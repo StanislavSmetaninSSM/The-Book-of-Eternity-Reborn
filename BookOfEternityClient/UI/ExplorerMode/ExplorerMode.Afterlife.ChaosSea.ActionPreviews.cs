@@ -82,11 +82,16 @@ public partial class ExplorerMode
     private static void AppendChaosSeaCommonContractRules(List<string> lines)
     {
         lines.Add("");
-        lines.Add("[bold]Общие правила Моря Хаоса:[/]");
-        lines.Add("  • Это afterlife-turn contract; Mortal World location/time/weather/NPC travel systems не используются.");
-        lines.Add("  • GM обязан закрывать машинный контракт canonical state/receipt-полями, а не только prose-описанием.");
-        lines.Add("  • Все id/requestId/cost/actionTag из этого предпросмотра должны совпасть с turn_request и output файлами.");
-        lines.Add("  • Forbidden side effects: currentLocationData, worldEventsLog, Mortal World UpdateNPCs и смена смертного мира без явного bootstrap.");
+        lines.Add("[bold]Realm rule matrix Моря Хаоса:[/]");
+        lines.Add("  • Lifecycle: это ordinary afterlife-turn contract; GM не запускает Mortal bootstrap, TriggerLifeEnd или смену currentRealm без явного /incarnate или Shining handoff.");
+        lines.Add("  • State authority: GM закрывает машинный контракт canonical state/receipt-полями, а не только prose-описанием.");
+        lines.Add("  • Identity lock: все id/requestId/cost/actionTag/source/target из этого предпросмотра должны совпасть с turn_request и output файлами.");
+        lines.Add("  • Mortal location/time/weather: forbidden currentLocationData, world_time timeChange/currentWeather/worldEventsLog and mortal travel.");
+        lines.Add("  • Mortal NPC/factions: forbidden UpdateNPCs, Mortal World factions, companion materialization and local encounter creation unless a MortalWorldProfile-only bootstrap contract exists.");
+        lines.Add("  • Mortal inventory/money/XP/skills: forbidden money, mortal inventory, equipment, XP, level, skill, wounds/combat/status mutations; afterlife uses soul_state, guardians, residents, archive and receipt surfaces.");
+        lines.Add("  • Combat: no combat enemies/allies/round state; conflict in Chaos Sea must be represented as guardian/resident/social/project state, not mortal combat files.");
+        lines.Add("  • Scheduler: world/progression cycles may advance only through progressionControl + progression_report.json; GM must not invent uncorrelated live-world deltas.");
+        lines.Add("  • Repair mode: if any pending/control file is malformed, fail closed and ask for repair rather than silently dropping the contract.");
     }
 
     private static void AppendChaosSeaLocalPreviewRules(List<string> lines)

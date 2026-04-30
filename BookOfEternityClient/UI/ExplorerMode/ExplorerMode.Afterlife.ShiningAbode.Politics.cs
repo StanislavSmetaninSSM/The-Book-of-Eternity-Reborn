@@ -620,8 +620,13 @@ public partial class ExplorerMode
         JsonObject? requestAudit,
         IReadOnlyList<string> lines)
     {
+        var previewLines = lines.ToList();
+        previewLines.Add("");
+        previewLines.Add("[bold]JSON-аудит ниже:[/]");
+        previewLines.Add("  • Includes `accepted` and `refusedOrWithdrawn` receipt/history scaffolds with exact request ids and quoted costs.");
+
         Clear();
-        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", previewLines)))
         {
             Header = new PanelHeader(" 🏛 Полный предпросмотр политического контракта ", Justify.Center),
             Border = BoxBorder.Double,
@@ -631,6 +636,10 @@ public partial class ExplorerMode
         });
 
         WriteJsonAuditPanel($"Полный JSON {pendingPath}.requests[0]", requestAudit, Color.Orange1);
+        WriteJsonAuditPanel(
+            "Ожидаемый каркас политического receipt/history для GM",
+            BuildShiningPoliticalExpectedReceiptAuditNode(pendingPath, requestAudit),
+            Color.Orange1);
 
         var choice = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]{Markup.Escape(confirmationTitle)}[/]")
@@ -644,6 +653,155 @@ public partial class ExplorerMode
     private static JsonObject? SerializePoliticalRequestForPreview<TRequest>(TRequest request)
     {
         return JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) as JsonObject;
+    }
+
+    private static JsonObject? BuildShiningPoliticalExpectedReceiptAuditNode(string pendingPath, JsonObject? request)
+    {
+        if (request == null)
+            return null;
+
+        if (string.Equals(pendingPath, ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return new JsonObject
+            {
+                ["accepted"] = new JsonObject
+                {
+                    ["stateSurface"] = "shining_abode_state.json.factionFoundingReceipts[] + halls[] + factions[]",
+                    ["receipt"] = new JsonObject
+                    {
+                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                        ["proposedFactionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
+                        ["proposedHallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
+                        ["factionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
+                        ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
+                        ["hallName"] = GetNodeString(request["proposedHallName"]) ?? "copy proposedHallName",
+                        ["supportingResidentIds"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"]),
+                        ["quotedCostFeathers"] = GetNodeInt(request["quotedCostFeathers"]),
+                        ["quotedCostLightSparks"] = GetNodeInt(request["quotedCostLightSparks"]),
+                        ["status"] = "accepted",
+                        ["resolvedAtTurn"] = "current turn number",
+                        ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+                        ["reason"] = "canonical founding outcome"
+                    }
+                },
+                ["refusedOrWithdrawn"] = new JsonObject
+                {
+                    ["stateSurface"] = "shining_abode_state.json.factionFoundingReceipts[] only; no hall/faction is created",
+                    ["receipt"] = new JsonObject
+                    {
+                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                        ["proposedFactionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
+                        ["proposedHallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
+                        ["supportingResidentIds"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"]),
+                        ["quotedCostFeathers"] = GetNodeInt(request["quotedCostFeathers"]),
+                        ["quotedCostLightSparks"] = GetNodeInt(request["quotedCostLightSparks"]),
+                        ["status"] = "refused|withdrawn",
+                        ["resolvedAtTurn"] = "current turn number",
+                        ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+                        ["reason"] = "canonical refusal reason"
+                    }
+                }
+            };
+        }
+
+        if (string.Equals(pendingPath, ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return new JsonObject
+            {
+                ["accepted"] = new JsonObject
+                {
+                    ["stateSurface"] = "guardian_abode_residents.json resident faction fields + shining_abode_state.json.factionRealignmentReceipts[]",
+                    ["receipt"] = new JsonObject
+                    {
+                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                        ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
+                        ["residentName"] = GetNodeString(request["residentName"]) ?? string.Empty,
+                        ["sourceFactionId"] = GetNodeString(request["sourceFactionId"]) ?? string.Empty,
+                        ["targetFactionId"] = GetNodeString(request["targetFactionId"]) ?? string.Empty,
+                        ["realignmentMode"] = GetNodeString(request["realignmentMode"]) ?? string.Empty,
+                        ["quotedCostFeathers"] = 0,
+                        ["quotedCostLightSparks"] = 0,
+                        ["status"] = "accepted",
+                        ["resolvedAtTurn"] = "current turn number",
+                        ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+                        ["reason"] = "canonical resident realignment outcome"
+                    }
+                },
+                ["refusedOrWithdrawn"] = new JsonObject
+                {
+                    ["stateSurface"] = "factionRealignmentReceipts[] only; resident faction binding remains unchanged",
+                    ["receipt"] = new JsonObject
+                    {
+                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                        ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
+                        ["sourceFactionId"] = GetNodeString(request["sourceFactionId"]) ?? string.Empty,
+                        ["targetFactionId"] = GetNodeString(request["targetFactionId"]) ?? string.Empty,
+                        ["realignmentMode"] = GetNodeString(request["realignmentMode"]) ?? string.Empty,
+                        ["quotedCostFeathers"] = 0,
+                        ["quotedCostLightSparks"] = 0,
+                        ["status"] = "refused|withdrawn",
+                        ["resolvedAtTurn"] = "current turn number",
+                        ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+                        ["reason"] = "canonical refusal reason"
+                    }
+                }
+            };
+        }
+
+        if (string.Equals(pendingPath, ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return new JsonObject
+            {
+                ["accepted"] = new JsonObject
+                {
+                    ["stateSurface"] = "faction.leadership + leadershipReceipts[] + leadershipHistory[] + shiningPoliticalActors[] when radiant_actor changes faction/head status",
+                    ["receipt"] = new JsonObject
+                    {
+                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                        ["factionId"] = GetNodeString(request["factionId"]) ?? string.Empty,
+                        ["transitionMode"] = GetNodeString(request["transitionMode"]) ?? string.Empty,
+                        ["previousHeadActorType"] = GetNodeString(request["incumbentHeadActorType"]) ?? string.Empty,
+                        ["previousHeadActorId"] = GetNodeString(request["incumbentHeadActorId"]) ?? string.Empty,
+                        ["newHeadActorType"] = GetNodeString(request["candidateHeadActorType"]) ?? string.Empty,
+                        ["newHeadActorId"] = GetNodeString(request["candidateHeadActorId"]) ?? string.Empty,
+                        ["supportingResidentIds"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"]),
+                        ["quotedCostFeathers"] = 0,
+                        ["quotedCostLightSparks"] = 0,
+                        ["status"] = "accepted",
+                        ["resolvedAtTurn"] = "current turn number",
+                        ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+                        ["reason"] = "canonical leadership outcome"
+                    },
+                    ["history"] = new JsonObject
+                    {
+                        ["eventId"] = "generated_leadership_event_id",
+                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                        ["eventType"] = "succeeded|abdicated|revolted|vacated",
+                        ["summary"] = "player-facing leadership history summary",
+                        ["turnNumber"] = "current turn number",
+                        ["occurredAtUtc"] = "ISO-8601 UTC timestamp"
+                    }
+                },
+                ["refusedOrWithdrawn"] = new JsonObject
+                {
+                    ["stateSurface"] = "leadershipReceipts[] + optional refusal history only; faction.leadership remains unchanged",
+                    ["receipt"] = new JsonObject
+                    {
+                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                        ["factionId"] = GetNodeString(request["factionId"]) ?? string.Empty,
+                        ["transitionMode"] = GetNodeString(request["transitionMode"]) ?? string.Empty,
+                        ["quotedCostFeathers"] = 0,
+                        ["quotedCostLightSparks"] = 0,
+                        ["status"] = "refused|withdrawn",
+                        ["resolvedAtTurn"] = "current turn number",
+                        ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+                        ["reason"] = "canonical refusal reason"
+                    }
+                }
+            };
+        }
+
+        return null;
     }
 
     private List<string> BuildShiningFoundingRequestPreviewLines(
@@ -710,6 +868,7 @@ public partial class ExplorerMode
         lines.Add($"  • Лояльность: [dim]{request.FactionLoyaltyLevel} / {Markup.Escape(DescribeShiningFactionLoyaltyTier(request.FactionLoyaltyTier))}[/]");
         lines.Add($"  • Брожение: [dim]{request.FactionRestlessness}[/]");
         lines.Add($"  • Состояние перестройки: [dim]{Markup.Escape(DescribeShiningFactionRealignmentState(request.FactionRealignmentState))}[/]");
+        lines.Add("  • Стоимость: [dim]quotedCostFeathers=0, quotedCostLightSparks=0[/] (политический переход не списывает ресурсы).");
 
         lines.Add("");
         lines.Add("[bold]Контракт закрытия для GM:[/]");
@@ -740,6 +899,7 @@ public partial class ExplorerMode
             ? "  • Новый глава: [dim]не указан; accepted abdication оставит место вакантным[/]"
             : $"  • Новый глава: [white]{Markup.Escape(BuildHeadActorLabel(request.CandidateHeadActorType, request.CandidateHeadActorId))}[/]");
         AppendPoliticalResidentList(lines, "Сторонники перехода", context.ResidentRoot, request.SupportingResidentIds);
+        lines.Add("  • Стоимость: [dim]quotedCostFeathers=0, quotedCostLightSparks=0[/] (смена власти не списывает ресурсы).");
 
         lines.Add("");
         lines.Add("[bold]Контракт закрытия для GM:[/]");

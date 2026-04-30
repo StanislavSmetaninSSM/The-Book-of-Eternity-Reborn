@@ -47,7 +47,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("[blue]/море_хаоса", help, StringComparison.Ordinal);
         Assert.Contains("[blue]/abodes", help, StringComparison.Ordinal);
         Assert.DoesNotContain("/реликвии /хранители /обители /душа", lifecycle, StringComparison.Ordinal);
-        Assert.Contains("/реликвии /хранители /обители /гача /душа", lifecycle, StringComparison.Ordinal);
+        Assert.Contains("/статус /реликвии /хранители /обители /гача /перья /архив_души", lifecycle, StringComparison.Ordinal);
         Assert.Contains("CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction)", lifecycle, StringComparison.Ordinal);
         Assert.Contains("CleanupAfterCancelledChaosSeaMarkerTurn(action)", lifecycle, StringComparison.Ordinal);
         Assert.Contains("[\"/chaos_sea\"] = ShowGuardians", ReadSource("UI", "ExplorerMode.cs"), StringComparison.Ordinal);

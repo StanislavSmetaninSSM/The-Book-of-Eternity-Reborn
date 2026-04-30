@@ -2140,16 +2140,17 @@ public partial class GameEngine
         else if (isShiningAbode)
         {
             AnsiConsole.MarkupLine("[dim]  Свободный ролеплей с Хранителями в Сияющей Обители[/]");
-            AnsiConsole.MarkupLine("[dim]  /сияющая_обитель /shining_abode │ /сияющая_политика /shining_politics[/]");
-            AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /душа │ /вернуться_в_море_хаоса /новая_игра+ │ /help[/]");
+            AnsiConsole.MarkupLine("[dim]  /статус /status │ /сияющая_обитель /shining_abode │ /сияющая_политика /shining_politics[/]");
+            AnsiConsole.MarkupLine("[dim]  /перья /архив_души /уведомления_загробья │ /реликвии /хранители /душа[/]");
+            AnsiConsole.MarkupLine("[dim]  /вернуться_в_море_хаоса /новая_игра+ │ /help[/]");
         }
         else if (isChaosSea)
         {
             AnsiConsole.MarkupLine("[dim]  Говорите с Хранителем: торговать, квесты, реликвии души, вытягивание реликвий, сменить хранителя[/]");
             if (_stateManager.CurrentState.CanReenterShiningAbode)
-                AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /обители /гача /душа │ /воплотиться /вернуться_в_обитель │ /help[/]");
+                AnsiConsole.MarkupLine("[dim]  /статус /реликвии /хранители /обители /гача /перья /архив_души │ /воплотиться /вернуться_в_обитель │ /help[/]");
             else
-                AnsiConsole.MarkupLine("[dim]  /реликвии /хранители /обители /гача /душа │ /воплотиться │ /help[/]");
+                AnsiConsole.MarkupLine("[dim]  /статус /реликвии /хранители /обители /гача /перья /архив_души │ /воплотиться │ /help[/]");
         }
         else
         {

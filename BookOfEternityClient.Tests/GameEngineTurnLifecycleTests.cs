@@ -159,6 +159,76 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CollectIncarnationBlockersAsync_ResidentTransferEnumeratesEveryPendingRequest()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "transfer_alpha",
+                    residentId = "resident_alpha",
+                    sourceGuardianId = "guardian_old_alpha",
+                    sourceAbodeId = "abode_old_alpha",
+                    targetGuardianId = "guardian_new_alpha",
+                    targetAbodeId = "abode_new_alpha",
+                    createdAtTurn = 12
+                },
+                new
+                {
+                    requestId = "transfer_beta",
+                    residentId = "resident_beta",
+                    sourceGuardianId = "guardian_old_beta",
+                    sourceAbodeId = "abode_old_beta",
+                    targetGuardianId = "guardian_new_beta",
+                    targetAbodeId = "abode_new_beta",
+                    createdAtTurn = 13
+                }
+            }
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        var blocker = Assert.Single(blockers);
+        Assert.Contains("pending_guardian_abode_resident_transfers.json", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("request[0]:", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("requestId=transfer_alpha", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("targetAbodeId=abode_new_alpha", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("request[1]:", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("requestId=transfer_beta", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sourceGuardianId=guardian_old_beta", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("full payload:", blocker, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task CollectIncarnationBlockersAsync_AbodeOfferingShowsGenericPayloadAndClosure()
+    {
+        await WriteJsonAsync(GuardianAbodeOfferingState.PendingRequestPath, new
+        {
+            requestId = "offering_blocker_001",
+            guardianId = "guardian_offering_001",
+            abodeId = "abode_offering_001",
+            offeringType = "ink_feathers",
+            inkFeathersOffered = 100,
+            powerGain = 20,
+            createdAtTurn = 14
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        var blocker = Assert.Single(blockers);
+        Assert.Contains("pending_abode_offering.json", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("requestId=offering_blocker_001", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("offeringType=ink_feathers", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("inkFeathersOffered=100", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("output/ink_feather_action_result.json", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"powerGain\": 20", blocker, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task CleanupAfterCancelledChaosSeaMarkerTurn_PreservesSystemGuardianAttractionForLateResponse()
     {
         await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new

@@ -267,6 +267,31 @@ public partial class ExplorerMode
                     pendingNotice += $"\n  [dim]… и ещё {unreadResidentNotifications.Count - 3}. Откройте /уведомления_загробья[/]";
             }
 
+            var overviewLines = new List<string>
+            {
+                "[bold cyan]Море Хаоса: полный operational overview[/]",
+                "",
+                $"  • Активный Хранитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(activeGuardianDisplayName) ? activeGuardianId : activeGuardianDisplayName)}[/] [dim]({Markup.Escape(activeGuardianId)})[/]",
+                $"  • Текущая Обитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeId) ? "не выбрана" : currentAbodeId)}[/]",
+                $"  • Известных Хранителей: [white]{guardians.Count}[/]",
+                "",
+                "[bold]Подробные audit-панели:[/]",
+                "  • /status — единый статус afterlife ресурсов, blockers, contracts и Shining-сигналов.",
+                "  • /afterlife_inbox — все ответы GM по торговле, архиву, резидентам и политике.",
+                "  • /feathers, /afterlife_archive, /guardian_projects, /abode_offering — детальные ресурсы и state deltas."
+            };
+            overviewLines.Add("");
+            overviewLines.AddRange(await BuildAfterlifePendingContractAuditLinesAsync(includeShining: true, includeFullPayload: true));
+            Clear();
+            Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", overviewLines)))
+            {
+                Header = new PanelHeader(" 🌊 Chaos Sea Audit ", Justify.Center),
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Cyan1),
+                Padding = new Padding(1, 1),
+                Expand = true
+            });
+
             var selected = Prompt(new SelectionPrompt<string>()
                 .Title($"[bold cyan]🛡️ {_loc.T("guardians_info")} — Обители Моря Хаоса[/]" +
                     (string.IsNullOrEmpty(pendingNotice) ? "" : $"\n{pendingNotice}"))
@@ -2573,9 +2598,11 @@ public partial class ExplorerMode
                 }
 
                 var pendingRequests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
-                var matchesCurrentRequest = pendingRequests.Any(pendingRequest =>
+                var matchingPendingRequests = pendingRequests.Where(pendingRequest =>
                     string.Equals(pendingRequest.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase) &&
-                    string.Equals(pendingRequest.AbodeId, abodeId, StringComparison.OrdinalIgnoreCase));
+                    string.Equals(pendingRequest.AbodeId, abodeId, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+                var matchesCurrentRequest = matchingPendingRequests.Count > 0;
 
                 if (!matchesCurrentRequest)
                 {
@@ -2648,6 +2675,23 @@ public partial class ExplorerMode
                     pendingLines.Add($"[dim]{Markup.Escape(founderFeatureSummary)}[/]");
                 if (isFoundedGuardian)
                     pendingLines.Add("[dim]Старые обитатели прежнего покровителя не переносятся автоматически; новая мантия собирает собственный первый состав.[/]");
+                if (matchingPendingRequests.Count > 0)
+                {
+                    pendingLines.Add("");
+                    pendingLines.Add("[bold]Живой pending contract:[/]");
+                    pendingLines.Add($"  • Файл: [dim]{Markup.Escape(GuardianAbodeResidentRequestState.PendingResidentsRequestPath)}[/]");
+                    pendingLines.Add("  • Закрытие: UpdateGuardianAbodeResidents + UpdateGuardianAbodeResidentRosterReceipts with matching requestId/guardianId/abodeId.");
+                    foreach (var pendingRequest in matchingPendingRequests)
+                    {
+                        pendingLines.Add($"  • requestId: [white]{Markup.Escape(pendingRequest.RequestId)}[/]");
+                        pendingLines.Add($"    guardianId: [dim]{Markup.Escape(pendingRequest.GuardianId)}[/], abodeId: [dim]{Markup.Escape(pendingRequest.AbodeId)}[/], requestMode: [dim]{Markup.Escape(pendingRequest.RequestMode)}[/]");
+                        pendingLines.Add($"    createdAtTurn: [dim]{pendingRequest.CreatedAtTurn}[/], createdAtUtc: [dim]{Markup.Escape(pendingRequest.CreatedAtUtc)}[/], currentReputation: [dim]{pendingRequest.CurrentReputation}[/]");
+                        pendingLines.Add("    full payload:");
+                        var payload = JsonSerializer.Serialize(pendingRequest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+                        foreach (var payloadLine in payload.Split('\n'))
+                            pendingLines.Add($"      [dim]{Markup.Escape(payloadLine.TrimEnd('\r'))}[/]");
+                    }
+                }
                 pendingLines.Add("");
                 pendingLines.Add("[dim]Откройте панель позже, когда явное состояние обитателей будет материализовано.[/]");
 
@@ -3194,9 +3238,11 @@ public partial class ExplorerMode
         var guardian = ResolveGuardianObject(guardiansRoot, guardianId);
         var currentAbodePower = guardian == null ? (int?)null : AbodePowerRules.GetCurrentPower(guardian);
         var resident = GuardianAbodeResidentState.ReadResidentEntry(residentNode, currentAbodePower);
-        var guardianName = GuardianManifestation.GetDisplayName(guardian) ??
-                           GetNodeString(guardian?["canonicalName"]) ??
-                           guardianId;
+        var guardianName = guardian == null
+            ? guardianId
+            : GuardianManifestation.GetDisplayName(guardian) ??
+              GetNodeString(guardian["canonicalName"]) ??
+              guardianId;
         var abodeName = GetNodeString(guardian?["abode"]?["name"]) ?? resident.AbodeId;
 
         await ShowGuardianAbodeResidentDetailAsync(

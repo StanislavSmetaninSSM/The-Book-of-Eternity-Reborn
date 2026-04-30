@@ -33,6 +33,10 @@ public partial class ExplorerMode
             "Ожидаемый каркас coreActionReceipts[] (скрытые runtime details удалены)",
             BuildShiningCoreExpectedReceiptAuditNode(context, request),
             Color.Gold1);
+        WriteJsonAuditPanel(
+            "Ожидаемый accepted-state delta audit",
+            BuildShiningCoreExpectedStateDeltaAuditNode(context, request),
+            Color.Gold1);
 
         var choice = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]{Markup.Escape(confirmationTitle)}[/]")
@@ -292,6 +296,7 @@ public partial class ExplorerMode
         lines.Add($"  • Echo quoted costs exactly: quotedCostFeathers={request.QuotedCostFeathers}, quotedCostLightSparks={request.QuotedCostLightSparks}; do not recompute them in prose.");
         lines.Add("  • For accepted status, canonical state must exactly match the action helper projection.");
         lines.Add("  • For refused/withdrawn status, state remains unchanged except `coreActionReceipts[]`.");
+        lines.Add("  • The accepted-state delta audit below exposes `changedSurfaces`, before/after state summaries, and targetFaction/targetProject details when applicable.");
         lines.Add("  • `pending_shining_abode_actions.json` is client-owned input; GM must not rewrite it as output.");
 
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction, StringComparison.OrdinalIgnoreCase))
@@ -378,6 +383,179 @@ public partial class ExplorerMode
             return string.Empty;
 
         return request.TargetFormTag;
+    }
+
+    private static JsonObject BuildShiningCoreExpectedStateDeltaAuditNode(
+        ShiningContext context,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        var result = new JsonObject
+        {
+            ["requestId"] = request.RequestId,
+            ["actionType"] = request.ActionType,
+            ["acceptedStatusOnly"] = true,
+            ["refusedOrWithdrawnDelta"] = "state unchanged except coreActionReceipts[] closure",
+            ["changedSurfaces"] = new JsonArray()
+        };
+
+        var changedSurfaces = result["changedSurfaces"]!.AsArray();
+        var beforeShining = BuildShiningCoreStateSummaryForPreview(context.Root, context.ResidentRoot, request);
+        result["before"] = new JsonObject
+        {
+            ["shining_abode_state"] = beforeShining,
+            ["soul_state"] = BuildSoulCoreStateSummaryForPreview(context.SoulRoot, request)
+        };
+
+        if (ShiningCoreActionRequestState.TryBuildProjectedShiningRootForPreview(
+                request,
+                context.Root,
+                context.ResidentRoot,
+                out var projectedRoot))
+        {
+            result["after"] = new JsonObject
+            {
+                ["shining_abode_state"] = BuildShiningCoreStateSummaryForPreview(projectedRoot, context.ResidentRoot, request)
+            };
+            changedSurfaces.Add("game_state/meta/shining_abode_state.json");
+        }
+        else
+        {
+            result["afterProjection"] = "not available before GM-authored accepted payload; validator still enforces exact canonical projection";
+        }
+
+        var actionType = request.ActionType ?? string.Empty;
+        if (string.Equals(actionType, ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
+        {
+            changedSurfaces.Add("game_state/meta/soul_state.json");
+            result["soulDelta"] = new JsonObject
+            {
+                ["expected"] = "append exactly one generated Soul Relic and leave unrelated soul fields unchanged",
+                ["requiredReceiptFields"] = new JsonArray("relicId", "relicName", "baseRarity", "finalRarity", "returnCycleId")
+            };
+        }
+        else if (ShiningAbodeState.IsForgeActionType(actionType))
+        {
+            changedSurfaces.Add("game_state/meta/soul_state.json");
+            result["soulDelta"] = new JsonObject
+            {
+                ["expected"] = "mutate exactly the requested Soul Relic plus resource/entitlement lifecycle",
+                ["relicBefore"] = CloneShiningJsonForPlayerFacingAudit(FindSoulRelicForPreview(context.SoulRoot, request.RelicId)),
+                ["mutation"] = new JsonObject
+                {
+                    ["relicId"] = request.RelicId,
+                    ["targetFormTag"] = request.TargetFormTag ?? string.Empty,
+                    ["propertyIndex"] = request.PropertyIndex,
+                    ["replacementProperty"] = CloneShiningJsonForPlayerFacingAudit(request.ReplacementProperty),
+                    ["addedProperties"] = CloneShiningJsonForPlayerFacingAudit(request.AddedProperties)
+                }
+            };
+        }
+
+        if (request.QuotedCostFeathers != 0 || request.QuotedCostLightSparks != 0)
+        {
+            result["resourceDelta"] = new JsonObject
+            {
+                ["quotedCostFeathers"] = request.QuotedCostFeathers,
+                ["quotedCostLightSparks"] = request.QuotedCostLightSparks,
+                ["currentInkFeathers"] = CurrentInkFeathersForPreview(context.SoulRoot),
+                ["currentLightSparks"] = GetNodeInt(context.Root["lightSparks"]),
+                ["expectedLightSparksAfter"] = Math.Max(0, GetNodeInt(context.Root["lightSparks"]) - Math.Max(0, request.QuotedCostLightSparks))
+            };
+        }
+
+        return result;
+    }
+
+    private static JsonObject BuildShiningCoreStateSummaryForPreview(
+        JsonObject? shiningRoot,
+        JsonObject? residentRoot,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        var summary = new JsonObject
+        {
+            ["radianceExperience"] = GetNodeInt(shiningRoot?["radiance"]?["experience"]),
+            ["radianceTier"] = GetNodeInt(shiningRoot?["radiance"]?["tier"]),
+            ["lightSparks"] = GetNodeInt(shiningRoot?["lightSparks"]),
+            ["factionCount"] = (shiningRoot?["factions"] as JsonArray)?.Count ?? 0,
+            ["coreActionReceiptCount"] = (shiningRoot?["coreActionReceipts"] as JsonArray)?.Count ?? 0
+        };
+
+        if (shiningRoot?["gates"] is JsonObject gates)
+        {
+            summary["gates"] = new JsonObject
+            {
+                ["draftVersion"] = GetNodeInt(gates["draftVersion"]),
+                ["hasOpenDraft"] = GetNodeBool(gates["hasOpenDraft"]),
+                ["isStale"] = GetNodeBool(gates["isStale"]),
+                ["availableCardCount"] = (gates["availableBlessingCards"] as JsonArray)?.Count ?? 0,
+                ["selectedCardCount"] = (gates["selectedBlessingCardIds"] as JsonArray)?.Count ?? 0,
+                ["rerollsRemaining"] = GetNodeInt(gates["rerollsRemaining"])
+            };
+        }
+
+        var faction = FindShiningFactionForPreview(shiningRoot, request.FactionId);
+        if (faction != null)
+        {
+            var strength = GetNodeInt(faction["factionStrength"]);
+            summary["targetFaction"] = new JsonObject
+            {
+                ["factionId"] = GetNodeString(faction["factionId"]) ?? string.Empty,
+                ["factionName"] = GetNodeString(faction["charter"]?["factionName"]) ?? string.Empty,
+                ["factionStrength"] = strength,
+                ["investCountThisAscension"] = GetNodeInt(faction["investCountThisAscension"]),
+                ["tradeTier"] = ShiningAbodeState.GetTradeTier(strength),
+                ["tradeSlots"] = ShiningAbodeState.GetTradeStockItemCount(faction, residentRoot),
+                ["rarityCeiling"] = ShiningAbodeState.GetTradeRarityCeiling(strength),
+                ["serviceMultiplier"] = ShiningAbodeState.GetServiceMultiplier(strength),
+                ["projectCount"] = (faction["projects"] as JsonArray)?.Count ?? 0
+            };
+        }
+
+        var project = FindShiningProjectForPreview(shiningRoot, request.FactionId, request.ProjectId);
+        if (project != null)
+        {
+            summary["targetProject"] = new JsonObject
+            {
+                ["projectId"] = GetNodeString(project["projectId"]) ?? string.Empty,
+                ["displayName"] = GetNodeString(project["displayName"]) ?? string.Empty,
+                ["status"] = GetNodeString(project["status"]) ?? string.Empty,
+                ["isSupported"] = GetNodeBool(project["isSupported"]),
+                ["tier"] = GetNodeInt(project["tier"]),
+                ["strengthReward"] = GetNodeInt(project["strengthReward"]),
+                ["projectArchetype"] = GetNodeString(project["projectArchetype"]) ?? string.Empty,
+                ["outputEffectFamily"] = GetNodeString(project["outputEffectFamily"]) ?? string.Empty
+            };
+        }
+
+        if (shiningRoot?["preparedIncarnationPackage"] is JsonObject package)
+        {
+            summary["preparedIncarnationPackage"] = new JsonObject
+            {
+                ["generatedFromDraftVersion"] = GetNodeInt(package["generatedFromDraftVersion"]),
+                ["selectedCardCount"] = (package["selectedCards"] as JsonArray)?.Count ?? 0,
+                ["preparedAtTurn"] = GetNodeInt(package["preparedAtTurn"])
+            };
+        }
+
+        return summary;
+    }
+
+    private static JsonObject BuildSoulCoreStateSummaryForPreview(
+        JsonObject? soulRoot,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        var summary = new JsonObject
+        {
+            ["inkFeathers"] = CurrentInkFeathersForPreview(soulRoot),
+            ["storedRelicCount"] = (soulRoot?["soulRelics"]?["stored"] as JsonArray)?.Count ?? 0,
+            ["equippedRelicCount"] = (soulRoot?["soulRelics"]?["equipped"] as JsonArray)?.Count ?? 0,
+            ["archiveReceiptCount"] = (soulRoot?["afterlifeArchive"]?["actionReceipts"] as JsonArray)?.Count ?? 0
+        };
+
+        if (!string.IsNullOrWhiteSpace(request.RelicId))
+            summary["targetRelic"] = CloneShiningJsonForPlayerFacingAudit(FindSoulRelicForPreview(soulRoot, request.RelicId));
+
+        return summary;
     }
 
     private static void AddAcceptedGeneratedReceiptScaffoldFields(
