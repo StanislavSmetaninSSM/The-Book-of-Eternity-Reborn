@@ -31,7 +31,7 @@ public partial class ExplorerMode
         WriteJsonAuditPanel("Полный JSON pending_shining_abode_actions.json.requests[0]", requestAudit, Color.Gold1);
         WriteJsonAuditPanel(
             "Ожидаемый каркас coreActionReceipts[] (скрытые runtime details удалены)",
-            BuildShiningCoreExpectedReceiptAuditNode(request),
+            BuildShiningCoreExpectedReceiptAuditNode(context, request),
             Color.Gold1);
 
         var choice = Prompt(new SelectionPrompt<string>()
@@ -306,7 +306,27 @@ public partial class ExplorerMode
             lines.Add("  • forge receipt must echo relicId/relicName and mutation fields such as targetFormTag/propertyIndex/replacementProperty/addedProperties.");
     }
 
-    private static JsonObject BuildShiningCoreExpectedReceiptAuditNode(ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    private static JsonObject BuildShiningCoreExpectedReceiptAuditNode(
+        ShiningContext context,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        return new JsonObject
+        {
+            ["accepted"] = BuildShiningCoreExpectedReceiptAuditNode(
+                request,
+                status: "accepted",
+                generatedDraftVersion: ResolveAcceptedReceiptDraftVersionForPreview(context, request)),
+            ["refusedOrWithdrawn"] = BuildShiningCoreExpectedReceiptAuditNode(
+                request,
+                status: "refused|withdrawn",
+                generatedDraftVersion: 0)
+        };
+    }
+
+    private static JsonObject BuildShiningCoreExpectedReceiptAuditNode(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string status,
+        int generatedDraftVersion)
     {
         var selectedCardIds = new JsonArray(request.SelectedCardIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
@@ -326,8 +346,8 @@ public partial class ExplorerMode
             ["selectedCardIds"] = selectedCardIds,
             ["newResidentIds"] = new JsonArray(),
             ["seededProjectIds"] = new JsonArray(),
-            ["generatedDraftVersion"] = ResolveExpectedReceiptDraftVersionForPreview(request),
-            ["status"] = "accepted|refused|withdrawn",
+            ["generatedDraftVersion"] = generatedDraftVersion,
+            ["status"] = status,
             ["resolvedAtTurn"] = "current turn number",
             ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
             ["reason"] = "canonical human-readable closure reason"
@@ -347,10 +367,12 @@ public partial class ExplorerMode
         return receipt;
     }
 
-    private static int ResolveExpectedReceiptDraftVersionForPreview(ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    private static int ResolveAcceptedReceiptDraftVersionForPreview(
+        ShiningContext context,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeOpenGates, StringComparison.OrdinalIgnoreCase))
-            return Math.Max(1, request.SourceDraftVersion + 1);
+            return Math.Max(1, GetNodeInt(context.Root["gates"]?["draftVersion"]) + 1);
 
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase))
             return Math.Max(0, request.SourceDraftVersion);
