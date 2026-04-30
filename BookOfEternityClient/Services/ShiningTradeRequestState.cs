@@ -143,6 +143,13 @@ internal static class ShiningTradeRequestState
         var existingState = await ReadRequestsStateAsync(fs);
         if (existingState.IsMalformed)
             throw new InvalidOperationException("pending_shining_trade_inventory_requests.json повреждён и должен быть исправлен или очищен до записи новых торговых запросов.");
+        if (existingState.Requests.Any(existing =>
+                string.Equals(existing.FactionId, request.FactionId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(existing.TradeCycleId, request.TradeCycleId, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(existing.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException("pending_shining_trade_inventory_requests.json уже содержит live foreign trade contract for this faction/cycle; guarded writer не заменяет unresolved contract.");
+        }
 
         var requests = (await ReadRequestsAsync(fs)).ToList();
         requests.RemoveAll(existing =>

@@ -436,10 +436,38 @@ public partial class ExplorerMode
         else if (ShiningAbodeState.IsForgeActionType(actionType))
         {
             changedSurfaces.Add("game_state/meta/soul_state.json");
+            JsonObject? projectedSoulRoot = null;
+            JsonObject? projectedShiningRoot = null;
+            string? forgeProjectionError = context.SoulRoot == null ? "missing Soul state" : null;
+            var projectedForge = context.SoulRoot != null &&
+                ShiningCoreActionRequestState.TryBuildProjectedForgeStateForPreview(
+                    request,
+                    context.Root,
+                    context.SoulRoot,
+                    context.ResidentRoot,
+                    out projectedSoulRoot,
+                    out projectedShiningRoot,
+                    out forgeProjectionError);
             result["soulDelta"] = new JsonObject
             {
                 ["expected"] = "mutate exactly the requested Soul Relic plus resource/entitlement lifecycle",
                 ["relicBefore"] = CloneShiningJsonForPlayerFacingAudit(FindSoulRelicForPreview(context.SoulRoot, request.RelicId)),
+                ["relicAfter"] = projectedForge
+                    ? CloneShiningJsonForPlayerFacingAudit(FindSoulRelicForPreview(projectedSoulRoot, request.RelicId))
+                    : JsonValue.Create($"projection unavailable: {forgeProjectionError}"),
+                ["inkFeathersBefore"] = CurrentInkFeathersForPreview(context.SoulRoot),
+                ["inkFeathersAfter"] = projectedForge ? JsonValue.Create(CurrentInkFeathersForPreview(projectedSoulRoot)) : null,
+                ["lightSparksBefore"] = GetNodeInt(context.Root["lightSparks"]),
+                ["lightSparksAfter"] = projectedForge ? JsonValue.Create(GetNodeInt(projectedShiningRoot?["lightSparks"])) : null,
+                ["relicRefinementEntitlementsBefore"] = CloneShiningJsonForPlayerFacingAudit(context.SoulRoot?[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"]),
+                ["relicRefinementEntitlementsAfter"] = projectedForge
+                    ? CloneShiningJsonForPlayerFacingAudit(projectedSoulRoot?[ShiningBlessingEffectState.SoulStateProperty]?["relicRefinementEntitlements"])
+                    : null,
+                ["consumptionAudit"] = new JsonObject
+                {
+                    ["consumedAtTurn"] = request.CreatedAtTurn,
+                    ["consumedAtUtc"] = "receipt resolvedAtUtc / request createdAtUtc if client-authored preview"
+                },
                 ["mutation"] = new JsonObject
                 {
                     ["relicId"] = request.RelicId,

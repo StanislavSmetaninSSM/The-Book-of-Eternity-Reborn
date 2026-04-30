@@ -266,8 +266,8 @@ internal static partial class ShiningAbodeState
             return "radiance object повреждён или отсутствует.";
         if (root["gates"] is not JsonObject)
             return "gates object повреждён или отсутствует.";
-        if (root["gachaSystem"] is not JsonObject)
-            return "gachaSystem object повреждён или отсутствует.";
+        if (root.ContainsKey("gachaSystem") && root["gachaSystem"] is not JsonObject)
+            return "gachaSystem object повреждён.";
 
         var blessingCardIssue = ValidateRawBlessingCardContracts(root);
         if (!string.IsNullOrWhiteSpace(blessingCardIssue))
@@ -983,6 +983,7 @@ internal static partial class ShiningAbodeState
 
         return ValidateRawBlessingIdArray(selectedIds, "preparedIncarnationPackage.selectedCardIds") ??
                ValidateRawBlessingCardArray(selectedCards, "preparedIncarnationPackage.selectedCards") ??
+               ValidatePreparedPackageUniqueCardIds(preparedPackage) ??
                ValidatePreparedPackageCardSnapshot(preparedPackage);
     }
 
@@ -1051,6 +1052,30 @@ internal static partial class ShiningAbodeState
         return orderedIds.SequenceEqual(cardSnapshotIds, StringComparer.OrdinalIgnoreCase)
             ? null
             : "preparedIncarnationPackage содержит mismatched selectedCardIds/selectedCards snapshot и не может authorise actionable Shining mode.";
+    }
+
+    private static string? ValidatePreparedPackageUniqueCardIds(JsonObject preparedPackage)
+    {
+        if (preparedPackage["selectedCardIds"] is not JsonArray selectedIds ||
+            preparedPackage["selectedCards"] is not JsonArray selectedCards)
+        {
+            return null;
+        }
+
+        var orderedIds = selectedIds.OfType<JsonValue>()
+            .Select(node => node.TryGetValue<string>(out var value) ? value?.Trim() ?? string.Empty : string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        if (orderedIds.Count != orderedIds.Distinct(StringComparer.OrdinalIgnoreCase).Count())
+            return "preparedIncarnationPackage.selectedCardIds содержит duplicate blessing card id и не может authorise actionable Shining bootstrap.";
+
+        var cardIds = selectedCards.OfType<JsonObject>()
+            .Select(card => GetNodeString(card["cardId"]) ?? string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        return cardIds.Count == cardIds.Distinct(StringComparer.OrdinalIgnoreCase).Count()
+            ? null
+            : "preparedIncarnationPackage.selectedCards содержит duplicate blessing card id и не может authorise actionable Shining bootstrap.";
     }
 
     private static string? ValidateRawPoliticalContracts(JsonObject root)

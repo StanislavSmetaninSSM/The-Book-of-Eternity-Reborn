@@ -410,6 +410,12 @@ internal static partial class ShiningAbodeState
             return false;
         }
 
+        if (string.IsNullOrWhiteSpace(GetForgePropertyIdentity(replacementProperty)))
+        {
+            error = "replacementProperty должен иметь propertyId, name или stat.";
+            return false;
+        }
+
         if (JsonNode.DeepEquals(currentProperty, replacementProperty))
         {
             error = "replacementProperty должен отличаться от текущего свойства.";

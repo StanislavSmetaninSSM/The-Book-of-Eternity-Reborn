@@ -4215,7 +4215,7 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
-        if (IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        if (RealmSemantics.IsAfterlifeRealm(await TryResolvePreTurnRealmAsync()))
         {
             issues.Add(new ValidationIssue(
                 NpcTradeRequestState.PendingRequestPath,
@@ -5237,7 +5237,7 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
-        if (IsChaosSeaRealm(await TryResolvePreTurnRealmAsync()))
+        if (RealmSemantics.IsAfterlifeRealm(await TryResolvePreTurnRealmAsync()))
         {
             issues.Add(new ValidationIssue(
                 ActorSocialInteractionRequestState.PendingNpcRequestPath,

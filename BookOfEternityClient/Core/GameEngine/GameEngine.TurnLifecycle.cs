@@ -1806,6 +1806,10 @@ public partial class GameEngine
                 if (!blessingResult.Success)
                 {
                     _logger.LogWarning("Не удалось materialize pendingShiningBlessingEffects during bootstrap: {ErrorMessage}", blessingResult.ErrorMessage);
+                    await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
+                    AnsiConsole.MarkupLine("[red]⚠ Bootstrap Сияющей Обители остановлен: blessing package не удалось безопасно материализовать.[/]");
+                    AnsiConsole.MarkupLine("[yellow]preparedIncarnationPackage и incarnation_trigger сохранены для repair/retry; смертный bootstrap не отправлен.[/]");
+                    return;
                 }
                 else if (blessingResult.SummaryLines.Count > 0)
                 {
@@ -1880,7 +1884,10 @@ public partial class GameEngine
             if (!requestDispatched)
                 await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
             LogError(ex);
-            _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+            if (isShiningBootstrapHandoff)
+                _logger.LogWarning("Shining bootstrap handoff failed before dispatch; preserving incarnation_trigger.json and preparedIncarnationPackage for repair/retry.");
+            else
+                _fs.DeleteFile("game_state/control/incarnation_trigger.json");
         }
     }
 

@@ -1967,7 +1967,7 @@ Correct faction patch:
 }
 ```
 
-If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`, use `currentFactionId = <factionId>` and `politicalStatus = "head"` for the current head, and move the replaced radiant head to `politicalStatus = "former_head"` in the same accepted state.
+If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`, use `currentFactionId = <factionId>` and `politicalStatus = "head"` for the current head, and move the replaced radiant head to `politicalStatus = "former_head"` in the same accepted state. Supported `politicalStatus` values are `head`, `former_head`, `claimant`, `elder`, and `retired`; do not invent local political status strings.
 
 Canonical leadership transition matrix:
 
@@ -4437,7 +4437,7 @@ Correct response/state fragment:
           "tier": 1,
           "status": "completed",
           "isSupported": true,
-          "strengthReward": 6
+          "strengthReward": 8
         }
       ],
       "tradeInventory": {

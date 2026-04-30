@@ -1152,12 +1152,30 @@ internal static class ShiningFactionRequestState
         if (existingState.IsMalformed)
             throw new InvalidOperationException($"{Path.GetFileName(path)} повреждён и должен быть исправлен или очищен до записи нового политического запроса.");
 
+        var requestId = GetPoliticalRequestId(request);
+        if (existingState.Requests.Any(existingRequest =>
+                conflictSelector(existingRequest, request) &&
+                !string.Equals(GetPoliticalRequestId(existingRequest), requestId, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException($"{Path.GetFileName(path)} уже содержит live foreign Shining political contract with the same target identity; guarded writer не заменяет unresolved contract.");
+        }
+
         var existing = existingState.Requests.ToList();
         existing.RemoveAll(existingRequest => conflictSelector(existingRequest, request));
         existing.Add(request);
 
         await PersistRequestsAsync(fs, path, existing);
     }
+
+    private static string GetPoliticalRequestId<TRequest>(TRequest request)
+        where TRequest : class =>
+        request switch
+        {
+            PendingShiningFactionFoundingRequest founding => founding.RequestId,
+            PendingShiningFactionRealignmentRequest realignment => realignment.RequestId,
+            PendingShiningFactionLeadershipTransitionRequest leadership => leadership.RequestId,
+            _ => string.Empty
+        };
 
     private static async Task PersistRequestsAsync<TRequest>(FileSystemManager fs, string path, IReadOnlyCollection<TRequest> requests)
         where TRequest : class

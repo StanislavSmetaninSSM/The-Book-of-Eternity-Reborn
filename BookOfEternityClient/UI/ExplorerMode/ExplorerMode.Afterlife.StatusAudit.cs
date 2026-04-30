@@ -30,6 +30,7 @@ public partial class ExplorerMode
         new(GuardianTradeRequestState.PendingRequestPath, "Торговая витрина Хранителя", "UpdateGuardians + guardians[].tradeInventory + tradeInventoryReceipts[]"),
         new(PlayerGuardianFoundationState.PendingRequestPath, "Основание собственного Хранителя", "UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory"),
         new(SystemGuardianLibraryService.AttractionRequestPath, "Притяжение извечного Хранителя", "UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation or explicit client cancellation"),
+        new(AfterlifeReturnGuardService.GuardPath, "Post-life return guard", "client-owned protection guard; GM must not clear or bypass it"),
         new(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "Состав резидентов Обители", "UpdateGuardianAbodeResidents + UpdateGuardianAbodeResidentRosterReceipts"),
         new(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "Разговор/история резидента Обители", "residentInteractionLogUpdates or resident history log + matching interaction receipts"),
         new(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "Переход резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"),
@@ -48,6 +49,7 @@ public partial class ExplorerMode
         var soulRoot = await ReadJsonObjectForAfterlifeStatusAsync("game_state/meta/soul_state.json");
         var guardiansRoot = await ReadJsonObjectForAfterlifeStatusAsync("game_state/meta/guardians.json");
         var residentsRoot = await ReadJsonObjectForAfterlifeStatusAsync(GuardianAbodeResidentState.StatePath);
+        var returnGuardRaw = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
         var shiningContext = await LoadShiningContextAsync();
         var pendingLines = await BuildAfterlifePendingContractAuditLinesAsync(includeShining: true, includeFullPayload: true);
 
@@ -68,7 +70,7 @@ public partial class ExplorerMode
             $"  • Архив души: stored [white]{(soulRoot?["afterlifeArchive"]?["stored"] as JsonArray)?.Count ?? 0}[/], receipts [white]{(soulRoot?["afterlifeArchive"]?["actionReceipts"] as JsonArray)?.Count ?? 0}[/]"
         };
 
-        AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot);
+        AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot, returnGuardRaw);
         AppendShiningStatusLines(lines, shiningContext);
 
         lines.Add("");
@@ -91,7 +93,7 @@ public partial class ExplorerMode
         WaitForKey();
     }
 
-    private static void AppendChaosSeaStatusLines(List<string> lines, JsonObject? guardiansRoot, JsonObject? residentsRoot)
+    private static void AppendChaosSeaStatusLines(List<string> lines, JsonObject? guardiansRoot, JsonObject? residentsRoot, string? returnGuardRaw)
     {
         lines.Add("");
         lines.Add("[bold]Море Хаоса:[/]");
@@ -115,6 +117,20 @@ public partial class ExplorerMode
             lines.Add($"  • Гача активного Хранителя: [white]{Math.Max(0, GetNodeInt(gacha["chargesPerReturn"]) - GetNodeInt(gacha["chargesUsedThisReturn"]))}[/]/[white]{GetNodeInt(gacha["chargesPerReturn"])}[/] попыток за возвращение.");
         if (activeGuardian?["abodePower"] is JsonObject power)
             lines.Add($"  • Сила текущей Обители: [white]{GetNodeInt(power["currentPower"])}[/] [dim]({Markup.Escape(GetNodeString(power["tier"]) ?? "tier не указан")})[/]");
+
+        if (activeGuardian != null)
+        {
+            var reputation = GuardianGachaChargeRules.ResolveGuardianReputation(activeGuardian);
+            var guardState = AfterlifeReturnGuardService.Classify(returnGuardRaw, out var guard);
+            var guardLabel = guardState switch
+            {
+                AfterlifeReturnGuardSemanticState.ActiveValid => $"protected, remainingTurns={guard?.RemainingProtectedTurns ?? 0}",
+                AfterlifeReturnGuardSemanticState.BlockingInvalid => "blocking-invalid guard; fail-closed",
+                _ => "not protected"
+            };
+            var risk = reputation <= -21 ? "[red]ENABLED[/]" : "[green]not enabled[/]";
+            lines.Add($"  • Guardian-forced incarnation risk: {risk}; guardianId=[dim]{Markup.Escape(activeGuardianId)}[/], abodeId=[dim]{Markup.Escape(currentAbodeId)}[/], reputation=[white]{reputation}[/], threshold=[white]<= -21[/], returnGuard=[white]{Markup.Escape(guardLabel)}[/].");
+        }
     }
 
     private static void AppendShiningStatusLines(List<string> lines, ShiningContext? context)
@@ -133,8 +149,12 @@ public partial class ExplorerMode
         lines.Add($"  • Light Sparks: [gold1]{GetNodeInt(root["lightSparks"])}[/]");
         lines.Add($"  • Shining gacha: [white]{ShiningAbodeState.GetRemainingShiningGachaCharges(root)}[/]/[white]{GetNodeInt(root["gachaSystem"]?["chargesPerReturn"])}[/] [dim]({BuildShiningReturnCycleStatusLabel(root)})[/]");
         lines.Add($"  • Фракций: [white]{(root["factions"] as JsonArray)?.Count ?? 0}[/], залов: [white]{(root["halls"] as JsonArray)?.Count ?? 0}[/], ascended residents: [white]{CountAscendedShiningResidents(context.ResidentRoot)}[/]");
+        lines.Add($"  • Receipts: coreAction={(root["coreActionReceipts"] as JsonArray)?.Count ?? 0}, founding={CountNestedReceipts(root, "factionFoundingReceipts")}, realignment={CountNestedReceipts(root, "factionRealignmentReceipts")}, leadership={CountNestedReceipts(root, "leadershipReceipts")}, trade={CountNestedReceipts(root, ShiningTradeRequestState.ReceiptsProperty)}.");
         if (root["gates"] is JsonObject gates)
+        {
             lines.Add($"  • Врата: draftVersion [white]{GetNodeInt(gates["draftVersion"])}[/], open={GetNodeBool(gates["hasOpenDraft"])}, stale={GetNodeBool(gates["isStale"])}, availableCards={(gates["availableBlessingCards"] as JsonArray)?.Count ?? 0}, selected={(gates["selectedBlessingCardIds"] as JsonArray)?.Count ?? 0}, rerolls={GetNodeInt(gates["rerollsRemaining"])}.");
+            AppendSelectedShiningCardStatusLines(lines, gates);
+        }
         if (root["preparedIncarnationPackage"] is JsonObject package)
             lines.Add($"  • Prepared package: draftVersion [white]{GetNodeInt(package["generatedFromDraftVersion"])}[/], selectedCards={(package["selectedCards"] as JsonArray)?.Count ?? 0}, preparedAtTurn={GetNodeInt(package["preparedAtTurn"])}.");
 
@@ -150,6 +170,42 @@ public partial class ExplorerMode
                 var memberCount = CountResidentsInFaction(context.ResidentRoot, factionId);
                 lines.Add($"  • {Markup.Escape(name)} [dim]({Markup.Escape(factionId)})[/]: strength={strength}, tradeTier={ShiningAbodeState.GetTradeTier(strength)}, slots={ShiningAbodeState.GetTradeStockItemCount(faction, context.ResidentRoot)}, rarity={Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(strength))}, service x{ShiningAbodeState.GetServiceMultiplier(strength):0.00}, residents={memberCount}, projects={projects?.Count ?? 0}, supported={supported}.");
             }
+        }
+    }
+
+    private static int CountNestedReceipts(JsonObject root, string receiptProperty)
+    {
+        var total = 0;
+        if (root["factions"] is JsonArray factions)
+        {
+            total += factions.OfType<JsonObject>()
+                .Sum(faction => (faction[receiptProperty] as JsonArray)?.Count ?? 0);
+        }
+
+        total += (root[receiptProperty] as JsonArray)?.Count ?? 0;
+        return total;
+    }
+
+    private static void AppendSelectedShiningCardStatusLines(List<string> lines, JsonObject gates)
+    {
+        var selected = (gates["selectedBlessingCardIds"] as JsonArray)?
+            .OfType<JsonValue>()
+            .Select(value => value.TryGetValue<string>(out var id) ? id : string.Empty)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Take(8)
+            .ToList() ?? new List<string>();
+        if (selected.Count == 0)
+            return;
+
+        lines.Add("  • Selected blessing cards:");
+        foreach (var cardId in selected)
+        {
+            var card = (gates["availableBlessingCards"] as JsonArray)?.OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
+            var label = GetNodeString(card?["displayName"]) ?? cardId;
+            var rarity = GetNodeString(card?["rarity"]) ?? "unknown";
+            var family = GetNodeString(card?["effectFamily"]) ?? "unknown";
+            lines.Add($"    - {Markup.Escape(label)} [dim]({Markup.Escape(cardId)}; {Markup.Escape(rarity)}; {Markup.Escape(family)})[/]");
         }
     }
 

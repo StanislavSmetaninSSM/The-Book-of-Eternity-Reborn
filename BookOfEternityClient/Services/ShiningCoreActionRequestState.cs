@@ -241,6 +241,11 @@ internal static class ShiningCoreActionRequestState
         var existingState = await ReadRequestsStateAsync(fs);
         if (existingState.IsMalformed)
             throw new InvalidOperationException("pending_shining_abode_actions.json повреждён и должен быть исправлен или очищен до записи нового core action request.");
+        if (existingState.Requests.Any(existing =>
+                !string.Equals(existing.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException("pending_shining_abode_actions.json уже содержит live foreign core action request; guarded writer не заменяет unresolved Shining contract.");
+        }
 
         await fs.WriteFileAtomicAsync(PendingActionsRequestPath, JsonSerializer.Serialize(new Dictionary<string, object?>
         {
@@ -302,6 +307,41 @@ internal static class ShiningCoreActionRequestState
             default:
                 return false;
         }
+    }
+
+    public static bool TryBuildProjectedForgeStateForPreview(
+        PendingShiningCoreActionRequest request,
+        JsonObject shiningRoot,
+        JsonObject soulRoot,
+        JsonObject? residentRoot,
+        out JsonObject? projectedSoulRoot,
+        out JsonObject? projectedShiningRoot,
+        out string? error)
+    {
+        projectedSoulRoot = JsonNode.Parse(soulRoot.ToJsonString())?.AsObject();
+        projectedShiningRoot = JsonNode.Parse(shiningRoot.ToJsonString())?.AsObject();
+        error = null;
+        if (projectedSoulRoot == null || projectedShiningRoot == null)
+        {
+            error = "missing Shining or Soul state";
+            return false;
+        }
+
+        return ShiningAbodeState.TryApplyForgeAction(
+            projectedShiningRoot,
+            projectedSoulRoot,
+            residentRoot,
+            request.ActionType,
+            request.FactionId,
+            request.RelicId,
+            request.TargetFormTag,
+            request.PropertyIndex,
+            request.ReplacementProperty?.DeepClone().AsObject(),
+            request.AddedProperties?.DeepClone().AsArray(),
+            request.CreatedAtTurn,
+            request.CreatedAtUtc,
+            out _,
+            out error);
     }
 
     public static void ClearRequests(FileSystemManager fs) => fs.DeleteFile(PendingActionsRequestPath);

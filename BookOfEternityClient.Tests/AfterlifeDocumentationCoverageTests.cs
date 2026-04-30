@@ -119,8 +119,11 @@ public sealed class AfterlifeDocumentationCoverageTests
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
 
         var values = ShiningConstantValues(
+            "HeadActorType",
             "LeadershipState",
             "OriginType",
+            "PoliticalStatus",
+            "ProjectStatus",
             "FactionRealignmentState",
             "FactionLoyaltyTier",
             "ResidentRole",
@@ -132,6 +135,72 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains(value, matrix, StringComparison.Ordinal);
             Assert.Contains(value, examples, StringComparison.Ordinal);
         }
+    }
+
+    [Fact]
+    public void GuardianProjectAssistAndSabotageScoringAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var combined = matrix + examples;
+
+        foreach (var term in new[]
+        {
+            "DomainRelevance",
+            "RiskOrCost",
+            "ScarcityOrUniqueness",
+            "DirectProjectImpact",
+            "assistScore",
+            "auditKind=defense",
+            "rival_defense",
+            "HostileReach",
+            "ProjectExposure",
+            "DamageIntent",
+            "DamageAchieved",
+            "PlayerComplicity",
+            "sabotageSeverityScore",
+            "grand strike"
+        })
+        {
+            Assert.Contains(term, combined, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void NonFeatherAbodeOfferingsAreDocumentedWithoutInkFeatherReceipt()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var combined = matrix + examples + manifest;
+
+        foreach (var term in new[]
+        {
+            "soul_relic",
+            "archive_lore_fragment",
+            "archive_secret_record",
+            "guardianAbodeOffering",
+            "guardianPowerEvents",
+            "Do not write `output/ink_feather_action_result.json`",
+            "afterlife_abode_offering_response"
+        })
+        {
+            Assert.Contains(term, combined, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ShiningGachaAndProjectStrengthDocsMatchRuntimeContracts()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var combined = matrix + examples;
+
+        Assert.Contains("baseRarity", combined, StringComparison.Ordinal);
+        Assert.Contains("finalRarity", combined, StringComparison.Ordinal);
+        Assert.Contains("projectedGachaBonusSteps", combined, StringComparison.Ordinal);
+        Assert.Contains("tier 1 = 8, tier 2 = 12, tier 3 = 16", examples, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"strengthReward\": 6", examples, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -1256,7 +1256,8 @@ internal static class GuardianAbodeResidentRequestState
     {
         if (!IsMortalRealm(currentRealm))
         {
-            ClearManifestationRequest(fs);
+            // Manifestation requests are Mortal-only, but afterlife runtime must not delete them:
+            // a wrong-realm file is repair evidence and should block Soul Gates until resolved.
             return;
         }
 

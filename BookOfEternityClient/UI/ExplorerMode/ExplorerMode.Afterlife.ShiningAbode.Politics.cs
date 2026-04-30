@@ -682,6 +682,31 @@ public partial class ExplorerMode
                         ["resolvedAtTurn"] = "current turn number",
                         ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
                         ["reason"] = "canonical founding outcome"
+                    },
+                    ["acceptedStateDelta"] = new JsonObject
+                    {
+                        ["halls.add"] = new JsonObject
+                        {
+                            ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
+                            ["hallName"] = GetNodeString(request["proposedHallName"]) ?? string.Empty,
+                            ["serviceTags"] = CloneShiningJsonForPlayerFacingAudit(request["proposedHallServiceTags"]),
+                            ["originType"] = "player_founded"
+                        },
+                        ["factions.add"] = new JsonObject
+                        {
+                            ["factionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
+                            ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
+                            ["originType"] = "player_founded",
+                            ["baseStrength"] = 35,
+                            ["factionStrength"] = 35,
+                            ["leadership"] = new JsonObject
+                            {
+                                ["headActorType"] = "player_soul",
+                                ["headActorId"] = "player_soul",
+                                ["leadershipState"] = "secure"
+                            }
+                        },
+                        ["residents.update"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"])
                     }
                 },
                 ["refusedOrWithdrawn"] = new JsonObject
@@ -692,6 +717,9 @@ public partial class ExplorerMode
                         ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
                         ["proposedFactionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
                         ["proposedHallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
+                        ["factionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
+                        ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
+                        ["hallName"] = GetNodeString(request["proposedHallName"]) ?? "copy proposedHallName",
                         ["supportingResidentIds"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"]),
                         ["quotedCostFeathers"] = GetNodeInt(request["quotedCostFeathers"]),
                         ["quotedCostLightSparks"] = GetNodeInt(request["quotedCostLightSparks"]),
@@ -706,6 +734,10 @@ public partial class ExplorerMode
 
         if (string.Equals(pendingPath, ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase))
         {
+            var realignmentMode = GetNodeString(request["realignmentMode"]) ?? string.Empty;
+            var acceptedStatus = string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase)
+                ? ShiningFactionRequestState.RequestStatusDepartedToNeutral
+                : ShiningFactionRequestState.RequestStatusAccepted;
             return new JsonObject
             {
                 ["accepted"] = new JsonObject
@@ -718,13 +750,22 @@ public partial class ExplorerMode
                         ["residentName"] = GetNodeString(request["residentName"]) ?? string.Empty,
                         ["sourceFactionId"] = GetNodeString(request["sourceFactionId"]) ?? string.Empty,
                         ["targetFactionId"] = GetNodeString(request["targetFactionId"]) ?? string.Empty,
-                        ["realignmentMode"] = GetNodeString(request["realignmentMode"]) ?? string.Empty,
+                        ["realignmentMode"] = realignmentMode,
                         ["quotedCostFeathers"] = 0,
                         ["quotedCostLightSparks"] = 0,
-                        ["status"] = "accepted",
+                        ["status"] = acceptedStatus,
                         ["resolvedAtTurn"] = "current turn number",
                         ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
                         ["reason"] = "canonical resident realignment outcome"
+                    },
+                    ["residentHistory"] = new JsonObject
+                    {
+                        ["entryId"] = "generated_resident_realignment_history_id",
+                        ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
+                        ["title"] = "player-facing realignment title",
+                        ["summary"] = "canonical resident history summary for transfer/departure",
+                        ["revealedAtTurn"] = "current turn number",
+                        ["revealedAtUtc"] = "ISO-8601 UTC timestamp"
                     }
                 },
                 ["refusedOrWithdrawn"] = new JsonObject
@@ -734,9 +775,10 @@ public partial class ExplorerMode
                     {
                         ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
                         ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
+                        ["residentName"] = GetNodeString(request["residentName"]) ?? string.Empty,
                         ["sourceFactionId"] = GetNodeString(request["sourceFactionId"]) ?? string.Empty,
                         ["targetFactionId"] = GetNodeString(request["targetFactionId"]) ?? string.Empty,
-                        ["realignmentMode"] = GetNodeString(request["realignmentMode"]) ?? string.Empty,
+                        ["realignmentMode"] = realignmentMode,
                         ["quotedCostFeathers"] = 0,
                         ["quotedCostLightSparks"] = 0,
                         ["status"] = "refused|withdrawn",
@@ -790,12 +832,28 @@ public partial class ExplorerMode
                         ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
                         ["factionId"] = GetNodeString(request["factionId"]) ?? string.Empty,
                         ["transitionMode"] = GetNodeString(request["transitionMode"]) ?? string.Empty,
+                        ["previousHeadActorType"] = GetNodeString(request["incumbentHeadActorType"]) ?? string.Empty,
+                        ["previousHeadActorId"] = GetNodeString(request["incumbentHeadActorId"]) ?? string.Empty,
+                        ["newHeadActorType"] = GetNodeString(request["candidateHeadActorType"]) ?? string.Empty,
+                        ["newHeadActorId"] = GetNodeString(request["candidateHeadActorId"]) ?? string.Empty,
+                        ["supportingResidentIds"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"]),
                         ["quotedCostFeathers"] = 0,
                         ["quotedCostLightSparks"] = 0,
                         ["status"] = "refused|withdrawn",
                         ["resolvedAtTurn"] = "current turn number",
                         ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
                         ["reason"] = "canonical refusal reason"
+                    },
+                    ["history"] = new JsonObject
+                    {
+                        ["eventId"] = "generated_leadership_refusal_event_id",
+                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                        ["eventType"] = "refused",
+                        ["previousHeadActorType"] = GetNodeString(request["incumbentHeadActorType"]) ?? string.Empty,
+                        ["previousHeadActorId"] = GetNodeString(request["incumbentHeadActorId"]) ?? string.Empty,
+                        ["summary"] = "player-facing refusal/withdrawal summary",
+                        ["turnNumber"] = "current turn number",
+                        ["occurredAtUtc"] = "ISO-8601 UTC timestamp"
                     }
                 }
             };

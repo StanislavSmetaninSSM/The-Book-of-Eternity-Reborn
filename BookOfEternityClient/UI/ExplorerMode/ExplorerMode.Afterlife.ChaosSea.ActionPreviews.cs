@@ -84,7 +84,9 @@ public partial class ExplorerMode
         lines.Add("");
         lines.Add("[bold]Realm rule matrix Моря Хаоса:[/]");
         lines.Add("  • Lifecycle: это ordinary afterlife-turn contract; GM не запускает Mortal bootstrap, TriggerLifeEnd или смену currentRealm без явного /incarnate или Shining handoff.");
+        lines.Add("  • Guardian-forced incarnation exception: hostile active Guardian may write TriggerIncarnation.source=guardian_forced only on ordinary Chaos Sea turn with explicit provocation evidence, reputation <= -21, and no active/blocking afterlife_return_guard.json.");
         lines.Add("  • State authority: GM закрывает машинный контракт canonical state/receipt-полями, а не только prose-описанием.");
+        lines.Add("  • Snapshot authority: accepted-turn validation compares against game_state/control/pending_turn_snapshot copies; do not reason from edited live pending files after request creation.");
         lines.Add("  • Identity lock: все id/requestId/cost/actionTag/source/target из этого предпросмотра должны совпасть с turn_request и output файлами.");
         lines.Add("  • Mortal location/time/weather: forbidden currentLocationData, world_time timeChange/currentWeather/worldEventsLog and mortal travel.");
         lines.Add("  • Mortal NPC/factions: forbidden UpdateNPCs, Mortal World factions, companion materialization and local encounter creation unless a MortalWorldProfile-only bootstrap contract exists.");
