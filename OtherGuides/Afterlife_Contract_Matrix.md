@@ -98,8 +98,8 @@ The GM must treat `pending_player_guardian_foundation.json` as valid only when a
 - The soul has a non-empty `soulName` / founder identity; the new Guardian is a separate Guardian actor, not the player soul rewritten as an NPC.
 - `shining_abode_state.json.availability = sealed_until_next_ascension`; `active` means the Shining Abode is still open and the foundation ritual is not authorized.
 - `shining_abode_state.json.preparedIncarnationPackage` is absent/null; a prepared package handoff blocks foundation.
-- No active `afterlife_return_guard.json`, no malformed/existing `pending_player_guardian_foundation.json` from another request, and no existing `soul_state.playerFoundedGuardianId` or already founded Guardian for this soul.
-- The pending request must echo `sourceShiningAvailability = sealed_until_next_ascension`, `founderSoulName`, previous Guardian identity, proposed mantle identity, feature summary, turn and UTC timing.
+- No active, malformed, wrong-reason, or otherwise blocking `afterlife_return_guard.json`; no malformed/existing `pending_player_guardian_foundation.json` from another request; and no existing `soul_state.playerFoundedGuardianId` or already founded Guardian for this soul.
+- The pending request must echo `sourceShiningAvailability = sealed_until_next_ascension`, `founderSoulName`, previous Guardian identity, proposed mantle identity, `mantleSummary`, `mantleCreed`, appearance motifs, turn and UTC timing.
 
 ## Preview Ownership Rules
 

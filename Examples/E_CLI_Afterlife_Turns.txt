@@ -2332,7 +2332,7 @@ Correct GM reasoning:
 ### Тарн
 - Ситуация: Тарн arrives as a traveler-soul drawn by the safe-start beacon.
 - Внутренние мысли: He is not settled yet, but the new Abode gives him a reason to pause.
-- Действия: He joins as a wavering resident, available for future talk/history hooks.
+- Действия: He joins as a restless resident, available for future talk/history hooks.
 ```
 
 Correct response/state fragment:
@@ -2408,7 +2408,7 @@ Correct response/state fragment:
       "abodeDevotionLevel": 46,
       "abodeDevotionTier": "attached",
       "restlessness": 12,
-      "migrationState": "settled"
+      "migrationState": "wavering"
     },
     {
       "residentId": "res_lumen_tarn_318",
@@ -2478,7 +2478,7 @@ Correct response/state fragment:
       "abodeDevotionLevel": 28,
       "abodeDevotionTier": "uncertain",
       "restlessness": 34,
-      "migrationState": "wavering"
+      "migrationState": "restless"
     }
   ],
   "UpdateGuardianAbodeResidentRosterReceipts": [
