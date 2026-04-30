@@ -994,6 +994,10 @@ public partial class ExplorerMode
             "Полный JSON pending_shining_trade_inventory_requests.json.requests[0]",
             JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) as JsonObject,
             Color.Cyan1);
+        WriteJsonAuditPanel(
+            "Ожидаемый каркас faction.tradeInventoryReceipts[]",
+            BuildShiningTradeInventoryExpectedReceiptAuditNode(request),
+            Color.Cyan1);
 
         var choice = Prompt(new SelectionPrompt<string>()
             .Title("[bold yellow]Подтвердить запрос сияющей витрины[/]")
@@ -1003,6 +1007,27 @@ public partial class ExplorerMode
         return choice.Contains("Создать", StringComparison.OrdinalIgnoreCase) ||
                choice.Contains("Подтвердить", StringComparison.OrdinalIgnoreCase);
     }
+
+    private static JsonObject BuildShiningTradeInventoryExpectedReceiptAuditNode(ShiningTradeRequestState.PendingShiningTradeInventoryRequest request) =>
+        new()
+        {
+            ["requestId"] = request.RequestId,
+            ["factionId"] = request.FactionId,
+            ["factionName"] = request.FactionName,
+            ["tradeCycleId"] = request.TradeCycleId,
+            ["status"] = ShiningTradeRequestState.ReceiptStatusReady,
+            ["itemCount"] = request.DerivedTradeSlotCount,
+            ["soldOutCount"] = 0,
+            ["resolvedAtTurn"] = "current turn number",
+            ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+            ["stateEvidence"] = new JsonObject
+            {
+                ["generationTradeTier"] = request.DerivedTradeTier,
+                ["generationRarityCeiling"] = request.DerivedRarityCeiling,
+                ["serviceMultiplierSnapshot"] = request.DerivedServiceMultiplier,
+                ["merchantProfile"] = request.MerchantProfile
+            }
+        };
 
     private static JsonObject BuildShiningTradeOfferAuditNode(
         ShiningTradeService.ShiningTradeOffer offer,

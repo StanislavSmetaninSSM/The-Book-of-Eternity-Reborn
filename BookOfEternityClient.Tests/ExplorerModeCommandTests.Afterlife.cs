@@ -3557,7 +3557,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Форма реликвии: стекло пути → солнечный венец", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("glass_path", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("solar_crown", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("solar_crown", renderedText, StringComparison.OrdinalIgnoreCase);
 
         var pendingRaw = await _fs.ReadFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath);
         Assert.NotNull(pendingRaw);

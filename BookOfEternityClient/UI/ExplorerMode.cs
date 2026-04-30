@@ -99,6 +99,8 @@ public partial class ExplorerMode
 
         _chaosSeaOnlyCommands = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
         {
+            ["/chaos_sea"] = ShowGuardians,
+            ["/море_хаоса"] = ShowGuardians,
             ["/guardians"] = ShowGuardians,
             ["/хранители"] = ShowGuardians,
             ["/abode_power"] = ShowAbodePower,

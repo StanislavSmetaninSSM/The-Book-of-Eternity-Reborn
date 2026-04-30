@@ -516,6 +516,7 @@ public partial class ValidationService
             await ValidatePendingShiningFoundingResolutionAsync(issues);
             await ValidatePendingShiningRealignmentResolutionAsync(issues);
             await ValidatePendingShiningLeadershipTransitionResolutionAsync(issues);
+            await ValidateShiningClosureCompositeDiffAsync(issues);
             await ValidatePendingGuardianSocialInteractionResolutionAsync(issues);
             await ValidatePendingNpcSocialInteractionResolutionAsync(issues);
             await ValidateResidentMechanicalOutcomeMemoryAsync(issues);

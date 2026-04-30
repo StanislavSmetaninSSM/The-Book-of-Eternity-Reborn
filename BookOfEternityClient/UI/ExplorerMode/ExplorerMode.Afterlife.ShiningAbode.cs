@@ -149,6 +149,12 @@ public partial class ExplorerMode
             var foundingRequests = await ShiningFactionRequestState.ReadFoundingRequestsAsync(_fs);
             var realignmentRequests = await ShiningFactionRequestState.ReadRealignmentRequestsAsync(_fs);
             var leadershipRequests = await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(_fs);
+            var feathers = await ReadInkFeathersBalance();
+            var lightSparks = GetNodeInt(context?.Root["lightSparks"]);
+            var ascendedResidentCount = CountAscendedShiningResidents(context?.ResidentRoot);
+            var hasPendingPoliticalRequest = foundingRequests.Count > 0 ||
+                                             realignmentRequests.Count > 0 ||
+                                             leadershipRequests.Count > 0;
 
             var lines = new List<string>
             {
@@ -159,6 +165,12 @@ public partial class ExplorerMode
                 $"  • Переходов между фракциями в ожидании: [white]{realignmentRequests.Count}[/]",
                 $"  • Смен власти в ожидании: [white]{leadershipRequests.Count}[/]"
             };
+
+            lines.Add("");
+            lines.Add("[bold]Доступность политических действий:[/] [dim](стоимости, блокеры и минимальные требования до выбора)[/]");
+            lines.Add($"  • Основание фракции: cost {ShiningFactionRequestState.FactionFoundingCostFeathers} Чернильных Перьев / {ShiningFactionRequestState.FactionFoundingCostLightSparks} Искр Света; баланс {feathers}/{lightSparks}; минимум 3 ascended supporters из {ascendedResidentCount}; {(feathers >= ShiningFactionRequestState.FactionFoundingCostFeathers && lightSparks >= ShiningFactionRequestState.FactionFoundingCostLightSparks && ascendedResidentCount >= 3 && !hasPendingPoliticalRequest ? "доступно" : "заблокировано условиями или живым pending request")}.");
+            lines.Add($"  • Перестройка резидента: требует ascended resident с factionRealignmentState ready_to_realign/wavering и machine-readable target/source faction; {(hasPendingPoliticalRequest ? "новый запрос заблокирован, пока живёт political pending request" : "проверяется при выборе резидента")}.");
+            lines.Add($"  • Смена власти: требует существующую faction, валидного incumbent и допустимого candidate head; {(hasPendingPoliticalRequest ? "новый запрос заблокирован, пока живёт political pending request" : "проверяется перед записью pending request")}.");
 
             if (context?.Root["factions"] is JsonArray factions && factions.Count > 0)
             {
@@ -1896,6 +1908,15 @@ public partial class ExplorerMode
 
         return entries.OfType<JsonObject>()
             .Count(entry => string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static int CountAscendedShiningResidents(JsonObject? residentRoot)
+    {
+        if (residentRoot?["entries"] is not JsonArray entries)
+            return 0;
+
+        return entries.OfType<JsonObject>()
+            .Count(entry => string.Equals(GetNodeString(entry["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase));
     }
 
     private static string BuildStableHeadActorReceiptLabel(string? explicitLabel, string? headActorType, string? headActorId)

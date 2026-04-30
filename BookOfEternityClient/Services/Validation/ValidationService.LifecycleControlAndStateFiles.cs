@@ -1672,6 +1672,8 @@ public partial class ValidationService
                 ? JsonNode.Parse(soulJson) as JsonObject
                 : null;
             var ownedSoulRelicIds = CollectOwnedSoulRelicIds(currentSoulRoot);
+            var preTurnSoulRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json"));
+            ownedSoulRelicIds.UnionWith(CollectOwnedSoulRelicIds(preTurnSoulRoot));
             var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
             ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
 
@@ -1968,6 +1970,419 @@ public partial class ValidationService
         {
             // parse issues reported elsewhere
         }
+    }
+
+    private async Task ValidateShiningClosureCompositeDiffAsync(List<ValidationIssue> issues)
+    {
+        var hasFoundingRequests = ShiningFactionRequestState
+            .ReadFoundingRequests(await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningFactionRequestState.PendingFoundingsRequestPath))
+            .Count > 0;
+        var hasRealignmentRequests = ShiningFactionRequestState
+            .ReadRealignmentRequests(await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath))
+            .Count > 0;
+        var hasLeadershipRequests = ShiningFactionRequestState
+            .ReadLeadershipTransitionRequests(await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath))
+            .Count > 0;
+        var hasTradeRequests = ShiningTradeRequestState
+            .ReadRequests(await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningTradeRequestState.PendingRequestsPath))
+            .Count > 0;
+
+        if (!hasFoundingRequests && !hasRealignmentRequests && !hasLeadershipRequests && !hasTradeRequests)
+            return;
+
+        // Core-action resolution already projects these concurrent closure deltas before comparing full state.
+        if (ShiningCoreActionRequestState
+                .ReadRequests(await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath))
+                .Count > 0)
+        {
+            return;
+        }
+
+        var currentShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var currentResidentsJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
+        var currentSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(currentShiningJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                ShiningAbodeState.StatePath,
+                "shining_closure_missing_current_shining_state",
+                "Shining closure composite diff требует current shining_abode_state.json.",
+                "Не удаляй shining_abode_state.json на accepted turn с pending Shining closure; strict composite diff должен доказать только разрешённые closure deltas.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentResidentsJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                GuardianAbodeResidentState.StatePath,
+                "shining_closure_missing_current_resident_state",
+                "Shining closure composite diff требует current guardian_abode_residents.json.",
+                "Не удаляй guardian_abode_residents.json на accepted turn с pending Shining closure; unrelated resident edits должны быть проверяемы.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentSoulJson))
+        {
+            AddMissingShiningResolutionCurrentFileIssue(
+                issues,
+                "game_state/meta/soul_state.json",
+                "shining_closure_missing_current_soul_state",
+                "Shining closure composite diff требует current soul_state.json.",
+                "Не удаляй soul_state.json на accepted turn с pending Shining closure; unrelated soul edits должны быть проверяемы.");
+        }
+
+        if (string.IsNullOrWhiteSpace(currentShiningJson) ||
+            string.IsNullOrWhiteSpace(currentResidentsJson) ||
+            string.IsNullOrWhiteSpace(currentSoulJson))
+        {
+            return;
+        }
+
+        var preTurnShiningJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            ShiningAbodeState.StatePath,
+            issues,
+            code: "shining_closure_missing_pre_turn_shining_state",
+            section: "ShiningAbode",
+            message: "Shining closure composite diff требует validated pre-turn shining_abode_state.json.",
+            repairHint: "Сохраняй canonical pre-turn shining_abode_state.json в validated pending snapshot для строгой проверки Shining closure deltas.");
+        var preTurnResidentsJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            GuardianAbodeResidentState.StatePath,
+            issues,
+            code: "shining_closure_missing_pre_turn_resident_state",
+            section: "ShiningAbode",
+            message: "Shining closure composite diff требует validated pre-turn guardian_abode_residents.json.",
+            repairHint: "Сохраняй canonical pre-turn guardian_abode_residents.json в validated pending snapshot для строгой проверки Shining closure resident deltas.");
+        var preTurnSoulJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            issues,
+            code: "shining_closure_missing_pre_turn_soul_state",
+            section: "ShiningAbode",
+            message: "Shining closure composite diff требует validated pre-turn soul_state.json.",
+            repairHint: "Сохраняй canonical pre-turn soul_state.json в validated pending snapshot для строгой проверки, что Shining closures не мутируют unrelated soul state.");
+
+        if (string.IsNullOrWhiteSpace(preTurnShiningJson) ||
+            string.IsNullOrWhiteSpace(preTurnResidentsJson) ||
+            string.IsNullOrWhiteSpace(preTurnSoulJson))
+        {
+            return;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(currentShiningJson) is not JsonObject currentShiningRoot ||
+                JsonNode.Parse(currentResidentsJson) is not JsonObject currentResidentsRoot ||
+                JsonNode.Parse(currentSoulJson) is not JsonObject currentSoulRoot ||
+                JsonNode.Parse(preTurnShiningJson) is not JsonObject expectedShiningRoot ||
+                JsonNode.Parse(preTurnResidentsJson) is not JsonObject expectedResidentsRoot ||
+                JsonNode.Parse(preTurnSoulJson) is not JsonObject expectedSoulRoot)
+            {
+                return;
+            }
+
+            var currentGuardiansRoot = await ReadJsonObjectAsync("game_state/meta/guardians.json");
+            GuardianAbodeResidentState.NormalizeShape(currentResidentsRoot);
+            GuardianAbodeResidentState.NormalizeShape(expectedResidentsRoot);
+            ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, currentResidentsRoot, currentGuardiansRoot);
+            ShiningAbodeState.NormalizeStateRoot(expectedShiningRoot, expectedResidentsRoot, currentGuardiansRoot);
+
+            await TryApplyConcurrentShiningClosuresAsync(
+                expectedShiningRoot,
+                expectedResidentsRoot,
+                currentShiningRoot,
+                currentResidentsRoot);
+
+            ShiningAbodeState.NormalizeStateRoot(expectedShiningRoot, expectedResidentsRoot, currentGuardiansRoot);
+
+            if (!JsonNode.DeepEquals(expectedShiningRoot, currentShiningRoot))
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningAbodeState.StatePath,
+                    IssueSeverity.Error,
+                    "Shining closure accepted turn содержит посторонние изменения shining_abode_state.json сверх разрешённых pending closure deltas.",
+                    code: "shining_closure_unexpected_shining_state_diff",
+                    section: "ShiningAbode",
+                    expected: "pre-turn Shining state plus exact founding/realignment/leadership/trade closure deltas",
+                    actual: "current shining_abode_state.json differs from projected closure-only state",
+                    repairHint: "Откати все unrelated Shining mutations; accepted closure может менять только target receipt/materialization/history/tradeInventory, разрешённые client-authored request."));
+            }
+
+            if (!JsonNode.DeepEquals(expectedResidentsRoot, currentResidentsRoot))
+            {
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeResidentState.StatePath,
+                    IssueSeverity.Error,
+                    "Shining closure accepted turn содержит посторонние изменения guardian_abode_residents.json сверх разрешённых pending closure deltas.",
+                    code: "shining_closure_unexpected_resident_state_diff",
+                    section: "ShiningAbode",
+                    expected: "pre-turn resident state plus exact supporter/realignment/history closure deltas",
+                    actual: "current guardian_abode_residents.json differs from projected closure-only state",
+                    repairHint: "Не меняй unrelated residents во время закрытия Shining founding/realignment/leadership/trade contract."));
+            }
+
+            var expectedSoulForComparison = CloneJsonObject(expectedSoulRoot);
+            if (!JsonNode.DeepEquals(expectedSoulForComparison, currentSoulRoot))
+            {
+                var projectedSoulRoot = CloneJsonObject(expectedSoulRoot);
+                if (await TryProjectConcurrentShiningClosureSoulDeltasAsync(projectedSoulRoot, currentSoulRoot) &&
+                    JsonNode.DeepEquals(projectedSoulRoot, currentSoulRoot))
+                {
+                    expectedSoulForComparison = projectedSoulRoot;
+                }
+            }
+
+            if (!JsonNode.DeepEquals(expectedSoulForComparison, currentSoulRoot))
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json",
+                    IssueSeverity.Error,
+                    "Shining closure accepted turn содержит посторонние изменения soul_state.json.",
+                    code: "shining_closure_unexpected_soul_state_diff",
+                    section: "ShiningAbode",
+                    expected: "pre-turn soul_state.json unchanged during Shining closure resolution",
+                    actual: "current soul_state.json differs from validated pre-turn snapshot",
+                    repairHint: "Shining political/trade closure не должна скрыто менять soul_state.json; отдельные soul mutations требуют собственного client-authored contract."));
+            }
+        }
+        catch
+        {
+            // parse issues reported elsewhere
+        }
+    }
+
+    private async Task<bool> TryProjectConcurrentShiningClosureSoulDeltasAsync(JsonObject expectedSoulRoot, JsonObject currentSoulRoot)
+    {
+        var projectedAny = false;
+        projectedAny |= await TryProjectConcurrentAbodeOfferingSoulDeltaAsync(expectedSoulRoot);
+        projectedAny |= await TryProjectConcurrentArchiveActionSoulDeltaAsync(
+            expectedSoulRoot,
+            currentSoulRoot,
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            AfterlifeArchiveActionState.RequestedModeConsultation);
+        projectedAny |= await TryProjectConcurrentArchiveActionSoulDeltaAsync(
+            expectedSoulRoot,
+            currentSoulRoot,
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            AfterlifeArchiveActionState.RequestedModeProjectFuel);
+
+        return projectedAny;
+    }
+
+    private async Task<bool> TryProjectConcurrentAbodeOfferingSoulDeltaAsync(JsonObject expectedSoulRoot)
+    {
+        var offeringJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeOfferingState.PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(offeringJson))
+            return false;
+
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest? offeringRequest;
+        try
+        {
+            offeringRequest = JsonSerializer.Deserialize<GuardianAbodeOfferingState.PendingAbodeOfferingRequest>(offeringJson);
+        }
+        catch
+        {
+            return false;
+        }
+
+        if (offeringRequest == null)
+            return false;
+
+        if (string.Equals(offeringRequest.OfferingType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
+        {
+            if (offeringRequest.InkFeathersOffered <= 0)
+                return false;
+
+            ApplyFeatherCostToSoul(expectedSoulRoot, offeringRequest.InkFeathersOffered);
+            return true;
+        }
+
+        if (string.Equals(offeringRequest.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+            return TryRemoveSoulRelicFromSoulState(expectedSoulRoot, offeringRequest.RelicId);
+
+        if (string.Equals(offeringRequest.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(offeringRequest.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            return TryRemoveAfterlifeArchiveEntryFromSoulState(expectedSoulRoot, offeringRequest.ArchiveId);
+        }
+
+        return false;
+    }
+
+    private async Task<bool> TryProjectConcurrentArchiveActionSoulDeltaAsync(
+        JsonObject expectedSoulRoot,
+        JsonObject currentSoulRoot,
+        string pendingRequestPath,
+        string requestedMode)
+    {
+        var requestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(pendingRequestPath);
+        if (string.IsNullOrWhiteSpace(requestJson))
+            return false;
+
+        if (!TryReadArchiveActionRequestIdentity(
+                requestJson,
+                requestedMode,
+                out var requestId,
+                out var archiveId,
+                out var canonicalRequestedMode))
+        {
+            return false;
+        }
+
+        var resolution = FindCurrentArchiveActionResolution(
+            currentSoulRoot,
+            requestId,
+            archiveId,
+            canonicalRequestedMode);
+        if (resolution == null)
+            return false;
+
+        try
+        {
+            AfterlifeArchiveState.ApplyActionResolutions(
+                expectedSoulRoot,
+                new JsonArray(CloneJsonObject(resolution)),
+                GetNodeInt(resolution["resolvedAtTurn"]));
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryReadArchiveActionRequestIdentity(
+        string requestJson,
+        string requestedMode,
+        out string requestId,
+        out string archiveId,
+        out string canonicalRequestedMode)
+    {
+        requestId = string.Empty;
+        archiveId = string.Empty;
+        canonicalRequestedMode = requestedMode;
+
+        try
+        {
+            if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase))
+            {
+                var state = AfterlifeArchiveActionState.ParseConsultationState(requestJson);
+                if (state.IsMalformed || state.Request == null)
+                    return false;
+
+                requestId = state.Request.RequestId;
+                archiveId = state.Request.ArchiveId;
+                canonicalRequestedMode = state.Request.RequestedMode;
+                return !string.IsNullOrWhiteSpace(requestId) &&
+                       !string.IsNullOrWhiteSpace(archiveId) &&
+                       string.Equals(canonicalRequestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeProjectFuel, StringComparison.OrdinalIgnoreCase))
+            {
+                var state = AfterlifeArchiveActionState.ParseProjectFuelState(requestJson);
+                if (state.IsMalformed || state.Request == null)
+                    return false;
+
+                requestId = state.Request.RequestId;
+                archiveId = state.Request.ArchiveId;
+                canonicalRequestedMode = state.Request.RequestedMode;
+                return !string.IsNullOrWhiteSpace(requestId) &&
+                       !string.IsNullOrWhiteSpace(archiveId) &&
+                       string.Equals(canonicalRequestedMode, AfterlifeArchiveActionState.RequestedModeProjectFuel, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return false;
+    }
+
+    private static JsonObject? FindCurrentArchiveActionResolution(
+        JsonObject currentSoulRoot,
+        string requestId,
+        string archiveId,
+        string requestedMode)
+    {
+        if (currentSoulRoot["archiveActionResolutions"] is JsonArray resolutions)
+        {
+            var resolution = FindArchiveActionObject(resolutions, requestId, archiveId, requestedMode);
+            if (resolution != null)
+                return resolution;
+        }
+
+        if (currentSoulRoot[AfterlifeArchiveState.ContainerProperty] is JsonObject archiveRoot &&
+            archiveRoot[AfterlifeArchiveState.ActionReceiptsProperty] is JsonArray receipts)
+        {
+            return FindArchiveActionObject(receipts, requestId, archiveId, requestedMode);
+        }
+
+        return null;
+    }
+
+    private static JsonObject? FindArchiveActionObject(
+        JsonArray entries,
+        string requestId,
+        string archiveId,
+        string requestedMode)
+    {
+        return entries
+            .OfType<JsonObject>()
+            .FirstOrDefault(entry =>
+                string.Equals(GetNodeString(entry["requestId"]), requestId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["archiveId"]), archiveId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["requestedMode"]), requestedMode, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool TryRemoveSoulRelicFromSoulState(JsonObject soulRoot, string? relicId)
+    {
+        if (string.IsNullOrWhiteSpace(relicId))
+            return false;
+
+        if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is JsonArray collection &&
+                    TryRemoveArrayEntryById(collection, relicId, "relicId", "id"))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (soulRoot["soulRelics"] is JsonArray flatCollection)
+        {
+            return TryRemoveArrayEntryById(flatCollection, relicId, "relicId", "id");
+        }
+
+        return false;
+    }
+
+    private static bool TryRemoveAfterlifeArchiveEntryFromSoulState(JsonObject soulRoot, string? archiveId)
+    {
+        if (string.IsNullOrWhiteSpace(archiveId))
+            return false;
+
+        return soulRoot["afterlifeArchive"] is JsonObject archiveRoot &&
+               archiveRoot["stored"] is JsonArray stored &&
+               TryRemoveArrayEntryById(stored, archiveId, "archiveId", "entryId", "id");
+    }
+
+    private static bool TryRemoveArrayEntryById(JsonArray array, string id, params string[] idFieldNames)
+    {
+        for (var i = 0; i < array.Count; i++)
+        {
+            if (array[i] is not JsonObject entry)
+                continue;
+
+            if (!idFieldNames.Any(fieldName => string.Equals(GetNodeString(entry[fieldName]), id, StringComparison.OrdinalIgnoreCase)))
+                continue;
+
+            array.RemoveAt(i);
+            return true;
+        }
+
+        return false;
     }
 
     private void ValidateSystemGuardianAttractionStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)

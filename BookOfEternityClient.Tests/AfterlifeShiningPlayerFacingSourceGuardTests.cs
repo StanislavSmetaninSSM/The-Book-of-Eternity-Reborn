@@ -44,14 +44,30 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
     public void ShiningInspectionScreens_MustExposeFullJsonAuditsAndPendingPreviewContract()
     {
         var source = ReadSource("ExplorerMode.Afterlife.ShiningAbode.cs");
+        var actionPreviewSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs");
 
         Assert.Contains("Полный JSON halls[]", source, StringComparison.Ordinal);
         Assert.Contains("Полный JSON shiningPoliticalActors[]", source, StringComparison.Ordinal);
-        Assert.Contains("Полный JSON coreActionReceipts[]", source, StringComparison.Ordinal);
-        Assert.Contains("Полный JSON shining_abode_state.json после исходов", source, StringComparison.Ordinal);
+        Assert.Contains("JSON coreActionReceipts[] для просмотра", source, StringComparison.Ordinal);
+        Assert.Contains("JSON shining_abode_state.json после исходов", source, StringComparison.Ordinal);
         Assert.Contains("Ключевые последствия receipt", source, StringComparison.Ordinal);
         Assert.Contains("Полный контракт, который должен закрыть GM", source, StringComparison.Ordinal);
         Assert.Contains("BuildShiningCoreActionRequestPreviewLines(context, request)", source, StringComparison.Ordinal);
+        Assert.Contains("Доступность политических действий", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningFactionRequestState.FactionFoundingCostFeathers", source, StringComparison.Ordinal);
+        Assert.Contains("CountAscendedShiningResidents", source, StringComparison.Ordinal);
+        Assert.Contains("Ожидаемый каркас coreActionReceipts[]", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("selectedCardIds[]", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("newResidentIds[]", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("seededProjectIds[]", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("generatedDraftVersion", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("ShiningCoreActionRequestState.ActionTypeOpenGates", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningCoreExpectedReceiptAuditNode(context, request)", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("GetNodeInt(context.Root[\"gates\"]?[\"draftVersion\"]) + 1", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("[\"refusedOrWithdrawn\"]", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("generatedDraftVersion: 0", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("quotedCostFeathers", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("quotedCostLightSparks", actionPreviewSource, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -62,6 +78,8 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
 
         Assert.Contains("Чернильные Перья: [gold1]{currentFeathers}[/] ->", tradeSource, StringComparison.Ordinal);
         Assert.Contains("expectedLocalReceipt", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("Ожидаемый каркас faction.tradeInventoryReceipts[]", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningTradeInventoryExpectedReceiptAuditNode", tradeSource, StringComparison.Ordinal);
         Assert.Contains("expectedStateFragment", tradeSource, StringComparison.Ordinal);
         Assert.Contains("affectedFiles", tradeSource, StringComparison.Ordinal);
         Assert.Contains("soldOutAfterPurchase", tradeSource, StringComparison.Ordinal);

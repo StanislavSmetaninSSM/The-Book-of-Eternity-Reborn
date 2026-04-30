@@ -417,6 +417,75 @@ public sealed class ShiningTradeResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningTradeInventoryResolutionAsync_PreTurnOwnedRelicIdCollision_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var faction = currentShiningRoot["factions"]!.AsArray()[0]!.AsObject();
+        faction["tradeInventory"] = new JsonObject
+        {
+            ["tradeCycleId"] = "shining_return_2",
+            ["generatedAtUtc"] = "2026-04-17T01:00:00Z",
+            ["generationTradeTier"] = 2,
+            ["generationRarityCeiling"] = "rare",
+            ["serviceMultiplierSnapshot"] = 1.25,
+            ["merchantProfile"] = "shining_faction",
+            ["items"] = new JsonArray
+            {
+                CreateTradeSlot("slot_1", 70, "relic_owned_pre_turn", "Rare"),
+                CreateTradeSlot("slot_2", 30, "relic_trade_2", "Common"),
+                CreateTradeSlot("slot_3", 30, "relic_trade_3", "Common"),
+                CreateTradeSlot("slot_4", 30, "relic_trade_4", "Common"),
+                CreateTradeSlot("slot_5", 30, "relic_trade_5", "Common"),
+                CreateTradeSlot("slot_6", 30, "relic_trade_6", "Common")
+            }
+        };
+        faction["tradeInventoryReceipts"] = new JsonArray
+        {
+            new JsonObject
+            {
+                ["requestId"] = "shining_trade_req_pre_owned",
+                ["factionId"] = "faction_old",
+                ["factionName"] = "Старый Дом",
+                ["tradeCycleId"] = "shining_return_2",
+                ["status"] = "ready",
+                ["itemCount"] = 6,
+                ["soldOutCount"] = 0,
+                ["resolvedAtTurn"] = 14,
+                ["resolvedAtUtc"] = "2026-04-17T01:00:00Z"
+            }
+        };
+
+        await WriteNodeAsync(ShiningAbodeState.StatePath, currentShiningRoot);
+        await WriteNodeAsync("game_state/meta/soul_state.json", CreateSoulStateRoot());
+        await WriteNodeAsync(GuardianAbodeResidentState.StatePath, new JsonObject { ["entries"] = new JsonArray() });
+        await WriteNodeAsync("game_state/meta/guardians.json", new JsonObject
+        {
+            ["guardians"] = new JsonArray(new JsonObject
+            {
+                ["guardianId"] = "guardian_old",
+                ["guardianName"] = "Азалия"
+            })
+        });
+        await WriteNodeAsync("ready/turn_complete.json", new JsonObject { ["accepted"] = true });
+
+        var requestRoot = new JsonObject
+        {
+            [ShiningTradeRequestState.RequestsProperty] = new JsonArray
+            {
+                CreatePendingTradeRequest("shining_trade_req_pre_owned")
+            }
+        };
+        var preTurnSoulRoot = CreateSoulStateRoot("relic_owned_pre_turn");
+        await WriteNodeAsync(ShiningTradeRequestState.PendingRequestsPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, requestRoot, preTurnSoulRoot);
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningTradeInventoryResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_trade_inventory_owned_relic_id_collision", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningTradeInventoryRequestContextAsync_DuplicateSameCycleFactionRequests_Fails()
     {
         await WriteNodeAsync("game_state/meta/soul_state.json", new JsonObject
@@ -447,13 +516,21 @@ public sealed class ShiningTradeResolutionValidationTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_trade_duplicate_same_cycle_faction_requests", StringComparison.OrdinalIgnoreCase));
     }
 
-    private async Task WritePendingTurnSnapshotManifestAsync(JsonObject preTurnShiningRoot, JsonObject requestRoot)
+    private async Task WritePendingTurnSnapshotManifestAsync(
+        JsonObject preTurnShiningRoot,
+        JsonObject requestRoot,
+        JsonObject? preTurnSoulRoot = null,
+        JsonObject? preTurnResidentRoot = null)
     {
         const string requestSnapshotPath = "game_state/control/pending_turn_snapshot/pre_shining_trade_request.json";
         const string shiningSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/shining_abode_state.json";
+        const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
+        const string residentsSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/guardian_abode_residents.json";
 
         await WriteNodeAsync(requestSnapshotPath, requestRoot);
         await WriteNodeAsync(shiningSnapshotPath, preTurnShiningRoot);
+        await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot ?? CreateSoulStateRoot());
+        await WriteNodeAsync(residentsSnapshotPath, preTurnResidentRoot ?? new JsonObject { ["entries"] = new JsonArray() });
         await WriteNodeAsync("input/turn_request.json", new JsonObject
         {
             ["sessionId"] = "test-session",
@@ -471,22 +548,30 @@ public sealed class ShiningTradeResolutionValidationTests : IDisposable
             ["files"] = new JsonObject
             {
                 [NormalizeRelativePath(ShiningTradeRequestState.PendingRequestsPath)] = requestSnapshotPath,
-                ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath
+                ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath,
+                ["game_state/meta/soul_state.json"] = soulSnapshotPath,
+                ["game_state/meta/guardian_abode_residents.json"] = residentsSnapshotPath
             },
             ["snapshotFileHashes"] = new JsonObject
             {
                 [NormalizeRelativePath(ShiningTradeRequestState.PendingRequestsPath)] = ComputeSha256(await _fs.ReadFileAsync(requestSnapshotPath) ?? string.Empty),
-                ["game_state/meta/shining_abode_state.json"] = ComputeSha256(await _fs.ReadFileAsync(shiningSnapshotPath) ?? string.Empty)
+                ["game_state/meta/shining_abode_state.json"] = ComputeSha256(await _fs.ReadFileAsync(shiningSnapshotPath) ?? string.Empty),
+                ["game_state/meta/soul_state.json"] = ComputeSha256(await _fs.ReadFileAsync(soulSnapshotPath) ?? string.Empty),
+                ["game_state/meta/guardian_abode_residents.json"] = ComputeSha256(await _fs.ReadFileAsync(residentsSnapshotPath) ?? string.Empty)
             },
             ["clientOwnedValidationHashes"] = new JsonObject(),
             ["rollbackBackups"] = new JsonObject
             {
                 [NormalizeRelativePath(ShiningTradeRequestState.PendingRequestsPath)] = requestSnapshotPath,
-                ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath
+                ["game_state/meta/shining_abode_state.json"] = shiningSnapshotPath,
+                ["game_state/meta/soul_state.json"] = soulSnapshotPath,
+                ["game_state/meta/guardian_abode_residents.json"] = residentsSnapshotPath
             },
             ["rollbackBaselineFiles"] = new JsonArray(
                 NormalizeRelativePath(ShiningTradeRequestState.PendingRequestsPath),
-                "game_state/meta/shining_abode_state.json"),
+                "game_state/meta/shining_abode_state.json",
+                "game_state/meta/soul_state.json",
+                "game_state/meta/guardian_abode_residents.json"),
             ["sourceLabel"] = "shining-trade-resolution-tests",
             ["manifestPayloadHash"] = string.Empty
         };
@@ -559,6 +644,25 @@ public sealed class ShiningTradeResolutionValidationTests : IDisposable
             ["relicId"] = relicId,
             ["name"] = relicId,
             ["quality"] = quality
+        }
+    };
+
+    private static JsonObject CreateSoulStateRoot(params string[] storedRelicIds) => new()
+    {
+        ["currentRealm"] = "Shining Abode",
+        ["currentIncarnation"] = 2,
+        ["soulRelics"] = new JsonObject
+        {
+            ["equipped"] = new JsonArray(),
+            ["stored"] = new JsonArray(storedRelicIds
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Select(id => (JsonNode?)new JsonObject
+                {
+                    ["relicId"] = id,
+                    ["name"] = id,
+                    ["quality"] = "Rare"
+                })
+                .ToArray())
         }
     };
 

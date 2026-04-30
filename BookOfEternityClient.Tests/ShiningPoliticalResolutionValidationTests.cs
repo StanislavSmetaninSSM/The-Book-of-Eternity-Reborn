@@ -342,6 +342,154 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithUnrelatedMutations_Fails()
+    {
+        var request = CreateFoundingRequest("founding_req_unrelated_mutations", "faction_unrelated_mutations", "hall_unrelated_mutations");
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        AddAcceptedFoundingMaterialization(currentShiningRoot, currentResidentRoot, request);
+
+        currentShiningRoot["radiance"]!["experience"] = 999;
+        var unrelatedResident = currentResidentRoot["entries"]!.AsArray()
+            .OfType<JsonObject>()
+            .First(entry => string.Equals(entry["residentId"]?.GetValue<string>(), "resident_outsider", StringComparison.OrdinalIgnoreCase));
+        unrelatedResident["factionRestlessness"] = 99;
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentFeathers: 80);
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_unrelated_mutations.json";
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(backupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteValidatedSnapshotStateAsync(
+            preTurnShiningRoot,
+            CreateSoulStateRoot(currentFeathers: 75),
+            preTurnResidentRoot);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ShiningFactionRequestState.PendingFoundingsRequestPath] = backupPath
+        });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_resident_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithConcurrentAbodeOfferingSoulDelta_Passes()
+    {
+        var request = CreateFoundingRequest("founding_req_with_offering", "faction_with_offering", "hall_with_offering");
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        AddAcceptedFoundingMaterialization(currentShiningRoot, currentResidentRoot, request);
+        var offeringRequest = new JsonObject
+        {
+            ["guardianId"] = "guardian_old",
+            ["guardianName"] = "Азалия",
+            ["offeringType"] = GuardianAbodeOfferingState.OfferingTypeInkFeathers,
+            ["inkFeathersOffered"] = 50,
+            ["returnCycleId"] = "return_2",
+            ["createdAtUtc"] = "2026-04-16T15:21:00Z"
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentFeathers: 25);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(GuardianAbodeOfferingState.PendingRequestPath, offeringRequest.DeepClone());
+        const string foundingBackupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_with_offering.json";
+        const string offeringBackupPath = "game_state/control/pending_turn_snapshot/pre_abode_offering_with_founding.json";
+        await WriteNodeAsync(foundingBackupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(offeringBackupPath, offeringRequest.DeepClone());
+        await WriteValidatedSnapshotStateAsync(
+            preTurnShiningRoot,
+            CreateSoulStateRoot(currentFeathers: 75),
+            preTurnResidentRoot);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ShiningFactionRequestState.PendingFoundingsRequestPath] = foundingBackupPath,
+            [GuardianAbodeOfferingState.PendingRequestPath] = offeringBackupPath
+        });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_resident_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData(AfterlifeArchiveActionState.RequestedModeConsultation)]
+    [InlineData(AfterlifeArchiveActionState.RequestedModeProjectFuel)]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithConcurrentArchiveSoulDelta_Passes(string requestedMode)
+    {
+        var request = CreateFoundingRequest($"founding_req_with_{requestedMode}", $"faction_with_{requestedMode}", $"hall_with_{requestedMode}");
+        var archiveRequestId = $"archive_req_{requestedMode}";
+        var archiveId = $"archive_entry_{requestedMode}";
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        AddAcceptedFoundingMaterialization(currentShiningRoot, currentResidentRoot, request);
+        var preTurnSoulRoot = CreateSoulStateRootWithReservedArchive(
+            75,
+            archiveRequestId,
+            archiveId,
+            requestedMode);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        var archiveResolution = CreateAcceptedArchiveResolution(archiveRequestId, archiveId, requestedMode);
+        AfterlifeArchiveState.ApplyActionResolutions(currentSoulRoot, new JsonArray(CloneJsonObject(archiveResolution)), 12);
+        var archiveRequest = CreateArchiveRequest(archiveRequestId, archiveId, requestedMode);
+        var archiveRequestPath = string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase)
+            ? AfterlifeArchiveActionState.ConsultationRequestPath
+            : AfterlifeArchiveActionState.ProjectFuelRequestPath;
+        var archiveBackupPath = $"game_state/control/pending_turn_snapshot/pre_{requestedMode}_with_founding.json";
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot);
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoulRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(archiveRequestPath, archiveRequest.DeepClone());
+        const string foundingBackupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_with_archive.json";
+        await WriteNodeAsync(foundingBackupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(archiveBackupPath, archiveRequest.DeepClone());
+        await WriteValidatedSnapshotStateAsync(
+            preTurnShiningRoot,
+            preTurnSoulRoot,
+            preTurnResidentRoot);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ShiningFactionRequestState.PendingFoundingsRequestPath] = foundingBackupPath,
+            [archiveRequestPath] = archiveBackupPath
+        });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_resident_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_PendingShiningFoundingsWithDuplicateRequestId_Fails()
     {
         var shiningRoot = CreateBaseShiningRoot();
@@ -868,6 +1016,98 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         }
     };
 
+    private static JsonObject CreateSoulStateRootWithReservedArchive(
+        int currentFeathers,
+        string requestId,
+        string archiveId,
+        string requestedMode)
+    {
+        var root = CreateSoulStateRoot(currentFeathers);
+        var stored = AfterlifeArchiveState.EnsureStoredArray(root);
+        stored.Add(new JsonObject
+        {
+            ["archiveId"] = archiveId,
+            ["title"] = "Запись для совместного закрытия",
+            ["entryType"] = "lore_fragment",
+            ["rarity"] = "rare",
+            ["sourceKind"] = "test"
+        });
+        AfterlifeArchiveState.TryReserveEntry(
+            stored,
+            archiveId,
+            requestedMode,
+            requestId,
+            "guardian_old",
+            "Азалия",
+            12,
+            targetProjectId: "project_archive_focus",
+            targetProjectName: "Архивный фокус");
+        return root;
+    }
+
+    private static JsonObject CreateArchiveRequest(string requestId, string archiveId, string requestedMode)
+    {
+        var request = new JsonObject
+        {
+            ["requestId"] = requestId,
+            ["guardianId"] = "guardian_old",
+            ["guardianName"] = "Азалия",
+            ["archiveId"] = archiveId,
+            ["archiveTitle"] = "Запись для совместного закрытия",
+            ["archiveEntryType"] = "lore_fragment",
+            ["archiveRarity"] = "rare",
+            ["archiveSourceKind"] = "test",
+            ["createdAtTurn"] = 12,
+            ["createdAtUtc"] = "2026-04-16T15:21:00Z",
+            ["requestedMode"] = requestedMode
+        };
+
+        if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase))
+        {
+            request["targetIncarnation"] = 2;
+        }
+        else
+        {
+            request["targetProjectId"] = "project_archive_focus";
+            request["targetProjectName"] = "Архивный фокус";
+        }
+
+        return request;
+    }
+
+    private static JsonObject CreateAcceptedArchiveResolution(string requestId, string archiveId, string requestedMode)
+    {
+        var resolution = new JsonObject
+        {
+            ["requestId"] = requestId,
+            ["archiveId"] = archiveId,
+            ["requestedMode"] = requestedMode,
+            ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted,
+            ["guardianId"] = "guardian_old",
+            ["guardianName"] = "Азалия",
+            ["reason"] = "accepted_concurrent_archive_contract",
+            ["resolvedAtTurn"] = 12,
+            ["resolvedAtUtc"] = "2026-04-16T15:24:00Z"
+        };
+
+        if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase))
+        {
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeGuaranteedArchiveQuestCount] = 1;
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeQuestHookCount] = 0;
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeSpecialQuestLineUnlocks] = 0;
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeVisibleRivalClueBonus] = 0;
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeArchiveWarningTierBonus] = 0;
+        }
+        else
+        {
+            resolution["targetProjectId"] = "project_archive_focus";
+            resolution["resultMode"] = AfterlifeArchiveActionState.ProjectFuelResultModePressureRelief;
+            resolution["resultAmount"] = 1;
+        }
+
+        return resolution;
+    }
+
     private static JsonObject CreateFoundingRequest(string requestId, string proposedFactionId, string proposedHallId) => new()
     {
         ["requestId"] = requestId,
@@ -1029,9 +1269,13 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         });
     }
 
-    private async Task WriteValidatedSnapshotStateAsync(JsonObject preTurnShiningRoot, JsonObject preTurnSoulRoot)
+    private async Task WriteValidatedSnapshotStateAsync(
+        JsonObject preTurnShiningRoot,
+        JsonObject preTurnSoulRoot,
+        JsonObject? preTurnResidentRoot = null)
     {
         await WriteNodeAsync($"game_state/control/pending_turn_snapshot/{ShiningAbodeState.StatePath}", preTurnShiningRoot);
+        await WriteNodeAsync($"game_state/control/pending_turn_snapshot/{GuardianAbodeResidentState.StatePath}", preTurnResidentRoot ?? CreateBaseResidentRoot());
         await WriteNodeAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", preTurnSoulRoot);
     }
 

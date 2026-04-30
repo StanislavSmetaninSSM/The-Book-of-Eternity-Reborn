@@ -991,7 +991,7 @@
     {
       "exampleNumber": 9,
       "runtimeScenarioIds": [],
-      "exemptionReason": "The Shining founding/realignment/leadership example is a set of state-patch fragments; strict Shining schemas and all action names are covered by documentation coverage tests."
+      "exemptionReason": "The Shining founding/realignment/leadership example is a set of state-patch fragments; strict Shining schemas, shining_closure composite diff rules, and all action names are covered by documentation coverage tests."
     },
     {
       "exampleNumber": 10,
