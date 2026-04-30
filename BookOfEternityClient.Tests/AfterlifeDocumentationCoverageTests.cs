@@ -71,6 +71,122 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningCoreRequestShapeAndZeroCostFieldsAreDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, examples })
+        {
+            Assert.Contains("requests[]", doc, StringComparison.Ordinal);
+            Assert.Contains("quotedCostFeathers", doc, StringComparison.Ordinal);
+            Assert.Contains("quotedCostLightSparks", doc, StringComparison.Ordinal);
+        }
+
+        Assert.DoesNotContain("pending_shining_abode_actions.json.actionType", examples, StringComparison.Ordinal);
+        Assert.Contains("quotedCostFeathers = 0", matrix, StringComparison.Ordinal);
+        Assert.Contains("quotedCostLightSparks = 0", matrix, StringComparison.Ordinal);
+        Assert.Contains("\"quotedCostFeathers\": 0", examples, StringComparison.Ordinal);
+        Assert.Contains("\"quotedCostLightSparks\": 0", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PlayerGuardianFoundationPreconditionsAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, taskGuide, operations, examples })
+        {
+            Assert.Contains("sealed_until_next_ascension", doc, StringComparison.Ordinal);
+            Assert.Contains("preparedIncarnationPackage", doc, StringComparison.Ordinal);
+            Assert.Contains("afterlife_return_guard.json", doc, StringComparison.Ordinal);
+            Assert.Contains("playerFoundedGuardianId", doc, StringComparison.Ordinal);
+            Assert.Contains("sourceShiningAvailability", doc, StringComparison.Ordinal);
+        }
+
+        Assert.DoesNotContain("returned_from_shining_abode", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningCanonicalEnumVocabularyIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        var values = ShiningConstantValues(
+            "LeadershipState",
+            "OriginType",
+            "FactionRealignmentState",
+            "FactionLoyaltyTier",
+            "ResidentRole",
+            "ProjectArchetype");
+
+        Assert.NotEmpty(values);
+        foreach (var value in values)
+        {
+            Assert.Contains(value, matrix, StringComparison.Ordinal);
+            Assert.Contains(value, examples, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void AbodeResidentDispositionDevotionMigrationVocabularyIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        var values = ResidentConstantValues(
+            "PowerSensitivity",
+            "MigrationDisposition",
+            "CommunalOrientation",
+            "StabilityNeed",
+            "AbodeDevotionTier",
+            "MigrationState");
+
+        Assert.NotEmpty(values);
+        foreach (var value in values)
+        {
+            Assert.Contains(value, matrix, StringComparison.Ordinal);
+            Assert.Contains(value, examples, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains("0..19", doc, StringComparison.Ordinal);
+            Assert.Contains("ready_to_transfer", doc, StringComparison.Ordinal);
+            Assert.Contains("guest", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void DirectResidentActionExamplesAreRuntimeValidated()
+    {
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var combined = examples + manifest;
+
+        foreach (var term in new[]
+        {
+            "ABODE_RESIDENT_RELIC_GRANT accepted response",
+            "ABODE_RESIDENT_QUEST_REQUEST accepted response",
+            "afterlife_direct_resident_relic_grant_response",
+            "afterlife_direct_resident_quest_request_response",
+            "metaStateUpdates",
+            "soulRelicOperations",
+            "relatedAfterlifeResidentId",
+            "residentInteractionLogUpdates"
+        })
+        {
+            Assert.Contains(term, combined, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ShiningClosureCompositeDiffRulesAreDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -1109,6 +1225,28 @@ public sealed class AfterlifeDocumentationCoverageTests
             }
         }
     }
+
+    private static string[] ShiningConstantValues(params string[] prefixes) =>
+        typeof(ShiningAbodeState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            prefixes.Any(prefix => field.Name.StartsWith(prefix, StringComparison.Ordinal)))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
+
+    private static string[] ResidentConstantValues(params string[] prefixes) =>
+        typeof(GuardianAbodeResidentState)
+            .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            .Where(field => field is { IsLiteral: true, IsInitOnly: false } &&
+                            field.FieldType == typeof(string) &&
+                            prefixes.Any(prefix => field.Name.StartsWith(prefix, StringComparison.Ordinal)))
+            .Select(field => (string)field.GetRawConstantValue()!)
+            .Distinct(StringComparer.Ordinal)
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .ToArray();
 
     private static bool IsAfterlifePendingFile(string fileName) =>
         fileName.StartsWith("pending_shining_", StringComparison.Ordinal) ||

@@ -937,6 +937,153 @@
           ]
         }
       ]
+    },
+    {
+      "id": "afterlife_direct_resident_relic_grant_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "acceptedTurnDistribution",
+      "requiredText": [
+        "[ABODE_RESIDENT_RELIC_GRANT]",
+        "soul_relic_liora_echo_522",
+        "resident_log_liora_relic_522"
+      ],
+      "baselineKind": "chaosSeaAzaliaLivingWorld",
+      "preStateFiles": [
+        {
+          "path": "input/turn_request.json",
+          "content": {
+            "sessionId": "resident_relic_session_022",
+            "requestId": "turn_522",
+            "turnNumber": 522,
+            "currentRealm": "Chaos Sea",
+            "playerAction": "[ABODE_RESIDENT_RELIC_GRANT] Игрок принимает реликвию связи от afterlife resident 'Лиора' (residentId=res_azalia_liora_001, guardianId=guard_social_azalia_001, abodeId=abode_azalia_memory_silk_001).",
+            "timestamp": "2026-04-24T17:22:00Z",
+            "gameMode": "normal",
+            "progressionControl": {
+              "currentRealm": "Chaos Sea",
+              "mustEvaluateChaosSeaProgression": false,
+              "mustEvaluateGuardianProjectProgression": false,
+              "mustEvaluateResidentAgencyProgression": false,
+              "afterlifeCatchupRequired": false
+            }
+          }
+        }
+      ],
+      "pendingSnapshotFiles": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardian_abode_residents.json"
+      ],
+      "pendingSnapshotSourceLabel": "direct resident relic grant example",
+      "expectedModifiedFiles": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/guardian_abode_residents.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/soul_state.json",
+          "requiredText": [
+            "\"relicId\": \"soul_relic_liora_echo_522\"",
+            "\"relicType\": \"companion_echo\"",
+            "\"sourceResidentId\": \"res_azalia_liora_001\""
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "requiredText": [
+            "\"bondRewardState\": \"granted\"",
+            "\"grantedRelicId\": \"soul_relic_liora_echo_522\"",
+            "\"entryId\": \"resident_log_liora_relic_522\""
+          ]
+        }
+      ],
+      "expectedFileDoesNotContain": [
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "forbiddenText": [
+            "\"UpdateGuardianAbodeResidentInteractionReceipts\"",
+            "\"UpdateGuardianAbodeResidentRosterReceipts\"",
+            "\"UpdateGuardianAbodeResidentTransferReceipts\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "afterlife_direct_resident_quest_request_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "acceptedTurnDistribution",
+      "requiredText": [
+        "[ABODE_RESIDENT_QUEST_REQUEST]",
+        "soul_quest_liora_name_thread_523",
+        "resident_log_liora_quest_523"
+      ],
+      "baselineKind": "chaosSeaAzaliaLivingWorld",
+      "preStateFiles": [
+        {
+          "path": "input/turn_request.json",
+          "content": {
+            "sessionId": "resident_quest_session_022",
+            "requestId": "turn_523",
+            "turnNumber": 523,
+            "currentRealm": "Chaos Sea",
+            "playerAction": "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=res_azalia_liora_001, guardianId=guard_social_azalia_001, abodeId=abode_azalia_memory_silk_001).",
+            "timestamp": "2026-04-24T17:23:00Z",
+            "gameMode": "normal",
+            "progressionControl": {
+              "currentRealm": "Chaos Sea",
+              "mustEvaluateChaosSeaProgression": false,
+              "mustEvaluateGuardianProjectProgression": false,
+              "mustEvaluateResidentAgencyProgression": false,
+              "afterlifeCatchupRequired": false
+            }
+          }
+        },
+        {
+          "path": "game_state/quests/soul_quests.json",
+          "content": {
+            "quests": []
+          }
+        }
+      ],
+      "pendingSnapshotFiles": [
+        "game_state/meta/soul_state.json",
+        "game_state/meta/guardians.json",
+        "game_state/meta/guardian_projects.json",
+        "game_state/meta/guardian_abode_residents.json",
+        "game_state/quests/soul_quests.json"
+      ],
+      "pendingSnapshotSourceLabel": "direct resident quest request example",
+      "expectedModifiedFiles": [
+        "game_state/quests/soul_quests.json",
+        "game_state/meta/guardian_abode_residents.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/quests/soul_quests.json",
+          "requiredText": [
+            "\"questId\": \"soul_quest_liora_name_thread_523\"",
+            "\"relatedAfterlifeResidentId\": \"res_azalia_liora_001\"",
+            "\"guardianId\": \"guard_social_azalia_001\""
+          ]
+        },
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "requiredText": [
+            "\"linkedSoulQuestId\": \"soul_quest_liora_name_thread_523\"",
+            "\"entryId\": \"resident_log_liora_quest_523\""
+          ]
+        }
+      ],
+      "expectedFileDoesNotContain": [
+        {
+          "path": "game_state/meta/guardian_abode_residents.json",
+          "forbiddenText": [
+            "\"UpdateGuardianAbodeResidentInteractionReceipts\"",
+            "\"UpdateNPCs\""
+          ]
+        }
+      ]
     }
   ],
   "afterlifeExampleCoverage": [
@@ -1065,8 +1212,10 @@
     },
     {
       "exampleNumber": 22,
-      "runtimeScenarioIds": [],
-      "exemptionReason": "The direct resident action and pending-backed routing tag example is a text routing matrix, not one accepted response payload."
+      "runtimeScenarioIds": [
+        "afterlife_direct_resident_relic_grant_response",
+        "afterlife_direct_resident_quest_request_response"
+      ]
     },
     {
       "exampleNumber": 23,

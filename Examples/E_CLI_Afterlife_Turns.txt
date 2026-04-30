@@ -32,7 +32,7 @@ Use this index before resolving an afterlife turn:
 - `pending_guardian_abode_resident_transfers.json`: see example 11.
 - `pending_guardian_social_interactions.json`: see example 12.
 - `pending_player_guardian_foundation.json`: see example 13.
-- All `pending_shining_abode_actions.json.actionType` variants: see example 14.
+- All `pending_shining_abode_actions.json` `requests[].actionType` variants: see example 14.
 - Freeform afterlife `UpdateGuardians` commands outside strict pending files: see example 15.
 - Combined Chaos Sea scheduler + pending contract + player action: see example 16.
 - Combined active Shining scheduler + core action + trade/resident consequence: see example 17.
@@ -2332,7 +2332,7 @@ Correct GM reasoning:
 ### Тарн
 - Ситуация: Тарн arrives as a traveler-soul drawn by the safe-start beacon.
 - Внутренние мысли: He is not settled yet, but the new Abode gives him a reason to pause.
-- Действия: He joins as a wavering resident, available for future talk/history hooks.
+- Действия: He joins as a restless resident, available for future talk/history hooks.
 ```
 
 Correct response/state fragment:
@@ -2408,7 +2408,7 @@ Correct response/state fragment:
       "abodeDevotionLevel": 46,
       "abodeDevotionTier": "attached",
       "restlessness": 12,
-      "migrationState": "settled"
+      "migrationState": "wavering"
     },
     {
       "residentId": "res_lumen_tarn_318",
@@ -2476,9 +2476,9 @@ Correct response/state fragment:
         "stabilityNeed": "medium"
       },
       "abodeDevotionLevel": 28,
-      "abodeDevotionTier": "guest",
+      "abodeDevotionTier": "uncertain",
       "restlessness": 34,
-      "migrationState": "wavering"
+      "migrationState": "restless"
     }
   ],
   "UpdateGuardianAbodeResidentRosterReceipts": [
@@ -2891,6 +2891,14 @@ Invalid guardian social shortcuts:
 
 `pending_player_guardian_foundation.json` is a late Chaos Sea ritual after Shining return. The player remains `player_soul`; the GM creates a new Guardian mantle as a separate guardian actor. This is not ascension, not New Game+, and not rewriting the soul into an NPC.
 
+Runtime preconditions before the GM may close this contract:
+- current realm is exactly `Chaos Sea`;
+- `soul_state.soulName` / `founderSoulName` is non-empty;
+- `shining_abode_state.json.availability = sealed_until_next_ascension`;
+- `preparedIncarnationPackage` is null/absent;
+- no active `afterlife_return_guard.json`, no malformed/competing foundation request, and no existing `playerFoundedGuardianId` / already founded Guardian for this soul;
+- pending request echoes `sourceShiningAvailability = sealed_until_next_ascension`.
+
 Input fragment:
 
 ```json
@@ -2901,7 +2909,7 @@ Input fragment:
     "founderSoulName": "Станислав",
     "previousGuardianId": "guard_social_azalia_001",
     "previousGuardianName": "Азалия",
-    "sourceShiningAvailability": "returned_from_shining_abode",
+    "sourceShiningAvailability": "sealed_until_next_ascension",
     "proposedDisplayName": "Мантия Прилива Памяти",
     "mantleSummary": "Новая Хранительская мантия, основанная душой игрока после возвращения из Сияющей Обители.",
     "mantleCreed": "Память должна вести к новой жизни, а не удерживать её в клетке.",
@@ -3272,6 +3280,28 @@ Shining resident normalizer side effects:
 - If not ascended, runtime normalizes the resident to `ascensionState = "remained_in_chaos_sea"`, clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = "alienated"`, `factionRestlessness = 0`, and `factionRealignmentState = "settled"`.
 - If ascended but `shiningFactionId` is missing or points to a non-existing faction, the same affiliation reset applies.
 - If ascended and faction exists, runtime derives/validates `residentRole`, `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`. Do not use non-canonical `shiningAlignment`.
+
+Canonical Shining vocabulary tables:
+
+| Field | Allowed values | Use |
+|---|---|---|
+| `leadershipState` | `secure`, `contested`, `vacant` | Faction leadership status; `vacant` only when no head remains. |
+| faction `originType` | `ascended_guardian`, `native_radiant`, `player_founded` | Where a Shining faction came from. |
+| `residentRole` | `archive_support`, `forge_support`, `social_support`, `resource_support`, `descent_support` | Ascended resident's faction role and blessing/trade contribution. |
+| `factionLoyaltyTier` | `alienated`, `uncertain`, `attached`, `devoted`, `steadfast` | Derived from resident loyalty/restlessness; do not invent prose tiers. |
+| `factionRealignmentState` | `settled`, `wavering`, `restless`, `considering_realignment`, `ready_to_realign` | Whether the resident is stable or ready to change faction. |
+| `projectArchetype` | `revelation`, `accord`, `provision`, `remembrance`, `refinement`, `passage`, `warding`, `subversion` | Project cost/effect classification. |
+
+Canonical Abode resident disposition/devotion/migration tables:
+
+| Field | Allowed values / mapping |
+|---|---|
+| `abodeDisposition.powerSensitivity` | `low`, `medium`, `high` |
+| `abodeDisposition.migrationDisposition` | `rooted`, `selective`, `opportunistic`, `wandering` |
+| `abodeDisposition.communalOrientation` | `low`, `medium`, `high` |
+| `abodeDisposition.stabilityNeed` | `low`, `medium`, `high` |
+| `abodeDevotionTier` | `alienated` for devotion `0..19`, `uncertain` for `20..39`, `attached` for `40..59`, `devoted` for `60..79`, `steadfast` for `80..100`; `guest` is invalid. |
+| `migrationState` | `ready_to_transfer` when devotion `<=15` and restlessness `>=70`; `considering_departure` when devotion `<=30` and restlessness `>=55`; `restless` when devotion `<=45` or restlessness `>=45`; `wavering` when devotion `<=60` or restlessness `>=30`; otherwise `settled`. |
 
 Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. `refused` and `withdrawn` outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged. Supported receipt statuses are only `accepted`, `refused`, and `withdrawn`.
 
@@ -4569,7 +4599,7 @@ This is the most important Shining lifecycle distinction:
 prepare_incarnation_package turn:
 - Realm: ordinary active Shining Abode.
 - preparedIncarnationPackage is currently null.
-- pending_shining_abode_actions.json.actionType = prepare_incarnation_package.
+- `pending_shining_abode_actions.json` root is `{ "requests": [ ... ] }`; the active request has `actionType = prepare_incarnation_package`.
 - GM closes the core action through canonical Shining state mutation and coreActionReceipts[].
 - GM writes/updates preparedIncarnationPackage with selectedCardIds[] and selectedCards[].
 - GM does NOT write TriggerIncarnation on this same accepted turn, even if the player asks to incarnate immediately.
@@ -5150,7 +5180,7 @@ Why this is valid:
 - The active guard blocks only immediate Guardian-forced reincarnation; it does not block ordinary afterlife narration.
 - The GM does not mutate the client-owned guard. Runtime consumes/clears it after accepting the protected ordinary afterlife turn.
 - That consumption rule applies only to a semantic-valid guard with `reason = post_life_return`. If `afterlife_return_guard.json` is malformed, unreadable, or parsed with the wrong `reason`, the GM leaves it intact; the route remains fail-closed until validation repair or explicit client/runtime clear.
-- For `return_to_chaos_sea`, Shining pending files with non-empty `requests[]` or malformed JSON block the local route. A valid explicit-empty `{ "requests": [] }` file is not an actionable GM contract and may be removed by runtime as stale local state.
+- For `return_to_chaos_sea`, Shining pending files with non-empty `requests[]` or malformed JSON block the local route. A valid explicit-empty `{ "requests": [] }` file is not an actionable GM contract and may be removed by runtime as stale local state. `shining_abode_state.json.pendingNativeFactionDiscovery` must be exactly `null`; any non-null object, string, array, or malformed legacy evidence blocks return until repaired or closed.
 - The response does not confuse `afterlife_return_guard.json` with `preparedIncarnationPackage`, `AscensionTrigger`, or Mortal World return state.
 
 ==================================================
@@ -5225,6 +5255,255 @@ Forbidden for this tag:
 - no Mortal UpdateQuests
 - no UpdateNPCs
 - no resident receipt arrays unless a separate pending resident file exists in game_state/control
+```
+
+ABODE_RESIDENT_RELIC_GRANT accepted response:
+
+```json
+{
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Mixed\n- Afterlife subtype: Direct resident relic grant.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия is the active Guardian of this Abode; playerAction contains [ABODE_RESIDENT_RELIC_GRANT] for residentId=res_azalia_liora_001 and the accepted turn must grant Лиора's companion echo as a new Soul Relic.\n- Акторы вне охвата: Mortal World NPCs, resident receipt pending files\n- Почему они вне охвата: this direct tag has no pending control file and no Mortal NPC manifestation.\n\n## Размышления акторов\n### Азалия\n- Ситуация: Душа принимает resident reward inside Азалия's Abode.\n- Мысли: Азалия allows Лиора to leave a companion echo while keeping the Abode boundary stable.\n- Действия: Азалия holds the ritual space and does not create any Mortal NPC now.\n### Лиора\n- Ситуация: Душа принимает дар связи от Лиоры.\n- Мысли: Лиора выбирает оставить эхо, которое поможет в будущей жизни без создания Mortal NPC now.\n- Действия: She grants a new companion_echo relic, updates her own reward state, and records a current-turn interaction log.",
+  "metaStateUpdates": {
+    "soulRelicOperations": {
+      "addRelic": {
+        "relicId": "soul_relic_liora_echo_522",
+        "name": "Эхо Лиоры в Серебряной Нити",
+        "rarity": "Rare",
+        "relicType": "companion_echo",
+        "description": "Companion echo Soul Relic granted directly by afterlife resident Лиора.",
+        "companionSeed": {
+          "sourceResidentId": "res_azalia_liora_001",
+          "sourceGuardianId": "guard_social_azalia_001",
+          "sourceAbodeId": "abode_azalia_memory_silk_001",
+          "companionNameHint": "Лиора",
+          "originWorldSummary": "Город речных храмов, где Лиора была переписчицей долгов.",
+          "futureCompanionPrompt": "If manifested in a mortal life, show Liora as a quiet witness who notices when memory becomes violence.",
+          "bondReason": "Лиора trusts the soul enough to leave a companion echo.",
+          "coreTraits": [
+            "observant",
+            "careful",
+            "memory-bound"
+          ],
+          "archetypeHints": [
+            "witness",
+            "scribe"
+          ],
+          "appearanceMotifs": [
+            "silver ink",
+            "water-woven cloth"
+          ],
+          "personalityProfile": {
+            "archetype": "Quiet Witness",
+            "worldview": "Safety should not become a cage.",
+            "culturalLayer": "River temple debt ledgers",
+            "coreValues": [
+              "safety",
+              "honesty",
+              "memory"
+            ],
+            "personalityTraits": [
+              {
+                "traitName": "observant",
+                "value": 8,
+                "valueDescription": "Замечает опасные изгибы памяти до того, как они становятся насилием.",
+                "description": "Лиора quietly tracks what the soul is ready to remember."
+              }
+            ]
+          },
+          "abodeDisposition": {
+            "powerSensitivity": "medium",
+            "migrationDisposition": "selective",
+            "communalOrientation": "medium",
+            "stabilityNeed": "medium"
+          },
+          "abodeDevotionLevel": 42,
+          "abodeDevotionTier": "attached",
+          "restlessness": 18,
+          "migrationState": "restless"
+        }
+      }
+    }
+  },
+  "UpdateGuardianAbodeResidents": [
+    {
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "displayName": "Лиора",
+      "residentKind": "wayfaring_soul",
+      "originType": "traveler_soul",
+      "roleLabel": "тихая свидетельница",
+      "summary": "Душа, которая учится не путать безопасность с клеткой.",
+      "bondLevel": 36,
+      "bondTier": "familiar",
+      "canGrantCompanionRelic": true,
+      "bondRewardState": "granted",
+      "grantedRelicId": "soul_relic_liora_echo_522",
+      "historyRevealed": false,
+      "isPresent": true,
+      "personalityProfile": {
+        "archetype": "осторожная свидетельница",
+        "speechPattern": "тихая, образная",
+        "coreValues": [
+          "безопасность",
+          "честность",
+          "память"
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "medium",
+        "migrationDisposition": "selective",
+        "communalOrientation": "medium",
+        "stabilityNeed": "medium"
+      },
+      "abodeDevotionLevel": 42,
+      "abodeDevotionTier": "attached",
+      "restlessness": 18,
+      "migrationState": "restless",
+      "mortalWorldImprint": {
+        "originWorldSummary": "Город речных храмов, где Лиора была переписчицей долгов.",
+        "futureCompanionPrompt": "Если Лиора когда-нибудь станет спутницей, покажи её как спокойного свидетеля, который замечает, где память становится насилием.",
+        "bondReason": "Душа однажды помогла ей не потерять собственное имя.",
+        "coreTraits": [
+          "наблюдательная",
+          "осторожная"
+        ],
+        "archetypeHints": [
+          "witness",
+          "scribe"
+        ],
+        "appearanceMotifs": [
+          "серебряные чернила",
+          "водяная ткань"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history",
+        "quest"
+      ]
+    }
+  ],
+  "residentInteractionLogUpdates": [
+    {
+      "entryId": "resident_log_liora_relic_522",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "title": "Лиора оставляет эхо",
+      "summary": "Лиора дарует душе новую companion_echo реликвию soul_relic_liora_echo_522.",
+      "turn": 522,
+      "timestamp": "2026-04-24T17:22:00Z"
+    }
+  ],
+  "response": "Лиора касается серебряной нити в стене Обители. Нить сворачивается в реликвию-эхо: она не создаёт смертного NPC сейчас, но несёт образ будущей спутницы."
+}
+```
+
+ABODE_RESIDENT_QUEST_REQUEST accepted response:
+
+```json
+{
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Mixed\n- Afterlife subtype: Direct resident quest request.\n- Релевантные акторы: Азалия, Лиора\n- Почему они релевантны: Азалия is the active Guardian of this Abode; playerAction contains [ABODE_RESIDENT_QUEST_REQUEST] for residentId=res_azalia_liora_001 and the accepted turn must create or progress a Soul Quest linked to Лиора.\n- Акторы вне охвата: Mortal World NPCs, Mortal UpdateQuests, pending resident receipt arrays\n- Почему они вне охвата: this direct tag uses UpdateSoulQuests and residentInteractionLogUpdates, not pending receipts.\n\n## Размышления акторов\n### Азалия\n- Ситуация: Душа accepts a resident-linked request inside Азалия's Abode.\n- Мысли: Азалия treats the request as a cross-incarnation thread rather than a Mortal World scene.\n- Действия: Азалия keeps the Abode context stable while Лиора creates the Soul Quest memory.\n### Лиора\n- Ситуация: Душа принимает просьбу Лиоры о поиске имени в будущих жизнях.\n- Мысли: Лиора asks for a cross-incarnation Soul Quest instead of an immediate history reveal.\n- Действия: She creates a resident-linked Soul Quest and records the current-turn request memory.",
+  "UpdateSoulQuests": [
+    {
+      "questId": "soul_quest_liora_name_thread_523",
+      "guardianId": "guard_social_azalia_001",
+      "relatedAfterlifeResidentId": "res_azalia_liora_001",
+      "title": "Нить имени Лиоры",
+      "description": "В будущих жизнях искать следы имени, которое Лиора потеряла между речными храмами.",
+      "objectives": [
+        {
+          "objectiveId": "find_name_echo",
+          "description": "Найти в смертном мире echo, связанное с речными храмами и долговыми записями.",
+          "status": "Active"
+        }
+      ],
+      "progress": {
+        "completed": 0,
+        "total": 1
+      },
+      "status": "active",
+      "rewards": {
+        "inkFeathers": 30,
+        "enlightenmentExperience": 2
+      },
+      "crossIncarnation": true
+    }
+  ],
+  "UpdateGuardianAbodeResidents": [
+    {
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "displayName": "Лиора",
+      "residentKind": "wayfaring_soul",
+      "originType": "traveler_soul",
+      "roleLabel": "тихая свидетельница",
+      "summary": "Душа, которая учится не путать безопасность с клеткой.",
+      "bondLevel": 38,
+      "bondTier": "familiar",
+      "canGrantCompanionRelic": false,
+      "bondRewardState": "none",
+      "linkedSoulQuestId": "soul_quest_liora_name_thread_523",
+      "historyRevealed": false,
+      "isPresent": true,
+      "personalityProfile": {
+        "archetype": "осторожная свидетельница",
+        "speechPattern": "тихая, образная",
+        "coreValues": [
+          "безопасность",
+          "честность",
+          "память"
+        ]
+      },
+      "abodeDisposition": {
+        "powerSensitivity": "medium",
+        "migrationDisposition": "selective",
+        "communalOrientation": "medium",
+        "stabilityNeed": "medium"
+      },
+      "abodeDevotionLevel": 44,
+      "abodeDevotionTier": "attached",
+      "restlessness": 20,
+      "migrationState": "restless",
+      "mortalWorldImprint": {
+        "originWorldSummary": "Город речных храмов, где Лиора была переписчицей долгов.",
+        "futureCompanionPrompt": "Если Лиора когда-нибудь станет спутницей, покажи её как спокойного свидетеля, который замечает, где память становится насилием.",
+        "bondReason": "Душа однажды помогла ей не потерять собственное имя.",
+        "coreTraits": [
+          "наблюдательная",
+          "осторожная"
+        ],
+        "archetypeHints": [
+          "witness",
+          "scribe"
+        ],
+        "appearanceMotifs": [
+          "серебряные чернила",
+          "водяная ткань"
+        ]
+      },
+      "availableInteractions": [
+        "talk",
+        "history",
+        "quest"
+      ]
+    }
+  ],
+  "residentInteractionLogUpdates": [
+    {
+      "entryId": "resident_log_liora_quest_523",
+      "residentId": "res_azalia_liora_001",
+      "guardianId": "guard_social_azalia_001",
+      "abodeId": "abode_azalia_memory_silk_001",
+      "title": "Просьба о нити имени",
+      "summary": "Лиора просит душу не раскрыть историю немедленно, а взять Soul Quest soul_quest_liora_name_thread_523.",
+      "turn": 523,
+      "timestamp": "2026-04-24T17:23:00Z"
+    }
+  ],
+  "response": "Лиора не просит ответа сразу. Она вплетает в ладонь души маленькую задачу: в будущих жизнях искать имя, которое осталось в долговых книгах речных храмов."
+}
 ```
 
 Pending-backed routing tags:

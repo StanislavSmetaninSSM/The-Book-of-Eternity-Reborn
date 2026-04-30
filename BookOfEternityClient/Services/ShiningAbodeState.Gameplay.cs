@@ -796,6 +796,12 @@ internal static partial class ShiningAbodeState
 
     private static bool EnsureActiveGuardianFactionMaterialized(JsonObject root, JsonObject? guardiansRoot)
     {
+        if (!string.Equals(GetNodeString(root["availability"]), AvailabilityActive, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (GetPreparedIncarnationPackageMode(root) != PreparedIncarnationPackageMode.Absent)
+            return false;
+
         if (guardiansRoot?["activeGuardian"] is not JsonObject activeGuardian)
             return false;
 

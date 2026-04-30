@@ -1606,9 +1606,9 @@ public partial class GameEngine
             return false;
         }
 
-        if (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
+        if (shiningRoot["pendingNativeFactionDiscovery"] is not null)
         {
-            AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока legacy pendingNativeFactionDiscovery ожидает GM-closure. Сначала дождитесь закрытия или repair/refund.[/]");
+            AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока legacy pendingNativeFactionDiscovery non-null или повреждён. Сначала дождитесь закрытия или repair/refund.[/]");
             AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery[/]");
             return false;
         }
@@ -1682,12 +1682,29 @@ public partial class GameEngine
         {
             var state = await ClassifyRequestsPendingFileAsync(path);
             if (state == RequestsPendingFileState.ActiveOrMalformed)
-                blockingPaths.Add(path);
+                blockingPaths.Add(await DescribeBlockingShiningPendingContractAsync(path));
             else if (state == RequestsPendingFileState.ValidEmpty)
                 _fs.DeleteFile(path);
         }
 
         return blockingPaths;
+    }
+
+    private async Task<string> DescribeBlockingShiningPendingContractAsync(string path)
+    {
+        if (!string.Equals(path, ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase))
+            return path;
+
+        var json = await _fs.ReadFileAsync(path);
+        var requests = ShiningTradeRequestState.ReadRequests(json);
+        if (requests.Count == 0)
+            return $"{path} (malformed or unreadable)";
+
+        var details = requests
+            .Select(request =>
+                $"requestId={request.RequestId}, factionId={request.FactionId}, tradeCycleId={request.TradeCycleId}")
+            .ToArray();
+        return $"{path}: {string.Join("; ", details)}";
     }
 
     private enum RequestsPendingFileState

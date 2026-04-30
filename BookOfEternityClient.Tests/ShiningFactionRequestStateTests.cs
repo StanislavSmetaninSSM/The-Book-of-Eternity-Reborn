@@ -348,7 +348,7 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
-    public async Task EnsureHealthyAsync_ChaosSeaClearsPendingRequests()
+    public async Task EnsureHealthyAsync_ChaosSeaPreservesActivePendingRequests()
     {
         var root = CreateTempRoot();
         try
@@ -394,12 +394,12 @@ public sealed class ShiningFactionRequestStateTests
 
             await ShiningFactionRequestState.EnsureHealthyAsync(fs, "Chaos Sea");
 
-            Assert.Empty(await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs));
-            Assert.Empty(await ShiningFactionRequestState.ReadRealignmentRequestsAsync(fs));
-            Assert.Empty(await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(fs));
-            Assert.False(fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
-            Assert.False(fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
-            Assert.False(fs.FileExists(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath));
+            Assert.Single(await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs));
+            Assert.Single(await ShiningFactionRequestState.ReadRealignmentRequestsAsync(fs));
+            Assert.Single(await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(fs));
+            Assert.True(fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
+            Assert.True(fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
+            Assert.True(fs.FileExists(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath));
         }
         finally
         {

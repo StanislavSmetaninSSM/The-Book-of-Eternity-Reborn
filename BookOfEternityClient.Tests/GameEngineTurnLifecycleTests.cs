@@ -564,7 +564,10 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         Assert.DoesNotContain(ShiningCoreActionRequestState.PendingActionsRequestPath, blockingPaths);
         Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
-        Assert.Contains(ShiningTradeRequestState.PendingRequestsPath, blockingPaths);
+        Assert.Contains(blockingPaths, item =>
+            item.Contains(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) &&
+            item.Contains("trade-request-1", StringComparison.OrdinalIgnoreCase) &&
+            item.Contains("shining_return_4", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, blockingPaths);
         Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
         Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
@@ -623,6 +626,52 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.NotNull(shiningRoot["pendingNativeFactionDiscovery"]);
         Assert.Equal(ShiningAbodeState.AvailabilityActive, shiningRoot["availability"]?.GetValue<string>());
         Assert.Equal("Shining Abode", stateManager.CurrentState.CurrentRealm);
+    }
+
+    [Fact]
+    public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_BlocksMalformedNonNullLegacyPendingNativeDiscovery()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Испытующая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 32, total = 64 }
+        });
+        await WriteJsonAsync("game_state/meta/shining_abode_state.json", new
+        {
+            availability = "active",
+            radiance = new { experience = 22, tier = 3 },
+            lightSparks = 68,
+            halls = Array.Empty<object>(),
+            factions = Array.Empty<object>(),
+            shiningPoliticalActors = Array.Empty<object>(),
+            preparedIncarnationPackage = (object?)null,
+            pendingNativeFactionDiscovery = "malformed_contract",
+            gates = new
+            {
+                hasOpenDraft = false,
+                isStale = false,
+                openedThisAscension = false,
+                draftOpenedAtTurn = (int?)null,
+                draftOpenedAtUtc = (string?)null,
+                blessingDraft = Array.Empty<object>(),
+                selectedBlessingCardIds = Array.Empty<string>()
+            }
+        });
+
+        var engine = CreateGameEngine();
+        var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
+        await stateManager.RefreshGameStateAsync();
+
+        var completed = await InvokePrivateAsync<bool>(engine, "TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync");
+
+        Assert.False(completed);
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
+        Assert.Equal("Shining Abode", soulRoot["currentRealm"]?.GetValue<string>());
+        Assert.Equal("malformed_contract", shiningRoot["pendingNativeFactionDiscovery"]?.GetValue<string>());
+        Assert.Equal(ShiningAbodeState.AvailabilityActive, shiningRoot["availability"]?.GetValue<string>());
     }
 
     [Fact]

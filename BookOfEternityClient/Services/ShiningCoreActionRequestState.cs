@@ -313,7 +313,9 @@ internal static class ShiningCoreActionRequestState
 
         if (!IsShiningRealm(currentRealm))
         {
-            ClearRequests(fs);
+            var outsideRealmRequestState = await ReadRequestsStateAsync(fs);
+            if (!outsideRealmRequestState.IsMalformed && outsideRealmRequestState.Requests.Count == 0)
+                ClearRequests(fs);
             return;
         }
 

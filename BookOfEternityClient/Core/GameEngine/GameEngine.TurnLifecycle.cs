@@ -323,7 +323,7 @@ public partial class GameEngine
             {
             // Pick up late responses (agent finished after cancel/timeout, or response from previous turn)
             var manifest = await LoadPendingTurnSnapshotManifestAsync();
-            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+            var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false);
             var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
             if (await ResolveConcurrentActiveTerminalSignalsAsync(snapshotContext, rollbackSnapshot))
                 continue;
@@ -389,6 +389,21 @@ public partial class GameEngine
                     _pendingImagePrompt = null;
                     _gameLoop.IncrementTurn();
                     CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
+                    var lateAction = snapshotContext?.PlayerAction ?? string.Empty;
+                    await _pendingTurnState.RotateAfterAcceptedTurnAsync();
+                    await NormalizeRuntimeUiArtifactsAsync();
+
+                    var state = _stateManager.CurrentState;
+                    await _storyService.AppendTurnAsync(
+                        _gameLoop.TurnNumber,
+                        state.CurrentRealm ?? "Chaos Sea",
+                        state.Incarnation,
+                        lateAction,
+                        lateResponse?.Response,
+                        state.CurrentLocation,
+                        await ExtractStoryEntityRefsAsync(lateAction));
+
+                    await ProcessMortalProgressionAfterAcceptedTurnAsync();
                     await CheckLifeTransitions();
                     await CheckAscensionTrigger();
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
@@ -410,6 +425,12 @@ public partial class GameEngine
 
                     await ConsumeAfterlifeReturnProtectionIfNeededAsync(snapshotContext);
                     await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
+
+                    if (_stateManager.Settings.AutosaveIntervalTurns > 0 &&
+                        _gameLoop.TurnNumber % _stateManager.Settings.AutosaveIntervalTurns == 0)
+                    {
+                        await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
+                    }
                 }
                 _fs.DeleteFile("ready/turn_complete.json");
                 await CleanupPendingTurnSnapshotAsync();

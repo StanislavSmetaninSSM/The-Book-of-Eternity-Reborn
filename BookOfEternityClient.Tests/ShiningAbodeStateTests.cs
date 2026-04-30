@@ -650,6 +650,30 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void NormalizeStateRoot_SealedAvailability_DoesNotMaterializeActiveGuardianFaction()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
+        var guardiansRoot = JsonNode.Parse("""
+        {
+          "activeGuardian": {
+            "guardianId": "guardian_azalia",
+            "canonicalName": "Азалия",
+            "domain": "memory",
+            "abode": {
+              "abodeName": "Зал Тихой Памяти"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        ShiningAbodeState.NormalizeStateRoot(root, residentRoot: null, guardiansRoot);
+
+        Assert.Empty(root["halls"]!.AsArray());
+        Assert.Empty(root["factions"]!.AsArray());
+    }
+
+    [Fact]
     public void ActivateForAscension_WithFoundedGuardian_MaterializesPlayerFoundedProjection()
     {
         var root = ShiningAbodeState.CreateDefaultState();

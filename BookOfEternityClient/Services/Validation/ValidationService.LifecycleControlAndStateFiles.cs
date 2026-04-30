@@ -2092,8 +2092,20 @@ public partial class ValidationService
                 currentResidentsRoot);
 
             ShiningAbodeState.NormalizeStateRoot(expectedShiningRoot, expectedResidentsRoot, currentGuardiansRoot);
+            var progressionControl = await ResolveValidatedCurrentProgressionControlAsync();
+            var hasVerifiedProgressionReport = await HasVerifiedAfterlifeProgressionReportForCompositeAsync(progressionControl);
+            var allowShiningProgressionDeltas = hasVerifiedProgressionReport &&
+                                               progressionControl != null &&
+                                               (progressionControl.ShiningAbodeCyclesExpectedThisTurn > 0 ||
+                                                progressionControl.ShiningFactionCyclesExpectedThisTurn > 0 ||
+                                                progressionControl.ShiningTradeCyclesExpectedThisTurn > 0 ||
+                                                progressionControl.AfterlifeCatchupRequired);
+            var allowResidentProgressionDeltas = hasVerifiedProgressionReport &&
+                                                progressionControl != null &&
+                                                (progressionControl.ResidentAgencyCyclesExpectedThisTurn > 0 ||
+                                                 progressionControl.AfterlifeCatchupRequired);
 
-            if (!JsonNode.DeepEquals(expectedShiningRoot, currentShiningRoot))
+            if (!allowShiningProgressionDeltas && !JsonNode.DeepEquals(expectedShiningRoot, currentShiningRoot))
             {
                 issues.Add(new ValidationIssue(
                     ShiningAbodeState.StatePath,
@@ -2106,7 +2118,7 @@ public partial class ValidationService
                     repairHint: "Откати все unrelated Shining mutations; accepted closure может менять только target receipt/materialization/history/tradeInventory, разрешённые client-authored request."));
             }
 
-            if (!JsonNode.DeepEquals(expectedResidentsRoot, currentResidentsRoot))
+            if (!allowResidentProgressionDeltas && !JsonNode.DeepEquals(expectedResidentsRoot, currentResidentsRoot))
             {
                 issues.Add(new ValidationIssue(
                     GuardianAbodeResidentState.StatePath,
@@ -2146,6 +2158,72 @@ public partial class ValidationService
         catch
         {
             // parse issues reported elsewhere
+        }
+    }
+
+    private async Task<ProgressionControl?> ResolveValidatedCurrentProgressionControlAsync()
+    {
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        return lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable
+            ? lookup.Manifest?.ProgressionControl
+            : null;
+    }
+
+    private async Task<bool> HasVerifiedAfterlifeProgressionReportForCompositeAsync(ProgressionControl? control)
+    {
+        if (control == null || !RealmSemantics.IsAfterlifeRealm(control.CurrentRealm))
+            return false;
+
+        var report = await ReadCurrentProgressionProcessingReportForCompositeAsync();
+        if (report == null)
+            return false;
+
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var manifest = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable
+            ? lookup.Manifest
+            : null;
+        if (manifest == null ||
+            report.TurnNumber != manifest.TurnNumber ||
+            !string.Equals(report.SessionId, manifest.SessionId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(report.RequestId, manifest.RequestId, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return (report.WorldCyclesProcessed ?? 0) == 0 &&
+               (report.FactionCyclesProcessed ?? 0) == 0 &&
+               (report.ChaosSeaCyclesProcessed ?? 0) == Math.Max(0, control.ChaosSeaCyclesExpectedThisTurn) &&
+               (report.GuardianProjectCyclesProcessed ?? 0) == Math.Max(0, control.GuardianProjectCyclesExpectedThisTurn) &&
+               (report.ResidentAgencyCyclesProcessed ?? 0) == Math.Max(0, control.ResidentAgencyCyclesExpectedThisTurn) &&
+               (report.ShiningAbodeCyclesProcessed ?? 0) == Math.Max(0, control.ShiningAbodeCyclesExpectedThisTurn) &&
+               (report.ShiningFactionCyclesProcessed ?? 0) == Math.Max(0, control.ShiningFactionCyclesExpectedThisTurn) &&
+               (report.ShiningTradeCyclesProcessed ?? 0) == Math.Max(0, control.ShiningTradeCyclesExpectedThisTurn);
+    }
+
+    private async Task<ProgressionProcessingReport?> ReadCurrentProgressionProcessingReportForCompositeAsync()
+    {
+        var json = await _fs.ReadFileAsync(ProgressionScheduleService.ReportPath);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (root.ValueKind != JsonValueKind.Object)
+                return null;
+
+            if (root.TryGetProperty("progressionProcessingReport", out var nested) &&
+                nested.ValueKind == JsonValueKind.Object)
+            {
+                return JsonSerializer.Deserialize<ProgressionProcessingReport>(nested.GetRawText(), ManifestJsonOpts);
+            }
+
+            return JsonSerializer.Deserialize<ProgressionProcessingReport>(root.GetRawText(), ManifestJsonOpts);
+        }
+        catch
+        {
+            return null;
         }
     }
 
