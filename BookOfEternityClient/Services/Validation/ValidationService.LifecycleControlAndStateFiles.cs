@@ -8408,8 +8408,19 @@ public partial class ValidationService
         var relicId = GetNodeString(receipt["relicId"]) ?? string.Empty;
         var relicName = GetNodeString(receipt["relicName"]) ?? string.Empty;
 
-        if (!string.IsNullOrWhiteSpace(baseRarityFromTurn) &&
-            !string.Equals(baseRarityFromTurn, receiptBaseRarity, StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrWhiteSpace(baseRarityFromTurn))
+        {
+            issues.Add(new ValidationIssue(
+                "input/turn_request.json.gachaBaseResult.baseRarity",
+                IssueSeverity.Error,
+                "Accepted Shining gacha требует client-computed gachaBaseResult.baseRarity для проверки базовой редкости.",
+                code: "shining_gacha_missing_turn_base_rarity",
+                section: "ShiningAbode",
+                expected: "non-empty baseRarity from current turn request",
+                actual: "missing",
+                repairHint: "Перед Shining pull_relic_gacha клиент должен передать gachaBaseResult.baseRarity; GM не выбирает базовую редкость самостоятельно."));
+        }
+        else if (!string.Equals(baseRarityFromTurn, receiptBaseRarity, StringComparison.OrdinalIgnoreCase))
         {
             issues.Add(new ValidationIssue(
                 ShiningCoreActionRequestState.PendingActionsRequestPath,

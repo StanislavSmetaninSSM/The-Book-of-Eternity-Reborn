@@ -951,6 +951,152 @@ public sealed class ShiningFactionRequestStateTests
         }
     }
 
+    [Fact]
+    public async Task ValidateRealignmentRequestAgainstCurrentStateAsync_ForeignLiveResidentRequest_FailsEarly()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            await ShiningFactionRequestState.WriteRealignmentRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionRealignmentRequest
+            {
+                RequestId = "realignment_existing",
+                ResidentId = "resident_liora",
+                ResidentName = "Лиора",
+                SourceFactionId = "faction_old",
+                SourceFactionName = "Старый Дом",
+                TargetFactionId = "faction_new",
+                TargetFactionName = "Новый Дом",
+                RealignmentMode = ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+                FactionLoyaltyLevel = 15,
+                FactionLoyaltyTier = ShiningAbodeState.FactionLoyaltyTierAlienated,
+                FactionRestlessness = 80,
+                FactionRealignmentState = ShiningAbodeState.FactionRealignmentStateReadyToRealign
+            });
+
+            var error = await ShiningFactionRequestState.ValidateRealignmentRequestAgainstCurrentStateAsync(fs, new ShiningFactionRequestState.PendingShiningFactionRealignmentRequest
+            {
+                RequestId = "realignment_foreign",
+                ResidentId = "resident_liora",
+                ResidentName = "Лиора",
+                SourceFactionId = "faction_old",
+                SourceFactionName = "Старый Дом",
+                TargetFactionId = "faction_new",
+                TargetFactionName = "Новый Дом",
+                RealignmentMode = ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+                FactionLoyaltyLevel = 15,
+                FactionLoyaltyTier = ShiningAbodeState.FactionLoyaltyTierAlienated,
+                FactionRestlessness = 80,
+                FactionRealignmentState = ShiningAbodeState.FactionRealignmentStateReadyToRealign
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("foreign", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateLeadershipTransitionRequestAgainstCurrentStateAsync_ForeignLiveFactionRequest_FailsEarly()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                RequestId = "leadership_existing",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+                IncumbentHeadActorId = "guardian_old",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypePlayerSoul,
+                CandidateHeadActorId = ShiningAbodeState.HeadActorTypePlayerSoul,
+                SupportingResidentIds = { "resident_liora", "resident_mael", "resident_serit" }
+            });
+
+            var error = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                RequestId = "leadership_foreign",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+                IncumbentHeadActorId = "guardian_old",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypePlayerSoul,
+                CandidateHeadActorId = ShiningAbodeState.HeadActorTypePlayerSoul,
+                SupportingResidentIds = { "resident_liora", "resident_mael", "resident_serit" }
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("foreign", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateLeadershipTransitionRequestAgainstCurrentStateAsync_CandidateAlreadyHeadsAnotherFaction_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            var shiningRoot = await ReadJsonAsync(fs, ShiningAbodeState.StatePath);
+            var factionNew = shiningRoot?["factions"]?.AsArray().OfType<JsonObject>()
+                .First(faction => string.Equals(faction["factionId"]?.GetValue<string>(), "faction_new", StringComparison.OrdinalIgnoreCase));
+            factionNew!["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeGuardian,
+                ["headActorId"] = "guardian_new",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            };
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot!.ToJsonString());
+
+            var guardiansRoot = await ReadJsonAsync(fs, "game_state/meta/guardians.json");
+            guardiansRoot!["guardians"]!.AsArray().Add(new JsonObject
+            {
+                ["guardianId"] = "guardian_new",
+                ["guardianName"] = "Элиан"
+            });
+            await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString());
+
+            var error = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+                IncumbentHeadActorId = "guardian_old",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+                CandidateHeadActorId = "guardian_new",
+                SupportingResidentIds = { "resident_liora", "resident_mael", "resident_serit" }
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("current head другой", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static string CreateTempRoot()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-shining-request-tests-" + Guid.NewGuid().ToString("N"));

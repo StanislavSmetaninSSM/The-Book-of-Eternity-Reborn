@@ -3327,9 +3327,32 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("factionRealignmentReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("realignmentMode", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("accepted_transfer", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("residentHistoryEntryId", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ожидаемый каркас политического receipt/history", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("quotedCostLightSparks", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("refusedOrWithdrawn", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningPolitics_DeparturePreviewShowsModeConsistentStatuses()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        _console.QueueSelection("Политика Сияющей Обители", "⇄ Создать запрос на переход между фракциями", "← Назад");
+        _console.QueueSelection("Режим перестройки", "Уйти в нейтральное состояние");
+        _console.QueueSelection("Подтвердить перестройку резидента", "← Отмена");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_politics"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_political_departure_preview_cancel");
+        Assert.False(_fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("departure_to_neutral", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("departed_to_neutral", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("residentHistoryEntryId", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("refused|withdrawn", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
