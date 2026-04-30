@@ -1570,6 +1570,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Canonical after payload schema", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("grantSnapshot", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("applicationState: pending", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("startingCharacteristicBonus", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("startingPassiveKnowledgeSkill", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("memoryLegacyGrant", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("stat_bonus", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("knowledge_skill", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("grantSource: memory_gates", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6611,14 +6617,38 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             pendingMemoryLegacy = new
             {
                 legacyId = "legacy_status_001",
-                legacyType = "knowledge_skill",
-                grantSource = "memory_gates",
+                legacyType = "startingPassiveKnowledgeSkill",
+                grantSource = "memoryLegacyGrant",
                 applicationState = "pending",
                 skillName = "Echo Cartography",
+                skillDescription = "Reads routes through afterlife echoes.",
+                group = "Knowledge",
                 grantSnapshot = new
                 {
                     requestId = "memory_gates_status_001",
-                    costInFeathers = 24
+                    costInFeathers = 24,
+                    legacyType = "startingPassiveKnowledgeSkill",
+                    skillName = "Echo Cartography",
+                    skillDescription = "Reads routes through afterlife echoes.",
+                    group = "Knowledge",
+                    structuredBonuses = new[]
+                    {
+                        new
+                        {
+                            bonusType = "knowledge_check",
+                            target = "afterlife_routes",
+                            value = 1
+                        }
+                    }
+                },
+                structuredBonuses = new[]
+                {
+                    new
+                    {
+                        bonusType = "knowledge_check",
+                        target = "afterlife_routes",
+                        value = 1
+                    }
                 }
             },
             soulImprint = new

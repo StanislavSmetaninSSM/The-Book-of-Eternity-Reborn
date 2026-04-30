@@ -548,6 +548,8 @@ public partial class ExplorerMode
         {
             "stat_bonus" => "усиление характеристики",
             "skill_knowledge" => "наследие знания",
+            "startingcharacteristicbonus" => "усиление стартовой характеристики",
+            "startingpassiveknowledgeskill" => "пассивный навык знания",
             _ => legacyType ?? string.Empty
         };
 
@@ -555,6 +557,7 @@ public partial class ExplorerMode
         (grantSource ?? string.Empty).Trim().ToLowerInvariant() switch
         {
             "memory_gates" => "Врата Памяти",
+            "memorylegacygrant" => "дар наследия памяти",
             "archive" => "Архив души",
             _ => grantSource ?? string.Empty
         };
@@ -827,11 +830,12 @@ public partial class ExplorerMode
 
         lines.Add("Canonical after payload schema:");
         lines.Add("  pendingMemoryLegacy.legacyId: new non-empty id.");
-        lines.Add("  pendingMemoryLegacy.legacyType: stat_bonus или knowledge_skill.");
-        lines.Add("  pendingMemoryLegacy.grantSource: memory_gates.");
+        lines.Add("  pendingMemoryLegacy.legacyType: startingCharacteristicBonus или startingPassiveKnowledgeSkill.");
+        lines.Add("  pendingMemoryLegacy.grantSource: memoryLegacyGrant.");
         lines.Add("  pendingMemoryLegacy.applicationState: pending.");
-        lines.Add("  pendingMemoryLegacy.grantSnapshot: source turn/request/cost plus selected bonus.");
-        lines.Add("  pendingMemoryLegacy.bonus: exactly one mechanical bonus (+2 stat OR one passive Knowledge skill).");
+        lines.Add("  pendingMemoryLegacy.grantSnapshot: exact structured metaStateUpdates.memoryLegacyGrant object, including legacyId, legacyType, source turn/request/cost and selected bonus.");
+        lines.Add("  pendingMemoryLegacy for startingCharacteristicBonus: characteristic plus bonus=2.");
+        lines.Add("  pendingMemoryLegacy for startingPassiveKnowledgeSkill: skillName, skillDescription, group=Knowledge and non-empty structuredBonuses.");
         lines.Add("  source ids/context: carry sourceLifeHint/sourceGuardianId/sourceActionTag when known.");
 
         return lines;

@@ -1215,7 +1215,7 @@ public partial class GameEngine
             }
 
             return parts.Count == 0
-                ? "pending setup exists; inspect game_state/control/pending_incarnation_world_setup.json"
+                ? $"pending setup exists; inspect {WorldDirectiveService.PendingSetupPath}"
                 : string.Join("; ", parts);
         }
         catch

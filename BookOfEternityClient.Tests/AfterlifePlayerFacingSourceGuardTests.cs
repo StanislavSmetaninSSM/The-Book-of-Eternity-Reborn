@@ -16,6 +16,8 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("ConfirmIncarnationContractPreview", mainMenu, StringComparison.Ordinal);
         Assert.Contains("BuildPendingWorldSetupActionSummary", mainMenu, StringComparison.Ordinal);
         Assert.Contains("pending setup exists but is malformed", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("WorldDirectiveService.PendingSetupPath", mainMenu, StringComparison.Ordinal);
+        Assert.DoesNotContain("pending_incarnation_world_setup.json", mainMenu, StringComparison.Ordinal);
         Assert.True(
             mainMenu.IndexOf("if (!ConfirmIncarnationContractPreview", StringComparison.Ordinal) <
             mainMenu.IndexOf("_fs.ClearCurrentWorldLore();", StringComparison.Ordinal));
