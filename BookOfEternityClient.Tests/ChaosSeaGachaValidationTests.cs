@@ -262,6 +262,29 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithOmittedExistingQuestSnapshot_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot();
+        var preTurnResidents = CreateResidentRoot("resident_liora", includeInteractionLog: true);
+        var currentResidents = preTurnResidents.DeepClone().AsObject();
+        var currentQuests = CreateSoulQuestRoot("quest_liora_old", "resident_liora");
+        var playerAction = "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).";
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", currentResidents);
+        await WriteNodeAsync("game_state/quests/soul_quests.json", currentQuests);
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(playerAction));
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: playerAction,
+            preTurnResidentRoot: preTurnResidents,
+            markSoulQuestsAsExistingWithoutSnapshot: true);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "abode_resident_quest_request_missing_pre_turn_soul_quests_snapshot", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestForUnknownResident_Fails()
     {
         var preTurnSoul = CreateSoulRoot();
@@ -396,7 +419,8 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         JsonObject? rollbackSoulRoot = null,
         string? playerAction = null,
         JsonObject? preTurnResidentRoot = null,
-        JsonObject? preTurnSoulQuestsRoot = null)
+        JsonObject? preTurnSoulQuestsRoot = null,
+        bool markSoulQuestsAsExistingWithoutSnapshot = false)
     {
         const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
         await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
@@ -432,6 +456,12 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
                 PendingTurnSnapshotAuthority.ComputeSha256(await _fs.ReadFileAsync(questSnapshotPath) ?? string.Empty);
         }
 
+        var rollbackBaselineFiles = new JsonArray();
+        if (rollbackSoulRoot != null)
+            rollbackBaselineFiles.Add("game_state/meta/soul_state.json");
+        if (markSoulQuestsAsExistingWithoutSnapshot)
+            rollbackBaselineFiles.Add("game_state/quests/soul_quests.json");
+
         var manifest = new JsonObject
         {
             ["sessionId"] = "session",
@@ -448,9 +478,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
                 {
                     ["game_state/meta/soul_state.json"] = soulRollbackPath
                 },
-            ["rollbackBaselineFiles"] = rollbackSoulRoot == null
-                ? new JsonArray()
-                : new JsonArray("game_state/meta/soul_state.json"),
+            ["rollbackBaselineFiles"] = rollbackBaselineFiles,
             ["sourceLabel"] = "обычный ход игрока"
         };
         manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);

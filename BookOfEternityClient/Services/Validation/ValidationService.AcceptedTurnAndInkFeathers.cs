@@ -8050,6 +8050,23 @@ public partial class ValidationService
 
         if (lookup.Manifest.Files == null || !lookup.Manifest.Files.ContainsKey(path))
         {
+            var manifestIndicatesExistingQuestFile =
+                (lookup.Manifest.RollbackBaselineFiles?.Contains(path, StringComparer.OrdinalIgnoreCase) ?? false) ||
+                (lookup.Manifest.SnapshotFileHashes?.ContainsKey(path) ?? false);
+            if (manifestIndicatesExistingQuestFile)
+            {
+                issues.Add(new ValidationIssue(
+                    path,
+                    IssueSeverity.Error,
+                    $"{section} требует readable validated pre-turn JSON object in {path}, потому что pending_turn_snapshot показывает существовавший pre-turn quest file.",
+                    code: $"{section.ToLowerInvariant()}_missing_pre_turn_soul_quests_snapshot",
+                    section: section,
+                    expected: "registered validated snapshot for pre-existing soul_quests.json",
+                    actual: "soul_quests.json was baseline-tracked but absent from manifest.Files",
+                    repairHint: "Если soul_quests.json существовал до хода, сохраняй его в manifest.Files и snapshotFileHashes; empty baseline допустим только когда файла реально не было до хода."));
+                return null;
+            }
+
             return new JsonObject
             {
                 ["quests"] = new JsonArray()
