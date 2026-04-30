@@ -86,6 +86,46 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal("solar_crown", GetString(receipt["targetFormTag"]));
     }
 
+    [Fact]
+    public void AcceptedCompleteProjectReceiptScaffold_IncludesGeneratedProjectId()
+    {
+        var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+        {
+            RequestId = "core_complete_project_preview",
+            ActionType = ShiningCoreActionRequestState.ActionTypeCompleteProject,
+            FactionId = "faction_dawn",
+            ProjectDraft = new JsonObject
+            {
+                ["displayName"] = "Завершённая песнь",
+                ["projectArchetype"] = ShiningAbodeState.ProjectArchetypeAccord
+            }
+        };
+
+        var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
+
+        Assert.Equal("generated_completed_project_id", GetString(receipt["projectId"]));
+    }
+
+    [Fact]
+    public void RefusedCompleteProjectReceiptScaffold_LeavesProjectIdEmpty()
+    {
+        var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+        {
+            RequestId = "core_complete_project_refused_preview",
+            ActionType = ShiningCoreActionRequestState.ActionTypeCompleteProject,
+            FactionId = "faction_dawn",
+            ProjectDraft = new JsonObject
+            {
+                ["displayName"] = "Незавершённая песнь",
+                ["projectArchetype"] = ShiningAbodeState.ProjectArchetypeAccord
+            }
+        };
+
+        var receipt = BuildReceiptScaffold(request, "refused|withdrawn");
+
+        Assert.Equal(string.Empty, GetString(receipt["projectId"]));
+    }
+
     private static JsonObject BuildReceiptScaffold(
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
         string status)

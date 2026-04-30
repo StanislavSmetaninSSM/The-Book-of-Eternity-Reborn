@@ -302,6 +302,9 @@ public partial class ExplorerMode
             lines.Add("  • prepare receipt must include selectedCardIds[] and selectedCards snapshot matching the frozen package, with generatedDraftVersion equal to sourceDraftVersion.");
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
             lines.Add("  • gacha receipt must include baseRarity, finalRarity, relicId, relicName and returnCycleId.");
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeCompleteProject, StringComparison.OrdinalIgnoreCase) &&
+            string.IsNullOrWhiteSpace(request.ProjectId))
+            lines.Add("  • complete_project accepted receipt must fill projectId with the new generated completed project id; refused/withdrawn keeps projectId empty.");
         if (ShiningAbodeState.IsForgeActionType(request.ActionType))
             lines.Add("  • forge receipt must echo relicId/relicName and mutation fields such as targetFormTag/propertyIndex/replacementProperty/addedProperties.");
     }
@@ -417,6 +420,13 @@ public partial class ExplorerMode
             receipt["seededProjectNames"] = new JsonArray(
                 "generated completed project name 1",
                 "generated completed project name 2");
+            return;
+        }
+
+        if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeCompleteProject, StringComparison.OrdinalIgnoreCase) &&
+            string.IsNullOrWhiteSpace(request.ProjectId))
+        {
+            receipt["projectId"] = "generated_completed_project_id";
         }
     }
 
