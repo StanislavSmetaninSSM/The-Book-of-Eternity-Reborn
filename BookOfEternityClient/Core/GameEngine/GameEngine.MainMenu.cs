@@ -1013,9 +1013,55 @@ public partial class GameEngine
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath))
         {
-            blockers.Add(await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(_fs)
-                ? await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "повреждённый mortal-only запрос проявления companion-резидента", "repair pending_resident_companion_manifestation_request.json before Soul Gates")
-                : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "mortal-only запрос проявления companion-резидента остался в afterlife", "закройте/почините manifestation request before Soul Gates"));
+            if (await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(_fs))
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+                    "повреждённый mortal-only запрос проявления companion-резидента",
+                    "repair pending_resident_companion_manifestation_request.json before Soul Gates"));
+            }
+            else
+            {
+                var manifestationRequests = await GuardianAbodeResidentRequestState.ReadManifestationRequestsAsync(_fs);
+                if (manifestationRequests.Count == 0)
+                    GuardianAbodeResidentRequestState.ClearManifestationRequest(_fs);
+            }
+        }
+
+        var npcSocialState = await ActorSocialInteractionRequestState.ReadNpcRequestsStateAsync(_fs);
+        if (npcSocialState.FilePresent)
+        {
+            if (npcSocialState.IsMalformed)
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                    "повреждённый mortal-only NPC social request",
+                    "repair pending_npc_social_interactions.json before Soul Gates"));
+            }
+            else if (npcSocialState.Requests.Count == 0)
+            {
+                ActorSocialInteractionRequestState.ClearNpcRequests(_fs);
+            }
+            else
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                    "незакрытый mortal-only NPC social request",
+                    "close through npcInteractionJournalUpdates in Mortal World or repair before Soul Gates"));
+            }
+        }
+
+        var npcTradeState = await ClassifyRequestsPendingFileAsync(NpcTradeRequestState.PendingRequestPath);
+        if (npcTradeState == RequestsPendingFileState.ActiveOrMalformed)
+        {
+            blockers.Add(await BuildPendingFileBlockerAsync(
+                NpcTradeRequestState.PendingRequestPath,
+                "незакрытый или повреждённый mortal-only NPC trade request",
+                "close through UpdateNpcTradeInventoryReceipts in Mortal World or repair before Soul Gates"));
+        }
+        else if (npcTradeState == RequestsPendingFileState.ValidEmpty)
+        {
+            _fs.DeleteFile(NpcTradeRequestState.PendingRequestPath);
         }
 
         var guardianSocialState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);

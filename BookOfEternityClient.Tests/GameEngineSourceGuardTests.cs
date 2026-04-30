@@ -338,6 +338,25 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void TransitionWaitForGmResponse_MustRunAcceptedTurnFinalizerSteps()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+        var waitStart = source.IndexOf("private async Task<bool> WaitForGmResponse()", StringComparison.Ordinal);
+        var rawWaitStart = source.IndexOf("private async Task<bool> WaitForGmResponseRaw()", StringComparison.Ordinal);
+        Assert.True(waitStart >= 0);
+        Assert.True(rawWaitStart > waitStart);
+        var waitForGmResponseSource = source[waitStart..rawWaitStart];
+
+        Assert.Contains("CleanupBackup(rollbackSnapshot!)", waitForGmResponseSource, StringComparison.Ordinal);
+        Assert.Contains("CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction)", waitForGmResponseSource, StringComparison.Ordinal);
+        Assert.Contains("await _pendingTurnState.RotateAfterAcceptedTurnAsync()", waitForGmResponseSource, StringComparison.Ordinal);
+        Assert.Contains("await NormalizeRuntimeUiArtifactsAsync()", waitForGmResponseSource, StringComparison.Ordinal);
+        Assert.Contains("await _storyService.AppendTurnAsync(", waitForGmResponseSource, StringComparison.Ordinal);
+        Assert.Contains("await ProcessMortalProgressionAfterAcceptedTurnAsync()", waitForGmResponseSource, StringComparison.Ordinal);
+        Assert.Contains("await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber)", waitForGmResponseSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ValidationRepairFlow_MustUseValidatedPendingSnapshotContext_ForRepairCorrelationAndMetadata()
     {
         var source = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");

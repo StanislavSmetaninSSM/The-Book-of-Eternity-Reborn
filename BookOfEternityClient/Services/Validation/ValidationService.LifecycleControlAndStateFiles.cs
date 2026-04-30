@@ -3857,15 +3857,18 @@ public partial class ValidationService
         if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
             return;
 
-        issues.Add(new ValidationIssue(
-            GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
-            IssueSeverity.Error,
-            "pending_resident_companion_manifestation_request.json является MortalWorldProfile-only contract и не может быть live pending file в afterlife realm.",
-            code: "pending_resident_companion_manifestation_afterlife_forbidden",
-            section: "AfterlifeResidents",
-            expected: "file absent while currentRealm is Chaos Sea or Shining Abode",
-            actual: currentRealm ?? "unknown current realm",
-            repairHint: "В afterlife не создавай и не обрабатывай pending_resident_companion_manifestation_request.json; оставь файл только для следующей смертной жизни или убери stale contract через repair."));
+        if (await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(_fs))
+        {
+            issues.Add(new ValidationIssue(
+                GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+                IssueSeverity.Error,
+                "pending_resident_companion_manifestation_request.json повреждён в afterlife и должен быть сохранён для repair.",
+                code: "pending_resident_companion_manifestation_afterlife_malformed",
+                section: "AfterlifeResidents",
+                expected: "valid requests[] next-life manifestation contract or absent file",
+                actual: "malformed manifestation request file",
+                repairHint: "В afterlife не закрывай malformed manifestation request через afterlife receipts; восстанови machine-readable requests[] или очисти только явным repair."));
+        }
     }
 
     private void ValidatePendingAbodeOfferingConsumptionProof(

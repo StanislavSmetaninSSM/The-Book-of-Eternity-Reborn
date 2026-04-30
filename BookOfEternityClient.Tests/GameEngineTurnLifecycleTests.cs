@@ -229,6 +229,89 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CollectIncarnationBlockersAsync_NpcSocialAndTradeBlockSoulGates()
+    {
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "npc_social_alpha",
+                    npcId = "npc_mira",
+                    npcName = "Мира",
+                    interactionType = "talk",
+                    createdAtTurn = 14,
+                    createdAtUtc = "2026-04-27T14:00:00Z"
+                }
+            }
+        });
+        await WriteJsonAsync(NpcTradeRequestState.PendingRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "npc_trade_alpha",
+                    npcId = "npc_mira",
+                    npcName = "Мира",
+                    merchantProfile = "local_merchant",
+                    tradeCycleId = "mortal_trade_14",
+                    derivedTradeSlotCount = 4,
+                    createdAtTurn = 14,
+                    createdAtUtc = "2026-04-27T14:00:00Z"
+                }
+            }
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Contains(blockers, blocker =>
+            blocker.Contains(ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains("npc_social_alpha", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(blockers, blocker =>
+            blocker.Contains(NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains("npc_trade_alpha", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CollectIncarnationBlockersAsync_ValidManifestationRequestDoesNotBlockSoulGates()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "manifest_next_life",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_echo",
+                    relicName = "Эхо Лиоры",
+                    sourceResidentId = "resident_liora",
+                    sourceGuardianId = "guardian_azalia",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 5,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Следующая смертная жизнь.",
+                    futureCompanionPrompt = "Лиора проявится как ранняя спутница в следующей смертной жизни.",
+                    bondReason = "Связь закреплена через реликвию резидента.",
+                    coreTraits = new[] { "loyal" },
+                    archetypeHints = new[] { "guide" },
+                    appearanceMotifs = new[] { "dawn" },
+                    createdAtUtc = "2026-04-27T14:00:00Z"
+                }
+            }
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Empty(blockers);
+        Assert.True(_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath));
+    }
+
+    [Fact]
     public async Task CleanupAfterCancelledChaosSeaMarkerTurn_PreservesSystemGuardianAttractionForLateResponse()
     {
         await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new

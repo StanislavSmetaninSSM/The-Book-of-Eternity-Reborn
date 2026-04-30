@@ -733,6 +733,23 @@ internal static class ShiningFactionRequestState
         if (foundingRequests.Count == 0 && realignmentRequests.Count == 0 && leadershipRequests.Count == 0)
             return null;
 
+        if (!IsShiningRealm(currentRealm))
+        {
+            var wrongRealm = new StringBuilder();
+            wrongRealm.AppendLine("SHINING ABODE POLITICAL REQUESTS WRONG REALM:");
+            wrongRealm.AppendLine("  - currentRealm is not Shining Abode, so Shining political pending files are repair-only context here.");
+            wrongRealm.AppendLine("  - Preserve the files; do not resolve factionFoundingReceipts[], factionRealignmentReceipts[], leadershipReceipts[], or Shining political state from this Chaos Sea turn.");
+            wrongRealm.AppendLine("  - Re-enter Shining Abode or repair/clear the contracts through the proper Shining runtime path before ordinary processing.");
+            wrongRealm.AppendLine($"  - Pending requests detected: {foundingRequests.Count + realignmentRequests.Count + leadershipRequests.Count}");
+            foreach (var request in foundingRequests)
+                AppendSerializedJsonBlock(wrongRealm, "Wrong-realm pending founding DTO", request);
+            foreach (var request in realignmentRequests)
+                AppendSerializedJsonBlock(wrongRealm, "Wrong-realm pending realignment DTO", request);
+            foreach (var request in leadershipRequests)
+                AppendSerializedJsonBlock(wrongRealm, "Wrong-realm pending leadership DTO", request);
+            return wrongRealm.ToString();
+        }
+
         if (IsShiningRealm(currentRealm))
         {
             var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);

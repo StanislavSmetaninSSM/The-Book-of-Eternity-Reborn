@@ -109,6 +109,36 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task BuildSystemReminderFragmentAsync_ChaosSeaTreatsPendingCoreActionAsWrongRealm()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                RequestId = "core_req_open_gates",
+                ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                CreatedAtTurn = 7
+            });
+
+            var reminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(fs, "Chaos Sea");
+
+            Assert.NotNull(reminder);
+            Assert.Contains("WRONG REALM", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("repair-only", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("core_req_open_gates", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Resolve it in accepted turn", reminder, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_PendingBootstrapBlocksAndPreservesCoreActionReminder()
     {
         var root = CreateTempRoot();

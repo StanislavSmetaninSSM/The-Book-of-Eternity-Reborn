@@ -72,7 +72,13 @@ public partial class GameEngine
 
             _audioService.PlayCue(AudioCue.TurnReady);
             var response = await BuildGameResponseFromFiles();
+            if (HasRollbackCapability(rollbackSnapshot))
+                CleanupBackup(rollbackSnapshot!);
+
             _gameLoop.IncrementTurn();
+            CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
+            await _pendingTurnState.RotateAfterAcceptedTurnAsync();
+            await NormalizeRuntimeUiArtifactsAsync();
 
             // Debug: log narrative length to help diagnose rendering issues
             if (string.IsNullOrEmpty(response?.Response))
@@ -80,6 +86,19 @@ public partial class GameEngine
 
             _lastResponse = response;
             _pendingImagePrompt = null;
+
+            var acceptedAction = snapshotContext?.PlayerAction ?? string.Empty;
+            var state = _stateManager.CurrentState;
+            await _storyService.AppendTurnAsync(
+                _gameLoop.TurnNumber,
+                state.CurrentRealm ?? "Chaos Sea",
+                state.Incarnation,
+                acceptedAction,
+                response?.Response,
+                state.CurrentLocation,
+                await ExtractStoryEntityRefsAsync(acceptedAction));
+
+            await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
             await CheckLifeTransitions();
             await CheckAscensionTrigger();
@@ -107,6 +126,12 @@ public partial class GameEngine
                 await _worldDirectiveService.MaterializePendingToActiveAsync();
 
             await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
+
+            if (_stateManager.Settings.AutosaveIntervalTurns > 0 &&
+                _gameLoop.TurnNumber % _stateManager.Settings.AutosaveIntervalTurns == 0)
+            {
+                await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
+            }
 
             _fs.DeleteFile("ready/turn_complete.json");
             await CleanupPendingTurnSnapshotAsync();
