@@ -185,7 +185,7 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
-    public async Task EnsureHealthyAsync_ChaosSeaClearsPendingRequests()
+    public async Task EnsureHealthyAsync_ChaosSeaPreservesActivePendingRequests()
     {
         var root = CreateTempRoot();
         try
@@ -201,8 +201,8 @@ public sealed class ShiningCoreActionRequestStateTests
 
             await ShiningCoreActionRequestState.EnsureHealthyAsync(fs, "Chaos Sea");
 
-            Assert.Empty(await ShiningCoreActionRequestState.ReadRequestsAsync(fs));
-            Assert.False(fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+            Assert.Single(await ShiningCoreActionRequestState.ReadRequestsAsync(fs));
+            Assert.True(fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
         }
         finally
         {

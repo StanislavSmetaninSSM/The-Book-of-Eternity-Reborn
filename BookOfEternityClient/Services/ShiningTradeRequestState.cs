@@ -359,7 +359,9 @@ internal static class ShiningTradeRequestState
 
         if (!IsShiningRealm(currentRealm))
         {
-            fs.DeleteFile(PendingRequestsPath);
+            var state = await ReadRequestsStateAsync(fs);
+            if (!state.IsMalformed && state.Requests.Count == 0)
+                fs.DeleteFile(PendingRequestsPath);
             return;
         }
 

@@ -170,7 +170,7 @@ public partial class ExplorerMode
             lines.Add("[bold]Доступность политических действий:[/] [dim](стоимости, блокеры и минимальные требования до выбора)[/]");
             lines.Add($"  • Основание фракции: cost {ShiningFactionRequestState.FactionFoundingCostFeathers} Чернильных Перьев / {ShiningFactionRequestState.FactionFoundingCostLightSparks} Искр Света; баланс {feathers}/{lightSparks}; минимум 3 ascended supporters из {ascendedResidentCount}; {(feathers >= ShiningFactionRequestState.FactionFoundingCostFeathers && lightSparks >= ShiningFactionRequestState.FactionFoundingCostLightSparks && ascendedResidentCount >= 3 && !hasPendingPoliticalRequest ? "доступно" : "заблокировано условиями или живым pending request")}.");
             lines.Add($"  • Перестройка резидента: требует ascended resident с factionRealignmentState ready_to_realign/wavering и machine-readable target/source faction; {(hasPendingPoliticalRequest ? "новый запрос заблокирован, пока живёт political pending request" : "проверяется при выборе резидента")}.");
-            lines.Add($"  • Смена власти: требует существующую faction, валидного incumbent и допустимого candidate head; {(hasPendingPoliticalRequest ? "новый запрос заблокирован, пока живёт political pending request" : "проверяется перед записью pending request")}.");
+            lines.Add($"  • Смена власти: требует существующую faction, валидного incumbent и допустимого кандидата на главу; {(hasPendingPoliticalRequest ? "новый запрос заблокирован, пока живёт political pending request" : "проверяется перед записью pending request")}.");
 
             if (context?.Root["factions"] is JsonArray factions && factions.Count > 0)
             {

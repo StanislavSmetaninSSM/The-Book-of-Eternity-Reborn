@@ -523,6 +523,44 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnOutcomeAsync_LateReadySignalProvidesProgressionCorrelationContext()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+        await WriteTurnRequestContextAsync("session_late", "req_late", 5);
+
+        var control = await _service.BuildControlForNextTurnAsync();
+        _fs.DeleteFile("input/turn_request.json");
+        await WriteReadySignalContextAsync("session_late", "req_late", 5);
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, """
+        {
+          "progressionProcessingReport": {
+            "sessionId": "session_late",
+            "requestId": "req_late",
+            "turnNumber": 5,
+            "worldCyclesProcessed": 0,
+            "factionCyclesProcessed": 0,
+            "chaosSeaCyclesProcessed": 1,
+            "guardianProjectCyclesProcessed": 1,
+            "residentAgencyCyclesProcessed": 1,
+            "newLastChaosSeaSimulationOrdinal": 1,
+            "newLastGuardianProjectCycleOrdinal": 1,
+            "newLastResidentAgencyCycleOrdinal": 1
+          }
+        }
+        """);
+
+        var issues = await _service.ValidateAcceptedTurnOutcomeAsync(control);
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "progression_report_missing_turn_context", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "progression_report_turn_context_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task BuildControlForNextTurnAsync_ShiningAbodeUsesShiningContoursWithoutChaosCycle()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -1111,6 +1149,20 @@ public sealed class ProgressionScheduleServiceTests : IDisposable
           "playerAction": "test progression",
           "timestamp": "2026-04-23T00:00:00.0000000Z",
           "gameMode": "normal"
+        }
+        """);
+    }
+
+    private Task WriteReadySignalContextAsync(string sessionId, string requestId, int turnNumber)
+    {
+        return _fs.WriteFileAtomicAsync("ready/turn_complete.json", $$"""
+        {
+          "sessionId": "{{sessionId}}",
+          "requestId": "{{requestId}}",
+          "turnNumber": {{turnNumber}},
+          "status": "success",
+          "timestamp": "2026-04-23T00:00:01.0000000Z",
+          "filesModified": []
         }
         """);
     }
