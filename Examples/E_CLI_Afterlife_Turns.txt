@@ -3264,6 +3264,8 @@ Accepted Shining core actions are strict diff contracts: mutate only the canonic
 
 If the same accepted turn also closes a Shining political/trade/resident pending contract, the final state is the composition of all accepted closures. For example, accepted faction founding first materializes the hall/faction and supporter resident alignment, then `open_gates` builds its draft from that updated Shining state; both `factionFoundingReceipts[]` and `coreActionReceipts[]` must be present.
 
+The strict Shining closure validator uses pre-turn `game_state/control/pending_turn_snapshot` roots for `game_state/meta/shining_abode_state.json`, `game_state/meta/guardian_abode_residents.json`, and `game_state/meta/soul_state.json`. It accepts only the canonical projected diff for the Shining core request plus other explicitly closed afterlife contracts in the same accepted response. Unrelated edits fail as `shining_closure_unexpected_shining_state_diff`, `shining_closure_unexpected_resident_state_diff`, or `shining_closure_unexpected_soul_state_diff`; missing baseline files fail as `shining_closure_missing_pre_turn_shining_state`, `shining_closure_missing_pre_turn_resident_state`, or `shining_closure_missing_pre_turn_soul_state`. A legal concurrent Soul delta must be proved by its own contract, for example an `ABODE_OFFERING` receipt/state change, not by silently changing `soul_state.json` during Shining closure.
+
 Supported `actionType` values:
 
 ```text
