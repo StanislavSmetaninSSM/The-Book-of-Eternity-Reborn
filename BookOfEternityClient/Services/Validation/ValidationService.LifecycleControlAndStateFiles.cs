@@ -2119,7 +2119,18 @@ public partial class ValidationService
                     repairHint: "Не меняй unrelated residents во время закрытия Shining founding/realignment/leadership/trade contract."));
             }
 
-            if (!JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
+            var expectedSoulForComparison = CloneJsonObject(expectedSoulRoot);
+            if (!JsonNode.DeepEquals(expectedSoulForComparison, currentSoulRoot))
+            {
+                var projectedSoulRoot = CloneJsonObject(expectedSoulRoot);
+                if (await TryProjectConcurrentShiningClosureSoulDeltasAsync(projectedSoulRoot) &&
+                    JsonNode.DeepEquals(projectedSoulRoot, currentSoulRoot))
+                {
+                    expectedSoulForComparison = projectedSoulRoot;
+                }
+            }
+
+            if (!JsonNode.DeepEquals(expectedSoulForComparison, currentSoulRoot))
             {
                 issues.Add(new ValidationIssue(
                     "game_state/meta/soul_state.json",
@@ -2136,6 +2147,97 @@ public partial class ValidationService
         {
             // parse issues reported elsewhere
         }
+    }
+
+    private async Task<bool> TryProjectConcurrentShiningClosureSoulDeltasAsync(JsonObject expectedSoulRoot)
+    {
+        var offeringJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeOfferingState.PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(offeringJson))
+            return false;
+
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest? offeringRequest;
+        try
+        {
+            offeringRequest = JsonSerializer.Deserialize<GuardianAbodeOfferingState.PendingAbodeOfferingRequest>(offeringJson);
+        }
+        catch
+        {
+            return false;
+        }
+
+        if (offeringRequest == null)
+            return false;
+
+        if (string.Equals(offeringRequest.OfferingType, GuardianAbodeOfferingState.OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
+        {
+            if (offeringRequest.InkFeathersOffered <= 0)
+                return false;
+
+            ApplyFeatherCostToSoul(expectedSoulRoot, offeringRequest.InkFeathersOffered);
+            return true;
+        }
+
+        if (string.Equals(offeringRequest.OfferingType, GuardianAbodeOfferingState.OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+            return TryRemoveSoulRelicFromSoulState(expectedSoulRoot, offeringRequest.RelicId);
+
+        if (string.Equals(offeringRequest.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(offeringRequest.OfferingType, GuardianAbodeOfferingState.OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            return TryRemoveAfterlifeArchiveEntryFromSoulState(expectedSoulRoot, offeringRequest.ArchiveId);
+        }
+
+        return false;
+    }
+
+    private static bool TryRemoveSoulRelicFromSoulState(JsonObject soulRoot, string? relicId)
+    {
+        if (string.IsNullOrWhiteSpace(relicId))
+            return false;
+
+        if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is JsonArray collection &&
+                    TryRemoveArrayEntryById(collection, relicId, "relicId", "id"))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (soulRoot["soulRelics"] is JsonArray flatCollection)
+        {
+            return TryRemoveArrayEntryById(flatCollection, relicId, "relicId", "id");
+        }
+
+        return false;
+    }
+
+    private static bool TryRemoveAfterlifeArchiveEntryFromSoulState(JsonObject soulRoot, string? archiveId)
+    {
+        if (string.IsNullOrWhiteSpace(archiveId))
+            return false;
+
+        return soulRoot["afterlifeArchive"] is JsonObject archiveRoot &&
+               archiveRoot["stored"] is JsonArray stored &&
+               TryRemoveArrayEntryById(stored, archiveId, "archiveId", "entryId", "id");
+    }
+
+    private static bool TryRemoveArrayEntryById(JsonArray array, string id, params string[] idFieldNames)
+    {
+        for (var i = 0; i < array.Count; i++)
+        {
+            if (array[i] is not JsonObject entry)
+                continue;
+
+            if (!idFieldNames.Any(fieldName => string.Equals(GetNodeString(entry[fieldName]), id, StringComparison.OrdinalIgnoreCase)))
+                continue;
+
+            array.RemoveAt(i);
+            return true;
+        }
+
+        return false;
     }
 
     private void ValidateSystemGuardianAttractionStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
