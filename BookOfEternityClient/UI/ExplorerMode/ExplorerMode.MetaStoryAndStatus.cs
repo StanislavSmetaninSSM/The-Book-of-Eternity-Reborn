@@ -174,6 +174,7 @@ public partial class ExplorerMode
         {
             table.AddRow("[bold yellow]── СИЯЮЩАЯ ОБИТЕЛЬ ──[/]", "", "");
             table.AddRow("[yellow]/guardians[/]", "[yellow]/хранители[/]", "[yellow]Информация о хранителях[/]");
+            table.AddRow("[yellow]/status[/]", "[yellow]/статус[/]", "[yellow]Полный статус afterlife: ресурсы души, blockers, pending contracts, Radiance, Light Sparks, Врата, trade/forge и политические сигналы[/]");
             table.AddRow("[yellow]/abode_power[/]", "[yellow]/сила_обители[/]", "[yellow]Журнал силы Обителей и её причин[/]");
             table.AddRow("[yellow]/abode_offering[/]", "[yellow]/подношение_обители[/]", "[yellow]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[yellow]/guardian_projects[/]", "[yellow]/проекты_хранителей[/]", "[yellow]Подробный журнал проектов хранителей[/]");
@@ -192,12 +193,14 @@ public partial class ExplorerMode
             table.AddRow("[bold gold1]/new_game_plus[/]", "[bold gold1]/новая_игра+[/]", "[bold gold1]Начать Новый Цикл, сохранив Реликвии Души и Хранителей[/]");
             table.AddRow("", "", "");
             table.AddRow("[dim]💡 Это финальная зона свободного ролеплея над Морем Хаоса[/]", "", "");
+            table.AddRow("[dim]💡 В /shining_abode локальные Врата/выбор карт отделены от GM-turn core actions; предпросмотры показывают receipt scaffold и expected state delta.[/]", "", "");
         }
         else if (isChaosSea)
         {
             // Chaos Sea commands
             table.AddRow("[bold blue]── МОРЕ ХАОСА (загробная жизнь) ──[/]", "", "");
             table.AddRow("[blue]/chaos_sea[/]", "[blue]/море_хаоса[/]", "[blue]Обзор Моря Хаоса: активный Хранитель, навигация, pending contracts и доступные действия[/]");
+            table.AddRow("[blue]/status[/]", "[blue]/статус[/]", "[blue]Полный статус afterlife: ресурсы души, blockers, pending contracts, reward/delta hints и сохранённая Сияющая Обитель[/]");
             table.AddRow("[blue]/guardians[/]", "[blue]/хранители[/]", "[blue]Информация о хранителях[/]");
             table.AddRow("[blue]/abodes[/]", "[blue]/обители[/]", "[blue]Навигация по Обителям Хранителей; Chaos Sea-only переходы без Mortal World travel[/]");
             table.AddRow("[blue]/abode_power[/]", "[blue]/сила_обители[/]", "[blue]Журнал силы Обителей и её причин[/]");
@@ -222,6 +225,7 @@ public partial class ExplorerMode
             table.AddRow("", "", "");
             table.AddRow("[dim]💡 Говорите с Хранителем свободным текстом:[/]", "", "");
             table.AddRow("[dim]   торговать, брать квесты, менять реликвии, сменить хранителя[/]", "", "");
+            table.AddRow("[dim]💡 Для аудита перед ходом: /status, /afterlife_inbox, /feathers, /afterlife_archive, /guardian_projects, /abode_offering.[/]", "", "");
         }
         else
         {

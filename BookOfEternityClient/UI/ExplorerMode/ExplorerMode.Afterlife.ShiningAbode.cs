@@ -74,6 +74,8 @@ public partial class ExplorerMode
                 choices.Add("📝 Осмотреть ожидающие действия Обители");
             if ((context.Root["factions"] as JsonArray)?.Count > 0)
                 choices.Add("🧾 Осмотреть торговые циклы");
+            if ((context.Root["factions"] as JsonArray)?.Count > 0 || (context.ResidentRoot?["entries"] as JsonArray)?.Count > 0)
+                choices.Add("🧭 Сводный аудит резидентов и проектов");
 
             choices.Add("🏛 Политика");
             choices.Add("← Назад");
@@ -120,6 +122,13 @@ public partial class ExplorerMode
                 continue;
             }
 
+            if (choice.Contains("Сводный аудит", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowShiningResidentProjectAuditPanel(context);
+                WaitForKey();
+                continue;
+            }
+
             if (choice.Contains("залы", StringComparison.OrdinalIgnoreCase) ||
                 choice.Contains("светозарных акторов", StringComparison.OrdinalIgnoreCase))
             {
@@ -139,6 +148,94 @@ public partial class ExplorerMode
             else if (choice.Contains("кузня", StringComparison.OrdinalIgnoreCase))
                 await ShowShiningTradeAndForgeAsync();
         }
+    }
+
+    private void ShowShiningResidentProjectAuditPanel(ShiningContext context)
+    {
+        var lines = new List<string>
+        {
+            "[bold yellow]Сводный аудит резидентов и проектов Сияющей Обители[/]",
+            "",
+            "[bold]Фракции, резиденты, проекты:[/] [dim](без перехода в отдельные карточки)[/]"
+        };
+
+        var factions = (context.Root["factions"] as JsonArray)?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
+        if (factions.Count == 0)
+        {
+            lines.Add("  • Фракции пока не материализованы.");
+        }
+
+        foreach (var faction in factions.OrderByDescending(faction => GetNodeInt(faction["factionStrength"])))
+        {
+            var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
+            var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
+            var strength = GetNodeInt(faction["factionStrength"]);
+            lines.Add("");
+            lines.Add($"[bold]{Markup.Escape(factionName)}[/] [dim]({Markup.Escape(factionId)})[/]");
+            lines.Add($"  • Strength: [white]{strength}[/] [dim]({Markup.Escape(ShiningAbodeState.GetFactionStrengthBand(strength))})[/], tradeTier={ShiningAbodeState.GetTradeTier(strength)}, slots={ShiningAbodeState.GetTradeStockItemCount(faction, context.ResidentRoot)}, rarity={Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(strength))}, service x{ShiningAbodeState.GetServiceMultiplier(strength):0.00}.");
+            lines.Add($"  • Leadership: {Markup.Escape(BuildHeadActorLabel(GetNodeString(faction["leadership"]?["headActorType"]), GetNodeString(faction["leadership"]?["headActorId"]), context.ResidentRoot, context.GuardiansRoot, context.Root))} [dim]({Markup.Escape(DescribeShiningLeadershipState(GetNodeString(faction["leadership"]?["leadershipState"])))})[/].");
+
+            var residents = CollectShiningFactionResidents(context.ResidentRoot, factionId);
+            lines.Add($"  • Residents: [white]{residents.Count}[/]");
+            foreach (var resident in residents)
+            {
+                var name = GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentName"]) ?? GetNodeString(resident["residentId"]) ?? "?";
+                lines.Add($"    - {Markup.Escape(name)} [dim]({Markup.Escape(GetNodeString(resident["residentId"]) ?? "?")})[/]: role={Markup.Escape(GetNodeString(resident["roleLabel"]) ?? "—")}, loyalty={GetNodeInt(resident["factionLoyaltyLevel"])}/{Markup.Escape(GetNodeString(resident["factionLoyaltyTier"]) ?? "—")}, restlessness={GetNodeInt(resident["factionRestlessness"])}, realignment={Markup.Escape(DescribeShiningFactionRealignmentState(GetNodeString(resident["factionRealignmentState"])))}.");
+            }
+
+            var projects = (faction["projects"] as JsonArray)?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
+            lines.Add($"  • Projects: [white]{projects.Count}[/]");
+            foreach (var project in projects)
+            {
+                var projectName = GetNodeString(project["displayName"]) ?? GetNodeString(project["projectId"]) ?? "?";
+                lines.Add($"    - {Markup.Escape(projectName)} [dim]({Markup.Escape(GetNodeString(project["projectId"]) ?? "?")})[/]: status={Markup.Escape(DescribeShiningProjectStatus(GetNodeString(project["status"])))}, supported={GetNodeBool(project["isSupported"])}, tier={GetNodeInt(project["tier"])}, strengthReward={GetNodeInt(project["strengthReward"])}, archetype={Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(project["projectArchetype"])))}, effect={Markup.Escape(DescribeShiningEffectFamily(GetNodeString(project["outputEffectFamily"])))}.");
+            }
+        }
+
+        var unaligned = CollectShiningFactionResidents(context.ResidentRoot, string.Empty)
+            .Where(resident => string.IsNullOrWhiteSpace(GetNodeString(resident["shiningFactionId"])))
+            .ToList();
+        if (unaligned.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("[bold]Без фракции / нейтральные:[/]");
+            foreach (var resident in unaligned)
+            {
+                var name = GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentName"]) ?? GetNodeString(resident["residentId"]) ?? "?";
+                lines.Add($"  • {Markup.Escape(name)} [dim]({Markup.Escape(GetNodeString(resident["residentId"]) ?? "?")})[/]: ascensionState={Markup.Escape(GetNodeString(resident["ascensionState"]) ?? "—")}, realignment={Markup.Escape(DescribeShiningFactionRealignmentState(GetNodeString(resident["factionRealignmentState"])))}.");
+            }
+        }
+
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🧭 Shining Residents & Projects ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+    }
+
+    private static List<JsonObject> CollectShiningFactionResidents(JsonObject? residentRoot, string? factionId)
+    {
+        if (residentRoot?["entries"] is not JsonArray entries)
+            return new List<JsonObject>();
+
+        return entries.OfType<JsonObject>()
+            .Where(resident =>
+            {
+                var ascended = string.Equals(GetNodeString(resident["ascensionState"]), "ascended", StringComparison.OrdinalIgnoreCase) ||
+                               !string.IsNullOrWhiteSpace(GetNodeString(resident["shiningFactionId"]));
+                if (!ascended)
+                    return false;
+
+                if (string.IsNullOrWhiteSpace(factionId))
+                    return true;
+
+                return string.Equals(GetNodeString(resident["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase);
+            })
+            .OrderBy(resident => GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentName"]) ?? GetNodeString(resident["residentId"]))
+            .ToList();
     }
 
     private async Task ShowShiningPoliticsOverview()

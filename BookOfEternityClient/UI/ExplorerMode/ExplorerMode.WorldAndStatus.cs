@@ -985,6 +985,11 @@ public partial class ExplorerMode
     {
         await _stateManager.RefreshGameStateAsync();
         var state = _stateManager.CurrentState;
+        if (state.IsInAfterlifeRealm)
+        {
+            await ShowAfterlifeDetailedStatusAsync();
+            return;
+        }
 
         // ── Load supplementary data ──
         var expDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/experience.json");

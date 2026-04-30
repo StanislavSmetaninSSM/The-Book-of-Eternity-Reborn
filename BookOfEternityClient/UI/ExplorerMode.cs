@@ -95,6 +95,8 @@ public partial class ExplorerMode
             ["/правила_мира"] = ShowWorldRules,
             ["/gallery"] = ShowGallery,
             ["/галерея"] = ShowGallery,
+            ["/status"] = ShowDetailedStatus,
+            ["/статус"] = ShowDetailedStatus,
         };
 
         _chaosSeaOnlyCommands = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
@@ -138,8 +140,6 @@ public partial class ExplorerMode
             ["/квесты"] = ShowQuests,
             ["/map"] = ShowMap,
             ["/карта"] = ShowMap,
-            ["/status"] = ShowDetailedStatus,
-            ["/статус"] = ShowDetailedStatus,
             ["/where_am_i"] = ShowCurrentLocation,
             ["/где_я"] = ShowCurrentLocation,
             ["/factions"] = ShowFactions,

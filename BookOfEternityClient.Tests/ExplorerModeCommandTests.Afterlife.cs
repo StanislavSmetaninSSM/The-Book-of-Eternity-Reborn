@@ -1713,6 +1713,26 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningAbode_AllFactionAuditShowsResidentsAndProjects()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        _console.QueueSelection("Сияющая Обитель", "🧭 Сводный аудит резидентов и проектов");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_resident_project_audit");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Сводный аудит резидентов и проектов", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Хор Рассвета", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Residents:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Projects:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Песнь согласия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("loyalty=", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningAbode_GatesInspectionShowsRerolledCandidateDetails()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
@@ -3281,6 +3301,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("quotedCostFeathers", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("coreActionReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Пока этот request не закрыт", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ожидаемый accepted-state delta audit", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("changedSurfaces", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("targetFaction", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3304,6 +3327,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("factionRealignmentReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("realignmentMode", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("accepted_transfer", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ожидаемый каркас политического receipt/history", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("quotedCostLightSparks", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("refusedOrWithdrawn", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6518,6 +6544,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("help_chaos_sea_wording");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Поздний ритуал основания собственного Хранителя после возвращения из Сияющей Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/afterlife_inbox", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/guardian_projects", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Late-game", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
     }
@@ -6534,6 +6563,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("help_shining_wording");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Вернуться в Море Хаоса и запечатать Сияющую Обитель без запуска Нового Цикла", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("локальные Врата", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("expected state delta", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -6551,6 +6583,93 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("SHINING ABODE HANDOFF", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/status", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/статус", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_ChaosSeaShowsFullPendingContractAudit()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync(GuardianAbodeOfferingState.PendingRequestPath, new
+        {
+            requestId = "offering_status_001",
+            guardianId = "guardian_trade_001",
+            guardianName = "Азалия",
+            abodeId = "abode_trade_001",
+            abodeName = "Торговая Обитель",
+            offeringType = "ink_feathers",
+            inkFeathersOffered = 100,
+            powerGain = 20,
+            createdAtTurn = 12,
+            createdAtUtc = "2026-04-21T00:00:00Z"
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_chaos_pending");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Полный статус загробного цикла", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_abode_offering.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("offering_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("full payload", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/afterlife_inbox", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_ShiningAbodeShowsRadianceGatesAndTradeSignals()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/статус"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_shining");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Сияющая Обитель", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Radiance", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Light Sparks", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("draftVersion", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_shining_trade_inventory_requests.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("shining_trade_memory_7", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ChaosSeaOverviewEnumeratesFullPendingContracts()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "resident_talk_pending_001",
+                    guardianId = "guardian_trade_001",
+                    guardianName = "Азалия",
+                    abodeId = "abode_trade_001",
+                    residentId = "resident_liora_001",
+                    residentName = "Лиора",
+                    interactionType = "talk",
+                    createdAtTurn = 12,
+                    createdAtUtc = "2026-04-21T00:02:00Z"
+                }
+            }
+        });
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/chaos_sea"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("chaos_sea_pending_contract_overview");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Chaos Sea Audit", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_guardian_abode_resident_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("resident_talk_pending_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("residentInteractionLogUpdates", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("full payload", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6648,6 +6767,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("pending_guardian_abode_residents_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("requestMode", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("guardian_abode_residents.json roster", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Realm rule matrix Моря Хаоса", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Mortal inventory/money/XP/skills", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("progression_report.json", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6808,6 +6930,72 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("pending_guardian_abode_resident_transfers.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("UpdateGuardianAbodeResidentTransferReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("resident_ember_001", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Guardians_AbodeResidentsExistingPendingShowsFullRosterContract()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_roster_pending_001",
+                    canonicalName = "Азалия",
+                    domain = "Social",
+                    manifestation = new { currentDisplayName = "Азалия" },
+                    relationshipData = new { currentReputation = 130 },
+                    abodePower = new { currentPower = 58, tier = "Могущественная", history = Array.Empty<object>() },
+                    abode = new
+                    {
+                        abodeId = "abode_roster_pending_001",
+                        name = "Обитель Неутолимого Пламени",
+                        isDiscovered = true
+                    }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guardian_roster_pending_001"
+            },
+            chaosSeaNavigation = new
+            {
+                currentAbodeId = "abode_roster_pending_001"
+            }
+        });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "roster_pending_existing_001",
+                    guardianId = "guardian_roster_pending_001",
+                    guardianName = "Азалия",
+                    abodeId = "abode_roster_pending_001",
+                    abodeName = "Обитель Неутолимого Пламени",
+                    currentReputation = 130,
+                    requestMode = "standard_roster",
+                    createdAtTurn = 41,
+                    createdAtUtc = "2026-04-21T00:03:00Z"
+                }
+            }
+        });
+        _console.QueueSelection("Действие", "🏛 Обитатели Обители");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/хранители"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("guardian_abode_residents_existing_pending");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Живой pending contract", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_guardian_abode_residents_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("roster_pending_existing_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("full payload", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("UpdateGuardianAbodeResidentRosterReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

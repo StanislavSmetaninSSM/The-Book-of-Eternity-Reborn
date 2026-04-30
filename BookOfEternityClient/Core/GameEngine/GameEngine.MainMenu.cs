@@ -940,17 +940,19 @@ public partial class GameEngine
         var pendingConsultationState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
         if (pendingConsultationState.Exists)
         {
-            blockers.Add(pendingConsultationState.IsMalformed
-                ? await BuildPendingFileBlockerAsync(AfterlifeArchiveActionState.ConsultationRequestPath, "повреждённый запрос на архивную консультацию", "archiveActionResolutions + soul_state.afterlifeArchive.actionReceipts[]")
-                : BuildArchiveConsultationBlocker(pendingConsultationState.Request));
+            blockers.Add(await BuildPendingFileBlockerAsync(
+                AfterlifeArchiveActionState.ConsultationRequestPath,
+                pendingConsultationState.IsMalformed ? "повреждённый запрос на архивную консультацию" : "незакрытый запрос на архивную консультацию",
+                "archiveActionResolutions + soul_state.afterlifeArchive.actionReceipts[]"));
         }
 
         var pendingProjectFuelState = await AfterlifeArchiveActionState.ReadProjectFuelStateAsync(_fs);
         if (pendingProjectFuelState.Exists)
         {
-            blockers.Add(pendingProjectFuelState.IsMalformed
-                ? await BuildPendingFileBlockerAsync(AfterlifeArchiveActionState.ProjectFuelRequestPath, "повреждённый запрос на архивную подпитку проекта", "archiveActionResolutions + project/log effect only if request permits it")
-                : BuildArchiveProjectFuelBlocker(pendingProjectFuelState.Request));
+            blockers.Add(await BuildPendingFileBlockerAsync(
+                AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                pendingProjectFuelState.IsMalformed ? "повреждённый запрос на архивную подпитку проекта" : "незакрытый запрос на архивную подпитку проекта",
+                "archiveActionResolutions + project/log effect only if request permits it"));
         }
 
         if (_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath))
@@ -963,17 +965,19 @@ public partial class GameEngine
         var guardianTradeState = await GuardianTradeRequestState.ReadStateAsync(_fs);
         if (guardianTradeState.Exists)
         {
-            blockers.Add(guardianTradeState.IsMalformed
-                ? await BuildPendingFileBlockerAsync(GuardianTradeRequestState.PendingRequestPath, "повреждённый запрос на торговую витрину Хранителя", "UpdateGuardians + guardian tradeInventory + tradeInventoryReceipts[]")
-                : BuildGuardianTradeBlocker(guardianTradeState.Request));
+            blockers.Add(await BuildPendingFileBlockerAsync(
+                GuardianTradeRequestState.PendingRequestPath,
+                guardianTradeState.IsMalformed ? "повреждённый запрос на торговую витрину Хранителя" : "незакрытый запрос на торговую витрину Хранителя",
+                "UpdateGuardians + guardian tradeInventory + tradeInventoryReceipts[]"));
         }
 
         var foundationState = await PlayerGuardianFoundationState.ReadStateAsync(_fs);
         if (foundationState.Exists)
         {
-            blockers.Add(foundationState.IsMalformed
-                ? await BuildPendingFileBlockerAsync(PlayerGuardianFoundationState.PendingRequestPath, "повреждённый ритуал основания собственного Хранителя", "UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory")
-                : BuildFoundationBlocker(foundationState.Request));
+            blockers.Add(await BuildPendingFileBlockerAsync(
+                PlayerGuardianFoundationState.PendingRequestPath,
+                foundationState.IsMalformed ? "повреждённый ритуал основания собственного Хранителя" : "незакрытый ритуал основания собственного Хранителя",
+                "UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory"));
         }
 
         var attractionState = await _systemGuardianLibraryService.ReadAttractionRequestDisplayStateAsync();
@@ -1176,7 +1180,7 @@ public partial class GameEngine
     {
         var raw = await _fs.ReadFileAsync(path);
         var identity = DescribePendingFileIdentity(raw);
-        return $"{path}: {title}; {identity}; закрытие: {closure}.";
+        return $"{path}: {title}\n  identity: {identity}\n  закрытие: {closure}\n{DescribePendingFilePayload(raw)}";
     }
 
     private static string BuildArchiveConsultationBlocker(AfterlifeArchiveActionState.PendingArchiveConsultationRequest? request) =>
@@ -1211,26 +1215,57 @@ public partial class GameEngine
             if (root == null)
                 return "identity unavailable: root is not an object";
 
-            var source = root;
-            if (root["requests"] is JsonArray { Count: > 0 } requests && requests[0] is JsonObject firstRequest)
-                source = firstRequest;
+            var payloads = root["requests"] is JsonArray requests
+                ? requests.OfType<JsonObject>().ToList()
+                : new List<JsonObject> { root };
+            if (payloads.Count == 0)
+                payloads.Add(root);
 
-            var parts = new[]
+            var summaries = new List<string>();
+            for (var i = 0; i < payloads.Count; i++)
             {
-                ("requestId", GetAuditNodeString(source["requestId"])),
-                ("actionType", GetAuditNodeString(source["actionType"])),
-                ("guardianId", GetAuditNodeString(source["guardianId"])),
-                ("residentId", GetAuditNodeString(source["residentId"])),
-                ("targetProjectId", GetAuditNodeString(source["targetProjectId"])),
-                ("tradeCycleId", GetAuditNodeString(source["tradeCycleId"]))
-            }
-            .Where(part => !string.IsNullOrWhiteSpace(part.Item2))
-            .Select(part => $"{part.Item1}={part.Item2}")
-            .ToArray();
+                var source = payloads[i];
+                var parts = new[]
+                {
+                    ("requestId", GetAuditNodeString(source["requestId"])),
+                    ("actionType", GetAuditNodeString(source["actionType"])),
+                    ("interactionType", GetAuditNodeString(source["interactionType"])),
+                    ("requestedMode", GetAuditNodeString(source["requestedMode"])),
+                    ("requestMode", GetAuditNodeString(source["requestMode"])),
+                    ("offeringType", GetAuditNodeString(source["offeringType"])),
+                    ("guardianId", GetAuditNodeString(source["guardianId"])),
+                    ("abodeId", GetAuditNodeString(source["abodeId"])),
+                    ("residentId", GetAuditNodeString(source["residentId"])),
+                    ("sourceGuardianId", GetAuditNodeString(source["sourceGuardianId"])),
+                    ("sourceAbodeId", GetAuditNodeString(source["sourceAbodeId"])),
+                    ("targetGuardianId", GetAuditNodeString(source["targetGuardianId"])),
+                    ("targetAbodeId", GetAuditNodeString(source["targetAbodeId"])),
+                    ("targetProjectId", GetAuditNodeString(source["targetProjectId"])),
+                    ("factionId", GetAuditNodeString(source["factionId"])),
+                    ("projectId", GetAuditNodeString(source["projectId"])),
+                    ("relicId", GetAuditNodeString(source["relicId"])),
+                    ("archiveId", GetAuditNodeString(source["archiveId"])),
+                    ("tradeCycleId", GetAuditNodeString(source["tradeCycleId"])),
+                    ("returnCycleId", GetAuditNodeString(source["returnCycleId"])),
+                    ("createdAtTurn", GetAuditNodeString(source["createdAtTurn"])),
+                    ("costFeathers", GetAuditNodeString(source["costFeathers"])),
+                    ("costLightSparks", GetAuditNodeString(source["costLightSparks"])),
+                    ("quotedCostFeathers", GetAuditNodeString(source["quotedCostFeathers"])),
+                    ("quotedCostLightSparks", GetAuditNodeString(source["quotedCostLightSparks"])),
+                    ("inkFeathersOffered", GetAuditNodeString(source["inkFeathersOffered"])),
+                    ("derivedTradeSlotCount", GetAuditNodeString(source["derivedTradeSlotCount"])),
+                    ("derivedRarityCeiling", GetAuditNodeString(source["derivedRarityCeiling"]))
+                }
+                .Where(part => !string.IsNullOrWhiteSpace(part.Item2))
+                .Select(part => $"{part.Item1}={part.Item2}")
+                .ToArray();
 
-            return parts.Length == 0
-                ? "identity fields not found; inspect full pending JSON"
-                : string.Join(", ", parts);
+                summaries.Add(parts.Length == 0
+                    ? $"request[{i}]: identity fields not found; inspect full pending JSON"
+                    : $"request[{i}]: {string.Join(", ", parts)}");
+            }
+
+            return string.Join("; ", summaries);
         }
         catch (Exception ex)
         {
@@ -1238,10 +1273,55 @@ public partial class GameEngine
         }
     }
 
-    private static string? GetAuditNodeString(JsonNode? node) =>
-        node is JsonValue value && value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text)
-            ? text
-            : null;
+    private static string DescribePendingFilePayload(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return "  full payload: <empty>";
+
+        try
+        {
+            var node = JsonNode.Parse(raw);
+            if (node == null)
+                return "  full payload: <unreadable>";
+
+            var payloadLines = node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+                .Split('\n')
+                .Select(line => $"    {line.TrimEnd('\r')}");
+            return "  full payload:\n" + string.Join("\n", payloadLines);
+        }
+        catch (Exception ex)
+        {
+            return $"  full payload: malformed JSON ({ex.GetType().Name})";
+        }
+    }
+
+    private static string? GetAuditNodeString(JsonNode? node)
+    {
+        if (node == null)
+            return null;
+
+        if (node is JsonArray array)
+        {
+            var values = array
+                .Select(GetAuditNodeString)
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Take(8)
+                .ToArray();
+            return values.Length == 0 ? null : $"[{string.Join(", ", values)}]";
+        }
+
+        if (node is JsonObject)
+            return null;
+
+        try
+        {
+            return node.GetValue<string>();
+        }
+        catch
+        {
+            return node.ToJsonString().Trim('"');
+        }
+    }
 
     private static JsonObject BuildSystemGuardianPresetAuditNode(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset) =>
         new()
