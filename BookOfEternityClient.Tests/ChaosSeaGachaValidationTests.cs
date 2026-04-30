@@ -287,6 +287,29 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithFirstQuestFile_Passes()
+    {
+        var preTurnSoul = CreateSoulRoot();
+        var preTurnResidents = CreateResidentRoot("resident_liora");
+        var currentResidents = preTurnResidents.DeepClone().AsObject();
+        AddResidentInteractionLog(currentResidents, "resident_liora", "log_liora_first_quest_file");
+        var currentQuests = CreateSoulQuestRoot("quest_liora_first", "resident_liora");
+        var playerAction = "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Лиора' (residentId=resident_liora, guardianId=guardian_azalia, abodeId=abode_azalia).";
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", currentResidents);
+        await WriteNodeAsync("game_state/quests/soul_quests.json", currentQuests);
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(playerAction));
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: playerAction,
+            preTurnResidentRoot: preTurnResidents);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithOldAndNewQuest_Passes()
     {
         var preTurnSoul = CreateSoulRoot();

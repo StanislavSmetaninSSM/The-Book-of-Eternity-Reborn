@@ -7863,7 +7863,7 @@ public partial class ValidationService
         var residentRoot = await ReadJsonObjectForSpecialActionAsync(GuardianAbodeResidentState.StatePath, "ABODE_RESIDENT_QUEST_REQUEST", issues);
         var questsRoot = await ReadJsonObjectForSpecialActionAsync("game_state/quests/soul_quests.json", "ABODE_RESIDENT_QUEST_REQUEST", issues);
         var preTurnResidentRoot = await ReadPreTurnJsonObjectForSpecialActionAsync(GuardianAbodeResidentState.StatePath, "ABODE_RESIDENT_QUEST_REQUEST", issues);
-        var preTurnQuestsRoot = await ReadPreTurnJsonObjectForSpecialActionAsync("game_state/quests/soul_quests.json", "ABODE_RESIDENT_QUEST_REQUEST", issues);
+        var preTurnQuestsRoot = await ReadOptionalPreTurnSoulQuestsRootForResidentQuestRequestAsync("ABODE_RESIDENT_QUEST_REQUEST", issues);
         if (residentRoot == null || questsRoot == null || preTurnResidentRoot == null || preTurnQuestsRoot == null)
             return;
 
@@ -8006,6 +8006,69 @@ public partial class ValidationService
                 expected: "valid pre-turn JSON object",
                 actual: "invalid JSON",
                 repairHint: "Исправь validated pre-turn snapshot; special action validator не может доказать same-turn delta поверх malformed baseline."));
+            return null;
+        }
+    }
+
+    private async Task<JsonObject?> ReadOptionalPreTurnSoulQuestsRootForResidentQuestRequestAsync(
+        string section,
+        List<ValidationIssue> issues)
+    {
+        const string path = "game_state/quests/soul_quests.json";
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+            return null;
+
+        if (lookup.Manifest.Files == null || !lookup.Manifest.Files.ContainsKey(path))
+        {
+            return new JsonObject
+            {
+                ["quests"] = new JsonArray()
+            };
+        }
+
+        var json = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, path);
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            issues.Add(new ValidationIssue(
+                path,
+                IssueSeverity.Error,
+                $"{section} требует readable validated pre-turn JSON object in {path}, если snapshot явно зарегистрировал этот файл.",
+                code: $"{section.ToLowerInvariant()}_invalid_pre_turn_snapshot_json",
+                section: section,
+                expected: "valid pre-turn JSON object or absent snapshot file for an empty first-quest baseline",
+                actual: "missing, empty, or hash-mismatched registered snapshot",
+                repairHint: "Если soul_quests.json существовал до хода, восстанови validated snapshot; если это первый quest file, не регистрируй отсутствующий файл в pending_turn_snapshot."));
+            return null;
+        }
+
+        try
+        {
+            if (JsonNode.Parse(json) is JsonObject root)
+                return root;
+
+            issues.Add(new ValidationIssue(
+                path,
+                IssueSeverity.Error,
+                $"{section} требует readable validated pre-turn JSON object in {path}.",
+                code: $"{section.ToLowerInvariant()}_invalid_pre_turn_snapshot_json",
+                section: section,
+                expected: "valid pre-turn JSON object",
+                actual: "valid JSON but not an object",
+                repairHint: "Сохрани pre-turn soul_quests.json как JSON object с массивом quests или не регистрируй отсутствующий first-quest file."));
+            return null;
+        }
+        catch
+        {
+            issues.Add(new ValidationIssue(
+                path,
+                IssueSeverity.Error,
+                $"{section} требует readable validated pre-turn JSON object in {path}.",
+                code: $"{section.ToLowerInvariant()}_invalid_pre_turn_snapshot_json",
+                section: section,
+                expected: "valid pre-turn JSON object",
+                actual: "invalid JSON",
+                repairHint: "Исправь validated pre-turn snapshot; resident quest validator не может доказать same-turn delta поверх malformed baseline."));
             return null;
         }
     }
