@@ -4289,7 +4289,11 @@ public partial class ValidationService
             return true;
 
         var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
-        return DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext);
+        if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext))
+            return true;
+
+        var completionContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("ready/turn_complete.json"));
+        return DoesPendingTurnRequestValidationContextMatchManifest(manifest, completionContext);
     }
 
     private bool IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
@@ -4301,7 +4305,11 @@ public partial class ValidationService
             return true;
 
         var turnContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("input/turn_request.json"));
-        return DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, turnContext);
+        if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, turnContext))
+            return true;
+
+        var completionContext = LoadPendingTurnRequestValidationContextSync(_fs.ResolvePath("ready/turn_complete.json"));
+        return DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, completionContext);
     }
 
     private static bool DoesPendingTurnRequestValidationContextMatchManifest(

@@ -92,7 +92,7 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
-    public async Task EnsureHealthyAsync_ChaosSeaClearsPendingRequests()
+    public async Task EnsureHealthyAsync_ChaosSeaPreservesActivePendingRequests()
     {
         var root = CreateTempRoot();
         try
@@ -114,8 +114,8 @@ public sealed class ShiningTradeRequestStateTests
 
             await ShiningTradeRequestState.EnsureHealthyAsync(fs, "Chaos Sea");
 
-            Assert.Empty(await ShiningTradeRequestState.ReadRequestsAsync(fs));
-            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+            Assert.Single(await ShiningTradeRequestState.ReadRequestsAsync(fs));
+            Assert.True(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
         }
         finally
         {

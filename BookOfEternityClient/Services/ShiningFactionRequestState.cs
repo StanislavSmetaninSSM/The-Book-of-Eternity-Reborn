@@ -611,7 +611,12 @@ internal static class ShiningFactionRequestState
 
         if (!IsShiningRealm(currentRealm))
         {
-            ClearAllRequests(fs);
+            await ClearOnlyValidEmptyRequestsAsync(fs, PendingFoundingsRequestPath,
+                static json => JsonSerializer.Deserialize<PendingShiningFactionFoundingRequest>(json, JsonOpts));
+            await ClearOnlyValidEmptyRequestsAsync(fs, PendingRealignmentsRequestPath,
+                static json => JsonSerializer.Deserialize<PendingShiningFactionRealignmentRequest>(json, JsonOpts));
+            await ClearOnlyValidEmptyRequestsAsync(fs, PendingLeadershipTransitionsRequestPath,
+                static json => JsonSerializer.Deserialize<PendingShiningFactionLeadershipTransitionRequest>(json, JsonOpts));
             return;
         }
 
@@ -677,6 +682,17 @@ internal static class ShiningFactionRequestState
             if (unresolvedLeadershipTransitions.Count != leadershipState.Requests.Count)
                 await PersistRequestsAsync(fs, PendingLeadershipTransitionsRequestPath, unresolvedLeadershipTransitions);
         }
+    }
+
+    private static async Task ClearOnlyValidEmptyRequestsAsync<TRequest>(
+        FileSystemManager fs,
+        string path,
+        Func<string, TRequest?> deserialize)
+        where TRequest : class
+    {
+        var state = await ReadRequestsStateAsync(fs, path, deserialize);
+        if (!state.IsMalformed && state.Requests.Count == 0 && fs.FileExists(path))
+            fs.DeleteFile(path);
     }
 
     public static async Task<string?> BuildSystemReminderFragmentAsync(FileSystemManager fs, string? currentRealm)

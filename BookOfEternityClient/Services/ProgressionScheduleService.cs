@@ -1211,7 +1211,24 @@ public class ProgressionScheduleService
 
     private async Task<PendingTurnRequestContext?> ReadCurrentTurnRequestContextAsync()
     {
-        var json = await _fs.ReadFileAsync("input/turn_request.json");
+        foreach (var path in new[]
+                 {
+                     "input/turn_request.json",
+                     "ready/turn_complete.json",
+                     "game_state/control/validation_repair_request.json"
+                 })
+        {
+            var context = await ReadTurnRequestContextFromPathAsync(path);
+            if (context != null)
+                return context;
+        }
+
+        return null;
+    }
+
+    private async Task<PendingTurnRequestContext?> ReadTurnRequestContextFromPathAsync(string path)
+    {
+        var json = await _fs.ReadFileAsync(path);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 

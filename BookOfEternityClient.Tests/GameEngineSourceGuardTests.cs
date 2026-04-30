@@ -423,7 +423,7 @@ public sealed class GameEngineSourceGuardTests
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
 
-        Assert.Contains("GetExistingShiningPendingContractPaths()", source, StringComparison.Ordinal);
+        Assert.Contains("GetBlockingShiningPendingContractPathsAsync()", source, StringComparison.Ordinal);
         Assert.DoesNotContain("ShiningCoreActionRequestState.ClearRequests(_fs);\r\n        ShiningTradeRequestState.ClearRequests(_fs);\r\n        ShiningFactionRequestState.ClearAllRequests(_fs);", source, StringComparison.Ordinal);
     }
 

@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -381,6 +382,72 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_resident_state_diff", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithVerifiedSchedulerDeltas_Passes()
+    {
+        var request = CreateFoundingRequest("founding_req_scheduler_deltas", "faction_scheduler_deltas", "hall_scheduler_deltas");
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        AddAcceptedFoundingMaterialization(currentShiningRoot, currentResidentRoot, request);
+
+        currentShiningRoot["radiance"]!["experience"] = 999;
+        var schedulerResident = currentResidentRoot["entries"]!.AsArray()
+            .OfType<JsonObject>()
+            .First(entry => string.Equals(entry["residentId"]?.GetValue<string>(), "resident_outsider", StringComparison.OrdinalIgnoreCase));
+        schedulerResident["factionRestlessness"] = 99;
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentFeathers: 75);
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_scheduler_deltas.json";
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(backupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteValidatedSnapshotStateAsync(
+            preTurnShiningRoot,
+            CreateSoulStateRoot(currentFeathers: 75),
+            preTurnResidentRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingFoundingsRequestPath] = backupPath
+            },
+            new ProgressionControl
+            {
+                CurrentRealm = "Shining Abode",
+                ResidentAgencyCyclesExpectedThisTurn = 1,
+                ShiningFactionCyclesExpectedThisTurn = 1
+            });
+        await WriteNodeAsync(ProgressionScheduleService.ReportPath, new JsonObject
+        {
+            ["progressionProcessingReport"] = new JsonObject
+            {
+                ["sessionId"] = "test-session",
+                ["requestId"] = "test-request",
+                ["turnNumber"] = 12,
+                ["worldCyclesProcessed"] = 0,
+                ["factionCyclesProcessed"] = 0,
+                ["chaosSeaCyclesProcessed"] = 0,
+                ["guardianProjectCyclesProcessed"] = 0,
+                ["residentAgencyCyclesProcessed"] = 1,
+                ["shiningAbodeCyclesProcessed"] = 0,
+                ["shiningFactionCyclesProcessed"] = 1,
+                ["shiningTradeCyclesProcessed"] = 0
+            }
+        });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_resident_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -1290,7 +1357,9 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         return issues;
     }
 
-    private async Task WritePendingTurnSnapshotManifestAsync(Dictionary<string, string> rollbackBackups)
+    private async Task WritePendingTurnSnapshotManifestAsync(
+        Dictionary<string, string> rollbackBackups,
+        ProgressionControl? progressionControl = null)
     {
         var manifest = new JsonObject
         {
@@ -1314,6 +1383,8 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             ["sourceLabel"] = "shining-political-resolution-tests",
             ["manifestPayloadHash"] = string.Empty
         };
+        if (progressionControl != null)
+            manifest["progressionControl"] = JsonSerializer.SerializeToNode(progressionControl);
 
         await WriteNodeAsync("input/turn_request.json", new JsonObject
         {
