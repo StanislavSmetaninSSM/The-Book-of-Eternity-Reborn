@@ -2123,7 +2123,7 @@ public partial class ValidationService
             if (!JsonNode.DeepEquals(expectedSoulForComparison, currentSoulRoot))
             {
                 var projectedSoulRoot = CloneJsonObject(expectedSoulRoot);
-                if (await TryProjectConcurrentShiningClosureSoulDeltasAsync(projectedSoulRoot) &&
+                if (await TryProjectConcurrentShiningClosureSoulDeltasAsync(projectedSoulRoot, currentSoulRoot) &&
                     JsonNode.DeepEquals(projectedSoulRoot, currentSoulRoot))
                 {
                     expectedSoulForComparison = projectedSoulRoot;
@@ -2149,7 +2149,25 @@ public partial class ValidationService
         }
     }
 
-    private async Task<bool> TryProjectConcurrentShiningClosureSoulDeltasAsync(JsonObject expectedSoulRoot)
+    private async Task<bool> TryProjectConcurrentShiningClosureSoulDeltasAsync(JsonObject expectedSoulRoot, JsonObject currentSoulRoot)
+    {
+        var projectedAny = false;
+        projectedAny |= await TryProjectConcurrentAbodeOfferingSoulDeltaAsync(expectedSoulRoot);
+        projectedAny |= await TryProjectConcurrentArchiveActionSoulDeltaAsync(
+            expectedSoulRoot,
+            currentSoulRoot,
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            AfterlifeArchiveActionState.RequestedModeConsultation);
+        projectedAny |= await TryProjectConcurrentArchiveActionSoulDeltaAsync(
+            expectedSoulRoot,
+            currentSoulRoot,
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            AfterlifeArchiveActionState.RequestedModeProjectFuel);
+
+        return projectedAny;
+    }
+
+    private async Task<bool> TryProjectConcurrentAbodeOfferingSoulDeltaAsync(JsonObject expectedSoulRoot)
     {
         var offeringJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(GuardianAbodeOfferingState.PendingRequestPath);
         if (string.IsNullOrWhiteSpace(offeringJson))
@@ -2187,6 +2205,133 @@ public partial class ValidationService
         }
 
         return false;
+    }
+
+    private async Task<bool> TryProjectConcurrentArchiveActionSoulDeltaAsync(
+        JsonObject expectedSoulRoot,
+        JsonObject currentSoulRoot,
+        string pendingRequestPath,
+        string requestedMode)
+    {
+        var requestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(pendingRequestPath);
+        if (string.IsNullOrWhiteSpace(requestJson))
+            return false;
+
+        if (!TryReadArchiveActionRequestIdentity(
+                requestJson,
+                requestedMode,
+                out var requestId,
+                out var archiveId,
+                out var canonicalRequestedMode))
+        {
+            return false;
+        }
+
+        var resolution = FindCurrentArchiveActionResolution(
+            currentSoulRoot,
+            requestId,
+            archiveId,
+            canonicalRequestedMode);
+        if (resolution == null)
+            return false;
+
+        try
+        {
+            AfterlifeArchiveState.ApplyActionResolutions(
+                expectedSoulRoot,
+                new JsonArray(CloneJsonObject(resolution)),
+                GetNodeInt(resolution["resolvedAtTurn"]));
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryReadArchiveActionRequestIdentity(
+        string requestJson,
+        string requestedMode,
+        out string requestId,
+        out string archiveId,
+        out string canonicalRequestedMode)
+    {
+        requestId = string.Empty;
+        archiveId = string.Empty;
+        canonicalRequestedMode = requestedMode;
+
+        try
+        {
+            if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase))
+            {
+                var state = AfterlifeArchiveActionState.ParseConsultationState(requestJson);
+                if (state.IsMalformed || state.Request == null)
+                    return false;
+
+                requestId = state.Request.RequestId;
+                archiveId = state.Request.ArchiveId;
+                canonicalRequestedMode = state.Request.RequestedMode;
+                return !string.IsNullOrWhiteSpace(requestId) &&
+                       !string.IsNullOrWhiteSpace(archiveId) &&
+                       string.Equals(canonicalRequestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeProjectFuel, StringComparison.OrdinalIgnoreCase))
+            {
+                var state = AfterlifeArchiveActionState.ParseProjectFuelState(requestJson);
+                if (state.IsMalformed || state.Request == null)
+                    return false;
+
+                requestId = state.Request.RequestId;
+                archiveId = state.Request.ArchiveId;
+                canonicalRequestedMode = state.Request.RequestedMode;
+                return !string.IsNullOrWhiteSpace(requestId) &&
+                       !string.IsNullOrWhiteSpace(archiveId) &&
+                       string.Equals(canonicalRequestedMode, AfterlifeArchiveActionState.RequestedModeProjectFuel, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return false;
+    }
+
+    private static JsonObject? FindCurrentArchiveActionResolution(
+        JsonObject currentSoulRoot,
+        string requestId,
+        string archiveId,
+        string requestedMode)
+    {
+        if (currentSoulRoot["archiveActionResolutions"] is JsonArray resolutions)
+        {
+            var resolution = FindArchiveActionObject(resolutions, requestId, archiveId, requestedMode);
+            if (resolution != null)
+                return resolution;
+        }
+
+        if (currentSoulRoot[AfterlifeArchiveState.ContainerProperty] is JsonObject archiveRoot &&
+            archiveRoot[AfterlifeArchiveState.ActionReceiptsProperty] is JsonArray receipts)
+        {
+            return FindArchiveActionObject(receipts, requestId, archiveId, requestedMode);
+        }
+
+        return null;
+    }
+
+    private static JsonObject? FindArchiveActionObject(
+        JsonArray entries,
+        string requestId,
+        string archiveId,
+        string requestedMode)
+    {
+        return entries
+            .OfType<JsonObject>()
+            .FirstOrDefault(entry =>
+                string.Equals(GetNodeString(entry["requestId"]), requestId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["archiveId"]), archiveId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["requestedMode"]), requestedMode, StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool TryRemoveSoulRelicFromSoulState(JsonObject soulRoot, string? relicId)

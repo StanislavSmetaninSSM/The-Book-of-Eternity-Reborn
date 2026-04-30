@@ -432,6 +432,63 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Theory]
+    [InlineData(AfterlifeArchiveActionState.RequestedModeConsultation)]
+    [InlineData(AfterlifeArchiveActionState.RequestedModeProjectFuel)]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithConcurrentArchiveSoulDelta_Passes(string requestedMode)
+    {
+        var request = CreateFoundingRequest($"founding_req_with_{requestedMode}", $"faction_with_{requestedMode}", $"hall_with_{requestedMode}");
+        var archiveRequestId = $"archive_req_{requestedMode}";
+        var archiveId = $"archive_entry_{requestedMode}";
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        AddAcceptedFoundingMaterialization(currentShiningRoot, currentResidentRoot, request);
+        var preTurnSoulRoot = CreateSoulStateRootWithReservedArchive(
+            75,
+            archiveRequestId,
+            archiveId,
+            requestedMode);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        var archiveResolution = CreateAcceptedArchiveResolution(archiveRequestId, archiveId, requestedMode);
+        AfterlifeArchiveState.ApplyActionResolutions(currentSoulRoot, new JsonArray(CloneJsonObject(archiveResolution)), 12);
+        var archiveRequest = CreateArchiveRequest(archiveRequestId, archiveId, requestedMode);
+        var archiveRequestPath = string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase)
+            ? AfterlifeArchiveActionState.ConsultationRequestPath
+            : AfterlifeArchiveActionState.ProjectFuelRequestPath;
+        var archiveBackupPath = $"game_state/control/pending_turn_snapshot/pre_{requestedMode}_with_founding.json";
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot);
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoulRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(archiveRequestPath, archiveRequest.DeepClone());
+        const string foundingBackupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_with_archive.json";
+        await WriteNodeAsync(foundingBackupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(archiveBackupPath, archiveRequest.DeepClone());
+        await WriteValidatedSnapshotStateAsync(
+            preTurnShiningRoot,
+            preTurnSoulRoot,
+            preTurnResidentRoot);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ShiningFactionRequestState.PendingFoundingsRequestPath] = foundingBackupPath,
+            [archiveRequestPath] = archiveBackupPath
+        });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_resident_state_diff", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Fact]
     public async Task ValidateGameState_PendingShiningFoundingsWithDuplicateRequestId_Fails()
     {
@@ -958,6 +1015,98 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             ["total"] = Math.Max(currentFeathers, 100)
         }
     };
+
+    private static JsonObject CreateSoulStateRootWithReservedArchive(
+        int currentFeathers,
+        string requestId,
+        string archiveId,
+        string requestedMode)
+    {
+        var root = CreateSoulStateRoot(currentFeathers);
+        var stored = AfterlifeArchiveState.EnsureStoredArray(root);
+        stored.Add(new JsonObject
+        {
+            ["archiveId"] = archiveId,
+            ["title"] = "Запись для совместного закрытия",
+            ["entryType"] = "lore_fragment",
+            ["rarity"] = "rare",
+            ["sourceKind"] = "test"
+        });
+        AfterlifeArchiveState.TryReserveEntry(
+            stored,
+            archiveId,
+            requestedMode,
+            requestId,
+            "guardian_old",
+            "Азалия",
+            12,
+            targetProjectId: "project_archive_focus",
+            targetProjectName: "Архивный фокус");
+        return root;
+    }
+
+    private static JsonObject CreateArchiveRequest(string requestId, string archiveId, string requestedMode)
+    {
+        var request = new JsonObject
+        {
+            ["requestId"] = requestId,
+            ["guardianId"] = "guardian_old",
+            ["guardianName"] = "Азалия",
+            ["archiveId"] = archiveId,
+            ["archiveTitle"] = "Запись для совместного закрытия",
+            ["archiveEntryType"] = "lore_fragment",
+            ["archiveRarity"] = "rare",
+            ["archiveSourceKind"] = "test",
+            ["createdAtTurn"] = 12,
+            ["createdAtUtc"] = "2026-04-16T15:21:00Z",
+            ["requestedMode"] = requestedMode
+        };
+
+        if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase))
+        {
+            request["targetIncarnation"] = 2;
+        }
+        else
+        {
+            request["targetProjectId"] = "project_archive_focus";
+            request["targetProjectName"] = "Архивный фокус";
+        }
+
+        return request;
+    }
+
+    private static JsonObject CreateAcceptedArchiveResolution(string requestId, string archiveId, string requestedMode)
+    {
+        var resolution = new JsonObject
+        {
+            ["requestId"] = requestId,
+            ["archiveId"] = archiveId,
+            ["requestedMode"] = requestedMode,
+            ["status"] = AfterlifeArchiveActionState.ResolutionStatusAccepted,
+            ["guardianId"] = "guardian_old",
+            ["guardianName"] = "Азалия",
+            ["reason"] = "accepted_concurrent_archive_contract",
+            ["resolvedAtTurn"] = 12,
+            ["resolvedAtUtc"] = "2026-04-16T15:24:00Z"
+        };
+
+        if (string.Equals(requestedMode, AfterlifeArchiveActionState.RequestedModeConsultation, StringComparison.OrdinalIgnoreCase))
+        {
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeGuaranteedArchiveQuestCount] = 1;
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeQuestHookCount] = 0;
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeSpecialQuestLineUnlocks] = 0;
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeVisibleRivalClueBonus] = 0;
+            resolution[AfterlifeArchiveActionState.ConsultationOutcomeArchiveWarningTierBonus] = 0;
+        }
+        else
+        {
+            resolution["targetProjectId"] = "project_archive_focus";
+            resolution["resultMode"] = AfterlifeArchiveActionState.ProjectFuelResultModePressureRelief;
+            resolution["resultAmount"] = 1;
+        }
+
+        return resolution;
+    }
 
     private static JsonObject CreateFoundingRequest(string requestId, string proposedFactionId, string proposedHallId) => new()
     {
