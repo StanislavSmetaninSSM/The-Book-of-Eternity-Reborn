@@ -262,6 +262,31 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestForUnknownResident_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot();
+        var preTurnResidents = CreateResidentRoot("resident_liora");
+        var currentResidents = preTurnResidents.DeepClone().AsObject();
+        AddResidentInteractionLog(currentResidents, "resident_missing", "log_missing_resident_quest");
+        var preTurnQuests = CreateSoulQuestRoot();
+        var currentQuests = CreateSoulQuestRoot("quest_missing_resident", "resident_missing");
+        var playerAction = "[ABODE_RESIDENT_QUEST_REQUEST] Игрок помогает обитателю загробья 'Неизвестный' (residentId=resident_missing, guardianId=guardian_azalia, abodeId=abode_azalia).";
+        await WriteNodeAsync("game_state/meta/guardian_abode_residents.json", currentResidents);
+        await WriteNodeAsync("game_state/quests/soul_quests.json", currentQuests);
+        await WriteNodeAsync("input/turn_request.json", CreateResidentActionTurnRequest(playerAction));
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            playerAction: playerAction,
+            preTurnResidentRoot: preTurnResidents,
+            preTurnSoulQuestsRoot: preTurnQuests);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "abode_resident_quest_request_unknown_resident", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentQuestWithNewQuest_Passes()
     {
         var preTurnSoul = CreateSoulRoot();

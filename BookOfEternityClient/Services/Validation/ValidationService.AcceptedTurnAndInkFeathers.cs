@@ -7869,6 +7869,35 @@ public partial class ValidationService
 
         GuardianAbodeResidentState.NormalizeShape(residentRoot);
         GuardianAbodeResidentState.NormalizeShape(preTurnResidentRoot);
+        var preTurnResident = FindResidentNode(preTurnResidentRoot, residentId);
+        if (preTurnResident == null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{GuardianAbodeResidentState.StatePath}.entries",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_QUEST_REQUEST должен ссылаться на afterlife resident, существовавшего до хода.",
+                code: "abode_resident_quest_request_unknown_resident",
+                section: "ABODE_RESIDENT_QUEST_REQUEST",
+                expected: $"pre-turn residentId={residentId}",
+                actual: "missing pre-turn resident",
+                repairHint: "Direct resident quest marker закрывает просьбу существующего resident; не создавай quest/log для произвольного или нового residentId."));
+            return;
+        }
+
+        if (FindResidentNode(residentRoot, residentId) == null)
+        {
+            issues.Add(new ValidationIssue(
+                $"{GuardianAbodeResidentState.StatePath}.entries",
+                IssueSeverity.Error,
+                "ABODE_RESIDENT_QUEST_REQUEST должен сохранять существующего afterlife resident в текущем accepted state.",
+                code: "abode_resident_quest_request_missing_current_resident",
+                section: "ABODE_RESIDENT_QUEST_REQUEST",
+                expected: $"current residentId={residentId}",
+                actual: "missing current resident",
+                repairHint: "Не удаляй resident при закрытии direct resident quest marker; обнови quest/log, сохранив resident в guardian_abode_residents.json."));
+            return;
+        }
+
         var quests = EnumerateQuestObjects(questsRoot)
             .Select(quest => new
             {
