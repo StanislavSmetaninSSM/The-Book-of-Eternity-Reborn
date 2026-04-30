@@ -212,6 +212,7 @@ public partial class ExplorerMode
             AddNextLifePayloadField(lines, legacy, "characteristic");
             AddNextLifePayloadField(lines, legacy, "skillName");
             AddNextLifePayloadField(lines, legacy, "playerStatBonus");
+            AddNextLifePayloadField(lines, legacy, "bonus");
             if (legacy["bonus"] is JsonObject bonus)
                 lines.Add($"    bonus: [dim]{Markup.Escape(bonus.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
             if (legacy["grantSnapshot"] is JsonObject snapshot)

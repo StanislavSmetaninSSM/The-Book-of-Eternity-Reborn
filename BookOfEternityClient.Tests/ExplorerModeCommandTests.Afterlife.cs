@@ -6605,6 +6605,54 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Status_ChaosSeaShowsNumericMemoryLegacyBonus()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 },
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = Array.Empty<object>()
+            },
+            pendingMemoryLegacy = new
+            {
+                legacyId = "legacy_status_bonus_001",
+                legacyType = "startingCharacteristicBonus",
+                sourceLifeHint = "Эхо жизни мудреца.",
+                grantSource = "memoryLegacyGrant",
+                applicationState = "pending",
+                characteristic = "intelligence",
+                bonus = 2,
+                grantSnapshot = new
+                {
+                    legacyId = "legacy_status_bonus_001",
+                    legacyType = "startingCharacteristicBonus",
+                    sourceLifeHint = "Эхо жизни мудреца.",
+                    characteristic = "intelligence",
+                    bonus = 2
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_numeric_memory_bonus");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Next-life payloads", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("legacy_status_bonus_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("startingCharacteristicBonus", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("characteristic: intelligence", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("bonus: 2", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Status_ChaosSeaShowsFullPendingContractAudit()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
@@ -6628,6 +6676,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 skillName = "Echo Cartography",
                 skillDescription = "Reads routes through afterlife echoes.",
                 group = "Knowledge",
+                playerStatBonus = "+1 to afterlife route knowledge checks",
                 grantSnapshot = new
                 {
                     requestId = "memory_gates_status_001",
@@ -6636,6 +6685,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                     skillName = "Echo Cartography",
                     skillDescription = "Reads routes through afterlife echoes.",
                     group = "Knowledge",
+                    playerStatBonus = "+1 to afterlife route knowledge checks",
                     structuredBonuses = new[]
                     {
                         new
@@ -6700,6 +6750,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Next-life payloads", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("legacy_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Echo Cartography", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("playerStatBonus", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("+1 to afterlife route knowledge checks", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("imprint_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("futureCompanionPrompt", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("sourceProvenance", renderedText, StringComparison.OrdinalIgnoreCase);
