@@ -335,10 +335,7 @@ internal static class NpcTradeRequestState
             return;
 
         if (!IsMortalRealm(currentRealm))
-        {
-            fs.DeleteFile(PendingRequestPath);
             return;
-        }
 
         var requests = (await ReadRequestsAsync(fs)).ToList();
         if (requests.Count == 0)

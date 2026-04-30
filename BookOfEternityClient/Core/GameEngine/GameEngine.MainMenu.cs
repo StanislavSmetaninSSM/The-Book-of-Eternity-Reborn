@@ -921,7 +921,9 @@ public partial class GameEngine
             "Сначала выполни только canonical TriggerIncarnation в game_state/control/incarnation_trigger.json, используя pending incarnation_world_setup как входной контракт. " +
             "После принятого TriggerIncarnation клиент сам выполнит локальный переход и запустит отдельный следующий ход для первого Mortal World bootstrap.";
 
-        if (!ConfirmIncarnationContractPreview(charDesc, worldDesc, circumstances, action))
+        var pendingSetupBeforeRaw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);
+        var pendingSetupAfterPreview = await BuildIncarnationPendingSetupAfterPreviewAsync(charDesc, worldDesc, circumstances);
+        if (!ConfirmIncarnationContractPreview(charDesc, worldDesc, circumstances, action, pendingSetupBeforeRaw, pendingSetupAfterPreview))
             return;
 
         // Each accepted incarnation request must create a fresh mortal-world lore set.
@@ -1009,12 +1011,39 @@ public partial class GameEngine
                 : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "незакрытый запрос перехода резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"));
         }
 
+        if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath))
+        {
+            blockers.Add(await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(_fs)
+                ? await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "повреждённый mortal-only запрос проявления companion-резидента", "repair pending_resident_companion_manifestation_request.json before Soul Gates")
+                : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "mortal-only запрос проявления companion-резидента остался в afterlife", "закройте/почините manifestation request before Soul Gates"));
+        }
+
         var guardianSocialState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
         if (guardianSocialState.FilePresent)
         {
             blockers.Add(guardianSocialState.IsMalformed
                 ? await BuildPendingFileBlockerAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "повреждённый социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType")
                 : await BuildPendingFileBlockerAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "незакрытый социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"));
+        }
+
+        foreach (var shiningPending in await GetBlockingShiningPendingContractPathsAsync())
+            blockers.Add($"{shiningPending}\n  закрытие: соответствующий Shining receipt/canonical state projection before Soul Gates");
+
+        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        if (!string.IsNullOrWhiteSpace(shiningJson))
+        {
+            try
+            {
+                if (JsonNode.Parse(shiningJson) is JsonObject shiningRoot &&
+                    shiningRoot["pendingNativeFactionDiscovery"] is not null)
+                {
+                    blockers.Add($"{ShiningAbodeState.StatePath}.pendingNativeFactionDiscovery: legacy Shining discovery contract не закрыт\n  закрытие: discover_native_faction legacy receipt + pendingNativeFactionDiscovery=null before Soul Gates");
+                }
+            }
+            catch
+            {
+                blockers.Add($"{ShiningAbodeState.StatePath}: повреждённый Shining owner state; repair before Soul Gates");
+            }
         }
 
         return blockers;
@@ -1112,7 +1141,52 @@ public partial class GameEngine
         return AnsiConsole.Confirm("[yellow]Выбрать этого хранителя для новой игры?[/]", true);
     }
 
-    private bool ConfirmIncarnationContractPreview(string characterDescription, string worldDescription, string circumstances, string playerAction)
+    private async Task<JsonNode?> BuildIncarnationPendingSetupAfterPreviewAsync(string characterDescription, string worldDescription, string circumstances)
+    {
+        var pending = await _worldDirectiveService.ReadPendingSetupAsync();
+        if (pending == null &&
+            string.IsNullOrWhiteSpace(characterDescription) &&
+            string.IsNullOrWhiteSpace(worldDescription) &&
+            string.IsNullOrWhiteSpace(circumstances))
+        {
+            return null;
+        }
+
+        pending ??= new WorldDirectiveService.PendingWorldSetup
+        {
+            Mode = "manual",
+            WorldDirectives = new WorldDirectiveService.WorldDirectives()
+        };
+
+        if (!string.IsNullOrWhiteSpace(characterDescription))
+            pending.CharacterDescription = characterDescription.Trim();
+        if (!string.IsNullOrWhiteSpace(circumstances))
+            pending.StartingCircumstances = circumstances.Trim();
+        if (string.IsNullOrWhiteSpace(pending.WorldDirectives.SettingSummary) &&
+            !string.IsNullOrWhiteSpace(worldDescription))
+            pending.WorldDirectives.SettingSummary = worldDescription.Trim();
+        if (string.IsNullOrWhiteSpace(pending.WorldDirectives.DetailedWorldDescription) &&
+            !string.IsNullOrWhiteSpace(worldDescription))
+            pending.WorldDirectives.DetailedWorldDescription = worldDescription.Trim();
+        if (!string.IsNullOrWhiteSpace(circumstances))
+        {
+            var note = $"Стартовые обстоятельства: {circumstances.Trim()}";
+            if (!pending.WorldDirectives.ContinuityNotes.Contains(note, StringComparer.OrdinalIgnoreCase))
+                pending.WorldDirectives.ContinuityNotes.Add(note);
+        }
+        if (pending.Mode == "profile")
+            pending.Mode = "mixed";
+
+        return JsonSerializer.SerializeToNode(pending, JsonOpts);
+    }
+
+    private bool ConfirmIncarnationContractPreview(
+        string characterDescription,
+        string worldDescription,
+        string circumstances,
+        string playerAction,
+        string? pendingSetupBeforeRaw,
+        JsonNode? pendingSetupAfterPreview)
     {
         var lines = new List<string>
         {
@@ -1131,6 +1205,10 @@ public partial class GameEngine
             "  • если GM не может закрыть trigger строго, он не должен переключать мир вручную.",
             "  • pending setup сохраняется как client-owned входной контракт для ремонта.",
             "",
+            "[bold]Pending world setup before/after:[/]",
+            $"  • before: {(string.IsNullOrWhiteSpace(pendingSetupBeforeRaw) ? "none" : WorldDirectiveService.PendingSetupPath)}",
+            $"  • after: {(pendingSetupAfterPreview == null ? "none/new file not written by blank prompt" : "see full JSON audit below")}",
+            "",
             "[bold]Запрещено в accepted turn:[/]",
             "  • TriggerLifeEnd, Life Evaluation rewards, Mortal World currentLocationData/worldEventsLog/UpdateNPCs.",
             "  • Создание первого mortal bootstrap в том же ответе.",
@@ -1146,6 +1224,8 @@ public partial class GameEngine
             ["characterDescription"] = characterDescription,
             ["worldDescription"] = worldDescription,
             ["circumstances"] = circumstances,
+            ["pendingSetupBefore"] = TryParseJsonAuditNode(pendingSetupBeforeRaw) ?? JsonValue.Create(string.IsNullOrWhiteSpace(pendingSetupBeforeRaw) ? "absent" : pendingSetupBeforeRaw),
+            ["pendingSetupAfterPreview"] = pendingSetupAfterPreview?.DeepClone(),
             ["affectedFiles"] = new JsonArray
             {
                 "game_state/control/incarnation_trigger.json",
@@ -1174,6 +1254,21 @@ public partial class GameEngine
         WriteMainMenuJsonAuditPanel("Полный JSON-аудит /incarnate contract", audit, Color.Yellow);
 
         return AnsiConsole.Confirm("[yellow]Отправить этот контракт GM?[/]", true);
+    }
+
+    private static JsonNode? TryParseJsonAuditNode(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(raw);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private async Task<string> BuildPendingFileBlockerAsync(string path, string title, string closure)
@@ -1426,6 +1521,14 @@ public partial class GameEngine
         if (shiningRoot == null)
             return;
 
+        var rawOwnerStateIssue = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+        if (!string.IsNullOrWhiteSpace(rawOwnerStateIssue))
+        {
+            AnsiConsole.MarkupLine("[red]Состояние Сияющей Обители повреждено; локальный возврат заблокирован fail-closed до repair.[/]");
+            AnsiConsole.MarkupLine($"[dim]{Markup.Escape(rawOwnerStateIssue)}[/]");
+            return;
+        }
+
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase))
         {
             AnsiConsole.MarkupLine("[yellow]Сияющая Обитель сейчас недоступна для возврата.[/]");
@@ -1593,6 +1696,14 @@ public partial class GameEngine
         var shiningRoot = await TryReadShiningAbodeStateRootAsync();
         if (shiningRoot == null)
             return false;
+
+        var rawOwnerStateIssue = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+        if (!string.IsNullOrWhiteSpace(rawOwnerStateIssue))
+        {
+            AnsiConsole.MarkupLine("[red]Состояние Сияющей Обители повреждено; локальный выход в Море Хаоса заблокирован fail-closed до repair.[/]");
+            AnsiConsole.MarkupLine($"[dim]{Markup.Escape(rawOwnerStateIssue)}[/]");
+            return false;
+        }
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase))
         {

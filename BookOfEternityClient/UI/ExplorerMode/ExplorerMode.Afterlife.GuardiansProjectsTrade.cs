@@ -388,6 +388,7 @@ public partial class ExplorerMode
             "  [green]13-18:[/] Обитель найдена! Мгновенное прибытие",
             "  [gold1]19-20:[/] Найден редкий Хранитель!",
         };
+        AppendChaosSeaCommonContractRules(lines);
 
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {

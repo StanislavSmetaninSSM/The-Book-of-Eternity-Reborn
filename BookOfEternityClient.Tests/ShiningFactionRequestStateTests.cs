@@ -9,7 +9,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class ShiningFactionRequestStateTests
 {
     [Fact]
-    public async Task WriteFoundingRequestAsync_ReplacesRequestByFactionId()
+    public async Task WriteFoundingRequestAsync_RejectsForeignRequestByFactionId()
     {
         var root = CreateTempRoot();
         try
@@ -34,8 +34,9 @@ public sealed class ShiningFactionRequestStateTests
                 }
             });
 
-            await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
             {
+                RequestId = "founding_req_foreign",
                 ProposedFactionId = "faction_dawn",
                 ProposedHallId = "hall_dawn_v2",
                 ProposedHallName = "Зал Второго Рассвета",
@@ -48,12 +49,13 @@ public sealed class ShiningFactionRequestStateTests
                     PatronEffectFamily = "social",
                     Summary = "Новый рассвет."
                 }
-            });
+            }));
 
             var requests = await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs);
             var request = Assert.Single(requests);
-            Assert.Equal("hall_dawn_v2", request.ProposedHallId);
-            Assert.Equal("Зал Второго Рассвета", request.ProposedHallName);
+            Assert.Equal("founding_req_dawn", request.RequestId);
+            Assert.Equal("hall_dawn", request.ProposedHallId);
+            Assert.Equal("Зал Рассвета", request.ProposedHallName);
             Assert.Equal(ShiningFactionRequestState.FactionFoundingCostFeathers, request.QuotedCostFeathers);
             Assert.Equal(ShiningFactionRequestState.FactionFoundingCostLightSparks, request.QuotedCostLightSparks);
         }
@@ -64,7 +66,7 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
-    public async Task WriteFoundingRequestAsync_ReplacesRequestByHallId()
+    public async Task WriteFoundingRequestAsync_RejectsForeignRequestByHallId()
     {
         var root = CreateTempRoot();
         try
@@ -89,7 +91,7 @@ public sealed class ShiningFactionRequestStateTests
                 }
             });
 
-            await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
             {
                 RequestId = "founding_second",
                 ProposedFactionId = "faction_twilight",
@@ -104,13 +106,14 @@ public sealed class ShiningFactionRequestStateTests
                     PatronEffectFamily = "social",
                     Summary = "Несут иной свет."
                 }
-            });
+            }));
 
             var requests = await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs);
             var request = Assert.Single(requests);
-            Assert.Equal("faction_twilight", request.ProposedFactionId);
+            Assert.Equal("founding_first", request.RequestId);
+            Assert.Equal("faction_dawn", request.ProposedFactionId);
             Assert.Equal("hall_shared", request.ProposedHallId);
-            Assert.Equal("Зал Сумерек", request.ProposedHallName);
+            Assert.Equal("Зал Рассвета", request.ProposedHallName);
         }
         finally
         {
@@ -119,7 +122,7 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
-    public async Task WriteFoundingRequestAsync_ReplacesRequestByHallId_CaseInsensitive()
+    public async Task WriteFoundingRequestAsync_RejectsForeignRequestByHallId_CaseInsensitive()
     {
         var root = CreateTempRoot();
         try
@@ -144,7 +147,7 @@ public sealed class ShiningFactionRequestStateTests
                 }
             });
 
-            await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
             {
                 RequestId = "founding_second",
                 ProposedFactionId = "faction_twilight",
@@ -159,13 +162,14 @@ public sealed class ShiningFactionRequestStateTests
                     PatronEffectFamily = "social",
                     Summary = "Несут иной свет."
                 }
-            });
+            }));
 
             var requests = await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs);
             var request = Assert.Single(requests);
-            Assert.Equal("faction_twilight", request.ProposedFactionId);
-            Assert.Equal("HALL_SHARED", request.ProposedHallId);
-            Assert.Equal("Зал Сумерек", request.ProposedHallName);
+            Assert.Equal("founding_first", request.RequestId);
+            Assert.Equal("faction_dawn", request.ProposedFactionId);
+            Assert.Equal("hall_shared", request.ProposedHallId);
+            Assert.Equal("Зал Рассвета", request.ProposedHallName);
         }
         finally
         {

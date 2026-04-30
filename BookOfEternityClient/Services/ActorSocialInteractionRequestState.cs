@@ -228,8 +228,8 @@ internal static class ActorSocialInteractionRequestState
         {
             if (!guardianState.IsMalformed)
                 await EnsureGuardianRequestsHealthyAsync(fs, guardianState);
-            if (!npcState.IsMalformed)
-                ClearNpcRequests(fs);
+            // NPC social requests are Mortal-only, but afterlife health checks must preserve
+            // wrong-realm files as repair evidence; validation surfaces the realm mismatch.
             return;
         }
 

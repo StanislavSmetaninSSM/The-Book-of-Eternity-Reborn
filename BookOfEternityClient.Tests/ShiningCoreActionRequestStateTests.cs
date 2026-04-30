@@ -10,7 +10,7 @@ namespace BookOfEternityClient.Tests;
 public sealed class ShiningCoreActionRequestStateTests
 {
     [Fact]
-    public async Task WriteRequestAsync_ReplacesExistingPendingRequest()
+    public async Task WriteRequestAsync_RejectsForeignLivePendingRequest()
     {
         var root = CreateTempRoot();
         try
@@ -20,18 +20,22 @@ public sealed class ShiningCoreActionRequestStateTests
 
             await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
             {
+                RequestId = "core_req_existing",
                 ActionType = ShiningCoreActionRequestState.ActionTypeInvestInFaction,
                 FactionId = "faction_old",
                 FactionName = "Старый Дом"
             });
-            await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
             {
+                RequestId = "core_req_foreign",
                 ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates
-            });
+            }));
 
             var requests = await ShiningCoreActionRequestState.ReadRequestsAsync(fs);
             var request = Assert.Single(requests);
-            Assert.Equal(ShiningCoreActionRequestState.ActionTypeOpenGates, request.ActionType);
+            Assert.Equal("core_req_existing", request.RequestId);
+            Assert.Equal(ShiningCoreActionRequestState.ActionTypeInvestInFaction, request.ActionType);
         }
         finally
         {
