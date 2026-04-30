@@ -151,6 +151,8 @@ public partial class ExplorerMode
     }
 
     private static bool IsExactChaosSeaCommand(string command) =>
+        string.Equals(command, "/chaos_sea", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/море_хаоса", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/gacha", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/гача", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/abodes", StringComparison.OrdinalIgnoreCase) ||

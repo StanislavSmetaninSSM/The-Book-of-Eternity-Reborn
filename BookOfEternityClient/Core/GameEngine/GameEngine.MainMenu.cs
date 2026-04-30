@@ -1533,7 +1533,7 @@ public partial class GameEngine
             return false;
         }
 
-        var blockingPendingContracts = GetExistingShiningPendingContractPaths();
+        var blockingPendingContracts = await GetBlockingShiningPendingContractPathsAsync();
         if (blockingPendingContracts.Count > 0)
         {
             AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока есть активные Shining pending contracts. Сначала дождитесь их закрытия или repair.[/]");
@@ -1586,7 +1586,7 @@ public partial class GameEngine
         return true;
     }
 
-    private IReadOnlyList<string> GetExistingShiningPendingContractPaths()
+    private async Task<IReadOnlyList<string>> GetBlockingShiningPendingContractPathsAsync()
     {
         var paths = new[]
         {
@@ -1597,9 +1597,53 @@ public partial class GameEngine
             ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath
         };
 
-        return paths
-            .Where(_fs.FileExists)
-            .ToList();
+        var blockingPaths = new List<string>();
+        foreach (var path in paths)
+        {
+            var state = await ClassifyRequestsPendingFileAsync(path);
+            if (state == RequestsPendingFileState.ActiveOrMalformed)
+                blockingPaths.Add(path);
+            else if (state == RequestsPendingFileState.ValidEmpty)
+                _fs.DeleteFile(path);
+        }
+
+        return blockingPaths;
+    }
+
+    private enum RequestsPendingFileState
+    {
+        Absent,
+        ValidEmpty,
+        ActiveOrMalformed
+    }
+
+    private async Task<RequestsPendingFileState> ClassifyRequestsPendingFileAsync(string path)
+    {
+        if (!_fs.FileExists(path))
+            return RequestsPendingFileState.Absent;
+
+        var json = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return RequestsPendingFileState.ActiveOrMalformed;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty("requests", out var requestsNode) ||
+                requestsNode.ValueKind != JsonValueKind.Array)
+            {
+                return RequestsPendingFileState.ActiveOrMalformed;
+            }
+
+            return requestsNode.GetArrayLength() == 0
+                ? RequestsPendingFileState.ValidEmpty
+                : RequestsPendingFileState.ActiveOrMalformed;
+        }
+        catch
+        {
+            return RequestsPendingFileState.ActiveOrMalformed;
+        }
     }
 
     private async Task HandleReturnToChaosSeaFromShiningAbode()

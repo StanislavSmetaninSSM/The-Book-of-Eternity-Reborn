@@ -159,6 +159,32 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CleanupAfterCancelledChaosSeaMarkerTurn_PreservesSystemGuardianAttractionForLateResponse()
+    {
+        await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new
+        {
+            mode = "system_guardian_attraction",
+            targetPresetId = "eternal_tide_001",
+            targetPresetDisplayName = "Прилив Памяти",
+            targetPresetVersion = "1.0",
+            sourceLibrary = "built_in",
+            targetSummary = "Извечный Хранитель памяти.",
+            renderedPromptPackage = "Досье Хранителя.",
+            _lastUpdated = "2026-04-27T12:00:00Z"
+        });
+        var engine = CreateGameEngine();
+
+        InvokePrivate(
+            engine,
+            "CleanupAfterCancelledChaosSeaMarkerTurn",
+            "[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: eternal_tide_001] Игрок слышит зов.");
+
+        Assert.True(_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath));
+        var json = await _fs.ReadFileAsync(SystemGuardianLibraryService.AttractionRequestPath);
+        Assert.Contains("eternal_tide_001", json, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes()
     {
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new
@@ -438,6 +464,40 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal(ShiningAbodeState.AvailabilityActive, shiningRoot["availability"]?.GetValue<string>());
         Assert.Equal("Shining Abode", stateManager.CurrentState.CurrentRealm);
         Assert.True(stateManager.CurrentState.IsInShiningAbode);
+    }
+
+    [Fact]
+    public async Task GetBlockingShiningPendingContractPathsAsync_DeletesExplicitEmptyFilesButKeepsMalformedAndActive()
+    {
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, new
+        {
+            requests = Array.Empty<object>()
+        });
+        await WriteJsonAsync(ShiningTradeRequestState.PendingRequestsPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "trade-request-1",
+                    factionId = "faction-alpha",
+                    tradeCycleId = "shining_return_4",
+                    createdAtTurn = 12
+                }
+            }
+        });
+        await _fs.WriteFileAtomicAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, "{ malformed");
+
+        var engine = CreateGameEngine();
+
+        var blockingPaths = await InvokePrivateAsync<IReadOnlyList<string>>(engine, "GetBlockingShiningPendingContractPathsAsync");
+
+        Assert.DoesNotContain(ShiningCoreActionRequestState.PendingActionsRequestPath, blockingPaths);
+        Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        Assert.Contains(ShiningTradeRequestState.PendingRequestsPath, blockingPaths);
+        Assert.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, blockingPaths);
+        Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
     }
 
     [Fact]
@@ -744,6 +804,13 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var task = method!.Invoke(instance, args) as Task<T>;
         Assert.NotNull(task);
         return await task!;
+    }
+
+    private static void InvokePrivate(object instance, string methodName, params object?[]? args)
+    {
+        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        method!.Invoke(instance, args);
     }
 
     public void Dispose()
