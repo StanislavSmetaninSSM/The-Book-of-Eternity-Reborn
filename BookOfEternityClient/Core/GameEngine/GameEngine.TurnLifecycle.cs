@@ -388,8 +388,8 @@ public partial class GameEngine
                     _lastResponse = lateResponse;
                     _pendingImagePrompt = null;
                     _gameLoop.IncrementTurn();
+                    CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction);
                     var lateAction = snapshotContext?.PlayerAction ?? string.Empty;
-                    CleanupAfterAcceptedChaosSeaMarkerTurn(lateAction);
                     await _pendingTurnState.RotateAfterAcceptedTurnAsync();
                     await NormalizeRuntimeUiArtifactsAsync();
 
