@@ -234,7 +234,25 @@ public partial class ExplorerMode
             return;
         }
 
-        await ShiningFactionRequestState.WriteRealignmentRequestAsync(_fs, request);
+        var postPreviewError = await ShiningFactionRequestState.ValidateRealignmentRequestAgainstCurrentStateAsync(_fs, request);
+        if (!string.IsNullOrWhiteSpace(postPreviewError))
+        {
+            MarkupLine($"[yellow]{Markup.Escape(postPreviewError)}[/]");
+            WaitForKey();
+            return;
+        }
+
+        try
+        {
+            await ShiningFactionRequestState.WriteRealignmentRequestAsync(_fs, request);
+        }
+        catch (InvalidOperationException ex)
+        {
+            MarkupLine($"[yellow]{Markup.Escape(ex.Message)}[/]");
+            WaitForKey();
+            return;
+        }
+
         MarkupLine("[green]Создан ожидающий запрос на перестройку резидента.[/]");
         WaitForKey();
     }
@@ -312,7 +330,25 @@ public partial class ExplorerMode
             return;
         }
 
-        await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(_fs, request);
+        var postPreviewError = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(_fs, request);
+        if (!string.IsNullOrWhiteSpace(postPreviewError))
+        {
+            MarkupLine($"[yellow]{Markup.Escape(postPreviewError)}[/]");
+            WaitForKey();
+            return;
+        }
+
+        try
+        {
+            await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(_fs, request);
+        }
+        catch (InvalidOperationException ex)
+        {
+            MarkupLine($"[yellow]{Markup.Escape(ex.Message)}[/]");
+            WaitForKey();
+            return;
+        }
+
         MarkupLine("[green]Создан ожидающий запрос на смену главы фракции.[/]");
         WaitForKey();
     }
@@ -662,6 +698,7 @@ public partial class ExplorerMode
 
         if (string.Equals(pendingPath, ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase))
         {
+            var charter = request["charter"] as JsonObject;
             return new JsonObject
             {
                 ["accepted"] = new JsonObject
@@ -689,16 +726,35 @@ public partial class ExplorerMode
                         {
                             ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
                             ["hallName"] = GetNodeString(request["proposedHallName"]) ?? string.Empty,
+                            ["description"] = GetNodeString(request["proposedHallDescription"]) ?? "copy proposedHallDescription",
                             ["serviceTags"] = CloneShiningJsonForPlayerFacingAudit(request["proposedHallServiceTags"]),
-                            ["originType"] = "player_founded"
+                            ["originType"] = "player_founded",
+                            ["factionIds"] = new JsonArray
+                            {
+                                GetNodeString(request["proposedFactionId"]) ?? string.Empty
+                            },
+                            ["createdByRequestId"] = GetNodeString(request["requestId"]) ?? string.Empty
                         },
                         ["factions.add"] = new JsonObject
                         {
                             ["factionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
                             ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
                             ["originType"] = "player_founded",
+                            ["charter"] = new JsonObject
+                            {
+                                ["factionName"] = GetNodeString(charter?["factionName"]) ?? "copy charter.factionName",
+                                ["summary"] = GetNodeString(charter?["summary"]) ?? "copy charter.summary",
+                                ["favoredArchetype"] = GetNodeString(charter?["favoredArchetype"]) ?? "copy charter.favoredArchetype",
+                                ["patronEffectFamily"] = GetNodeString(charter?["patronEffectFamily"]) ?? "copy charter.patronEffectFamily"
+                            },
                             ["baseStrength"] = 35,
                             ["factionStrength"] = 35,
+                            ["investCountThisAscension"] = 0,
+                            ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+                            ["projects"] = new JsonArray(),
+                            ["tradeInventoryReceipts"] = new JsonArray(),
+                            ["leadershipReceipts"] = new JsonArray(),
+                            ["leadershipHistory"] = new JsonArray(),
                             ["leadership"] = new JsonObject
                             {
                                 ["headActorType"] = "player_soul",
@@ -706,7 +762,22 @@ public partial class ExplorerMode
                                 ["leadershipState"] = "secure"
                             }
                         },
-                        ["residents.update"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"])
+                        ["residents.update"] = new JsonObject
+                        {
+                            ["supportingResidentIds"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"]),
+                            ["requiredPerResidentFields"] = new JsonArray
+                            {
+                                "residentId",
+                                "ascensionState=ascended",
+                                "shiningFactionId=proposedFactionId",
+                                "residentRole",
+                                "factionLoyaltyLevel",
+                                "factionLoyaltyTier",
+                                "factionRestlessness",
+                                "factionRealignmentState"
+                            },
+                            ["beforeAfterRule"] = "each supporter remains the same resident object but gains canonical Shining faction binding to the new faction"
+                        }
                     }
                 },
                 ["refusedOrWithdrawn"] = new JsonObject
@@ -735,9 +806,13 @@ public partial class ExplorerMode
         if (string.Equals(pendingPath, ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase))
         {
             var realignmentMode = GetNodeString(request["realignmentMode"]) ?? string.Empty;
+            var historyEntryId = $"generated_resident_realignment_history_id_for_{GetNodeString(request["requestId"]) ?? "request"}";
             var acceptedStatus = string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase)
                 ? ShiningFactionRequestState.RequestStatusDepartedToNeutral
                 : ShiningFactionRequestState.RequestStatusAccepted;
+            var nonAcceptedStatuses = string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase)
+                ? ShiningFactionRequestState.RequestStatusWithdrawn
+                : $"{ShiningFactionRequestState.RequestStatusRefused}|{ShiningFactionRequestState.RequestStatusWithdrawn}";
             return new JsonObject
             {
                 ["accepted"] = new JsonObject
@@ -754,13 +829,14 @@ public partial class ExplorerMode
                         ["quotedCostFeathers"] = 0,
                         ["quotedCostLightSparks"] = 0,
                         ["status"] = acceptedStatus,
+                        ["residentHistoryEntryId"] = historyEntryId,
                         ["resolvedAtTurn"] = "current turn number",
                         ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
                         ["reason"] = "canonical resident realignment outcome"
                     },
                     ["residentHistory"] = new JsonObject
                     {
-                        ["entryId"] = "generated_resident_realignment_history_id",
+                        ["entryId"] = historyEntryId,
                         ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
                         ["title"] = "player-facing realignment title",
                         ["summary"] = "canonical resident history summary for transfer/departure",
@@ -781,7 +857,7 @@ public partial class ExplorerMode
                         ["realignmentMode"] = realignmentMode,
                         ["quotedCostFeathers"] = 0,
                         ["quotedCostLightSparks"] = 0,
-                        ["status"] = "refused|withdrawn",
+                        ["status"] = nonAcceptedStatuses,
                         ["resolvedAtTurn"] = "current turn number",
                         ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
                         ["reason"] = "canonical refusal reason"
@@ -932,8 +1008,8 @@ public partial class ExplorerMode
         lines.Add("[bold]Контракт закрытия для GM:[/]");
         lines.Add("  • accepted_transfer: обновить canonical resident shiningFactionId/name, loyalty/restlessness state and write resident history.");
         lines.Add("  • departure_to_neutral: очистить faction binding у резидента и зафиксировать departed_to_neutral receipt.");
-        lines.Add("  • refused/withdrawn: не менять resident faction binding; закрыть только receipt/status/reason.");
-        lines.Add("  • Обязательно записать `factionRealignmentReceipts[]` with requestId, residentId, source/target, realignmentMode, status, resolvedAtTurn/resolvedAtUtc.");
+        lines.Add("  • refused/withdrawn: не менять resident faction binding; для departure_to_neutral не использовать refused, только departed_to_neutral или withdrawn.");
+        lines.Add("  • Обязательно записать `factionRealignmentReceipts[]` with requestId, residentId, source/target, realignmentMode, status, residentHistoryEntryId for accepted/departed outcomes, resolvedAtTurn/resolvedAtUtc.");
         return lines;
     }
 

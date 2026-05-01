@@ -194,6 +194,8 @@ public partial class ExplorerMode
             table.AddRow("", "", "");
             table.AddRow("[dim]💡 Это финальная зона свободного ролеплея над Морем Хаоса[/]", "", "");
             table.AddRow("[dim]💡 В /shining_abode локальные Врата/выбор карт отделены от GM-turn core actions; предпросмотры показывают receipt scaffold и expected state delta.[/]", "", "");
+            table.AddRow("[dim]💡 Карта аудита Shining: /status показывает compact state, blockers, selected cards and next-life payloads; /shining_abode → исходы/Врата показывает gates/package/core receipts and full JSON; /shining_politics показывает founding/realignment/leadership contracts; trade/forge previews live inside /shining_abode.[/]", "", "");
+            table.AddRow("[dim]💡 Где full/canonical JSON: pending core action preview, receipt inspection, gates/package inspection, trade lifecycle inspection, politics pending/resolution inspection. Human summaries are labels only; JSON panels are the contract audit.[/]", "", "");
         }
         else if (isChaosSea)
         {
@@ -226,6 +228,7 @@ public partial class ExplorerMode
             table.AddRow("[dim]💡 Говорите с Хранителем свободным текстом:[/]", "", "");
             table.AddRow("[dim]   торговать, брать квесты, менять реликвии, сменить хранителя[/]", "", "");
             table.AddRow("[dim]💡 Для аудита перед ходом: /status, /afterlife_inbox, /feathers, /afterlife_archive, /guardian_projects, /abode_offering.[/]", "", "");
+            table.AddRow("[dim]💡 Если сохранённая Сияющая Обитель важна: /shining_abode показывает gates/package/core receipts/trade-forge previews, /shining_politics показывает political receipts and pending contracts, /status показывает compact Shining blockers.[/]", "", "");
         }
         else
         {

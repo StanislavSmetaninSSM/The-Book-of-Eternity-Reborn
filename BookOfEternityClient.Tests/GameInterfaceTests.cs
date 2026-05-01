@@ -15,6 +15,14 @@ public sealed class GameInterfaceTests
     }
 
     [Fact]
+    public void SafeMarkup_DoesNotThrow_OnUnknownStyleArrayText()
+    {
+        var ex = Record.Exception(() => GameInterface.SafeMarkup("selectedCardIds=[card_alpha, card_beta]"));
+
+        Assert.Null(ex);
+    }
+
+    [Fact]
     public void SafeMarkup_DoesNotThrow_OnValidMarkup()
     {
         var ex = Record.Exception(() => GameInterface.SafeMarkup("[dim]Текст[/] [white]в порядке[/]"));

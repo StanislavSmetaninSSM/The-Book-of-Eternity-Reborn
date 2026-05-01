@@ -11,6 +11,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
+using Spectre.Console;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -309,6 +310,45 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         Assert.Empty(blockers);
         Assert.True(_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath));
+    }
+
+    [Fact]
+    public async Task CollectIncarnationBlockersAsync_ShiningArrayPayloadIsSafeForSoulGatesPanel()
+    {
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "core_blocker_array_001",
+                    actionType = "prepare_incarnation_package",
+                    selectedCardIds = new[] { "card_alpha", "card_beta" },
+                    createdAtTurn = 14,
+                    createdAtUtc = "2026-04-28T00:00:00Z"
+                }
+            }
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        var blocker = Assert.Single(blockers);
+        Assert.Contains("core_blocker_array_001", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("selectedCardIds=[card_alpha, card_beta]", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"selectedCardIds\": [", blocker, StringComparison.OrdinalIgnoreCase);
+
+        var panelBody = string.Join("\n", new[]
+        {
+            "Нельзя войти в новую смертную жизнь, пока остаются незакрытые загробные контракты.",
+            string.Empty,
+            string.Join("\n", blockers.Select(item => $"• {item}")),
+            string.Empty,
+            "Сначала дождитесь явного закрытия GM или почините повреждённый pending contract."
+        });
+        var ex = Record.Exception(() => new Panel(GameInterface.SafeMarkup(panelBody)));
+
+        Assert.Null(ex);
     }
 
     [Fact]
@@ -640,6 +680,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             }
         });
         await _fs.WriteFileAtomicAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, "{ malformed");
+        await WriteJsonAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath, new { });
 
         var engine = CreateGameEngine();
 
@@ -651,9 +692,19 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             item.Contains(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) &&
             item.Contains("trade-request-1", StringComparison.OrdinalIgnoreCase) &&
             item.Contains("shining_return_4", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, blockingPaths);
+        Assert.Contains(blockingPaths, item =>
+            item.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) &&
+            item.Contains("malformed", StringComparison.OrdinalIgnoreCase));
+        var wrongShapeBlocker = Assert.Single(
+            blockingPaths,
+            item => item.Contains(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("missing requests[] array", wrongShapeBlocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("repair", wrongShapeBlocker, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("active Shining pending contract", wrongShapeBlocker, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("root full payload", wrongShapeBlocker, StringComparison.OrdinalIgnoreCase);
         Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
         Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
+        Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
     }
 
     [Fact]

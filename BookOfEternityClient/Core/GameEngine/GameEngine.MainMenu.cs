@@ -865,14 +865,14 @@ public partial class GameEngine
         var incarnationBlockers = await CollectIncarnationBlockersAsync();
         if (incarnationBlockers.Count > 0)
         {
-            AnsiConsole.Write(new Panel(string.Join("\n", new[]
+            AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", new[]
             {
                 "Нельзя войти в новую смертную жизнь, пока остаются незакрытые загробные контракты.",
                 string.Empty,
                 string.Join("\n", incarnationBlockers.Select(item => $"• {item}")),
                 string.Empty,
                 "Сначала дождитесь явного закрытия GM или почините повреждённый pending contract."
-            }))
+            })))
             {
                 Header = new PanelHeader(" Врата Души ", Justify.Center),
                 Border = BoxBorder.Double,
@@ -903,6 +903,9 @@ public partial class GameEngine
         AnsiConsole.MarkupLine("[dim](Где вы появляетесь? Что происходит вокруг?)[/]");
         var circumstances = PromptTextInput("[cyan]Обстоятельства:[/]", allowEmpty: true, preserveNewlines: true);
 
+        var pendingSetupBeforeRaw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);
+        var pendingSetupSummary = BuildPendingWorldSetupActionSummary(pendingSetupBeforeRaw);
+
         // Build incarnation action
         var parts = new List<string> { "Душа входит через Врата Души и воплощается в смертную жизнь." };
 
@@ -913,7 +916,15 @@ public partial class GameEngine
         if (!string.IsNullOrWhiteSpace(circumstances))
             parts.Add($"Обстоятельства начала: {circumstances}.");
         if (string.IsNullOrWhiteSpace(charDesc) && string.IsNullOrWhiteSpace(worldDesc))
-            parts.Add("Хранитель выбирает мир и обстоятельства рождения для души.");
+        {
+            parts.Add(string.IsNullOrWhiteSpace(pendingSetupSummary)
+                ? "Хранитель выбирает мир и обстоятельства рождения для души."
+                : $"Используй уже подготовленный pending world setup как главный входной контракт для мира и обстоятельств: {pendingSetupSummary}.");
+        }
+        else if (!string.IsNullOrWhiteSpace(pendingSetupSummary))
+        {
+            parts.Add($"Учитывай уже подготовленный pending world setup, не противоречь ему и не удаляй его смысл: {pendingSetupSummary}.");
+        }
 
         var action =
             string.Join(" ", parts) +
@@ -921,7 +932,6 @@ public partial class GameEngine
             "Сначала выполни только canonical TriggerIncarnation в game_state/control/incarnation_trigger.json, используя pending incarnation_world_setup как входной контракт. " +
             "После принятого TriggerIncarnation клиент сам выполнит локальный переход и запустит отдельный следующий ход для первого Mortal World bootstrap.";
 
-        var pendingSetupBeforeRaw = await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath);
         var pendingSetupAfterPreview = await BuildIncarnationPendingSetupAfterPreviewAsync(charDesc, worldDesc, circumstances);
         if (!ConfirmIncarnationContractPreview(charDesc, worldDesc, circumstances, action, pendingSetupBeforeRaw, pendingSetupAfterPreview))
             return;
@@ -1073,7 +1083,7 @@ public partial class GameEngine
         }
 
         foreach (var shiningPending in await GetBlockingShiningPendingContractPathsAsync())
-            blockers.Add($"{shiningPending}\n  закрытие: соответствующий Shining receipt/canonical state projection before Soul Gates");
+            blockers.Add(shiningPending);
 
         var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
         if (!string.IsNullOrWhiteSpace(shiningJson))
@@ -1224,6 +1234,51 @@ public partial class GameEngine
             pending.Mode = "mixed";
 
         return JsonSerializer.SerializeToNode(pending, JsonOpts);
+    }
+
+    private static string BuildPendingWorldSetupActionSummary(string? pendingSetupRaw)
+    {
+        if (string.IsNullOrWhiteSpace(pendingSetupRaw))
+            return string.Empty;
+
+        try
+        {
+            if (JsonNode.Parse(pendingSetupRaw) is not JsonObject root)
+                return "pending setup exists but is not a JSON object";
+
+            var parts = new List<string>();
+            AddPendingSetupSummaryPart(parts, "sourceId", root["sourceId"]);
+            AddPendingSetupSummaryPart(parts, "mode", root["mode"]);
+            AddPendingSetupSummaryPart(parts, "character", root["characterDescription"]);
+            AddPendingSetupSummaryPart(parts, "circumstances", root["startingCircumstances"]);
+
+            if (root["worldDirectives"] is JsonObject worldDirectives)
+            {
+                AddPendingSetupSummaryPart(parts, "setting", worldDirectives["settingSummary"]);
+                AddPendingSetupSummaryPart(parts, "genre", worldDirectives["genre"]);
+                AddPendingSetupSummaryPart(parts, "tone", worldDirectives["tone"]);
+                AddPendingSetupSummaryPart(parts, "detailedWorldDescription", worldDirectives["detailedWorldDescription"]);
+            }
+
+            return parts.Count == 0
+                ? $"pending setup exists; inspect {WorldDirectiveService.PendingSetupPath}"
+                : string.Join("; ", parts);
+        }
+        catch
+        {
+            return "pending setup exists but is malformed; preserve it for repair instead of contradicting it";
+        }
+    }
+
+    private static void AddPendingSetupSummaryPart(List<string> parts, string label, JsonNode? node)
+    {
+        var value = GetNodeString(node);
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        const int maxLength = 220;
+        value = value.Length > maxLength ? value[..maxLength] + "..." : value;
+        parts.Add($"{label}={value}");
     }
 
     private bool ConfirmIncarnationContractPreview(
@@ -1849,19 +1904,125 @@ public partial class GameEngine
 
     private async Task<string> DescribeBlockingShiningPendingContractAsync(string path)
     {
-        if (!string.Equals(path, ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase))
-            return path;
-
         var json = await _fs.ReadFileAsync(path);
-        var requests = ShiningTradeRequestState.ReadRequests(json);
-        if (requests.Count == 0)
-            return $"{path} (malformed or unreadable)";
+        if (string.IsNullOrWhiteSpace(json))
+            return $"{path}: empty/malformed Shining pending contract\n  закрытие: repair or remove the malformed file before Soul Gates";
 
-        var details = requests
-            .Select(request =>
-                $"requestId={request.RequestId}, factionId={request.FactionId}, tradeCycleId={request.TradeCycleId}")
-            .ToArray();
-        return $"{path}: {string.Join("; ", details)}";
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root)
+                return $"{path}: malformed Shining pending contract root\n  закрытие: repair JSON object before Soul Gates";
+
+            if (root["requests"] is not JsonArray requests)
+                return $"{path}: malformed Shining pending contract root: missing requests[] array\n  закрытие: repair or remove the malformed file before Soul Gates";
+
+            if (requests.Count == 0)
+                return $"{path}: empty Shining pending contract\n  закрытие: repair or remove the empty file before Soul Gates";
+
+            var closure = DescribeShiningPendingClosure(path);
+            var payloads = requests.Select((node, index) => (Node: node as JsonObject, Index: (int?)index)).ToArray();
+
+            var lines = new List<string>
+            {
+                $"{path}: active Shining pending contract blocks Soul Gates",
+                $"  закрытие: {closure}"
+            };
+
+            foreach (var (node, index) in payloads)
+            {
+                if (node == null)
+                {
+                    lines.Add($"  request[{index ?? 0}]: malformed request entry");
+                    continue;
+                }
+
+                var requestLabel = index.HasValue ? $"requests[{index.Value}]" : "root";
+                var summary = BuildShiningPendingBlockerIdentitySummary(node);
+                lines.Add($"  {requestLabel}: {(string.IsNullOrWhiteSpace(summary) ? "inspect full payload" : summary)}");
+                lines.Add($"  {requestLabel} full payload: {node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)}");
+            }
+
+            return string.Join("\n", lines);
+        }
+        catch
+        {
+            return $"{path} (malformed or unreadable)";
+        }
+    }
+
+    private static string DescribeShiningPendingClosure(string path) =>
+        path switch
+        {
+            _ when string.Equals(path, ShiningCoreActionRequestState.PendingActionsRequestPath, StringComparison.OrdinalIgnoreCase) =>
+                "shining_abode_state.coreActionReceipts[] + exact canonical state projection; receipt echoes actionType, target ids, quoted costs, selected ids and generated ids",
+            _ when string.Equals(path, ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) =>
+                "faction tradeInventory + tradeInventoryReceipts[] with derived tier/slots/rarity/service multiplier and unique relic ids",
+            _ when string.Equals(path, ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) =>
+                "halls[]/factions[] materialization + factionFoundingReceipts[] + supporter resident alignment",
+            _ when string.Equals(path, ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase) =>
+                "resident Shining faction fields + factionRealignmentReceipts[]",
+            _ when string.Equals(path, ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase) =>
+                "faction.leadership + leadershipReceipts[] + leadershipHistory[] + radiant actor registry if applicable",
+            _ => "matching Shining receipt/canonical state projection"
+        };
+
+    private static string BuildShiningPendingBlockerIdentitySummary(JsonObject payload)
+    {
+        var keys = new[]
+        {
+            "requestId", "actionType", "status", "factionId", "factionName", "sourceFactionId", "targetFactionId",
+            "projectId", "projectDisplayName", "relicId", "relicName", "returnCycleId", "targetFormTag",
+            "residentId", "residentName", "actorId", "candidateActorId", "transitionMode",
+            "proposedFactionId", "proposedHallId", "proposedHallName", "supportingResidentIds",
+            "quotedCostFeathers", "quotedCostLightSparks", "costFeathers", "costLightSparks",
+            "derivedTradeTier", "derivedTradeSlotCount", "derivedRarityCeiling", "derivedServiceMultiplier",
+            "radianceTierAtRequest", "projectedGachaBonusSteps", "sourceDraftVersion", "selectedCardIds",
+            "createdAtTurn", "createdAtUtc"
+        };
+
+        var parts = new List<string>();
+        foreach (var key in keys)
+        {
+            var value = FormatShiningPendingBlockerValue(payload[key]);
+            if (!string.IsNullOrWhiteSpace(value))
+                parts.Add($"{key}={value}");
+        }
+
+        return string.Join(", ", parts);
+    }
+
+    private static string FormatShiningPendingBlockerValue(JsonNode? node)
+    {
+        if (node == null)
+            return string.Empty;
+
+        if (node is JsonArray array)
+        {
+            var values = array
+                .Select(FormatShiningPendingBlockerValue)
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .ToArray();
+            return values.Length == 0 ? string.Empty : $"[{string.Join(", ", values)}]";
+        }
+
+        if (node is JsonObject)
+            return "{...}";
+
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var text))
+                return text ?? string.Empty;
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue.ToString();
+            if (value.TryGetValue<long>(out var longValue))
+                return longValue.ToString();
+            if (value.TryGetValue<double>(out var doubleValue))
+                return doubleValue.ToString("0.###");
+            if (value.TryGetValue<bool>(out var boolValue))
+                return boolValue ? "true" : "false";
+        }
+
+        return string.Empty;
     }
 
     private enum RequestsPendingFileState
