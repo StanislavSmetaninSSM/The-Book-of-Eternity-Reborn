@@ -221,6 +221,9 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
+        if (await ShouldSkipLiveShiningPendingEligibilityContextAsync(ShiningFactionRequestState.PendingFoundingsRequestPath))
+            return;
+
         await ValidateShiningPoliticalRequestModeAsync(
             issues,
             ShiningFactionRequestState.PendingFoundingsRequestPath,
@@ -280,6 +283,9 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
+        if (await ShouldSkipLiveShiningPendingEligibilityContextAsync(ShiningCoreActionRequestState.PendingActionsRequestPath))
+            return;
+
         await ValidateShiningPoliticalRequestModeAsync(
             issues,
             ShiningCoreActionRequestState.PendingActionsRequestPath,
@@ -330,6 +336,9 @@ public partial class ValidationService
         }
 
         if (requests.Count == 0)
+            return;
+
+        if (await ShouldSkipLiveShiningPendingEligibilityContextAsync(ShiningTradeRequestState.PendingRequestsPath))
             return;
 
         await ValidateShiningPoliticalRequestModeAsync(
@@ -397,6 +406,9 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
+        if (await ShouldSkipLiveShiningPendingEligibilityContextAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath))
+            return;
+
         await ValidateShiningPoliticalRequestModeAsync(
             issues,
             ShiningFactionRequestState.PendingRealignmentsRequestPath,
@@ -458,6 +470,9 @@ public partial class ValidationService
         if (requests.Count == 0)
             return;
 
+        if (await ShouldSkipLiveShiningPendingEligibilityContextAsync(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath))
+            return;
+
         await ValidateShiningPoliticalRequestModeAsync(
             issues,
             ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
@@ -477,6 +492,22 @@ public partial class ValidationService
                 section: "ShiningAbode",
                 repairHint: "Исправь leadership request так, чтобы он соответствовал canonical faction leadership и supporter rules."));
         }
+    }
+
+    private async Task<bool> ShouldSkipLiveShiningPendingEligibilityContextAsync(string requestPath)
+    {
+        if (!_fs.FileExists("ready/turn_complete.json") &&
+            !_fs.FileExists("ready/turn_error.json"))
+        {
+            return false;
+        }
+
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+            return false;
+
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, requestPath);
+        return !string.IsNullOrWhiteSpace(snapshotJson);
     }
 
     private async Task ValidateShiningPoliticalRequestModeAsync(List<ValidationIssue> issues, string requestPath, string code, string? messageOverride = null)

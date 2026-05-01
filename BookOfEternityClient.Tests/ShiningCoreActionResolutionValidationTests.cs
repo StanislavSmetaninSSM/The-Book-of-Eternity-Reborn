@@ -856,6 +856,57 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionRequestContextAsync_ReadyTurnSkipsPostResolutionEligibilityCheck()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var gates = preTurnShiningRoot["gates"]!.AsObject();
+        gates["selectedBlessingCardIds"] = new JsonArray("card_social");
+        var selectedCard = ((gates["availableBlessingCards"] as JsonArray)![0] as JsonObject)?.DeepClone()
+            ?? throw new InvalidOperationException("Expected selected card snapshot.");
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        Assert.True(ShiningAbodeState.TryPrepareIncarnationPackage(currentShiningRoot, 15, out _, "2026-04-16T12:40:00Z"));
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+
+        var requestRoot = new JsonObject
+        {
+            [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray(new JsonObject
+            {
+                ["requestId"] = "core_req_prepare_package",
+                ["actionType"] = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                ["factionId"] = "",
+                ["factionName"] = "",
+                ["projectId"] = "",
+                ["projectDisplayName"] = "",
+                ["radianceTierAtRequest"] = 2,
+                ["quotedCostFeathers"] = 0,
+                ["quotedCostLightSparks"] = 0,
+                ["sourceDraftVersion"] = 1,
+                ["selectedCardIds"] = new JsonArray("card_social"),
+                ["selectedCards"] = new JsonArray(selectedCard),
+                ["createdAtTurn"] = 15,
+                ["createdAtUtc"] = "2026-04-16T12:39:00Z"
+            })
+        };
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(preTurnShiningRoot, preTurnResidentRoot, preTurnSoulRoot, CloneJsonObject(requestRoot));
+        await WriteNodeAsync("ready/turn_complete.json", new JsonObject
+        {
+            ["sessionId"] = "test-session",
+            ["requestId"] = "test-request",
+            ["turnNumber"] = 12,
+            ["accepted"] = true
+        });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionRequestContextAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_invalid_context", StringComparison.OrdinalIgnoreCase));
+        Assert.Empty(issues);
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_PreparePackageGeneratedDraftMismatch_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();

@@ -714,6 +714,8 @@ public partial class GameEngine
         await NormalizePendingTerminalProtocolFailureArtifactsAsync();
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
         await AfterlifeNotificationState.EnsureHealthyAsync(_fs);
+        var hasActivePendingSnapshotArtifacts = hasReadySignals ||
+                                                pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable;
         if (!preserveControlFilesForTerminalValidation)
         {
             await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);
@@ -724,9 +726,12 @@ public partial class GameEngine
             await NpcTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             await AfterlifeArchiveActionState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-            await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-            await ShiningTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-            await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            if (!hasActivePendingSnapshotArtifacts)
+            {
+                await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+                await ShiningTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+                await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            }
             await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         }
