@@ -77,9 +77,17 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("string.Equals(command, \"/chaos_sea\"", explorerPrivate, StringComparison.Ordinal);
 
         Assert.Contains("BuildGuardianSellAuditNode", trade, StringComparison.Ordinal);
+        Assert.Contains("BuildGuardianBuyAuditNode", trade, StringComparison.Ordinal);
+        Assert.Contains("guardianId", trade, StringComparison.Ordinal);
+        Assert.Contains("tradeCycleId", trade, StringComparison.Ordinal);
+        Assert.Contains("transactionCorrelationId", trade, StringComparison.Ordinal);
         Assert.Contains("generatedBuybackEntryFields", trade, StringComparison.Ordinal);
         Assert.Contains("GM turn не отправляется: это client-local coordinated write with full audit JSON", trade, StringComparison.Ordinal);
 
+        Assert.Contains("candidateId:", inbox, StringComparison.Ordinal);
+        Assert.Contains("archiveId:", inbox, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON выбранного archive candidate", inbox, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON записи Архива души", inbox, StringComparison.Ordinal);
         Assert.Contains("Полный JSON afterlife notification", inbox, StringComparison.Ordinal);
     }
 

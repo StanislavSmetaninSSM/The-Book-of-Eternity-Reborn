@@ -1392,6 +1392,7 @@ public partial class ExplorerMode
             {
                 $"[bold yellow]🗂 {Markup.Escape(candidate.Title)}[/]",
                 "",
+                $"  candidateId: [dim]{Markup.Escape(candidate.CandidateId)}[/]",
                 $"  Тип архива: [cyan]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(candidate.ProposedEntryType))}[/]",
                 $"  Редкость: [{GetRarityColor(candidate.Rarity)}]{Markup.Escape(DescribeRarityLabel(candidate.Rarity))}[/]",
                 $"  Статус: [white]{Markup.Escape(statusLabel)}[/]",
@@ -1418,6 +1419,7 @@ public partial class ExplorerMode
                 Padding = new Padding(2, 1),
                 Expand = true
             });
+            WriteJsonAuditPanel("Полный JSON выбранного archive candidate", BuildArchiveCandidateAuditNode(candidate), Color.Yellow);
 
             var candidateActions = new List<string>();
             if (!string.IsNullOrWhiteSpace(candidate.SourceEntryId))
@@ -2305,6 +2307,7 @@ public partial class ExplorerMode
         {
             $"[bold yellow]📚 {Markup.Escape(entry.Title)}[/]",
             "",
+            $"  archiveId: [dim]{Markup.Escape(entry.ArchiveId)}[/]",
             $"  Тип: [cyan]{Markup.Escape(AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType))}[/]",
             $"  Редкость: [{GetRarityColor(entry.Rarity)}]{Markup.Escape(DescribeRarityLabel(entry.Rarity))}[/]",
             $"  Источник жизни: [yellow]{entry.SourceLife}[/]",
