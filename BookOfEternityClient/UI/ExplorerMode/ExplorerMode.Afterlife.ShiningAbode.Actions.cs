@@ -322,23 +322,27 @@ public partial class ExplorerMode
         var lightSparks = GetNodeInt(shiningRoot["lightSparks"]);
         var pendingBlocker = coreRequests.Count > 0 ? $"pending core action {coreRequests[0].RequestId}" : null;
         var discoveryCost = ShiningAbodeState.GetNativeDiscoveryCost();
+        var radianceTier = GetNodeInt(shiningRoot["radiance"]?["tier"]);
         var choices = new List<string>
         {
             BuildShiningActionChoiceWithState(
                 "🔍 Запросить открытие нативной фракции",
                 pendingBlocker == null &&
                 shiningRoot["pendingNativeFactionDiscovery"] is not JsonObject &&
+                radianceTier >= 1 &&
                 feathers >= discoveryCost.Feathers &&
                 lightSparks >= discoveryCost.LightSparks,
                 $"{discoveryCost.Feathers} Перьев / {discoveryCost.LightSparks} Искр",
                 pendingBlocker ??
                 (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject pendingDiscovery
                     ? $"legacy pendingNativeFactionDiscovery {GetNodeString(pendingDiscovery["requestId"]) ?? "без requestId"}"
-                    : feathers < discoveryCost.Feathers
-                        ? "не хватает Перьев"
-                        : lightSparks < discoveryCost.LightSparks
-                            ? "не хватает Искр Света"
-                            : null))
+                    : radianceTier < 1
+                        ? "нужен Radiance tier 1+"
+                        : feathers < discoveryCost.Feathers
+                            ? "не хватает Перьев"
+                            : lightSparks < discoveryCost.LightSparks
+                                ? "не хватает Искр Света"
+                                : null))
         };
         if (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
             choices.Add("🔎 Осмотреть ожидающее открытие нативной фракции");
@@ -353,6 +357,8 @@ public partial class ExplorerMode
             string.Equals(GetNodeString(project["status"]), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase) &&
             !GetNodeBool(project["isSupported"]));
         var supportedProjects = CountShiningProjects(shiningRoot, project => GetNodeBool(project["isSupported"]));
+        var supportedProjectCap = ShiningAbodeState.GetSupportedProjectCap(radianceTier);
+        var supportCapAvailable = ShiningAbodeState.CountSupportedProjectsAcrossState(shiningRoot) < supportedProjectCap;
 
         choices.AddRange(new[]
         {
@@ -368,9 +374,9 @@ public partial class ExplorerMode
                 pendingBlocker ?? (factionCount == 0 ? "нет фракций" : null)),
             BuildShiningActionChoiceWithState(
                 "🪄 Поддержать проект",
-                pendingBlocker == null && supportEligible > 0,
-                $"0 Перьев / 0 Искр; eligible completed projects {supportEligible}",
-                pendingBlocker ?? (supportEligible == 0 ? "нет completed unsupported projects" : null)),
+                pendingBlocker == null && supportEligible > 0 && supportCapAvailable,
+                $"0 Перьев / 0 Искр; eligible completed projects {supportEligible}; support cap {supportedProjects}/{supportedProjectCap}",
+                pendingBlocker ?? (supportEligible == 0 ? "нет completed unsupported projects" : !supportCapAvailable ? "лимит поддерживаемых проектов исчерпан" : null)),
             BuildShiningActionChoiceWithState(
                 "↩️ Снять поддержку проекта",
                 pendingBlocker == null && supportedProjects > 0,

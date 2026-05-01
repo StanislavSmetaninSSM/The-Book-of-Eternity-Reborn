@@ -6572,6 +6572,75 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningAbode_ActionsBlockNativeDiscoveryBelowRadianceTierOne()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        soulRoot["inkFeathers"] = new JsonObject { ["current"] = 50 };
+        await WriteJsonAsync("game_state/meta/soul_state.json", soulRoot);
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        shiningRoot["radiance"] = new JsonObject
+        {
+            ["experience"] = 0,
+            ["tier"] = 0
+        };
+        shiningRoot["lightSparks"] = 94;
+        await WriteJsonAsync(ShiningAbodeState.StatePath, shiningRoot);
+        _console.QueueSelection("Сияющая Обитель", "✨ Основные действия");
+        _console.QueueSelection("Основные действия Сияющей Обители", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_actions_native_discovery_radiance_gate");
+        Assert.Contains(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Основные действия Сияющей Обители", StringComparison.OrdinalIgnoreCase) &&
+                     entry.Choices.Any(choice =>
+                         choice.Contains("Запросить открытие нативной фракции", StringComparison.OrdinalIgnoreCase) &&
+                         choice.Contains("нужен Radiance tier 1+", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningAbode_ActionsBlockProjectSupportWhenGlobalCapFull()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        var firstFaction = (shiningRoot["factions"] as JsonArray)?.OfType<JsonObject>().First()
+            ?? throw new InvalidOperationException("Expected seeded Shining faction.");
+        var projects = firstFaction["projects"] as JsonArray
+            ?? throw new InvalidOperationException("Expected seeded projects.");
+        projects.Add(new JsonObject
+        {
+            ["projectId"] = "project_unsup_cap_test",
+            ["displayName"] = "Неподдержанный проект",
+            ["summary"] = "Проверяет global support cap.",
+            ["toneTags"] = new JsonArray("test"),
+            ["targetFactionIds"] = new JsonArray(),
+            ["projectArchetype"] = ShiningAbodeState.ProjectArchetypeRevelation,
+            ["outputEffectFamily"] = ShiningAbodeState.EffectFamilyLore,
+            ["tier"] = 1,
+            ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+            ["isSupported"] = false,
+            ["strengthReward"] = 4
+        });
+        await WriteJsonAsync(ShiningAbodeState.StatePath, shiningRoot);
+        _console.QueueSelection("Сияющая Обитель", "✨ Основные действия");
+        _console.QueueSelection("Основные действия Сияющей Обители", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_actions_support_cap_gate");
+        Assert.Contains(_console.SelectionChoicesHistory,
+            entry => entry.Title.Contains("Основные действия Сияющей Обители", StringComparison.OrdinalIgnoreCase) &&
+                     entry.Choices.Any(choice =>
+                         choice.Contains("Поддержать проект", StringComparison.OrdinalIgnoreCase) &&
+                         choice.Contains("лимит поддерживаемых проектов исчерпан", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Help_ChaosSeaUsesPlayerFacingRussianWording()
     {
         await SeedSessionForCommandAsync("/душа");

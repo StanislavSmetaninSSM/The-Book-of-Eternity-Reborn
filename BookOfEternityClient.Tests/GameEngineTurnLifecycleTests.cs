@@ -708,6 +708,102 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task NormalizeRuntimeUiArtifactsAsync_PreservesResolvedShiningPendingRequestDuringActiveSnapshot()
+    {
+        var requestRoot = new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "core_req_open_gates",
+                    actionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                    factionId = "",
+                    factionName = "",
+                    projectId = "",
+                    projectDisplayName = "",
+                    radianceTierAtRequest = 1,
+                    quotedCostFeathers = 0,
+                    quotedCostLightSparks = 0,
+                    sourceDraftVersion = 0,
+                    selectedCardIds = Array.Empty<string>(),
+                    createdAtTurn = 12,
+                    createdAtUtc = "2026-04-30T00:00:00Z"
+                }
+            }
+        };
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Shining Abode",
+            currentIncarnation = 3,
+            inkFeathers = new { current = 40 }
+        });
+        await WriteJsonAsync(ShiningAbodeState.StatePath, new
+        {
+            availability = ShiningAbodeState.AvailabilityActive,
+            radiance = new { experience = 120, tier = 1 },
+            lightSparks = 12,
+            gates = new
+            {
+                draftVersion = 2,
+                hasOpenDraft = true,
+                isStale = false,
+                allCandidateBlessingCards = Array.Empty<object>(),
+                availableBlessingCards = Array.Empty<object>(),
+                shownBlessingCardIds = Array.Empty<string>(),
+                selectedBlessingCardIds = Array.Empty<string>(),
+                nextCandidateCursor = 0,
+                rerollsRemaining = 0
+            },
+            coreActionReceipts = new[]
+            {
+                new
+                {
+                    requestId = "core_req_open_gates",
+                    actionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                    status = ShiningCoreActionRequestState.RequestStatusAccepted,
+                    generatedDraftVersion = 2,
+                    selectedCardIds = Array.Empty<string>(),
+                    newResidentIds = Array.Empty<string>(),
+                    seededProjectIds = Array.Empty<string>(),
+                    quotedCostFeathers = 0,
+                    quotedCostLightSparks = 0,
+                    resolvedAtTurn = 12,
+                    resolvedAtUtc = "2026-04-30T00:01:00Z",
+                    reason = "gates_opened"
+                }
+            }
+        });
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WriteJsonAsync(
+            $"game_state/control/pending_turn_snapshot/{ShiningCoreActionRequestState.PendingActionsRequestPath}",
+            requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            "test-session",
+            "test-request",
+            12,
+            ShiningCoreActionRequestState.PendingActionsRequestPath);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "test-session",
+            requestId = "test-request",
+            turnNumber = 12
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            sessionId = "test-session",
+            requestId = "test-request",
+            turnNumber = 12,
+            accepted = true
+        });
+        var engine = CreateGameEngine();
+
+        await InvokePrivateTaskAsync(engine, "NormalizeRuntimeUiArtifactsAsync");
+
+        Assert.True(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+    }
+
+    [Fact]
     public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_BlocksLegacyPendingNativeDiscovery()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
@@ -1057,6 +1153,15 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var task = method!.Invoke(instance, args) as Task<T>;
         Assert.NotNull(task);
         return await task!;
+    }
+
+    private static async Task InvokePrivateTaskAsync(object instance, string methodName, params object?[]? args)
+    {
+        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = method!.Invoke(instance, args) as Task;
+        Assert.NotNull(task);
+        await task!;
     }
 
     private static void InvokePrivate(object instance, string methodName, params object?[]? args)
