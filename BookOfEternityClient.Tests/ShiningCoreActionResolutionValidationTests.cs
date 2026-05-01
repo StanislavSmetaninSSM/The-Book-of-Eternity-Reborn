@@ -1419,6 +1419,80 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedRelicGachaWithoutTurnBaseRarity_Fails()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        Assert.True(ShiningAbodeState.TryApplyRelicGachaAccounting(
+            currentShiningRoot,
+            currentSoulRoot,
+            CloneJsonObject(preTurnResidentRoot),
+            "faction_old",
+            "core_req_shining_gacha_missing_base",
+            "relic_gacha_missing_base",
+            "Сияющий Осколок",
+            "Uncommon",
+            "Rare",
+            17,
+            "2026-04-16T13:00:00Z",
+            out _,
+            out _,
+            out _));
+        currentSoulRoot["soulRelics"]!["stored"]!.AsArray().Add(new JsonObject
+        {
+            ["relicId"] = "relic_gacha_missing_base",
+            ["name"] = "Сияющий Осколок",
+            ["rarity"] = "Rare"
+        });
+        ShiningAbodeState.EnsureCoreActionReceiptsArray(currentShiningRoot).Add(new JsonObject
+        {
+            ["requestId"] = "core_req_shining_gacha_missing_base",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+            ["factionId"] = "faction_old",
+            ["projectId"] = "",
+            ["hallId"] = "",
+            ["resolvedFactionId"] = "",
+            ["relicId"] = "relic_gacha_missing_base",
+            ["relicName"] = "Сияющий Осколок",
+            ["returnCycleId"] = "shining_return_2",
+            ["baseRarity"] = "Uncommon",
+            ["finalRarity"] = "Rare",
+            ["selectedCardIds"] = new JsonArray(),
+            ["newResidentIds"] = new JsonArray(),
+            ["seededProjectIds"] = new JsonArray(),
+            ["generatedDraftVersion"] = 0,
+            ["resolvedAtTurn"] = 17,
+            ["resolvedAtUtc"] = "2026-04-16T13:00:00Z",
+            ["reason"] = "shining_gacha_resolved"
+        });
+
+        var requestRoot = CreateShiningGachaRequestRoot("core_req_shining_gacha_missing_base", "shining_return_2");
+
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, currentSoulRoot);
+        await WriteNodeAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, requestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            CloneJsonObject(requestRoot));
+        await WriteNodeAsync("input/turn_request.json", new JsonObject
+        {
+            ["sessionId"] = "test-session",
+            ["requestId"] = "test-request",
+            ["turnNumber"] = 12
+        });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningCoreActionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_gacha_missing_turn_base_rarity", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_NonAcceptedRelicGachaWithResultRelicId_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();

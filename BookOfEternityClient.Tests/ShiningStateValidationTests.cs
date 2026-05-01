@@ -521,6 +521,44 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
+    public void ValidateShiningAbodeStateFile_EmptyPreparedPackage_RaisesBootstrapError()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["preparedIncarnationPackage"] = new JsonObject
+        {
+            ["generatedFromDraftVersion"] = 4,
+            ["preparedAtTurn"] = 155,
+            ["preparedAtUtc"] = "2026-04-19T10:00:00Z",
+            ["selectedCardIds"] = new JsonArray(),
+            ["selectedCards"] = new JsonArray()
+        };
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_prepare_package_bootstrap_invalid", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_DuplicatePreparedPackageCardIds_RaisesBootstrapError()
+    {
+        var cardA = CreateBlessingCard("card_route");
+        var cardB = CreateBlessingCard("card_route");
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["preparedIncarnationPackage"] = new JsonObject
+        {
+            ["generatedFromDraftVersion"] = 4,
+            ["preparedAtTurn"] = 155,
+            ["preparedAtUtc"] = "2026-04-19T10:00:00Z",
+            ["selectedCardIds"] = new JsonArray("card_route", "card_route"),
+            ["selectedCards"] = new JsonArray(cardA, cardB)
+        };
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_prepare_package_bootstrap_invalid", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateShiningAbodeStateFile_GatesBlessingCardUnsupportedTokens_RaiseExplicitErrors()
     {
         var card = CreateBlessingCard("card_bad_gates");
