@@ -400,7 +400,7 @@ public partial class ExplorerMode
                 var displayName = GetNodeString(entry["displayName"]) ?? residentId;
                 var factionId = GetNodeString(entry["shiningFactionId"]) ?? "none";
                 var factionLabel = GetNodeString(entry["shiningFactionName"]) ?? factionId;
-                var label = $"{displayName} [dim](фракция {factionLabel}, лояльность {GetNodeInt(entry["factionLoyaltyLevel"])}, брожение {GetNodeInt(entry["factionRestlessness"])})[/]";
+                var label = $"{displayName} [dim](residentId={residentId}; фракция {factionLabel}/{factionId}; лояльность {GetNodeInt(entry["factionLoyaltyLevel"])}, брожение {GetNodeInt(entry["factionRestlessness"])})[/]";
                 return (Label: label, Entry: entry);
             })
             .ToList();
@@ -434,7 +434,7 @@ public partial class ExplorerMode
             {
                 var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
                 var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
-                var label = $"{factionName} [dim](сила {GetNodeInt(faction["factionStrength"])})[/]";
+                var label = $"{factionName} [dim](factionId={factionId}; сила {GetNodeInt(faction["factionStrength"])})[/]";
                 return (Label: label, Faction: faction);
             })
             .ToList();
@@ -643,7 +643,7 @@ public partial class ExplorerMode
                 var resident = entries.OfType<JsonObject>()
                     .FirstOrDefault(entry => string.Equals(GetNodeString(entry["residentId"]), selectedId, StringComparison.OrdinalIgnoreCase));
                 var displayName = GetNodeString(resident?["displayName"]) ?? selectedId;
-                return displayName;
+                return $"{displayName} ({selectedId})";
             }
 
             return selectedId;

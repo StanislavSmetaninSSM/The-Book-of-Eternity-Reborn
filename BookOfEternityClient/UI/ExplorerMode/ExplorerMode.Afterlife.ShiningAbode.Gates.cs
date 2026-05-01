@@ -676,7 +676,7 @@ public partial class ExplorerMode
         if (cardIds.Count == 0)
             return "нет";
 
-        return string.Join(", ", cardIds.Select(id => ResolveShiningBlessingCardLabel(root, id)));
+        return string.Join(", ", cardIds.Select(id => $"{ResolveShiningBlessingCardLabel(root, id)} ({id})"));
     }
 
     private IEnumerable<string> BuildShiningBlessingCardInspectionLines(JsonObject card, ShiningContext context, bool isSelected)
@@ -1069,7 +1069,7 @@ public partial class ExplorerMode
                 var projectId = GetNodeString(project["projectId"]) ?? string.Empty;
                 var displayName = GetNodeString(project["displayName"]) ?? projectId;
                 var supportLabel = GetNodeBool(project["isSupported"]) ? "поддержан" : "без поддержки";
-                options.Add(($"{factionName} → {displayName} [dim]({DescribeShiningProjectStatus(status)}, {supportLabel})[/]", project, factionId, projectId));
+                options.Add(($"{factionName} [dim](factionId={factionId})[/] → {displayName} [dim](projectId={projectId}; {DescribeShiningProjectStatus(status)}, {supportLabel})[/]", project, factionId, projectId));
             }
         }
 

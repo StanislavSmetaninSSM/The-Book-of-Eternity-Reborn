@@ -822,10 +822,13 @@ public partial class ExplorerMode
             var choices = view.Offers.Select(offer =>
             {
                 var soldTag = offer.SoldOut ? "РАСПРОДАНО" : "";
+                var relicId = GetNodeString(offer.RelicData["relicId"]) ?? GetNodeString(offer.RelicData["id"]) ?? "?";
                 return ConsoleLayout.PlainChoiceLabel(
                     $"💎 {offer.Name}",
                     offer.Rarity,
                     $"🪶 {offer.PriceInFeathers}",
+                    $"slotId {offer.SlotId}",
+                    $"relicId {relicId}",
                     soldTag);
             }).ToList();
             choices.Add("← Назад");
@@ -1425,7 +1428,7 @@ public partial class ExplorerMode
             var rarity = GetNodeString(item.Relic["quality"]) ?? GetNodeString(item.Relic["rarity"]) ?? "?";
             var formTag = GetNodeString(item.Relic["formTag"]);
             var propertyCount = GetForgePropertyCount(item.Relic);
-            var label = $"{item.RelicName} [dim]({Markup.Escape(rarity)} • {Markup.Escape(DescribeSoulRelicCollection(item.Collection))} • свойств {propertyCount})[/]" +
+            var label = $"{item.RelicName} [dim](relicId={Markup.Escape(item.RelicId)} • {Markup.Escape(rarity)} • {Markup.Escape(DescribeSoulRelicCollection(item.Collection))} • свойств {propertyCount})[/]" +
                         (string.IsNullOrWhiteSpace(formTag) ? string.Empty : $" [grey]форма: {Markup.Escape(DescribeForgeFormTag(formTag))}[/]");
             return (Label: label, Item: item);
         }).ToList();
