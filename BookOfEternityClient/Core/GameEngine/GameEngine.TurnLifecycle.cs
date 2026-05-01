@@ -114,8 +114,7 @@ public partial class GameEngine
             if (qteHandling.EarlyExit)
             {
                 await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
-                _fs.DeleteFile("ready/turn_complete.json");
-                await CleanupPendingTurnSnapshotAsync();
+                await CleanupAcceptedTurnTerminalArtifactsAsync();
                 return true;
             }
 
@@ -133,8 +132,7 @@ public partial class GameEngine
                 await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
             }
 
-            _fs.DeleteFile("ready/turn_complete.json");
-            await CleanupPendingTurnSnapshotAsync();
+            await CleanupAcceptedTurnTerminalArtifactsAsync();
             return true;
         }
 
@@ -400,6 +398,7 @@ public partial class GameEngine
                     continue;
                 }
 
+                var acceptedLateResponse = false;
                 if (await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "late response GM",
                         rollbackSnapshot,
@@ -456,9 +455,18 @@ public partial class GameEngine
                     {
                         await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
                     }
+
+                    acceptedLateResponse = true;
                 }
-                _fs.DeleteFile("ready/turn_complete.json");
-                await CleanupPendingTurnSnapshotAsync();
+                if (acceptedLateResponse)
+                {
+                    await CleanupAcceptedTurnTerminalArtifactsAsync();
+                }
+                else
+                {
+                    _fs.DeleteFile("ready/turn_complete.json");
+                    await CleanupPendingTurnSnapshotAsync();
+                }
             }
 
             // Check for GM-initiated incarnation (GM sends player to Mortal World)
@@ -761,8 +769,6 @@ public partial class GameEngine
         _lastResponse = qteHandling.Response;
         _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
 
-        await CleanupPendingTurnSnapshotAsync();
-
         // Autosave
         if (_stateManager.Settings.AutosaveIntervalTurns > 0 &&
             _gameLoop.TurnNumber % _stateManager.Settings.AutosaveIntervalTurns == 0)
@@ -770,8 +776,7 @@ public partial class GameEngine
             await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
         }
 
-        // Cleanup ready signal
-        _fs.DeleteFile("ready/turn_complete.json");
+        await CleanupAcceptedTurnTerminalArtifactsAsync();
     }
 
     private void CleanupAfterAcceptedChaosSeaMarkerTurn(string? action)
@@ -1454,8 +1459,7 @@ public partial class GameEngine
                     guardianContext.GuardianName,
                     _gameLoop.TurnNumber);
 
-                _fs.DeleteFile("ready/turn_complete.json");
-                await CleanupPendingTurnSnapshotAsync();
+                await CleanupAcceptedTurnTerminalArtifactsAsync();
             }
         }
         catch (TriggerLifeEndRuntimeContextException ex)

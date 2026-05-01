@@ -767,6 +767,36 @@ public partial class GameEngine
         _fs.FileExists("ready/turn_complete.json") ||
         _fs.FileExists("ready/turn_error.json");
 
+    private async Task CleanupAcceptedTurnTerminalArtifactsAsync()
+    {
+        _fs.DeleteFile("ready/turn_complete.json");
+        _fs.DeleteFile("ready/turn_error.json");
+        await CleanupPendingTurnSnapshotAsync();
+        await CleanupResolvedAfterlifePendingContractsAfterAcceptedTurnAsync();
+    }
+
+    private async Task CleanupResolvedAfterlifePendingContractsAfterAcceptedTurnAsync()
+    {
+        await _stateManager.RefreshGameStateAsync();
+        var currentRealm = _stateManager.CurrentState.CurrentRealm;
+
+        await _afterlifeReturnGuardService.EnsureHealthyAsync(currentRealm);
+        await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(currentRealm);
+        await GuardianAbodeOfferingState.EnsureHealthyAsync(_fs, currentRealm);
+        await GuardianTradeRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await PlayerGuardianFoundationState.EnsureHealthyAsync(_fs, currentRealm);
+        await NpcTradeRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await AfterlifeArchiveActionState.EnsureHealthyAsync(_fs, currentRealm);
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await ShiningTradeRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await ShiningFactionRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, currentRealm);
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+        await AfterlifeNotificationState.EnsureHealthyAsync(_fs);
+    }
+
     private static bool ShouldPreserveClientOwnedControlFilesForTerminalValidation(
         bool hasReadySignals,
         PendingTurnSnapshotResolution pendingSnapshot) =>
