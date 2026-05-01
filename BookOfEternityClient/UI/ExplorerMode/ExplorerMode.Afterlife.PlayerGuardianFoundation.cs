@@ -24,6 +24,8 @@ public partial class ExplorerMode
                 $"[bold]Кредо:[/] [dim]{Markup.Escape(pendingRequest.MantleCreed)}[/]",
                 $"[bold]Мотивы:[/] [dim]{Markup.Escape(string.Join(", ", pendingRequest.AppearanceMotifs))}[/]",
                 $"[bold]Прежний покровитель:[/] [white]{Markup.Escape(pendingRequest.PreviousGuardianName)}[/]",
+                $"[bold]Идентификатор запроса:[/] [dim]{Markup.Escape(pendingRequest.RequestId)}[/]",
+                $"[bold]Идентификатор прежнего покровителя:[/] [dim]{Markup.Escape(pendingRequest.PreviousGuardianId)}[/]",
                 "",
                 "[dim]Запрос на основание уже записан и ждёт следующего обычного хода GM в загробье.[/]",
                 "[dim]Это одноразовая поздняя ветка: старые Хранители сохранятся, а новая мантия станет активным Хранителем по умолчанию.[/]",
@@ -61,19 +63,30 @@ public partial class ExplorerMode
             var foundedGuardianName = string.IsNullOrWhiteSpace(context.ExistingFoundedGuardianName)
                 ? "Основанный Хранитель"
                 : context.ExistingFoundedGuardianName;
+            var activeGuardianId = context.CurrentActiveGuardianIsFounded
+                ? context.ExistingFoundedGuardianId
+                : context.PreviousGuardianId;
             var lines = new List<string>
             {
                 "[bold gold1]👑 Ветка основания уже завершена[/]",
                 "",
                 $"[bold]Статус:[/] [gold1]{Markup.Escape(DescribeFoundationStatus(string.IsNullOrWhiteSpace(context.FoundationStatus) ? PlayerGuardianFoundationState.SoulStateFoundationStatusFounded : context.FoundationStatus))}[/]",
                 $"[bold]Основанный Хранитель:[/] [white]{Markup.Escape(foundedGuardianName)}[/]",
-                $"[bold]Текущий активный Хранитель:[/] [white]{Markup.Escape(context.CurrentActiveGuardianIsFounded ? foundedGuardianName : context.PreviousGuardianName)}[/]"
+                $"[bold]Идентификатор основанного Хранителя:[/] [dim]{Markup.Escape(context.ExistingFoundedGuardianId)}[/]",
+                $"[bold]Текущий активный Хранитель:[/] [white]{Markup.Escape(context.CurrentActiveGuardianIsFounded ? foundedGuardianName : context.PreviousGuardianName)}[/]",
+                $"[bold]Идентификатор активного Хранителя:[/] [dim]{Markup.Escape(activeGuardianId)}[/]"
             };
 
             if (!string.IsNullOrWhiteSpace(context.ExistingFoundedGuardianAbodeName))
                 lines.Add($"[bold]Текущая Обитель:[/] [white]{Markup.Escape(context.ExistingFoundedGuardianAbodeName)}[/]");
+            if (!string.IsNullOrWhiteSpace(context.ExistingFoundedGuardianAbodeId))
+                lines.Add($"[bold]Идентификатор текущей Обители:[/] [dim]{Markup.Escape(context.ExistingFoundedGuardianAbodeId)}[/]");
+            if (!string.IsNullOrWhiteSpace(context.FoundationRequestId))
+                lines.Add($"[bold]Идентификатор запроса основания:[/] [dim]{Markup.Escape(context.FoundationRequestId)}[/]");
             if (!string.IsNullOrWhiteSpace(context.FormerPatronGuardianName))
                 lines.Add($"[bold]Прежний покровитель:[/] [white]{Markup.Escape(context.FormerPatronGuardianName)}[/] [dim]({DescribeFoundationGuardianRole(PlayerGuardianFoundationState.GuardianRoleFormerPatron)})[/]");
+            if (!string.IsNullOrWhiteSpace(context.FormerPatronGuardianId))
+                lines.Add($"[bold]Идентификатор прежнего покровителя:[/] [dim]{Markup.Escape(context.FormerPatronGuardianId)}[/]");
             if (context.FoundationResolvedAtTurn > 0)
                 lines.Add($"[bold]Ход основания:[/] [white]{context.FoundationResolvedAtTurn}[/]");
             if (!string.IsNullOrWhiteSpace(context.FoundationResolvedAtUtc))

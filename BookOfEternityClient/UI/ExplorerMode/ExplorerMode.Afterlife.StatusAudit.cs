@@ -157,7 +157,10 @@ public partial class ExplorerMode
             AppendSelectedShiningCardStatusLines(lines, gates, context);
         }
         if (root["preparedIncarnationPackage"] is JsonObject package)
+        {
             lines.Add($"  • Prepared package: draftVersion [white]{GetNodeInt(package["generatedFromDraftVersion"])}[/], selectedCards={(package["selectedCards"] as JsonArray)?.Count ?? 0}, preparedAtTurn={GetNodeInt(package["preparedAtTurn"])}.");
+            AppendPreparedPackageShiningCardStatusLines(lines, root, package);
+        }
 
         if (root["factions"] is JsonArray factions)
         {
@@ -259,11 +262,57 @@ public partial class ExplorerMode
         lines.Add("  • Selected blessing cards (all selected; safe effect details, no hidden runtime payload keys):");
         foreach (var cardId in selected)
         {
-            var card = (gates["availableBlessingCards"] as JsonArray)?.OfType<JsonObject>()
-                .FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
+            var card = FindShiningBlessingCardForAudit(context.Root, cardId);
             if (card == null)
             {
-                lines.Add($"    - {Markup.Escape(cardId)} [dim](card not found in availableBlessingCards; inspect /shining_abode)[/]");
+                lines.Add($"    - {Markup.Escape(cardId)} [dim](card not found in available/candidate/package snapshots; inspect /shining_abode)[/]");
+                continue;
+            }
+
+            lines.Add($"    - {Markup.Escape(FormatShiningReceiptAuditObject(card))}");
+            foreach (var effectLine in BuildShiningBlessingEffectDetailLines(card))
+                lines.Add($"      effect: [dim]{Markup.Escape(effectLine)}[/]");
+        }
+    }
+
+    private static JsonObject? FindShiningBlessingCardForAudit(JsonObject shiningRoot, string cardId)
+    {
+        if (string.IsNullOrWhiteSpace(cardId))
+            return null;
+
+        if (shiningRoot["gates"] is JsonObject gates)
+        {
+            foreach (var arrayName in new[] { "availableBlessingCards", "allCandidateBlessingCards" })
+            {
+                var card = (gates[arrayName] as JsonArray)?.OfType<JsonObject>()
+                    .FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
+                if (card != null)
+                    return card;
+            }
+        }
+
+        if (shiningRoot["preparedIncarnationPackage"] is JsonObject package)
+        {
+            return GetConsistentPreparedPackageCards(package)
+                .FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
+        }
+
+        return null;
+    }
+
+    private static void AppendPreparedPackageShiningCardStatusLines(List<string> lines, JsonObject shiningRoot, JsonObject package)
+    {
+        var selected = GetPreparedPackageSelectedCardIds(package);
+        if (selected.Count == 0)
+            return;
+
+        lines.Add("  • Prepared package selected cards (frozen; safe effect details, no hidden runtime payload keys):");
+        foreach (var cardId in selected)
+        {
+            var card = FindShiningBlessingCardForAudit(shiningRoot, cardId);
+            if (card == null)
+            {
+                lines.Add($"    - {Markup.Escape(cardId)} [dim](frozen card snapshot unavailable; inspect /shining_abode)[/]");
                 continue;
             }
 

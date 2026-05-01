@@ -111,6 +111,7 @@ internal static class PlayerGuardianFoundationState
         public string ExistingFoundedGuardianFeatureSummary { get; init; } = "";
         public string FormerPatronGuardianId { get; init; } = "";
         public string FormerPatronGuardianName { get; init; } = "";
+        public string FoundationRequestId { get; init; } = "";
         public int FoundationResolvedAtTurn { get; init; }
         public string FoundationResolvedAtUtc { get; init; } = "";
         public bool CurrentActiveGuardianIsFounded { get; init; }
@@ -244,6 +245,7 @@ internal static class PlayerGuardianFoundationState
                                  FindLatestHistoryEntry(guardiansRoot);
         var formerPatronGuardianId = GetNodeString(latestHistoryEntry?["formerPatronGuardianId"]) ?? "";
         var formerPatronGuardianName = GetNodeString(latestHistoryEntry?["formerPatronGuardianName"]) ?? "";
+        var foundationRequestId = GetNodeString(latestHistoryEntry?["requestId"]) ?? "";
         var foundationResolvedAtTurn = TryGetNodeInt(latestHistoryEntry?["resolvedAtTurn"]);
         var foundationResolvedAtUtc = GetNodeString(latestHistoryEntry?["resolvedAtUtc"]) ?? "";
         if (string.IsNullOrWhiteSpace(existingFoundedGuardianId))
@@ -288,6 +290,7 @@ internal static class PlayerGuardianFoundationState
             ExistingFoundedGuardianFeatureSummary = existingFoundedGuardianFeatureSummary,
             FormerPatronGuardianId = formerPatronGuardianId,
             FormerPatronGuardianName = formerPatronGuardianName,
+            FoundationRequestId = foundationRequestId,
             FoundationResolvedAtTurn = foundationResolvedAtTurn,
             FoundationResolvedAtUtc = foundationResolvedAtUtc,
             CurrentActiveGuardianIsFounded = currentActiveGuardianIsFounded,
