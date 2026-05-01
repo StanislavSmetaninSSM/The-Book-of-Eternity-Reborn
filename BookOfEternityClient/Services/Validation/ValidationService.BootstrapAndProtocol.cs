@@ -661,6 +661,7 @@ public partial class ValidationService
                      GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
                      GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
                      GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                     GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
                      ActorSocialInteractionRequestState.PendingGuardianRequestPath,
                      ActorSocialInteractionRequestState.PendingNpcRequestPath,
                      SystemGuardianLibraryService.AttractionRequestPath,
@@ -698,7 +699,8 @@ public partial class ValidationService
                                 ? "NpcContracts"
                             : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                               clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
-                              clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase)
+                              clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                              clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, StringComparison.OrdinalIgnoreCase)
                                 ? "GuardianAbodeResidents"
                             : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase)
                                 ? "GuardianSocial"
@@ -738,6 +740,8 @@ public partial class ValidationService
                         ? "client_owned_resident_interaction_request_modified"
                     : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_resident_transfer_request_modified"
+                    : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_resident_manifestation_request_modified"
                     : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_guardian_social_request_modified"
                     : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase)
@@ -775,7 +779,8 @@ public partial class ValidationService
                         ? "AfterlifeArchive"
                     : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                       clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
-                      clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase)
+                      clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "GuardianAbodeResidents"
                     : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "GuardianSocial"

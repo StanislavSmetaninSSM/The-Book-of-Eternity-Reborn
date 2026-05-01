@@ -947,6 +947,87 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_PendingManifestationFileMutation_IsRejectedAsClientOwned()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 10, total = 10 },
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = Array.Empty<object>()
+            }
+        });
+
+        var preTurnRequest = new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "manifest_original",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_alpha",
+                    relicName = "Эхо Зари",
+                    sourceResidentId = "resident_alpha",
+                    sourceGuardianId = "guardian_alpha",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 5,
+                    companionNameHint = "Ирия",
+                    originWorldSummary = "Будущая смертная жизнь.",
+                    futureCompanionPrompt = "Ирия должна проявиться как ранняя спутница в следующей смертной жизни.",
+                    bondReason = "Связь создана через реликвию резидента.",
+                    coreTraits = new[] { "loyal" },
+                    archetypeHints = new[] { "guide" },
+                    appearanceMotifs = new[] { "dawn" },
+                    createdAtUtc = "2026-04-20T00:00:00Z"
+                }
+            }
+        };
+        var mutatedLiveRequest = new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "manifest_retargeted",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_beta",
+                    relicName = "Эхо Заката",
+                    sourceResidentId = "resident_beta",
+                    sourceGuardianId = "guardian_beta",
+                    sourceGuardianName = "Мириэль",
+                    targetIncarnation = 5,
+                    companionNameHint = "Селия",
+                    originWorldSummary = "Будущая смертная жизнь.",
+                    futureCompanionPrompt = "Селия должна проявиться как ранняя спутница в следующей смертной жизни.",
+                    bondReason = "Связь переписана через другую реликвию резидента.",
+                    coreTraits = new[] { "watchful" },
+                    archetypeHints = new[] { "sentinel" },
+                    appearanceMotifs = new[] { "dusk" },
+                    createdAtUtc = "2026-04-20T01:00:00Z"
+                }
+            }
+        };
+
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, mutatedLiveRequest);
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_resident_manifestation_request_original.json";
+        await WriteJsonAsync(backupPath, preTurnRequest);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianAbodeResidentRequestState.PendingManifestationRequestPath] = backupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_resident_manifestation_request_modified", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PreTurnTradeRequestWithoutInventory_FailsResolutionContract()
     {
         var request = new
