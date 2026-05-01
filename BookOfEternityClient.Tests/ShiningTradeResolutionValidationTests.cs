@@ -516,6 +516,41 @@ public sealed class ShiningTradeResolutionValidationTests : IDisposable
         Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_trade_duplicate_same_cycle_faction_requests", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidatePendingShiningTradeInventoryRequestContextAsync_DuplicateRequestIds_Fails()
+    {
+        await WriteNodeAsync("game_state/meta/soul_state.json", new JsonObject
+        {
+            ["currentRealm"] = "Shining Abode",
+            ["currentIncarnation"] = 2
+        });
+        await WriteNodeAsync(ShiningAbodeState.StatePath, CreateBaseShiningRoot());
+        await WriteNodeAsync(GuardianAbodeResidentState.StatePath, new JsonObject
+        {
+            ["entries"] = new JsonArray()
+        });
+        await WriteNodeAsync("game_state/meta/guardians.json", new JsonObject
+        {
+            ["guardians"] = new JsonArray()
+        });
+
+        var firstRequest = CreatePendingTradeRequest("trade_req_shared");
+        var secondRequest = CreatePendingTradeRequest("trade_req_shared");
+        secondRequest["tradeCycleId"] = "shining_return_3";
+        await WriteNodeAsync(ShiningTradeRequestState.PendingRequestsPath, new JsonObject
+        {
+            [ShiningTradeRequestState.RequestsProperty] = new JsonArray
+            {
+                firstRequest,
+                secondRequest
+            }
+        });
+
+        var issues = await InvokeValidationAsync("ValidatePendingShiningTradeInventoryRequestContextAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_trade_duplicate_request_id", StringComparison.OrdinalIgnoreCase));
+    }
+
     private async Task WritePendingTurnSnapshotManifestAsync(
         JsonObject preTurnShiningRoot,
         JsonObject requestRoot,

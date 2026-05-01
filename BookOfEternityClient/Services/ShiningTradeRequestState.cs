@@ -150,6 +150,14 @@ internal static class ShiningTradeRequestState
         {
             throw new InvalidOperationException("pending_shining_trade_inventory_requests.json уже содержит live foreign trade contract for this faction/cycle; guarded writer не заменяет unresolved contract.");
         }
+        if (!string.IsNullOrWhiteSpace(request.RequestId) &&
+            existingState.Requests.Any(existing =>
+                string.Equals(existing.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase) &&
+                (!string.Equals(existing.FactionId, request.FactionId, StringComparison.OrdinalIgnoreCase) ||
+                 !string.Equals(existing.TradeCycleId, request.TradeCycleId, StringComparison.OrdinalIgnoreCase))))
+        {
+            throw new InvalidOperationException("pending_shining_trade_inventory_requests.json уже содержит live foreign trade contract with the same requestId; guarded writer не создаёт ambiguous notification identity.");
+        }
 
         var requests = (await ReadRequestsAsync(fs)).ToList();
         requests.RemoveAll(existing =>
@@ -171,6 +179,15 @@ internal static class ShiningTradeRequestState
             fs.DeleteFile(PendingRequestsPath);
             return;
         }
+
+        var duplicateRequestIds = requests
+            .Where(request => !string.IsNullOrWhiteSpace(request.RequestId))
+            .GroupBy(request => request.RequestId, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .ToList();
+        if (duplicateRequestIds.Count > 0)
+            throw new InvalidOperationException($"pending_shining_trade_inventory_requests.json не допускает duplicated requestId: {string.Join(", ", duplicateRequestIds)}.");
 
         await fs.WriteFileAtomicAsync(PendingRequestsPath, JsonSerializer.Serialize(new Dictionary<string, object?>
         {

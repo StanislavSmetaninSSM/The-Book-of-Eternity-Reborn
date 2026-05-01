@@ -1089,6 +1089,119 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
+    public async Task ValidateLeadershipTransitionRequestAgainstCurrentStateAsync_CandidateResidentPendingRealignment_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            await ShiningFactionRequestState.WriteRealignmentRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionRealignmentRequest
+            {
+                RequestId = "realignment_existing",
+                ResidentId = "resident_liora",
+                ResidentName = "Лиора",
+                SourceFactionId = "faction_old",
+                SourceFactionName = "Старый Дом",
+                TargetFactionId = "faction_new",
+                TargetFactionName = "Новый Дом",
+                RealignmentMode = ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+                FactionLoyaltyLevel = 15,
+                FactionLoyaltyTier = ShiningAbodeState.FactionLoyaltyTierAlienated,
+                FactionRestlessness = 80,
+                FactionRealignmentState = ShiningAbodeState.FactionRealignmentStateReadyToRealign
+            });
+
+            var error = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                RequestId = "leadership_candidate_locked",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+                IncumbentHeadActorId = "guardian_old",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypeResident,
+                CandidateHeadActorId = "resident_liora",
+                SupportingResidentIds = { "resident_mael", "resident_serit" }
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("Candidate resident", error, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("pending Shining flow", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateLeadershipTransitionRequestAgainstCurrentStateAsync_IncumbentResidentPendingOrdinaryTransfer_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            var shiningRoot = await ReadJsonAsync(fs, ShiningAbodeState.StatePath);
+            var factionOld = shiningRoot?["factions"]?.AsArray().OfType<JsonObject>()
+                .First(faction => string.Equals(faction["factionId"]?.GetValue<string>(), "faction_old", StringComparison.OrdinalIgnoreCase));
+            factionOld!["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeResident,
+                ["headActorId"] = "resident_liora",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            };
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot!.ToJsonString());
+
+            await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(fs, new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+            {
+                RequestId = "transfer_existing",
+                ResidentId = "resident_liora",
+                ResidentName = "Лиора",
+                SourceGuardianId = "guardian_old",
+                SourceGuardianName = "Азалия",
+                SourceAbodeId = "abode_old",
+                SourceAbodeName = "Старая Обитель",
+                TargetGuardianId = "guardian_new",
+                TargetGuardianName = "Элиан",
+                TargetAbodeId = "abode_new",
+                TargetAbodeName = "Новая Обитель",
+                AbodeDevotionLevel = 15,
+                AbodeDevotionTier = GuardianAbodeResidentState.AbodeDevotionTierAlienated,
+                Restlessness = 80,
+                MigrationState = GuardianAbodeResidentState.MigrationStateReadyToTransfer,
+                TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer
+            });
+
+            var error = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                RequestId = "leadership_incumbent_locked",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeResident,
+                IncumbentHeadActorId = "resident_liora",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypePlayerSoul,
+                CandidateHeadActorId = ShiningAbodeState.HeadActorTypePlayerSoul,
+                SupportingResidentIds = { "resident_mael", "resident_serit" }
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("Incumbent resident", error, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("ordinary inter-Abode transfer", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateLeadershipTransitionRequestAgainstCurrentStateAsync_CandidateAlreadyHeadsAnotherFaction_Fails()
     {
         var root = CreateTempRoot();

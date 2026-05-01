@@ -726,6 +726,52 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameState_PendingShiningLeadershipTransitionsWithDuplicateRequestId_Fails()
+    {
+        var shiningRoot = CreateBaseShiningRoot();
+        var residentRoot = CreateBaseResidentRoot();
+        await SeedCurrentStateAsync(shiningRoot, residentRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["requestId"] = "leadership_req_shared",
+                    ["factionId"] = "faction_old",
+                    ["factionName"] = "Старый Дом",
+                    ["transitionMode"] = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                    ["incumbentHeadActorType"] = ShiningAbodeState.HeadActorTypeGuardian,
+                    ["incumbentHeadActorId"] = "guardian_old",
+                    ["candidateHeadActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                    ["candidateHeadActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                    ["supportingResidentIds"] = new JsonArray("resident_liora", "resident_mael"),
+                    ["createdAtTurn"] = 203,
+                    ["createdAtUtc"] = "2026-04-16T16:40:00Z"
+                },
+                new JsonObject
+                {
+                    ["requestId"] = "leadership_req_shared",
+                    ["factionId"] = "faction_new",
+                    ["factionName"] = "Новый Дом",
+                    ["transitionMode"] = ShiningFactionRequestState.TransitionModeRevolt,
+                    ["incumbentHeadActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                    ["incumbentHeadActorId"] = "radiant_actor_new_head",
+                    ["candidateHeadActorType"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                    ["candidateHeadActorId"] = ShiningAbodeState.HeadActorTypePlayerSoul,
+                    ["supportingResidentIds"] = new JsonArray("resident_outsider"),
+                    ["createdAtTurn"] = 204,
+                    ["createdAtUtc"] = "2026-04-16T16:41:00Z"
+                }
+            }
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_duplicate_request_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_NonVacantLeadershipWithoutCanonicalHeadBinding_Fails()
     {
         var shiningRoot = CreateBaseShiningRoot();
