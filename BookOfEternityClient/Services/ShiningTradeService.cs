@@ -37,6 +37,11 @@ internal static class ShiningTradeService
 
     public sealed record ShiningTradeOperationResult(bool Success, bool StateChanged, string Message);
     public sealed record ShiningTradeAutoRefreshResult(bool StateChanged, int CreatedRequestCount, string TradeCycleId);
+    private sealed record ShiningTradeAutoRefreshPlan(
+        bool StateChanged,
+        int CreatedRequestCount,
+        string TradeCycleId,
+        IReadOnlyList<ShiningTradeRequestState.PendingShiningTradeInventoryRequest> Requests);
 
     public static async Task<ShiningTradeView?> ReadTradeViewAsync(FileSystemManager fs, string factionId)
     {
@@ -242,22 +247,50 @@ internal static class ShiningTradeService
         FileSystemManager fs,
         int currentTurn)
     {
-        var soulRoot = await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
-        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
+        var plan = await BuildAutoRefreshRequestsForCurrentCycleAsync(fs, currentTurn);
+        if (!plan.StateChanged)
+            return new ShiningTradeAutoRefreshResult(false, 0, plan.TradeCycleId);
+
+        await ShiningTradeRequestState.WriteRequestsAsync(fs, plan.Requests);
+        return new ShiningTradeAutoRefreshResult(true, plan.CreatedRequestCount, plan.TradeCycleId);
+    }
+
+    public static async Task<ShiningTradeAutoRefreshResult> PreviewAutoRefreshRequestsForCurrentCycleAsync(
+        FileSystemManager fs,
+        JsonObject? projectedSoulRoot,
+        JsonObject? projectedShiningRoot,
+        int currentTurn)
+    {
+        var plan = await BuildAutoRefreshRequestsForCurrentCycleAsync(
+            fs,
+            currentTurn,
+            projectedSoulRoot,
+            projectedShiningRoot);
+        return new ShiningTradeAutoRefreshResult(plan.StateChanged, plan.CreatedRequestCount, plan.TradeCycleId);
+    }
+
+    private static async Task<ShiningTradeAutoRefreshPlan> BuildAutoRefreshRequestsForCurrentCycleAsync(
+        FileSystemManager fs,
+        int currentTurn,
+        JsonObject? soulRootOverride = null,
+        JsonObject? shiningRootOverride = null)
+    {
+        var soulRoot = soulRootOverride?.DeepClone() as JsonObject ?? await ReadJsonObjectAsync(fs, "game_state/meta/soul_state.json");
+        var shiningRoot = shiningRootOverride?.DeepClone() as JsonObject ?? await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
         var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
         var guardiansRoot = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
         if (soulRoot == null || shiningRoot == null)
-            return new ShiningTradeAutoRefreshResult(false, 0, string.Empty);
+            return new ShiningTradeAutoRefreshPlan(false, 0, string.Empty, Array.Empty<ShiningTradeRequestState.PendingShiningTradeInventoryRequest>());
 
         ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
         var blockedReason = ResolveTradeBlockedReason(soulRoot, shiningRoot, tradeTier: 1);
         if (!string.IsNullOrWhiteSpace(blockedReason))
-            return new ShiningTradeAutoRefreshResult(false, 0, string.Empty);
+            return new ShiningTradeAutoRefreshPlan(false, 0, string.Empty, Array.Empty<ShiningTradeRequestState.PendingShiningTradeInventoryRequest>());
 
         var tradeCycleId = ShiningAbodeState.GetTradeCycleId(GetNodeInt(soulRoot["currentIncarnation"], 0));
         var requestState = await ShiningTradeRequestState.ReadRequestsStateAsync(fs);
         if (requestState.IsMalformed)
-            return new ShiningTradeAutoRefreshResult(false, 0, tradeCycleId);
+            return new ShiningTradeAutoRefreshPlan(false, 0, tradeCycleId, requestState.Requests);
 
         var requests = requestState.Requests.ToList();
 
@@ -316,10 +349,9 @@ internal static class ShiningTradeService
         }
 
         if (!requestsChanged)
-            return new ShiningTradeAutoRefreshResult(false, 0, tradeCycleId);
+            return new ShiningTradeAutoRefreshPlan(false, 0, tradeCycleId, requests);
 
-        await ShiningTradeRequestState.WriteRequestsAsync(fs, requests);
-        return new ShiningTradeAutoRefreshResult(true, createdCount, tradeCycleId);
+        return new ShiningTradeAutoRefreshPlan(true, createdCount, tradeCycleId, requests);
     }
 
     public static async Task<ShiningTradeOperationResult> BuyAsync(

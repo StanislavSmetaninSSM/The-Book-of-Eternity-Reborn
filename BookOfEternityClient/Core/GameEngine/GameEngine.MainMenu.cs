@@ -1704,6 +1704,10 @@ public partial class GameEngine
             return;
         }
 
+        var projectedSoulRoot = soulRoot.DeepClone() as JsonObject ?? new JsonObject();
+        projectedSoulRoot["currentRealm"] = "Shining Abode";
+        var reentrySideEffects = await BuildShiningReentrySideEffectPreviewAsync(normalizedRoot, projectedSoulRoot);
+
         soulRoot["currentRealm"] = "Shining Abode";
         var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
         var reenterPreviewLines = new List<string>
@@ -1720,6 +1724,12 @@ public partial class GameEngine
             "  • shining_abode_state.availability == active",
             "  • preparedIncarnationPackage отсутствует",
             $"  • {AfterlifeReturnGuardService.GuardPath} не содержит активный post-life guard",
+            "",
+            "[bold]Return-cycle sync:[/]",
+            $"  • currentReturnCycleId: {Markup.Escape(reentrySideEffects.BeforeReturnCycleId)} -> {Markup.Escape(reentrySideEffects.AfterReturnCycleId)}",
+            $"  • chargesUsedThisReturn: {reentrySideEffects.BeforeChargesUsedThisReturn} -> {reentrySideEffects.AfterChargesUsedThisReturn} из {reentrySideEffects.ChargesPerReturn}",
+            $"  • gacha charges reset: {(reentrySideEffects.GachaChargesReset ? "yes" : "no")}",
+            $"  • auto trade refresh: {ShiningTradeRequestState.PendingRequestsPath}; tradeCycleId={Markup.Escape(reentrySideEffects.AutoTradeRefresh.TradeCycleId)}; createdRequests={reentrySideEffects.AutoTradeRefresh.CreatedRequestCount}",
             "",
             "[bold]Последствия подтверждения:[/] вы возвращаетесь в уже существующую Обитель; pending GM action не создаётся."
         };
@@ -1744,6 +1754,22 @@ public partial class GameEngine
             {
                 ["soulCurrentRealm"] = "Shining Abode",
                 ["shiningAvailability"] = GetNodeString(normalizedRoot["availability"]) ?? "active"
+            },
+            ["returnCycleSync"] = new JsonObject
+            {
+                ["currentReturnCycleIdBefore"] = reentrySideEffects.BeforeReturnCycleId,
+                ["currentReturnCycleIdAfter"] = reentrySideEffects.AfterReturnCycleId,
+                ["chargesUsedThisReturnBefore"] = reentrySideEffects.BeforeChargesUsedThisReturn,
+                ["chargesUsedThisReturnAfter"] = reentrySideEffects.AfterChargesUsedThisReturn,
+                ["chargesPerReturn"] = reentrySideEffects.ChargesPerReturn,
+                ["gachaChargesReset"] = reentrySideEffects.GachaChargesReset
+            },
+            ["autoTradeRefresh"] = new JsonObject
+            {
+                ["pendingFile"] = ShiningTradeRequestState.PendingRequestsPath,
+                ["tradeCycleId"] = reentrySideEffects.AutoTradeRefresh.TradeCycleId,
+                ["createdRequestCount"] = reentrySideEffects.AutoTradeRefresh.CreatedRequestCount,
+                ["stateWouldChange"] = reentrySideEffects.AutoTradeRefresh.StateChanged
             },
             ["affectedFiles"] = new JsonArray(
                 JsonValue.Create(ShiningAbodeState.StatePath),
@@ -1787,6 +1813,46 @@ public partial class GameEngine
         AnsiConsole.MarkupLine("[yellow]✨ Вы возвращаетесь в активную Сияющую Обитель.[/]");
         if (!string.IsNullOrWhiteSpace(returnSyncSummary))
             AnsiConsole.MarkupLine($"[dim]{GameInterface.EscapeMarkup(returnSyncSummary)}[/]");
+    }
+
+    private sealed record ShiningReentrySideEffectPreview(
+        string BeforeReturnCycleId,
+        string AfterReturnCycleId,
+        int BeforeChargesUsedThisReturn,
+        int AfterChargesUsedThisReturn,
+        int ChargesPerReturn,
+        bool GachaChargesReset,
+        ShiningTradeService.ShiningTradeAutoRefreshResult AutoTradeRefresh);
+
+    private async Task<ShiningReentrySideEffectPreview> BuildShiningReentrySideEffectPreviewAsync(
+        JsonObject normalizedShiningRoot,
+        JsonObject projectedSoulRoot)
+    {
+        var projectedShiningRoot = normalizedShiningRoot.DeepClone() as JsonObject ?? new JsonObject();
+        var beforeGacha = normalizedShiningRoot["gachaSystem"] as JsonObject;
+        var beforeCycleId = GetNodeString(beforeGacha?["currentReturnCycleId"]) ?? string.Empty;
+        var beforeChargesUsed = ReadIntNode(beforeGacha?["chargesUsedThisReturn"]);
+        var currentIncarnation = Math.Max(0, ReadIntNode(projectedSoulRoot["currentIncarnation"]));
+
+        ShiningAbodeState.SyncShiningReturnCycle(projectedShiningRoot, currentIncarnation, out var cycleChanged);
+        var afterGacha = ShiningAbodeState.EnsureGachaSystemObject(projectedShiningRoot);
+        var afterCycleId = GetNodeString(afterGacha["currentReturnCycleId"]) ?? ShiningAbodeState.GetTradeCycleId(currentIncarnation);
+        var afterChargesUsed = ReadIntNode(afterGacha["chargesUsedThisReturn"]);
+        var chargesPerReturn = ReadIntNode(afterGacha["chargesPerReturn"]);
+        var autoTradeRefresh = await ShiningTradeService.PreviewAutoRefreshRequestsForCurrentCycleAsync(
+            _fs,
+            projectedSoulRoot,
+            projectedShiningRoot,
+            Math.Max(1, _gameLoop.TurnNumber + 1));
+
+        return new ShiningReentrySideEffectPreview(
+            string.IsNullOrWhiteSpace(beforeCycleId) ? "(empty)" : beforeCycleId,
+            afterCycleId,
+            beforeChargesUsed,
+            afterChargesUsed,
+            chargesPerReturn,
+            cycleChanged && beforeChargesUsed != afterChargesUsed,
+            autoTradeRefresh);
     }
 
     private async Task<bool> TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync()
@@ -1878,7 +1944,10 @@ public partial class GameEngine
         return true;
     }
 
-    private async Task<IReadOnlyList<string>> GetBlockingShiningPendingContractPathsAsync()
+    private Task<IReadOnlyList<string>> GetBlockingShiningPendingContractPathsAsync() =>
+        GetBlockingShiningPendingContractPathsCoreAsync(deleteEmptyFiles: true);
+
+    private async Task<IReadOnlyList<string>> GetBlockingShiningPendingContractPathsCoreAsync(bool deleteEmptyFiles)
     {
         var paths = new[]
         {
@@ -1895,7 +1964,7 @@ public partial class GameEngine
             var state = await ClassifyRequestsPendingFileAsync(path);
             if (state == RequestsPendingFileState.ActiveOrMalformed)
                 blockingPaths.Add(await DescribeBlockingShiningPendingContractAsync(path));
-            else if (state == RequestsPendingFileState.ValidEmpty)
+            else if (state == RequestsPendingFileState.ValidEmpty && deleteEmptyFiles)
                 _fs.DeleteFile(path);
         }
 
@@ -2063,11 +2132,157 @@ public partial class GameEngine
 
     private async Task HandleReturnToChaosSeaFromShiningAbode()
     {
+        if (!await ConfirmOrdinaryReturnToChaosSeaFromShiningAbodeAsync())
+            return;
+
         if (!await TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync())
             return;
 
         GameInterface.RenderRealmTransition(true);
         AnsiConsole.MarkupLine("[blue]🌊 Сияющая Обитель запечатана. Вы возвращаетесь в Море Хаоса.[/]");
+    }
+
+    private async Task<bool> ConfirmOrdinaryReturnToChaosSeaFromShiningAbodeAsync()
+    {
+        if (!_stateManager.CurrentState.IsInShiningAbode)
+            return false;
+
+        var shiningRoot = await TryReadShiningAbodeStateRootAsync();
+        if (shiningRoot == null)
+            return false;
+
+        var rawOwnerStateIssue = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+        if (!string.IsNullOrWhiteSpace(rawOwnerStateIssue))
+        {
+            AnsiConsole.MarkupLine("[red]Состояние Сияющей Обители повреждено; локальный выход в Море Хаоса заблокирован fail-closed до repair.[/]");
+            AnsiConsole.MarkupLine($"[dim]{Markup.Escape(rawOwnerStateIssue)}[/]");
+            return false;
+        }
+
+        if (!string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase))
+        {
+            AnsiConsole.MarkupLine("[yellow]Сияющая Обитель уже запечатана или недоступна для обычного выхода.[/]");
+            return false;
+        }
+
+        if (shiningRoot["preparedIncarnationPackage"] != null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Нельзя покинуть Сияющую Обитель, пока frozen package ожидает bootstrap.[/]");
+            return false;
+        }
+
+        if (shiningRoot["pendingNativeFactionDiscovery"] is not null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока legacy pendingNativeFactionDiscovery non-null или повреждён. Сначала дождитесь закрытия или repair/refund.[/]");
+            AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery[/]");
+            return false;
+        }
+
+        var blockingPendingContracts = await GetBlockingShiningPendingContractPathsCoreAsync(deleteEmptyFiles: false);
+        if (blockingPendingContracts.Count > 0)
+        {
+            AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока есть активные Shining pending contracts. Сначала дождитесь их закрытия или repair.[/]");
+            foreach (var path in blockingPendingContracts)
+                AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(path)}[/]");
+            return false;
+        }
+
+        var previousSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(previousSoulJson))
+        {
+            AnsiConsole.MarkupLine("[red]Не удалось подтвердить текущий realm души. Возврат в Море Хаоса отменён.[/]");
+            return false;
+        }
+
+        JsonObject soulRoot;
+        try
+        {
+            soulRoot = JsonNode.Parse(previousSoulJson) as JsonObject
+                ?? throw new InvalidOperationException("soul_state.json должен быть object root.");
+        }
+        catch
+        {
+            AnsiConsole.MarkupLine("[red]soul_state.json повреждён и не позволяет безопасно запечатать Сияющую Обитель.[/]");
+            return false;
+        }
+
+        var projectedShiningRoot = shiningRoot.DeepClone() as JsonObject ?? new JsonObject();
+        var projectedSoulRoot = soulRoot.DeepClone() as JsonObject ?? new JsonObject();
+        var beforeSoulRealm = GetNodeString(soulRoot["currentRealm"]) ?? "unknown";
+        var beforeShiningAvailability = GetNodeString(shiningRoot["availability"]) ?? "unknown";
+        ShiningAbodeState.SealForChaosSeaReturn(projectedShiningRoot);
+        projectedSoulRoot["currentRealm"] = "Chaos Sea";
+
+        var afterShiningAvailability = GetNodeString(projectedShiningRoot["availability"]) ?? ShiningAbodeState.AvailabilitySealedUntilNextAscension;
+        var previewLines = new List<string>
+        {
+            "[bold blue]Выход из Сияющей Обители в Море Хаоса[/]",
+            "",
+            "[bold]Тип изменения:[/] client-local coordinated write; GM turn не отправляется.",
+            "[bold]Это НЕ New Game+ и НЕ потеря Просветления.[/]",
+            "[bold]Before -> after:[/]",
+            $"  • soul_state.currentRealm: {Markup.Escape(beforeSoulRealm)} -> Chaos Sea",
+            $"  • shining_abode_state.availability: {Markup.Escape(beforeShiningAvailability)} -> {Markup.Escape(afterShiningAvailability)}",
+            "",
+            "[bold]Блокеры уже проверены:[/]",
+            "  • currentRealm == Shining Abode",
+            "  • shining_abode_state.availability == active",
+            "  • preparedIncarnationPackage отсутствует",
+            "  • legacy pendingNativeFactionDiscovery отсутствует",
+            "  • pending_shining_abode_actions.json / trade / founding / realignment / leadership отсутствуют или пусты",
+            "",
+            "[bold]Affected files:[/]",
+            $"  • {ShiningAbodeState.StatePath} [dim](availability seal for Chaos Sea return)[/]",
+            "  • game_state/meta/soul_state.json [dim](currentRealm: Shining Abode -> Chaos Sea)[/]",
+            "",
+            "[bold]Последствия подтверждения:[/] вы покинете активную Обитель; возврат обратно пойдёт через /reenter_shining_abode с отдельным preview."
+        };
+        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", previewLines)))
+        {
+            Header = new PanelHeader(" 🌊 Предпросмотр return_to_chaos_sea ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.SteelBlue1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+        AnsiConsole.Write(new Panel(new Text(new JsonObject
+        {
+            ["operation"] = "return_to_chaos_sea",
+            ["gmTurnInvolved"] = false,
+            ["before"] = new JsonObject
+            {
+                ["soulCurrentRealm"] = beforeSoulRealm,
+                ["shiningAvailability"] = beforeShiningAvailability,
+                ["preparedIncarnationPackagePresent"] = shiningRoot["preparedIncarnationPackage"] != null
+            },
+            ["after"] = new JsonObject
+            {
+                ["soulCurrentRealm"] = "Chaos Sea",
+                ["shiningAvailability"] = afterShiningAvailability
+            },
+            ["blockersChecked"] = new JsonArray(
+                JsonValue.Create("currentRealm == Shining Abode"),
+                JsonValue.Create("shining_abode_state.availability == active"),
+                JsonValue.Create("preparedIncarnationPackage absent"),
+                JsonValue.Create("legacy pendingNativeFactionDiscovery absent"),
+                JsonValue.Create("no active or malformed Shining pending request files")),
+            ["affectedFiles"] = new JsonArray(
+                JsonValue.Create(ShiningAbodeState.StatePath),
+                JsonValue.Create("game_state/meta/soul_state.json"))
+        }.ToJsonString(JsonOpts)))
+        {
+            Header = new PanelHeader(" JSON audit ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.SteelBlue1),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
+
+        var confirmReturn = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            .Title("[bold blue]Подтвердить локальный выход в Море Хаоса?[/]")
+            .HighlightStyle(new Style(Color.SteelBlue1))
+            .AddChoices("✅ Да, выйти", "← Отмена"));
+        return confirmReturn.Contains("Да", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task HandleNewGamePlus()
