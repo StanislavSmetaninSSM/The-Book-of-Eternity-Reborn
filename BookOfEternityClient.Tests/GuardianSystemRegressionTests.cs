@@ -22661,6 +22661,119 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameState_SystemGuardianAttractionUsesSnapshotPresetWhenLiveFileIsRetargeted()
+    {
+        const string guardiansJson = """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_varak",
+              "canonicalName": "Варак",
+              "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+              "manifestation": {
+                "currentDisplayName": "Варак",
+                "formFlexibility": "fixed",
+                "currentPresentationStyle": "masculine",
+                "currentPronouns": "он/его",
+                "appearanceDescription": "Wrong retargeted active guardian."
+              },
+              "manifestationHistory": [],
+              "domain": "Forge",
+              "abode": { "abodeId": "abode_varak", "title": "Горн Варака" },
+              "personalityProfile": {
+                "archetype": "Forge Warden",
+                "speechPattern": "Short and iron",
+                "coreValues": [ "discipline", "fire", "will" ]
+              },
+              "relationshipData": { "currentReputation": 5, "reputationHistory": [], "lastInteraction": null },
+              "abodePower": { "currentPower": 42, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+              "guardianRelationships": [],
+              "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+              "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+              "sourcePreset": { "presetId": "varak", "displayName": "Варак", "version": "1.0", "library": "built_in" }
+            }
+          ],
+          "activeGuardian": {
+            "guardianId": "guardian_varak",
+            "canonicalName": "Варак",
+            "nameVariants": { "default": "Варак", "feminine": null, "masculine": "Варак", "neutral": null },
+            "manifestation": {
+              "currentDisplayName": "Варак",
+              "formFlexibility": "fixed",
+              "currentPresentationStyle": "masculine",
+              "currentPronouns": "он/его",
+              "appearanceDescription": "Wrong retargeted active guardian."
+            },
+            "manifestationHistory": [],
+            "domain": "Forge",
+            "abode": { "abodeId": "abode_varak", "title": "Горн Варака" },
+            "personalityProfile": {
+              "archetype": "Forge Warden",
+              "speechPattern": "Short and iron",
+              "coreValues": [ "discipline", "fire", "will" ]
+            },
+            "relationshipData": { "currentReputation": 5, "reputationHistory": [], "lastInteraction": null },
+            "abodePower": { "currentPower": 42, "tier": "Стабильная", "lastUpdatedAt": "2026-03-24T00:00:00Z", "history": [] },
+            "guardianRelationships": [],
+            "questManagement": { "availableQuests": [], "activeQuests": [], "completedQuests": [] },
+            "gachaSystem": { "chargesPerReturn": 0, "chargesUsedThisReturn": 0, "gachaHistory": [] },
+            "sourcePreset": { "presetId": "varak", "displayName": "Варак", "version": "1.0", "library": "built_in" }
+          }
+        }
+        """;
+        const string preTurnAttractionJson = """
+        {
+          "mode": "system_guardian_attraction",
+          "targetPresetId": "azalia",
+          "targetPresetDisplayName": "Азалия",
+          "targetPresetVersion": "1.0",
+          "sourceLibrary": "built_in",
+          "targetSummary": "Дипломатичная хранительница страсти, власти и преданности.",
+          "renderedPromptPackage": "PresetId: azalia"
+        }
+        """;
+        const string retargetedLiveAttractionJson = """
+        {
+          "mode": "system_guardian_attraction",
+          "targetPresetId": "varak",
+          "targetPresetDisplayName": "Варак",
+          "targetPresetVersion": "1.0",
+          "sourceLibrary": "built_in",
+          "targetSummary": "Воинственный кузнец.",
+          "renderedPromptPackage": "PresetId: varak"
+        }
+        """;
+
+        await WriteRawAsync("game_state/meta/guardians.json", NormalizeGuardianStateJson(guardiansJson));
+        await WriteRawAsync(SystemGuardianLibraryService.AttractionRequestPath, retargetedLiveAttractionJson);
+        await WriteRawAsync("ready/turn_complete.json", """{ "accepted": true }""");
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/preturn_guardians_system_attraction_retargeted.json",
+            NormalizeGuardianStateJson(guardiansJson));
+        await WritePreTurnTrackedFileAsync(
+            SystemGuardianLibraryService.AttractionRequestPath,
+            "test_backups/preturn_system_attraction_azalia.json",
+            preTurnAttractionJson);
+        var manifest = await ReadObjectAsync("game_state/control/pending_turn_snapshot.json");
+        manifest["playerAction"] = "[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia] Игрок зовёт Азалию.";
+        manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
+        await WriteRawAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_system_guardian_attraction_modified", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "system_guardian_attraction_target_mismatch", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Expected, "azalia", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(issue.Actual, "varak", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_SystemGuardianAttractionUsesAuthorityActiveGuardianInsteadOfRawMirror()
     {
         await WriteRawAsync("game_state/meta/guardians.json", """

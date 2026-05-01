@@ -98,6 +98,53 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureAttractionRequestHealthyAsync_ResolvedActiveGuardianClearsAttractionOutsideActiveTurn()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
+        var preset = await _service.FindPresetAsync("azalia", includeDossier: true);
+        Assert.NotNull(preset);
+        await _service.WriteAttractionRequestAsync(preset!);
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [],
+          "activeGuardian": {
+            "guardianId": "guardian_azalia",
+            "canonicalName": "Азалия",
+            "sourcePreset": { "presetId": "azalia", "displayName": "Азалия", "version": "1.0", "library": "built_in" }
+          }
+        }
+        """);
+
+        await _service.EnsureAttractionRequestHealthyAsync("Chaos Sea");
+
+        Assert.False(_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath));
+    }
+
+    [Fact]
+    public async Task EnsureAttractionRequestHealthyAsync_ActiveReadyPreservesResolvedAttractionUntilValidation()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
+        var preset = await _service.FindPresetAsync("azalia", includeDossier: true);
+        Assert.NotNull(preset);
+        await _service.WriteAttractionRequestAsync(preset!);
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """{ "accepted": true }""");
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [],
+          "activeGuardian": {
+            "guardianId": "guardian_azalia",
+            "canonicalName": "Азалия",
+            "sourcePreset": { "presetId": "azalia", "displayName": "Азалия", "version": "1.0", "library": "built_in" }
+          }
+        }
+        """);
+
+        await _service.EnsureAttractionRequestHealthyAsync("Chaos Sea");
+
+        Assert.True(_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath));
+    }
+
+    [Fact]
     public async Task WriteAttractionRequestAsync_ExistingLiveRequest_BlocksReplacement()
     {
         await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "РђР·Р°Р»РёСЏ", "Social", "built_in");

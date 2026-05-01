@@ -900,6 +900,53 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_GuardianTradePendingFileMutation_IsRejectedAsClientOwned()
+    {
+        var preTurnRequest = new
+        {
+            requestId = "guardian_trade_original",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            abodeId = "abode_alpha",
+            returnCycleId = "return_1",
+            currentReputation = 110,
+            derivedTradeSlotCount = 4,
+            effectiveRarityCeilingBonusSteps = 0,
+            projectBonusSignature = "0|0|0",
+            createdAtUtc = "2026-03-26T00:00:00Z",
+            createdAtTurn = 11
+        };
+        var mutatedLiveRequest = new
+        {
+            requestId = "guardian_trade_retargeted",
+            guardianId = "guardian_beta",
+            guardianName = "Варак",
+            abodeId = "abode_beta",
+            returnCycleId = "return_2",
+            currentReputation = 120,
+            derivedTradeSlotCount = 4,
+            effectiveRarityCeilingBonusSteps = 0,
+            projectBonusSignature = "0|0|0",
+            createdAtUtc = "2026-03-26T01:00:00Z",
+            createdAtTurn = 12
+        };
+
+        await WriteJsonAsync(GuardianTradeRequestState.PendingRequestPath, mutatedLiveRequest);
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_trade_request_original.json";
+        await WriteJsonAsync(backupPath, preTurnRequest);
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [GuardianTradeRequestState.PendingRequestPath] = backupPath
+        });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "client_owned_guardian_trade_request_modified", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PreTurnTradeRequestWithoutInventory_FailsResolutionContract()
     {
         var request = new

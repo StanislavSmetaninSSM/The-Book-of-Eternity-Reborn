@@ -2510,7 +2510,7 @@ public partial class ValidationService
 
             ValidateSystemGuardianAttractionStateFile(doc.RootElement, SystemGuardianLibraryService.AttractionRequestPath, issues);
 
-            var targetPresetId = GetFirstNonEmptyString(doc.RootElement, "targetPresetId");
+            var targetPresetId = await ResolveSystemGuardianAttractionAuthorityPresetIdAsync(doc.RootElement, issues);
             if (string.IsNullOrWhiteSpace(targetPresetId))
                 return;
 
@@ -2566,6 +2566,84 @@ public partial class ValidationService
                 code: "system_guardian_attraction_invalid_json",
                 section: "SystemGuardianPresets"));
         }
+    }
+
+    private async Task<string?> ResolveSystemGuardianAttractionAuthorityPresetIdAsync(
+        JsonElement liveRoot,
+        List<ValidationIssue> issues)
+    {
+        var targetPresetId = GetFirstNonEmptyString(liveRoot, "targetPresetId");
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
+            return targetPresetId;
+
+        if (!_fs.FileExists("ready/turn_complete.json") &&
+            !_fs.FileExists("ready/turn_error.json"))
+        {
+            return targetPresetId;
+        }
+
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+            lookup.Manifest,
+            SystemGuardianLibraryService.AttractionRequestPath);
+        if (!string.IsNullOrWhiteSpace(snapshotJson))
+        {
+            try
+            {
+                using var snapshotDoc = JsonDocument.Parse(snapshotJson);
+                if (snapshotDoc.RootElement.ValueKind == JsonValueKind.Object)
+                {
+                    var snapshotPresetId = GetFirstNonEmptyString(snapshotDoc.RootElement, "targetPresetId");
+                    if (!string.IsNullOrWhiteSpace(snapshotPresetId))
+                        targetPresetId = snapshotPresetId;
+                }
+            }
+            catch
+            {
+                issues.Add(new ValidationIssue(
+                    SystemGuardianLibraryService.AttractionRequestPath,
+                    IssueSeverity.Error,
+                    "validated snapshot system_guardian_attraction.json не читается как валидный JSON",
+                    code: "system_guardian_attraction_invalid_validated_snapshot",
+                    section: "SystemGuardianPresets"));
+            }
+        }
+
+        var actionPresetId = TryParseSystemGuardianAttractionPresetFromAction(lookup.Manifest.PlayerAction);
+        if (string.IsNullOrWhiteSpace(actionPresetId))
+            return targetPresetId;
+
+        if (!string.IsNullOrWhiteSpace(targetPresetId) &&
+            !string.Equals(targetPresetId, actionPresetId, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(new ValidationIssue(
+                SystemGuardianLibraryService.AttractionRequestPath,
+                IssueSeverity.Error,
+                "system_guardian_attraction.json не совпадает с preset id из playerAction marker.",
+                code: "system_guardian_attraction_action_marker_mismatch",
+                section: "SystemGuardianPresets",
+                expected: actionPresetId,
+                actual: targetPresetId,
+                repairHint: "Сохраняй один и тот же preset id в [CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: ...] и system_guardian_attraction.json."));
+        }
+
+        return actionPresetId;
+    }
+
+    private static string? TryParseSystemGuardianAttractionPresetFromAction(string? playerAction)
+    {
+        if (string.IsNullOrWhiteSpace(playerAction))
+            return null;
+
+        var match = Regex.Match(
+            playerAction,
+            @"\[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION:\s*(?<preset>[^\]\r\n]+)\]",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        if (!match.Success)
+            return null;
+
+        var presetId = match.Groups["preset"].Value.Trim();
+        return string.IsNullOrWhiteSpace(presetId) ? null : presetId;
     }
 
     private void ValidatePendingAbodeOfferingStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
