@@ -4073,7 +4073,7 @@ public partial class ExplorerMode
 
             var offer = refreshedView.Offers[selectedIndex];
             var canBuy = !offer.SoldOut && feathers >= offer.PriceInFeathers;
-            var decision = ShowGuardianTradeBuyPreview(offer, feathers, canBuy);
+            var decision = ShowGuardianTradeBuyPreview(refreshedView, offer, feathers, canBuy);
             if (decision != GuardianTradeBuyDecision.Buy)
                 continue;
 
@@ -4094,7 +4094,7 @@ public partial class ExplorerMode
         Buy
     }
 
-    private GuardianTradeBuyDecision ShowGuardianTradeBuyPreview(Services.GuardianTradeService.GuardianTradeOffer offer, int currentFeathers, bool canBuy)
+    private GuardianTradeBuyDecision ShowGuardianTradeBuyPreview(Services.GuardianTradeService.GuardianTradeView view, Services.GuardianTradeService.GuardianTradeOffer offer, int currentFeathers, bool canBuy)
     {
         using var relicDoc = JsonDocument.Parse(offer.RelicData.ToJsonString());
         var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
@@ -4102,15 +4102,18 @@ public partial class ExplorerMode
         lines.Insert(2, $"  🛍️ Источник витрины: [cyan]{Markup.Escape(GuardianTradeDisplayDomain(offer.DomainTag))}[/]");
         lines.Insert(3, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
         lines.Insert(4, $"  🪶 После покупки: [gold1]{Math.Max(0, currentFeathers - offer.PriceInFeathers)}[/]");
-        lines.Insert(5, $"  slotId: [dim]{Markup.Escape(offer.SlotId)}[/]");
+        lines.Insert(5, $"  guardianId: [dim]{Markup.Escape(view.GuardianId)}[/]");
+        lines.Insert(6, $"  guardianName: [white]{Markup.Escape(view.GuardianName)}[/]");
+        lines.Insert(7, $"  tradeCycleId: [dim]{Markup.Escape(view.TradeCycleId)}[/]");
+        lines.Insert(8, $"  slotId: [dim]{Markup.Escape(offer.SlotId)}[/]");
 
         if (offer.SoldOut)
         {
-            lines.Insert(6, "  [red]Статус витрины: слот уже распродан в текущем возвращении.[/]");
+            lines.Insert(9, "  [red]Статус витрины: слот уже распродан в текущем возвращении.[/]");
         }
         else if (currentFeathers < offer.PriceInFeathers)
         {
-            lines.Insert(6, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
+            lines.Insert(9, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
         }
         lines.Add("");
         lines.Add("[bold]Canonical local transaction:[/]");
@@ -4131,16 +4134,7 @@ public partial class ExplorerMode
         });
         WriteJsonAuditPanel(
             "Полный JSON покупки у Хранителя",
-            new JsonObject
-            {
-                ["slotId"] = offer.SlotId,
-                ["priceInFeathers"] = offer.PriceInFeathers,
-                ["currentFeathers"] = currentFeathers,
-                ["projectedFeathers"] = Math.Max(0, currentFeathers - offer.PriceInFeathers),
-                ["soldOut"] = offer.SoldOut,
-                ["domainTag"] = offer.DomainTag,
-                ["relicData"] = offer.RelicData.DeepClone()
-            },
+            BuildGuardianBuyAuditNode(view, offer, currentFeathers),
             Color.Gold1);
 
         var actions = new List<string>();
@@ -4211,7 +4205,7 @@ public partial class ExplorerMode
 
             var offer = offers[selectedIndex];
             var currentFeathers = await ReadInkFeathersBalance();
-            var confirm = ShowGuardianTradeSellPreview(offer, tradeView.GuardianName, currentFeathers);
+            var confirm = ShowGuardianTradeSellPreview(tradeView, offer, currentFeathers);
             if (!confirm)
                 continue;
 
@@ -4226,16 +4220,18 @@ public partial class ExplorerMode
         }
     }
 
-    private bool ShowGuardianTradeSellPreview(Services.GuardianTradeService.GuardianSellOffer offer, string guardianName, int currentFeathers)
+    private bool ShowGuardianTradeSellPreview(Services.GuardianTradeService.GuardianTradeView view, Services.GuardianTradeService.GuardianSellOffer offer, int currentFeathers)
     {
         using var relicDoc = JsonDocument.Parse(offer.RelicData.ToJsonString());
         var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
         lines.Insert(1, $"  💰 Вы получите: [yellow]{offer.PriceInFeathers} 🪶[/]");
         lines.Insert(2, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
         lines.Insert(3, $"  🪶 После продажи: [gold1]{currentFeathers + offer.PriceInFeathers}[/]");
-        lines.Insert(4, $"  🛡️ Покупатель: [cyan]{Markup.Escape(guardianName)}[/]");
-        lines.Insert(5, "  🔁 После продажи реликвия будет удалена из хранилища души и появится у этого Хранителя в обратном выкупе.");
-        lines.Insert(6, "  [yellow]Продажу нельзя откатить без будущего обратного выкупа у того же Хранителя.[/]");
+        lines.Insert(4, $"  🛡️ Покупатель: [cyan]{Markup.Escape(view.GuardianName)}[/]");
+        lines.Insert(5, $"  guardianId: [dim]{Markup.Escape(view.GuardianId)}[/]");
+        lines.Insert(6, $"  tradeCycleId: [dim]{Markup.Escape(view.TradeCycleId)}[/]");
+        lines.Insert(7, "  🔁 После продажи реликвия будет удалена из хранилища души и появится у этого Хранителя в обратном выкупе.");
+        lines.Insert(8, "  [yellow]Продажу нельзя откатить без будущего обратного выкупа у того же Хранителя.[/]");
         lines.Add("");
         lines.Add("[bold]Canonical local transaction:[/]");
         lines.Add("  • game_state/meta/soul_state.json: Ink Feathers увеличиваются на sellPrice.");
@@ -4252,23 +4248,56 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
-        WriteJsonAuditPanel("Полный JSON продаваемой Реликвии Души", BuildGuardianSellAuditNode(offer, guardianName, currentFeathers), Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON продаваемой Реликвии Души", BuildGuardianSellAuditNode(view, offer, currentFeathers), Color.Gold1);
 
         return Confirm(
             $"Продать «{offer.Name}» за {offer.PriceInFeathers} 🪶? Реликвия перейдёт в обратный выкуп у Хранителя.",
             false);
     }
 
-    internal static JsonObject BuildGuardianSellAuditNode(Services.GuardianTradeService.GuardianSellOffer offer, string guardianName, int currentFeathers) =>
+    internal static JsonObject BuildGuardianBuyAuditNode(Services.GuardianTradeService.GuardianTradeView view, Services.GuardianTradeService.GuardianTradeOffer offer, int currentFeathers)
+    {
+        var relicId = GetNodeString(offer.RelicData["relicId"]) ?? GetNodeString(offer.RelicData["id"]) ?? string.Empty;
+        return new JsonObject
+        {
+            ["guardianId"] = view.GuardianId,
+            ["guardianName"] = view.GuardianName,
+            ["tradeCycleId"] = view.TradeCycleId,
+            ["slotId"] = offer.SlotId,
+            ["relicId"] = relicId,
+            ["relicName"] = offer.Name,
+            ["rarity"] = offer.Rarity,
+            ["priceInFeathers"] = offer.PriceInFeathers,
+            ["currentFeathers"] = currentFeathers,
+            ["projectedFeathers"] = Math.Max(0, currentFeathers - offer.PriceInFeathers),
+            ["soldOut"] = offer.SoldOut,
+            ["domainTag"] = offer.DomainTag,
+            ["transactionKind"] = "guardian_trade_buy",
+            ["transactionCorrelationId"] = $"guardian_trade_buy:{view.GuardianId}:{view.TradeCycleId}:{offer.SlotId}:{relicId}",
+            ["affectedFiles"] = new JsonArray
+            {
+                "game_state/meta/soul_state.json",
+                "game_state/meta/guardians.json"
+            },
+            ["localTransaction"] = "mark guardian tradeInventory slot soldOut, add relicData to soulRelics.stored, decrease Ink Feathers",
+            ["relicData"] = offer.RelicData.DeepClone()
+        };
+    }
+
+    internal static JsonObject BuildGuardianSellAuditNode(Services.GuardianTradeService.GuardianTradeView view, Services.GuardianTradeService.GuardianSellOffer offer, int currentFeathers) =>
         new()
         {
-            ["guardianName"] = guardianName,
+            ["guardianId"] = view.GuardianId,
+            ["guardianName"] = view.GuardianName,
+            ["tradeCycleId"] = view.TradeCycleId,
             ["relicId"] = offer.RelicId,
             ["relicName"] = offer.Name,
             ["rarity"] = offer.Rarity,
             ["sellPriceInFeathers"] = offer.PriceInFeathers,
             ["currentFeathers"] = currentFeathers,
             ["projectedFeathers"] = currentFeathers + offer.PriceInFeathers,
+            ["transactionKind"] = "guardian_trade_sell",
+            ["transactionCorrelationId"] = $"guardian_trade_sell:{view.GuardianId}:{view.TradeCycleId}:{offer.RelicId}",
             ["affectedFiles"] = new JsonArray
             {
                 "game_state/meta/soul_state.json",
@@ -4343,7 +4372,7 @@ public partial class ExplorerMode
                 return;
 
             var offer = selectedOffer;
-            if (!ShowGuardianTradeBuybackPreview(offer, feathers, feathers >= offer.PriceInFeathers))
+            if (!ShowGuardianTradeBuybackPreview(tradeView, offer, feathers, feathers >= offer.PriceInFeathers))
                 continue;
 
             var result = await _guardianTradeService.BuyBackAsync(guardianId, offer.BuybackEntryId, await TryReadCurrentTurnNumberAsync());
@@ -4357,19 +4386,22 @@ public partial class ExplorerMode
         }
     }
 
-    private bool ShowGuardianTradeBuybackPreview(Services.GuardianTradeService.GuardianBuybackOffer offer, int currentFeathers, bool canBuyBack)
+    private bool ShowGuardianTradeBuybackPreview(Services.GuardianTradeService.GuardianTradeView view, Services.GuardianTradeService.GuardianBuybackOffer offer, int currentFeathers, bool canBuyBack)
     {
         using var relicDoc = JsonDocument.Parse(offer.RelicData.ToJsonString());
         var lines = BuildSoulRelicDetailLines(offer.Name, relicDoc.RootElement, null, residentDoc: null, guardiansDoc: null);
         lines.Insert(1, $"  🔁 Цена обратного выкупа: [yellow]{offer.PriceInFeathers} 🪶[/]");
         lines.Insert(2, $"  🪶 У вас сейчас: [gold1]{currentFeathers}[/]");
         lines.Insert(3, $"  🪶 После выкупа: [gold1]{Math.Max(0, currentFeathers - offer.PriceInFeathers)}[/]");
-        lines.Insert(4, $"  buybackEntryId: [dim]{Markup.Escape(offer.BuybackEntryId)}[/]");
-        lines.Insert(5, $"  💸 Продана ранее за: [grey]{offer.SoldForPrice} 🪶[/]");
-        lines.Insert(6, $"  🕰 Продана на ходу: [grey]{offer.SoldAtTurn}[/]");
+        lines.Insert(4, $"  guardianId: [dim]{Markup.Escape(view.GuardianId)}[/]");
+        lines.Insert(5, $"  guardianName: [white]{Markup.Escape(view.GuardianName)}[/]");
+        lines.Insert(6, $"  tradeCycleId: [dim]{Markup.Escape(view.TradeCycleId)}[/]");
+        lines.Insert(7, $"  buybackEntryId: [dim]{Markup.Escape(offer.BuybackEntryId)}[/]");
+        lines.Insert(8, $"  💸 Продана ранее за: [grey]{offer.SoldForPrice} 🪶[/]");
+        lines.Insert(9, $"  🕰 Продана на ходу: [grey]{offer.SoldAtTurn}[/]");
 
         if (currentFeathers < offer.PriceInFeathers)
-            lines.Insert(7, "  [yellow]Статус выкупа: пока не хватает Чернильных Перьев.[/]");
+            lines.Insert(10, "  [yellow]Статус выкупа: пока не хватает Чернильных Перьев.[/]");
         lines.Add("");
         lines.Add("[bold]Canonical local transaction:[/]");
         lines.Add("  • game_state/meta/soul_state.json: Ink Feathers уменьшаются на priceInFeathers.");
@@ -4388,7 +4420,7 @@ public partial class ExplorerMode
         });
         WriteJsonAuditPanel(
             "Полный JSON обратного выкупа у Хранителя",
-            BuildGuardianBuybackAuditNode(offer, currentFeathers),
+            BuildGuardianBuybackAuditNode(view, offer, currentFeathers),
             Color.Gold1);
 
         var actions = new List<string>();
@@ -4404,9 +4436,12 @@ public partial class ExplorerMode
         return action.Contains("Выкупить", StringComparison.OrdinalIgnoreCase);
     }
 
-    internal static JsonObject BuildGuardianBuybackAuditNode(Services.GuardianTradeService.GuardianBuybackOffer offer, int currentFeathers) =>
+    internal static JsonObject BuildGuardianBuybackAuditNode(Services.GuardianTradeService.GuardianTradeView view, Services.GuardianTradeService.GuardianBuybackOffer offer, int currentFeathers) =>
         new()
         {
+            ["guardianId"] = view.GuardianId,
+            ["guardianName"] = view.GuardianName,
+            ["tradeCycleId"] = view.TradeCycleId,
             ["buybackEntryId"] = offer.BuybackEntryId,
             ["relicId"] = offer.RelicId,
             ["relicName"] = offer.Name,
@@ -4416,6 +4451,8 @@ public partial class ExplorerMode
             ["projectedFeathers"] = Math.Max(0, currentFeathers - offer.PriceInFeathers),
             ["soldForPrice"] = offer.SoldForPrice,
             ["soldAtTurn"] = offer.SoldAtTurn,
+            ["transactionKind"] = "guardian_trade_buyback",
+            ["transactionCorrelationId"] = $"guardian_trade_buyback:{view.GuardianId}:{view.TradeCycleId}:{offer.BuybackEntryId}:{offer.RelicId}",
             ["description"] = offer.Description,
             ["relicData"] = offer.RelicData.DeepClone()
         };

@@ -152,6 +152,7 @@ public sealed class ExplorerModeAfterlifeAuditSurfaceTests
     [Fact]
     public void GuardianBuybackAuditNode_ExposesTransactionAndProjectedBalance()
     {
+        var view = CreateGuardianTradeView();
         var offer = new GuardianTradeService.GuardianBuybackOffer(
             "buyback_relic_001",
             "relic_oath_001",
@@ -168,8 +169,11 @@ public sealed class ExplorerModeAfterlifeAuditSurfaceTests
                 ["rarity"] = "Uncommon"
             });
 
-        var audit = ExplorerMode.BuildGuardianBuybackAuditNode(offer, currentFeathers: 100);
+        var audit = ExplorerMode.BuildGuardianBuybackAuditNode(view, offer, currentFeathers: 100);
 
+        Assert.Equal("guardian_alpha", audit["guardianId"]?.GetValue<string>());
+        Assert.Equal("Азалия", audit["guardianName"]?.GetValue<string>());
+        Assert.Equal("return_7", audit["tradeCycleId"]?.GetValue<string>());
         Assert.Equal("buyback_relic_001", audit["buybackEntryId"]?.GetValue<string>());
         Assert.Equal("relic_oath_001", audit["relicId"]?.GetValue<string>());
         Assert.Equal(45, audit["priceInFeathers"]?.GetValue<int>());
@@ -177,6 +181,88 @@ public sealed class ExplorerModeAfterlifeAuditSurfaceTests
         Assert.Equal(55, audit["projectedFeathers"]?.GetValue<int>());
         Assert.Equal(30, audit["soldForPrice"]?.GetValue<int>());
         Assert.Equal(118, audit["soldAtTurn"]?.GetValue<int>());
+        Assert.Equal("guardian_trade_buyback", audit["transactionKind"]?.GetValue<string>());
+        Assert.Contains("guardian_alpha:return_7:buyback_relic_001", audit["transactionCorrelationId"]?.GetValue<string>() ?? string.Empty, StringComparison.Ordinal);
         Assert.NotNull(audit["relicData"]?.AsObject());
     }
+
+    [Fact]
+    public void GuardianBuyAuditNode_ExposesGuardianTradeCycleAndSlotIds()
+    {
+        var view = CreateGuardianTradeView();
+        var offer = new GuardianTradeService.GuardianTradeOffer(
+            "slot_lantern_001",
+            "Фонарь Возврата",
+            "Rare",
+            70,
+            "Светит путём к старым обетам.",
+            "memory",
+            false,
+            new JsonObject
+            {
+                ["relicId"] = "relic_lantern_001",
+                ["name"] = "Фонарь Возврата",
+                ["rarity"] = "Rare"
+            });
+
+        var audit = ExplorerMode.BuildGuardianBuyAuditNode(view, offer, currentFeathers: 120);
+
+        Assert.Equal("guardian_alpha", audit["guardianId"]?.GetValue<string>());
+        Assert.Equal("Азалия", audit["guardianName"]?.GetValue<string>());
+        Assert.Equal("return_7", audit["tradeCycleId"]?.GetValue<string>());
+        Assert.Equal("slot_lantern_001", audit["slotId"]?.GetValue<string>());
+        Assert.Equal("relic_lantern_001", audit["relicId"]?.GetValue<string>());
+        Assert.Equal("guardian_trade_buy", audit["transactionKind"]?.GetValue<string>());
+        Assert.Contains("guardian_alpha:return_7:slot_lantern_001:relic_lantern_001", audit["transactionCorrelationId"]?.GetValue<string>() ?? string.Empty, StringComparison.Ordinal);
+        Assert.NotNull(audit["relicData"]?.AsObject());
+    }
+
+    [Fact]
+    public void GuardianSellAuditNode_ExposesGuardianTradeCycleAndGeneratedBuybackFields()
+    {
+        var view = CreateGuardianTradeView();
+        var offer = new GuardianTradeService.GuardianSellOffer(
+            "relic_sold_001",
+            "Пепельное Кольцо",
+            "Uncommon",
+            35,
+            "Можно продать Хранителю.",
+            new JsonObject
+            {
+                ["relicId"] = "relic_sold_001",
+                ["name"] = "Пепельное Кольцо",
+                ["rarity"] = "Uncommon"
+            });
+
+        var audit = ExplorerMode.BuildGuardianSellAuditNode(view, offer, currentFeathers: 10);
+
+        Assert.Equal("guardian_alpha", audit["guardianId"]?.GetValue<string>());
+        Assert.Equal("Азалия", audit["guardianName"]?.GetValue<string>());
+        Assert.Equal("return_7", audit["tradeCycleId"]?.GetValue<string>());
+        Assert.Equal("relic_sold_001", audit["relicId"]?.GetValue<string>());
+        Assert.Equal("guardian_trade_sell", audit["transactionKind"]?.GetValue<string>());
+        Assert.Contains("guardian_alpha:return_7:relic_sold_001", audit["transactionCorrelationId"]?.GetValue<string>() ?? string.Empty, StringComparison.Ordinal);
+        Assert.Contains(audit["generatedBuybackEntryFields"]!.AsArray().Select(node => node!.GetValue<string>()), value => value == "buybackEntryId");
+    }
+
+    private static GuardianTradeService.GuardianTradeView CreateGuardianTradeView() =>
+        new(
+            "guardian_alpha",
+            "Азалия",
+            "memory",
+            "Память",
+            72,
+            "trusted",
+            false,
+            null,
+            "return_7",
+            true,
+            false,
+            false,
+            null,
+            null,
+            null,
+            null,
+            Array.Empty<GuardianTradeService.GuardianTradeOffer>(),
+            Array.Empty<GuardianTradeService.GuardianBuybackOffer>());
 }
