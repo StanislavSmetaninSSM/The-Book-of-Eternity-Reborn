@@ -34,7 +34,7 @@ public partial class ExplorerMode
         new(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "Состав резидентов Обители", "UpdateGuardianAbodeResidents + UpdateGuardianAbodeResidentRosterReceipts"),
         new(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "Разговор/история резидента Обители", "residentInteractionLogUpdates or resident history log + matching interaction receipts"),
         new(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "Переход резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"),
-        new(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "Манифестация резидента в следующей жизни", "MortalWorldProfile-only closure after bootstrap; in afterlife treat as blocker/repair signal"),
+        new(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "Манифестация резидента в следующей жизни", "MortalWorldProfile-only closure after bootstrap; valid files are preserved in afterlife, malformed files require repair"),
         new(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "Социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"),
         new(ShiningCoreActionRequestState.PendingActionsRequestPath, "Core-действие Сияющей Обители", "shining_abode_state.coreActionReceipts[] + exact canonical state projection", ShiningOnly: true),
         new(ShiningTradeRequestState.PendingRequestsPath, "Торговая витрина Сияющей фракции", "factions[].tradeInventory + tradeInventoryReceipts[]", ShiningOnly: true),

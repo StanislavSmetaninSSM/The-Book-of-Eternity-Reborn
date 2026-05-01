@@ -352,6 +352,47 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
+    public async Task BuildSystemReminderFragmentAsync_ChaosSeaTreatsPendingPoliticsAsWrongRealm()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await ShiningFactionRequestState.WriteRealignmentRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionRealignmentRequest
+            {
+                RequestId = "realignment_req_liora",
+                ResidentId = "resident_liora",
+                ResidentName = "Лиора",
+                SourceFactionId = "faction_old",
+                SourceFactionName = "Старый Дом",
+                TargetFactionId = "faction_dawn",
+                TargetFactionName = "Хор Рассвета",
+                RealignmentMode = ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+                FactionLoyaltyLevel = 73,
+                FactionLoyaltyTier = "trusted",
+                FactionRestlessness = 18,
+                FactionRealignmentState = "ready_to_realign",
+                CreatedAtTurn = 12,
+                CreatedAtUtc = "2026-04-27T12:00:00Z"
+            });
+
+            var reminder = await ShiningFactionRequestState.BuildSystemReminderFragmentAsync(fs, "Chaos Sea");
+
+            Assert.NotNull(reminder);
+            Assert.Contains("WRONG REALM", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("repair-only", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("realignment_req_liora", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Resolve founding/realignment/leadership", reminder, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_ChaosSeaPreservesActivePendingRequests()
     {
         var root = CreateTempRoot();

@@ -815,7 +815,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("game_state/factions/*", doc, StringComparison.Ordinal);
             Assert.Contains("pending_npc_social_interactions.json", doc, StringComparison.Ordinal);
             Assert.Contains("MortalWorldProfile-only", doc, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("stale/repair", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("repair", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("wrong-realm", doc, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.NotEmpty(FileMapping.FieldToFile.Where(pair =>

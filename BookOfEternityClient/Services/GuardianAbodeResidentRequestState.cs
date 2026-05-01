@@ -594,7 +594,11 @@ internal static class GuardianAbodeResidentRequestState
             await EnsureInteractionRequestsHealthyAsync(fs);
             await EnsureTransferRequestsHealthyAsync(fs);
             if (!manifestationFileMalformed)
-                ClearManifestationRequest(fs);
+            {
+                var manifestationRequests = await ReadManifestationRequestsAsync(fs);
+                if (manifestationRequests.Count == 0)
+                    ClearManifestationRequest(fs);
+            }
         }
     }
 
@@ -602,8 +606,6 @@ internal static class GuardianAbodeResidentRequestState
     {
         if (!IsMortalRealm(currentRealm))
         {
-            if (!await IsManifestationRequestFileMalformedAsync(fs))
-                ClearManifestationRequest(fs);
             return;
         }
 
@@ -735,13 +737,49 @@ internal static class GuardianAbodeResidentRequestState
             var rosterRequests = await ReadResidentsRequestsAsync(fs);
             var interactionRequests = await ReadInteractionRequestsAsync(fs);
             var transferRequests = await ReadTransferRequestsAsync(fs);
+            var manifestationMalformed = await IsManifestationRequestFileMalformedAsync(fs);
             var pressuredResidents = await ReadResidentPressureReminderInfosAsync(fs, transferRequests);
-            if (rosterRequests.Count == 0 && interactionRequests.Count == 0 && transferRequests.Count == 0 && pressuredResidents.Count == 0)
+            var afterlifeManifestationRequests = manifestationMalformed ? Array.Empty<PendingResidentCompanionManifestationRequest>() : await ReadManifestationRequestsAsync(fs);
+            if (rosterRequests.Count == 0 &&
+                interactionRequests.Count == 0 &&
+                transferRequests.Count == 0 &&
+                pressuredResidents.Count == 0 &&
+                !manifestationMalformed &&
+                afterlifeManifestationRequests.Count == 0)
                 return null;
 
             var rosterLines = new List<string>();
+            if (manifestationMalformed)
+            {
+                rosterLines.AddRange(new[]
+                {
+                    "COMPANION MANIFESTATION REQUEST CORRUPTION:",
+                    $"There is malformed {PendingManifestationRequestPath}.",
+                    "This is a MortalWorldProfile-only next-life contract. In afterlife, preserve it for repair; do not materialize mortal NPCs or close it with afterlife receipts."
+                });
+            }
+            else if (afterlifeManifestationRequests.Count > 0)
+            {
+                rosterLines.AddRange(new[]
+                {
+                    "COMPANION MANIFESTATION REQUESTS PRESERVED FOR NEXT LIFE:",
+                    $"There are {afterlifeManifestationRequests.Count} pending entries in pending_resident_companion_manifestation_request.json.",
+                    "This file may originate from afterlife resident rewards or imprint-bearing Soul Relics, but it closes only after Mortal bootstrap.",
+                    "In Chaos Sea or Shining Abode, do not materialize mortal NPCs, encounters, NPC social journals, quests, or afterlife receipts from it."
+                });
+
+                foreach (var request in afterlifeManifestationRequests.Take(ReminderEntryLimit))
+                {
+                    var snapshotSummary = DescribeManifestationRequestSnapshot(request);
+                    rosterLines.Add($"- requestId={request.RequestId}, relicId={request.RelicId}, source={request.ManifestationSource}, residentId={request.SourceResidentId}, imprintId={request.SourceImprintId}, targetIncarnation={request.TargetIncarnation}{snapshotSummary}");
+                }
+            }
+
             if (rosterRequests.Count > 0)
             {
+                if (rosterLines.Count > 0)
+                    rosterLines.Add(string.Empty);
+
                 rosterLines.AddRange(new[]
                 {
                     "ABODE RESIDENT ROSTER REQUESTS:",

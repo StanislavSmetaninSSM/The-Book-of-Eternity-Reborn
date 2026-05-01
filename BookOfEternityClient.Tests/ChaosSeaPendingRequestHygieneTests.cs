@@ -1,4 +1,5 @@
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Text.Json;
@@ -359,7 +360,7 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
     [Theory]
     [InlineData("Chaos Sea")]
     [InlineData("Shining Abode")]
-    public async Task ValidateGameStateAsync_PendingManifestationRequestInAfterlife_Fails(string currentRealm)
+    public async Task ValidateGameStateAsync_ValidPendingManifestationRequestInAfterlife_IsPreserved(string currentRealm)
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", $$"""
         {
@@ -396,8 +397,30 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
 
         var issues = await _validator.ValidateGameStateAsync();
 
+        Assert.DoesNotContain(issues, issue =>
+            issue.FilePath.Contains("pending_resident_companion_manifestation_request", StringComparison.OrdinalIgnoreCase) &&
+            issue.Severity == IssueSeverity.Error);
+    }
+
+    [Theory]
+    [InlineData("Chaos Sea")]
+    [InlineData("Shining Abode")]
+    public async Task ValidateGameStateAsync_MalformedPendingManifestationRequestInAfterlife_FailsClosed(string currentRealm)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", $$"""
+        {
+          "currentRealm": "{{currentRealm}}",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 10, "total": 10 },
+          "soulRelics": { "equipped": [], "stored": [] }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "{ malformed");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
         Assert.Contains(issues, issue =>
-            string.Equals(issue.Code, "pending_resident_companion_manifestation_afterlife_forbidden", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "pending_resident_companion_manifestation_afterlife_malformed", StringComparison.OrdinalIgnoreCase));
     }
 
     private async Task<List<ValidationIssue>> InvokeValidationAsync(string methodName)

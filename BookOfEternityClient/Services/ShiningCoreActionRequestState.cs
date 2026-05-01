@@ -449,6 +449,18 @@ internal static class ShiningCoreActionRequestState
             return sb.ToString();
         }
 
+        if (!IsShiningRealm(currentRealm) && requests.Count > 0)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SHINING ABODE CORE ACTION WRONG REALM:");
+            sb.AppendLine("  - currentRealm is not Shining Abode, so pending_shining_abode_actions.json is repair-only context here.");
+            sb.AppendLine("  - Preserve the file; do not resolve Shining core receipts or mutate Shining state from this Chaos Sea turn.");
+            sb.AppendLine("  - Re-enter Shining Abode or repair/clear the contract through the proper Shining runtime path before ordinary processing.");
+            sb.AppendLine($"  - Pending requests detected: {requests.Count}");
+            AppendSerializedJsonBlock(sb, "Wrong-realm pending core-action DTOs", requests);
+            return sb.ToString();
+        }
+
         if (requests.Count == 1)
         {
             var request = requests[0];
