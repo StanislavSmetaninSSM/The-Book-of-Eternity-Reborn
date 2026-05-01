@@ -1052,6 +1052,25 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningProjectedStateFragmentPreviewIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains("projectedStateFragment", doc, StringComparison.Ordinal);
+            Assert.Contains("beforeFullShiningRoot", doc, StringComparison.Ordinal);
+            Assert.Contains("afterFullShiningRoot", doc, StringComparison.Ordinal);
+            Assert.Contains("audit", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("not", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("output file", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("coreActionReceipts[]", doc, StringComparison.Ordinal);
+            Assert.Contains("effectPayload", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ResidentCompanionManifestationHandoffIsDocumentedForAfterlifeOrigin()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

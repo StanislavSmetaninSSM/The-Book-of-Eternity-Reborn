@@ -126,6 +126,49 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal(string.Empty, GetString(receipt["projectId"]));
     }
 
+    [Fact]
+    public void AcceptedFactionFoundingPreview_UsesCanonicalHallDescriptionAndNestedCharter()
+    {
+        var request = new JsonObject
+        {
+            ["requestId"] = "founding_preview_custom",
+            ["proposedFactionId"] = "faction_custom",
+            ["proposedHallId"] = "hall_custom",
+            ["proposedHallName"] = "Зал Глубокого Согласия",
+            ["proposedHallDescription"] = "Каноническое описание зала из pending request.",
+            ["proposedHallServiceTags"] = new JsonArray("social", "memory"),
+            ["supportingResidentIds"] = new JsonArray("resident_a", "resident_b", "resident_c"),
+            ["quotedCostFeathers"] = ShiningFactionRequestState.FactionFoundingCostFeathers,
+            ["quotedCostLightSparks"] = ShiningFactionRequestState.FactionFoundingCostLightSparks,
+            ["proposedFactionName"] = "WRONG root faction name",
+            ["factionSummary"] = "WRONG root summary",
+            ["favoredProjectArchetype"] = "WRONG_root_archetype",
+            ["patronEffectFamily"] = "WRONG_root_family",
+            ["charter"] = new JsonObject
+            {
+                ["factionName"] = "Орден Глубокого Согласия",
+                ["summary"] = "Nested charter summary must be copied exactly.",
+                ["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeRemembrance,
+                ["patronEffectFamily"] = ShiningAbodeState.EffectFamilyLore
+            }
+        };
+
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingFoundingsRequestPath,
+            request);
+        var accepted = scaffold["accepted"]!.AsObject();
+        var delta = accepted["acceptedStateDelta"]!.AsObject();
+        var hall = delta["halls.add"]!.AsObject();
+        var charter = delta["factions.add"]!["charter"]!.AsObject();
+
+        Assert.Equal("Каноническое описание зала из pending request.", GetString(hall["description"]));
+        Assert.False(hall.ContainsKey("hallDescription"));
+        Assert.Equal("Орден Глубокого Согласия", GetString(charter["factionName"]));
+        Assert.Equal("Nested charter summary must be copied exactly.", GetString(charter["summary"]));
+        Assert.Equal(ShiningAbodeState.ProjectArchetypeRemembrance, GetString(charter["favoredArchetype"]));
+        Assert.Equal(ShiningAbodeState.EffectFamilyLore, GetString(charter["patronEffectFamily"]));
+    }
+
     private static JsonObject BuildReceiptScaffold(
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
         string status)
@@ -143,6 +186,22 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             modifiers: null) ?? throw new MissingMethodException(nameof(ExplorerMode), "BuildShiningCoreExpectedReceiptAuditNode");
 
         return (JsonObject)method.Invoke(null, [request, status, 0])!;
+    }
+
+    private static JsonObject BuildPoliticalExpectedReceiptAuditNode(string pendingPath, JsonObject request)
+    {
+        var method = typeof(ExplorerMode).GetMethod(
+            "BuildShiningPoliticalExpectedReceiptAuditNode",
+            BindingFlags.NonPublic | BindingFlags.Static,
+            binder: null,
+            types:
+            [
+                typeof(string),
+                typeof(JsonObject)
+            ],
+            modifiers: null) ?? throw new MissingMethodException(nameof(ExplorerMode), "BuildShiningPoliticalExpectedReceiptAuditNode");
+
+        return (JsonObject)method.Invoke(null, [pendingPath, request])!;
     }
 
     private static string GetString(JsonNode? node) => node?.GetValue<string>() ?? string.Empty;

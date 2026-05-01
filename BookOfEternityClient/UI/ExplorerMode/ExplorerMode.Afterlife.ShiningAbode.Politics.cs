@@ -662,6 +662,7 @@ public partial class ExplorerMode
 
         if (string.Equals(pendingPath, ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase))
         {
+            var charter = request["charter"] as JsonObject;
             return new JsonObject
             {
                 ["accepted"] = new JsonObject
@@ -689,16 +690,35 @@ public partial class ExplorerMode
                         {
                             ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
                             ["hallName"] = GetNodeString(request["proposedHallName"]) ?? string.Empty,
+                            ["description"] = GetNodeString(request["proposedHallDescription"]) ?? "copy proposedHallDescription",
                             ["serviceTags"] = CloneShiningJsonForPlayerFacingAudit(request["proposedHallServiceTags"]),
-                            ["originType"] = "player_founded"
+                            ["originType"] = "player_founded",
+                            ["factionIds"] = new JsonArray
+                            {
+                                GetNodeString(request["proposedFactionId"]) ?? string.Empty
+                            },
+                            ["createdByRequestId"] = GetNodeString(request["requestId"]) ?? string.Empty
                         },
                         ["factions.add"] = new JsonObject
                         {
                             ["factionId"] = GetNodeString(request["proposedFactionId"]) ?? string.Empty,
                             ["hallId"] = GetNodeString(request["proposedHallId"]) ?? string.Empty,
                             ["originType"] = "player_founded",
+                            ["charter"] = new JsonObject
+                            {
+                                ["factionName"] = GetNodeString(charter?["factionName"]) ?? "copy charter.factionName",
+                                ["summary"] = GetNodeString(charter?["summary"]) ?? "copy charter.summary",
+                                ["favoredArchetype"] = GetNodeString(charter?["favoredArchetype"]) ?? "copy charter.favoredArchetype",
+                                ["patronEffectFamily"] = GetNodeString(charter?["patronEffectFamily"]) ?? "copy charter.patronEffectFamily"
+                            },
                             ["baseStrength"] = 35,
                             ["factionStrength"] = 35,
+                            ["investCountThisAscension"] = 0,
+                            ["projectArchetypesCountedThisAscension"] = new JsonArray(),
+                            ["projects"] = new JsonArray(),
+                            ["tradeInventoryReceipts"] = new JsonArray(),
+                            ["leadershipReceipts"] = new JsonArray(),
+                            ["leadershipHistory"] = new JsonArray(),
                             ["leadership"] = new JsonObject
                             {
                                 ["headActorType"] = "player_soul",
@@ -706,7 +726,22 @@ public partial class ExplorerMode
                                 ["leadershipState"] = "secure"
                             }
                         },
-                        ["residents.update"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"])
+                        ["residents.update"] = new JsonObject
+                        {
+                            ["supportingResidentIds"] = CloneShiningJsonForPlayerFacingAudit(request["supportingResidentIds"]),
+                            ["requiredPerResidentFields"] = new JsonArray
+                            {
+                                "residentId",
+                                "ascensionState=ascended",
+                                "shiningFactionId=proposedFactionId",
+                                "residentRole",
+                                "factionLoyaltyLevel",
+                                "factionLoyaltyTier",
+                                "factionRestlessness",
+                                "factionRealignmentState"
+                            },
+                            ["beforeAfterRule"] = "each supporter remains the same resident object but gains canonical Shining faction binding to the new faction"
+                        }
                     }
                 },
                 ["refusedOrWithdrawn"] = new JsonObject

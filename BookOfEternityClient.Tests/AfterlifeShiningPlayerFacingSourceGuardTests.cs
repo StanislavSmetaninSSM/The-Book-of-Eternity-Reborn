@@ -63,11 +63,17 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("generatedDraftVersion", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("ShiningCoreActionRequestState.ActionTypeOpenGates", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("BuildShiningCoreExpectedReceiptAuditNode(context, request)", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningCoreProjectedStateFragment", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("projectedStateFragment", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("beforeFullShiningRoot", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("afterFullShiningRoot", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("GetNodeInt(context.Root[\"gates\"]?[\"draftVersion\"]) + 1", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("[\"refusedOrWithdrawn\"]", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("generatedDraftVersion: 0", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("quotedCostFeathers", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("quotedCostLightSparks", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("safeEffectDetails", source, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningBlessingEffectDetailLines", source, StringComparison.Ordinal);
     }
 
     [Fact]

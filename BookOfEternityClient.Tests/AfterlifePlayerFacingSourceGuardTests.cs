@@ -14,6 +14,12 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("Полный контракт /incarnate", mainMenu, StringComparison.Ordinal);
         Assert.Contains("game_state/control/incarnation_trigger.json", mainMenu, StringComparison.Ordinal);
         Assert.Contains("ConfirmIncarnationContractPreview", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("BuildPendingWorldSetupActionSummary", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("pending setup exists but is malformed", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("WorldDirectiveService.PendingSetupPath", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("new Panel(GameInterface.SafeMarkup(string.Join(\"\\n\", new[]", mainMenu, StringComparison.Ordinal);
+        Assert.DoesNotContain("new Panel(string.Join(\"\\n\", new[]", mainMenu, StringComparison.Ordinal);
+        Assert.DoesNotContain("pending_incarnation_world_setup.json", mainMenu, StringComparison.Ordinal);
         Assert.True(
             mainMenu.IndexOf("if (!ConfirmIncarnationContractPreview", StringComparison.Ordinal) <
             mainMenu.IndexOf("_fs.ClearCurrentWorldLore();", StringComparison.Ordinal));
@@ -22,6 +28,16 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("output/ink_feather_action_result.json", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("alreadyDeductedByClient", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("stateEvidence обязан содержать affectedFiles", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("BuildMemoryGatesPreviewAuditLines", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("full before payload", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("Canonical after payload schema", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("sourceLifeHint: required non-empty", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("non-empty playerStatBonus", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("group=Knowledge", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("snapshotAuthorityPath", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("acceptedPreTurnAuthority", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("expectedSoulRelicDelta", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("forbiddenSurfaces", inkFeathers, StringComparison.Ordinal);
 
         Assert.Contains("Полный pending contract основания Хранителя", foundation, StringComparison.Ordinal);
         Assert.Contains("UpdateGuardians.create", foundation, StringComparison.Ordinal);
@@ -39,8 +55,13 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         var inbox = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs");
 
         Assert.Contains("BuildPendingFileBlockerAsync", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("DescribeBlockingShiningPendingContractAsync", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("DescribeShiningPendingClosure", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningPendingBlockerIdentitySummary", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("missing requests[] array", mainMenu, StringComparison.Ordinal);
         Assert.Contains("requestId=", mainMenu, StringComparison.Ordinal);
         Assert.Contains("закрытие:", mainMenu, StringComparison.Ordinal);
+        Assert.Contains("full payload", mainMenu, StringComparison.Ordinal);
 
         Assert.DoesNotContain("[yellow]/abodes", help, StringComparison.Ordinal);
         Assert.Contains("[blue]/chaos_sea", help, StringComparison.Ordinal);
