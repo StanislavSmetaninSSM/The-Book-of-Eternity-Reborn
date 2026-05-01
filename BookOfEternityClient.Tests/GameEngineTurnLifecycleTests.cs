@@ -378,6 +378,104 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task NormalizeRuntimeUiArtifactsAsync_PreservesResolvedPendingContractsWhenTerminalValidationIsPending()
+    {
+        const string sessionId = "session-terminal-validation";
+        const string requestId = "request-terminal-validation";
+        const int turnNumber = 21;
+        var pendingRequest = new
+        {
+            requestId = "guardian_trade_late_response",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            abodeId = "abode_alpha",
+            returnCycleId = "return_21",
+            currentReputation = 110,
+            derivedTradeSlotCount = 1,
+            effectiveRarityCeilingBonusSteps = 0,
+            projectBonusSignature = "0|0|0",
+            createdAtUtc = "2026-04-27T00:00:00Z",
+            createdAtTurn = turnNumber
+        };
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 10, total = 10 },
+            soulRelics = new
+            {
+                equipped = Array.Empty<object>(),
+                stored = Array.Empty<object>()
+            }
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    guardianName = "Азалия",
+                    tradeInventory = new
+                    {
+                        tradeCycleId = "return_21",
+                        generatedAtUtc = "2026-04-27T01:00:00Z",
+                        generationReputationTier = "Friendly",
+                        pricingReputationTier = "Friendly",
+                        effectiveRarityCeilingBonusSteps = 0,
+                        projectBonusSignature = "0|0|0",
+                        items = Array.Empty<object>()
+                    },
+                    tradeInventoryReceipts = new[]
+                    {
+                        new
+                        {
+                            requestId = "guardian_trade_late_response",
+                            guardianId = "guardian_alpha",
+                            guardianName = "Азалия",
+                            abodeId = "abode_alpha",
+                            tradeCycleId = "return_21",
+                            status = "ready",
+                            itemCount = 0,
+                            resolvedAtTurn = turnNumber,
+                            resolvedAtUtc = "2026-04-27T01:01:00Z"
+                        }
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync(GuardianTradeRequestState.PendingRequestPath, pendingRequest);
+        await WriteJsonAsync(
+            $"game_state/control/pending_turn_snapshot/{GuardianTradeRequestState.PendingRequestPath}",
+            pendingRequest);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            accepted = true,
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WritePendingTurnSnapshotManifestAsync(
+            sessionId,
+            requestId,
+            turnNumber,
+            GuardianTradeRequestState.PendingRequestPath);
+
+        var engine = CreateGameEngine();
+
+        await InvokePrivateTaskAsync(engine, "NormalizeRuntimeUiArtifactsAsync");
+
+        Assert.True(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
+    }
+
+    [Fact]
     public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes()
     {
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new

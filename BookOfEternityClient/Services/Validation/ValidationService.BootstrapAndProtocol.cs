@@ -653,6 +653,18 @@ public partial class ValidationService
                      AfterlifeArchiveCandidateService.ManifestPath,
                      GuardianCorrectionService.StatePath,
                      GuardianAbodeOfferingState.PendingRequestPath,
+                     GuardianTradeRequestState.PendingRequestPath,
+                     PlayerGuardianFoundationState.PendingRequestPath,
+                     NpcTradeRequestState.PendingRequestPath,
+                     AfterlifeArchiveActionState.ConsultationRequestPath,
+                     AfterlifeArchiveActionState.ProjectFuelRequestPath,
+                     GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                     GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                     GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                     GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+                     ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                     ActorSocialInteractionRequestState.PendingNpcRequestPath,
+                     SystemGuardianLibraryService.AttractionRequestPath,
                      ShiningCoreActionRequestState.PendingActionsRequestPath,
                      ShiningTradeRequestState.PendingRequestsPath,
                      ShiningFactionRequestState.PendingFoundingsRequestPath,
@@ -673,6 +685,25 @@ public partial class ValidationService
                             ? "Lifecycle"
                             : clientOwnedPath.Equals(AfterlifeArchiveCandidateService.ManifestPath, StringComparison.OrdinalIgnoreCase)
                                 ? "AfterlifeArchive"
+                            : clientOwnedPath.Equals(AfterlifeArchiveActionState.ConsultationRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                              clientOwnedPath.Equals(AfterlifeArchiveActionState.ProjectFuelRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "AfterlifeArchive"
+                            : clientOwnedPath.Equals(SystemGuardianLibraryService.AttractionRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "SystemGuardianPresets"
+                            : clientOwnedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "GuardianTrade"
+                            : clientOwnedPath.Equals(PlayerGuardianFoundationState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "PlayerGuardianFoundation"
+                            : clientOwnedPath.Equals(NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                              clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "NpcContracts"
+                            : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                              clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                              clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                              clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "GuardianAbodeResidents"
+                            : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "GuardianSocial"
                                 : "BootstrapProtocol",
                         $"{Path.GetFileName(clientOwnedPath)} нельзя проверить строго: validated pre-turn baseline отсутствует.",
                         "Для client-authored control surfaces сохраняй validated snapshot entry в pending turn snapshot, чтобы GM-side diff checks не опирались на missing baseline.");
@@ -693,6 +724,30 @@ public partial class ValidationService
                             ? "client_owned_guardian_corrections_modified"
                     : clientOwnedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_abode_offering_request_modified"
+                    : clientOwnedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_guardian_trade_request_modified"
+                    : clientOwnedPath.Equals(PlayerGuardianFoundationState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_player_guardian_foundation_request_modified"
+                    : clientOwnedPath.Equals(NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_npc_trade_request_modified"
+                    : clientOwnedPath.Equals(AfterlifeArchiveActionState.ConsultationRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_archive_consultation_request_modified"
+                    : clientOwnedPath.Equals(AfterlifeArchiveActionState.ProjectFuelRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_archive_project_fuel_request_modified"
+                    : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_resident_roster_request_modified"
+                    : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_resident_interaction_request_modified"
+                    : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_resident_transfer_request_modified"
+                    : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_resident_manifestation_request_modified"
+                    : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_guardian_social_request_modified"
+                    : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_npc_social_request_modified"
+                    : clientOwnedPath.Equals(SystemGuardianLibraryService.AttractionRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_system_guardian_attraction_modified"
                     : clientOwnedPath.Equals(ShiningCoreActionRequestState.PendingActionsRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_shining_core_action_request_modified"
                     : clientOwnedPath.Equals(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase)
@@ -712,6 +767,25 @@ public partial class ValidationService
                         ? "GuardianCorrections"
                     : clientOwnedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "GuardianOfferings"
+                    : clientOwnedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "GuardianTrade"
+                    : clientOwnedPath.Equals(PlayerGuardianFoundationState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "PlayerGuardianFoundation"
+                    : clientOwnedPath.Equals(NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "NpcContracts"
+                    : clientOwnedPath.Equals(AfterlifeArchiveActionState.ConsultationRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(AfterlifeArchiveActionState.ProjectFuelRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "AfterlifeArchive"
+                    : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "GuardianAbodeResidents"
+                    : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "GuardianSocial"
+                    : clientOwnedPath.Equals(SystemGuardianLibraryService.AttractionRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "SystemGuardianPresets"
                     : clientOwnedPath.Equals(ShiningCoreActionRequestState.PendingActionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                       clientOwnedPath.Equals(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) ||
                       clientOwnedPath.Equals(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) ||

@@ -370,6 +370,53 @@ public sealed class SystemGuardianLibraryService
         {
             return;
         }
+
+        if (HasActiveTurnValidationArtifacts())
+            return;
+
+        if (await ActiveGuardianMatchesAttractionRequestAsync(request))
+            _fs.DeleteFile(AttractionRequestPath);
+    }
+
+    private bool HasActiveTurnValidationArtifacts() =>
+        _fs.FileExists("ready/turn_complete.json") ||
+        _fs.FileExists("ready/turn_error.json") ||
+        _fs.FileExists("game_state/control/pending_turn_snapshot.json") ||
+        _fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath);
+
+    private async Task<bool> ActiveGuardianMatchesAttractionRequestAsync(SystemGuardianAttractionRequest request)
+    {
+        var guardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(guardiansJson))
+            return false;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(guardiansJson);
+            if (!doc.RootElement.TryGetProperty("activeGuardian", out var activeGuardian) ||
+                activeGuardian.ValueKind != JsonValueKind.Object)
+            {
+                return false;
+            }
+
+            if (!activeGuardian.TryGetProperty("sourcePreset", out var sourcePreset) ||
+                sourcePreset.ValueKind != JsonValueKind.Object ||
+                !sourcePreset.TryGetProperty("presetId", out var presetIdNode) ||
+                presetIdNode.ValueKind != JsonValueKind.String)
+            {
+                return false;
+            }
+
+            return string.Equals(
+                presetIdNode.GetString(),
+                request.TargetPresetId,
+                StringComparison.OrdinalIgnoreCase);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogDebug(ex, "Не удалось прочитать guardians.json для проверки resolved system guardian attraction.");
+            return false;
+        }
     }
 
     public async Task<string> BuildReminderFragmentAsync(string? currentRealm)

@@ -18,13 +18,19 @@ public partial class GameEngine
     private async Task EnsureClientOwnedSystemFilesHealthyAsync()
     {
         await _stateManager.RefreshGameStateAsync();
+        var preserveControlFilesForTerminalValidation =
+            await ShouldPreserveClientOwnedControlFilesForTerminalValidationAsync();
 
         if (await _systemModService.WriteManifestForGmAsync())
             await _stateManager.SaveSettingsAsync();
 
         await AfterlifeNotificationState.EnsureHealthyAsync(_fs);
-        await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);
-        await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);
+        if (!preserveControlFilesForTerminalValidation)
+        {
+            await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);
+            await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);
+        }
+
         await _qteSceneService.EnsureRuntimeStateHealthyAsync();
         await _progressionSchedule.EnsureInitializedAsync();
     }

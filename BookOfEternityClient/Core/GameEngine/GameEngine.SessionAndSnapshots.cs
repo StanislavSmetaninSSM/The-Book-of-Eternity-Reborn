@@ -705,30 +705,37 @@ public partial class GameEngine
     private async Task NormalizeRuntimeUiArtifactsAsync()
     {
         await _stateManager.RefreshGameStateAsync();
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+        var hasReadySignals = HasTerminalReadySignal();
+        var preserveControlFilesForTerminalValidation =
+            ShouldPreserveClientOwnedControlFilesForTerminalValidation(hasReadySignals, pendingSnapshot);
+
         await NormalizePendingRepairArtifactsAsync();
         await NormalizePendingTerminalProtocolFailureArtifactsAsync();
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
         await AfterlifeNotificationState.EnsureHealthyAsync(_fs);
-        await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);
-        await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);
-        await GuardianAbodeOfferingState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-        await GuardianTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-        await PlayerGuardianFoundationState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-        await NpcTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-        await AfterlifeArchiveActionState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-        var hasReadySignals = _fs.FileExists("ready/turn_complete.json") || _fs.FileExists("ready/turn_error.json");
-        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
         var hasActivePendingSnapshotArtifacts = hasReadySignals ||
                                                 pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable;
-        if (!hasActivePendingSnapshotArtifacts)
+        if (!preserveControlFilesForTerminalValidation)
         {
-            await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-            await ShiningTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-            await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);
+            await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);
+            await GuardianAbodeOfferingState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            await GuardianTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            await PlayerGuardianFoundationState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            await NpcTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            await AfterlifeArchiveActionState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            if (!hasActivePendingSnapshotArtifacts)
+            {
+                await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+                await ShiningTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+                await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            }
+            await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+            await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         }
-        await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
-        await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+
         await _qteSceneService.EnsureRuntimeStateHealthyAsync();
 
         if (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Missing && hasReadySignals)
@@ -754,6 +761,27 @@ public partial class GameEngine
                     : "Найден input/turn_request.json с unreadable/invalid validated pending snapshot authority. Удаление как stale runtime artifact.");
             _fs.DeleteFile("input/turn_request.json");
         }
+    }
+
+    private bool HasTerminalReadySignal() =>
+        _fs.FileExists("ready/turn_complete.json") ||
+        _fs.FileExists("ready/turn_error.json");
+
+    private static bool ShouldPreserveClientOwnedControlFilesForTerminalValidation(
+        bool hasReadySignals,
+        PendingTurnSnapshotResolution pendingSnapshot) =>
+        hasReadySignals &&
+        pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable;
+
+    private async Task<bool> ShouldPreserveClientOwnedControlFilesForTerminalValidationAsync()
+    {
+        if (!HasTerminalReadySignal())
+            return false;
+
+        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+        return ShouldPreserveClientOwnedControlFilesForTerminalValidation(
+            hasReadySignals: true,
+            pendingSnapshot);
     }
 
     private async Task<int?> ReadReadySignalTurnNumberAsync()
