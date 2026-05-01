@@ -80,6 +80,15 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void EndOfLifeCommand_MustRequireExplicitMortalRealm()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+
+        Assert.Contains("RealmSemantics.IsMortalRealm(currentRealm)", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("!_stateManager.CurrentState.IsInAfterlifeRealm)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void RealmSensitiveStartupCleanup_MustRefreshPersistedStateBeforeHygiene()
     {
         var sessionSnapshotSource = ReadGameEnginePartialSource("GameEngine.SessionAndSnapshots.cs");
