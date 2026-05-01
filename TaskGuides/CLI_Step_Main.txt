@@ -58,7 +58,7 @@
                - `guardians[].buybackRelics[]` is separate from authored `guardian.tradeInventory`: it stores exact Soul Relics the player sold to that Guardian and powers local reverse-buyback without another GM stock-generation round-trip
                - If `pending_guardian_trade_request.json` exists, answer it with explicit `guardian.tradeInventory` **and** close it through `UpdateGuardianTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
                - If the player asks the current active Guardian about a relic bought from Guardian local stock, the Guardian should know that relic as part of their own trade assortment
-               - If `pending_npc_trade_inventory_requests.json` exists while AfterlifeProfile is active, treat it as stale or realm-wrong; do NOT author NPC trade from an afterlife turn
+               - If `pending_npc_trade_inventory_requests.json` or `[NPC_TRADE_REQUEST]` exists while AfterlifeProfile is active, treat it as stale or realm-wrong; do NOT author NPC trade from an afterlife turn
                - If a turn materializes the current active Guardian, you MUST also materialize the abode navigation state in `guardians.json`: `chaosSeaNavigation.currentAbodeId`, `chaosSeaNavigation.discoveredAbodes` containing that abodeId, and `abode.isDiscovered = true`
                - If `guardians.json.pendingGuardianCreation.mode = system_preset`, the client has selected a named Eternal Guardian preset; materialize THAT exact guardian, not a nearby substitute
                - If a guardian is materialized from an Eternal Guardian preset, write `sourcePreset` into the guardian object with `presetId`, `displayName`, `version`, `library`
@@ -114,7 +114,7 @@
                - If the SAME extra clue is surfaced through both `publicSignals` and linked `worldEventsLog`, reuse the same `bonusClueRevealId` on both surfaces so the client spends clue budget only once
                - Local NPC trade may also exist as a client-side panel for mortal-world goods only
                - Local NPC trade uses `game_state/core/player_status.json.money`, never Ink Feathers, and never trades Soul Relics
-               - If `pending_npc_trade_inventory_requests.json` exists in MortalWorldProfile, answer each request with explicit `npc.tradeInventory` for the requested world-time cycle **and** close it through `UpdateNpcTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
+               - If `pending_npc_trade_inventory_requests.json` or `[NPC_TRADE_REQUEST]` exists in MortalWorldProfile, answer each request with explicit `npc.tradeInventory` for the requested world-time cycle **and** close it through `UpdateNpcTradeInventoryReceipts`; matching stock without receipt is invalid on accepted turn
                - If the player asks a merchant NPC about an item bought from that NPC's local stock, the merchant should know that item as part of their own local assortment
                - For canonical local NPC trade examples, read `Examples/E_CLI_NPC_Trade.txt`
                - QTE offers are optional cinematic scene graphs for Mortal World only
@@ -190,7 +190,7 @@
                - If `afterlifeCatchupRequired=true`, produce exactly `afterlifeCatchupSummaryEventsRequired` summary outcomes and explicitly name the affected `afterlifeCatchupContours`
                - MUST NOT satisfy afterlife progression with `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, or `weatherChange`
                - MUST write `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values
-               - MUST keep Shining bootstrap handoff separate: if `preparedIncarnationPackage` is active, process bootstrap only and do not run ordinary Shining living-world cycles
+               - MUST keep Shining bootstrap handoff separate: if `preparedIncarnationPackage` is active, GM writes only `TriggerIncarnation` / `game_state/control/incarnation_trigger.json`, preserves the package, and does not run ordinary Shining living-world cycles
                - If `preparedIncarnationPackage` is malformed, non-object, or fails bootstrap package validation, fail closed: preserve it and pending Shining files for repair and do not treat the turn as ordinary active Shining Abode
                - Shining Gates select/deselect/reroll is client-local: no GM turn, no pending file, no `coreActionReceipts[]`, and only local `gates.selectedBlessingCardIds`, `shownBlessingCardIds`, `availableBlessingCards`, `rerollsRemaining`, `nextCandidateCursor` change
 
@@ -352,7 +352,7 @@
             - Shining faction founding contracts: `pending_shining_faction_foundings.json` must close through `factionFoundingReceipts[]`; preserve `quotedCostFeathers = 25` and `quotedCostLightSparks = 15` from the request in the receipt
             - Shining faction realignment contracts: `pending_shining_faction_realignments.json` must close through `factionRealignmentReceipts[]`
             - Shining leadership contracts: `pending_shining_faction_leadership_transitions.json` must close through faction `leadershipReceipts[]` and leadership history
-            - Shining trade contracts: `pending_shining_trade_inventory_requests.json` must close through faction `tradeInventory` plus `tradeInventoryReceipts[]`
+            - Shining trade contracts: `pending_shining_trade_inventory_requests.json` must close through faction `tradeInventory` plus `tradeInventoryReceipts[]` only in ordinary active Shining Abode (`currentRealm = Shining Abode`, `availability = active`, no prepared package); otherwise preserve as wrong-realm/mode repair context
             - Step 6, actor scope: list every Guardian, resident, Shining faction, hall, gate, head actor, or institution whose state, memory, project, leadership, trade, or public position may change
             - If a plausible afterlife actor is not processed, explicitly mark it outside scope and explain why it remains stable this turn
             - Step 7, living-world cycles: resolve due contours in bounded form using only afterlife surfaces
@@ -465,7 +465,7 @@
   - Residents: `residentThoughtJournalUpdates` = current thoughts, `residentInteractionLogUpdates` = important past interactions, `UpdateGuardianAbodeResidentHistoryLog` = revealed past
 - If `game_state/control/pending_guardian_social_interactions.json` exists, close each request in the same accepted turn through `guardianSocialJournalUpdates`.
 - If `game_state/control/pending_npc_social_interactions.json` exists, close each request only in the same accepted MortalWorldProfile turn through `npcInteractionJournalUpdates`. In `Chaos Sea` or `Shining Abode`, this file is MortalWorldProfile-only wrong-realm repair context: do not close it, do not write `npcInteractionJournalUpdates`, and do not mutate `game_state/npcs/*`. Non-empty or malformed NPC social pending files must be resolved in Mortal World or repaired before Soul Gates.
-- If `game_state/control/pending_npc_trade_inventory_requests.json` exists in `Chaos Sea` or `Shining Abode`, treat it as MortalWorldProfile-only wrong-realm repair context too. Do not materialize NPC trade stock, `UpdateNpcTradeInventoryReceipts`, or `game_state/npcs/*` from afterlife; non-empty or malformed NPC trade pending files must be resolved in Mortal World or repaired before Soul Gates.
+- If `game_state/control/pending_npc_trade_inventory_requests.json` or `[NPC_TRADE_REQUEST]` exists in `Chaos Sea` or `Shining Abode`, treat it as MortalWorldProfile-only wrong-realm repair context too. Do not materialize NPC trade stock, `UpdateNpcTradeInventoryReceipts`, or `game_state/npcs/*` from afterlife; non-empty or malformed NPC trade pending files must be resolved in Mortal World or repaired before Soul Gates.
 - If `game_state/control/pending_resident_companion_manifestation_request.json` exists in `Chaos Sea` or `Shining Abode`, it is MortalWorldProfile-only next-life context. Valid non-empty files are preserved and do not block Soul Gates; malformed manifestation files block Soul Gates until repair. Do not materialize Mortal NPCs/encounters, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, or `worldEventsLog`, and do not close it by afterlife receipts.
 - These guardian/NPC social closures are machine-readable journal entries with:
   - `requestId`
@@ -485,7 +485,7 @@
 - Guardian sell-side now also keeps canonical memory in `guardians[].buybackRelics[]`; reverse-buyback restores exact `relicData` from that layer and does not require GM stock generation.
 - Guardian local sell-side and reverse-buyback require a real current turn for canonical timing; do not rely on `0` as a fallback turn in new writes.
 - Guardian buy-side validation/request creation also requires a real current turn; stale inventory discovered during purchase must not create a request with `createdAtTurn = 0`.
-- MortalWorldProfile-only: NPC local trade stock is explicit too; if `pending_npc_trade_inventory_requests.json` exists in Mortal World, materialize `npc.tradeInventory` for the requested `tradeCycleId` and close each request through `UpdateNpcTradeInventoryReceipts` with `requestId`, `npcId`, `tradeCycleId`, `merchantProfile`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.
+- MortalWorldProfile-only: NPC local trade stock is explicit too; if `pending_npc_trade_inventory_requests.json` or `[NPC_TRADE_REQUEST]` exists in Mortal World, materialize `npc.tradeInventory` for the requested `tradeCycleId` and close each request through `UpdateNpcTradeInventoryReceipts` with `requestId`, `npcId`, `tradeCycleId`, `merchantProfile`, `itemCount`, `resolvedAtTurn`, and `resolvedAtUtc`.
 - MortalWorldProfile-only: NPC sell-side remains local, but sold items must persist canonically in `npc.buybackInventory[]`; do not treat them as disappearing from the world.
 - MortalWorldProfile-only: `npc.buybackInventory[]` is separate from authored `npc.tradeInventory`; it stores exact items the player sold to that merchant and powers local reverse-buyback without another GM stock-generation round-trip.
 - MortalWorldProfile-only: NPC local sell-side and reverse-buyback require a real current turn for canonical timing; do not write new buyback entries with turn `0`.

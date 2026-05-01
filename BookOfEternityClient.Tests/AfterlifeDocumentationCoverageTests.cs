@@ -737,6 +737,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var launchScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
         var launchGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var lifecyclePrompt = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
         var docs = new[] { matrix, apiSpec, daemonSpec, launchScript, launchGenerator };
 
         foreach (var doc in docs)
@@ -753,8 +756,17 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("Mortal bootstrap", doc, StringComparison.OrdinalIgnoreCase);
         }
 
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec })
+        {
+            Assert.Contains("TriggerIncarnation", doc, StringComparison.Ordinal);
+            Assert.Contains("preserve", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("preparedIncarnationPackage", doc, StringComparison.Ordinal);
+        }
+
         Assert.DoesNotContain("ONLY bootstrap/materialization", launchScript, StringComparison.Ordinal);
         Assert.DoesNotContain("ONLY bootstrap/materialization", launchGenerator, StringComparison.Ordinal);
+        foreach (var prompt in new[] { taskGuide, operations, lifecyclePrompt, daemonSpec })
+            Assert.DoesNotContain("process bootstrap only", prompt, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("GM sends player to Mortal World", apiSpec, StringComparison.Ordinal);
         Assert.Contains("validation repair", daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("runtime normalization clears", daemonSpec, StringComparison.Ordinal);
@@ -876,6 +888,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var lifecyclePrompt = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
         var docs = new[] { matrix, apiSpec, daemonSpec, taskGuide, examples };
 
         foreach (var doc in docs)
@@ -884,10 +897,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("game_state/npcs/*", doc, StringComparison.Ordinal);
             Assert.Contains("game_state/factions/*", doc, StringComparison.Ordinal);
             Assert.Contains("pending_npc_social_interactions.json", doc, StringComparison.Ordinal);
+            Assert.Contains("pending_npc_trade_inventory_requests.json", doc, StringComparison.Ordinal);
+            Assert.Contains("[NPC_TRADE_REQUEST]", doc, StringComparison.Ordinal);
             Assert.Contains("MortalWorldProfile-only", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("repair", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("wrong-realm", doc, StringComparison.OrdinalIgnoreCase);
         }
+
+        Assert.Contains("pending_npc_trade_inventory_requests.json", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("[NPC_TRADE_REQUEST]", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("MortalWorldProfile-only", lifecyclePrompt, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("repair", lifecyclePrompt, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("wrong-realm", lifecyclePrompt, StringComparison.OrdinalIgnoreCase);
 
         Assert.NotEmpty(FileMapping.FieldToFile.Where(pair =>
             pair.Value.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
@@ -1013,6 +1034,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains("(factionId, tradeCycleId)", doc, StringComparison.Ordinal);
             Assert.Contains("pending_shining_trade_inventory_requests.json", doc, StringComparison.Ordinal);
+            Assert.Contains("ordinary active Shining", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("preparedIncarnationPackage", doc, StringComparison.Ordinal);
         }
 
         foreach (var doc in new[] { matrix, apiSpec, examples })

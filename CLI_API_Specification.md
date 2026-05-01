@@ -644,7 +644,7 @@ Quest state contract notes:
 - `game_state/control/pending_shining_faction_foundings.json` ← close through `shining_abode_state.factionFoundingReceipts[]`; both pending request and receipt carry exact cost audit fields `quotedCostFeathers = 25` and `quotedCostLightSparks = 15`.
 - `game_state/control/pending_shining_faction_realignments.json` ← close through `shining_abode_state.factionRealignmentReceipts[]`.
 - `game_state/control/pending_shining_faction_leadership_transitions.json` ← close through faction `leadershipReceipts[]` and leadership history.
-- `game_state/control/pending_shining_trade_inventory_requests.json` ← close through faction `tradeInventory` plus `tradeInventoryReceipts[]`; supports `requests[]`, but `(factionId, tradeCycleId)` is the uniqueness key and duplicate contracts for the same faction/cycle are invalid.
+- `game_state/control/pending_shining_trade_inventory_requests.json` ← close through faction `tradeInventory` plus `tradeInventoryReceipts[]` only in ordinary active `Shining Abode` (`currentRealm = Shining Abode`, `availability = active`, `preparedIncarnationPackage` null/absent); supports `requests[]`, but `(factionId, tradeCycleId)` is the uniqueness key and duplicate contracts for the same faction/cycle are invalid. In Chaos Sea, sealed Shining, pending-bootstrap handoff, or package fault, preserve it as wrong-realm/mode repair context and do not resolve Shining trade receipts.
 - `game_state/control/afterlife_notifications.json` is client-owned; GM must not author inbox entries manually.
 
 #### **LORE CODEX (GM writes directly to lore/ files)**
@@ -916,7 +916,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `TechnicalGoods`
   - `IllicitGoods`
 - NPC stock is explicit authored state in `npc.tradeInventory`; the client does NOT generate stock locally anymore.
-- If persisted NPC stock is missing, stale, malformed, or no longer matches the current world-time cycle, the client creates `pending_npc_trade_inventory_requests.json` and waits for a GM-materialized inventory.
+- If persisted NPC stock is missing, stale, malformed, or no longer matches the current world-time cycle, the MortalWorldProfile client creates `pending_npc_trade_inventory_requests.json` / `[NPC_TRADE_REQUEST]` and waits for a GM-materialized inventory. This contract is not valid in `Chaos Sea` or `Shining Abode`.
 - A NPC trade request is closed canonically only when matching `npc.tradeInventory` appears **and** the same NPC gets a matching `tradeInventoryReceipts[]` receipt with `status = ready`.
 - Stock refresh is tied to world time, not to return from mortal life:
   - stock belongs to a deterministic `tradeCycleId`
@@ -1683,7 +1683,7 @@ Canonical Abode Power changes must flow through `guardianPowerEvents` or be clie
 - `game_state/control/archive_candidate_manifest.json` ← client-authored Life Evaluation manifest for codex-derived archive candidates
 - `game_state/control/pending_guardian_trade_request.json` ← client-authored request to materialize an explicit guardian trade inventory for the current return-cycle
 - `UpdateGuardianTradeInventoryReceipts` ← GM-authored receipt surface written into `game_state/meta/guardians.json`; each receipt closes one pending guardian trade inventory request with `status = ready`
-- `game_state/control/pending_npc_trade_inventory_requests.json` ← client-authored request to materialize an explicit NPC trade inventory for the current world-time cycle
+- `game_state/control/pending_npc_trade_inventory_requests.json` / `[NPC_TRADE_REQUEST]` ← MortalWorldProfile-only client-authored request to materialize an explicit NPC trade inventory for the current world-time cycle; in `Chaos Sea` or `Shining Abode`, preserve as wrong-realm repair-only context and do not write NPC trade receipts or `game_state/npcs/*`
 - `UpdateNpcTradeInventoryReceipts` ← GM-authored receipt surface written into `game_state/npcs/npc_core.json`; each receipt closes one pending NPC trade inventory request with `status = ready`
 - `game_state/control/pending_guardian_abode_residents_request.json` ← client-authored requests to materialize explicit afterlife residents for one or more Guardian Abodes, stored as `requests[]`
 - `game_state/control/pending_guardian_abode_resident_interactions.json` ← client-authored talk/history requests for afterlife residents, stored as `requests[]`
