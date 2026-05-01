@@ -797,30 +797,136 @@ internal static class ShiningBlessingEffectState
             var common = GetNodeInt(resourceGrant["common"], 0);
             var uncommon = GetNodeInt(resourceGrant["uncommon"], 0);
             lines.Add($"Стартовые ресурсы: +{money} денег, common x{common}, uncommon x{uncommon}.");
+            AppendBootstrapActivationAuditLine(
+                lines,
+                "resourceGrant",
+                "resource",
+                GetNodeString(resourceGrant["status"]) ?? ResourceStatusAppliedAtBootstrap,
+                ReadStringArray(resourceGrant["sourceCardIds"]),
+                "game_state/core/player_status.json + game_state/inventory/items.json",
+                "starting resources");
         }
 
         if (effectState["memorySelection"] is JsonObject memorySelection)
         {
             lines.Add($"Память следующей жизни: +{GetNodeInt(memorySelection["options"], 0)} вариантов, rerolls {GetNodeInt(memorySelection["rerolls"], 0)}.");
+            AppendBootstrapActivationAuditLine(
+                lines,
+                "memorySelection",
+                "memory",
+                GetNodeString(memorySelection["status"]) ?? MemoryStatusPendingPreTurnOneSelection,
+                ReadStringArray(memorySelection["sourceCardIds"]),
+                "game_state/meta/soul_state.json.pendingShiningBlessingEffects.memorySelection",
+                "pre-turn-one memory echo selection");
         }
 
         if (effectState["pendingSocialEffects"] is JsonArray socialEffects)
+        {
             AppendPendingCountLine(lines, socialEffects, SocialStatusPendingFirstRelationCommit, "Ожидают применения social effects");
+            AppendBootstrapActivationAuditLinesForArray(
+                lines,
+                socialEffects,
+                "social",
+                "game_state/npcs/npc_core.json + game_state/npcs/npc_relationships.json + game_state/factions/faction_core.json",
+                "first qualifying relation commit");
+        }
         if (effectState["pendingRouteEffects"] is JsonArray routeEffects)
+        {
             AppendPendingCountLine(lines, routeEffects, RouteStatusPendingEarlyRouteSeed, "Ожидают применения route effects");
+            AppendBootstrapActivationAuditLinesForArray(
+                lines,
+                routeEffects,
+                "route",
+                "game_state/world/world_events.json",
+                "early route seed insertion");
+        }
         if (effectState["pendingLoreEffects"] is JsonArray loreEffects)
+        {
             AppendPendingCountLine(lines, loreEffects, LoreStatusPendingLoreInsertion, "Ожидают применения lore effects");
+            AppendBootstrapActivationAuditLinesForArray(
+                lines,
+                loreEffects,
+                "lore",
+                "game_state/world/world_events.json",
+                "lore clue insertion");
+        }
         if (effectState["pendingSurvivalEffects"] is JsonArray survivalEffects)
+        {
             AppendPendingCountLine(lines, survivalEffects, SurvivalStatusPendingFirstRuinousFailure, "Ожидают применения survival effects");
+            AppendBootstrapActivationAuditLinesForArray(
+                lines,
+                survivalEffects,
+                "survival",
+                "game_state/core/player_status.json + game_state/world/world_events.json",
+                "first ruinous failure downgrade");
+        }
         if (effectState["pendingDescentEffects"] is JsonArray descentEffects)
+        {
             AppendPendingCountLine(lines, descentEffects, DescentStatusPendingResidentDescent, "Ожидают применения descent effects");
+            AppendBootstrapActivationAuditLinesForArray(
+                lines,
+                descentEffects,
+                "descent",
+                "game_state/meta/soul_state.json + game_state/npcs/npc_core.json",
+                "resident companion descent");
+        }
 
         if (effectState["relicRefinementEntitlements"] is JsonObject relic)
         {
             lines.Add($"Реликтовые права: rerolls {GetNodeInt(relic["rerolls"], 0)}, freeShape={GetNodeBool(relic["freeShape"])}, freeRetune={GetNodeBool(relic["freeRetune"])}.");
+            AppendBootstrapActivationAuditLine(
+                lines,
+                "relicRefinementEntitlements",
+                "relic",
+                GetNodeString(relic["status"]) ?? RelicStatusPendingEntitlement,
+                ReadStringArray(relic["sourceCardIds"]),
+                "game_state/meta/soul_state.json + Shining forge actions",
+                "next-life relic refinement entitlements");
         }
 
         return lines;
+    }
+
+    private static void AppendBootstrapActivationAuditLinesForArray(
+        List<string> lines,
+        JsonArray effects,
+        string family,
+        string consumptionSurface,
+        string consumptionTarget)
+    {
+        foreach (var effect in effects.OfType<JsonObject>())
+        {
+            var effectId = GetNodeString(effect["effectId"]) ??
+                           GetNodeString(effect["sourceCardId"]) ??
+                           "unknown_effect";
+            var sourceCardId = GetNodeString(effect["sourceCardId"]);
+            var sourceCardIds = string.IsNullOrWhiteSpace(sourceCardId)
+                ? Array.Empty<string>()
+                : new[] { sourceCardId };
+            AppendBootstrapActivationAuditLine(
+                lines,
+                effectId,
+                family,
+                GetNodeString(effect["status"]) ?? "unknown",
+                sourceCardIds,
+                consumptionSurface,
+                consumptionTarget);
+        }
+    }
+
+    private static void AppendBootstrapActivationAuditLine(
+        List<string> lines,
+        string effectId,
+        string family,
+        string status,
+        IReadOnlyList<string> sourceCardIds,
+        string consumptionSurface,
+        string consumptionTarget)
+    {
+        var sourceCards = sourceCardIds.Count == 0
+            ? "[]"
+            : $"[{string.Join(", ", sourceCardIds)}]";
+        lines.Add($"Blessing audit: effectId={effectId}; family={family}; status={status}; sourceCardIds={sourceCards}; consumptionSurface={consumptionSurface}; consumptionTarget={consumptionTarget}.");
     }
 
     private static List<string> BuildDirectiveLines(JsonObject effectState)

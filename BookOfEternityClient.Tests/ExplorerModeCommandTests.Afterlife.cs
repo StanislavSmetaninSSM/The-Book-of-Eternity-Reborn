@@ -1692,7 +1692,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Полный зафиксированный набор карт", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("уровень сияния", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("уровень торговли", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("цикл возвращения синхронизирован", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("currentReturnCycleId=return_7", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Выбранные идентификаторы карт", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Выбранные card id", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("frozen payload", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -3544,8 +3544,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("card_resource_seed", afterAvailableIds);
 
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Уходят из доступного набора: Песнь Рассвета, Память Эха", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Приходят в доступный набор: Зерно запаса, Щит выживания", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Уходят из доступного набора: Песнь Рассвета (card_social_dawn), Память Эха (card_memory_echo)", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Приходят в доступный набор: Зерно запаса (card_resource_seed), Щит выживания (card_survival_shield)", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Новый доступный набор", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Полные карты, уходящие из selectable-набора", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Полные карты, приходящие в selectable-набор", renderedText, StringComparison.OrdinalIgnoreCase);

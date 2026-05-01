@@ -41,6 +41,10 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.Success);
             Assert.True(result.StateChanged);
             Assert.Contains(result.SummaryLines, line => line.Contains("Стартовые ресурсы", StringComparison.OrdinalIgnoreCase));
+            Assert.Contains(result.SummaryLines, line => line.Contains("Blessing audit: effectId=resourceGrant", StringComparison.Ordinal));
+            Assert.Contains(result.SummaryLines, line => line.Contains("sourceCardIds=[card_resource]", StringComparison.Ordinal));
+            Assert.Contains(result.SummaryLines, line => line.Contains("Blessing audit: effectId=card_social", StringComparison.Ordinal));
+            Assert.DoesNotContain(result.SummaryLines, line => line.Contains("effectPayload", StringComparison.OrdinalIgnoreCase));
 
             var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
             var blessingState = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!.AsObject();

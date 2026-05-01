@@ -36,6 +36,11 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.DoesNotContain("foreach (var request in leadershipRequests.Take(5))", politicsSource, StringComparison.Ordinal);
         Assert.DoesNotContain(".Take(6)", tradeSource, StringComparison.Ordinal);
         Assert.Contains("показаны все без сокращения", overviewSource, StringComparison.Ordinal);
+        Assert.Contains("currentReturnCycleId=", overviewSource, StringComparison.Ordinal);
+        Assert.Contains("hallId=", overviewSource, StringComparison.Ordinal);
+        Assert.Contains("actorId=", overviewSource, StringComparison.Ordinal);
+        Assert.Contains("currentFactionId=", overviewSource, StringComparison.Ordinal);
+        Assert.Contains("factionId=", overviewSource, StringComparison.Ordinal);
         Assert.Contains("все pending-запросы", politicsSource, StringComparison.Ordinal);
         Assert.Contains("Все призывы реликвий", tradeSource, StringComparison.Ordinal);
     }
@@ -89,6 +94,8 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("expectedStateFragment", tradeSource, StringComparison.Ordinal);
         Assert.Contains("affectedFiles", tradeSource, StringComparison.Ordinal);
         Assert.Contains("soldOutAfterPurchase", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("slotId {offer.SlotId}", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("relicId={Markup.Escape(item.RelicId)}", tradeSource, StringComparison.Ordinal);
         Assert.Contains("Полный JSON покупки сияющей витрины: предложение, чек и фрагмент состояния", tradeSource, StringComparison.Ordinal);
         Assert.Contains("BuildDuplicatePendingTradeRequestsMessage", serviceSource, StringComparison.Ordinal);
         Assert.Contains("derivedTradeSlotCount", serviceSource, StringComparison.Ordinal);
@@ -107,6 +114,30 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("ReadGateAvailableCardIds(beforeGates)", source, StringComparison.Ordinal);
         Assert.Contains("ReadGateAvailableCardIds(afterGates)", source, StringComparison.Ordinal);
         Assert.Contains("BuildShiningBlessingCardInspectionLines(card, context, isSelected: false)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningCommandChoiceLabels_MustExposeStableIds()
+    {
+        var gatesSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.Gates.cs");
+        var politicsSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.Politics.cs");
+
+        Assert.Contains("projectId={projectId}", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("residentId={residentId}", politicsSource, StringComparison.Ordinal);
+        Assert.Contains("factionId={factionId}", politicsSource, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningRadiantActorPoliticalChoiceLabel", politicsSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningBlessingActivationAudit_MustExposeStableIdsWithoutRawPayloads()
+    {
+        var serviceSource = ReadServiceSource("ShiningBlessingEffectState.cs");
+
+        Assert.Contains("Blessing audit: effectId=", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("sourceCardIds=", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("consumptionSurface=", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("consumptionTarget=", serviceSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("effectPayload.ToJsonString", serviceSource, StringComparison.Ordinal);
     }
 
     [Fact]

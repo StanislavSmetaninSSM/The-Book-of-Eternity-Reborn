@@ -166,7 +166,11 @@ public partial class ExplorerMode
                 var summarySuffix = serviceTags.Count > 0
                     ? $" [dim](службы: {Markup.Escape(string.Join(", ", serviceTags))})[/]"
                     : string.Empty;
-                lines.Add($"  • {Markup.Escape(hallName)} — {Markup.Escape(string.IsNullOrWhiteSpace(description) ? "описание пока не заполнено" : description)}{summarySuffix}");
+                var hallId = GetNodeString(hall["hallId"]) ?? string.Empty;
+                var hallIdSuffix = string.IsNullOrWhiteSpace(hallId)
+                    ? string.Empty
+                    : $" [dim](hallId={Markup.Escape(hallId)})[/]";
+                lines.Add($"  • {Markup.Escape(hallName)}{hallIdSuffix} — {Markup.Escape(string.IsNullOrWhiteSpace(description) ? "описание пока не заполнено" : description)}{summarySuffix}");
             }
         }
 
@@ -179,11 +183,16 @@ public partial class ExplorerMode
                 var actorName = GetNodeString(actor["displayName"]) ?? GetNodeString(actor["actorId"]) ?? "?";
                 var summary = GetNodeString(actor["summary"]) ?? string.Empty;
                 var status = DescribeShiningPoliticalStatus(GetNodeString(actor["politicalStatus"]));
-                var factionName = ResolveShiningFactionLabel(shiningRoot, GetNodeString(actor["currentFactionId"]));
+                var actorId = GetNodeString(actor["actorId"]) ?? string.Empty;
+                var currentFactionId = GetNodeString(actor["currentFactionId"]) ?? string.Empty;
+                var actorIdSuffix = string.IsNullOrWhiteSpace(actorId)
+                    ? string.Empty
+                    : $" [dim](actorId={Markup.Escape(actorId)})[/]";
+                var factionName = ResolveShiningFactionLabel(shiningRoot, currentFactionId);
                 var factionSuffix = !string.IsNullOrWhiteSpace(factionName) && factionName != "?"
-                    ? $" [dim](сейчас: {Markup.Escape(factionName)})[/]"
+                    ? $" [dim](сейчас: {Markup.Escape(factionName)}; currentFactionId={Markup.Escape(string.IsNullOrWhiteSpace(currentFactionId) ? "none" : currentFactionId)})[/]"
                     : string.Empty;
-                lines.Add($"  • {Markup.Escape(actorName)} — {Markup.Escape(string.IsNullOrWhiteSpace(summary) ? "без сводки" : summary)} [dim]({Markup.Escape(status)})[/]{factionSuffix}");
+                lines.Add($"  • {Markup.Escape(actorName)}{actorIdSuffix} — {Markup.Escape(string.IsNullOrWhiteSpace(summary) ? "без сводки" : summary)} [dim]({Markup.Escape(status)})[/]{factionSuffix}");
             }
         }
 
@@ -206,7 +215,11 @@ public partial class ExplorerMode
                 var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
                 var memberCount = CountResidentsInFaction(residentRoot, factionId);
                 var tradeState = tradeTier >= 1 ? "активна" : "спит";
-                lines.Add($"  • {Markup.Escape(factionName)} — сила [white]{strength}[/] [dim]({Markup.Escape(band)})[/], участников {memberCount}, торговля {tradeState} [dim](уровень торговли {tradeTier}, витрина {tradeStock}, потолок {Markup.Escape(tradeRarity)})[/], услуги x{serviceMultiplier:0.00}, глава {Markup.Escape(BuildHeadActorLabel(leaderType, leaderId, residentRoot, guardiansRoot, shiningRoot))}");
+                var hallId = GetNodeString(faction["hallId"]) ?? string.Empty;
+                var idSuffix = string.IsNullOrWhiteSpace(hallId)
+                    ? $"factionId={Markup.Escape(factionId)}"
+                    : $"factionId={Markup.Escape(factionId)}, hallId={Markup.Escape(hallId)}";
+                lines.Add($"  • {Markup.Escape(factionName)} [dim]({idSuffix})[/] — сила [white]{strength}[/] [dim]({Markup.Escape(band)})[/], участников {memberCount}, торговля {tradeState} [dim](уровень торговли {tradeTier}, витрина {tradeStock}, потолок {Markup.Escape(tradeRarity)})[/], услуги x{serviceMultiplier:0.00}, глава {Markup.Escape(BuildHeadActorLabel(leaderType, leaderId, residentRoot, guardiansRoot, shiningRoot))}");
             }
 
             var latestTradeReceipts = factions.OfType<JsonObject>()
@@ -251,8 +264,8 @@ public partial class ExplorerMode
     {
         var currentReturnCycleId = GetNodeString(shiningRoot["gachaSystem"]?["currentReturnCycleId"]);
         return string.IsNullOrWhiteSpace(currentReturnCycleId)
-            ? "цикл возвращения не синхронизирован"
-            : "цикл возвращения синхронизирован";
+            ? "currentReturnCycleId не синхронизирован"
+            : $"currentReturnCycleId={currentReturnCycleId}";
     }
 
     private bool EnsureActiveShiningAbodeAvailable(string title)
