@@ -973,6 +973,39 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task PreviewAutoRefreshRequestsForCurrentCycleAsync_UsesProjectedReentryStateWithoutWriting()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+
+            var projectedSoulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            projectedSoulRoot["currentRealm"] = "Shining Abode";
+            projectedSoulRoot["currentIncarnation"] = 3;
+            var projectedShiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            ShiningAbodeState.SyncShiningReturnCycle(projectedShiningRoot, 3, out _);
+
+            var result = await ShiningTradeService.PreviewAutoRefreshRequestsForCurrentCycleAsync(
+                fs,
+                projectedSoulRoot,
+                projectedShiningRoot,
+                currentTurn: 12);
+
+            Assert.True(result.StateChanged);
+            Assert.Equal(1, result.CreatedRequestCount);
+            Assert.Equal("shining_return_3", result.TradeCycleId);
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task WriteRequestsAsync_DuplicateRequestIds_Throws()
     {
         var root = CreateTempRoot();

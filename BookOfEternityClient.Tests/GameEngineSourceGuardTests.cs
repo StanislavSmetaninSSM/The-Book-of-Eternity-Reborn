@@ -473,6 +473,37 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void OrdinaryReturnToChaosSea_MustShowBeforeAfterPreviewBeforeLocalWrite()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+
+        Assert.Contains("ConfirmOrdinaryReturnToChaosSeaFromShiningAbodeAsync", source, StringComparison.Ordinal);
+        Assert.Contains("\"return_to_chaos_sea\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"blockersChecked\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"affectedFiles\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"soulCurrentRealm\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"shiningAvailability\"", source, StringComparison.Ordinal);
+        Assert.Contains("GetBlockingShiningPendingContractPathsCoreAsync(deleteEmptyFiles: false)", source, StringComparison.Ordinal);
+        Assert.Contains("Подтвердить локальный выход в Море Хаоса", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ReenterShiningAbode_MustPreviewReturnCycleAndAutoTradeRefreshSideEffects()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
+
+        Assert.Contains("BuildShiningReentrySideEffectPreviewAsync", source, StringComparison.Ordinal);
+        Assert.Contains("\"returnCycleSync\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"autoTradeRefresh\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"currentReturnCycleIdBefore\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"currentReturnCycleIdAfter\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"chargesUsedThisReturnBefore\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"chargesUsedThisReturnAfter\"", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningTradeRequestState.PendingRequestsPath", source, StringComparison.Ordinal);
+        Assert.Contains("PreviewAutoRefreshRequestsForCurrentCycleAsync", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void RuntimePrompt_MustDescribeEternalGuardianPresetContract()
     {
         var source = ReadGameEngineSource();
