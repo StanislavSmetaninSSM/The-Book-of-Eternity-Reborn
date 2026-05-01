@@ -45,7 +45,7 @@ Do NOT look for or use legacy `custom_rules`.
 ## EACH TURN — 5 PHASES
 
 ### PHASE 0: REALM CHECK (NEVER SKIP)
-Read `worldState.currentRealm` from game state.
+Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also exposes this value as `Context.worldState.currentRealm`.
 - If `currentRealm = "Shining Abode"` and `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` is a valid bootstrap package object, treat the turn as **Shining Abode pending-bootstrap handoff**:
   - ONLY `TriggerIncarnation` / `game_state/control/incarnation_trigger.json` is GM-authored in this handoff
   - preserve `preparedIncarnationPackage` exactly; the client performs Mortal bootstrap after accepting the trigger

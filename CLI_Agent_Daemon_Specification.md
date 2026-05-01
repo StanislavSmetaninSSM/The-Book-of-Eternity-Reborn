@@ -308,8 +308,14 @@ Hidden afterlife routing tags are machine contracts, not prose hints: `[GUARDIAN
 **1.A.2. Shining resident normalizer side effects:**
 - Resident belongs to Shining faction only when `ascensionState = ascended` and `shiningFactionId` points to an existing Shining faction.
 - If not ascended, runtime normalizes the resident to `ascensionState = remained_in_chaos_sea`, clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = alienated`, `factionRestlessness = 0`, and `factionRealignmentState = settled`.
-- If ascended but `shiningFactionId` does not resolve to a faction, the same Shining affiliation fields are cleared/reset.
+- If ascended but `shiningFactionId` does not resolve to a faction, runtime preserves `ascensionState = ascended`, treats the resident as ascended but unaffiliated, and clears/resets only the Shining affiliation fields: `shiningFactionId`, `residentRole`, `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`.
 - If the faction is valid, runtime derives/validates `residentRole`, `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`; do not preserve ad-hoc `shiningAlignment`.
+
+**1.A.3. Client-owned next-life Scenario Core:**
+- If `game_state/control/next_life_scenario_core.json` is present, read it as bootstrap context for the next Mortal life.
+- The GM must not edit, clear, or close this file. It is client-owned and has no GM receipt.
+- `scenarioCoreAssertions[]` are hard facts that the next-life bootstrap must not contradict.
+- `candidateAssertions[]` are candidate-only hints until later accepted state confirms them; do not promote them to hard facts by narration alone.
 
 **1.B. Как выбирать последствия Сияющей Обители:**
 - Shining Abode cycle отвечает за общую жизнь Обители: напряжение между залами, публичные ритуалы, реакцию radiant actors, последствия completed projects, состояние gates и civic order.
