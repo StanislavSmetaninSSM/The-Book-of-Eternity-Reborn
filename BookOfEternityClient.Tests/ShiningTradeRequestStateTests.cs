@@ -972,6 +972,51 @@ public sealed class ShiningTradeRequestStateTests
         }
     }
 
+    [Fact]
+    public async Task WriteRequestsAsync_DuplicateRequestIds_Throws()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ShiningTradeRequestState.WriteRequestsAsync(fs, new[]
+            {
+                new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+                {
+                    RequestId = "trade_req_shared",
+                    FactionId = "faction_old",
+                    FactionName = "Старый Дом",
+                    TradeCycleId = "shining_return_2",
+                    DerivedTradeTier = 2,
+                    DerivedTradeSlotCount = 6,
+                    DerivedRarityCeiling = "rare",
+                    DerivedServiceMultiplier = 1.25,
+                    CreatedAtTurn = 10
+                },
+                new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+                {
+                    RequestId = "trade_req_shared",
+                    FactionId = "faction_old",
+                    FactionName = "Старый Дом",
+                    TradeCycleId = "shining_return_3",
+                    DerivedTradeTier = 2,
+                    DerivedTradeSlotCount = 6,
+                    DerivedRarityCeiling = "rare",
+                    DerivedServiceMultiplier = 1.25,
+                    CreatedAtTurn = 11
+                }
+            }));
+
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static async Task WriteMinimalShiningTradeStateAsync(FileSystemManager fs, int factionStrength, bool withReadyInventory = false)
     {
         await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
