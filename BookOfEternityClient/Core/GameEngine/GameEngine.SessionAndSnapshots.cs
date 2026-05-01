@@ -761,6 +761,8 @@ public partial class GameEngine
                     : "Найден input/turn_request.json с unreadable/invalid validated pending snapshot authority. Удаление как stale runtime artifact.");
             _fs.DeleteFile("input/turn_request.json");
         }
+
+        await RepairStalePreparedShiningPackageAfterMortalBootstrapAsync(pendingSnapshot, hasReadySignals);
     }
 
     private bool HasTerminalReadySignal() =>

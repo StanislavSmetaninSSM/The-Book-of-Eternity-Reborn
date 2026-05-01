@@ -2156,26 +2156,27 @@ public partial class ExplorerMode
     private async Task<int> TryReadCurrentTurnNumberAsync()
     {
         var raw = await _fs.ReadFileAsync("input/turn_request.json");
-        if (string.IsNullOrWhiteSpace(raw))
-            return 0;
-
-        try
+        if (!string.IsNullOrWhiteSpace(raw))
         {
-            using var doc = JsonDocument.Parse(raw);
-            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
-                doc.RootElement.TryGetProperty("turnNumber", out var turnNode) &&
-                turnNode.ValueKind == JsonValueKind.Number &&
-                turnNode.TryGetInt32(out var turn))
+            try
             {
-                return turn;
+                using var doc = JsonDocument.Parse(raw);
+                if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                    doc.RootElement.TryGetProperty("turnNumber", out var turnNode) &&
+                    turnNode.ValueKind == JsonValueKind.Number &&
+                    turnNode.TryGetInt32(out var turn) &&
+                    turn > 0)
+                {
+                    return turn;
+                }
+            }
+            catch
+            {
+                // Fall back to runtime state below.
             }
         }
-        catch
-        {
-            // ignored
-        }
 
-        return 0;
+        return Math.Max(1, _stateManager.CurrentState.TurnNumber + 1);
     }
 
     private static bool IsAfterlifeRealm(string? realm) => RealmSemantics.IsAfterlifeRealm(realm);

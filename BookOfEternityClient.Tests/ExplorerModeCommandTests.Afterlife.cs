@@ -2013,7 +2013,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("задумывается о переходе", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Кандидат:", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("резидент Мираэль", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("resident:resident_mirael", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("resident:resident_mirael", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Создан в UTC: 2026-04-19T11:25:00Z", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -3618,13 +3618,15 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_trade_inventory_requires_current_turn");
-        Assert.False(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+        var pendingRaw = await _fs.ReadFileAsync(ShiningTradeRequestState.PendingRequestsPath);
+        Assert.Contains("\"createdAtTurn\":", pendingRaw, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(_console.MarkupLines,
-            line => line.Contains("input/turn_request.json", StringComparison.OrdinalIgnoreCase) &&
-                    line.Contains("turnNumber", StringComparison.OrdinalIgnoreCase));
+            line => line.Contains("pending Shining trade contract", StringComparison.OrdinalIgnoreCase) &&
+                    line.Contains("requestId=", StringComparison.OrdinalIgnoreCase));
 
         var renderedText = ExtractRenderedText();
-        Assert.DoesNotContain("Предпросмотр сияющей торговой витрины", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Предпросмотр сияющей торговой витрины", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6848,11 +6850,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/помощь"));
 
         Assert.Null(ex);
-        AssertNoHiddenExplorerErrors("help_pending_bootstrap_no_status");
+        AssertNoHiddenExplorerErrors("help_pending_bootstrap_read_only_audits");
         var renderedText = ExtractRenderedText();
         Assert.Contains("SHINING ABODE HANDOFF", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("/status", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("/статус", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/статус", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/shining_abode", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/shining_politics", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

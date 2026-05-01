@@ -2362,15 +2362,15 @@ Read Context.worldState.currentRealm (projected from game_state/meta/soul_state.
 
 IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage is a VALID bootstrap package object:
   TREAT THIS AS Shining Abode pending-bootstrap handoff, NOT as ordinary active Shining Abode.
-  ALLOWED: only mortal bootstrap / next-life materialization. GM MUST preserve game_state/meta/shining_abode_state.json.preparedIncarnationPackage exactly as provided; do not remove, clear, rename, or mutate it. The client runtime consumes and clears the frozen package only after successful Mortal World bootstrap.
-  FORBIDDEN: ordinary Guardian interactions, ordinary Abode interactions, ordinary afterlife interactions, archive/relic/world-setup meta flows, Mortal World systems.
+  ALLOWED: only canonical TriggerIncarnation / game_state/control/incarnation_trigger.json for next-life bootstrap. GM MUST preserve game_state/meta/shining_abode_state.json.preparedIncarnationPackage exactly as provided; do not remove, clear, rename, or mutate it. The client runtime consumes and clears the frozen package only after successful Mortal World bootstrap.
+  FORBIDDEN: ordinary Guardian interactions, ordinary Abode interactions, ordinary afterlife interactions, archive/relic/world-setup meta flows, Life Evaluation, Shining return, Chaos Sea travel, Mortal World systems.
 
 IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage is present but not a valid bootstrap package:
   TREAT THIS AS Shining Abode package fault. Fail closed, preserve the package and pending Shining contracts for repair, and do NOT process ordinary Shining gameplay or handoff.
 
 ELSE IF REALM = Chaos Sea:
   FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
-  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, guardian/abode afterlife interactions, Life Evaluation, Incarnation setup.
+  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, guardian/abode afterlife interactions, Life Evaluation only on dedicated Life Evaluation turns, and Chaos Sea TriggerIncarnation setup.
   AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.
   Sell Relic is a separate guardian trade interaction, not an Ink Feather action.
   If game_state/meta/shining_abode_state.json.availability = active and afterlife_return_guard is absent, or semantic-valid (`reason=post_life_return`) and inactive, the player MAY use the client-owned local command /reenter_shining_abode to re-enter the already-active Shining Abode. A malformed guard or a parsed guard with the wrong reason still blocks re-entry until client normalization clears it. This is an ordinary return route, not Ascension, and not a GM-authored turn.
@@ -2382,7 +2382,8 @@ ELSE IF REALM = Chaos Sea:
 
 ELSE IF REALM = Shining Abode:
   FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
-  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, Abode/Guardian interactions, Life Evaluation, Incarnation setup.
+  ALLOWED: Shining core actions, Shining trade, Shining politics, read-only Shining audit, local afterlife resource/relic flows, and guardian/resident state only when an explicit afterlife contract authorizes it.
+  FORBIDDEN ALSO: Life Evaluation, ordinary Chaos Sea travel, and direct incarnation setup unless this state first becomes Shining pending-bootstrap through a valid preparedIncarnationPackage.
   AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.
   Shining Abode is the ascended endgame free-roleplay zone above the Chaos Sea. It still uses afterlife/guardian systems, not Mortal World systems.
   The player may use the client-owned local command /return_to_chaos_sea to return to Chaos Sea and seal the Shining Abode without triggering destructive New Game+ reset.

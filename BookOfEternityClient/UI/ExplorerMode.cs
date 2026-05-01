@@ -221,7 +221,7 @@ public partial class ExplorerMode
                 return "";
             }
 
-            if (IsExactChaosSeaCommand(cmd) && !_stateManager.CurrentState.IsInChaosSea)
+            if (IsExactChaosSeaCommand(cmd) && isAfterlife && !_stateManager.CurrentState.IsInChaosSea)
             {
                 MarkupLine("[yellow]⚠️ Эта команда доступна только в Море Хаоса.[/]");
                 MarkupLine("[dim]В Сияющей Обители и во время bootstrap прямые действия Моря Хаоса недоступны.[/]");

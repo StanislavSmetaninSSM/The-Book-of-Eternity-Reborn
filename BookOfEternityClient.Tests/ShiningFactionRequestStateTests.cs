@@ -1251,6 +1251,53 @@ public sealed class ShiningFactionRequestStateTests
         }
     }
 
+    [Fact]
+    public async Task ValidateLeadershipTransitionRequestAgainstCurrentStateAsync_ActiveGuardianAutoFactionRejectsDifferentGuardianHead()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            var shiningRoot = await ReadJsonAsync(fs, ShiningAbodeState.StatePath);
+            var factionOld = shiningRoot?["factions"]?.AsArray().OfType<JsonObject>()
+                .First(faction => string.Equals(faction["factionId"]?.GetValue<string>(), "faction_old", StringComparison.OrdinalIgnoreCase));
+            factionOld!["factionId"] = "faction_guardian_old";
+            factionOld["hallId"] = "hall_guardian_old";
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot!.ToJsonString());
+
+            var guardiansRoot = await ReadJsonAsync(fs, "game_state/meta/guardians.json");
+            guardiansRoot!["guardians"]!.AsArray().Add(new JsonObject
+            {
+                ["guardianId"] = "guardian_new",
+                ["guardianName"] = "Элиан"
+            });
+            await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString());
+
+            var error = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                FactionId = "faction_guardian_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+                IncumbentHeadActorId = "guardian_old",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+                CandidateHeadActorId = "guardian_new",
+                SupportingResidentIds = { "resident_liora", "resident_mael", "resident_serit" }
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("auto faction", error, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("activeGuardianId", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static string CreateTempRoot()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-shining-request-tests-" + Guid.NewGuid().ToString("N"));

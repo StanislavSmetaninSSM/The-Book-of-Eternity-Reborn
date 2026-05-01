@@ -516,6 +516,13 @@ internal static class ShiningFactionRequestState
             if (candidateError != null)
                 return candidateError;
 
+            if (string.Equals(request.CandidateHeadActorType, ShiningAbodeState.HeadActorTypeGuardian, StringComparison.OrdinalIgnoreCase) &&
+                IsActiveGuardianAutoFaction(faction, guardiansRoot, out var activeGuardianId) &&
+                !string.Equals(request.CandidateHeadActorId, activeGuardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                return "Active-guardian auto faction не может передать leadership другому guardian: normalizer вернёт headActorId к activeGuardianId.";
+            }
+
             if (HasCurrentHeadFaction(
                     shiningRoot,
                     request.CandidateHeadActorType,
@@ -986,8 +993,50 @@ internal static class ShiningFactionRequestState
         }
 
         return guardiansRoot["guardians"] is JsonArray guardians &&
-               guardians.OfType<JsonObject>()
+                   guardians.OfType<JsonObject>()
                    .Any(guardian => string.Equals(GetNodeString(guardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsActiveGuardianAutoFaction(JsonObject faction, JsonObject? guardiansRoot, out string activeGuardianId)
+    {
+        activeGuardianId = string.Empty;
+        if (guardiansRoot?["activeGuardian"] is not JsonObject activeGuardian)
+            return false;
+
+        activeGuardianId = GetNodeString(activeGuardian["guardianId"]) ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(activeGuardianId))
+            return false;
+
+        var slug = Slugify(activeGuardianId);
+        var expectedFactionId = $"faction_{slug}";
+        var expectedHallId = $"hall_{slug}";
+        var originType = GetNodeString(faction["originType"]);
+        var hasAutoOrigin =
+            string.Equals(originType, ShiningAbodeState.OriginTypeAscendedGuardian, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(originType, ShiningAbodeState.OriginTypePlayerFounded, StringComparison.OrdinalIgnoreCase);
+
+        return hasAutoOrigin &&
+               (string.Equals(GetNodeString(faction["factionId"]), expectedFactionId, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(GetNodeString(faction["hallId"]), expectedHallId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string Slugify(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "item";
+
+        var buffer = new char[value.Length];
+        var index = 0;
+        foreach (var ch in value.Trim())
+        {
+            if (char.IsLetterOrDigit(ch))
+                buffer[index++] = char.ToLowerInvariant(ch);
+            else if (index == 0 || buffer[index - 1] != '_')
+                buffer[index++] = '_';
+        }
+
+        var result = new string(buffer, 0, index).Trim('_');
+        return string.IsNullOrWhiteSpace(result) ? "item" : result;
     }
 
     private static bool TryGetCurrentResidentHeadFactionId(JsonObject? shiningRoot, string residentId, out string factionId)

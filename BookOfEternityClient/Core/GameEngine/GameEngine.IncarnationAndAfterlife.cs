@@ -792,6 +792,47 @@ public partial class GameEngine
         }
     }
 
+    private async Task RepairStalePreparedShiningPackageAfterMortalBootstrapAsync(
+        PendingTurnSnapshotResolution pendingSnapshot,
+        bool hasReadySignals)
+    {
+        if (!RealmSemantics.IsMortalRealm(_stateManager.CurrentState.CurrentRealm))
+            return;
+
+        if (hasReadySignals || pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable)
+            return;
+
+        if (_fs.FileExists("input/turn_request.json") ||
+            _fs.FileExists("game_state/control/incarnation_trigger.json"))
+        {
+            return;
+        }
+
+        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(shiningJson))
+            return;
+
+        try
+        {
+            var root = JsonNode.Parse(shiningJson) as JsonObject;
+            if (root?["preparedIncarnationPackage"] is not JsonObject preparedPackage)
+                return;
+
+            var validationError = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(preparedPackage);
+            if (!string.IsNullOrWhiteSpace(validationError))
+                return;
+
+            root["preparedIncarnationPackage"] = null;
+            await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, root.ToJsonString(JsonOpts));
+            _logger.LogInformation("Cleared stale Shining preparedIncarnationPackage after confirmed Mortal World bootstrap.");
+            await RefreshRuntimeStateAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Не удалось проверить stale preparedIncarnationPackage after Mortal World bootstrap");
+        }
+    }
+
     private async Task<bool> HasPendingMemoryLegacyAwaitingConsumptionAsync()
     {
         var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");

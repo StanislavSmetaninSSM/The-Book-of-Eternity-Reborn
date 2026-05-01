@@ -169,6 +169,9 @@ public partial class ExplorerMode
         {
             table.AddRow("[bold khaki1]── SHINING ABODE HANDOFF ──[/]", "", "");
             table.AddRow("[khaki1]/help[/]", "[khaki1]/помощь[/]", "[khaki1]Показать этот экран; обычные команды Обители и Моря Хаоса пока недоступны[/]");
+            table.AddRow("[khaki1]/status[/]", "[khaki1]/статус[/]", "[khaki1]Read-only audit: blockers, frozen preparedIncarnationPackage, pending setup and next-life payloads[/]");
+            table.AddRow("[khaki1]/shining_abode[/]", "[khaki1]/сияющая_обитель[/]", "[khaki1]Read-only audit of gates, frozen package, selected cards and core receipts; no ordinary Shining actions[/]");
+            table.AddRow("[khaki1]/shining_politics[/]", "[khaki1]/сияющая_политика[/]", "[khaki1]Read-only audit of faction founding, realignment and leadership receipts/pending contracts[/]");
         }
         else if (isShiningAbode)
         {

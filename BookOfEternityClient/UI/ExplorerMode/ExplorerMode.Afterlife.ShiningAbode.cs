@@ -613,15 +613,22 @@ public partial class ExplorerMode
 
     private static string BuildShiningFoundingReceiptSummary(JsonObject receipt)
     {
+        var requestId = GetNodeString(receipt["requestId"]) ?? "?";
+        var hallId = GetNodeString(receipt["hallId"]) ?? GetNodeString(receipt["proposedHallId"]) ?? "?";
+        var factionId = GetNodeString(receipt["factionId"]) ?? GetNodeString(receipt["proposedFactionId"]) ?? "?";
         var hallName = GetNodeString(receipt["hallName"]) ?? GetNodeString(receipt["hallId"]) ?? "?";
         var factionName = GetNodeString(receipt["factionName"]) ?? GetNodeString(receipt["factionId"]) ?? GetNodeString(receipt["proposedFactionId"]) ?? "?";
         var status = DescribeShiningResolutionStatus(GetNodeString(receipt["status"]));
         var supporterCount = (receipt["supportingResidentIds"] as JsonArray)?.Count ?? 0;
-        return $"Основание фракции — {status}. Зал «{hallName}», фракция «{factionName}», сторонников {supporterCount}.";
+        return $"Основание фракции — {status}. requestId={requestId}, hallId={hallId}, factionId={factionId}; зал «{hallName}», фракция «{factionName}», сторонников {supporterCount}.";
     }
 
     private static string BuildShiningRealignmentReceiptSummary(JsonObject receipt)
     {
+        var requestId = GetNodeString(receipt["requestId"]) ?? "?";
+        var residentId = GetNodeString(receipt["residentId"]) ?? "?";
+        var sourceFactionId = GetNodeString(receipt["sourceFactionId"]) ?? "none";
+        var targetFactionId = GetNodeString(receipt["targetFactionId"]);
         var residentName = GetNodeString(receipt["residentName"]) ?? GetNodeString(receipt["residentId"]) ?? "?";
         var sourceFaction = string.IsNullOrWhiteSpace(GetNodeString(receipt["sourceFactionName"]))
             ? GetNodeString(receipt["sourceFactionId"]) ?? "?"
@@ -633,18 +640,24 @@ public partial class ExplorerMode
             : GetNodeString(receipt["targetFactionName"])!;
         var mode = DescribeShiningRealignmentMode(GetNodeString(receipt["realignmentMode"]));
         var status = DescribeShiningResolutionStatus(GetNodeString(receipt["status"]));
-        return $"Перестройка резидента — {status}. {residentName}: {sourceFaction} -> {targetFaction}, режим {mode}.";
+        return $"Перестройка резидента — {status}. requestId={requestId}, residentId={residentId}; {residentName}: {sourceFaction} ({sourceFactionId}) -> {targetFaction} ({(string.IsNullOrWhiteSpace(targetFactionId) ? "neutral" : targetFactionId)}), режим {mode}.";
     }
 
     private static string BuildShiningLeadershipReceiptSummary(string factionName, JsonObject receipt)
     {
+        var requestId = GetNodeString(receipt["requestId"]) ?? "?";
+        var factionId = GetNodeString(receipt["factionId"]) ?? "?";
         var stableFactionName = GetNodeString(receipt["factionName"]) ?? GetNodeString(receipt["factionId"]) ?? factionName;
         var transitionMode = DescribeShiningLeadershipMode(GetNodeString(receipt["transitionMode"]));
         var status = DescribeShiningResolutionStatus(GetNodeString(receipt["status"]));
+        var previousHeadActorType = GetNodeString(receipt["previousHeadActorType"]) ?? "?";
+        var previousHeadActorId = GetNodeString(receipt["previousHeadActorId"]) ?? "?";
+        var newHeadActorType = GetNodeString(receipt["newHeadActorType"]) ?? "?";
+        var newHeadActorId = GetNodeString(receipt["newHeadActorId"]) ?? "?";
         var newHead = string.IsNullOrWhiteSpace(GetNodeString(receipt["newHeadLabel"]))
             ? BuildHeadActorLabel(GetNodeString(receipt["newHeadActorType"]), GetNodeString(receipt["newHeadActorId"]))
             : GetNodeString(receipt["newHeadLabel"])!;
-        return $"Смена главы — {status}. {stableFactionName}, {transitionMode}, новый глава: {newHead}.";
+        return $"Смена главы — {status}. requestId={requestId}, factionId={factionId}; {stableFactionName}, {transitionMode}, {previousHeadActorType}:{previousHeadActorId} -> {newHeadActorType}:{newHeadActorId}, новый глава: {newHead}.";
     }
 
     private static string BuildForgeReceiptSuffix(JsonObject receipt)
@@ -1517,9 +1530,14 @@ public partial class ExplorerMode
                     lines.Add($"  • [white]{Markup.Escape(BuildShiningLeadershipReceiptSummary(item.FactionName, item.Receipt))}[/]");
                     AppendShiningResolutionAuditLines(lines, item.Receipt, 4);
                     var stableFactionName = GetNodeString(item.Receipt["factionName"]) ?? GetNodeString(item.Receipt["factionId"]) ?? "?";
-                    lines.Add($"    Фракция: [white]{Markup.Escape(stableFactionName)}[/]");
-                    lines.Add($"    Предыдущий глава: [dim]{Markup.Escape(BuildStableHeadActorReceiptLabel(GetNodeString(item.Receipt["previousHeadLabel"]), GetNodeString(item.Receipt["previousHeadActorType"]), GetNodeString(item.Receipt["previousHeadActorId"])))}[/]");
-                    lines.Add($"    Новый глава: [dim]{Markup.Escape(BuildStableHeadActorReceiptLabel(GetNodeString(item.Receipt["newHeadLabel"]), GetNodeString(item.Receipt["newHeadActorType"]), GetNodeString(item.Receipt["newHeadActorId"])))}[/]");
+                    var stableFactionId = GetNodeString(item.Receipt["factionId"]) ?? string.Empty;
+                    var previousType = GetNodeString(item.Receipt["previousHeadActorType"]) ?? string.Empty;
+                    var previousId = GetNodeString(item.Receipt["previousHeadActorId"]) ?? string.Empty;
+                    var newType = GetNodeString(item.Receipt["newHeadActorType"]) ?? string.Empty;
+                    var newId = GetNodeString(item.Receipt["newHeadActorId"]) ?? string.Empty;
+                    lines.Add($"    Фракция: [white]{Markup.Escape(stableFactionName)}[/] [dim]({Markup.Escape(stableFactionId)})[/]");
+                    lines.Add($"    Предыдущий глава: [dim]{Markup.Escape(BuildStableHeadActorReceiptLabel(GetNodeString(item.Receipt["previousHeadLabel"]), previousType, previousId))} ({Markup.Escape(previousType)}:{Markup.Escape(previousId)})[/]");
+                    lines.Add($"    Новый глава: [dim]{Markup.Escape(BuildStableHeadActorReceiptLabel(GetNodeString(item.Receipt["newHeadLabel"]), newType, newId))} ({Markup.Escape(newType)}:{Markup.Escape(newId)})[/]");
                     lines.Add($"    Режим перехода: [dim]{Markup.Escape(DescribeShiningLeadershipMode(GetNodeString(item.Receipt["transitionMode"])))}[/]");
                     if (historyEntry != null)
                     {

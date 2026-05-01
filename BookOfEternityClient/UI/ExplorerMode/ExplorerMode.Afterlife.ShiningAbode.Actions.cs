@@ -453,7 +453,9 @@ public partial class ExplorerMode
             return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine("[green]Создан ожидающий запрос действия Обители: открытие нативной фракции. На принятом ходу нужно материализовать новую фракцию и записать подтверждение.[/]");
+        MarkupLine(BuildShiningCorePostConfirmMarkup(
+            request,
+            "На принятом ходу нужно материализовать новую фракцию, новый hallId/factionId, resident/project arrays и coreActionReceipts[] с тем же requestId."));
         WaitForKey();
     }
 
@@ -529,7 +531,9 @@ public partial class ExplorerMode
             return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine("[green]Создан ожидающий запрос действия Обители: инвестиция во фракцию. На принятом ходу нужно применить каноническое усиление и записать подтверждение.[/]");
+        MarkupLine(BuildShiningCorePostConfirmMarkup(
+            request,
+            "На принятом ходу нужно применить каноническое усиление factionStrength/radiance и coreActionReceipts[] с тем же requestId."));
         WaitForKey();
     }
 

@@ -47,6 +47,56 @@ public partial class ExplorerMode
                choice.Contains("Подтвердить", StringComparison.OrdinalIgnoreCase);
     }
 
+    private static string BuildShiningCorePostConfirmMarkup(
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
+        string outcomeHint)
+    {
+        var fields = new List<string>
+        {
+            $"requestId={request.RequestId}",
+            $"path={ShiningCoreActionRequestState.PendingActionsRequestPath}",
+            $"actionType={request.ActionType}",
+            $"createdAtTurn={request.CreatedAtTurn}"
+        };
+
+        if (!string.IsNullOrWhiteSpace(request.FactionId))
+            fields.Add($"factionId={request.FactionId}");
+        if (!string.IsNullOrWhiteSpace(request.ProjectId))
+            fields.Add($"projectId={request.ProjectId}");
+        if (request.SelectedCardIds.Count > 0)
+            fields.Add($"selectedCardIds=[{string.Join(", ", request.SelectedCardIds)}]");
+        if (!string.IsNullOrWhiteSpace(request.ReturnCycleId))
+            fields.Add($"returnCycleId={request.ReturnCycleId}");
+        if (!string.IsNullOrWhiteSpace(request.RelicId))
+            fields.Add($"relicId={request.RelicId}");
+        if (!string.IsNullOrWhiteSpace(request.TargetFormTag))
+            fields.Add($"targetFormTag={request.TargetFormTag}");
+        if (request.QuotedCostFeathers > 0 || request.QuotedCostLightSparks > 0)
+            fields.Add($"quotedCost={request.QuotedCostFeathers} feathers/{request.QuotedCostLightSparks} lightSparks");
+        if (request.ProjectedGachaBonusSteps > 0)
+            fields.Add($"projectedGachaBonusSteps={request.ProjectedGachaBonusSteps}");
+
+        return $"[green]✅ Создан pending Shining core contract: {Markup.Escape(string.Join("; ", fields))}. {Markup.Escape(outcomeHint)}[/]";
+    }
+
+    private static string BuildShiningTradePostConfirmMarkup(ShiningTradeRequestState.PendingShiningTradeInventoryRequest request)
+    {
+        var fields = new[]
+        {
+            $"requestId={request.RequestId}",
+            $"path={ShiningTradeRequestState.PendingRequestsPath}",
+            $"factionId={request.FactionId}",
+            $"tradeCycleId={request.TradeCycleId}",
+            $"createdAtTurn={request.CreatedAtTurn}",
+            $"derivedTradeTier={request.DerivedTradeTier}",
+            $"slots={request.DerivedTradeSlotCount}",
+            $"rarityCeiling={request.DerivedRarityCeiling}",
+            $"serviceMultiplier={request.DerivedServiceMultiplier:0.###}"
+        };
+
+        return $"[green]✅ Создан pending Shining trade contract: {Markup.Escape(string.Join("; ", fields))}. GM должен явно оформить tradeInventory и tradeInventoryReceipts[] с тем же requestId/tradeCycleId.[/]";
+    }
+
     private List<string> BuildShiningCoreActionRequestPreviewLines(
         ShiningContext context,
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,

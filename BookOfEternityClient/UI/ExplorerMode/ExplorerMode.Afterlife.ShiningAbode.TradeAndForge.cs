@@ -681,13 +681,6 @@ public partial class ExplorerMode
             if (choice.Contains("Запросить", StringComparison.Ordinal))
             {
                 var currentTurn = await TryReadCurrentTurnNumberAsync();
-                if (currentTurn <= 0)
-                {
-                    MarkupLine("[red]❌ Нельзя создать pending Shining trade request: input/turn_request.json отсутствует, повреждён или не содержит положительный turnNumber.[/]");
-                    WaitForKey();
-                    continue;
-                }
-
                 var request = new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
                 {
                     FactionId = view.FactionId,
@@ -721,7 +714,7 @@ public partial class ExplorerMode
                 }
 
                 await ShiningTradeRequestState.WriteRequestAsync(_fs, request);
-                MarkupLine($"[green]✅ Создан ожидающий запрос сияющей торговли для фракции «{Markup.Escape(request.FactionName)}». В принятом ходе GM должен явно оформить tradeInventory и receipt.[/]");
+                MarkupLine(BuildShiningTradePostConfirmMarkup(request));
                 WaitForKey();
                 await _stateManager.RefreshGameStateAsync();
                 continue;
@@ -788,7 +781,9 @@ public partial class ExplorerMode
             return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine($"[green]Запрос на сияющий призыв реликвии создан. Следующий подтверждённый ход должен взять базовую редкость призыва, применить бонус до +{projectedBonusSteps} и проявить Реликвию Души.[/]");
+        MarkupLine(BuildShiningCorePostConfirmMarkup(
+            request,
+            $"Следующий подтверждённый ход должен сгенерировать relicId/relicName, взять базовую редкость призыва, применить бонус до +{projectedBonusSteps}, обновить soul_state.json и coreActionReceipts[] с тем же requestId."));
         WaitForKey();
     }
 
@@ -1207,7 +1202,9 @@ public partial class ExplorerMode
         }
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine($"[green]Запрос на перековку создан: {Markup.Escape(DescribeShiningCoreActionLabel(actionType))}. Следующий подтверждённый ход должен закрепить исход и списать цену {cost.Feathers} 🪶 / {cost.LightSparks} ✨.[/]");
+        MarkupLine(BuildShiningCorePostConfirmMarkup(
+            request,
+            $"Следующий подтверждённый ход должен закрепить forge delta для relicId, списать {cost.Feathers}/{cost.LightSparks}, обновить soul_state.json и coreActionReceipts[] с тем же requestId."));
         WaitForKey();
     }
 
