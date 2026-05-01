@@ -189,11 +189,8 @@ internal static class GuardianAbodeOfferingState
             {
                 return;
             }
-
-            return;
         }
-
-        if (string.Equals(request.OfferingType, OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+        else if (string.Equals(request.OfferingType, OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
         {
             if (string.IsNullOrWhiteSpace(request.RelicId) ||
                 string.IsNullOrWhiteSpace(request.RelicName) ||
@@ -201,12 +198,9 @@ internal static class GuardianAbodeOfferingState
             {
                 return;
             }
-
-            return;
         }
-
-        if (string.Equals(request.OfferingType, OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(request.OfferingType, OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        else if (string.Equals(request.OfferingType, OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(request.OfferingType, OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
         {
             if (string.IsNullOrWhiteSpace(request.ArchiveId) ||
                 string.IsNullOrWhiteSpace(request.ArchiveTitle) ||
@@ -218,9 +212,14 @@ internal static class GuardianAbodeOfferingState
             {
                 return;
             }
-
+        }
+        else
+        {
             return;
         }
+
+        if (await HasMatchingResolvedOfferingJournalEntryAsync(fs, request))
+            fs.DeleteFile(PendingRequestPath);
     }
 
     public static int CountOfferedInkFeathersForReturnCycle(JsonElement journalRoot, string guardianId, string returnCycleId)
@@ -261,6 +260,87 @@ internal static class GuardianAbodeOfferingState
         }
 
         return total;
+    }
+
+    private static async Task<bool> HasMatchingResolvedOfferingJournalEntryAsync(FileSystemManager fs, PendingAbodeOfferingRequest request)
+    {
+        var journalJson = await fs.ReadFileAsync(GuardianPowerEventState.JournalPath);
+        if (string.IsNullOrWhiteSpace(journalJson) ||
+            !DateTimeOffset.TryParse(request.CreatedAtUtc, out var requestCreatedAt))
+        {
+            return false;
+        }
+
+        try
+        {
+            using var doc = JsonDocument.Parse(journalJson);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object ||
+                !doc.RootElement.TryGetProperty("entries", out var entries) ||
+                entries.ValueKind != JsonValueKind.Array)
+            {
+                return false;
+            }
+
+            var expectedGain = ResolvePowerGainForPendingRequest(request);
+            if (expectedGain <= 0)
+                return false;
+
+            foreach (var entry in entries.EnumerateArray())
+            {
+                if (OfferingJournalEntryMatchesRequest(entry, request, expectedGain, requestCreatedAt))
+                    return true;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+
+        return false;
+    }
+
+    private static bool OfferingJournalEntryMatchesRequest(
+        JsonElement entry,
+        PendingAbodeOfferingRequest request,
+        int expectedGain,
+        DateTimeOffset requestCreatedAt)
+    {
+        if (entry.ValueKind != JsonValueKind.Object ||
+            !string.Equals(GetString(entry, "guardianId"), request.GuardianId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetString(entry, "reasonType"), "offering", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetString(entry, "sourceSurface"), "guardianAbodeOffering", StringComparison.OrdinalIgnoreCase) ||
+            GetInt(entry, "delta") != expectedGain ||
+            !DateTimeOffset.TryParse(GetString(entry, "appliedAt"), out var appliedAt) ||
+            appliedAt < requestCreatedAt ||
+            !entry.TryGetProperty("audit", out var audit) ||
+            audit.ValueKind != JsonValueKind.Object ||
+            !string.Equals(GetString(audit, "offeringType"), request.OfferingType, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetString(audit, "returnCycleId"), request.ReturnCycleId, StringComparison.OrdinalIgnoreCase) ||
+            GetInt(audit, "finalDelta") != expectedGain)
+        {
+            return false;
+        }
+
+        if (string.Equals(request.OfferingType, OfferingTypeInkFeathers, StringComparison.OrdinalIgnoreCase))
+            return GetInt(audit, "inkFeathersOffered") == request.InkFeathersOffered;
+
+        if (string.Equals(request.OfferingType, OfferingTypeSoulRelic, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(GetString(audit, "relicId"), request.RelicId, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetString(audit, "relicName"), request.RelicName, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetString(audit, "relicRarity"), request.RelicRarity, StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (string.Equals(request.OfferingType, OfferingTypeArchiveLoreFragment, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(request.OfferingType, OfferingTypeArchiveSecretRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(GetString(audit, "archiveId"), request.ArchiveId, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetString(audit, "archiveTitle"), request.ArchiveTitle, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetString(audit, "archiveEntryType"), request.ArchiveEntryType, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetString(audit, "archiveRarity"), request.ArchiveRarity, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return false;
     }
 
     private static bool IsAfterlifeRealm(string? currentRealm) =>
