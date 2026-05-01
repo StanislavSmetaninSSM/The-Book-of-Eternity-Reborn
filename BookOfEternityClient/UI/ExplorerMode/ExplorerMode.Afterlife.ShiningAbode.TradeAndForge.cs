@@ -158,10 +158,11 @@ public partial class ExplorerMode
                         {
                             var relicData = item["relicData"] as JsonObject;
                             var relicName = GetNodeString(relicData?["name"]) ?? GetNodeString(relicData?["relicId"]) ?? "реликвия";
+                            var relicId = GetNodeString(relicData?["relicId"]) ?? "?";
                             var rarity = GetNodeString(relicData?["quality"]) ?? GetNodeString(relicData?["rarity"]) ?? "?";
                             var availability = GetNodeBool(item["soldOut"]) ? "распродано" : "доступно";
                             var slotId = GetNodeString(item["slotId"]) ?? "?";
-                            lines.Add($"      • {Markup.Escape(DescribeShiningTradeSlotLabel(slotId))} — {Markup.Escape(relicName)} [dim]({Markup.Escape(DescribeForgeRarity(rarity))}, {GetNodeInt(item["priceInFeathers"])} 🪶, {Markup.Escape(availability)}; id {Markup.Escape(slotId)})[/]");
+                            lines.Add($"      • {Markup.Escape(DescribeShiningTradeSlotLabel(slotId))} — {Markup.Escape(relicName)} [dim]({Markup.Escape(DescribeForgeRarity(rarity))}, {GetNodeInt(item["priceInFeathers"])} 🪶, {Markup.Escape(availability)}; slotId {Markup.Escape(slotId)}; relicId {Markup.Escape(relicId)})[/]");
                         }
                     }
                 }
@@ -239,10 +240,12 @@ public partial class ExplorerMode
                          .ThenByDescending(item => GetNodeString(item["timestamp"]), StringComparer.OrdinalIgnoreCase))
             {
                 var factionName = GetNodeString(entry["factionName"]) ?? GetNodeString(entry["factionId"]) ?? "фракция";
+                var factionId = GetNodeString(entry["factionId"]) ?? "?";
                 var relicName = GetNodeString(entry["relicName"]) ?? GetNodeString(entry["relicId"]) ?? "реликвия";
+                var relicId = GetNodeString(entry["relicId"]) ?? "?";
                 var turnNumber = GetNodeInt(entry["turnNumber"]);
                 var turnText = turnNumber > 0 ? $" [dim](ход {turnNumber})[/]" : string.Empty;
-                lines.Add($"  • {Markup.Escape(factionName)} — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"])))}, {Markup.Escape(relicName)}{turnText}");
+                lines.Add($"  • {Markup.Escape(factionName)} [dim]({Markup.Escape(factionId)})[/] — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"])))}, {Markup.Escape(relicName)} [dim]({Markup.Escape(relicId)})[/]{turnText}");
                 lines.Add($"    Идентификатор запроса: [dim]{Markup.Escape(GetNodeString(entry["requestId"]) ?? "?")}[/]");
                 lines.Add($"    Цикл возвращения: [dim]{Markup.Escape(GetNodeString(entry["returnCycleId"]) ?? "?")}[/]");
                 lines.Add($"    Стоимость в Перьях: [dim]{GetNodeInt(entry["costInFeathers"])}[/]");
@@ -375,8 +378,13 @@ public partial class ExplorerMode
                          .OrderByDescending(item => GetNodeInt(item["turnNumber"])))
             {
                 var factionName = GetNodeString(entry["factionName"]) ?? GetNodeString(entry["factionId"]) ?? "фракция";
+                var factionId = GetNodeString(entry["factionId"]) ?? "?";
                 var relicName = GetNodeString(entry["relicName"]) ?? GetNodeString(entry["relicId"]) ?? "реликвия";
-                lines.Add($"  • {Markup.Escape(factionName)} — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"])))}, {Markup.Escape(relicName)}");
+                var relicId = GetNodeString(entry["relicId"]) ?? "?";
+                lines.Add($"  • {Markup.Escape(factionName)} [dim]({Markup.Escape(factionId)})[/] — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"])))}, {Markup.Escape(relicName)} [dim]({Markup.Escape(relicId)})[/]");
+                lines.Add($"    Идентификатор запроса: [dim]{Markup.Escape(GetNodeString(entry["requestId"]) ?? "?")}[/]");
+                lines.Add($"    Цикл возвращения: [dim]{Markup.Escape(GetNodeString(entry["returnCycleId"]) ?? "?")}[/]");
+                lines.Add($"    Стоимость в Перьях: [dim]{GetNodeInt(entry["costInFeathers"])}[/]");
             }
         }
 

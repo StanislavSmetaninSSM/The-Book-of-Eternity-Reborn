@@ -911,6 +911,8 @@ public partial class ExplorerMode
             "",
             "[bold]Сводка фракции:[/]",
             $"  • Зал: {Markup.Escape(hallName)}",
+            $"  • Идентификатор фракции: [dim]{Markup.Escape(factionId)}[/]",
+            $"  • Идентификатор зала: [dim]{Markup.Escape(GetNodeString(faction["hallId"]) ?? string.Empty)}[/]",
             $"  • Сила: [white]{factionStrength}[/]",
             $"  • Базовая сила: [white]{baseStrength}[/]",
             $"  • Происхождение: {Markup.Escape(originType)}",
@@ -1103,21 +1105,29 @@ public partial class ExplorerMode
                         }
                         break;
                     case ShiningCoreActionRequestState.ActionTypePullRelicGacha:
-                        var stableBannerName = GetNodeString(receipt["factionName"]) ??
-                                               GetNodeString(receipt["factionId"]) ??
-                                               ResolveShiningFactionLabel(context.Root, GetNodeString(receipt["factionId"]));
-                        lines.Add($"  Баннер: [white]{Markup.Escape(stableBannerName)}[/]");
+                        var gachaFactionId = GetNodeString(receipt["factionId"]) ?? string.Empty;
+                        var gachaRelicId = GetNodeString(receipt["relicId"]) ?? string.Empty;
+                        var stableBannerName = GetNodeString(receipt["factionName"]);
+                        if (string.IsNullOrWhiteSpace(stableBannerName))
+                            stableBannerName = !string.IsNullOrWhiteSpace(gachaFactionId)
+                                ? ResolveShiningFactionLabel(context.Root, gachaFactionId)
+                                : "фракция";
+                        lines.Add($"  Баннер: [white]{Markup.Escape(stableBannerName)}[/] [dim]({Markup.Escape(gachaFactionId)})[/]");
                         if (!string.IsNullOrWhiteSpace(GetNodeString(receipt["returnCycleId"])))
                             lines.Add($"  Цикл возвращения: [dim]{Markup.Escape(GetNodeString(receipt["returnCycleId"])!)}[/]");
                         lines.Add($"  Редкость: [dim]{Markup.Escape(DescribeForgeRarity(GetNodeString(receipt["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(receipt["finalRarity"])))}[/]");
-                        lines.Add($"  Реликвия: [white]{Markup.Escape(relicName)}[/]");
+                        lines.Add($"  Реликвия: [white]{Markup.Escape(relicName)}[/] [dim]({Markup.Escape(gachaRelicId)})[/]");
                         break;
                     case ShiningCoreActionRequestState.ActionTypeForgeRelicReshape:
                     case ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty:
                     case ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand:
                     case ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho:
                     case ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity:
-                        lines.Add($"  Реликвия: [white]{Markup.Escape(relicName)}[/]");
+                        var forgeFactionId = GetNodeString(receipt["factionId"]) ?? string.Empty;
+                        var forgeRelicId = GetNodeString(receipt["relicId"]) ?? string.Empty;
+                        if (!string.IsNullOrWhiteSpace(forgeFactionId))
+                            lines.Add($"  Фракция кузни: [dim]{Markup.Escape(forgeFactionId)}[/]");
+                        lines.Add($"  Реликвия: [white]{Markup.Escape(relicName)}[/] [dim]({Markup.Escape(forgeRelicId)})[/]");
                         if (!string.IsNullOrWhiteSpace(GetNodeString(receipt["targetFormTag"])))
                             lines.Add($"  Новая форма: [dim]{Markup.Escape(DescribeForgeFormTag(GetNodeString(receipt["targetFormTag"])))}[/]");
                         if (TryReadIntegerNode(receipt["propertyIndex"], out var propertyIndex) && propertyIndex >= 0)

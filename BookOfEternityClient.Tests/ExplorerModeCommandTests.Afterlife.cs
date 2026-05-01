@@ -2046,6 +2046,63 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningAbode_CoreReceiptInspectionShowsGachaAndForgeIds()
+    {
+        await SeedShiningInspectionStateAsync();
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
+            ?? throw new InvalidOperationException("Expected seeded shining abode state.");
+        var receipts = shiningRoot["coreActionReceipts"]?.AsArray()
+            ?? throw new InvalidOperationException("Expected core action receipts.");
+        receipts.Add(new JsonObject
+        {
+            ["requestId"] = "core_gacha_dawn_2",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypePullRelicGacha,
+            ["factionId"] = "faction_dawn",
+            ["factionName"] = "Хор Рассвета",
+            ["relicId"] = "relic_gacha_dawn_2",
+            ["relicName"] = "Перо Хора",
+            ["baseRarity"] = "rare",
+            ["finalRarity"] = "epic",
+            ["returnCycleId"] = "return_7",
+            ["resolvedAtTurn"] = 162,
+            ["resolvedAtUtc"] = "2026-04-19T11:10:00Z",
+            ["status"] = "accepted",
+            ["reason"] = "relic_gacha_ready"
+        });
+        receipts.Add(new JsonObject
+        {
+            ["requestId"] = "core_forge_dawn_2",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypeForgeRelicReshape,
+            ["factionId"] = "faction_dawn",
+            ["factionName"] = "Хор Рассвета",
+            ["relicId"] = "relic_routeglass",
+            ["relicName"] = "Стекло Пути",
+            ["targetFormTag"] = "solar_crown",
+            ["resolvedAtTurn"] = 161,
+            ["resolvedAtUtc"] = "2026-04-19T11:05:00Z",
+            ["status"] = "accepted",
+            ["reason"] = "relic_reshaped"
+        });
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        _console.QueueSelection("Сияющая Обитель", "📜 Осмотреть исходы Обители", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_core_receipt_ids");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Баннер:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("faction_dawn", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("relic_gacha_dawn_2", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Фракция кузни: faction_dawn", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("relic_routeglass", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningAbode_CoreReceiptInspectionUsesStableDiscoverySnapshotAfterStateMutation()
     {
         await SeedShiningInspectionStateAsync();
@@ -2724,6 +2781,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Создан на ходу: 158", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Подготовленная витрина", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Учёт витрины: слотов 2, распродано 1, доступно 1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("slotId slot_dawn_2", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("relicId relic_routeglass", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Подтверждение исхода", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Подтверждено на ходу: 156", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Полная история подтверждений", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -2826,6 +2885,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 ["relicName"] = $"Реликвия истории {index}",
                 ["baseRarity"] = "rare",
                 ["finalRarity"] = "epic",
+                ["requestId"] = $"shining_gacha_req_{index}",
+                ["returnCycleId"] = $"return_{index}",
+                ["costInFeathers"] = 60 + index,
                 ["turnNumber"] = 140 + index,
                 ["timestamp"] = $"2026-04-19T10:{index:00}:00Z"
             });
@@ -2844,6 +2906,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Полная история сияющих призывов", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Реликвия истории 7", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("relic_history_7", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("shining_gacha_req_7", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("return_7", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Стоимость в Перьях: 67", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Реликвия истории 1", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -5603,12 +5669,105 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Вся память общения", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("t4: Мысль 4 — Подробность мысли 4", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("t6: Разговор 6 — Краткая память общения 6", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Идентификатор записи: gthought_4", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Идентификатор записи: gsocial_6", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Идентификатор Хранителя: guard_test_azalia", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Последствие: echo_4", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Намерение: intent_4", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Идентификатор запроса: guardian_social_req_6", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Request id", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Режим ответа: знание раскрыто", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Метки: social_tag_6", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_PlayerGuardianFoundation_CompletedStateShowsDurableIds()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 7,
+            inkFeathers = new { current = 33 },
+            playerFoundedGuardianId = "guard_founded_1",
+            playerGuardianFoundationStatus = PlayerGuardianFoundationState.SoulStateFoundationStatusFounded
+        });
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new object[]
+            {
+                new
+                {
+                    guardianId = "guard_founded_1",
+                    canonicalName = "Северин",
+                    originType = PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+                    guardianRoleToPlayer = "active_patron",
+                    manifestation = new { currentDisplayName = "Северин" },
+                    abode = new
+                    {
+                        abodeId = "abode_founded_1",
+                        name = "Обитель Северина"
+                    },
+                    founderBonuses = new
+                    {
+                        extraGachaChargesPerReturn = PlayerGuardianFoundationState.DefaultFounderExtraGachaChargesPerReturn
+                    },
+                    founderAbodeFeatures = new
+                    {
+                        featureTitle = "Зов основателя",
+                        featureSummary = "Новая Обитель притягивает собственную линию резидентов.",
+                        residentAttractionMode = PlayerGuardianFoundationState.FounderAbodeResidentAttractionModeFounderCall
+                    }
+                },
+                new
+                {
+                    guardianId = "guard_patron_1",
+                    canonicalName = "Азалия",
+                    guardianRoleToPlayer = PlayerGuardianFoundationState.GuardianRoleFormerPatron,
+                    manifestation = new { currentDisplayName = "Азалия" }
+                }
+            },
+            activeGuardian = new
+            {
+                guardianId = "guard_founded_1",
+                canonicalName = "Северин",
+                originType = PlayerGuardianFoundationState.OriginTypePlayerFoundedAscendedSoul,
+                manifestation = new { currentDisplayName = "Северин" },
+                abode = new
+                {
+                    abodeId = "abode_founded_1",
+                    name = "Обитель Северина"
+                }
+            },
+            playerGuardianFoundationHistory = new[]
+            {
+                new
+                {
+                    requestId = "foundation_req_1",
+                    guardianId = "guard_founded_1",
+                    guardianDisplayName = "Северин",
+                    founderSoulName = "Тестовая Душа",
+                    formerPatronGuardianId = "guard_patron_1",
+                    formerPatronGuardianName = "Азалия",
+                    foundationSource = PlayerGuardianFoundationState.FoundationSourceShiningReturn,
+                    resolvedAtTurn = 174,
+                    resolvedAtUtc = "2026-04-22T10:00:00Z"
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/found_guardian_mantle"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("player_guardian_foundation_completed_ids");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Идентификатор основанного Хранителя: guard_founded_1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Идентификатор активного Хранителя: guard_founded_1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Идентификатор текущей Обители: abode_founded_1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Идентификатор запроса основания: foundation_req_1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Идентификатор прежнего покровителя: guard_patron_1", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -6800,6 +6959,37 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("effect:", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("pending_shining_trade_inventory_requests.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("shining_trade_memory_7", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_ShiningSelectedCardsUsePackageFallback()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: true);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
+            ?? throw new InvalidOperationException("Expected seeded shining abode state.");
+        var availableCards = shiningRoot["gates"]?["availableBlessingCards"]?.AsArray()
+            ?? throw new InvalidOperationException("Expected available blessing cards.");
+        for (var index = availableCards.Count - 1; index >= 0; index--)
+        {
+            if (string.Equals(availableCards[index]?["cardId"]?.GetValue<string>(), "card_route_dawn", StringComparison.OrdinalIgnoreCase))
+                availableCards.RemoveAt(index);
+        }
+
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/статус"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_shining_package_card_fallback");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Prepared package selected cards", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тропа возвращения", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открывает путь через память", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("frozen card snapshot unavailable", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

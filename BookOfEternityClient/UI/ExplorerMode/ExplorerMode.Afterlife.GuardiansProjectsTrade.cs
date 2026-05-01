@@ -2198,6 +2198,14 @@ public partial class ExplorerMode
     {
         lines.Add($"  • [white]{Markup.Escape(BuildActorJournalLine(entry))}[/]");
 
+        var entryId = GetStr(entry, "entryId", "");
+        if (!string.IsNullOrWhiteSpace(entryId))
+            lines.Add($"    [dim]Идентификатор записи: {Markup.Escape(entryId)}[/]");
+
+        var guardianId = GetStr(entry, "guardianId", "");
+        if (!string.IsNullOrWhiteSpace(guardianId))
+            lines.Add($"    [dim]Идентификатор Хранителя: {Markup.Escape(guardianId)}[/]");
+
         var timestamp = GetStr(entry, "timestamp", "");
         if (!string.IsNullOrWhiteSpace(timestamp))
             lines.Add($"    [dim]Время: {Markup.Escape(timestamp)}[/]");
