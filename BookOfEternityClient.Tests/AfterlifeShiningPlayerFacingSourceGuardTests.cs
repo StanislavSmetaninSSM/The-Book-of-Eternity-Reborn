@@ -82,6 +82,21 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
     }
 
     [Fact]
+    public void ShiningPoliticsOverview_MustMirrorImplementedEligibilityAndPendingLocks()
+    {
+        var source = ReadSource("ExplorerMode.Afterlife.ShiningAbode.cs");
+
+        Assert.Contains("factionRealignmentState=ready_to_realign", source, StringComparison.Ordinal);
+        Assert.Contains("wavering tier сам по себе не открывает переход", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("ready_to_realign/wavering", source, StringComparison.Ordinal);
+        Assert.Contains("Pending-модель не является глобальным mutex", source, StringComparison.Ordinal);
+        Assert.Contains("Pending-модель не глобальная", source, StringComparison.Ordinal);
+        Assert.Contains("foreign pending realignment для того же residentId", source, StringComparison.Ordinal);
+        Assert.Contains("foreign pending leadership для той же factionId", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("новый запрос заблокирован, пока живёт political pending request", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShiningTradePreviewAndDuplicateConflict_MustExposeFullConsequences()
     {
         var tradeSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs");

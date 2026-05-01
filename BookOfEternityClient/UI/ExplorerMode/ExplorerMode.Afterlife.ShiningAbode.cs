@@ -249,9 +249,9 @@ public partial class ExplorerMode
             var feathers = await ReadInkFeathersBalance();
             var lightSparks = GetNodeInt(context?.Root["lightSparks"]);
             var ascendedResidentCount = CountAscendedShiningResidents(context?.ResidentRoot);
-            var hasPendingPoliticalRequest = foundingRequests.Count > 0 ||
-                                             realignmentRequests.Count > 0 ||
-                                             leadershipRequests.Count > 0;
+            var foundingPreconditionsMet = feathers >= ShiningFactionRequestState.FactionFoundingCostFeathers &&
+                                           lightSparks >= ShiningFactionRequestState.FactionFoundingCostLightSparks &&
+                                           ascendedResidentCount >= 3;
 
             var lines = new List<string>
             {
@@ -265,9 +265,9 @@ public partial class ExplorerMode
 
             lines.Add("");
             lines.Add("[bold]Доступность политических действий:[/] [dim](стоимости, блокеры и минимальные требования до выбора)[/]");
-            lines.Add($"  • Основание фракции: cost {ShiningFactionRequestState.FactionFoundingCostFeathers} Чернильных Перьев / {ShiningFactionRequestState.FactionFoundingCostLightSparks} Искр Света; баланс {feathers}/{lightSparks}; минимум 3 ascended supporters из {ascendedResidentCount}; {(feathers >= ShiningFactionRequestState.FactionFoundingCostFeathers && lightSparks >= ShiningFactionRequestState.FactionFoundingCostLightSparks && ascendedResidentCount >= 3 && !hasPendingPoliticalRequest ? "доступно" : "заблокировано условиями или живым pending request")}.");
-            lines.Add($"  • Перестройка резидента: требует ascended resident с factionRealignmentState ready_to_realign/wavering и machine-readable target/source faction; {(hasPendingPoliticalRequest ? "новый запрос заблокирован, пока живёт political pending request" : "проверяется при выборе резидента")}.");
-            lines.Add($"  • Смена власти: требует существующую faction, валидного incumbent и допустимого кандидата на главу; {(hasPendingPoliticalRequest ? "новый запрос заблокирован, пока живёт political pending request" : "проверяется перед записью pending request")}.");
+            lines.Add($"  • Основание фракции: cost {ShiningFactionRequestState.FactionFoundingCostFeathers} Чернильных Перьев / {ShiningFactionRequestState.FactionFoundingCostLightSparks} Искр Света; баланс {feathers}/{lightSparks}; минимум 3 ascended supporters из {ascendedResidentCount}; {(foundingPreconditionsMet ? "базовые условия выполнены" : "не хватает ресурсов или ascended supporters")}. Pending-модель не является глобальным mutex: запись блокируют malformed founding file, founding с тем же proposedFactionId/proposedHallId или supporters, занятые другим Shining/ordinary flow.");
+            lines.Add("  • Перестройка резидента: требует ascended resident с factionRealignmentState=ready_to_realign (wavering tier сам по себе не открывает переход) и machine-readable target/source faction. Pending-модель не глобальная: блокируют foreign pending realignment для того же residentId, ordinary transfer или другой Shining flow этого резидента.");
+            lines.Add("  • Смена власти: требует существующую faction, валидного incumbent и допустимого кандидата на главу. Pending-модель не глобальная: блокируют foreign pending leadership для той же factionId и supporter/candidate locks; pending других фракций сам по себе не запрещает проверку.");
 
             if (context?.Root["factions"] is JsonArray factions && factions.Count > 0)
             {
