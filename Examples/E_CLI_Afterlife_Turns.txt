@@ -341,7 +341,7 @@ Why this is valid:
 Scenario:
 - The soul is in the active Shining Abode.
 - The player says: "Откройте Врата Рассвета и пусть Орден Стеклянного Света подготовит торговую витрину."
-- There is no `preparedIncarnationPackage`, so this is ordinary active Shining Abode, not bootstrap handoff.
+- `shining_abode_state.json.availability = active` and there is no `preparedIncarnationPackage`, so this is ordinary active Shining Abode, not bootstrap handoff or sealed Shining state.
 - Shining Abode, Shining faction, Shining trade, Guardian project, and resident agency cycles are due.
 - A Shining core action request and a Shining trade inventory request are pending.
 
@@ -466,7 +466,7 @@ Correct GM reasoning:
 ```markdown
 ## Оценка времени и мира
 - Realm: Shining Abode.
-- `preparedIncarnationPackage`: null. This is ordinary active Shining Abode, not pending-bootstrap handoff.
+- `availability`: active, and `preparedIncarnationPackage`: null. This is ordinary active Shining Abode, not pending-bootstrap handoff or sealed Shining state.
 - progressionControl read before narrative resolution.
 - Due contours: Shining Abode x1, Shining faction x2, Shining trade x1, Guardian project x1, resident agency x1.
 - Catch-up: not required.
@@ -1297,6 +1297,63 @@ Correct response surface:
 }
 ```
 
+Guardian project sabotage is also a structured project update. If the GM records a hostile sabotage result, carry `sabotageAudit` on the exact `guardianProjectUpdates[]` entry and reflect the Abode Power side effect as a `guardianPowerEvents.reasonType = rival_strike` event. The negative `delta` is derived from `sabotageSeverityScore`: `3..4 = -1`, `5..7 = -2`, `8+ = -4`.
+
+```json
+{
+  "response": "Внешний соперник рвёт часть шёлкового контура Азалии. Проект не исчезает, но получает давление и теряет устойчивость; в журнале силы Обители фиксируется вражеский удар.",
+  "guardianProjectUpdates": [
+    {
+      "projectId": "gproj_azalia_silk_hall_001",
+      "guardianId": "guard_social_azalia_001",
+      "activeState": "active",
+      "pressure": 4,
+      "stability": 62,
+      "relatedGuardianId": "guard_rival_morren_002",
+      "sabotageAudit": {
+        "HostileReach": 1,
+        "ProjectExposure": 1,
+        "DamageIntent": 2,
+        "DamageAchieved": 1,
+        "PlayerComplicity": 1,
+        "sabotageSeverityScore": 6,
+        "classification": "major sabotage",
+        "reason": "guardian_project_update_sabotage_example_001"
+      }
+    }
+  ],
+  "guardianPowerEvents": [
+    {
+      "eventId": "guardian_project_update_sabotage_example_001",
+      "guardianId": "guard_social_azalia_001",
+      "delta": -2,
+      "reasonType": "rival_strike",
+      "sourceSurface": "guardianProjectUpdates",
+      "sourceId": "gproj_azalia_silk_hall_001",
+      "title": "Соперник ударил по шёлковому залу",
+      "summary": "Саботаж повредил активный проект Азалии и снизил силу её Обители.",
+      "visibility": "player_known",
+      "relatedGuardianId": "guard_rival_morren_002",
+      "appliedAt": "2026-04-24T09:30:00Z",
+      "audit": {
+        "projectGuardianId": "guard_social_azalia_001",
+        "projectId": "gproj_azalia_silk_hall_001",
+        "projectName": "Тихий шёлковый зал",
+        "projectType": "abode_fortification",
+        "projectTier": "minor",
+        "HostileReach": 1,
+        "ProjectExposure": 1,
+        "DamageIntent": 2,
+        "DamageAchieved": 1,
+        "PlayerComplicity": 1,
+        "sabotageSeverityScore": 6,
+        "classification": "major sabotage"
+      }
+    }
+  ]
+}
+```
+
 Canonical state after normalization must retain matching archive action receipts. Patch fragment, not a replacement for the whole file:
 
 ```json
@@ -1669,6 +1726,65 @@ The receipt keeps `actionTag = ABODE_OFFERING`; the matching `guardianPowerEvent
     "powerEventId": "abode_offering_azalia_return_5",
     "reasonType": "offering"
   }
+}
+```
+
+Non-feather `soul_relic` offering uses the same Abode Power event surface but no Ink Feather receipt. The pending request is created by the client after reserving the stored relic; the GM must echo the pending `relicId`, `relicName`, and canonical `relicRarity` exactly.
+
+```json
+{
+  "guardianPowerEvents": [
+    {
+      "eventId": "abode_offering_azalia_soul_relic_return_5",
+      "guardianId": "guard_social_azalia_001",
+      "delta": 2,
+      "reasonType": "offering",
+      "sourceSurface": "guardianAbodeOffering",
+      "sourceId": "return_5",
+      "title": "Реликвия стала опорой Обители",
+      "summary": "Душа принесла Азалии редкую реликвию, и её шёлковые залы получили новый устойчивый узел памяти.",
+      "audit": {
+        "offeringType": "soul_relic",
+        "relicId": "soul_relic_lantern_memory_rare_001",
+        "relicName": "Фонарь бережной памяти",
+        "relicRarity": "Rare",
+        "returnCycleId": "return_5",
+        "baseDelta": 2,
+        "finalDelta": 2
+      }
+    }
+  ],
+  "response": "Азалия принимает реликвию не как плату, а как якорь. Фонарь остаётся в её Обители, и каждая нить вокруг зала начинает помнить дорогу домой."
+}
+```
+
+Non-feather archive offering works the same way. The GM closes it through `guardianPowerEvents` only, and the archive-specific audit must preserve `archiveId`, `archiveTitle`, `archiveEntryType`, `archiveRarity`, and `returnCycleId` from `pending_abode_offering.json`.
+
+```json
+{
+  "guardianPowerEvents": [
+    {
+      "eventId": "abode_offering_azalia_archive_return_5",
+      "guardianId": "guard_social_azalia_001",
+      "delta": 2,
+      "reasonType": "offering",
+      "sourceSurface": "guardianAbodeOffering",
+      "sourceId": "return_5",
+      "title": "Архивный фрагмент укрепил Обитель",
+      "summary": "Душа отдала Азалии редкий фрагмент знания; Обитель получила новый слой защищённой памяти.",
+      "audit": {
+        "offeringType": "archive_lore_fragment",
+        "archiveId": "archive_life_7_broken_oath",
+        "archiveTitle": "Клятва, нарушенная у северных ворот",
+        "archiveEntryType": "lore_fragment",
+        "archiveRarity": "Rare",
+        "returnCycleId": "return_5",
+        "baseDelta": 2,
+        "finalDelta": 2
+      }
+    }
+  ],
+  "response": "Фрагмент знания растворяется в стенах зала как тонкая запись. Азалия не превращает его в смертный квест; он остаётся силой Обители."
 }
 ```
 
@@ -3261,7 +3377,7 @@ Invalid foundation shortcuts:
 
 Queue and mode rules:
 - The file root is always `requests[]`; it contains exactly one active Shining core request, not a GM-managed queue. Do not write a singular root request property and do not invent a second simultaneous Shining core request.
-- Ordinary active Shining uses `shining_abode_state.json.availability = active` or another accepted value such as `sealed_until_next_ascension`; pending-bootstrap is not an `availability` value.
+- Ordinary active Shining requires `currentRealm = Shining Abode`, `shining_abode_state.json.availability = active`, and `preparedIncarnationPackage = null`/absent. `sealed_until_next_ascension` is accepted persisted state, but it is not ordinary active Shining gameplay and must not process core/trade/political actions.
 - Pending-bootstrap is derived from non-null valid `preparedIncarnationPackage`; in that mode the GM preserves the package and does not process ordinary Shining core actions.
 - Cost fields in receipts identify the accepted request, but resource spends, Radiance XP, strength changes, gate invalidation, and package creation must also be reflected through canonical Shining/Soul state deltas.
 - Blessing-card rarity order is `common -> uncommon -> rare -> epic -> legendary -> radiant`; project-card bonuses upgrade only one step on that ladder, so a `rare` project card becomes `epic`, not immediately `radiant`.
@@ -3343,6 +3459,8 @@ Common accepted receipt fields for every Shining core action:
   "returnCycleId": "same returnCycleId as request, or empty string",
   "targetFormTag": "same targetFormTag as request, or empty string",
   "propertyIndex": -1,
+  "quotedCostFeathers": 0,
+  "quotedCostLightSparks": 0,
   "selectedCardIds": [],
   "newResidentIds": [],
   "seededProjectIds": [],
@@ -3355,6 +3473,7 @@ Common accepted receipt fields for every Shining core action:
 
 Important receipt rules:
 - Always keep `requestId`, `actionType`, target ids, `selectedCardIds`, `returnCycleId`, `targetFormTag`, and `propertyIndex` synchronized with the pending request. Exception: `pull_relic_gacha` introduces a new non-empty result `relicId` in the receipt because the pending request cannot know that id in advance.
+- Always include `quotedCostFeathers` and `quotedCostLightSparks`, exactly copied from the pending request even when the value is `0`.
 - Always include `selectedCardIds`, `newResidentIds`, and `seededProjectIds`; use empty arrays when the action does not use them.
 - Always include positive `resolvedAtTurn` and non-empty ISO `resolvedAtUtc`.
 - `status = refused` or `withdrawn` closes the request but must not apply the accepted state mutation.

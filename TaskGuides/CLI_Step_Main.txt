@@ -186,7 +186,7 @@
                - If `mustEvaluateResidentAgencyProgression=true`, let authored residents act: thoughts, interaction/history logs, resident-linked Soul Quests, relic grants, or other documented resident results
                - If `mustEvaluateShiningAbodeProgression=true`, update the Shining Abode's public/civic/metaphysical state without using Mortal World location/time/weather fields
                - If `mustEvaluateShiningFactionProgression=true`, advance Shining-specific institutions/factions without using Mortal World `factionDataChanges`
-               - If `mustEvaluateShiningTradeProgression=true`, update Shining/Guardian trade availability, receipts, or related afterlife trade consequences
+               - If `mustEvaluateShiningTradeProgression=true`, update only Shining faction trade availability, faction `tradeInventory`, faction `tradeInventoryReceipts[]`, sold-out state, and related Shining trade consequences; Guardian trade belongs only to `pending_guardian_trade_request.json`
                - If `afterlifeCatchupRequired=true`, produce exactly `afterlifeCatchupSummaryEventsRequired` summary outcomes and explicitly name the affected `afterlifeCatchupContours`
                - MUST NOT satisfy afterlife progression with `worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, or `weatherChange`
                - MUST write `progressionProcessingReport` with exact processed counts and per-contour `newLast*Ordinal` values
@@ -321,7 +321,7 @@
 
             **Afterlife Turn Master Procedure (Chaos Sea / Shining Abode):**
             - Use this procedure for every accepted turn while `soul_state.json.currentRealm` is `Chaos Sea` or `Shining Abode`; do not treat afterlife as a simple dialogue scene
-            - Step 1, realm gate: read `game_state/meta/soul_state.json.currentRealm` and classify the mode as ordinary Chaos Sea, ordinary active Shining Abode, or Shining Abode pending-bootstrap handoff
+            - Step 1, realm gate: read `game_state/meta/soul_state.json.currentRealm` and classify the mode as ordinary Chaos Sea, ordinary active Shining Abode (`currentRealm = Shining Abode`, `availability = active`, no prepared package), or Shining Abode pending-bootstrap handoff
             - Step 2, lifecycle guards: read relevant control/state markers before narration: `afterlife_return_guard.json`, `ascension.json`, `incarnation_trigger.json`, and `shining_abode_state.json.preparedIncarnationPackage`
             - If pending-bootstrap handoff is active, suppress ordinary Shining living-world progression and process only the frozen next-life bootstrap package; if the package is present but invalid, preserve it and all pending Shining files for repair
             - If the package marker is malformed, suppress ordinary Shining processing and surface repair instead of deleting/nulling the package
