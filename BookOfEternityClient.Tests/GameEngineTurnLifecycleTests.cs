@@ -11,6 +11,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
+using Spectre.Console;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -226,6 +227,45 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains("inkFeathersOffered=100", blocker, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("output/ink_feather_action_result.json", blocker, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("\"powerGain\": 20", blocker, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task CollectIncarnationBlockersAsync_ShiningArrayPayloadIsSafeForSoulGatesPanel()
+    {
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "core_blocker_array_001",
+                    actionType = "prepare_incarnation_package",
+                    selectedCardIds = new[] { "card_alpha", "card_beta" },
+                    createdAtTurn = 14,
+                    createdAtUtc = "2026-04-28T00:00:00Z"
+                }
+            }
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        var blocker = Assert.Single(blockers);
+        Assert.Contains("core_blocker_array_001", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("selectedCardIds=[card_alpha, card_beta]", blocker, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"selectedCardIds\": [", blocker, StringComparison.OrdinalIgnoreCase);
+
+        var panelBody = string.Join("\n", new[]
+        {
+            "Нельзя войти в новую смертную жизнь, пока остаются незакрытые загробные контракты.",
+            string.Empty,
+            string.Join("\n", blockers.Select(item => $"• {item}")),
+            string.Empty,
+            "Сначала дождитесь явного закрытия GM или почините повреждённый pending contract."
+        });
+        var ex = Record.Exception(() => new Panel(GameInterface.SafeMarkup(panelBody)));
+
+        Assert.Null(ex);
     }
 
     [Fact]

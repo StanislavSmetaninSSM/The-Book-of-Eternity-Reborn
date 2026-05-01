@@ -531,12 +531,24 @@ public class GameInterface
         }
         catch (Exception ex) when (IsMarkupParseFailure(ex))
         {
-            var plainText = Markup.Remove(text ?? string.Empty);
+            var plainText = TryRemoveMarkup(text ?? string.Empty);
             var fallbackTitle = string.IsNullOrWhiteSpace(fallbackContext)
                 ? "[yellow dim]⚠ Обнаружена повреждённая UI-разметка. Показан безопасный текст.[/]"
                 : $"[yellow dim]⚠ Обнаружена повреждённая UI-разметка ({EscapeMarkup(fallbackContext)}). Показан безопасный текст.[/]";
 
             return new Markup($"{fallbackTitle}\n[white]{EscapeMarkup(plainText)}[/]");
+        }
+    }
+
+    private static string TryRemoveMarkup(string text)
+    {
+        try
+        {
+            return Markup.Remove(text ?? string.Empty);
+        }
+        catch (Exception ex) when (IsMarkupParseFailure(ex))
+        {
+            return text ?? string.Empty;
         }
     }
 
@@ -548,6 +560,7 @@ public class GameInterface
     private static bool IsMarkupParseFailure(Exception ex)
     {
         return ex is InvalidOperationException &&
-               ex.Message.Contains("markup", StringComparison.OrdinalIgnoreCase);
+               (ex.Message.Contains("markup", StringComparison.OrdinalIgnoreCase) ||
+                ex.Message.Contains("color or style", StringComparison.OrdinalIgnoreCase));
     }
 }

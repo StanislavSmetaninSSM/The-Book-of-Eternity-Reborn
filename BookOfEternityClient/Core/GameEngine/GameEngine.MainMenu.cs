@@ -865,14 +865,14 @@ public partial class GameEngine
         var incarnationBlockers = await CollectIncarnationBlockersAsync();
         if (incarnationBlockers.Count > 0)
         {
-            AnsiConsole.Write(new Panel(string.Join("\n", new[]
+            AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", new[]
             {
                 "Нельзя войти в новую смертную жизнь, пока остаются незакрытые загробные контракты.",
                 string.Empty,
                 string.Join("\n", incarnationBlockers.Select(item => $"• {item}")),
                 string.Empty,
                 "Сначала дождитесь явного закрытия GM или почините повреждённый pending contract."
-            }))
+            })))
             {
                 Header = new PanelHeader(" Врата Души ", Justify.Center),
                 Border = BoxBorder.Double,
