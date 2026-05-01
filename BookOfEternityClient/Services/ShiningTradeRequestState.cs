@@ -451,6 +451,19 @@ internal static class ShiningTradeRequestState
         if (requests.Count == 0)
             return null;
 
+        if (!IsShiningRealm(currentRealm))
+        {
+            var wrongRealm = new StringBuilder();
+            wrongRealm.AppendLine("SHINING TRADE REQUESTS WRONG REALM:");
+            wrongRealm.AppendLine("  - currentRealm is not Shining Abode, so pending_shining_trade_inventory_requests.json is repair-only context here.");
+            wrongRealm.AppendLine("  - Preserve the file; do not materialize faction.tradeInventory or tradeInventoryReceipts[] from this Chaos Sea turn.");
+            wrongRealm.AppendLine("  - Re-enter Shining Abode or repair/clear the contract through the proper Shining runtime path before ordinary processing.");
+            wrongRealm.AppendLine($"  - Pending requests detected: {requests.Count}");
+            foreach (var request in requests)
+                AppendSerializedJsonBlock(wrongRealm, "Wrong-realm pending trade DTO", request);
+            return wrongRealm.ToString();
+        }
+
         if (IsShiningRealm(currentRealm))
         {
             var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);

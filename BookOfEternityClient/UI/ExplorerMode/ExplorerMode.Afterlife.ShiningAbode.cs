@@ -1629,12 +1629,17 @@ public partial class ExplorerMode
                 $"эффект {effectFamily}"
             };
 
+            var displaySummary = GetNodeString(obj["displaySummary"]);
+            if (!string.IsNullOrWhiteSpace(displaySummary))
+                parts.Add($"сводка: {displaySummary}");
             if (!string.IsNullOrWhiteSpace(sourceType))
                 parts.Add($"источник {sourceType}");
             if (!string.IsNullOrWhiteSpace(sourceFactionId))
                 parts.Add($"фракция {sourceFactionId}");
             if (!string.IsNullOrWhiteSpace(sourceActorId))
                 parts.Add($"актор {sourceActorId}");
+            foreach (var effectDetail in BuildShiningBlessingEffectDetailLines(obj))
+                parts.Add($"деталь: {effectDetail}");
 
             return string.Join(", ", parts);
         }
@@ -1665,6 +1670,7 @@ public partial class ExplorerMode
         switch (node)
         {
             case JsonObject obj:
+                AddSafeShiningBlessingEffectDetails(obj);
                 obj.Remove("effectPayload");
                 foreach (var child in obj.Select(pair => pair.Value).ToList())
                     RemoveShiningBlessingRuntimePayloads(child);
@@ -1674,6 +1680,18 @@ public partial class ExplorerMode
                     RemoveShiningBlessingRuntimePayloads(child);
                 break;
         }
+    }
+
+    private static void AddSafeShiningBlessingEffectDetails(JsonObject obj)
+    {
+        if (obj["effectPayload"] is not JsonObject || !obj.ContainsKey("cardId"))
+            return;
+
+        var detailLines = BuildShiningBlessingEffectDetailLines(obj);
+        if (detailLines.Count == 0)
+            return;
+
+        obj["safeEffectDetails"] = new JsonArray(detailLines.Select(line => JsonValue.Create(line)).ToArray<JsonNode?>());
     }
 
     private static string DescribeShiningBlessingReceiptSourceType(string? sourceType) =>

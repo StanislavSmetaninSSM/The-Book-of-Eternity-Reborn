@@ -2144,6 +2144,79 @@ public sealed class GuardianAbodeResidentRequestStateTests : IDisposable
         Assert.Contains("roster_req_missing_receipt", pendingRaw, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task EnsureHealthyAsync_AfterlifePreservesValidManifestationRequestsForNextLife()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "manifest_next_life",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_echo",
+                    relicName = "Эхо Лиоры",
+                    sourceResidentId = "resident_liora",
+                    sourceGuardianId = "guardian_azalia",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 5,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Следующая смертная жизнь.",
+                    futureCompanionPrompt = "Лиора проявится как ранняя спутница в следующей смертной жизни.",
+                    bondReason = "Связь закреплена через реликвию резидента.",
+                    coreTraits = new[] { "loyal" },
+                    archetypeHints = new[] { "guide" },
+                    appearanceMotifs = new[] { "dawn" },
+                    createdAtUtc = "2026-04-27T14:00:00Z"
+                }
+            }
+        });
+
+        await GuardianAbodeResidentRequestState.EnsureHealthyAsync(_fs, "Chaos Sea");
+
+        var pendingRaw = await _fs.ReadFileAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath);
+        Assert.NotNull(pendingRaw);
+        Assert.Contains("manifest_next_life", pendingRaw, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task BuildSystemReminderFragmentAsync_AfterlifeMarksManifestationAsPreservedNextLifeContext()
+    {
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "manifest_next_life",
+                    manifestationSource = "resident_relic",
+                    relicId = "relic_echo",
+                    relicName = "Эхо Лиоры",
+                    sourceResidentId = "resident_liora",
+                    sourceGuardianId = "guardian_azalia",
+                    sourceGuardianName = "Азалия",
+                    targetIncarnation = 5,
+                    companionNameHint = "Лиора",
+                    originWorldSummary = "Следующая смертная жизнь.",
+                    futureCompanionPrompt = "Лиора проявится как ранняя спутница в следующей смертной жизни.",
+                    bondReason = "Связь закреплена через реликвию резидента.",
+                    coreTraits = new[] { "loyal" },
+                    archetypeHints = new[] { "guide" },
+                    appearanceMotifs = new[] { "dawn" },
+                    createdAtUtc = "2026-04-27T14:00:00Z"
+                }
+            }
+        });
+
+        var reminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, "Chaos Sea");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("PRESERVED FOR NEXT LIFE", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("manifest_next_life", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("materialize an early mortal-world encounter", reminder, StringComparison.OrdinalIgnoreCase);
+    }
+
     private async Task WriteJsonAsync(string relativePath, object payload)
     {
         await _fs.WriteFileAtomicAsync(relativePath, JsonSerializer.Serialize(payload, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));

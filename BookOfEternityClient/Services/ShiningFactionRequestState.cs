@@ -325,7 +325,12 @@ internal static class ShiningFactionRequestState
             return "Pending founding request с таким proposedFactionId или proposedHallId уже существует.";
         }
 
-        if (HasCurrentPlayerHeadFaction(shiningRoot, excludingFactionId: null))
+        if (HasCurrentHeadFaction(
+                shiningRoot,
+                ShiningAbodeState.HeadActorTypePlayerSoul,
+                ShiningAbodeState.HeadActorTypePlayerSoul,
+                excludingFactionId: null,
+                out _))
             return "Игрок уже является текущим главой другой materialized Shining-фракции.";
 
         var supporterIds = request.SupportingResidentIds
@@ -400,6 +405,8 @@ internal static class ShiningFactionRequestState
         if (!string.Equals(actualRealignmentState, ShiningAbodeState.FactionRealignmentStateReadyToRealign, StringComparison.OrdinalIgnoreCase))
             return "Faction realignment request допустим только для resident в состоянии ready_to_realign.";
 
+        if (await HasForeignPendingRealignmentForResidentAsync(fs, request.ResidentId, request.RequestId))
+            return "Resident уже имеет live foreign pending Shining realignment contract.";
         if (await HasPendingOrdinaryTransferAsync(fs, request.ResidentId))
             return "Resident уже участвует в ordinary inter-Abode transfer.";
         if (await IsResidentLockedByPendingFlowInternalAsync(fs, request.ResidentId, excludeFoundingFactionId: null, excludeRealignmentResidentId: request.ResidentId, excludeLeadershipFactionId: null))
@@ -500,12 +507,19 @@ internal static class ShiningFactionRequestState
             if (candidateError != null)
                 return candidateError;
 
-            if (string.Equals(request.CandidateHeadActorType, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
-                HasCurrentPlayerHeadFaction(shiningRoot, excludingFactionId: request.FactionId))
+            if (HasCurrentHeadFaction(
+                    shiningRoot,
+                    request.CandidateHeadActorType,
+                    request.CandidateHeadActorId,
+                    excludingFactionId: request.FactionId,
+                    out var candidateCurrentHeadFactionId))
             {
-                return "Игрок уже является current head другой Shining-фракции.";
+                return $"Candidate уже является current head другой Shining-фракции '{candidateCurrentHeadFactionId}'.";
             }
         }
+
+        if (await HasForeignPendingLeadershipForFactionAsync(fs, request.FactionId, request.RequestId))
+            return "Faction уже имеет live foreign pending Shining leadership contract.";
 
         var supporterIds = request.SupportingResidentIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
@@ -733,6 +747,23 @@ internal static class ShiningFactionRequestState
         if (foundingRequests.Count == 0 && realignmentRequests.Count == 0 && leadershipRequests.Count == 0)
             return null;
 
+        if (!IsShiningRealm(currentRealm))
+        {
+            var wrongRealm = new StringBuilder();
+            wrongRealm.AppendLine("SHINING ABODE POLITICAL REQUESTS WRONG REALM:");
+            wrongRealm.AppendLine("  - currentRealm is not Shining Abode, so Shining political pending files are repair-only context here.");
+            wrongRealm.AppendLine("  - Preserve the files; do not resolve factionFoundingReceipts[], factionRealignmentReceipts[], leadershipReceipts[], or Shining political state from this Chaos Sea turn.");
+            wrongRealm.AppendLine("  - Re-enter Shining Abode or repair/clear the contracts through the proper Shining runtime path before ordinary processing.");
+            wrongRealm.AppendLine($"  - Pending requests detected: {foundingRequests.Count + realignmentRequests.Count + leadershipRequests.Count}");
+            foreach (var request in foundingRequests)
+                AppendSerializedJsonBlock(wrongRealm, "Wrong-realm pending founding DTO", request);
+            foreach (var request in realignmentRequests)
+                AppendSerializedJsonBlock(wrongRealm, "Wrong-realm pending realignment DTO", request);
+            foreach (var request in leadershipRequests)
+                AppendSerializedJsonBlock(wrongRealm, "Wrong-realm pending leadership DTO", request);
+            return wrongRealm.ToString();
+        }
+
         if (IsShiningRealm(currentRealm))
         {
             var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
@@ -941,40 +972,43 @@ internal static class ShiningFactionRequestState
                    .Any(guardian => string.Equals(GetNodeString(guardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
     }
 
-    private static bool HasCurrentPlayerHeadFaction(JsonObject? shiningRoot, string? excludingFactionId)
-    {
-        if (shiningRoot?["factions"] is not JsonArray factions)
-            return false;
-
-        return factions.OfType<JsonObject>().Any(faction =>
-        {
-            if (!string.IsNullOrWhiteSpace(excludingFactionId) &&
-                string.Equals(GetNodeString(faction["factionId"]), excludingFactionId, StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-
-            return string.Equals(GetNodeString(faction["leadership"]?["headActorType"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(GetNodeString(faction["leadership"]?["headActorId"]), ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase) &&
-                   !string.Equals(GetNodeString(faction["leadership"]?["leadershipState"]), ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase);
-        });
-    }
-
     private static bool TryGetCurrentResidentHeadFactionId(JsonObject? shiningRoot, string residentId, out string factionId)
     {
+        return HasCurrentHeadFaction(shiningRoot, ShiningAbodeState.HeadActorTypeResident, residentId, excludingFactionId: null, out factionId);
+    }
+
+    private static bool HasCurrentHeadFaction(
+        JsonObject? shiningRoot,
+        string? actorType,
+        string? actorId,
+        string? excludingFactionId,
+        out string factionId)
+    {
         factionId = string.Empty;
-        if (shiningRoot?["factions"] is not JsonArray factions || string.IsNullOrWhiteSpace(residentId))
+        if (shiningRoot?["factions"] is not JsonArray factions ||
+            string.IsNullOrWhiteSpace(actorType) ||
+            string.IsNullOrWhiteSpace(actorId))
+        {
             return false;
+        }
 
         foreach (var faction in factions.OfType<JsonObject>())
         {
-            if (!string.Equals(GetNodeString(faction["leadership"]?["headActorType"]), ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) ||
-                !string.Equals(GetNodeString(faction["leadership"]?["headActorId"]), residentId, StringComparison.OrdinalIgnoreCase))
+            var currentFactionId = GetNodeString(faction["factionId"]) ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(excludingFactionId) &&
+                string.Equals(currentFactionId, excludingFactionId, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
 
-            factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
+            if (!string.Equals(GetNodeString(faction["leadership"]?["headActorType"]), actorType, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(GetNodeString(faction["leadership"]?["headActorId"]), actorId, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(GetNodeString(faction["leadership"]?["leadershipState"]), ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            factionId = currentFactionId;
             return true;
         }
 
@@ -989,6 +1023,28 @@ internal static class ShiningFactionRequestState
         return entries.OfType<JsonObject>().Count(entry =>
             string.Equals(GetNodeString(entry["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(GetNodeString(entry["shiningFactionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static async Task<bool> HasForeignPendingRealignmentForResidentAsync(FileSystemManager fs, string residentId, string requestId)
+    {
+        if (string.IsNullOrWhiteSpace(residentId))
+            return false;
+
+        var requests = await ReadRealignmentRequestsAsync(fs);
+        return requests.Any(request =>
+            string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static async Task<bool> HasForeignPendingLeadershipForFactionAsync(FileSystemManager fs, string factionId, string requestId)
+    {
+        if (string.IsNullOrWhiteSpace(factionId))
+            return false;
+
+        var requests = await ReadLeadershipTransitionRequestsAsync(fs);
+        return requests.Any(request =>
+            string.Equals(request.FactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.RequestId, requestId, StringComparison.OrdinalIgnoreCase));
     }
 
     private static async Task<bool> HasPendingOrdinaryTransferAsync(FileSystemManager fs, string residentId)

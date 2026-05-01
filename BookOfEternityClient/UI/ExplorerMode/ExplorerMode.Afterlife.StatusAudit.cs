@@ -34,7 +34,7 @@ public partial class ExplorerMode
         new(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "Состав резидентов Обители", "UpdateGuardianAbodeResidents + UpdateGuardianAbodeResidentRosterReceipts"),
         new(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "Разговор/история резидента Обители", "residentInteractionLogUpdates or resident history log + matching interaction receipts"),
         new(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "Переход резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"),
-        new(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "Манифестация резидента в следующей жизни", "MortalWorldProfile-only closure after bootstrap; in afterlife treat as blocker/repair signal"),
+        new(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "Манифестация резидента в следующей жизни", "MortalWorldProfile-only closure after bootstrap; valid files are preserved in afterlife, malformed files require repair"),
         new(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "Социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"),
         new(ShiningCoreActionRequestState.PendingActionsRequestPath, "Core-действие Сияющей Обители", "shining_abode_state.coreActionReceipts[] + exact canonical state projection", ShiningOnly: true),
         new(ShiningTradeRequestState.PendingRequestsPath, "Торговая витрина Сияющей фракции", "factions[].tradeInventory + tradeInventoryReceipts[]", ShiningOnly: true),
@@ -70,6 +70,7 @@ public partial class ExplorerMode
             $"  • Архив души: stored [white]{(soulRoot?["afterlifeArchive"]?["stored"] as JsonArray)?.Count ?? 0}[/], receipts [white]{(soulRoot?["afterlifeArchive"]?["actionReceipts"] as JsonArray)?.Count ?? 0}[/]"
         };
 
+        AppendNextLifePayloadStatusLines(lines, soulRoot);
         AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot, returnGuardRaw);
         AppendShiningStatusLines(lines, shiningContext);
 
@@ -153,7 +154,7 @@ public partial class ExplorerMode
         if (root["gates"] is JsonObject gates)
         {
             lines.Add($"  • Врата: draftVersion [white]{GetNodeInt(gates["draftVersion"])}[/], open={GetNodeBool(gates["hasOpenDraft"])}, stale={GetNodeBool(gates["isStale"])}, availableCards={(gates["availableBlessingCards"] as JsonArray)?.Count ?? 0}, selected={(gates["selectedBlessingCardIds"] as JsonArray)?.Count ?? 0}, rerolls={GetNodeInt(gates["rerollsRemaining"])}.");
-            AppendSelectedShiningCardStatusLines(lines, gates);
+            AppendSelectedShiningCardStatusLines(lines, gates, context);
         }
         if (root["preparedIncarnationPackage"] is JsonObject package)
             lines.Add($"  • Prepared package: draftVersion [white]{GetNodeInt(package["generatedFromDraftVersion"])}[/], selectedCards={(package["selectedCards"] as JsonArray)?.Count ?? 0}, preparedAtTurn={GetNodeInt(package["preparedAtTurn"])}.");
@@ -186,26 +187,89 @@ public partial class ExplorerMode
         return total;
     }
 
-    private static void AppendSelectedShiningCardStatusLines(List<string> lines, JsonObject gates)
+    private static void AppendNextLifePayloadStatusLines(List<string> lines, JsonObject? soulRoot)
+    {
+        if (soulRoot == null)
+            return;
+
+        var hasLegacy = soulRoot["pendingMemoryLegacy"] is JsonObject;
+        var hasImprint = soulRoot["soulImprint"] is JsonObject;
+        if (!hasLegacy && !hasImprint)
+            return;
+
+        lines.Add("");
+        lines.Add("[bold]Next-life payloads:[/]");
+        lines.Add("  • Эти данные будут применяться в следующей смертной жизни; полный просмотр доступен через /soul.");
+
+        if (soulRoot["pendingMemoryLegacy"] is JsonObject legacy)
+        {
+            lines.Add("  • pendingMemoryLegacy:");
+            AddNextLifePayloadField(lines, legacy, "legacyId");
+            AddNextLifePayloadField(lines, legacy, "legacyType");
+            AddNextLifePayloadField(lines, legacy, "grantSource");
+            AddNextLifePayloadField(lines, legacy, "applicationState");
+            AddNextLifePayloadField(lines, legacy, "sourceLifeHint");
+            AddNextLifePayloadField(lines, legacy, "characteristic");
+            AddNextLifePayloadField(lines, legacy, "skillName");
+            AddNextLifePayloadField(lines, legacy, "playerStatBonus");
+            AddNextLifePayloadField(lines, legacy, "bonus");
+            if (legacy["bonus"] is JsonObject bonus)
+                lines.Add($"    bonus: [dim]{Markup.Escape(bonus.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
+            if (legacy["grantSnapshot"] is JsonObject snapshot)
+                lines.Add($"    grantSnapshot: [dim]{Markup.Escape(snapshot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
+        }
+
+        if (soulRoot["soulImprint"] is JsonObject imprint)
+        {
+            lines.Add("  • soulImprint:");
+            foreach (var key in new[]
+            {
+                "imprintId", "sourceCompanionId", "companionId", "NPCId", "sourceNpcId", "companionName", "NPCName",
+                "summary", "futureCompanionPrompt", "grantSource", "applicationState"
+            })
+            {
+                AddNextLifePayloadField(lines, imprint, key);
+            }
+
+            foreach (var key in new[] { "coreTraits", "personalityMarkers", "relationshipMarkers", "appearanceMotifs", "sourceProvenance" })
+            {
+                if (imprint[key] is JsonArray or JsonObject)
+                    lines.Add($"    {key}: [dim]{Markup.Escape(imprint[key]!.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed))}[/]");
+            }
+        }
+    }
+
+    private static void AddNextLifePayloadField(List<string> lines, JsonObject root, string key)
+    {
+        var value = FormatPendingIdentityValue(root[key]);
+        if (!string.IsNullOrWhiteSpace(value))
+            lines.Add($"    {key}: [white]{Markup.Escape(value)}[/]");
+    }
+
+    private static void AppendSelectedShiningCardStatusLines(List<string> lines, JsonObject gates, ShiningContext context)
     {
         var selected = (gates["selectedBlessingCardIds"] as JsonArray)?
             .OfType<JsonValue>()
             .Select(value => value.TryGetValue<string>(out var id) ? id : string.Empty)
             .Where(id => !string.IsNullOrWhiteSpace(id))
-            .Take(8)
             .ToList() ?? new List<string>();
         if (selected.Count == 0)
             return;
 
-        lines.Add("  • Selected blessing cards:");
+        lines.Add("  • Selected blessing cards (all selected; safe effect details, no hidden runtime payload keys):");
         foreach (var cardId in selected)
         {
             var card = (gates["availableBlessingCards"] as JsonArray)?.OfType<JsonObject>()
                 .FirstOrDefault(item => string.Equals(GetNodeString(item["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
-            var label = GetNodeString(card?["displayName"]) ?? cardId;
-            var rarity = GetNodeString(card?["rarity"]) ?? "unknown";
-            var family = GetNodeString(card?["effectFamily"]) ?? "unknown";
-            lines.Add($"    - {Markup.Escape(label)} [dim]({Markup.Escape(cardId)}; {Markup.Escape(rarity)}; {Markup.Escape(family)})[/]");
+            if (card == null)
+            {
+                lines.Add($"    - {Markup.Escape(cardId)} [dim](card not found in availableBlessingCards; inspect /shining_abode)[/]");
+                continue;
+            }
+
+            lines.Add($"    - {Markup.Escape(FormatShiningReceiptAuditObject(card))}");
+            foreach (var effectLine in BuildShiningBlessingEffectDetailLines(card))
+                lines.Add($"      effect: [dim]{Markup.Escape(effectLine)}[/]");
         }
     }
 

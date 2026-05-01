@@ -23,6 +23,55 @@ public sealed class ExplorerModeAfterlifeAuditSurfaceTests
     }
 
     [Fact]
+    public void MemoryGatesPreviewAuditLines_ExposeExistingLegacyAndCanonicalReplacementSchema()
+    {
+        var soulRoot = new JsonObject
+        {
+            ["pendingMemoryLegacy"] = new JsonObject
+            {
+                ["legacyId"] = "legacy_memory_old",
+                ["legacyType"] = "startingCharacteristicBonus",
+                ["grantSource"] = "memoryLegacyGrant",
+                ["applicationState"] = "pending",
+                ["grantSnapshot"] = new JsonObject
+                {
+                    ["sourceTurn"] = 41,
+                    ["sourceActionTag"] = "ARCHIVE",
+                    ["legacyType"] = "startingCharacteristicBonus",
+                    ["characteristic"] = "Wisdom",
+                    ["bonus"] = 2
+                },
+                ["characteristic"] = "Wisdom",
+                ["bonus"] = 2
+            }
+        };
+
+        var lines = ExplorerMode.BuildMemoryGatesPreviewAuditLines(24, 120, soulRoot);
+        var text = string.Join("\n", lines);
+
+        Assert.Contains("120 -> 96", text, StringComparison.Ordinal);
+        Assert.Contains("legacy_memory_old", text, StringComparison.Ordinal);
+        Assert.Contains("grantSource=memoryLegacyGrant", text, StringComparison.Ordinal);
+        Assert.Contains("full before payload", text, StringComparison.Ordinal);
+        Assert.Contains("grantSnapshot", text, StringComparison.Ordinal);
+        Assert.Contains("Canonical after payload schema", text, StringComparison.Ordinal);
+        Assert.Contains("pendingMemoryLegacy.legacyId", text, StringComparison.Ordinal);
+        Assert.Contains("startingCharacteristicBonus", text, StringComparison.Ordinal);
+        Assert.Contains("startingPassiveKnowledgeSkill", text, StringComparison.Ordinal);
+        Assert.Contains("memoryLegacyGrant", text, StringComparison.Ordinal);
+        Assert.Contains("sourceLifeHint", text, StringComparison.Ordinal);
+        Assert.Contains("group=Knowledge", text, StringComparison.Ordinal);
+        Assert.Contains("playerStatBonus", text, StringComparison.Ordinal);
+        Assert.Contains("bonus=2", text, StringComparison.Ordinal);
+        Assert.Contains("structuredBonuses", text, StringComparison.Ordinal);
+        Assert.Contains("optional source ids/context", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("stat_bonus", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("knowledge_skill", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("grantSource: memory_gates", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("source ids/context: carry sourceLifeHint", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AbodeOfferingPreviewAuditLines_ShowConsumedObjectAndPowerDelta()
     {
         var lines = ExplorerMode.BuildAbodeOfferingPreviewAuditLines(

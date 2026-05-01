@@ -3421,6 +3421,8 @@ Canonical Abode resident disposition/devotion/migration tables:
 
 Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. `refused` and `withdrawn` outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged. Supported receipt statuses are only `accepted`, `refused`, and `withdrawn`.
 
+The client preview may show a `projectedStateFragment` containing sanitized `beforeFullShiningRoot`, `afterFullShiningRoot`, and focused `gates`/faction/project fragments. Treat it as an audit aid only: it is not a GM output file and not a new response field. The accepted response still persists the full canonical `game_state/meta/shining_abode_state.json` root plus `coreActionReceipts[]`, and hidden blessing `effectPayload` keys must not be copied from previews.
+
 If the same accepted turn also closes a Shining political/trade/resident pending contract, the final state is the composition of all accepted closures. For example, accepted faction founding first materializes the hall/faction and supporter resident alignment, then `open_gates` builds its draft from that updated Shining state; both `factionFoundingReceipts[]` and `coreActionReceipts[]` must be present.
 
 The strict Shining closure validator uses pre-turn `game_state/control/pending_turn_snapshot` roots for `game_state/meta/shining_abode_state.json`, `game_state/meta/guardian_abode_residents.json`, and `game_state/meta/soul_state.json`. It accepts only the canonical projected diff for the Shining core request plus other explicitly closed afterlife contracts in the same accepted response. Unrelated edits fail as `shining_closure_unexpected_shining_state_diff`, `shining_closure_unexpected_resident_state_diff`, or `shining_closure_unexpected_soul_state_diff`; missing baseline files fail as `shining_closure_missing_pre_turn_shining_state`, `shining_closure_missing_pre_turn_resident_state`, or `shining_closure_missing_pre_turn_soul_state`. A legal concurrent Soul delta must be proved by its own contract, for example an `ABODE_OFFERING` receipt/state change, not by silently changing `soul_state.json` during Shining closure.
@@ -5855,9 +5857,9 @@ Archive candidate manifest:
 Afterlife-origin companion manifestation handoff:
 
 ```text
-pending_resident_companion_manifestation_request.json is not closable in Chaos Sea or Shining Abode.
-pending_npc_social_interactions.json is also MortalWorldProfile-only. If it exists during Chaos Sea or Shining Abode, treat it as stale/repair-only context: do not close it through npcInteractionJournalUpdates, do not write UpdateNPCs, and do not mutate game_state/npcs/*.
-Valid realm-wrong pending files may be ignored or client-cleared by runtime health logic when they are explicit stale clutter. Malformed realm-wrong pending files are preserved for repair; do not "fix" them by writing an afterlife receipt or by materializing MortalWorldProfile NPCs.
+pending_resident_companion_manifestation_request.json is not closable in Chaos Sea or Shining Abode. Valid non-empty files are preserved as next-life context and do not block Soul Gates; malformed files block Soul Gates until repair.
+pending_npc_social_interactions.json and pending_npc_trade_inventory_requests.json are also MortalWorldProfile-only. If either exists during Chaos Sea or Shining Abode, treat it as wrong-realm repair-only context: do not close it through npcInteractionJournalUpdates, do not write UpdateNPCs or UpdateNpcTradeInventoryReceipts, and do not mutate game_state/npcs/*.
+Valid explicit-empty realm-wrong request files may be client-cleared as stale clutter. Malformed realm-wrong pending files are preserved for repair; do not "fix" them by writing an afterlife receipt or by materializing MortalWorldProfile NPCs.
 
 It can still originate from afterlife resident rewards or imprint-bearing Soul Relics. When it appears later in MortalWorldProfile, the GM must preserve and use:
 - requestId

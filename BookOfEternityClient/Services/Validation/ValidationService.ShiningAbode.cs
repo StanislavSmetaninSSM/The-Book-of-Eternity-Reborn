@@ -839,6 +839,23 @@ public partial class ValidationService
         ValidateIntegerField(package, contextPrefix, issues, "preparedAtTurn");
         ValidateOptionalString(package, contextPrefix, issues, "preparedAtUtc");
 
+        if (JsonNode.Parse(package.GetRawText()) is JsonObject packageRoot)
+        {
+            var bootstrapValidationError = ShiningAbodeState.ValidatePreparedIncarnationPackageForBootstrap(packageRoot);
+            if (!string.IsNullOrWhiteSpace(bootstrapValidationError))
+            {
+                issues.Add(new ValidationIssue(
+                    contextPrefix,
+                    IssueSeverity.Error,
+                    "preparedIncarnationPackage не проходит runtime bootstrap validation.",
+                    code: "shining_abode_prepare_package_bootstrap_invalid",
+                    section: "ShiningAbode",
+                    expected: "non-empty unique selectedCardIds/selectedCards bootstrap package",
+                    actual: bootstrapValidationError,
+                    repairHint: "Храни preparedIncarnationPackage в той же форме, которую runtime может consume for Shining pending-bootstrap handoff."));
+            }
+        }
+
         if (!package.TryGetProperty("selectedCardIds", out var selectedCardIds) ||
             selectedCardIds.ValueKind != JsonValueKind.Array ||
             !package.TryGetProperty("selectedCards", out var selectedCards) ||

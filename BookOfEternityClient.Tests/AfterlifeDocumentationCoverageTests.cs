@@ -829,7 +829,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("game_state/factions/*", doc, StringComparison.Ordinal);
             Assert.Contains("pending_npc_social_interactions.json", doc, StringComparison.Ordinal);
             Assert.Contains("MortalWorldProfile-only", doc, StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("stale/repair", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("repair", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("wrong-realm", doc, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.NotEmpty(FileMapping.FieldToFile.Where(pair =>
@@ -1075,6 +1076,25 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("factionRestlessness", doc, StringComparison.Ordinal);
             Assert.Contains("factionRealignmentState", doc, StringComparison.Ordinal);
             Assert.Contains("shiningAlignment", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ShiningProjectedStateFragmentPreviewIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains("projectedStateFragment", doc, StringComparison.Ordinal);
+            Assert.Contains("beforeFullShiningRoot", doc, StringComparison.Ordinal);
+            Assert.Contains("afterFullShiningRoot", doc, StringComparison.Ordinal);
+            Assert.Contains("audit", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("not", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("output file", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("coreActionReceipts[]", doc, StringComparison.Ordinal);
+            Assert.Contains("effectPayload", doc, StringComparison.Ordinal);
         }
     }
 

@@ -52,6 +52,44 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task BuildSystemReminderFragmentAsync_ChaosSeaTreatsPendingTradeAsWrongRealm()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await ShiningTradeRequestState.WriteRequestAsync(fs, new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+            {
+                RequestId = "trade_req_old_house",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TradeCycleId = "shining_return_2",
+                DerivedTradeTier = 2,
+                DerivedTradeSlotCount = 6,
+                DerivedRarityCeiling = "rare",
+                DerivedServiceMultiplier = 1.25,
+                MerchantProfile = ShiningTradeRequestState.MerchantProfileShiningFaction,
+                CreatedAtTurn = 11,
+                CreatedAtUtc = "2026-04-27T11:00:00Z"
+            });
+
+            var reminder = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(fs, "Chaos Sea");
+
+            Assert.NotNull(reminder);
+            Assert.Contains("WRONG REALM", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("repair-only", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("trade_req_old_house", reminder, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Resolve each request in accepted turn", reminder, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_DoesNotTruncatePendingTradeRequests()
     {
         var root = CreateTempRoot();
