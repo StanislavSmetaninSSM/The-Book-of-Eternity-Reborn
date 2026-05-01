@@ -347,6 +347,25 @@ public partial class ValidationService
             "shining_trade_request_wrong_realm_or_mode",
             "Pending Shining trade request допустим только в ordinary active Shining Abode state");
 
+        var duplicateRequestIds = requests
+            .Where(request => !string.IsNullOrWhiteSpace(request.RequestId))
+            .GroupBy(request => request.RequestId, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .OrderBy(id => id, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (duplicateRequestIds.Count > 0)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningTradeRequestState.PendingRequestsPath,
+                IssueSeverity.Error,
+                $"pending_shining_trade_inventory_requests.json содержит duplicated requestId: {string.Join(", ", duplicateRequestIds)}",
+                code: "shining_trade_duplicate_request_id",
+                section: "ShiningAbode",
+                repairHint: "Оставляй в pending_shining_trade_inventory_requests.json уникальный requestId для каждого Shining trade contract, чтобы resolved notification и receipt identity не сливались."));
+            return;
+        }
+
         var duplicateFactionCycleContracts = requests
             .GroupBy(
                 request => $"{request.FactionId}::{request.TradeCycleId}",
@@ -477,6 +496,25 @@ public partial class ValidationService
             issues,
             ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
             "shining_leadership_wrong_realm_or_mode");
+
+        var duplicateRequestIds = requests
+            .Where(request => !string.IsNullOrWhiteSpace(request.RequestId))
+            .GroupBy(request => request.RequestId, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .OrderBy(id => id, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (duplicateRequestIds.Count > 0)
+        {
+            issues.Add(new ValidationIssue(
+                ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                IssueSeverity.Error,
+                $"pending_shining_faction_leadership_transitions.json содержит duplicated requestId: {string.Join(", ", duplicateRequestIds)}",
+                code: "shining_leadership_duplicate_request_id",
+                section: "ShiningAbode",
+                repairHint: "Оставляй в pending_shining_faction_leadership_transitions.json уникальный requestId для каждого leadership transition, чтобы resolved notification и receipt identity не сливались."));
+            return;
+        }
 
         for (var i = 0; i < requests.Count; i++)
         {

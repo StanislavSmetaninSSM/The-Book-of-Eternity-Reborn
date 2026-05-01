@@ -73,6 +73,54 @@ public sealed class ChaosSeaPendingRequestHygieneTests : IDisposable
     }
 
     [Fact]
+    public async Task GuardianAbodeOffering_EnsureHealthyAsync_MatchingOfferingJournalEntryClearsPendingFile()
+    {
+        await _fs.WriteFileAtomicAsync(GuardianAbodeOfferingState.PendingRequestPath, """
+        {
+          "guardianId": "guardian_alpha",
+          "guardianName": "Азалия",
+          "offeringType": "ink_feathers",
+          "inkFeathersOffered": 50,
+          "returnCycleId": "return_4",
+          "createdAtUtc": "2026-04-27T00:00:00Z"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """
+        {
+          "entries": [
+            {
+              "entryId": "journal_offering_001",
+              "eventId": "gpe_offering_001",
+              "guardianId": "guardian_alpha",
+              "guardianName": "Азалия",
+              "turn": 42,
+              "delta": 1,
+              "reasonType": "offering",
+              "sourceSurface": "guardianAbodeOffering",
+              "sourceId": "pending_abode_offering.json",
+              "title": "Подношение Обители",
+              "summary": "Игрок принес подношение.",
+              "visibility": "public",
+              "appliedAt": "2026-04-27T00:01:00Z",
+              "audit": {
+                "offeringType": "ink_feathers",
+                "returnCycleId": "return_4",
+                "inkFeathersOffered": 50,
+                "baseDelta": 1,
+                "finalDelta": 1,
+                "capRemainingBefore": 10
+              }
+            }
+          ]
+        }
+        """);
+
+        await GuardianAbodeOfferingState.EnsureHealthyAsync(_fs, "Chaos Sea");
+
+        Assert.False(_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath));
+    }
+
+    [Fact]
     public async Task GuardianAbodeOffering_WriteAsync_ExistingPendingRequest_ThrowsWithoutOverwrite()
     {
         await GuardianAbodeOfferingState.WriteAsync(_fs, new GuardianAbodeOfferingState.PendingAbodeOfferingRequest

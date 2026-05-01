@@ -1803,6 +1803,11 @@ Forbidden:
 
 This section contains three independent Shining political pending-contract examples. Each example is a patch fragment; preserve all other required roots of `shining_abode_state.json` and `guardian_abode_residents.json`.
 
+Political request identity and locks:
+- Every active `requests[]` entry in `pending_shining_faction_foundings.json`, `pending_shining_faction_realignments.json`, `pending_shining_faction_leadership_transitions.json`, and `pending_shining_trade_inventory_requests.json` must have a unique non-empty `requestId` inside that file. Resolved notification identity is keyed by request family plus `requestId`; duplicate ids can hide a different contract and are invalid.
+- Leadership `candidateHeadActorType/headActorId` and `incumbentHeadActorType/headActorId` are locked actor identities, not decorative labels. A resident candidate or incumbent must not simultaneously be in pending Shining realignment, ordinary inter-Abode resident transfer, founding supporter set, or another leadership transition. If a conflict exists, preserve the pending files for repair; do not close the leadership request by inventing a winner.
+- Non-resident leadership actors (`player_soul`, `guardian`, `radiant_actor`) still must not be referenced by another pending leadership transition unless it is the same faction/request being resolved.
+
 9A. Founding a new Shining faction:
 
 Resource reservation rule:
@@ -5859,7 +5864,7 @@ Afterlife-origin companion manifestation handoff:
 
 ```text
 pending_resident_companion_manifestation_request.json is not closable in Chaos Sea or Shining Abode. Valid non-empty files are preserved as next-life context and do not block Soul Gates; malformed files block Soul Gates until repair.
-pending_npc_social_interactions.json and pending_npc_trade_inventory_requests.json are also MortalWorldProfile-only. If either exists during Chaos Sea or Shining Abode, treat it as wrong-realm repair-only context: do not close it through npcInteractionJournalUpdates, do not write UpdateNPCs or UpdateNpcTradeInventoryReceipts, and do not mutate game_state/npcs/*.
+pending_npc_social_interactions.json, pending_npc_trade_inventory_requests.json, and `[NPC_TRADE_REQUEST]` are MortalWorldProfile-only. If any of them exists during Chaos Sea or Shining Abode, treat it as wrong-realm repair-only context: do not close it through npcInteractionJournalUpdates, do not write UpdateNPCs or UpdateNpcTradeInventoryReceipts, and do not mutate game_state/npcs/*.
 Valid explicit-empty realm-wrong request files may be client-cleared as stale clutter. Malformed realm-wrong pending files are preserved for repair; do not "fix" them by writing an afterlife receipt or by materializing MortalWorldProfile NPCs.
 
 It can still originate from afterlife resident rewards or imprint-bearing Soul Relics. When it appears later in MortalWorldProfile, the GM must preserve and use:

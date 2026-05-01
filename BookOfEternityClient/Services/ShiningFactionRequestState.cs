@@ -482,6 +482,15 @@ internal static class ShiningFactionRequestState
             return "Leadership request должен ссылаться на текущего incumbent head из faction.leadership.";
         }
 
+        var incumbentLockError = await ValidateLeadershipActorPendingLocksAsync(
+            fs,
+            "Incumbent",
+            request.IncumbentHeadActorType,
+            request.IncumbentHeadActorId,
+            request.FactionId);
+        if (incumbentLockError != null)
+            return incumbentLockError;
+
         if (string.Equals(request.TransitionMode, TransitionModeRevolt, StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateContested, StringComparison.OrdinalIgnoreCase))
         {
@@ -516,6 +525,15 @@ internal static class ShiningFactionRequestState
             {
                 return $"Candidate уже является current head другой Shining-фракции '{candidateCurrentHeadFactionId}'.";
             }
+
+            var candidateLockError = await ValidateLeadershipActorPendingLocksAsync(
+                fs,
+                "Candidate",
+                request.CandidateHeadActorType,
+                request.CandidateHeadActorId,
+                request.FactionId);
+            if (candidateLockError != null)
+                return candidateLockError;
         }
 
         if (await HasForeignPendingLeadershipForFactionAsync(fs, request.FactionId, request.RequestId))
@@ -1092,6 +1110,49 @@ internal static class ShiningFactionRequestState
                 (string.Equals(request.IncumbentHeadActorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) &&
                  string.Equals(request.IncumbentHeadActorId, residentId, StringComparison.OrdinalIgnoreCase))
             ));
+    }
+
+    private static async Task<string?> ValidateLeadershipActorPendingLocksAsync(
+        FileSystemManager fs,
+        string label,
+        string actorType,
+        string actorId,
+        string currentFactionId)
+    {
+        if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
+            return null;
+
+        if (string.Equals(actorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase))
+        {
+            if (await HasPendingOrdinaryTransferAsync(fs, actorId))
+                return $"{label} resident '{actorId}' уже участвует в ordinary inter-Abode transfer.";
+            if (await IsResidentLockedByPendingFlowInternalAsync(fs, actorId, excludeFoundingFactionId: null, excludeRealignmentResidentId: null, excludeLeadershipFactionId: currentFactionId))
+                return $"{label} resident '{actorId}' уже заблокирован другим pending Shining flow.";
+
+            return null;
+        }
+
+        var leadershipRequests = await ReadLeadershipTransitionRequestsAsync(fs);
+        return leadershipRequests.Any(request =>
+            !string.Equals(request.FactionId, currentFactionId, StringComparison.OrdinalIgnoreCase) &&
+            LeadershipRequestReferencesActor(request, actorType, actorId))
+            ? $"{label} actor '{actorType}:{actorId}' уже заблокирован другим pending Shining leadership flow."
+            : null;
+    }
+
+    private static bool LeadershipRequestReferencesActor(
+        PendingShiningFactionLeadershipTransitionRequest request,
+        string actorType,
+        string actorId)
+    {
+        if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
+            return false;
+
+        return
+            (string.Equals(request.CandidateHeadActorType, actorType, StringComparison.OrdinalIgnoreCase) &&
+             string.Equals(request.CandidateHeadActorId, actorId, StringComparison.OrdinalIgnoreCase)) ||
+            (string.Equals(request.IncumbentHeadActorType, actorType, StringComparison.OrdinalIgnoreCase) &&
+             string.Equals(request.IncumbentHeadActorId, actorId, StringComparison.OrdinalIgnoreCase));
     }
 
     private static string? ValidateLeadershipCandidate(

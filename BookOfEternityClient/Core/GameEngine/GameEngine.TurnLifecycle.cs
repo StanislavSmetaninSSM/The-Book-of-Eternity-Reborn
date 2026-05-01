@@ -114,8 +114,7 @@ public partial class GameEngine
             if (qteHandling.EarlyExit)
             {
                 await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
-                _fs.DeleteFile("ready/turn_complete.json");
-                await CleanupPendingTurnSnapshotAsync();
+                await CleanupAcceptedTurnTerminalArtifactsAsync();
                 return true;
             }
 
@@ -133,8 +132,7 @@ public partial class GameEngine
                 await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
             }
 
-            _fs.DeleteFile("ready/turn_complete.json");
-            await CleanupPendingTurnSnapshotAsync();
+            await CleanupAcceptedTurnTerminalArtifactsAsync();
             return true;
         }
 
@@ -400,6 +398,7 @@ public partial class GameEngine
                     continue;
                 }
 
+                var acceptedLateResponse = false;
                 if (await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "late response GM",
                         rollbackSnapshot,
@@ -456,9 +455,18 @@ public partial class GameEngine
                     {
                         await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
                     }
+
+                    acceptedLateResponse = true;
                 }
-                _fs.DeleteFile("ready/turn_complete.json");
-                await CleanupPendingTurnSnapshotAsync();
+                if (acceptedLateResponse)
+                {
+                    await CleanupAcceptedTurnTerminalArtifactsAsync();
+                }
+                else
+                {
+                    _fs.DeleteFile("ready/turn_complete.json");
+                    await CleanupPendingTurnSnapshotAsync();
+                }
             }
 
             // Check for GM-initiated incarnation (GM sends player to Mortal World)
@@ -570,11 +578,24 @@ public partial class GameEngine
             }
 
             // Check for end of life command (Mortal Life → Chaos Sea)
-            if ((input.Equals("/end_of_life", StringComparison.OrdinalIgnoreCase) ||
-                 input.Equals("/конец_жизни", StringComparison.OrdinalIgnoreCase)) &&
-                !_stateManager.CurrentState.IsInAfterlifeRealm)
+            if (input.Equals("/end_of_life", StringComparison.OrdinalIgnoreCase) ||
+                input.Equals("/конец_жизни", StringComparison.OrdinalIgnoreCase))
             {
-                await HandleEndOfLife();
+                var currentRealm = _stateManager.CurrentState.CurrentRealm;
+                if (RealmSemantics.IsMortalRealm(currentRealm))
+                {
+                    await HandleEndOfLife();
+                }
+                else if (!RealmSemantics.HasResolvedRealm(currentRealm))
+                {
+                    AnsiConsole.MarkupLine("[yellow]⚠ Нельзя завершить смертную жизнь: soul_state.currentRealm не определён.[/]");
+                    AnsiConsole.MarkupLine("[dim]Восстановите game_state/meta/soul_state.json.currentRealm; клиент не будет угадывать смертный мир по отсутствию afterlife realm.[/]");
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[yellow]⚠ Команда /end_of_life доступна только в смертной жизни.[/]");
+                    AnsiConsole.MarkupLine("[dim]Текущий realm не является смертным миром.[/]");
+                }
                 continue;
             }
 
@@ -761,8 +782,6 @@ public partial class GameEngine
         _lastResponse = qteHandling.Response;
         _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
 
-        await CleanupPendingTurnSnapshotAsync();
-
         // Autosave
         if (_stateManager.Settings.AutosaveIntervalTurns > 0 &&
             _gameLoop.TurnNumber % _stateManager.Settings.AutosaveIntervalTurns == 0)
@@ -770,8 +789,7 @@ public partial class GameEngine
             await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
         }
 
-        // Cleanup ready signal
-        _fs.DeleteFile("ready/turn_complete.json");
+        await CleanupAcceptedTurnTerminalArtifactsAsync();
     }
 
     private void CleanupAfterAcceptedChaosSeaMarkerTurn(string? action)
@@ -1454,8 +1472,7 @@ public partial class GameEngine
                     guardianContext.GuardianName,
                     _gameLoop.TurnNumber);
 
-                _fs.DeleteFile("ready/turn_complete.json");
-                await CleanupPendingTurnSnapshotAsync();
+                await CleanupAcceptedTurnTerminalArtifactsAsync();
             }
         }
         catch (TriggerLifeEndRuntimeContextException ex)
@@ -2560,14 +2577,16 @@ Resolve the ritual by:
   - appending guardians.json.playerGuardianFoundationHistory[] receipt.
 In v1 this route is single-use per save. Do NOT create a second player-founded guardian if one already exists.
 
-LOCAL NPC TRADE REQUESTS:
-If game_state/control/pending_npc_trade_inventory_requests.json exists, treat it as a client-authored request to materialize explicit npc.tradeInventory for the current world-time trade cycle.
+LOCAL NPC TRADE REQUESTS — MortalWorldProfile-only:
+If game_state/control/pending_npc_trade_inventory_requests.json or [NPC_TRADE_REQUEST] is present in MortalWorldProfile, treat it as a client-authored request to materialize explicit npc.tradeInventory for the current world-time trade cycle.
+If the same pending file or tag appears while currentRealm is Chaos Sea or Shining Abode, it is wrong-realm repair-only context: preserve it, do NOT materialize NPC stock, do NOT write UpdateNpcTradeInventoryReceipts, and do NOT mutate game_state/npcs/* from afterlife.
 Do NOT generate or infer NPC stock on the client.
-Answer each request by writing explicit npc.tradeInventory into npc_core.json with matching tradeCycleId, refreshAfterWorldDate, and a valid items array.
-Close each request canonically through UpdateNpcTradeInventoryReceipts in npc_core.json with matching requestId, npcId, tradeCycleId, merchantProfile, itemCount, resolvedAtTurn, and resolvedAtUtc.
+In MortalWorldProfile only, answer each request by writing explicit npc.tradeInventory into npc_core.json with matching tradeCycleId, refreshAfterWorldDate, and a valid items array.
+In MortalWorldProfile only, close each request canonically through UpdateNpcTradeInventoryReceipts in npc_core.json with matching requestId, npcId, tradeCycleId, merchantProfile, itemCount, resolvedAtTurn, and resolvedAtUtc.
 
-LOCAL SHINING TRADE REQUESTS:
-If game_state/control/pending_shining_trade_inventory_requests.json exists, treat it as a client-authored request to materialize explicit shining faction tradeInventory for the current return cycle.
+LOCAL SHINING TRADE REQUESTS — ORDINARY ACTIVE SHINING ABODE ONLY:
+If game_state/control/pending_shining_trade_inventory_requests.json exists while currentRealm is Shining Abode, shining_abode_state.availability is active, and preparedIncarnationPackage is null/absent, treat it as a client-authored request to materialize explicit shining faction tradeInventory for the current return cycle.
+If this file appears in Chaos Sea, sealed Shining state, Shining pending-bootstrap handoff, or Shining package fault, it is wrong-realm/mode repair-only context: preserve it and do NOT resolve Shining trade receipts or mutate Shining trade stock from that turn.
 These requests may be created automatically by the client when the Soul returns to the active Shining Abode after a new mortal life.
 Do NOT infer or generate Shining stock on the client.
 Answer each request by writing explicit faction.tradeInventory into shining_abode_state.json with matching tradeCycleId, generationTradeTier, generationRarityCeiling, serviceMultiplierSnapshot and a valid items array.

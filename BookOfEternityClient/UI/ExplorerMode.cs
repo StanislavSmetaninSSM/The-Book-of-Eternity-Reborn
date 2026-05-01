@@ -197,7 +197,10 @@ public partial class ExplorerMode
     public async Task<string?> TryProcessCommand(string input)
     {
         var cmd = input.Trim().Split(' ')[0].ToLower();
-        var isAfterlife = _stateManager.CurrentState.IsInAfterlifeRealm;
+        var currentRealm = _stateManager.CurrentState.CurrentRealm;
+        var hasResolvedRealm = RealmSemantics.HasResolvedRealm(currentRealm);
+        var isAfterlife = RealmSemantics.IsAfterlifeRealm(currentRealm);
+        var isMortal = RealmSemantics.IsMortalRealm(currentRealm);
         _pendingGmAction = null;
 
         if (_universalCommands.TryGetValue(cmd, out var handler))
@@ -210,6 +213,14 @@ public partial class ExplorerMode
 
         if (_chaosSeaOnlyCommands.TryGetValue(cmd, out var chaosHandler))
         {
+            if (!hasResolvedRealm)
+            {
+                MarkupLine("[yellow]⚠️ Нельзя выполнить realm-scoped команду: soul_state.currentRealm не определён.[/]");
+                MarkupLine("[dim]Сначала восстановите game_state/meta/soul_state.json.currentRealm; клиент не будет угадывать смертный или загробный режим.[/]");
+                WaitForKey();
+                return "";
+            }
+
             if (IsExactChaosSeaCommand(cmd) && !_stateManager.CurrentState.IsInChaosSea)
             {
                 MarkupLine("[yellow]⚠️ Эта команда доступна только в Море Хаоса.[/]");
@@ -234,12 +245,20 @@ public partial class ExplorerMode
 
         if (_mortalOnlyCommands.TryGetValue(cmd, out var mortalHandler))
         {
-            if (!isAfterlife)
+            if (isMortal)
             {
                 await SafeExecute(mortalHandler, cmd);
                 if (string.IsNullOrEmpty(_pendingGmAction))
                     await DiscardPendingLocalTurnRollbackSnapshotAsync();
                 return _pendingGmAction ?? "";
+            }
+
+            if (!hasResolvedRealm)
+            {
+                MarkupLine("[yellow]⚠️ Эта команда требует явного смертного мира, но soul_state.currentRealm не определён.[/]");
+                MarkupLine("[dim]Восстановите game_state/meta/soul_state.json.currentRealm перед командами смертной жизни.[/]");
+                WaitForKey();
+                return "";
             }
 
             MarkupLine("[yellow]⚠️ Эта команда доступна только в смертной жизни.[/]");

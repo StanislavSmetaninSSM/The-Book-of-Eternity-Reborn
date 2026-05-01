@@ -378,7 +378,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task NormalizeRuntimeUiArtifactsAsync_PreservesResolvedPendingContractsWhenTerminalValidationIsPending()
+    public async Task NormalizeRuntimeUiArtifactsAsync_PreservesResolvedPendingContractsBeforeValidation_AndAcceptedCleanupClearsThem()
     {
         const string sessionId = "session-terminal-validation";
         const string requestId = "request-terminal-validation";
@@ -425,7 +425,10 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                         pricingReputationTier = "Friendly",
                         effectiveRarityCeilingBonusSteps = 0,
                         projectBonusSignature = "0|0|0",
-                        items = Array.Empty<object>()
+                        items = new[]
+                        {
+                            new { slotId = "slot_guardian_trade_late_response_001" }
+                        }
                     },
                     tradeInventoryReceipts = new[]
                     {
@@ -437,7 +440,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                             abodeId = "abode_alpha",
                             tradeCycleId = "return_21",
                             status = "ready",
-                            itemCount = 0,
+                            itemCount = 1,
                             resolvedAtTurn = turnNumber,
                             resolvedAtUtc = "2026-04-27T01:01:00Z"
                         }
@@ -473,6 +476,10 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         await InvokePrivateTaskAsync(engine, "NormalizeRuntimeUiArtifactsAsync");
 
         Assert.True(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
+
+        await InvokePrivateTaskAsync(engine, "CleanupAcceptedTurnTerminalArtifactsAsync");
+
+        Assert.False(_fs.FileExists(GuardianTradeRequestState.PendingRequestPath));
     }
 
     [Fact]
