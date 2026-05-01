@@ -69,6 +69,7 @@ Every accepted afterlife turn must follow this order:
    - Read `guardian_projects.json`.
    - Read `guardian_abode_residents.json`.
    - In Shining Abode, also read `shining_abode_state.json`.
+   - If `game_state/control/next_life_scenario_core.json` exists, read it as client-owned next-life bootstrap context. Do not edit or close it. `scenarioCoreAssertions[]` are hard facts for the next life; `candidateAssertions[]` are candidate-only until later accepted state confirms them.
 
 5. Pending contracts:
    - Read pending afterlife request files in `game_state/control/`.
@@ -3394,7 +3395,7 @@ Client-owned local Gates operations:
 Shining resident normalizer side effects:
 - A resident is Shining-aligned only when `ascensionState = "ascended"` and `shiningFactionId` points to an existing Shining faction.
 - If not ascended, runtime normalizes the resident to `ascensionState = "remained_in_chaos_sea"`, clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = "alienated"`, `factionRestlessness = 0`, and `factionRealignmentState = "settled"`.
-- If ascended but `shiningFactionId` is missing or points to a non-existing faction, the same affiliation reset applies.
+- If ascended but `shiningFactionId` is missing or points to a non-existing faction, runtime preserves `ascensionState = "ascended"` and treats the resident as ascended but unaffiliated: it clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = "alienated"`, `factionRestlessness = 0`, and `factionRealignmentState = "settled"`.
 - If ascended and faction exists, runtime derives/validates `residentRole`, `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`. Do not use non-canonical `shiningAlignment`.
 
 Canonical Shining vocabulary tables:

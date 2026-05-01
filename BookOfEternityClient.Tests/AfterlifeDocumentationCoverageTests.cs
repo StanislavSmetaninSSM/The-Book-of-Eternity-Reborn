@@ -761,6 +761,62 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningResidentAscensionDocsMatchNormalizerBehavior()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, taskGuide, operations, examples })
+        {
+            Assert.Contains("ascended but unaffiliated", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("remained_in_chaos_sea", doc, StringComparison.Ordinal);
+            Assert.Contains("shiningFactionId", doc, StringComparison.Ordinal);
+            Assert.Contains("shiningAlignment", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, examples })
+            Assert.Contains("preserves", doc, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void NextLifeScenarioCoreIsDocumentedAsClientOwnedBootstrapInput()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, taskGuide, operations, examples })
+        {
+            Assert.Contains("next_life_scenario_core.json", doc, StringComparison.Ordinal);
+            Assert.Contains("client-owned", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("scenarioCoreAssertions", doc, StringComparison.Ordinal);
+            Assert.Contains("candidateAssertions", doc, StringComparison.Ordinal);
+            Assert.Contains("edit", doc, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void LauncherRealmCheckNamesCanonicalSoulStateSource()
+    {
+        var launchScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var launchGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+
+        foreach (var doc in new[] { launchScript, launchGenerator })
+        {
+            Assert.Contains("game_state/meta/soul_state.json.currentRealm", doc, StringComparison.Ordinal);
+            Assert.Contains("Context.worldState.currentRealm", doc, StringComparison.Ordinal);
+            Assert.DoesNotContain("Read `worldState.currentRealm` from game state.", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void AfterlifePromptDocsDescribeGuardianProjectStartAndShiningFactionTradeSurfaces()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
