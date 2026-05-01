@@ -39,6 +39,62 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_MortalOnlyCommand_BlankRealmFailsClosed()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "",
+            currentIncarnation = 1
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/инв");
+
+        Assert.Equal("", result);
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("currentRealm", StringComparison.OrdinalIgnoreCase) &&
+                    line.Contains("не определ", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_MortalOnlyCommand_MissingRealmFailsClosed()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentIncarnation = 1
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/карта");
+
+        Assert.Equal("", result);
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("currentRealm", StringComparison.OrdinalIgnoreCase) &&
+                    line.Contains("не определ", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ChaosSeaCommand_BlankRealmFailsClosed()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "",
+            currentIncarnation = 1
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/хранители");
+
+        Assert.Equal("", result);
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("currentRealm", StringComparison.OrdinalIgnoreCase) &&
+                    line.Contains("не определ", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_CompanionDirective_UpdatesNpcCoreWithoutException()
     {

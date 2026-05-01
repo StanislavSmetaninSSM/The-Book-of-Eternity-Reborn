@@ -578,11 +578,24 @@ public partial class GameEngine
             }
 
             // Check for end of life command (Mortal Life → Chaos Sea)
-            if ((input.Equals("/end_of_life", StringComparison.OrdinalIgnoreCase) ||
-                 input.Equals("/конец_жизни", StringComparison.OrdinalIgnoreCase)) &&
-                !_stateManager.CurrentState.IsInAfterlifeRealm)
+            if (input.Equals("/end_of_life", StringComparison.OrdinalIgnoreCase) ||
+                input.Equals("/конец_жизни", StringComparison.OrdinalIgnoreCase))
             {
-                await HandleEndOfLife();
+                var currentRealm = _stateManager.CurrentState.CurrentRealm;
+                if (RealmSemantics.IsMortalRealm(currentRealm))
+                {
+                    await HandleEndOfLife();
+                }
+                else if (!RealmSemantics.HasResolvedRealm(currentRealm))
+                {
+                    AnsiConsole.MarkupLine("[yellow]⚠ Нельзя завершить смертную жизнь: soul_state.currentRealm не определён.[/]");
+                    AnsiConsole.MarkupLine("[dim]Восстановите game_state/meta/soul_state.json.currentRealm; клиент не будет угадывать смертный мир по отсутствию afterlife realm.[/]");
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[yellow]⚠ Команда /end_of_life доступна только в смертной жизни.[/]");
+                    AnsiConsole.MarkupLine("[dim]Текущий realm не является смертным миром.[/]");
+                }
                 continue;
             }
 
