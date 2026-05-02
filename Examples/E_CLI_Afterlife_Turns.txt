@@ -1470,10 +1470,18 @@ Guardian-forced incarnation is a different flow. It is legal only on an ordinary
 
 The runtime accepts exact `playerAction` tags as deterministic evidence for Guardian-forced incarnation. This is the input context, not a GM response surface:
 
+Additional pre-state requirement:
+- The provoking Guardian must be the current active Guardian.
+- Pre-turn `game_state/meta/guardians.json` for that Guardian must have `relationshipData.currentReputation` / `CurrentReputation <= -21`.
+- Severity mapping is mechanical: `-21..-50 => "harsh"`, `-51..-100 => "severe"`. A reputation of `-20` or better must not force incarnation even with a provocation tag.
+
 ```text
 input/turn_request.json:
 playerAction = "[GUARDIAN_PROVOCATION: guardian_azalia] Игрок deliberately insults Азалия and demands punishment."
 turnNumber = 77
+
+pre-turn activeGuardian.guardianId = "guardian_azalia"
+pre-turn guardian_azalia.relationshipData.currentReputation = -34
 ```
 
 Correct GM response:
@@ -1496,7 +1504,44 @@ Correct GM response:
 Why this is valid:
 - `[GUARDIAN_PROVOCATION]` without an id is accepted as explicit provocation evidence.
 - `[GUARDIAN_PROVOCATION: guardianId]` is accepted only when the id exactly matches `TriggerIncarnation.guardianId`.
+- `severityBand = "harsh"` matches pre-turn reputation `-34` in the `-21..-50` band. If the same Guardian had `currentReputation = -62`, the correct `severityBand` would be `"severe"`.
 - This tag is evidence, not a pending file. It does not authorize Shining handoff, protected post-life turns, or forcing one Guardian's punishment through another Guardian's id.
+
+6B. VALID — ASCENSION HANDOFF IS CLIENT-EXECUTED
+------------------------------------------------
+
+Ascension is a Chaos Sea lifecycle trigger. The GM confirms the explicit choice and writes the trigger only; the client performs the later realm handoff after validation. Do not manually switch `soul_state.currentRealm` to `Shining Abode` in the same response.
+
+Input prerequisites:
+- `soul_state.currentRealm = "Chaos Sea"`.
+- Enlightenment/Transcendence is at maximum.
+- `playerAction` explicitly chooses Ascension.
+- No `TriggerLifeEnd`, no Shining pending-bootstrap package handoff, no Mortal World state mutation.
+
+Correct accepted response:
+
+```json
+{
+  "AscensionTrigger": true,
+  "playerChoice": "Ascension",
+  "response": "Море Хаоса раскрывается сияющим разломом. Душа делает выбор вознестись; дальнейший переход в Сияющую Обитель выполнит клиент после принятия этого хода."
+}
+```
+
+Correct `game_state/control/ascension.json` after distribution:
+
+```json
+{
+  "AscensionTrigger": true,
+  "playerChoice": "Ascension"
+}
+```
+
+Forbidden in the same accepted response:
+- `TriggerLifeEnd`.
+- Manual `soul_state.currentRealm = "Shining Abode"`.
+- Shining faction/radiance/trade state mutations.
+- Mortal World `currentLocationData`, `UpdateNPCs`, `worldEventsLog`, or faction state.
 
 ==================================================
 7. VALID — DIRECT CHAOS SEA GACHA VS GUARDIAN-MEDIATED GACHA
@@ -3529,9 +3574,37 @@ Legacy `pendingNativeFactionDiscovery` closure:
 - Materialize the same hall/native faction/residents/projects/Radiance outcome as above.
 - Spend `pendingNativeFactionDiscovery.costFeathers` from `soul_state.json.inkFeathers`.
 - Preserve current `shining_abode_state.json.lightSparks`; the legacy queue already reserved `pendingNativeFactionDiscovery.costLightSparks`, so do not subtract Light Sparks a second time.
+- Legacy receipt cost audit is intentionally asymmetric: write `quotedCostFeathers = pendingNativeFactionDiscovery.costFeathers`, but write `quotedCostLightSparks = 0` because Light Sparks were reserved before GM closure.
 - Set `shining_abode_state.json.pendingNativeFactionDiscovery = null` in the accepted state.
 - Do not create or echo a duplicate `pending_shining_abode_actions.json` request for this legacy payload.
 - Do not use the legacy closure to edit unrelated existing Shining state; only the newly discovered hall/faction/residents/projects, Radiance, Soul Feather debit, pending slot, and receipt may change.
+
+Correct legacy `pendingNativeFactionDiscovery` receipt cost audit:
+
+```json
+{
+  "requestId": "legacy_native_discovery_118",
+  "actionType": "discover_native_faction",
+  "status": "accepted",
+  "quotedCostFeathers": 25,
+  "quotedCostLightSparks": 0,
+  "hallId": "hall_legacy_radiant_118",
+  "resolvedFactionId": "shine_faction_legacy_radiant_118",
+  "selectedCardIds": [],
+  "newResidentIds": [
+    "res_legacy_radiant_118_a",
+    "res_legacy_radiant_118_b"
+  ],
+  "seededProjectIds": [
+    "shine_project_legacy_radiant_118_memory",
+    "shine_project_legacy_radiant_118_passage"
+  ],
+  "generatedDraftVersion": 0,
+  "resolvedAtTurn": 118,
+  "resolvedAtUtc": "2026-04-24T13:04:00Z",
+  "reason": "legacy pendingNativeFactionDiscovery closed; Light Sparks were pre-reserved"
+}
+```
 
 Correct `discover_native_faction` receipt fragment:
 
