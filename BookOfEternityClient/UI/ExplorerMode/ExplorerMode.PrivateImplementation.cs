@@ -155,14 +155,8 @@ public partial class ExplorerMode
         string.Equals(command, "/море_хаоса", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/gacha", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/гача", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/guardians", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/хранители", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/abodes", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/обители", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/abode_offering", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/подношение_обители", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/guardian_projects", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/проекты_хранителей", StringComparison.OrdinalIgnoreCase);
+        string.Equals(command, "/обители", StringComparison.OrdinalIgnoreCase);
 
     // Commands ONLY available in Mortal Life
     private readonly Dictionary<string, Func<Task>> _mortalOnlyCommands;
