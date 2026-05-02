@@ -19,7 +19,8 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             ReturnCycleId = "shining_return_7",
             ProjectedGachaBonusSteps = 2,
             QuotedCostFeathers = 20,
-            QuotedCostLightSparks = 0
+            QuotedCostLightSparks = 0,
+            CreatedAtTurn = 42
         };
 
         var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
@@ -29,6 +30,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal("copy input/turn_request.json.gachaBaseResult.baseRarity", GetString(receipt["baseRarity"]));
         Assert.Contains("+2 rarity step", GetString(receipt["finalRarity"]), StringComparison.Ordinal);
         Assert.Equal("shining_return_7", GetString(receipt["returnCycleId"]));
+        Assert.Equal(42, GetInt(receipt["resolvedAtTurn"]));
     }
 
     [Fact]
@@ -144,6 +146,8 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             ["factionSummary"] = "WRONG root summary",
             ["favoredProjectArchetype"] = "WRONG_root_archetype",
             ["patronEffectFamily"] = "WRONG_root_family",
+            ["createdAtTurn"] = 20,
+            ["createdAtUtc"] = "2026-05-02T00:00:00Z",
             ["charter"] = new JsonObject
             {
                 ["factionName"] = "Орден Глубокого Согласия",
@@ -167,6 +171,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal("Nested charter summary must be copied exactly.", GetString(charter["summary"]));
         Assert.Equal(ShiningAbodeState.ProjectArchetypeRemembrance, GetString(charter["favoredArchetype"]));
         Assert.Equal(ShiningAbodeState.EffectFamilyLore, GetString(charter["patronEffectFamily"]));
+        Assert.Equal(20, GetInt(accepted["receipt"]!["resolvedAtTurn"]));
     }
 
     [Fact]
@@ -182,6 +187,8 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal(
             ShiningFactionRequestState.RequestStatusAccepted,
             GetString(scaffold["accepted"]!["receipt"]!["status"]));
+        Assert.Equal(20, GetInt(scaffold["accepted"]!["receipt"]!["resolvedAtTurn"]));
+        Assert.Equal(20, GetInt(scaffold["accepted"]!["residentHistory"]!["revealedAtTurn"]));
     }
 
     [Fact]
@@ -198,6 +205,8 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal(
             ShiningFactionRequestState.RequestStatusDepartedToNeutral,
             GetString(scaffold["departed_to_neutral"]!["receipt"]!["status"]));
+        Assert.Equal(20, GetInt(scaffold["departed_to_neutral"]!["receipt"]!["resolvedAtTurn"]));
+        Assert.Equal(20, GetInt(scaffold["departed_to_neutral"]!["residentHistory"]!["revealedAtTurn"]));
     }
 
     [Fact]
@@ -213,6 +222,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal(
             ShiningFactionRequestState.RequestStatusRefused,
             GetString(scaffold["refused"]!["receipt"]!["status"]));
+        Assert.Equal(20, GetInt(scaffold["refused"]!["receipt"]!["resolvedAtTurn"]));
     }
 
     [Theory]
@@ -233,6 +243,8 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         var history = scaffold["accepted"]!["history"]!.AsObject();
 
         Assert.Equal(expectedEventType, GetString(history["eventType"]));
+        Assert.Equal(20, GetInt(scaffold["accepted"]!["receipt"]!["resolvedAtTurn"]));
+        Assert.Equal(20, GetInt(history["turnNumber"]));
     }
 
     [Fact]
@@ -322,4 +334,6 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
     };
 
     private static string GetString(JsonNode? node) => node?.GetValue<string>() ?? string.Empty;
+
+    private static int GetInt(JsonNode? node) => node?.GetValue<int>() ?? 0;
 }

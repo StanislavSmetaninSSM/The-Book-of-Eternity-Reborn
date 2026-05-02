@@ -744,13 +744,13 @@ public partial class ExplorerMode
     private static JsonObject BuildClosureScaffoldCopyRules(string receiptSurface, string extraRule) => new()
     {
         ["receiptSurface"] = receiptSurface,
-        ["resolvedAtTurnRule"] = "Replace the example positive integer with the actual accepted turn number.",
+        ["resolvedAtTurnRule"] = "Use the pending request's createdAtTurn as the normal closing turn; do not add a future turn.",
         ["resolvedAtUtcRule"] = "Replace the example ISO-8601 timestamp with the actual UTC closure timestamp.",
         ["generatedIdRule"] = extraRule
     };
 
     private static int BuildExampleResolvedAtTurn(int createdAtTurn) =>
-        Math.Max(1, createdAtTurn + 1);
+        Math.Max(1, createdAtTurn);
 
     private static string BuildExampleResolvedAtUtc(string? createdAtUtc)
     {
