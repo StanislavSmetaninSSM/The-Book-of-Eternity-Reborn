@@ -566,7 +566,7 @@ public partial class ExplorerMode
         var finalRarityScaffold = request.ProjectedGachaBonusSteps > 0
             ? $"copy accepted receipt finalRarity; no more than +{request.ProjectedGachaBonusSteps} rarity step(s) above baseRarity"
             : "copy accepted receipt finalRarity; must equal baseRarity";
-        var exampleResolvedAtTurn = Math.Max(1, request.CreatedAtTurn + 1);
+        var exampleResolvedAtTurn = Math.Max(1, request.CreatedAtTurn);
         var exampleResolvedAtUtc = BuildPreviewResolvedAtUtc(request.CreatedAtUtc);
 
         var audit = new JsonObject
