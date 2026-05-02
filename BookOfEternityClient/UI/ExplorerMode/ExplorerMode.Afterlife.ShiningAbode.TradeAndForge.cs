@@ -982,6 +982,7 @@ public partial class ExplorerMode
             "  • accepted/ready: materialize exact `faction.tradeInventory` for this requestId/tradeCycleId.",
             "  • tradeInventory must include generatedAtUtc, generationTradeTier, generationRarityCeiling, serviceMultiplierSnapshot, merchantProfile and `items[]`.",
             "  • Each item requires unique slotId, priceInFeathers, soldOut boolean and nested relicData.",
+            "  • The JSON audit below gives a canonical `faction.tradeInventory` scaffold with every required slot/relic field.",
             "  • Close through `tradeInventoryReceipts[]` with requestId, factionId, tradeCycleId, status=ready, itemCount, soldOutCount, resolvedAtTurn/resolvedAtUtc.",
             "  • Cancel here leaves no pending file changes."
         };
@@ -1003,6 +1004,10 @@ public partial class ExplorerMode
         WriteJsonAuditPanel(
             "Ожидаемый каркас faction.tradeInventoryReceipts[]",
             BuildShiningTradeInventoryExpectedReceiptAuditNode(request),
+            Color.Cyan1);
+        WriteJsonAuditPanel(
+            "Ожидаемый каркас faction.tradeInventory",
+            BuildShiningTradeInventoryExpectedStateAuditNode(request),
             Color.Cyan1);
 
         var choice = Prompt(new SelectionPrompt<string>()
@@ -1034,6 +1039,81 @@ public partial class ExplorerMode
                 ["merchantProfile"] = request.MerchantProfile
             }
         };
+
+    private static JsonObject BuildShiningTradeInventoryExpectedStateAuditNode(ShiningTradeRequestState.PendingShiningTradeInventoryRequest request) =>
+        new()
+        {
+            ["stateSurface"] = "game_state/meta/shining_abode_state.json.factions[].tradeInventory",
+            ["receiptSurface"] = "game_state/meta/shining_abode_state.json.factions[].tradeInventoryReceipts[]",
+            ["requestId"] = request.RequestId,
+            ["factionId"] = request.FactionId,
+            ["tradeCycleId"] = request.TradeCycleId,
+            ["expectedTradeInventory"] = new JsonObject
+            {
+                ["tradeCycleId"] = request.TradeCycleId,
+                ["generatedAtUtc"] = BuildPreviewResolvedAtUtc(request.CreatedAtUtc),
+                ["generationTradeTier"] = request.DerivedTradeTier,
+                ["generationRarityCeiling"] = request.DerivedRarityCeiling,
+                ["serviceMultiplierSnapshot"] = request.DerivedServiceMultiplier,
+                ["merchantProfile"] = request.MerchantProfile,
+                ["slotCount"] = request.DerivedTradeSlotCount,
+                ["items"] = BuildShiningTradeInventoryExpectedItemsAuditArray(request)
+            },
+            ["rules"] = new JsonArray(
+                "items.length must equal derivedTradeSlotCount",
+                "each slotId and relicData.relicId must be unique",
+                "priceInFeathers must be a positive integer",
+                "relicData.quality/rarity must not exceed generationRarityCeiling",
+                "soldOut starts false for every freshly generated slot")
+        };
+
+    private static JsonArray BuildShiningTradeInventoryExpectedItemsAuditArray(ShiningTradeRequestState.PendingShiningTradeInventoryRequest request)
+    {
+        var items = new JsonArray();
+        var count = Math.Max(0, request.DerivedTradeSlotCount);
+        var rarity = BuildShiningTradeInventoryExampleRarity(request.DerivedRarityCeiling);
+        var idStem = BuildPreviewExampleId("shine_trade", request.RequestId);
+        for (var i = 0; i < count; i++)
+        {
+            var index = i + 1;
+            items.Add(new JsonObject
+            {
+                ["slotId"] = $"{idStem}_slot_{index:00}",
+                ["priceInFeathers"] = 20 + i * 5,
+                ["soldOut"] = false,
+                ["relicData"] = new JsonObject
+                {
+                    ["relicId"] = $"{idStem}_relic_{index:00}",
+                    ["name"] = $"Generated Shining Trade Relic {index}",
+                    ["quality"] = rarity,
+                    ["rarity"] = rarity,
+                    ["formTag"] = "shining_trade_relic",
+                    ["domainTag"] = "shining_abode",
+                    ["description"] = "GM-authored Soul Relic generated for this exact Shining trade inventory slot.",
+                    ["source"] = "shining_trade_inventory",
+                    ["sourceFactionId"] = request.FactionId,
+                    ["sourceTradeCycleId"] = request.TradeCycleId
+                }
+            });
+        }
+
+        return items;
+    }
+
+    private static string BuildShiningTradeInventoryExampleRarity(string? ceiling)
+    {
+        var normalized = (ceiling ?? string.Empty).Trim().ToLowerInvariant();
+        return normalized switch
+        {
+            ShiningAbodeState.RarityCommon => ShiningAbodeState.RarityCommon,
+            ShiningAbodeState.RarityUncommon => ShiningAbodeState.RarityCommon,
+            ShiningAbodeState.RarityRare => ShiningAbodeState.RarityUncommon,
+            ShiningAbodeState.RarityEpic => ShiningAbodeState.RarityRare,
+            ShiningAbodeState.RarityLegendary => ShiningAbodeState.RarityEpic,
+            ShiningAbodeState.RarityRadiant => ShiningAbodeState.RarityLegendary,
+            _ => ShiningAbodeState.RarityCommon
+        };
+    }
 
     private static JsonObject BuildShiningTradeOfferAuditNode(
         ShiningTradeService.ShiningTradeOffer offer,

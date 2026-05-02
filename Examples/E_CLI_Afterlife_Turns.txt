@@ -866,6 +866,7 @@ Why this is valid:
 - The Shining state file is the canonical place for halls, gates, radiance, factions, and trade receipts.
 - The pending core action is closed through `coreActionReceipts[]`.
 - The pending trade request is closed through faction `tradeInventory` plus faction `tradeInventoryReceipts[]`.
+- If the player preview shows `expectedTradeInventory`, treat it as an audit scaffold for the canonical faction `tradeInventory`: keep `generationTradeTier`, `generationRarityCeiling`, `serviceMultiplierSnapshot`, slot count, `priceInFeathers`, and nested `relicData` aligned with the pending request.
 - Every Shining trade `tradeInventory.items[].relicData.relicId` is unique in the inventory and absent from the player's existing `soulRelics.equipped[]` / `soulRelics.stored[]`; these ids become new Soul Relic identities on local purchase.
 - Shining faction progress is not written through Mortal World faction fields.
 - The resident is handled through resident afterlife state, not NPC state.
@@ -3478,7 +3479,7 @@ Canonical Abode resident disposition/devotion/migration tables:
 
 Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. `refused` and `withdrawn` outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged. Supported receipt statuses are only `accepted`, `refused`, and `withdrawn`.
 
-The client preview may show a `projectedStateFragment` containing sanitized `beforeFullShiningRoot`, `afterFullShiningRoot`, and focused `gates`/faction/project fragments. Treat it as an audit aid only: it is not a GM output file and not a new response field. The accepted response still persists the full canonical `game_state/meta/shining_abode_state.json` root plus `coreActionReceipts[]`, and hidden blessing `effectPayload` keys must not be copied from previews.
+The client preview may show a `projectedStateFragment` containing sanitized `beforeFullShiningRoot`, `afterFullShiningRoot`, and focused `gates`/faction/project fragments. Forge previews can also show sanitized `beforeFullSoulRoot`/`afterFullSoulRoot`; Shining gacha previews can show `gachaAccounting`, `expectedGachaHistoryEntryShape`, and `oneNewRelicEvidence`. Treat these as audit aids only: they are not GM output files and not new response fields. The accepted response still persists the full canonical `game_state/meta/shining_abode_state.json` root, `game_state/meta/soul_state.json` when listed in `changedSurfaces`, plus `coreActionReceipts[]`; hidden blessing `effectPayload` keys must not be copied from previews.
 
 If the same accepted turn also closes a Shining political/trade/resident pending contract, the final state is the composition of all accepted closures. For example, accepted faction founding first materializes the hall/faction and supporter resident alignment, then `open_gates` builds its draft from that updated Shining state; both `factionFoundingReceipts[]` and `coreActionReceipts[]` must be present.
 

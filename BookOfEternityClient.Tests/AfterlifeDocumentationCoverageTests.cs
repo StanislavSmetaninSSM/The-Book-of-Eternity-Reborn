@@ -1230,6 +1230,11 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("projectedStateFragment", doc, StringComparison.Ordinal);
             Assert.Contains("beforeFullShiningRoot", doc, StringComparison.Ordinal);
             Assert.Contains("afterFullShiningRoot", doc, StringComparison.Ordinal);
+            Assert.Contains("beforeFullSoulRoot", doc, StringComparison.Ordinal);
+            Assert.Contains("afterFullSoulRoot", doc, StringComparison.Ordinal);
+            Assert.Contains("gachaAccounting", doc, StringComparison.Ordinal);
+            Assert.Contains("expectedGachaHistoryEntryShape", doc, StringComparison.Ordinal);
+            Assert.Contains("oneNewRelicEvidence", doc, StringComparison.Ordinal);
             Assert.Contains("audit", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("not", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("output file", doc, StringComparison.OrdinalIgnoreCase);
