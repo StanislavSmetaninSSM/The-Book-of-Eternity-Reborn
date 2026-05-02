@@ -1031,6 +1031,46 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
+    public async Task ValidateLeadershipTransitionRequestAgainstCurrentStateAsync_VacantPeacefulSuccession_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
+            faction["leadership"] = new JsonObject
+            {
+                ["headActorType"] = "",
+                ["headActorId"] = "",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateVacant
+            };
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            var error = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                IncumbentHeadActorType = "",
+                IncumbentHeadActorId = "",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypePlayerSoul,
+                CandidateHeadActorId = ShiningAbodeState.HeadActorTypePlayerSoul
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("vacant", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateRealignmentRequestAgainstCurrentStateAsync_ForeignLiveResidentRequest_FailsEarly()
     {
         var root = CreateTempRoot();

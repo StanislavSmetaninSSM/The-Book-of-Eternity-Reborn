@@ -423,6 +423,8 @@ Recommended request layer:
 - `peaceful_succession`
 - `revolt`
 
+Все эти режимы требуют текущего non-vacant incumbent head. Если фракция уже имеет `leadershipState = vacant` и пустые `headActorType/headActorId`, не создавай `pending_shining_faction_leadership_transitions.json`: явный vacancy-fill режим пока не реализован.
+
 ### 7.2. `abdication`
 
 Глава добровольно уходит.

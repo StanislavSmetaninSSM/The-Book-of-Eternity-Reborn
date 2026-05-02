@@ -2095,7 +2095,7 @@ If a leadership transition names `candidateHeadActorType = "radiant_actor"` or l
 
 active-guardian auto faction rule: if the faction is the active Guardian's auto faction (`factionId = faction_{slug(activeGuardianId)}` and/or `hallId = hall_{slug(activeGuardianId)}`), `candidateHeadActorType=guardian` is valid only when `candidateHeadActorId` equals the same `activeGuardianId`. Do not transfer this auto faction to a different Guardian through `pending_shining_faction_leadership_transitions.json`; the canonical normalizer keeps the active Guardian as that faction's head.
 
-Vacant leadership rule: `abdication` requires an actual current incumbent. If the faction already has `leadershipState = "vacant"` with empty `headActorType/headActorId`, do not create or close an abdication contract for it; preserve the state for a future explicit vacancy-fill feature instead.
+Vacant leadership rule: every `pending_shining_faction_leadership_transitions.json` request requires an actual current non-vacant incumbent. If the faction already has `leadershipState = "vacant"` with empty `headActorType/headActorId`, do not create or close `abdication`, `peaceful_succession`, or `revolt` for it; preserve the state for a future explicit vacancy-fill feature instead.
 
 Canonical leadership transition matrix:
 

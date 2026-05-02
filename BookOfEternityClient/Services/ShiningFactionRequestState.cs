@@ -474,19 +474,18 @@ internal static class ShiningFactionRequestState
             return "Указанная factionId не найдена в текущем Shining state.";
 
         var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
+        var leadershipState = GetNodeString(leadership["leadershipState"]);
+        if (string.Equals(leadershipState, ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
+        {
+            return "Leadership transition недоступен для faction с vacant leadership: нет действующего incumbent head; vacancy filling пока не реализован.";
+        }
+
         var actualIncumbentType = GetNodeString(leadership["headActorType"]) ?? string.Empty;
         var actualIncumbentId = GetNodeString(leadership["headActorId"]) ?? string.Empty;
         if (!string.Equals(actualIncumbentType, request.IncumbentHeadActorType, StringComparison.OrdinalIgnoreCase) ||
             !string.Equals(actualIncumbentId, request.IncumbentHeadActorId, StringComparison.OrdinalIgnoreCase))
         {
             return "Leadership request должен ссылаться на текущего incumbent head из faction.leadership.";
-        }
-
-        var leadershipState = GetNodeString(leadership["leadershipState"]);
-        if (string.Equals(request.TransitionMode, TransitionModeAbdication, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(leadershipState, ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
-        {
-            return "Abdication недопустим для faction с уже vacant leadership: нет действующего incumbent head, который может отречься.";
         }
 
         var incumbentLockError = await ValidateLeadershipActorPendingLocksAsync(
