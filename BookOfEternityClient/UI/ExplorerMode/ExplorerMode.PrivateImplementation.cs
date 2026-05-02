@@ -136,17 +136,22 @@ public partial class ExplorerMode
     private readonly Dictionary<string, Func<Task>> _chaosSeaOnlyCommands;
 
     private bool IsOrdinaryAfterlifeInteractionState =>
-        _stateManager.CurrentState.IsInAfterlifeRealm &&
-        !_stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
+        _stateManager.CurrentState.IsInChaosSea ||
+        _stateManager.CurrentState.IsInShiningAbode;
 
     private bool EnsureOrdinaryAfterlifeInteractionAvailable(string title)
     {
-        if (!_stateManager.CurrentState.IsInShiningAbodePendingBootstrap)
+        if (!_stateManager.CurrentState.IsInAfterlifeRealm)
             return true;
 
-        ShowEmptyPanel(
-            title,
-            "Сейчас активен handoff к следующей смертной жизни. Обычные действия Моря Хаоса, Хранителей и Сияющей Обители недоступны до завершения bootstrap.");
+        if (IsOrdinaryAfterlifeInteractionState)
+            return true;
+
+        var message = _stateManager.CurrentState.HasInvalidShiningAbodeBootstrapPackage
+            ? "Сияющая Обитель содержит повреждённый preparedIncarnationPackage. Обычные действия Моря Хаоса, Хранителей и Сияющей Обители недоступны до ремонта или очистки package fault."
+            : "Сейчас активен handoff к следующей смертной жизни. Обычные действия Моря Хаоса, Хранителей и Сияющей Обители недоступны до завершения bootstrap.";
+
+        ShowEmptyPanel(title, message);
         return false;
     }
 

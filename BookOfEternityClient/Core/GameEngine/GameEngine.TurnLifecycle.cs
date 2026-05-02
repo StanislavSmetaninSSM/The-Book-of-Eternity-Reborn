@@ -661,8 +661,8 @@ public partial class GameEngine
             GameMode = _stateManager.Settings.AllowHistoryManipulation ? "debug" : "normal",
             SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)
         };
-        await AttachPendingDiceAndGachaAsync(request);
         request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
+        await AttachPendingDiceAndGachaAsync(request);
         var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
 
         // Attach computed characteristics for GM reference

@@ -205,6 +205,14 @@ public partial class ExplorerMode
 
         if (_universalCommands.TryGetValue(cmd, out var handler))
         {
+            if (RequiresResolvedRealmForUniversalCommand(cmd) && !hasResolvedRealm)
+            {
+                MarkupLine("[yellow]⚠️ Эта команда требует определённого realm, но soul_state.currentRealm не определён.[/]");
+                MarkupLine("[dim]Восстановите game_state/meta/soul_state.json.currentRealm перед командами, которые могут менять состояние души.[/]");
+                WaitForKey();
+                return "";
+            }
+
             await SafeExecute(handler, cmd);
             if (string.IsNullOrEmpty(_pendingGmAction))
                 await DiscardPendingLocalTurnRollbackSnapshotAsync();
@@ -273,4 +281,10 @@ public partial class ExplorerMode
 
     public bool IsCommand(string input)
         => input.TrimStart().StartsWith('/');
+
+    private static bool RequiresResolvedRealmForUniversalCommand(string command) =>
+        string.Equals(command, "/feathers", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/перья", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/soul_relics", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/реликвии", StringComparison.OrdinalIgnoreCase);
 }

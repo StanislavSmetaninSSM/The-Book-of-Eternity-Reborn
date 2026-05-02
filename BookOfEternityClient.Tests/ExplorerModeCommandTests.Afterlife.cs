@@ -7470,6 +7470,86 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.True(File.Exists(_fs.ResolvePath(PendingTurnStateService.PendingDiceStatePath)));
     }
 
+    [Fact]
+    public async Task TryProcessCommand_InkFeathers_UnresolvedRealm_DoesNotMutateSoulOrDice()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 50 }
+        });
+        var before = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        _console.QueueAnySelection("🔮 Открыть Судьбу (−5 🪶)");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/перья"));
+
+        Assert.Null(ex);
+        Assert.Equal(before, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.False(File.Exists(_fs.ResolvePath(PendingTurnStateService.PendingDiceStatePath)));
+        Assert.Empty(_console.SelectionChoicesHistory);
+        Assert.Contains(_console.MarkupLines, line => line.Contains("currentRealm не определён", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SoulRelics_UnresolvedRealm_DoesNotNormalizeLegacyFlatRelics()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new JsonObject
+        {
+            ["soulName"] = "Тестовая Душа",
+            ["currentRealm"] = "",
+            ["currentIncarnation"] = 1,
+            ["inkFeathers"] = new JsonObject { ["current"] = 3 },
+            ["soulRelics"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["relicId"] = "relic_flat_001",
+                    ["name"] = "Плоская Реликвия",
+                    ["gameplayStatus"] = new JsonObject { ["equipped"] = false }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/реликвии"));
+
+        Assert.Null(ex);
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+        Assert.IsType<JsonArray>(soulRoot["soulRelics"]);
+        Assert.Contains(_console.MarkupLines, line => line.Contains("currentRealm не определён", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_InkFeathers_InvalidShiningPackage_BlocksOrdinaryAfterlifeActions()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 3,
+            inkFeathers = new { current = 50 }
+        });
+        await WriteJsonAsync(ShiningAbodeState.StatePath, new JsonObject
+        {
+            ["availability"] = ShiningAbodeState.AvailabilityActive,
+            ["preparedIncarnationPackage"] = new JsonObject
+            {
+                ["selectedCardIds"] = new JsonArray()
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/перья"));
+
+        Assert.Null(ex);
+        Assert.Empty(_console.SelectionChoicesHistory);
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("package fault", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
     private async Task SeedAbodeOfferingRelicAliasStateAsync(string rarityField, string rarity)
     {
         var relic = new JsonObject

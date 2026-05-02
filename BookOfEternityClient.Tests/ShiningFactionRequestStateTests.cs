@@ -489,6 +489,65 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_SealedShiningPreservesNonEmptyAndMalformedPoliticalRequests()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            {
+                RequestId = "founding_req_sealed",
+                ProposedFactionId = "faction_dawn",
+                ProposedHallId = "hall_dawn",
+                ProposedHallName = "Зал Рассвета",
+                ProposedHallDescription = "Светлый зал",
+                ProposedHallServiceTags = { "social" },
+                Charter = new ShiningFactionRequestState.FactionCharterPayload
+                {
+                    FactionName = "Хор Рассвета",
+                    FavoredArchetype = "accord",
+                    PatronEffectFamily = "social",
+                    Summary = "Поют утренний свет."
+                }
+            });
+            await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                RequestId = "leadership_req_sealed",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeGuardian,
+                IncumbentHeadActorId = "guardian_old",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypePlayerSoul,
+                CandidateHeadActorId = ShiningAbodeState.HeadActorTypePlayerSoul
+            });
+
+            await ShiningFactionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.True(fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
+            Assert.True(fs.FileExists(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath));
+            Assert.Single(await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs));
+            Assert.Single(await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(fs));
+
+            await fs.WriteFileAtomicAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath, "{ malformed");
+            await ShiningFactionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.Equal("{ malformed", await fs.ReadFileAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_PendingBootstrapPreservesPoliticalRequestsAndShowsBlockingReminder()
     {
         var root = CreateTempRoot();

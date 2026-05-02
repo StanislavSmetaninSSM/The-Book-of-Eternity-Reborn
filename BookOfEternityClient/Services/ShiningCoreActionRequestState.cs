@@ -367,7 +367,9 @@ internal static class ShiningCoreActionRequestState
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
         {
-            ClearRequests(fs);
+            var nonActiveRequestState = await ReadRequestsStateAsync(fs);
+            if (!nonActiveRequestState.IsMalformed && nonActiveRequestState.Requests.Count == 0)
+                ClearRequests(fs);
             return;
         }
         if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)

@@ -123,6 +123,26 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task ProcessPlayerTurn_UnresolvedRealm_DoesNotCreatePendingDiceState()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 50 }
+        });
+        var engine = CreateGameEngine();
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Тестовый ход", null));
+
+        Assert.Contains("currentRealm", ex.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(PendingTurnStateService.PendingDiceStatePath));
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+    }
+
+    [Fact]
     public async Task CollectIncarnationBlockersAsync_SystemGuardianAttractionBlocksIncarnation()
     {
         await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new
