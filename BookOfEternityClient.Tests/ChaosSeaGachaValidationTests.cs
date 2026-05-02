@@ -153,6 +153,39 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaMutatesExistingRelic_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5);
+        currentSoul["soulRelics"]!["stored"]!.AsArray()[0]!.AsObject()["name"] = "Подменённая реликвия";
+        AddStoredSoulRelic(currentSoul, "relic_new");
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("input/turn_request.json", CreateDirectGachaTurnRequest());
+        await WritePendingTurnSnapshotAsync(preTurnSoul);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "direct_chaos_gacha_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaMutatesUnrelatedSoulField_Fails()
+    {
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 10, enlightenmentExperience: 0);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5, enlightenmentExperience: 10);
+        AddStoredSoulRelic(currentSoul, "relic_new");
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("input/turn_request.json", CreateDirectGachaTurnRequest());
+        await WritePendingTurnSnapshotAsync(preTurnSoul);
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "direct_chaos_gacha_unexpected_soul_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_AbodeResidentRelicGrantWithoutCompanionEcho_Fails()
     {
         var preTurnSoul = CreateSoulRoot();

@@ -1509,7 +1509,9 @@ Direct Chaos Sea `/gacha`:
 - The client already spent the Ink Feathers before the GM turn; preserve the post-spend balance and do not write `metaStateUpdates.inkFeatherChanges.spend`.
 - `turn_request.json.playerAction` must contain the exact prepaid cost phrase `<N> Чернильных Перьев` or `<N> Ink Feathers`; the validator extracts direct-gacha cost from that phrase.
 - Must materialize exactly one new Soul Relic in Soul/meta state.
+- Must read the full `turn_request.json.gachaBaseResult` audit (`diceUsed`, `baseScore`, `baseRarity`, `formula`) before choosing the relic.
 - Final rarity must equal `turn_request.json.gachaBaseResult.baseRarity` exactly. Direct `/gacha` has no upgrade or downgrade path.
+- No other `soul_state.json` changes are allowed: existing Soul Relics keep their exact JSON, unrelated soul fields keep their pre-turn values, and the only allowed diff is the already-paid feather balance plus one appended relic.
 
 Correct direct `/gacha` response fragment:
 
@@ -2092,6 +2094,8 @@ Correct faction patch:
 If a leadership transition names `candidateHeadActorType = "radiant_actor"` or leaves a faction with `leadership.headActorType = "radiant_actor"`, the same accepted state must maintain the canonical root `shiningPoliticalActors[]`. The actor referenced by `leadership.headActorId` must exist as `shiningPoliticalActors[].actorId`, use `currentFactionId = <factionId>` and `politicalStatus = "head"` for the current head, and move the replaced radiant head to `politicalStatus = "former_head"` in the same accepted state. Supported `politicalStatus` values are `head`, `former_head`, `claimant`, `elder`, and `retired`; do not invent local political status strings.
 
 active-guardian auto faction rule: if the faction is the active Guardian's auto faction (`factionId = faction_{slug(activeGuardianId)}` and/or `hallId = hall_{slug(activeGuardianId)}`), `candidateHeadActorType=guardian` is valid only when `candidateHeadActorId` equals the same `activeGuardianId`. Do not transfer this auto faction to a different Guardian through `pending_shining_faction_leadership_transitions.json`; the canonical normalizer keeps the active Guardian as that faction's head.
+
+Vacant leadership rule: `abdication` requires an actual current incumbent. If the faction already has `leadershipState = "vacant"` with empty `headActorType/headActorId`, do not create or close an abdication contract for it; preserve the state for a future explicit vacancy-fill feature instead.
 
 Canonical leadership transition matrix:
 

@@ -482,6 +482,13 @@ internal static class ShiningFactionRequestState
             return "Leadership request должен ссылаться на текущего incumbent head из faction.leadership.";
         }
 
+        var leadershipState = GetNodeString(leadership["leadershipState"]);
+        if (string.Equals(request.TransitionMode, TransitionModeAbdication, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(leadershipState, ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
+        {
+            return "Abdication недопустим для faction с уже vacant leadership: нет действующего incumbent head, который может отречься.";
+        }
+
         var incumbentLockError = await ValidateLeadershipActorPendingLocksAsync(
             fs,
             "Incumbent",
@@ -492,7 +499,7 @@ internal static class ShiningFactionRequestState
             return incumbentLockError;
 
         if (string.Equals(request.TransitionMode, TransitionModeRevolt, StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateContested, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(leadershipState, ShiningAbodeState.LeadershipStateContested, StringComparison.OrdinalIgnoreCase))
         {
             return "Revolt допустим только для faction в состоянии contested.";
         }

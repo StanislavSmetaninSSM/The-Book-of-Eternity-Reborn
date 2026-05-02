@@ -1606,6 +1606,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("1 Чернильных Перьев", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("валидатор извлекает", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("diceUsed", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("guardian modifiers", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("finalRarity должен точно совпасть с baseRarity", renderedText, StringComparison.OrdinalIgnoreCase);

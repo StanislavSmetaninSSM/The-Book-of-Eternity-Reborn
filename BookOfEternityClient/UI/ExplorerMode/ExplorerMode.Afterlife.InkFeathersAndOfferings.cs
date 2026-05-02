@@ -2331,6 +2331,10 @@ public partial class ExplorerMode
             ? await _pendingTurnState.GetOrCreateAsync()
             : null;
         var gacha = pendingState?.GachaBaseResult ?? new GachaResult();
+        var diceUsed = gacha.DiceUsed ?? Array.Empty<int>();
+        var diceUsedSummary = diceUsed.Length == 0
+            ? "[]"
+            : $"[{string.Join(", ", diceUsed)}]";
         var baseRarity = string.IsNullOrWhiteSpace(gacha.BaseRarity) ? "Common" : gacha.BaseRarity;
         var rarityColor = GetRarityColor(baseRarity);
         var mechanicsLines = new List<string>
@@ -2341,6 +2345,7 @@ public partial class ExplorerMode
             "Эта фраза обязательна: валидатор извлекает из неё prepaid cost direct /gacha.",
             "",
             "[bold]Базовый результат текущего хода:[/]",
+            $"  • diceUsed: [dim]{Markup.Escape(diceUsedSummary)}[/]",
             $"  • baseScore: [cyan]{gacha.BaseScore}[/]",
             $"  • baseRarity: [{rarityColor}]{Markup.Escape(DescribeRarityLabel(baseRarity))}[/]",
             $"  • formula: [dim]{Markup.Escape(gacha.Formula ?? "client-computed gacha base (range 4-80)")}[/]",
@@ -2372,6 +2377,7 @@ public partial class ExplorerMode
                 ("costInFeathers", inputCost),
                 ("currentFeathers", feathers),
                 ("projectedFeathers", feathers - inputCost),
+                ("diceUsed", diceUsed),
                 ("baseScore", gacha.BaseScore),
                 ("baseRarity", baseRarity),
                 ("formula", gacha.Formula ?? "client-computed gacha base (range 4-80)"),
