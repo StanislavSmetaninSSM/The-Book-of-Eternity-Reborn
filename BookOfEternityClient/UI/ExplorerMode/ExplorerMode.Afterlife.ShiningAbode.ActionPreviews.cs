@@ -562,10 +562,10 @@ public partial class ExplorerMode
         var exampleRelicName = string.IsNullOrWhiteSpace(request.RelicName)
             ? "Generated Shining Soul Relic"
             : request.RelicName;
-        var exampleBaseRarity = ShiningAbodeState.RarityRare;
-        var exampleFinalRarity = request.ProjectedGachaBonusSteps > 0
-            ? ShiningAbodeState.RarityEpic
-            : ShiningAbodeState.RarityRare;
+        var baseRarityScaffold = "copy input/turn_request.json.gachaBaseResult.baseRarity";
+        var finalRarityScaffold = request.ProjectedGachaBonusSteps > 0
+            ? $"copy accepted receipt finalRarity; no more than +{request.ProjectedGachaBonusSteps} rarity step(s) above baseRarity"
+            : "copy accepted receipt finalRarity; must equal baseRarity";
         var exampleResolvedAtTurn = Math.Max(1, request.CreatedAtTurn + 1);
         var exampleResolvedAtUtc = BuildPreviewResolvedAtUtc(request.CreatedAtUtc);
 
@@ -585,10 +585,8 @@ public partial class ExplorerMode
                 ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
                 ["relicId"] = exampleRelicId,
                 ["relicName"] = exampleRelicName,
-                ["baseRarity"] = "copy input/turn_request.json.gachaBaseResult.baseRarity",
-                ["finalRarity"] = request.ProjectedGachaBonusSteps > 0
-                    ? $"baseRarity or higher by <= {request.ProjectedGachaBonusSteps} step(s)"
-                    : "same as baseRarity",
+                ["baseRarity"] = baseRarityScaffold,
+                ["finalRarity"] = finalRarityScaffold,
                 ["returnCycleId"] = request.ReturnCycleId,
                 ["resolvedAtTurn"] = exampleResolvedAtTurn,
                 ["resolvedAtUtc"] = exampleResolvedAtUtc
@@ -612,8 +610,8 @@ public partial class ExplorerMode
                 request.RequestId,
                 exampleRelicId,
                 exampleRelicName,
-                exampleBaseRarity,
-                exampleFinalRarity,
+                baseRarityScaffold,
+                finalRarityScaffold,
                 exampleResolvedAtTurn,
                 exampleResolvedAtUtc,
                 out var cost,

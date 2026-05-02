@@ -70,6 +70,9 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("BuildShiningCoreExpectedReceiptAuditNode(context, request)", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("BuildShiningCoreProjectedStateFragment", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("projectedStateFragment", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("copy accepted receipt finalRarity", actionPreviewSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("exampleBaseRarity = ShiningAbodeState.RarityRare", actionPreviewSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("exampleFinalRarity", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("beforeFullShiningRoot", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("afterFullShiningRoot", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("beforeFullSoulRoot", actionPreviewSource, StringComparison.Ordinal);
