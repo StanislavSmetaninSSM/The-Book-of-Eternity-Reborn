@@ -818,9 +818,6 @@ public partial class ExplorerMode
             var historyEntryId = BuildExampleGeneratedId("resident_realignment_history", GetNodeString(request["requestId"]));
             var resolvedAtTurn = BuildExampleResolvedAtTurn(GetNodeInt(request["createdAtTurn"]));
             var resolvedAtUtc = BuildExampleResolvedAtUtc(GetNodeString(request["createdAtUtc"]));
-            var acceptedStatus = string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase)
-                ? ShiningFactionRequestState.RequestStatusDepartedToNeutral
-                : ShiningFactionRequestState.RequestStatusAccepted;
 
             JsonObject BuildNonAcceptedRealignmentVariant(string status) => new()
             {
@@ -842,43 +839,58 @@ public partial class ExplorerMode
                 }
             };
 
-            return new JsonObject
+            JsonObject BuildStateChangingRealignmentVariant(string status) => new()
+            {
+                ["stateSurface"] = "guardian_abode_residents.json resident faction fields + shining_abode_state.json.factionRealignmentReceipts[]",
+                ["receipt"] = new JsonObject
+                {
+                    ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+                    ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
+                    ["residentName"] = GetNodeString(request["residentName"]) ?? string.Empty,
+                    ["sourceFactionId"] = GetNodeString(request["sourceFactionId"]) ?? string.Empty,
+                    ["targetFactionId"] = GetNodeString(request["targetFactionId"]) ?? string.Empty,
+                    ["realignmentMode"] = realignmentMode,
+                    ["quotedCostFeathers"] = 0,
+                    ["quotedCostLightSparks"] = 0,
+                    ["status"] = status,
+                    ["residentHistoryEntryId"] = historyEntryId,
+                    ["resolvedAtTurn"] = resolvedAtTurn,
+                    ["resolvedAtUtc"] = resolvedAtUtc,
+                    ["reason"] = "canonical resident realignment outcome"
+                },
+                ["residentHistory"] = new JsonObject
+                {
+                    ["entryId"] = historyEntryId,
+                    ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
+                    ["title"] = "player-facing realignment title",
+                    ["summary"] = "canonical resident history summary for transfer/departure",
+                    ["revealedAtTurn"] = resolvedAtTurn,
+                    ["revealedAtUtc"] = resolvedAtUtc
+                }
+            };
+
+            var result = new JsonObject
             {
                 ["copyRules"] = BuildClosureScaffoldCopyRules(
                     "factionRealignmentReceipts[]",
-                    "Use accepted/departed_to_neutral only for state-changing outcomes; refused/withdrawn must leave resident binding unchanged."),
-                ["accepted"] = new JsonObject
-                {
-                    ["stateSurface"] = "guardian_abode_residents.json resident faction fields + shining_abode_state.json.factionRealignmentReceipts[]",
-                    ["receipt"] = new JsonObject
-                    {
-                        ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
-                        ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
-                        ["residentName"] = GetNodeString(request["residentName"]) ?? string.Empty,
-                        ["sourceFactionId"] = GetNodeString(request["sourceFactionId"]) ?? string.Empty,
-                        ["targetFactionId"] = GetNodeString(request["targetFactionId"]) ?? string.Empty,
-                        ["realignmentMode"] = realignmentMode,
-                        ["quotedCostFeathers"] = 0,
-                        ["quotedCostLightSparks"] = 0,
-                        ["status"] = acceptedStatus,
-                        ["residentHistoryEntryId"] = historyEntryId,
-                        ["resolvedAtTurn"] = resolvedAtTurn,
-                        ["resolvedAtUtc"] = resolvedAtUtc,
-                        ["reason"] = "canonical resident realignment outcome"
-                    },
-                    ["residentHistory"] = new JsonObject
-                    {
-                        ["entryId"] = historyEntryId,
-                        ["residentId"] = GetNodeString(request["residentId"]) ?? string.Empty,
-                        ["title"] = "player-facing realignment title",
-                        ["summary"] = "canonical resident history summary for transfer/departure",
-                        ["revealedAtTurn"] = resolvedAtTurn,
-                        ["revealedAtUtc"] = resolvedAtUtc
-                    }
-                },
-                ["refused"] = BuildNonAcceptedRealignmentVariant(ShiningFactionRequestState.RequestStatusRefused),
-                ["withdrawn"] = BuildNonAcceptedRealignmentVariant(ShiningFactionRequestState.RequestStatusWithdrawn)
+                    "Only copy the variant legal for this request's realignmentMode: accepted_transfer => accepted, departure_to_neutral => departed_to_neutral, refused_transfer => refused; withdrawn is always non-mutating.")
             };
+
+            if (string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeRefusedTransfer, StringComparison.OrdinalIgnoreCase))
+            {
+                result["refused"] = BuildNonAcceptedRealignmentVariant(ShiningFactionRequestState.RequestStatusRefused);
+            }
+            else if (string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase))
+            {
+                result["departed_to_neutral"] = BuildStateChangingRealignmentVariant(ShiningFactionRequestState.RequestStatusDepartedToNeutral);
+            }
+            else
+            {
+                result["accepted"] = BuildStateChangingRealignmentVariant(ShiningFactionRequestState.RequestStatusAccepted);
+            }
+
+            result["withdrawn"] = BuildNonAcceptedRealignmentVariant(ShiningFactionRequestState.RequestStatusWithdrawn);
+            return result;
         }
 
         if (string.Equals(pendingPath, ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase))

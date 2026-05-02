@@ -169,6 +169,52 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal(ShiningAbodeState.EffectFamilyLore, GetString(charter["patronEffectFamily"]));
     }
 
+    [Fact]
+    public void RealignmentPreview_AcceptedTransferShowsOnlyAcceptedAndWithdrawnVariants()
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            CreateRealignmentRequest(ShiningFactionRequestState.RealignmentModeAcceptedTransfer));
+
+        Assert.True(scaffold.ContainsKey("accepted"));
+        Assert.False(scaffold.ContainsKey("refused"));
+        Assert.True(scaffold.ContainsKey("withdrawn"));
+        Assert.Equal(
+            ShiningFactionRequestState.RequestStatusAccepted,
+            GetString(scaffold["accepted"]!["receipt"]!["status"]));
+    }
+
+    [Fact]
+    public void RealignmentPreview_DepartureShowsOnlyDepartedAndWithdrawnVariants()
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            CreateRealignmentRequest(ShiningFactionRequestState.RealignmentModeDepartureToNeutral));
+
+        Assert.False(scaffold.ContainsKey("accepted"));
+        Assert.False(scaffold.ContainsKey("refused"));
+        Assert.True(scaffold.ContainsKey("departed_to_neutral"));
+        Assert.True(scaffold.ContainsKey("withdrawn"));
+        Assert.Equal(
+            ShiningFactionRequestState.RequestStatusDepartedToNeutral,
+            GetString(scaffold["departed_to_neutral"]!["receipt"]!["status"]));
+    }
+
+    [Fact]
+    public void RealignmentPreview_RefusedTransferShowsOnlyRefusedAndWithdrawnVariants()
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            CreateRealignmentRequest(ShiningFactionRequestState.RealignmentModeRefusedTransfer));
+
+        Assert.False(scaffold.ContainsKey("accepted"));
+        Assert.True(scaffold.ContainsKey("refused"));
+        Assert.True(scaffold.ContainsKey("withdrawn"));
+        Assert.Equal(
+            ShiningFactionRequestState.RequestStatusRefused,
+            GetString(scaffold["refused"]!["receipt"]!["status"]));
+    }
+
     [Theory]
     [InlineData(ShiningFactionRequestState.TransitionModePeacefulSuccession, "resident", "resident_new_head", "succeeded")]
     [InlineData(ShiningFactionRequestState.TransitionModeRevolt, "resident", "resident_rebel_head", "revolted")]
@@ -253,6 +299,24 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         ["candidateHeadActorType"] = candidateHeadActorType,
         ["candidateHeadActorId"] = candidateHeadActorId,
         ["supportingResidentIds"] = new JsonArray("resident_support_a", "resident_support_b", "resident_support_c"),
+        ["createdAtTurn"] = 20,
+        ["createdAtUtc"] = "2026-05-02T00:00:00Z"
+    };
+
+    private static JsonObject CreateRealignmentRequest(string realignmentMode) => new()
+    {
+        ["requestId"] = "realignment_preview",
+        ["residentId"] = "resident_mira",
+        ["residentName"] = "Мира",
+        ["sourceFactionId"] = "faction_old",
+        ["sourceFactionName"] = "Old Faction",
+        ["targetFactionId"] = string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase)
+            ? string.Empty
+            : "faction_new",
+        ["targetFactionName"] = string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase)
+            ? string.Empty
+            : "New Faction",
+        ["realignmentMode"] = realignmentMode,
         ["createdAtTurn"] = 20,
         ["createdAtUtc"] = "2026-05-02T00:00:00Z"
     };
