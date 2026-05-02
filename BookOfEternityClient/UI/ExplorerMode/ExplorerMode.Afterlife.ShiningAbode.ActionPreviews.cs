@@ -556,8 +556,8 @@ public partial class ExplorerMode
         ShiningContext context,
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
     {
-        var projectedShiningRoot = CloneJsonObjectForPreview(context.Root);
-        var projectedSoulRoot = CloneJsonObjectForPreview(context.SoulRoot);
+        var quotedShiningRoot = CloneJsonObjectForPreview(context.Root);
+        var quotedSoulRoot = CloneJsonObjectForPreview(context.SoulRoot);
         var exampleRelicId = BuildPreviewExampleId("generated_shining_relic", request.RequestId);
         var exampleRelicName = string.IsNullOrWhiteSpace(request.RelicName)
             ? "Generated Shining Soul Relic"
@@ -601,48 +601,57 @@ public partial class ExplorerMode
         };
 
         string? projectionError = null;
-        if (projectedShiningRoot != null && projectedSoulRoot != null &&
-            ShiningAbodeState.TryApplyRelicGachaAccounting(
-                projectedShiningRoot,
-                projectedSoulRoot,
+        if (quotedShiningRoot != null && quotedSoulRoot != null &&
+            ShiningAbodeState.TryQuoteRelicGachaPull(
+                quotedShiningRoot,
+                quotedSoulRoot,
                 context.ResidentRoot,
                 request.FactionId,
-                request.RequestId,
-                exampleRelicId,
-                exampleRelicName,
-                baseRarityScaffold,
-                finalRarityScaffold,
-                exampleResolvedAtTurn,
-                exampleResolvedAtUtc,
                 out var cost,
                 out var projectedBonusSteps,
+                out var returnCycleId,
                 out projectionError))
         {
-            audit["after"] = new JsonObject
-            {
-                ["gachaSystem"] = CloneShiningJsonForPlayerFacingAudit(projectedShiningRoot["gachaSystem"]),
-                ["inkFeathers"] = CurrentInkFeathersForPreview(projectedSoulRoot),
-                ["soulRelicCount"] = CountSoulRelicsForPreview(context.SoulRoot) + 1
-            };
+            var quotedGachaSystem = quotedShiningRoot["gachaSystem"];
+            var rawChargesPerReturn = GetNodeInt(quotedGachaSystem?["chargesPerReturn"]);
+            var chargesPerReturn = Math.Max(
+                0,
+                rawChargesPerReturn > 0
+                    ? rawChargesPerReturn
+                    : ShiningAbodeState.GetShiningGachaChargesPerReturn(GetNodeInt(quotedShiningRoot["radiance"]?["tier"])));
+            var chargesUsedBefore = Math.Clamp(GetNodeInt(quotedGachaSystem?["chargesUsedThisReturn"]), 0, chargesPerReturn);
+            var inkFeathersBefore = CurrentInkFeathersForPreview(context.SoulRoot);
+
             audit["accounting"] = new JsonObject
             {
                 ["costInFeathers"] = cost.Feathers,
                 ["costInLightSparks"] = cost.LightSparks,
                 ["projectedGachaBonusSteps"] = projectedBonusSteps,
-                ["chargesUsedThisReturnBefore"] = GetNodeInt(context.Root["gachaSystem"]?["chargesUsedThisReturn"]),
-                ["chargesUsedThisReturnAfter"] = GetNodeInt(projectedShiningRoot["gachaSystem"]?["chargesUsedThisReturn"]),
-                ["chargesPerReturn"] = GetNodeInt(projectedShiningRoot["gachaSystem"]?["chargesPerReturn"]),
+                ["chargesUsedThisReturnBefore"] = chargesUsedBefore,
+                ["chargesUsedThisReturnAfter"] = chargesUsedBefore + 1,
+                ["chargesPerReturn"] = chargesPerReturn,
                 ["returnCycleIdBefore"] = GetNodeString(context.Root["gachaSystem"]?["currentReturnCycleId"]) ?? string.Empty,
-                ["returnCycleIdAfter"] = GetNodeString(projectedShiningRoot["gachaSystem"]?["currentReturnCycleId"]) ?? string.Empty,
-                ["inkFeathersBefore"] = CurrentInkFeathersForPreview(context.SoulRoot),
-                ["inkFeathersAfter"] = CurrentInkFeathersForPreview(projectedSoulRoot)
+                ["returnCycleIdAfter"] = returnCycleId,
+                ["inkFeathersBefore"] = inkFeathersBefore,
+                ["inkFeathersAfter"] = Math.Max(0, inkFeathersBefore - cost.Feathers)
             };
-            audit["expectedGachaHistoryEntry"] = CloneShiningJsonForPlayerFacingAudit(
-                FindGachaHistoryEntryForPreview(projectedShiningRoot, request.RequestId));
+            audit["expectedGachaHistoryEntryShape"] = new JsonObject
+            {
+                ["requestId"] = request.RequestId,
+                ["factionId"] = request.FactionId,
+                ["returnCycleId"] = returnCycleId,
+                ["costInFeathers"] = cost.Feathers,
+                ["baseRarityRule"] = "copy accepted coreActionReceipts[].baseRarity; it must equal input/turn_request.json.gachaBaseResult.baseRarity and be a canonical rarity",
+                ["finalRarityRule"] = "copy accepted coreActionReceipts[].finalRarity; it must be canonical and within projectedGachaBonusSteps",
+                ["relicIdRule"] = "copy accepted coreActionReceipts[].relicId",
+                ["relicNameRule"] = "copy accepted coreActionReceipts[].relicName",
+                ["turnNumber"] = exampleResolvedAtTurn,
+                ["timestamp"] = exampleResolvedAtUtc
+            };
         }
         else
         {
-            audit["projectionError"] = projectedShiningRoot == null || projectedSoulRoot == null
+            audit["projectionError"] = quotedShiningRoot == null || quotedSoulRoot == null
                 ? "missing Shining or Soul state"
                 : projectionError ?? "projection unavailable";
         }
@@ -669,19 +678,6 @@ public partial class ExplorerMode
 
         return ((soulRelics["stored"] as JsonArray)?.Count ?? 0) +
                ((soulRelics["equipped"] as JsonArray)?.Count ?? 0);
-    }
-
-    private static JsonObject? FindGachaHistoryEntryForPreview(JsonObject? shiningRoot, string? requestId)
-    {
-        if (string.IsNullOrWhiteSpace(requestId) ||
-            shiningRoot?["gachaSystem"]?["gachaHistory"] is not JsonArray history)
-        {
-            return null;
-        }
-
-        return history
-            .OfType<JsonObject>()
-            .LastOrDefault(item => string.Equals(GetNodeString(item["requestId"]), requestId, StringComparison.OrdinalIgnoreCase));
     }
 
     private static string BuildPreviewExampleId(string prefix, string? sourceId)

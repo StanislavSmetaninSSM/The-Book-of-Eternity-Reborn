@@ -78,7 +78,9 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("beforeFullSoulRoot", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("afterFullSoulRoot", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("BuildShiningGachaAccountingAuditNode", actionPreviewSource, StringComparison.Ordinal);
-        Assert.Contains("expectedGachaHistoryEntry", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("expectedGachaHistoryEntryShape", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("TryQuoteRelicGachaPull", actionPreviewSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("TryApplyRelicGachaAccounting", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("oneNewRelicEvidence", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("GetNodeInt(context.Root[\"gates\"]?[\"draftVersion\"]) + 1", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("[\"refusedOrWithdrawn\"]", actionPreviewSource, StringComparison.Ordinal);
