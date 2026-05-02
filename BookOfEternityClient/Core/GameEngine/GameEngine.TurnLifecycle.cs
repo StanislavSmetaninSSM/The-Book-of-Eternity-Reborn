@@ -1674,6 +1674,14 @@ public partial class GameEngine
                 return;
             }
 
+            if (!await HasAcceptedTurnAuthorityForIncarnationTriggerAsync(payload, isShiningBootstrapHandoff))
+            {
+                _logger.LogWarning("incarnation_trigger.json ignored because it is not backed by a validated accepted-turn authority context.");
+                _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+                await CleanupPendingTurnSnapshotAsync();
+                return;
+            }
+
             JsonObject? preparedShiningPackage = null;
             if (isShiningBootstrapHandoff)
             {
@@ -1931,6 +1939,72 @@ public partial class GameEngine
             else
                 _fs.DeleteFile("game_state/control/incarnation_trigger.json");
         }
+    }
+
+    private async Task<bool> HasAcceptedTurnAuthorityForIncarnationTriggerAsync(
+        IncarnationTriggerPayload payload,
+        bool isShiningBootstrapHandoff)
+    {
+        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+        if (snapshotContext == null)
+            return false;
+
+        var preTurnSoulJson = ReadPreTurnSnapshotFile(snapshotContext, "game_state/meta/soul_state.json");
+        var preTurnRealm = TryReadRealmFromSoulStateJson(preTurnSoulJson);
+        if (string.IsNullOrWhiteSpace(preTurnRealm))
+            return false;
+
+        if (payload.IsGuardianForced)
+        {
+            if (!RealmSemantics.IsChaosSea(preTurnRealm) || isShiningBootstrapHandoff)
+                return false;
+
+            if (!string.Equals(snapshotContext.SourceLabel, OrdinaryPlayerTurnSourceLabel, StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
+        else if (!RealmSemantics.IsChaosSea(preTurnRealm) && !isShiningBootstrapHandoff)
+        {
+            return false;
+        }
+
+        var issues = await _validator.ValidateGameStateAsync();
+        return !issues.Any(issue =>
+            issue.Severity == IssueSeverity.Error &&
+            IsIncarnationTriggerAuthorityIssue(issue));
+    }
+
+    private static bool IsIncarnationTriggerAuthorityIssue(ValidationIssue issue)
+    {
+        if (string.Equals(issue.FilePath, "game_state/control/incarnation_trigger.json", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (string.Equals(issue.FilePath, AfterlifeReturnGuardService.GuardPath, StringComparison.OrdinalIgnoreCase) &&
+            issue.Code?.StartsWith("forced_incarnation_", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return true;
+        }
+
+        return issue.Code?.StartsWith("incarnation_trigger_", StringComparison.OrdinalIgnoreCase) == true ||
+               issue.Code?.StartsWith("forced_incarnation_", StringComparison.OrdinalIgnoreCase) == true;
+    }
+
+    private static string? TryReadRealmFromSoulStateJson(string? soulStateJson)
+    {
+        if (string.IsNullOrWhiteSpace(soulStateJson))
+            return null;
+
+        try
+        {
+            if (JsonNode.Parse(soulStateJson) is JsonObject root)
+                return GetNodeString(root["currentRealm"]);
+        }
+        catch
+        {
+            // Invalid pre-turn soul_state is handled as missing authority.
+        }
+
+        return null;
     }
 
     private async Task CheckAscensionTrigger()

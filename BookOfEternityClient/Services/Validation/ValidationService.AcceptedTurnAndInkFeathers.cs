@@ -7081,13 +7081,12 @@ public partial class ValidationService
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnSpecialActionOutcomesInternalAsync()
     {
         var issues = new List<ValidationIssue>();
-        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
-        if (string.IsNullOrWhiteSpace(requestJson))
+        using var requestDoc = await ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync();
+        if (requestDoc == null)
             return issues;
 
         try
         {
-            using var requestDoc = JsonDocument.Parse(requestJson);
             if (!requestDoc.RootElement.TryGetProperty("playerAction", out var actionEl) ||
                 actionEl.ValueKind != JsonValueKind.String)
                 return issues;
@@ -7445,9 +7444,9 @@ public partial class ValidationService
                             expected: snapshotBonusesJson,
                             actual: pendingBonusesJson,
                             repairHint: "Canonical pendingMemoryLegacy должен сохранять тот же набор structuredBonuses, что и structured memoryLegacyGrant."));
-                    }
-                }
             }
+        }
+    }
 
             var previousLegacyJson = await ReadPreviousPendingMemoryLegacyJsonAsync();
             var currentLegacyJson = BuildPendingMemoryLegacyComparisonSignature(pendingLegacy);
@@ -7481,6 +7480,39 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private async Task<JsonDocument?> ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync()
+    {
+        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        if (!string.IsNullOrWhiteSpace(requestJson))
+        {
+            try
+            {
+                return JsonDocument.Parse(requestJson);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        var manifest = await LoadValidatedCurrentPendingTurnSnapshotManifestAsync();
+        if (manifest == null || string.IsNullOrWhiteSpace(manifest.PlayerAction))
+            return null;
+
+        var root = new JsonObject
+        {
+            ["sessionId"] = manifest.SessionId,
+            ["requestId"] = manifest.RequestId,
+            ["turnNumber"] = manifest.TurnNumber,
+            ["playerAction"] = manifest.PlayerAction
+        };
+
+        if (manifest.GachaBaseResult != null)
+            root["gachaBaseResult"] = manifest.GachaBaseResult.DeepClone();
+
+        return JsonDocument.Parse(root.ToJsonString(ManifestJsonOpts));
     }
 
     private async Task<List<ValidationIssue>> ValidatePendingMemoryLegacyApplicationInternalAsync()
