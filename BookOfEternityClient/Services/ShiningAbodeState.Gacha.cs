@@ -190,6 +190,7 @@ internal static partial class ShiningAbodeState
         if (string.IsNullOrWhiteSpace(currentReturnCycleId))
         {
             gachaSystem["currentReturnCycleId"] = nextReturnCycleId;
+            gachaSystem["chargesUsedThisReturn"] = 0;
             return true;
         }
 
@@ -203,8 +204,11 @@ internal static partial class ShiningAbodeState
     {
         var chargesPerReturn = GetShiningGachaChargesPerReturn(radianceTier);
         gachaSystem["chargesPerReturn"] = chargesPerReturn;
-        gachaSystem["chargesUsedThisReturn"] = Math.Clamp(GetNodeInt(gachaSystem["chargesUsedThisReturn"], 0), 0, chargesPerReturn);
-        gachaSystem["currentReturnCycleId"] = GetNodeString(gachaSystem["currentReturnCycleId"]) ?? string.Empty;
+        var currentReturnCycleId = GetNodeString(gachaSystem["currentReturnCycleId"]) ?? string.Empty;
+        gachaSystem["currentReturnCycleId"] = currentReturnCycleId;
+        gachaSystem["chargesUsedThisReturn"] = string.IsNullOrWhiteSpace(currentReturnCycleId)
+            ? 0
+            : Math.Clamp(GetNodeInt(gachaSystem["chargesUsedThisReturn"], 0), 0, chargesPerReturn);
 
         var history = EnsureArray(gachaSystem, "gachaHistory");
         for (var i = history.Count - 1; i >= 0; i--)

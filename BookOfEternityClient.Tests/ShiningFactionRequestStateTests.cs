@@ -178,6 +178,58 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
+    public async Task WriteFoundingRequestAsync_RejectsSecondLivePlayerSoulFounding()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+
+            await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            {
+                RequestId = "founding_first",
+                ProposedFactionId = "faction_dawn",
+                ProposedHallId = "hall_dawn",
+                ProposedHallName = "Зал Рассвета",
+                ProposedHallDescription = "Светлый зал",
+                ProposedHallServiceTags = { "social" },
+                Charter = new ShiningFactionRequestState.FactionCharterPayload
+                {
+                    FactionName = "Хор Рассвета",
+                    FavoredArchetype = "accord",
+                    PatronEffectFamily = "social",
+                    Summary = "Поют утренний свет."
+                }
+            });
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ShiningFactionRequestState.WriteFoundingRequestAsync(fs, new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            {
+                RequestId = "founding_second",
+                ProposedFactionId = "faction_twilight",
+                ProposedHallId = "hall_twilight",
+                ProposedHallName = "Зал Сумерек",
+                ProposedHallDescription = "Иной зал",
+                ProposedHallServiceTags = { "lore" },
+                Charter = new ShiningFactionRequestState.FactionCharterPayload
+                {
+                    FactionName = "Хор Сумерек",
+                    FavoredArchetype = "revelation",
+                    PatronEffectFamily = "lore",
+                    Summary = "Несут иной свет."
+                }
+            }));
+
+            var request = Assert.Single(await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs));
+            Assert.Equal("founding_first", request.RequestId);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task WriteFoundingRequestAsync_ReplacesRequestByRequestId()
     {
         var root = CreateTempRoot();
@@ -1122,6 +1174,50 @@ public sealed class ShiningFactionRequestStateTests
 
             Assert.NotNull(error);
             Assert.Contains("vacant", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateLeadershipTransitionRequestAgainstCurrentStateAsync_RevoltIncumbentResidentSupporter_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+
+            var shiningRoot = await ReadJsonAsync(fs, ShiningAbodeState.StatePath);
+            var factionOld = shiningRoot?["factions"]?.AsArray().OfType<JsonObject>()
+                .First(faction => string.Equals(faction["factionId"]?.GetValue<string>(), "faction_old", StringComparison.OrdinalIgnoreCase));
+            factionOld!["leadership"] = new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeResident,
+                ["headActorId"] = "resident_liora",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateContested
+            };
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot!.ToJsonString());
+
+            var error = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(fs, new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+            {
+                RequestId = "leadership_revolt_self_support",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TransitionMode = ShiningFactionRequestState.TransitionModeRevolt,
+                IncumbentHeadActorType = ShiningAbodeState.HeadActorTypeResident,
+                IncumbentHeadActorId = "resident_liora",
+                CandidateHeadActorType = ShiningAbodeState.HeadActorTypePlayerSoul,
+                CandidateHeadActorId = ShiningAbodeState.HeadActorTypePlayerSoul,
+                SupportingResidentIds = { "resident_liora", "resident_mael", "resident_serit" }
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("Incumbent resident", error, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("revolt", error, StringComparison.OrdinalIgnoreCase);
         }
         finally
         {

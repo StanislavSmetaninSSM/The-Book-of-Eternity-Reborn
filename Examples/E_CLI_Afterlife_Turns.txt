@@ -1853,6 +1853,7 @@ This section contains three independent Shining political pending-contract examp
 
 Political request identity and locks:
 - Every active `requests[]` entry in `pending_shining_faction_foundings.json`, `pending_shining_faction_realignments.json`, `pending_shining_faction_leadership_transitions.json`, and `pending_shining_trade_inventory_requests.json` must have a unique non-empty `requestId` inside that file. Resolved notification identity is keyed by request family plus `requestId`; duplicate ids can hide a different contract and are invalid.
+- `pending_shining_faction_foundings.json` may contain only one unresolved player-soul founding request. Every accepted founding makes `player_soul` the head of the new faction, so two simultaneous founding requests conflict with the single-head invariant even when their proposed faction/hall ids differ.
 - Leadership `candidateHeadActorType/headActorId` and `incumbentHeadActorType/headActorId` are locked actor identities, not decorative labels. A resident candidate or incumbent must not simultaneously be in pending Shining realignment, ordinary inter-Abode resident transfer, founding supporter set, or another leadership transition. If a conflict exists, preserve the pending files for repair; do not close the leadership request by inventing a winner.
 - Non-resident leadership actors (`player_soul`, `guardian`, `radiant_actor`) still must not be referenced by another pending leadership transition unless it is the same faction/request being resolved.
 
@@ -2142,6 +2143,8 @@ If a leadership transition names `candidateHeadActorType = "radiant_actor"` or l
 active-guardian auto faction rule: if the faction is the active Guardian's auto faction (`factionId = faction_{slug(activeGuardianId)}` and/or `hallId = hall_{slug(activeGuardianId)}`), `candidateHeadActorType=guardian` is valid only when `candidateHeadActorId` equals the same `activeGuardianId`. Do not transfer this auto faction to a different Guardian through `pending_shining_faction_leadership_transitions.json`; the canonical normalizer keeps the active Guardian as that faction's head.
 
 Vacant leadership rule: every `pending_shining_faction_leadership_transitions.json` request requires an actual current non-vacant incumbent. If the faction already has `leadershipState = "vacant"` with empty `headActorType/headActorId`, do not create or close `abdication`, `peaceful_succession`, or `revolt` for it; preserve the state for a future explicit vacancy-fill feature instead.
+
+Revolt supporter rule: if `transitionMode = "revolt"` and the incumbent is a resident, `supportingResidentIds[]` must not include that incumbent resident. Supporters represent actors backing the challenge, not the current head authorizing their own removal.
 
 Canonical leadership transition matrix:
 
@@ -3454,6 +3457,11 @@ Shining resident normalizer side effects:
 - If not ascended, runtime normalizes the resident to `ascensionState = "remained_in_chaos_sea"`, clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = "alienated"`, `factionRestlessness = 0`, and `factionRealignmentState = "settled"`.
 - If ascended but `shiningFactionId` is missing or points to a non-existing faction, runtime preserves `ascensionState = "ascended"` and treats the resident as ascended but unaffiliated: it clears `shiningFactionId` and `residentRole`, sets `factionLoyaltyLevel = 0`, `factionLoyaltyTier = "alienated"`, `factionRestlessness = 0`, and `factionRealignmentState = "settled"`.
 - If ascended and faction exists, runtime derives/validates `residentRole`, `factionLoyaltyLevel`, `factionLoyaltyTier`, `factionRestlessness`, and `factionRealignmentState`. Do not use non-canonical `shiningAlignment`.
+
+Canonical Shining owner-state invariants:
+- `halls[].hallId`, `factions[].factionId`, `shiningPoliticalActors[].actorId`, and every `projects[].projectId` across all factions must be unique. Duplicate ids make runtime helpers choose the first match and are invalid.
+- Supported completed projects are globally capped by Radiance tier: tier `0..1` allows `1`, tier `2..3` allows `2`, tier `4` allows `3`. If more completed projects have `isSupported = true`, preserve for repair or close an explicit `unsupport_project`; do not keep the over-cap state.
+- `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. While it is empty, `gachaSystem.chargesUsedThisReturn` must be `0`; positive used charges without a cycle id are stale state.
 
 Canonical Shining vocabulary tables:
 

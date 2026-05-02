@@ -316,14 +316,20 @@ internal static class ShiningFactionRequestState
         var otherFoundings = foundingRequests
             .Where(existing => !IsSameFoundingLogicalRequest(existing, request))
             .ToList();
-        if (otherFoundings.Any(existing => string.Equals(existing.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase)))
-            return "Pending founding request с таким requestId уже существует.";
         if (otherFoundings.Any(existing =>
-                string.Equals(existing.ProposedFactionId, request.ProposedFactionId, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(existing.ProposedFactionId, request.ProposedFactionId, StringComparison.OrdinalIgnoreCase)))
+        {
+            return "Pending founding request уже использует этот proposedFactionId. Дождитесь закрытия текущего founding request или выберите другой factionId.";
+        }
+
+        if (otherFoundings.Any(existing =>
                 string.Equals(existing.ProposedHallId, request.ProposedHallId, StringComparison.OrdinalIgnoreCase)))
         {
-            return "Pending founding request с таким proposedFactionId или proposedHallId уже существует.";
+            return "Pending founding request уже использует этот proposedHallId. Дождитесь закрытия текущего founding request или выберите другой hallId.";
         }
+
+        if (otherFoundings.Count > 0)
+            return "В Сияющей Обители может быть только один live player-soul founding request: все founding outcomes создают player_soul head и конфликтуют с single-head invariant.";
 
         if (HasCurrentHeadFaction(
                 shiningRoot,
@@ -558,6 +564,13 @@ internal static class ShiningFactionRequestState
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
+        if (string.Equals(request.TransitionMode, TransitionModeRevolt, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(request.IncumbentHeadActorType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase) &&
+            supporterIds.Contains(request.IncumbentHeadActorId, StringComparer.OrdinalIgnoreCase))
+        {
+            return "Incumbent resident не может быть listed supporter собственного revolt.";
+        }
+
         var ascendedFactionResidents = CountAscendedFactionResidents(residentRoot, request.FactionId);
         var minimumSupport = string.Equals(request.TransitionMode, TransitionModePeacefulSuccession, StringComparison.OrdinalIgnoreCase)
             ? Math.Max(2, (int)Math.Ceiling(ascendedFactionResidents / 3.0))
@@ -622,10 +635,7 @@ internal static class ShiningFactionRequestState
             fs,
             PendingFoundingsRequestPath,
             request,
-            static (existing, pending) =>
-                string.Equals(existing.RequestId, pending.RequestId, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(existing.ProposedFactionId, pending.ProposedFactionId, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(existing.ProposedHallId, pending.ProposedHallId, StringComparison.OrdinalIgnoreCase));
+            static (_, _) => true);
 
     public static Task WriteRealignmentRequestAsync(FileSystemManager fs, PendingShiningFactionRealignmentRequest request) =>
         WriteSingleRequestAsync(

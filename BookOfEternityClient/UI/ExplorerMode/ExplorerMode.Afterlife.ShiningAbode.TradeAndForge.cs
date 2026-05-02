@@ -1273,15 +1273,21 @@ public partial class ExplorerMode
             return;
         }
 
-        if (relicRerollsToCommit > 0 &&
-            !await ShiningBlessingEffectState.ConsumeRelicRerollsAsync(_fs, _stateManager.CurrentState.TurnNumber, relicRerollsToCommit))
+        try
         {
-            MarkupLine("[yellow]Переброс благословением больше недоступен: entitlements изменились до подтверждения. Запрос на перековку не создан.[/]");
+            await ShiningCoreActionRequestState.WriteForgeRequestWithRelicRerollCommitAsync(
+                _fs,
+                request,
+                _stateManager.CurrentState.TurnNumber,
+                relicRerollsToCommit);
+        }
+        catch (InvalidOperationException ex)
+        {
+            MarkupLine($"[yellow]{Markup.Escape(ex.Message)}[/]");
             WaitForKey();
             return;
         }
 
-        await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
         MarkupLine(BuildShiningCorePostConfirmMarkup(
             request,
             $"Следующий подтверждённый ход должен закрепить forge delta для relicId, списать {cost.Feathers}/{cost.LightSparks}, обновить soul_state.json и coreActionReceipts[] с тем же requestId."));

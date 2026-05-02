@@ -374,7 +374,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             "Vacant leadership rule",
             "leadershipState = \"vacant\"",
             "every `pending_shining_faction_leadership_transitions.json` request requires an actual current non-vacant incumbent",
-            "do not create or close `abdication`, `peaceful_succession`, or `revolt`"
+            "do not create or close `abdication`, `peaceful_succession`, or `revolt`",
+            "single-head invariant",
+            "Revolt supporter rule"
         })
         {
             Assert.Contains(requiredTerm, examples, StringComparison.Ordinal);
@@ -388,7 +390,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             "activeGuardianId",
             "leadershipState = vacant",
             "any leadership transition requires `leadershipState != vacant`",
-            "future explicit vacancy-fill feature"
+            "future explicit vacancy-fill feature",
+            "single-head invariant",
+            "supportingResidentIds[] must never include the incumbent resident"
         })
         {
             Assert.Contains(requiredTerm, matrix, StringComparison.Ordinal);

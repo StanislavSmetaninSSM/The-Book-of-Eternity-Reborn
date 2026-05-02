@@ -1590,7 +1590,7 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void SyncShiningReturnCycle_EmptyLegacyCycleIdPreservesUsedGachaCharges()
+    public void SyncShiningReturnCycle_EmptyLegacyCycleIdResetsUsedGachaCharges()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         root["gachaSystem"] = new JsonObject
@@ -1606,7 +1606,7 @@ public sealed class ShiningAbodeStateTests
         Assert.True(changed);
         Assert.False(cycleChanged);
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
-        Assert.Equal(2, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.Equal(0, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
     }
 
     [Fact]
