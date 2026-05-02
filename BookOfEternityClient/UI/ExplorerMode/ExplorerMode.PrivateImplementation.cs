@@ -100,6 +100,8 @@ public partial class ExplorerMode
         string Rarity,
         string Status,
         string DiscoveredAt,
+        string ArchivedAtUtc,
+        string SkippedAtUtc,
         IReadOnlyList<string> Tags);
 
     private sealed record FriendlyGuardianConsultationChoice(
