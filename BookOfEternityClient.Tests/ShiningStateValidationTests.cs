@@ -689,6 +689,74 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
+    public void ValidateShiningAbodeStateFile_CoreReceiptWithoutCostAudit_RaisesExplicitErrors()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["coreActionReceipts"]!.AsArray().Add(new JsonObject
+        {
+            ["requestId"] = "core_without_costs",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypeOpenGates,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+            ["selectedCardIds"] = new JsonArray(),
+            ["newResidentIds"] = new JsonArray(),
+            ["seededProjectIds"] = new JsonArray(),
+            ["generatedDraftVersion"] = 1,
+            ["resolvedAtTurn"] = 12,
+            ["resolvedAtUtc"] = "2026-04-19T10:00:00Z"
+        });
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_missing_quoted_cost_feathers", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_missing_quoted_cost_light_sparks", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_PreparePackageAcceptedReceiptWithoutSelectedCards_RaisesExplicitError()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["coreActionReceipts"]!.AsArray().Add(new JsonObject
+        {
+            ["requestId"] = "package_without_cards",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+            ["quotedCostFeathers"] = 0,
+            ["quotedCostLightSparks"] = 0,
+            ["selectedCardIds"] = new JsonArray("card_route"),
+            ["newResidentIds"] = new JsonArray(),
+            ["seededProjectIds"] = new JsonArray(),
+            ["generatedDraftVersion"] = 4,
+            ["resolvedAtTurn"] = 155,
+            ["resolvedAtUtc"] = "2026-04-19T10:00:00Z"
+        });
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_prepare_package_receipt_missing_selected_cards", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_ResolvedRealignmentWithoutResidentHistoryEntry_RaisesExplicitError()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["factionRealignmentReceipts"]!.AsArray().Add(new JsonObject
+        {
+            ["requestId"] = "realign_without_history",
+            ["residentId"] = "resident_liora",
+            ["sourceFactionId"] = "faction_old",
+            ["targetFactionId"] = "faction_new",
+            ["status"] = ShiningFactionRequestState.RequestStatusDepartedToNeutral,
+            ["realignmentMode"] = ShiningFactionRequestState.RealignmentModeDepartureToNeutral,
+            ["resolvedAtTurn"] = 120,
+            ["resolvedAtUtc"] = "2026-04-19T10:00:00Z"
+        });
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_realignment_receipt_missing_resident_history_entry_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateShiningLeadershipHeadReferencesAsync_MissingGuardianBinding_RaisesExplicitError()
     {
         var root = CreateTempRoot();

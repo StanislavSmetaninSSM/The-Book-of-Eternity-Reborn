@@ -1415,6 +1415,20 @@ public partial class ValidationService
         RequireArrayOfStrings(receipt, contextPrefix, issues, "selectedCardIds");
         RequireArrayOfStrings(receipt, contextPrefix, issues, "newResidentIds");
         RequireArrayOfStrings(receipt, contextPrefix, issues, "seededProjectIds");
+        RequireIntegerField(
+            receipt,
+            contextPrefix,
+            issues,
+            "quotedCostFeathers",
+            "shining_core_action_receipt_missing_quoted_cost_feathers",
+            "coreActionReceipts[].quotedCostFeathers обязателен как canonical cost audit field");
+        RequireIntegerField(
+            receipt,
+            contextPrefix,
+            issues,
+            "quotedCostLightSparks",
+            "shining_core_action_receipt_missing_quoted_cost_light_sparks",
+            "coreActionReceipts[].quotedCostLightSparks обязателен как canonical cost audit field");
         ValidateIntegerField(receipt, contextPrefix, issues, "generatedDraftVersion");
         ValidateIntegerField(receipt, contextPrefix, issues, "resolvedAtTurn");
         ValidateOptionalString(receipt, contextPrefix, issues, "resolvedAtUtc");
@@ -1486,6 +1500,36 @@ public partial class ValidationService
 
         if (receipt.TryGetProperty("selectedCards", out _))
             ValidateArrayItems(receipt, $"{contextPrefix}.selectedCards", issues, "selectedCards", ValidateShiningBlessingCardObject);
+
+        if (string.Equals(actionType, ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(status, ShiningCoreActionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!receipt.TryGetProperty("selectedCardIds", out var requiredSelectedCardIds) ||
+                requiredSelectedCardIds.ValueKind != JsonValueKind.Array ||
+                requiredSelectedCardIds.GetArrayLength() == 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.selectedCardIds",
+                    IssueSeverity.Error,
+                    "accepted prepare_incarnation_package receipt должен хранить non-empty selectedCardIds snapshot",
+                    code: "shining_prepare_package_receipt_missing_selected_card_ids",
+                    section: "ShiningAbode",
+                    repairHint: "Для accepted prepare_incarnation_package receipt сохрани selectedCardIds[] из frozen package."));
+            }
+
+            if (!receipt.TryGetProperty("selectedCards", out var requiredSelectedCards) ||
+                requiredSelectedCards.ValueKind != JsonValueKind.Array ||
+                requiredSelectedCards.GetArrayLength() == 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.selectedCards",
+                    IssueSeverity.Error,
+                    "accepted prepare_incarnation_package receipt должен хранить non-empty selectedCards[] frozen snapshot",
+                    code: "shining_prepare_package_receipt_missing_selected_cards",
+                    section: "ShiningAbode",
+                    repairHint: "Для accepted prepare_incarnation_package receipt сохрани selectedCards[] snapshots, совпадающие с selectedCardIds[]."));
+            }
+        }
 
         if (string.Equals(actionType, ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage, StringComparison.OrdinalIgnoreCase) &&
             receipt.TryGetProperty("selectedCardIds", out var selectedCardIds) &&
@@ -1599,7 +1643,21 @@ public partial class ValidationService
         }
 
         if (ShiningFactionRequestState.IsSupportedRealignmentStatus(status))
+        {
             RequireCanonicalShiningReceiptClosureMarkers(receipt, contextPrefix, issues, "realignment", "realignmentReceipts");
+            if ((string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(status, ShiningFactionRequestState.RequestStatusDepartedToNeutral, StringComparison.OrdinalIgnoreCase)) &&
+                string.IsNullOrWhiteSpace(GetFirstNonEmptyString(receipt, "residentHistoryEntryId")))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.residentHistoryEntryId",
+                    IssueSeverity.Error,
+                    "accepted/departed Shining realignment receipt должен ссылаться на resident history entry.",
+                    code: "shining_realignment_receipt_missing_resident_history_entry_id",
+                    section: "ShiningAbode",
+                    repairHint: "Для accepted или departed_to_neutral realignment receipt укажи residentHistoryEntryId, соответствующий записи истории резидента."));
+            }
+        }
     }
 
     private void ValidateShiningLeadershipReceiptObject(JsonElement receipt, string contextPrefix, List<ValidationIssue> issues)
@@ -2102,5 +2160,29 @@ public partial class ValidationService
         }
 
         RequireArrayOfStrings(array, $"{contextPrefix}.{propertyName}", issues);
+    }
+
+    private static void RequireIntegerField(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        string propertyName,
+        string code,
+        string message)
+    {
+        if (root.TryGetProperty(propertyName, out var value) &&
+            value.ValueKind == JsonValueKind.Number &&
+            value.TryGetInt32(out _))
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.{propertyName}",
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "ShiningAbode",
+            repairHint: $"Укажи {propertyName} как integer, exact from the canonical Shining request/legacy contract."));
     }
 }

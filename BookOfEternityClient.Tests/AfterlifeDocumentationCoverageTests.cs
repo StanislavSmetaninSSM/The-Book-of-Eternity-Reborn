@@ -87,8 +87,18 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.DoesNotContain("pending_shining_abode_actions.json.actionType", examples, StringComparison.Ordinal);
         Assert.Contains("quotedCostFeathers = 0", matrix, StringComparison.Ordinal);
         Assert.Contains("quotedCostLightSparks = 0", matrix, StringComparison.Ordinal);
+        Assert.Contains("quotedCostFeathers = costFeathers", matrix, StringComparison.Ordinal);
+        Assert.Contains("quotedCostLightSparks = 0", apiSpec, StringComparison.Ordinal);
+        Assert.Contains("quotedCostLightSparks = 0", ExtractRequiredSection(
+            examples,
+            "Legacy `pendingNativeFactionDiscovery` closure:",
+            "Correct `discover_native_faction` receipt fragment:"), StringComparison.Ordinal);
         Assert.Contains("\"quotedCostFeathers\": 0", examples, StringComparison.Ordinal);
         Assert.Contains("\"quotedCostLightSparks\": 0", examples, StringComparison.Ordinal);
+        Assert.Contains("selectedCards[]", matrix, StringComparison.Ordinal);
+        Assert.Contains("selectedCards[]", examples, StringComparison.Ordinal);
+        Assert.Contains("residentHistoryEntryId", matrix, StringComparison.Ordinal);
+        Assert.Contains("residentHistoryEntryId", examples, StringComparison.Ordinal);
 
         var commonReceiptSkeleton = ExtractRequiredSection(
             examples,
@@ -948,11 +958,40 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("guardianId", doc, StringComparison.Ordinal);
         }
 
+        foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+        {
+            Assert.Contains("CurrentReputation", doc, StringComparison.Ordinal);
+            Assert.Contains("-21", doc, StringComparison.Ordinal);
+            Assert.Contains("-51", doc, StringComparison.Ordinal);
+            Assert.Contains("severity", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
         foreach (var doc in new[] { matrix, taskGuide, examples, apiSpec })
         {
             Assert.Contains("archive_candidate_manifest.json", doc, StringComparison.Ordinal);
             Assert.Contains("client-owned", doc, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    [Fact]
+    public void AfterlifePromptDocsCoverAscensionClientExecutedHandoff()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+        {
+            Assert.Contains("AscensionTrigger", doc, StringComparison.Ordinal);
+            Assert.Contains("playerChoice", doc, StringComparison.Ordinal);
+            Assert.Contains("Ascension", doc, StringComparison.Ordinal);
+            Assert.Contains("TriggerLifeEnd", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("6B. VALID — ASCENSION HANDOFF IS CLIENT-EXECUTED", examples, StringComparison.Ordinal);
+        Assert.Contains("client performs the realm handoff", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("do not manually switch `soul_state.currentRealm`", examples, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
