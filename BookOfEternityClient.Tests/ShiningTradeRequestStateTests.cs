@@ -940,6 +940,46 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task InventoryMatchesRequestContract_NonObjectItem_FailsClosed()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
+            var tradeInventory = faction["tradeInventory"]!.AsObject();
+            var items = tradeInventory["items"]!.AsArray();
+            items[0] = "not an item object";
+
+            var matches = ShiningTradeRequestState.InventoryMatchesRequestContract(
+                tradeInventory,
+                new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+                {
+                    FactionId = "faction_old",
+                    FactionName = "Старый Дом",
+                    TradeCycleId = "shining_return_2",
+                    DerivedTradeTier = 2,
+                    DerivedTradeSlotCount = 6,
+                    DerivedRarityCeiling = "rare",
+                    DerivedServiceMultiplier = 1.25,
+                    MerchantProfile = ShiningTradeRequestState.MerchantProfileShiningFaction
+                });
+
+            Assert.False(matches);
+            Assert.Equal(-1, ShiningTradeRequestState.GetTradeInventoryItemCount(tradeInventory));
+            Assert.Equal(-1, ShiningTradeRequestState.GetTradeInventorySoldOutCount(tradeInventory));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuyAsync_DuplicateSlotIds_Fails()
     {
         var root = CreateTempRoot();

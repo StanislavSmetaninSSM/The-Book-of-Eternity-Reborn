@@ -269,6 +269,13 @@ public partial class ExplorerMode
         var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
         var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
         var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
+        if (string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
+        {
+            ShowEmptyPanel(
+                "Политика Сияющей Обители",
+                "У выбранной фракции уже vacant leadership. Текущие режимы смены главы требуют действующего incumbent; отдельный режим заполнения вакансии пока не реализован.");
+            return;
+        }
 
         var transitionChoices = new[]
         {

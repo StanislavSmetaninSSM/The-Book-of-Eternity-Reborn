@@ -321,12 +321,15 @@ public partial class ValidationService
 
             var preTurnFeathers = CurrentSoulFeathers(preTurnSoulRoot);
             var currentFeathers = CurrentSoulFeathers(currentSoulRoot);
-            if (costMatch.Success && int.TryParse(costMatch.Groups[1].Value, out costInFeathers) && costInFeathers > 0)
+            costInFeathers = 0;
+            var hasValidCost = costMatch.Success && int.TryParse(costMatch.Groups[1].Value, out costInFeathers) && costInFeathers > 0;
+            var expectedFeathers = preTurnFeathers;
+            if (hasValidCost)
             {
                 var clientSpendAlreadyInSnapshot = await IsClientInkFeatherSpendAlreadyInSnapshotAsync(
                     preTurnFeathers,
                     costInFeathers);
-                var expectedFeathers = clientSpendAlreadyInSnapshot
+                expectedFeathers = clientSpendAlreadyInSnapshot
                     ? preTurnFeathers
                     : preTurnFeathers - costInFeathers;
                 if (currentFeathers != expectedFeathers)
@@ -374,12 +377,66 @@ public partial class ValidationService
                 var newRelicId = newRelicIds.First();
                 if (TryFindSoulRelicNode(currentSoulRoot, newRelicId, out var newRelic))
                     ValidateDirectChaosSeaGachaExactRarity(newRelic, newRelicId, issues);
+
+                if (hasValidCost)
+                    ValidateDirectChaosSeaGachaExactSoulDiff(preTurnSoulRoot, currentSoulRoot, newRelicId, expectedFeathers, issues);
             }
         }
         catch
         {
             // JSON shape issues are reported by normal state validation.
         }
+    }
+
+    private static void ValidateDirectChaosSeaGachaExactSoulDiff(
+        JsonObject preTurnSoulRoot,
+        JsonObject currentSoulRoot,
+        string newRelicId,
+        int expectedFeathers,
+        List<ValidationIssue> issues)
+    {
+        if (!TryFindSoulRelicNode(currentSoulRoot, newRelicId, out var newRelic))
+            return;
+
+        var expectedSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        SetCurrentSoulFeathers(expectedSoulRoot, expectedFeathers);
+        if (!TryAppendRelicCloneToMatchingExpectedCollection(expectedSoulRoot, currentSoulRoot, newRelicId, newRelic))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json.soulRelics",
+                IssueSeverity.Error,
+                "Direct Chaos Sea gacha должен добавлять новую Soul Relic в ту же canonical структуру soulRelics, не перестраивая контейнер.",
+                code: "direct_chaos_gacha_unexpected_soul_state_diff",
+                section: "CHAOS_SEA_DIRECT_GACHA",
+                expected: "pre-turn soul_state + exact feather spend + one new relic append",
+                actual: "new relic is not in a matching soulRelics collection",
+                repairHint: "Сохрани pre-turn shape soulRelics и добавь ровно один новый relic object в stored/equipped без иных изменений."));
+            return;
+        }
+
+        if (JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
+            return;
+
+        issues.Add(new ValidationIssue(
+            "game_state/meta/soul_state.json",
+            IssueSeverity.Error,
+            "Direct Chaos Sea gacha разрешает только точный расход Чернильных Перьев и append ровно одной новой Soul Relic; любые другие изменения soul_state запрещены.",
+            code: "direct_chaos_gacha_unexpected_soul_state_diff",
+            section: "CHAOS_SEA_DIRECT_GACHA",
+            expected: "pre-turn soul_state + exact feather spend + one new relic append",
+            actual: "current soul_state has unrelated or mutated data",
+            repairHint: "Верни все pre-existing soul_state поля и pre-existing Soul Relic JSON к pre-turn snapshot; оставь только новый relic и корректный баланс Перьев."));
+    }
+
+    private static void SetCurrentSoulFeathers(JsonObject soulRoot, int feathers)
+    {
+        if (soulRoot["inkFeathers"] is JsonObject inkFeathers)
+        {
+            inkFeathers["current"] = feathers;
+            return;
+        }
+
+        soulRoot["inkFeathers"] = feathers;
     }
 
     private async Task ValidateChaosSeaTravelOutcomeAsync(string playerAction, List<ValidationIssue> issues)

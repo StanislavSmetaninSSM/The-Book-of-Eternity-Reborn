@@ -458,6 +458,7 @@ Supported `transitionMode` values:
 
 Transition rules:
 
+- every listed mode requires a current non-vacant incumbent head; if `leadershipState = vacant`, preserve the state until an explicit vacancy-fill mode exists
 - `abdication`:
   - incumbent consent required
   - candidate may be absent; accepted result may set the faction to `vacant`

@@ -474,6 +474,12 @@ internal static class ShiningFactionRequestState
             return "Указанная factionId не найдена в текущем Shining state.";
 
         var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
+        var leadershipState = GetNodeString(leadership["leadershipState"]);
+        if (string.Equals(leadershipState, ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
+        {
+            return "Leadership transition недоступен для faction с vacant leadership: нет действующего incumbent head; vacancy filling пока не реализован.";
+        }
+
         var actualIncumbentType = GetNodeString(leadership["headActorType"]) ?? string.Empty;
         var actualIncumbentId = GetNodeString(leadership["headActorId"]) ?? string.Empty;
         if (!string.Equals(actualIncumbentType, request.IncumbentHeadActorType, StringComparison.OrdinalIgnoreCase) ||
@@ -492,7 +498,7 @@ internal static class ShiningFactionRequestState
             return incumbentLockError;
 
         if (string.Equals(request.TransitionMode, TransitionModeRevolt, StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(GetNodeString(leadership["leadershipState"]), ShiningAbodeState.LeadershipStateContested, StringComparison.OrdinalIgnoreCase))
+            !string.Equals(leadershipState, ShiningAbodeState.LeadershipStateContested, StringComparison.OrdinalIgnoreCase))
         {
             return "Revolt допустим только для faction в состоянии contested.";
         }

@@ -280,12 +280,14 @@ internal static class ShiningTradeRequestState
 
     public static int GetTradeInventoryItemCount(JsonObject? tradeInventory) =>
         tradeInventory?["items"] is JsonArray items
-            ? items.OfType<JsonObject>().Count()
+            ? items.All(item => item is JsonObject) ? items.Count : -1
             : 0;
 
     public static int GetTradeInventorySoldOutCount(JsonObject? tradeInventory) =>
         tradeInventory?["items"] is JsonArray items
-            ? items.OfType<JsonObject>().Count(item => TryReadBool(item["soldOut"], out var soldOut) && soldOut)
+            ? items.All(item => item is JsonObject)
+                ? items.OfType<JsonObject>().Count(item => TryReadBool(item["soldOut"], out var soldOut) && soldOut)
+                : -1
             : 0;
 
     public static bool InventoryMatchesRequestContract(JsonObject? tradeInventory, PendingShiningTradeInventoryRequest request)
@@ -319,8 +321,11 @@ internal static class ShiningTradeRequestState
 
         var seenSlotIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var seenRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var item in items.OfType<JsonObject>())
+        foreach (var node in items)
         {
+            if (node is not JsonObject item)
+                return false;
+
             var slotId = GetNodeString(item["slotId"]);
             if (string.IsNullOrWhiteSpace(slotId) ||
                 !seenSlotIds.Add(slotId) ||
@@ -340,7 +345,8 @@ internal static class ShiningTradeRequestState
                 return false;
         }
 
-        return true;
+        return seenSlotIds.Count == request.DerivedTradeSlotCount &&
+               seenRelicIds.Count == request.DerivedTradeSlotCount;
     }
 
     public static bool ReceiptMatchesRequestContract(

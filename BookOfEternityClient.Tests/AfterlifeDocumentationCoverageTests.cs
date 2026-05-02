@@ -360,7 +360,11 @@ public sealed class AfterlifeDocumentationCoverageTests
             "active-guardian auto faction",
             "faction_{slug(activeGuardianId)}",
             "candidateHeadActorType=guardian",
-            "activeGuardianId"
+            "activeGuardianId",
+            "Vacant leadership rule",
+            "leadershipState = \"vacant\"",
+            "every `pending_shining_faction_leadership_transitions.json` request requires an actual current non-vacant incumbent",
+            "do not create or close `abdication`, `peaceful_succession`, or `revolt`"
         })
         {
             Assert.Contains(requiredTerm, examples, StringComparison.Ordinal);
@@ -371,7 +375,10 @@ public sealed class AfterlifeDocumentationCoverageTests
             "active-guardian auto faction",
             "faction_{slug(activeGuardianId)}",
             "candidateHeadActorType=guardian",
-            "activeGuardianId"
+            "activeGuardianId",
+            "leadershipState = vacant",
+            "any leadership transition requires `leadershipState != vacant`",
+            "future explicit vacancy-fill feature"
         })
         {
             Assert.Contains(requiredTerm, matrix, StringComparison.Ordinal);
@@ -1287,6 +1294,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
         var guardianRules = ReadRepoFile("Rules", "Block_32_Guardians.txt");
         var lifecyclePrompt = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        var inkFeatherPreview = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
 
         foreach (var text in new[] { daemonSpec, matrix, examples, guardianRules, lifecyclePrompt })
         {
@@ -1298,6 +1306,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("Guardian reputation", text, StringComparison.OrdinalIgnoreCase);
         }
 
+        Assert.Contains("diceUsed", matrix, StringComparison.Ordinal);
+        Assert.Contains("diceUsed", examples, StringComparison.Ordinal);
+        Assert.Contains("diceUsed", inkFeatherPreview, StringComparison.Ordinal);
         Assert.DoesNotContain("Improve Gacha rates by", guardianRules, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Maximum Gacha benefits", guardianRules, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Guardian reputation bonus (Block 32)", lifecyclePrompt, StringComparison.OrdinalIgnoreCase);
