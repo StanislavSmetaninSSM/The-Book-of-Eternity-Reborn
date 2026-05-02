@@ -524,6 +524,20 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel("Полный JSON фракции-кузницы", faction, Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON реликвии до перековки", relicChoice.Relic, Color.Gold1);
+        WriteJsonAuditPanel(
+            "Полный JSON forge request payload preview",
+            BuildShiningForgeRequestPayloadAuditNode(
+                faction,
+                relicChoice,
+                actionType,
+                targetFormTag,
+                propertyIndex,
+                replacementProperty,
+                addedProperties,
+                cost),
+            Color.Gold1);
 
         var choice = Prompt(new SelectionPrompt<string>()
             .Title("[bold yellow]Подтвердить запрос на перековку[/]")
@@ -532,6 +546,35 @@ public partial class ExplorerMode
 
         return choice.Contains("Создать запрос", StringComparison.OrdinalIgnoreCase);
     }
+
+    private static JsonObject BuildShiningForgeRequestPayloadAuditNode(
+        JsonObject faction,
+        (string RelicId, string RelicName, JsonObject Relic) relicChoice,
+        string actionType,
+        string targetFormTag,
+        int propertyIndex,
+        JsonObject? replacementProperty,
+        JsonArray? addedProperties,
+        ShiningAbodeState.ResourceCost cost) =>
+        new()
+        {
+            ["actionType"] = actionType,
+            ["factionId"] = GetNodeString(faction["factionId"]) ?? string.Empty,
+            ["factionName"] = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? string.Empty,
+            ["relicId"] = relicChoice.RelicId,
+            ["relicName"] = relicChoice.RelicName,
+            ["targetFormTag"] = targetFormTag,
+            ["propertyIndex"] = propertyIndex,
+            ["replacementProperty"] = replacementProperty?.DeepClone(),
+            ["addedProperties"] = addedProperties?.DeepClone(),
+            ["quotedCostFeathers"] = cost.Feathers,
+            ["quotedCostLightSparks"] = cost.LightSparks,
+            ["beforeRelic"] = relicChoice.Relic.DeepClone(),
+            ["rules"] = new JsonArray(
+                "pending request must echo every non-empty mutation field shown here",
+                "accepted receipt must echo replacementProperty/addedProperties for retune/uplift",
+                "GM must not invent hidden relic fields outside the canonical forge action")
+        };
 
     private List<string> BuildShiningForgePreviewLines(
         JsonObject faction,

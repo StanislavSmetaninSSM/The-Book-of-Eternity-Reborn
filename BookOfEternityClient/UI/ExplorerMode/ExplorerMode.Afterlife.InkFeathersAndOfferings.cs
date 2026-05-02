@@ -939,6 +939,48 @@ public partial class ExplorerMode
         return lines;
     }
 
+    private static JsonObject BuildAbodeOfferingPreviewAuditNode(
+        GuardianAbodeOfferingState.PendingAbodeOfferingRequest request,
+        JsonObject? consumedObject,
+        string consumedCollectionPath,
+        int currentAbodePower,
+        int basePowerGain,
+        int? currentFeathers = null,
+        int? costInFeathers = null)
+    {
+        var projectedPower = AbodePowerRules.ClampCurrentPower(currentAbodePower + Math.Max(0, basePowerGain));
+        var requestNode = JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) as JsonObject;
+        return new JsonObject
+        {
+            ["pendingRequest"] = requestNode,
+            ["consumedObjectFullJson"] = consumedObject?.DeepClone(),
+            ["consumedCollectionPath"] = consumedCollectionPath,
+            ["before"] = new JsonObject
+            {
+                ["guardianId"] = request.GuardianId,
+                ["guardianName"] = request.GuardianName,
+                ["abodePower.currentPower"] = AbodePowerRules.ClampCurrentPower(currentAbodePower),
+                ["soul_state.inkFeathers.current"] = currentFeathers.HasValue ? JsonValue.Create(currentFeathers.Value) : null
+            },
+            ["after"] = new JsonObject
+            {
+                ["abodePower.currentPowerProjected"] = projectedPower,
+                ["guardianPowerEvents.reasonType"] = "offering",
+                ["guardianPowerEvents.sourceSurface"] = "guardianAbodeOffering",
+                ["baseDelta"] = Math.Max(0, basePowerGain),
+                ["finalDelta"] = Math.Max(0, projectedPower - AbodePowerRules.ClampCurrentPower(currentAbodePower)),
+                ["soul_state.inkFeathers.currentProjected"] = currentFeathers.HasValue && costInFeathers.HasValue
+                    ? JsonValue.Create(Math.Max(0, currentFeathers.Value - Math.Max(0, costInFeathers.Value)))
+                    : null
+            },
+            ["affectedFiles"] = new JsonArray(
+                "game_state/meta/guardians.json",
+                "game_state/meta/abode_power_journal.json",
+                "game_state/meta/soul_state.json",
+                GuardianAbodeOfferingState.PendingRequestPath)
+        };
+    }
+
     private async Task HandleRevealFate(int feathers)
     {
         var cost = Math.Max(5, (int)(feathers * 0.10));
@@ -1391,8 +1433,13 @@ public partial class ExplorerMode
             if (!ConfirmChaosSeaContractPreview(
                     "Полный предпросмотр подношения реликвии",
                     relicLines,
-                    ToChaosSeaAuditNode(relicRequest),
-                    "Полный JSON pending abode offering request"))
+                    BuildAbodeOfferingPreviewAuditNode(
+                        relicRequest,
+                        relic.RawJson,
+                        "game_state/meta/soul_state.json.soulRelics.stored[]",
+                        currentAbodePowerChosen,
+                        relicPowerGain),
+                    "Полный JSON подношения реликвии: pending request + consumed relic + before/after"))
             {
                 return;
             }
@@ -1517,8 +1564,13 @@ public partial class ExplorerMode
             if (!ConfirmChaosSeaContractPreview(
                     "Полный предпросмотр подношения Архива",
                     archiveLines,
-                    ToChaosSeaAuditNode(archiveRequest),
-                    "Полный JSON pending abode offering request"))
+                    BuildAbodeOfferingPreviewAuditNode(
+                        archiveRequest,
+                        archiveEntry.RawJson,
+                        "game_state/meta/soul_state.json.afterlifeArchive.stored[]",
+                        currentAbodePowerChosen,
+                        archivePowerGain),
+                    "Полный JSON подношения Архива: pending request + consumed archive entry + before/after"))
             {
                 return;
             }
@@ -1631,8 +1683,15 @@ public partial class ExplorerMode
         if (!ConfirmChaosSeaContractPreview(
                 "Полный предпросмотр подношения Перьев",
                 featherLines,
-                ToChaosSeaAuditNode(request),
-                "Полный JSON pending abode offering request"))
+                BuildAbodeOfferingPreviewAuditNode(
+                    request,
+                    null,
+                    "game_state/meta/soul_state.json.inkFeathers.current",
+                    currentAbodePowerChosen,
+                    powerGain,
+                    feathers,
+                    inputCost),
+                "Полный JSON подношения Перьев: pending request + before/after"))
         {
             return;
         }
@@ -1677,7 +1736,8 @@ public partial class ExplorerMode
         string Rarity,
         string RaritySource,
         bool HasValidRarity,
-        string RarityIssue);
+        string RarityIssue,
+        JsonObject RawJson);
 
     private async Task<List<AbodeOfferingRelic>> ReadStoredSoulRelicsForAbodeOfferingAsync()
     {
@@ -1708,7 +1768,14 @@ public partial class ExplorerMode
                         ? "missing rarity/quality/relicRarity"
                         : $"unsupported {raritySource}='{rarity}'";
                 if (!string.IsNullOrWhiteSpace(relicId))
-                    result.Add(new AbodeOfferingRelic(relicId, name, rarity, raritySource, hasValidRarity, rarityIssue));
+                    result.Add(new AbodeOfferingRelic(
+                        relicId,
+                        name,
+                        rarity,
+                        raritySource,
+                        hasValidRarity,
+                        rarityIssue,
+                        CloneJsonObjectElementForAudit(relic) ?? new JsonObject()));
             }
         }
 
@@ -1812,7 +1879,8 @@ public partial class ExplorerMode
                     reservedForGuardianId,
                     reservedForGuardianName,
                     reservedForProjectId,
-                    reservedForProjectName));
+                    reservedForProjectName,
+                    CloneJsonObjectElementForAudit(entry) ?? new JsonObject()));
             }
         }
 

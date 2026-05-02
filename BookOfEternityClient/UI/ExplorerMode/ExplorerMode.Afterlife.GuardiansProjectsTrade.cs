@@ -401,6 +401,13 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        if (guardiansDoc?.RootElement.ValueKind == JsonValueKind.Object)
+            WriteJsonAuditPanel(
+                "Полный JSON текущего Chaos Sea state перед свободным поиском",
+                guardiansDoc.RootElement,
+                Color.Cyan1);
         WaitForKey();
     }
 
@@ -859,6 +866,7 @@ public partial class ExplorerMode
         var currentAbodeId = "";
         var previousActiveGuardianId = "";
         var previousActiveGuardianName = "";
+        JsonElement? previousActiveGuardianNode = null;
         var discoveredAbodeIds = new List<string>();
         if (root.ValueKind == JsonValueKind.Object &&
             root.TryGetProperty("chaosSeaNavigation", out var nav) && nav.ValueKind == JsonValueKind.Object)
@@ -880,6 +888,7 @@ public partial class ExplorerMode
             root.TryGetProperty("activeGuardian", out var activeGuardian) &&
             activeGuardian.ValueKind == JsonValueKind.Object)
         {
+            previousActiveGuardianNode = activeGuardian;
             previousActiveGuardianId = GetStr(activeGuardian, "guardianId", "");
             previousActiveGuardianName = GuardianManifestation.GetDisplayName(activeGuardian);
         }
@@ -1008,7 +1017,9 @@ public partial class ExplorerMode
                         selGuardianId,
                         selGName,
                         targetAlreadyDiscovered,
-                        discoveredAbodeIds),
+                        discoveredAbodeIds,
+                        previousActiveGuardianNode,
+                        selGuardian),
                     "Полный JSON before/after перехода Моря Хаоса"))
             {
                 continue;
@@ -1031,7 +1042,9 @@ public partial class ExplorerMode
         string targetGuardianId,
         string targetGuardianName,
         bool targetAlreadyDiscovered,
-        IReadOnlyCollection<string> discoveredAbodeIds)
+        IReadOnlyCollection<string> discoveredAbodeIds,
+        JsonElement? previousActiveGuardian,
+        JsonElement targetGuardian)
     {
         var discoveredBefore = discoveredAbodeIds
             .Where(id => !string.IsNullOrWhiteSpace(id))
@@ -1055,7 +1068,10 @@ public partial class ExplorerMode
                 ["previousActiveGuardianId"] = previousActiveGuardianId,
                 ["previousActiveGuardianName"] = previousActiveGuardianName,
                 ["chaosSeaNavigation.currentAbodeId"] = previousAbodeId,
-                ["chaosSeaNavigation.discoveredAbodes"] = new JsonArray(discoveredBefore.Select(id => (JsonNode?)id).ToArray())
+                ["chaosSeaNavigation.discoveredAbodes"] = new JsonArray(discoveredBefore.Select(id => (JsonNode?)id).ToArray()),
+                ["previousActiveGuardianFull"] = previousActiveGuardian.HasValue
+                    ? CloneJsonElementForAudit(previousActiveGuardian.Value)
+                    : null
             },
             ["after"] = new JsonObject
             {
@@ -1065,7 +1081,11 @@ public partial class ExplorerMode
                 ["chaosSeaNavigation.discoveredAbodes"] = new JsonArray(discoveredAfter.Select(id => (JsonNode?)id).ToArray()),
                 ["targetGuardian.abode.abodeId"] = targetAbodeId,
                 ["targetGuardian.abode.name"] = targetAbodeName,
-                ["targetGuardian.abode.isDiscovered"] = true
+                ["targetGuardian.abode.isDiscovered"] = true,
+                ["targetGuardianFull"] = CloneJsonElementForAudit(targetGuardian),
+                ["targetAbodeFull"] = targetGuardian.TryGetProperty("abode", out var targetAbode) && targetAbode.ValueKind == JsonValueKind.Object
+                    ? CloneJsonElementForAudit(targetAbode)
+                    : null
             },
             ["contract"] = new JsonObject
             {
@@ -3055,6 +3075,16 @@ public partial class ExplorerMode
                 "Полный JSON interactionReceipts резидента",
                 BuildResidentInteractionReceiptsAuditNode(interactionReceiptEntries),
                 Color.Cyan1);
+        if (transferReceiptEntries.Count > 0)
+            WriteJsonAuditPanel(
+                "Полный JSON transferReceipts резидента",
+                BuildResidentTransferReceiptsAuditNode(transferReceiptEntries),
+                Color.Cyan1);
+        if (residentStateRoot != null)
+            WriteJsonAuditPanel(
+                "Полный JSON guardian_abode_residents.json для сверки roster/history/receipts",
+                residentStateRoot.DeepClone(),
+                Color.Grey);
 
         var availableInteractions = resident.AvailableInteractions.Select(value => value.Trim().ToLowerInvariant()).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var useDefaultInteractions = availableInteractions.Count == 0;
@@ -3145,7 +3175,9 @@ public partial class ExplorerMode
                         ("residentId", resident.ResidentId),
                         ("guardianId", guardianId),
                         ("abodeId", abodeId),
-                        ("requiredRelicType", GuardianAbodeResidentState.RelicTypeCompanionEcho))))
+                        ("requiredRelicType", GuardianAbodeResidentState.RelicTypeCompanionEcho),
+                        ("residentFullJsonBefore", rawResident?.DeepClone()),
+                        ("soulStateFullJsonBefore", soulDoc == null ? null : CloneJsonElementForAudit(soulDoc.RootElement)))))
             {
                 return;
             }
@@ -3187,7 +3219,9 @@ public partial class ExplorerMode
                         ("residentId", resident.ResidentId),
                         ("guardianId", guardianId),
                         ("abodeId", abodeId),
-                        ("linkedSoulQuestId", resident.LinkedSoulQuestId))))
+                        ("linkedSoulQuestId", resident.LinkedSoulQuestId),
+                        ("residentFullJsonBefore", rawResident?.DeepClone()),
+                        ("soulQuestsFullJsonBefore", soulQuestDoc == null ? null : CloneJsonElementForAudit(soulQuestDoc.RootElement)))))
             {
                 return;
             }
@@ -3708,6 +3742,33 @@ public partial class ExplorerMode
                 ["status"] = entry.Status,
                 ["responseMode"] = entry.ResponseMode,
                 ["historyEntryId"] = entry.HistoryEntryId,
+                ["reason"] = entry.Reason,
+                ["resolvedAtTurn"] = entry.ResolvedAtTurn,
+                ["resolvedAtUtc"] = entry.ResolvedAtUtc
+            }).ToArray())
+        };
+
+    private static JsonObject BuildResidentTransferReceiptsAuditNode(IEnumerable<GuardianAbodeResidentState.TransferReceiptEntry> entries) =>
+        new()
+        {
+            ["surface"] = "game_state/meta/guardian_abode_residents.json.transferReceipts[]",
+            ["entries"] = new JsonArray(entries.Select(entry => (JsonNode?)new JsonObject
+            {
+                ["requestId"] = entry.RequestId,
+                ["residentId"] = entry.ResidentId,
+                ["residentName"] = entry.ResidentName,
+                ["sourceGuardianId"] = entry.SourceGuardianId,
+                ["sourceGuardianName"] = entry.SourceGuardianName,
+                ["sourceAbodeId"] = entry.SourceAbodeId,
+                ["sourceAbodeName"] = entry.SourceAbodeName,
+                ["targetGuardianId"] = entry.TargetGuardianId,
+                ["targetGuardianName"] = entry.TargetGuardianName,
+                ["targetAbodeId"] = entry.TargetAbodeId,
+                ["targetAbodeName"] = entry.TargetAbodeName,
+                ["status"] = entry.Status,
+                ["transferMode"] = entry.TransferMode,
+                ["departureHistoryEntryId"] = entry.DepartureHistoryEntryId,
+                ["arrivalHistoryEntryId"] = entry.ArrivalHistoryEntryId,
                 ["reason"] = entry.Reason,
                 ["resolvedAtTurn"] = entry.ResolvedAtTurn,
                 ["resolvedAtUtc"] = entry.ResolvedAtUtc
