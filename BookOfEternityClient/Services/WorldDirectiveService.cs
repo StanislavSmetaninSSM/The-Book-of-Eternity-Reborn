@@ -260,6 +260,13 @@ public sealed class WorldDirectiveService
         if (string.IsNullOrWhiteSpace(fallbackWorldDescription) && string.IsNullOrWhiteSpace(fallbackCircumstances))
             return;
 
+        if (await ReadActiveWorldDirectivesAsync() != null)
+        {
+            _logger.LogInformation(
+                "Skipping fallback world directives materialization because active world directives already exist.");
+            return;
+        }
+
         var directivesFromPrompt = new WorldDirectives
         {
             SettingSummary = fallbackWorldDescription?.Trim() ?? "",

@@ -356,10 +356,25 @@ public sealed class AfterlifeDocumentationCoverageTests
             "abdicated",
             "vacated",
             "leadershipHistory.eventType",
-            "departed_to_neutral"
+            "departed_to_neutral",
+            "active-guardian auto faction",
+            "faction_{slug(activeGuardianId)}",
+            "candidateHeadActorType=guardian",
+            "activeGuardianId"
         })
         {
             Assert.Contains(requiredTerm, examples, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredTerm in new[]
+        {
+            "active-guardian auto faction",
+            "faction_{slug(activeGuardianId)}",
+            "candidateHeadActorType=guardian",
+            "activeGuardianId"
+        })
+        {
+            Assert.Contains(requiredTerm, matrix, StringComparison.Ordinal);
         }
     }
 

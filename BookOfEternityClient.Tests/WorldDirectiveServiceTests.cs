@@ -61,6 +61,29 @@ public sealed class WorldDirectiveServiceTests : IDisposable
         Assert.Equal(source.HardRules, clone.HardRules);
     }
 
+    [Fact]
+    public async Task MaterializePendingToActiveAsync_DoesNotOverwriteExistingActiveDirectivesWithFallback()
+    {
+        await _service.WriteActiveWorldDirectivesAsync(new WorldDirectiveService.WorldDirectives
+        {
+            WorldTitle = "Profile World",
+            SettingSummary = "Detailed profile summary",
+            DetailedWorldDescription = "Detailed profile body",
+            ContinuityNotes = new() { "Profile note" }
+        });
+
+        await _service.MaterializePendingToActiveAsync(
+            fallbackWorldDescription: "Short trigger world",
+            fallbackCircumstances: "Short trigger circumstances");
+
+        var active = await _service.ReadActiveWorldDirectivesAsync();
+        Assert.NotNull(active);
+        Assert.Equal("Detailed profile summary", active!.SettingSummary);
+        Assert.Equal("Detailed profile body", active.DetailedWorldDescription);
+        Assert.Contains("Profile note", active.ContinuityNotes);
+        Assert.DoesNotContain(active.ContinuityNotes, note => note.Contains("Short trigger circumstances", StringComparison.OrdinalIgnoreCase));
+    }
+
     public void Dispose()
     {
         try

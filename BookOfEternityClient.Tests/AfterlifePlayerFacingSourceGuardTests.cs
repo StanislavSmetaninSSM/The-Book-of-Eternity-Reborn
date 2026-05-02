@@ -75,6 +75,15 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("string.Equals(command, \"/abodes\"", explorerPrivate, StringComparison.Ordinal);
         Assert.Contains("string.Equals(command, \"/обители\"", explorerPrivate, StringComparison.Ordinal);
         Assert.Contains("string.Equals(command, \"/chaos_sea\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.DoesNotContain("string.Equals(command, \"/guardians\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.DoesNotContain("string.Equals(command, \"/хранители\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.DoesNotContain("string.Equals(command, \"/abode_offering\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.DoesNotContain("string.Equals(command, \"/подношение_обители\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.DoesNotContain("string.Equals(command, \"/guardian_projects\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.DoesNotContain("string.Equals(command, \"/проекты_хранителей\"", explorerPrivate, StringComparison.Ordinal);
+        Assert.Contains("only canonical TriggerIncarnation / game_state/control/incarnation_trigger.json", lifecycle, StringComparison.Ordinal);
+        Assert.DoesNotContain("ALLOWED: only mortal bootstrap / next-life materialization", lifecycle, StringComparison.Ordinal);
+        Assert.DoesNotContain("ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, Abode/Guardian interactions, Life Evaluation, Incarnation setup", lifecycle, StringComparison.Ordinal);
 
         Assert.Contains("BuildGuardianSellAuditNode", trade, StringComparison.Ordinal);
         Assert.Contains("BuildGuardianBuyAuditNode", trade, StringComparison.Ordinal);

@@ -61,7 +61,9 @@ public partial class ExplorerMode
             return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine($"[green]Создан ожидающий запрос действия Обители: завершение проекта. На принятом ходу нужно материализовать завершённый проект и списать {cost.Feathers} / {cost.LightSparks}. Любимый архетип влияет только на эту цену; strengthReward проекта определяется только tier: 8/12/16.[/]");
+        MarkupLine(BuildShiningCorePostConfirmMarkup(
+            request,
+            $"На принятом ходу нужно материализовать generated projectId, списать {cost.Feathers}/{cost.LightSparks}, обновить factionStrength/gates stale state и coreActionReceipts[] с тем же requestId."));
         WaitForKey();
     }
 
@@ -93,9 +95,11 @@ public partial class ExplorerMode
             return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine(support
-            ? "[green]Создан ожидающий запрос действия Обители: поддержка проекта. На принятом ходу нужно включить поддержку проекта и пометить черновик Врат устаревшим, если он открыт.[/]"
-            : "[green]Создан ожидающий запрос действия Обители: снятие поддержки проекта. На принятом ходу нужно снять поддержку и пометить черновик Врат устаревшим, если он открыт.[/]");
+        MarkupLine(BuildShiningCorePostConfirmMarkup(
+            request,
+            support
+                ? "На принятом ходу нужно включить support_project для projectId, пометить открытый черновик Врат stale и записать coreActionReceipts[] с тем же requestId."
+                : "На принятом ходу нужно снять support_project для projectId, пометить открытый черновик Врат stale и записать coreActionReceipts[] с тем же requestId."));
         WaitForKey();
     }
 
@@ -125,7 +129,9 @@ public partial class ExplorerMode
             return;
 
         await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-        MarkupLine("[green]Создан ожидающий запрос действия Обители: отправка проекта в историю. На принятом ходу нужно перенести проект в историю, пересчитать силу и записать подтверждение.[/]");
+        MarkupLine(BuildShiningCorePostConfirmMarkup(
+            request,
+            "На принятом ходу нужно перенести projectId в историю, пересчитать factionStrength/gates stale state и записать coreActionReceipts[] с тем же requestId."));
         WaitForKey();
     }
 
@@ -185,7 +191,9 @@ public partial class ExplorerMode
                     continue;
 
                 await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-                MarkupLine("[green]Создан ожидающий запрос действия Обители: открытие Врат. На принятом ходу нужно материализовать зафиксированный набор и записать подтверждение.[/]");
+                MarkupLine(BuildShiningCorePostConfirmMarkup(
+                    request,
+                    "На принятом ходу нужно создать новый positive gates.draftVersion, availableBlessingCards/selected arrays и coreActionReceipts[] с тем же requestId."));
                 WaitForKey();
                 continue;
             }
@@ -262,7 +270,9 @@ public partial class ExplorerMode
                     continue;
 
                 await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
-                MarkupLine("[green]Создан ожидающий запрос действия Обители: подготовка новой жизни. На принятом ходу нужно записать зафиксированный пакет и перевести runtime в режим стартовой передачи.[/]");
+                MarkupLine(BuildShiningCorePostConfirmMarkup(
+                    request,
+                    "На принятом ходу нужно записать preparedIncarnationPackage.selectedCards snapshot, generatedFromDraftVersion и coreActionReceipts[] с тем же requestId; TriggerIncarnation выполняется позднее."));
                 WaitForKey();
                 return;
             }
@@ -325,8 +335,21 @@ public partial class ExplorerMode
             var cardId = GetNodeString(card["cardId"]) ?? string.Empty;
             var name = GetNodeString(card["displayName"]) ?? cardId;
             var summary = GetNodeString(card["displaySummary"]) ?? string.Empty;
+            var sourceType = GetNodeString(card["sourceType"]) ?? string.Empty;
+            var sourceFactionId = GetNodeString(card["sourceFactionId"]) ?? string.Empty;
+            var sourceActorId = GetNodeString(card["sourceActorId"]) ?? string.Empty;
+            var dedupeKey = GetNodeString(card["dedupeKey"]) ?? string.Empty;
+            var sourceParts = new[]
+                {
+                    string.IsNullOrWhiteSpace(cardId) ? "" : $"cardId={cardId}",
+                    string.IsNullOrWhiteSpace(sourceType) ? "" : $"sourceType={sourceType}",
+                    string.IsNullOrWhiteSpace(sourceFactionId) ? "" : $"sourceFactionId={sourceFactionId}",
+                    string.IsNullOrWhiteSpace(sourceActorId) ? "" : $"sourceActorId={sourceActorId}",
+                    string.IsNullOrWhiteSpace(dedupeKey) ? "" : $"dedupeKey={dedupeKey}"
+                }
+                .Where(part => !string.IsNullOrWhiteSpace(part));
             var marker = selectedIds.Contains(cardId) ? "[green]✓[/]" : "[dim]•[/]";
-            return ($"{marker} {name} [dim]({GetNodeString(card["rarity"])}, {GetNodeString(card["effectFamily"])})[/] [grey]{summary}[/]", cardId);
+            return ($"{marker} {Markup.Escape(name)} [dim]({Markup.Escape(GetNodeString(card["rarity"]) ?? "")}, {Markup.Escape(GetNodeString(card["effectFamily"]) ?? "")})[/] [dim]{Markup.Escape(string.Join("; ", sourceParts))}[/] [grey]{Markup.Escape(summary)}[/]", cardId);
         }).ToList();
 
         var selected = Prompt(new SelectionPrompt<string>()

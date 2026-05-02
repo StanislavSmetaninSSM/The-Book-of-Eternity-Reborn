@@ -86,6 +86,7 @@ public partial class ExplorerMode
                 if (string.IsNullOrWhiteSpace(name))
                     name = "?";
                 var isActiveGuardian = string.Equals(GetStr(g, "guardianId", ""), activeGuardianId, StringComparison.OrdinalIgnoreCase);
+                var guardianId = GetStr(g, "guardianId", "");
                 var domain = GetStr(g, "domain", "");
                 int rep = 0;
                 if (g.TryGetProperty("relationshipData", out var rd))
@@ -140,6 +141,8 @@ public partial class ExplorerMode
                     repTierTag,
                     string.IsNullOrEmpty(moodTag) ? "" : moodTag,
                     string.IsNullOrEmpty(abodeName) ? "" : $"🏛 {abodeName}",
+                    string.IsNullOrEmpty(guardianId) ? "" : $"guardianId={guardianId}",
+                    string.IsNullOrEmpty(abodeId) ? "" : $"abodeId={abodeId}",
                     locTag);
             }).ToList();
 
@@ -927,6 +930,8 @@ public partial class ExplorerMode
                 return ConsoleLayout.PlainChoiceLabel(
                     $"🏛️ {abName}",
                     $"{domainRu} — {gName}",
+                    string.IsNullOrWhiteSpace(GetStr(g, "guardianId", "")) ? "" : $"guardianId={GetStr(g, "guardianId", "")}",
+                    string.IsNullOrWhiteSpace(abId) ? "" : $"abodeId={abId}",
                     isCurrent ? "ЗДЕСЬ" : "");
             }).ToList();
             choices.Add("🔍 Искать новую обитель");
@@ -2541,12 +2546,15 @@ public partial class ExplorerMode
             {
                 var project = entry.GetProperty("project");
                 var projectName = GetStr(project, "projectName", GetStr(project, "name", "Проект"));
+                var projectId = GetStr(project, "projectId", "");
                 var activeState = GetStr(project, "activeState", "");
                 var finalState = GetStr(project, "finalState", "");
                 var status = FormatGuardianProjectStateLabel(string.IsNullOrWhiteSpace(activeState) ? finalState : activeState);
                 return ConsoleLayout.PlainChoiceLabel(
                     $"🔬 {projectName}",
                     guardianName,
+                    string.IsNullOrWhiteSpace(projectId) ? "" : $"projectId={projectId}",
+                    $"guardianId={guardianId}",
                     string.IsNullOrWhiteSpace(status) ? "" : status);
             }).ToList();
             choices.Add("← Назад");
@@ -4050,10 +4058,13 @@ public partial class ExplorerMode
             var choices = refreshedView.Offers.Select(offer =>
             {
                 var soldTag = offer.SoldOut ? "РАСПРОДАНО" : "";
+                var relicId = GetNodeString(offer.RelicData["relicId"]) ?? GetNodeString(offer.RelicData["id"]) ?? string.Empty;
                 return ConsoleLayout.PlainChoiceLabel(
                     $"💎 {offer.Name}",
                     offer.Rarity,
                     $"🪶 {offer.PriceInFeathers}",
+                    string.IsNullOrWhiteSpace(offer.SlotId) ? "" : $"slotId={offer.SlotId}",
+                    string.IsNullOrWhiteSpace(relicId) ? "" : $"relicId={relicId}",
                     soldTag);
             }).ToList();
             choices.Add("← Назад");
@@ -4186,7 +4197,8 @@ public partial class ExplorerMode
                 ConsoleLayout.PlainChoiceLabel(
                     $"💎 {offer.Name}",
                     offer.Rarity,
-                    $"🪶 {offer.PriceInFeathers}"))
+                    $"🪶 {offer.PriceInFeathers}",
+                    string.IsNullOrWhiteSpace(offer.RelicId) ? "" : $"relicId={offer.RelicId}"))
                 .ToList();
             choices.Add("← Назад");
 
@@ -4354,7 +4366,9 @@ public partial class ExplorerMode
                 ConsoleLayout.PlainChoiceLabel(
                     $"🔁 {offer.Name}",
                     offer.Rarity,
-                    $"🪶 {offer.PriceInFeathers}"));
+                    $"🪶 {offer.PriceInFeathers}",
+                    string.IsNullOrWhiteSpace(offer.BuybackEntryId) ? "" : $"buybackEntryId={offer.BuybackEntryId}",
+                    string.IsNullOrWhiteSpace(offer.RelicId) ? "" : $"relicId={offer.RelicId}"));
             var choices = offerChoices.Select(item => item.Label).ToList();
             choices.Add("← Назад");
 
