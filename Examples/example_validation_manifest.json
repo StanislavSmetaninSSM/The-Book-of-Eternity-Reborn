@@ -157,6 +157,31 @@
       ]
     },
     {
+      "id": "afterlife_guardian_correction_spend_reference",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "\"eventId\": \"gce_corr_protective_omen_002\"",
+        "\"reasonType\": \"correction_spend\"",
+        "\"sourceSurface\": \"guardian_corrections\""
+      ],
+      "baselineKind": "chaosSeaAzaliaLivingWorld",
+      "expectedModifiedFiles": [
+        "game_state/meta/guardians.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/guardians.json",
+          "requiredText": [
+            "\"guardianPowerEvents\"",
+            "\"correction_spend\"",
+            "\"guardian_corrections\"",
+            "\"corr_protective_omen_002\""
+          ]
+        }
+      ]
+    },
+    {
       "id": "afterlife_chaos_catchup_resident_history_response",
       "file": "E_CLI_Afterlife_Turns.txt",
       "runner": "gameResponseDistribution",
@@ -1238,7 +1263,8 @@
     {
       "exampleNumber": 6,
       "runtimeScenarioIds": [
-        "afterlife_ordinary_chaos_incarnation_response"
+        "afterlife_ordinary_chaos_incarnation_response",
+        "afterlife_chaos_ascension_trigger_response"
       ]
     },
     {

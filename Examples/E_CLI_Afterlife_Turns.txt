@@ -62,6 +62,7 @@ Every accepted afterlife turn must follow this order:
    - Read `input/turn_request.json.progressionControl` before resolving the player action.
    - Every `mustEvaluate* = true` is mandatory.
    - `afterlifeCatchupRequired = true` is one bounded summary obligation, not thousands of raw cycles.
+   - `game_state/control/progression_schedule.json` is client-owned; never edit it directly. Close scheduler obligations only through `progressionProcessingReport` / `game_state/control/progression_report.json`.
 
 4. State loading:
    - Read `soul_state.json`.
@@ -89,6 +90,7 @@ Every accepted afterlife turn must follow this order:
 9. Report:
    - If any afterlife cycle is due, write `progressionProcessingReport` with exact processed counts and exact per-contour `newLast*Ordinal`.
    - Copy `sessionId`, `requestId`, and `turnNumber` from the current `input/turn_request.json`; do not invent new correlation values.
+   - The report is the only GM-authored scheduler proof. Never write processed counts, `last*Ordinal` markers, catch-up baselines, or pending cycle counts into `progression_schedule.json`.
 
 10. Final audit:
    - Remove stale Mortal World outputs.
@@ -1540,9 +1542,13 @@ Correct `game_state/control/ascension.json` after distribution:
 
 Forbidden in the same accepted response:
 - `TriggerLifeEnd`.
+- `game_state/control/life_transitions.json`.
+- `TriggerIncarnation`.
 - Manual `soul_state.currentRealm = "Shining Abode"`.
 - Shining faction/radiance/trade state mutations.
+- `progressionProcessingReport` unless the same request's `progressionControl` explicitly requires scheduler debt.
 - Mortal World `currentLocationData`, `UpdateNPCs`, `worldEventsLog`, or faction state.
+- Mortal bootstrap files or current-world lore. The client performs the Shining Abode handoff after accepting `ascension.json`.
 
 ==================================================
 7. VALID — DIRECT CHAOS SEA GACHA VS GUARDIAN-MEDIATED GACHA
@@ -5967,17 +5973,130 @@ Post-bootstrap Shining blessing effects:
 
 ```text
 pendingShiningBlessingEffects is runtime-created from preparedIncarnationPackage.selectedCards after Shining bootstrap.
-The GM does not author this object during afterlife turns. Later Mortal turns consume it through normal Mortal surfaces:
+The GM does not author this object during afterlife turns. Most families are consumed later through normal Mortal surfaces:
 - memorySelection.status = pending_pre_turn_one_selection -> pre-turn-one memory selection UI/runtime.
 - resourceGrant.status = applied_at_bootstrap -> already applied at bootstrap; preserve audit only.
-- relicRefinementEntitlements.status = pending_relic_entitlement -> Shining forge receipts consume rerolls/freeShape/freeRetune.
 - pendingSocialEffects.status = pending_first_relation_commit -> first qualifying NPC/faction relation commit.
 - pendingRouteEffects.status = pending_early_route_seed -> world route event seeds before latestTurn.
 - pendingLoreEffects.status = pending_lore_insertion -> world lore event insertion before latestTurn.
 - pendingSurvivalEffects.status = pending_first_ruinous_failure -> first ruinous failure mitigation.
 - pendingDescentEffects.status = pending_resident_descent -> later companion manifestation/descent closure.
+- relicRefinementEntitlements.status = pending_relic_entitlement is the explicit Shining exception: Shining forge previews/requests may consume rerolls/freeShape/freeRetune in Shining Abode. The GM still closes only the resulting pending_shining_abode_actions.json forge request through coreActionReceipts[] and canonical Soul/Shining state; do not author pendingShiningBlessingEffects directly.
 - Terminal status consumed -> preserve consumedAtTurn and consumedAtUtc.
 - Terminal status expired -> preserve expiredAtTurn and expiredAtUtc.
+```
+
+Guardian correction lifecycle and `soul_preparation`:
+
+```text
+Guardian project `soul_preparation` is not an immediate reward. It prepares the next Mortal life and is consumed by client-side Guardian correction resolution when the new life starts.
+
+Completed soul_preparation project fields:
+- project.projectType = soul_preparation
+- project.finalState = Completed
+- project.projectOutcomeAudit.preparationBudgetPoints
+- project.projectOutcomeAudit.preparationClaimPriorityBonus
+- project.effectState.targetIncarnation
+- project.effectState.preparationBudgetPointsGranted
+- project.effectState.preparationBudgetPointsSpent
+- project.effectState.preparationClaimPriorityBonusGranted
+- project.effectState.consumedAtLifeStart
+
+Sabotaged soul_preparation project fields:
+- project.finalState = Sabotaged
+- project.projectOutcomeAudit.hostilePriorityTokensGranted
+- project.effectState.targetIncarnation
+- project.effectState.hostilePriorityTokensGranted
+- project.effectState.hostilePriorityTokensSpent
+- project.effectState.consumedAtLifeStart
+
+At Mortal bootstrap the client reads those effectState fields, applies compatible correction claims around next_life_scenario_core.json, writes game_state/world/guardian_corrections.json, consumes the matching effectState budgets/tokens, and may materialize Abode Power spend through guardianPowerEvents.reasonType = correction_spend.
+
+GM rule:
+- In Chaos Sea/Shining Abode, never create or edit game_state/world/guardian_corrections.json.
+- In Mortal World, read it as client-authored explanation of current-life corrections; do not rewrite the player's scenario core because of it.
+- If a correction spend appears in a raw power-event repair/audit context, it uses sourceSurface = guardian_corrections and sourceId = correctionId.
+```
+
+Reference `soul_preparation` project fragment:
+
+```json
+{
+  "completedProjects": [
+    {
+      "guardianId": "guard_social_azalia_001",
+      "project": {
+        "projectId": "gproj_azalia_soul_preparation_002",
+        "projectType": "soul_preparation",
+        "projectTier": "major",
+        "projectMode": "internal",
+        "projectName": "Нить мягкого старта",
+        "finalState": "Completed",
+        "projectOutcomeAudit": {
+          "preparationBudgetPoints": 2,
+          "preparationClaimPriorityBonus": 1
+        },
+        "effectState": {
+          "targetIncarnation": 9,
+          "preparationBudgetPointsGranted": 2,
+          "preparationBudgetPointsSpent": 0,
+          "preparationClaimPriorityBonusGranted": 1,
+          "consumedAtLifeStart": false
+        }
+      }
+    },
+    {
+      "guardianId": "guard_rival_neris_001",
+      "project": {
+        "projectId": "gproj_neris_soul_preparation_sabotage_002",
+        "projectType": "soul_preparation",
+        "projectTier": "major",
+        "projectMode": "rival",
+        "projectName": "Враждебный приоритет",
+        "finalState": "Sabotaged",
+        "projectOutcomeAudit": {
+          "hostilePriorityTokensGranted": 2
+        },
+        "effectState": {
+          "targetIncarnation": 9,
+          "hostilePriorityTokensGranted": 2,
+          "hostilePriorityTokensSpent": 0,
+          "consumedAtLifeStart": false
+        }
+      }
+    }
+  ]
+}
+```
+
+Reference `guardianPowerEvents.reasonType = correction_spend` shape:
+
+```json
+{
+  "guardianPowerEvents": [
+    {
+      "eventId": "gce_corr_protective_omen_002",
+      "guardianId": "guard_social_azalia_001",
+      "delta": -4,
+      "reasonType": "correction_spend",
+      "sourceSurface": "guardian_corrections",
+      "sourceId": "corr_protective_omen_002",
+      "title": "Корректива Хранителя: Защитное предзнаменование",
+      "summary": "Клиент применил совместимую коррективу старта и списал силу Обители.",
+      "visibility": "player_known",
+      "appliedAt": "2026-04-24T18:10:00Z",
+      "relatedGuardianId": null,
+      "audit": {
+        "correctionId": "corr_protective_omen_002",
+        "slotId": "slot_protection_or_omen",
+        "slotType": "protection_or_omen",
+        "severity": "minor",
+        "claimStrength": 5,
+        "intent": "friendly"
+      }
+    }
+  ]
+}
 ```
 
 Correct reasoning checklist:
@@ -6022,6 +6141,10 @@ Invalid afterlife response:
   },
   "timeChange": {
     "minutes": 60
+  },
+  "progression_schedule": {
+    "pendingChaosSeaCycles": 0,
+    "lastChaosSeaSimulationOrdinal": 99
   }
 }
 ```
@@ -6032,7 +6155,8 @@ Why invalid:
 - `UpdateNPCs` is for regular mortal NPCs, not Guardians or afterlife residents.
 - `currentLocationData` is Mortal World location state; afterlife uses Abodes and Shining state.
 - `timeChange` is Mortal World time; afterlife scheduler uses `progressionControl` and `progressionProcessingReport`.
-- File-level rule: in Chaos Sea or Shining Abode, any response surface mapped to `game_state/world/*`, `game_state/npcs/*`, or `game_state/factions/*` is forbidden unless a future matrix row explicitly says otherwise.
+- `progression_schedule.json` is client-owned and cannot be advanced by GM output; the GM writes `progressionProcessingReport` / `progression_report.json` instead.
+- File-level rule: in Chaos Sea or Shining Abode, any response surface mapped to `game_state/core/player_status.json`, `game_state/player/*`, `game_state/inventory/*`, `game_state/world/*`, `game_state/npcs/*`, `game_state/combat/*`, `game_state/factions/*`, `lore/current_world/*`, Mortal quest files (`game_state/quests/regular_quests.json`, `quest_history.json`, `plot_outline.json`), or Mortal misc files (`game_state/misc/characteristics.json`, `vehicles.json`, `storage_access.json`, `player_interactions.json`) is forbidden unless a future matrix row explicitly says otherwise.
 
 Correct replacement:
 

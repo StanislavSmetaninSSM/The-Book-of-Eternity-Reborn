@@ -24,7 +24,7 @@
                - game_state/quests/ files (active quest progress)
                
             3. **Read System State:**
-               - game_state/control/ files (life transitions, incarnation, ascension)
+               - game_state/control/ files (life transitions, incarnation, `game_state/control/ascension.json`)
                - game_state/history/ files (recent events, patterns)
                
             4. **Read Reference Data as Needed:**
@@ -49,8 +49,8 @@
 
             **AfterlifeProfile (`Chaos Sea` / `Shining Abode`):**
                - Allowed: Guardians, Abodes, Soul Relics, afterlife Ink Feather whitelist actions, Gacha, Soul-system/meta progression, afterlife living-world scheduler, Shining-specific systems when in Shining Abode, `progressionProcessingReport`
-               - Forbidden: combat, experience, leveling, stat gains/losses, regular NPC mechanics, mortal quests, normal inventory management, Mortal World factions, weather, world time, mortal location system
-               - File-level forbidden rule: during AfterlifeProfile, do not write any response surface mapped to `game_state/world/*`, `game_state/npcs/*`, or `game_state/factions/*`
+               - Forbidden: combat, experience, leveling, stat gains/losses, regular NPC mechanics, mortal quests, normal inventory management, Mortal World factions, weather, world time, mortal location system, vehicles/storage/current-world lore
+               - File-level forbidden rule: during AfterlifeProfile, do not write any response surface mapped to `game_state/core/player_status.json`, `game_state/player/*`, `game_state/inventory/*`, `game_state/world/*`, `game_state/npcs/*`, `game_state/combat/*`, `game_state/factions/*`, `lore/current_world/*`, Mortal quest files, or Mortal misc files
                - Afterlife Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when `pending_abode_offering.json.offeringType = ink_feathers`
                - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
                - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
@@ -77,7 +77,7 @@
                - Temporary recipe project effects are client-tracked, not perpetual:
                  - `relic_forging` lasts only until the next local trade refresh and one guardian-mediated gacha use
                  - `lore_research` hook/clue bonuses are tied to a target incarnation
-                 - `soul_preparation` applies only to the next life and is consumed at correction resolution
+                 - `soul_preparation` applies only to the next life and is consumed at correction resolution into `game_state/world/guardian_corrections.json`; completed projects need `projectOutcomeAudit.preparationBudgetPoints` / `preparationClaimPriorityBonus` and `effectState.preparationBudgetPointsGranted` / `preparationBudgetPointsSpent` / `preparationClaimPriorityBonusGranted` / `consumedAtLifeStart`, while sabotaged projects need `projectOutcomeAudit.hostilePriorityTokensGranted` and `effectState.hostilePriorityTokensGranted` / `hostilePriorityTokensSpent` / `consumedAtLifeStart`; matching Abode Power chronology uses `guardianPowerEvents.reasonType=correction_spend` and `sourceSurface=guardian_corrections`
                - If `game_state/control/system_guardian_attraction.json` exists, the soul is deliberately seeking that exact Eternal Guardian; this attraction is deterministic for the turn and must resolve to the requested preset
                - If `game_state/control/afterlife_return_guard.json` exists with `remainingProtectedTurns > 0`, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any forced re-incarnation
                - Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn and only as a reaction to explicit player provocation against the current active Guardian whose pre-turn `relationshipData.currentReputation` / `CurrentReputation` is `<= -21`
@@ -329,6 +329,7 @@
             - Step 3, scheduler first: read `input/turn_request.json.progressionControl` before choosing the scene resolution, relevant actors, or response tone
             - Treat every `mustEvaluate* = true` as mandatory work for this turn, even if the player action is conversational
             - Treat `afterlifeCatchupRequired = true` as a bounded epoch-summary obligation; summarize the accumulated absence into the requested number of major outcomes instead of simulating every raw missed cycle
+            - `game_state/control/progression_schedule.json` is client-owned; never edit it directly. If scheduler debt is due, write only `progressionProcessingReport` / `game_state/control/progression_report.json` with exact current turn correlation and per-contour ordinals.
             - If scheduler debt, pending files, and a direct player action occur in the same afterlife turn, do not split them into separate imagined turns; first select all active rows in `OtherGuides/Afterlife_Contract_Matrix.md`, then use `Examples/E_CLI_Afterlife_Turns.txt` examples 16-18 as the combined-turn model
             - Step 4, state loading: read `soul_state.json`, `guardians.json`, `guardian_projects.json`, and `guardian_abode_residents.json`
             - In Shining Abode, or when Shining catch-up contours are listed, also read `shining_abode_state.json` and evaluate halls, gates, radiance, Light Sparks, factions, leadership, `shiningPoliticalActors`, trade, public mood, and prepared incarnation state
@@ -372,7 +373,7 @@
             - Shining action: mutate `shining_abode_state.json` and matching receipt arrays; do not route Shining politics through mortal `factionDataChanges`
             - Ascension/incarnation choice: write the lifecycle trigger only when the player explicitly chooses it and all prerequisites are satisfied
             - Step 9, canonical output: write only legal afterlife surfaces: `metaStateUpdates`, Guardian updates/journals/projects/power events, resident updates/journals/receipts/history, Shining state/receipts, Soul quests, archive resolutions, lore/chronicle updates, and `progressionProcessingReport`
-            - Step 10, forbidden mortal channels: do not use `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, combat data, mortal inventory, money, health, poise, energy, skills, or XP to satisfy afterlife meaning
+            - Step 10, forbidden mortal channels: do not use `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, `worldEventsLog`, `factionDataChanges`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`, combat data, mortal inventory, money, health, poise, energy, skills, XP, vehicles, storage access, current-world lore, regular quests, quest history, or plot outline to satisfy afterlife meaning
             - Step 11, scheduler report: when any due cycle or catch-up exists, write exact processed counts and exact `newLast*Ordinal` values for every processed afterlife contour
             - Step 12, final audit: before ready signal, verify realm segregation, lifecycle exclusivity, pending contract closure, actor-scope coverage, legal output surfaces, no manual afterlife notifications, and explicit reasoning for every stable/no-mutation contour
 
@@ -392,7 +393,7 @@
 
             **Ascension (Enlightenment 100% + explicit player choice):**
             - Trigger: Player reaches 100% Enlightenment and explicitly chooses ascension
-            - Output: `AscensionTrigger = true` and `playerChoice = "Ascension"`
+            - Output: write `game_state/control/ascension.json` through `AscensionTrigger = true` and `playerChoice = "Ascension"`
             - MANDATORY: do not emit AscensionTrigger without that explicit choice marker
             - Result: real transition from `Chaos Sea` into `Shining Abode`
             - `Shining Abode` still uses afterlife guardian/soul/meta systems, not Mortal World systems
@@ -501,7 +502,7 @@
 - Do not arbitrarily reduce this list to one request because of relic slots. If multiple equipped companion-carrying relics exist, process all of them; slot overlap is not a limiter for next-life companion manifestation.
 - For accepted `archive consultation`, include machine-readable whitelist outcome fields in `archiveActionResolutions`: `guaranteedArchiveQuestCount`, `questHookCount`, `specialQuestLineUnlocks`, `visibleRivalClueBonus`, `archiveWarningTierBonus`.
 - For accepted `archive project fuel`, include machine-readable `resultMode = project_work | pressure_relief` and `resultAmount > 0` in `archiveActionResolutions`, in addition to the canonical journal/tracker result.
-- `pendingShiningBlessingEffects` is created by runtime after Shining prepared-package bootstrap. Do not author it during afterlife. In Mortal turns, close its deferred families through ordinary Mortal surfaces: `memorySelection.status=pending_pre_turn_one_selection`, `resourceGrant.status=applied_at_bootstrap`, `relicRefinementEntitlements.status=pending_relic_entitlement`, `pendingSocialEffects.status=pending_first_relation_commit`, `pendingRouteEffects.status=pending_early_route_seed`, `pendingLoreEffects.status=pending_lore_insertion`, `pendingSurvivalEffects.status=pending_first_ruinous_failure`, and `pendingDescentEffects.status=pending_resident_descent`. Terminal states are `consumed` with `consumedAtTurn`/`consumedAtUtc` and `expired` with `expiredAtTurn`/`expiredAtUtc`. Treat `resourceGrant.grantId` and hidden `_shiningBootstrapResourceGrantIds` player/inventory markers as client-owned idempotency audit data; never create, clear, or use them as GM-authored spend receipts.
+- `pendingShiningBlessingEffects` is created by runtime after Shining prepared-package bootstrap. Do not author it during afterlife. Most deferred families close through ordinary Mortal surfaces: `memorySelection.status=pending_pre_turn_one_selection`, `resourceGrant.status=applied_at_bootstrap`, `pendingSocialEffects.status=pending_first_relation_commit`, `pendingRouteEffects.status=pending_early_route_seed`, `pendingLoreEffects.status=pending_lore_insertion`, `pendingSurvivalEffects.status=pending_first_ruinous_failure`, and `pendingDescentEffects.status=pending_resident_descent`. `relicRefinementEntitlements.status=pending_relic_entitlement` is the explicit Shining forge exception: Shining forge previews/requests may consume rerolls/freeShape/freeRetune in Shining Abode, while the GM closes only the resulting `pending_shining_abode_actions.json` forge receipt/state contract. Terminal states are `consumed` with `consumedAtTurn`/`consumedAtUtc` and `expired` with `expiredAtTurn`/`expiredAtUtc`. Treat `resourceGrant.grantId` and hidden `_shiningBootstrapResourceGrantIds` player/inventory markers as client-owned idempotency audit data; never create, clear, or use them as GM-authored spend receipts.
             - If Guardian reveals lore: add loreCodexUpdates with discoveryContext referencing the Guardian
             
             **Generate the same logical turn result as API mode** (per Block_2.txt master schema),
@@ -536,7 +537,7 @@
                - lore/ files (world lore updates when triggered)
                
             4. **System Updates:**
-               - game_state/control/ files (life transitions, incarnation, ascension)
+               - game_state/control/ files (life transitions, incarnation, `game_state/control/ascension.json`)
                - game_state/history/ files (turn archive, event logging)
                
             5. **Ready Signal:**
