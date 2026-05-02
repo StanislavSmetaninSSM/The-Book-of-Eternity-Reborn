@@ -1294,9 +1294,28 @@ public partial class ExplorerMode
         if (requests.Count > 0)
         {
             var pendingAudit = new JsonArray();
+            var receiptAudit = new JsonArray();
+            var stateDeltaAudit = new JsonArray();
             foreach (var request in requests)
+            {
                 pendingAudit.Add(JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+                receiptAudit.Add(new JsonObject
+                {
+                    ["requestId"] = request.RequestId,
+                    ["actionType"] = request.ActionType,
+                    ["expectedReceipts"] = BuildShiningCoreExpectedReceiptAuditNode(context, request)
+                });
+                stateDeltaAudit.Add(new JsonObject
+                {
+                    ["requestId"] = request.RequestId,
+                    ["actionType"] = request.ActionType,
+                    ["expectedAcceptedStateDelta"] = BuildShiningCoreExpectedStateDeltaAuditNode(context, request)
+                });
+            }
+
             WriteJsonAuditPanel("Полный JSON pending Shining core actions", pendingAudit, Color.Gold1);
+            WriteJsonAuditPanel("Ожидаемые typed coreActionReceipts[] для pending Shining core actions", receiptAudit, Color.Gold1);
+            WriteJsonAuditPanel("Ожидаемые accepted-state deltas для pending Shining core actions", stateDeltaAudit, Color.Gold1);
         }
     }
 
@@ -1420,6 +1439,38 @@ public partial class ExplorerMode
             ["leadershipRequests"] = JsonSerializer.SerializeToNode(leadershipRequests, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
         };
         WriteJsonAuditPanel("Полный JSON pending political contracts", pendingAudit, Color.Orange1);
+
+        var politicalReceiptAudit = new JsonObject
+        {
+            ["foundingRequests"] = BuildShiningPoliticalPendingReceiptAuditArray(
+                ShiningFactionRequestState.PendingFoundingsRequestPath,
+                foundingRequests),
+            ["realignmentRequests"] = BuildShiningPoliticalPendingReceiptAuditArray(
+                ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                realignmentRequests),
+            ["leadershipRequests"] = BuildShiningPoliticalPendingReceiptAuditArray(
+                ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                leadershipRequests)
+        };
+        WriteJsonAuditPanel("Ожидаемые typed political receipts/history для pending contracts", politicalReceiptAudit, Color.Orange1);
+    }
+
+    private static JsonArray BuildShiningPoliticalPendingReceiptAuditArray<TRequest>(
+        string pendingPath,
+        IReadOnlyList<TRequest> requests)
+    {
+        var result = new JsonArray();
+        foreach (var request in requests)
+        {
+            var requestAudit = JsonSerializer.SerializeToNode(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) as JsonObject;
+            result.Add(new JsonObject
+            {
+                ["requestId"] = GetNodeString(requestAudit?["requestId"]) ?? string.Empty,
+                ["expectedReceiptsAndHistory"] = BuildShiningPoliticalExpectedReceiptAuditNode(pendingPath, requestAudit)
+            });
+        }
+
+        return result;
     }
 
     private void ShowShiningPoliticalResolutionInspectionPanel(ShiningContext context)

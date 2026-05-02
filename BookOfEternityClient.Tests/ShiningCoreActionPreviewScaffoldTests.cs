@@ -24,10 +24,10 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
 
         var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
 
-        Assert.Equal("generated_shining_relic_id", GetString(receipt["relicId"]));
-        Assert.Equal("generated Shining Soul Relic name", GetString(receipt["relicName"]));
-        Assert.Contains("gachaBaseResult.baseRarity", GetString(receipt["baseRarity"]), StringComparison.Ordinal);
-        Assert.Contains("<= 2", GetString(receipt["finalRarity"]), StringComparison.Ordinal);
+        Assert.Equal("shine_relic_core_gacha_preview", GetString(receipt["relicId"]));
+        Assert.Equal("Example Shining Soul Relic", GetString(receipt["relicName"]));
+        Assert.Equal(ShiningAbodeState.RarityRare, GetString(receipt["baseRarity"]));
+        Assert.Equal(ShiningAbodeState.RarityEpic, GetString(receipt["finalRarity"]));
         Assert.Equal("shining_return_7", GetString(receipt["returnCycleId"]));
     }
 
@@ -44,11 +44,11 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
 
         var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
 
-        Assert.Equal("generated_native_hall_id", GetString(receipt["hallId"]));
-        Assert.Equal("generated_native_faction_id", GetString(receipt["resolvedFactionId"]));
+        Assert.Equal("hall_native_core_discovery_preview", GetString(receipt["hallId"]));
+        Assert.Equal("shine_faction_native_core_discovery_preview", GetString(receipt["resolvedFactionId"]));
         Assert.Equal(2, receipt["newResidentIds"]!.AsArray().Count);
         Assert.Equal(2, receipt["seededProjectIds"]!.AsArray().Count);
-        Assert.Equal("generated native faction charter summary", GetString(receipt["charterSummary"]));
+        Assert.Equal("Example generated native faction charter summary", GetString(receipt["charterSummary"]));
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             ReturnCycleId = "shining_return_7"
         };
 
-        var receipt = BuildReceiptScaffold(request, "refused|withdrawn");
+        var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusRefused);
 
         Assert.Equal(string.Empty, GetString(receipt["relicId"]));
         Assert.Null(receipt["baseRarity"]);
@@ -103,7 +103,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
 
         var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
 
-        Assert.Equal("generated_completed_project_id", GetString(receipt["projectId"]));
+        Assert.Equal("shine_project_completed_core_complete_project_preview", GetString(receipt["projectId"]));
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             }
         };
 
-        var receipt = BuildReceiptScaffold(request, "refused|withdrawn");
+        var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusWithdrawn);
 
         Assert.Equal(string.Empty, GetString(receipt["projectId"]));
     }
