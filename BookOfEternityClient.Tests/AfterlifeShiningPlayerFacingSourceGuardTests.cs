@@ -72,6 +72,11 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("projectedStateFragment", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("beforeFullShiningRoot", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("afterFullShiningRoot", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("beforeFullSoulRoot", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("afterFullSoulRoot", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningGachaAccountingAuditNode", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("expectedGachaHistoryEntry", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("oneNewRelicEvidence", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("GetNodeInt(context.Root[\"gates\"]?[\"draftVersion\"]) + 1", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("[\"refusedOrWithdrawn\"]", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("generatedDraftVersion: 0", actionPreviewSource, StringComparison.Ordinal);
@@ -105,7 +110,15 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("Чернильные Перья: [gold1]{currentFeathers}[/] ->", tradeSource, StringComparison.Ordinal);
         Assert.Contains("expectedLocalReceipt", tradeSource, StringComparison.Ordinal);
         Assert.Contains("Ожидаемый каркас faction.tradeInventoryReceipts[]", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("Ожидаемый каркас faction.tradeInventory", tradeSource, StringComparison.Ordinal);
         Assert.Contains("BuildShiningTradeInventoryExpectedReceiptAuditNode", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningTradeInventoryExpectedStateAuditNode", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningTradeInventoryExpectedItemsAuditArray", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("priceInFeathers", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("relicData", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("slotCount", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("generationTradeTier", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("serviceMultiplierSnapshot", tradeSource, StringComparison.Ordinal);
         Assert.Contains("expectedStateFragment", tradeSource, StringComparison.Ordinal);
         Assert.Contains("affectedFiles", tradeSource, StringComparison.Ordinal);
         Assert.Contains("soldOutAfterPurchase", tradeSource, StringComparison.Ordinal);
