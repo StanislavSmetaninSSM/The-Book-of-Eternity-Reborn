@@ -271,6 +271,42 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_SealedShiningPreservesNonEmptyAndMalformedPendingRequests()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                RequestId = "core_req_sealed",
+                ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                CreatedAtTurn = 8
+            });
+
+            await ShiningCoreActionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.True(fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
+            Assert.Single(await ShiningCoreActionRequestState.ReadRequestsAsync(fs));
+
+            await fs.WriteFileAtomicAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, "{ malformed");
+            await ShiningCoreActionRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.Equal("{ malformed", await fs.ReadFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_ActiveShiningWithMultiplePendingRequests_PreservesMalformedFile()
     {
         var root = CreateTempRoot();

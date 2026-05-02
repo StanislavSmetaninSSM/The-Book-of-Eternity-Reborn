@@ -194,6 +194,44 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_SealedShiningPreservesNonEmptyTradeRequests()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            await ShiningTradeRequestState.WriteRequestAsync(fs, new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+            {
+                RequestId = "trade_req_sealed",
+                FactionId = "faction_old",
+                FactionName = "Старый Дом",
+                TradeCycleId = "shining_return_2",
+                DerivedTradeTier = 2,
+                DerivedTradeSlotCount = 6,
+                DerivedRarityCeiling = "rare",
+                DerivedServiceMultiplier = 1.25,
+                CreatedAtTurn = 10
+            });
+
+            await ShiningTradeRequestState.EnsureHealthyAsync(fs, "Shining Abode");
+
+            Assert.True(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
+            var request = Assert.Single(await ShiningTradeRequestState.ReadRequestsAsync(fs));
+            Assert.Equal("trade_req_sealed", request.RequestId);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_PendingBootstrapPreservesTradeRequestAndShowsBlockingReminder()
     {
         var root = CreateTempRoot();

@@ -673,7 +673,12 @@ internal static class ShiningFactionRequestState
 
         if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
         {
-            ClearAllRequests(fs);
+            await ClearOnlyValidEmptyRequestsAsync(fs, PendingFoundingsRequestPath,
+                static json => JsonSerializer.Deserialize<PendingShiningFactionFoundingRequest>(json, JsonOpts));
+            await ClearOnlyValidEmptyRequestsAsync(fs, PendingRealignmentsRequestPath,
+                static json => JsonSerializer.Deserialize<PendingShiningFactionRealignmentRequest>(json, JsonOpts));
+            await ClearOnlyValidEmptyRequestsAsync(fs, PendingLeadershipTransitionsRequestPath,
+                static json => JsonSerializer.Deserialize<PendingShiningFactionLeadershipTransitionRequest>(json, JsonOpts));
             return;
         }
         if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)

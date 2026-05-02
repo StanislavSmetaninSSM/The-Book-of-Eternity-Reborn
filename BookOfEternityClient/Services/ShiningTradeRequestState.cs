@@ -419,7 +419,8 @@ internal static class ShiningTradeRequestState
             ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
             if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
             {
-                fs.DeleteFile(PendingRequestsPath);
+                if (requestState.Requests.Count == 0)
+                    fs.DeleteFile(PendingRequestsPath);
                 return;
             }
             if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
