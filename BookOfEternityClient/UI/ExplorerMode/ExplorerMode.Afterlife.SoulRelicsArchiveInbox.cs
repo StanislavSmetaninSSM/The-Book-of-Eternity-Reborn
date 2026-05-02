@@ -1358,6 +1358,8 @@ public partial class ExplorerMode
                     candidate.Rarity,
                     candidate.Status,
                     candidate.DiscoveredAt ?? "",
+                    candidate.ArchivedAtUtc ?? "",
+                    candidate.SkippedAtUtc ?? "",
                     candidate.Tags))
                 .ToList();
 
@@ -1405,6 +1407,10 @@ public partial class ExplorerMode
 
             if (!string.IsNullOrWhiteSpace(candidate.DiscoveredAt))
                 lines.Add($"  Обнаружено: [dim]{Markup.Escape(candidate.DiscoveredAt)}[/]");
+            if (!string.IsNullOrWhiteSpace(candidate.ArchivedAtUtc))
+                lines.Add($"  Сохранено в Архив UTC: [dim]{Markup.Escape(candidate.ArchivedAtUtc)}[/]");
+            if (!string.IsNullOrWhiteSpace(candidate.SkippedAtUtc))
+                lines.Add($"  Пропущено UTC: [dim]{Markup.Escape(candidate.SkippedAtUtc)}[/]");
             if (!string.IsNullOrWhiteSpace(candidate.SourceEntryId))
                 lines.Add($"  Исходная запись Кодекса: [dim]{Markup.Escape(candidate.SourceEntryId)}[/]");
             if (candidate.Tags.Count > 0)
@@ -1628,6 +1634,8 @@ public partial class ExplorerMode
             ["rarity"] = candidate.Rarity,
             ["status"] = candidate.Status,
             ["discoveredAt"] = candidate.DiscoveredAt,
+            ["archivedAtUtc"] = candidate.ArchivedAtUtc,
+            ["skippedAtUtc"] = candidate.SkippedAtUtc,
             ["tags"] = new JsonArray(candidate.Tags.Select(tag => JsonValue.Create(tag)).ToArray<JsonNode?>())
         };
 

@@ -42,6 +42,10 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("Полный pending contract основания Хранителя", foundation, StringComparison.Ordinal);
         Assert.Contains("UpdateGuardians.create", foundation, StringComparison.Ordinal);
         Assert.Contains("PlayerGuardianFoundationState.PendingRequestPath", foundation, StringComparison.Ordinal);
+        Assert.Contains("WriteCompletedPlayerGuardianFoundationAuditPanelsAsync", foundation, StringComparison.Ordinal);
+        Assert.Contains("foundationHistoryEntry", foundation, StringComparison.Ordinal);
+        Assert.Contains("foundedGuardian", foundation, StringComparison.Ordinal);
+        Assert.Contains("chaosSeaNavigation", foundation, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -87,14 +91,30 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
 
         Assert.Contains("BuildGuardianSellAuditNode", trade, StringComparison.Ordinal);
         Assert.Contains("BuildGuardianBuyAuditNode", trade, StringComparison.Ordinal);
+        Assert.Contains("BuildGuardianBuybackAuditNode", trade, StringComparison.Ordinal);
+        Assert.Contains("BuildChaosSeaTravelAuditNode", trade, StringComparison.Ordinal);
+        Assert.Contains("BuildResidentInteractionReceiptsAuditNode", trade, StringComparison.Ordinal);
+        Assert.Contains("BuildActorJournalEntriesAuditArray", trade, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON interactionReceipts резидента", trade, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON thought journal Хранителя", trade, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON social journal Хранителя", trade, StringComparison.Ordinal);
+        Assert.Contains("eventType:", trade, StringComparison.Ordinal);
+        Assert.Contains("historyEntryId", trade, StringComparison.Ordinal);
         Assert.Contains("guardianId", trade, StringComparison.Ordinal);
         Assert.Contains("tradeCycleId", trade, StringComparison.Ordinal);
         Assert.Contains("transactionCorrelationId", trade, StringComparison.Ordinal);
+        Assert.Contains("statusBefore", trade, StringComparison.Ordinal);
+        Assert.Contains("statusAfter", trade, StringComparison.Ordinal);
+        Assert.Contains("stateTransition", trade, StringComparison.Ordinal);
         Assert.Contains("generatedBuybackEntryFields", trade, StringComparison.Ordinal);
         Assert.Contains("GM turn не отправляется: это client-local coordinated write with full audit JSON", trade, StringComparison.Ordinal);
 
         Assert.Contains("candidateId:", inbox, StringComparison.Ordinal);
         Assert.Contains("archiveId:", inbox, StringComparison.Ordinal);
+        Assert.Contains("archivedAtUtc", inbox, StringComparison.Ordinal);
+        Assert.Contains("skippedAtUtc", inbox, StringComparison.Ordinal);
+        Assert.Contains("Сохранено в Архив UTC", inbox, StringComparison.Ordinal);
+        Assert.Contains("Пропущено UTC", inbox, StringComparison.Ordinal);
         Assert.Contains("Полный JSON выбранного archive candidate", inbox, StringComparison.Ordinal);
         Assert.Contains("Полный JSON записи Архива души", inbox, StringComparison.Ordinal);
         Assert.Contains("Полный JSON afterlife notification", inbox, StringComparison.Ordinal);

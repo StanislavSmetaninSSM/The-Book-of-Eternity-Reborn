@@ -114,6 +114,7 @@ public partial class ExplorerMode
                 Padding = new Padding(2, 1),
                 Expand = true
             });
+            await WriteCompletedPlayerGuardianFoundationAuditPanelsAsync(context);
             WaitForKey();
             return;
         }
@@ -261,6 +262,39 @@ public partial class ExplorerMode
         await PlayerGuardianFoundationState.WriteAsync(_fs, request);
         _pendingGmAction = PlayerGuardianFoundationState.BuildPendingGmActionText(request);
         MarkupLine($"[gold1]👑 Ритуал учреждения мантии «{Markup.Escape(request.ProposedDisplayName)}» подготовлен. Следующий обычный ход в Море Хаоса отправит запрос GM.[/]");
+    }
+
+    private async Task WriteCompletedPlayerGuardianFoundationAuditPanelsAsync(PlayerGuardianFoundationState.FoundationContext context)
+    {
+        var guardiansDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/guardians.json");
+        var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
+        var guardiansRoot = guardiansDoc == null
+            ? null
+            : JsonNode.Parse(guardiansDoc.RootElement.GetRawText()) as JsonObject;
+        var soulRoot = soulDoc == null
+            ? null
+            : JsonNode.Parse(soulDoc.RootElement.GetRawText()) as JsonObject;
+        var foundedGuardian = PlayerGuardianFoundationState.FindGuardianById(guardiansRoot, context.ExistingFoundedGuardianId) ??
+                              PlayerGuardianFoundationState.FindPlayerFoundedGuardian(guardiansRoot);
+        var historyEntry = PlayerGuardianFoundationState.FindHistoryEntryByGuardianId(guardiansRoot, context.ExistingFoundedGuardianId) ??
+                           PlayerGuardianFoundationState.FindHistoryEntry(guardiansRoot, context.FoundationRequestId);
+
+        WriteJsonAuditPanel(
+            "Полный JSON завершенного основания Хранителя: history/founded/navigation",
+            new JsonObject
+            {
+                ["foundationStatus"] = context.FoundationStatus,
+                ["foundationHistoryEntry"] = historyEntry?.DeepClone(),
+                ["foundedGuardian"] = foundedGuardian?.DeepClone(),
+                ["activeGuardian"] = guardiansRoot?["activeGuardian"]?.DeepClone(),
+                ["chaosSeaNavigation"] = guardiansRoot?["chaosSeaNavigation"]?.DeepClone(),
+                ["soulFoundation"] = new JsonObject
+                {
+                    ["playerFoundedGuardianId"] = soulRoot?[PlayerGuardianFoundationState.SoulStateGuardianIdProperty]?.DeepClone(),
+                    ["playerGuardianFoundationStatus"] = soulRoot?[PlayerGuardianFoundationState.SoulStateFoundationStatusProperty]?.DeepClone()
+                }
+            },
+            Color.Gold1);
     }
 
     private string PromptRequiredFoundationText(string titleMarkup, string emptyError)
