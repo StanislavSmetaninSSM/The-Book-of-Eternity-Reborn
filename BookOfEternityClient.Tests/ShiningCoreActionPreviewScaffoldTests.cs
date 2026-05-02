@@ -19,16 +19,18 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             ReturnCycleId = "shining_return_7",
             ProjectedGachaBonusSteps = 2,
             QuotedCostFeathers = 20,
-            QuotedCostLightSparks = 0
+            QuotedCostLightSparks = 0,
+            CreatedAtTurn = 42
         };
 
         var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
 
-        Assert.Equal("generated_shining_relic_id", GetString(receipt["relicId"]));
-        Assert.Equal("generated Shining Soul Relic name", GetString(receipt["relicName"]));
-        Assert.Contains("gachaBaseResult.baseRarity", GetString(receipt["baseRarity"]), StringComparison.Ordinal);
-        Assert.Contains("<= 2", GetString(receipt["finalRarity"]), StringComparison.Ordinal);
+        Assert.Equal("shine_relic_core_gacha_preview", GetString(receipt["relicId"]));
+        Assert.Equal("Example Shining Soul Relic", GetString(receipt["relicName"]));
+        Assert.Equal("copy input/turn_request.json.gachaBaseResult.baseRarity", GetString(receipt["baseRarity"]));
+        Assert.Contains("+2 rarity step", GetString(receipt["finalRarity"]), StringComparison.Ordinal);
         Assert.Equal("shining_return_7", GetString(receipt["returnCycleId"]));
+        Assert.Equal(42, GetInt(receipt["resolvedAtTurn"]));
     }
 
     [Fact]
@@ -44,11 +46,11 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
 
         var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
 
-        Assert.Equal("generated_native_hall_id", GetString(receipt["hallId"]));
-        Assert.Equal("generated_native_faction_id", GetString(receipt["resolvedFactionId"]));
+        Assert.Equal("hall_native_core_discovery_preview", GetString(receipt["hallId"]));
+        Assert.Equal("shine_faction_native_core_discovery_preview", GetString(receipt["resolvedFactionId"]));
         Assert.Equal(2, receipt["newResidentIds"]!.AsArray().Count);
         Assert.Equal(2, receipt["seededProjectIds"]!.AsArray().Count);
-        Assert.Equal("generated native faction charter summary", GetString(receipt["charterSummary"]));
+        Assert.Equal("Example generated native faction charter summary", GetString(receipt["charterSummary"]));
     }
 
     [Fact]
@@ -62,7 +64,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             ReturnCycleId = "shining_return_7"
         };
 
-        var receipt = BuildReceiptScaffold(request, "refused|withdrawn");
+        var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusRefused);
 
         Assert.Equal(string.Empty, GetString(receipt["relicId"]));
         Assert.Null(receipt["baseRarity"]);
@@ -103,7 +105,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
 
         var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusAccepted);
 
-        Assert.Equal("generated_completed_project_id", GetString(receipt["projectId"]));
+        Assert.Equal("shine_project_completed_core_complete_project_preview", GetString(receipt["projectId"]));
     }
 
     [Fact]
@@ -121,7 +123,7 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             }
         };
 
-        var receipt = BuildReceiptScaffold(request, "refused|withdrawn");
+        var receipt = BuildReceiptScaffold(request, ShiningCoreActionRequestState.RequestStatusWithdrawn);
 
         Assert.Equal(string.Empty, GetString(receipt["projectId"]));
     }
@@ -144,6 +146,8 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
             ["factionSummary"] = "WRONG root summary",
             ["favoredProjectArchetype"] = "WRONG_root_archetype",
             ["patronEffectFamily"] = "WRONG_root_family",
+            ["createdAtTurn"] = 20,
+            ["createdAtUtc"] = "2026-05-02T00:00:00Z",
             ["charter"] = new JsonObject
             {
                 ["factionName"] = "Орден Глубокого Согласия",
@@ -167,6 +171,96 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal("Nested charter summary must be copied exactly.", GetString(charter["summary"]));
         Assert.Equal(ShiningAbodeState.ProjectArchetypeRemembrance, GetString(charter["favoredArchetype"]));
         Assert.Equal(ShiningAbodeState.EffectFamilyLore, GetString(charter["patronEffectFamily"]));
+        Assert.Equal(20, GetInt(accepted["receipt"]!["resolvedAtTurn"]));
+    }
+
+    [Fact]
+    public void RealignmentPreview_AcceptedTransferShowsOnlyAcceptedAndWithdrawnVariants()
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            CreateRealignmentRequest(ShiningFactionRequestState.RealignmentModeAcceptedTransfer));
+
+        Assert.True(scaffold.ContainsKey("accepted"));
+        Assert.False(scaffold.ContainsKey("refused"));
+        Assert.True(scaffold.ContainsKey("withdrawn"));
+        Assert.Equal(
+            ShiningFactionRequestState.RequestStatusAccepted,
+            GetString(scaffold["accepted"]!["receipt"]!["status"]));
+        Assert.Equal(20, GetInt(scaffold["accepted"]!["receipt"]!["resolvedAtTurn"]));
+        Assert.Equal(20, GetInt(scaffold["accepted"]!["residentHistory"]!["revealedAtTurn"]));
+    }
+
+    [Fact]
+    public void RealignmentPreview_DepartureShowsOnlyDepartedAndWithdrawnVariants()
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            CreateRealignmentRequest(ShiningFactionRequestState.RealignmentModeDepartureToNeutral));
+
+        Assert.False(scaffold.ContainsKey("accepted"));
+        Assert.False(scaffold.ContainsKey("refused"));
+        Assert.True(scaffold.ContainsKey("departed_to_neutral"));
+        Assert.True(scaffold.ContainsKey("withdrawn"));
+        Assert.Equal(
+            ShiningFactionRequestState.RequestStatusDepartedToNeutral,
+            GetString(scaffold["departed_to_neutral"]!["receipt"]!["status"]));
+        Assert.Equal(20, GetInt(scaffold["departed_to_neutral"]!["receipt"]!["resolvedAtTurn"]));
+        Assert.Equal(20, GetInt(scaffold["departed_to_neutral"]!["residentHistory"]!["revealedAtTurn"]));
+    }
+
+    [Fact]
+    public void RealignmentPreview_RefusedTransferShowsOnlyRefusedAndWithdrawnVariants()
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            CreateRealignmentRequest(ShiningFactionRequestState.RealignmentModeRefusedTransfer));
+
+        Assert.False(scaffold.ContainsKey("accepted"));
+        Assert.True(scaffold.ContainsKey("refused"));
+        Assert.True(scaffold.ContainsKey("withdrawn"));
+        Assert.Equal(
+            ShiningFactionRequestState.RequestStatusRefused,
+            GetString(scaffold["refused"]!["receipt"]!["status"]));
+        Assert.Equal(20, GetInt(scaffold["refused"]!["receipt"]!["resolvedAtTurn"]));
+    }
+
+    [Theory]
+    [InlineData(ShiningFactionRequestState.TransitionModePeacefulSuccession, "resident", "resident_new_head", "succeeded")]
+    [InlineData(ShiningFactionRequestState.TransitionModeRevolt, "resident", "resident_rebel_head", "revolted")]
+    [InlineData(ShiningFactionRequestState.TransitionModeAbdication, "guardian", "guardian_new_head", "abdicated")]
+    [InlineData(ShiningFactionRequestState.TransitionModeAbdication, "", "", "vacated")]
+    public void AcceptedLeadershipPreview_UsesValidatorEventTypeMapping(
+        string transitionMode,
+        string candidateHeadActorType,
+        string candidateHeadActorId,
+        string expectedEventType)
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            CreateLeadershipRequest(transitionMode, candidateHeadActorType, candidateHeadActorId));
+
+        var history = scaffold["accepted"]!["history"]!.AsObject();
+
+        Assert.Equal(expectedEventType, GetString(history["eventType"]));
+        Assert.Equal(20, GetInt(scaffold["accepted"]!["receipt"]!["resolvedAtTurn"]));
+        Assert.Equal(20, GetInt(history["turnNumber"]));
+    }
+
+    [Fact]
+    public void WithdrawnLeadershipPreview_OmitsUnsupportedHistoryEventType()
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            CreateLeadershipRequest(
+                ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                "resident",
+                "resident_new_head"));
+
+        var withdrawn = scaffold["withdrawn"]!.AsObject();
+        var history = withdrawn["history"]!.AsArray();
+
+        Assert.Empty(history);
     }
 
     private static JsonObject BuildReceiptScaffold(
@@ -204,5 +298,42 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         return (JsonObject)method.Invoke(null, [pendingPath, request])!;
     }
 
+    private static JsonObject CreateLeadershipRequest(
+        string transitionMode,
+        string candidateHeadActorType,
+        string candidateHeadActorId) => new()
+    {
+        ["requestId"] = "leadership_preview",
+        ["factionId"] = "faction_dawn",
+        ["transitionMode"] = transitionMode,
+        ["incumbentHeadActorType"] = "resident",
+        ["incumbentHeadActorId"] = "resident_old_head",
+        ["candidateHeadActorType"] = candidateHeadActorType,
+        ["candidateHeadActorId"] = candidateHeadActorId,
+        ["supportingResidentIds"] = new JsonArray("resident_support_a", "resident_support_b", "resident_support_c"),
+        ["createdAtTurn"] = 20,
+        ["createdAtUtc"] = "2026-05-02T00:00:00Z"
+    };
+
+    private static JsonObject CreateRealignmentRequest(string realignmentMode) => new()
+    {
+        ["requestId"] = "realignment_preview",
+        ["residentId"] = "resident_mira",
+        ["residentName"] = "Мира",
+        ["sourceFactionId"] = "faction_old",
+        ["sourceFactionName"] = "Old Faction",
+        ["targetFactionId"] = string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase)
+            ? string.Empty
+            : "faction_new",
+        ["targetFactionName"] = string.Equals(realignmentMode, ShiningFactionRequestState.RealignmentModeDepartureToNeutral, StringComparison.OrdinalIgnoreCase)
+            ? string.Empty
+            : "New Faction",
+        ["realignmentMode"] = realignmentMode,
+        ["createdAtTurn"] = 20,
+        ["createdAtUtc"] = "2026-05-02T00:00:00Z"
+    };
+
     private static string GetString(JsonNode? node) => node?.GetValue<string>() ?? string.Empty;
+
+    private static int GetInt(JsonNode? node) => node?.GetValue<int>() ?? 0;
 }

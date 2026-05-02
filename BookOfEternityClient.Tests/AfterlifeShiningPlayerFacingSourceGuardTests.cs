@@ -73,7 +73,13 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("beforeFullShiningRoot", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("afterFullShiningRoot", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("GetNodeInt(context.Root[\"gates\"]?[\"draftVersion\"]) + 1", actionPreviewSource, StringComparison.Ordinal);
-        Assert.Contains("[\"refusedOrWithdrawn\"]", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("[\"refused\"]", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("[\"withdrawn\"]", actionPreviewSource, StringComparison.Ordinal);
+        Assert.Contains("Ожидаемые typed coreActionReceipts[] для pending Shining core actions", source, StringComparison.Ordinal);
+        Assert.Contains("Ожидаемые accepted-state deltas для pending Shining core actions", source, StringComparison.Ordinal);
+        Assert.Contains("Ожидаемые typed political receipts/history для pending contracts", source, StringComparison.Ordinal);
+        Assert.Contains("BuildShiningPoliticalPendingReceiptAuditArray", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("refused|withdrawn", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("generatedDraftVersion: 0", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("quotedCostFeathers", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("quotedCostLightSparks", actionPreviewSource, StringComparison.Ordinal);

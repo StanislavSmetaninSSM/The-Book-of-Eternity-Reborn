@@ -370,13 +370,20 @@ public partial class ExplorerMode
     {
         return new JsonObject
         {
+            ["copyRules"] = BuildClosureScaffoldCopyRules(
+                "coreActionReceipts[]",
+                "Use the current accepted turn number and UTC timestamp; generated ids below are concrete examples, not magic tokens."),
             ["accepted"] = BuildShiningCoreExpectedReceiptAuditNode(
                 request,
                 status: "accepted",
                 generatedDraftVersion: ResolveAcceptedReceiptDraftVersionForPreview(context, request)),
-            ["refusedOrWithdrawn"] = BuildShiningCoreExpectedReceiptAuditNode(
+            ["refused"] = BuildShiningCoreExpectedReceiptAuditNode(
                 request,
-                status: "refused|withdrawn",
+                status: ShiningCoreActionRequestState.RequestStatusRefused,
+                generatedDraftVersion: 0),
+            ["withdrawn"] = BuildShiningCoreExpectedReceiptAuditNode(
+                request,
+                status: ShiningCoreActionRequestState.RequestStatusWithdrawn,
                 generatedDraftVersion: 0)
         };
     }
@@ -406,8 +413,8 @@ public partial class ExplorerMode
             ["seededProjectIds"] = new JsonArray(),
             ["generatedDraftVersion"] = generatedDraftVersion,
             ["status"] = status,
-            ["resolvedAtTurn"] = "current turn number",
-            ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+            ["resolvedAtTurn"] = BuildExampleResolvedAtTurn(request.CreatedAtTurn),
+            ["resolvedAtUtc"] = BuildExampleResolvedAtUtc(request.CreatedAtUtc),
             ["reason"] = "canonical human-readable closure reason"
         };
 
@@ -444,7 +451,7 @@ public partial class ExplorerMode
             ["requestId"] = request.RequestId,
             ["actionType"] = request.ActionType,
             ["acceptedStatusOnly"] = true,
-            ["refusedOrWithdrawnDelta"] = "state unchanged except coreActionReceipts[] closure",
+            ["nonAcceptedDelta"] = "refused/withdrawn leaves state unchanged except coreActionReceipts[] closure",
             ["changedSurfaces"] = new JsonArray()
         };
 
@@ -691,47 +698,94 @@ public partial class ExplorerMode
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
         {
             if (string.IsNullOrWhiteSpace(GetNodeString(receipt["relicId"])))
-                receipt["relicId"] = "generated_shining_relic_id";
+                receipt["relicId"] = BuildExampleGeneratedId("shine_relic", request.RequestId);
 
             receipt["relicName"] = string.IsNullOrWhiteSpace(request.RelicName)
-                ? "generated Shining Soul Relic name"
+                ? "Example Shining Soul Relic"
                 : request.RelicName;
             receipt["baseRarity"] = "copy input/turn_request.json.gachaBaseResult.baseRarity";
             receipt["finalRarity"] = request.ProjectedGachaBonusSteps > 0
-                ? $"baseRarity or higher by <= {request.ProjectedGachaBonusSteps} step(s)"
-                : "same as baseRarity";
+                ? $"copy accepted outcome; no more than +{request.ProjectedGachaBonusSteps} rarity step(s) above baseRarity"
+                : "copy baseRarity exactly; no projected upgrade steps";
             return;
         }
 
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction, StringComparison.OrdinalIgnoreCase))
         {
-            receipt["hallId"] = "generated_native_hall_id";
-            receipt["hallName"] = "generated native hall name";
-            receipt["resolvedFactionId"] = "generated_native_faction_id";
-            receipt["factionName"] = "generated native faction name";
-            receipt["charterSummary"] = "generated native faction charter summary";
-            receipt["favoredArchetype"] = "generated native faction archetype";
-            receipt["patronEffectFamily"] = "generated native faction effect family";
+            receipt["hallId"] = BuildExampleGeneratedId("hall_native", request.RequestId);
+            receipt["hallName"] = "Example Native Hall";
+            receipt["resolvedFactionId"] = BuildExampleGeneratedId("shine_faction_native", request.RequestId);
+            receipt["factionName"] = "Example Native Faction";
+            receipt["charterSummary"] = "Example generated native faction charter summary";
+            receipt["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord;
+            receipt["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial;
             receipt["newResidentIds"] = new JsonArray(
-                "generated_ascended_resident_id_1",
-                "generated_ascended_resident_id_2");
+                BuildExampleGeneratedId("resident_native", request.RequestId, "a"),
+                BuildExampleGeneratedId("resident_native", request.RequestId, "b"));
             receipt["newResidentNames"] = new JsonArray(
-                "generated resident name 1",
-                "generated resident name 2");
+                "Example Resident A",
+                "Example Resident B");
             receipt["seededProjectIds"] = new JsonArray(
-                "generated_completed_project_id_1",
-                "generated_completed_project_id_2");
+                BuildExampleGeneratedId("shine_project_native", request.RequestId, "accord"),
+                BuildExampleGeneratedId("shine_project_native", request.RequestId, "route"));
             receipt["seededProjectNames"] = new JsonArray(
-                "generated completed project name 1",
-                "generated completed project name 2");
+                "Example Native Accord Project",
+                "Example Native Route Project");
             return;
         }
 
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeCompleteProject, StringComparison.OrdinalIgnoreCase) &&
             string.IsNullOrWhiteSpace(request.ProjectId))
         {
-            receipt["projectId"] = "generated_completed_project_id";
+            receipt["projectId"] = BuildExampleGeneratedId("shine_project_completed", request.RequestId);
         }
+    }
+
+    private static JsonObject BuildClosureScaffoldCopyRules(string receiptSurface, string extraRule) => new()
+    {
+        ["receiptSurface"] = receiptSurface,
+        ["resolvedAtTurnRule"] = "Use the pending request's createdAtTurn as the normal closing turn; do not add a future turn.",
+        ["resolvedAtUtcRule"] = "Replace the example ISO-8601 timestamp with the actual UTC closure timestamp.",
+        ["generatedIdRule"] = extraRule
+    };
+
+    private static int BuildExampleResolvedAtTurn(int createdAtTurn) =>
+        Math.Max(1, createdAtTurn);
+
+    private static string BuildExampleResolvedAtUtc(string? createdAtUtc)
+    {
+        if (DateTimeOffset.TryParse(createdAtUtc, out var parsed))
+            return parsed.AddMinutes(1).UtcDateTime.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+        return "2026-04-24T13:04:00Z";
+    }
+
+    private static string BuildExampleGeneratedId(string prefix, string? requestId, string? suffix = null)
+    {
+        var token = SanitizeExampleIdToken(requestId);
+        if (string.IsNullOrWhiteSpace(token))
+            token = "request";
+
+        return string.IsNullOrWhiteSpace(suffix)
+            ? $"{prefix}_{token}"
+            : $"{prefix}_{token}_{SanitizeExampleIdToken(suffix)}";
+    }
+
+    private static string SanitizeExampleIdToken(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var chars = value
+            .Trim()
+            .ToLowerInvariant()
+            .Select(ch => char.IsLetterOrDigit(ch) ? ch : '_')
+            .ToArray();
+        var token = new string(chars);
+        while (token.Contains("__", StringComparison.Ordinal))
+            token = token.Replace("__", "_", StringComparison.Ordinal);
+
+        return token.Trim('_');
     }
 
     private static int ResolveAcceptedReceiptDraftVersionForPreview(
