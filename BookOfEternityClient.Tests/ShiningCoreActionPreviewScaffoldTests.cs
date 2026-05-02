@@ -26,8 +26,8 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
 
         Assert.Equal("shine_relic_core_gacha_preview", GetString(receipt["relicId"]));
         Assert.Equal("Example Shining Soul Relic", GetString(receipt["relicName"]));
-        Assert.Equal(ShiningAbodeState.RarityRare, GetString(receipt["baseRarity"]));
-        Assert.Equal(ShiningAbodeState.RarityEpic, GetString(receipt["finalRarity"]));
+        Assert.Equal("copy input/turn_request.json.gachaBaseResult.baseRarity", GetString(receipt["baseRarity"]));
+        Assert.Contains("+2 rarity step", GetString(receipt["finalRarity"]), StringComparison.Ordinal);
         Assert.Equal("shining_return_7", GetString(receipt["returnCycleId"]));
     }
 
@@ -169,6 +169,42 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
         Assert.Equal(ShiningAbodeState.EffectFamilyLore, GetString(charter["patronEffectFamily"]));
     }
 
+    [Theory]
+    [InlineData(ShiningFactionRequestState.TransitionModePeacefulSuccession, "resident", "resident_new_head", "succeeded")]
+    [InlineData(ShiningFactionRequestState.TransitionModeRevolt, "resident", "resident_rebel_head", "revolted")]
+    [InlineData(ShiningFactionRequestState.TransitionModeAbdication, "guardian", "guardian_new_head", "abdicated")]
+    [InlineData(ShiningFactionRequestState.TransitionModeAbdication, "", "", "vacated")]
+    public void AcceptedLeadershipPreview_UsesValidatorEventTypeMapping(
+        string transitionMode,
+        string candidateHeadActorType,
+        string candidateHeadActorId,
+        string expectedEventType)
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            CreateLeadershipRequest(transitionMode, candidateHeadActorType, candidateHeadActorId));
+
+        var history = scaffold["accepted"]!["history"]!.AsObject();
+
+        Assert.Equal(expectedEventType, GetString(history["eventType"]));
+    }
+
+    [Fact]
+    public void WithdrawnLeadershipPreview_OmitsUnsupportedHistoryEventType()
+    {
+        var scaffold = BuildPoliticalExpectedReceiptAuditNode(
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            CreateLeadershipRequest(
+                ShiningFactionRequestState.TransitionModePeacefulSuccession,
+                "resident",
+                "resident_new_head"));
+
+        var withdrawn = scaffold["withdrawn"]!.AsObject();
+        var history = withdrawn["history"]!.AsArray();
+
+        Assert.Empty(history);
+    }
+
     private static JsonObject BuildReceiptScaffold(
         ShiningCoreActionRequestState.PendingShiningCoreActionRequest request,
         string status)
@@ -203,6 +239,23 @@ public sealed class ShiningCoreActionPreviewScaffoldTests
 
         return (JsonObject)method.Invoke(null, [pendingPath, request])!;
     }
+
+    private static JsonObject CreateLeadershipRequest(
+        string transitionMode,
+        string candidateHeadActorType,
+        string candidateHeadActorId) => new()
+    {
+        ["requestId"] = "leadership_preview",
+        ["factionId"] = "faction_dawn",
+        ["transitionMode"] = transitionMode,
+        ["incumbentHeadActorType"] = "resident",
+        ["incumbentHeadActorId"] = "resident_old_head",
+        ["candidateHeadActorType"] = candidateHeadActorType,
+        ["candidateHeadActorId"] = candidateHeadActorId,
+        ["supportingResidentIds"] = new JsonArray("resident_support_a", "resident_support_b", "resident_support_c"),
+        ["createdAtTurn"] = 20,
+        ["createdAtUtc"] = "2026-05-02T00:00:00Z"
+    };
 
     private static string GetString(JsonNode? node) => node?.GetValue<string>() ?? string.Empty;
 }

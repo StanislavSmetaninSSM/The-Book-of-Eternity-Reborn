@@ -888,7 +888,9 @@ public partial class ExplorerMode
 
             JsonObject BuildNonAcceptedLeadershipVariant(string status) => new()
             {
-                ["stateSurface"] = "leadershipReceipts[] + optional refusal history only; faction.leadership remains unchanged",
+                ["stateSurface"] = string.Equals(status, ShiningFactionRequestState.RequestStatusRefused, StringComparison.OrdinalIgnoreCase)
+                    ? "leadershipReceipts[] + refused leadershipHistory[]; faction.leadership remains unchanged"
+                    : "leadershipReceipts[] only; withdrawn leadership closures must not create leadershipHistory[]",
                 ["receipt"] = new JsonObject
                 {
                     ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
@@ -906,17 +908,7 @@ public partial class ExplorerMode
                     ["resolvedAtUtc"] = resolvedAtUtc,
                     ["reason"] = "canonical refusal reason"
                 },
-                ["history"] = new JsonObject
-                {
-                    ["eventId"] = BuildExampleGeneratedId("leadership_refusal_event", GetNodeString(request["requestId"]), status),
-                    ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
-                    ["eventType"] = status,
-                    ["previousHeadActorType"] = GetNodeString(request["incumbentHeadActorType"]) ?? string.Empty,
-                    ["previousHeadActorId"] = GetNodeString(request["incumbentHeadActorId"]) ?? string.Empty,
-                    ["summary"] = "player-facing refusal/withdrawal summary",
-                    ["turnNumber"] = resolvedAtTurn,
-                    ["occurredAtUtc"] = resolvedAtUtc
-                }
+                ["history"] = BuildNonAcceptedLeadershipHistoryVariant(request, status, resolvedAtTurn, resolvedAtUtc)
             };
 
             return new JsonObject
@@ -948,7 +940,7 @@ public partial class ExplorerMode
                     {
                         ["eventId"] = BuildExampleGeneratedId("leadership_event", GetNodeString(request["requestId"])),
                         ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
-                        ["eventType"] = "succeeded",
+                        ["eventType"] = ResolveAcceptedLeadershipHistoryEventTypeForPreview(request),
                         ["summary"] = "player-facing leadership history summary",
                         ["turnNumber"] = resolvedAtTurn,
                         ["occurredAtUtc"] = resolvedAtUtc
@@ -960,6 +952,44 @@ public partial class ExplorerMode
         }
 
         return null;
+    }
+
+    private static JsonNode BuildNonAcceptedLeadershipHistoryVariant(
+        JsonObject request,
+        string status,
+        int resolvedAtTurn,
+        string resolvedAtUtc)
+    {
+        if (string.Equals(status, ShiningFactionRequestState.RequestStatusWithdrawn, StringComparison.OrdinalIgnoreCase))
+            return new JsonArray();
+
+        return new JsonObject
+        {
+            ["eventId"] = BuildExampleGeneratedId("leadership_refusal_event", GetNodeString(request["requestId"]), status),
+            ["requestId"] = GetNodeString(request["requestId"]) ?? string.Empty,
+            ["eventType"] = "refused",
+            ["previousHeadActorType"] = GetNodeString(request["incumbentHeadActorType"]) ?? string.Empty,
+            ["previousHeadActorId"] = GetNodeString(request["incumbentHeadActorId"]) ?? string.Empty,
+            ["summary"] = "player-facing refusal summary",
+            ["turnNumber"] = resolvedAtTurn,
+            ["occurredAtUtc"] = resolvedAtUtc
+        };
+    }
+
+    private static string ResolveAcceptedLeadershipHistoryEventTypeForPreview(JsonObject request)
+    {
+        var transitionMode = GetNodeString(request["transitionMode"]);
+        if (string.Equals(transitionMode, ShiningFactionRequestState.TransitionModeRevolt, StringComparison.OrdinalIgnoreCase))
+            return "revolted";
+        if (string.Equals(transitionMode, ShiningFactionRequestState.TransitionModePeacefulSuccession, StringComparison.OrdinalIgnoreCase))
+            return "succeeded";
+
+        var candidateHeadActorType = GetNodeString(request["candidateHeadActorType"]);
+        var candidateHeadActorId = GetNodeString(request["candidateHeadActorId"]);
+        return string.IsNullOrWhiteSpace(candidateHeadActorType) &&
+               string.IsNullOrWhiteSpace(candidateHeadActorId)
+            ? "vacated"
+            : "abdicated";
     }
 
     private List<string> BuildShiningFoundingRequestPreviewLines(

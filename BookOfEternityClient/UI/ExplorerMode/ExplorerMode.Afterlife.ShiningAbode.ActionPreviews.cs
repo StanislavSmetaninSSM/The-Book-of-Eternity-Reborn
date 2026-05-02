@@ -703,10 +703,10 @@ public partial class ExplorerMode
             receipt["relicName"] = string.IsNullOrWhiteSpace(request.RelicName)
                 ? "Example Shining Soul Relic"
                 : request.RelicName;
-            receipt["baseRarity"] = ShiningAbodeState.RarityRare;
+            receipt["baseRarity"] = "copy input/turn_request.json.gachaBaseResult.baseRarity";
             receipt["finalRarity"] = request.ProjectedGachaBonusSteps > 0
-                ? ShiningAbodeState.RarityEpic
-                : ShiningAbodeState.RarityRare;
+                ? $"copy accepted outcome; no more than +{request.ProjectedGachaBonusSteps} rarity step(s) above baseRarity"
+                : "copy baseRarity exactly; no projected upgrade steps";
             return;
         }
 
