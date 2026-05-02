@@ -689,7 +689,7 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
-    public void ValidateShiningAbodeStateFile_CoreReceiptWithoutCostAudit_RaisesExplicitErrors()
+    public void ValidateShiningAbodeStateFile_CoreReceiptWithoutCostAudit_AllowsHistoricalReceipt()
     {
         var root = CreateMinimalShiningStateForBlessingCardValidation();
         root["coreActionReceipts"]!.AsArray().Add(new JsonObject
@@ -707,8 +707,33 @@ public sealed class ShiningStateValidationTests
 
         var issues = InvokeShiningStateValidation(root);
 
-        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_missing_quoted_cost_feathers", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_core_action_receipt_missing_quoted_cost_light_sparks", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => issue.FilePath.Contains("quotedCostFeathers", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => issue.FilePath.Contains("quotedCostLightSparks", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_CoreReceiptWithMalformedCostAudit_RaisesIntegerErrors()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["coreActionReceipts"]!.AsArray().Add(new JsonObject
+        {
+            ["requestId"] = "core_malformed_costs",
+            ["actionType"] = ShiningCoreActionRequestState.ActionTypeOpenGates,
+            ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+            ["quotedCostFeathers"] = "0",
+            ["quotedCostLightSparks"] = "0",
+            ["selectedCardIds"] = new JsonArray(),
+            ["newResidentIds"] = new JsonArray(),
+            ["seededProjectIds"] = new JsonArray(),
+            ["generatedDraftVersion"] = 1,
+            ["resolvedAtTurn"] = 12,
+            ["resolvedAtUtc"] = "2026-04-19T10:00:00Z"
+        });
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => issue.FilePath.EndsWith(".coreActionReceipts[0].quotedCostFeathers", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => issue.FilePath.EndsWith(".coreActionReceipts[0].quotedCostLightSparks", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

@@ -1415,20 +1415,8 @@ public partial class ValidationService
         RequireArrayOfStrings(receipt, contextPrefix, issues, "selectedCardIds");
         RequireArrayOfStrings(receipt, contextPrefix, issues, "newResidentIds");
         RequireArrayOfStrings(receipt, contextPrefix, issues, "seededProjectIds");
-        RequireIntegerField(
-            receipt,
-            contextPrefix,
-            issues,
-            "quotedCostFeathers",
-            "shining_core_action_receipt_missing_quoted_cost_feathers",
-            "coreActionReceipts[].quotedCostFeathers обязателен как canonical cost audit field");
-        RequireIntegerField(
-            receipt,
-            contextPrefix,
-            issues,
-            "quotedCostLightSparks",
-            "shining_core_action_receipt_missing_quoted_cost_light_sparks",
-            "coreActionReceipts[].quotedCostLightSparks обязателен как canonical cost audit field");
+        ValidateIntegerField(receipt, contextPrefix, issues, "quotedCostFeathers");
+        ValidateIntegerField(receipt, contextPrefix, issues, "quotedCostLightSparks");
         ValidateIntegerField(receipt, contextPrefix, issues, "generatedDraftVersion");
         ValidateIntegerField(receipt, contextPrefix, issues, "resolvedAtTurn");
         ValidateOptionalString(receipt, contextPrefix, issues, "resolvedAtUtc");
