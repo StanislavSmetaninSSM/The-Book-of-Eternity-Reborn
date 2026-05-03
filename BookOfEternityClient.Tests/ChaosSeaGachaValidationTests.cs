@@ -121,6 +121,45 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaWithoutLiveTurnRequest_UsesSnapshotContext()
+    {
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5);
+        AddStoredSoulRelic(currentSoul, "relic_new", "Common");
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WritePendingTurnSnapshotAsync(preTurnSoul, gachaBaseRarity: "Rare");
+        await WriteNodeAsync("ready/turn_complete.json", new JsonObject
+        {
+            ["sessionId"] = "session",
+            ["requestId"] = "request",
+            ["turnNumber"] = 7
+        });
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "direct_chaos_gacha_result_rarity_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_MalformedLiveTurnRequest_FailsClosed()
+    {
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5);
+        AddStoredSoulRelic(currentSoul, "relic_new", "Common");
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", "{ malformed turn request");
+        await WritePendingTurnSnapshotAsync(preTurnSoul, gachaBaseRarity: "Rare");
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_special_action_request_parse_failed", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "direct_chaos_gacha_result_rarity_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaAboveBaseRarity_Fails()
     {
         var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
@@ -453,7 +492,8 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         string? playerAction = null,
         JsonObject? preTurnResidentRoot = null,
         JsonObject? preTurnSoulQuestsRoot = null,
-        bool markSoulQuestsAsExistingWithoutSnapshot = false)
+        bool markSoulQuestsAsExistingWithoutSnapshot = false,
+        string gachaBaseRarity = "Common")
     {
         const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
         await WriteNodeAsync(soulSnapshotPath, preTurnSoulRoot);
@@ -502,6 +542,10 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             ["turnNumber"] = 7,
             ["requestTimestamp"] = "2026-04-24T00:00:00Z",
             ["playerAction"] = playerAction ?? "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 5 Чернильных Перьев.",
+            ["gachaBaseResult"] = new JsonObject
+            {
+                ["baseRarity"] = gachaBaseRarity
+            },
             ["files"] = files,
             ["snapshotFileHashes"] = snapshotHashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),

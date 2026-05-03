@@ -27,6 +27,7 @@ public partial class GameEngine
         public int TurnNumber { get; set; }
         public string RequestTimestamp { get; set; } = "";
         public string PlayerAction { get; set; } = "";
+        public JsonObject? GachaBaseResult { get; set; }
         public ProgressionControl? ProgressionControl { get; set; }
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);

@@ -145,10 +145,12 @@ public sealed class ValidationSourceGuardTests
         var guardianPowerSource = File.ReadAllText(guardianPowerPath);
 
         Assert.Contains("PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(", normalizerSource, StringComparison.Ordinal);
+        Assert.Contains("JsonObject? GachaBaseResult", normalizerSource, StringComparison.Ordinal);
         Assert.Contains("static snapshotManifest => snapshotManifest.RollbackBackups", normalizerSource, StringComparison.Ordinal);
         Assert.Contains("relativePath => ReadRelativeFileFromWorkspace(fs, relativePath)", normalizerSource, StringComparison.Ordinal);
 
         Assert.Contains("PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(", guardianPowerSource, StringComparison.Ordinal);
+        Assert.Contains("JsonObject? GachaBaseResult", guardianPowerSource, StringComparison.Ordinal);
         Assert.Contains("static snapshotManifest => snapshotManifest.RollbackBackups", guardianPowerSource, StringComparison.Ordinal);
         Assert.Contains("relativePath => ReadRelativeFileFromWorkspace(fs, relativePath)", guardianPowerSource, StringComparison.Ordinal);
     }

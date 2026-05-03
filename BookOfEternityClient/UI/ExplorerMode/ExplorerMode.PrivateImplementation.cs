@@ -86,7 +86,8 @@ public partial class ExplorerMode
         string ReservedForGuardianId,
         string ReservedForGuardianName,
         string ReservedForProjectId,
-        string ReservedForProjectName);
+        string ReservedForProjectName,
+        JsonObject RawJson);
 
     private sealed record AfterlifeArchiveCandidateSummary(
         string CandidateId,
@@ -256,6 +257,14 @@ public partial class ExplorerMode
             Expand = true
         });
     }
+
+    private static JsonNode? CloneJsonElementForAudit(JsonElement element) =>
+        element.ValueKind is JsonValueKind.Undefined
+            ? null
+            : JsonNode.Parse(element.GetRawText());
+
+    private static JsonObject? CloneJsonObjectElementForAudit(JsonElement element) =>
+        CloneJsonElementForAudit(element) as JsonObject;
 
     private async Task StartSystemGuardianAttractionAsync()
     {

@@ -168,6 +168,9 @@ public partial class GameEngine
             TurnNumber = request.TurnNumber,
             RequestTimestamp = request.Timestamp,
             PlayerAction = request.PlayerAction,
+            GachaBaseResult = request.GachaBaseResult == null
+                ? null
+                : JsonSerializer.SerializeToNode(request.GachaBaseResult, JsonOpts) as JsonObject,
             ProgressionControl = request.ProgressionControl,
             Files = files,
             SnapshotFileHashes = snapshotHashes,
@@ -352,7 +355,11 @@ public partial class GameEngine
             return true;
 
         var turnContext = await ReadPendingTurnSnapshotRequestContextAsync("input/turn_request.json");
-        return DoesPendingTurnRequestContextMatchManifest(manifest, turnContext);
+        if (DoesPendingTurnRequestContextMatchManifest(manifest, turnContext))
+            return true;
+
+        var completionContext = await ReadPendingTurnSnapshotRequestContextAsync("ready/turn_complete.json");
+        return DoesPendingTurnRequestContextMatchManifest(manifest, completionContext);
     }
 
     private async Task<PendingTurnSnapshotRequestContext?> ReadPendingTurnSnapshotRequestContextAsync(string relativePath)
@@ -771,9 +778,11 @@ public partial class GameEngine
 
     private async Task CleanupAcceptedTurnTerminalArtifactsAsync()
     {
+        var hasIncarnationTrigger = _fs.FileExists("game_state/control/incarnation_trigger.json");
         _fs.DeleteFile("ready/turn_complete.json");
         _fs.DeleteFile("ready/turn_error.json");
-        await CleanupPendingTurnSnapshotAsync();
+        if (!hasIncarnationTrigger)
+            await CleanupPendingTurnSnapshotAsync();
         await CleanupResolvedAfterlifePendingContractsAfterAcceptedTurnAsync();
     }
 

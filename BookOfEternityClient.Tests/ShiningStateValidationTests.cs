@@ -380,6 +380,59 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
+    public void ValidateShiningAbodeStateFile_DuplicateFactionAndProjectIds_RaiseExplicitErrors()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        var factionA = CreateFaction("faction_duplicate", CreateSecureLeadership("guardian_a"));
+        var factionB = CreateFaction("faction_duplicate", CreateSecureLeadership("guardian_b"));
+        factionA["projects"] = new JsonArray(CreateProject("project_duplicate", isSupported: false));
+        factionB["projects"] = new JsonArray(CreateProject("project_duplicate", isSupported: false));
+        root["factions"] = new JsonArray(factionA, factionB);
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_duplicate_faction_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_duplicate_project_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_SupportedProjectCapExceeded_RaisesExplicitError()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["radiance"] = new JsonObject
+        {
+            ["experience"] = 120,
+            ["tier"] = 1
+        };
+        var factionA = CreateFaction("faction_support_a", CreateSecureLeadership("guardian_a"));
+        var factionB = CreateFaction("faction_support_b", CreateSecureLeadership("guardian_b"));
+        factionA["projects"] = new JsonArray(CreateProject("project_support_a", isSupported: true));
+        factionB["projects"] = new JsonArray(CreateProject("project_support_b", isSupported: true));
+        root["factions"] = new JsonArray(factionA, factionB);
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_abode_supported_project_cap_exceeded", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_EmptyGachaCycleWithUsedCharges_RaisesExplicitError()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root["gachaSystem"] = new JsonObject
+        {
+            ["chargesPerReturn"] = 3,
+            ["chargesUsedThisReturn"] = 2,
+            ["currentReturnCycleId"] = "",
+            ["gachaHistory"] = new JsonArray()
+        };
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_gacha_used_charges_without_cycle", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateShiningAbodeStateFile_CoreReceiptWithoutResolvedMarkers_RaisesExplicitErrors()
     {
         var root = JsonNode.Parse("""
@@ -1055,6 +1108,28 @@ public sealed class ShiningStateValidationTests
         ["tradeInventoryReceipts"] = new JsonArray(),
         ["leadershipReceipts"] = new JsonArray(),
         ["leadershipHistory"] = new JsonArray()
+    };
+
+    private static JsonObject CreateSecureLeadership(string guardianId) => new()
+    {
+        ["headActorType"] = ShiningAbodeState.HeadActorTypeGuardian,
+        ["headActorId"] = guardianId,
+        ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+    };
+
+    private static JsonObject CreateProject(string projectId, bool isSupported) => new()
+    {
+        ["projectId"] = projectId,
+        ["displayName"] = projectId,
+        ["summary"] = projectId,
+        ["toneTags"] = new JsonArray("bright"),
+        ["targetFactionIds"] = new JsonArray(),
+        ["projectArchetype"] = ShiningAbodeState.ProjectArchetypeAccord,
+        ["outputEffectFamily"] = ShiningAbodeState.EffectFamilySocial,
+        ["tier"] = 1,
+        ["status"] = ShiningAbodeState.ProjectStatusCompleted,
+        ["isSupported"] = isSupported,
+        ["strengthReward"] = 8
     };
 
     private static JsonObject CreateMinimalGuardiansRoot() => new()

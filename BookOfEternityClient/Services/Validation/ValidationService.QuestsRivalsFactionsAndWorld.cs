@@ -2510,23 +2510,33 @@ public partial class ValidationService
     private string? TryReadCurrentTurnGachaBaseRaritySync()
     {
         var requestPath = _fs.ResolvePath("input/turn_request.json");
-        if (!File.Exists(requestPath))
-            return null;
-
-        try
+        if (File.Exists(requestPath))
         {
-            using var doc = JsonDocument.Parse(File.ReadAllText(requestPath));
-            if (doc.RootElement.TryGetProperty("gachaBaseResult", out var gachaBaseResult) &&
-                gachaBaseResult.ValueKind == JsonValueKind.Object &&
-                gachaBaseResult.TryGetProperty("baseRarity", out var baseRarity) &&
-                baseRarity.ValueKind == JsonValueKind.String)
+            try
             {
-                return baseRarity.GetString();
+                using var doc = JsonDocument.Parse(File.ReadAllText(requestPath));
+                if (doc.RootElement.TryGetProperty("gachaBaseResult", out var gachaBaseResult) &&
+                    gachaBaseResult.ValueKind == JsonValueKind.Object &&
+                    gachaBaseResult.TryGetProperty("baseRarity", out var baseRarity) &&
+                    baseRarity.ValueKind == JsonValueKind.String)
+                {
+                    return baseRarity.GetString();
+                }
+            }
+            catch
+            {
+                // ignored
             }
         }
-        catch
+
+        var manifest = LoadValidatedCurrentPendingTurnSnapshotManifestSync();
+        if (manifest?.GachaBaseResult != null &&
+            manifest.GachaBaseResult.TryGetPropertyValue("baseRarity", out var manifestBaseRarityNode) &&
+            manifestBaseRarityNode is JsonValue manifestBaseRarityValue &&
+            manifestBaseRarityValue.TryGetValue<string>(out var manifestBaseRarity) &&
+            !string.IsNullOrWhiteSpace(manifestBaseRarity))
         {
-            // ignored
+            return manifestBaseRarity;
         }
 
         return null;

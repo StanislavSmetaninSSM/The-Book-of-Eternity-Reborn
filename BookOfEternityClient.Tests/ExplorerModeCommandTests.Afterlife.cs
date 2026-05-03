@@ -4521,7 +4521,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             outputEffectFamily = "social",
                             tier = 2,
                             status = "completed",
-                            isSupported = true,
+                            isSupported = false,
                             strengthReward = 12
                         },
                         new

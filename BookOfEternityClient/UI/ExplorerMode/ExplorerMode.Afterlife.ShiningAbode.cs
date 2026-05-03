@@ -214,6 +214,10 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel("JSON shining_abode_state.factions/projects для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAudit(context.Root["factions"]), Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON guardian_abode_residents.json для Shining bindings", context.ResidentRoot, Color.Gold1);
+        WriteJsonAuditPanel("JSON shining_abode_state.halls для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAudit(context.Root["halls"]), Color.Gold1);
+        WriteJsonAuditPanel("JSON shining_abode_state.shiningPoliticalActors для просмотра (скрытые runtime details удалены)", CloneShiningJsonForPlayerFacingAudit(context.Root["shiningPoliticalActors"]), Color.Gold1);
     }
 
     private static List<JsonObject> CollectShiningFactionResidents(JsonObject? residentRoot, string? factionId)

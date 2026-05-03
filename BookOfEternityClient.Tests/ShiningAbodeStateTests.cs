@@ -258,6 +258,81 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void ValidateRawOwnerStateForActionableMode_DuplicateHallIds_FailsClosed()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["halls"] = new JsonArray(
+            new JsonObject
+            {
+                ["hallId"] = "hall_dawn",
+                ["hallName"] = "Зал Рассвета",
+                ["description"] = "Первый зал."
+            },
+            new JsonObject
+            {
+                ["hallId"] = "HALL_DAWN",
+                ["hallName"] = "Дубликат Рассвета",
+                ["description"] = "Дубликат не должен authorise actions."
+            });
+
+        var error = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(root);
+
+        Assert.NotNull(error);
+        Assert.Contains("duplicate hallId", error, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ValidateRawOwnerStateForActionableMode_DuplicatePoliticalActorIds_FailsClosed()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["shiningPoliticalActors"] = new JsonArray(
+            new JsonObject
+            {
+                ["actorId"] = "radiant_actor_dawn",
+                ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["displayName"] = "Глашатай Рассвета",
+                ["politicalStatus"] = ShiningAbodeState.PoliticalStatusElder
+            },
+            new JsonObject
+            {
+                ["actorId"] = "RADIANT_ACTOR_DAWN",
+                ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["displayName"] = "Дубликат Глашатая",
+                ["politicalStatus"] = ShiningAbodeState.PoliticalStatusClaimant
+            });
+
+        var error = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(root);
+
+        Assert.NotNull(error);
+        Assert.Contains("duplicate actorId", error, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ValidateRawOwnerStateForActionableMode_UniqueHallAndActorIds_Passes()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["halls"] = new JsonArray(
+            new JsonObject
+            {
+                ["hallId"] = "hall_dawn",
+                ["hallName"] = "Зал Рассвета",
+                ["description"] = "Первый зал."
+            });
+        root["shiningPoliticalActors"] = new JsonArray(
+            new JsonObject
+            {
+                ["actorId"] = "radiant_actor_dawn",
+                ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["displayName"] = "Глашатай Рассвета",
+                ["politicalStatus"] = ShiningAbodeState.PoliticalStatusElder
+            });
+
+        var error = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(root);
+
+        Assert.Null(error);
+    }
+
+    [Fact]
     public void NormalizeStateRoot_DoesNotRebuildPreparedPackageSelectedCardIds()
     {
         var root = JsonNode.Parse("""
@@ -1590,7 +1665,7 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
-    public void SyncShiningReturnCycle_EmptyLegacyCycleIdPreservesUsedGachaCharges()
+    public void SyncShiningReturnCycle_EmptyLegacyCycleIdResetsUsedGachaCharges()
     {
         var root = ShiningAbodeState.CreateDefaultState();
         root["gachaSystem"] = new JsonObject
@@ -1606,7 +1681,7 @@ public sealed class ShiningAbodeStateTests
         Assert.True(changed);
         Assert.False(cycleChanged);
         Assert.Equal("shining_return_5", root["gachaSystem"]?["currentReturnCycleId"]?.GetValue<string>());
-        Assert.Equal(2, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
+        Assert.Equal(0, root["gachaSystem"]?["chargesUsedThisReturn"]?.GetValue<int>());
     }
 
     [Fact]
