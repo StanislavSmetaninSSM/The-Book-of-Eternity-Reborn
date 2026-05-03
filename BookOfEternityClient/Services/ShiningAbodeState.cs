@@ -1080,13 +1080,35 @@ internal static partial class ShiningAbodeState
 
     private static string? ValidateRawPoliticalContracts(JsonObject root)
     {
+        if (root["halls"] is not JsonArray halls)
+            return "halls повреждён и не может authorise actionable Shining mode.";
+
+        var hallIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var hallNode in halls)
+        {
+            if (hallNode is not JsonObject hall)
+                return "halls содержит повреждённую запись и не может authorise actionable Shining mode.";
+
+            var hallId = GetNodeString(hall["hallId"]);
+            if (string.IsNullOrWhiteSpace(hallId) || !hallIds.Add(hallId))
+                return "halls содержит missing или duplicate hallId и не может authorise actionable Shining mode.";
+        }
+
         if (root["factions"] is not JsonArray factions)
             return "factions повреждён и не может authorise actionable Shining mode.";
 
+        var factionIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var projectIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var supportedProjects = 0;
+        var radianceTier = GetNodeInt(root["radiance"]?["tier"], 0);
         foreach (var factionNode in factions)
         {
             if (factionNode is not JsonObject faction)
                 return "factions содержит повреждённую запись и не может authorise actionable Shining mode.";
+
+            var factionId = GetNodeString(faction["factionId"]);
+            if (string.IsNullOrWhiteSpace(factionId) || !factionIds.Add(factionId))
+                return "factions содержит missing или duplicate factionId и не может authorise actionable Shining mode.";
 
             if (!IsSupportedOriginType(GetNodeString(faction["originType"])))
                 return "factions содержит неподдерживаемый originType и не может authorise actionable Shining mode.";
@@ -1134,16 +1156,35 @@ internal static partial class ShiningAbodeState
                 {
                     return "factions.projects содержит повреждённый project contract и не может authorise actionable Shining mode.";
                 }
+
+                var projectId = GetNodeString(project["projectId"]);
+                if (string.IsNullOrWhiteSpace(projectId) || !projectIds.Add(projectId))
+                    return "factions.projects содержит missing или duplicate projectId и не может authorise actionable Shining mode.";
+
+                if (string.Equals(GetNodeString(project["status"]), ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase) &&
+                    GetNodeBool(project["isSupported"]))
+                {
+                    supportedProjects++;
+                }
             }
         }
+
+        var supportedProjectCap = GetSupportedProjectCap(radianceTier);
+        if (supportedProjects > supportedProjectCap)
+            return $"Количество supported completed Shining projects ({supportedProjects}) превышает Radiance cap ({supportedProjectCap}) и не может authorise actionable Shining mode.";
 
         if (root["shiningPoliticalActors"] is not JsonArray actors)
             return "shiningPoliticalActors повреждён и не может authorise actionable Shining mode.";
 
+        var actorIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var actorNode in actors)
         {
             if (actorNode is not JsonObject actor)
                 return "shiningPoliticalActors содержит повреждённую запись и не может authorise actionable Shining mode.";
+
+            var actorId = GetNodeString(actor["actorId"]);
+            if (string.IsNullOrWhiteSpace(actorId) || !actorIds.Add(actorId))
+                return "shiningPoliticalActors содержит missing или duplicate actorId и не может authorise actionable Shining mode.";
 
             var actorType = GetNodeString(actor["actorType"]);
             if (!string.IsNullOrWhiteSpace(actorType) &&

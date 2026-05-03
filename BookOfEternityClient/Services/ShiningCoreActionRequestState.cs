@@ -253,6 +253,35 @@ internal static class ShiningCoreActionRequestState
         }, JsonOpts));
     }
 
+    public static async Task WriteForgeRequestWithRelicRerollCommitAsync(
+        FileSystemManager fs,
+        PendingShiningCoreActionRequest request,
+        int currentTurnNumber,
+        int relicRerollsToCommit)
+    {
+        if (relicRerollsToCommit <= 0)
+        {
+            await WriteRequestAsync(fs, request);
+            return;
+        }
+
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        var preCommitSoulJson = await fs.ReadFileAsync(soulStatePath);
+        if (!await ShiningBlessingEffectState.ConsumeRelicRerollsAsync(fs, currentTurnNumber, relicRerollsToCommit))
+            throw new InvalidOperationException("Relic reroll entitlement больше недоступен; Shining forge request не создан.");
+
+        try
+        {
+            await WriteRequestAsync(fs, request);
+        }
+        catch
+        {
+            if (preCommitSoulJson != null)
+                await fs.WriteFileAtomicAsync(soulStatePath, preCommitSoulJson);
+            throw;
+        }
+    }
+
     public static bool TryBuildProjectedShiningRootForPreview(
         PendingShiningCoreActionRequest request,
         JsonObject shiningRoot,

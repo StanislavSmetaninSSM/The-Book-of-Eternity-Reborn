@@ -74,6 +74,16 @@ public partial class ValidationService
         ValidateArrayItems(root, $"{contextPrefix}.halls", issues, "halls", ValidateShiningHallObject);
         ValidateArrayItems(root, $"{contextPrefix}.factions", issues, "factions", ValidateShiningFactionObject);
         ValidateArrayItems(root, $"{contextPrefix}.shiningPoliticalActors", issues, "shiningPoliticalActors", ValidateShiningPoliticalActorObject);
+        if (root.TryGetProperty("halls", out var halls))
+            ValidateDuplicateStringIdsInArray(halls, $"{contextPrefix}.halls", issues, "hallId", "shining_abode_duplicate_hall_id");
+        if (root.TryGetProperty("factions", out var factionIdentities))
+        {
+            ValidateDuplicateStringIdsInArray(factionIdentities, $"{contextPrefix}.factions", issues, "factionId", "shining_abode_duplicate_faction_id");
+            ValidateDuplicateProjectIdsAcrossShiningFactions(factionIdentities, $"{contextPrefix}.factions", issues);
+            ValidateShiningSupportedProjectCap(root, factionIdentities, contextPrefix, issues);
+        }
+        if (root.TryGetProperty("shiningPoliticalActors", out var politicalActors))
+            ValidateDuplicateStringIdsInArray(politicalActors, $"{contextPrefix}.shiningPoliticalActors", issues, "actorId", "shining_abode_duplicate_political_actor_id");
 
         if (root.TryGetProperty("pendingNativeFactionDiscovery", out var pendingDiscovery) &&
             pendingDiscovery.ValueKind != JsonValueKind.Null)
@@ -183,6 +193,128 @@ public partial class ValidationService
             code: code,
             section: "ShiningAbode",
             repairHint: "Оставляй в canonical Shining receipts/history уникальный requestId для каждого resolved contract, чтобы strict validation не зависела от порядка массива."));
+    }
+
+    private void ValidateDuplicateStringIdsInArray(
+        JsonElement array,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        string idProperty,
+        string code)
+    {
+        if (array.ValueKind != JsonValueKind.Array)
+            return;
+
+        var duplicateIds = array.EnumerateArray()
+            .Where(item => item.ValueKind == JsonValueKind.Object)
+            .Select(item => GetFirstNonEmptyString(item, idProperty))
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .GroupBy(id => id!, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .OrderBy(id => id, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (duplicateIds.Count == 0)
+            return;
+
+        issues.Add(new ValidationIssue(
+            contextPrefix,
+            IssueSeverity.Error,
+            $"Shining state содержит duplicated {idProperty}: {string.Join(", ", duplicateIds)}",
+            code: code,
+            section: "ShiningAbode",
+            expected: $"unique non-empty {idProperty}",
+            actual: string.Join(", ", duplicateIds),
+            repairHint: $"Сохраняй уникальные {idProperty} в canonical Shining owner-state; runtime helpers выбирают первый match и не могут безопасно обработать duplicates."));
+    }
+
+    private void ValidateDuplicateProjectIdsAcrossShiningFactions(
+        JsonElement factions,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (factions.ValueKind != JsonValueKind.Array)
+            return;
+
+        var projectIds = new List<string>();
+        foreach (var faction in factions.EnumerateArray())
+        {
+            if (faction.ValueKind != JsonValueKind.Object ||
+                !faction.TryGetProperty("projects", out var projects) ||
+                projects.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            projectIds.AddRange(projects.EnumerateArray()
+                .Where(project => project.ValueKind == JsonValueKind.Object)
+                .Select(project => GetFirstNonEmptyString(project, "projectId"))
+                .Where(projectId => !string.IsNullOrWhiteSpace(projectId))
+                .Cast<string>());
+        }
+
+        var duplicates = projectIds
+            .GroupBy(projectId => projectId, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)
+            .OrderBy(projectId => projectId, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        if (duplicates.Count == 0)
+            return;
+
+        issues.Add(new ValidationIssue(
+            contextPrefix,
+            IssueSeverity.Error,
+            $"Shining state содержит duplicated projects[].projectId: {string.Join(", ", duplicates)}",
+            code: "shining_abode_duplicate_project_id",
+            section: "ShiningAbode",
+            expected: "unique projectId across all Shining factions",
+            actual: string.Join(", ", duplicates),
+            repairHint: "Каждый Shining projectId должен быть уникальным across all factions; не переиспользуй id даже в другой faction.projects[]."));
+    }
+
+    private void ValidateShiningSupportedProjectCap(
+        JsonElement root,
+        JsonElement factions,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (factions.ValueKind != JsonValueKind.Array)
+            return;
+
+        var radianceTier = 0;
+        if (root.TryGetProperty("radiance", out var radiance))
+            TryReadInt(radiance, "tier", out radianceTier);
+
+        var supportedProjects = 0;
+        foreach (var faction in factions.EnumerateArray())
+        {
+            if (faction.ValueKind != JsonValueKind.Object ||
+                !faction.TryGetProperty("projects", out var projects) ||
+                projects.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            supportedProjects += projects.EnumerateArray().Count(project =>
+                project.ValueKind == JsonValueKind.Object &&
+                string.Equals(GetFirstNonEmptyString(project, "status"), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase) &&
+                GetBoolean(project, "isSupported", defaultValue: false));
+        }
+
+        var cap = ShiningAbodeState.GetSupportedProjectCap(radianceTier);
+        if (supportedProjects <= cap)
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.factions",
+            IssueSeverity.Error,
+            "Количество supported completed Shining projects превышает Radiance cap",
+            code: "shining_abode_supported_project_cap_exceeded",
+            section: "ShiningAbode",
+            expected: $"<= {cap} supported completed projects at radiance tier {radianceTier}",
+            actual: supportedProjects.ToString(),
+            repairHint: "Оставь supported=true только у allowed project cap; лишние completed projects должны быть unsupported через canonical unsupport_project closure."));
     }
 
     private void ValidatePendingShiningCoreActionsRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues) =>
@@ -1147,6 +1279,22 @@ public partial class ValidationService
                 expected: $"<= {chargesPerReturn}",
                 actual: chargesUsed.ToString(),
                 repairHint: "Синхронизируй used charges с canonical chargesPerReturn текущего return-cycle."));
+        }
+
+        var returnCycleId = GetFirstNonEmptyString(gachaSystem, "currentReturnCycleId");
+        if (string.IsNullOrWhiteSpace(returnCycleId) &&
+            TryReadInt(gachaSystem, "chargesUsedThisReturn", out var chargesUsedWithoutCycle) &&
+            chargesUsedWithoutCycle > 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.chargesUsedThisReturn",
+                IssueSeverity.Error,
+                "chargesUsedThisReturn не может быть положительным без currentReturnCycleId",
+                code: "shining_gacha_used_charges_without_cycle",
+                section: "ShiningAbode",
+                expected: "chargesUsedThisReturn = 0 when currentReturnCycleId is empty",
+                actual: chargesUsedWithoutCycle.ToString(),
+                repairHint: "Если currentReturnCycleId пустой legacy/state bootstrap marker, сбрось chargesUsedThisReturn в 0 до первого resolved Shining gacha pull."));
         }
     }
 

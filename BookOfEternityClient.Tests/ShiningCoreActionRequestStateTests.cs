@@ -1100,6 +1100,64 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task WriteForgeRequestWithRelicRerollCommitAsync_RestoresEntitlementWhenPendingWriteFails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+            soulRoot[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
+            {
+                ["relicRefinementEntitlements"] = new JsonObject
+                {
+                    ["status"] = ShiningBlessingEffectState.RelicStatusPendingEntitlement,
+                    ["rerolls"] = 2,
+                    ["rerollsSpent"] = 0,
+                    ["freeShape"] = false,
+                    ["freeRetune"] = false
+                }
+            };
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+
+            await ShiningCoreActionRequestState.WriteRequestAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                RequestId = "core_req_existing",
+                ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                CreatedAtTurn = 5
+            });
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => ShiningCoreActionRequestState.WriteForgeRequestWithRelicRerollCommitAsync(
+                fs,
+                new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    RequestId = "core_req_forge_after_race",
+                    ActionType = ShiningCoreActionRequestState.ActionTypeForgeRelicReshape,
+                    FactionId = "faction_old",
+                    RelicId = "relic_old",
+                    TargetFormTag = "lance",
+                    CreatedAtTurn = 5
+                },
+                currentTurnNumber: 4,
+                relicRerollsToCommit: 1));
+
+            var restoredSoulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+            var effectState = Assert.IsType<JsonObject>(restoredSoulRoot[ShiningBlessingEffectState.SoulStateProperty]);
+            var entitlements = Assert.IsType<JsonObject>(effectState["relicRefinementEntitlements"]);
+            Assert.Equal(2, entitlements["rerolls"]?.GetValue<int>());
+            Assert.Equal(0, entitlements["rerollsSpent"]?.GetValue<int>());
+            Assert.Equal(ShiningBlessingEffectState.RelicStatusPendingEntitlement, entitlements["status"]?.GetValue<string>());
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateRequestAgainstCurrentStateAsync_RelicGachaWithCanonicalBannerState_Passes()
     {
         var root = CreateTempRoot();
