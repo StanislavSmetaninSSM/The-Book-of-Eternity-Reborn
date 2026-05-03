@@ -6051,7 +6051,7 @@ Reference `soul_preparation` project fragment:
         "projectId": "gproj_neris_soul_preparation_sabotage_002",
         "projectType": "soul_preparation",
         "projectTier": "major",
-        "projectMode": "rival",
+        "projectMode": "offensive",
         "projectName": "Враждебный приоритет",
         "finalState": "Sabotaged",
         "projectOutcomeAudit": {

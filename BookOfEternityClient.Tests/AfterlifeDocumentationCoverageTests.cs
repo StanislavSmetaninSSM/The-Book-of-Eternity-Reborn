@@ -1130,6 +1130,10 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains(term, matrix + examples + manifest, StringComparison.Ordinal);
         }
+
+        Assert.Contains("\"projectId\": \"gproj_neris_soul_preparation_sabotage_002\"", examples, StringComparison.Ordinal);
+        Assert.Contains("\"projectMode\": \"offensive\"", examples, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"projectMode\": \"rival\"", examples, StringComparison.Ordinal);
     }
 
     [Fact]
