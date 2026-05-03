@@ -504,6 +504,70 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CleanupAcceptedTurnTerminalArtifactsAsync_PreservesTerminalContextForIncarnationTrigger()
+    {
+        const string sessionId = "session-late-incarnation";
+        const string requestId = "request-late-incarnation";
+        const int turnNumber = 23;
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 2
+        });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, "game_state/meta/soul_state.json");
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            accepted = true,
+            sessionId,
+            requestId,
+            turnNumber
+        });
+        await WriteJsonAsync("game_state/control/incarnation_trigger.json", new
+        {
+            worldDescription = "Тестовый смертный мир.",
+            characterDescription = "Тестовая душа.",
+            circumstances = "Проверка late accepted trigger.",
+            source = "test"
+        });
+
+        var engine = CreateGameEngine();
+
+        await InvokePrivateTaskAsync(engine, "CleanupAcceptedTurnTerminalArtifactsAsync");
+
+        Assert.True(_fs.FileExists("ready/turn_complete.json"));
+        Assert.True(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        Assert.True(_fs.FileExists("game_state/control/incarnation_trigger.json"));
+    }
+
+    [Fact]
+    public async Task CleanupAcceptedTurnTerminalArtifactsAsync_WithoutIncarnationTrigger_RemovesTerminalContext()
+    {
+        const string sessionId = "session-normal-cleanup";
+        const string requestId = "request-normal-cleanup";
+        const int turnNumber = 24;
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 2
+        });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, "game_state/meta/soul_state.json");
+        await WriteJsonAsync("ready/turn_complete.json", new
+        {
+            accepted = true,
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
+        var engine = CreateGameEngine();
+
+        await InvokePrivateTaskAsync(engine, "CleanupAcceptedTurnTerminalArtifactsAsync");
+
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+    }
+
+    [Fact]
     public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes()
     {
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new

@@ -1915,6 +1915,7 @@ public partial class GameEngine
 
             // Clean up trigger file
             _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+            ClearReadySignals();
 
             // Visual transition
             GameInterface.RenderRealmTransition(false);
