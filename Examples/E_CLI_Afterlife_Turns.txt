@@ -880,6 +880,7 @@ Scenario:
 - `shining_abode_state.json.preparedIncarnationPackage` is not null.
 - The player has already chosen a prepared next-life package.
 - The current accepted turn must create `TriggerIncarnation` while preserving the frozen package for the client transition code to consume after successful mortal bootstrap.
+- `TriggerIncarnation` is valid only because this is the current accepted turn with matching validated `game_state/control/pending_turn_snapshot` authority; it is not a manual/out-of-band file the GM can create later.
 - Ordinary Shining living-world progression must NOT run in this handoff turn.
 
 Input fragment:
@@ -966,6 +967,7 @@ Correct GM decision:
 - Mode: Shining Abode pending-bootstrap handoff.
 - Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.
 - This turn only emits `TriggerIncarnation` from the frozen next-life package. The GM must preserve the package; the client transition code consumes and clears it only after successful mortal bootstrap.
+- Accepted-turn authority: `TriggerIncarnation` is authored only for this accepted turn and relies on the matching validated `game_state/control/pending_turn_snapshot`; if that authority is missing or stale, the runtime treats the trigger as invalid (`incarnation_trigger_invalid_validated_snapshot_context`).
 
 ## Охват NPC-анализа
 - Режим: Scene-local
@@ -983,7 +985,7 @@ Correct response/control fragment:
 ```json
 {
   "response": "Сияющая Обитель не требует новых решений. Она только удерживает уже выбранный узор, пока душа проходит сквозь подготовленные врата. Стеклянный рассвет сжимается в точку памяти, и впереди раскрывается смертный мир храмовых архивов и речных духов.",
-  "gm_thoughts_markdown": "## Оценка времени и мира\n- Realm: Shining Abode.\n- preparedIncarnationPackage is present.\n- Mode: Shining Abode pending-bootstrap handoff.\n- Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.\n- This turn only emits `TriggerIncarnation` from the frozen next-life package. The GM must preserve the package; the client transition code consumes and clears it only after successful mortal bootstrap.\n\n## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: нет\n- Почему они релевантны: Ход является lifecycle/bootstrap handoff and does not mutate Guardian/resident/faction agency.\n- Акторы вне охвата: сияющие фракции, Хранители, резиденты\n- Почему они вне охвата: pending-bootstrap handoff explicitly suppresses ordinary Shining progression.\n\n## Reasoning / Размышления NPC / Guardian Thoughts\n- No actor reasoning block is required because no structured actor updates are emitted.",
+  "gm_thoughts_markdown": "## Оценка времени и мира\n- Realm: Shining Abode.\n- preparedIncarnationPackage is present.\n- Mode: Shining Abode pending-bootstrap handoff.\n- Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.\n- This turn only emits `TriggerIncarnation` from the frozen next-life package. The GM must preserve the package; the client transition code consumes and clears it only after successful mortal bootstrap.\n- Accepted-turn authority: `TriggerIncarnation` relies on the matching validated `game_state/control/pending_turn_snapshot`; if that authority is missing or stale, the runtime treats the trigger as invalid.\n\n## Охват NPC-анализа\n- Режим: Scene-local\n- Релевантные акторы: нет\n- Почему они релевантны: Ход является lifecycle/bootstrap handoff and does not mutate Guardian/resident/faction agency.\n- Акторы вне охвата: сияющие фракции, Хранители, резиденты\n- Почему они вне охвата: pending-bootstrap handoff explicitly suppresses ordinary Shining progression.\n\n## Reasoning / Размышления NPC / Guardian Thoughts\n- No actor reasoning block is required because no structured actor updates are emitted.",
   "TriggerIncarnation": {
     "worldDescription": "Мир поздней бронзы, где города-государства спорят с духами рек.",
     "characterDescription": "Ребёнок писца, родившийся с памятью о стеклянном рассвете.",
@@ -998,6 +1000,8 @@ Correct Shining state handling:
 Do not write a `shining_abode_state.json` mutation for `preparedIncarnationPackage` in this handoff turn. Preserve the existing package object exactly as it was in input; the runtime reads it after accepting `TriggerIncarnation`, materializes the frozen blessing/world setup, and clears it after successful mortal bootstrap. Do not add unsupported handoff marker fields.
 
 There is no required Shining state output fragment for this handoff unless another already-valid state field must be preserved unchanged by the normal save pipeline.
+
+Do not create `game_state/control/incarnation_trigger.json` outside the accepted-turn lifecycle. The runtime requires the matching validated `game_state/control/pending_turn_snapshot` context; a trigger without that authority is ignored/deleted rather than consumed.
 
 Do NOT write in this handoff example:
 
@@ -1442,6 +1446,7 @@ Scenario:
 - No Shining `preparedIncarnationPackage` is present.
 - The player explicitly chooses the next mortal life.
 - This is not Life Evaluation and not Shining pending-bootstrap handoff.
+- This response is part of the accepted turn that owns the matching validated `game_state/control/pending_turn_snapshot`; a later manual `incarnation_trigger.json` repair without that authority is invalid.
 
 Correct response/control fragment:
 
@@ -1462,6 +1467,7 @@ Do not write in ordinary Chaos Sea `TriggerIncarnation`:
 - `preparedIncarnationPackage` mutations.
 - Shining faction/radiance/trade progression.
 - Mortal World `currentLocationData`, `worldEventsLog`, `UpdateNPCs`, `UpdateQuests`, or weather/time outputs.
+- Out-of-band `incarnation_trigger.json` after the turn has ended or after snapshot/terminal authority is gone.
 
 Guardian-forced incarnation is a different flow. It is legal only on an ordinary player-driven Chaos Sea turn as a reaction to explicit provocation against the current active Guardian, and then it must include the extra guardian-forced fields described in `TaskGuides/CLI_Step_Main.txt`.
 
@@ -1497,6 +1503,7 @@ Why this is valid:
 - `[GUARDIAN_PROVOCATION]` without an id is accepted as explicit provocation evidence.
 - `[GUARDIAN_PROVOCATION: guardianId]` is accepted only when the id exactly matches `TriggerIncarnation.guardianId`.
 - This tag is evidence, not a pending file. It does not authorize Shining handoff, protected post-life turns, or forcing one Guardian's punishment through another Guardian's id.
+- The trigger is still valid only inside the current accepted turn with matching validated `game_state/control/pending_turn_snapshot` authority; otherwise validation reports `incarnation_trigger_invalid_validated_snapshot_context`.
 
 ==================================================
 7. VALID — DIRECT CHAOS SEA GACHA VS GUARDIAN-MEDIATED GACHA
@@ -4835,7 +4842,7 @@ Correct later pending-bootstrap handoff response:
 ```json
 {
   "response": "Сияющая Обитель удерживает уже выбранный узор и не требует новой политики. Душа проходит через подготовленные врата, а frozen package остаётся на месте до runtime consumption.",
-  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Afterlife subtype: Shining pending-bootstrap handoff.\n- Релевантные акторы: нет\n- Почему они релевантны: обычные actor systems suppressed; the handoff only writes TriggerIncarnation.\n- Акторы вне охвата: Guardians, residents, Shining factions\n- Почему они вне охвата: preparedIncarnationPackage already exists and ordinary Shining progression is suppressed.\n\n## Afterlife Living World / Живой мир Посмертия\n- No ordinary Shining scheduler cycles are processed in this handoff.\n- preparedIncarnationPackage is preserved exactly for runtime bootstrap consumption.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим: Scene-local\n- Afterlife subtype: Shining pending-bootstrap handoff.\n- Релевантные акторы: нет\n- Почему они релевантны: обычные actor systems suppressed; the handoff only writes TriggerIncarnation.\n- Акторы вне охвата: Guardians, residents, Shining factions\n- Почему они вне охвата: preparedIncarnationPackage already exists and ordinary Shining progression is suppressed.\n\n## Afterlife Living World / Живой мир Посмертия\n- No ordinary Shining scheduler cycles are processed in this handoff.\n- preparedIncarnationPackage is preserved exactly for runtime bootstrap consumption.\n- Accepted-turn authority: TriggerIncarnation is valid only with the matching validated game_state/control/pending_turn_snapshot context for this accepted turn.",
   "TriggerIncarnation": {
     "worldDescription": "Мир речных храмов, где архивы спорят с духами наводнений.",
     "characterDescription": "Ребёнок хранителя храмовой библиотеки, родившийся рядом с затопленным порогом.",
@@ -4853,6 +4860,7 @@ preparedIncarnationPackageId on TriggerIncarnation
 ordinary Shining coreActionReceipts[]
 ordinary Shining trade/faction/resident progression report
 soul_state.currentRealm = "Mortal World"
+manual/out-of-band incarnation_trigger.json without validated accepted-turn authority
 ```
 
 ==================================================
