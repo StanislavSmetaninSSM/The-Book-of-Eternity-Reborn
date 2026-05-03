@@ -214,6 +214,10 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel("Полный JSON shining_abode_state.json.factions/projects", context.Root["factions"], Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON guardian_abode_residents.json для Shining bindings", context.ResidentRoot, Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON shining_abode_state.json.halls", context.Root["halls"], Color.Gold1);
+        WriteJsonAuditPanel("Полный JSON shining_abode_state.json.shiningPoliticalActors", context.Root["shiningPoliticalActors"], Color.Gold1);
     }
 
     private static List<JsonObject> CollectShiningFactionResidents(JsonObject? residentRoot, string? factionId)

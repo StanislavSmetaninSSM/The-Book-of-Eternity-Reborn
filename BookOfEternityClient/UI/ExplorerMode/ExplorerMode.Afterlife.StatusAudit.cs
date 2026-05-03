@@ -91,6 +91,18 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel("Полный JSON game_state/meta/soul_state.json", soulRoot, Color.Cyan1);
+        WriteJsonAuditPanel("Полный JSON game_state/meta/guardians.json", guardiansRoot, Color.Cyan1);
+        WriteJsonAuditPanel("Полный JSON game_state/meta/guardian_abode_residents.json", residentsRoot, Color.Cyan1);
+        if (shiningContext != null)
+        {
+            WriteJsonAuditPanel("Полный JSON game_state/meta/shining_abode_state.json", shiningContext.Root, Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining resident bindings", shiningContext.ResidentRoot, Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining gates", shiningContext.Root["gates"], Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON preparedIncarnationPackage", shiningContext.Root["preparedIncarnationPackage"], Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining coreActionReceipts", shiningContext.Root["coreActionReceipts"], Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining gachaSystem", shiningContext.Root["gachaSystem"], Color.Gold1);
+        }
         WaitForKey();
     }
 

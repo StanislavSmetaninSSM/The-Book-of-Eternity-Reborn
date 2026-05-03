@@ -1343,6 +1343,51 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifePlayerPreviewsExposeFullAuditJsonForTravelOfferingsResidentsAndShining()
+    {
+        var guardiansTrade = ReadRepoFile(
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs");
+        var offerings = ReadRepoFile(
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
+        var statusAudit = ReadRepoFile(
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.StatusAudit.cs");
+        var shiningOverview = ReadRepoFile(
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.ShiningAbode.cs");
+        var shiningTradeForge = ReadRepoFile(
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs");
+
+        foreach (var term in new[] { "previousActiveGuardianFull", "targetGuardianFull", "Полный JSON текущего Chaos Sea state перед свободным поиском" })
+            Assert.Contains(term, guardiansTrade, StringComparison.Ordinal);
+
+        foreach (var term in new[] { "consumedObjectFullJson", "consumedCollectionPath", "Полный JSON подношения реликвии", "Полный JSON подношения Архива" })
+            Assert.Contains(term, offerings, StringComparison.Ordinal);
+
+        foreach (var term in new[] { "residentFullJsonBefore", "soulQuestsFullJsonBefore", "Полный JSON transferReceipts резидента" })
+            Assert.Contains(term, guardiansTrade, StringComparison.Ordinal);
+
+        foreach (var term in new[] { "Полный JSON game_state/meta/shining_abode_state.json", "Полный JSON Shining gates", "Полный JSON preparedIncarnationPackage" })
+            Assert.Contains(term, statusAudit, StringComparison.Ordinal);
+
+        Assert.Contains("Полный JSON shining_abode_state.json.factions/projects", shiningOverview, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON forge request payload preview", shiningTradeForge, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ChaosSeaGachaDocsMatchValidatedModifierAndCostContract()
     {
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
