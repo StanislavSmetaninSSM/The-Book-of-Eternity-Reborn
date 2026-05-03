@@ -114,6 +114,8 @@ public partial class GameEngine
             if (qteHandling.EarlyExit)
             {
                 await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
+                if (await CheckGmIncarnationTrigger(snapshotContext))
+                    return true;
                 await CleanupAcceptedTurnTerminalArtifactsAsync();
                 return true;
             }
@@ -132,6 +134,8 @@ public partial class GameEngine
                 await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
             }
 
+            if (await CheckGmIncarnationTrigger(snapshotContext))
+                return true;
             await CleanupAcceptedTurnTerminalArtifactsAsync();
             return true;
         }
@@ -460,7 +464,8 @@ public partial class GameEngine
                 }
                 if (acceptedLateResponse)
                 {
-                    await CleanupAcceptedTurnTerminalArtifactsAsync();
+                    if (!await CheckGmIncarnationTrigger(snapshotContext))
+                        await CleanupAcceptedTurnTerminalArtifactsAsync();
                 }
                 else
                 {
@@ -789,6 +794,8 @@ public partial class GameEngine
             await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
         }
 
+        if (await CheckGmIncarnationTrigger(activeSnapshotContext))
+            return;
         await CleanupAcceptedTurnTerminalArtifactsAsync();
     }
 
@@ -1472,6 +1479,8 @@ public partial class GameEngine
                     guardianContext.GuardianName,
                     _gameLoop.TurnNumber);
 
+                if (await CheckGmIncarnationTrigger(snapshotContext))
+                    return;
                 await CleanupAcceptedTurnTerminalArtifactsAsync();
             }
         }
@@ -1650,15 +1659,15 @@ public partial class GameEngine
     /// Checks for GM-initiated incarnation trigger.
     /// GM can write game_state/control/incarnation_trigger.json to send the player to Mortal World.
     /// </summary>
-    private async Task CheckGmIncarnationTrigger()
+    private async Task<bool> CheckGmIncarnationTrigger(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
         var triggerJson = await _fs.ReadFileAsync("game_state/control/incarnation_trigger.json");
-        if (triggerJson == null) return;
+        if (triggerJson == null) return false;
         var isShiningBootstrapHandoff = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
         if (!_stateManager.CurrentState.IsInChaosSea && !isShiningBootstrapHandoff)
         {
             _fs.DeleteFile("game_state/control/incarnation_trigger.json");
-            return;
+            return false;
         }
 
         RollbackSnapshot? rollbackBackups = null;
@@ -1671,15 +1680,15 @@ public partial class GameEngine
             if (!IncarnationTriggerContract.TryParse(triggerJson, out var payload))
             {
                 _fs.DeleteFile("game_state/control/incarnation_trigger.json");
-                return;
+                return false;
             }
 
-            if (!await HasAcceptedTurnAuthorityForIncarnationTriggerAsync(payload, isShiningBootstrapHandoff))
+            if (!await HasAcceptedTurnAuthorityForIncarnationTriggerAsync(payload, isShiningBootstrapHandoff, acceptedTurnSnapshotContext))
             {
                 _logger.LogWarning("incarnation_trigger.json ignored because it is not backed by a validated accepted-turn authority context.");
                 _fs.DeleteFile("game_state/control/incarnation_trigger.json");
                 await CleanupPendingTurnSnapshotAsync();
-                return;
+                return false;
             }
 
             JsonObject? preparedShiningPackage = null;
@@ -1690,7 +1699,7 @@ public partial class GameEngine
                 {
                     _logger.LogWarning("Shining pending-bootstrap handoff detected, but preparedIncarnationPackage is unreadable or invalid. Deleting stale incarnation trigger and preserving the package for repair.");
                     _fs.DeleteFile("game_state/control/incarnation_trigger.json");
-                    return;
+                    return false;
                 }
             }
 
@@ -1705,7 +1714,7 @@ public partial class GameEngine
                     _logger.LogWarning(
                         "guardian_forced incarnation trigger ignored because afterlife_return_guard is invalid. Failing closed to preserve the protected return turn.");
                     _fs.DeleteFile("game_state/control/incarnation_trigger.json");
-                    return;
+                    return false;
                 }
 
                 if (guardSemanticState == AfterlifeReturnGuardSemanticState.ActiveValid && activeReturnGuard != null)
@@ -1714,7 +1723,7 @@ public partial class GameEngine
                         "guardian_forced incarnation trigger ignored because afterlife_return_guard is still active (remainingProtectedTurns={Turns}).",
                         activeReturnGuard.RemainingProtectedTurns);
                     _fs.DeleteFile("game_state/control/incarnation_trigger.json");
-                    return;
+                    return false;
                 }
             }
             var worldDesc = payload.WorldDescription;
@@ -1859,7 +1868,7 @@ public partial class GameEngine
                     await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
                     AnsiConsole.MarkupLine("[red]⚠ Bootstrap Сияющей Обители остановлен: blessing package не удалось безопасно материализовать.[/]");
                     AnsiConsole.MarkupLine("[yellow]preparedIncarnationPackage и incarnation_trigger сохранены для repair/retry; смертный bootstrap не отправлен.[/]");
-                    return;
+                    return false;
                 }
                 else if (blessingResult.SummaryLines.Count > 0)
                 {
@@ -1928,6 +1937,8 @@ public partial class GameEngine
                 if (preparedShiningPackage != null)
                     await ClearPreparedShiningPackageAfterBootstrapAsync();
             }
+
+            return true;
         }
         catch (Exception ex)
         {
@@ -1939,15 +1950,21 @@ public partial class GameEngine
                 _logger.LogWarning("Shining bootstrap handoff failed before dispatch; preserving incarnation_trigger.json and preparedIncarnationPackage for repair/retry.");
             else
                 _fs.DeleteFile("game_state/control/incarnation_trigger.json");
+            return requestDispatched;
         }
     }
 
     private async Task<bool> HasAcceptedTurnAuthorityForIncarnationTriggerAsync(
         IncarnationTriggerPayload payload,
-        bool isShiningBootstrapHandoff)
+        bool isShiningBootstrapHandoff,
+        ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
-        var manifest = await LoadPendingTurnSnapshotManifestAsync();
-        var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+        var snapshotContext = acceptedTurnSnapshotContext;
+        if (snapshotContext == null)
+        {
+            var manifest = await LoadPendingTurnSnapshotManifestAsync();
+            snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+        }
         if (snapshotContext == null)
             return false;
 

@@ -504,7 +504,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task CleanupAcceptedTurnTerminalArtifactsAsync_PreservesTerminalContextForIncarnationTrigger()
+    public async Task CleanupAcceptedTurnTerminalArtifactsAsync_PreservesSnapshotButNotReadyForIncarnationTrigger()
     {
         const string sessionId = "session-late-incarnation";
         const string requestId = "request-late-incarnation";
@@ -534,7 +534,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         await InvokePrivateTaskAsync(engine, "CleanupAcceptedTurnTerminalArtifactsAsync");
 
-        Assert.True(_fs.FileExists("ready/turn_complete.json"));
+        Assert.False(_fs.FileExists("ready/turn_complete.json"));
         Assert.True(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
         Assert.True(_fs.FileExists("game_state/control/incarnation_trigger.json"));
     }

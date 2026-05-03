@@ -779,8 +779,7 @@ public partial class GameEngine
     private async Task CleanupAcceptedTurnTerminalArtifactsAsync()
     {
         var hasIncarnationTrigger = _fs.FileExists("game_state/control/incarnation_trigger.json");
-        if (!hasIncarnationTrigger)
-            _fs.DeleteFile("ready/turn_complete.json");
+        _fs.DeleteFile("ready/turn_complete.json");
         _fs.DeleteFile("ready/turn_error.json");
         if (!hasIncarnationTrigger)
             await CleanupPendingTurnSnapshotAsync();
