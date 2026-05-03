@@ -127,6 +127,76 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateIncarnationContextAsync_ShiningHandoffWithPreservedPreparedPackage_PassesPackageGuard()
+    {
+        var package = CreatePreparedIncarnationPackage();
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        preTurnShiningRoot["preparedIncarnationPackage"] = package.DeepClone();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            new JsonObject { [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray() });
+        await WriteIncarnationTriggerAsync();
+
+        var issues = await InvokeValidationAsync("ValidateIncarnationContextAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "incarnation_trigger_shining_handoff_package_missing", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "incarnation_trigger_shining_handoff_package_modified", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateIncarnationContextAsync_ShiningHandoffWithClearedPreparedPackage_FailsPackageGuard()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        preTurnShiningRoot["preparedIncarnationPackage"] = CreatePreparedIncarnationPackage();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        currentShiningRoot["preparedIncarnationPackage"] = null;
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            new JsonObject { [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray() });
+        await WriteIncarnationTriggerAsync();
+
+        var issues = await InvokeValidationAsync("ValidateIncarnationContextAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "incarnation_trigger_shining_handoff_package_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateIncarnationContextAsync_ShiningHandoffWithMutatedPreparedPackage_FailsPackageGuard()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        preTurnShiningRoot["preparedIncarnationPackage"] = CreatePreparedIncarnationPackage();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        currentShiningRoot["preparedIncarnationPackage"]!["selectedCards"]![0]!["effectPayload"]!["routeSeedId"] = "mutated_seed";
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+
+        await SeedCurrentStateAsync(currentShiningRoot, preTurnResidentRoot, preTurnSoulRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            new JsonObject { [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray() });
+        await WriteIncarnationTriggerAsync();
+
+        var issues = await InvokeValidationAsync("ValidateIncarnationContextAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "incarnation_trigger_shining_handoff_package_modified", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidatePendingShiningCoreActionResolutionAsync_AcceptedOpenGatesWithoutDraftVersion_Fails()
     {
         var preTurnShiningRoot = CreateBaseShiningRoot();
@@ -211,6 +281,45 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
 
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_projected_state_mismatch", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_core_action_unexpected_resident_state_change", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingMarksExistingOpenGatesStale()
+    {
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var preTurnSoulRoot = CreateBaseSoulRoot();
+        Assert.True(ShiningAbodeState.TryOpenGates(preTurnShiningRoot, CloneJsonObject(preTurnResidentRoot), out _));
+        Assert.True(preTurnShiningRoot["gates"]?["isStale"] is JsonValue isStaleValue &&
+                    isStaleValue.TryGetValue<bool>(out var isStale) &&
+                    !isStale);
+
+        var foundingRequest = CreateFoundingRequest("founding_req_with_open_gates", "faction_dawn_choir", "hall_dawn_choir");
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        MaterializeAcceptedFounding(currentShiningRoot, currentResidentRoot, foundingRequest);
+        currentShiningRoot["gates"]!["isStale"] = true;
+
+        var foundingRequestRoot = new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(foundingRequest.DeepClone())
+        };
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, preTurnSoulRoot);
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, foundingRequestRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            preTurnShiningRoot,
+            preTurnResidentRoot,
+            preTurnSoulRoot,
+            new JsonObject { [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray() },
+            new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingFoundingsRequestPath] = foundingRequestRoot
+            });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2728,6 +2837,17 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
+    private async Task WriteIncarnationTriggerAsync()
+    {
+        await WriteNodeAsync("game_state/control/incarnation_trigger.json", new JsonObject
+        {
+            ["worldDescription"] = "Тестовый смертный мир.",
+            ["characterDescription"] = "Тестовая душа.",
+            ["circumstances"] = "Проверка Shining bootstrap handoff.",
+            ["source"] = "test"
+        });
+    }
+
     private async Task WriteLegacyNativeDiscoverySnapshotManifestAsync(JsonObject preTurnShiningRoot, JsonObject preTurnResidentRoot, JsonObject preTurnSoulRoot)
     {
         const string shiningSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/shining_abode_state.json";
@@ -3062,6 +3182,30 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
             ["type"] = "noop"
         }
     };
+
+    private static JsonObject CreatePreparedIncarnationPackage()
+    {
+        var card = CreateCard(
+            "card_route_seed",
+            ShiningAbodeState.CardSourceTypeProject,
+            "project_passage",
+            ShiningAbodeState.EffectFamilyRoute,
+            ShiningAbodeState.RarityRare);
+        card["effectPayload"] = new JsonObject
+        {
+            ["type"] = "route_seed",
+            ["routeSeedId"] = "route_seed_original"
+        };
+
+        return new JsonObject
+        {
+            ["generatedFromDraftVersion"] = 7,
+            ["preparedAtTurn"] = 12,
+            ["preparedAtUtc"] = "2026-04-16T12:30:00Z",
+            ["selectedCardIds"] = new JsonArray("card_route_seed"),
+            ["selectedCards"] = new JsonArray(card)
+        };
+    }
 
     private static JsonObject CreateDiscoverNativeFactionRequest() => new()
     {

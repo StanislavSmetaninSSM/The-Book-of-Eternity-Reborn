@@ -118,6 +118,8 @@ public partial class ExplorerMode
             SupportingResidentIds = supporterIds,
             QuotedCostFeathers = cost.Feathers,
             QuotedCostLightSparks = cost.LightSparks,
+            ReservedInkFeathersBefore = feathers,
+            ReservedLightSparksBefore = GetNodeInt(context.Root["lightSparks"]),
             CreatedAtTurn = _stateManager.CurrentState.TurnNumber + 1
         };
 

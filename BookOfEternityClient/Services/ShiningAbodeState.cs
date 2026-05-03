@@ -262,6 +262,13 @@ internal static partial class ShiningAbodeState
             return "preparedIncarnationPackage повреждён и не позволяет надёжно определить lifecycle handoff.";
         }
 
+        if (root.ContainsKey("pendingNativeFactionDiscovery") &&
+            root["pendingNativeFactionDiscovery"] != null &&
+            root["pendingNativeFactionDiscovery"] is not JsonObject)
+        {
+            return "pendingNativeFactionDiscovery повреждён; legacy discovery contract должен быть repaired или closed перед actionable Shining mode.";
+        }
+
         if (root["radiance"] is not JsonObject)
             return "radiance object повреждён или отсутствует.";
         if (root["gates"] is not JsonObject)

@@ -29,6 +29,8 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("alreadyDeductedByClient", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("stateEvidence обязан содержать affectedFiles", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("BuildMemoryGatesPreviewAuditLines", inkFeathers, StringComparison.Ordinal);
+        Assert.DoesNotContain("direct_chaos_gacha_result receipt data", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("no separate direct_chaos_gacha_result receipt is supported", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("full before payload", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("Canonical after payload schema", inkFeathers, StringComparison.Ordinal);
         Assert.Contains("sourceLifeHint: required non-empty", inkFeathers, StringComparison.Ordinal);
@@ -56,6 +58,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         var lifecycle = ReadSource("Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
         var explorerPrivate = ReadSource("UI", "ExplorerMode", "ExplorerMode.PrivateImplementation.cs");
         var trade = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs");
+        var inkFeathers = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
         var inbox = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs");
 
         Assert.Contains("BuildPendingFileBlockerAsync", mainMenu, StringComparison.Ordinal);
@@ -108,6 +111,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("stateTransition", trade, StringComparison.Ordinal);
         Assert.Contains("generatedBuybackEntryFields", trade, StringComparison.Ordinal);
         Assert.Contains("GM turn не отправляется: это client-local coordinated write with full audit JSON", trade, StringComparison.Ordinal);
+        Assert.DoesNotContain(".Take(3)", trade, StringComparison.Ordinal);
 
         Assert.Contains("candidateId:", inbox, StringComparison.Ordinal);
         Assert.Contains("archiveId:", inbox, StringComparison.Ordinal);
@@ -118,6 +122,11 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("Полный JSON выбранного archive candidate", inbox, StringComparison.Ordinal);
         Assert.Contains("Полный JSON записи Архива души", inbox, StringComparison.Ordinal);
         Assert.Contains("Полный JSON afterlife notification", inbox, StringComparison.Ordinal);
+        Assert.DoesNotContain(".Take(3)", inkFeathers, StringComparison.Ordinal);
+        Assert.DoesNotContain(".Take(3)", inbox, StringComparison.Ordinal);
+        Assert.Contains("FormatAfterlifeNotificationInline", trade, StringComparison.Ordinal);
+        Assert.Contains("FormatAfterlifeNotificationInline", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("FormatAfterlifeNotificationInline", inbox, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -139,13 +148,31 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
     {
         var lifecycle = ReadSource("Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
         var shiningAbode = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.ShiningAbode.cs");
+        var statusAudit = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.StatusAudit.cs");
+        var explorerPrivate = ReadSource("UI", "ExplorerMode", "ExplorerMode.PrivateImplementation.cs");
 
         Assert.DoesNotContain("Shining blessing effectPayload", lifecycle, StringComparison.Ordinal);
         Assert.DoesNotContain("effectPayload.ToJsonString", lifecycle, StringComparison.Ordinal);
         Assert.Contains("CloneShiningJsonForPlayerFacingAudit", shiningAbode, StringComparison.Ordinal);
+        Assert.Contains("CloneShiningJsonForPlayerFacingAudit", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("ContainsRuntimeEffectPayload", explorerPrivate, StringComparison.Ordinal);
         Assert.Contains("RemoveShiningBlessingRuntimePayloads", shiningAbode, StringComparison.Ordinal);
         Assert.DoesNotContain("WriteJsonAuditPanel(\"Полный JSON coreActionReceipts[]\"", shiningAbode, StringComparison.Ordinal);
         Assert.DoesNotContain("WriteJsonAuditPanel(\"Полный JSON shining_abode_state.json", shiningAbode, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AfterlifeStatusAuditSurfacesWrongRealmAndProgressionContracts()
+    {
+        var statusAudit = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.StatusAudit.cs");
+
+        Assert.Contains("ActorSocialInteractionRequestState.PendingNpcRequestPath", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("NpcTradeRequestState.PendingRequestPath", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("wrong-realm repair-only in Chaos Sea", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("ProgressionScheduleService.SchedulePath", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("ProgressionScheduleService.ReportPath", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("afterlifeCatchupContours", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("progressionControl", statusAudit, StringComparison.Ordinal);
     }
 
     private static string ReadSource(params string[] pathParts) =>

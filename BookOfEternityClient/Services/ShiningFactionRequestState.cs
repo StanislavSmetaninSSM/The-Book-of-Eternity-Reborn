@@ -130,6 +130,12 @@ internal static class ShiningFactionRequestState
         [JsonPropertyName("quotedCostLightSparks")]
         public int QuotedCostLightSparks { get; set; } = FactionFoundingCostLightSparks;
 
+        [JsonPropertyName("reservedInkFeathersBefore")]
+        public int ReservedInkFeathersBefore { get; set; } = -1;
+
+        [JsonPropertyName("reservedLightSparksBefore")]
+        public int ReservedLightSparksBefore { get; set; } = -1;
+
         [JsonPropertyName("createdAtTurn")]
         public int CreatedAtTurn { get; set; }
 
@@ -330,6 +336,14 @@ internal static class ShiningFactionRequestState
 
         if (otherFoundings.Count > 0)
             return "В Сияющей Обители может быть только один live player-soul founding request: все founding outcomes создают player_soul head и конфликтуют с single-head invariant.";
+
+        var isLiveRequest = foundingRequests.Any(existing => IsSameFoundingLogicalRequest(existing, request));
+        if (isLiveRequest)
+        {
+            var reservationError = ValidateFoundingResourceReservation(request, soulRoot, shiningRoot);
+            if (reservationError != null)
+                return reservationError;
+        }
 
         if (HasCurrentHeadFaction(
                 shiningRoot,
@@ -1584,6 +1598,42 @@ internal static class ShiningFactionRequestState
         }
 
         return result;
+    }
+
+    private static string? ValidateFoundingResourceReservation(
+        PendingShiningFactionFoundingRequest request,
+        JsonObject? soulRoot,
+        JsonObject shiningRoot)
+    {
+        if (request.ReservedInkFeathersBefore < FactionFoundingCostFeathers ||
+            request.ReservedLightSparksBefore < FactionFoundingCostLightSparks)
+        {
+            return "Live founding request должен содержать client-authored reservedInkFeathersBefore и reservedLightSparksBefore snapshot до локальной резервации.";
+        }
+
+        var expectedCurrentFeathers = request.ReservedInkFeathersBefore - FactionFoundingCostFeathers;
+        var actualCurrentFeathers = CurrentSoulFeathers(soulRoot);
+        if (actualCurrentFeathers != expectedCurrentFeathers)
+        {
+            return $"Founding request не подтверждает локальную резервацию Ink Feathers: expected current={expectedCurrentFeathers} from reservedInkFeathersBefore-cost, actual current={actualCurrentFeathers}.";
+        }
+
+        var expectedCurrentLightSparks = request.ReservedLightSparksBefore - FactionFoundingCostLightSparks;
+        var actualCurrentLightSparks = GetNodeInt(shiningRoot["lightSparks"]);
+        if (actualCurrentLightSparks != expectedCurrentLightSparks)
+        {
+            return $"Founding request не подтверждает локальную резервацию Light Sparks: expected current={expectedCurrentLightSparks} from reservedLightSparksBefore-cost, actual current={actualCurrentLightSparks}.";
+        }
+
+        return null;
+    }
+
+    private static int CurrentSoulFeathers(JsonObject? soulRoot)
+    {
+        if (soulRoot?["inkFeathers"] is JsonObject feathers)
+            return GetNodeInt(feathers["current"]);
+
+        return GetNodeInt(soulRoot?["inkFeathers"]);
     }
 
     private static bool IsSameFoundingLogicalRequest(

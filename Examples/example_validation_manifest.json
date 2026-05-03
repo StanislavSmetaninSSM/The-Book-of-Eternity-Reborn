@@ -108,6 +108,38 @@
       "reason": "This block is explicitly documented as a persisted Guardian state patch, not a real GameResponse payload."
     }
   ],
+  "inkFeatherReceiptCoverage": [
+    {
+      "actionTag": "DONATE_TO_GUARDIAN",
+      "file": "E_CLI_Ink_Feather_Actions.txt",
+      "coverageKind": "receiptContractValidation",
+      "exemptionReason": "This example is the canonical output/ink_feather_action_result.json receipt fragment; the receipt contract test validates required fields and action-specific stateEvidence without running a full GameResponse scenario."
+    },
+    {
+      "actionTag": "CULTIVATE_ENLIGHTENMENT",
+      "file": "E_CLI_Ink_Feather_Actions.txt",
+      "coverageKind": "receiptContractValidation",
+      "exemptionReason": "This example is the canonical output/ink_feather_action_result.json receipt fragment; the receipt contract test validates required fields and action-specific stateEvidence without running a full GameResponse scenario."
+    },
+    {
+      "actionTag": "GUARDIAN_FAVOR",
+      "file": "E_CLI_Ink_Feather_Actions.txt",
+      "coverageKind": "receiptContractValidation",
+      "exemptionReason": "This example is the canonical output/ink_feather_action_result.json receipt fragment; the receipt contract test validates required fields and action-specific stateEvidence without running a full GameResponse scenario."
+    },
+    {
+      "actionTag": "MEMORY_GATES",
+      "file": "E_CLI_Ink_Feather_Actions.txt",
+      "coverageKind": "receiptContractValidation",
+      "exemptionReason": "This example is the canonical output/ink_feather_action_result.json receipt fragment; the receipt contract test validates required fields and action-specific stateEvidence without running a full GameResponse scenario."
+    },
+    {
+      "actionTag": "SOUL_IMPRINT",
+      "file": "E_CLI_Ink_Feather_Actions.txt",
+      "coverageKind": "receiptContractValidation",
+      "exemptionReason": "This example is the canonical output/ink_feather_action_result.json receipt fragment; the receipt contract test validates required fields and action-specific stateEvidence without running a full GameResponse scenario."
+    }
+  ],
   "runtimeScenarios": [
     {
       "id": "cli_translation_simple_player_status_response",

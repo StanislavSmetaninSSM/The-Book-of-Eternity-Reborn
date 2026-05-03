@@ -6264,6 +6264,7 @@ public partial class ValidationService
         var currentRealm = await TryResolveCurrentRealmAsync();
 
         var allowsShiningPendingBootstrap = false;
+        JsonObject? preTurnPreparedShiningPackage = null;
         if (!IsExactChaosSeaRealm(preTurnRealm) &&
             (string.Equals(preTurnRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
              string.Equals(preTurnRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase)))
@@ -6280,15 +6281,60 @@ public partial class ValidationService
                 try
                 {
                     if (JsonNode.Parse(preTurnShiningJson) is JsonObject preTurnShiningRoot &&
-                        preTurnShiningRoot["preparedIncarnationPackage"] is JsonObject)
+                        preTurnShiningRoot["preparedIncarnationPackage"] is JsonObject preparedPackage)
                     {
                         allowsShiningPendingBootstrap = true;
+                        preTurnPreparedShiningPackage = preparedPackage;
                     }
                 }
                 catch
                 {
                     // parse issues are reported elsewhere
                 }
+            }
+        }
+
+        if (allowsShiningPendingBootstrap && preTurnPreparedShiningPackage != null)
+        {
+            var currentShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            JsonObject? currentPreparedPackage = null;
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(currentShiningJson) &&
+                    JsonNode.Parse(currentShiningJson) is JsonObject currentShiningRoot &&
+                    currentShiningRoot["preparedIncarnationPackage"] is JsonObject currentPackage)
+                {
+                    currentPreparedPackage = currentPackage;
+                }
+            }
+            catch
+            {
+                // Existing Shining state validation reports malformed current state.
+            }
+
+            if (currentPreparedPackage == null)
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningAbodeState.StatePath,
+                    IssueSeverity.Error,
+                    "TriggerIncarnation из Shining pending-bootstrap handoff требует сохранить текущий preparedIncarnationPackage до runtime consumption.",
+                    code: "incarnation_trigger_shining_handoff_package_missing",
+                    section: "Lifecycle",
+                    expected: "current preparedIncarnationPackage preserved exactly from validated pre-turn snapshot",
+                    actual: "missing, null, malformed, or non-object current preparedIncarnationPackage",
+                    repairHint: "На accepted turn с frozen Shining handoff не удаляй и не очищай preparedIncarnationPackage; клиент прочитает и очистит package только после успешного Mortal bootstrap."));
+            }
+            else if (!JsonNode.DeepEquals(preTurnPreparedShiningPackage, currentPreparedPackage))
+            {
+                issues.Add(new ValidationIssue(
+                    ShiningAbodeState.StatePath,
+                    IssueSeverity.Error,
+                    "TriggerIncarnation из Shining pending-bootstrap handoff не может менять frozen preparedIncarnationPackage.",
+                    code: "incarnation_trigger_shining_handoff_package_modified",
+                    section: "Lifecycle",
+                    expected: "preparedIncarnationPackage byte-equivalent to validated pre-turn frozen package",
+                    actual: "current preparedIncarnationPackage differs from validated pre-turn snapshot",
+                    repairHint: "GM пишет только TriggerIncarnation и сохраняет preparedIncarnationPackage exactly as provided; любые изменения selectedCards/effectPayload/package metadata должен выполнять только runtime bootstrap."));
             }
         }
 
@@ -9500,6 +9546,7 @@ public partial class ValidationService
 
         ShiningAbodeState.EnsureFactionFoundingReceiptsArray(expectedShiningRoot).Add(CloneJsonObject(receipt));
         ShiningAbodeState.NormalizeStateRoot(expectedShiningRoot, expectedResidentsRoot, null);
+        MarkCompositeOpenGatesStale(expectedShiningRoot);
     }
 
     private static void ApplyRealignmentToComposite(
@@ -9526,6 +9573,11 @@ public partial class ValidationService
 
         CopyResidentHistoryEntryToComposite(expectedResidentsRoot, currentResidentsRoot, receipt);
         ShiningAbodeState.NormalizeStateRoot(expectedShiningRoot, expectedResidentsRoot, null);
+        if (string.Equals(status, ShiningFactionRequestState.RequestStatusAccepted, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(status, ShiningFactionRequestState.RequestStatusDepartedToNeutral, StringComparison.OrdinalIgnoreCase))
+        {
+            MarkCompositeOpenGatesStale(expectedShiningRoot);
+        }
     }
 
     private static void ApplyLeadershipToComposite(
@@ -9585,6 +9637,18 @@ public partial class ValidationService
                 request.CandidateHeadActorId,
                 request.FactionId,
                 ShiningAbodeState.PoliticalStatusHead);
+            MarkCompositeOpenGatesStale(expectedShiningRoot);
+        }
+    }
+
+    private static void MarkCompositeOpenGatesStale(JsonObject expectedShiningRoot)
+    {
+        if (expectedShiningRoot["gates"] is JsonObject gates &&
+            gates["hasOpenDraft"] is JsonValue hasOpenDraftValue &&
+            hasOpenDraftValue.TryGetValue<bool>(out var hasOpenDraft) &&
+            hasOpenDraft)
+        {
+            gates["isStale"] = true;
         }
     }
 

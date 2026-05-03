@@ -36,6 +36,8 @@ public partial class ExplorerMode
         new(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "Переход резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"),
         new(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "Манифестация резидента в следующей жизни", "MortalWorldProfile-only closure after bootstrap; valid files are preserved in afterlife, malformed files require repair"),
         new(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "Социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"),
+        new(ActorSocialInteractionRequestState.PendingNpcRequestPath, "NPC social request из смертного мира", "wrong-realm repair-only in afterlife; preserve full payload and do not close through afterlife"),
+        new(NpcTradeRequestState.PendingRequestPath, "NPC trade request из смертного мира", "wrong-realm repair-only in afterlife; preserve full payload and do not create afterlife trade receipts"),
         new(ShiningCoreActionRequestState.PendingActionsRequestPath, "Core-действие Сияющей Обители", "shining_abode_state.coreActionReceipts[] + exact canonical state projection", ShiningOnly: true),
         new(ShiningTradeRequestState.PendingRequestsPath, "Торговая витрина Сияющей фракции", "factions[].tradeInventory + tradeInventoryReceipts[]", ShiningOnly: true),
         new(ShiningFactionRequestState.PendingFoundingsRequestPath, "Основание сияющей фракции", "halls[]/factions[] + factionFoundingReceipts[]", ShiningOnly: true),
@@ -73,6 +75,7 @@ public partial class ExplorerMode
         AppendNextLifePayloadStatusLines(lines, soulRoot);
         AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot, returnGuardRaw);
         AppendShiningStatusLines(lines, shiningContext);
+        await AppendAfterlifeProgressionStatusLinesAsync(lines);
 
         lines.Add("");
         lines.AddRange(pendingLines);
@@ -96,12 +99,12 @@ public partial class ExplorerMode
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardian_abode_residents.json", residentsRoot, Color.Cyan1);
         if (shiningContext != null)
         {
-            WriteJsonAuditPanel("Полный JSON game_state/meta/shining_abode_state.json", shiningContext.Root, Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON game_state/meta/shining_abode_state.json", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root), Color.Gold1);
             WriteJsonAuditPanel("Полный JSON Shining resident bindings", shiningContext.ResidentRoot, Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON Shining gates", shiningContext.Root["gates"], Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON preparedIncarnationPackage", shiningContext.Root["preparedIncarnationPackage"], Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON Shining coreActionReceipts", shiningContext.Root["coreActionReceipts"], Color.Gold1);
-            WriteJsonAuditPanel("Полный JSON Shining gachaSystem", shiningContext.Root["gachaSystem"], Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining gates", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gates"]), Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON preparedIncarnationPackage", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["preparedIncarnationPackage"]), Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining coreActionReceipts", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["coreActionReceipts"]), Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining gachaSystem", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gachaSystem"]), Color.Gold1);
         }
         WaitForKey();
     }
@@ -144,6 +147,113 @@ public partial class ExplorerMode
             var risk = reputation <= -21 ? "[red]ENABLED[/]" : "[green]not enabled[/]";
             lines.Add($"  • Guardian-forced incarnation risk: {risk}; guardianId=[dim]{Markup.Escape(activeGuardianId)}[/], abodeId=[dim]{Markup.Escape(currentAbodeId)}[/], reputation=[white]{reputation}[/], threshold=[white]<= -21[/], returnGuard=[white]{Markup.Escape(guardLabel)}[/].");
         }
+    }
+
+    private async Task AppendAfterlifeProgressionStatusLinesAsync(List<string> lines)
+    {
+        lines.Add("");
+        lines.Add("[bold]Afterlife living-world progression:[/]");
+
+        var scheduleRoot = await ReadJsonObjectForAfterlifeStatusAsync(ProgressionScheduleService.SchedulePath);
+        if (scheduleRoot == null)
+        {
+            lines.Add($"  • {ProgressionScheduleService.SchedulePath}: не найден или повреждён.");
+        }
+        else
+        {
+            AppendProgressionObjectSummaryLines(lines, scheduleRoot, "schedule");
+        }
+
+        var turnRoot = await ReadJsonObjectForAfterlifeStatusAsync("input/turn_request.json");
+        if (turnRoot?["progressionControl"] is JsonObject control)
+        {
+            AppendProgressionObjectSummaryLines(lines, control, "current progressionControl");
+            if (control["afterlifeCatchupContours"] is JsonArray contours)
+                lines.Add($"  • catch-up contours: [white]{Markup.Escape(FormatPendingIdentityValue(contours) ?? "[]")}[/]");
+        }
+        else
+        {
+            lines.Add("  • current progressionControl: нет активного input/turn_request.json с progressionControl.");
+        }
+
+        var reportRoot = await ReadJsonObjectForAfterlifeStatusAsync(ProgressionScheduleService.ReportPath);
+        if (reportRoot == null)
+        {
+            lines.Add($"  • {ProgressionScheduleService.ReportPath}: нет текущего отчёта.");
+        }
+        else
+        {
+            AppendProgressionObjectSummaryLines(lines, reportRoot, "progression_report");
+        }
+    }
+
+    private static void AppendProgressionObjectSummaryLines(List<string> lines, JsonObject root, string label)
+    {
+        var fields = new[]
+        {
+            "currentRealm",
+            "currentWorldTimeInMinutes",
+            "lastWorldSimulationTimeInMinutes",
+            "lastFactionSimulationTimeInMinutes",
+            "worldCyclesAlreadyPendingBeforeTurn",
+            "factionCyclesAlreadyPendingBeforeTurn",
+            "currentChaosSeaTurnOrdinal",
+            "nextChaosSeaTurnOrdinal",
+            "lastChaosSeaSimulationOrdinal",
+            "lastGuardianProjectCycleOrdinal",
+            "nextGuardianProjectCycleOrdinal",
+            "lastResidentAgencyCycleOrdinal",
+            "nextResidentAgencyCycleOrdinal",
+            "lastShiningAbodeCycleOrdinal",
+            "nextShiningAbodeCycleOrdinal",
+            "lastShiningFactionCycleOrdinal",
+            "nextShiningFactionCycleOrdinal",
+            "lastShiningTradeCycleOrdinal",
+            "nextShiningTradeCycleOrdinal",
+            "chaosSeaCyclesExpectedThisTurn",
+            "guardianProjectCyclesExpectedThisTurn",
+            "residentAgencyCyclesExpectedThisTurn",
+            "shiningAbodeCyclesExpectedThisTurn",
+            "shiningFactionCyclesExpectedThisTurn",
+            "shiningTradeCyclesExpectedThisTurn",
+            "mustEvaluateChaosSeaProgression",
+            "mustEvaluateGuardianProjectProgression",
+            "mustEvaluateResidentAgencyProgression",
+            "mustEvaluateShiningAbodeProgression",
+            "mustEvaluateShiningFactionProgression",
+            "mustEvaluateShiningTradeProgression",
+            "afterlifeCatchupRequired",
+            "afterlifeCatchupElapsedCycles",
+            "afterlifeCatchupPressureTier",
+            "afterlifeCatchupSummaryEventsRequired",
+            "sessionId",
+            "requestId",
+            "turnNumber",
+            "chaosSeaCyclesProcessed",
+            "guardianProjectCyclesProcessed",
+            "residentAgencyCyclesProcessed",
+            "shiningAbodeCyclesProcessed",
+            "shiningFactionCyclesProcessed",
+            "shiningTradeCyclesProcessed",
+            "newLastChaosSeaSimulationOrdinal",
+            "newLastGuardianProjectCycleOrdinal",
+            "newLastResidentAgencyCycleOrdinal",
+            "newLastShiningAbodeCycleOrdinal",
+            "newLastShiningFactionCycleOrdinal",
+            "newLastShiningTradeCycleOrdinal",
+            "afterlifeCatchupProcessed",
+            "afterlifeCatchupSummaryEventsProcessed"
+        };
+
+        var parts = fields
+            .Select(field => (Field: field, Value: FormatPendingIdentityValue(root[field])))
+            .Where(item => !string.IsNullOrWhiteSpace(item.Value))
+            .Select(item => $"{item.Field}={item.Value}")
+            .ToList();
+
+        lines.Add(parts.Count == 0
+            ? $"  • {label}: no compact fields; inspect JSON/state file."
+            : $"  • {label}: [dim]{Markup.Escape(string.Join("; ", parts))}[/]");
     }
 
     private static void AppendShiningStatusLines(List<string> lines, ShiningContext? context)
@@ -350,12 +460,19 @@ public partial class ExplorerMode
 
         foreach (var entry in entries)
         {
+            var isWrongRealmShiningContract =
+                entry.Definition.ShiningOnly &&
+                _stateManager.CurrentState.IsInChaosSea;
             var requestLabel = entry.RequestIndex.HasValue ? $"requests[{entry.RequestIndex.Value}]" : "root";
             lines.Add($"  • [white]{Markup.Escape(entry.Definition.Label)}[/] — [dim]{Markup.Escape(entry.Definition.Path)}[/] / {Markup.Escape(requestLabel)}");
+            if (isWrongRealmShiningContract)
+            {
+                lines.Add("    realm: [yellow]wrong-realm repair-only in Chaos Sea[/]; preserve the payload and do not close it with Shining receipts/state until the realm is Shining Abode.");
+            }
             if (entry.IsMalformed)
             {
                 lines.Add($"    malformed: [red]{Markup.Escape(entry.Error ?? "unknown parse error")}[/]");
-                lines.Add($"    closure/repair: {Markup.Escape(entry.Definition.ClosureHint)}");
+                lines.Add($"    closure/repair: {Markup.Escape(isWrongRealmShiningContract ? "repair malformed file only; do not process Shining closure from Chaos Sea" : entry.Definition.ClosureHint)}");
                 continue;
             }
 
@@ -364,7 +481,9 @@ public partial class ExplorerMode
                 var identity = BuildPendingContractIdentitySummary(entry.Payload);
                 lines.Add($"    identity: {Markup.Escape(string.IsNullOrWhiteSpace(identity) ? "fields not found; inspect full payload below" : identity)}");
             }
-            lines.Add($"    closure: {Markup.Escape(entry.Definition.ClosureHint)}");
+            lines.Add(isWrongRealmShiningContract
+                ? "    closure: [yellow]none in Chaos Sea[/]; Shining pending contract is displayed for full audit/repair only."
+                : $"    closure: {Markup.Escape(entry.Definition.ClosureHint)}");
 
             if (includeFullPayload && entry.Payload != null)
             {

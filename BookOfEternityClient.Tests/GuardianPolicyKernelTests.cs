@@ -173,6 +173,96 @@ public sealed class GuardianPolicyKernelTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameState_SameTurnCreateAuthorizesFollowUpGuardianCommandWithoutPreTurnBaseline()
+    {
+        var createdGuardian = BuildCanonicalGuardian("guardian_new", "Лира", reputation: 25, power: 18);
+        var root = new JsonObject
+        {
+            ["UpdateGuardians"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["command"] = "create",
+                    ["data"] = createdGuardian.DeepClone()
+                },
+                new JsonObject
+                {
+                    ["command"] = "updateReputation",
+                    ["guardianId"] = "guardian_new",
+                    ["reputationChange"] = 5,
+                    ["reason"] = "Follow-up command for the Guardian created earlier in this response."
+                }
+            }
+        };
+
+        await WriteRawAsync("game_state/meta/guardians.json", SerializeJson(root));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_commands_missing_validated_preturn_guardians_snapshot", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(".UpdateGuardians[1]", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "guardian_non_create_unknown_guardian", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(".UpdateGuardians[1].guardianId", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameState_GuardianProcessGachaRequiresCurrentTurnBaseRarity()
+    {
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", """
+        { "sessionId": "test-session", "requestId": "missing-gacha-base", "turnNumber": 12 }
+        """);
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/guardians.json",
+            "test_backups/kernel_guardian_process_gacha_requires_base_rarity.json",
+            SerializeJson(BuildGuardiansRoot(BuildCanonicalGuardian("guardian_alpha", "Азалия", reputation: 80, power: 40))));
+
+        var root = new JsonObject
+        {
+            ["UpdateGuardians"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["command"] = "processGacha",
+                    ["guardianId"] = "guardian_alpha",
+                    ["inkFeathersSpent"] = 25,
+                    ["result"] = new JsonObject
+                    {
+                        ["relicId"] = "relic_alpha",
+                        ["name"] = "Осколок прилива",
+                        ["rarity"] = "rare"
+                    }
+                }
+            },
+            ["metaStateUpdates"] = new JsonObject
+            {
+                ["inkFeatherChanges"] = new JsonObject
+                {
+                    ["spend"] = 25
+                },
+                ["soulRelicOperations"] = new JsonObject
+                {
+                    ["addRelic"] = new JsonObject
+                    {
+                        ["relicId"] = "relic_alpha",
+                        ["name"] = "Осколок прилива",
+                        ["rarity"] = "rare"
+                    }
+                }
+            }
+        };
+        await WriteRawAsync("game_state/meta/guardians.json", SerializeJson(root));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "guardian_process_gacha_missing_or_invalid_base_rarity", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task DebugGuardianPolicyContext_RawCurrentGuardiansDoNotOverrideAuthorityRoot()
     {
         await WriteRawAsync("game_state/meta/guardians.json", """

@@ -42,24 +42,6 @@ public partial class ValidationService
         guardianPolicyContext ??= _guardianPolicyContextInProgress ?? ResolveGuardianPolicyContextSync();
         var hasUsableValidatedPreTurnBaseline =
             TryGetGuardianPreTurnBaselineRootForCommandAuthorization(guardianPolicyContext, out _);
-        var containsNonCreateCommand = arr.EnumerateArray()
-            .Any(item =>
-                item.ValueKind == JsonValueKind.Object &&
-                !string.Equals(GetFirstNonEmptyString(item, "command"), "create", StringComparison.OrdinalIgnoreCase));
-
-        if (containsNonCreateCommand && !hasUsableValidatedPreTurnBaseline && issues != null)
-        {
-            issues.Add(new ValidationIssue(
-                $"{contextPrefix}.UpdateGuardians",
-                IssueSeverity.Error,
-                "Non-create UpdateGuardians commands требуют readable validated pre-turn guardians baseline и не используют current guardians[] как authority fallback.",
-                code: "guardian_commands_missing_validated_preturn_guardians_snapshot",
-                section: "UpdateGuardians",
-                expected: "validated pre-turn guardians baseline or earlier valid same-turn create",
-                actual: DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
-                repairHint: "Для non-create UpdateGuardians сохраняй readable validated snapshot copy game_state/meta/guardians.json. Без этого команды должны fail-closed вместо вывода authority из current guardians[]."));
-        }
-
         var knownGuardianIds = CollectKnownGuardianIds(guardianPolicyContext);
         var createConflictGuardianIds = CollectKnownGuardianIdsForCreateConflictValidation(guardianPolicyContext);
         var guardianSequentialStates = CollectKnownGuardianSequentialStatesForCommandValidation(guardianPolicyContext);
@@ -116,11 +98,25 @@ public partial class ValidationService
                 continue;
             }
 
-            if (!hasUsableValidatedPreTurnBaseline)
-                continue;
-
             var issuesBeforeCommandValidation = issueSink.Count;
             var guardianId = RequireString(item, itemContext, issueSink, "guardianId");
+            var hasEarlierSameTurnCreateAuthority =
+                !string.IsNullOrWhiteSpace(guardianId) &&
+                guardianSequentialStates.ContainsKey(guardianId);
+            if (!hasUsableValidatedPreTurnBaseline && !hasEarlierSameTurnCreateAuthority)
+            {
+                issueSink.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    "Non-create UpdateGuardians commands требуют readable validated pre-turn guardians baseline или earlier valid same-turn create для target guardian.",
+                    code: "guardian_commands_missing_validated_preturn_guardians_snapshot",
+                    section: "UpdateGuardians",
+                    expected: "validated pre-turn guardians baseline or earlier valid same-turn create",
+                    actual: DescribeGuardianPreTurnBaselineFailure(guardianPolicyContext),
+                    repairHint: "Для non-create UpdateGuardians сохраняй readable validated snapshot copy game_state/meta/guardians.json или сначала создай нового Хранителя через валидный UpdateGuardians.create раньше в том же массиве."));
+                continue;
+            }
+
             var proposedGuardianState = !string.IsNullOrWhiteSpace(guardianId) &&
                                        guardianSequentialStates.TryGetValue(guardianId, out var currentGuardianState)
                 ? CloneGuardianSequentialState(currentGuardianState)
@@ -268,8 +264,24 @@ public partial class ValidationService
                         ValidateGuardianProcessGachaAccounting(root, item, resultNode, itemContext, issueSink);
 
                         var baseRarity = TryReadCurrentTurnGachaBaseRaritySync();
+                        var hasSupportedBaseRarity =
+                            !string.IsNullOrWhiteSpace(baseRarity) &&
+                            GetRarityRank(baseRarity) > 0;
+                        if (!hasSupportedBaseRarity)
+                        {
+                            issueSink.Add(new ValidationIssue(
+                                "input/turn_request.json.gachaBaseResult.baseRarity",
+                                IssueSeverity.Error,
+                                "Guardian-mediated processGacha требует client-computed gachaBaseResult.baseRarity текущего хода.",
+                                code: "guardian_process_gacha_missing_or_invalid_base_rarity",
+                                section: "UpdateGuardians.processGacha",
+                                expected: "canonical baseRarity from current turn_request.gachaBaseResult",
+                                actual: string.IsNullOrWhiteSpace(baseRarity) ? "missing" : baseRarity,
+                                repairHint: "Перед guardian-mediated processGacha клиент должен передать supported gachaBaseResult.baseRarity; GM не выбирает базовую редкость самостоятельно."));
+                        }
+
                         var finalRarity = GetFirstNonEmptyString(resultNode, "rarity", "quality");
-                        if (!string.IsNullOrWhiteSpace(baseRarity))
+                        if (hasSupportedBaseRarity)
                         {
                             if (string.IsNullOrWhiteSpace(finalRarity))
                             {
@@ -302,7 +314,7 @@ public partial class ValidationService
                             item,
                             itemContext,
                             guardianId ?? string.Empty,
-                            baseRarity,
+                            hasSupportedBaseRarity ? baseRarity : null,
                             finalRarity,
                             currentPower,
                             issueSink);

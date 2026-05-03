@@ -222,10 +222,8 @@ public partial class ExplorerMode
             if (unreadTradeNotifications.Count > 0)
             {
                 pendingNotice += "\n  [yellow]📬 Непрочитанные ответы по торговле:[/]";
-                foreach (var notification in unreadTradeNotifications.Take(3))
-                    pendingNotice += $"\n  [dim]• {Markup.Escape(notification.Summary)}[/]";
-                if (unreadTradeNotifications.Count > 3)
-                    pendingNotice += $"\n  [dim]… и ещё {unreadTradeNotifications.Count - 3}. Откройте /уведомления_загробья[/]";
+                foreach (var notification in unreadTradeNotifications)
+                    pendingNotice += $"\n  [dim]• {Markup.Escape(FormatAfterlifeNotificationInline(notification))}[/]";
             }
 
             var unreadGuardianQuestNotifications = (await AfterlifeNotificationState.ReadAsync(_fs))
@@ -236,10 +234,8 @@ public partial class ExplorerMode
             if (unreadGuardianQuestNotifications.Count > 0)
             {
                 pendingNotice += "\n  [yellow]📜 Новые квесты Хранителей:[/]";
-                foreach (var notification in unreadGuardianQuestNotifications.Take(3))
-                    pendingNotice += $"\n  [dim]• {Markup.Escape(notification.Summary)}[/]";
-                if (unreadGuardianQuestNotifications.Count > 3)
-                    pendingNotice += $"\n  [dim]… и ещё {unreadGuardianQuestNotifications.Count - 3}. Откройте /уведомления_загробья[/]";
+                foreach (var notification in unreadGuardianQuestNotifications)
+                    pendingNotice += $"\n  [dim]• {Markup.Escape(FormatAfterlifeNotificationInline(notification))}[/]";
             }
 
             var unreadResidentNotifications = (await AfterlifeNotificationState.ReadAsync(_fs))
@@ -264,10 +260,8 @@ public partial class ExplorerMode
             if (unreadResidentNotifications.Count > 0)
             {
                 pendingNotice += "\n  [yellow]🏛 События Обители:[/]";
-                foreach (var notification in unreadResidentNotifications.Take(3))
-                    pendingNotice += $"\n  [dim]• {Markup.Escape(notification.Summary)}[/]";
-                if (unreadResidentNotifications.Count > 3)
-                    pendingNotice += $"\n  [dim]… и ещё {unreadResidentNotifications.Count - 3}. Откройте /уведомления_загробья[/]";
+                foreach (var notification in unreadResidentNotifications)
+                    pendingNotice += $"\n  [dim]• {Markup.Escape(FormatAfterlifeNotificationInline(notification))}[/]";
             }
 
             var overviewLines = new List<string>

@@ -97,6 +97,9 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("quotedCostLightSparks", actionPreviewSource, StringComparison.Ordinal);
         Assert.Contains("safeEffectDetails", source, StringComparison.Ordinal);
         Assert.Contains("BuildShiningBlessingEffectDetailLines", source, StringComparison.Ordinal);
+        Assert.Contains("supported refinement project", ReadServiceSource("ShiningCoreActionRequestState.cs"), StringComparison.Ordinal);
+        Assert.DoesNotContain("no completed refinement project", source, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("no completed refinement project", ReadSource("ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs"), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -176,9 +179,23 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
 
         Assert.Contains("Blessing audit: effectId=", serviceSource, StringComparison.Ordinal);
         Assert.Contains("sourceCardIds=", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("AppendStatusStableAuditLines", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("appliedAtUtc", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("consumedAtTurn", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("expiredAtUtc", serviceSource, StringComparison.Ordinal);
         Assert.Contains("consumptionSurface=", serviceSource, StringComparison.Ordinal);
         Assert.Contains("consumptionTarget=", serviceSource, StringComparison.Ordinal);
         Assert.DoesNotContain("effectPayload.ToJsonString", serviceSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningCanonicalTokensHavePlayerFacingLabels()
+    {
+        var source = ReadSource("ExplorerMode.Afterlife.ShiningAbode.cs");
+
+        Assert.Contains("\"sealed_until_next_ascension\" => \"запечатана до следующего восхождения\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"native_radiant\" => \"рождённая в Сияющей Обители\"", source, StringComparison.Ordinal);
+        Assert.Contains("residentRole=", source, StringComparison.Ordinal);
     }
 
     [Fact]

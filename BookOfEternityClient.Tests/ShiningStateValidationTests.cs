@@ -1029,6 +1029,45 @@ public sealed class ShiningStateValidationTests
         }
     }
 
+    [Fact]
+    public async Task ValidateShiningLeadershipHeadReferencesAsync_RadiantHeadMustHaveHeadPoliticalStatus()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var shiningRoot = CreateLeadershipStateRoot(new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["headActorId"] = "actor_current_head",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            });
+            shiningRoot["shiningPoliticalActors"] = new JsonArray(new JsonObject
+            {
+                ["actorId"] = "actor_current_head",
+                ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["displayName"] = "Архон",
+                ["summary"] = "Actor is bound to the faction but has stale status.",
+                ["originFactionId"] = "faction_main",
+                ["currentFactionId"] = "faction_main",
+                ["politicalStatus"] = ShiningAbodeState.PoliticalStatusFormerHead
+            });
+
+            await WriteNodeAsync(fs, ShiningAbodeState.StatePath, shiningRoot);
+            await WriteNodeAsync(fs, "game_state/meta/guardians.json", CreateMinimalGuardiansRoot());
+            await WriteNodeAsync(fs, GuardianAbodeResidentState.StatePath, CreateEmptyResidentRoot());
+
+            var issues = await InvokeLeadershipValidationAsync(fs);
+
+            Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_radiant_head_status_mismatch", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
     private static string CreateTempRoot()
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-shining-validation-" + Guid.NewGuid().ToString("N"));

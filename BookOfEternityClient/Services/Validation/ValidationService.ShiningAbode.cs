@@ -1202,6 +1202,20 @@ public partial class ValidationService
                             actual: string.IsNullOrWhiteSpace(actorFactionId) ? "missing" : actorFactionId,
                             repairHint: "Синхронизируй shiningPoliticalActors[].currentFactionId с руководимой factionId или выбери другого radiant actor."));
                     }
+
+                    var politicalStatus = GetNodeString(actor["politicalStatus"]);
+                    if (!string.Equals(politicalStatus, ShiningAbodeState.PoliticalStatusHead, StringComparison.OrdinalIgnoreCase))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{ShiningAbodeState.StatePath}.shiningPoliticalActors[].politicalStatus",
+                            IssueSeverity.Error,
+                            "radiant_actor-глава Shining faction должен иметь politicalStatus=head в actor registry.",
+                            code: "shining_leadership_radiant_head_status_mismatch",
+                            section: "ShiningAbode",
+                            expected: ShiningAbodeState.PoliticalStatusHead,
+                            actual: string.IsNullOrWhiteSpace(politicalStatus) ? "missing" : politicalStatus,
+                            repairHint: "Синхронизируй shiningPoliticalActors[].politicalStatus=head для текущего radiant_actor главы или выбери другого главу."));
+                    }
                 }
             }
 
