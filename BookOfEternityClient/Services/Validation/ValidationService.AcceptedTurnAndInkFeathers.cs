@@ -7081,7 +7081,7 @@ public partial class ValidationService
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnSpecialActionOutcomesInternalAsync()
     {
         var issues = new List<ValidationIssue>();
-        using var requestDoc = await ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync();
+        using var requestDoc = await ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync(issues);
         if (requestDoc == null)
             return issues;
 
@@ -7482,7 +7482,7 @@ public partial class ValidationService
         return issues;
     }
 
-    private async Task<JsonDocument?> ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync()
+    private async Task<JsonDocument?> ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync(List<ValidationIssue> issues)
     {
         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
         if (!string.IsNullOrWhiteSpace(requestJson))
@@ -7491,8 +7491,17 @@ public partial class ValidationService
             {
                 return JsonDocument.Parse(requestJson);
             }
-            catch
+            catch (JsonException ex)
             {
+                issues.Add(new ValidationIssue(
+                    "input/turn_request.json",
+                    IssueSeverity.Error,
+                    $"Не удалось проверить accepted-turn special actions из-за невалидного turn_request.json: {ex.Message}",
+                    code: "accepted_turn_special_action_request_parse_failed",
+                    section: "ACCEPTED_TURN_SPECIAL_ACTION",
+                    expected: "Valid current turn_request.json or missing live request with valid pending_turn_snapshot fallback",
+                    actual: "Invalid JSON",
+                    repairHint: "Это client/protocol input failure: special-action validation не должна подменять malformed live turn_request snapshot fallback. Восстанови корректный input/turn_request.json или lifecycle snapshot перед accepted-turn проверкой."));
                 return null;
             }
         }

@@ -142,6 +142,24 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_MalformedLiveTurnRequest_FailsClosed()
+    {
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5);
+        AddStoredSoulRelic(currentSoul, "relic_new", "Common");
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", "{ malformed turn request");
+        await WritePendingTurnSnapshotAsync(preTurnSoul, gachaBaseRarity: "Rare");
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "accepted_turn_special_action_request_parse_failed", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "direct_chaos_gacha_result_rarity_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_DirectChaosGachaAboveBaseRarity_Fails()
     {
         var preTurnSoul = CreateSoulRoot(inkFeathers: 10);
