@@ -4,9 +4,12 @@ internal static class RealmSemantics
 {
     public static bool HasResolvedRealm(string? realm) => !string.IsNullOrWhiteSpace(realm);
 
-    public static bool IsAfterlifeRealm(string? realm) =>
+    public static bool IsChaosSea(string? realm) =>
         string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase);
+
+    public static bool IsAfterlifeRealm(string? realm) =>
+        IsChaosSea(realm) ||
         string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
 

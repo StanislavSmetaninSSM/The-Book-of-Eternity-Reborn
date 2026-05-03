@@ -767,6 +767,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var apiSpec = ReadRepoFile("CLI_API_Specification.md");
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
         var launchScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
         var launchGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
@@ -793,6 +794,13 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("TriggerIncarnation", doc, StringComparison.Ordinal);
             Assert.Contains("preserve", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("preparedIncarnationPackage", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains("validated accepted-turn authority", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/control/pending_turn_snapshot", doc, StringComparison.Ordinal);
+            Assert.Contains("incarnation_trigger_invalid_validated_snapshot_context", doc, StringComparison.Ordinal);
         }
 
         Assert.DoesNotContain("ONLY bootstrap/materialization", launchScript, StringComparison.Ordinal);

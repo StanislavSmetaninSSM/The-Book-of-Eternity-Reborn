@@ -7081,13 +7081,12 @@ public partial class ValidationService
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnSpecialActionOutcomesInternalAsync()
     {
         var issues = new List<ValidationIssue>();
-        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
-        if (string.IsNullOrWhiteSpace(requestJson))
+        using var requestDoc = await ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync(issues);
+        if (requestDoc == null)
             return issues;
 
         try
         {
-            using var requestDoc = JsonDocument.Parse(requestJson);
             if (!requestDoc.RootElement.TryGetProperty("playerAction", out var actionEl) ||
                 actionEl.ValueKind != JsonValueKind.String)
                 return issues;
@@ -7445,9 +7444,9 @@ public partial class ValidationService
                             expected: snapshotBonusesJson,
                             actual: pendingBonusesJson,
                             repairHint: "Canonical pendingMemoryLegacy должен сохранять тот же набор structuredBonuses, что и structured memoryLegacyGrant."));
-                    }
-                }
             }
+        }
+    }
 
             var previousLegacyJson = await ReadPreviousPendingMemoryLegacyJsonAsync();
             var currentLegacyJson = BuildPendingMemoryLegacyComparisonSignature(pendingLegacy);
@@ -7481,6 +7480,48 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private async Task<JsonDocument?> ResolveAcceptedTurnRequestDocumentForSpecialActionValidationAsync(List<ValidationIssue> issues)
+    {
+        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        if (!string.IsNullOrWhiteSpace(requestJson))
+        {
+            try
+            {
+                return JsonDocument.Parse(requestJson);
+            }
+            catch (JsonException ex)
+            {
+                issues.Add(new ValidationIssue(
+                    "input/turn_request.json",
+                    IssueSeverity.Error,
+                    $"Не удалось проверить accepted-turn special actions из-за невалидного turn_request.json: {ex.Message}",
+                    code: "accepted_turn_special_action_request_parse_failed",
+                    section: "ACCEPTED_TURN_SPECIAL_ACTION",
+                    expected: "Valid current turn_request.json or missing live request with valid pending_turn_snapshot fallback",
+                    actual: "Invalid JSON",
+                    repairHint: "Это client/protocol input failure: special-action validation не должна подменять malformed live turn_request snapshot fallback. Восстанови корректный input/turn_request.json или lifecycle snapshot перед accepted-turn проверкой."));
+                return null;
+            }
+        }
+
+        var manifest = await LoadValidatedCurrentPendingTurnSnapshotManifestAsync();
+        if (manifest == null || string.IsNullOrWhiteSpace(manifest.PlayerAction))
+            return null;
+
+        var root = new JsonObject
+        {
+            ["sessionId"] = manifest.SessionId,
+            ["requestId"] = manifest.RequestId,
+            ["turnNumber"] = manifest.TurnNumber,
+            ["playerAction"] = manifest.PlayerAction
+        };
+
+        if (manifest.GachaBaseResult != null)
+            root["gachaBaseResult"] = manifest.GachaBaseResult.DeepClone();
+
+        return JsonDocument.Parse(root.ToJsonString(ManifestJsonOpts));
     }
 
     private async Task<List<ValidationIssue>> ValidatePendingMemoryLegacyApplicationInternalAsync()
