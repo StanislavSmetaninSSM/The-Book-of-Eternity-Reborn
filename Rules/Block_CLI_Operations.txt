@@ -292,6 +292,8 @@
                     - game_state/control/pending_shining_faction_leadership_transitions.json ← client-authored Shining leadership transition requests; close through faction leadershipReceipts[] and leadership history
                     - game_state/control/pending_shining_trade_inventory_requests.json ← client-authored Shining trade inventory requests; close through faction.tradeInventory + faction.tradeInventoryReceipts[] only in ordinary active Shining Abode (`currentRealm = Shining Abode`, `availability = active`, `preparedIncarnationPackage` null/absent); in Chaos Sea, sealed Shining, pending-bootstrap handoff, or package fault preserve as wrong-realm/mode repair context
                     - game_state/control/afterlife_notifications.json is client-owned; GM does not author inbox entries manually
+                    - game_state/control/progression_schedule.json is client-owned scheduler state; GM never edits it directly and writes only progressionProcessingReport / game_state/control/progression_report.json when progressionControl requires scheduler proof
+                    - game_state/world/guardian_corrections.json is client-owned current-life Guardian correction state; it is created at Mortal bootstrap from next_life_scenario_core.json and soul_preparation effects. GM reads it as context only and never creates/edits it from afterlife; matching power chronology uses guardianPowerEvents.reasonType=correction_spend and sourceSurface=guardian_corrections
 
                     **MISCELLANEOUS:**
                     - game_state/misc/vehicles.json ← UpdateVehicles, removeVehicles, activeVehicleChange

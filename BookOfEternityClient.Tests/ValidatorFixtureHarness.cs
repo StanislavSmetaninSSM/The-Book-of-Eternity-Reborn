@@ -207,15 +207,13 @@ internal sealed class ValidatorFixtureHarness : IDisposable
                 if (string.IsNullOrWhiteSpace(content))
                     continue;
 
-                if (snapshotFileHashes[pair.Key] == null)
-                    snapshotFileHashes[pair.Key] = ComputeSha256(content);
+                snapshotFileHashes[pair.Key] = ComputeSha256(content);
             }
         }
 
         foreach (var pair in files)
         {
-            if (snapshotFileHashes[pair.Key] != null ||
-                pair.Value is not JsonValue snapshotPathNode ||
+            if (pair.Value is not JsonValue snapshotPathNode ||
                 !snapshotPathNode.TryGetValue<string>(out var snapshotPath) ||
                 string.IsNullOrWhiteSpace(snapshotPath))
             {

@@ -961,6 +961,90 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifePromptDocsCoverFullRuntimeForbiddenFileGroups()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, examples })
+        {
+            foreach (var forbiddenGroup in new[]
+            {
+                "game_state/core/player_status.json",
+                "game_state/player/*",
+                "game_state/inventory/*",
+                "game_state/world/*",
+                "game_state/npcs/*",
+                "game_state/combat/*",
+                "game_state/factions/*",
+                "lore/current_world/*",
+                "game_state/quests/regular_quests.json",
+                "quest_history.json",
+                "plot_outline.json",
+                "game_state/misc/characteristics.json",
+                "vehicles.json",
+                "storage_access.json",
+                "player_interactions.json"
+            })
+            {
+                Assert.Contains(forbiddenGroup, doc, StringComparison.Ordinal);
+            }
+        }
+
+        foreach (var doc in new[] { daemonSpec, taskGuide })
+        {
+            Assert.Contains("game_state/core/player_status.json", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/combat/*", doc, StringComparison.Ordinal);
+            Assert.Contains("lore/current_world/*", doc, StringComparison.Ordinal);
+            Assert.Contains("Mortal misc", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var forbiddenRuntimeTargets = FileMapping.FieldToFile.Values
+            .Where(path =>
+                path.Equals("game_state/core/player_status.json", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("game_state/player/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("game_state/inventory/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase) ||
+                path.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.NotEmpty(forbiddenRuntimeTargets);
+    }
+
+    [Fact]
+    public void AfterlifePromptDocsTreatProgressionScheduleAsClientOwned()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var docs = new[] { matrix, apiSpec, daemonSpec, taskGuide, examples };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains(ProgressionScheduleService.SchedulePath, doc, StringComparison.Ordinal);
+            Assert.Contains(ProgressionScheduleService.ReportPath, doc, StringComparison.Ordinal);
+            Assert.Contains("client-owned", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("progressionControl", doc, StringComparison.Ordinal);
+            Assert.Contains("progressionProcessingReport", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains("never edit", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("last*Ordinal", doc, StringComparison.Ordinal);
+            Assert.Contains("pending cycle counts", doc, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void AfterlifePromptDocsCoverGuardianProvocationAndArchiveCandidateManifest()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -999,6 +1083,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var apiSpec = ReadRepoFile("CLI_API_Specification.md");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
 
         foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
         {
@@ -1006,11 +1091,61 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("playerChoice", doc, StringComparison.Ordinal);
             Assert.Contains("Ascension", doc, StringComparison.Ordinal);
             Assert.Contains("TriggerLifeEnd", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/control/ascension.json", doc, StringComparison.Ordinal);
         }
 
         Assert.Contains("6B. VALID — ASCENSION HANDOFF IS CLIENT-EXECUTED", examples, StringComparison.Ordinal);
         Assert.Contains("client performs the realm handoff", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("do not manually switch `soul_state.currentRealm`", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("life_transitions.json", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_chaos_ascension_trigger_response", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AfterlifePromptDocsCoverSoulPreparationAndGuardianCorrections()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, taskGuide, operations, examples })
+        {
+            Assert.Contains("soul_preparation", doc, StringComparison.Ordinal);
+            Assert.Contains("guardian_corrections.json", doc, StringComparison.Ordinal);
+            Assert.Contains("correction_spend", doc, StringComparison.Ordinal);
+            Assert.Contains("guardian_corrections", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var term in new[]
+        {
+            "projectOutcomeAudit",
+            "effectState",
+            "preparationBudgetPoints",
+            "preparationClaimPriorityBonus",
+            "preparationBudgetPointsGranted",
+            "preparationBudgetPointsSpent",
+            "preparationClaimPriorityBonusGranted",
+            "hostilePriorityTokensGranted",
+            "hostilePriorityTokensSpent",
+            "consumedAtLifeStart",
+            "claimants[]",
+            "contestedSlots[]",
+            "resolutionOrder[]",
+            "corrections[]",
+            "sourceSurface=guardian_corrections",
+            "afterlife_guardian_correction_spend_reference"
+        })
+        {
+            Assert.Contains(term, matrix + examples + manifest, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("\"projectId\": \"gproj_neris_soul_preparation_sabotage_002\"", examples, StringComparison.Ordinal);
+        Assert.Contains("\"projectMode\": \"offensive\"", examples, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"projectMode\": \"rival\"", examples, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1136,6 +1271,7 @@ public sealed class AfterlifeDocumentationCoverageTests
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
 
@@ -1154,6 +1290,15 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
                 Assert.Contains(term, doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, taskGuide, examples })
+        {
+            Assert.Contains("relicRefinementEntitlements", doc, StringComparison.Ordinal);
+            Assert.Contains("exception", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Shining forge", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("rerolls/freeShape/freeRetune", doc, StringComparison.Ordinal);
+            Assert.Contains("pending_shining_abode_actions.json", doc, StringComparison.Ordinal);
         }
     }
 
@@ -1383,7 +1528,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         foreach (var term in new[] { "Полный JSON game_state/meta/shining_abode_state.json", "Полный JSON Shining gates", "Полный JSON preparedIncarnationPackage" })
             Assert.Contains(term, statusAudit, StringComparison.Ordinal);
 
-        Assert.Contains("Полный JSON shining_abode_state.json.factions/projects", shiningOverview, StringComparison.Ordinal);
+        Assert.Contains("JSON shining_abode_state.factions/projects для просмотра", shiningOverview, StringComparison.Ordinal);
         Assert.Contains("Полный JSON forge request payload preview", shiningTradeForge, StringComparison.Ordinal);
     }
 
