@@ -2016,6 +2016,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("резидент Мираэль", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("resident:resident_mirael", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Создан в UTC: 2026-04-19T11:25:00Z", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("refused|withdrawn", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -2599,6 +2600,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Свод Рассвета", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Тоновые метки", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("card_route_dawn", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("refused|withdrawn", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3413,7 +3415,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("residentHistoryEntryId", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ожидаемый каркас политического receipt/history", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("quotedCostLightSparks", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("refusedOrWithdrawn", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("refusedOrWithdrawn", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

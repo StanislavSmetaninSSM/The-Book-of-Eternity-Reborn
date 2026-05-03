@@ -998,14 +998,18 @@ public partial class ExplorerMode
             if (!ConfirmChaosSeaContractPreview(
                     "Полный предпросмотр перехода Моря Хаоса",
                     travelLines,
-                    BuildChaosSeaDirectActionAudit(
-                        "CHAOS_SEA_TRAVEL",
+                    BuildChaosSeaTravelAuditNode(
                         travelAction,
-                        ("previousAbodeId", currentAbodeId),
-                        ("previousActiveGuardianId", previousActiveGuardianId),
-                        ("targetAbodeId", selAbodeId),
-                        ("targetGuardianId", selGuardianId),
-                        ("targetAlreadyDiscovered", targetAlreadyDiscovered))))
+                        currentAbodeId,
+                        previousActiveGuardianId,
+                        previousActiveGuardianName,
+                        selAbodeId,
+                        selAbodeName,
+                        selGuardianId,
+                        selGName,
+                        targetAlreadyDiscovered,
+                        discoveredAbodeIds),
+                    "Полный JSON before/after перехода Моря Хаоса"))
             {
                 continue;
             }
@@ -1015,6 +1019,69 @@ public partial class ExplorerMode
             MarkupLine($"[cyan]🌊 Переход в обитель «{Markup.Escape(selAbodeName)}» отправляется Мастеру Игры...[/]");
             return;
         }
+    }
+
+    private static JsonObject BuildChaosSeaTravelAuditNode(
+        string playerAction,
+        string previousAbodeId,
+        string previousActiveGuardianId,
+        string previousActiveGuardianName,
+        string targetAbodeId,
+        string targetAbodeName,
+        string targetGuardianId,
+        string targetGuardianName,
+        bool targetAlreadyDiscovered,
+        IReadOnlyCollection<string> discoveredAbodeIds)
+    {
+        var discoveredBefore = discoveredAbodeIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(id => id, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var discoveredAfter = discoveredBefore
+            .Append(targetAbodeId)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(id => id, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        return new JsonObject
+        {
+            ["actionTag"] = "CHAOS_SEA_TRAVEL",
+            ["playerAction"] = playerAction,
+            ["before"] = new JsonObject
+            {
+                ["previousAbodeId"] = previousAbodeId,
+                ["previousActiveGuardianId"] = previousActiveGuardianId,
+                ["previousActiveGuardianName"] = previousActiveGuardianName,
+                ["chaosSeaNavigation.currentAbodeId"] = previousAbodeId,
+                ["chaosSeaNavigation.discoveredAbodes"] = new JsonArray(discoveredBefore.Select(id => (JsonNode?)id).ToArray())
+            },
+            ["after"] = new JsonObject
+            {
+                ["activeGuardian.guardianId"] = targetGuardianId,
+                ["activeGuardian.displayName"] = targetGuardianName,
+                ["chaosSeaNavigation.currentAbodeId"] = targetAbodeId,
+                ["chaosSeaNavigation.discoveredAbodes"] = new JsonArray(discoveredAfter.Select(id => (JsonNode?)id).ToArray()),
+                ["targetGuardian.abode.abodeId"] = targetAbodeId,
+                ["targetGuardian.abode.name"] = targetAbodeName,
+                ["targetGuardian.abode.isDiscovered"] = true
+            },
+            ["contract"] = new JsonObject
+            {
+                ["targetAlreadyDiscoveredBeforeTurn"] = targetAlreadyDiscovered,
+                ["mustSetActiveGuardian"] = true,
+                ["mustSetNavigationCurrentAbodeId"] = true,
+                ["mustEnsureTargetInDiscoveredAbodes"] = true,
+                ["mustMarkTargetAbodeDiscovered"] = true
+            },
+            ["forbiddenSurfaces"] = new JsonArray(
+                "currentLocationData",
+                "UpdateNPCs",
+                "worldEventsLog",
+                "world_time.json.timeChange/currentWeather",
+                "Mortal World travel/location systems")
+        };
     }
 
     private async Task ShowGuardianDetailPanel(JsonElement g, List<JsonElement>? allGuardians = null, string currentAbodeId = "", string activeGuardianId = "", JsonElement? guardianProjectTrackerRoot = null)
@@ -2197,11 +2264,19 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        if (guardianThoughtEntries.Count > 0)
+            WriteJsonAuditPanel("Полный JSON thought journal Хранителя", BuildActorJournalEntriesAuditArray(guardianThoughtEntries), Color.Cyan1);
+        if (guardianSocialEntries.Count > 0)
+            WriteJsonAuditPanel("Полный JSON social journal Хранителя", BuildActorJournalEntriesAuditArray(guardianSocialEntries), Color.Cyan1);
     }
 
     private static void AppendGuardianJournalDetailEntryLines(List<string> lines, JsonElement entry)
     {
         lines.Add($"  • [white]{Markup.Escape(BuildActorJournalLine(entry))}[/]");
+
+        var eventType = GetStr(entry, "eventType", "");
+        if (!string.IsNullOrWhiteSpace(eventType))
+            lines.Add($"    [dim]eventType: {Markup.Escape(eventType)} ({Markup.Escape(DescribeActorJournalEventType(eventType))})[/]");
 
         var entryId = GetStr(entry, "entryId", "");
         if (!string.IsNullOrWhiteSpace(entryId))
@@ -2254,6 +2329,19 @@ public partial class ExplorerMode
             if (tags.Count > 0)
                 lines.Add($"    [dim]Метки: {Markup.Escape(string.Join(", ", tags))}[/]");
         }
+    }
+
+    private static JsonArray BuildActorJournalEntriesAuditArray(IEnumerable<JsonElement> entries)
+    {
+        var array = new JsonArray();
+        foreach (var entry in entries)
+        {
+            var node = JsonNode.Parse(entry.GetRawText());
+            if (node != null)
+                array.Add(node);
+        }
+
+        return array;
     }
 
     private static bool GuardianTradeAvailableHere(JsonElement guardian, string currentAbodeId)
@@ -2792,6 +2880,9 @@ public partial class ExplorerMode
         var transferReceiptEntries = residentStateDoc != null
             ? GuardianAbodeResidentState.CollectTransferReceipts(residentStateDoc.RootElement, resident.ResidentId)
             : new List<GuardianAbodeResidentState.TransferReceiptEntry>();
+        var interactionReceiptEntries = residentStateDoc != null
+            ? GuardianAbodeResidentState.CollectInteractionReceipts(residentStateDoc.RootElement, resident.ResidentId)
+            : new List<GuardianAbodeResidentState.InteractionReceiptEntry>();
         var pendingInteractionRequests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs);
         var pendingTransferRequest = await GuardianAbodeResidentRequestState.FindPendingTransferAsync(_fs, resident.ResidentId);
         var pendingTalkRequest = pendingInteractionRequests.FirstOrDefault(request =>
@@ -2938,6 +3029,13 @@ public partial class ExplorerMode
             foreach (var transferEntry in transferReceiptEntries)
                 AppendResidentTransferReceiptLines(lines, transferEntry);
         }
+        if (interactionReceiptEntries.Count > 0)
+        {
+            lines.Add("");
+            lines.Add($"[bold]Receipt-история взаимодействий:[/] [dim]({interactionReceiptEntries.Count} закрытий)[/]");
+            foreach (var receiptEntry in interactionReceiptEntries)
+                AppendResidentInteractionReceiptLines(lines, receiptEntry);
+        }
 
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
@@ -2952,6 +3050,11 @@ public partial class ExplorerMode
             ? null
             : GuardianAbodeResidentState.FindResident(residentStateRoot, resident.ResidentId);
         WriteJsonAuditPanel("Полный JSON резидента Обители", rawResident, Color.Cyan1);
+        if (interactionReceiptEntries.Count > 0)
+            WriteJsonAuditPanel(
+                "Полный JSON interactionReceipts резидента",
+                BuildResidentInteractionReceiptsAuditNode(interactionReceiptEntries),
+                Color.Cyan1);
 
         var availableInteractions = resident.AvailableInteractions.Select(value => value.Trim().ToLowerInvariant()).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var useDefaultInteractions = availableInteractions.Count == 0;
@@ -3570,6 +3673,55 @@ public partial class ExplorerMode
         if (!string.IsNullOrWhiteSpace(entry.EntryId))
             lines.Add($"    [dim]Идентификатор записи: {Markup.Escape(entry.EntryId)}[/]");
     }
+
+    private static void AppendResidentInteractionReceiptLines(List<string> lines, GuardianAbodeResidentState.InteractionReceiptEntry entry)
+    {
+        var typeLabel = string.IsNullOrWhiteSpace(entry.InteractionType)
+            ? "interaction"
+            : DescribeResidentInteractionType(entry.InteractionType);
+        lines.Add($"  • [white]{Markup.Escape(typeLabel)}[/] [dim]requestId={Markup.Escape(entry.RequestId)}, status={Markup.Escape(entry.Status)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.ResponseMode))
+            lines.Add($"    [dim]Режим ответа: {Markup.Escape(entry.ResponseMode)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.HistoryEntryId))
+            lines.Add($"    [dim]historyEntryId: {Markup.Escape(entry.HistoryEntryId)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.Reason))
+            lines.Add($"    [dim]Причина: {Markup.Escape(entry.Reason)}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.GuardianId) || !string.IsNullOrWhiteSpace(entry.AbodeId))
+            lines.Add($"    [dim]guardianId={Markup.Escape(entry.GuardianId)}, abodeId={Markup.Escape(entry.AbodeId)}[/]");
+        if (entry.ResolvedAtTurn > 0)
+            lines.Add($"    [dim]Ход закрытия: {entry.ResolvedAtTurn}[/]");
+        if (!string.IsNullOrWhiteSpace(entry.ResolvedAtUtc))
+            lines.Add($"    [dim]UTC закрытия: {Markup.Escape(entry.ResolvedAtUtc)}[/]");
+    }
+
+    private static JsonObject BuildResidentInteractionReceiptsAuditNode(IEnumerable<GuardianAbodeResidentState.InteractionReceiptEntry> entries) =>
+        new()
+        {
+            ["surface"] = "game_state/meta/guardian_abode_residents.json.interactionReceipts[]",
+            ["entries"] = new JsonArray(entries.Select(entry => (JsonNode?)new JsonObject
+            {
+                ["requestId"] = entry.RequestId,
+                ["residentId"] = entry.ResidentId,
+                ["guardianId"] = entry.GuardianId,
+                ["abodeId"] = entry.AbodeId,
+                ["interactionType"] = entry.InteractionType,
+                ["status"] = entry.Status,
+                ["responseMode"] = entry.ResponseMode,
+                ["historyEntryId"] = entry.HistoryEntryId,
+                ["reason"] = entry.Reason,
+                ["resolvedAtTurn"] = entry.ResolvedAtTurn,
+                ["resolvedAtUtc"] = entry.ResolvedAtUtc
+            }).ToArray())
+        };
+
+    private static string DescribeResidentInteractionType(string? interactionType) =>
+        (interactionType ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            GuardianAbodeResidentState.InteractionTypeTalk => "разговор",
+            GuardianAbodeResidentState.InteractionTypeHistory => "раскрытие истории",
+            "" => "interaction",
+            _ => interactionType ?? "interaction"
+        };
 
     private static void AppendResidentHistoryDetailLines(List<string> lines, GuardianAbodeResidentState.HistoryLogEntry entry)
     {
@@ -4463,10 +4615,20 @@ public partial class ExplorerMode
             ["priceInFeathers"] = offer.PriceInFeathers,
             ["currentFeathers"] = currentFeathers,
             ["projectedFeathers"] = Math.Max(0, currentFeathers - offer.PriceInFeathers),
+            ["statusBefore"] = "available",
+            ["statusAfter"] = "rebought",
             ["soldForPrice"] = offer.SoldForPrice,
             ["soldAtTurn"] = offer.SoldAtTurn,
             ["transactionKind"] = "guardian_trade_buyback",
             ["transactionCorrelationId"] = $"guardian_trade_buyback:{view.GuardianId}:{view.TradeCycleId}:{offer.BuybackEntryId}:{offer.RelicId}",
+            ["affectedFiles"] = new JsonArray("game_state/meta/soul_state.json", "game_state/meta/guardians.json"),
+            ["stateTransition"] = new JsonObject
+            {
+                ["soul_state.inkFeathers.current"] = $"{currentFeathers} -> {Math.Max(0, currentFeathers - offer.PriceInFeathers)}",
+                ["soul_state.soulRelics.stored.add"] = offer.RelicId,
+                ["guardians[].buybackRelics[].status"] = "available -> rebought",
+                ["guardians[].buybackRelics[].buybackEntryId"] = offer.BuybackEntryId
+            },
             ["description"] = offer.Description,
             ["relicData"] = offer.RelicData.DeepClone()
         };

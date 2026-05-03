@@ -469,6 +469,7 @@ public sealed class ExplorerModeSourceGuardTests
         var source = ReadExplorerModeSource();
 
         Assert.Contains("[CHAOS_SEA_TRAVEL]", source, StringComparison.Ordinal);
+        Assert.Contains("BuildChaosSeaTravelAuditNode", source, StringComparison.Ordinal);
         Assert.Contains("targetAbodeId=", source, StringComparison.Ordinal);
         Assert.Contains("targetGuardianId=", source, StringComparison.Ordinal);
         Assert.Contains("previousAbodeId=", source, StringComparison.Ordinal);
@@ -476,6 +477,8 @@ public sealed class ExplorerModeSourceGuardTests
         Assert.Contains("discoveredAbodes=", source, StringComparison.Ordinal);
         Assert.Contains("activeGuardian", source, StringComparison.Ordinal);
         Assert.Contains("chaosSeaNavigation.currentAbodeId", source, StringComparison.Ordinal);
+        Assert.Contains("targetGuardian.abode.isDiscovered", source, StringComparison.Ordinal);
+        Assert.Contains("forbiddenSurfaces", source, StringComparison.Ordinal);
         Assert.Contains("currentLocationData", source, StringComparison.Ordinal);
         Assert.Contains("worldEventsLog", source, StringComparison.Ordinal);
     }

@@ -866,6 +866,7 @@ Why this is valid:
 - The Shining state file is the canonical place for halls, gates, radiance, factions, and trade receipts.
 - The pending core action is closed through `coreActionReceipts[]`.
 - The pending trade request is closed through faction `tradeInventory` plus faction `tradeInventoryReceipts[]`.
+- If the player preview shows `expectedTradeInventory`, treat it as an audit scaffold for the canonical faction `tradeInventory`: keep `generationTradeTier`, `generationRarityCeiling`, `serviceMultiplierSnapshot`, slot count, `priceInFeathers`, and nested `relicData` aligned with the pending request.
 - Every Shining trade `tradeInventory.items[].relicData.relicId` is unique in the inventory and absent from the player's existing `soulRelics.equipped[]` / `soulRelics.stored[]`; these ids become new Soul Relic identities on local purchase.
 - Shining faction progress is not written through Mortal World faction fields.
 - The resident is handled through resident afterlife state, not NPC state.
@@ -1476,10 +1477,18 @@ Guardian-forced incarnation is a different flow. It is legal only on an ordinary
 
 The runtime accepts exact `playerAction` tags as deterministic evidence for Guardian-forced incarnation. This is the input context, not a GM response surface:
 
+Additional pre-state requirement:
+- The provoking Guardian must be the current active Guardian.
+- Pre-turn `game_state/meta/guardians.json` for that Guardian must have `relationshipData.currentReputation` / `CurrentReputation <= -21`.
+- Severity mapping is mechanical: `-21..-50 => "harsh"`, `-51..-100 => "severe"`. A reputation of `-20` or better must not force incarnation even with a provocation tag.
+
 ```text
 input/turn_request.json:
 playerAction = "[GUARDIAN_PROVOCATION: guardian_azalia] Игрок deliberately insults Азалия and demands punishment."
 turnNumber = 77
+
+pre-turn activeGuardian.guardianId = "guardian_azalia"
+pre-turn guardian_azalia.relationshipData.currentReputation = -34
 ```
 
 Correct GM response:
@@ -1502,8 +1511,45 @@ Correct GM response:
 Why this is valid:
 - `[GUARDIAN_PROVOCATION]` without an id is accepted as explicit provocation evidence.
 - `[GUARDIAN_PROVOCATION: guardianId]` is accepted only when the id exactly matches `TriggerIncarnation.guardianId`.
+- `severityBand = "harsh"` matches pre-turn reputation `-34` in the `-21..-50` band. If the same Guardian had `currentReputation = -62`, the correct `severityBand` would be `"severe"`.
 - This tag is evidence, not a pending file. It does not authorize Shining handoff, protected post-life turns, or forcing one Guardian's punishment through another Guardian's id.
 - The trigger is still valid only inside the current accepted turn with matching validated `game_state/control/pending_turn_snapshot` authority; otherwise validation reports `incarnation_trigger_invalid_validated_snapshot_context`.
+
+6B. VALID — ASCENSION HANDOFF IS CLIENT-EXECUTED
+------------------------------------------------
+
+Ascension is a Chaos Sea lifecycle trigger. The GM confirms the explicit choice and writes the trigger only; the client performs the later realm handoff after validation. Do not manually switch `soul_state.currentRealm` to `Shining Abode` in the same response.
+
+Input prerequisites:
+- `soul_state.currentRealm = "Chaos Sea"`.
+- Enlightenment/Transcendence is at maximum.
+- `playerAction` explicitly chooses Ascension.
+- No `TriggerLifeEnd`, no Shining pending-bootstrap package handoff, no Mortal World state mutation.
+
+Correct accepted response:
+
+```json
+{
+  "AscensionTrigger": true,
+  "playerChoice": "Ascension",
+  "response": "Море Хаоса раскрывается сияющим разломом. Душа делает выбор вознестись; дальнейший переход в Сияющую Обитель выполнит клиент после принятия этого хода."
+}
+```
+
+Correct `game_state/control/ascension.json` after distribution:
+
+```json
+{
+  "AscensionTrigger": true,
+  "playerChoice": "Ascension"
+}
+```
+
+Forbidden in the same accepted response:
+- `TriggerLifeEnd`.
+- Manual `soul_state.currentRealm = "Shining Abode"`.
+- Shining faction/radiance/trade state mutations.
+- Mortal World `currentLocationData`, `UpdateNPCs`, `worldEventsLog`, or faction state.
 
 ==================================================
 7. VALID — DIRECT CHAOS SEA GACHA VS GUARDIAN-MEDIATED GACHA
@@ -3440,7 +3486,7 @@ Canonical Abode resident disposition/devotion/migration tables:
 
 Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. `refused` and `withdrawn` outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged. Supported receipt statuses are only `accepted`, `refused`, and `withdrawn`.
 
-The client preview may show a `projectedStateFragment` containing sanitized `beforeFullShiningRoot`, `afterFullShiningRoot`, and focused `gates`/faction/project fragments. Treat it as an audit aid only: it is not a GM output file and not a new response field. The accepted response still persists the full canonical `game_state/meta/shining_abode_state.json` root plus `coreActionReceipts[]`, and hidden blessing `effectPayload` keys must not be copied from previews.
+The client preview may show a `projectedStateFragment` containing sanitized `beforeFullShiningRoot`, `afterFullShiningRoot`, and focused `gates`/faction/project fragments. Forge previews can also show sanitized `beforeFullSoulRoot`/`afterFullSoulRoot`; Shining gacha previews can show `gachaAccounting`, `expectedGachaHistoryEntryShape`, and `oneNewRelicEvidence`. Treat these as audit aids only: they are not GM output files and not new response fields. The accepted response still persists the full canonical `game_state/meta/shining_abode_state.json` root, `game_state/meta/soul_state.json` when listed in `changedSurfaces`, plus `coreActionReceipts[]`; hidden blessing `effectPayload` keys must not be copied from previews.
 
 If the same accepted turn also closes a Shining political/trade/resident pending contract, the final state is the composition of all accepted closures. For example, accepted faction founding first materializes the hall/faction and supporter resident alignment, then `open_gates` builds its draft from that updated Shining state; both `factionFoundingReceipts[]` and `coreActionReceipts[]` must be present.
 
@@ -3536,9 +3582,37 @@ Legacy `pendingNativeFactionDiscovery` closure:
 - Materialize the same hall/native faction/residents/projects/Radiance outcome as above.
 - Spend `pendingNativeFactionDiscovery.costFeathers` from `soul_state.json.inkFeathers`.
 - Preserve current `shining_abode_state.json.lightSparks`; the legacy queue already reserved `pendingNativeFactionDiscovery.costLightSparks`, so do not subtract Light Sparks a second time.
+- Legacy receipt cost audit is intentionally asymmetric: write `quotedCostFeathers = pendingNativeFactionDiscovery.costFeathers`, but write `quotedCostLightSparks = 0` because Light Sparks were reserved before GM closure.
 - Set `shining_abode_state.json.pendingNativeFactionDiscovery = null` in the accepted state.
 - Do not create or echo a duplicate `pending_shining_abode_actions.json` request for this legacy payload.
 - Do not use the legacy closure to edit unrelated existing Shining state; only the newly discovered hall/faction/residents/projects, Radiance, Soul Feather debit, pending slot, and receipt may change.
+
+Correct legacy `pendingNativeFactionDiscovery` receipt cost audit:
+
+```json
+{
+  "requestId": "legacy_native_discovery_118",
+  "actionType": "discover_native_faction",
+  "status": "accepted",
+  "quotedCostFeathers": 25,
+  "quotedCostLightSparks": 0,
+  "hallId": "hall_legacy_radiant_118",
+  "resolvedFactionId": "shine_faction_legacy_radiant_118",
+  "selectedCardIds": [],
+  "newResidentIds": [
+    "res_legacy_radiant_118_a",
+    "res_legacy_radiant_118_b"
+  ],
+  "seededProjectIds": [
+    "shine_project_legacy_radiant_118_memory",
+    "shine_project_legacy_radiant_118_passage"
+  ],
+  "generatedDraftVersion": 0,
+  "resolvedAtTurn": 118,
+  "resolvedAtUtc": "2026-04-24T13:04:00Z",
+  "reason": "legacy pendingNativeFactionDiscovery closed; Light Sparks were pre-reserved"
+}
+```
 
 Correct `discover_native_faction` receipt fragment:
 

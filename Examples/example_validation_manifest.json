@@ -135,6 +135,28 @@
       ]
     },
     {
+      "id": "afterlife_chaos_ascension_trigger_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "\"AscensionTrigger\": true",
+        "\"playerChoice\": \"Ascension\"",
+        "\"response\":"
+      ],
+      "expectedModifiedFiles": [
+        "game_state/control/ascension.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/control/ascension.json",
+          "requiredText": [
+            "\"AscensionTrigger\": true",
+            "\"playerChoice\": \"Ascension\""
+          ]
+        }
+      ]
+    },
+    {
       "id": "afterlife_chaos_catchup_resident_history_response",
       "file": "E_CLI_Afterlife_Turns.txt",
       "runner": "gameResponseDistribution",

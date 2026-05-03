@@ -370,13 +370,20 @@ public partial class ExplorerMode
     {
         return new JsonObject
         {
+            ["copyRules"] = BuildClosureScaffoldCopyRules(
+                "coreActionReceipts[]",
+                "Use the current accepted turn number and UTC timestamp; generated ids below are concrete examples, not magic tokens."),
             ["accepted"] = BuildShiningCoreExpectedReceiptAuditNode(
                 request,
                 status: "accepted",
                 generatedDraftVersion: ResolveAcceptedReceiptDraftVersionForPreview(context, request)),
-            ["refusedOrWithdrawn"] = BuildShiningCoreExpectedReceiptAuditNode(
+            ["refused"] = BuildShiningCoreExpectedReceiptAuditNode(
                 request,
-                status: "refused|withdrawn",
+                status: ShiningCoreActionRequestState.RequestStatusRefused,
+                generatedDraftVersion: 0),
+            ["withdrawn"] = BuildShiningCoreExpectedReceiptAuditNode(
+                request,
+                status: ShiningCoreActionRequestState.RequestStatusWithdrawn,
                 generatedDraftVersion: 0)
         };
     }
@@ -406,8 +413,8 @@ public partial class ExplorerMode
             ["seededProjectIds"] = new JsonArray(),
             ["generatedDraftVersion"] = generatedDraftVersion,
             ["status"] = status,
-            ["resolvedAtTurn"] = "current turn number",
-            ["resolvedAtUtc"] = "ISO-8601 UTC timestamp",
+            ["resolvedAtTurn"] = BuildExampleResolvedAtTurn(request.CreatedAtTurn),
+            ["resolvedAtUtc"] = BuildExampleResolvedAtUtc(request.CreatedAtUtc),
             ["reason"] = "canonical human-readable closure reason"
         };
 
@@ -444,7 +451,7 @@ public partial class ExplorerMode
             ["requestId"] = request.RequestId,
             ["actionType"] = request.ActionType,
             ["acceptedStatusOnly"] = true,
-            ["refusedOrWithdrawnDelta"] = "state unchanged except coreActionReceipts[] closure",
+            ["nonAcceptedDelta"] = "refused/withdrawn leaves state unchanged except coreActionReceipts[] closure",
             ["changedSurfaces"] = new JsonArray()
         };
 
@@ -477,16 +484,19 @@ public partial class ExplorerMode
         var actionType = request.ActionType ?? string.Empty;
         if (string.Equals(actionType, ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
         {
-            changedSurfaces.Add("game_state/meta/soul_state.json");
+            AddUniqueChangedSurface(changedSurfaces, "game_state/meta/shining_abode_state.json");
+            AddUniqueChangedSurface(changedSurfaces, "game_state/meta/soul_state.json");
             result["soulDelta"] = new JsonObject
             {
                 ["expected"] = "append exactly one generated Soul Relic and leave unrelated soul fields unchanged",
                 ["requiredReceiptFields"] = new JsonArray("relicId", "relicName", "baseRarity", "finalRarity", "returnCycleId")
             };
+            result["gachaAccounting"] = BuildShiningGachaAccountingAuditNode(context, request);
         }
         else if (ShiningAbodeState.IsForgeActionType(actionType))
         {
-            changedSurfaces.Add("game_state/meta/soul_state.json");
+            AddUniqueChangedSurface(changedSurfaces, "game_state/meta/shining_abode_state.json");
+            AddUniqueChangedSurface(changedSurfaces, "game_state/meta/soul_state.json");
             JsonObject? projectedSoulRoot = null;
             JsonObject? projectedShiningRoot = null;
             string? forgeProjectionError = context.SoulRoot == null ? "missing Soul state" : null;
@@ -502,6 +512,10 @@ public partial class ExplorerMode
             result["soulDelta"] = new JsonObject
             {
                 ["expected"] = "mutate exactly the requested Soul Relic plus resource/entitlement lifecycle",
+                ["beforeFullSoulRoot"] = CloneShiningJsonForPlayerFacingAudit(context.SoulRoot),
+                ["afterFullSoulRoot"] = projectedForge ? CloneShiningJsonForPlayerFacingAudit(projectedSoulRoot) : null,
+                ["beforeFullShiningRoot"] = CloneShiningJsonForPlayerFacingAudit(context.Root),
+                ["afterFullShiningRoot"] = projectedForge ? CloneShiningJsonForPlayerFacingAudit(projectedShiningRoot) : null,
                 ["relicBefore"] = CloneShiningJsonForPlayerFacingAudit(FindSoulRelicForPreview(context.SoulRoot, request.RelicId)),
                 ["relicAfter"] = projectedForge
                     ? CloneShiningJsonForPlayerFacingAudit(FindSoulRelicForPreview(projectedSoulRoot, request.RelicId))
@@ -543,6 +557,154 @@ public partial class ExplorerMode
         }
 
         return result;
+    }
+
+    private static JsonObject BuildShiningGachaAccountingAuditNode(
+        ShiningContext context,
+        ShiningCoreActionRequestState.PendingShiningCoreActionRequest request)
+    {
+        var quotedShiningRoot = CloneJsonObjectForPreview(context.Root);
+        var quotedSoulRoot = CloneJsonObjectForPreview(context.SoulRoot);
+        var exampleRelicId = BuildPreviewExampleId("generated_shining_relic", request.RequestId);
+        var exampleRelicName = string.IsNullOrWhiteSpace(request.RelicName)
+            ? "Generated Shining Soul Relic"
+            : request.RelicName;
+        var baseRarityScaffold = "copy input/turn_request.json.gachaBaseResult.baseRarity";
+        var finalRarityScaffold = request.ProjectedGachaBonusSteps > 0
+            ? $"copy accepted receipt finalRarity; no more than +{request.ProjectedGachaBonusSteps} rarity step(s) above baseRarity"
+            : "copy accepted receipt finalRarity; must equal baseRarity";
+        var exampleResolvedAtTurn = Math.Max(1, request.CreatedAtTurn);
+        var exampleResolvedAtUtc = BuildPreviewResolvedAtUtc(request.CreatedAtUtc);
+
+        var audit = new JsonObject
+        {
+            ["expected"] = "accepted Shining gacha updates both Soul state and shining_abode_state.gachaSystem; GM must not skip either surface",
+            ["before"] = new JsonObject
+            {
+                ["gachaSystem"] = CloneShiningJsonForPlayerFacingAudit(context.Root["gachaSystem"]),
+                ["inkFeathers"] = CurrentInkFeathersForPreview(context.SoulRoot),
+                ["soulRelicCount"] = CountSoulRelicsForPreview(context.SoulRoot)
+            },
+            ["receiptExample"] = new JsonObject
+            {
+                ["requestId"] = request.RequestId,
+                ["actionType"] = request.ActionType,
+                ["status"] = ShiningCoreActionRequestState.RequestStatusAccepted,
+                ["relicId"] = exampleRelicId,
+                ["relicName"] = exampleRelicName,
+                ["baseRarity"] = baseRarityScaffold,
+                ["finalRarity"] = finalRarityScaffold,
+                ["returnCycleId"] = request.ReturnCycleId,
+                ["resolvedAtTurn"] = exampleResolvedAtTurn,
+                ["resolvedAtUtc"] = exampleResolvedAtUtc
+            },
+            ["oneNewRelicEvidence"] = new JsonObject
+            {
+                ["beforeSoulRelicCount"] = CountSoulRelicsForPreview(context.SoulRoot),
+                ["expectedAfterSoulRelicCount"] = CountSoulRelicsForPreview(context.SoulRoot) + 1,
+                ["expectedNewRelicId"] = exampleRelicId,
+                ["requiredRelicFields"] = new JsonArray("relicId", "name", "quality|rarity", "description")
+            }
+        };
+
+        string? projectionError = null;
+        if (quotedShiningRoot != null && quotedSoulRoot != null &&
+            ShiningAbodeState.TryQuoteRelicGachaPull(
+                quotedShiningRoot,
+                quotedSoulRoot,
+                context.ResidentRoot,
+                request.FactionId,
+                out var cost,
+                out var projectedBonusSteps,
+                out var returnCycleId,
+                out projectionError))
+        {
+            var quotedGachaSystem = quotedShiningRoot["gachaSystem"];
+            var rawChargesPerReturn = GetNodeInt(quotedGachaSystem?["chargesPerReturn"]);
+            var chargesPerReturn = Math.Max(
+                0,
+                rawChargesPerReturn > 0
+                    ? rawChargesPerReturn
+                    : ShiningAbodeState.GetShiningGachaChargesPerReturn(GetNodeInt(quotedShiningRoot["radiance"]?["tier"])));
+            var chargesUsedBefore = Math.Clamp(GetNodeInt(quotedGachaSystem?["chargesUsedThisReturn"]), 0, chargesPerReturn);
+            var inkFeathersBefore = CurrentInkFeathersForPreview(context.SoulRoot);
+
+            audit["accounting"] = new JsonObject
+            {
+                ["costInFeathers"] = cost.Feathers,
+                ["costInLightSparks"] = cost.LightSparks,
+                ["projectedGachaBonusSteps"] = projectedBonusSteps,
+                ["chargesUsedThisReturnBefore"] = chargesUsedBefore,
+                ["chargesUsedThisReturnAfter"] = chargesUsedBefore + 1,
+                ["chargesPerReturn"] = chargesPerReturn,
+                ["returnCycleIdBefore"] = GetNodeString(context.Root["gachaSystem"]?["currentReturnCycleId"]) ?? string.Empty,
+                ["returnCycleIdAfter"] = returnCycleId,
+                ["inkFeathersBefore"] = inkFeathersBefore,
+                ["inkFeathersAfter"] = Math.Max(0, inkFeathersBefore - cost.Feathers)
+            };
+            audit["expectedGachaHistoryEntryShape"] = new JsonObject
+            {
+                ["requestId"] = request.RequestId,
+                ["factionId"] = request.FactionId,
+                ["returnCycleId"] = returnCycleId,
+                ["costInFeathers"] = cost.Feathers,
+                ["baseRarityRule"] = "copy accepted coreActionReceipts[].baseRarity; it must equal input/turn_request.json.gachaBaseResult.baseRarity and be a canonical rarity",
+                ["finalRarityRule"] = "copy accepted coreActionReceipts[].finalRarity; it must be canonical and within projectedGachaBonusSteps",
+                ["relicIdRule"] = "copy accepted coreActionReceipts[].relicId",
+                ["relicNameRule"] = "copy accepted coreActionReceipts[].relicName",
+                ["turnNumber"] = exampleResolvedAtTurn,
+                ["timestamp"] = exampleResolvedAtUtc
+            };
+        }
+        else
+        {
+            audit["projectionError"] = quotedShiningRoot == null || quotedSoulRoot == null
+                ? "missing Shining or Soul state"
+                : projectionError ?? "projection unavailable";
+        }
+
+        return audit;
+    }
+
+    private static void AddUniqueChangedSurface(JsonArray changedSurfaces, string path)
+    {
+        if (changedSurfaces
+            .Select(item => GetNodeString(item))
+            .Any(item => string.Equals(item, path, StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        changedSurfaces.Add(path);
+    }
+
+    private static int CountSoulRelicsForPreview(JsonObject? soulRoot)
+    {
+        if (soulRoot?["soulRelics"] is not JsonObject soulRelics)
+            return 0;
+
+        return ((soulRelics["stored"] as JsonArray)?.Count ?? 0) +
+               ((soulRelics["equipped"] as JsonArray)?.Count ?? 0);
+    }
+
+    private static string BuildPreviewExampleId(string prefix, string? sourceId)
+    {
+        var suffix = new string((sourceId ?? string.Empty)
+            .Select(ch => char.IsLetterOrDigit(ch) ? char.ToLowerInvariant(ch) : '_')
+            .ToArray())
+            .Trim('_');
+
+        return string.IsNullOrWhiteSpace(suffix)
+            ? $"{prefix}_example"
+            : $"{prefix}_{suffix}";
+    }
+
+    private static string BuildPreviewResolvedAtUtc(string? createdAtUtc)
+    {
+        if (DateTimeOffset.TryParse(createdAtUtc, out var parsed))
+            return parsed.AddMinutes(1).ToUniversalTime().ToString("O");
+
+        return "2026-04-24T13:04:00.0000000Z";
     }
 
     private static JsonObject BuildShiningCoreProjectedStateFragment(
@@ -691,47 +853,94 @@ public partial class ExplorerMode
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypePullRelicGacha, StringComparison.OrdinalIgnoreCase))
         {
             if (string.IsNullOrWhiteSpace(GetNodeString(receipt["relicId"])))
-                receipt["relicId"] = "generated_shining_relic_id";
+                receipt["relicId"] = BuildExampleGeneratedId("shine_relic", request.RequestId);
 
             receipt["relicName"] = string.IsNullOrWhiteSpace(request.RelicName)
-                ? "generated Shining Soul Relic name"
+                ? "Example Shining Soul Relic"
                 : request.RelicName;
             receipt["baseRarity"] = "copy input/turn_request.json.gachaBaseResult.baseRarity";
             receipt["finalRarity"] = request.ProjectedGachaBonusSteps > 0
-                ? $"baseRarity or higher by <= {request.ProjectedGachaBonusSteps} step(s)"
-                : "same as baseRarity";
+                ? $"copy accepted outcome; no more than +{request.ProjectedGachaBonusSteps} rarity step(s) above baseRarity"
+                : "copy baseRarity exactly; no projected upgrade steps";
             return;
         }
 
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction, StringComparison.OrdinalIgnoreCase))
         {
-            receipt["hallId"] = "generated_native_hall_id";
-            receipt["hallName"] = "generated native hall name";
-            receipt["resolvedFactionId"] = "generated_native_faction_id";
-            receipt["factionName"] = "generated native faction name";
-            receipt["charterSummary"] = "generated native faction charter summary";
-            receipt["favoredArchetype"] = "generated native faction archetype";
-            receipt["patronEffectFamily"] = "generated native faction effect family";
+            receipt["hallId"] = BuildExampleGeneratedId("hall_native", request.RequestId);
+            receipt["hallName"] = "Example Native Hall";
+            receipt["resolvedFactionId"] = BuildExampleGeneratedId("shine_faction_native", request.RequestId);
+            receipt["factionName"] = "Example Native Faction";
+            receipt["charterSummary"] = "Example generated native faction charter summary";
+            receipt["favoredArchetype"] = ShiningAbodeState.ProjectArchetypeAccord;
+            receipt["patronEffectFamily"] = ShiningAbodeState.EffectFamilySocial;
             receipt["newResidentIds"] = new JsonArray(
-                "generated_ascended_resident_id_1",
-                "generated_ascended_resident_id_2");
+                BuildExampleGeneratedId("resident_native", request.RequestId, "a"),
+                BuildExampleGeneratedId("resident_native", request.RequestId, "b"));
             receipt["newResidentNames"] = new JsonArray(
-                "generated resident name 1",
-                "generated resident name 2");
+                "Example Resident A",
+                "Example Resident B");
             receipt["seededProjectIds"] = new JsonArray(
-                "generated_completed_project_id_1",
-                "generated_completed_project_id_2");
+                BuildExampleGeneratedId("shine_project_native", request.RequestId, "accord"),
+                BuildExampleGeneratedId("shine_project_native", request.RequestId, "route"));
             receipt["seededProjectNames"] = new JsonArray(
-                "generated completed project name 1",
-                "generated completed project name 2");
+                "Example Native Accord Project",
+                "Example Native Route Project");
             return;
         }
 
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeCompleteProject, StringComparison.OrdinalIgnoreCase) &&
             string.IsNullOrWhiteSpace(request.ProjectId))
         {
-            receipt["projectId"] = "generated_completed_project_id";
+            receipt["projectId"] = BuildExampleGeneratedId("shine_project_completed", request.RequestId);
         }
+    }
+
+    private static JsonObject BuildClosureScaffoldCopyRules(string receiptSurface, string extraRule) => new()
+    {
+        ["receiptSurface"] = receiptSurface,
+        ["resolvedAtTurnRule"] = "Use the pending request's createdAtTurn as the normal closing turn; do not add a future turn.",
+        ["resolvedAtUtcRule"] = "Replace the example ISO-8601 timestamp with the actual UTC closure timestamp.",
+        ["generatedIdRule"] = extraRule
+    };
+
+    private static int BuildExampleResolvedAtTurn(int createdAtTurn) =>
+        Math.Max(1, createdAtTurn);
+
+    private static string BuildExampleResolvedAtUtc(string? createdAtUtc)
+    {
+        if (DateTimeOffset.TryParse(createdAtUtc, out var parsed))
+            return parsed.AddMinutes(1).UtcDateTime.ToString("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+        return "2026-04-24T13:04:00Z";
+    }
+
+    private static string BuildExampleGeneratedId(string prefix, string? requestId, string? suffix = null)
+    {
+        var token = SanitizeExampleIdToken(requestId);
+        if (string.IsNullOrWhiteSpace(token))
+            token = "request";
+
+        return string.IsNullOrWhiteSpace(suffix)
+            ? $"{prefix}_{token}"
+            : $"{prefix}_{token}_{SanitizeExampleIdToken(suffix)}";
+    }
+
+    private static string SanitizeExampleIdToken(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var chars = value
+            .Trim()
+            .ToLowerInvariant()
+            .Select(ch => char.IsLetterOrDigit(ch) ? ch : '_')
+            .ToArray();
+        var token = new string(chars);
+        while (token.Contains("__", StringComparison.Ordinal))
+            token = token.Replace("__", "_", StringComparison.Ordinal);
+
+        return token.Trim('_');
     }
 
     private static int ResolveAcceptedReceiptDraftVersionForPreview(
