@@ -3557,6 +3557,85 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningAbode_MalformedLegacyDiscoveryBlocksLocalGatesSaveAndPreservesEvidence()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var gates = shiningRoot["gates"]!.AsObject();
+        var allCandidates = gates["allCandidateBlessingCards"]!.AsArray();
+        var availableCards = gates["availableBlessingCards"]!.AsArray();
+        var shownIds = gates["shownBlessingCardIds"]!.AsArray();
+        var memoryCard = JsonNode.Parse("""
+        {
+          "cardId": "card_memory_echo",
+          "dedupeKey": "memory_echo",
+          "sourceType": "project",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "project_social",
+          "effectFamily": "memory",
+          "rarity": "Rare",
+          "displayName": "Память Эха",
+          "displaySummary": "Даёт новый вариант памяти.",
+          "effectPayload": { "options": 1 }
+        }
+        """)!.AsObject();
+        var resourceCard = JsonNode.Parse("""
+        {
+          "cardId": "card_resource_seed",
+          "dedupeKey": "resource_seed",
+          "sourceType": "head",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "guard_test_founder",
+          "effectFamily": "resource",
+          "rarity": "Epic",
+          "displayName": "Зерно запаса",
+          "displaySummary": "Даёт стартовые ресурсы.",
+          "effectPayload": { "common": 2 }
+        }
+        """)!.AsObject();
+        var survivalCard = JsonNode.Parse("""
+        {
+          "cardId": "card_survival_shield",
+          "dedupeKey": "survival_shield",
+          "sourceType": "project",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "project_refinement",
+          "effectFamily": "survival",
+          "rarity": "Rare",
+          "displayName": "Щит выживания",
+          "displaySummary": "Смягчает будущий провал.",
+          "effectPayload": { "downgrade": 1 }
+        }
+        """)!.AsObject();
+        allCandidates.Add(memoryCard.DeepClone());
+        allCandidates.Add(resourceCard.DeepClone());
+        allCandidates.Add(survivalCard.DeepClone());
+        availableCards.Add(memoryCard.DeepClone());
+        shownIds.Add("card_memory_echo");
+        gates["nextCandidateCursor"] = 3;
+        shiningRoot["pendingNativeFactionDiscovery"] = "malformed_contract";
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString());
+
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "🚪 Врата и благословения", "← Назад");
+        _console.QueueSelection("Врата Сияющей Обители", "🔁 Обновить набор благословений", "← Назад");
+        _console.QueueSelection("Подтвердить обновление набора Врат", "✅ Применить изменение");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_gates_malformed_legacy_discovery_preserved");
+        var afterRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        Assert.Equal("malformed_contract", afterRoot["pendingNativeFactionDiscovery"]?.GetValue<string>());
+        Assert.Equal(1, afterRoot["gates"]?["rerollsRemaining"]?.GetValue<int>());
+        Assert.Contains(_console.MarkupLines, line => line.Contains("pendingNativeFactionDiscovery", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.MarkupLines, line => line.Contains("повреж", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningTradeAndForge_InventoryRequestPreviewCanCancelWithoutWritingPendingRequest()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);

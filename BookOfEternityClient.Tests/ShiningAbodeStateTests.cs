@@ -258,6 +258,21 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void ValidateRawOwnerStateForActionableMode_MalformedLegacyPendingDiscovery_FailsClosed()
+    {
+        var root = ShiningAbodeState.CreateDefaultState();
+        root["pendingNativeFactionDiscovery"] = "malformed_contract";
+
+        var error = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(root);
+        var shapeError = ShiningAbodeState.ValidateLegacyPendingNativeFactionDiscoveryShape(root);
+
+        Assert.NotNull(error);
+        Assert.NotNull(shapeError);
+        Assert.Contains("pendingNativeFactionDiscovery", error, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("повреж", shapeError, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ValidateRawOwnerStateForActionableMode_DuplicateHallIds_FailsClosed()
     {
         var root = ShiningAbodeState.CreateDefaultState();

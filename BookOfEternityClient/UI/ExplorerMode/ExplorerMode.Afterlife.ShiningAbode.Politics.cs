@@ -157,7 +157,12 @@ public partial class ExplorerMode
             }
 
             context.Root["lightSparks"] = Math.Max(0, GetNodeInt(context.Root["lightSparks"]) - cost.LightSparks);
-            await SaveShiningRootAsync(context.Root);
+            if (!await SaveShiningRootAsync(context.Root))
+            {
+                await RestorePendingLocalTurnRollbackSnapshotAsync();
+                WaitForKey();
+                return;
+            }
         }
         catch
         {

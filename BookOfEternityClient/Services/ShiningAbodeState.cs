@@ -262,12 +262,9 @@ internal static partial class ShiningAbodeState
             return "preparedIncarnationPackage повреждён и не позволяет надёжно определить lifecycle handoff.";
         }
 
-        if (root.ContainsKey("pendingNativeFactionDiscovery") &&
-            root["pendingNativeFactionDiscovery"] != null &&
-            root["pendingNativeFactionDiscovery"] is not JsonObject)
-        {
-            return "pendingNativeFactionDiscovery повреждён; legacy discovery contract должен быть repaired или closed перед actionable Shining mode.";
-        }
+        var pendingDiscoveryIssue = ValidateLegacyPendingNativeFactionDiscoveryShape(root);
+        if (!string.IsNullOrWhiteSpace(pendingDiscoveryIssue))
+            return pendingDiscoveryIssue;
 
         if (root["radiance"] is not JsonObject)
             return "radiance object повреждён или отсутствует.";
@@ -283,6 +280,18 @@ internal static partial class ShiningAbodeState
         var politicalIssue = ValidateRawPoliticalContracts(root);
         if (!string.IsNullOrWhiteSpace(politicalIssue))
             return politicalIssue;
+
+        return null;
+    }
+
+    public static string? ValidateLegacyPendingNativeFactionDiscoveryShape(JsonObject root)
+    {
+        if (root.ContainsKey("pendingNativeFactionDiscovery") &&
+            root["pendingNativeFactionDiscovery"] != null &&
+            root["pendingNativeFactionDiscovery"] is not JsonObject)
+        {
+            return "pendingNativeFactionDiscovery повреждён; legacy discovery contract должен быть repaired или closed перед actionable Shining mode.";
+        }
 
         return null;
     }
