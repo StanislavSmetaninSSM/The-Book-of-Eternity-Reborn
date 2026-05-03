@@ -1080,6 +1080,20 @@ internal static partial class ShiningAbodeState
 
     private static string? ValidateRawPoliticalContracts(JsonObject root)
     {
+        if (root["halls"] is not JsonArray halls)
+            return "halls повреждён и не может authorise actionable Shining mode.";
+
+        var hallIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var hallNode in halls)
+        {
+            if (hallNode is not JsonObject hall)
+                return "halls содержит повреждённую запись и не может authorise actionable Shining mode.";
+
+            var hallId = GetNodeString(hall["hallId"]);
+            if (string.IsNullOrWhiteSpace(hallId) || !hallIds.Add(hallId))
+                return "halls содержит missing или duplicate hallId и не может authorise actionable Shining mode.";
+        }
+
         if (root["factions"] is not JsonArray factions)
             return "factions повреждён и не может authorise actionable Shining mode.";
 
@@ -1162,10 +1176,15 @@ internal static partial class ShiningAbodeState
         if (root["shiningPoliticalActors"] is not JsonArray actors)
             return "shiningPoliticalActors повреждён и не может authorise actionable Shining mode.";
 
+        var actorIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var actorNode in actors)
         {
             if (actorNode is not JsonObject actor)
                 return "shiningPoliticalActors содержит повреждённую запись и не может authorise actionable Shining mode.";
+
+            var actorId = GetNodeString(actor["actorId"]);
+            if (string.IsNullOrWhiteSpace(actorId) || !actorIds.Add(actorId))
+                return "shiningPoliticalActors содержит missing или duplicate actorId и не может authorise actionable Shining mode.";
 
             var actorType = GetNodeString(actor["actorType"]);
             if (!string.IsNullOrWhiteSpace(actorType) &&
