@@ -568,6 +568,55 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CheckGmIncarnationTrigger_InputOnlySnapshotWithoutAcceptedContext_DoesNotDispatch()
+    {
+        const string sessionId = "session-input-only-incarnation";
+        const string requestId = "request-input-only-incarnation";
+        const int turnNumber = 25;
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 2,
+            inkFeathers = new { current = 12 }
+        });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 2
+        });
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, "game_state/meta/soul_state.json");
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber,
+            playerAction = "Обычный ожидающий ход без accepted ready signal."
+        });
+        await WriteJsonAsync("game_state/control/incarnation_trigger.json", new
+        {
+            worldDescription = "Тестовый смертный мир.",
+            characterDescription = "Тестовая душа.",
+            circumstances = "Этот trigger не подтверждён accepted turn.",
+            source = "test"
+        });
+
+        var engine = CreateGameEngine();
+        var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
+        await stateManager.RefreshGameStateAsync();
+
+        var dispatched = await InvokePrivateAsync<bool>(engine, "CheckGmIncarnationTrigger", new object?[] { null });
+
+        Assert.False(dispatched);
+        Assert.False(_fs.FileExists("game_state/control/incarnation_trigger.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        var inputTurn = await _fs.ReadFileAsync("input/turn_request.json");
+        Assert.NotNull(inputTurn);
+        Assert.Contains(requestId, inputTurn, StringComparison.Ordinal);
+        Assert.DoesNotContain("Тестовый смертный мир", inputTurn, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes()
     {
         await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new

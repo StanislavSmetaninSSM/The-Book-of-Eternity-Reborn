@@ -1961,11 +1961,6 @@ public partial class GameEngine
     {
         var snapshotContext = acceptedTurnSnapshotContext;
         if (snapshotContext == null)
-        {
-            var manifest = await LoadPendingTurnSnapshotManifestAsync();
-            snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
-        }
-        if (snapshotContext == null)
             return false;
 
         var preTurnSoulJson = ReadPreTurnSnapshotFile(snapshotContext, "game_state/meta/soul_state.json");
