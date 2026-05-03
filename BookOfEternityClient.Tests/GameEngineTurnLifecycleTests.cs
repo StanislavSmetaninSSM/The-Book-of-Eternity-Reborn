@@ -25,6 +25,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         public int TurnNumber { get; set; }
         public string RequestTimestamp { get; set; } = "";
         public string PlayerAction { get; set; } = "";
+        public JsonObject? GachaBaseResult { get; set; }
         public ProgressionControl? ProgressionControl { get; set; }
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
@@ -511,6 +512,45 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             currentIncarnation = 2
         });
         await WritePendingTurnSnapshotManifestAsync("test-session", "test-request", 14, "game_state/meta/soul_state.json");
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "test-session",
+            requestId = "test-request",
+            turnNumber = 14
+        });
+        await WriteJsonAsync("game_state/control/life_transitions.json", new
+        {
+            reason = "Death",
+            summary = "Жизнь завершена."
+        });
+
+        var resolution = await CanonicalStateNormalizer.ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+            _fs,
+            await _fs.ReadFileAsync("game_state/control/life_transitions.json"),
+            "Mortal World");
+
+        Assert.True(resolution.IsAuthorized);
+        Assert.Equal("authorized", resolution.Code);
+    }
+
+    [Fact]
+    public async Task ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_GachaManifest_Authorizes()
+    {
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new
+        {
+            currentRealm = "Mortal World",
+            currentIncarnation = 2
+        });
+        await WritePendingTurnSnapshotManifestAsync(
+            "test-session",
+            "test-request",
+            14,
+            new JsonObject
+            {
+                ["baseRarity"] = "Rare",
+                ["formula"] = "test-gacha-roll"
+            },
+            "game_state/meta/soul_state.json");
         await WriteJsonAsync("input/turn_request.json", new
         {
             sessionId = "test-session",
@@ -1124,6 +1164,16 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         int turnNumber,
         params string[] trackedPaths)
     {
+        await WritePendingTurnSnapshotManifestAsync(sessionId, requestId, turnNumber, gachaBaseResult: null, trackedPaths);
+    }
+
+    private async Task WritePendingTurnSnapshotManifestAsync(
+        string sessionId,
+        string requestId,
+        int turnNumber,
+        JsonObject? gachaBaseResult,
+        params string[] trackedPaths)
+    {
         var files = trackedPaths.ToDictionary(
             path => path,
             path => $"game_state/control/pending_turn_snapshot/{path}",
@@ -1144,6 +1194,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             TurnNumber = turnNumber,
             RequestTimestamp = "2026-03-24T00:00:00Z",
             PlayerAction = "game-engine-turn-lifecycle-test",
+            GachaBaseResult = gachaBaseResult,
             ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" },
             Files = files,
             SnapshotFileHashes = snapshotHashes,
@@ -1154,22 +1205,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         };
         manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
 
-        await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", new
-        {
-            sessionId,
-            requestId,
-            turnNumber,
-            requestTimestamp = manifest.RequestTimestamp,
-            playerAction = manifest.PlayerAction,
-            progressionControl = manifest.ProgressionControl,
-            files,
-            snapshotFileHashes = snapshotHashes,
-            clientOwnedValidationHashes = manifest.ClientOwnedValidationHashes,
-            rollbackBackups = manifest.RollbackBackups,
-            rollbackBaselineFiles = manifest.RollbackBaselineFiles,
-            sourceLabel = manifest.SourceLabel,
-            manifestPayloadHash = manifest.ManifestPayloadHash
-        });
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
