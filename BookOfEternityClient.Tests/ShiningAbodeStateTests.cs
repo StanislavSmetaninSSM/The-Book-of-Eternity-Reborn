@@ -100,6 +100,32 @@ public sealed class ShiningAbodeStateTests
     }
 
     [Fact]
+    public void NormalizeStateRoot_PreservesMalformedLegacyPendingNativeFactionDiscoveryForRepair()
+    {
+        var root = JsonNode.Parse("""
+        {
+          "availability": "active",
+          "radiance": { "experience": 40, "tier": 0 },
+          "lightSparks": 50,
+          "halls": [],
+          "factions": [],
+          "shiningPoliticalActors": [],
+          "pendingNativeFactionDiscovery": "malformed_contract"
+        }
+        """)!.AsObject();
+
+        ShiningAbodeState.NormalizeStateRoot(root, residentRoot: null);
+
+        Assert.Equal("malformed_contract", root["pendingNativeFactionDiscovery"]?.GetValue<string>());
+
+        root["pendingNativeFactionDiscovery"] = new JsonArray("malformed_contract");
+
+        ShiningAbodeState.NormalizeStateRoot(root, residentRoot: null);
+
+        Assert.True(root["pendingNativeFactionDiscovery"] is JsonArray);
+    }
+
+    [Fact]
     public void NormalizeStateRoot_PreservesUnsupportedEnumBackedFactionAndProjectValues()
     {
         var root = JsonNode.Parse("""

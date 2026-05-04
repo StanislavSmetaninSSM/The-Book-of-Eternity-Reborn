@@ -9,6 +9,66 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ShiningStateValidationTests
 {
+    [Theory]
+    [InlineData("\"malformed_contract\"")]
+    [InlineData("[\"malformed_contract\"]")]
+    public void ValidateShiningAbodeStateFile_MalformedLegacyPendingNativeFactionDiscovery_RaisesExpectedObject(string pendingDiscoveryJson)
+    {
+        var root = new JsonObject
+        {
+            ["availability"] = "active",
+            ["radiance"] = new JsonObject
+            {
+                ["experience"] = 0,
+                ["tier"] = 0
+            },
+            ["lightSparks"] = 50,
+            ["halls"] = new JsonArray(),
+            ["factions"] = new JsonArray(),
+            ["shiningPoliticalActors"] = new JsonArray(),
+            ["pendingNativeFactionDiscovery"] = JsonNode.Parse(pendingDiscoveryJson),
+            ["factionFoundingReceipts"] = new JsonArray(),
+            ["factionRealignmentReceipts"] = new JsonArray(),
+            ["coreActionReceipts"] = new JsonArray(),
+            ["gates"] = new JsonObject
+            {
+                ["draftVersion"] = 0,
+                ["hasOpenDraft"] = false,
+                ["isStale"] = false,
+                ["allCandidateBlessingCards"] = new JsonArray(),
+                ["availableBlessingCards"] = new JsonArray(),
+                ["shownBlessingCardIds"] = new JsonArray(),
+                ["selectedBlessingCardIds"] = new JsonArray(),
+                ["nextCandidateCursor"] = 0,
+                ["rerollsRemaining"] = 0
+            },
+            ["gachaSystem"] = new JsonObject
+            {
+                ["chargesPerReturn"] = 0,
+                ["chargesUsedThisReturn"] = 0,
+                ["currentReturnCycleId"] = string.Empty,
+                ["gachaHistory"] = new JsonArray()
+            }
+        };
+
+        using var document = JsonDocument.Parse(root.ToJsonString());
+        var validator = new ValidationService(
+            new FileSystemManager(Path.GetTempPath(), NullLogger<FileSystemManager>.Instance),
+            NullLogger<ValidationService>.Instance);
+        var issues = new List<ValidationIssue>();
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateShiningAbodeStateFile",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        method!.Invoke(validator, new object[] { document.RootElement, ShiningAbodeState.StatePath, issues });
+
+        Assert.Contains(
+            issues,
+            issue => string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) &&
+                     issue.FilePath.Contains("pendingNativeFactionDiscovery", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Fact]
     public void ValidateShiningAbodeStateFile_InvalidEnumBackedFields_RaiseExplicitErrors()
     {

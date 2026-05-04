@@ -450,7 +450,7 @@ internal static partial class ShiningAbodeState
 
         if (root["pendingNativeFactionDiscovery"] is JsonObject pendingDiscovery)
             NormalizePendingNativeFactionDiscoveryObject(pendingDiscovery, radianceTier);
-        else if (!root.ContainsKey("pendingNativeFactionDiscovery") || root["pendingNativeFactionDiscovery"] is not null)
+        else if (!root.ContainsKey("pendingNativeFactionDiscovery"))
             root["pendingNativeFactionDiscovery"] = null;
 
         if (root["gates"] is not JsonObject gates)
