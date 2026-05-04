@@ -442,15 +442,19 @@ public partial class ExplorerMode
                     ? resolvedName
                     : guardianId;
                 var project = entry.GetProperty("project");
+                var projectId = GetStr(project, "projectId", GetStr(project, "id", ""));
                 var projectName = GetStr(project, "projectName", GetStr(project, "name", "Проект"));
                 var activeState = GetStr(project, "activeState", "");
                 var finalState = GetStr(project, "finalState", "");
                 var status = FormatGuardianProjectStateLabel(string.IsNullOrWhiteSpace(activeState) ? finalState : activeState);
                 return ConsoleLayout.PlainChoiceLabel(
                     $"🔬 {projectName}",
-                    string.IsNullOrWhiteSpace(guardianName) ? guardianId : guardianName,
+                    $"{(string.IsNullOrWhiteSpace(guardianName) ? guardianId : guardianName)} • guardianId={guardianId} • projectId={projectId}",
                     string.IsNullOrWhiteSpace(status) ? "" : status);
             }).ToList();
+            var choiceIndexByLabel = choices
+                .Select((choice, index) => (choice, index))
+                .ToDictionary(item => item.choice, item => item.index, StringComparer.Ordinal);
             choices.Add("← Назад");
 
             var selected = Prompt(new SelectionPrompt<string>()
@@ -462,8 +466,9 @@ public partial class ExplorerMode
             if (selected == "← Назад")
                 return;
 
-            var selectedIndex = choices.IndexOf(selected);
-            if (selectedIndex < 0 || selectedIndex >= allEntries.Count)
+            if (!choiceIndexByLabel.TryGetValue(selected, out var selectedIndex) ||
+                selectedIndex < 0 ||
+                selectedIndex >= allEntries.Count)
                 return;
 
             ShowGuardianProjectDetailPanel(allEntries[selectedIndex], guardianNames, journalDoc?.RootElement, trackerRoot);

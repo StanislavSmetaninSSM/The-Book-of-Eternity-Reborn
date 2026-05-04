@@ -1233,21 +1233,12 @@ public partial class ExplorerMode
 
             seen[entry.Label] = seen.GetValueOrDefault(entry.Label) + 1;
             var suffix = !string.IsNullOrWhiteSpace(entry.Identity)
-                ? $" [dim]#{Markup.Escape(ShortIdentity(entry.Identity))}[/]"
+                ? $" [dim]id={Markup.Escape(entry.Identity)}[/]"
                 : $" [dim](дубль {seen[entry.Label]})[/]";
             result.Add(entry.Label + suffix);
         }
 
         return result;
-    }
-
-    private static string ShortIdentity(string identity)
-    {
-        if (string.IsNullOrWhiteSpace(identity))
-            return "?";
-
-        var normalized = identity.Replace("-", "", StringComparison.Ordinal);
-        return normalized.Length <= 8 ? normalized : normalized[..8];
     }
 
     private static int FindInventoryItemIndex(JsonArray items, string itemIdentity, string itemName)

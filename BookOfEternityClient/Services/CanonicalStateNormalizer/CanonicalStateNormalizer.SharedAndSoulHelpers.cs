@@ -317,7 +317,7 @@ public partial class CanonicalStateNormalizer
                             ["eventId"] = eventId,
                             ["relicId"] = resultNode != null ? GetNodeString(resultNode["relicId"]) ?? GetNodeString(resultNode["name"]) ?? "" : "",
                             ["costInFeathers"] = GetNodeInt(commandNode["inkFeathersSpent"]),
-                            ["finalRarity"] = resultNode != null ? GetNodeString(resultNode["rarity"]) ?? "" : "",
+                            ["finalRarity"] = resultNode != null ? GetNodeString(resultNode["rarity"]) ?? GetNodeString(resultNode["quality"]) ?? "" : "",
                             ["timestamp"] = DateTime.UtcNow.ToString("o"),
                             ["gachaBonusAudit"] = commandNode["gachaBonusAudit"]?.DeepClone()
                         });

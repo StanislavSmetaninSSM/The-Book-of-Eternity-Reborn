@@ -114,6 +114,12 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("Pending-модель не глобальная", source, StringComparison.Ordinal);
         Assert.Contains("foreign pending realignment для того же residentId", source, StringComparison.Ordinal);
         Assert.Contains("foreign pending leadership для той же factionId", source, StringComparison.Ordinal);
+        Assert.Contains("requestId=", source, StringComparison.Ordinal);
+        Assert.Contains("hallId=", source, StringComparison.Ordinal);
+        Assert.Contains("factionId=", source, StringComparison.Ordinal);
+        Assert.Contains("residentId=", source, StringComparison.Ordinal);
+        Assert.Contains("quotedCostFeathers", source, StringComparison.Ordinal);
+        Assert.Contains("quotedCostLightSparks", source, StringComparison.Ordinal);
         Assert.DoesNotContain("новый запрос заблокирован, пока живёт political pending request", source, StringComparison.Ordinal);
     }
 
@@ -176,6 +182,8 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
     public void ShiningBlessingActivationAudit_MustExposeStableIdsWithoutRawPayloads()
     {
         var serviceSource = ReadServiceSource("ShiningBlessingEffectState.cs");
+        var explorerPrivate = ReadSource("ExplorerMode.PrivateImplementation.cs");
+        var gatesSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.Gates.cs");
 
         Assert.Contains("Blessing audit: effectId=", serviceSource, StringComparison.Ordinal);
         Assert.Contains("sourceCardIds=", serviceSource, StringComparison.Ordinal);
@@ -185,6 +193,10 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("expiredAtUtc", serviceSource, StringComparison.Ordinal);
         Assert.Contains("consumptionSurface=", serviceSource, StringComparison.Ordinal);
         Assert.Contains("consumptionTarget=", serviceSource, StringComparison.Ordinal);
+        Assert.Contains("effectPayload redacted; safeEffectDetails shown", explorerPrivate, StringComparison.Ordinal);
+        Assert.Contains("Скрытый `effectPayload`", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("safeEffectDetails", gatesSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Полный `effectPayload` показан", gatesSource, StringComparison.Ordinal);
         Assert.DoesNotContain("effectPayload.ToJsonString", serviceSource, StringComparison.Ordinal);
     }
 

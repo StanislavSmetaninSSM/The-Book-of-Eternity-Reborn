@@ -300,7 +300,7 @@ public partial class ExplorerMode
                 lines.Add("");
                 lines.Add("[bold]Ожидают решения:[/] основание фракций [dim](все pending-запросы)[/]");
                 foreach (var request in foundingRequests)
-                    lines.Add($"  • {Markup.Escape(request.Charter.FactionName)} — новый зал {Markup.Escape(request.ProposedHallName)}, сторонников {request.SupportingResidentIds.Count}");
+                    lines.Add($"  • requestId={Markup.Escape(request.RequestId)}; factionId={Markup.Escape(request.ProposedFactionId)}; hallId={Markup.Escape(request.ProposedHallId)}; factionName={Markup.Escape(request.Charter.FactionName)}; hallName={Markup.Escape(request.ProposedHallName)}; supporters={request.SupportingResidentIds.Count}; quotedCost={request.QuotedCostFeathers} Чернильных Перьев/{request.QuotedCostLightSparks} Искр Света; reservedBefore={request.ReservedInkFeathersBefore}/{request.ReservedLightSparksBefore}; createdAtTurn={request.CreatedAtTurn}; createdAtUtc={Markup.Escape(request.CreatedAtUtc)}");
             }
 
             if (realignmentRequests.Count > 0)
@@ -308,7 +308,7 @@ public partial class ExplorerMode
                 lines.Add("");
                 lines.Add("[bold]Ожидают решения:[/] переходы между фракциями [dim](все pending-запросы)[/]");
                 foreach (var request in realignmentRequests)
-                    lines.Add($"  • {Markup.Escape(request.ResidentName)} — {Markup.Escape(request.SourceFactionName)} -> {Markup.Escape(string.IsNullOrWhiteSpace(request.TargetFactionName) ? "нейтраль" : request.TargetFactionName)} [dim]({Markup.Escape(DescribeShiningRealignmentMode(request.RealignmentMode))})[/]");
+                    lines.Add($"  • requestId={Markup.Escape(request.RequestId)}; residentId={Markup.Escape(request.ResidentId)}; residentName={Markup.Escape(request.ResidentName)}; sourceFactionId={Markup.Escape(request.SourceFactionId)}; targetFactionId={Markup.Escape(string.IsNullOrWhiteSpace(request.TargetFactionId) ? "neutral" : request.TargetFactionId)}; mode={Markup.Escape(DescribeShiningRealignmentMode(request.RealignmentMode))}; loyalty={request.FactionLoyaltyLevel}/{Markup.Escape(request.FactionLoyaltyTier)}; restlessness={request.FactionRestlessness}; createdAtTurn={request.CreatedAtTurn}; createdAtUtc={Markup.Escape(request.CreatedAtUtc)}");
             }
 
             if (leadershipRequests.Count > 0)
@@ -316,7 +316,7 @@ public partial class ExplorerMode
                 lines.Add("");
                 lines.Add("[bold]Ожидают решения:[/] смена власти [dim](все pending-запросы)[/]");
                 foreach (var request in leadershipRequests)
-                    lines.Add($"  • {Markup.Escape(request.FactionName)} — {Markup.Escape(DescribeShiningLeadershipMode(request.TransitionMode))} -> {Markup.Escape(BuildHeadActorLabel(request.CandidateHeadActorType, request.CandidateHeadActorId))}");
+                    lines.Add($"  • requestId={Markup.Escape(request.RequestId)}; factionId={Markup.Escape(request.FactionId)}; factionName={Markup.Escape(request.FactionName)}; mode={Markup.Escape(DescribeShiningLeadershipMode(request.TransitionMode))}; incumbent={Markup.Escape(request.IncumbentHeadActorType)}:{Markup.Escape(request.IncumbentHeadActorId)}; candidate={Markup.Escape(request.CandidateHeadActorType)}:{Markup.Escape(request.CandidateHeadActorId)}; supportingResidentIds=[{Markup.Escape(string.Join(", ", request.SupportingResidentIds))}]; createdAtTurn={request.CreatedAtTurn}; createdAtUtc={Markup.Escape(request.CreatedAtUtc)}");
             }
 
             if (context?.Root["factionFoundingReceipts"] is JsonArray foundingReceipts && foundingReceipts.Count > 0)

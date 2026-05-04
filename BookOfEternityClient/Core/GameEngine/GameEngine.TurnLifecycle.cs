@@ -2450,7 +2450,7 @@ Read Context.worldState.currentRealm (projected from game_state/meta/soul_state.
 IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage is a VALID bootstrap package object:
   TREAT THIS AS Shining Abode pending-bootstrap handoff, NOT as ordinary active Shining Abode.
   ALLOWED: only canonical TriggerIncarnation / game_state/control/incarnation_trigger.json for next-life bootstrap. GM MUST preserve game_state/meta/shining_abode_state.json.preparedIncarnationPackage exactly as provided; do not remove, clear, rename, or mutate it. The client runtime consumes and clears the frozen package only after successful Mortal World bootstrap.
-  FORBIDDEN: ordinary Guardian interactions, ordinary Abode interactions, ordinary afterlife interactions, archive/relic/world-setup meta flows, Life Evaluation, Shining return, Chaos Sea travel, Mortal World systems.
+  FORBIDDEN: ordinary Guardian interactions, ordinary Abode interactions, ordinary afterlife interactions, archive/relic/world-setup meta flows, unrelated pending contract closure, Life Evaluation, Shining return, Chaos Sea travel, Mortal World systems. If any unresolved afterlife pending/control contract exists, Soul Gates must block this handoff until it is resolved or repaired.
 
 IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage is present but not a valid bootstrap package:
   TREAT THIS AS Shining Abode package fault. Fail closed, preserve the package and pending Shining contracts for repair, and do NOT process ordinary Shining gameplay or handoff.

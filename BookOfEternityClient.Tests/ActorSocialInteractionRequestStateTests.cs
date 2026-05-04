@@ -97,6 +97,29 @@ public sealed class ActorSocialInteractionRequestStateTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_UnreadableGuardiansPreservesGuardianRequest()
+    {
+        await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest
+        {
+            RequestId = "guardian_req_preserve",
+            GuardianId = "guardian_azalia",
+            GuardianName = "Азалия",
+            InteractionType = ActorSocialInteractionRequestState.GuardianInteractionTypeTalk,
+            CreatedAtTurn = 12,
+            CreatedAtUtc = "2026-03-27T10:00:00Z"
+        });
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", "{");
+
+        await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, "Chaos Sea");
+
+        var requests = await ActorSocialInteractionRequestState.ReadGuardianRequestsAsync(_fs);
+        var request = Assert.Single(requests);
+        Assert.Equal("guardian_req_preserve", request.RequestId);
+        Assert.True(_fs.FileExists(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+    }
+
+    [Fact]
     public async Task BuildSystemReminderFragmentAsync_AfterlifeIncludesFullGuardianSocialDto()
     {
         await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest

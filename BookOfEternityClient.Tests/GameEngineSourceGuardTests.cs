@@ -495,12 +495,14 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("BuildShiningReentrySideEffectPreviewAsync", source, StringComparison.Ordinal);
         Assert.Contains("\"returnCycleSync\"", source, StringComparison.Ordinal);
         Assert.Contains("\"autoTradeRefresh\"", source, StringComparison.Ordinal);
+        Assert.Contains("autoTradeCreatesPending", source, StringComparison.Ordinal);
         Assert.Contains("\"currentReturnCycleIdBefore\"", source, StringComparison.Ordinal);
         Assert.Contains("\"currentReturnCycleIdAfter\"", source, StringComparison.Ordinal);
         Assert.Contains("\"chargesUsedThisReturnBefore\"", source, StringComparison.Ordinal);
         Assert.Contains("\"chargesUsedThisReturnAfter\"", source, StringComparison.Ordinal);
         Assert.Contains("ShiningTradeRequestState.PendingRequestsPath", source, StringComparison.Ordinal);
         Assert.Contains("PreviewAutoRefreshRequestsForCurrentCycleAsync", source, StringComparison.Ordinal);
+        Assert.Contains("client-owned auto refresh создаст/обновит", source, StringComparison.Ordinal);
     }
 
     [Fact]

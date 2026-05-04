@@ -424,7 +424,7 @@ internal static class ActorSocialInteractionRequestState
                 !string.IsNullOrWhiteSpace(request.RequestId) &&
                 !string.IsNullOrWhiteSpace(request.GuardianId) &&
                 FindGuardianResolutionEntry(journalRoot, request.GuardianId, request.RequestId) == null &&
-                GuardianExists(guardiansRoot, request.GuardianId))
+                (guardiansRoot == null || GuardianExists(guardiansRoot, request.GuardianId)))
             .ToList();
 
         await WriteGuardianRequestsAsync(fs, remaining);

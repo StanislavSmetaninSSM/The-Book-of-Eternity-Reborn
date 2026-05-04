@@ -260,6 +260,9 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
 
         Assert.NotNull(guardiansJson);
         Assert.Contains("\"gachaBonusAudit\"", guardiansJson, StringComparison.Ordinal);
+        var guardiansRoot = JsonNode.Parse(guardiansJson)!.AsObject();
+        var historyEntry = guardiansRoot["guardians"]![0]!["gachaSystem"]!["gachaHistory"]![0]!.AsObject();
+        Assert.Equal("Epic", historyEntry["finalRarity"]?.GetValue<string>());
         Assert.NotNull(trackerJson);
         Assert.Contains("\"gachaUsesSpent\": 1", trackerJson, StringComparison.Ordinal);
     }
@@ -311,7 +314,6 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
               "result": {
                 "relicId": "relic_alpha",
                 "name": "Тестовая реликвия",
-                "rarity": "Epic",
                 "quality": "Epic"
               }
             }

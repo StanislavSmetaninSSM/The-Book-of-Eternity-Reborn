@@ -1710,6 +1710,14 @@ public partial class GameEngine
 
         soulRoot["currentRealm"] = "Shining Abode";
         var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
+        var autoTradeCreatesPending = reentrySideEffects.AutoTradeRefresh.CreatedRequestCount > 0 ||
+                                      reentrySideEffects.AutoTradeRefresh.StateChanged;
+        var affectedFiles = new JsonArray(
+            JsonValue.Create(ShiningAbodeState.StatePath),
+            JsonValue.Create("game_state/meta/soul_state.json"));
+        if (autoTradeCreatesPending)
+            affectedFiles.Add(ShiningTradeRequestState.PendingRequestsPath);
+
         var reenterPreviewLines = new List<string>
         {
             "[bold yellow]Возврат в активную Сияющую Обитель[/]",
@@ -1731,7 +1739,9 @@ public partial class GameEngine
             $"  • gacha charges reset: {(reentrySideEffects.GachaChargesReset ? "yes" : "no")}",
             $"  • auto trade refresh: {ShiningTradeRequestState.PendingRequestsPath}; tradeCycleId={Markup.Escape(reentrySideEffects.AutoTradeRefresh.TradeCycleId)}; createdRequests={reentrySideEffects.AutoTradeRefresh.CreatedRequestCount}",
             "",
-            "[bold]Последствия подтверждения:[/] вы возвращаетесь в уже существующую Обитель; pending GM action не создаётся."
+            autoTradeCreatesPending
+                ? "[bold]Последствия подтверждения:[/] вы возвращаетесь в уже существующую Обитель; ход GM не отправляется, но client-owned auto refresh создаст/обновит pending Shining trade contract для следующего GM closure."
+                : "[bold]Последствия подтверждения:[/] вы возвращаетесь в уже существующую Обитель; ход GM и новые pending GM contracts не создаются."
         };
         AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", reenterPreviewLines)))
         {
@@ -1771,9 +1781,7 @@ public partial class GameEngine
                 ["createdRequestCount"] = reentrySideEffects.AutoTradeRefresh.CreatedRequestCount,
                 ["stateWouldChange"] = reentrySideEffects.AutoTradeRefresh.StateChanged
             },
-            ["affectedFiles"] = new JsonArray(
-                JsonValue.Create(ShiningAbodeState.StatePath),
-                JsonValue.Create("game_state/meta/soul_state.json"))
+            ["affectedFiles"] = affectedFiles
         }.ToJsonString(JsonOpts)))
         {
             Header = new PanelHeader(" JSON audit ", Justify.Center),
