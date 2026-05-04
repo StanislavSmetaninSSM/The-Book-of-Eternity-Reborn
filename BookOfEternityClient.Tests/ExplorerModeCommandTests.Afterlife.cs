@@ -7037,6 +7037,88 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Status_ShowsRepairOnlyShiningStateWithMalformedLegacyDiscovery()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        shiningRoot["pendingNativeFactionDiscovery"] = "malformed_contract";
+        await File.WriteAllTextAsync(shiningStatePath, shiningRoot.ToJsonString());
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_shining_malformed_legacy_discovery");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Сияющая Обитель", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Repair-only blocker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pendingNativeFactionDiscovery", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("повреж", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("shining_abode_state.json пока отсутствует или повреждён", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_SkipsEmptyNpcPendingQueues()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(NpcTradeRequestState.PendingRequestPath, new { requests = Array.Empty<object>() });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_empty_npc_queues");
+        var renderedText = ExtractRenderedText();
+        Assert.DoesNotContain("pending_npc_social_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending_npc_trade_inventory_requests.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("NPC social request из смертного мира", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("NPC trade request из смертного мира", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_ShowsNonEmptyNpcPendingQueues()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "npc_social_status_001",
+                    npcId = "npc_merchant_001",
+                    npcName = "Марек",
+                    interactionType = "talk"
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_nonempty_npc_queue");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("pending_npc_social_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("npc_social_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("wrong-realm repair-only", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Status_ChaosSeaShowsFullPendingContractAudit()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);

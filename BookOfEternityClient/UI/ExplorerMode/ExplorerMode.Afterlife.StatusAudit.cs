@@ -286,6 +286,13 @@ public partial class ExplorerMode
         lines.Add($"  • Shining gacha: [white]{ShiningAbodeState.GetRemainingShiningGachaCharges(root)}[/]/[white]{GetNodeInt(root["gachaSystem"]?["chargesPerReturn"])}[/] [dim]({BuildShiningReturnCycleStatusLabel(root)})[/]");
         lines.Add($"  • Фракций: [white]{(root["factions"] as JsonArray)?.Count ?? 0}[/], залов: [white]{(root["halls"] as JsonArray)?.Count ?? 0}[/], ascended residents: [white]{CountAscendedShiningResidents(context.ResidentRoot)}[/]");
         lines.Add($"  • Receipts: coreAction={(root["coreActionReceipts"] as JsonArray)?.Count ?? 0}, founding={CountNestedReceipts(root, "factionFoundingReceipts")}, realignment={CountNestedReceipts(root, "factionRealignmentReceipts")}, leadership={CountNestedReceipts(root, "leadershipReceipts")}, trade={CountNestedReceipts(root, ShiningTradeRequestState.ReceiptsProperty)}.");
+        var legacyPendingDiscoveryIssue = ShiningAbodeState.ValidateLegacyPendingNativeFactionDiscoveryShape(root);
+        if (!string.IsNullOrWhiteSpace(legacyPendingDiscoveryIssue))
+        {
+            lines.Add($"  • Repair-only blocker: [red]{Markup.Escape(legacyPendingDiscoveryIssue)}[/]");
+            lines.Add($"    path: [dim]{Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery[/]");
+        }
+
         if (root["gates"] is JsonObject gates)
         {
             lines.Add($"  • Врата: draftVersion [white]{GetNodeInt(gates["draftVersion"])}[/], open={GetNodeBool(gates["hasOpenDraft"])}, stale={GetNodeBool(gates["isStale"])}, availableCards={(gates["availableBlessingCards"] as JsonArray)?.Count ?? 0}, selected={(gates["selectedBlessingCardIds"] as JsonArray)?.Count ?? 0}, rerolls={GetNodeInt(gates["rerollsRemaining"])}.");
@@ -533,6 +540,9 @@ public partial class ExplorerMode
                 {
                     if (requests.Count == 0)
                     {
+                        if (ShouldSkipEmptyRequestsQueueInAfterlifeAudit(definition))
+                            continue;
+
                         result.Add(new AfterlifePendingContractAuditEntry(definition, root, null, IsMalformed: false, Error: null));
                         continue;
                     }
@@ -564,6 +574,10 @@ public partial class ExplorerMode
 
         return result;
     }
+
+    private static bool ShouldSkipEmptyRequestsQueueInAfterlifeAudit(AfterlifePendingContractDefinition definition) =>
+        string.Equals(definition.Path, ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(definition.Path, NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase);
 
     private static string BuildPendingContractIdentitySummary(JsonObject payload)
     {

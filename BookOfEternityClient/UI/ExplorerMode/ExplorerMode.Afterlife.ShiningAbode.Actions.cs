@@ -28,8 +28,8 @@ public partial class ExplorerMode
         if (shiningRoot == null)
             return null;
 
-        if (!EnsureNoMalformedLegacyPendingDiscoveryForLocalShiningSave(shiningRoot))
-            return null;
+        var hasMalformedLegacyPendingDiscovery =
+            !string.IsNullOrWhiteSpace(ShiningAbodeState.ValidateLegacyPendingNativeFactionDiscoveryShape(shiningRoot));
 
         JsonObject? residentRoot = null;
         var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
@@ -73,7 +73,8 @@ public partial class ExplorerMode
             }
         }
 
-        ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
+        if (!hasMalformedLegacyPendingDiscovery)
+            ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
         return new ShiningContext(shiningRoot, residentRoot, guardiansRoot, soulRoot);
     }
 
@@ -145,6 +146,13 @@ public partial class ExplorerMode
             lines.Add("[bold orange1]Ожидает решения:[/]");
             lines.Add($"  • Открытие нативной фракции [dim](уровень сияния при запросе {GetNodeInt(pendingDiscovery["radianceTierAtRequest"])}, запрос {Markup.Escape(GetNodeString(pendingDiscovery["requestId"]) ?? "?")})[/]");
             lines.Add("  • [dim]Откройте подробный осмотр в этом разделе, чтобы увидеть полную стоимость и payload запроса.[/]");
+        }
+        else if (shiningRoot.ContainsKey("pendingNativeFactionDiscovery") &&
+                 shiningRoot["pendingNativeFactionDiscovery"] is not null)
+        {
+            lines.Add("");
+            lines.Add("[bold red]Repair-only blocker:[/]");
+            lines.Add($"  • {Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery повреждён; local saves/actions blocked until repair or closure.");
         }
 
         if (shiningRoot["gates"] is JsonObject gates)
