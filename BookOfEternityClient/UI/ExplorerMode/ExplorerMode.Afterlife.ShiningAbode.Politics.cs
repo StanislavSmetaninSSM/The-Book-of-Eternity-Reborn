@@ -118,6 +118,8 @@ public partial class ExplorerMode
             SupportingResidentIds = supporterIds,
             QuotedCostFeathers = cost.Feathers,
             QuotedCostLightSparks = cost.LightSparks,
+            ReservedInkFeathersBefore = feathers,
+            ReservedLightSparksBefore = GetNodeInt(context.Root["lightSparks"]),
             CreatedAtTurn = _stateManager.CurrentState.TurnNumber + 1
         };
 
@@ -155,7 +157,12 @@ public partial class ExplorerMode
             }
 
             context.Root["lightSparks"] = Math.Max(0, GetNodeInt(context.Root["lightSparks"]) - cost.LightSparks);
-            await SaveShiningRootAsync(context.Root);
+            if (!await SaveShiningRootAsync(context.Root))
+            {
+                await RestorePendingLocalTurnRollbackSnapshotAsync();
+                WaitForKey();
+                return;
+            }
         }
         catch
         {

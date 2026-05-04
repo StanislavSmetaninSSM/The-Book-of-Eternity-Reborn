@@ -88,10 +88,8 @@ public partial class ExplorerMode
         {
             lines.Add("");
             lines.Add($"[bold yellow]📬 Непрочитанные ответы Хранителей: {unread.Count}[/]");
-            foreach (var notification in unread.Take(3))
-                lines.Add($"  • {Markup.Escape(notification.Summary)}");
-            if (unread.Count > 3)
-                lines.Add($"  • [dim]…и ещё {unread.Count - 3}. Откройте «Ответы Хранителей», чтобы увидеть все записи полностью.[/]");
+            foreach (var notification in unread)
+                lines.Add($"  • {Markup.Escape(FormatAfterlifeNotificationInline(notification))}");
         }
 
         var manifestationRequests = await GuardianAbodeResidentRequestState.ReadManifestationRequestsAsync(_fs);
@@ -2426,7 +2424,7 @@ public partial class ExplorerMode
             $"  • Чернильные Перья: {feathers} -> {feathers - inputCost}; это уже сделает клиент до отправки GM.",
             "  • Soul Relics before: validator берёт pre-turn snapshot из game_state/control/pending_turn_snapshot.",
             "  • Soul Relics after: ровно один новый relicId в soulRelics.stored/equipped; unrelated soul fields unchanged.",
-            "  • Accepted response proof: metaStateUpdates.soulRelicOperations.addRelic plus direct_chaos_gacha_result receipt data."
+            "  • Accepted response proof: preserve the prepaid cost phrase, keep gachaBaseResult.baseRarity exact, and append exactly one new Soul Relic through metaStateUpdates.soulRelicOperations.addRelic; no separate direct_chaos_gacha_result receipt is supported."
         };
         AppendChaosSeaCommonContractRules(mechanicsLines);
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", mechanicsLines)))

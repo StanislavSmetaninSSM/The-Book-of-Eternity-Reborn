@@ -180,7 +180,12 @@ public partial class ExplorerMode
             foreach (var resident in residents)
             {
                 var name = GetNodeString(resident["displayName"]) ?? GetNodeString(resident["residentName"]) ?? GetNodeString(resident["residentId"]) ?? "?";
-                lines.Add($"    - {Markup.Escape(name)} [dim]({Markup.Escape(GetNodeString(resident["residentId"]) ?? "?")})[/]: role={Markup.Escape(GetNodeString(resident["roleLabel"]) ?? "—")}, loyalty={GetNodeInt(resident["factionLoyaltyLevel"])}/{Markup.Escape(GetNodeString(resident["factionLoyaltyTier"]) ?? "—")}, restlessness={GetNodeInt(resident["factionRestlessness"])}, realignment={Markup.Escape(DescribeShiningFactionRealignmentState(GetNodeString(resident["factionRealignmentState"])))}.");
+                var residentRole = GetNodeString(resident["residentRole"]);
+                var roleLabel = GetNodeString(resident["roleLabel"]);
+                var roleText = string.IsNullOrWhiteSpace(roleLabel)
+                    ? DescribeShiningResidentRole(residentRole)
+                    : $"{DescribeShiningResidentRole(residentRole)} / {roleLabel}";
+                lines.Add($"    - {Markup.Escape(name)} [dim]({Markup.Escape(GetNodeString(resident["residentId"]) ?? "?")})[/]: residentRole={Markup.Escape(string.IsNullOrWhiteSpace(residentRole) ? "—" : residentRole)} ({Markup.Escape(roleText)}), loyalty={GetNodeInt(resident["factionLoyaltyLevel"])}/{Markup.Escape(GetNodeString(resident["factionLoyaltyTier"]) ?? "—")}, restlessness={GetNodeInt(resident["factionRestlessness"])}, realignment={Markup.Escape(DescribeShiningFactionRealignmentState(GetNodeString(resident["factionRealignmentState"])))}.");
             }
 
             var projects = (faction["projects"] as JsonArray)?.OfType<JsonObject>().ToList() ?? new List<JsonObject>();
@@ -1817,6 +1822,20 @@ public partial class ExplorerMode
             lines.Add($"  • [dim]…и ещё {totalCount - cap}; полный список доступен через соответствующий пункт осмотра.[/]");
     }
 
+    private static string FormatAfterlifeNotificationInline(AfterlifeNotificationState.NotificationEntry notification)
+    {
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(notification.Summary))
+            parts.Add(notification.Summary);
+        if (!string.IsNullOrWhiteSpace(notification.NotificationId))
+            parts.Add($"notificationId={notification.NotificationId}");
+        if (!string.IsNullOrWhiteSpace(notification.RequestId))
+            parts.Add($"requestId={notification.RequestId}");
+        if (!string.IsNullOrWhiteSpace(notification.NotificationType))
+            parts.Add($"type={notification.NotificationType}");
+        return string.Join("; ", parts);
+    }
+
     private static void AppendShiningNamedIdList(
         List<string> lines,
         string title,
@@ -2237,6 +2256,7 @@ public partial class ExplorerMode
         {
             "active" => "активна",
             "sealed" => "запечатана",
+            "sealed_until_next_ascension" => "запечатана до следующего восхождения",
             "dormant" => "дремлет",
             _ => availability ?? "?"
         };
@@ -2443,6 +2463,7 @@ public partial class ExplorerMode
         {
             "player_founded" => "основана игроком",
             "ascended_guardian" => "восходит к Хранителю",
+            "native_radiant" => "рождённая в Сияющей Обители",
             _ => originType ?? "?"
         };
 

@@ -237,7 +237,12 @@ public partial class ExplorerMode
                     continue;
                 }
 
-                await SaveShiningRootAsync(projectedRoot);
+                if (!await SaveShiningRootAsync(projectedRoot))
+                {
+                    WaitForKey();
+                    continue;
+                }
+
                 MarkupLine("[green]Набор благословений обновлён.[/]");
                 WaitForKey();
                 continue;
@@ -383,7 +388,12 @@ public partial class ExplorerMode
             return;
         }
 
-        await SaveShiningRootAsync(projectedRoot!);
+        if (!await SaveShiningRootAsync(projectedRoot!))
+        {
+            WaitForKey();
+            return;
+        }
+
         MarkupLine(toggledOff
             ? "[green]Благословение снято с выбора.[/]"
             : "[green]Благословение выбрано.[/]");

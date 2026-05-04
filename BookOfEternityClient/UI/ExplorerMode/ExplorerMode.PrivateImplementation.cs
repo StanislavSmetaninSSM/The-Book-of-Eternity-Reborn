@@ -231,7 +231,13 @@ public partial class ExplorerMode
         if (node == null)
             return;
 
-        var json = node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        var auditNode = ContainsRuntimeEffectPayload(node)
+            ? CloneShiningJsonForPlayerFacingAudit(node)
+            : node;
+        var json = auditNode?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
         Write(new Panel(new Text(json))
         {
             Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
@@ -248,6 +254,13 @@ public partial class ExplorerMode
             return;
 
         var json = JsonSerializer.Serialize(element, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+        if (json.Contains("\"effectPayload\"", StringComparison.Ordinal))
+        {
+            var node = JsonNode.Parse(json);
+            var auditNode = CloneShiningJsonForPlayerFacingAudit(node);
+            json = auditNode?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) ?? json;
+        }
+
         Write(new Panel(new Text(json))
         {
             Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
@@ -262,6 +275,21 @@ public partial class ExplorerMode
         element.ValueKind is JsonValueKind.Undefined
             ? null
             : JsonNode.Parse(element.GetRawText());
+
+    private static bool ContainsRuntimeEffectPayload(JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                if (obj.ContainsKey("effectPayload"))
+                    return true;
+                return obj.Any(pair => ContainsRuntimeEffectPayload(pair.Value));
+            case JsonArray array:
+                return array.Any(ContainsRuntimeEffectPayload);
+            default:
+                return false;
+        }
+    }
 
     private static JsonObject? CloneJsonObjectElementForAudit(JsonElement element) =>
         CloneJsonElementForAudit(element) as JsonObject;

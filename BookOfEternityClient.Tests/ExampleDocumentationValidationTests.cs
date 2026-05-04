@@ -338,6 +338,8 @@ public sealed class ExampleDocumentationValidationTests
                 if (missingEvidence.Length > 0)
                     failures.Add($"{snippet.Location}: ABODE_OFFERING receipt stateEvidence is missing: {string.Join(", ", missingEvidence)}");
             }
+
+            failures.AddRange(ValidateInkFeatherActionSpecificEvidence(snippet, root, actionTagElement.GetString()));
         }
 
         Assert.True(
@@ -345,6 +347,78 @@ public sealed class ExampleDocumentationValidationTests
             "Ink Feather action receipt examples must match the output/ink_feather_action_result.json contract." +
             Environment.NewLine +
             string.Join(Environment.NewLine, failures.Take(50)));
+    }
+
+    [Fact]
+    public void AfterlifeInkFeatherNonOfferingActionsHaveManifestReceiptCoverage()
+    {
+        var manifest = ExampleValidationManifest.Load();
+        var snippets = ExampleSnippetExtractor.ExtractAll().ToArray();
+        var failures = new List<string>();
+        var requiredActions = new[]
+        {
+            "DONATE_TO_GUARDIAN",
+            "CULTIVATE_ENLIGHTENMENT",
+            "GUARDIAN_FAVOR",
+            "MEMORY_GATES",
+            "SOUL_IMPRINT"
+        };
+
+        foreach (var action in requiredActions)
+        {
+            var coverage = manifest.InkFeatherReceiptCoverage
+                .FirstOrDefault(item => string.Equals(item.ActionTag, action, StringComparison.Ordinal));
+            if (coverage == null)
+            {
+                failures.Add($"{action}: missing inkFeatherReceiptCoverage manifest entry.");
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(coverage.ExemptionReason))
+                failures.Add($"{action}: manifest coverage must explicitly state why this is receipt-contract validation instead of a full GameResponse runtime scenario.");
+
+            var matches = snippets
+                .Where(snippet => string.Equals(snippet.File, coverage.File, StringComparison.OrdinalIgnoreCase) &&
+                                  snippet.RawText.Contains($"\"actionTag\": \"{action}\"", StringComparison.Ordinal))
+                .ToArray();
+            if (matches.Length != 1)
+                failures.Add($"{action}: expected exactly one manifest-covered receipt snippet in {coverage.File}, found {matches.Length}.");
+        }
+
+        Assert.True(
+            failures.Count == 0,
+            "Non-offering afterlife Ink Feather actions must have explicit manifest coverage." +
+            Environment.NewLine +
+            string.Join(Environment.NewLine, failures));
+    }
+
+    private static IEnumerable<string> ValidateInkFeatherActionSpecificEvidence(
+        ExampleSnippet snippet,
+        JsonElement root,
+        string? actionTag)
+    {
+        if (string.IsNullOrWhiteSpace(actionTag) ||
+            !root.TryGetProperty("stateEvidence", out var stateEvidence) ||
+            stateEvidence.ValueKind != JsonValueKind.Object)
+        {
+            yield break;
+        }
+
+        string[] requiredEvidence = actionTag switch
+        {
+            "DONATE_TO_GUARDIAN" => new[] { "guardianId", "reputationChange" },
+            "GUARDIAN_FAVOR" => new[] { "guardianId", "reputationChange" },
+            "CULTIVATE_ENLIGHTENMENT" => new[] { "experienceGain" },
+            "MEMORY_GATES" => new[] { "legacyId", "legacyType" },
+            "SOUL_IMPRINT" => new[] { "imprintId", "companionName" },
+            _ => Array.Empty<string>()
+        };
+
+        foreach (var field in requiredEvidence)
+        {
+            if (!stateEvidence.TryGetProperty(field, out _))
+                yield return $"{snippet.Location}: {actionTag} receipt stateEvidence is missing {field}.";
+        }
     }
 
     private static bool LooksLikeGameResponse(IReadOnlyCollection<string> propertyNames, ISet<string> knownResponseFields)
@@ -1623,6 +1697,7 @@ internal sealed class ExampleValidationManifest
     public int Version { get; set; }
     public List<ExampleSyntaxExemption> SyntaxExemptions { get; set; } = new();
     public List<ExampleSyntaxExemption> ShapeExemptions { get; set; } = new();
+    public List<InkFeatherReceiptCoverage> InkFeatherReceiptCoverage { get; set; } = new();
     public List<ExampleRuntimeScenario> RuntimeScenarios { get; set; } = new();
     public List<AfterlifeExampleCoverage> AfterlifeExampleCoverage { get; set; } = new();
 
@@ -1647,6 +1722,14 @@ internal sealed class ExampleValidationManifest
 
     public bool IsShapeExempt(ExampleSnippet snippet) =>
         ShapeExemptions.Any(exemption => exemption.Matches(snippet));
+}
+
+internal sealed class InkFeatherReceiptCoverage
+{
+    public string ActionTag { get; set; } = "";
+    public string File { get; set; } = "";
+    public string CoverageKind { get; set; } = "";
+    public string ExemptionReason { get; set; } = "";
 }
 
 internal sealed class ExampleSyntaxExemption

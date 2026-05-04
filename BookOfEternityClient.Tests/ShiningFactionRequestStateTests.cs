@@ -830,6 +830,110 @@ public sealed class ShiningFactionRequestStateTests
     }
 
     [Fact]
+    public async Task ValidateFoundingRequestAgainstCurrentStateAsync_LiveRequestWithoutReservedResources_Fails()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
+            {
+                ["currentRealm"] = "Shining Abode",
+                ["inkFeathers"] = new JsonObject
+                {
+                    ["current"] = 100
+                }
+            }.ToJsonString());
+
+            var request = new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            {
+                RequestId = "founding_unpaid",
+                ProposedFactionId = "faction_dawn",
+                ProposedHallId = "hall_dawn",
+                ProposedHallName = "Зал Рассвета",
+                ProposedHallDescription = "Светлый зал",
+                ProposedHallServiceTags = { "social", "lore" },
+                Charter = new ShiningFactionRequestState.FactionCharterPayload
+                {
+                    FactionName = "Хор Рассвета",
+                    FavoredArchetype = ShiningAbodeState.ProjectArchetypeAccord,
+                    PatronEffectFamily = ShiningAbodeState.EffectFamilySocial,
+                    Summary = "Поют утренний свет."
+                },
+                SupportingResidentIds = { "resident_liora", "resident_mael", "resident_serit" },
+                ReservedInkFeathersBefore = 100,
+                ReservedLightSparksBefore = 100
+            };
+
+            await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, request);
+
+            var error = await ShiningFactionRequestState.ValidateFoundingRequestAgainstCurrentStateAsync(fs, request);
+
+            Assert.NotNull(error);
+            Assert.Contains("резервац", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateFoundingRequestAgainstCurrentStateAsync_LiveRequestWithReservedResources_Passes()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningPoliticalStateAsync(fs);
+            await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
+            {
+                ["currentRealm"] = "Shining Abode",
+                ["inkFeathers"] = new JsonObject
+                {
+                    ["current"] = 75
+                }
+            }.ToJsonString());
+            var shiningRoot = await ReadJsonAsync(fs, ShiningAbodeState.StatePath);
+            shiningRoot!["lightSparks"] = 85;
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            var request = new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+            {
+                RequestId = "founding_paid",
+                ProposedFactionId = "faction_dawn",
+                ProposedHallId = "hall_dawn",
+                ProposedHallName = "Зал Рассвета",
+                ProposedHallDescription = "Светлый зал",
+                ProposedHallServiceTags = { "social", "lore" },
+                Charter = new ShiningFactionRequestState.FactionCharterPayload
+                {
+                    FactionName = "Хор Рассвета",
+                    FavoredArchetype = ShiningAbodeState.ProjectArchetypeAccord,
+                    PatronEffectFamily = ShiningAbodeState.EffectFamilySocial,
+                    Summary = "Поют утренний свет."
+                },
+                SupportingResidentIds = { "resident_liora", "resident_mael", "resident_serit" },
+                ReservedInkFeathersBefore = 100,
+                ReservedLightSparksBefore = 100
+            };
+
+            await ShiningFactionRequestState.WriteFoundingRequestAsync(fs, request);
+
+            var error = await ShiningFactionRequestState.ValidateFoundingRequestAgainstCurrentStateAsync(fs, request);
+
+            Assert.Null(error);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateFoundingRequestAgainstCurrentStateAsync_ReusedRequestIdAcrossDifferentPendingRequest_Fails()
     {
         var root = CreateTempRoot();

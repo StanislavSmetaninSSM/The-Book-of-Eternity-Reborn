@@ -126,7 +126,29 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("sourceShiningAvailability", doc, StringComparison.Ordinal);
         }
 
+        foreach (var doc in new[] { matrix, apiSpec, taskGuide, operations, examples })
+        {
+            Assert.Contains("malformed", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("wrong-reason", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
         Assert.DoesNotContain("returned_from_shining_abode", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ReenterShiningAbodeLocalRouteDocsCoverGuardAndSyncSideEffects()
+    {
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var combined = apiSpec + matrix + daemonSpec;
+
+        Assert.Contains("reenter_shining_abode", combined, StringComparison.Ordinal);
+        Assert.Contains("malformed", combined, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("wrong-reason", combined, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("gacha charges", combined, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("trade auto-refresh", combined, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("No GM-authored output", apiSpec, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -151,6 +173,23 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains(value, matrix, StringComparison.Ordinal);
             Assert.Contains(value, examples, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ShiningFactionFoundingDocsCoverClientResourceReservationSnapshot()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+        {
+            Assert.Contains("reservedInkFeathersBefore", doc, StringComparison.Ordinal);
+            Assert.Contains("reservedLightSparksBefore", doc, StringComparison.Ordinal);
+            Assert.Contains("quotedCostFeathers", doc, StringComparison.Ordinal);
+            Assert.Contains("quotedCostLightSparks", doc, StringComparison.Ordinal);
         }
     }
 

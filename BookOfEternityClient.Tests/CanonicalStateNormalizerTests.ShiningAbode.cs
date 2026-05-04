@@ -9,6 +9,44 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class CanonicalStateNormalizerTests
 {
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_PreservesMalformedLegacyPendingNativeFactionDiscovery()
+    {
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, """
+        {
+          "availability": "active",
+          "radiance": {
+            "experience": 40,
+            "tier": 0
+          },
+          "lightSparks": 50,
+          "halls": [],
+          "factions": [],
+          "shiningPoliticalActors": [],
+          "pendingNativeFactionDiscovery": "malformed_contract",
+          "gates": {
+            "draftVersion": 0,
+            "hasOpenDraft": false,
+            "isStale": false,
+            "rerollsRemaining": 0,
+            "allCandidateBlessingCards": [],
+            "availableBlessingCards": [],
+            "shownBlessingCardIds": [],
+            "selectedBlessingCardIds": []
+          },
+          "preparedIncarnationPackage": null
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        using var shiningDoc = JsonDocument.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!);
+        Assert.Equal(
+            "malformed_contract",
+            shiningDoc.RootElement.GetProperty("pendingNativeFactionDiscovery").GetString());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_AscendedResidentKeepsActiveGuardianFactionMembership()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """

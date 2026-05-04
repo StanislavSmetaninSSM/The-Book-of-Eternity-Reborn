@@ -3557,6 +3557,85 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningAbode_MalformedLegacyDiscoveryBlocksLocalGatesSaveAndPreservesEvidence()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var gates = shiningRoot["gates"]!.AsObject();
+        var allCandidates = gates["allCandidateBlessingCards"]!.AsArray();
+        var availableCards = gates["availableBlessingCards"]!.AsArray();
+        var shownIds = gates["shownBlessingCardIds"]!.AsArray();
+        var memoryCard = JsonNode.Parse("""
+        {
+          "cardId": "card_memory_echo",
+          "dedupeKey": "memory_echo",
+          "sourceType": "project",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "project_social",
+          "effectFamily": "memory",
+          "rarity": "Rare",
+          "displayName": "Память Эха",
+          "displaySummary": "Даёт новый вариант памяти.",
+          "effectPayload": { "options": 1 }
+        }
+        """)!.AsObject();
+        var resourceCard = JsonNode.Parse("""
+        {
+          "cardId": "card_resource_seed",
+          "dedupeKey": "resource_seed",
+          "sourceType": "head",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "guard_test_founder",
+          "effectFamily": "resource",
+          "rarity": "Epic",
+          "displayName": "Зерно запаса",
+          "displaySummary": "Даёт стартовые ресурсы.",
+          "effectPayload": { "common": 2 }
+        }
+        """)!.AsObject();
+        var survivalCard = JsonNode.Parse("""
+        {
+          "cardId": "card_survival_shield",
+          "dedupeKey": "survival_shield",
+          "sourceType": "project",
+          "sourceFactionId": "faction_dawn",
+          "sourceActorId": "project_refinement",
+          "effectFamily": "survival",
+          "rarity": "Rare",
+          "displayName": "Щит выживания",
+          "displaySummary": "Смягчает будущий провал.",
+          "effectPayload": { "downgrade": 1 }
+        }
+        """)!.AsObject();
+        allCandidates.Add(memoryCard.DeepClone());
+        allCandidates.Add(resourceCard.DeepClone());
+        allCandidates.Add(survivalCard.DeepClone());
+        availableCards.Add(memoryCard.DeepClone());
+        shownIds.Add("card_memory_echo");
+        gates["nextCandidateCursor"] = 3;
+        shiningRoot["pendingNativeFactionDiscovery"] = "malformed_contract";
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString());
+
+        _console.QueueSelection("[bold yellow]Сияющая Обитель[/]", "🚪 Врата и благословения", "← Назад");
+        _console.QueueSelection("Врата Сияющей Обители", "🔁 Обновить набор благословений", "← Назад");
+        _console.QueueSelection("Подтвердить обновление набора Врат", "✅ Применить изменение");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_abode"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_gates_malformed_legacy_discovery_preserved");
+        var afterRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        Assert.Equal("malformed_contract", afterRoot["pendingNativeFactionDiscovery"]?.GetValue<string>());
+        Assert.Equal(1, afterRoot["gates"]?["rerollsRemaining"]?.GetValue<int>());
+        Assert.Contains(_console.MarkupLines, line => line.Contains("pendingNativeFactionDiscovery", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.MarkupLines, line => line.Contains("повреж", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningTradeAndForge_InventoryRequestPreviewCanCancelWithoutWritingPendingRequest()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
@@ -6908,6 +6987,135 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("startingCharacteristicBonus", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("characteristic: intelligence", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("bonus: 2", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_UnwrapsCanonicalProgressionReport()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        await WriteJsonAsync(ProgressionScheduleService.ReportPath, new
+        {
+            progressionProcessingReport = new
+            {
+                sessionId = "session_status_progression_001",
+                requestId = "request_status_progression_001",
+                turnNumber = 22,
+                chaosSeaCyclesProcessed = 2,
+                guardianProjectCyclesProcessed = 1,
+                residentAgencyCyclesProcessed = 1,
+                shiningAbodeCyclesProcessed = 0,
+                shiningFactionCyclesProcessed = 0,
+                shiningTradeCyclesProcessed = 0,
+                newLastChaosSeaSimulationOrdinal = 42,
+                newLastGuardianProjectCycleOrdinal = 17,
+                newLastResidentAgencyCycleOrdinal = 9,
+                afterlifeCatchupProcessed = true,
+                afterlifeCatchupSummaryEventsProcessed = 3
+            },
+            _lastUpdated = "2026-04-21T00:00:00Z"
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_progression_report_unwrap");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("progression_report.progressionProcessingReport", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("chaosSeaCyclesProcessed=2", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("newLastChaosSeaSimulationOrdinal=42", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sessionId=session_status_progression_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("progression_report: no compact fields", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("_lastUpdated", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_ShowsRepairOnlyShiningStateWithMalformedLegacyDiscovery()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        shiningRoot["pendingNativeFactionDiscovery"] = "malformed_contract";
+        await File.WriteAllTextAsync(shiningStatePath, shiningRoot.ToJsonString());
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_shining_malformed_legacy_discovery");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Сияющая Обитель", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Repair-only blocker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pendingNativeFactionDiscovery", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("повреж", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("shining_abode_state.json пока отсутствует или повреждён", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_SkipsEmptyNpcPendingQueues()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(NpcTradeRequestState.PendingRequestPath, new { requests = Array.Empty<object>() });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_empty_npc_queues");
+        var renderedText = ExtractRenderedText();
+        Assert.DoesNotContain("pending_npc_social_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending_npc_trade_inventory_requests.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("NPC social request из смертного мира", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("NPC trade request из смертного мира", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_ShowsNonEmptyNpcPendingQueues()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "npc_social_status_001",
+                    npcId = "npc_merchant_001",
+                    npcName = "Марек",
+                    interactionType = "talk"
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_nonempty_npc_queue");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("pending_npc_social_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("npc_social_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("wrong-realm repair-only", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

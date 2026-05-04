@@ -1874,6 +1874,7 @@ Political request identity and locks:
 
 Resource reservation rule:
 - Creating `pending_shining_faction_foundings.json` is a client-local reservation: the client has already deducted `quotedCostFeathers = 25` from `soul_state.inkFeathers.current` and `quotedCostLightSparks = 15` from `shining_abode_state.json.lightSparks` before the GM receives the turn.
+- The live request must include `reservedInkFeathersBefore` and `reservedLightSparksBefore`. The current state must equal `reservedInkFeathersBefore - quotedCostFeathers` and `reservedLightSparksBefore - quotedCostLightSparks`; if those numbers do not line up, preserve the pending file for repair instead of founding a faction.
 - On `status = accepted`, do not restore pre-reservation resource balances. The accepted response may spend additional resources only if another valid same-turn Shining contract explicitly authorizes that spend, but it must never make current Feathers/Sparks higher than the validated pre-turn reserved balances.
 
 Input fragment:
@@ -1905,6 +1906,8 @@ Input fragment:
         ],
         "quotedCostFeathers": 25,
         "quotedCostLightSparks": 15,
+        "reservedInkFeathersBefore": 120,
+        "reservedLightSparksBefore": 40,
         "createdAtTurn": 301,
         "createdAtUtc": "2026-04-24T10:10:00Z"
       }
@@ -3086,7 +3089,7 @@ Runtime preconditions before the GM may close this contract:
 - `soul_state.soulName` / `founderSoulName` is non-empty;
 - `shining_abode_state.json.availability = sealed_until_next_ascension`;
 - `preparedIncarnationPackage` is null/absent;
-- no active `afterlife_return_guard.json`, no malformed/competing foundation request, and no existing `playerFoundedGuardianId` / already founded Guardian for this soul;
+- no active, malformed, wrong-reason, or otherwise blocking `afterlife_return_guard.json`; no malformed/competing foundation request; and no existing `playerFoundedGuardianId` / already founded Guardian for this soul;
 - pending request echoes `sourceShiningAvailability = sealed_until_next_ascension`.
 
 Input fragment:

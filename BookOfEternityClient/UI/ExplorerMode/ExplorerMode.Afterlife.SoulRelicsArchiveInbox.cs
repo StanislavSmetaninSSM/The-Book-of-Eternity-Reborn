@@ -163,10 +163,8 @@ public partial class ExplorerMode
                 {
                     "[bold yellow]📬 Непрочитанные ответы Хранителей по Архиву[/]"
                 };
-                foreach (var notification in unreadArchiveNotifications.Take(3))
-                    bannerLines.Add($"• {Markup.Escape(notification.Summary)}");
-                if (unreadArchiveNotifications.Count > 3)
-                    bannerLines.Add($"[dim]… и ещё {unreadArchiveNotifications.Count - 3}. Откройте /уведомления_загробья[/]");
+                foreach (var notification in unreadArchiveNotifications)
+                    bannerLines.Add($"• {Markup.Escape(FormatAfterlifeNotificationInline(notification))}");
 
                 Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", bannerLines)))
                 {
@@ -3450,10 +3448,8 @@ public partial class ExplorerMode
         if (unreadGuardianQuestNotifications.Count > 0)
         {
             var bannerLines = new List<string> { "[bold yellow]📬 Новые квесты и просьбы из загробья[/]" };
-            foreach (var notification in unreadGuardianQuestNotifications.Take(3))
-                bannerLines.Add($"[dim]• {Markup.Escape(notification.Summary)}[/]");
-            if (unreadGuardianQuestNotifications.Count > 3)
-                bannerLines.Add($"[dim]… и ещё {unreadGuardianQuestNotifications.Count - 3}. Откройте /уведомления_загробья[/]");
+            foreach (var notification in unreadGuardianQuestNotifications)
+                bannerLines.Add($"[dim]• {Markup.Escape(FormatAfterlifeNotificationInline(notification))}[/]");
 
             Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", bannerLines)))
             {

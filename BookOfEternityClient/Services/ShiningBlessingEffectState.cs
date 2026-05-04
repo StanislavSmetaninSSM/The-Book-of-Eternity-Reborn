@@ -502,6 +502,7 @@ internal static class ShiningBlessingEffectState
 
         var lines = BuildPlayerFacingStatusLines(effectState, currentTurnNumber);
         AppendStatusLifecycleSummary(lines, effectState, currentTurnNumber);
+        AppendStatusStableAuditLines(lines, effectState);
         return lines;
     }
 
@@ -1185,6 +1186,93 @@ internal static class ShiningBlessingEffectState
             var suffix = rerollsSpent > 0 ? $" Перебросов потрачено: {rerollsSpent}." : string.Empty;
             lines.Add($"Израсходовано: кузнечные привилегии этой жизни исчерпаны.{suffix}");
         }
+    }
+
+    private static void AppendStatusStableAuditLines(List<string> lines, JsonObject effectState)
+    {
+        var rootParts = BuildBlessingAuditParts(
+            effectState,
+            "currentIncarnation",
+            "sourcePackagePreparedAtTurn",
+            "sourceCardIds",
+            "sourceCardCount",
+            "materializedAtUtc");
+        if (rootParts.Count > 0)
+            lines.Add($"Аудит благословений: {string.Join("; ", rootParts)}.");
+
+        AppendStatusStableAuditLine(lines, "resourceGrant", effectState["resourceGrant"] as JsonObject);
+        AppendStatusStableAuditLine(lines, "memorySelection", effectState["memorySelection"] as JsonObject);
+        AppendStatusStableAuditLine(lines, "relicRefinementEntitlements", effectState["relicRefinementEntitlements"] as JsonObject);
+        AppendStatusStableAuditLinesForArray(lines, "social", effectState["pendingSocialEffects"] as JsonArray);
+        AppendStatusStableAuditLinesForArray(lines, "route", effectState["pendingRouteEffects"] as JsonArray);
+        AppendStatusStableAuditLinesForArray(lines, "lore", effectState["pendingLoreEffects"] as JsonArray);
+        AppendStatusStableAuditLinesForArray(lines, "survival", effectState["pendingSurvivalEffects"] as JsonArray);
+        AppendStatusStableAuditLinesForArray(lines, "descent", effectState["pendingDescentEffects"] as JsonArray);
+    }
+
+    private static void AppendStatusStableAuditLinesForArray(List<string> lines, string family, JsonArray? effects)
+    {
+        if (effects == null)
+            return;
+
+        foreach (var effect in effects.OfType<JsonObject>())
+            AppendStatusStableAuditLine(lines, family, effect);
+    }
+
+    private static void AppendStatusStableAuditLine(List<string> lines, string label, JsonObject? effect)
+    {
+        if (effect == null)
+            return;
+
+        var parts = BuildBlessingAuditParts(
+            effect,
+            "effectId",
+            "grantId",
+            "sourceCardId",
+            "sourceCardIds",
+            "status",
+            "appliedAtUtc",
+            "consumedAtTurn",
+            "consumedAtUtc",
+            "expiredAtTurn",
+            "expiredAtUtc",
+            "latestTurn");
+        if (parts.Count > 0)
+            lines.Add($"Аудит благословения {label}: {string.Join("; ", parts)}.");
+    }
+
+    private static List<string> BuildBlessingAuditParts(JsonObject root, params string[] keys)
+    {
+        var parts = new List<string>();
+        foreach (var key in keys)
+        {
+            var value = FormatBlessingAuditValue(root[key]);
+            if (!string.IsNullOrWhiteSpace(value))
+                parts.Add($"{key}={value}");
+        }
+
+        return parts;
+    }
+
+    private static string? FormatBlessingAuditValue(JsonNode? node)
+    {
+        if (node == null)
+            return null;
+
+        if (node is JsonArray array)
+        {
+            var values = array
+                .Select(FormatBlessingAuditValue)
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .ToArray();
+            return values.Length == 0 ? null : $"[{string.Join(", ", values)}]";
+        }
+
+        if (node is JsonObject)
+            return null;
+
+        var value = GetNodeString(node);
+        return string.IsNullOrWhiteSpace(value) ? null : value;
     }
 
     private static void AppendLifecycleStatusLine(List<string> lines, JsonArray? effects, string familyName)

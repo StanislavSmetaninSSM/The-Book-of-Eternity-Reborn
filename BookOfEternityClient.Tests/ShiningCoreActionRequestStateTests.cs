@@ -742,6 +742,40 @@ public sealed class ShiningCoreActionRequestStateTests
     }
 
     [Fact]
+    public async Task ValidateRequestAgainstCurrentStateAsync_MalformedLegacyPendingDiscovery_FailsClosed()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalActiveShiningStateAsync(fs);
+
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            shiningRoot["pendingNativeFactionDiscovery"] = "malformed_contract";
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+
+            var cost = ShiningAbodeState.GetNativeDiscoveryCost();
+            var error = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+            {
+                ActionType = ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
+                RadianceTierAtRequest = 1,
+                QuotedCostFeathers = cost.Feathers,
+                QuotedCostLightSparks = cost.LightSparks,
+                CreatedAtTurn = 5
+            });
+
+            Assert.NotNull(error);
+            Assert.Contains("pendingNativeFactionDiscovery", error, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("повреж", error, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task ValidateRequestAgainstCurrentStateAsync_FreeCoreActionWithNonzeroCost_Fails()
     {
         var root = CreateTempRoot();

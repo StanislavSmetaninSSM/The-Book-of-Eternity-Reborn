@@ -9,6 +9,66 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ShiningStateValidationTests
 {
+    [Theory]
+    [InlineData("\"malformed_contract\"")]
+    [InlineData("[\"malformed_contract\"]")]
+    public void ValidateShiningAbodeStateFile_MalformedLegacyPendingNativeFactionDiscovery_RaisesExpectedObject(string pendingDiscoveryJson)
+    {
+        var root = new JsonObject
+        {
+            ["availability"] = "active",
+            ["radiance"] = new JsonObject
+            {
+                ["experience"] = 0,
+                ["tier"] = 0
+            },
+            ["lightSparks"] = 50,
+            ["halls"] = new JsonArray(),
+            ["factions"] = new JsonArray(),
+            ["shiningPoliticalActors"] = new JsonArray(),
+            ["pendingNativeFactionDiscovery"] = JsonNode.Parse(pendingDiscoveryJson),
+            ["factionFoundingReceipts"] = new JsonArray(),
+            ["factionRealignmentReceipts"] = new JsonArray(),
+            ["coreActionReceipts"] = new JsonArray(),
+            ["gates"] = new JsonObject
+            {
+                ["draftVersion"] = 0,
+                ["hasOpenDraft"] = false,
+                ["isStale"] = false,
+                ["allCandidateBlessingCards"] = new JsonArray(),
+                ["availableBlessingCards"] = new JsonArray(),
+                ["shownBlessingCardIds"] = new JsonArray(),
+                ["selectedBlessingCardIds"] = new JsonArray(),
+                ["nextCandidateCursor"] = 0,
+                ["rerollsRemaining"] = 0
+            },
+            ["gachaSystem"] = new JsonObject
+            {
+                ["chargesPerReturn"] = 0,
+                ["chargesUsedThisReturn"] = 0,
+                ["currentReturnCycleId"] = string.Empty,
+                ["gachaHistory"] = new JsonArray()
+            }
+        };
+
+        using var document = JsonDocument.Parse(root.ToJsonString());
+        var validator = new ValidationService(
+            new FileSystemManager(Path.GetTempPath(), NullLogger<FileSystemManager>.Instance),
+            NullLogger<ValidationService>.Instance);
+        var issues = new List<ValidationIssue>();
+        var method = typeof(ValidationService).GetMethod(
+            "ValidateShiningAbodeStateFile",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        method!.Invoke(validator, new object[] { document.RootElement, ShiningAbodeState.StatePath, issues });
+
+        Assert.Contains(
+            issues,
+            issue => string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) &&
+                     issue.FilePath.Contains("pendingNativeFactionDiscovery", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Fact]
     public void ValidateShiningAbodeStateFile_InvalidEnumBackedFields_RaiseExplicitErrors()
     {
@@ -1022,6 +1082,45 @@ public sealed class ShiningStateValidationTests
 
             Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_radiant_head_faction_mismatch", StringComparison.OrdinalIgnoreCase));
             Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_duplicate_head_actor", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task ValidateShiningLeadershipHeadReferencesAsync_RadiantHeadMustHaveHeadPoliticalStatus()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            var shiningRoot = CreateLeadershipStateRoot(new JsonObject
+            {
+                ["headActorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["headActorId"] = "actor_current_head",
+                ["leadershipState"] = ShiningAbodeState.LeadershipStateSecure
+            });
+            shiningRoot["shiningPoliticalActors"] = new JsonArray(new JsonObject
+            {
+                ["actorId"] = "actor_current_head",
+                ["actorType"] = ShiningAbodeState.HeadActorTypeRadiantActor,
+                ["displayName"] = "Архон",
+                ["summary"] = "Actor is bound to the faction but has stale status.",
+                ["originFactionId"] = "faction_main",
+                ["currentFactionId"] = "faction_main",
+                ["politicalStatus"] = ShiningAbodeState.PoliticalStatusFormerHead
+            });
+
+            await WriteNodeAsync(fs, ShiningAbodeState.StatePath, shiningRoot);
+            await WriteNodeAsync(fs, "game_state/meta/guardians.json", CreateMinimalGuardiansRoot());
+            await WriteNodeAsync(fs, GuardianAbodeResidentState.StatePath, CreateEmptyResidentRoot());
+
+            var issues = await InvokeLeadershipValidationAsync(fs);
+
+            Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_leadership_radiant_head_status_mismatch", StringComparison.OrdinalIgnoreCase));
         }
         finally
         {
