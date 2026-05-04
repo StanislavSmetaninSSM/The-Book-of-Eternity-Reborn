@@ -6990,6 +6990,53 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Status_UnwrapsCanonicalProgressionReport()
+    {
+        await SeedGuardianTradeStateAsync(includeTradeInventory: false);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        await WriteJsonAsync(ProgressionScheduleService.ReportPath, new
+        {
+            progressionProcessingReport = new
+            {
+                sessionId = "session_status_progression_001",
+                requestId = "request_status_progression_001",
+                turnNumber = 22,
+                chaosSeaCyclesProcessed = 2,
+                guardianProjectCyclesProcessed = 1,
+                residentAgencyCyclesProcessed = 1,
+                shiningAbodeCyclesProcessed = 0,
+                shiningFactionCyclesProcessed = 0,
+                shiningTradeCyclesProcessed = 0,
+                newLastChaosSeaSimulationOrdinal = 42,
+                newLastGuardianProjectCycleOrdinal = 17,
+                newLastResidentAgencyCycleOrdinal = 9,
+                afterlifeCatchupProcessed = true,
+                afterlifeCatchupSummaryEventsProcessed = 3
+            },
+            _lastUpdated = "2026-04-21T00:00:00Z"
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_progression_report_unwrap");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("progression_report.progressionProcessingReport", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("chaosSeaCyclesProcessed=2", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("newLastChaosSeaSimulationOrdinal=42", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sessionId=session_status_progression_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("progression_report: no compact fields", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("_lastUpdated", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Status_ChaosSeaShowsFullPendingContractAudit()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);

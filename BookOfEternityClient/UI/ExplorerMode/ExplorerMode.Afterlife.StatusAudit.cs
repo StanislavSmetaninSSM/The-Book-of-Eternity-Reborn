@@ -183,8 +183,21 @@ public partial class ExplorerMode
         }
         else
         {
-            AppendProgressionObjectSummaryLines(lines, reportRoot, "progression_report");
+            var reportForSummary = UnwrapProgressionReportForStatus(reportRoot, out var reportLabel);
+            AppendProgressionObjectSummaryLines(lines, reportForSummary, reportLabel);
         }
+    }
+
+    private static JsonObject UnwrapProgressionReportForStatus(JsonObject root, out string label)
+    {
+        if (root["progressionProcessingReport"] is JsonObject report)
+        {
+            label = "progression_report.progressionProcessingReport";
+            return report;
+        }
+
+        label = "progression_report";
+        return root;
     }
 
     private static void AppendProgressionObjectSummaryLines(List<string> lines, JsonObject root, string label)
