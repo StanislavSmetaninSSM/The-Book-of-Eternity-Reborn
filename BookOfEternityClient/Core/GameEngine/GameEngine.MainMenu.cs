@@ -1710,12 +1710,13 @@ public partial class GameEngine
 
         soulRoot["currentRealm"] = "Shining Abode";
         var nextSoulJson = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts);
-        var autoTradeCreatesPending = reentrySideEffects.AutoTradeRefresh.CreatedRequestCount > 0 ||
-                                      reentrySideEffects.AutoTradeRefresh.StateChanged;
+        var autoTradeCreatesPending = reentrySideEffects.AutoTradeRefresh.CreatedRequestCount > 0;
+        var autoTradeChangesPendingFile = reentrySideEffects.AutoTradeRefresh.StateChanged;
+        var autoTradeCleanupOnly = autoTradeChangesPendingFile && !autoTradeCreatesPending;
         var affectedFiles = new JsonArray(
             JsonValue.Create(ShiningAbodeState.StatePath),
             JsonValue.Create("game_state/meta/soul_state.json"));
-        if (autoTradeCreatesPending)
+        if (autoTradeChangesPendingFile)
             affectedFiles.Add(ShiningTradeRequestState.PendingRequestsPath);
 
         var reenterPreviewLines = new List<string>
@@ -1737,10 +1738,12 @@ public partial class GameEngine
             $"  • currentReturnCycleId: {Markup.Escape(reentrySideEffects.BeforeReturnCycleId)} -> {Markup.Escape(reentrySideEffects.AfterReturnCycleId)}",
             $"  • chargesUsedThisReturn: {reentrySideEffects.BeforeChargesUsedThisReturn} -> {reentrySideEffects.AfterChargesUsedThisReturn} из {reentrySideEffects.ChargesPerReturn}",
             $"  • gacha charges reset: {(reentrySideEffects.GachaChargesReset ? "yes" : "no")}",
-            $"  • auto trade refresh: {ShiningTradeRequestState.PendingRequestsPath}; tradeCycleId={Markup.Escape(reentrySideEffects.AutoTradeRefresh.TradeCycleId)}; createdRequests={reentrySideEffects.AutoTradeRefresh.CreatedRequestCount}",
+            $"  • auto trade refresh: {ShiningTradeRequestState.PendingRequestsPath}; tradeCycleId={Markup.Escape(reentrySideEffects.AutoTradeRefresh.TradeCycleId)}; createdRequests={reentrySideEffects.AutoTradeRefresh.CreatedRequestCount}; pendingFileWouldChange={(autoTradeChangesPendingFile ? "yes" : "no")}",
             "",
             autoTradeCreatesPending
                 ? "[bold]Последствия подтверждения:[/] вы возвращаетесь в уже существующую Обитель; ход GM не отправляется, но client-owned auto refresh создаст/обновит pending Shining trade contract для следующего GM closure."
+                : autoTradeCleanupOnly
+                    ? "[bold]Последствия подтверждения:[/] вы возвращаетесь в уже существующую Обитель; ход GM не отправляется, client-owned auto refresh только очистит/обновит устаревшие trade requests и не создаст новый GM closure contract."
                 : "[bold]Последствия подтверждения:[/] вы возвращаетесь в уже существующую Обитель; ход GM и новые pending GM contracts не создаются."
         };
         AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", reenterPreviewLines)))
@@ -1779,7 +1782,10 @@ public partial class GameEngine
                 ["pendingFile"] = ShiningTradeRequestState.PendingRequestsPath,
                 ["tradeCycleId"] = reentrySideEffects.AutoTradeRefresh.TradeCycleId,
                 ["createdRequestCount"] = reentrySideEffects.AutoTradeRefresh.CreatedRequestCount,
-                ["stateWouldChange"] = reentrySideEffects.AutoTradeRefresh.StateChanged
+                ["stateWouldChange"] = reentrySideEffects.AutoTradeRefresh.StateChanged,
+                ["pendingFileWouldChange"] = autoTradeChangesPendingFile,
+                ["createsPendingGmContract"] = autoTradeCreatesPending,
+                ["cleanupOnly"] = autoTradeCleanupOnly
             },
             ["affectedFiles"] = affectedFiles
         }.ToJsonString(JsonOpts)))

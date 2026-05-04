@@ -496,6 +496,11 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("\"returnCycleSync\"", source, StringComparison.Ordinal);
         Assert.Contains("\"autoTradeRefresh\"", source, StringComparison.Ordinal);
         Assert.Contains("autoTradeCreatesPending", source, StringComparison.Ordinal);
+        Assert.Contains("autoTradeChangesPendingFile", source, StringComparison.Ordinal);
+        Assert.Contains("autoTradeCleanupOnly", source, StringComparison.Ordinal);
+        Assert.Contains("\"pendingFileWouldChange\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"createsPendingGmContract\"", source, StringComparison.Ordinal);
+        Assert.Contains("\"cleanupOnly\"", source, StringComparison.Ordinal);
         Assert.Contains("\"currentReturnCycleIdBefore\"", source, StringComparison.Ordinal);
         Assert.Contains("\"currentReturnCycleIdAfter\"", source, StringComparison.Ordinal);
         Assert.Contains("\"chargesUsedThisReturnBefore\"", source, StringComparison.Ordinal);
@@ -503,6 +508,8 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("ShiningTradeRequestState.PendingRequestsPath", source, StringComparison.Ordinal);
         Assert.Contains("PreviewAutoRefreshRequestsForCurrentCycleAsync", source, StringComparison.Ordinal);
         Assert.Contains("client-owned auto refresh создаст/обновит", source, StringComparison.Ordinal);
+        Assert.Contains("client-owned auto refresh только очистит/обновит", source, StringComparison.Ordinal);
+        Assert.Contains("не создаст новый GM closure contract", source, StringComparison.Ordinal);
     }
 
     [Fact]

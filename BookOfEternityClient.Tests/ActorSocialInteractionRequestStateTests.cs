@@ -97,6 +97,57 @@ public sealed class ActorSocialInteractionRequestStateTests : IDisposable
     }
 
     [Fact]
+    public async Task EnsureHealthyAsync_WrongGuardianInteractionTypeKeepsRequestPending()
+    {
+        await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest
+        {
+            RequestId = "guardian_req_lore",
+            GuardianId = "guardian_azalia",
+            GuardianName = "Азалия",
+            InteractionType = ActorSocialInteractionRequestState.GuardianInteractionTypeLore,
+            CreatedAtTurn = 12,
+            CreatedAtUtc = "2026-03-27T10:00:00Z"
+        });
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            {
+              "guardianId": "guardian_azalia",
+              "canonicalName": "Азалия"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(GuardianSocialJournalState.StatePath, """
+        {
+          "entries": [
+            {
+              "entryId": "guardian_social_entry_wrong_type",
+              "guardianId": "guardian_azalia",
+              "requestId": "guardian_req_lore",
+              "interactionType": "talk",
+              "status": "accepted",
+              "responseMode": "conversation",
+              "turn": 12,
+              "timestamp": "2026-03-27T10:01:00Z",
+              "title": "Разговор вместо знания",
+              "summary": "Азалия ответила беседой, но не закрыла запрос знания."
+            }
+          ]
+        }
+        """);
+
+        await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, "Chaos Sea");
+
+        var requests = await ActorSocialInteractionRequestState.ReadGuardianRequestsAsync(_fs);
+        var request = Assert.Single(requests);
+        Assert.Equal("guardian_req_lore", request.RequestId);
+        Assert.Equal(ActorSocialInteractionRequestState.GuardianInteractionTypeLore, request.InteractionType);
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_UnreadableGuardiansPreservesGuardianRequest()
     {
         await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, new ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest
