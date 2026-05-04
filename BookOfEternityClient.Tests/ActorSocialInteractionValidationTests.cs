@@ -177,6 +177,59 @@ public sealed class ActorSocialInteractionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_PendingGuardianSocialRequestWithWrongInteractionType_Fails()
+    {
+        var request = new
+        {
+            requestId = "guardian_social_req_type",
+            guardianId = "guardian_alpha",
+            guardianName = "Азалия",
+            interactionType = "lore",
+            createdAtTurn = 12,
+            createdAtUtc = "2026-03-27T00:00:00Z"
+        };
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1
+        });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, new { requests = new[] { request } });
+        await WriteJsonAsync(GuardianSocialJournalState.StatePath, new
+        {
+            entries = new[]
+            {
+                new
+                {
+                    entryId = "guardian_social_entry_type",
+                    guardianId = "guardian_alpha",
+                    requestId = "guardian_social_req_type",
+                    interactionType = "talk",
+                    status = "accepted",
+                    responseMode = "talk_scene",
+                    turn = 12,
+                    timestamp = "2026-03-27T00:01:00Z",
+                    title = "Азалия ответила беседой",
+                    summary = "Хранитель ответил сценой разговора вместо lore-запроса."
+                }
+            }
+        });
+        await WriteJsonAsync("ready/turn_complete.json", new { accepted = true });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", new { currentRealm = "Chaos Sea" });
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_pending_guardian_social_interactions_type.json";
+        await WriteJsonAsync(backupPath, new { requests = new[] { request } });
+        await WritePendingTurnSnapshotManifestAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ActorSocialInteractionRequestState.PendingGuardianRequestPath] = backupPath
+        });
+
+        var issues = await InvokeValidationAsync("ValidatePendingGuardianSocialInteractionResolutionAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "guardian_social_interaction_type_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PendingNpcSocialRequestWithInvalidContract_Fails()
     {
         var request = new

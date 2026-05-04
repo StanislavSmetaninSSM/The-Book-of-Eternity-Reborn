@@ -106,6 +106,7 @@ public partial class ExplorerMode
             WriteJsonAuditPanel("Полный JSON Shining coreActionReceipts", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["coreActionReceipts"]), Color.Gold1);
             WriteJsonAuditPanel("Полный JSON Shining gachaSystem", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gachaSystem"]), Color.Gold1);
         }
+        await WriteAfterlifeProgressionAuditPanelsAsync();
         WaitForKey();
     }
 
@@ -198,6 +199,25 @@ public partial class ExplorerMode
 
         label = "progression_report";
         return root;
+    }
+
+    private async Task WriteAfterlifeProgressionAuditPanelsAsync()
+    {
+        var scheduleRoot = await ReadJsonObjectForAfterlifeStatusAsync(ProgressionScheduleService.SchedulePath);
+        WriteJsonAuditPanel("Полный JSON progression_schedule.json", scheduleRoot, Color.Cyan1);
+
+        var turnRoot = await ReadJsonObjectForAfterlifeStatusAsync("input/turn_request.json");
+        if (turnRoot?["progressionControl"] is JsonObject progressionControl)
+            WriteJsonAuditPanel("Полный JSON input/turn_request.json.progressionControl", progressionControl, Color.Cyan1);
+
+        var reportRoot = await ReadJsonObjectForAfterlifeStatusAsync(ProgressionScheduleService.ReportPath);
+        if (reportRoot != null)
+        {
+            WriteJsonAuditPanel("Полный JSON progression_report.json", reportRoot, Color.Cyan1);
+            var unwrappedReport = UnwrapProgressionReportForStatus(reportRoot, out _);
+            if (!ReferenceEquals(unwrappedReport, reportRoot))
+                WriteJsonAuditPanel("Полный JSON progression_report.progressionProcessingReport", unwrappedReport, Color.Cyan1);
+        }
     }
 
     private static void AppendProgressionObjectSummaryLines(List<string> lines, JsonObject root, string label)

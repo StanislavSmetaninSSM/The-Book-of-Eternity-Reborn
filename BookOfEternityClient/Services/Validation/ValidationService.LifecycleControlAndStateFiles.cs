@@ -5400,7 +5400,23 @@ public partial class ValidationService
         {
             var resolution = ActorSocialInteractionRequestState.FindGuardianResolutionEntry(journalRoot, request.GuardianId, request.RequestId);
             if (resolution != null)
+            {
+                var actualInteractionType = GetNodeString(resolution["interactionType"]);
+                if (!string.Equals(actualInteractionType, request.InteractionType, StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(new ValidationIssue(
+                        ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                        IssueSeverity.Error,
+                        "pending guardian social request закрыт journal entry с неправильным interactionType",
+                        code: "guardian_social_interaction_type_mismatch",
+                        section: "GuardianSocial",
+                        expected: request.InteractionType,
+                        actual: actualInteractionType ?? "(missing)",
+                        repairHint: "guardianSocialJournalUpdates entry должен повторять interactionType из pending_guardian_social_interactions.json для matching requestId/guardianId."));
+                }
+
                 continue;
+            }
 
             issues.Add(new ValidationIssue(
                 ActorSocialInteractionRequestState.PendingGuardianRequestPath,

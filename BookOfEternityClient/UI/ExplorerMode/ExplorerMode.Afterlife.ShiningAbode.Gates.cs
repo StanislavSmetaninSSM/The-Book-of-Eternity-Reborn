@@ -594,7 +594,7 @@ public partial class ExplorerMode
             lines.Add($"  sourceFactionId: [dim]{Markup.Escape(GetNodeString(card["sourceFactionId"]) ?? string.Empty)}[/]");
             lines.Add($"  sourceActorId: [dim]{Markup.Escape(GetNodeString(card["sourceActorId"]) ?? string.Empty)}[/]");
             lines.Add($"  dedupeKey: [dim]{Markup.Escape(GetNodeString(card["dedupeKey"]) ?? string.Empty)}[/]");
-            lines.Add("  Полный `effectPayload` показан в JSON панели карты ниже.");
+            lines.Add("  Скрытый `effectPayload` в JSON-панели редактируется: player-facing audit показывает только safeEffectDetails и стабильные поля карты.");
         }
 
         return lines;

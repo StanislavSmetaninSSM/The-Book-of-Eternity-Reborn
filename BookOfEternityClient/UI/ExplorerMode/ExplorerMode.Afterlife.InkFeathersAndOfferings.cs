@@ -11,6 +11,13 @@ namespace BookOfEternityClient.UI;
 
 public partial class ExplorerMode
 {
+    private sealed record GuardianInkFeatherTargetPreview(
+        string GuardianId,
+        string GuardianName,
+        string AbodeId,
+        string AbodeName,
+        int CurrentReputation);
+
     private async Task ShowSoulInfo()
     {
         var soulDoc = await _stateManager.LoadGameStateFileAsync("game_state/meta/soul_state.json");
@@ -724,22 +731,19 @@ public partial class ExplorerMode
             else
             {
                 if (choice.Contains("Пожертвовать Хранителю"))
+                {
+                    var targetGuardian = await ReadActiveGuardianInkFeatherTargetAsync();
                     await HandleGmFeatherAction(feathers,
                         Math.Max(10, (int)(feathers * 0.15)),
                         "🎁 Пожертвовать Хранителю",
                         cost => $"[INK_FEATHER_ACTION: DONATE_TO_GUARDIAN] Игрок жертвует {cost} Чернильных Перьев Хранителю. " +
+                            BuildGuardianTargetActionSentence(targetGuardian) +
                             $"Повысь репутацию с текущим Хранителем ровно на {Math.Min(25, Math.Max(15, cost / 3))} по формуле reputationChange = min(25, max(15, cost / 3)). " +
                             "Перья уже списаны клиентом.",
-                        cost => new[]
-                        {
-                            "Формула: reputationChange = min(25, max(15, cost / 3)).",
-                            $"При текущей цене {cost} Чернильных Перьев expected reputationChange = {Math.Min(25, Math.Max(15, cost / 3))}.",
-                            $"Чернильные Перья: {feathers} -> {Math.Max(0, feathers - cost)}.",
-                            "GM обязан указать target guardian identity: guardianId, guardianName и текущий relationship/reputation context.",
-                            "GM обязан реально изменить game_state/meta/guardians.json для текущего Хранителя и показать before/after reputation delta.",
-                            "output/ink_feather_action_result.json должен содержать stateEvidence.guardianId, stateEvidence.guardianName, stateEvidence.reputationChange и affectedFiles."
-                        },
-                        cost => $"Репутация текущего Хранителя вырастет ровно на {Math.Min(25, Math.Max(15, cost / 3))}.");
+                        cost => BuildGuardianDonationPreviewAuditLines(cost, feathers, targetGuardian),
+                        cost => BuildGuardianDonationConfirmationSummary(cost, targetGuardian),
+                        cost => BuildGuardianInkFeatherTargetAuditNode(targetGuardian, expectedReputationDelta: Math.Min(25, Math.Max(15, cost / 3))));
+                }
                 else if (choice.Contains("Культивировать Просветление"))
                     await HandleGmFeatherAction(feathers,
                         Math.Max(20, (int)(feathers * 0.25)),
@@ -804,6 +808,121 @@ public partial class ExplorerMode
         }
     }
 
+    private async Task<GuardianInkFeatherTargetPreview?> ReadActiveGuardianInkFeatherTargetAsync()
+    {
+        var raw = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(raw))
+            return null;
+
+        try
+        {
+            if (JsonNode.Parse(raw) is not JsonObject root)
+                return null;
+
+            var activeGuardianId = GetNodeString(root["activeGuardian"]?["guardianId"]) ?? string.Empty;
+            var guardian = (root["guardians"] as JsonArray)?.OfType<JsonObject>()
+                .FirstOrDefault(candidate => string.Equals(GetNodeString(candidate["guardianId"]), activeGuardianId, StringComparison.OrdinalIgnoreCase));
+            if (guardian == null && root["activeGuardian"] is JsonObject activeGuardian)
+                guardian = activeGuardian;
+            if (guardian == null)
+                return null;
+
+            var guardianId = GetNodeString(guardian["guardianId"]) ?? activeGuardianId;
+            var guardianName = GuardianManifestation.GetDisplayName(guardian);
+            var abodeId = GetNodeString(guardian["abode"]?["abodeId"]) ??
+                          GetNodeString(root["chaosSeaNavigation"]?["currentAbodeId"]) ??
+                          string.Empty;
+            var abodeName = GetNodeString(guardian["abode"]?["name"]) ??
+                            GetNodeString(guardian["abodeName"]) ??
+                            abodeId;
+            var currentReputation = guardian["relationshipData"] is JsonObject relationshipData
+                ? GetNodeInt(relationshipData["currentReputation"])
+                : GetNodeInt(guardian["reputation"]);
+
+            return new GuardianInkFeatherTargetPreview(
+                guardianId,
+                string.IsNullOrWhiteSpace(guardianName) ? guardianId : guardianName,
+                abodeId,
+                string.IsNullOrWhiteSpace(abodeName) ? abodeId : abodeName,
+                currentReputation);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static string BuildGuardianTargetActionSentence(GuardianInkFeatherTargetPreview? target)
+    {
+        if (target == null)
+            return "Цель: текущий activeGuardian из game_state/meta/guardians.json; GM обязан сверить точный guardianId перед записью результата. ";
+
+        return $"Цель: activeGuardian guardianId={target.GuardianId}, guardianName={target.GuardianName}, abodeId={target.AbodeId}, currentReputation={target.CurrentReputation}. ";
+    }
+
+    private static IReadOnlyList<string> BuildGuardianDonationPreviewAuditLines(
+        int cost,
+        int currentFeathers,
+        GuardianInkFeatherTargetPreview? target)
+    {
+        var expectedDelta = Math.Min(25, Math.Max(15, cost / 3));
+        var projectedReputation = target == null
+            ? (int?)null
+            : target.CurrentReputation + expectedDelta;
+        var lines = new List<string>
+        {
+            "Формула: reputationChange = min(25, max(15, cost / 3)).",
+            $"При текущей цене {cost} Чернильных Перьев expected reputationChange = {expectedDelta}.",
+            $"Чернильные Перья: {currentFeathers} -> {Math.Max(0, currentFeathers - cost)}.",
+            target == null
+                ? "Target guardian: activeGuardian не удалось прочитать; GM обязан fail-closed сверить guardianId/guardianName/abodeId из guardians.json."
+                : $"Target guardian: guardianId={target.GuardianId}; guardianName={target.GuardianName}; abodeId={target.AbodeId}; abodeName={target.AbodeName}; currentReputation={target.CurrentReputation}; expectedReputationAfter={projectedReputation}.",
+            "GM обязан указать target guardian identity: guardianId, guardianName, abodeId и текущий relationship/reputation context.",
+            "GM обязан реально изменить game_state/meta/guardians.json для текущего Хранителя и показать before/after reputation delta.",
+            "output/ink_feather_action_result.json должен содержать stateEvidence.guardianId, stateEvidence.guardianName, stateEvidence.abodeId, stateEvidence.reputationChange и affectedFiles."
+        };
+
+        return lines;
+    }
+
+    private static string BuildGuardianDonationConfirmationSummary(int cost, GuardianInkFeatherTargetPreview? target)
+    {
+        var expectedDelta = Math.Min(25, Math.Max(15, cost / 3));
+        if (target == null)
+            return $"Репутация текущего Хранителя вырастет ровно на {expectedDelta}; guardianId нужно сверить в guardians.json.";
+
+        return $"Репутация {target.GuardianName} ({target.GuardianId}) вырастет ровно на {expectedDelta}: {target.CurrentReputation} -> {target.CurrentReputation + expectedDelta}.";
+    }
+
+    private static JsonObject? BuildGuardianInkFeatherTargetAuditNode(
+        GuardianInkFeatherTargetPreview? target,
+        int? expectedReputationDelta = null)
+    {
+        if (target == null)
+            return new JsonObject
+            {
+                ["targetGuardianReadable"] = false,
+                ["requiredLookup"] = "game_state/meta/guardians.json.activeGuardian.guardianId"
+            };
+
+        var audit = new JsonObject
+        {
+            ["targetGuardianReadable"] = true,
+            ["guardianId"] = target.GuardianId,
+            ["guardianName"] = target.GuardianName,
+            ["abodeId"] = target.AbodeId,
+            ["abodeName"] = target.AbodeName,
+            ["currentReputation"] = target.CurrentReputation,
+            ["expectedReputationDelta"] = expectedReputationDelta
+        };
+
+        audit["expectedReputationAfter"] = expectedReputationDelta.HasValue
+            ? target.CurrentReputation + expectedReputationDelta.Value
+            : null;
+
+        return audit;
+    }
+
     internal static IReadOnlyList<string> BuildMemoryGatesPreviewAuditLines(int costInFeathers, int currentFeathers, JsonObject? currentSoulRoot)
     {
         var lines = new List<string>
@@ -859,8 +978,10 @@ public partial class ExplorerMode
         string playerAction,
         int costInFeathers,
         int currentFeathers,
-        IReadOnlyList<string> effectLines) =>
-        new()
+        IReadOnlyList<string> effectLines,
+        JsonObject? actionSpecificAudit = null)
+    {
+        var audit = new JsonObject
         {
             ["actionTag"] = actionTag,
             ["playerAction"] = playerAction,
@@ -889,6 +1010,10 @@ public partial class ExplorerMode
             },
             ["effectPreview"] = new JsonArray(effectLines.Select(line => JsonValue.Create(line)).ToArray<JsonNode?>())
         };
+        if (actionSpecificAudit != null)
+            audit["actionSpecificAudit"] = actionSpecificAudit;
+        return audit;
+    }
 
     private static string ExtractInkFeatherActionTag(string gmAction)
     {
@@ -1109,7 +1234,8 @@ public partial class ExplorerMode
         string actionName,
         Func<int, string> buildGmAction,
         Func<int, IReadOnlyList<string>>? buildEffectLines = null,
-        Func<int, string>? buildConfirmationSummary = null)
+        Func<int, string>? buildConfirmationSummary = null,
+        Func<int, JsonObject?>? buildActionSpecificAudit = null)
     {
         var costDisplay = $"{cost} 🪶 (останется {feathers - cost})";
         var effectLines = buildEffectLines?.Invoke(cost) ?? Array.Empty<string>();
@@ -1142,7 +1268,7 @@ public partial class ExplorerMode
         if (!ConfirmChaosSeaContractPreview(
                 $"Полный контракт Ink Feather action — {actionName}",
                 previewLines,
-                BuildInkFeatherActionAuditNode(actionTag, gmAction, cost, feathers, effectLines),
+                BuildInkFeatherActionAuditNode(actionTag, gmAction, cost, feathers, effectLines, buildActionSpecificAudit?.Invoke(cost)),
                 "Полный JSON-аудит output/ink_feather_action_result.json",
                 confirmChoice: $"✅ Да, потратить {Markup.Escape(costDisplay)}"))
         {
@@ -1188,6 +1314,7 @@ public partial class ExplorerMode
 
     private async Task HandleGuardianFavor(int feathers)
     {
+        var targetGuardian = await ReadActiveGuardianInkFeatherTargetAsync();
         var inputCost = Prompt(new TextPrompt<int>(
             $"[bold yellow]🤝 Сколько Перьев предложить Хранителю? (у вас {feathers} 🪶, мин. 10):[/]")
             .Validate(val =>
@@ -1199,14 +1326,18 @@ public partial class ExplorerMode
 
         var costDisplay = $"{inputCost} 🪶 (останется {feathers - inputCost})";
         var gmAction = $"[INK_FEATHER_ACTION: GUARDIAN_FAVOR] Игрок предлагает Хранителю {inputCost} Чернильных Перьев в обмен на услугу. " +
+            BuildGuardianTargetActionSentence(targetGuardian) +
             "Игрок может просить о чём-то, а может просто передавать перья в дар. " +
             "Гарантированный механический минимум: репутация с текущим Хранителем должна вырасти. " +
             "Перья уже списаны клиентом. Обязательно запиши output/ink_feather_action_result.json с guardianId, reputationChange и stateEvidence; всё остальное зависит от ролеплея и может быть добавлено дополнительно.";
-        var effectLines = new[]
+        var effectLines = new List<string>
         {
             "Гарантированный минимум: репутация с текущим Хранителем должна реально вырасти.",
             "Дополнительная услуга может быть нарративной или stateful, но не заменяет обязательный рост репутации.",
             $"Чернильные Перья: {feathers} -> {Math.Max(0, feathers - inputCost)}.",
+            targetGuardian == null
+                ? "Target guardian: activeGuardian не удалось прочитать; GM обязан fail-closed сверить guardianId/guardianName/abodeId из guardians.json."
+                : $"Target guardian: guardianId={targetGuardian.GuardianId}; guardianName={targetGuardian.GuardianName}; abodeId={targetGuardian.AbodeId}; abodeName={targetGuardian.AbodeName}; currentReputation={targetGuardian.CurrentReputation}; expectedReputationDelta=positive.",
             "GM обязан указать target guardian identity: guardianId, guardianName и текущий relationship/reputation context.",
             "GM обязан реально изменить game_state/meta/guardians.json, показать before/after reputation delta и записать guardianId/reputationChange в stateEvidence.",
             "Цена переменная; валидатор проверяет факт положительного reputationChange, а не фиксированную формулу."
@@ -1232,7 +1363,7 @@ public partial class ExplorerMode
         if (!ConfirmChaosSeaContractPreview(
                 "Полный контракт услуги Хранителя",
                 previewLines,
-                BuildInkFeatherActionAuditNode("GUARDIAN_FAVOR", gmAction, inputCost, feathers, effectLines),
+                BuildInkFeatherActionAuditNode("GUARDIAN_FAVOR", gmAction, inputCost, feathers, effectLines, BuildGuardianInkFeatherTargetAuditNode(targetGuardian)),
                 "Полный JSON-аудит GUARDIAN_FAVOR receipt",
                 confirmChoice: $"✅ Да, предложить {Markup.Escape(costDisplay)}"))
         {
@@ -1295,7 +1426,7 @@ public partial class ExplorerMode
                     ? 0
                     : GuardianAbodeOfferingState.CountOfferedInkFeathersForReturnCycle(journalDoc.RootElement, guardianId, returnCycleId);
                 var remainingCap = Math.Max(0, 150 - alreadyOffered);
-                return ($"🏛 {Markup.Escape(displayName)} [dim](сила {currentPower}/100 • лимит {remainingCap} 🪶)[/]", guardian);
+                return ($"🏛 {Markup.Escape(displayName)} [dim](guardianId={Markup.Escape(guardianId)} • сила {currentPower}/100 • лимит {remainingCap} 🪶)[/]", guardian);
             })
             .ToList();
 
@@ -1355,9 +1486,12 @@ public partial class ExplorerMode
             var relicChoices = storedRelics
                 .Select(relic =>
                     relic.HasValidRarity
-                        ? $"{Markup.Escape(relic.Name)} [dim]({Markup.Escape(relic.Rarity)} via {Markup.Escape(relic.RaritySource)})[/]"
-                        : $"{Markup.Escape(relic.Name)} [red](invalid rarity: {Markup.Escape(relic.RarityIssue)})[/]")
+                        ? $"{Markup.Escape(relic.Name)} [dim](relicId={Markup.Escape(relic.RelicId)} • rarity={Markup.Escape(relic.Rarity)} via {Markup.Escape(relic.RaritySource)})[/]"
+                        : $"{Markup.Escape(relic.Name)} [red](relicId={Markup.Escape(relic.RelicId)} • invalid rarity: {Markup.Escape(relic.RarityIssue)})[/]")
                 .ToList();
+            var relicIndexByChoice = relicChoices
+                .Select((choice, index) => (choice, index))
+                .ToDictionary(item => item.choice, item => item.index, StringComparer.Ordinal);
             relicChoices.Add("[dim]← Назад[/]");
 
             var selectedRelic = Prompt(new SelectionPrompt<string>()
@@ -1368,8 +1502,9 @@ public partial class ExplorerMode
             if (selectedRelic.Contains("Назад", StringComparison.Ordinal))
                 return;
 
-            var relicIndex = relicChoices.IndexOf(selectedRelic);
-            if (relicIndex < 0 || relicIndex >= storedRelics.Count)
+            if (!relicIndexByChoice.TryGetValue(selectedRelic, out var relicIndex) ||
+                relicIndex < 0 ||
+                relicIndex >= storedRelics.Count)
                 return;
 
             var relic = storedRelics[relicIndex];
@@ -1490,8 +1625,11 @@ public partial class ExplorerMode
             }
 
             var archiveChoices = filteredEntries
-                .Select(entry => $"{Markup.Escape(entry.Title)} [dim]({Markup.Escape(entry.Rarity)})[/]")
+                .Select(entry => $"{Markup.Escape(entry.Title)} [dim](archiveId={Markup.Escape(entry.ArchiveId)} • type={Markup.Escape(entry.EntryType)} • rarity={Markup.Escape(entry.Rarity)})[/]")
                 .ToList();
+            var archiveIndexByChoice = archiveChoices
+                .Select((choice, index) => (choice, index))
+                .ToDictionary(item => item.choice, item => item.index, StringComparer.Ordinal);
             archiveChoices.Add("[dim]← Назад[/]");
 
             var selectedArchive = Prompt(new SelectionPrompt<string>()
@@ -1502,8 +1640,9 @@ public partial class ExplorerMode
             if (selectedArchive.Contains("Назад", StringComparison.Ordinal))
                 return;
 
-            var archiveIndex = archiveChoices.IndexOf(selectedArchive);
-            if (archiveIndex < 0 || archiveIndex >= filteredEntries.Count)
+            if (!archiveIndexByChoice.TryGetValue(selectedArchive, out var archiveIndex) ||
+                archiveIndex < 0 ||
+                archiveIndex >= filteredEntries.Count)
                 return;
 
             var archiveEntry = filteredEntries[archiveIndex];

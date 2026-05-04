@@ -882,8 +882,9 @@ Scenario:
 - `currentRealm = "Shining Abode"`.
 - `shining_abode_state.json.preparedIncarnationPackage` is not null.
 - The player has already chosen a prepared next-life package.
+- No unresolved afterlife pending/control contracts remain; Guardian, resident, archive, offering, Shining core/trade/politics, malformed wrong-realm NPC, and legacy `pendingNativeFactionDiscovery` blockers must be resolved or repaired before this handoff, not in the same response.
 - The current accepted turn must create `TriggerIncarnation` while preserving the frozen package for the client transition code to consume after successful mortal bootstrap.
-- `TriggerIncarnation` is valid only because this is the current accepted turn with matching validated `game_state/control/pending_turn_snapshot` authority; it is not a manual/out-of-band file the GM can create later.
+- `TriggerIncarnation` is valid only because this is the current accepted turn with matching validated `game_state/control/pending_turn_snapshot` plus client-owned `game_state/control/pending_turn_snapshot.authority.json` authority; it is not a manual/out-of-band file the GM can create later.
 - Ordinary Shining living-world progression must NOT run in this handoff turn.
 
 Input fragment:
@@ -968,9 +969,10 @@ Correct GM decision:
 - Realm: Shining Abode.
 - preparedIncarnationPackage is present.
 - Mode: Shining Abode pending-bootstrap handoff.
+- No unresolved afterlife pending/control contracts are present; if any such blocker exists, Soul Gates must stop here and the GM must not combine its closure with bootstrap.
 - Ordinary Shining living-world progression is suppressed; the expected ordinary Shining cycle counts are zero in this handoff request.
 - This turn only emits `TriggerIncarnation` from the frozen next-life package. The GM must preserve the package; the client transition code consumes and clears it only after successful mortal bootstrap.
-- Accepted-turn authority: `TriggerIncarnation` is authored only for this accepted turn and relies on the matching validated `game_state/control/pending_turn_snapshot`; if that authority is missing or stale, the runtime treats the trigger as invalid (`incarnation_trigger_invalid_validated_snapshot_context`).
+- Accepted-turn authority: `TriggerIncarnation` is authored only for this accepted turn and relies on the matching validated `game_state/control/pending_turn_snapshot` plus client-owned `game_state/control/pending_turn_snapshot.authority.json`; if that authority is missing or stale, the runtime treats the trigger as invalid (`incarnation_trigger_invalid_validated_snapshot_context`).
 
 ## Охват NPC-анализа
 - Режим: Scene-local
@@ -3701,7 +3703,13 @@ open_gates
   Request does not require a faction.
   State result: rebuild gates draft from current Shining factions, supported projects, residents, and radiance; write gates.hasOpenDraft = true and gates.isStale = false.
   Receipt target: empty ids, generatedDraftVersion = the resulting gates.draftVersion.
+  Deterministic projection: copy `projectedStateFragment.afterFullShiningRoot.gates` from the client preview when present. If rebuilding manually, use radiance thresholds 0..99/100..219/220..379/380..579/580+, draft size 4/6/7/8/10, pick cap 1/2/2/3/4, supported remembrance projects for rerollsRemaining, source cards from faction heads + supported completed projects + resident descent sources, de-duplicate by dedupeKey, write all candidates to allCandidateBlessingCards, first draft-size cards to availableBlessingCards, their ids to shownBlessingCardIds, selectedBlessingCardIds=[], nextCandidateCursor=available count, and generatedDraftVersion=current gates.draftVersion+1.
 ```
+
+Deterministic `open_gates` Projection summary:
+- Prefer the client preview `projectedStateFragment.afterFullShiningRoot.gates` exactly.
+- Manual rebuild uses radiance thresholds 0..99/100..219/220..379/380..579/580+, draft size 4/6/7/8/10, pick cap 1/2/2/3/4, deterministic candidate order, and `dedupeKey` de-duplication.
+- The canonical output includes `allCandidateBlessingCards`, `availableBlessingCards`, `shownBlessingCardIds`, `selectedBlessingCardIds=[]`, `nextCandidateCursor`, `rerollsRemaining`, and `generatedDraftVersion`.
 
 Every `coreActionReceipts[]` entry that closes `pending_shining_abode_actions.json` must echo the exact `quotedCostFeathers` and `quotedCostLightSparks` from the pending request, including zero-cost actions. Forge receipts have one extra audit rule: `forge_relic.retune_property` must echo the request `replacementProperty`, `forge_relic.uplift_rarity` must echo request `addedProperties`, and other forge actions must not invent those payload fields.
 
@@ -3941,9 +3949,17 @@ Correct receipt fragment:
 
 All forge actions require ordinary active Shining Abode, a valid `factionId`, a real Soul Relic `relicId`, enough Ink Feathers and Light Sparks, and at least one supported completed `refinement` project in that faction. Accepted forge output must update both `shining_abode_state.json.lightSparks` and the exact Soul Relic in `soul_state.json`.
 
-Forge action matrix:
+Exact Shining Forge Mutation Table / Forge action matrix:
 
 ```text
+Global forge constants:
+  Required Radiance tiers: reshape 0, retune_property 1, strengthen_band 2, stabilize_echo 3, uplift_rarity 4.
+  Base costs: reshape 10 Feathers/10 Light Sparks; retune_property 20/15; strengthen_band 30/20; stabilize_echo 25/15; uplift_rarity 45/30.
+  Service multiplier by factionStrength: 0..24 => 0.75, 25..49 => 1.0, 50..74 => 1.25, 75..100 => 1.5.
+  Rarity/band ladder: common -> uncommon -> rare -> epic -> legendary; numeric bands increment by +1.
+  Minimum property counts after rarity uplift: common 1, uncommon 2, rare 3, epic 4, legendary 5.
+  Relic refinement entitlements consumed by forge must end as consumed(consumedAtTurn/consumedAtUtc) or expired(expiredAtTurn/expiredAtUtc), never remain pending after use.
+
 forge_relic.reshape
   Requires: relic.formTag exists, targetFormTag is non-empty and different.
   State result: relic.formTag becomes targetFormTag.
@@ -3961,7 +3977,7 @@ forge_relic.strengthen_band
 
 forge_relic.stabilize_echo
   Requires: companion_echo relic or relic with companionSeed / companionManifestationQualityBonus.
-  State result: relic.companionManifestationQualityBonus increases by canonical service multiplier.
+  State result: relic.companionManifestationQualityBonus increases by floor(15 * service multiplier).
   Receipt identity: factionId, relicId.
 
 forge_relic.uplift_rarity
@@ -4002,6 +4018,73 @@ Correct `forge_relic.retune_property` receipt fragment:
       "reason": "property at index 1 retuned within the same band"
     }
   ]
+}
+```
+
+Canonical before/after fragment for that `retune_property` closure:
+
+```json
+{
+  "changedSurfaces": [
+    "game_state/meta/soul_state.json",
+    "game_state/meta/shining_abode_state.json.coreActionReceipts[]",
+    "game_state/meta/shining_abode_state.json.lightSparks"
+  ],
+  "beforeRelic": {
+    "relicId": "relic_mirror_lens_001",
+    "quality": "rare",
+    "formTag": "mirror_lens",
+    "properties": [
+      {
+        "propertyId": "prop_mirror_lens_old",
+        "name": "Old Reflection",
+        "stat": "reflection",
+        "band": "rare"
+      },
+      {
+        "propertyId": "prop_mirror_lens_clouded",
+        "name": "Clouded Route",
+        "stat": "route_noise",
+        "band": "rare"
+      },
+      {
+        "propertyId": "prop_mirror_lens_memory",
+        "name": "Memory Lens",
+        "stat": "memory",
+        "band": "uncommon"
+      }
+    ]
+  },
+  "afterRelic": {
+    "relicId": "relic_mirror_lens_001",
+    "quality": "rare",
+    "formTag": "mirror_lens",
+    "properties": [
+      {
+        "propertyId": "prop_mirror_lens_old",
+        "name": "Old Reflection",
+        "stat": "reflection",
+        "band": "rare"
+      },
+      {
+        "propertyId": "prop_mirror_lens_dawn_focus",
+        "name": "Dawn Focus",
+        "stat": "route_clarity",
+        "band": "rare"
+      },
+      {
+        "propertyId": "prop_mirror_lens_memory",
+        "name": "Memory Lens",
+        "stat": "memory",
+        "band": "uncommon"
+      }
+    ]
+  },
+  "resourceDelta": {
+    "inkFeathers": "-20",
+    "lightSparks": "-15"
+  },
+  "entitlementTerminalRule": "if a pending relicRefinementEntitlement paid for this retune, mark it consumed with consumedAtTurn=325 and consumedAtUtc matching the receipt; otherwise leave unrelated entitlements unchanged"
 }
 ```
 

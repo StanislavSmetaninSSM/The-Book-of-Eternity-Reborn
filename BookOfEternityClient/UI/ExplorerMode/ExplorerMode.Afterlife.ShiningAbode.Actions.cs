@@ -514,16 +514,23 @@ public partial class ExplorerMode
 
     private void ShowPendingNativeFactionDiscoveryInspectionPanel(JsonObject shiningRoot)
     {
-        var pendingDiscovery = shiningRoot["pendingNativeFactionDiscovery"] as JsonObject;
+        var pendingNode = shiningRoot["pendingNativeFactionDiscovery"];
+        var pendingDiscovery = pendingNode as JsonObject;
         var lines = new List<string>
         {
             "[bold yellow]🔎 Ожидающее открытие нативной фракции[/]",
             ""
         };
 
-        if (pendingDiscovery == null)
+        if (pendingNode == null)
         {
             lines.Add("[dim]Ожидающего открытия сейчас нет.[/]");
+        }
+        else if (pendingDiscovery == null)
+        {
+            lines.Add("[bold red]Repair-only blocker:[/]");
+            lines.Add("  pendingNativeFactionDiscovery присутствует, но не является JSON object.");
+            lines.Add("  Это malformed legacy discovery evidence: local Shining saves/actions blocked until repair; GM не должен silently null/erase this value.");
         }
         else
         {
@@ -545,6 +552,10 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         });
+        WriteJsonAuditPanel(
+            "Полный JSON shining_abode_state.pendingNativeFactionDiscovery",
+            pendingNode,
+            pendingDiscovery == null && pendingNode != null ? Color.Red : Color.Orange1);
         WaitForKey();
     }
 

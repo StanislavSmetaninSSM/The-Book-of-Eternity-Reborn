@@ -843,8 +843,13 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains("validated accepted-turn authority", doc, StringComparison.Ordinal);
             Assert.Contains("game_state/control/pending_turn_snapshot", doc, StringComparison.Ordinal);
+            Assert.Contains("game_state/control/pending_turn_snapshot.authority.json", doc, StringComparison.Ordinal);
             Assert.Contains("incarnation_trigger_invalid_validated_snapshot_context", doc, StringComparison.Ordinal);
+            Assert.Contains("no unresolved afterlife pending/control contracts", doc, StringComparison.OrdinalIgnoreCase);
         }
+
+        Assert.Contains("game_state/control/pending_turn_snapshot.authority.json", apiSpec, StringComparison.Ordinal);
+        Assert.Contains("client-owned transient authority", apiSpec, StringComparison.Ordinal);
 
         Assert.DoesNotContain("ONLY bootstrap/materialization", launchScript, StringComparison.Ordinal);
         Assert.DoesNotContain("ONLY bootstrap/materialization", launchGenerator, StringComparison.Ordinal);
@@ -1413,6 +1418,17 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("factionRealignmentState", doc, StringComparison.Ordinal);
             Assert.Contains("shiningAlignment", doc, StringComparison.Ordinal);
         }
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains("Deterministic `open_gates` Projection", doc, StringComparison.Ordinal);
+            Assert.Contains("projectedStateFragment.afterFullShiningRoot.gates", doc, StringComparison.Ordinal);
+            Assert.Contains("draft size", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("pick cap", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("dedupeKey", doc, StringComparison.Ordinal);
+            Assert.Contains("allCandidateBlessingCards", doc, StringComparison.Ordinal);
+            Assert.Contains("availableBlessingCards", doc, StringComparison.Ordinal);
+        }
     }
 
     [Fact]
@@ -1569,6 +1585,41 @@ public sealed class AfterlifeDocumentationCoverageTests
 
         Assert.Contains("JSON shining_abode_state.factions/projects для просмотра", shiningOverview, StringComparison.Ordinal);
         Assert.Contains("Полный JSON forge request payload preview", shiningTradeForge, StringComparison.Ordinal);
+        foreach (var term in new[]
+        {
+            "Полный JSON progression_schedule.json",
+            "Полный JSON input/turn_request.json.progressionControl",
+            "Полный JSON progression_report.json",
+            "Полный JSON progression_report.progressionProcessingReport"
+        })
+            Assert.Contains(term, statusAudit, StringComparison.Ordinal);
+
+        foreach (var term in new[] { "targetGuardianReadable", "expectedReputationDelta", "expectedReputationAfter" })
+            Assert.Contains(term, offerings, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ShiningForgeExactMutationTableIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, examples })
+        {
+            Assert.Contains("Exact Shining Forge Mutation Table", doc, StringComparison.Ordinal);
+            Assert.Contains("forge_relic.reshape", doc, StringComparison.Ordinal);
+            Assert.Contains("forge_relic.retune_property", doc, StringComparison.Ordinal);
+            Assert.Contains("forge_relic.strengthen_band", doc, StringComparison.Ordinal);
+            Assert.Contains("forge_relic.stabilize_echo", doc, StringComparison.Ordinal);
+            Assert.Contains("forge_relic.uplift_rarity", doc, StringComparison.Ordinal);
+            Assert.Contains("required Radiance tier", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("service multiplier", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("minimum property counts", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("common -> uncommon -> rare -> epic -> legendary", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("pendingShiningBlessingEffects", doc, StringComparison.Ordinal);
+            Assert.Contains("consumed", doc, StringComparison.Ordinal);
+            Assert.Contains("expired", doc, StringComparison.Ordinal);
+        }
     }
 
     [Fact]

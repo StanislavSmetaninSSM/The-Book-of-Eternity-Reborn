@@ -231,16 +231,20 @@ public partial class ExplorerMode
         if (node == null)
             return;
 
-        var auditNode = ContainsRuntimeEffectPayload(node)
+        var hasRedactedEffectPayload = ContainsRuntimeEffectPayload(node);
+        var auditNode = hasRedactedEffectPayload
             ? CloneShiningJsonForPlayerFacingAudit(node)
             : node;
         var json = auditNode?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
         if (string.IsNullOrWhiteSpace(json))
             return;
+        var panelTitle = hasRedactedEffectPayload
+            ? $"{title} (effectPayload redacted; safeEffectDetails shown)"
+            : title;
 
         Write(new Panel(new Text(json))
         {
-            Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
+            Header = new PanelHeader($" {Markup.Escape(panelTitle)} ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(borderColor ?? Color.Grey),
             Padding = new Padding(1, 1),
@@ -254,16 +258,20 @@ public partial class ExplorerMode
             return;
 
         var json = JsonSerializer.Serialize(element, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
-        if (json.Contains("\"effectPayload\"", StringComparison.Ordinal))
+        var hasRedactedEffectPayload = json.Contains("\"effectPayload\"", StringComparison.Ordinal);
+        if (hasRedactedEffectPayload)
         {
             var node = JsonNode.Parse(json);
             var auditNode = CloneShiningJsonForPlayerFacingAudit(node);
             json = auditNode?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) ?? json;
         }
+        var panelTitle = hasRedactedEffectPayload
+            ? $"{title} (effectPayload redacted; safeEffectDetails shown)"
+            : title;
 
         Write(new Panel(new Text(json))
         {
-            Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
+            Header = new PanelHeader($" {Markup.Escape(panelTitle)} ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(borderColor ?? Color.Grey),
             Padding = new Padding(1, 1),

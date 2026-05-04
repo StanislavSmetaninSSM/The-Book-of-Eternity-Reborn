@@ -321,6 +321,24 @@ internal static class ActorSocialInteractionRequestState
     public static JsonObject? FindGuardianResolutionEntry(JsonObject? journalRoot, string guardianId, string requestId) =>
         ActorJournalState.FindResolutionEntry(journalRoot, GuardianSocialJournalState.ActorIdProperty, guardianId, requestId);
 
+    public static JsonObject? FindGuardianResolutionEntry(JsonObject? journalRoot, string guardianId, string requestId, string interactionType)
+    {
+        if (journalRoot == null ||
+            string.IsNullOrWhiteSpace(guardianId) ||
+            string.IsNullOrWhiteSpace(requestId) ||
+            string.IsNullOrWhiteSpace(interactionType) ||
+            journalRoot[ActorJournalState.EntriesProperty] is not JsonArray entries)
+        {
+            return null;
+        }
+
+        return entries.OfType<JsonObject>()
+            .FirstOrDefault(entry =>
+                string.Equals(GetNodeString(entry[GuardianSocialJournalState.ActorIdProperty]), guardianId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["requestId"]), requestId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetNodeString(entry["interactionType"]), interactionType, StringComparison.OrdinalIgnoreCase));
+    }
+
     public static JsonObject? FindNpcResolutionEntry(JsonObject? journalRoot, string npcId, string requestId) =>
         ActorJournalState.FindResolutionEntry(journalRoot, NpcInteractionJournalState.ActorIdProperty, npcId, requestId);
 
@@ -423,8 +441,8 @@ internal static class ActorSocialInteractionRequestState
             .Where(request =>
                 !string.IsNullOrWhiteSpace(request.RequestId) &&
                 !string.IsNullOrWhiteSpace(request.GuardianId) &&
-                FindGuardianResolutionEntry(journalRoot, request.GuardianId, request.RequestId) == null &&
-                GuardianExists(guardiansRoot, request.GuardianId))
+                FindGuardianResolutionEntry(journalRoot, request.GuardianId, request.RequestId, request.InteractionType) == null &&
+                (guardiansRoot == null || GuardianExists(guardiansRoot, request.GuardianId)))
             .ToList();
 
         await WriteGuardianRequestsAsync(fs, remaining);

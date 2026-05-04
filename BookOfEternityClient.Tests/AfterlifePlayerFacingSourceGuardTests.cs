@@ -59,6 +59,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         var explorerPrivate = ReadSource("UI", "ExplorerMode", "ExplorerMode.PrivateImplementation.cs");
         var trade = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs");
         var inkFeathers = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
+        var inventory = ReadSource("UI", "ExplorerMode", "ExplorerMode.Inventory.cs");
         var inbox = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs");
 
         Assert.Contains("BuildPendingFileBlockerAsync", mainMenu, StringComparison.Ordinal);
@@ -105,6 +106,9 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("historyEntryId", trade, StringComparison.Ordinal);
         Assert.Contains("guardianId", trade, StringComparison.Ordinal);
         Assert.Contains("tradeCycleId", trade, StringComparison.Ordinal);
+        Assert.Contains("guardianId=", trade, StringComparison.Ordinal);
+        Assert.Contains("projectId=", trade, StringComparison.Ordinal);
+        Assert.Contains("choiceIndexByLabel", trade, StringComparison.Ordinal);
         Assert.Contains("transactionCorrelationId", trade, StringComparison.Ordinal);
         Assert.Contains("statusBefore", trade, StringComparison.Ordinal);
         Assert.Contains("statusAfter", trade, StringComparison.Ordinal);
@@ -112,6 +116,13 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("generatedBuybackEntryFields", trade, StringComparison.Ordinal);
         Assert.Contains("GM turn не отправляется: это client-local coordinated write with full audit JSON", trade, StringComparison.Ordinal);
         Assert.DoesNotContain(".Take(3)", trade, StringComparison.Ordinal);
+
+        Assert.Contains("relicId=", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("archiveId=", inkFeathers, StringComparison.Ordinal);
+        Assert.DoesNotContain("relicChoices.IndexOf", inkFeathers, StringComparison.Ordinal);
+        Assert.DoesNotContain("archiveChoices.IndexOf", inkFeathers, StringComparison.Ordinal);
+        Assert.Contains("id=", inventory, StringComparison.Ordinal);
+        Assert.DoesNotContain("ShortIdentity", inventory, StringComparison.Ordinal);
 
         Assert.Contains("candidateId:", inbox, StringComparison.Ordinal);
         Assert.Contains("archiveId:", inbox, StringComparison.Ordinal);
@@ -173,6 +184,10 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("ProgressionScheduleService.ReportPath", statusAudit, StringComparison.Ordinal);
         Assert.Contains("afterlifeCatchupContours", statusAudit, StringComparison.Ordinal);
         Assert.Contains("progressionControl", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("WriteAfterlifeProgressionAuditPanelsAsync", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON progression_schedule.json", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON input/turn_request.json.progressionControl", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON progression_report.progressionProcessingReport", statusAudit, StringComparison.Ordinal);
     }
 
     private static string ReadSource(params string[] pathParts) =>
