@@ -2090,6 +2090,7 @@ public partial class ExplorerMode
             .Select(choice => ConsoleLayout.PlainChoiceLabel(
                 $"🛡️ {choice.GuardianName}",
                 $"репутация {choice.Reputation} • {GuardianTradeDisplayDomain(choice.Domain)}",
+                $"guardianId={choice.GuardianId}",
                 "Результат будет явно оформлен GM по разрешённым исходам консультации",
                 string.Equals(entry.EntryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
                     ? "возможны заметные подсказки о нити соперника или предупреждения"
@@ -2210,6 +2211,8 @@ public partial class ExplorerMode
             .Select(choice => ConsoleLayout.PlainChoiceLabel(
                 $"⚙️ {choice.GuardianName}",
                 $"репутация {choice.Reputation} • {GuardianTradeDisplayDomain(choice.Domain)}",
+                $"guardianId={choice.GuardianId}",
+                $"projectId={choice.TargetProjectId}",
                 $"целевой проект: {choice.TargetProjectName}",
                 string.Equals(entry.EntryType, AfterlifeArchiveState.EntryTypeSecretRecord, StringComparison.OrdinalIgnoreCase)
                     ? "GM явно оформит ослабление давления на проект"

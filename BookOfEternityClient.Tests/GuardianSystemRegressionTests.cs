@@ -22774,6 +22774,57 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameState_SystemGuardianAttractionWrongRealmSkipsClosureChecks()
+    {
+        const string attractionJson = """
+        {
+          "mode": "system_guardian_attraction",
+          "targetPresetId": "azalia",
+          "targetPresetDisplayName": "Азалия",
+          "targetPresetVersion": "1.0",
+          "sourceLibrary": "built_in",
+          "targetSummary": "Дипломатичная хранительница страсти, власти и преданности.",
+          "renderedPromptPackage": "PresetId: azalia"
+        }
+        """;
+        const string shiningSoulJson = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Shining Abode",
+          "currentIncarnation": 1
+        }
+        """;
+
+        await WriteRawAsync("game_state/meta/soul_state.json", shiningSoulJson);
+        await WriteRawAsync(SystemGuardianLibraryService.AttractionRequestPath, attractionJson);
+        await WriteRawAsync("ready/turn_complete.json", """{ "accepted": true }""");
+        await WritePreTurnTrackedFileAsync(
+            "game_state/meta/soul_state.json",
+            "test_backups/preturn_soul_state_system_attraction_shining.json",
+            shiningSoulJson);
+        await WritePreTurnTrackedFileAsync(
+            SystemGuardianLibraryService.AttractionRequestPath,
+            "test_backups/preturn_system_attraction_shining_wrong_realm.json",
+            attractionJson);
+        var manifest = await ReadObjectAsync("game_state/control/pending_turn_snapshot.json");
+        manifest["playerAction"] = "[CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION: azalia] Игрок зовёт Азалию.";
+        manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(manifest);
+        await WriteRawAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "system_guardian_attraction_wrong_realm", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "system_guardian_attraction_missing_active_guardian", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "system_guardian_attraction_target_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameState_SystemGuardianAttractionUsesAuthorityActiveGuardianInsteadOfRawMirror()
     {
         await WriteRawAsync("game_state/meta/guardians.json", """

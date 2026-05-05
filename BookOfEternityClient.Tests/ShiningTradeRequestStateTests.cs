@@ -515,6 +515,33 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task ReadTradeViewAndBuyAsync_MalformedPendingRequestBlocksReadyInventory()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            await fs.WriteFileAtomicAsync(ShiningTradeRequestState.PendingRequestsPath, "{}");
+
+            var view = await ShiningTradeService.ReadTradeViewAsync(fs, "faction_old");
+            var buy = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
+
+            Assert.NotNull(view);
+            Assert.False(view!.InventoryReady);
+            Assert.True(view.InventoryRequestPending);
+            Assert.Contains("поврежд", view.InventoryStatusMessage ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+            Assert.False(buy.Success);
+            Assert.Contains("поврежд", buy.Message, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_DuplicateReadyReceipts_DoNotClearPendingRequest()
     {
         var root = CreateTempRoot();

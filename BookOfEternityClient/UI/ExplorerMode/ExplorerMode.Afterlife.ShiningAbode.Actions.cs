@@ -7,7 +7,14 @@ namespace BookOfEternityClient.UI;
 
 public partial class ExplorerMode
 {
-    private sealed record ShiningContext(JsonObject Root, JsonObject? ResidentRoot, JsonObject? GuardiansRoot, JsonObject? SoulRoot);
+    private sealed record ShiningContextReadIssue(string Path, string Error, string? RawPayload);
+
+    private sealed record ShiningContext(
+        JsonObject Root,
+        JsonObject? ResidentRoot,
+        JsonObject? GuardiansRoot,
+        JsonObject? SoulRoot,
+        IReadOnlyList<ShiningContextReadIssue>? ReadIssues = null);
 
     private async Task<ShiningContext?> LoadShiningContextAsync()
     {
@@ -31,6 +38,7 @@ public partial class ExplorerMode
         var hasMalformedLegacyPendingDiscovery =
             !string.IsNullOrWhiteSpace(ShiningAbodeState.ValidateLegacyPendingNativeFactionDiscoveryShape(shiningRoot));
 
+        var readIssues = new List<ShiningContextReadIssue>();
         JsonObject? residentRoot = null;
         var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
         if (!string.IsNullOrWhiteSpace(residentJson))
@@ -39,8 +47,9 @@ public partial class ExplorerMode
             {
                 residentRoot = JsonNode.Parse(residentJson) as JsonObject;
             }
-            catch
+            catch (Exception ex)
             {
+                readIssues.Add(new ShiningContextReadIssue(GuardianAbodeResidentState.StatePath, ex.GetType().Name, residentJson));
                 residentRoot = null;
             }
         }
@@ -53,8 +62,9 @@ public partial class ExplorerMode
             {
                 guardiansRoot = JsonNode.Parse(guardiansJson) as JsonObject;
             }
-            catch
+            catch (Exception ex)
             {
+                readIssues.Add(new ShiningContextReadIssue("game_state/meta/guardians.json", ex.GetType().Name, guardiansJson));
                 guardiansRoot = null;
             }
         }
@@ -67,15 +77,16 @@ public partial class ExplorerMode
             {
                 soulRoot = JsonNode.Parse(soulJson) as JsonObject;
             }
-            catch
+            catch (Exception ex)
             {
+                readIssues.Add(new ShiningContextReadIssue("game_state/meta/soul_state.json", ex.GetType().Name, soulJson));
                 soulRoot = null;
             }
         }
 
         if (!hasMalformedLegacyPendingDiscovery)
             ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
-        return new ShiningContext(shiningRoot, residentRoot, guardiansRoot, soulRoot);
+        return new ShiningContext(shiningRoot, residentRoot, guardiansRoot, soulRoot, readIssues);
     }
 
     private async Task<bool> SaveShiningRootAsync(JsonObject root)

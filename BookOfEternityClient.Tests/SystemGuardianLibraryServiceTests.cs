@@ -73,6 +73,38 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildReminderFragmentAsync_ShiningAbodeTreatsAttractionAsRepairOnly()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
+        var preset = await _service.FindPresetAsync("azalia", includeDossier: true);
+        Assert.NotNull(preset);
+        await _service.WriteAttractionRequestAsync(preset!);
+
+        var reminder = await _service.BuildReminderFragmentAsync("Shining Abode");
+
+        Assert.Contains("WRONG-REALM REPAIR", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Chaos Sea-only", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("create and materialize", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("route the soul", reminder, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task BuildReminderFragmentAsync_ChaosSeaKeepsAttractionClosureInstructions()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
+        var preset = await _service.FindPresetAsync("azalia", includeDossier: true);
+        Assert.NotNull(preset);
+        await _service.WriteAttractionRequestAsync(preset!);
+
+        var reminder = await _service.BuildReminderFragmentAsync("Chaos Sea");
+
+        Assert.Contains("ETERNAL GUARDIAN ATTRACTION:", reminder, StringComparison.Ordinal);
+        Assert.Contains("create and materialize", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("route the soul", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("WRONG-REALM REPAIR", reminder, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task EnsureAttractionRequestHealthyAsync_MalformedFile_IsPreservedAndSurfaced()
     {
         await _fs.WriteFileAtomicAsync(SystemGuardianLibraryService.AttractionRequestPath, "{ not valid json");

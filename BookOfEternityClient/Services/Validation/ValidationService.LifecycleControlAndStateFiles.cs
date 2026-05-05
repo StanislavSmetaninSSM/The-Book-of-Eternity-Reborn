@@ -2492,7 +2492,21 @@ public partial class ValidationService
     {
         var json = await _fs.ReadFileAsync(SystemGuardianLibraryService.AttractionRequestPath);
         if (string.IsNullOrWhiteSpace(json))
+        {
+            if (_fs.FileExists(SystemGuardianLibraryService.AttractionRequestPath))
+            {
+                issues.Add(new ValidationIssue(
+                    SystemGuardianLibraryService.AttractionRequestPath,
+                    IssueSeverity.Error,
+                    "system_guardian_attraction.json существует, но пуст или содержит только whitespace.",
+                    code: "system_guardian_attraction_invalid_json",
+                    section: "SystemGuardianPresets",
+                    expected: "JSON object system_guardian_attraction contract",
+                    actual: "empty/whitespace file",
+                    repairHint: "Исправь system_guardian_attraction.json или очисти файл явным client cancellation; пустой файл нельзя считать отсутствующим контрактом."));
+            }
             return;
+        }
 
         try
         {
@@ -2509,6 +2523,8 @@ public partial class ValidationService
             }
 
             ValidateSystemGuardianAttractionStateFile(doc.RootElement, SystemGuardianLibraryService.AttractionRequestPath, issues);
+            if (!await ValidateSystemGuardianAttractionRealmContextAsync(issues))
+                return;
 
             var targetPresetId = await ResolveSystemGuardianAttractionAuthorityPresetIdAsync(doc.RootElement, issues);
             if (string.IsNullOrWhiteSpace(targetPresetId))
@@ -3044,7 +3060,21 @@ public partial class ValidationService
     {
         var json = await _fs.ReadFileAsync(GuardianAbodeOfferingState.PendingRequestPath);
         if (string.IsNullOrWhiteSpace(json))
+        {
+            if (_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath))
+            {
+                issues.Add(new ValidationIssue(
+                    GuardianAbodeOfferingState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_abode_offering.json существует, но пуст или содержит только whitespace.",
+                    code: "abode_offering_invalid_json",
+                    section: "GuardianOfferings",
+                    expected: "JSON object pending abode offering contract",
+                    actual: "empty/whitespace file",
+                    repairHint: "Исправь pending_abode_offering.json; пустой client-owned pending contract нельзя считать отсутствующим."));
+            }
             return;
+        }
 
         try
         {
@@ -3383,7 +3413,21 @@ public partial class ValidationService
     {
         var json = await _fs.ReadFileAsync(GuardianTradeRequestState.PendingRequestPath);
         if (string.IsNullOrWhiteSpace(json))
+        {
+            if (_fs.FileExists(GuardianTradeRequestState.PendingRequestPath))
+            {
+                issues.Add(new ValidationIssue(
+                    GuardianTradeRequestState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_guardian_trade_request.json существует, но пуст или содержит только whitespace.",
+                    code: "guardian_trade_request_invalid_json",
+                    section: "GuardianTrade",
+                    expected: "JSON object pending guardian trade contract",
+                    actual: "empty/whitespace file",
+                    repairHint: "Исправь pending_guardian_trade_request.json; пустой client-owned pending contract нельзя считать отсутствующим."));
+            }
             return;
+        }
 
         GuardianTradeRequestState.PendingGuardianTradeRequest? request;
         try
@@ -3417,7 +3461,21 @@ public partial class ValidationService
     {
         var json = await _fs.ReadFileAsync(PlayerGuardianFoundationState.PendingRequestPath);
         if (string.IsNullOrWhiteSpace(json))
+        {
+            if (_fs.FileExists(PlayerGuardianFoundationState.PendingRequestPath))
+            {
+                issues.Add(new ValidationIssue(
+                    PlayerGuardianFoundationState.PendingRequestPath,
+                    IssueSeverity.Error,
+                    "pending_player_guardian_foundation.json существует, но пуст или содержит только whitespace.",
+                    code: "player_guardian_foundation_invalid_json",
+                    section: "PlayerGuardianFoundation",
+                    expected: "JSON object pending player guardian foundation contract",
+                    actual: "empty/whitespace file",
+                    repairHint: "Исправь pending_player_guardian_foundation.json; пустой client-owned pending contract нельзя считать отсутствующим."));
+            }
             return;
+        }
 
         PlayerGuardianFoundationState.PendingPlayerGuardianFoundationRequest? request;
         try
@@ -3924,6 +3982,30 @@ public partial class ValidationService
                 actual: currentRealm,
                 repairHint: "Не создавай и не разрешай pending_player_guardian_foundation.json вне Моря Хаоса."));
         }
+    }
+
+    private async Task<bool> ValidateSystemGuardianAttractionRealmContextAsync(List<ValidationIssue> issues)
+    {
+        var currentRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
+            SystemGuardianLibraryService.AttractionRequestPath,
+            issues,
+            code: "system_guardian_attraction_invalid_validated_snapshot_context",
+            section: "SystemGuardianPresets");
+        if (currentRealm != null && !IsExactChaosSeaRealm(currentRealm))
+        {
+            issues.Add(new ValidationIssue(
+                SystemGuardianLibraryService.AttractionRequestPath,
+                IssueSeverity.Error,
+                "system_guardian_attraction.json допустим только в точном realm Моря Хаоса.",
+                code: "system_guardian_attraction_wrong_realm",
+                section: "SystemGuardianPresets",
+                expected: "Chaos Sea pre-turn realm",
+                actual: currentRealm,
+                repairHint: "Не создавай и не разрешай CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION из Shining Abode, pending-bootstrap или смертного realm."));
+            return false;
+        }
+
+        return true;
     }
 
     private async Task ValidatePendingResidentCompanionManifestationRealmContextAsync(List<ValidationIssue> issues)
@@ -8545,7 +8627,7 @@ public partial class ValidationService
         JsonObject currentSoulRoot,
         List<ValidationIssue> issues)
     {
-        var baseRarityFromTurn = TryReadCurrentTurnGachaBaseRaritySync();
+        var baseRarityFromTurn = TryReadValidatedTurnGachaBaseRaritySync();
         var receiptBaseRarity = GetNodeString(receipt["baseRarity"]) ?? string.Empty;
         var receiptFinalRarity = GetNodeString(receipt["finalRarity"]) ?? string.Empty;
         var relicId = GetNodeString(receipt["relicId"]) ?? string.Empty;

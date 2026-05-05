@@ -20,6 +20,13 @@ public partial class ExplorerMode
         JsonObject? Payload,
         int? RequestIndex,
         bool IsMalformed,
+        string? Error,
+        string? RawPayload = null);
+
+    private sealed record AfterlifeStatusJsonReadResult(
+        string Path,
+        JsonObject? Root,
+        string? RawPayload,
         string? Error);
 
     private static readonly AfterlifePendingContractDefinition[] AfterlifePendingContractDefinitions =
@@ -29,7 +36,7 @@ public partial class ExplorerMode
         new(GuardianAbodeOfferingState.PendingRequestPath, "Подношение Обители", "guardianPowerEvents.reasonType=offering; ink_feathers additionally require output/ink_feather_action_result.json"),
         new(GuardianTradeRequestState.PendingRequestPath, "Торговая витрина Хранителя", "UpdateGuardians + guardians[].tradeInventory + tradeInventoryReceipts[]"),
         new(PlayerGuardianFoundationState.PendingRequestPath, "Основание собственного Хранителя", "UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory"),
-        new(SystemGuardianLibraryService.AttractionRequestPath, "Притяжение извечного Хранителя", "UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation or explicit client cancellation"),
+        new(SystemGuardianLibraryService.AttractionRequestPath, "Притяжение извечного Хранителя", "Chaos Sea-only: UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation; outside Chaos Sea preserve as wrong-realm repair-only or clear by explicit client cancellation"),
         new(AfterlifeReturnGuardService.GuardPath, "Post-life return guard", "client-owned protection guard; GM must not clear or bypass it"),
         new(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "Состав резидентов Обители", "UpdateGuardianAbodeResidents + UpdateGuardianAbodeResidentRosterReceipts"),
         new(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "Разговор/история резидента Обители", "residentInteractionLogUpdates or resident history log + matching interaction receipts"),
@@ -48,9 +55,13 @@ public partial class ExplorerMode
     private async Task ShowAfterlifeDetailedStatusAsync()
     {
         await _stateManager.RefreshGameStateAsync();
-        var soulRoot = await ReadJsonObjectForAfterlifeStatusAsync("game_state/meta/soul_state.json");
-        var guardiansRoot = await ReadJsonObjectForAfterlifeStatusAsync("game_state/meta/guardians.json");
-        var residentsRoot = await ReadJsonObjectForAfterlifeStatusAsync(GuardianAbodeResidentState.StatePath);
+        var soulStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync("game_state/meta/soul_state.json");
+        var guardiansStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync("game_state/meta/guardians.json");
+        var residentsStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync(GuardianAbodeResidentState.StatePath);
+        var shiningStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync(ShiningAbodeState.StatePath);
+        var soulRoot = soulStateRead.Root;
+        var guardiansRoot = guardiansStateRead.Root;
+        var residentsRoot = residentsStateRead.Root;
         var returnGuardRaw = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
         var shiningContext = await LoadShiningContextAsync();
         var pendingLines = await BuildAfterlifePendingContractAuditLinesAsync(includeShining: true, includeFullPayload: true);
@@ -75,6 +86,10 @@ public partial class ExplorerMode
         AppendNextLifePayloadStatusLines(lines, soulRoot);
         AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot, returnGuardRaw);
         AppendShiningStatusLines(lines, shiningContext);
+        AppendMalformedAfterlifeStateStatusLines(
+            lines,
+            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead },
+            shiningContext?.ReadIssues);
         await AppendAfterlifeProgressionStatusLinesAsync(lines);
 
         lines.Add("");
@@ -97,6 +112,9 @@ public partial class ExplorerMode
         WriteJsonAuditPanel("Полный JSON game_state/meta/soul_state.json", soulRoot, Color.Cyan1);
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardians.json", guardiansRoot, Color.Cyan1);
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardian_abode_residents.json", residentsRoot, Color.Cyan1);
+        WriteMalformedAfterlifeStateAuditPanels(
+            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead },
+            shiningContext?.ReadIssues);
         if (shiningContext != null)
         {
             WriteJsonAuditPanel("Полный JSON game_state/meta/shining_abode_state.json", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root), Color.Gold1);
@@ -108,6 +126,68 @@ public partial class ExplorerMode
         }
         await WriteAfterlifeProgressionAuditPanelsAsync();
         WaitForKey();
+    }
+
+    private static void AppendMalformedAfterlifeStateStatusLines(
+        List<string> lines,
+        IEnumerable<AfterlifeStatusJsonReadResult> stateReads,
+        IReadOnlyList<ShiningContextReadIssue>? shiningReadIssues)
+    {
+        var issues = stateReads
+            .Where(result => !string.IsNullOrWhiteSpace(result.Error))
+            .Select(result => (Path: result.Path, Error: result.Error!))
+            .ToList();
+
+        if (shiningReadIssues != null)
+        {
+            issues.AddRange(shiningReadIssues
+                .Where(issue => !string.IsNullOrWhiteSpace(issue.Error))
+                .Select(issue => (issue.Path, issue.Error)));
+        }
+
+        if (issues.Count == 0)
+            return;
+
+        lines.Add("");
+        lines.Add("[bold red]Malformed afterlife state files:[/]");
+        foreach (var issue in issues)
+        {
+            lines.Add($"  • {Markup.Escape(issue.Path)}: [red]{Markup.Escape(issue.Error)}[/]");
+            lines.Add("    Полный raw payload выведен ниже отдельной repair-only audit-панелью; GM/client не должен молча нормализовать или перезаписывать этот файл.");
+        }
+    }
+
+    private void WriteMalformedAfterlifeStateAuditPanels(
+        IEnumerable<AfterlifeStatusJsonReadResult> stateReads,
+        IReadOnlyList<ShiningContextReadIssue>? shiningReadIssues)
+    {
+        foreach (var read in stateReads.Where(result => !string.IsNullOrWhiteSpace(result.Error)))
+        {
+            WriteRawAuditPanel($"Raw malformed {read.Path}", read.RawPayload, Color.Red);
+        }
+
+        if (shiningReadIssues == null)
+            return;
+
+        foreach (var issue in shiningReadIssues.Where(issue => !string.IsNullOrWhiteSpace(issue.Error)))
+        {
+            WriteRawAuditPanel($"Raw malformed {issue.Path}", issue.RawPayload, Color.Red);
+        }
+    }
+
+    private void WriteRawAuditPanel(string title, string? rawPayload, Color? borderColor = null)
+    {
+        if (rawPayload == null)
+            return;
+
+        Write(new Panel(new Text(rawPayload))
+        {
+            Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(borderColor ?? Color.Grey),
+            Padding = new Padding(1, 1),
+            Expand = true
+        });
     }
 
     private static void AppendChaosSeaStatusLines(List<string> lines, JsonObject? guardiansRoot, JsonObject? residentsRoot, string? returnGuardRaw)
@@ -513,6 +593,11 @@ public partial class ExplorerMode
             {
                 lines.Add($"    malformed: [red]{Markup.Escape(entry.Error ?? "unknown parse error")}[/]");
                 lines.Add($"    closure/repair: {Markup.Escape(isWrongRealmShiningContract ? "repair malformed file only; do not process Shining closure from Chaos Sea" : entry.Definition.ClosureHint)}");
+                if (includeFullPayload && !string.IsNullOrWhiteSpace(entry.RawPayload))
+                {
+                    lines.Add("    raw malformed payload:");
+                    AppendIndentedRawPayloadLines(lines, entry.RawPayload, "      ");
+                }
                 continue;
             }
 
@@ -549,7 +634,7 @@ public partial class ExplorerMode
             var raw = await _fs.ReadFileAsync(definition.Path);
             if (string.IsNullOrWhiteSpace(raw))
             {
-                result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: "empty file"));
+                result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: "empty file", RawPayload: raw));
                 continue;
             }
 
@@ -563,7 +648,7 @@ public partial class ExplorerMode
                         if (ShouldSkipEmptyRequestsQueueInAfterlifeAudit(definition))
                             continue;
 
-                        result.Add(new AfterlifePendingContractAuditEntry(definition, root, null, IsMalformed: false, Error: null));
+                        result.Add(new AfterlifePendingContractAuditEntry(definition, root, null, IsMalformed: false, Error: null, RawPayload: raw));
                         continue;
                     }
 
@@ -574,21 +659,22 @@ public partial class ExplorerMode
                             requests[i] as JsonObject,
                             i,
                             IsMalformed: requests[i] is not JsonObject,
-                            Error: requests[i] is JsonObject ? null : "request entry is not an object"));
+                            Error: requests[i] is JsonObject ? null : "request entry is not an object",
+                            RawPayload: requests[i]?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) ?? raw));
                     }
                 }
                 else if (node is JsonObject obj)
                 {
-                    result.Add(new AfterlifePendingContractAuditEntry(definition, obj, null, IsMalformed: false, Error: null));
+                    result.Add(new AfterlifePendingContractAuditEntry(definition, obj, null, IsMalformed: false, Error: null, RawPayload: raw));
                 }
                 else
                 {
-                    result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: "root is not an object"));
+                    result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: "root is not an object", RawPayload: raw));
                 }
             }
             catch (Exception ex)
             {
-                result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: ex.GetType().Name));
+                result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: ex.GetType().Name, RawPayload: raw));
             }
         }
 
@@ -647,19 +733,31 @@ public partial class ExplorerMode
     }
 
     private async Task<JsonObject?> ReadJsonObjectForAfterlifeStatusAsync(string path)
+        => (await ReadJsonObjectForAfterlifeStatusResultAsync(path)).Root;
+
+    private async Task<AfterlifeStatusJsonReadResult> ReadJsonObjectForAfterlifeStatusResultAsync(string path)
     {
         var raw = await _fs.ReadFileAsync(path);
         if (string.IsNullOrWhiteSpace(raw))
-            return null;
+            return new AfterlifeStatusJsonReadResult(path, null, raw, null);
 
         try
         {
-            return JsonNode.Parse(raw) as JsonObject;
+            var root = JsonNode.Parse(raw) as JsonObject;
+            return root == null
+                ? new AfterlifeStatusJsonReadResult(path, null, raw, "root is not an object")
+                : new AfterlifeStatusJsonReadResult(path, root, raw, null);
         }
-        catch
+        catch (Exception ex)
         {
-            return null;
+            return new AfterlifeStatusJsonReadResult(path, null, raw, ex.GetType().Name);
         }
+    }
+
+    private static void AppendIndentedRawPayloadLines(List<string> lines, string rawPayload, string prefix)
+    {
+        foreach (var payloadLine in rawPayload.Replace("\r\n", "\n").Split('\n'))
+            lines.Add($"{prefix}[dim]{Markup.Escape(payloadLine.TrimEnd('\r'))}[/]");
     }
 
 }

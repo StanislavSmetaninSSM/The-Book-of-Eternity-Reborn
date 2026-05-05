@@ -1559,6 +1559,10 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
                 ["createdAtTurn"] = 17,
                 ["createdAtUtc"] = "2026-04-16T12:59:00Z"
             })
+        },
+        gachaBaseResult: new JsonObject
+        {
+            ["baseRarity"] = "Uncommon"
         });
         await WriteNodeAsync("input/turn_request.json", new JsonObject
         {
@@ -1567,7 +1571,7 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
             ["turnNumber"] = 12,
             ["gachaBaseResult"] = new JsonObject
             {
-                ["baseRarity"] = "Uncommon"
+                ["baseRarity"] = "Common"
             }
         });
 
@@ -2752,7 +2756,8 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
         JsonObject preTurnResidentRoot,
         JsonObject preTurnSoulRoot,
         JsonObject requestRoot,
-        IReadOnlyDictionary<string, JsonObject>? additionalTrackedFiles = null)
+        IReadOnlyDictionary<string, JsonObject>? additionalTrackedFiles = null,
+        JsonObject? gachaBaseResult = null)
     {
         const string requestSnapshotPath = "game_state/control/pending_turn_snapshot/pre_shining_core_action_request.json";
         const string shiningSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/shining_abode_state.json";
@@ -2831,6 +2836,8 @@ public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
             ["sourceLabel"] = "shining-core-resolution-tests",
             ["manifestPayloadHash"] = string.Empty
         };
+        if (gachaBaseResult != null)
+            manifest["gachaBaseResult"] = gachaBaseResult.DeepClone();
 
         manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
         await WriteNodeAsync("game_state/control/pending_turn_snapshot.json", manifest);

@@ -1298,6 +1298,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("preparedIncarnationPackage", doc, StringComparison.Ordinal);
             Assert.Contains("system_guardian_attraction.json", doc, StringComparison.Ordinal);
         }
+        Assert.Contains("Ordinary Chaos Sea only", matrix, StringComparison.Ordinal);
+        Assert.Contains("do not create, close, or repair this from Shining Abode", matrix, StringComparison.Ordinal);
 
         foreach (var doc in new[] { matrix, apiSpec, examples, taskGuide, launcherGenerator, launcherGenerated })
         {
@@ -1343,6 +1345,23 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("Shining forge", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("rerolls/freeShape/freeRetune", doc, StringComparison.Ordinal);
             Assert.Contains("pending_shining_abode_actions.json", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void GuardianQuestOriginMetadataIsDocumentedForAfterlifeHooks()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
+        {
+            Assert.Contains("lore_research_hook", doc, StringComparison.Ordinal);
+            Assert.Contains("lore_research_special_line", doc, StringComparison.Ordinal);
+            Assert.Contains("archive_consultation_hook", doc, StringComparison.Ordinal);
+            Assert.Contains("sourceProjectId", doc, StringComparison.Ordinal);
         }
     }
 

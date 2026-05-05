@@ -119,7 +119,12 @@ internal static class ShiningTradeService
             DerivedServiceMultiplier = serviceMultiplier
         };
 
-        if (!tradeBlocked &&
+        if (requestState.IsMalformed)
+        {
+            inventoryReady = false;
+            inventoryStatusMessage = "Ожидающий торговый запрос сияющей фракции повреждён. Новая витрина и покупки заблокированы, пока этот контракт не будет исправлен или очищен.";
+        }
+        else if (!tradeBlocked &&
             matchingRequest != null &&
             ShiningTradeRequestState.HasReadyInventoryForCurrentContract(faction, matchingRequest))
         {
@@ -390,6 +395,9 @@ internal static class ShiningTradeService
             return new ShiningTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
         if (!view.InventoryReady)
             return new ShiningTradeOperationResult(false, false, view.InventoryStatusMessage ?? "Витрина сияющей фракции ещё не подготовлена.");
+        var pendingRequestState = await ShiningTradeRequestState.ReadRequestsStateAsync(fs);
+        if (pendingRequestState.IsMalformed)
+            return new ShiningTradeOperationResult(false, false, "Ожидающий торговый запрос сияющей фракции повреждён. Покупка заблокирована до repair/cleanup pending_shining_trade_inventory_requests.json.");
 
         var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
         var residentRoot = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);

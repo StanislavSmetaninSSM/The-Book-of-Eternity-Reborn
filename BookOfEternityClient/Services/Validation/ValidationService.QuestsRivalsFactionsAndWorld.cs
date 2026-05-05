@@ -2529,6 +2529,11 @@ public partial class ValidationService
             }
         }
 
+        return TryReadValidatedTurnGachaBaseRaritySync();
+    }
+
+    private string? TryReadValidatedTurnGachaBaseRaritySync()
+    {
         var manifest = LoadValidatedCurrentPendingTurnSnapshotManifestSync();
         if (manifest?.GachaBaseResult != null &&
             manifest.GachaBaseResult.TryGetPropertyValue("baseRarity", out var manifestBaseRarityNode) &&

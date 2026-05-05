@@ -2172,7 +2172,8 @@ public partial class ExplorerMode
         if (string.Equals(headActorType, "resident", StringComparison.OrdinalIgnoreCase))
         {
             var residentName = ResolveResidentLabel(residentRoot, headActorId);
-            return string.IsNullOrWhiteSpace(residentName) ? $"резидент {headActorId}" : $"резидент {residentName}";
+            var label = string.IsNullOrWhiteSpace(residentName) ? headActorId : residentName;
+            return $"резидент {label} [resident:{headActorId}]";
         }
 
         if (string.Equals(headActorType, "guardian", StringComparison.OrdinalIgnoreCase))
@@ -2184,16 +2185,18 @@ public partial class ExplorerMode
             var guardianLabel = PlayerGuardianFoundationState.IsPlayerFoundedGuardian(guardian)
                 ? "основанный хранитель"
                 : "хранитель";
-            return string.IsNullOrWhiteSpace(guardianName) ? $"{guardianLabel} {headActorId}" : $"{guardianLabel} {guardianName}";
+            var label = string.IsNullOrWhiteSpace(guardianName) ? headActorId : guardianName;
+            return $"{guardianLabel} {label} [guardian:{headActorId}]";
         }
 
         if (string.Equals(headActorType, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase))
-            return "душа игрока";
+            return "душа игрока [player_soul:player_soul]";
 
         if (string.Equals(headActorType, ShiningAbodeState.HeadActorTypeRadiantActor, StringComparison.OrdinalIgnoreCase))
         {
             var actorName = ResolveShiningPoliticalActorLabel(shiningRoot, headActorId);
-            return string.IsNullOrWhiteSpace(actorName) ? $"светозарный актор {headActorId}" : $"светозарный актор {actorName}";
+            var label = string.IsNullOrWhiteSpace(actorName) ? headActorId : actorName;
+            return $"светозарный актор {label} [radiant_actor:{headActorId}]";
         }
 
         return $"{headActorType}:{headActorId}";

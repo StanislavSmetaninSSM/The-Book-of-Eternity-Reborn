@@ -421,13 +421,11 @@ public sealed class SystemGuardianLibraryService
 
     public async Task<string> BuildReminderFragmentAsync(string? currentRealm)
     {
-        var isAfterlife = string.Equals(currentRealm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
-                          string.Equals(currentRealm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
-                          string.Equals(currentRealm, "Море Хаоса", StringComparison.OrdinalIgnoreCase) ||
-                          string.Equals(currentRealm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
+        var isAfterlife = RealmSemantics.IsAfterlifeRealm(currentRealm);
         if (!isAfterlife)
             return string.Empty;
 
+        var isChaosSea = RealmSemantics.IsChaosSea(currentRealm);
         var parts = new List<string>();
         var pendingPreset = await ReadPendingGuardianCreationPresetAsync();
         if (pendingPreset != null)
@@ -448,26 +446,47 @@ public sealed class SystemGuardianLibraryService
         var attractionState = await ReadAttractionRequestStateAsync();
         if (attractionState.IsMalformed)
         {
-            parts.Add("ETERNAL GUARDIAN ATTRACTION CORRUPTION:");
-            parts.Add("  - system_guardian_attraction.json unreadable or structurally invalid.");
-            parts.Add("  - Preserve this deterministic attraction contract until validation/repair resolves it.");
+            if (isChaosSea)
+            {
+                parts.Add("ETERNAL GUARDIAN ATTRACTION CORRUPTION:");
+                parts.Add("  - system_guardian_attraction.json unreadable or structurally invalid.");
+                parts.Add("  - Preserve this deterministic attraction contract until validation/repair resolves it.");
+            }
+            else
+            {
+                parts.Add("ETERNAL GUARDIAN ATTRACTION WRONG-REALM REPAIR:");
+                parts.Add("  - system_guardian_attraction.json is unreadable or structurally invalid and current realm is not Chaos Sea.");
+                parts.Add("  - Treat this file as repair-only wrong-realm evidence; do not resolve a Shining Abode turn from it.");
+                parts.Add("  - Preserve it for client repair or explicit client cancellation.");
+            }
         }
         else if (attractionState.Request != null)
         {
             var attractionRequest = attractionState.Request;
-            parts.Add("ETERNAL GUARDIAN ATTRACTION:");
-            parts.Add("  - Player-facing roleplay term: Eternal Guardian. Technical control-file term: system_guardian_attraction.");
-            parts.Add("  - The player is deliberately seeking a specific Eternal Guardian.");
-            parts.Add("  - This attraction is deterministic for this turn. Do NOT substitute a different guardian.");
-            parts.Add("  - If the guardian is not yet materialized in the session, create and materialize them from this preset now.");
-            parts.Add("  - If the guardian already exists, route the soul to that guardian and synchronize activeGuardian/current abode state.");
-            parts.Add("  - The result must point to the requested guardian, not a nearby approximation.");
-            parts.Add("  - Keep the guardian's canonical identity stable even if their visible manifestation changes.");
-            parts.Add($"  - Target preset: {attractionRequest.TargetPresetDisplayName} ({attractionRequest.TargetPresetId}, {attractionRequest.SourceLibrary}, v{attractionRequest.TargetPresetVersion})");
-            if (!string.IsNullOrWhiteSpace(attractionRequest.TargetSummary))
-                parts.Add($"  - Summary: {attractionRequest.TargetSummary}");
-            parts.Add("  - Rendered dossier:");
-            parts.Add(IndentMultiline(attractionRequest.RenderedPromptPackage, "    "));
+            if (isChaosSea)
+            {
+                parts.Add("ETERNAL GUARDIAN ATTRACTION:");
+                parts.Add("  - Player-facing roleplay term: Eternal Guardian. Technical control-file term: system_guardian_attraction.");
+                parts.Add("  - The player is deliberately seeking a specific Eternal Guardian.");
+                parts.Add("  - This attraction is deterministic for this turn. Do NOT substitute a different guardian.");
+                parts.Add("  - If the guardian is not yet materialized in the session, create and materialize them from this preset now.");
+                parts.Add("  - If the guardian already exists, route the soul to that guardian and synchronize activeGuardian/current abode state.");
+                parts.Add("  - The result must point to the requested guardian, not a nearby approximation.");
+                parts.Add("  - Keep the guardian's canonical identity stable even if their visible manifestation changes.");
+                parts.Add($"  - Target preset: {attractionRequest.TargetPresetDisplayName} ({attractionRequest.TargetPresetId}, {attractionRequest.SourceLibrary}, v{attractionRequest.TargetPresetVersion})");
+                if (!string.IsNullOrWhiteSpace(attractionRequest.TargetSummary))
+                    parts.Add($"  - Summary: {attractionRequest.TargetSummary}");
+                parts.Add("  - Rendered dossier:");
+                parts.Add(IndentMultiline(attractionRequest.RenderedPromptPackage, "    "));
+            }
+            else
+            {
+                parts.Add("ETERNAL GUARDIAN ATTRACTION WRONG-REALM REPAIR:");
+                parts.Add("  - system_guardian_attraction.json is Chaos Sea-only and current realm is not Chaos Sea.");
+                parts.Add("  - Treat this file as repair-only evidence; do not close this Shining Abode turn from it.");
+                parts.Add($"  - Target preset retained for audit: {attractionRequest.TargetPresetDisplayName} ({attractionRequest.TargetPresetId}, {attractionRequest.SourceLibrary}, v{attractionRequest.TargetPresetVersion})");
+                parts.Add("  - Preserve it for client repair or explicit client cancellation.");
+            }
         }
 
         return string.Join(Environment.NewLine, parts.Where(part => !string.IsNullOrWhiteSpace(part)));

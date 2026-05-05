@@ -1202,6 +1202,7 @@ Input fragments:
 Correct GM procedure:
 - For consultation, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = consultation`, `status`, `guardianId`, and at least one machine-readable outcome field.
 - Accepted consultation must also create a completed `lore_research` Guardian project with `projectOrigin = archive_consultation`, `consultationRequestId`, `consultationArchiveId`, and `projectOutcomeAudit` matching the resolution fields.
+- If that consultation creates a Guardian quest hook, the quest record in `questManagement.availableQuests`/`activeQuests`/`completedQuests` must carry `questOrigin = archive_consultation_hook` and `sourceProjectId = archive_consult_project_azalia_241`. Ordinary lore-research hooks use `questOrigin = lore_research_hook`; special lore-research lines use `questOrigin = lore_research_special_line`.
 - For project fuel, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = project_fuel`, `targetProjectId`, `status`, `resultMode`, and `resultAmount > 0`.
 - For project fuel, `archiveEntryType = lore_fragment` may resolve only as `resultMode = project_work`; `archiveEntryType = secret_record` may resolve only as `resultMode = pressure_relief`.
 - Accepted archive entries are consumed/resolved by canonical archive state; rejected/cancelled entries return to availability.
@@ -3958,7 +3959,7 @@ Global forge constants:
   Service multiplier by factionStrength: 0..24 => 0.75, 25..49 => 1.0, 50..74 => 1.25, 75..100 => 1.5.
   Rarity/band ladder: common -> uncommon -> rare -> epic -> legendary; numeric bands increment by +1.
   Minimum property counts after rarity uplift: common 1, uncommon 2, rare 3, epic 4, legendary 5.
-  Relic refinement entitlements consumed by forge must end as consumed(consumedAtTurn/consumedAtUtc) or expired(expiredAtTurn/expiredAtUtc), never remain pending after use.
+  Relic refinement entitlements consumed by forge must end as consumed(consumedAtTurn/consumedAtUtc), never remain pending after use. Do not write expired for relicRefinementEntitlements; expired(expiredAtTurn/expiredAtUtc) belongs only to supported route/lore/descent deferred effect arrays.
 
 forge_relic.reshape
   Requires: relic.formTag exists, targetFormTag is non-empty and different.
@@ -5173,7 +5174,7 @@ Why this is valid:
 20. VALID — SYSTEM ETERNAL GUARDIAN ATTRACTION
 ==================================================
 
-This example is for a deterministic Eternal Guardian attraction. The player-facing fiction is "I seek this Eternal Guardian." The technical contract is `game_state/control/system_guardian_attraction.json`, often paired with `guardians.json.pendingGuardianCreation.mode = system_preset`.
+This example is for a deterministic Eternal Guardian attraction from ordinary Chaos Sea. The player-facing fiction is "I seek this Eternal Guardian." The technical contract is `game_state/control/system_guardian_attraction.json`, often paired with `guardians.json.pendingGuardianCreation.mode = system_preset`; do not create or resolve it from Shining Abode.
 
 The GM must not improvise a nearby Guardian archetype. The result must point to the requested preset and persist `sourcePreset` on the materialized Guardian.
 
@@ -6085,7 +6086,7 @@ The GM does not author this object during afterlife turns. Most families are con
 - pendingDescentEffects.status = pending_resident_descent -> later companion manifestation/descent closure.
 - relicRefinementEntitlements.status = pending_relic_entitlement is the explicit Shining exception: Shining forge previews/requests may consume rerolls/freeShape/freeRetune in Shining Abode. The GM still closes only the resulting pending_shining_abode_actions.json forge request through coreActionReceipts[] and canonical Soul/Shining state; do not author pendingShiningBlessingEffects directly.
 - Terminal status consumed -> preserve consumedAtTurn and consumedAtUtc.
-- Terminal status expired -> preserve expiredAtTurn and expiredAtUtc.
+- Do not use Terminal status expired for relicRefinementEntitlements. Expired with expiredAtTurn/expiredAtUtc is only for supported route/lore/descent deferred effect arrays.
 ```
 
 Guardian correction lifecycle and `soul_preparation`:

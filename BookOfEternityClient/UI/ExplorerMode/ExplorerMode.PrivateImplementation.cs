@@ -304,6 +304,14 @@ public partial class ExplorerMode
 
     private async Task StartSystemGuardianAttractionAsync()
     {
+        if (!_stateManager.CurrentState.IsInChaosSea)
+        {
+            ShowEmptyPanel(
+                "Извечные хранители",
+                "Притяжение к извечному Хранителю является Chaos Sea-only действием. В Сияющей Обители можно просматривать Хранителей, но нельзя создавать CHAOS_SEA_SYSTEM_GUARDIAN_ATTRACTION contract.");
+            return;
+        }
+
         if (_systemGuardianLibraryService == null)
         {
             ShowEmptyPanel("Извечные хранители", "Библиотека извечных хранителей недоступна");
@@ -378,8 +386,15 @@ public partial class ExplorerMode
 
         while (true)
         {
-            var choices = presets
-                .Select(preset => $"{preset.DisplayName} ({preset.Domain})")
+            var presetChoices = presets
+                .Select(preset => (
+                    Label: BuildSystemGuardianPresetChoiceLabel(preset),
+                    Identity: preset.PresetId,
+                    Preset: preset))
+                .ToList();
+            var choices = MakeUniqueChoiceLabels(presetChoices
+                    .Select(choice => (choice.Label, choice.Identity))
+                    .ToList())
                 .Append("📂 Открыть папку пользовательских извечных хранителей")
                 .Append("← Назад")
                 .ToList();
@@ -399,13 +414,22 @@ public partial class ExplorerMode
                 continue;
             }
 
-            var preset = presets.FirstOrDefault(p => choice == $"{p.DisplayName} ({p.Domain})");
-            if (preset == null)
+            var selectedIndex = choices.IndexOf(choice);
+            if (selectedIndex < 0 || selectedIndex >= presetChoices.Count)
                 continue;
 
+            var preset = presetChoices[selectedIndex].Preset;
             if (ShowSystemGuardianPresetDetail(preset))
                 return preset;
         }
+    }
+
+    private static string BuildSystemGuardianPresetChoiceLabel(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
+    {
+        var displayName = string.IsNullOrWhiteSpace(preset.DisplayName) ? preset.PresetId : preset.DisplayName;
+        var domain = string.IsNullOrWhiteSpace(preset.Domain) ? "domain не указан" : preset.Domain;
+        var abodeName = string.IsNullOrWhiteSpace(preset.AbodeName) ? "обитель не указана" : preset.AbodeName;
+        return $"{Markup.Escape(displayName)} [dim]({Markup.Escape(domain)}; presetId={Markup.Escape(preset.PresetId)}; abode={Markup.Escape(abodeName)})[/]";
     }
 
     private bool ShowSystemGuardianPresetDetail(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
@@ -760,7 +784,15 @@ public partial class ExplorerMode
 
         while (true)
         {
-            var choices = presets.Select(p => $"🛡 {p.DisplayName} ({p.Domain})").ToList();
+            var presetChoices = presets
+                .Select(preset => (
+                    Label: $"🛡 {BuildSystemGuardianPresetChoiceLabel(preset)}",
+                    Identity: preset.PresetId,
+                    Preset: preset))
+                .ToList();
+            var choices = MakeUniqueChoiceLabels(presetChoices
+                .Select(choice => (choice.Label, choice.Identity))
+                .ToList());
             choices.Add("📂 Открыть папку пользовательских извечных хранителей");
             choices.Add("← Назад");
 
@@ -779,9 +811,9 @@ public partial class ExplorerMode
                 continue;
             }
 
-            var preset = presets.FirstOrDefault(p => choice == $"🛡 {p.DisplayName} ({p.Domain})");
-            if (preset != null)
-                ShowSystemGuardianPresetDetail(preset);
+            var selectedIndex = choices.IndexOf(choice);
+            if (selectedIndex >= 0 && selectedIndex < presetChoices.Count)
+                ShowSystemGuardianPresetDetail(presetChoices[selectedIndex].Preset);
         }
     }
 
