@@ -49,6 +49,7 @@ public class GuardianPolicyContractDescriptorTests
         {
             "afterlifeArchive",
             "afterlifeArchiveUpdates",
+            "afterlifeCombatProfile",
             "archiveActionResolutions",
             "crossIncarnationData",
             "currentIncarnation",

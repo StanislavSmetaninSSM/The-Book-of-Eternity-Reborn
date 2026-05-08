@@ -138,6 +138,32 @@ public partial class GameEngine
         await RefreshRuntimeStateAsync();
     }
 
+    private async Task EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync()
+    {
+        if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
+            return;
+
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return;
+
+        try
+        {
+            var soulRoot = JsonNode.Parse(soulJson) as JsonObject;
+            var currentRealm = soulRoot?["currentRealm"]?.GetValue<string>();
+            if (!AfterlifeSpiritualConflictState.IsAfterlifeRealm(currentRealm))
+                return;
+
+            await _fs.WriteFileAtomicAsync(
+                AfterlifeSpiritualConflictState.StatePath,
+                AfterlifeSpiritualConflictState.CreateDefaultRoot().ToJsonString(JsonOpts));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось инициализировать afterlife spiritual conflict state перед snapshot.");
+        }
+    }
+
 
     private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,
         RollbackSnapshot? rollbackSnapshot = null,
@@ -145,6 +171,12 @@ public partial class GameEngine
     {
         await DeleteTerminalProtocolFailureRequestAsync();
         await CleanupPendingTurnSnapshotAsync();
+        var conflictStateExistedBeforeInitialization = _fs.FileExists(AfterlifeSpiritualConflictState.StatePath);
+        await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
+        await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
+            request,
+            rollbackSnapshot,
+            conflictStateExistedBeforeInitialization);
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -155,6 +187,8 @@ public partial class GameEngine
 
         foreach (var file in GuardianPolicySnapshotRequestFiles)
             rollbackBaselineFiles.Add(file);
+        if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
+            rollbackBaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
 
         foreach (var file in rollbackBaselineFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
         {
@@ -217,6 +251,29 @@ public partial class GameEngine
         }
 
         return files;
+    }
+
+    private async Task RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
+        TurnRequest request,
+        RollbackSnapshot? rollbackSnapshot,
+        bool existedBeforeInitialization)
+    {
+        if (rollbackSnapshot == null ||
+            existedBeforeInitialization ||
+            !_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
+        {
+            return;
+        }
+
+        var content = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath);
+        if (content == null)
+            return;
+
+        var backupPath = AfterlifeSpiritualConflictState.StatePath + $".rollback.{request.RequestId}.initialized";
+        await _fs.WriteFileAtomicAsync(backupPath, content);
+        rollbackSnapshot.BaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
+        rollbackSnapshot.BackupFiles[AfterlifeSpiritualConflictState.StatePath] = backupPath;
+        rollbackSnapshot.BackupHashes[AfterlifeSpiritualConflictState.StatePath] = ComputeSha256(content);
     }
 
     private async Task<Dictionary<string, string>> CaptureClientOwnedValidationHashesAsync()
@@ -296,7 +353,42 @@ public partial class GameEngine
             snapshot[relativePath] = snapshotPath;
         }
 
-        return snapshot.Count == canonicalFiles.Count ? snapshot : null;
+        if (!await TryAddOptionalCanonicalBaselineSnapshotAsync(
+                payload,
+                snapshot,
+                AfterlifeSpiritualConflictState.StatePath))
+        {
+            return null;
+        }
+
+        return snapshot.Count >= canonicalFiles.Count ? snapshot : null;
+    }
+
+    private async Task<bool> TryAddOptionalCanonicalBaselineSnapshotAsync(
+        PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload,
+        IDictionary<string, string> snapshot,
+        string relativePath)
+    {
+        if (!payload.Files.TryGetValue(relativePath, out var snapshotPath))
+            return true;
+
+        if (string.IsNullOrWhiteSpace(snapshotPath) ||
+            !PendingTurnSnapshotAuthority.IsSafeRelativePath(snapshotPath) ||
+            !payload.SnapshotFileHashes.TryGetValue(relativePath, out var expectedSnapshotHash) ||
+            string.IsNullOrWhiteSpace(expectedSnapshotHash))
+        {
+            return false;
+        }
+
+        var snapshotContent = await _fs.ReadFileAsync(snapshotPath);
+        if (string.IsNullOrWhiteSpace(snapshotContent) ||
+            !string.Equals(ComputeSha256(snapshotContent), expectedSnapshotHash, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        snapshot[relativePath] = snapshotPath;
+        return true;
     }
 
     private async Task<PendingTurnSnapshotManifest?> LoadPendingTurnSnapshotManifestAsync()

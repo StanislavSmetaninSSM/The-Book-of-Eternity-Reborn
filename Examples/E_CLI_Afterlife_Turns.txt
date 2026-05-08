@@ -1475,9 +1475,9 @@ Do not write in ordinary Chaos Sea `TriggerIncarnation`:
 - Mortal World `currentLocationData`, `worldEventsLog`, `UpdateNPCs`, `UpdateQuests`, or weather/time outputs.
 - Out-of-band `incarnation_trigger.json` after the turn has ended or after snapshot/terminal authority is gone.
 
-Guardian-forced incarnation is a different flow. It is legal only on an ordinary player-driven Chaos Sea turn as a reaction to explicit provocation against the current active Guardian, and then it must include the extra guardian-forced fields described in `TaskGuides/CLI_Step_Main.txt`.
+Guardian-forced incarnation is a different flow. It is legal only on an ordinary player-driven Chaos Sea turn with either legacy explicit provocation against the current active Guardian or current-turn resolved afterlife spiritual conflict proof. Guardian identity, current Abode, reputation threshold, and severity are evaluated from the validated pre-turn `game_state/meta/guardians.json` snapshot; same-turn Guardian edits cannot make the force legal. It must include the extra guardian-forced fields described in `TaskGuides/CLI_Step_Main.txt`.
 
-6A. VALID — GUARDIAN PROVOCATION TAG EVIDENCE
+6A. VALID — LEGACY GUARDIAN PROVOCATION TAG EVIDENCE
 ---------------------------------------------
 
 The runtime accepts exact `playerAction` tags as deterministic evidence for Guardian-forced incarnation. This is the input context, not a GM response surface:
@@ -6213,6 +6213,120 @@ Why this is valid:
 - It separates direct resident player actions from pending resident contracts.
 - It gives the GM exact tag names that the client puts into `playerAction`.
 - It routes every hidden pending-backed tag to the same canonical surfaces that validators and normalizers expect.
+
+==================================================
+EXAMPLE 24: AFTERLIFE SPIRITUAL CONFLICT
+==================================================
+
+Scenario:
+- `currentRealm = Chaos Sea`.
+- A hostile Guardian tries to force the soul toward an unwanted incarnation.
+- The player resists. This is not voluntary `TriggerIncarnation`.
+- The GM starts an afterlife spiritual conflict instead of writing Mortal combat state.
+- Conflict realm/mode is authorized from the validated pre-turn afterlife snapshot. Do not make the start legal by changing `soul_state.currentRealm` or Shining `availability`/`preparedIncarnationPackage` in the same accepted response.
+
+Correct accepted response:
+
+```json
+{
+  "response": "Лиора не может просто бросить душу во врата. Между вами раскрывается духовный поединок: не смертный бой, а спор воли, связей и права на следующий путь.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим / Mode: Mixed\n- Релевантные акторы / Relevant actors: Игрок, Лиора\n- Почему они релевантны / Why they are relevant: Лиора начинает coercive afterlife conflict, игрок сопротивляется forced incarnation.\n- Акторы вне охвата / Actors outside scope: нет\n- Почему они вне охвата / Why outside scope: Все изменяемые акторы входят в конфликт.\n\n### Игрок\n- Текущая локация / Current location: Море Хаоса, перед вратами Лиоры.\n- Ситуация / Current situation: Игрок отказывается от навязанной инкарнации.\n- Мысли / Internal thoughts: Сохранить свободу выбора и не дать Хранителю закрыть спор без поединка.\n- Действия / Intended actions: Сопротивляется давлению и удерживает позицию.\n\n### Лиора\n- Текущая локация / Current location: Море Хаоса, у собственной обители.\n- Ситуация / Current situation: Хранитель пытается продавить guardian_forced incarnation.\n- Мысли / Internal thoughts: Считает, что душа тратит время и должна быть отправлена в жизнь силой.\n- Действия / Intended actions: Начинает духовный конфликт и проверяет сопротивление души.",
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "start",
+    "conflictSeed": {
+      "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "status": "active",
+      "resolutionState": "active",
+      "conflictPosition": "contested",
+      "playerSideStrain": "clear",
+      "oppositionSideStrain": "clear",
+      "stakes": {
+        "primary": "Whether Liora can force guardian_forced incarnation without player consent.",
+        "voluntaryIncarnation": false,
+        "coerciveIncarnationRequiresConflictLoss": true
+      },
+      "playerSide": {
+        "leadContestant": {
+          "actorType": "player",
+          "actorId": "player_soul",
+          "displayName": "Игрок",
+          "purchasedArtTierSnapshot": {
+            "guard": 1,
+            "counter": 1,
+            "incarnation_resistance": 1
+          }
+        },
+        "supporters": []
+      },
+      "oppositionSide": {
+        "leadContestant": {
+          "actorType": "guardian",
+          "actorId": "guardian_liora_001",
+          "displayName": "Лиора",
+          "actorArtTierSnapshot": {
+            "pressure": 3,
+            "force_incarnation": 2,
+            "binding": 2
+          },
+          "artAuthoritySource": "guardian_state.relationshipData + abodePower + narrative authority"
+        },
+        "supporters": []
+      },
+      "exchangeLog": []
+    }
+  }
+}
+```
+
+If the player later sends:
+
+```text
+[AFTERLIFE_SPIRITUAL_ACTION: afterlife_conflict_liora_forced_incarnation_001] Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
+```
+
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented.
+
+If the conflict ends with Лиора forcing incarnation, the accepted turn must first close the conflict with current-turn proof and only then write the forced trigger:
+
+```json
+{
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "resolve",
+    "resolution": {
+      "mode": "resolve",
+      "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+      "resolutionState": "resolved",
+      "resolvedAtTurn": 42,
+      "guardianId": "guardian_liora_001",
+      "operationType": "force_incarnation",
+      "playerOutcome": "lost",
+      "resolutionKind": "player_loss",
+      "summary": "Лиора выиграла духовный конфликт о навязанном воплощении; душа не дала добровольного согласия."
+    }
+  },
+  "TriggerIncarnation": {
+    "worldDescription": "Новая жизнь, выбранная Лиорой как принудительное следствие конфликта.",
+    "characterDescription": "Душа просыпается в новом теле.",
+    "circumstances": "Принудительное воплощение после проигранного afterlife spiritual conflict.",
+    "source": "guardian_forced",
+    "guardianId": "guardian_liora_001",
+    "severityBand": "harsh",
+    "reason": "Поражение в духовном конфликте о forced incarnation.",
+    "provocationSummary": "Нет добровольного согласия; proof находится в recentConflicts[] текущего хода."
+  }
+}
+```
+
+`resolvedAtTurn` must be the current accepted turn, not a future turn and not an old conflict. This conflict proof replaces only the legacy `[GUARDIAN_PROVOCATION]` evidence requirement; Guardian identity, current Abode, negative reputation, return guard, validated snapshot authority, and severity rules still apply from the validated pre-turn Guardian snapshot, not from same-turn `guardians.json` edits. Do not leave `activeConflict.resolutionState = "resolved"` or `"repair_cancelled"`; terminal states must be produced by `mode=resolve` or `mode=repair_cancel`, with `activeConflict=null`.
+
+Why this is valid:
+- The GM starts the conflict from roleplay; the client did not pre-create a combat encounter.
+- The response uses `afterlifeSpiritualConflictUpdate`, which maps to `game_state/meta/afterlife_spiritual_conflict_state.json`.
+- It distinguishes coercive `guardian_forced` incarnation from voluntary `TriggerIncarnation`.
+- It uses side-vs-side fields, not root `opponent`, `playerStrain`, or `opponentStrain`.
+- It avoids `enemiesData`, `alliesData`, `combat_log_markdown`, HP, energy, XP, Mortal skills, Mortal NPCs, and Mortal world files.
 
 ==================================================
 COMMON INVALID PATTERNS

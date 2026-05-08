@@ -224,10 +224,23 @@ public partial class ValidationService
                 "afterlifeArchiveUpdates",
                 "soulName", "previousSoulNames", "currentRealm", "currentIncarnation", "enlightenment", "soulProgression",
                 "inkFeathers", "soulRelics", "afterlifeArchive", "livesHistory", "crossIncarnationData", "currentTier",
-                "soulImprint", "pendingMemoryLegacy", ShiningBlessingEffectState.SoulStateProperty,
+                "soulImprint", "pendingMemoryLegacy", AfterlifeSpiritualConflictState.SoulStateProfileProperty,
+                ShiningBlessingEffectState.SoulStateProperty,
                 PlayerGuardianFoundationState.SoulStateGuardianIdProperty,
                 PlayerGuardianFoundationState.SoulStateFoundationStatusProperty
             }, issues, ValidateMetaMiscContract);
+        await ValidateFlexibleStateFile(AfterlifeSpiritualConflictState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", "activeConflict", "recentConflicts", "lastInvalidUpdate",
+                "lastInvalidUpdateReason", "lastInvalidUpdateAtUtc", "_lastUpdated"
+            }, issues, ValidateMetaMiscContract);
+        await ValidateStrictTopLevelObjectFileAsync(AfterlifeSpiritualConflictState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", "activeConflict", "recentConflicts", "lastInvalidUpdate",
+                "lastInvalidUpdateReason", "lastInvalidUpdateAtUtc", "_lastUpdated"
+            }, issues);
         await ValidateFlexibleStateFile("game_state/meta/guardians.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -6351,6 +6364,8 @@ public partial class ValidationService
         if (!IncarnationTriggerContract.TryParse(json, out var payload))
             return;
 
+        await ValidateIncarnationTriggerHasNoActiveSpiritualConflictAsync(issues);
+
         var preTurnRealm = await ResolveGuardianValidatedPreTurnRealmForContextAsync(
             "game_state/control/incarnation_trigger.json",
             issues,
@@ -6493,6 +6508,34 @@ public partial class ValidationService
             await ValidateForcedGuardianIncarnationContextAsync(payload, issues);
     }
 
+    private async Task ValidateIncarnationTriggerHasNoActiveSpiritualConflictAsync(List<ValidationIssue> issues)
+    {
+        var conflictJson = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath);
+        if (string.IsNullOrWhiteSpace(conflictJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(conflictJson) is JsonObject root &&
+                root["activeConflict"] is JsonObject)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/control/incarnation_trigger.json",
+                    IssueSeverity.Error,
+                    "TriggerIncarnation нельзя закрывать, пока afterlife spiritual conflict остается активным.",
+                    code: "incarnation_trigger_active_spiritual_conflict",
+                    section: "Lifecycle",
+                    expected: $"{AfterlifeSpiritualConflictState.StatePath}.activeConflict = null",
+                    actual: "activeConflict object is still present",
+                    repairHint: "На этом же accepted turn сначала закрой конфликт через afterlifeSpiritualConflictUpdate mode=resolve или mode=repair_cancel. Для forced incarnation оставь current-turn proof в recentConflicts[] и только затем пиши TriggerIncarnation."));
+            }
+        }
+        catch
+        {
+            // Malformed conflict files are reported by afterlife spiritual conflict validation.
+        }
+    }
+
     private async Task ValidateForcedGuardianIncarnationContextAsync(IncarnationTriggerPayload payload, List<ValidationIssue> issues)
     {
         var manifest = await LoadRequiredValidatedCurrentPendingTurnSnapshotManifestAsync(
@@ -6517,17 +6560,22 @@ public partial class ValidationService
         }
 
         var playerAction = manifest?.PlayerAction ?? string.Empty;
-        if (manifest != null && !HasGuardianProvocationEvidence(playerAction, payload))
+        var hasLegacyProvocationEvidence = HasGuardianProvocationEvidence(playerAction, payload);
+        var conflictResolutionGuardianContext = manifest != null
+            ? await TryResolveAfterlifeConflictForcedIncarnationContextAsync(manifest, payload)
+            : null;
+        var hasConflictResolutionEvidence = conflictResolutionGuardianContext != null;
+        if (manifest != null && !hasLegacyProvocationEvidence && !hasConflictResolutionEvidence)
         {
             issues.Add(new ValidationIssue(
                 "input/turn_request.json.playerAction",
                 IssueSeverity.Error,
-                "Guardian-forced TriggerIncarnation требует явной провокации в реальном playerAction, а не только provocationSummary в trigger payload.",
+                "Guardian-forced TriggerIncarnation требует явной провокации в playerAction или current-turn proof проигранного/сданного afterlife spiritual conflict.",
                 code: "forced_incarnation_missing_player_action_provocation_evidence",
                 section: "Lifecycle",
-                expected: "playerAction with explicit provocation against the current Guardian",
+                expected: "playerAction provocation tag/keywords or resolved afterlife spiritual conflict proof for the current guardian and turn",
                 actual: string.IsNullOrWhiteSpace(playerAction) ? "missing or empty playerAction" : playerAction,
-                repairHint: "Если игрок реально не провоцировал Хранителя, убери guardian_forced incarnation. Для детерминированного разрешения используй явную провокацию в playerAction или тег [GUARDIAN_PROVOCATION: guardianId]."));
+                repairHint: "Если игрок не провоцировал Хранителя и не проиграл/сдал текущий духовный конфликт о forced incarnation, убери guardian_forced incarnation. Для legacy path используй [GUARDIAN_PROVOCATION: guardianId]; для conflict path запиши resolved recentConflicts[] proof с guardianId, resolvedAtTurn текущего хода, operationType=force_incarnation и playerOutcome=lost/surrendered/conceded."));
         }
 
         var guardJson = await _fs.ReadFileAsync(AfterlifeReturnGuardService.GuardPath);
@@ -6560,7 +6608,7 @@ public partial class ValidationService
             }
         }
 
-        var guardianContext = await TryReadCanonicalForcedGuardianIncarnationContextAsync();
+        var guardianContext = conflictResolutionGuardianContext ?? await TryReadCanonicalForcedGuardianIncarnationContextAsync();
         if (guardianContext == null)
         {
             issues.Add(new ValidationIssue(
@@ -6658,6 +6706,335 @@ public partial class ValidationService
         }
 
         return false;
+    }
+
+    private async Task<ForcedGuardianIncarnationContext?> TryResolveAfterlifeConflictForcedIncarnationContextAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        IncarnationTriggerPayload payload)
+    {
+        if (string.IsNullOrWhiteSpace(payload.GuardianId) || manifest.TurnNumber <= 0)
+            return null;
+
+        var preTurnActiveConflict = await TryReadValidatedPreTurnActiveSpiritualConflictAsync(manifest);
+        if (preTurnActiveConflict == null)
+            return null;
+
+        var preTurnConflictId = GetConflictProofNodeString(preTurnActiveConflict, "conflictId");
+        var preTurnGuardianId = TryReadConflictOppositionGuardianId(preTurnActiveConflict);
+        if (string.IsNullOrWhiteSpace(preTurnConflictId) ||
+            string.IsNullOrWhiteSpace(preTurnGuardianId) ||
+            !string.Equals(payload.GuardianId, preTurnGuardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        var preTurnGuardianContext = await TryReadValidatedPreTurnForcedGuardianIncarnationContextAsync(
+            manifest,
+            preTurnGuardianId);
+        if (preTurnGuardianContext == null)
+            return null;
+
+        var json = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath);
+        if (string.IsNullOrWhiteSpace(json))
+            return null;
+
+        try
+        {
+            var root = JsonNode.Parse(json) as JsonObject;
+            if (root?["recentConflicts"] is not JsonArray recentConflicts)
+                return null;
+
+            foreach (var item in recentConflicts.OfType<JsonObject>())
+            {
+                if (IsResolvedForcedIncarnationConflictProof(
+                        item,
+                        payload.GuardianId,
+                        manifest.TurnNumber,
+                        preTurnConflictId,
+                        preTurnGuardianId))
+                {
+                    return preTurnGuardianContext;
+                }
+            }
+        }
+        catch
+        {
+            return null;
+        }
+
+        return null;
+    }
+
+    private async Task<JsonObject?> TryReadValidatedPreTurnActiveSpiritualConflictAsync(ValidationPendingTurnSnapshotManifest manifest)
+    {
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, AfterlifeSpiritualConflictState.StatePath);
+        if (string.IsNullOrWhiteSpace(snapshotJson))
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(snapshotJson) is JsonObject root &&
+                   root["activeConflict"] is JsonObject activeConflict
+                ? activeConflict
+                : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private async Task<ForcedGuardianIncarnationContext?> TryReadValidatedPreTurnForcedGuardianIncarnationContextAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        string guardianId)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return null;
+
+        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, "game_state/meta/guardians.json");
+        if (string.IsNullOrWhiteSpace(snapshotJson))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(snapshotJson);
+            var root = doc.RootElement;
+            if (root.ValueKind != JsonValueKind.Object ||
+                !root.TryGetProperty("activeGuardian", out var activeGuardian) ||
+                activeGuardian.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            var activeGuardianId = GetFirstNonEmptyString(activeGuardian, "guardianId", "id") ?? "";
+            if (string.IsNullOrWhiteSpace(activeGuardianId) ||
+                !string.Equals(activeGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            var guardiansById = ReadGuardianStateMap(root);
+            if (!guardiansById.TryGetValue(activeGuardianId, out var canonicalGuardian))
+                return null;
+
+            var expectedAbodeId = TryReadGuardianAbodeId(canonicalGuardian) ?? "";
+            var currentAbodeId = "";
+            if (root.TryGetProperty("chaosSeaNavigation", out var navigation) &&
+                navigation.ValueKind == JsonValueKind.Object)
+            {
+                currentAbodeId = GetFirstNonEmptyString(navigation, "currentAbodeId") ?? "";
+            }
+
+            var currentReputation = TryReadGuardianCurrentReputation(canonicalGuardian) ?? 0;
+            return new ForcedGuardianIncarnationContext
+            {
+                GuardianId = activeGuardianId,
+                ExpectedAbodeId = expectedAbodeId,
+                CurrentAbodeId = currentAbodeId,
+                CurrentReputation = currentReputation,
+                IsInCurrentAbode = !string.IsNullOrWhiteSpace(expectedAbodeId) &&
+                                   string.Equals(expectedAbodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase)
+            };
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static string? TryReadConflictOppositionGuardianId(JsonObject activeConflict)
+    {
+        if (activeConflict["oppositionSide"] is not JsonObject oppositionSide ||
+            oppositionSide["leadContestant"] is not JsonObject lead ||
+            !ConflictProofStringEquals(lead, "guardian", "actorType"))
+        {
+            return null;
+        }
+
+        return GetConflictProofNodeString(lead, "actorId", "guardianId", "id");
+    }
+
+    private static bool IsResolvedForcedIncarnationConflictProof(
+        JsonObject proof,
+        string guardianId,
+        int turnNumber,
+        string preTurnConflictId,
+        string preTurnGuardianId)
+    {
+        return ConflictProofResolvedAtCurrentTurn(proof, turnNumber) &&
+               ConflictProofMatchesConflictId(proof, preTurnConflictId) &&
+               ConflictProofMatchesGuardian(proof, preTurnGuardianId) &&
+               ConflictProofMatchesGuardian(proof, guardianId) &&
+               ConflictProofIsResolved(proof) &&
+               ConflictProofIsForcedIncarnation(proof) &&
+               ConflictProofShowsPlayerLossOrConcession(proof);
+    }
+
+    private static bool ConflictProofResolvedAtCurrentTurn(JsonObject proof, int turnNumber)
+    {
+        var resolvedAtTurn = GetConflictProofNodeInt(proof, "resolvedAtTurn", "turnNumber", "turn");
+        return resolvedAtTurn == turnNumber;
+    }
+
+    private static bool ConflictProofMatchesConflictId(JsonObject proof, string conflictId)
+    {
+        return ConflictProofStringEquals(proof, conflictId, "conflictId", "id");
+    }
+
+    private static bool ConflictProofMatchesGuardian(JsonObject proof, string guardianId)
+    {
+        var sawGuardianSpecificReference = false;
+        foreach (var propertyName in new[]
+                 {
+                     "guardianId",
+                     "forcedByGuardianId",
+                     "oppositionGuardianId",
+                     "oppositionLeadActorId"
+                 })
+        {
+            var reference = GetConflictProofNodeString(proof, propertyName);
+            if (string.IsNullOrWhiteSpace(reference))
+                continue;
+
+            sawGuardianSpecificReference = true;
+            if (!string.Equals(reference, guardianId, StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
+
+        if (sawGuardianSpecificReference)
+            return true;
+
+        var sawGenericActorReference = false;
+        foreach (var propertyName in new[]
+                 {
+                     "resolvedActorId",
+                     "oppositionActorId",
+                     "actorId"
+                 })
+        {
+            var reference = GetConflictProofNodeString(proof, propertyName);
+            if (string.IsNullOrWhiteSpace(reference))
+                continue;
+
+            sawGenericActorReference = true;
+            if (!string.Equals(reference, guardianId, StringComparison.OrdinalIgnoreCase))
+                return false;
+        }
+
+        if (sawGenericActorReference)
+            return true;
+
+        if (proof["oppositionSide"] is JsonObject oppositionSide &&
+            oppositionSide["leadContestant"] is JsonObject lead &&
+            ConflictProofStringEquals(lead, "guardian", "actorType") &&
+            ConflictProofStringEquals(lead, guardianId, "actorId", "guardianId", "id"))
+        {
+            return true;
+        }
+
+        if (proof["oppositionLeadContestant"] is JsonObject oppositionLead &&
+            ConflictProofStringEquals(oppositionLead, "guardian", "actorType") &&
+            ConflictProofStringEquals(oppositionLead, guardianId, "actorId", "guardianId", "id"))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool ConflictProofIsResolved(JsonObject proof) =>
+        ConflictProofStringEquals(proof, "resolve", "mode") &&
+        ConflictProofStringEquals(proof, "resolved", "resolutionState", "status");
+
+    private static bool ConflictProofIsForcedIncarnation(JsonObject proof)
+    {
+        return ConflictProofStringEquals(proof, "force_incarnation", "operationType") ||
+               ConflictProofStringEquals(proof, "force_incarnation", "finalOperationType");
+    }
+
+    private static bool ConflictProofShowsPlayerLossOrConcession(JsonObject proof)
+    {
+        if (ConflictProofContainsAnyToken(
+                proof,
+                new[] { "playerOutcome", "playerSideOutcome", "outcome", "resolutionKind", "result" },
+                "lost",
+                "loss",
+                "player_loss",
+                "player_lost",
+                "surrendered",
+                "surrender",
+                "player_surrender",
+                "conceded",
+                "concession",
+                "player_concession"))
+        {
+            return true;
+        }
+
+        var winningSide = GetConflictProofNodeString(proof, "winningSide", "winnerSide");
+        var losingSide = GetConflictProofNodeString(proof, "losingSide", "loserSide");
+        return IsConflictProofToken(winningSide, "opposition", "oppositionSide", "guardian") &&
+               IsConflictProofToken(losingSide, "player", "playerSide", "soul");
+    }
+
+    private static bool ConflictProofStringEquals(JsonObject root, string expected, params string[] propertyNames)
+    {
+        var value = GetConflictProofNodeString(root, propertyNames);
+        return string.Equals(value, expected, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ConflictProofContainsAnyToken(JsonObject root, IEnumerable<string> propertyNames, params string[] acceptedTokens)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            if (IsConflictProofToken(GetConflictProofNodeString(root, propertyName), acceptedTokens))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsConflictProofToken(string? value, params string[] acceptedTokens)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return acceptedTokens.Any(token => string.Equals(value, token, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string? GetConflictProofNodeString(JsonObject root, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            if (root[propertyName] is JsonValue value &&
+                value.TryGetValue<string>(out var text) &&
+                !string.IsNullOrWhiteSpace(text))
+            {
+                return text.Trim();
+            }
+        }
+
+        return null;
+    }
+
+    private static int GetConflictProofNodeInt(JsonObject root, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            if (root[propertyName] is not JsonValue value)
+                continue;
+
+            if (value.TryGetValue<int>(out var number))
+                return number;
+
+            if (value.TryGetValue<string>(out var text) &&
+                int.TryParse(text, out var parsed))
+            {
+                return parsed;
+            }
+        }
+
+        return 0;
     }
 
     private async Task<ForcedGuardianIncarnationContext?> TryReadCanonicalForcedGuardianIncarnationContextAsync()

@@ -133,6 +133,7 @@ internal static class GuardianPolicyContracts
         "livesHistory",
         "soulImprint",
         "pendingMemoryLegacy",
+        AfterlifeSpiritualConflictState.SoulStateProfileProperty,
         ShiningBlessingEffectState.SoulStateProperty,
         PlayerGuardianFoundationState.SoulStateGuardianIdProperty,
         PlayerGuardianFoundationState.SoulStateFoundationStatusProperty
@@ -155,6 +156,7 @@ internal static class GuardianPolicyContracts
         "livesHistory",
         "soulImprint",
         "pendingMemoryLegacy",
+        AfterlifeSpiritualConflictState.SoulStateProfileProperty,
         ShiningBlessingEffectState.SoulStateProperty,
         PlayerGuardianFoundationState.SoulStateGuardianIdProperty,
         PlayerGuardianFoundationState.SoulStateFoundationStatusProperty

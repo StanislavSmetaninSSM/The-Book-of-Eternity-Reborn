@@ -372,6 +372,9 @@ public class GameResponse
     [JsonPropertyName("archiveActionResolutions")]
     public JsonElement[]? ArchiveActionResolutions { get; set; }
 
+    [JsonPropertyName("afterlifeSpiritualConflictUpdate")]
+    public JsonElement? AfterlifeSpiritualConflictUpdate { get; set; }
+
     [JsonPropertyName("UpdateGuardians")]
     public JsonElement[]? UpdateGuardians { get; set; }
 

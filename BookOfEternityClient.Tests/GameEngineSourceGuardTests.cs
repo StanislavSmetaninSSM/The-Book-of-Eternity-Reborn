@@ -319,7 +319,8 @@ public sealed class GameEngineSourceGuardTests
 
         Assert.Contains("PendingTurnSnapshotAuthority.HasValidatedSnapshotCoverage(", source, StringComparison.Ordinal);
         Assert.DoesNotContain("if (!rollbackBaselineFiles.Contains(relativePath))", source, StringComparison.Ordinal);
-        Assert.Contains("return snapshot.Count == canonicalFiles.Count ? snapshot : null;", source, StringComparison.Ordinal);
+        Assert.Contains("TryAddOptionalCanonicalBaselineSnapshotAsync(", source, StringComparison.Ordinal);
+        Assert.Contains("return snapshot.Count >= canonicalFiles.Count ? snapshot : null;", source, StringComparison.Ordinal);
     }
 
     [Fact]

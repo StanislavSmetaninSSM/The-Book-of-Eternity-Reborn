@@ -1287,9 +1287,57 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             Tree tree => ExtractTreeText(tree),
             Grid grid => ExtractGridText(grid),
             Table table => ExtractTableText(table),
-            Markup markup => ExtractMarkupText(markup),
+            Markup markup => ExtractParagraphText(markup),
             _ => renderable.ToString() ?? string.Empty
         };
+    }
+
+
+    private string ExtractRenderedLiteralText()
+    {
+        return string.Join("\n", _console.Rendered.Select(ExtractRenderableLiteralText));
+    }
+
+
+    private static string ExtractRenderableLiteralText(IRenderable renderable)
+    {
+        return renderable switch
+        {
+            Panel panel => ExtractPanelLiteralText(panel),
+            Grid grid => ExtractGridLiteralText(grid),
+            Text text => ExtractParagraphText(text),
+            _ => string.Empty
+        };
+    }
+
+
+    private static string ExtractPanelLiteralText(Panel panel)
+    {
+        var childField = typeof(Panel).GetField("_child", BindingFlags.Instance | BindingFlags.NonPublic);
+        return childField?.GetValue(panel) is IRenderable child
+            ? ExtractRenderableLiteralText(child)
+            : string.Empty;
+    }
+
+
+    private static string ExtractGridLiteralText(Grid grid)
+    {
+        var rowTexts = new List<string>();
+        foreach (var row in grid.Rows)
+        {
+            var itemsField = row.GetType().GetField("_items", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (itemsField?.GetValue(row) is not IEnumerable<IRenderable> items)
+                continue;
+
+            foreach (var item in items)
+            {
+                var text = ExtractRenderableLiteralText(item);
+                if (!string.IsNullOrWhiteSpace(text))
+                    rowTexts.Add(text);
+            }
+        }
+
+        return string.Join("\n", rowTexts);
     }
 
 
@@ -1340,10 +1388,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
 
-    private static string ExtractMarkupText(Markup markup)
+    private static string ExtractParagraphText(object renderable)
     {
-        var paragraphField = typeof(Markup).GetField("_paragraph", BindingFlags.Instance | BindingFlags.NonPublic);
-        var paragraph = paragraphField?.GetValue(markup);
+        var paragraphField = renderable.GetType().GetField("_paragraph", BindingFlags.Instance | BindingFlags.NonPublic);
+        var paragraph = paragraphField?.GetValue(renderable);
         if (paragraph == null)
             return string.Empty;
 
