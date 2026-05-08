@@ -59,6 +59,7 @@ public partial class ExplorerMode
         var guardiansStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync("game_state/meta/guardians.json");
         var residentsStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync(GuardianAbodeResidentState.StatePath);
         var shiningStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync(ShiningAbodeState.StatePath);
+        var spiritualConflictRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeSpiritualConflictState.StatePath);
         var soulRoot = soulStateRead.Root;
         var guardiansRoot = guardiansStateRead.Root;
         var residentsRoot = residentsStateRead.Root;
@@ -86,9 +87,10 @@ public partial class ExplorerMode
         AppendNextLifePayloadStatusLines(lines, soulRoot);
         AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot, returnGuardRaw);
         AppendShiningStatusLines(lines, shiningContext);
+        AppendAfterlifeSpiritualConflictStatusLines(lines, spiritualConflictRead.Root);
         AppendMalformedAfterlifeStateStatusLines(
             lines,
-            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead },
+            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead },
             shiningContext?.ReadIssues);
         await AppendAfterlifeProgressionStatusLinesAsync(lines);
 
@@ -113,7 +115,7 @@ public partial class ExplorerMode
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardians.json", guardiansRoot, Color.Cyan1);
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardian_abode_residents.json", residentsRoot, Color.Cyan1);
         WriteMalformedAfterlifeStateAuditPanels(
-            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead },
+            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead },
             shiningContext?.ReadIssues);
         if (shiningContext != null)
         {
@@ -124,8 +126,27 @@ public partial class ExplorerMode
             WriteJsonAuditPanel("Полный JSON Shining coreActionReceipts", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["coreActionReceipts"]), Color.Gold1);
             WriteJsonAuditPanel("Полный JSON Shining gachaSystem", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gachaSystem"]), Color.Gold1);
         }
+        WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", spiritualConflictRead.Root, Color.Cyan1);
         await WriteAfterlifeProgressionAuditPanelsAsync();
         WaitForKey();
+    }
+
+    private static void AppendAfterlifeSpiritualConflictStatusLines(List<string> lines, JsonObject? conflictRoot)
+    {
+        lines.Add("");
+        lines.Add("[bold]Afterlife spiritual conflict:[/]");
+        var active = conflictRoot?["activeConflict"] as JsonObject;
+        if (active == null)
+        {
+            lines.Add("  • Активного духовного конфликта нет.");
+            return;
+        }
+
+        lines.Add($"  • Conflict id: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown")}[/]");
+        lines.Add($"  • Model/position: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"]) ?? "?")}[/] / [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"]) ?? "?")}[/]");
+        lines.Add($"  • Side strain: player=[white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"]) ?? "?")}[/], opposition=[white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"]) ?? "?")}[/]");
+        lines.Add($"  • Resolution state: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"]) ?? "?")}[/]");
+        lines.Add($"  • Exchanges: [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
     }
 
     private static void AppendMalformedAfterlifeStateStatusLines(

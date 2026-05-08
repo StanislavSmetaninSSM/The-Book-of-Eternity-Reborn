@@ -142,6 +142,19 @@
   ],
   "runtimeScenarios": [
     {
+      "id": "afterlife_spiritual_conflict_start_response",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "runner": "gameResponseDistribution",
+      "requiredText": [
+        "afterlife_conflict_liora_forced_incarnation_001",
+        "\"afterlifeSpiritualConflictUpdate\"",
+        "\"mode\": \"start\""
+      ],
+      "expectedModifiedFiles": [
+        "game_state/meta/afterlife_spiritual_conflict_state.json"
+      ]
+    },
+    {
       "id": "cli_translation_simple_player_status_response",
       "file": "CLI_Translation_Guide.md",
       "runner": "gameResponseDistribution",

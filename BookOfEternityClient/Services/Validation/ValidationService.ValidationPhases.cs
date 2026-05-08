@@ -37,6 +37,7 @@ public partial class ValidationService
         await ValidateSkillContractConsistencyAsync(issues);
         await ValidateWorldQuestCombatFactionStateFiles(issues);
         await ValidateMetaMiscStateFiles(issues);
+        await ValidateAfterlifeSpiritualConflictStateAsync(issues);
         await ValidateShiningLeadershipHeadReferencesAsync(issues);
     }
 

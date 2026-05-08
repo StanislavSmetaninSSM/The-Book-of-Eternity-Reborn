@@ -6942,6 +6942,23 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SpiritualArts_UsesCanonicalShiningRadianceFields()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_spiritual_arts_shining_radiance");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Shining radiance:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("540 XP", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("tier 3", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Shining radiance value: 0", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Status_ChaosSeaShowsNumericMemoryLegacyBonus()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
@@ -7056,6 +7073,30 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("pendingNativeFactionDiscovery", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("повреж", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("shining_abode_state.json пока отсутствует или повреждён", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_Status_ShowsRawMalformedSpiritualConflictState()
+    {
+        const string rawConflict = "{ malformed spiritual conflict payload";
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, rawConflict);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_malformed_spiritual_conflict_raw");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains(AfterlifeSpiritualConflictState.StatePath, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Raw malformed", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(rawConflict, ExtractRenderedLiteralText(), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

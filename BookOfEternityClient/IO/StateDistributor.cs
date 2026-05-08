@@ -1,7 +1,9 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.IO;
@@ -180,6 +182,21 @@ public class StateDistributor
                 continue;
             }
 
+            if (relativePath.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+                key.Equals(AfterlifeSpiritualConflictState.ResponseField, StringComparison.OrdinalIgnoreCase) &&
+                value.ValueKind == JsonValueKind.Object)
+            {
+                var existingRoot = DictionaryToJsonObject(existingData);
+                existingRoot.Remove(AfterlifeSpiritualConflictState.ResponseField);
+                var updateRoot = AfterlifeSpiritualConflictState.CloneJsonElement(value) as JsonObject ?? new JsonObject();
+                var projected = AfterlifeSpiritualConflictState.ApplyUpdate(existingRoot, updateRoot);
+                projected.Remove(AfterlifeSpiritualConflictState.ResponseField);
+                existingData.Clear();
+                foreach (var prop in projected)
+                    existingData[prop.Key] = JsonNodeToElement(prop.Value);
+                continue;
+            }
+
             existingData[key] = value;
         }
 
@@ -189,6 +206,20 @@ public class StateDistributor
         // Serialize and write
         var merged = JsonSerializer.Serialize(existingData, JsonOpts);
         await _fs.WriteFileAtomicAsync(relativePath, merged);
+    }
+
+    private static JsonObject DictionaryToJsonObject(Dictionary<string, JsonElement> data)
+    {
+        var root = new JsonObject();
+        foreach (var (key, value) in data)
+            root[key] = AfterlifeSpiritualConflictState.CloneJsonElement(value);
+        return root;
+    }
+
+    private static JsonElement JsonNodeToElement(JsonNode? node)
+    {
+        using var doc = JsonDocument.Parse(node?.ToJsonString(JsonOpts) ?? "null");
+        return doc.RootElement.Clone();
     }
 
     private async Task WriteOutputFiles(GameResponse response)

@@ -651,6 +651,8 @@ public partial class GameEngine
     {
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
 
+        await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
+
         // Create backup of game state files before sending turn (for escape-rollback)
         var backupId = DateTime.UtcNow.Ticks.ToString();
         var backedUpFiles = await CreatePreTurnBackup(backupId);
@@ -2457,7 +2459,7 @@ IF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_a
 
 ELSE IF REALM = Chaos Sea:
   FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
-  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, guardian/abode afterlife interactions, Life Evaluation only on dedicated Life Evaluation turns, and Chaos Sea TriggerIncarnation setup.
+  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, guardian/abode afterlife interactions, afterlifeSpiritualConflictUpdate, Life Evaluation only on dedicated Life Evaluation turns, and Chaos Sea TriggerIncarnation setup.
   AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.
   Sell Relic is a separate guardian trade interaction, not an Ink Feather action.
   If game_state/meta/shining_abode_state.json.availability = active and afterlife_return_guard is absent, or semantic-valid (`reason=post_life_return`) and inactive, the player MAY use the client-owned local command /reenter_shining_abode to re-enter the already-active Shining Abode. A malformed guard or a parsed guard with the wrong reason still blocks re-entry until client normalization clears it. This is an ordinary return route, not Ascension, and not a GM-authored turn.
@@ -2469,7 +2471,7 @@ ELSE IF REALM = Chaos Sea:
 
 ELSE IF REALM = Shining Abode:
   FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.
-  ALLOWED: Shining core actions, Shining trade, Shining politics, read-only Shining audit, local afterlife resource/relic flows, and guardian/resident state only when an explicit afterlife contract authorizes it.
+  ALLOWED: Shining core actions, Shining trade, Shining politics, read-only Shining audit, local afterlife resource/relic flows, afterlifeSpiritualConflictUpdate, and guardian/resident state only when an explicit afterlife contract authorizes it.
   FORBIDDEN ALSO: Life Evaluation, ordinary Chaos Sea travel, and direct incarnation setup unless this state first becomes Shining pending-bootstrap through a valid preparedIncarnationPackage.
   AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.
   Shining Abode is the ascended endgame free-roleplay zone above the Chaos Sea. It still uses afterlife/guardian systems, not Mortal World systems.
@@ -2716,7 +2718,9 @@ If game_state/control/afterlife_return_guard.json is semantic-valid (`reason = p
 If afterlife_return_guard.json is malformed, unreadable, or parsed with the wrong reason, Guardian-forced incarnation is ALSO forbidden fail-closed until client normalization clears that invalid guard state.
 Do NOT immediately kick the soul back into a new life on that protected return turn.
 Do NOT immediately kick the soul back into a new life while afterlife_return_guard.json remains invalid or unreadable either; fail closed until client normalization clears that guard state.
-Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn as a response to explicit player provocation against the current active Guardian.
+Guardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn and only with one valid proof path:
+  - legacy explicit player provocation against the current active Guardian, using playerAction evidence such as [GUARDIAN_PROVOCATION: guardianId]
+  - or current-turn afterlife spiritual conflict proof in game_state/meta/afterlife_spiritual_conflict_state.json.recentConflicts[] where mode=resolve, resolutionState=resolved, resolvedAtTurn is the current turn, guardianId matches, operationType=force_incarnation, and playerOutcome/resolutionKind shows player loss, surrender, or concession
 If you write game_state/control/incarnation_trigger.json in this forced mode, include:
   - source = guardian_forced
   - guardianId

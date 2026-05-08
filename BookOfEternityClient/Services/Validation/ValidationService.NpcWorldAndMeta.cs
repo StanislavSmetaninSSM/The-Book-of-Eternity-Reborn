@@ -387,6 +387,7 @@ public partial class ValidationService
     {
         var normalized = relativePath.Replace('\\', '/');
         return normalized.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("lore/chaos_sea/", StringComparison.OrdinalIgnoreCase);
     }
 
@@ -448,6 +449,10 @@ public partial class ValidationService
             else if (normalized.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase))
             {
                 groups.Add("guardian state");
+            }
+            else if (normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase))
+            {
+                groups.Add("afterlife spiritual conflict state");
             }
             else if (normalized.StartsWith("lore/chaos_sea/", StringComparison.OrdinalIgnoreCase))
             {
@@ -5262,6 +5267,8 @@ public partial class ValidationService
         ValidateAfterlifeArchiveData(root, contextPrefix, issues);
         ValidatePendingMemoryLegacy(root, contextPrefix, issues);
         ValidatePendingShiningBlessingEffects(root, contextPrefix, issues);
+        ValidateAfterlifeCombatProfile(root, contextPrefix, issues);
+        ValidateAfterlifeSpiritualConflictUpdateContract(root, contextPrefix, issues);
         ValidatePlayerGuardianFoundationSoulStateFields(root, contextPrefix, issues);
         ValidateGuardianCommands(root, contextPrefix, issues);
         ValidateGuardianStateData(root, contextPrefix, issues);

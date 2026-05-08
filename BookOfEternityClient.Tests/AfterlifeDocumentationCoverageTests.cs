@@ -1562,6 +1562,42 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeSpiritualConflictContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var docs = new[] { matrix, examples, apiSpec, daemonSpec, taskGuide };
+
+        foreach (var text in docs)
+        {
+            Assert.Contains("afterlifeSpiritualConflictUpdate", text, StringComparison.Ordinal);
+            Assert.Contains("game_state/meta/afterlife_spiritual_conflict_state.json", text, StringComparison.Ordinal);
+            Assert.Contains("Mortal combat", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("guardian_forced", text, StringComparison.Ordinal);
+        }
+
+        foreach (var text in new[] { matrix, examples, daemonSpec })
+        {
+            Assert.Contains("AFTERLIFE_SPIRITUAL_ACTION", text, StringComparison.Ordinal);
+            Assert.Contains("playerSideStrain", text, StringComparison.Ordinal);
+            Assert.Contains("oppositionSideStrain", text, StringComparison.Ordinal);
+            Assert.Contains("actorArtTierSnapshot", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("afterlife_spiritual_conflict_start_response", manifest, StringComparison.Ordinal);
+        Assert.Contains("afterlife_conflict_liora_forced_incarnation_001", examples, StringComparison.Ordinal);
+        Assert.Contains("resolvedAtTurn", examples, StringComparison.Ordinal);
+        Assert.Contains("operationType", examples, StringComparison.Ordinal);
+        Assert.Contains("playerOutcome", examples, StringComparison.Ordinal);
+        Assert.Contains("example 24", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-24", daemonSpec, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void AfterlifePlayerPreviewsExposeFullAuditJsonForTravelOfferingsResidentsAndShining()
     {
         var guardiansTrade = ReadRepoFile(
@@ -1695,12 +1731,13 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
 
         Assert.Contains("example 19", taskGuide, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("examples 14-23", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-24", daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 19", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 20", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 21", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 22", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 23", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("example 24", daemonScript, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
