@@ -925,7 +925,8 @@
                 "AscensionTrigger": "(boolean) Real Chaos Sea-only ascension transition. Set to true ONLY if Enlightenment is 100% and playerChoice=Ascension.
                 playerChoice: (string or null) Required only with AscensionTrigger. Must equal 'Ascension'.
                 Runtime transitions the Soul into Shining Abode, which still uses afterlife guardian/soul/meta systems.
-                Optional New Game+ from Shining Abode resets Enlightenment and Ink Feathers while preserving Soul Relics and Guardians.
+                Client-owned return_to_chaos_sea / legacy new_game_plus starts the Shining Abode New Cycle: it seals Shining Abode, returns the soul to Chaos Sea, resets Enlightenment to baseline, and preserves Ink Feathers, Soul Relics, Guardians, Shining achievements, halls, factions, and Radiance progress.
+                Client-owned /shining_treasury / /казначейство is local-only: the player may deposit only Ink Feathers, claim capped Ink Feather interest, and exchange 25 Ink Feathers -> 1 Light Spark with max 3 Light Sparks per Shining return cycle. GM must not author treasury receipts, reports, or Light Spark deposits.
                 MUST NOT be combined with TriggerLifeEnd on the same turn."
             }
 

@@ -6280,13 +6280,19 @@ Correct accepted response:
 }
 ```
 
-If the player later sends:
+If the player later sends either the explicit command-shaped action:
 
 ```text
 [AFTERLIFE_SPIRITUAL_ACTION: afterlife_conflict_liora_forced_incarnation_001] Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented.
+or ordinary roleplay prose while this conflict is still active:
+
+```text
+Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
+```
+
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented.
 
 If the conflict ends with Лиора forcing incarnation, the accepted turn must first close the conflict with current-turn proof and only then write the forced trigger:
 
@@ -6324,6 +6330,7 @@ If the conflict ends with Лиора forcing incarnation, the accepted turn must
 Why this is valid:
 - The GM starts the conflict from roleplay; the client did not pre-create a combat encounter.
 - The response uses `afterlifeSpiritualConflictUpdate`, which maps to `game_state/meta/afterlife_spiritual_conflict_state.json`.
+- Once `activeConflict` exists, ordinary player prose can advance it; `/spiritual_action` only adds an explicit conflict tag.
 - It distinguishes coercive `guardian_forced` incarnation from voluntary `TriggerIncarnation`.
 - It uses side-vs-side fields, not root `opponent`, `playerStrain`, or `opponentStrain`.
 - It avoids `enemiesData`, `alliesData`, `combat_log_markdown`, HP, energy, XP, Mortal skills, Mortal NPCs, and Mortal world files.

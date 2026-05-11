@@ -1891,16 +1891,25 @@ internal static class AfterlifeNotificationState
         };
     }
 
-    private static string DescribeShiningResolutionStatus(string? status) =>
-        (status ?? string.Empty).Trim().ToLowerInvariant() switch
+    private static string DescribeShiningResolutionStatus(string? status)
+    {
+        var token = (status ?? string.Empty).Trim();
+        var label = token.ToLowerInvariant() switch
         {
             "accepted" => "принято",
             "ready" => "готово",
             "rejected" => "отклонено",
             "refused" => "отклонено",
+            "withdrawn" => "отозвано",
             "cancelled" => "отменено",
-            _ => status ?? "?"
+            "departed_to_neutral" => "ушёл в нейтраль",
+            _ => string.IsNullOrWhiteSpace(token) ? "не указано" : token
         };
+
+        return string.IsNullOrWhiteSpace(token) || string.Equals(label, token, StringComparison.OrdinalIgnoreCase)
+            ? label
+            : $"{label} ({token})";
+    }
 
     private static string DescribeShiningCoreActionLabel(string? actionType) =>
         (actionType ?? string.Empty).Trim() switch
@@ -1925,9 +1934,9 @@ internal static class AfterlifeNotificationState
     private static string DescribeShiningRealignmentMode(string? mode) =>
         (mode ?? string.Empty).Trim().ToLowerInvariant() switch
         {
-            "accepted_transfer" => "согласованный переход",
-            "refused_transfer" => "отклонённый переход",
-            "departure_only" => "уход в нейтраль",
+            "accepted_transfer" => "согласованный переход (accepted_transfer)",
+            "refused_transfer" => "отклонённый переход (refused_transfer)",
+            "departure_to_neutral" => "уход в нейтраль (departure_to_neutral)",
             _ => mode ?? "?"
         };
 

@@ -57,6 +57,7 @@ public partial class ExplorerMode
                 choices.Add("✨ Основные действия");
                 choices.Add("🚪 Врата и благословения");
                 choices.Add("⚒ Торговля и кузня");
+                choices.Add("🏦 Казначейство");
             }
 
             if ((context.Root["gates"] is JsonObject gates && GetNodeBool(gates["hasOpenDraft"])) ||
@@ -91,6 +92,12 @@ public partial class ExplorerMode
             if (choice.Contains("Политика", StringComparison.Ordinal))
             {
                 await ShowShiningPoliticsOverview();
+                continue;
+            }
+
+            if (choice.Contains("Казначейство", StringComparison.Ordinal))
+            {
+                await ShowShiningTreasuryAsync();
                 continue;
             }
 

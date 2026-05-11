@@ -263,7 +263,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors",
-                "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem",
+                "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts"
             }, issues, ValidateShiningAbodeStateFile);
@@ -271,7 +271,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors",
-                "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem",
+                "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts"
             }, issues);

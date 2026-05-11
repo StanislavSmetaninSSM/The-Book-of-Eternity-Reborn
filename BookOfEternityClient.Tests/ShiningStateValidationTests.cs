@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -67,6 +68,126 @@ public sealed class ShiningStateValidationTests
             issues,
             issue => string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) &&
                      issue.FilePath.Contains("pendingNativeFactionDiscovery", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_NullTreasury_RaisesExpectedObject()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        root[ShiningAbodeState.TreasuryProperty] = null;
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(
+            issues,
+            issue => string.Equals(issue.Code, "expected_object", StringComparison.OrdinalIgnoreCase) &&
+                     issue.FilePath.Contains(ShiningAbodeState.TreasuryProperty, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_MissingTreasury_RemainsLegacyCompatible()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.DoesNotContain(
+            issues,
+            issue => issue.FilePath.Contains(ShiningAbodeState.TreasuryProperty, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("changed")]
+    public async Task ValidateGameStateAsync_PreTurnTreasuryIsClientOwnedAndMustBePreserved(string mutationMode)
+    {
+        var basePath = Path.Combine(Path.GetTempPath(), $"boe_shining_treasury_validation_{Guid.NewGuid():N}");
+        try
+        {
+            var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            const string sessionId = "session_shining_treasury_preserve_001";
+            const string requestId = "request_shining_treasury_preserve_001";
+            const int turnNumber = 42;
+            const string snapshotPath = $"game_state/control/pending_turn_snapshot/{ShiningAbodeState.StatePath}";
+
+            var preTurnRoot = CreateMinimalShiningStateForBlessingCardValidation();
+            preTurnRoot[ShiningAbodeState.TreasuryProperty] = new JsonObject
+            {
+                ["depositedInkFeathers"] = 250,
+                ["claimableInkFeatherInterest"] = 5,
+                ["totalInterestClaimed"] = 10,
+                ["lastInterestSettlementCycleId"] = "shining_return_7",
+                ["exchangeCycleId"] = "shining_return_7",
+                ["exchangeThisCycleLightSparks"] = 2,
+                ["exchangeHistory"] = new JsonArray(new JsonObject
+                {
+                    ["exchangeId"] = "exchange_preserved_001",
+                    ["cycleId"] = "shining_return_7",
+                    ["inkFeathersSpent"] = 50,
+                    ["lightSparksReceived"] = 2,
+                    ["rateFeathersPerSpark"] = ShiningAbodeState.TreasuryFeathersPerLightSpark,
+                    ["createdAtUtc"] = "2026-05-09T00:00:00Z"
+                })
+            };
+
+            var currentRoot = preTurnRoot.DeepClone().AsObject();
+            if (string.Equals(mutationMode, "missing", StringComparison.OrdinalIgnoreCase))
+            {
+                currentRoot.Remove(ShiningAbodeState.TreasuryProperty);
+            }
+            else
+            {
+                currentRoot[ShiningAbodeState.TreasuryProperty]!["depositedInkFeathers"] = 0;
+            }
+
+            var preTurnJson = preTurnRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            await fs.WriteFileAtomicAsync(snapshotPath, preTurnJson);
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, currentRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            await fs.WriteFileAtomicAsync("input/turn_request.json", JsonSerializer.Serialize(new
+            {
+                sessionId,
+                requestId,
+                turnNumber
+            }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+            var manifest = new JsonObject
+            {
+                ["sessionId"] = sessionId,
+                ["requestId"] = requestId,
+                ["turnNumber"] = turnNumber,
+                ["requestTimestamp"] = "2026-05-09T00:00:00Z",
+                ["playerAction"] = "Shining treasury preservation validation test",
+                ["files"] = new JsonObject
+                {
+                    [ShiningAbodeState.StatePath] = snapshotPath
+                },
+                ["snapshotFileHashes"] = new JsonObject
+                {
+                    [ShiningAbodeState.StatePath] = PendingTurnSnapshotAuthority.ComputeSha256(preTurnJson)
+                },
+                ["clientOwnedValidationHashes"] = new JsonObject(),
+                ["rollbackBackups"] = new JsonObject(),
+                ["rollbackBaselineFiles"] = new JsonArray(),
+                ["sourceLabel"] = "shining-treasury-validation-tests",
+                ["manifestPayloadHash"] = string.Empty
+            };
+            manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+            await fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(fs);
+
+            var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
+            var issues = await validator.ValidateGameStateAsync();
+
+            Assert.Contains(
+                issues,
+                issue => string.Equals(issue.Code, "shining_treasury_client_owned_modified", StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            if (Directory.Exists(basePath))
+                Directory.Delete(basePath, recursive: true);
+        }
     }
 
     [Fact]

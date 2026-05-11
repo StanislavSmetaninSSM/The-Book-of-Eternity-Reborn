@@ -1060,16 +1060,61 @@ public sealed class ShiningTradeRequestStateTests
 
             var result = await ShiningTradeService.SyncAutoRefreshRequestsForCurrentCycleAsync(fs, currentTurn: 10);
             var requests = await ShiningTradeRequestState.ReadRequestsAsync(fs);
-            Assert.Equal(2, requests.Count);
-            var oldCycleRequest = Assert.Single(requests.Where(request => string.Equals(request.RequestId, "old_cycle_request", StringComparison.OrdinalIgnoreCase)));
+            Assert.Single(requests);
+            Assert.DoesNotContain(requests, request => string.Equals(request.RequestId, "old_cycle_request", StringComparison.OrdinalIgnoreCase));
             var currentCycleRequest = Assert.Single(requests.Where(request => string.Equals(request.TradeCycleId, "shining_return_2", StringComparison.OrdinalIgnoreCase)));
 
             Assert.True(result.StateChanged);
             Assert.Equal(1, result.CreatedRequestCount);
             Assert.Equal("shining_return_2", result.TradeCycleId);
-            Assert.Equal("shining_return_1", oldCycleRequest.TradeCycleId);
             Assert.Equal("shining_return_2", currentCycleRequest.TradeCycleId);
             Assert.Equal("faction_old", currentCycleRequest.FactionId);
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task SyncAutoRefreshRequestsForCurrentCycleAsync_RemovesOnlyStaleOldCycleRequestsWhenNoCurrentTradeIsAvailable()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
+            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var faction = ShiningAbodeState.EnsureFactionsArray(shiningRoot).OfType<JsonObject>().Single();
+            faction["baseStrength"] = 20;
+            faction["factionStrength"] = 20;
+            faction.Remove("tradeInventory");
+            await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
+            await ShiningTradeRequestState.WriteRequestsAsync(fs, new[]
+            {
+                new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
+                {
+                    RequestId = "old_cycle_request",
+                    FactionId = "faction_old",
+                    FactionName = "Старый Дом",
+                    TradeCycleId = "shining_return_1",
+                    DerivedTradeTier = 2,
+                    DerivedTradeSlotCount = 6,
+                    DerivedRarityCeiling = "rare",
+                    DerivedServiceMultiplier = 1.25,
+                    CreatedAtTurn = 5
+                }
+            });
+
+            var result = await ShiningTradeService.SyncAutoRefreshRequestsForCurrentCycleAsync(fs, currentTurn: 10);
+            var requests = await ShiningTradeRequestState.ReadRequestsAsync(fs);
+
+            Assert.True(result.StateChanged);
+            Assert.Equal(0, result.CreatedRequestCount);
+            Assert.Equal("shining_return_2", result.TradeCycleId);
+            Assert.Empty(requests);
+            Assert.False(fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
         }
         finally
         {

@@ -826,6 +826,34 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("game_state/factions/*", doc, StringComparison.Ordinal);
         }
 
+        foreach (var doc in new[] { launchScript, launchGenerator })
+        {
+            foreach (var forbiddenSurface in new[]
+            {
+                "game_state/core/player_status.json",
+                "game_state/player/*",
+                "game_state/inventory/*",
+                "game_state/world/*",
+                "game_state/npcs/*",
+                "game_state/combat/*",
+                "game_state/factions/*",
+                "lore/current_world/*",
+                "game_state/quests/regular_quests.json",
+                "game_state/quests/quest_history.json",
+                "game_state/quests/plot_outline.json",
+                "game_state/meta/characteristics.json",
+                "game_state/meta/vehicles.json",
+                "game_state/meta/storage_access.json",
+                "game_state/meta/player_interactions.json"
+            })
+            {
+                Assert.Contains(forbiddenSurface, doc, StringComparison.Ordinal);
+            }
+
+            Assert.Contains("no unresolved or malformed afterlife pending/control contracts", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("legacy `pendingNativeFactionDiscovery`", doc, StringComparison.Ordinal);
+        }
+
         foreach (var doc in new[] { apiSpec, daemonSpec, launchScript, launchGenerator })
         {
             Assert.Contains("client", doc, StringComparison.OrdinalIgnoreCase);
@@ -858,6 +886,11 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.DoesNotContain("GM sends player to Mortal World", apiSpec, StringComparison.Ordinal);
         Assert.Contains("validation repair", daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("runtime normalization clears", daemonSpec, StringComparison.Ordinal);
+
+        var foundationState = ReadRepoFile("BookOfEternityClient", "Services", "PlayerGuardianFoundationState.cs");
+        Assert.DoesNotContain("world events, and afterlife notifications", foundationState, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("allowed afterlife surfaces", foundationState, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Do NOT write Mortal World events or client-derived afterlife_notifications", foundationState, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1447,6 +1480,88 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("dedupeKey", doc, StringComparison.Ordinal);
             Assert.Contains("allCandidateBlessingCards", doc, StringComparison.Ordinal);
             Assert.Contains("availableBlessingCards", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void AfterlifeEnumContractsAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+
+        foreach (var value in new[]
+        {
+            ShiningFactionRequestState.RealignmentModeAcceptedTransfer,
+            ShiningFactionRequestState.RealignmentModeRefusedTransfer,
+            ShiningFactionRequestState.RealignmentModeDepartureToNeutral,
+            ShiningFactionRequestState.RequestStatusAccepted,
+            ShiningFactionRequestState.RequestStatusRefused,
+            ShiningFactionRequestState.RequestStatusWithdrawn,
+            ShiningFactionRequestState.RequestStatusDepartedToNeutral,
+            AfterlifeArchiveState.EntryTypeLoreFragment,
+            AfterlifeArchiveState.EntryTypeSecretRecord,
+            AfterlifeArchiveState.SourceKindCodex,
+            AfterlifeArchiveState.SourceKindSystem,
+            AfterlifeArchiveState.ReservationKindConsultation,
+            AfterlifeArchiveState.ReservationKindProjectFuel,
+            AfterlifeArchiveActionState.ProjectFuelResultModeProjectWork,
+            AfterlifeArchiveActionState.ProjectFuelResultModePressureRelief,
+            AfterlifeArchiveActionState.ConsultationOutcomeGuaranteedArchiveQuestCount,
+            AfterlifeArchiveActionState.ConsultationOutcomeQuestHookCount,
+            AfterlifeArchiveActionState.ConsultationOutcomeSpecialQuestLineUnlocks,
+            AfterlifeArchiveActionState.ConsultationOutcomeVisibleRivalClueBonus,
+            AfterlifeArchiveActionState.ConsultationOutcomeArchiveWarningTierBonus
+        })
+        {
+            Assert.Contains(value, matrix, StringComparison.Ordinal);
+        }
+
+        foreach (var field in new[]
+        {
+            "residentId",
+            "residentName",
+            "residentKind",
+            "originType",
+            "isPresent",
+            "sourceGuardianId",
+            "sourceAbodeId",
+            "abodeDevotionLevel",
+            "migrationState",
+            "historyLog",
+            "interactionLog"
+        })
+        {
+            Assert.Contains(field, matrix, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
+    public void ShiningTreasuryClientOwnedEconomyIsDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var helpSource = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.MetaStoryAndStatus.cs");
+        var docs = new[] { matrix, apiSpec, daemonSpec, taskGuide };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("shining_treasury", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("казначейство", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Ink Feathers", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Light Spark", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("shining_treasury", helpSource, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("казначейство", helpSource, StringComparison.OrdinalIgnoreCase);
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec })
+        {
+            Assert.Contains("client-owned", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(ShiningAbodeState.TreasuryFeathersPerLightSpark.ToString(), doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.TreasuryMaxLightSparksExchangePerCycle.ToString(), doc, StringComparison.Ordinal);
+            Assert.Contains("Light Sparks cannot be deposited", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("GM", doc, StringComparison.OrdinalIgnoreCase);
         }
     }
 

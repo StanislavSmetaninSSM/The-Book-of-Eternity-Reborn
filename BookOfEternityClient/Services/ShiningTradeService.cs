@@ -305,7 +305,11 @@ internal static class ShiningTradeService
         {
             var request = requests[index];
             if (!string.Equals(request.TradeCycleId, tradeCycleId, StringComparison.OrdinalIgnoreCase))
+            {
+                requests.RemoveAt(index);
+                requestsChanged = true;
                 continue;
+            }
 
             var faction = ShiningAbodeState.FindFaction(shiningRoot, request.FactionId);
             if (faction == null ||

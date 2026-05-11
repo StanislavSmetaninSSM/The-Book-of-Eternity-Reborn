@@ -125,6 +125,7 @@ public partial class ExplorerMode
             WriteJsonAuditPanel("Полный JSON preparedIncarnationPackage", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["preparedIncarnationPackage"]), Color.Gold1);
             WriteJsonAuditPanel("Полный JSON Shining coreActionReceipts", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["coreActionReceipts"]), Color.Gold1);
             WriteJsonAuditPanel("Полный JSON Shining gachaSystem", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gachaSystem"]), Color.Gold1);
+            WriteJsonAuditPanel("Полный JSON Shining treasury", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["treasury"]), Color.Gold1);
         }
         WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", spiritualConflictRead.Root, Color.Cyan1);
         await WriteAfterlifeProgressionAuditPanelsAsync();
@@ -404,6 +405,10 @@ public partial class ExplorerMode
         lines.Add($"  • Доступность: [white]{Markup.Escape(DescribeShiningAvailability(GetNodeString(root["availability"])))}[/]");
         lines.Add($"  • Radiance: [yellow]{GetNodeInt(root["radiance"]?["experience"])} XP[/] [dim](tier {GetNodeInt(root["radiance"]?["tier"])})[/]");
         lines.Add($"  • Light Sparks: [gold1]{GetNodeInt(root["lightSparks"])}[/]");
+        if (root["treasury"] is JsonObject treasury)
+        {
+            lines.Add($"  • Treasury: deposit [white]{GetNodeInt(treasury["depositedInkFeathers"])} 🪶[/], claimable interest [white]{GetNodeInt(treasury["claimableInkFeatherInterest"])} 🪶[/], exchanged this cycle [white]{GetNodeInt(treasury["exchangeThisCycleLightSparks"])}[/]/[white]{ShiningAbodeState.TreasuryMaxLightSparksExchangePerCycle}[/] ✨.");
+        }
         lines.Add($"  • Shining gacha: [white]{ShiningAbodeState.GetRemainingShiningGachaCharges(root)}[/]/[white]{GetNodeInt(root["gachaSystem"]?["chargesPerReturn"])}[/] [dim]({BuildShiningReturnCycleStatusLabel(root)})[/]");
         lines.Add($"  • Фракций: [white]{(root["factions"] as JsonArray)?.Count ?? 0}[/], залов: [white]{(root["halls"] as JsonArray)?.Count ?? 0}[/], ascended residents: [white]{CountAscendedShiningResidents(context.ResidentRoot)}[/]");
         lines.Add($"  • Receipts: coreAction={(root["coreActionReceipts"] as JsonArray)?.Count ?? 0}, founding={CountNestedReceipts(root, "factionFoundingReceipts")}, realignment={CountNestedReceipts(root, "factionRealignmentReceipts")}, leadership={CountNestedReceipts(root, "leadershipReceipts")}, trade={CountNestedReceipts(root, ShiningTradeRequestState.ReceiptsProperty)}.");
@@ -738,12 +743,14 @@ public partial class ExplorerMode
 
         if (node is JsonArray array)
         {
-            var values = array
+            var allValues = array
                 .Select(FormatPendingIdentityValue)
                 .Where(value => !string.IsNullOrWhiteSpace(value))
-                .Take(8)
                 .ToArray();
-            return values.Length == 0 ? null : $"[{string.Join(", ", values)}]";
+            var values = allValues.Take(8).ToList();
+            if (allValues.Length > values.Count)
+                values.Add($"+{allValues.Length - values.Count} more");
+            return values.Count == 0 ? null : $"[{string.Join(", ", values)}]";
         }
 
         if (node is JsonObject)

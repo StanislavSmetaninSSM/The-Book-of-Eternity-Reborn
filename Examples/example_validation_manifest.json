@@ -423,6 +423,15 @@
               "chargesUsedThisReturn": 0,
               "currentReturnCycleId": "shining_return_example_001",
               "gachaHistory": []
+            },
+            "treasury": {
+              "depositedInkFeathers": 0,
+              "claimableInkFeatherInterest": 0,
+              "totalInterestClaimed": 0,
+              "lastInterestSettlementCycleId": "",
+              "exchangeCycleId": "",
+              "exchangeThisCycleLightSparks": 0,
+              "exchangeHistory": []
             }
           }
         }

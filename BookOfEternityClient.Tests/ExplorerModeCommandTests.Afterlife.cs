@@ -612,6 +612,23 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Guardians_InShiningAbode_HidesChaosSeaOnlySearchActions()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _stateManager.RefreshGameStateAsync();
+
+        _console.QueueAnySelection("← Назад");
+        var result = await _explorer.TryProcessCommand("/хранители");
+
+        Assert.Equal(string.Empty, result);
+        AssertNoHiddenExplorerErrors("guardians_shining_hides_chaos_search");
+        var allChoices = _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices).ToArray();
+        Assert.DoesNotContain(allChoices, choice => choice.Contains("Искать новую обитель", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(allChoices, choice => choice.Contains("Учредить собственного Хранителя", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("Chaos Sea-only действия скрыты", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Guardians_UsesSharedGuardianReputationLabelsInChoices()
     {
@@ -6913,7 +6930,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("help_shining_wording");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Вернуться в Море Хаоса и запечатать Сияющую Обитель без запуска Нового Цикла", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Новый цикл: вернуться в Море Хаоса, сбросить Просветление, сохранить Перья и прогресс Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/shining_treasury", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("локальные Врата", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("expected state delta", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -6921,6 +6939,238 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("full/canonical JSON", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("trade lifecycle", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTreasury_BlocksCostBearingCorePendingRequests()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "core_cost_pending_001",
+                    actionType = ShiningCoreActionRequestState.ActionTypeInvestInFaction,
+                    factionId = "faction_dawn",
+                    quotedCostFeathers = 12,
+                    quotedCostLightSparks = 0,
+                    createdAtTurn = 159,
+                    createdAtUtc = "2026-04-19T10:33:00Z"
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+
+        var result = await _explorer.TryProcessCommand("/shining_treasury");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("shining_treasury_blocks_core_cost_pending");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Казначейство заблокировано", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("core_cost_pending_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTreasury_BlocksNoncanonicalFoundingPendingCosts()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await WriteJsonAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "founding_noncanonical_cost_001",
+                    proposedFactionId = "faction_noncanonical_cost",
+                    proposedHallId = "hall_noncanonical_cost",
+                    quotedCostFeathers = 0,
+                    quotedCostLightSparks = 0,
+                    createdAtTurn = 159,
+                    createdAtUtc = "2026-04-19T10:34:00Z"
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+
+        var result = await _explorer.TryProcessCommand("/shining_treasury");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("shining_treasury_blocks_noncanonical_founding_costs");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Казначейство заблокировано", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("founding_noncanonical_cost_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("noncanonical", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(ShiningFactionRequestState.FactionFoundingCostFeathers.ToString(), renderedText, StringComparison.Ordinal);
+        Assert.Contains(ShiningFactionRequestState.FactionFoundingCostLightSparks.ToString(), renderedText, StringComparison.Ordinal);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTreasury_BlocksActiveGmTurnLifecycle()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            turnNumber = 159,
+            playerAction = "Ordinary Shining turn still awaiting GM response"
+        });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", new
+        {
+            sessionId = "session_shining_treasury_pending_001",
+            turnNumber = 159
+        });
+        Directory.CreateDirectory(_fs.ResolvePath("game_state/control/pending_turn_snapshot"));
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", "{}");
+        await _stateManager.RefreshGameStateAsync();
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+
+        var result = await _explorer.TryProcessCommand("/shining_treasury");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("shining_treasury_blocks_active_gm_turn");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Казначейство заблокировано", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("активный GM-turn", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("input/turn_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_turn_snapshot", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTreasury_IgnoresEmptyStalePendingSnapshotDirectory()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        Directory.CreateDirectory(_fs.ResolvePath("game_state/control/pending_turn_snapshot"));
+        await _stateManager.RefreshGameStateAsync();
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+
+        var result = await _explorer.TryProcessCommand("/shining_treasury");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("shining_treasury_ignores_empty_snapshot_directory");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Казначейство Сияющей Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("активный GM-turn", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+    }
+
+    [Fact]
+    public async Task SaveShiningTreasuryRoots_BlocksActiveGmTurnCreatedAfterPreview()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _stateManager.RefreshGameStateAsync();
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var projectedShiningRoot = JsonNode.Parse(beforeShiningJson ?? "{}")!.AsObject();
+        var projectedSoulRoot = JsonNode.Parse(beforeSoulJson ?? "{}")!.AsObject();
+        ShiningAbodeState.EnsureTreasuryObject(projectedShiningRoot)["depositedInkFeathers"] = 999;
+        projectedSoulRoot["inkFeathers"] = new JsonObject
+        {
+            ["current"] = 0,
+            ["total"] = 0
+        };
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", new
+        {
+            sessionId = "session_shining_treasury_race_001",
+            turnNumber = 160
+        });
+
+        var method = typeof(ExplorerMode).GetMethod(
+            "SaveShiningTreasuryRootsAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var task = Assert.IsAssignableFrom<Task<bool>>(method!.Invoke(_explorer, new object?[]
+        {
+            projectedShiningRoot,
+            projectedSoulRoot,
+            null,
+            null
+        }));
+        var saved = await task;
+
+        Assert.False(saved);
+        Assert.Contains("активный GM-turn", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTreasury_BlocksLegacyNativeDiscoveryPending()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        shiningRoot["pendingNativeFactionDiscovery"] = new JsonObject
+        {
+            ["requestId"] = "legacy_discovery_pending_001",
+            ["costFeathers"] = 25,
+            ["costLightSparks"] = 20
+        };
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _stateManager.RefreshGameStateAsync();
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+
+        var result = await _explorer.TryProcessCommand("/shining_treasury");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("shining_treasury_blocks_legacy_native_discovery");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Казначейство заблокировано", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pendingNativeFactionDiscovery", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("legacy_discovery_pending_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTreasury_BlocksMalformedFoundingPendingFile()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _fs.WriteFileAtomicAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, "{");
+        await _stateManager.RefreshGameStateAsync();
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+
+        var result = await _explorer.TryProcessCommand("/shining_treasury");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("shining_treasury_blocks_malformed_founding_pending");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Казначейство заблокировано", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_shining_faction_foundings.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_ShiningTreasury_BlocksMalformedTreasuryWithoutNormalizingIt()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        shiningRoot[ShiningAbodeState.TreasuryProperty] = "malformed_treasury";
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _stateManager.RefreshGameStateAsync();
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+
+        var result = await _explorer.TryProcessCommand("/shining_treasury");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("shining_treasury_blocks_malformed_treasury");
+        Assert.Contains(_console.MarkupLines, line => line.Contains("treasury", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.MarkupLines, line => line.Contains("повреж", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
     }
 
     [Fact]

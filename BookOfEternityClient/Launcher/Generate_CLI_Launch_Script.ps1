@@ -72,13 +72,14 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
 - If `currentRealm = "Shining Abode"` and `game_state/meta/shining_abode_state.json.preparedIncarnationPackage` is a valid bootstrap package object, treat the turn as **Shining Abode pending-bootstrap handoff**:
   - ONLY `TriggerIncarnation` / `game_state/control/incarnation_trigger.json` is GM-authored in this handoff
   - preserve `preparedIncarnationPackage` exactly; the client performs Mortal bootstrap after accepting the trigger
+  - this handoff is legal only after Soul Gates have no unresolved or malformed afterlife pending/control contracts; do not close unrelated Guardian, resident, archive, offering, foundation, trade, Shining core/trade/politics, wrong-realm NPC, or legacy `pendingNativeFactionDiscovery` blockers in the same response
   - DO NOT run ordinary Guardian, Abode, Chaos Sea, Ink Feather, relic, archive, or world-setup afterlife flows
 - **null / empty / missing** → unresolved realm fault. Do not infer Chaos Sea; do not run afterlife or mortal systems until authoritative `soul_state.currentRealm` is repaired.
 - **"Chaos Sea"** / **"Море Хаоса"** → Afterlife mode (Guardians, Soul Relics, Gacha/meta systems — NO combat, NO NPCs, NO leveling)
 - **"Shining Abode"** with `availability = active` and `preparedIncarnationPackage = null`/absent → Active Shining Abode afterlife mode
 - **"Mortal World"** / other → Mortal mode (Combat, NPCs, Quests, Skills — NO Guardians, NO Abodes, NO Gacha)
 - Guardians are NOT NPCs. Use UpdateGuardians (Block 32), not UpdateNPCs.
-- File-level afterlife rule: during `Chaos Sea` / `Shining Abode`, do not write or mutate files mapped to `game_state/world/*`, `game_state/npcs/*`, or `game_state/factions/*`.
+- File-level afterlife rule: during `Chaos Sea` / `Shining Abode`, do not write or mutate Mortal World surfaces: `game_state/core/player_status.json`, `game_state/player/*`, `game_state/inventory/*`, `game_state/world/*`, `game_state/npcs/*`, `game_state/combat/*`, `game_state/factions/*`, `lore/current_world/*`, `game_state/quests/regular_quests.json`, `game_state/quests/quest_history.json`, `game_state/quests/plot_outline.json`, `game_state/meta/characteristics.json`, `game_state/meta/vehicles.json`, `game_state/meta/storage_access.json`, or `game_state/meta/player_interactions.json`.
 - Document realm check inside structured gm_thoughts_markdown scope/reasoning blocks.
 
 ### PHASE 1: WORLD ASSESSMENT

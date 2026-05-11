@@ -139,6 +139,12 @@ public partial class ValidationService
                 repairHint: "Сохраняй в Shining owner-state gachaSystem с chargesPerReturn, chargesUsedThisReturn, currentReturnCycleId и gachaHistory[]."));
         }
 
+        if (root.TryGetProperty(ShiningAbodeState.TreasuryProperty, out var treasury))
+        {
+            if (RequireObject(treasury, $"{contextPrefix}.{ShiningAbodeState.TreasuryProperty}", issues))
+                ValidateShiningTreasuryObject(treasury, $"{contextPrefix}.{ShiningAbodeState.TreasuryProperty}", issues);
+        }
+
         ValidateArrayItems(root, $"{contextPrefix}.coreActionReceipts", issues, "coreActionReceipts", ValidateShiningCoreActionReceiptObject);
         ValidateArrayItems(root, $"{contextPrefix}.factionFoundingReceipts", issues, "factionFoundingReceipts", ValidateShiningFoundingReceiptObject);
         ValidateArrayItems(root, $"{contextPrefix}.factionRealignmentReceipts", issues, "factionRealignmentReceipts", ValidateShiningRealignmentReceiptObject);
@@ -167,6 +173,65 @@ public partial class ValidationService
                     ValidateDuplicateRequestIdsInArray(leadershipHistory, $"{factionContext}.leadershipHistory", issues, "shining_leadership_duplicate_history_request_id");
             }
         }
+    }
+
+    private async Task ValidateShiningTreasuryClientOwnedStateAsync(List<ValidationIssue> issues)
+    {
+        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        JsonObject? preTurnRoot;
+        try
+        {
+            preTurnRoot = JsonNode.Parse(preTurnJson) as JsonObject;
+        }
+        catch
+        {
+            return;
+        }
+
+        if (preTurnRoot?[ShiningAbodeState.TreasuryProperty] is not JsonObject preTurnTreasury)
+            return;
+
+        var currentJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(currentJson))
+        {
+            AddShiningTreasuryClientOwnedIssue(issues, "missing_shining_state");
+            return;
+        }
+
+        JsonObject? currentRoot;
+        try
+        {
+            currentRoot = JsonNode.Parse(currentJson) as JsonObject;
+        }
+        catch
+        {
+            return;
+        }
+
+        if (currentRoot?[ShiningAbodeState.TreasuryProperty] is not JsonObject currentTreasury)
+        {
+            AddShiningTreasuryClientOwnedIssue(issues, "missing_or_invalid_treasury");
+            return;
+        }
+
+        if (!JsonNode.DeepEquals(preTurnTreasury, currentTreasury))
+            AddShiningTreasuryClientOwnedIssue(issues, "treasury_changed");
+    }
+
+    private static void AddShiningTreasuryClientOwnedIssue(List<ValidationIssue> issues, string actual)
+    {
+        issues.Add(new ValidationIssue(
+            $"{ShiningAbodeState.StatePath}.{ShiningAbodeState.TreasuryProperty}",
+            IssueSeverity.Error,
+            "Shining treasury является client-owned state и должен сохраняться неизменным в GM accepted turn.",
+            code: "shining_treasury_client_owned_modified",
+            section: "ShiningAbode",
+            expected: "current treasury object byte-equivalent to validated pre-turn treasury object",
+            actual: actual,
+            repairHint: "Не удаляй, не пересоздавай и не редактируй shining_abode_state.json.treasury в GM output; перенеси pre-turn treasury object без изменений."));
     }
 
     private void ValidateDuplicateRequestIdsInArray(JsonElement array, string contextPrefix, List<ValidationIssue> issues, string code)
@@ -1310,6 +1375,153 @@ public partial class ValidationService
                 actual: chargesUsedWithoutCycle.ToString(),
                 repairHint: "Если currentReturnCycleId пустой legacy/state bootstrap marker, сбрось chargesUsedThisReturn в 0 до первого resolved Shining gacha pull."));
         }
+    }
+
+    private void ValidateShiningTreasuryObject(JsonElement treasury, string contextPrefix, List<ValidationIssue> issues)
+    {
+        ValidateIntegerField(treasury, contextPrefix, issues, "depositedInkFeathers");
+        ValidateIntegerField(treasury, contextPrefix, issues, "claimableInkFeatherInterest");
+        ValidateIntegerField(treasury, contextPrefix, issues, "totalInterestClaimed");
+        ValidateIntegerField(treasury, contextPrefix, issues, "exchangeThisCycleLightSparks");
+        RequireTreasuryStringFieldAllowEmpty(treasury, contextPrefix, issues, "lastInterestSettlementCycleId");
+        RequireTreasuryStringFieldAllowEmpty(treasury, contextPrefix, issues, "exchangeCycleId");
+        ValidateArrayItems(treasury, $"{contextPrefix}.exchangeHistory", issues, "exchangeHistory", ValidateShiningTreasuryExchangeHistoryEntryObject);
+
+        foreach (var fieldName in new[] { "depositedInkFeathers", "claimableInkFeatherInterest", "totalInterestClaimed", "exchangeThisCycleLightSparks" })
+        {
+            if (TryReadInt(treasury, fieldName, out var value) && value < 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.{fieldName}",
+                    IssueSeverity.Error,
+                    "Shining Treasury integer fields must be non-negative",
+                    code: "shining_treasury_negative_integer",
+                    section: "ShiningAbode",
+                    expected: ">= 0",
+                    actual: value.ToString(),
+                    repairHint: "Казначейство Сияющей Обители хранит только неотрицательные integer counters."));
+            }
+        }
+
+        if (TryReadInt(treasury, "exchangeThisCycleLightSparks", out var exchangedThisCycle) &&
+            exchangedThisCycle > ShiningAbodeState.TreasuryMaxLightSparksExchangePerCycle)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.exchangeThisCycleLightSparks",
+                IssueSeverity.Error,
+                "Shining Treasury exchange cap exceeded",
+                code: "shining_treasury_exchange_cycle_cap_exceeded",
+                section: "ShiningAbode",
+                expected: $"<= {ShiningAbodeState.TreasuryMaxLightSparksExchangePerCycle}",
+                actual: exchangedThisCycle.ToString(),
+                repairHint: "Ограничь локальный обмен казначейства лимитом текущего Shining return cycle."));
+        }
+
+        foreach (var forbiddenField in new[] { "depositedLightSparks", "claimableLightSparkInterest", "lightSparkDepositHistory" })
+        {
+            if (!treasury.TryGetProperty(forbiddenField, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{forbiddenField}",
+                IssueSeverity.Error,
+                "Light Sparks cannot be deposited in Shining Treasury",
+                code: "shining_treasury_light_spark_deposit_forbidden",
+                section: "ShiningAbode",
+                expected: "Only Ink Feather deposits; Light Sparks are exchange target only",
+                actual: forbiddenField,
+                repairHint: "Удали Light Spark deposit/interest fields; Искры Света нельзя сдавать в казначейский вклад."));
+        }
+    }
+
+    private void ValidateShiningTreasuryExchangeHistoryEntryObject(JsonElement entry, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(entry, contextPrefix, issues))
+            return;
+
+        RequireString(entry, contextPrefix, issues, "exchangeId");
+        RequireString(entry, contextPrefix, issues, "cycleId");
+        RequireString(entry, contextPrefix, issues, "createdAtUtc");
+        ValidateIntegerField(entry, contextPrefix, issues, "inkFeathersSpent");
+        ValidateIntegerField(entry, contextPrefix, issues, "lightSparksReceived");
+        ValidateIntegerField(entry, contextPrefix, issues, "rateFeathersPerSpark");
+
+        var hasFeathers = TryReadInt(entry, "inkFeathersSpent", out var feathersSpent);
+        var hasSparks = TryReadInt(entry, "lightSparksReceived", out var sparksReceived);
+        var hasRate = TryReadInt(entry, "rateFeathersPerSpark", out var rate);
+
+        if (hasFeathers && feathersSpent <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.inkFeathersSpent",
+                IssueSeverity.Error,
+                "Treasury exchange must spend positive Ink Feathers",
+                code: "shining_treasury_exchange_invalid_feather_cost",
+                section: "ShiningAbode",
+                expected: "> 0",
+                actual: feathersSpent.ToString(),
+                repairHint: "Записывай только состоявшиеся локальные обмены казначейства."));
+        }
+
+        if (hasSparks && sparksReceived <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.lightSparksReceived",
+                IssueSeverity.Error,
+                "Treasury exchange must receive positive Light Sparks",
+                code: "shining_treasury_exchange_invalid_spark_gain",
+                section: "ShiningAbode",
+                expected: "> 0",
+                actual: sparksReceived.ToString(),
+                repairHint: "Записывай lightSparksReceived как положительный integer."));
+        }
+
+        if (hasRate && rate != ShiningAbodeState.TreasuryFeathersPerLightSpark)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.rateFeathersPerSpark",
+                IssueSeverity.Error,
+                "Treasury exchange rate must be canonical",
+                code: "shining_treasury_exchange_rate_mismatch",
+                section: "ShiningAbode",
+                expected: ShiningAbodeState.TreasuryFeathersPerLightSpark.ToString(),
+                actual: rate.ToString(),
+                repairHint: "Используй фиксированный консервативный курс казначейства."));
+        }
+
+        var expectedFeathers = (long)sparksReceived * ShiningAbodeState.TreasuryFeathersPerLightSpark;
+        if (hasFeathers && hasSparks && feathersSpent != expectedFeathers)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.inkFeathersSpent",
+                IssueSeverity.Error,
+                "Treasury exchange cost does not match received Light Sparks",
+                code: "shining_treasury_exchange_cost_mismatch",
+                section: "ShiningAbode",
+                expected: expectedFeathers.ToString(),
+                actual: feathersSpent.ToString(),
+                repairHint: "Синхронизируй inkFeathersSpent = lightSparksReceived * rateFeathersPerSpark."));
+        }
+    }
+
+    private static void RequireTreasuryStringFieldAllowEmpty(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        string propertyName)
+    {
+        if (root.TryGetProperty(propertyName, out var value) && value.ValueKind == JsonValueKind.String)
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.{propertyName}",
+            IssueSeverity.Error,
+            "Treasury cycle marker must be a string, empty before first synced cycle is allowed",
+            code: "shining_treasury_cycle_marker_not_string",
+            section: "ShiningAbode",
+            expected: "string (empty allowed)",
+            actual: root.TryGetProperty(propertyName, out value) ? value.ValueKind.ToString() : "missing",
+            repairHint: "Сохраняй cycle marker казначейства строкой; пустая строка допустима до первого synced Shining return cycle."));
     }
 
     private void ValidateShiningGachaHistoryEntryObject(JsonElement entry, string contextPrefix, List<ValidationIssue> issues)

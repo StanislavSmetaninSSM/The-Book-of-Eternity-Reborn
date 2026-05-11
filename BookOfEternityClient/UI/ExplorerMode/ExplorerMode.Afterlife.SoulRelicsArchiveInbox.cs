@@ -1194,12 +1194,30 @@ public partial class ExplorerMode
         var stableFactionName = GetNodeString(match.Receipt["factionName"]) ?? GetNodeString(match.Receipt["factionId"]) ?? match.FactionName;
         lines.Add($"  Фракция: [white]{Markup.Escape(stableFactionName)}[/]");
         lines.Add("  [bold]Результат:[/]");
+        lines.Add($"  requestId: [dim]{Markup.Escape(GetNodeString(match.Receipt["requestId"]) ?? "?")}[/]");
         lines.Add($"  Цикл: [dim]{Markup.Escape(GetNodeString(match.Receipt["tradeCycleId"]) ?? "?")}[/]");
         lines.Add($"  Слотов в витрине: [dim]{GetNodeInt(match.Receipt["itemCount"])}[/]");
         if (TryReadIntegerNode(match.Receipt["soldOutCount"], out var soldOutCount) && soldOutCount > 0)
         {
             var itemCount = Math.Max(GetNodeInt(match.Receipt["itemCount"]), soldOutCount);
             lines.Add($"  Распродано: [dim]{soldOutCount}/{itemCount}[/]");
+        }
+        var soldOutItems = (match.Faction["tradeInventory"]?["items"] as JsonArray)?.OfType<JsonObject>()
+            .Where(item => GetNodeBool(item["soldOut"]))
+            .ToArray() ?? Array.Empty<JsonObject>();
+        if (soldOutItems.Length > 0)
+        {
+            lines.Add("  Sold-out snapshot:");
+            foreach (var item in soldOutItems)
+            {
+                var slotId = GetNodeString(item["slotId"]) ?? "?";
+                var relicName = GetNodeString(item["relicData"]?["name"]) ??
+                                GetNodeString(item["relicData"]?["relicName"]) ??
+                                GetNodeString(item["relicData"]?["relicId"]) ??
+                                "?";
+                var price = GetNodeInt(item["priceInFeathers"]);
+                lines.Add($"    • slotId={Markup.Escape(slotId)}; relic={Markup.Escape(relicName)}; priceInFeathers={price}; soldOut=true");
+            }
         }
         lines.Add("  [bold]Связанный экран:[/] [white]/shining_abode[/]");
     }

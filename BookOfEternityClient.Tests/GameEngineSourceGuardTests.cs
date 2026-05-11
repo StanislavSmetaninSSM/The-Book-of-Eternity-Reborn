@@ -123,14 +123,14 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void NewGamePlus_MustBackupAndRestoreGameSessionBeforeDestructiveReset()
+    public void NewGamePlus_MustRouteThroughSafeShiningNewCycleReturn()
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
 
-        Assert.Contains("CreateGameSessionSafetyBackup(\"new-game-plus\")", source, StringComparison.Ordinal);
-        Assert.Contains("RestoreGameSessionSafetyBackup(backupPath)", source, StringComparison.Ordinal);
-        Assert.Contains("CleanupGameSessionSafetyBackup(backupPath)", source, StringComparison.Ordinal);
-        Assert.Contains("_fs.ClearGameState();", source, StringComparison.Ordinal);
+        Assert.Contains("private async Task HandleNewGamePlus()", source, StringComparison.Ordinal);
+        Assert.Contains("await HandleReturnToChaosSeaFromShiningAbode();", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("ExecuteNewGamePlusResetAsync", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("Чернильные Перья будут сброшены", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -435,16 +435,15 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
-    public void OrdinaryReturnToChaosSea_MustNotResetEnlightenment()
+    public void OrdinaryReturnToChaosSea_MustResetEnlightenmentAndPreserveInkFeathers()
     {
         var source = ReadGameEnginePartialSource("GameEngine.MainMenu.cs");
 
         Assert.Contains("soulRoot[\"currentRealm\"] = \"Chaos Sea\";", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("var enlightenment = soulRoot[\"enlightenment\"] as JsonObject ?? new JsonObject();", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("enlightenment[\"currentTier\"] = \"Новичок\";", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("enlightenment[\"experience\"] = 0;", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("enlightenment[\"level\"] = 0;", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("enlightenment[\"progressPercent\"] = 0;", source, StringComparison.Ordinal);
+        Assert.Contains("soulRoot[\"enlightenment\"] = CreateNewCycleEnlightenmentResetObject();", source, StringComparison.Ordinal);
+        Assert.Contains("soulRoot[\"soulProgression\"] = CreateNewCycleSoulProgressionResetObject();", source, StringComparison.Ordinal);
+        Assert.Contains("[\"inkFeathersPreserved\"] = true", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("[\"inkFeathers\"] = new { current = 0, total = 0 }", source, StringComparison.Ordinal);
     }
 
     [Fact]
