@@ -650,57 +650,106 @@ public partial class GameEngine
     private async Task ProcessPlayerTurn(string action, string? extraSystemReminder = null)
     {
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
+        RollbackSnapshot? backedUpFiles = null;
+        TurnRequest? request = null;
 
-        await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
-
-        // Create backup of game state files before sending turn (for escape-rollback)
-        var backupId = DateTime.UtcNow.Ticks.ToString();
-        var backedUpFiles = await CreatePreTurnBackup(backupId);
-        OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);
-
-        // Write turn request
-        var request = new TurnRequest
-        {
-            SessionId = _gameLoop.SessionId,
-            TurnNumber = _gameLoop.TurnNumber + 1,
-            PlayerAction = action,
-            Timestamp = DateTime.UtcNow.ToString("o"),
-            GameMode = _stateManager.Settings.AllowHistoryManipulation ? "debug" : "normal",
-            SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)
-        };
-        request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
-        await AttachPendingDiceAndGachaAsync(request);
-        var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
-
-        // Attach computed characteristics for GM reference
         try
         {
-            var computed = await _charService.ComputeAsync();
-            var charContext = new Dictionary<string, object>();
-            foreach (var (name, stat) in computed.Stats)
+            await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
+
+            // Create backup of game state files before sending turn (for escape-rollback)
+            var backupId = DateTime.UtcNow.Ticks.ToString();
+            backedUpFiles = await CreatePreTurnBackup(backupId);
+            OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);
+
+            // Write turn request
+            request = new TurnRequest
             {
-                charContext[name] = new
+                SessionId = _gameLoop.SessionId,
+                TurnNumber = _gameLoop.TurnNumber + 1,
+                PlayerAction = action,
+                Timestamp = DateTime.UtcNow.ToString("o"),
+                GameMode = _stateManager.Settings.AllowHistoryManipulation ? "debug" : "normal",
+                SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)
+            };
+            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
+            await AttachPendingDiceAndGachaAsync(request);
+            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
+
+            // Attach computed characteristics for GM reference
+            try
+            {
+                var computed = await _charService.ComputeAsync();
+                var charContext = new Dictionary<string, object>();
+                foreach (var (name, stat) in computed.Stats)
                 {
-                    standard = stat.BaseValue,
-                    permanentlyModified = stat.PermanentlyModified,
-                    modified = stat.Modified
+                    charContext[name] = new
+                    {
+                        standard = stat.BaseValue,
+                        permanentlyModified = stat.PermanentlyModified,
+                        modified = stat.Modified
+                    };
+                }
+                request.ComputedCharacteristics = new
+                {
+                    playerLevel = computed.PlayerLevel,
+                    unspentStatPoints = computed.UnspentStatPoints,
+                    stats = charContext
                 };
             }
-            request.ComputedCharacteristics = new
+            catch (Exception ex)
             {
-                playerLevel = computed.PlayerLevel,
-                unspentStatPoints = computed.UnspentStatPoints,
-                stats = charContext
-            };
+                _logger.LogWarning(ex, "Не удалось вычислить характеристики для контекста");
+            }
+
+            ClearTransientOutputFiles();
+            await _fs.WriteFileAtomicAsync("input/turn_request.json",
+                JsonSerializer.Serialize(request, JsonOpts));
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Не удалось вычислить характеристики для контекста");
+            _logger.LogDebug(ex, "Не удалось безопасно поставить ход в очередь; выполняется rollback локальной подготовки.");
+            try
+            {
+                _fs.DeleteFile("input/turn_request.json");
+            }
+            catch (Exception cleanupEx)
+            {
+                _logger.LogDebug(cleanupEx, "Не удалось удалить частичный turn_request.json после ошибки постановки хода.");
+            }
+
+            try
+            {
+                if (backedUpFiles != null)
+                {
+                    await RestorePreTurnBackup(backedUpFiles);
+                    await _explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedExplorerRollback);
+                    CleanupBackup(backedUpFiles);
+                }
+                else
+                {
+                    await _explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedExplorerRollback);
+                }
+            }
+            catch (Exception rollbackEx)
+            {
+                _logger.LogError(rollbackEx, "Не удалось восстановить локальную подготовку после ошибки постановки хода.");
+            }
+
+            try
+            {
+                await CleanupPendingTurnSnapshotAsync();
+            }
+            catch (Exception cleanupEx)
+            {
+                _logger.LogDebug(cleanupEx, "Не удалось полностью очистить частичные артефакты постановки хода.");
+            }
+
+            throw;
         }
 
-        ClearTransientOutputFiles();
-        await _fs.WriteFileAtomicAsync("input/turn_request.json",
-            JsonSerializer.Serialize(request, JsonOpts));
+        if (backedUpFiles == null || request == null)
+            throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
@@ -824,6 +873,9 @@ public partial class GameEngine
     {
         if (stagedSnapshot == null)
             return;
+
+        foreach (var validationFile in stagedSnapshot.ValidationSnapshotFiles)
+            targetSnapshot.ValidationSnapshotFiles.Add(validationFile);
 
         foreach (var trackedFile in stagedSnapshot.TrackedFiles)
         {
@@ -2475,8 +2527,7 @@ ELSE IF REALM = Shining Abode:
   FORBIDDEN ALSO: Life Evaluation, ordinary Chaos Sea travel, and direct incarnation setup unless this state first becomes Shining pending-bootstrap through a valid preparedIncarnationPackage.
   AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.
   Shining Abode is the ascended endgame free-roleplay zone above the Chaos Sea. It still uses afterlife/guardian systems, not Mortal World systems.
-  The player may use the client-owned local command /return_to_chaos_sea to return to Chaos Sea and seal the Shining Abode without triggering destructive New Game+ reset.
-  Optional New Game+ from Shining Abode is the separate destructive global reset path: it returns to Chaos Sea with Enlightenment and Ink Feathers reset while Soul Relics and Guardians are preserved.
+  The player may use the client-owned local command /return_to_chaos_sea, or the legacy alias /new_game_plus, to start the Shining Abode New Cycle: return to Chaos Sea, seal the Shining Abode, reset Enlightenment/Просветление to baseline, and preserve Ink Feathers, Soul Relics, Guardians, Shining achievements, halls, factions, and Radiance progress. There is no separate destructive global New Game+ reset path.
 
 IF REALM = Mortal World:
   FORBIDDEN: UpdateGuardians, Guardian-specific reputation/project/musings/lore commands, Abode navigation, Soul Relic Gacha, afterlife-only spending of Ink Feathers.

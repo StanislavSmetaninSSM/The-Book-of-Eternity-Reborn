@@ -266,6 +266,10 @@ internal static partial class ShiningAbodeState
         if (!string.IsNullOrWhiteSpace(pendingDiscoveryIssue))
             return pendingDiscoveryIssue;
 
+        var treasuryIssue = ValidateTreasuryShape(root);
+        if (!string.IsNullOrWhiteSpace(treasuryIssue))
+            return treasuryIssue;
+
         if (root["radiance"] is not JsonObject)
             return "radiance object повреждён или отсутствует.";
         if (root["gates"] is not JsonObject)
@@ -314,6 +318,7 @@ internal static partial class ShiningAbodeState
             ["gates"] = BuildDefaultGatesObject(),
             ["preparedIncarnationPackage"] = null,
             ["gachaSystem"] = BuildDefaultGachaSystemObject(),
+            ["treasury"] = BuildDefaultTreasuryObject(),
             ["coreActionReceipts"] = new JsonArray(),
             ["factionFoundingReceipts"] = new JsonArray(),
             ["factionRealignmentReceipts"] = new JsonArray()
@@ -473,6 +478,7 @@ internal static partial class ShiningAbodeState
         }
 
         NormalizeGachaSystemObject(gachaSystem, radianceTier);
+        NormalizeTreasuryObject(root);
 
         NormalizeReceiptArray(root, residentRoot, "coreActionReceipts");
         NormalizeReceiptArray(root, residentRoot, "factionFoundingReceipts");

@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Collections;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -141,6 +142,33 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Contains("currentRealm", ex.Message, StringComparison.OrdinalIgnoreCase);
         Assert.False(_fs.FileExists(PendingTurnStateService.PendingDiceStatePath));
         Assert.False(_fs.FileExists("input/turn_request.json"));
+    }
+
+    [Fact]
+    public void TryDescribeMalformedPendingWorldSetup_RejectsNullWorldDirectives()
+    {
+        var method = typeof(GameEngine).GetMethod(
+            "TryDescribeMalformedPendingWorldSetup",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+
+        object?[] args =
+        {
+            """
+            {
+              "mode": "manual",
+              "worldDirectives": null
+            }
+            """,
+            string.Empty
+        };
+
+        var malformed = Assert.IsType<bool>(method!.Invoke(null, args));
+
+        Assert.True(malformed);
+        var description = Assert.IsType<string>(args[1]);
+        Assert.Contains("worldDirectives", description, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("non-null JSON object", description, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -755,7 +783,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
-    public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_PreservesEnlightenmentState()
+    public async Task TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_ResetsEnlightenmentAndPreservesInkFeathers()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
@@ -769,6 +797,14 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
                 experience = 187,
                 level = 6,
                 progressPercent = 73
+            },
+            soulProgression = new
+            {
+                tier = 4,
+                tierName = "Transcendence",
+                progressPercent = 100,
+                totalExperience = 999,
+                experienceInCurrentTier = 999
             }
         });
         await WriteJsonAsync("game_state/meta/shining_abode_state.json", new
@@ -792,8 +828,6 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             }
         });
 
-        var beforeSoulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
-        var expectedEnlightenment = beforeSoulRoot["enlightenment"]!.DeepClone();
         var engine = CreateGameEngine();
         var stateManager = GetPrivateField<StateManager>(engine, "_stateManager");
 
@@ -807,10 +841,23 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
 
         Assert.Equal("Chaos Sea", soulRoot["currentRealm"]?.GetValue<string>());
-        Assert.True(JsonNode.DeepEquals(expectedEnlightenment, soulRoot["enlightenment"]));
+        var enlightenment = Assert.IsType<JsonObject>(soulRoot["enlightenment"]);
+        Assert.Equal("Новичок", enlightenment["currentTier"]?.GetValue<string>());
+        Assert.Equal(0, enlightenment["experience"]?.GetValue<int>());
+        Assert.Equal(0, enlightenment["level"]?.GetValue<int>());
+        Assert.Equal(0, enlightenment["progressPercent"]?.GetValue<int>());
+        var soulProgression = Assert.IsType<JsonObject>(soulRoot["soulProgression"]);
+        Assert.Equal(0, soulProgression["tier"]?.GetValue<int>());
+        Assert.Equal("Новичок", soulProgression["tierName"]?.GetValue<string>());
+        Assert.Equal(0, soulProgression["progressPercent"]?.GetValue<int>());
+        Assert.Equal(0, soulProgression["totalExperience"]?.GetValue<int>());
+        Assert.Equal(0, soulProgression["experienceInCurrentTier"]?.GetValue<int>());
+        var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
+        Assert.Equal(7, inkFeathers["current"]?.GetValue<int>());
+        Assert.Equal(31, inkFeathers["total"]?.GetValue<int>());
         Assert.Equal(ShiningAbodeState.AvailabilitySealedUntilNextAscension, shiningRoot["availability"]?.GetValue<string>());
         Assert.Equal("Chaos Sea", stateManager.CurrentState.CurrentRealm);
-        Assert.Equal("Сияющий Мудрец", stateManager.CurrentState.EnlightenmentTier);
+        Assert.Equal("Новичок", stateManager.CurrentState.EnlightenmentTier);
     }
 
     [Fact]
@@ -1264,6 +1311,217 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"));
     }
 
+    [Fact]
+    public async Task IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear()
+    {
+        const string worldSettingPath = "lore/current_world/world_setting.json";
+        const string nestedLorePath = "lore/current_world/history/era.json";
+        const string worldSettingJson = """{ "worldName": "Old World" }""";
+        const string nestedLoreJson = """{ "era": "Before Gates" }""";
+
+        await _fs.WriteFileAtomicAsync(worldSettingPath, worldSettingJson);
+        await _fs.WriteFileAtomicAsync(nestedLorePath, nestedLoreJson);
+
+        var engine = CreateGameEngine();
+        var explorer = GetPrivateField<ExplorerMode>(engine, "_explorer");
+        var rollbackFiles = InvokePrivateValue<string[]>(engine, "EnumerateIncarnationLocalPrepRollbackFiles");
+
+        Assert.Contains(worldSettingPath, rollbackFiles);
+        Assert.Contains(nestedLorePath, rollbackFiles);
+
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync(rollbackFiles);
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "explorer_rollback_filter");
+        var baselineFilesValue = rollbackSnapshot.GetType().GetProperty("BaselineFiles")?.GetValue(rollbackSnapshot);
+        var baselineFiles = Assert.IsAssignableFrom<IEnumerable>(baselineFilesValue);
+        Assert.DoesNotContain(
+            baselineFiles.Cast<object>().Select(value => value?.ToString() ?? string.Empty),
+            path => path.StartsWith("game_state/control/explorer_local_turn_rollback/", StringComparison.OrdinalIgnoreCase));
+
+        _fs.ClearCurrentWorldLore();
+
+        Assert.False(_fs.FileExists(worldSettingPath));
+        Assert.False(_fs.FileExists(nestedLorePath));
+
+        await explorer.RestoreStagedLocalTurnRollbackSnapshotAsync();
+
+        Assert.Equal(worldSettingJson, await _fs.ReadFileAsync(worldSettingPath));
+        Assert.Equal(nestedLoreJson, await _fs.ReadFileAsync(nestedLorePath));
+        Assert.False(Directory.Exists(_fs.ResolvePath("game_state/control/explorer_local_turn_rollback")));
+    }
+
+    [Fact]
+    public async Task IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        const string soulStateJson = """{ "soulName": "Тестовая Душа", "currentRealm": "Mortal World", "currentIncarnation": 1 }""";
+        const string pendingSetupJson = """{ "mode": "manual", "worldDirectives": { "settingSummary": "New setup" } }""";
+        const string scenarioCoreJson = """{ "scenarioCore": { "summary": "New scenario" } }""";
+
+        await _fs.WriteFileAtomicAsync(soulStatePath, soulStateJson);
+
+        var engine = CreateGameEngine();
+        var explorer = GetPrivateField<ExplorerMode>(engine, "_explorer");
+        var rollbackFiles = InvokePrivateValue<string[]>(engine, "EnumerateIncarnationLocalPrepRollbackFiles");
+
+        Assert.Contains(WorldDirectiveService.PendingSetupPath, rollbackFiles);
+        Assert.Contains(ScenarioCoreService.ManifestPath, rollbackFiles);
+
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync(rollbackFiles);
+        await _fs.WriteFileAtomicAsync(WorldDirectiveService.PendingSetupPath, pendingSetupJson);
+        await _fs.WriteFileAtomicAsync(ScenarioCoreService.ManifestPath, scenarioCoreJson);
+        explorer.MarkExistingPendingLocalTurnValidationSnapshotFiles(
+            WorldDirectiveService.PendingSetupPath,
+            ScenarioCoreService.ManifestPath);
+
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "incarnation_setup_validation_snapshot");
+        var stagedSnapshot = explorer.ConsumePendingLocalTurnRollbackSnapshot();
+        InvokePrivate(engine, "OverlayExplorerLocalRollbackSnapshot", rollbackSnapshot, stagedSnapshot);
+
+        var request = new TurnRequest
+        {
+            SessionId = "session_incarnation_setup_snapshot",
+            RequestId = "request_incarnation_setup_snapshot",
+            TurnNumber = 42,
+            PlayerAction = "incarnation setup snapshot test",
+            Timestamp = "2026-03-24T00:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" }
+        };
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollbackSnapshot, "test");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"]);
+        var rollbackBaselineSet = rollbackBaselineFiles
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.True(files.ContainsKey(WorldDirectiveService.PendingSetupPath));
+        Assert.True(files.ContainsKey(ScenarioCoreService.ManifestPath));
+        Assert.DoesNotContain(WorldDirectiveService.PendingSetupPath, rollbackBaselineSet);
+        Assert.DoesNotContain(ScenarioCoreService.ManifestPath, rollbackBaselineSet);
+
+        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot);
+
+        Assert.False(_fs.FileExists(WorldDirectiveService.PendingSetupPath));
+        Assert.False(_fs.FileExists(ScenarioCoreService.ManifestPath));
+    }
+
+    [Fact]
+    public async Task ValidatedRollbackSnapshot_PreservesExplorerLocalTurnRollbackBackups()
+    {
+        const string sessionId = "session_explorer_rollback_restart_001";
+        const string requestId = "request_explorer_rollback_restart_001";
+        const int turnNumber = 77;
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        const string soulSnapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
+        const string trackedPath = "lore/current_world/world_setting.json";
+        const string snapshotPath = "game_state/control/pending_turn_snapshot/lore/current_world/world_setting.json";
+        const string backupPath = "game_state/control/explorer_local_turn_rollback/restart/world_setting.json.rollback.001";
+        const string soulStateJson = """{ "soulName": "Тестовая Душа", "currentRealm": "Mortal World", "currentIncarnation": 1 }""";
+        const string worldSettingJson = """{ "worldName": "Old World" }""";
+
+        await _fs.WriteFileAtomicAsync(soulStatePath, soulStateJson);
+        await _fs.WriteFileAtomicAsync(soulSnapshotPath, soulStateJson);
+        await _fs.WriteFileAtomicAsync(trackedPath, worldSettingJson);
+        await _fs.WriteFileAtomicAsync(snapshotPath, worldSettingJson);
+        await _fs.WriteFileAtomicAsync(backupPath, worldSettingJson);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId,
+            requestId,
+            turnNumber
+        });
+
+        var manifest = new PendingTurnSnapshotManifestPayload
+        {
+            SessionId = sessionId,
+            RequestId = requestId,
+            TurnNumber = turnNumber,
+            RequestTimestamp = "2026-03-24T00:00:00Z",
+            PlayerAction = "restart rollback test",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Mortal World" },
+            Files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [soulStatePath] = soulSnapshotPath,
+                [trackedPath] = snapshotPath
+            },
+            SnapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [soulStatePath] = ComputeSha256(soulStateJson),
+                [trackedPath] = ComputeSha256(worldSettingJson)
+            },
+            ClientOwnedValidationHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
+            RollbackBackups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [trackedPath] = backupPath
+            },
+            RollbackBaselineFiles = new List<string> { soulStatePath, trackedPath },
+            SourceLabel = "game-engine-turn-lifecycle-tests"
+        };
+        manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
+
+        await _fs.WriteFileAtomicAsync(
+            "game_state/control/pending_turn_snapshot.json",
+            JsonSerializer.Serialize(manifest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+
+        _fs.DeleteFile(trackedPath);
+        var engine = CreateGameEngine();
+        var loadedManifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", loadedManifest);
+        var backupFilesValue = rollbackSnapshot.GetType().GetProperty("BackupFiles")?.GetValue(rollbackSnapshot);
+        var backupFiles = Assert.IsAssignableFrom<Dictionary<string, string>>(backupFilesValue);
+
+        Assert.True(backupFiles.TryGetValue(trackedPath, out var restoredBackupPath));
+        Assert.Equal(backupPath, restoredBackupPath);
+
+        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot);
+
+        Assert.Equal(worldSettingJson, await _fs.ReadFileAsync(trackedPath));
+    }
+
+    [Fact]
+    public async Task ProcessPlayerTurn_StagingFailureRestoresConsumedIncarnationLocalPrepRollback()
+    {
+        const string worldSettingPath = "lore/current_world/world_setting.json";
+        const string worldSettingJson = """{ "worldName": "Old World" }""";
+        const string pendingSetupJson = """{ "mode": "manual", "worldDirectives": { "settingSummary": "Old setup" } }""";
+        const string scenarioCoreJson = """{ "scenarioCore": { "summary": "Old scenario" } }""";
+
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Mortal World",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 50 }
+        });
+        await _fs.WriteFileAtomicAsync(worldSettingPath, worldSettingJson);
+        await _fs.WriteFileAtomicAsync(WorldDirectiveService.PendingSetupPath, pendingSetupJson);
+        await _fs.WriteFileAtomicAsync(ScenarioCoreService.ManifestPath, scenarioCoreJson);
+
+        var engine = CreateGameEngine();
+        var explorer = GetPrivateField<ExplorerMode>(engine, "_explorer");
+        var rollbackFiles = InvokePrivateValue<string[]>(engine, "EnumerateIncarnationLocalPrepRollbackFiles");
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync(rollbackFiles);
+
+        _fs.ClearCurrentWorldLore();
+        await _fs.WriteFileAtomicAsync(WorldDirectiveService.PendingSetupPath, """{ "mode": "manual", "worldDirectives": { "settingSummary": "Changed setup" } }""");
+        await _fs.WriteFileAtomicAsync(ScenarioCoreService.ManifestPath, """{ "scenarioCore": { "summary": "Changed scenario" } }""");
+        Directory.CreateDirectory(_fs.ResolvePath("input/turn_request.json"));
+
+        await Assert.ThrowsAnyAsync<Exception>(() =>
+            InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Тестовый ход", null));
+
+        Assert.Equal(worldSettingJson, await _fs.ReadFileAsync(worldSettingPath));
+        Assert.Equal(pendingSetupJson, await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath));
+        Assert.Equal(scenarioCoreJson, await _fs.ReadFileAsync(ScenarioCoreService.ManifestPath));
+        Assert.False(_fs.FileExists("input/turn_request.json"));
+        Assert.False(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+        Assert.False(Directory.Exists(_fs.ResolvePath("game_state/control/explorer_local_turn_rollback")));
+    }
+
     private async Task WriteJsonAsync(string relativePath, object payload)
     {
         await _fs.WriteFileAtomicAsync(
@@ -1445,6 +1703,29 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
         method!.Invoke(instance, args);
+    }
+
+    private static T InvokePrivateValue<T>(object instance, string methodName, params object?[]? args)
+    {
+        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var value = method!.Invoke(instance, args);
+        Assert.IsType<T>(value);
+        return (T)value!;
+    }
+
+    private static async Task<object> InvokePrivateTaskResultAsync(object instance, string methodName, params object?[]? args)
+    {
+        var method = instance.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var task = method!.Invoke(instance, args) as Task;
+        Assert.NotNull(task);
+        await task!;
+        var resultProperty = task.GetType().GetProperty("Result");
+        Assert.NotNull(resultProperty);
+        var result = resultProperty!.GetValue(task);
+        Assert.NotNull(result);
+        return result!;
     }
 
     public void Dispose()

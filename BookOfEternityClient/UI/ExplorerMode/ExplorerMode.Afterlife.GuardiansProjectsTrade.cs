@@ -60,6 +60,7 @@ public partial class ExplorerMode
 
             var root = doc.RootElement;
             var guardians = CollectGuardianDisplayEntries(root);
+            var isChaosSea = _stateManager.CurrentState.IsInChaosSea;
             if (guardians.Count == 0)
             {
                 ShowEmptyPanel(_loc.T("guardians_info"), "Хранители ещё не найдены");
@@ -147,8 +148,11 @@ public partial class ExplorerMode
             }).ToList();
 
             // Navigation options
-            choices.Add("🔍 Искать новую обитель (силой мысли)");
-            choices.Add("👑 Учредить собственного Хранителя");
+            if (isChaosSea)
+            {
+                choices.Add("🔍 Искать новую обитель (силой мысли)");
+                choices.Add("👑 Учредить собственного Хранителя");
+            }
             choices.Add("← Назад");
 
             // Pending guardian creation notice
@@ -266,7 +270,9 @@ public partial class ExplorerMode
 
             var overviewLines = new List<string>
             {
-                "[bold cyan]Море Хаоса: полный operational overview[/]",
+                isChaosSea
+                    ? "[bold cyan]Море Хаоса: полный operational overview[/]"
+                    : "[bold cyan]Сияющая Обитель: read-only Guardian overview[/]",
                 "",
                 $"  • Активный Хранитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(activeGuardianDisplayName) ? activeGuardianId : activeGuardianDisplayName)}[/] [dim]({Markup.Escape(activeGuardianId)})[/]",
                 $"  • Текущая Обитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeId) ? "не выбрана" : currentAbodeId)}[/]",
@@ -277,6 +283,11 @@ public partial class ExplorerMode
                 "  • /afterlife_inbox — все ответы GM по торговле, архиву, резидентам и политике.",
                 "  • /feathers, /afterlife_archive, /guardian_projects, /abode_offering — детальные ресурсы и state deltas."
             };
+            if (!isChaosSea)
+            {
+                overviewLines.Add("");
+                overviewLines.Add("[yellow]Chaos Sea-only действия скрыты:[/] поиск новой Обители и основание собственного Хранителя доступны только в обычном Море Хаоса.");
+            }
             overviewLines.Add("");
             overviewLines.AddRange(await BuildAfterlifePendingContractAuditLinesAsync(includeShining: true, includeFullPayload: true));
             Clear();
@@ -298,7 +309,7 @@ public partial class ExplorerMode
 
             if (selected.Contains("← Назад")) break;
 
-            if (selected.Contains("Искать новую обитель"))
+            if (isChaosSea && selected.Contains("Искать новую обитель"))
             {
                 await ShowSearchAbodePrompt();
                 if (_pendingGmAction != null)
@@ -306,7 +317,7 @@ public partial class ExplorerMode
                 continue;
             }
 
-            if (selected.Contains("Учредить собственного Хранителя"))
+            if (isChaosSea && selected.Contains("Учредить собственного Хранителя"))
             {
                 await ShowPlayerGuardianFoundationAsync();
                 if (_pendingGmAction != null)
@@ -891,6 +902,19 @@ public partial class ExplorerMode
             previousActiveGuardianId = GetStr(activeGuardian, "guardianId", "");
             previousActiveGuardianName = GuardianManifestation.GetDisplayName(activeGuardian);
         }
+        var currentAbodeName = guardians
+            .Select(g => g.TryGetProperty("abode", out var abode) && abode.ValueKind == JsonValueKind.Object
+                ? new
+                {
+                    AbodeId = GetStr(abode, "abodeId", ""),
+                    AbodeName = GetStr(abode, "name", "")
+                }
+                : null)
+            .Where(item => item != null)
+            .Where(item => string.Equals(item!.AbodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase))
+            .Select(item => item!.AbodeName)
+            .FirstOrDefault(name => !string.IsNullOrWhiteSpace(name))
+            ?? string.Empty;
 
         var abodeGuardians = guardians
             .Where(g =>
@@ -988,8 +1012,8 @@ public partial class ExplorerMode
             {
                 "[bold cyan]Переход между Обителями[/]",
                 "",
-                $"  From abode: [dim]{Markup.Escape(currentAbodeId)}[/]",
-                $"  From activeGuardian: [dim]{Markup.Escape(previousActiveGuardianId)}[/] {Markup.Escape(previousActiveGuardianName)}",
+                $"  Source abode: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeName) ? "неизвестно" : currentAbodeName)}[/] [dim]({Markup.Escape(currentAbodeId)})[/]",
+                $"  Source activeGuardian: [white]{Markup.Escape(string.IsNullOrWhiteSpace(previousActiveGuardianName) ? "неизвестно" : previousActiveGuardianName)}[/] [dim]({Markup.Escape(previousActiveGuardianId)})[/]",
                 $"  Target abode: [white]{Markup.Escape(selAbodeName)}[/] [dim]({Markup.Escape(selAbodeId)})[/]",
                 $"  Target guardian: [white]{Markup.Escape(selGName)}[/] [dim]({Markup.Escape(selGuardianId)})[/]",
                 $"  Уже открыта игроком: [dim]{targetAlreadyDiscovered.ToString().ToLowerInvariant()}[/]",
@@ -1009,6 +1033,7 @@ public partial class ExplorerMode
                     BuildChaosSeaTravelAuditNode(
                         travelAction,
                         currentAbodeId,
+                        currentAbodeName,
                         previousActiveGuardianId,
                         previousActiveGuardianName,
                         selAbodeId,
@@ -1034,6 +1059,7 @@ public partial class ExplorerMode
     private static JsonObject BuildChaosSeaTravelAuditNode(
         string playerAction,
         string previousAbodeId,
+        string previousAbodeName,
         string previousActiveGuardianId,
         string previousActiveGuardianName,
         string targetAbodeId,
@@ -1064,6 +1090,7 @@ public partial class ExplorerMode
             ["before"] = new JsonObject
             {
                 ["previousAbodeId"] = previousAbodeId,
+                ["previousAbodeName"] = previousAbodeName,
                 ["previousActiveGuardianId"] = previousActiveGuardianId,
                 ["previousActiveGuardianName"] = previousActiveGuardianName,
                 ["chaosSeaNavigation.currentAbodeId"] = previousAbodeId,

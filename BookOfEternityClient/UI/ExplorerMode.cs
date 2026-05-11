@@ -117,6 +117,8 @@ public partial class ExplorerMode
             ["/сияющая_обитель"] = ShowShiningAbodeOverview,
             ["/shining_politics"] = ShowShiningPoliticsOverview,
             ["/сияющая_политика"] = ShowShiningPoliticsOverview,
+            ["/shining_treasury"] = ShowShiningTreasuryAsync,
+            ["/казначейство"] = ShowShiningTreasuryAsync,
             ["/afterlife_inbox"] = ShowAfterlifeInbox,
             ["/уведомления_загробья"] = ShowAfterlifeInbox,
             ["/spiritual_conflict"] = ShowSpiritualConflictAsync,

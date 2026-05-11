@@ -37,6 +37,8 @@ public partial class ExplorerMode
 
         var hasMalformedLegacyPendingDiscovery =
             !string.IsNullOrWhiteSpace(ShiningAbodeState.ValidateLegacyPendingNativeFactionDiscoveryShape(shiningRoot));
+        var hasMalformedTreasury =
+            !string.IsNullOrWhiteSpace(ShiningAbodeState.ValidateTreasuryShape(shiningRoot));
 
         var readIssues = new List<ShiningContextReadIssue>();
         JsonObject? residentRoot = null;
@@ -84,13 +86,16 @@ public partial class ExplorerMode
             }
         }
 
-        if (!hasMalformedLegacyPendingDiscovery)
+        if (!hasMalformedLegacyPendingDiscovery && !hasMalformedTreasury)
             ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
         return new ShiningContext(shiningRoot, residentRoot, guardiansRoot, soulRoot, readIssues);
     }
 
     private async Task<bool> SaveShiningRootAsync(JsonObject root)
     {
+        if (!EnsureNoMalformedTreasuryForLocalShiningSave(root))
+            return false;
+
         if (!EnsureNoMalformedLegacyPendingDiscoveryForLocalShiningSave(root))
             return false;
 
@@ -114,6 +119,9 @@ public partial class ExplorerMode
                 return false;
             }
 
+            if (!EnsureNoMalformedTreasuryForLocalShiningSave(liveRoot))
+                return false;
+
             if (!EnsureNoMalformedLegacyPendingDiscoveryForLocalShiningSave(liveRoot))
                 return false;
         }
@@ -134,6 +142,17 @@ public partial class ExplorerMode
         return false;
     }
 
+    private bool EnsureNoMalformedTreasuryForLocalShiningSave(JsonObject root)
+    {
+        var issue = ShiningAbodeState.ValidateTreasuryShape(root);
+        if (string.IsNullOrWhiteSpace(issue))
+            return true;
+
+        MarkupLine($"[yellow]{Markup.Escape(issue)}[/]");
+        MarkupLine($"[dim]• {Markup.Escape(ShiningAbodeState.StatePath)}.{Markup.Escape(ShiningAbodeState.TreasuryProperty)}[/]");
+        return false;
+    }
+
     private Panel BuildShiningOverviewPanel(JsonObject shiningRoot, JsonObject? residentRoot, JsonObject? guardiansRoot)
     {
         var lines = new List<string>
@@ -145,6 +164,7 @@ public partial class ExplorerMode
             $"  • Доступность: [white]{Markup.Escape(DescribeShiningAvailability(GetNodeString(shiningRoot["availability"])))}[/]",
             $"  • Сияние: [yellow]{GetNodeInt(shiningRoot["radiance"]?["experience"])} опыта[/] [dim](уровень сияния {GetNodeInt(shiningRoot["radiance"]?["tier"])})[/]",
             $"  • Искры Света: [gold1]{GetNodeInt(shiningRoot["lightSparks"])}[/]",
+            BuildShiningTreasuryOverviewLine(shiningRoot),
             $"  • Сияющая гача: [white]{ShiningAbodeState.GetRemainingShiningGachaCharges(shiningRoot)}[/]/[white]{GetNodeInt(shiningRoot["gachaSystem"]?["chargesPerReturn"])}[/] [dim]({BuildShiningReturnCycleStatusLabel(shiningRoot)})[/]",
             $"  • Залов: [white]{(shiningRoot["halls"] as JsonArray)?.Count ?? 0}[/]",
             $"  • Фракций: [white]{(shiningRoot["factions"] as JsonArray)?.Count ?? 0}[/]",
@@ -322,6 +342,16 @@ public partial class ExplorerMode
             Padding = new Padding(2, 1),
             Expand = true
         };
+    }
+
+    private static string BuildShiningTreasuryOverviewLine(JsonObject shiningRoot)
+    {
+        var issue = ShiningAbodeState.ValidateTreasuryShape(shiningRoot);
+        if (!string.IsNullOrWhiteSpace(issue))
+            return $"  • Казначейство: [yellow]repair required[/] [dim]({Markup.Escape(issue)})[/]";
+
+        var treasury = ShiningAbodeState.EnsureTreasuryObject(shiningRoot);
+        return $"  • Казначейство: [white]{GetNodeInt(treasury["depositedInkFeathers"])} 🪶 вклад[/], [white]{GetNodeInt(treasury["claimableInkFeatherInterest"])} 🪶 проценты[/]";
     }
 
     private static string BuildShiningReturnCycleStatusLabel(JsonObject shiningRoot)

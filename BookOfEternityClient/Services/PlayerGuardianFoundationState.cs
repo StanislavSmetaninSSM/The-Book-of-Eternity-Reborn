@@ -434,7 +434,7 @@ internal static class PlayerGuardianFoundationState
             $"  - Write soul_state.{SoulStateGuardianIdProperty}, soul_state.{SoulStateFoundationStatusProperty}={SoulStateFoundationStatusFounded} and append guardians.json.{HistoryProperty} receipt history.",
             $"  - Founder bonuses should include {FounderBonusesProperty}.{FounderBonusExtraGachaChargesProperty}={DefaultFounderExtraGachaChargesPerReturn}.",
             $"  - Founder abode features should include {FounderAbodeFeaturesProperty}.{FounderAbodeResidentAttractionModeProperty}={FounderAbodeResidentAttractionModeFounderCall} with a concise title/summary. Do NOT migrate the former patron's residents automatically.",
-            "  - The former patron may receive ordinary GM-driven narrative follow-up through talks, quests, world events, and afterlife notifications. Do NOT create a separate diplomacy subsystem for this.",
+            "  - The former patron may receive ordinary GM-driven narrative follow-up only through allowed afterlife surfaces such as Guardian dialogue, Guardian musings/lore, Guardian relationship/project state, or Soul Quest hooks. Do NOT write Mortal World events or client-derived afterlife_notifications for this.",
             $"  - Proposed display name: {request.ProposedDisplayName}.",
             $"  - Mantle summary: {request.MantleSummary}.",
             $"  - Creed: {request.MantleCreed}.",

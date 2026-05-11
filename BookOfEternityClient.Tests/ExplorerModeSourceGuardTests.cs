@@ -37,6 +37,15 @@ public sealed class ExplorerModeSourceGuardTests
         Assert.DoesNotContain("Console.ReadKey(true)", source, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ExplorerRollbackBackups_MustLiveOutsideClearedCurrentWorldLore()
+    {
+        var source = ReadExplorerModeSource();
+
+        Assert.Contains("game_state/control/explorer_local_turn_rollback", source, StringComparison.Ordinal);
+        Assert.DoesNotContain(".explorer.rollback.{DateTime.UtcNow.Ticks}", source, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("BookOfEternityClient/UI/ExplorerMode.cs")]
     [InlineData("BookOfEternityClient/Core/GameEngine.cs")]

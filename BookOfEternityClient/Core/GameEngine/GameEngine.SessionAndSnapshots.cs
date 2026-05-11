@@ -170,7 +170,7 @@ public partial class GameEngine
         string? sourceLabel = null)
     {
         await DeleteTerminalProtocolFailureRequestAsync();
-        await CleanupPendingTurnSnapshotAsync();
+        await CleanupPendingTurnSnapshotAsync(rollbackSnapshot?.BackupFiles.Values);
         var conflictStateExistedBeforeInitialization = _fs.FileExists(AfterlifeSpiritualConflictState.StatePath);
         await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
         await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
@@ -190,7 +190,17 @@ public partial class GameEngine
         if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
 
-        foreach (var file in rollbackBaselineFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+        var snapshotFiles = new HashSet<string>(rollbackBaselineFiles, StringComparer.OrdinalIgnoreCase);
+        if (rollbackSnapshot?.ValidationSnapshotFiles is { Count: > 0 })
+        {
+            foreach (var file in rollbackSnapshot.ValidationSnapshotFiles)
+            {
+                if (!string.IsNullOrWhiteSpace(file))
+                    snapshotFiles.Add(file);
+            }
+        }
+
+        foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
         {
             await SnapshotFileIfPresentAsync(file, files, snapshotHashes);
         }
@@ -533,8 +543,19 @@ public partial class GameEngine
         snapshotHashes[relativePath] = ComputeSha256(content);
     }
 
-    private async Task CleanupPendingTurnSnapshotAsync()
+    private async Task CleanupPendingTurnSnapshotAsync(IEnumerable<string>? preservedRollbackPaths = null)
     {
+        var preservedRollbackSet = preservedRollbackPaths == null
+            ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            : new HashSet<string>(
+                preservedRollbackPaths
+                    .Where(path => !string.IsNullOrWhiteSpace(path))
+                    .Select(NormalizeArtifactRelativePath),
+                StringComparer.OrdinalIgnoreCase);
+
+        bool ShouldPreserveRollbackPath(string relativePath) =>
+            preservedRollbackSet.Contains(NormalizeArtifactRelativePath(relativePath));
+
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var payload = await LoadValidatedCurrentPendingTurnSnapshotAuthorityPayloadAsync(
             manifest,
@@ -555,6 +576,9 @@ public partial class GameEngine
 
                 foreach (var rollbackPath in payload.RollbackBackups.Values.Distinct(StringComparer.OrdinalIgnoreCase))
                 {
+                    if (ShouldPreserveRollbackPath(rollbackPath))
+                        continue;
+
                     if (!IsValidatedRollbackBackupArtifactPath(rollbackPath))
                         continue;
 
@@ -577,6 +601,13 @@ public partial class GameEngine
 
                 foreach (var rollbackFile in Directory.EnumerateFiles(_fs.GameSessionPath, "*.rollback.*", SearchOption.AllDirectories))
                 {
+                    var relativePath = Path.GetRelativePath(_fs.GameSessionPath, rollbackFile).Replace('\\', '/');
+                    if (ShouldPreserveRollbackPath(relativePath) ||
+                        IsExplorerLocalTurnRollbackArtifactPath(relativePath))
+                    {
+                        continue;
+                    }
+
                     if (File.Exists(rollbackFile))
                         File.Delete(rollbackFile);
                 }
@@ -702,6 +733,17 @@ public partial class GameEngine
     {
         return PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath) &&
                relativePath.Contains(".rollback.", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string NormalizeArtifactRelativePath(string relativePath) =>
+        relativePath.Replace('\\', '/').TrimStart('/');
+
+    private static bool IsExplorerLocalTurnRollbackArtifactPath(string relativePath)
+    {
+        var normalized = NormalizeArtifactRelativePath(relativePath);
+        return normalized.StartsWith(
+            "game_state/control/explorer_local_turn_rollback/",
+            StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task NormalizePendingRepairArtifactsAsync()

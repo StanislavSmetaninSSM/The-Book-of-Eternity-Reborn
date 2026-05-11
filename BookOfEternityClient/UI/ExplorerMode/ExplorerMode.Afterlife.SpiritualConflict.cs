@@ -57,7 +57,8 @@ public partial class ExplorerMode
 
         lines.Add("");
         lines.Add("[bold]Команды:[/]");
-        lines.Add("  • /spiritual_action — отправить действие в активном конфликте GM.");
+        lines.Add("  • /spiritual_action — отправить действие в активном конфликте GM с явным тегом.");
+        lines.Add("  • Обычная художественная заявка во время активного конфликта тоже должна резолвиться GM как действие конфликта.");
         lines.Add("  • /spiritual_arts — посмотреть ранги, art tiers и применимые действия.");
 
         Clear();
@@ -163,7 +164,7 @@ public partial class ExplorerMode
         var conflictId = AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown";
         Clear();
         MarkupLine($"[cyan]Активный конфликт:[/] [white]{Markup.Escape(conflictId)}[/]");
-        MarkupLine("[dim]Опишите одно намерение: давление, защита, манёвр, контр, разрыв/наложение binding, сдача, отступление или переговоры.[/]");
+        MarkupLine("[dim]Опишите одно намерение: давление, защита, манёвр, контр, разрыв/наложение binding, сдача, отступление или переговоры. Команда только добавляет явный тег; обычная ролевая заявка во время активного конфликта тоже валидна.[/]");
         var action = Ask("[cyan]Действие:[/]");
         if (string.IsNullOrWhiteSpace(action))
             return;

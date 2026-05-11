@@ -18,6 +18,8 @@ namespace BookOfEternityClient.UI;
 /// </summary>
 public partial class ExplorerMode
 {
+    private const string ExplorerLocalTurnRollbackRoot = "game_state/control/explorer_local_turn_rollback";
+
     private readonly IExplorerConsole _console;
     private readonly StateManager _stateManager;
     private readonly FileSystemManager _fs;
@@ -65,6 +67,7 @@ public partial class ExplorerMode
         public Dictionary<string, string> BackupHashes { get; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> TrackedFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> BaselineFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> ValidationSnapshotFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
     private sealed record AfterlifeArchiveEntrySummary(
@@ -540,6 +543,37 @@ public partial class ExplorerMode
         return snapshot;
     }
 
+    internal Task StagePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles) =>
+        EnsurePendingLocalTurnRollbackSnapshotAsync(trackedFiles);
+
+    internal void MarkExistingPendingLocalTurnValidationSnapshotFiles(params string[] trackedFiles)
+    {
+        var snapshot = _pendingLocalTurnRollbackSnapshot;
+        if (snapshot == null)
+            return;
+
+        foreach (var trackedFile in trackedFiles
+                     .Where(path => !string.IsNullOrWhiteSpace(path))
+                     .Select(path => path.Trim())
+                     .Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            if (_fs.FileExists(trackedFile))
+                snapshot.ValidationSnapshotFiles.Add(trackedFile);
+        }
+    }
+
+    internal Task RestoreStagedLocalTurnRollbackSnapshotAsync() =>
+        RestorePendingLocalTurnRollbackSnapshotAsync();
+
+    internal Task RestoreConsumedLocalTurnRollbackSnapshotAsync(PendingLocalTurnRollbackSnapshot? snapshot)
+    {
+        if (snapshot == null)
+            return Task.CompletedTask;
+
+        _pendingLocalTurnRollbackSnapshot = snapshot;
+        return RestorePendingLocalTurnRollbackSnapshotAsync();
+    }
+
     private async Task EnsurePendingLocalTurnRollbackSnapshotAsync(params string[] trackedFiles)
     {
         var normalizedTrackedFiles = trackedFiles
@@ -563,12 +597,24 @@ public partial class ExplorerMode
             if (backupContent == null)
                 continue;
 
-            var backupPath = $"{trackedFile}.explorer.rollback.{DateTime.UtcNow.Ticks}";
+            var backupPath = CreateExplorerRollbackBackupPath(trackedFile);
             await _fs.WriteFileAtomicAsync(backupPath, backupContent);
             _pendingLocalTurnRollbackSnapshot.BaselineFiles.Add(trackedFile);
             _pendingLocalTurnRollbackSnapshot.BackupFiles[trackedFile] = backupPath;
             _pendingLocalTurnRollbackSnapshot.BackupHashes[trackedFile] = ComputeExplorerRollbackHash(backupContent);
         }
+    }
+
+    private static string CreateExplorerRollbackBackupPath(string trackedFile)
+    {
+        var normalizedPath = trackedFile.Replace('\\', '/').Trim('/');
+        var safePath = new string(normalizedPath
+            .Select(ch => char.IsLetterOrDigit(ch) || ch is '.' or '-' or '_' ? ch : '_')
+            .ToArray());
+        if (string.IsNullOrWhiteSpace(safePath))
+            safePath = "tracked_file";
+
+        return $"{ExplorerLocalTurnRollbackRoot}/{DateTime.UtcNow.Ticks}_{Guid.NewGuid():N}/{safePath}.rollback.{Guid.NewGuid():N}";
     }
 
     private async Task RestorePendingLocalTurnRollbackSnapshotAsync()
@@ -618,7 +664,25 @@ public partial class ExplorerMode
                 _fs.DeleteFile(backupPath);
         }
 
+        DeleteEmptyExplorerRollbackDirectories();
         await Task.CompletedTask;
+    }
+
+    private void DeleteEmptyExplorerRollbackDirectories()
+    {
+        var rollbackRoot = _fs.ResolvePath(ExplorerLocalTurnRollbackRoot);
+        if (!Directory.Exists(rollbackRoot))
+            return;
+
+        foreach (var directory in Directory.GetDirectories(rollbackRoot, "*", SearchOption.AllDirectories)
+                     .OrderByDescending(path => path.Length))
+        {
+            if (!Directory.EnumerateFileSystemEntries(directory).Any())
+                Directory.Delete(directory);
+        }
+
+        if (!Directory.EnumerateFileSystemEntries(rollbackRoot).Any())
+            Directory.Delete(rollbackRoot);
     }
 
     private static string ComputeExplorerRollbackHash(string content)
