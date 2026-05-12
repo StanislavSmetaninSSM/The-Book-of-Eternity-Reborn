@@ -48,6 +48,49 @@ public sealed class CriticalStateHealthServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateAcceptedTurnRawStateAsync_AllowsProgressOnlyGuardianCommandSurface()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardianQuestProgressUpdates": [
+            {
+              "guardianId": "guardian_azalia",
+              "questId": "quest_rare_ore",
+              "status": "ready_to_turn_in",
+              "readyToTurnInEvidence": {
+                "itemEcho": {
+                  "mortalItemName": "Серебряная руда сна",
+                  "proofKind": "memory_imprint"
+                }
+              }
+            }
+          ]
+        }
+        """);
+
+        var issues = await _service.ValidateAcceptedTurnRawStateAsync();
+
+        Assert.DoesNotContain(issues, issue => issue.Code == "guardians_missing_valid_surface");
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnRawStateAsync_FlagsNonArrayProgressGuardianCommandSurface()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardianQuestProgressUpdates": {
+            "guardianId": "guardian_azalia",
+            "questId": "quest_rare_ore"
+          }
+        }
+        """);
+
+        var issues = await _service.ValidateAcceptedTurnRawStateAsync();
+
+        Assert.Contains(issues, issue => issue.Code == "guardians_missing_valid_surface");
+    }
+
+    [Fact]
     public async Task AssessCurrentSessionHealthAsync_MarksOversizedGuardiansAsBrokenSession()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """

@@ -127,6 +127,7 @@ public static class FileMapping
         ["archiveActionResolutions"] = "game_state/meta/soul_state.json",
         ["afterlifeSpiritualConflictUpdate"] = "game_state/meta/afterlife_spiritual_conflict_state.json",
         ["UpdateGuardians"] = "game_state/meta/guardians.json",
+        ["guardianQuestProgressUpdates"] = "game_state/meta/guardians.json",
         ["UpdateGuardianTradeInventoryReceipts"] = "game_state/meta/guardians.json",
         ["guardians"] = "game_state/meta/guardians.json",
         ["activeGuardian"] = "game_state/meta/guardians.json",

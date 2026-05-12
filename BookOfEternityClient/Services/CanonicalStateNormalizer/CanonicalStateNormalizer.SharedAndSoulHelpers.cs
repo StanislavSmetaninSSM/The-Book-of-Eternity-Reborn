@@ -485,6 +485,76 @@ public partial class CanonicalStateNormalizer
         return null;
     }
 
+    private static bool TryApplyGuardianQuestProgressUpdates(JsonObject root, JsonArray updates, int currentTurn)
+    {
+        if (root["guardians"] is not JsonArray guardians)
+            return false;
+
+        var operations = new List<(JsonObject Update, JsonObject Quest)>();
+        foreach (var updateNode in updates)
+        {
+            if (updateNode is not JsonObject update)
+                return false;
+
+            var guardianId = GetNodeString(update["guardianId"]);
+            var questId = GetNodeString(update["questId"]);
+            var status = GetNodeString(update["status"]);
+            if (string.IsNullOrWhiteSpace(guardianId) ||
+                string.IsNullOrWhiteSpace(questId) ||
+                !GuardianProjectState.IsSupportedActiveQuestProgressStatus(status))
+            {
+                return false;
+            }
+
+            var guardian = FindGuardian(guardians, guardianId!);
+            if (guardian?["questManagement"] is not JsonObject questManagement ||
+                questManagement["activeQuests"] is not JsonArray activeQuests)
+            {
+                return false;
+            }
+
+            var quest = activeQuests
+                .OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(GetNodeString(item["questId"]), questId, StringComparison.OrdinalIgnoreCase));
+            if (quest == null)
+                return false;
+
+            operations.Add((update, quest));
+        }
+
+        foreach (var (update, quest) in operations)
+        {
+            CopyString(update, quest, "status");
+            CopyString(update, quest, "progressSummary");
+            CopyString(update, quest, "turnInRequirement");
+            CopyObject(update, quest, "objectiveState");
+            CopyObject(update, quest, "readyToTurnInEvidence");
+            quest["updatedAtTurn"] = currentTurn;
+            quest["updatedAtUtc"] = DateTime.UtcNow.ToString("o");
+
+            if (string.Equals(GetNodeString(update["status"]), GuardianProjectState.QuestStatusReadyToTurnIn, StringComparison.OrdinalIgnoreCase) &&
+                GetNodeInt(quest["readyToTurnInAtTurn"]) <= 0)
+            {
+                quest["readyToTurnInAtTurn"] = currentTurn;
+            }
+        }
+
+        return true;
+    }
+
+    private static void CopyString(JsonObject source, JsonObject target, string propertyName)
+    {
+        var value = GetNodeString(source[propertyName]);
+        if (!string.IsNullOrWhiteSpace(value))
+            target[propertyName] = value;
+    }
+
+    private static void CopyObject(JsonObject source, JsonObject target, string propertyName)
+    {
+        if (source[propertyName] is JsonObject obj)
+            target[propertyName] = obj.DeepClone();
+    }
+
     private static string NormalizeGuardianQuestDifficulty(string? difficulty) =>
         AbodePowerRules.NormalizeGuardianQuestDifficulty(difficulty);
 

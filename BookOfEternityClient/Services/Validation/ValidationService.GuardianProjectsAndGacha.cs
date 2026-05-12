@@ -49,6 +49,8 @@ public partial class ValidationService
         clone.ActiveQuestIds.UnionWith(source.ActiveQuestIds);
         foreach (var (questId, difficulty) in source.QuestDifficultyById)
             clone.QuestDifficultyById[questId] = difficulty;
+        foreach (var (questId, status) in source.ActiveQuestStatusById)
+            clone.ActiveQuestStatusById[questId] = status;
 
         return clone;
     }
@@ -69,11 +71,12 @@ public partial class ValidationService
         var availableQuestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var activeQuestIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var questDifficultyById = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var activeQuestStatusById = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         if (guardian.TryGetProperty("questManagement", out var questManagement) &&
             questManagement.ValueKind == JsonValueKind.Object)
         {
             CollectQuestIdsFromGuardianQuestArray(questManagement, "availableQuests", availableQuestIds, questDifficultyById);
-            CollectQuestIdsFromGuardianQuestArray(questManagement, "activeQuests", activeQuestIds, questDifficultyById);
+            CollectQuestIdsFromGuardianQuestArray(questManagement, "activeQuests", activeQuestIds, questDifficultyById, activeQuestStatusById);
         }
 
         var chargesUsedThisReturn = 0;
@@ -97,6 +100,8 @@ public partial class ValidationService
         state.ActiveQuestIds.UnionWith(activeQuestIds);
         foreach (var (questId, difficulty) in questDifficultyById)
             state.QuestDifficultyById[questId] = difficulty;
+        foreach (var (questId, status) in activeQuestStatusById)
+            state.ActiveQuestStatusById[questId] = status;
         return state;
     }
 
@@ -105,7 +110,8 @@ public partial class ValidationService
         JsonElement questManagement,
         string propName,
         HashSet<string> target,
-        Dictionary<string, string>? difficultyById = null)
+        Dictionary<string, string>? difficultyById = null,
+        Dictionary<string, string>? statusById = null)
     {
         if (!questManagement.TryGetProperty(propName, out var questArray) || questArray.ValueKind != JsonValueKind.Array)
             return;
@@ -121,6 +127,9 @@ public partial class ValidationService
                 target.Add(questId);
                 if (difficultyById != null)
                     difficultyById[questId] = NormalizeGuardianQuestDifficulty(GetFirstNonEmptyString(quest, "difficulty"));
+                var status = GetFirstNonEmptyString(quest, "status");
+                if (statusById != null && !string.IsNullOrWhiteSpace(status))
+                    statusById[questId] = status;
             }
         }
     }

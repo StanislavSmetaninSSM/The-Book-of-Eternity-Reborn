@@ -1,5 +1,11 @@
 # Repository Agent Instructions
 
+## Task tracking guardrail
+
+Do not implement project changes without a tracked task.
+
+Before editing code, tests, prompts, documentation, examples, or game contracts, first ensure there is an explicit task for the work. If the user asks to implement something and no task exists, create or request a task record before making repository changes. Small exploratory reads, reviews, and planning may happen without a task, but implementation work must be tied to a task.
+
 ## Afterlife contract documentation guardrail
 
 The GM does not read client implementation code during normal play. If you change any `Chaos Sea` / `Shining Abode` runtime contract, update the GM-facing documentation in the same change.

@@ -2654,7 +2654,8 @@ internal static class AfterlifeNotificationState
     private static bool IsGuardianQuestNotificationOrigin(string? questOrigin) =>
         string.Equals(questOrigin, GuardianProjectState.LoreResearchHookOrigin, StringComparison.OrdinalIgnoreCase) ||
         string.Equals(questOrigin, GuardianProjectState.LoreResearchSpecialLineOrigin, StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(questOrigin, GuardianProjectState.ArchiveConsultationHookOrigin, StringComparison.OrdinalIgnoreCase);
+        string.Equals(questOrigin, GuardianProjectState.ArchiveConsultationHookOrigin, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(questOrigin, GuardianProjectState.BaselineMortalLifeHookOrigin, StringComparison.OrdinalIgnoreCase);
 
     private static string BuildGuardianQuestNotificationKey(string guardianId, string questId) =>
         $"{guardianId}:{questId}";
@@ -2668,6 +2669,8 @@ internal static class AfterlifeNotificationState
                 $"У Хранителя {guardianName} открылась особая квестовая линия «{questTitle}».",
             GuardianProjectState.LoreResearchHookOrigin =>
                 $"У Хранителя {guardianName} появилась новая квестовая зацепка «{questTitle}».",
+            GuardianProjectState.BaselineMortalLifeHookOrigin =>
+                $"У Хранителя {guardianName} появилось добровольное поручение для следующей жизни «{questTitle}».",
             _ =>
                 $"У Хранителя {guardianName} появился новый квест «{questTitle}»."
         };

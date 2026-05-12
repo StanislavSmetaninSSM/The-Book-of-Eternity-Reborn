@@ -225,7 +225,7 @@
                            "VALUE_SOURCE": "Guardian quests currently accepted/in progress for this specific Guardian",
                            "MEANING": "Quest objects that moved from available state into active progress",
                            "PURPOSE": "Allow quest-specific progression and valid completeQuest targeting",
-                           "VALIDATION": "Array of active quest objects; completed quests are removed from both availableQuests and activeQuests"
+                           "VALIDATION": "Array of active quest objects. status may be omitted for legacy entries or active|ready_to_turn_in|failed|expired. completed quests are removed from both availableQuests and activeQuests"
                          },
                          "completedQuests": {
                            "VALUE_SOURCE": "Historical log of all completed quests with this Guardian",
@@ -327,7 +327,7 @@
                      - "Твои прошлые ошибки не забыты, но работать с тобой ещё можно."
                      
                      System Behavior:
-                     - Offer only basic difficulty quests
+                     - Offer only basic difficulty quests; if the player has no Guardian quest, consider one optional baseline mortal-life hook (`questOrigin=guardian_baseline_mortal_life_hook`) rather than leaving the Guardian empty
                      - Increase Gacha costs by 50%
                      - Reduce reward quality by 25%
                      - Provide clear paths to reputation improvement
@@ -345,6 +345,7 @@
 
                      System Behavior:
                      - Standard quest offerings and rewards
+                     - If no active or available Guardian quest exists, consider 1-2 voluntary baseline mortal-life hooks (`questOrigin=guardian_baseline_mortal_life_hook`); keep them as offers until the player accepts
                      - Normal Gacha rates and costs
                      - Professional but not personal interactions
                      - Equal opportunity for reputation gain/loss
@@ -525,6 +526,7 @@
                      ```
                      
                      COMPLETING GUARDIAN QUEST:
+                     `completeQuest` is the afterlife hand-in after the soul returns to the Guardian. It can close only a quest already accepted into `activeQuests[]`; do not close an unaccepted `availableQuests[]` offer. If a quest was advanced during Mortal World play, it should already be in activeQuests with status `ready_to_turn_in` and non-physical proof. Do not require a physical mortal item: the Guardian receives a memory imprint, item echo, location witness, crafted outcome, knowledge trace, or soul resonance.
                      ```json
                      "UpdateGuardians": [
                        {
@@ -535,6 +537,29 @@
                         }
                       ]
                      ```
+
+                     MORTAL-LIFE GUARDIAN QUEST PROGRESS:
+                     In Mortal World, use `guardianQuestProgressUpdates`, not `UpdateGuardians`, and only for an already accepted active quest. This is how the GM marks "the player found the rare ore" without moving the ore itself into afterlife.
+                     ```json
+                     "guardianQuestProgressUpdates": [
+                       {
+                         "guardianId": "guard_combat_aleksandr_warlord_001",
+                         "questId": "quest_guard_rare_ore_echo_001",
+                         "status": "ready_to_turn_in",
+                         "progressSummary": "Игрок нашёл редкую руду; предмет остался в смертном мире.",
+                         "readyToTurnInEvidence": {
+                           "itemEcho": {
+                             "mortalItemName": "Редкая руда",
+                             "proofKind": "memory_imprint",
+                             "summary": "Душа сохранила слепок руды и обстоятельств находки."
+                           },
+                           "lifeEventEvidence": "Событие поиска подтверждено памятью текущей жизни."
+                         },
+                         "turnInRequirement": "Вернуться к Хранителю и передать слепок/резонанс, не физический предмет."
+                       }
+                     ]
+                     ```
+                     Forbidden evidence fields: `physicalItem`, `inventoryItem`, `transferredItem`, `transferredItemId`, `mortalInventoryTransfer`.
                      
                      PROCESSING GUARDIAN GACHA (ANTI-CHEAT PROTOCOL):
                      The client pre-computes an independent gacha base result and exposes it in

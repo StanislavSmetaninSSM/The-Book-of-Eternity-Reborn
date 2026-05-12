@@ -520,6 +520,7 @@ public partial class ValidationService
         public HashSet<string> AvailableQuestIds { get; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> ActiveQuestIds { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> QuestDifficultyById { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, string> ActiveQuestStatusById { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
     private sealed class ForcedGuardianIncarnationContext

@@ -1203,6 +1203,7 @@ Correct GM procedure:
 - For consultation, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = consultation`, `status`, `guardianId`, and at least one machine-readable outcome field.
 - Accepted consultation must also create a completed `lore_research` Guardian project with `projectOrigin = archive_consultation`, `consultationRequestId`, `consultationArchiveId`, and `projectOutcomeAudit` matching the resolution fields.
 - If that consultation creates a Guardian quest hook, the quest record in `questManagement.availableQuests`/`activeQuests`/`completedQuests` must carry `questOrigin = archive_consultation_hook` and `sourceProjectId = archive_consult_project_azalia_241`. Ordinary lore-research hooks use `questOrigin = lore_research_hook`; special lore-research lines use `questOrigin = lore_research_special_line`.
+- For ordinary Wary/Neutral-or-better Guardian scenes that are not backed by lore/archive tokens, the GM may offer a voluntary / добровольное future mortal-life assignment with `questOrigin = guardian_baseline_mortal_life_hook`. Keep it in `availableQuests` until the player explicitly accepts it; do not create an `activeQuest` just because the offer exists, and do not treat an empty `availableQuests` array as a validation error.
 - For project fuel, return `archiveActionResolutions` with exact `requestId`, `archiveId`, `requestedMode = project_fuel`, `targetProjectId`, `status`, `resultMode`, and `resultAmount > 0`.
 - For project fuel, `archiveEntryType = lore_fragment` may resolve only as `resultMode = project_work`; `archiveEntryType = secret_record` may resolve only as `resultMode = pressure_relief`.
 - Accepted archive entries are consumed/resolved by canonical archive state; rejected/cancelled entries return to availability.
@@ -4317,7 +4318,7 @@ Correct `completeQuest` fragment:
 
 Rules for these commands:
 - `updateReputation` uses top-level `reputationChange` and `reason`, not nested `data`.
-- `completeQuest` can target only an existing Guardian quest id in that Guardian's canonical quest state.
+- `completeQuest` can target only an existing active Guardian quest id in that Guardian's canonical `activeQuests[]`; it cannot close an unaccepted `availableQuests[]` offer.
 - `completeQuest` always carries deterministic `questPowerAudit` with `questDifficultyTier`, `outcome`, `baseDelta`, `bonusDelta`, and `finalDelta`; do not write raw `guardianPowerEvents.reasonType = guardian_quest`.
 - `processGacha` is only Guardian-mediated gacha; direct Chaos Sea `/gacha` must not use it.
 - `addMusings`, `unlockLore`, and `setMood` use top-level `musings[]`, `loreFragment`, and `mood`.
@@ -6047,6 +6048,70 @@ Archive consultation/project fuel:
 Archive candidate manifest:
 - `game_state/control/archive_candidate_manifest.json` is client-owned Life Evaluation / archive-candidate state, not a GM pending contract.
 - The GM may read it as context or repair evidence, but must not edit, clear, or close it with a receipt.
+```
+
+Guardian quest lifecycle through Mortal World:
+
+```text
+Baseline Guardian hooks (`questOrigin=guardian_baseline_mortal_life_hook`) are voluntary offers. They stay in availableQuests until the player accepts them.
+
+If the player accepts a Guardian quest before incarnation, it becomes activeQuests[]. During Mortal World play the GM can update only that accepted quest through guardianQuestProgressUpdates[]. This is the narrow exception to the Mortal World "no Guardian mutation" rule.
+
+Use ready_to_turn_in when the mortal objective is satisfied but the soul has not yet returned to the Guardian.
+
+Rare ore example:
+- The Guardian asked the player to find a rare ore in the next life.
+- The mortal player finds the ore.
+- The ore remains in Mortal World inventory/world state. It is not moved into afterlife.
+- The Guardian quest receives an itemEcho/memoryImprint/lifeEventEvidence, so the Guardian can later read the imprint from the soul.
+```
+
+```json
+{
+  "guardianQuestProgressUpdates": [
+    {
+      "guardianId": "guardian_azalia",
+      "questId": "quest_azalia_rare_ore_echo",
+      "status": "ready_to_turn_in",
+      "progressSummary": "Игрок нашёл редкую руду в смертной жизни; физический предмет остался в мире.",
+      "readyToTurnInEvidence": {
+        "itemEcho": {
+          "mortalItemName": "Серебряная руда сна",
+          "proofKind": "memory_imprint",
+          "summary": "Душа сохранила слепок структуры руды и место находки."
+        },
+        "lifeEventEvidence": "Событие поиска записано в памяти этой жизни."
+      },
+      "turnInRequirement": "Вернуться к Хранителю и передать слепок/резонанс, не физический предмет."
+    }
+  ]
+}
+```
+
+```text
+After the soul returns to the Guardian, close the quest through UpdateGuardians.completeQuest:
+```
+
+```json
+{
+  "UpdateGuardians": [
+    {
+      "command": "completeQuest",
+      "guardianId": "guardian_azalia",
+      "questId": "quest_azalia_rare_ore_echo",
+      "outcome": "success",
+      "questPowerAudit": {
+        "questDifficultyTier": "normal",
+        "outcome": "success",
+        "baseDelta": 3,
+        "supportsCurrentProject": false,
+        "defendsAgainstRivalPressure": false,
+        "bonusDelta": 0,
+        "finalDelta": 3
+      }
+    }
+  ]
+}
 ```
 
 Afterlife-origin companion manifestation handoff:

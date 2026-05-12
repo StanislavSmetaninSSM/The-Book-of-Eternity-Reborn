@@ -2532,6 +2532,7 @@ ELSE IF REALM = Shining Abode:
 IF REALM = Mortal World:
   FORBIDDEN: UpdateGuardians, Guardian-specific reputation/project/musings/lore commands, Abode navigation, Soul Relic Gacha, afterlife-only spending of Ink Feathers.
   ALLOWED: combat, NPCs, quests, inventory, factions, weather, time, world progression.
+  NARROW GUARDIAN QUEST PROGRESS EXCEPTION: guardianQuestProgressUpdates may update only existing guardian.questManagement.activeQuests[] to active, ready_to_turn_in, failed, or expired during Mortal World play. It must not change Guardian reputation, identity, Abode, gacha, projects, completed quests, or close/reward the quest. If the mortal objective was an item, record readyToTurnInEvidence as a non-physical echo/memory/imprint/resonance; the Guardian does NOT receive a physical mortal inventory item.
   MORTAL-WORLD INK FEATHER EXCEPTIONS: Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink.
   LOCAL NPC TRADE: Some NPCs may have a client-side Buy/Sell panel for mortal-world goods only. This panel does NOT create turn_request.json, does NOT use Ink Feathers, and does NOT trade Soul Relics.
   If the player later asks a merchant NPC about an item just bought from that merchant's local stock, treat the item as known to that merchant and do not act surprised by its existence.

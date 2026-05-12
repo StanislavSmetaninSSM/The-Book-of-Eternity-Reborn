@@ -112,7 +112,8 @@ public partial class CanonicalStateNormalizer
         IReadOnlyCollection<JsonObject>? authorizedCommands,
         IReadOnlyDictionary<string, JsonObject>? authorizedCreateGuardiansById,
         IReadOnlyCollection<JsonObject>? authorizedPowerEvents,
-        int currentTurn)
+        int currentTurn,
+        IReadOnlyCollection<JsonObject>? authorizedQuestProgressUpdates = null)
     {
         var result = CloneObject(preTurnRoot ?? new JsonObject());
         var pendingPowerEvents = new List<JsonObject>();
@@ -134,6 +135,8 @@ public partial class CanonicalStateNormalizer
         if (pendingPowerEvents.Count > 0)
             GuardianPowerEventState.ApplyEvents(result, pendingPowerEvents, currentTurn, powerJournalEntries);
 
+        if (authorizedQuestProgressUpdates is { Count: > 0 })
+            ApplyGuardianQuestProgressAuthorityUpdates(result, authorizedQuestProgressUpdates);
         ApplyCurrentGuardianRootAuthoritySurfaces(result, currentRoot, authorizedCreateGuardiansById);
 
         if (result["guardians"] is JsonArray guardians)
@@ -153,8 +156,101 @@ public partial class CanonicalStateNormalizer
         result.Remove("UpdateGuardians");
         result.Remove(GuardianTradeRequestState.UpdateReceiptsProperty);
         result.Remove("guardianPowerEvents");
+        result.Remove(GuardianProjectState.QuestProgressUpdatesProperty);
 
         return result;
+    }
+
+    private static void ApplyGuardianQuestProgressAuthorityUpdates(
+        JsonObject result,
+        IReadOnlyCollection<JsonObject> authorizedQuestProgressUpdates)
+    {
+        if (authorizedQuestProgressUpdates.Count == 0 ||
+            result["guardians"] is not JsonArray authorityGuardians)
+        {
+            return;
+        }
+
+        foreach (var update in authorizedQuestProgressUpdates)
+        {
+            if (!IsAllowedGuardianQuestProgressAuthorityState(update))
+                continue;
+
+            var guardianId = GetNodeString(update["guardianId"]);
+            var questId = GetNodeString(update["questId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(questId))
+                continue;
+
+            var authorityGuardian = FindGuardian(authorityGuardians, guardianId!);
+            if (authorityGuardian?["questManagement"] is not JsonObject authorityQuestManagement ||
+                authorityQuestManagement["activeQuests"] is not JsonArray authorityActiveQuests)
+            {
+                continue;
+            }
+
+            var authorityQuest = authorityActiveQuests
+                .OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(GetNodeString(item["questId"]), questId, StringComparison.OrdinalIgnoreCase));
+            if (authorityQuest == null)
+                continue;
+
+            foreach (var fieldName in GuardianQuestProgressAuthorityMutableFields)
+            {
+                if (update.TryGetPropertyValue(fieldName, out var updateValue))
+                    authorityQuest[fieldName] = updateValue?.DeepClone();
+            }
+        }
+    }
+
+    private static readonly string[] GuardianQuestProgressAuthorityMutableFields =
+    {
+        "status",
+        "progressSummary",
+        "objectiveState",
+        "readyToTurnInEvidence",
+        "turnInRequirement",
+        "readyToTurnInAtTurn",
+        "updatedAtTurn",
+        "updatedAtUtc"
+    };
+
+    private static bool IsAllowedGuardianQuestProgressAuthorityState(JsonObject quest)
+    {
+        var status = GetNodeString(quest["status"]);
+        if (!GuardianProjectState.IsSupportedActiveQuestProgressStatus(status))
+            return false;
+
+        var evidenceNode = quest["readyToTurnInEvidence"];
+        if (evidenceNode != null && evidenceNode is not JsonObject)
+            return false;
+        var evidence = evidenceNode as JsonObject;
+        if (evidence != null && GuardianProjectState.ContainsForbiddenQuestPhysicalEvidenceField(evidence))
+            return false;
+
+        if (!string.Equals(status, GuardianProjectState.QuestStatusReadyToTurnIn, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (evidence == null)
+            return false;
+
+        if (!GuardianQuestProgressAuthorityEvidenceHasAllowedProof(evidence))
+            return false;
+
+        return true;
+    }
+
+    private static bool GuardianQuestProgressAuthorityEvidenceHasAllowedProof(JsonObject evidence)
+    {
+        foreach (var fieldName in new[] { "memoryImprint", "lifeEventEvidence", "itemEcho", "locationWitness", "craftedOutcome", "knowledgeTrace", "soulResonance" })
+        {
+            var node = evidence[fieldName];
+            if (node is JsonObject or JsonArray)
+                return true;
+            if (node is JsonValue value && value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text))
+                return true;
+        }
+
+        return false;
     }
 
     private static void ApplyCurrentGuardianRootAuthoritySurfaces(
@@ -315,6 +411,7 @@ public partial class CanonicalStateNormalizer
         var currentTurn = await TryReadCurrentTurnNumberAsync();
         var pendingPowerEvents = new List<JsonObject>();
         var powerJournalEntries = new List<JsonObject>();
+        var keepQuestProgressUpdates = false;
 
         if (currentNode is JsonObject currentObj)
         {
@@ -329,6 +426,12 @@ public partial class CanonicalStateNormalizer
                 result["pendingGuardianCreation"] = pending.DeepClone();
             if (currentObj["UpdateGuardians"] is JsonArray updates)
                 ApplyGuardianCommands(result, updates, currentTurn, pendingPowerEvents);
+            if (currentObj.TryGetPropertyValue(GuardianProjectState.QuestProgressUpdatesProperty, out var questProgressUpdatesNode))
+            {
+                keepQuestProgressUpdates = questProgressUpdatesNode != null;
+                if (questProgressUpdatesNode is JsonArray questProgressUpdates)
+                    _ = TryApplyGuardianQuestProgressUpdates(result, questProgressUpdates, currentTurn);
+            }
             if (currentObj["guardianPowerEvents"] is JsonArray powerEvents)
                 pendingPowerEvents.AddRange(powerEvents.OfType<JsonObject>().Select(CloneObject));
         }
@@ -379,6 +482,8 @@ public partial class CanonicalStateNormalizer
         }
 
         result.Remove("UpdateGuardians");
+        if (!keepQuestProgressUpdates)
+            result.Remove(GuardianProjectState.QuestProgressUpdatesProperty);
         result.Remove(GuardianTradeRequestState.UpdateReceiptsProperty);
         result.Remove("guardianPowerEvents");
         await WriteIfChangedAsync(path, currentNode, result);

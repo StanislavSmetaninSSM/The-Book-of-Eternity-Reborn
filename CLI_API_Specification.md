@@ -337,6 +337,7 @@ CLI Agent automatically loads current game state from:
   // META-GAME SYSTEM  
   "metaStateUpdates": "object with soul progression changes",
   "UpdateGuardians": "array of guardian_command_objects (see Guardian Commands below)",
+  "guardianQuestProgressUpdates": "array of restricted Guardian active-quest progress updates; Mortal World may use this only to mark already accepted Guardian quests as active/ready_to_turn_in/failed/expired with non-physical proof",
   "guardians": "array of canonical guardian_objects when a contract explicitly requires full guardian-state authority",
   "activeGuardian": "canonical active guardian object or id-bearing object for guardian-state synchronization",
   "chaosSeaNavigation": "object with currentAbodeId and discoveredAbodes for afterlife navigation; [CHAOS_SEA_TRAVEL] target must already be in pre-turn discoveredAbodes and must also keep activeGuardian synced to the target guardian and target guardian abode.isDiscovered=true",
@@ -616,6 +617,7 @@ Quest state contract notes:
 - `game_state/meta/soul_state.json` ← `metaStateUpdates`, `afterlifeArchiveUpdates`, `archiveActionResolutions`
 - `game_state/meta/afterlife_spiritual_conflict_state.json` ← `afterlifeSpiritualConflictUpdate` (afterlife-only spiritual conflict state: `activeConflict`, `recentConflicts[]`; never Mortal combat files)
 - `game_state/meta/guardians.json` ← `UpdateGuardians`, `guardianPowerEvents`, `UpdateGuardianTradeInventoryReceipts`, and explicit canonical roots `guardians`, `activeGuardian`, `chaosSeaNavigation`, `playerGuardianFoundationHistory` when required by afterlife contract resolution
+- `game_state/meta/guardians.json` ← `guardianQuestProgressUpdates` for the restricted Mortal World progress exception: only existing `activeQuests[]` may receive progress/status/evidence fields, and `ready_to_turn_in` must use memory/imprint/echo/proof fields rather than mortal inventory transfer
 - `game_state/meta/guardian_abode_residents.json` ← `UpdateGuardianAbodeResidents`, `UpdateGuardianAbodeResidentRosterReceipts`, `UpdateGuardianAbodeResidentInteractionReceipts`, `UpdateGuardianAbodeResidentTransferReceipts`, `UpdateGuardianAbodeResidentHistoryLog`, `residentThoughtJournalUpdates`, `residentInteractionLogUpdates`
 - `game_state/meta/guardian_projects.json` ← `startGuardianProjects`, `guardianProjectUpdates`, `completeGuardianProjects`
 - `game_state/meta/guardian_project_journal.json` ← client-generated readable guardian project chronology
@@ -815,6 +817,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 
 ### Forbidden In Mortal World
 - Guardian presence as active entities, Guardian reputation changes, Abode navigation, Gacha, afterlife-only Ink Feather spending.
+- Narrow exception: `guardianQuestProgressUpdates` may update only an existing pre-turn `guardian.questManagement.activeQuests[]` entry during Mortal World play. It cannot create Guardian quests, change reputation, change Guardian identity, navigate Abodes, process Gacha, or complete the quest. Use it to mark accepted Guardian work as `active`, `ready_to_turn_in`, `failed`, or `expired` with non-physical evidence; final hand-in still uses `UpdateGuardians.completeQuest` after the soul returns to the Guardian.
 
 ### Mortal-World Ink Feather Exceptions
 The following spending-based Ink Feather actions are explicitly allowed in `Mortal World`:
@@ -1667,13 +1670,42 @@ Use dedicated top-level surfaces instead:
 - Completed `offensive_intrigue` may include relation-derived `targetAttitudeScore`, `targetAttitudeTier`, `hostilityWeight`, and `preferredHostileTarget` fields inside `offensiveImpactAudit`.
 - Completed `counter_rival_operation` may include relation-derived `coalitionSupportBonus` and `coalitionEligible` fields inside `projectOutcomeAudit` only when non-hostile Guardians coordinate against the same hostile target through an explicit current political project trace.
 
-Guardian quest origin contract for lore-derived quests:
+Guardian quest origin contract:
 - `questOrigin = lore_research_hook` -> ordinary lore-research hook quest, consumes one `questHookToken`
 - `questOrigin = lore_research_special_line` -> special quest line unlocked by `lore_research`
 - `questOrigin = archive_consultation_hook` -> guaranteed extra guardian quest created from `archive consultation` with a `lore_fragment`
+- `questOrigin = guardian_baseline_mortal_life_hook` -> voluntary / добровольное baseline Guardian assignment for a future mortal life; it is allowed for Wary/Neutral or better roleplay scenes when the Guardian offers a simple hook without forcing acceptance
 - Every object in `guardian.questManagement.availableQuests`, `activeQuests`, and `completedQuests` must carry a non-empty `questId`; do not use `title`, `questOrigin`, or `sourceProjectId` as surrogate identity.
-- All three origins must carry `sourceProjectId` of the completed `lore_research` project that granted the effect.
+- The three lore/archive origins must carry `sourceProjectId` of the completed `lore_research` project that granted the effect; `guardian_baseline_mortal_life_hook` does not require `sourceProjectId`.
+- A baseline Guardian hook is an offer, not an accepted quest. Do not move it to `activeQuests` unless the player explicitly accepts it in roleplay or through a later command. Do not treat an empty `availableQuests` array as a validation error.
 - If a quest with `archive_consultation_hook` is completed, keep `questOrigin` and `sourceProjectId` in `completedQuests` so the guaranteed-origin audit trail survives completion.
+
+Guardian quest lifecycle:
+- `availableQuests[].status` may be omitted or `available`: the Guardian is offering the quest, but the player has not accepted it.
+- `activeQuests[].status` may be omitted for legacy saves, or be `active`, `ready_to_turn_in`, `failed`, or `expired`.
+- During Mortal World play, the GM can use `guardianQuestProgressUpdates[]` to update an already accepted active Guardian quest:
+```json
+"guardianQuestProgressUpdates": [
+  {
+    "guardianId": "guardian_azalia",
+    "questId": "quest_azalia_rare_ore_echo",
+    "status": "ready_to_turn_in",
+    "progressSummary": "Игрок нашёл редкую руду в смертной жизни; физический предмет остался в мире.",
+    "readyToTurnInEvidence": {
+      "itemEcho": {
+        "mortalItemName": "Серебряная руда сна",
+        "proofKind": "memory_imprint",
+        "summary": "Душа сохранила слепок структуры руды и место находки."
+      },
+      "lifeEventEvidence": "Событие поиска записано в памяти этой жизни."
+    },
+    "turnInRequirement": "Вернуться к Хранителю и передать слепок/резонанс, не физический предмет."
+  }
+]
+```
+- `ready_to_turn_in` requires non-physical evidence: `memoryImprint`, `lifeEventEvidence`, `itemEcho`, `locationWitness`, `craftedOutcome`, `knowledgeTrace`, or `soulResonance`.
+- Forbidden evidence fields: `physicalItem`, `inventoryItem`, `transferredItem`, `transferredItemId`, `mortalInventoryTransfer`. Mortal inventory does not cross into afterlife.
+- After the soul returns to the Guardian, close the quest with `UpdateGuardians.completeQuest`. If the active quest explicitly has `status=active`, `failed`, or `expired`, do not use `completeQuest` as if it were ready for hand-in.
 
 ### Guardian Abode Power Events
 

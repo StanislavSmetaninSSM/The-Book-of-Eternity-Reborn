@@ -1387,6 +1387,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var apiSpec = ReadRepoFile("CLI_API_Specification.md");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var guardianRules = ReadRepoFile("Rules", "Block_32_Guardians.txt");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
 
         foreach (var doc in new[] { matrix, apiSpec, taskGuide, examples })
@@ -1394,7 +1396,19 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("lore_research_hook", doc, StringComparison.Ordinal);
             Assert.Contains("lore_research_special_line", doc, StringComparison.Ordinal);
             Assert.Contains("archive_consultation_hook", doc, StringComparison.Ordinal);
+            Assert.Contains("guardian_baseline_mortal_life_hook", doc, StringComparison.Ordinal);
             Assert.Contains("sourceProjectId", doc, StringComparison.Ordinal);
+            Assert.Contains("доброволь", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var doc in new[] { matrix, apiSpec, taskGuide, daemonSpec, guardianRules, examples })
+        {
+            Assert.Contains("guardianQuestProgressUpdates", doc, StringComparison.Ordinal);
+            Assert.Contains("ready_to_turn_in", doc, StringComparison.Ordinal);
+            Assert.Contains("readyToTurnInEvidence", doc, StringComparison.Ordinal);
+            Assert.Contains("itemEcho", doc, StringComparison.Ordinal);
+            Assert.Contains("memory", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("physical", doc, StringComparison.OrdinalIgnoreCase);
         }
     }
 
