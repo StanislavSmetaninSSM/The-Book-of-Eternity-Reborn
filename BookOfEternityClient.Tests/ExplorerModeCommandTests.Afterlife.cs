@@ -7336,6 +7336,85 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SpiritualArts_BlocksUpgradeWhenInkFeathersAreInsufficient()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 10, total = 10 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
+        });
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_blocks_insufficient_ink_feathers");
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Недостаточно Чернильных Перьев", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Empty(_console.ConfirmPrompts);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_BlocksUpgradeDuringActiveGmTurnLifecycle()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500, total = 500 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
+        });
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "session_spiritual_arts_pending",
+            requestId = "request_spiritual_arts_pending",
+            turnNumber = 7,
+            playerAction = "pending turn"
+        });
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_blocks_active_gm_turn");
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("активный GM-turn lifecycle", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("input/turn_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualConflict_ShowsOrdinaryProseRoutingRule()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_conflict"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_conflict_prose_routing_rule");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Обычная художественная заявка", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("действие конфликта", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Status_ChaosSeaShowsNumericMemoryLegacyBonus()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
