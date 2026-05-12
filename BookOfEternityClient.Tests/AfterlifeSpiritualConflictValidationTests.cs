@@ -132,6 +132,98 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateConflictExchangeRequiresExplicitDiceModifier()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_missing_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateConflictExchangeAcceptsExplicitLeadModifier()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_light_incarnate_present_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {
+            "formulaVersion": "afterlife_spiritual_conflict_v1",
+            "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+            "diceUsed": [
+              {
+                "side": "player",
+                "sourceIndex": 2,
+                "sides": 20,
+                "value": 14
+              },
+              {
+                "side": "opposition",
+                "sourceIndex": 3,
+                "sides": 20,
+                "value": 9
+              }
+            ],
+            "playerTotal": 26,
+            "oppositionTotal": 14,
+            "margin": 12,
+            "outcomeBand": "decisive_player_success",
+            "modifierBreakdown": {
+              "player": [
+                {
+                  "source": "guard art tier",
+                  "value": 2
+                },
+                {
+                  "source": "current Enlightenment rank",
+                  "value": 2
+                },
+                {
+                  "passiveId": "light_incarnate",
+                  "source": "light_incarnate",
+                  "value": 8
+                }
+              ],
+              "opposition": [
+                {
+                  "source": "guardian pressure art tier",
+                  "value": 2
+                },
+                {
+                  "source": "active Guardian Abode pressure",
+                  "value": 3
+                }
+              ]
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_NoEffectExchange_RejectsChangedBeforeAfter()
     {
         await WriteSoulStateAsync();
@@ -3131,6 +3223,25 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         {
           "soulName": "Асуран",
           "currentRealm": {{JsonSerializer.Serialize(realm)}}
+        }
+        """);
+    }
+
+    private Task WriteSoulStateWithLightIncarnateAsync()
+    {
+        return _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea",
+          "afterlifeCombatProfile": {
+            "capstones": {
+              "lightIncarnate": {
+                "passiveId": "light_incarnate",
+                "id": "light_incarnate",
+                "status": "completed"
+              }
+            }
+          }
         }
         """);
     }

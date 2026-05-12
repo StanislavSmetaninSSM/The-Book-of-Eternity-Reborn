@@ -265,7 +265,7 @@ public partial class ValidationService
             {
                 "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors",
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
-                "coreActionReceipts",
+                SourceOfLightCapstoneState.ShiningStateProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts"
             }, issues, ValidateShiningAbodeStateFile);
         await ValidateStrictTopLevelObjectFileAsync(ShiningAbodeState.StatePath,
@@ -273,7 +273,7 @@ public partial class ValidationService
             {
                 "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors",
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
-                "coreActionReceipts",
+                SourceOfLightCapstoneState.ShiningStateProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts"
             }, issues);
         await ValidateFlexibleStateFile(ShiningCoreActionRequestState.PendingActionsRequestPath,
@@ -295,6 +295,18 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 ShiningTradeRequestState.RequestsProperty
+            }, issues);
+        await ValidateFlexibleStateFile(SourceOfLightCapstoneState.PendingRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "requestId", "createdAtTurn", "createdAtUtc", "radianceExperienceAtRequest",
+                "radianceTierAtRequest", "rewardPassiveId", "rewardRelicId"
+            }, issues, ValidatePendingSourceOfLightCapstoneRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(SourceOfLightCapstoneState.PendingRequestPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "requestId", "createdAtTurn", "createdAtUtc", "radianceExperienceAtRequest",
+                "radianceTierAtRequest", "rewardPassiveId", "rewardRelicId"
             }, issues);
         await ValidateFlexibleStateFile(GuardianAbodeResidentState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -814,6 +826,7 @@ public partial class ValidationService
         await ValidatePendingShiningFoundingRequestContextAsync(issues);
         await ValidatePendingShiningRealignmentRequestContextAsync(issues);
         await ValidatePendingShiningLeadershipTransitionRequestContextAsync(issues);
+        await ValidatePendingSourceOfLightCapstoneRequestContextAsync(issues);
         await ValidateSystemGuardianAttractionContextAsync(issues);
     }
 

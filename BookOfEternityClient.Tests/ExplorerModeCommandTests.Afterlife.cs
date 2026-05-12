@@ -4991,6 +4991,21 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         });
     }
 
+    private async Task SetShiningRadianceAsync(int experience, int tier)
+    {
+        var raw = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var root = JsonNode.Parse(raw ?? "{}")!.AsObject();
+        root["radiance"] = new JsonObject
+        {
+            ["experience"] = experience,
+            ["tier"] = tier
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            ShiningAbodeState.StatePath,
+            root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
     [Fact]
 
     public async Task TryProcessCommand_AfterlifeArchive_ShowsUnreadArchiveBannerInRenderedPanel()
@@ -6932,6 +6947,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Новый цикл: вернуться в Море Хаоса, сбросить Просветление, сохранить Перья и прогресс Обители", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/shining_treasury", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/source_of_light", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/источник_света", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("локальные Врата", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("expected state delta", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -6939,6 +6956,89 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("full/canonical JSON", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("trade lifecycle", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SourceOfLight_BelowFullRadianceDoesNotCreatePendingRequest()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/source_of_light");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("source_of_light_locked_below_radiance");
+        Assert.False(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Источник Света", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Capstone ещё закрыт", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("radiance.tier=4", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("radiance.experience>=580", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SourceOfLight_FullRadianceCreatesPendingRequestAndGmAction()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await SetShiningRadianceAsync(experience: 580, tier: 4);
+        _fs.DeleteFile(ShiningTradeRequestState.PendingRequestsPath);
+        _console.QueueAnyConfirmResponse(true);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/источник_света");
+
+        Assert.NotNull(result);
+        Assert.Contains("[SOURCE_OF_LIGHT_CAPSTONE:", result, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(SourceOfLightCapstoneState.PendingRequestPath, result, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(SourceOfLightCapstoneState.PassiveId, result, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(SourceOfLightCapstoneState.RelicId, result, StringComparison.OrdinalIgnoreCase);
+        AssertNoHiddenExplorerErrors("source_of_light_creates_pending");
+
+        var pendingJson = await _fs.ReadFileAsync(SourceOfLightCapstoneState.PendingRequestPath);
+        Assert.False(string.IsNullOrWhiteSpace(pendingJson));
+        var pendingRoot = JsonNode.Parse(pendingJson!)!.AsObject();
+        Assert.StartsWith("source_of_light_capstone:", pendingRoot["requestId"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(580, pendingRoot["radianceExperienceAtRequest"]!.GetValue<int>());
+        Assert.Equal(4, pendingRoot["radianceTierAtRequest"]!.GetValue<int>());
+        Assert.Equal(SourceOfLightCapstoneState.PassiveId, pendingRoot["rewardPassiveId"]!.GetValue<string>());
+        Assert.Equal(SourceOfLightCapstoneState.RelicId, pendingRoot["rewardRelicId"]!.GetValue<string>());
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("JSON pending_source_of_light_capstone.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Воплощение Света", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Воплощенный Свет", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SourceOfLight_BlocksWhileShiningCorePendingRequestExists()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await SetShiningRadianceAsync(experience: 580, tier: 4);
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "core_blocks_source_light_001",
+                    actionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                    quotedCostFeathers = 0,
+                    quotedCostLightSparks = 0,
+                    createdAtTurn = 159,
+                    createdAtUtc = "2026-05-12T08:00:00Z"
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/source_of_light");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("source_of_light_blocks_core_pending");
+        Assert.False(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Источник Света заблокирован", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(ShiningCoreActionRequestState.PendingActionsRequestPath, renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

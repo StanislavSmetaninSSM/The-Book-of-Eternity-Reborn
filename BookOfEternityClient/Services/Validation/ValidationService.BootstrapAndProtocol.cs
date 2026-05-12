@@ -516,6 +516,7 @@ public partial class ValidationService
             await ValidatePendingShiningFoundingResolutionAsync(issues);
             await ValidatePendingShiningRealignmentResolutionAsync(issues);
             await ValidatePendingShiningLeadershipTransitionResolutionAsync(issues);
+            await ValidatePendingSourceOfLightCapstoneResolutionAsync(issues);
             await ValidateShiningClosureCompositeDiffAsync(issues);
             await ValidatePendingGuardianSocialInteractionResolutionAsync(issues);
             await ValidatePendingNpcSocialInteractionResolutionAsync(issues);
@@ -669,7 +670,8 @@ public partial class ValidationService
                      ShiningTradeRequestState.PendingRequestsPath,
                      ShiningFactionRequestState.PendingFoundingsRequestPath,
                      ShiningFactionRequestState.PendingRealignmentsRequestPath,
-                     ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath
+                     ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                     SourceOfLightCapstoneState.PendingRequestPath
                  })
         {
             switch (await DescribeTrackedFileChangeAgainstManifestAsync(manifest, clientOwnedPath))
@@ -704,6 +706,8 @@ public partial class ValidationService
                                 ? "GuardianAbodeResidents"
                             : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase)
                                 ? "GuardianSocial"
+                            : clientOwnedPath.Equals(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "ShiningAbode"
                                 : "BootstrapProtocol",
                         $"{Path.GetFileName(clientOwnedPath)} нельзя проверить строго: validated pre-turn baseline отсутствует.",
                         "Для client-authored control surfaces сохраняй validated snapshot entry в pending turn snapshot, чтобы GM-side diff checks не опирались на missing baseline.");
@@ -756,8 +760,10 @@ public partial class ValidationService
                         ? "client_owned_shining_founding_request_modified"
                     : clientOwnedPath.Equals(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_shining_realignment_request_modified"
-                    : clientOwnedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase)
-                        ? "client_owned_shining_leadership_request_modified"
+                            : clientOwnedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "client_owned_shining_leadership_request_modified"
+                    : clientOwnedPath.Equals(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_source_of_light_capstone_request_modified"
                     : "client_owned_world_setup_state_modified",
                 section: clientOwnedPath.Equals(AfterlifeReturnGuardService.GuardPath, StringComparison.OrdinalIgnoreCase)
                     ? "Lifecycle"
@@ -790,7 +796,8 @@ public partial class ValidationService
                       clientOwnedPath.Equals(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) ||
                       clientOwnedPath.Equals(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                       clientOwnedPath.Equals(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
-                      clientOwnedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase)
+                      clientOwnedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "ShiningAbode"
                     : "WorldSetup",
                 repairHint: $"Не записывай {clientOwnedPath} в GM response; этот файл поддерживается клиентом/игроком и должен читаться GM как входной контракт."));

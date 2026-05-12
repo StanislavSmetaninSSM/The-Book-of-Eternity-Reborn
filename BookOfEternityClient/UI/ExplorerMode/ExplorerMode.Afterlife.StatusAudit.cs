@@ -49,7 +49,8 @@ public partial class ExplorerMode
         new(ShiningTradeRequestState.PendingRequestsPath, "Торговая витрина Сияющей фракции", "factions[].tradeInventory + tradeInventoryReceipts[]", ShiningOnly: true),
         new(ShiningFactionRequestState.PendingFoundingsRequestPath, "Основание сияющей фракции", "halls[]/factions[] + factionFoundingReceipts[]", ShiningOnly: true),
         new(ShiningFactionRequestState.PendingRealignmentsRequestPath, "Переход сияющего резидента", "guardian_abode_residents.json resident faction fields + factionRealignmentReceipts[]", ShiningOnly: true),
-        new(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, "Смена власти сияющей фракции", "faction.leadership + leadershipReceipts[] + leadershipHistory[]", ShiningOnly: true)
+        new(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, "Смена власти сияющей фракции", "faction.leadership + leadershipReceipts[] + leadershipHistory[]", ShiningOnly: true),
+        new(SourceOfLightCapstoneState.PendingRequestPath, "Источник Света", "sourceOfLightCapstone + afterlifeCombatProfile.capstones.lightIncarnate + soulRelics.stored[]", ShiningOnly: true)
     };
 
     private async Task ShowAfterlifeDetailedStatusAsync()
@@ -404,6 +405,14 @@ public partial class ExplorerMode
         var root = context.Root;
         lines.Add($"  • Доступность: [white]{Markup.Escape(DescribeShiningAvailability(GetNodeString(root["availability"])))}[/]");
         lines.Add($"  • Radiance: [yellow]{GetNodeInt(root["radiance"]?["experience"])} XP[/] [dim](tier {GetNodeInt(root["radiance"]?["tier"])})[/]");
+        var sourceStatus = root[SourceOfLightCapstoneState.ShiningStateProperty] is JsonObject sourceMarker &&
+                           GetNodeBool(sourceMarker["completed"])
+            ? "completed: Воплощение Света + Воплощенный Свет"
+            : GetNodeInt(root["radiance"]?["tier"]) >= SourceOfLightCapstoneState.RequiredRadianceTier &&
+              GetNodeInt(root["radiance"]?["experience"]) >= SourceOfLightCapstoneState.RequiredRadianceExperience
+                ? "available: /источник_света"
+                : $"locked: нужно radiance.tier={SourceOfLightCapstoneState.RequiredRadianceTier}, experience>={SourceOfLightCapstoneState.RequiredRadianceExperience}";
+        lines.Add($"  • Источник Света (Source of Light): [white]{Markup.Escape(sourceStatus)}[/].");
         lines.Add($"  • Light Sparks: [gold1]{GetNodeInt(root["lightSparks"])}[/]");
         if (root["treasury"] is JsonObject treasury)
         {

@@ -22,6 +22,7 @@ public partial class GameEngine
         NpcTradeRequestState.PendingRequestPath,
         ShiningCoreActionRequestState.PendingActionsRequestPath,
         ShiningTradeRequestState.PendingRequestsPath,
+        SourceOfLightCapstoneState.PendingRequestPath,
         GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
         GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
         GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
@@ -873,6 +874,7 @@ public partial class GameEngine
                 await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
                 await ShiningTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
                 await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+                await SourceOfLightCapstoneState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             }
             await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
@@ -937,6 +939,7 @@ public partial class GameEngine
         await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await ShiningTradeRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await ShiningFactionRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await SourceOfLightCapstoneState.EnsureHealthyAsync(_fs, currentRealm);
         await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, currentRealm);
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);

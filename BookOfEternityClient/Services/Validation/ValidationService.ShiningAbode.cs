@@ -144,6 +144,7 @@ public partial class ValidationService
             if (RequireObject(treasury, $"{contextPrefix}.{ShiningAbodeState.TreasuryProperty}", issues))
                 ValidateShiningTreasuryObject(treasury, $"{contextPrefix}.{ShiningAbodeState.TreasuryProperty}", issues);
         }
+        ValidateSourceOfLightCapstoneMarker(root, contextPrefix, issues);
 
         ValidateArrayItems(root, $"{contextPrefix}.coreActionReceipts", issues, "coreActionReceipts", ValidateShiningCoreActionReceiptObject);
         ValidateArrayItems(root, $"{contextPrefix}.factionFoundingReceipts", issues, "factionFoundingReceipts", ValidateShiningFoundingReceiptObject);

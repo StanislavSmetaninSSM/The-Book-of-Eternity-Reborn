@@ -24,6 +24,9 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | enlightenmentRank | ранг Просветления | Chaos Sea progression rank used for afterlife conflict authority and art gates. |
 | radianceRank | ранг Сияния | Shining Abode progression rank used for afterlife conflict authority and art gates. |
 | art tier | уровень искусства | Upgrade tier of a spiritual art; ranks cap the maximum tier that can be purchased. |
+| Source of Light | Источник Света | Full-Radiance Shining capstone scene closed through `pending_source_of_light_capstone.json`. |
+| light_incarnate | Воплощение Света | Soul-owned capstone passive that adds explicit player-side dice modifiers in afterlife spiritual conflicts. |
+| Incarnated Light | Воплощенный Свет | One-per-soul Soul Relic `source_of_light_incarnated_light`; in Mortal lives it gives characteristic bonuses through Soul Relic effects. |
 
 ## Spiritual Art Names
 

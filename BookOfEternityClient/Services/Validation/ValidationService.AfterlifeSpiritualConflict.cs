@@ -132,7 +132,7 @@ public partial class ValidationService
         bool UsesValidatedSnapshot,
         ValidationPendingTurnSnapshotManifest? Manifest);
 
-    private sealed record AfterlifeConflictDiceContext(int[]? AuthoritativeDice)
+    private sealed record AfterlifeConflictDiceContext(int[]? AuthoritativeDice, bool HasLightIncarnate = false)
     {
         public bool HasAuthoritativeDice => AuthoritativeDice is { Length: > 0 };
     }
@@ -157,12 +157,15 @@ public partial class ValidationService
     private async Task<AfterlifeConflictDiceContext> ResolveAfterlifeConflictDiceContextAsync(
         ValidationPendingTurnSnapshotManifest? manifest)
     {
+        var hasLightIncarnate = SourceOfLightCapstoneState.HasLightIncarnate(
+            await ReadJsonObjectAsync("game_state/meta/soul_state.json"));
+
         if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
-            return new AfterlifeConflictDiceContext(manifestDice);
+            return new AfterlifeConflictDiceContext(manifestDice, hasLightIncarnate);
 
         var liveRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
         if (string.IsNullOrWhiteSpace(liveRequestJson))
-            return new AfterlifeConflictDiceContext(null);
+            return new AfterlifeConflictDiceContext(null, hasLightIncarnate);
 
         try
         {
@@ -177,7 +180,7 @@ public partial class ValidationService
                 }
 
                 if (dice.Count > 0)
-                    return new AfterlifeConflictDiceContext(dice.ToArray());
+                    return new AfterlifeConflictDiceContext(dice.ToArray(), hasLightIncarnate);
             }
         }
         catch
@@ -185,7 +188,7 @@ public partial class ValidationService
             // Other validators report malformed live turn requests; dice audit falls back to shape-only checks.
         }
 
-        return new AfterlifeConflictDiceContext(null);
+        return new AfterlifeConflictDiceContext(null, hasLightIncarnate);
     }
 
     private async Task<string?> TryReadShiningAvailabilityForConflictGateAsync(AfterlifeSpiritualConflictGateContext gateContext)
@@ -404,6 +407,7 @@ public partial class ValidationService
         ValidateNonNegativeIntegerField(profile, context, issues, "radianceRank", "AfterlifeSpiritualConflict");
         ValidateNonNegativeIntegerField(profile, context, issues, "retainedRadianceRank", "AfterlifeSpiritualConflict");
         ValidateNonNegativeIntegerField(profile, context, issues, "lastRecoveryTurn", "AfterlifeSpiritualConflict");
+        ValidateLightIncarnateCombatProfileCapstone(profile, context, issues);
 
         if (!profile.TryGetProperty("artTiers", out var artTiers))
             return;
@@ -801,7 +805,10 @@ public partial class ValidationService
         }
 
         if (proof["diceAudit"] is JsonObject diceAudit)
+        {
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+            ValidateLightIncarnateDiceAuditModifier(proof, diceAudit, $"{context}.diceAudit", issues, diceContext);
+        }
     }
 
     private void ValidateConflictExchange(
@@ -911,7 +918,10 @@ public partial class ValidationService
         }
 
         if (exchange["diceAudit"] is JsonObject diceAudit)
+        {
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+            ValidateLightIncarnateDiceAuditModifier(exchange, diceAudit, $"{context}.diceAudit", issues, diceContext);
+        }
     }
 
     private static bool ExchangeDiceAuditRequired(JsonObject exchange, string? outcome)

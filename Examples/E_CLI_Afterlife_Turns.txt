@@ -42,6 +42,7 @@ Use this index before resolving an afterlife turn:
 - `afterlife_return_guard.json` protected first afterlife turn: see example 21.
 - Direct resident action tags and hidden pending-backed routing tags: see example 22.
 - Freeform Chaos Sea Abode search from `/обители`: see example 23.
+- Source of Light capstone (`/source_of_light` / `/источник_света`): see example 25.
 - Player-facing Chaos Sea audit previews and notification receipt detail surfaces: see the audit checklist after example 23.
 
 ==================================================
@@ -6519,6 +6520,178 @@ Why this is valid:
 - It distinguishes coercive `guardian_forced` incarnation from voluntary `TriggerIncarnation`.
 - It uses side-vs-side fields, not root `opponent`, `playerStrain`, or `opponentStrain`.
 - It avoids `enemiesData`, `alliesData`, `combat_log_markdown`, HP, energy, XP, Mortal skills, Mortal NPCs, and Mortal world files.
+
+==================================================
+EXAMPLE 25: SOURCE OF LIGHT CAPSTONE
+==================================================
+
+Scenario:
+- `currentRealm = Shining Abode`.
+- `shining_abode_state.json.availability = active`.
+- `preparedIncarnationPackage = null`.
+- `radiance.tier = 4` and `radiance.experience >= 580`.
+- No active or malformed afterlife pending/control contract is live.
+- The client has created `game_state/control/pending_source_of_light_capstone.json` after the player chose `/source_of_light` / `/источник_света`.
+- This is a one-per-soul full-Radiance capstone reward. It is not `pending_shining_abode_actions.json`, not a Shining core action, and not closed through `coreActionReceipts[]`.
+
+Pre-turn pending request:
+
+```json
+{
+  "game_state/control/pending_source_of_light_capstone.json": {
+    "requestId": "source_of_light_capstone:612",
+    "createdAtTurn": 612,
+    "createdAtUtc": "2026-05-12T08:00:00Z",
+    "radianceExperienceAtRequest": 580,
+    "radianceTierAtRequest": 4,
+    "rewardPassiveId": "light_incarnate",
+    "rewardRelicId": "source_of_light_incarnated_light"
+  }
+}
+```
+
+Correct accepted closure narrative:
+
+```json
+{
+  "response": "Источник Света открывается не как зал и не как врата, а как причина, из которой когда-то родилось первое сияние. Душа проходит через сцену познания начала мироздания и возвращается уже не просто сияющей, а несущей свет внутри себя.",
+  "gm_thoughts_markdown": "## Охват NPC-анализа\n- Режим / Mode: Shining Abode\n- Релевантные акторы / Relevant actors: Игрок, Источник Света как Shining capstone locus\n- Почему они релевантны / Why relevant: закрывается pending_source_of_light_capstone.json и выдаются one-per-soul награды light_incarnate / source_of_light_incarnated_light.\n- Акторы вне охвата / Actors outside scope: Shining factions, residents, Guardians\n- Почему вне охвата / Why outside scope: этот capstone не меняет фракции, резидентов или coreActionReceipts[]."
+}
+```
+
+Correct accepted state fragments:
+
+```json
+{
+  "game_state/meta/shining_abode_state.json patch": {
+    "sourceOfLightCapstone": {
+      "completed": true,
+      "requestId": "source_of_light_capstone:612",
+      "completedAtTurn": 612,
+      "completedAtUtc": "2026-05-12T08:03:00Z",
+      "radianceExperienceAtRequest": 580,
+      "radianceTierAtRequest": 4,
+      "rewardPassiveId": "light_incarnate",
+      "rewardRelicId": "source_of_light_incarnated_light",
+      "sceneNameRu": "Источник Света",
+      "sceneNameEn": "Source of Light"
+    }
+  },
+  "game_state/meta/soul_state.json patch": {
+    "afterlifeCombatProfile": {
+      "capstones": {
+        "lightIncarnate": {
+          "id": "light_incarnate",
+          "passiveId": "light_incarnate",
+          "displayNameRu": "Воплощение Света",
+          "displayNameEn": "Light Incarnate",
+          "source": "source_of_light_capstone",
+          "status": "completed",
+          "requestId": "source_of_light_capstone:612",
+          "grantedAtTurn": 612,
+          "afterlifeDiceFormulaVersion": "afterlife_spiritual_conflict_v1",
+          "leadContestantBonus": 8,
+          "supporterBonus": 4,
+          "coerciveOperationExtraBonus": 4,
+          "coerciveOperations": [
+            "force_incarnation",
+            "force_binding",
+            "break_binding"
+          ]
+        }
+      }
+    },
+    "soulRelics": {
+      "stored": [
+        {
+          "relicId": "source_of_light_incarnated_light",
+          "name": "Воплощенный Свет",
+          "displayNameRu": "Воплощенный Свет",
+          "displayNameEn": "Incarnated Light",
+          "rarity": "legendary",
+          "quality": "legendary",
+          "shiningRarity": "radiant",
+          "unique": true,
+          "source": "source_of_light_capstone",
+          "sourceRequestId": "source_of_light_capstone:612",
+          "description": "Реликвия Источника Света. В смертной жизни при экипировке даёт +25 ко всем основным характеристикам.",
+          "effects": {
+            "characteristicBonuses": {
+              "strength": 25,
+              "dexterity": 25,
+              "constitution": 25,
+              "intelligence": 25,
+              "wisdom": 25,
+              "faith": 25,
+              "attractiveness": 25,
+              "trade": 25,
+              "persuasion": 25,
+              "perception": 25,
+              "luck": 25,
+              "speed": 25
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+After this reward, any contested afterlife spiritual conflict must account for `light_incarnate` in `diceAudit.modifierBreakdown.player[]`. Example player-led coercive action:
+
+```json
+{
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      {
+        "side": "player",
+        "sourceIndex": 0,
+        "sides": 20,
+        "value": 12
+      },
+      {
+        "side": "opposition",
+        "sourceIndex": 1,
+        "sides": 20,
+        "value": 15
+      }
+    ],
+    "playerTotal": 24,
+    "oppositionTotal": 20,
+    "margin": 4,
+    "outcomeBand": "player_success",
+    "modifierBreakdown": {
+      "player": [
+        {
+          "passiveId": "light_incarnate",
+          "source": "light_incarnate",
+          "value": 12,
+          "reason": "+8 player lead contestant, +4 coercive operation"
+        }
+      ],
+      "opposition": [
+        {
+          "source": "opposition art tier",
+          "value": 5
+        }
+      ]
+    }
+  }
+}
+```
+
+Correct reasoning checklist:
+- The pending file is a direct object, not `requests[]`.
+- Validate full Radiance from the pre-turn Shining snapshot: `radiance.tier = 4`, `radiance.experience >= 580`.
+- Do not close this from Chaos Sea, sealed Shining, or Shining pending-bootstrap handoff.
+- Do not combine it with unresolved Shining core/trade/political/legacy discovery contracts.
+- Do not write `coreActionReceipts[]`.
+- Grant exactly one `light_incarnate` passive and exactly one `source_of_light_incarnated_light` Soul Relic.
+- `source_of_light_incarnated_light` is a Soul Relic, not a Mortal inventory item. It affects Mortal characteristics only through the existing Soul Relic characteristic bonus path when equipped.
+- Future afterlife conflict dice must explicitly include `light_incarnate`; do not leave the bonus implicit in prose.
 
 ==================================================
 COMMON INVALID PATTERNS
