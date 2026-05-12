@@ -89,7 +89,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
     {
         var rollbackSoul = CreateSoulRoot(inkFeathers: 10, enlightenmentExperience: 0);
         var preTurnSoul = CreateSoulRoot(inkFeathers: 5, enlightenmentExperience: 0);
-        var currentSoul = CreateSoulRoot(inkFeathers: 0, enlightenmentExperience: 10);
+        var currentSoul = CreateSoulRoot(inkFeathers: 0, enlightenmentExperience: 20);
         await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
         await WriteNodeAsync("input/turn_request.json", CreateCultivateEnlightenmentTurnRequest());
         await WriteCultivateEnlightenmentReceiptAsync();
@@ -101,6 +101,30 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_ink_feather_client_prepaid_double_spend", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateAcceptedTurnSpecialActionOutcomesAsync_CultivateEnlightenmentUsesAcceleratedFormula_Passes()
+    {
+        var rollbackSoul = CreateSoulRoot(inkFeathers: 10, enlightenmentExperience: 0);
+        var preTurnSoul = CreateSoulRoot(inkFeathers: 5, enlightenmentExperience: 0);
+        var currentSoul = CreateSoulRoot(inkFeathers: 5, enlightenmentExperience: 20);
+        await WriteNodeAsync("game_state/meta/soul_state.json", currentSoul);
+        await WriteNodeAsync("input/turn_request.json", CreateCultivateEnlightenmentTurnRequest());
+        await WriteCultivateEnlightenmentReceiptAsync();
+        await WritePendingTurnSnapshotAsync(
+            preTurnSoul,
+            rollbackSoul,
+            "[INK_FEATHER_ACTION: CULTIVATE_ENLIGHTENMENT] Игрок вкладывает 5 Чернильных Перьев в просветление.");
+
+        var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "ink_feather_enlightenment_gain_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "ink_feather_enlightenment_growth_too_small", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_ink_feather_client_prepaid_double_spend", StringComparison.OrdinalIgnoreCase));
     }
 
@@ -695,7 +719,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
             ["summary"] = "Просветление продвинулось.",
             ["stateEvidence"] = new JsonObject
             {
-                ["experienceGain"] = 10,
+                ["experienceGain"] = 20,
                 ["affectedFiles"] = new JsonArray("game_state/meta/soul_state.json")
             }
         });

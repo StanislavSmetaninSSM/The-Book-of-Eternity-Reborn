@@ -1394,17 +1394,18 @@ public partial class ValidationService
         if (!experienceGain.HasValue)
             return;
 
-        if (context.ParsedCostInFeathers.HasValue && experienceGain.Value != context.ParsedCostInFeathers.Value * 2)
+        if (context.ParsedCostInFeathers.HasValue &&
+            experienceGain.Value != AfterlifeProgressionTuning.ComputeCultivateEnlightenmentExperienceGain(context.ParsedCostInFeathers.Value))
         {
             issues.Add(new ValidationIssue(
                 $"{InkFeatherActionResultPath}.stateEvidence.experienceGain",
                 IssueSeverity.Error,
-                "После CULTIVATE_ENLIGHTENMENT experienceGain должен быть равен costInFeathers * 2",
+                $"После CULTIVATE_ENLIGHTENMENT experienceGain должен быть равен costInFeathers * {AfterlifeProgressionTuning.CultivateEnlightenmentExperiencePerFeather}",
                 code: "ink_feather_enlightenment_gain_mismatch",
                 section: context.ActionTag,
-                expected: (context.ParsedCostInFeathers.Value * 2).ToString(),
+                expected: AfterlifeProgressionTuning.ComputeCultivateEnlightenmentExperienceGain(context.ParsedCostInFeathers.Value).ToString(),
                 actual: experienceGain.Value.ToString(),
-                repairHint: "Следуй формуле из правил: enlightenment_xp_gain = cost * 2."));
+                repairHint: $"Следуй формуле из правил: enlightenment_xp_gain = cost * {AfterlifeProgressionTuning.CultivateEnlightenmentExperiencePerFeather}."));
         }
 
         var previousExperience = await ReadEnlightenmentExperienceAsync(await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json"));

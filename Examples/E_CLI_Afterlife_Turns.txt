@@ -1528,7 +1528,7 @@ Ascension is a Chaos Sea lifecycle trigger. The GM confirms the explicit choice 
 
 Input prerequisites:
 - `soul_state.currentRealm = "Chaos Sea"`.
-- Enlightenment/Transcendence is at maximum.
+- Enlightenment is ascension-ready: `enlightenment.experience >= 60` or `soulProgression.totalExperience >= 60`; legacy max/Transcendence markers (`progressPercent=100`, high tier, `Transcendence`) remain valid.
 - `playerAction` explicitly chooses Ascension.
 - No `TriggerLifeEnd`, no Shining pending-bootstrap package handoff, no Mortal World state mutation.
 

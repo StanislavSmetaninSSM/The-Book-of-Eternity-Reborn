@@ -6320,12 +6320,12 @@ public partial class ValidationService
                 issues.Add(new ValidationIssue(
                     "game_state/control/ascension.json",
                     IssueSeverity.Error,
-                    "AscensionTrigger допустим только при максимальном Enlightenment",
+                    "AscensionTrigger допустим только при ascension-ready Enlightenment",
                     code: "ascension_requires_max_enlightenment",
                     section: "Lifecycle",
-                    expected: "Maximum Enlightenment / Transcendence before ascension",
+                    expected: $"enlightenment.experience or soulProgression.totalExperience >= {AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience}, or legacy max/Transcendence marker",
                     actual: "Soul progression is below ascension threshold",
-                    repairHint: "Перед AscensionTrigger доведи soul progression до максимального уровня Enlightenment/Transcendence и только потом создавай ascension.json."));
+                    repairHint: $"Перед AscensionTrigger доведи soul progression до {AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience} Enlightenment XP или legacy max/Transcendence marker и только потом создавай ascension.json."));
             }
         }
         catch (JsonException)
@@ -7103,6 +7103,14 @@ public partial class ValidationService
                 return true;
             }
 
+            if (progression.TryGetProperty("totalExperience", out var totalExperience) &&
+                totalExperience.ValueKind == JsonValueKind.Number &&
+                totalExperience.TryGetInt32(out var parsedTotalExperience) &&
+                AfterlifeProgressionTuning.IsAscensionReadyEnlightenmentExperience(parsedTotalExperience))
+            {
+                return true;
+            }
+
             if (progression.TryGetProperty("tier", out var tier) &&
                 tier.ValueKind == JsonValueKind.Number &&
                 tier.TryGetInt32(out var parsedTier) &&
@@ -7145,10 +7153,18 @@ public partial class ValidationService
                 {
                     return true;
                 }
+
+                if (enlightenment.TryGetProperty("experience", out var experienceProp) &&
+                    experienceProp.ValueKind == JsonValueKind.Number &&
+                    experienceProp.TryGetInt32(out var parsedExperience) &&
+                    AfterlifeProgressionTuning.IsAscensionReadyEnlightenmentExperience(parsedExperience))
+                {
+                    return true;
+                }
             }
             else if (enlightenment.ValueKind == JsonValueKind.Number &&
                      enlightenment.TryGetDouble(out var numericEnlightenment) &&
-                     numericEnlightenment >= 100)
+                     numericEnlightenment >= AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience)
             {
                 return true;
             }

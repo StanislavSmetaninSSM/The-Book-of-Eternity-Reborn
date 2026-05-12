@@ -85,11 +85,11 @@ public static class AfterlifeSpiritualConflictState
     public static readonly IReadOnlyList<RankDefinition> EnlightenmentRanks =
     [
         new(0, "dormant", 0, 0, "Baseline afterlife conflict participation."),
-        new(1, "stirring", 10, 1, "Unlocks tier-1 spiritual art upgrades."),
-        new(2, "focused", 25, 1, "Improves strain recovery after ordinary Chaos Sea conflicts."),
-        new(3, "tempered", 45, 2, "Unlocks tier-2 spiritual art upgrades."),
-        new(4, "lucid", 70, 2, "Improves resistance against ordinary Guardian pressure."),
-        new(5, "illuminated", 100, 3, "Unlocks tier-3 spiritual art upgrades and ascension-ready conflict scale.")
+        new(1, "stirring", 8, 1, "Unlocks tier-1 spiritual art upgrades."),
+        new(2, "focused", 18, 1, "Improves strain recovery after ordinary Chaos Sea conflicts."),
+        new(3, "tempered", 32, 2, "Unlocks tier-2 spiritual art upgrades."),
+        new(4, "lucid", 46, 2, "Improves resistance against ordinary Guardian pressure."),
+        new(5, "illuminated", AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience, 3, "Unlocks tier-3 spiritual art upgrades and ascension-ready conflict scale.")
     ];
 
     public static readonly IReadOnlyList<RankDefinition> RadianceRanks =

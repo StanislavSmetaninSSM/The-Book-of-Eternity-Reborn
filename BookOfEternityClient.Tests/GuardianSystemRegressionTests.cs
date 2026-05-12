@@ -1618,6 +1618,46 @@ public sealed class GuardianSystemRegressionTests : IDisposable
     }
 
     [Fact]
+    public async Task AscensionValidation_EnlightenmentExperienceThresholdAllowsMidgameShiningEntry()
+    {
+        var ascensionReadySoul = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1,
+          "enlightenment": {
+            "currentTier": "Закалённый",
+            "experience": 60,
+            "level": 3,
+            "progressPercent": 60
+          },
+          "soulProgression": {
+            "totalExperience": 60,
+            "tier": 3,
+            "progressPercent": 60
+          }
+        }
+        """;
+        await WriteRawAsync("game_state/meta/soul_state.json", ascensionReadySoul);
+        await WriteRawAsync("game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json", ascensionReadySoul);
+
+        await WriteRawAsync("game_state/control/ascension.json", """
+        {
+          "AscensionTrigger": true,
+          "playerChoice": "Ascension"
+        }
+        """);
+
+        var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        var issues = await validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "ascension_requires_max_enlightenment", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "ascension_invalid_realm", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task RealmSegregationValidation_InvalidManifestDoesNotTrustRawSourceLabel()
     {
         await WritePreTurnTrackedFileAsync(

@@ -63,7 +63,10 @@ public partial class ExplorerMode
             if (level >= 0)
                 lines.Add($"  🧭 Уровень: [mediumpurple1]{level}[/]");
             if (experience >= 0)
+            {
                 lines.Add($"  📈 Опыт просветления: [mediumpurple1]{experience}[/]");
+                lines.Add($"  🌅 Порог Сияющей Обители: [mediumpurple1]{experience}/{AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience} XP[/] ({AfterlifeProgressionTuning.ComputeAscensionProgressPercent(experience)}% до ascension-ready).");
+            }
             if (progressPercent >= 0)
                 lines.Add($"  📊 Прогресс до следующего тира: [mediumpurple1]{progressPercent}%[/]");
         }
@@ -749,16 +752,18 @@ public partial class ExplorerMode
                         Math.Max(20, (int)(feathers * 0.25)),
                         "✨ Культивировать Просветление",
                         cost => $"[INK_FEATHER_ACTION: CULTIVATE_ENLIGHTENMENT] Игрок тратит {cost} Чернильных Перьев на Культивирование Просветления. " +
-                            $"Добавь ровно {cost * 2} experience в soul_state.enlightenment.experience по формуле experienceGain = costInFeathers * 2. " +
+                            $"Добавь ровно {AfterlifeProgressionTuning.ComputeCultivateEnlightenmentExperienceGain(cost)} experience в soul_state.enlightenment.experience по формуле experienceGain = costInFeathers * {AfterlifeProgressionTuning.CultivateEnlightenmentExperiencePerFeather}. " +
+                            $"Порог ascension-ready для Сияющей Обители теперь {AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience} Enlightenment XP. " +
                             "Перья уже списаны клиентом.",
                         cost => new[]
                         {
-                            "Формула: experienceGain = costInFeathers * 2.",
-                            $"При текущей цене {cost} Чернильных Перьев expected experienceGain = {cost * 2}.",
+                            $"Формула: experienceGain = costInFeathers * {AfterlifeProgressionTuning.CultivateEnlightenmentExperiencePerFeather}.",
+                            $"При текущей цене {cost} Чернильных Перьев expected experienceGain = {AfterlifeProgressionTuning.ComputeCultivateEnlightenmentExperienceGain(cost)}.",
+                            $"Порог для AscensionTrigger в Сияющую Обитель: {AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience} Enlightenment XP или legacy max/tier marker.",
                             "GM обязан реально изменить game_state/meta/soul_state.json: enlightenment.experience должен вырасти не меньше заявленного gain.",
                             "output/ink_feather_action_result.json должен содержать stateEvidence.experienceGain."
                         },
-                        cost => $"Просветление получит ровно {cost * 2} experience.");
+                        cost => $"Просветление получит ровно {AfterlifeProgressionTuning.ComputeCultivateEnlightenmentExperienceGain(cost)} experience.");
                 else if (choice.Contains("Попросить об услуге"))
                     await HandleGuardianFavor(feathers);
                 else if (choice.Contains("Открыть Врата Памяти"))
