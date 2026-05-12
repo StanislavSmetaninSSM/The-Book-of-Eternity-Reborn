@@ -212,6 +212,7 @@ public partial class GameEngine
             TurnNumber = request.TurnNumber,
             RequestTimestamp = request.Timestamp,
             PlayerAction = request.PlayerAction,
+            PreGeneratedDices1d20 = request.PreGeneratedDices1d20,
             GachaBaseResult = request.GachaBaseResult == null
                 ? null
                 : JsonSerializer.SerializeToNode(request.GachaBaseResult, JsonOpts) as JsonObject,

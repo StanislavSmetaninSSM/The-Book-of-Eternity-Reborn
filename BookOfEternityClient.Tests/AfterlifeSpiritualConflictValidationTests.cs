@@ -11,6 +11,8 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 {
+    private static readonly int[] AuthoritativeConflictDice = { 5, 18, 14, 9, 11, 7, 20, 1, 13, 6, 16, 8, 12, 4, 10, 15, 3, 17, 2, 19 };
+
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly ValidationService _validator;
@@ -52,6 +54,84 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ContestedExchangeWithAuthoritativeDice_RequiresDiceAudit()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_missing_dice_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_exchange_missing_dice_audit", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ContestedExchange_RejectsDiceNotFromAuthoritativePool()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_wrong_dice_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson(playerValueOverride: 15)}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_value_not_authorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("playerTotal", 19, "afterlife_conflict_dice_player_total_mismatch")]
+    [InlineData("margin", 5, "afterlife_conflict_dice_margin_mismatch")]
+    [InlineData("outcomeBand", "mixed_or_no_effect", "afterlife_conflict_dice_outcome_band_mismatch")]
+    public async Task ValidateGameStateAsync_ContestedExchange_ValidatesDiceMathAndOutcomeBand(
+        string mutatedField,
+        object mutatedValue,
+        string expectedCode)
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAudit();
+        diceAudit[mutatedField] = mutatedValue switch
+        {
+            int intValue => JsonValue.Create(intValue),
+            string stringValue => JsonValue.Create(stringValue),
+            _ => throw new InvalidOperationException($"Unsupported mutated value type: {mutatedValue.GetType().Name}")
+        };
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_bad_math_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_NoEffectExchange_RejectsChangedBeforeAfter()
     {
         await WriteSoulStateAsync();
@@ -69,6 +149,34 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_no_effect_has_state_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_VoluntaryResolution_DoesNotRequireDiceAudit()
+    {
+        await WriteSoulStateAsync();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "mode": "resolve",
+              "conflictId": "afterlife_conflict_voluntary_001",
+              "resolutionState": "resolved",
+              "resolvedAtTurn": 7,
+              "operationType": "surrender",
+              "playerOutcome": "voluntary_surrender",
+              "voluntary": true
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_resolution_missing_dice_audit", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -1404,7 +1512,9 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """;
 
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", preTurnSoul);
-        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentConflict);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AddValidForcedIncarnationDiceAuditToRecentConflicts(currentConflict));
         await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
         await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, preTurnConflict);
         await WriteValidatedSnapshotManifestAsync(
@@ -2138,7 +2248,9 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul);
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardians);
-        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentConflict);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            AddValidForcedIncarnationDiceAuditToRecentConflicts(currentConflict));
         await _fs.WriteFileAtomicAsync("game_state/control/incarnation_trigger.json", """
         {
           "worldDescription": "Новый мир как принудительное следствие поражения.",
@@ -2201,6 +2313,37 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         var issues = await ValidateForcedIncarnationProofScenarioAsync(currentConflict);
 
         Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "forced_incarnation_missing_player_action_provocation_evidence", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ForcedIncarnation_RequiresDiceBackedConflictProof()
+    {
+        const string currentConflict = """
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "mode": "resolve",
+              "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+              "resolutionState": "resolved",
+              "resolvedAtTurn": 7,
+              "guardianId": "guardian_liora",
+              "operationType": "force_incarnation",
+              "playerOutcome": "lost"
+            }
+          ]
+        }
+        """;
+
+        var issues = await ValidateForcedIncarnationProofScenarioAsync(
+            currentConflict,
+            addForcedIncarnationDiceAudit: false);
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_resolution_missing_dice_audit", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "forced_incarnation_missing_player_action_provocation_evidence", StringComparison.OrdinalIgnoreCase));
     }
 
@@ -2649,7 +2792,8 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     private async Task<List<ValidationIssue>> ValidateForcedIncarnationProofScenarioAsync(
         string currentConflict,
         string? currentGuardiansOverride = null,
-        string? preTurnGuardiansOverride = null)
+        string? preTurnGuardiansOverride = null,
+        bool addForcedIncarnationDiceAudit = true)
     {
         const string soul = """
         {
@@ -2737,6 +2881,9 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul);
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", currentGuardians);
+        if (addForcedIncarnationDiceAudit)
+            currentConflict = AddValidForcedIncarnationDiceAuditToRecentConflicts(currentConflict);
+
         await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentConflict);
         await _fs.WriteFileAtomicAsync("game_state/control/incarnation_trigger.json", """
         {
@@ -2817,6 +2964,134 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """;
     }
+
+    private static string AddValidForcedIncarnationDiceAuditToRecentConflicts(string conflictJson)
+    {
+        var root = JsonNode.Parse(conflictJson)!.AsObject();
+        if (root["recentConflicts"] is not JsonArray recentConflicts)
+            return conflictJson;
+
+        foreach (var proof in recentConflicts.OfType<JsonObject>())
+        {
+            var operationType = proof["operationType"]?.GetValue<string>();
+            if (!string.Equals(operationType, "force_incarnation", StringComparison.OrdinalIgnoreCase) ||
+                proof["diceAudit"] is JsonObject)
+            {
+                continue;
+            }
+
+            proof["diceAudit"] = BuildValidForcedIncarnationDiceAudit();
+        }
+
+        return root.ToJsonString();
+    }
+
+    private static JsonObject BuildValidForcedIncarnationDiceAudit() => JsonNode.Parse("""
+    {
+      "formulaVersion": "afterlife_spiritual_conflict_v1",
+      "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+      "diceUsed": [
+        {
+          "side": "player",
+          "sourceIndex": 0,
+          "sides": 20,
+          "value": 5
+        },
+        {
+          "side": "opposition",
+          "sourceIndex": 1,
+          "sides": 20,
+          "value": 18
+        }
+      ],
+      "playerTotal": 9,
+      "oppositionTotal": 23,
+      "margin": -14,
+      "outcomeBand": "decisive_opposition_success",
+      "modifierBreakdown": {
+        "player": [
+          {
+            "source": "incarnation_resistance art tier",
+            "value": 2
+          },
+          {
+            "source": "current Enlightenment rank",
+            "value": 2
+          }
+        ],
+        "opposition": [
+          {
+            "source": "guardian force_incarnation art tier",
+            "value": 2
+          },
+          {
+            "source": "active Guardian Abode pressure",
+            "value": 3
+          }
+        ]
+      }
+    }
+    """)!.AsObject();
+
+    private static string BuildPlayerSuccessDiceAuditJson(int? playerValueOverride = null)
+    {
+        var audit = BuildPlayerSuccessDiceAudit();
+        if (playerValueOverride != null &&
+            audit["diceUsed"] is JsonArray diceUsed &&
+            diceUsed[0] is JsonObject playerDie)
+        {
+            playerDie["value"] = playerValueOverride.Value;
+        }
+
+        return audit.ToJsonString();
+    }
+
+    private static JsonObject BuildPlayerSuccessDiceAudit() => JsonNode.Parse("""
+    {
+      "formulaVersion": "afterlife_spiritual_conflict_v1",
+      "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+      "diceUsed": [
+        {
+          "side": "player",
+          "sourceIndex": 2,
+          "sides": 20,
+          "value": 14
+        },
+        {
+          "side": "opposition",
+          "sourceIndex": 3,
+          "sides": 20,
+          "value": 9
+        }
+      ],
+      "playerTotal": 18,
+      "oppositionTotal": 14,
+      "margin": 4,
+      "outcomeBand": "player_success",
+      "modifierBreakdown": {
+        "player": [
+          {
+            "source": "guard art tier",
+            "value": 2
+          },
+          {
+            "source": "current Enlightenment rank",
+            "value": 2
+          }
+        ],
+        "opposition": [
+          {
+            "source": "guardian pressure art tier",
+            "value": 2
+          },
+          {
+            "source": "active Guardian Abode pressure",
+            "value": 3
+          }
+        ]
+      }
+    }
+    """)!.AsObject();
 
     private static string BuildActiveConflictRootJson(string conflictId = "afterlife_conflict_test_001")
     {
@@ -3070,7 +3345,8 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
           "sessionId": "{{sessionId}}",
           "requestId": "{{requestId}}",
           "turnNumber": {{turnNumber}},
-          "playerAction": {{JsonSerializer.Serialize(playerAction)}}
+          "playerAction": {{JsonSerializer.Serialize(playerAction)}},
+          "preGeneratedDices1d20": {{JsonSerializer.Serialize(AuthoritativeConflictDice)}}
         }
         """);
 
@@ -3092,6 +3368,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ["turnNumber"] = turnNumber,
             ["requestTimestamp"] = "2026-05-06T00:00:00Z",
             ["playerAction"] = playerAction,
+            ["preGeneratedDices1d20"] = JsonSerializer.SerializeToNode(AuthoritativeConflictDice),
             ["files"] = files,
             ["snapshotFileHashes"] = snapshotFileHashes,
             ["clientOwnedValidationHashes"] = new JsonObject(),
