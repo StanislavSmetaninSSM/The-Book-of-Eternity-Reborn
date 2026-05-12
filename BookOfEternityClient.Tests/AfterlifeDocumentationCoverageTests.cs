@@ -1728,6 +1728,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("outcomeBand", examples, StringComparison.Ordinal);
         Assert.Contains("sourceIndex/value", matrix, StringComparison.Ordinal);
         Assert.Contains("modifierBreakdown", matrix, StringComparison.Ordinal);
+        Assert.Contains("spiritual_arts_local_upgrade", matrix, StringComparison.Ordinal);
+        Assert.Contains("must not author upgrade receipts", matrix, StringComparison.Ordinal);
         Assert.Contains("resolvedAtTurn", examples, StringComparison.Ordinal);
         Assert.Contains("operationType", examples, StringComparison.Ordinal);
         Assert.Contains("playerOutcome", examples, StringComparison.Ordinal);

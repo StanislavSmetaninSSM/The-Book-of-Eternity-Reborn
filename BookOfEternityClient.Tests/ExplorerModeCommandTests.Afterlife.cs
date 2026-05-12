@@ -7209,6 +7209,133 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SpiritualArts_UpgradesArtAndSpendsInkFeathers()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500, total = 500 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
+        });
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+        _console.QueueAnyConfirmResponse(true);
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_ink_feathers");
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var profile = Assert.IsType<JsonObject>(soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]);
+        var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
+        Assert.Equal(1, artTiers["pressure"]?.GetValue<int>());
+        Assert.Equal(5, profile["enlightenmentRank"]?.GetValue<int>());
+        var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
+        Assert.Equal(375, inkFeathers["current"]?.GetValue<int>());
+        Assert.Equal(500, inkFeathers["total"]?.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_AllowsFirstUpgradeForHigherUnlockArt()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500, total = 500 },
+            enlightenment = new { currentTier = "Tempered", experience = 45, level = 3 },
+            soulProgression = new { totalExperience = 45, tier = 3, progressPercent = 45 }
+        });
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+        _console.QueueSelection("Выберите духовное искусство", "Break Binding [break_binding] — tier 0->1, 150 🪶");
+        _console.QueueAnyConfirmResponse(true);
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_higher_unlock_art");
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var profile = Assert.IsType<JsonObject>(soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]);
+        var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
+        Assert.Equal(1, artTiers["break_binding"]?.GetValue<int>());
+        var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
+        Assert.Equal(350, inkFeathers["current"]?.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_BlocksUpgradeAboveRankGate()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500, total = 500 },
+            enlightenment = new { currentTier = "Новичок", experience = 0, level = 0 },
+            soulProgression = new { totalExperience = 0, tier = 0, progressPercent = 0 }
+        });
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_blocks_rank_gate");
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("нужен ранг", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_BlocksUpgradeDuringActiveConflict()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500, total = 500 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
+        });
+        await WriteJsonAsync(AfterlifeSpiritualConflictState.StatePath, new
+        {
+            schemaVersion = 1,
+            activeConflict = new
+            {
+                conflictId = "afterlife_conflict_active_upgrade_block",
+                realm = "Chaos Sea",
+                sideModel = "direct_duel",
+                playerSide = new { leadContestant = new { actorType = "player", actorId = "player", displayName = "Игрок" }, supporters = Array.Empty<object>() },
+                oppositionSide = new { leadContestant = new { actorType = "guardian", actorId = "guardian_liora", displayName = "Лиора", actorArtTierSnapshot = new { pressure = 1 }, artAuthoritySource = "guardian_state" }, supporters = Array.Empty<object>() },
+                playerSideStrain = "clear",
+                oppositionSideStrain = "clear",
+                conflictPosition = "contested",
+                resolutionState = "active",
+                exchangeLog = Array.Empty<object>()
+            },
+            recentConflicts = Array.Empty<object>()
+        });
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_blocks_active_conflict");
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("активен afterlife spiritual conflict", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Status_ChaosSeaShowsNumericMemoryLegacyBonus()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);
