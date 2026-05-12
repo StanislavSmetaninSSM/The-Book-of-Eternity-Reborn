@@ -1175,6 +1175,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("client performs the realm handoff", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("do not manually switch `soul_state.currentRealm`", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("life_transitions.json", examples, StringComparison.Ordinal);
+        Assert.Contains(">= 60", matrix + apiSpec + taskGuide + examples, StringComparison.Ordinal);
+        Assert.Contains("experienceGain = costInFeathers * 4", matrix + apiSpec + taskGuide, StringComparison.Ordinal);
         Assert.Contains("afterlife_chaos_ascension_trigger_response", manifest, StringComparison.Ordinal);
     }
 

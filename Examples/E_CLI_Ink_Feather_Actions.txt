@@ -217,13 +217,14 @@ Validation note:
     "affectedFiles": [
       "game_state/meta/soul_state.json"
     ],
-    "experienceGain": 40
+    "experienceGain": 80
   }
 }
 ```
 
 Validation note:
-- `experienceGain` must equal `costInFeathers * 2`
+- `experienceGain` must equal `costInFeathers * 4`
+- Chaos Sea ascension is now midgame-paced: 60 Enlightenment XP is ascension-ready, while legacy max/tier markers remain accepted for compatibility
 - the authoritative enlightenment counter must actually grow by at least that amount
 
 ==================================================
@@ -396,7 +397,7 @@ Invalid:
 - `ABSORB_FEATHERS` changes `experience.json`, but no authoritative XP counter actually grows
 - `DONATE_TO_GUARDIAN` uses a `reputationChange` value that does not match `min(25, max(15, costInFeathers / 3))`
 - `GUARDIAN_FAVOR` returns only lore or advice without a real reputation increase
-- `CULTIVATE_ENLIGHTENMENT` uses `experienceGain` that is not equal to `costInFeathers * 2`
+- `CULTIVATE_ENLIGHTENMENT` uses `experienceGain` that is not equal to `costInFeathers * 4`
 - `ABODE_OFFERING` changes guardian power without `guardianPowerEvents.reasonType = offering`
 - `ABODE_OFFERING` ignores `pending_abode_offering.json` or uses another `guardianId` / `returnCycleId`
 - `SOUL_IMPRINT` creates an imprint without summary/description or without preserved core traits / personality traits

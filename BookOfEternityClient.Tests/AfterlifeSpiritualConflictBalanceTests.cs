@@ -149,6 +149,18 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             Reading: "Even a large advantage does not erase rare dramatic reversals.")];
     }
 
+    [Fact]
+    public void EnlightenmentRankLadder_ReachesAscensionReadyAtSixtyExperience()
+    {
+        var finalRank = AfterlifeSpiritualConflictState.EnlightenmentRanks
+            .Single(rank => rank.Rank == 5);
+
+        Assert.Equal(AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience, finalRank.RequiredProgress);
+        Assert.Equal(60, AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience);
+        Assert.Equal(4, AfterlifeProgressionTuning.CultivateEnlightenmentExperiencePerFeather);
+        Assert.Equal(80, AfterlifeProgressionTuning.ComputeCultivateEnlightenmentExperienceGain(20));
+    }
+
     [Theory]
     [MemberData(nameof(BalanceMatrix))]
     public async Task ValidateGameStateAsync_AfterlifeConflictBalanceMatrix_AcceptsExpectedDiceBands(BalanceCase scenario)

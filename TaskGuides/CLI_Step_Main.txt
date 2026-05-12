@@ -51,7 +51,7 @@
                - Allowed: Guardians, Abodes, Soul Relics, afterlife Ink Feather whitelist actions, Gacha, Soul-system/meta progression, `afterlifeSpiritualConflictUpdate`, afterlife living-world scheduler, Shining-specific systems when in Shining Abode, `progressionProcessingReport`
                - Forbidden: combat, experience, leveling, stat gains/losses, regular NPC mechanics, mortal quests, normal inventory management, Mortal World factions, weather, world time, mortal location system, vehicles/storage/current-world lore
                - File-level forbidden rule: during AfterlifeProfile, do not write any response surface mapped to `game_state/core/player_status.json`, `game_state/player/*`, `game_state/inventory/*`, `game_state/world/*`, `game_state/npcs/*`, `game_state/combat/*`, `game_state/factions/*`, `lore/current_world/*`, Mortal quest files, or Mortal misc files
-               - Afterlife Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment, Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when `pending_abode_offering.json.offeringType = ink_feathers`
+               - Afterlife Ink Feather whitelist: Donate to Guardian, Cultivate Enlightenment (`experienceGain = costInFeathers * 4`; 60 Enlightenment XP is ascension-ready), Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when `pending_abode_offering.json.offeringType = ink_feathers`
                - `Sell Relic` is a separate guardian trade interaction and is NOT an Ink Feather action
                - Local guardian trade (`Buy / Sell` Soul Relics) is client-side, but canonically belongs to the current active Guardian's abode
                - Guardian sell-side remains local, but sold Soul Relics must persist canonically in `guardians[].buybackRelics[]`; do not treat them as disappearing after sale
@@ -392,8 +392,8 @@
             - Optional but structured: if the completed life clearly strengthened a Guardian's domain, emit `guardianPowerEvents` with `reasonType = resonance` and full `resonanceAudit`
             - `TriggerLifeEnd` only starts the return/evaluation lifecycle; the actual Ink Feather + Soul Relic reward belongs to the later Life Evaluation turn, not to the trigger turn itself
 
-            **Ascension (Enlightenment 100% + explicit player choice):**
-            - Trigger: Player reaches 100% Enlightenment and explicitly chooses ascension
+            **Ascension (60 Enlightenment XP or legacy max marker + explicit player choice):**
+            - Trigger: Player reaches ascension-ready Enlightenment (`enlightenment.experience` or `soulProgression.totalExperience >= 60`, or legacy max/Transcendence marker) and explicitly chooses ascension
             - Output: write `game_state/control/ascension.json` through `AscensionTrigger = true` and `playerChoice = "Ascension"`
             - MANDATORY: do not emit AscensionTrigger without that explicit choice marker
             - Result: real transition from `Chaos Sea` into `Shining Abode`

@@ -344,14 +344,14 @@
     Example: AscensionTrigger as a real transition into Shining Abode
    </title>
   <scenariocontext>
-    The player has reached 100% Enlightenment in the Chaos Sea and explicitly chooses ascension instead of continuing the ordinary hub cycle.
+    The player has reached ascension-ready Enlightenment in the Chaos Sea (60 Enlightenment XP or a legacy max/Transcendence marker) and explicitly chooses ascension instead of continuing the ordinary hub cycle.
   </scenariocontext>
   <logoutput target="gm_thoughts_markdown">
    <![CDATA[
    
     # Триггер Вознесения
     
-    1. **Проверка Условия:** Enlightenment = 100%, выбор игрока подтвержден, turn context = playerChoice=Ascension.
+    1. **Проверка Условия:** Enlightenment is ascension-ready (`enlightenment.experience >= 60`, `soulProgression.totalExperience >= 60`, or legacy max/Transcendence marker), выбор игрока подтвержден, turn context = playerChoice=Ascension.
     2. **Тип Перехода:** Это НЕ TriggerLifeEnd и НЕ отдельная Оценка Жизни.
     3. **Контракт:** AscensionTrigger запускает реальный переход из Chaos Sea в Shining Abode.
     4. **Запрет Смешивания:** Он не заменяет TriggerLifeEnd, не запускает Life Evaluation и не смешивается с ними в одном accepted turn.
@@ -369,7 +369,7 @@
       "AscensionTrigger": true,
       "playerChoice": "Ascension",
       "response": "Просветление достигает предела. Игрок явно выбирает Вознесение вместо обычного продолжения цикла.",
-      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: AscensionTrigger меняет только lifecycle/control state этого перехода.\n- Actors outside scope: Guardians, Mortal World NPCs\n- Why outside scope: В ходу нет structured actor updates и нет TriggerLifeEnd.\n\n## Reasoning\n- Preconditions выполнены: Enlightenment=100%, playerChoice=Ascension.\n- AscensionTrigger выполняет переход в Shining Abode и не смешивается с TriggerLifeEnd."
+      "gm_thoughts_markdown": "## NPC Scope\n- Mode: Scene-local\n- Relevant actors: none\n- Why relevant: AscensionTrigger меняет только lifecycle/control state этого перехода.\n- Actors outside scope: Guardians, Mortal World NPCs\n- Why outside scope: В ходу нет structured actor updates и нет TriggerLifeEnd.\n\n## Reasoning\n- Preconditions выполнены: Enlightenment ascension-ready, playerChoice=Ascension.\n- AscensionTrigger выполняет переход в Shining Abode и не смешивается с TriggerLifeEnd."
     }
    ]]>
   </jsonresponse>

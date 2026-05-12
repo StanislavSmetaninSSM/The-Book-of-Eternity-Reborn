@@ -384,7 +384,7 @@ CLI Agent automatically loads current game state from:
   // LIFE CONTROL
   "TriggerLifeEnd": "object with mandatory reason and summary (Mortal World only; reason must be Death|Voluntary; triggers a separate Life Evaluation request after the turn is accepted)",
   "TriggerIncarnation": "object with mandatory worldDescription, characterDescription, circumstances (ordinary Chaos Sea lifecycle control, or Shining Abode pending-bootstrap handoff that preserves the existing preparedIncarnationPackage; GM writes only the trigger and the client performs Mortal bootstrap after accepting it)",
-  "AscensionTrigger": "boolean (real Chaos Sea-only ascension transition; valid only if Enlightenment is 100% and playerChoice=Ascension; must not be combined with TriggerLifeEnd)",
+  "AscensionTrigger": "boolean (real Chaos Sea-only ascension transition; valid only if Enlightenment is ascension-ready: enlightenment.experience or soulProgression.totalExperience >= 60, or legacy max/Transcendence marker, and playerChoice=Ascension; must not be combined with TriggerLifeEnd)",
   "playerChoice": "string (required only with AscensionTrigger; must equal Ascension)"
 }
 ```
@@ -756,7 +756,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - Client-owned `reenter_shining_abode` is a local Chaos Sea route into an already stored active Shining Abode. No GM-authored output is required or allowed for this route. It fails closed if `afterlife_return_guard.json` is malformed, wrong-reason, or otherwise blocking; valid post-life guards must be consumed by an ordinary afterlife turn first. Re-entry does not reset ascension-local counters and does not refill Light Sparks. The local runtime may sync Shining return-cycle gacha charges and may create a Shining trade auto-refresh request when trade inventory is stale; those are client-side side effects, not GM-authored receipts.
 - Client-owned `return_to_chaos_sea` / legacy `new_game_plus` starts the Shining Abode New Cycle and is allowed only when there are no active, malformed, or non-empty Shining pending contracts and `shining_abode_state.json.pendingNativeFactionDiscovery = null`. Resolve or repair `pending_shining_abode_actions.json`, Shining trade inventory requests, Shining founding requests, Shining realignment requests, Shining leadership transition requests, and legacy native discovery before sealing the Abode. A valid explicit-empty `{ "requests": [] }` Shining pending file is stale client-owned clutter and may be deleted by runtime health logic; malformed files or any non-empty `requests[]` block the return fail-closed until repair, closure, or explicit cleanup. Any non-null `pendingNativeFactionDiscovery`, including a malformed string/array/non-object, also blocks return until repaired or explicitly closed. The local route resets Enlightenment/Просветление to baseline and preserves Ink Feathers, Soul Relics, Guardians, Shining achievements, halls, factions, and Radiance progress; it is not an Ink Feather wipe or destructive global reset.
 - `afterlife_return_guard.json` is a client-owned post-life safety guard, not a Shining bootstrap marker. Ordinary afterlife turns consume or clear only a semantic-valid guard with `reason = post_life_return`; malformed JSON or a parsed guard with the wrong `reason` remains fail-closed until validation repair or explicit client/runtime clear. GM must not weaken protection by rewriting, decrementing, or nulling the guard manually.
-- `AscensionTrigger` is valid only in Chaos Sea, only with maximum Enlightenment and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`. The GM writes `game_state/control/ascension.json` / `AscensionTrigger=true` plus `playerChoice="Ascension"` only; the client performs the later realm handoff, so do not manually switch `soul_state.currentRealm` to `Shining Abode` in the same accepted response.
+- `AscensionTrigger` is valid only in Chaos Sea, only with ascension-ready Enlightenment (`enlightenment.experience` or `soulProgression.totalExperience >= 60`, or legacy max/Transcendence marker) and explicit `playerChoice=Ascension`, and must never be mixed with `TriggerLifeEnd`. The GM writes `game_state/control/ascension.json` / `AscensionTrigger=true` plus `playerChoice="Ascension"` only; the client performs the later realm handoff, so do not manually switch `soul_state.currentRealm` to `Shining Abode` in the same accepted response.
 
 ### Afterlife Realm Model
 - Empty, missing, or `null` `currentRealm` is not `Chaos Sea`; it is an unresolved realm fault. GM must not infer realm from pending files, scheduler state, old logs, or narrative context.
@@ -842,7 +842,7 @@ These exceptions do NOT unlock Guardians, Abodes, Guardian reputation changes, o
 ### Afterlife Ink Feather Exceptions
 The following spending-based Ink Feather actions are explicitly allowed in afterlife realms (`Chaos Sea` and `Shining Abode`) when their specific action prerequisites are satisfied:
 - `Donate to Guardian`
-- `Cultivate Enlightenment`
+- `Cultivate Enlightenment` uses `experienceGain = costInFeathers * 4`; 60 Enlightenment XP is ascension-ready for first Shining Abode entry.
 - `Guardian Favor`
 - `Memory Gates`
 - `Soul Imprint`
@@ -1376,8 +1376,8 @@ The Lore Codex tracks knowledge the player has discovered during gameplay. It se
    - Accepted life-evaluation turn is also invalid if `player_chronicle.json` does not gain a new summary entry for the completed life.
    - `TriggerLifeEnd` only starts this return/evaluation lifecycle. The final Ink Feather and Soul Relic reward belongs to the later Life Evaluation turn, not to the trigger turn itself.
 
-5. **Ascension Transition (Enlightenment 100% + explicit player choice):**
-   - Write `AscensionTrigger = true` and `playerChoice = "Ascension"` only when Enlightenment is at maximum.
+5. **Ascension Transition (60 Enlightenment XP or legacy max marker + explicit player choice):**
+   - Write `AscensionTrigger = true` and `playerChoice = "Ascension"` only when Enlightenment is ascension-ready: `enlightenment.experience` or `soulProgression.totalExperience >= 60`, or legacy max/Transcendence markers.
    - Runtime performs a real transition from `Chaos Sea` into `Shining Abode`.
    - `Shining Abode` remains an afterlife hub with guardian/soul/meta systems, not a Mortal World.
    - Client-owned `return_to_chaos_sea` / legacy `new_game_plus` starts the Shining Abode New Cycle: it seals Shining Abode, returns the soul to Chaos Sea, resets Enlightenment/Просветление to baseline, and preserves Ink Feathers, Soul Relics, Guardians, Shining achievements, halls, factions, and Radiance progress.
