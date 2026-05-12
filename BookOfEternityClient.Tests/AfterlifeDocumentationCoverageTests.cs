@@ -1726,6 +1726,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("afterlife_spiritual_conflict_v1", examples, StringComparison.Ordinal);
         Assert.Contains("sourceIndex", examples, StringComparison.Ordinal);
         Assert.Contains("outcomeBand", examples, StringComparison.Ordinal);
+        Assert.Contains("sourceIndex/value", matrix, StringComparison.Ordinal);
+        Assert.Contains("modifierBreakdown", matrix, StringComparison.Ordinal);
         Assert.Contains("resolvedAtTurn", examples, StringComparison.Ordinal);
         Assert.Contains("operationType", examples, StringComparison.Ordinal);
         Assert.Contains("playerOutcome", examples, StringComparison.Ordinal);

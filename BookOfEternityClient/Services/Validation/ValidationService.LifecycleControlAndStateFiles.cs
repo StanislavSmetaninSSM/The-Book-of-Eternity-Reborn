@@ -6752,7 +6752,8 @@ public partial class ValidationService
                         payload.GuardianId,
                         manifest.TurnNumber,
                         preTurnConflictId,
-                        preTurnGuardianId))
+                        preTurnGuardianId,
+                        manifest.PreGeneratedDices1d20))
                 {
                     return preTurnGuardianContext;
                 }
@@ -6860,7 +6861,8 @@ public partial class ValidationService
         string guardianId,
         int turnNumber,
         string preTurnConflictId,
-        string preTurnGuardianId)
+        string preTurnGuardianId,
+        int[]? authoritativeDice)
     {
         return ConflictProofResolvedAtCurrentTurn(proof, turnNumber) &&
                ConflictProofMatchesConflictId(proof, preTurnConflictId) &&
@@ -6868,7 +6870,13 @@ public partial class ValidationService
                ConflictProofMatchesGuardian(proof, guardianId) &&
                ConflictProofIsResolved(proof) &&
                ConflictProofIsForcedIncarnation(proof) &&
-               ConflictProofShowsPlayerLossOrConcession(proof);
+               ConflictProofShowsPlayerLossOrConcession(proof) &&
+               proof["diceAudit"] is JsonObject diceAudit &&
+               ValidateAfterlifeConflictDiceAudit(
+                   diceAudit,
+                   $"{AfterlifeSpiritualConflictState.StatePath}.recentConflicts[].diceAudit",
+                   null,
+                   new AfterlifeConflictDiceContext(authoritativeDice));
     }
 
     private static bool ConflictProofResolvedAtCurrentTurn(JsonObject proof, int turnNumber)

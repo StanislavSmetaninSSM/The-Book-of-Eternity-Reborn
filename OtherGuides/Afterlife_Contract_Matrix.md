@@ -172,6 +172,7 @@ Dice audit rule:
 - `diceAudit.diceSource` is `input/turn_request.json.preGeneratedDices1d20`; never use `gachaBaseResult`, hidden random rolls, or GM preference for afterlife conflict results.
 - Use two visible d20 entries for a contested side-vs-side check: one player-side die and one opposition-side die. If another documented surface in the same turn already consumed visible dice, use the next unused indices and list them explicitly.
 - Required fields: `formulaVersion="afterlife_spiritual_conflict_v1"`, `diceSource`, `diceUsed[]` with `side`, `sourceIndex`, `sides=20`, and `value`, `playerTotal`, `oppositionTotal`, `margin`, `outcomeBand`, and `modifierBreakdown`.
+- Runtime validation compares every `diceUsed[].sourceIndex/value` against the current authoritative `input/turn_request.json.preGeneratedDices1d20`, recomputes side totals from `modifierBreakdown`, and rejects mismatched `margin` or `outcomeBand`.
 - `margin = playerTotal - oppositionTotal`. The GM may narrate freely, but `outcome`, strain changes, `conflictPosition`, and terminal proof must match the audit.
 - Outcome bands for v1: `margin >= 8` -> `decisive_player_success`; `margin 3..7` -> `player_success`; `margin -2..2` -> `mixed_or_no_effect`; `margin -7..-3` -> `opposition_success`; `margin <= -8` -> `decisive_opposition_success`.
 - `no_effect` is allowed only when the action truly produces no state delta; if the player's or opponent's action is contested and changes position, strain, or terminal proof, write `diceAudit`.

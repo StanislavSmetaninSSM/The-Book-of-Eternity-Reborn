@@ -47,10 +47,11 @@ public partial class ValidationService
             return;
         }
 
-        await ValidateActiveConflictRemovalHasTerminalProofAsync(root, issues);
-        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues);
-
         var gateContext = await ResolveAfterlifeSpiritualConflictGateContextAsync();
+        var diceContext = await ResolveAfterlifeConflictDiceContextAsync(gateContext.Manifest);
+        await ValidateActiveConflictRemovalHasTerminalProofAsync(root, issues);
+        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext);
+
         if (root["activeConflict"] is JsonObject activeConflict)
         {
             var gateRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(gateContext.Realm);
@@ -131,6 +132,11 @@ public partial class ValidationService
         bool UsesValidatedSnapshot,
         ValidationPendingTurnSnapshotManifest? Manifest);
 
+    private sealed record AfterlifeConflictDiceContext(int[]? AuthoritativeDice)
+    {
+        public bool HasAuthoritativeDice => AuthoritativeDice is { Length: > 0 };
+    }
+
     private async Task<AfterlifeSpiritualConflictGateContext> ResolveAfterlifeSpiritualConflictGateContextAsync()
     {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
@@ -146,6 +152,40 @@ public partial class ValidationService
             await TryReadCurrentSoulRealmAsync(),
             false,
             null);
+    }
+
+    private async Task<AfterlifeConflictDiceContext> ResolveAfterlifeConflictDiceContextAsync(
+        ValidationPendingTurnSnapshotManifest? manifest)
+    {
+        if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
+            return new AfterlifeConflictDiceContext(manifestDice);
+
+        var liveRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        if (string.IsNullOrWhiteSpace(liveRequestJson))
+            return new AfterlifeConflictDiceContext(null);
+
+        try
+        {
+            if (JsonNode.Parse(liveRequestJson) is JsonObject root &&
+                root["preGeneratedDices1d20"] is JsonArray diceArray)
+            {
+                var dice = new List<int>();
+                foreach (var item in diceArray)
+                {
+                    if (TryGetJsonNodeInt(item, out var value))
+                        dice.Add(value);
+                }
+
+                if (dice.Count > 0)
+                    return new AfterlifeConflictDiceContext(dice.ToArray());
+            }
+        }
+        catch
+        {
+            // Other validators report malformed live turn requests; dice audit falls back to shape-only checks.
+        }
+
+        return new AfterlifeConflictDiceContext(null);
     }
 
     private async Task<string?> TryReadShiningAvailabilityForConflictGateAsync(AfterlifeSpiritualConflictGateContext gateContext)
@@ -472,7 +512,11 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateAfterlifeSpiritualConflictRoot(JsonObject root, string context, List<ValidationIssue> issues)
+    private void ValidateAfterlifeSpiritualConflictRoot(
+        JsonObject root,
+        string context,
+        List<ValidationIssue> issues,
+        AfterlifeConflictDiceContext diceContext)
     {
         if (root.ContainsKey(AfterlifeSpiritualConflictState.ResponseField))
         {
@@ -513,7 +557,15 @@ public partial class ValidationService
                 actual: root["schemaVersion"]?.ToJsonString() ?? "missing"));
         }
 
-        if (root["recentConflicts"] is not JsonArray)
+        if (root["recentConflicts"] is JsonArray recentConflicts)
+        {
+            for (var index = 0; index < recentConflicts.Count; index++)
+            {
+                if (recentConflicts[index] is JsonObject proof)
+                    ValidateRecentConflictProof(proof, $"{context}.recentConflicts[{index}]", issues, diceContext);
+            }
+        }
+        else
         {
             issues.Add(new ValidationIssue(
                 $"{context}.recentConflicts",
@@ -526,7 +578,7 @@ public partial class ValidationService
         }
 
         if (root["activeConflict"] is JsonObject active)
-            ValidateActiveAfterlifeConflict(active, $"{context}.activeConflict", issues);
+            ValidateActiveAfterlifeConflict(active, $"{context}.activeConflict", issues, diceContext);
         else if (root.ContainsKey("activeConflict") && root["activeConflict"] != null)
             issues.Add(new ValidationIssue(
                 $"{context}.activeConflict",
@@ -538,7 +590,11 @@ public partial class ValidationService
                 actual: root["activeConflict"]?.GetType().Name ?? "missing"));
     }
 
-    private void ValidateActiveAfterlifeConflict(JsonObject conflict, string context, List<ValidationIssue> issues)
+    private void ValidateActiveAfterlifeConflict(
+        JsonObject conflict,
+        string context,
+        List<ValidationIssue> issues,
+        AfterlifeConflictDiceContext diceContext)
     {
         RequireNodeString(conflict, context, issues, "conflictId");
         var realm = RequireNodeString(conflict, context, issues, "realm");
@@ -607,7 +663,7 @@ public partial class ValidationService
             for (var index = 0; index < exchangeLog.Count; index++)
             {
                 if (exchangeLog[index] is JsonObject exchange)
-                    ValidateConflictExchange(exchange, $"{context}.exchangeLog[{index}]", issues);
+                    ValidateConflictExchange(exchange, $"{context}.exchangeLog[{index}]", issues, diceContext);
                 else
                     issues.Add(new ValidationIssue(
                         $"{context}.exchangeLog[{index}]",
@@ -724,7 +780,35 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateConflictExchange(JsonObject exchange, string context, List<ValidationIssue> issues)
+    private void ValidateRecentConflictProof(
+        JsonObject proof,
+        string context,
+        List<ValidationIssue> issues,
+        AfterlifeConflictDiceContext diceContext)
+    {
+        var diceRequired = ResolveDiceAuditRequired(proof);
+        if (diceRequired && proof["diceAudit"] is not JsonObject)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.diceAudit",
+                IssueSeverity.Error,
+                "Contested afterlife conflict resolution требует diceAudit.",
+                code: "afterlife_conflict_resolution_missing_dice_audit",
+                section: "AfterlifeSpiritualConflict",
+                expected: "resolution.diceAudit with current turn preGeneratedDices1d20 source indices",
+                actual: proof["diceAudit"]?.GetType().Name ?? "missing"));
+            return;
+        }
+
+        if (proof["diceAudit"] is JsonObject diceAudit)
+            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+    }
+
+    private void ValidateConflictExchange(
+        JsonObject exchange,
+        string context,
+        List<ValidationIssue> issues,
+        AfterlifeConflictDiceContext diceContext)
     {
         RequireNodeString(exchange, context, issues, "exchangeId");
         ValidateEnumNode(exchange, context, issues, "operationType", AfterlifeSpiritualConflictState.OperationTypes, "afterlife_conflict_invalid_operation_type");
@@ -812,6 +896,407 @@ public partial class ValidationService
                 expected: "changed before/after or outcome=blocked/no_effect",
                 actual: "before == after"));
         }
+
+        var diceRequired = ExchangeDiceAuditRequired(exchange, outcome);
+        if (diceRequired && exchange["diceAudit"] is not JsonObject)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.diceAudit",
+                IssueSeverity.Error,
+                "Contested afterlife conflict exchange требует diceAudit.",
+                code: "afterlife_conflict_exchange_missing_dice_audit",
+                section: "AfterlifeSpiritualConflict",
+                expected: "exchange.diceAudit with current turn preGeneratedDices1d20 source indices",
+                actual: exchange["diceAudit"]?.GetType().Name ?? "missing"));
+        }
+
+        if (exchange["diceAudit"] is JsonObject diceAudit)
+            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+    }
+
+    private static bool ExchangeDiceAuditRequired(JsonObject exchange, string? outcome)
+    {
+        if (string.Equals(outcome, "no_effect", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (IsExplicitVoluntaryNonContest(exchange))
+            return false;
+
+        return !string.IsNullOrWhiteSpace(outcome);
+    }
+
+    private static bool ResolveDiceAuditRequired(JsonObject proof)
+    {
+        if (IsExplicitVoluntaryNonContest(proof))
+            return false;
+
+        return ConflictNodeStringEquals(proof, "force_incarnation", "operationType", "finalOperationType");
+    }
+
+    private static bool IsExplicitVoluntaryNonContest(JsonObject root)
+    {
+        var operationType = AfterlifeSpiritualConflictState.GetNodeString(root["operationType"]) ??
+                            AfterlifeSpiritualConflictState.GetNodeString(root["finalOperationType"]);
+        var isVoluntaryOperation =
+            ConflictTokenEquals(operationType, "surrender", "withdraw", "negotiate") ||
+            ConflictNodeContainsAnyToken(root, new[] { "playerOutcome", "resolutionKind", "outcome", "result" },
+                "voluntary_surrender",
+                "voluntary_concession",
+                "voluntary_withdrawal",
+                "voluntary_withdraw",
+                "consented");
+
+        if (!isVoluntaryOperation)
+            return false;
+
+        return TryGetJsonNodeBool(root["voluntary"], out var voluntary) && voluntary ||
+               TryGetJsonNodeBool(root["isVoluntary"], out var isVoluntary) && isVoluntary ||
+               ConflictNodeStringEquals(root, "voluntary_player_choice", "resolutionSource", "source");
+    }
+
+    private static bool ValidateAfterlifeConflictDiceAudit(
+        JsonObject audit,
+        string context,
+        List<ValidationIssue>? issues,
+        AfterlifeConflictDiceContext diceContext)
+    {
+        var valid = true;
+
+        var formulaVersion = AfterlifeSpiritualConflictState.GetNodeString(audit["formulaVersion"]);
+        if (!string.Equals(formulaVersion, "afterlife_spiritual_conflict_v1", StringComparison.Ordinal))
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.formulaVersion",
+                "diceAudit.formulaVersion должен быть afterlife_spiritual_conflict_v1.",
+                "afterlife_conflict_dice_invalid_formula_version",
+                "afterlife_spiritual_conflict_v1",
+                string.IsNullOrWhiteSpace(formulaVersion) ? "missing" : formulaVersion);
+            valid = false;
+        }
+
+        var diceSource = AfterlifeSpiritualConflictState.GetNodeString(audit["diceSource"]);
+        if (!string.Equals(diceSource, "input/turn_request.json.preGeneratedDices1d20", StringComparison.Ordinal))
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceSource",
+                "diceAudit должен использовать visible turn_request preGeneratedDices1d20.",
+                "afterlife_conflict_dice_invalid_source",
+                "input/turn_request.json.preGeneratedDices1d20",
+                string.IsNullOrWhiteSpace(diceSource) ? "missing" : diceSource);
+            valid = false;
+        }
+
+        if (audit["diceUsed"] is not JsonArray diceUsed || diceUsed.Count < 2)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceUsed",
+                "diceAudit.diceUsed должен содержать player и opposition d20 entries.",
+                "afterlife_conflict_dice_missing_used",
+                "array with player/opposition dice entries",
+                audit["diceUsed"]?.GetType().Name ?? "missing");
+            return false;
+        }
+
+        int? playerDie = null;
+        int? oppositionDie = null;
+        var usedSourceIndices = new HashSet<int>();
+        for (var index = 0; index < diceUsed.Count; index++)
+        {
+            if (diceUsed[index] is not JsonObject dieEntry)
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed[{index}]",
+                    "diceUsed[] item должен быть object.",
+                    "afterlife_conflict_dice_invalid_used_entry",
+                    "object",
+                    diceUsed[index]?.GetType().Name ?? "null");
+                valid = false;
+                continue;
+            }
+
+            var side = AfterlifeSpiritualConflictState.GetNodeString(dieEntry["side"]);
+            if (!TryGetJsonNodeInt(dieEntry["sourceIndex"], out var sourceIndex) || sourceIndex < 0)
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed[{index}].sourceIndex",
+                    "diceUsed.sourceIndex должен быть non-negative integer.",
+                    "afterlife_conflict_dice_invalid_source_index",
+                    "0..19",
+                    dieEntry["sourceIndex"]?.ToJsonString() ?? "missing");
+                valid = false;
+            }
+            else if (!usedSourceIndices.Add(sourceIndex))
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed[{index}].sourceIndex",
+                    "diceUsed.sourceIndex не должен повторяться внутри одного diceAudit.",
+                    "afterlife_conflict_dice_duplicate_source_index",
+                    "unique sourceIndex values",
+                    sourceIndex.ToString());
+                valid = false;
+            }
+
+            if (!TryGetJsonNodeInt(dieEntry["sides"], out var sides) || sides != 20)
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed[{index}].sides",
+                    "afterlife conflict diceAudit поддерживает только d20.",
+                    "afterlife_conflict_dice_invalid_sides",
+                    "20",
+                    dieEntry["sides"]?.ToJsonString() ?? "missing");
+                valid = false;
+            }
+
+            if (!TryGetJsonNodeInt(dieEntry["value"], out var value) || value < 1 || value > 20)
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed[{index}].value",
+                    "diceUsed.value должен быть d20 value в диапазоне 1..20.",
+                    "afterlife_conflict_dice_invalid_value",
+                    "1..20",
+                    dieEntry["value"]?.ToJsonString() ?? "missing");
+                valid = false;
+                continue;
+            }
+
+            if (diceContext.AuthoritativeDice is { Length: > 0 } authoritativeDice &&
+                sourceIndex >= 0)
+            {
+                if (sourceIndex >= authoritativeDice.Length)
+                {
+                    AddDiceAuditIssue(
+                        issues,
+                        $"{context}.diceUsed[{index}].sourceIndex",
+                        "diceUsed.sourceIndex отсутствует в authoritative preGeneratedDices1d20.",
+                        "afterlife_conflict_dice_source_index_not_authorized",
+                        $"0..{authoritativeDice.Length - 1}",
+                        sourceIndex.ToString());
+                    valid = false;
+                }
+                else if (authoritativeDice[sourceIndex] != value)
+                {
+                    AddDiceAuditIssue(
+                        issues,
+                        $"{context}.diceUsed[{index}].value",
+                        "diceUsed.value должен совпадать с authoritative preGeneratedDices1d20[sourceIndex].",
+                        "afterlife_conflict_dice_value_not_authorized",
+                        authoritativeDice[sourceIndex].ToString(),
+                        value.ToString());
+                    valid = false;
+                }
+            }
+
+            if (ConflictTokenEquals(side, "player", "playerSide", "soul"))
+                playerDie = value;
+            else if (ConflictTokenEquals(side, "opposition", "oppositionSide", "guardian"))
+                oppositionDie = value;
+            else
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed[{index}].side",
+                    "diceUsed.side должен быть player или opposition.",
+                    "afterlife_conflict_dice_invalid_side",
+                    "player/opposition",
+                    string.IsNullOrWhiteSpace(side) ? "missing" : side);
+                valid = false;
+            }
+        }
+
+        if (playerDie == null)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceUsed",
+                "diceAudit должен включать player-side die.",
+                "afterlife_conflict_dice_missing_player_die",
+                "diceUsed side=player",
+                "missing");
+            valid = false;
+        }
+
+        if (oppositionDie == null)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceUsed",
+                "diceAudit должен включать opposition-side die.",
+                "afterlife_conflict_dice_missing_opposition_die",
+                "diceUsed side=opposition",
+                "missing");
+            valid = false;
+        }
+
+        var playerModifier = SumDiceAuditModifiers(audit, "player", $"{context}.modifierBreakdown.player", issues, ref valid);
+        var oppositionModifier = SumDiceAuditModifiers(audit, "opposition", $"{context}.modifierBreakdown.opposition", issues, ref valid);
+
+        if (!TryGetJsonNodeInt(audit["playerTotal"], out var playerTotal))
+        {
+            AddDiceAuditIssue(issues, $"{context}.playerTotal", "diceAudit.playerTotal должен быть integer.", "afterlife_conflict_dice_missing_player_total", "integer", audit["playerTotal"]?.ToJsonString() ?? "missing");
+            valid = false;
+        }
+        else if (playerDie != null && playerTotal != playerDie.Value + playerModifier)
+        {
+            AddDiceAuditIssue(issues, $"{context}.playerTotal", "diceAudit.playerTotal должен равняться player die + modifierBreakdown.player.", "afterlife_conflict_dice_player_total_mismatch", (playerDie.Value + playerModifier).ToString(), playerTotal.ToString());
+            valid = false;
+        }
+
+        if (!TryGetJsonNodeInt(audit["oppositionTotal"], out var oppositionTotal))
+        {
+            AddDiceAuditIssue(issues, $"{context}.oppositionTotal", "diceAudit.oppositionTotal должен быть integer.", "afterlife_conflict_dice_missing_opposition_total", "integer", audit["oppositionTotal"]?.ToJsonString() ?? "missing");
+            valid = false;
+        }
+        else if (oppositionDie != null && oppositionTotal != oppositionDie.Value + oppositionModifier)
+        {
+            AddDiceAuditIssue(issues, $"{context}.oppositionTotal", "diceAudit.oppositionTotal должен равняться opposition die + modifierBreakdown.opposition.", "afterlife_conflict_dice_opposition_total_mismatch", (oppositionDie.Value + oppositionModifier).ToString(), oppositionTotal.ToString());
+            valid = false;
+        }
+
+        if (!TryGetJsonNodeInt(audit["margin"], out var margin))
+        {
+            AddDiceAuditIssue(issues, $"{context}.margin", "diceAudit.margin должен быть integer.", "afterlife_conflict_dice_missing_margin", "playerTotal - oppositionTotal", audit["margin"]?.ToJsonString() ?? "missing");
+            valid = false;
+        }
+        else if (TryGetJsonNodeInt(audit["playerTotal"], out playerTotal) &&
+                 TryGetJsonNodeInt(audit["oppositionTotal"], out oppositionTotal) &&
+                 margin != playerTotal - oppositionTotal)
+        {
+            AddDiceAuditIssue(issues, $"{context}.margin", "diceAudit.margin должен равняться playerTotal - oppositionTotal.", "afterlife_conflict_dice_margin_mismatch", (playerTotal - oppositionTotal).ToString(), margin.ToString());
+            valid = false;
+        }
+
+        var outcomeBand = AfterlifeSpiritualConflictState.GetNodeString(audit["outcomeBand"]);
+        if (TryGetJsonNodeInt(audit["margin"], out margin))
+        {
+            var expectedBand = ExpectedAfterlifeConflictOutcomeBand(margin);
+            if (!string.Equals(outcomeBand, expectedBand, StringComparison.Ordinal))
+            {
+                AddDiceAuditIssue(issues, $"{context}.outcomeBand", "diceAudit.outcomeBand должен соответствовать margin.", "afterlife_conflict_dice_outcome_band_mismatch", expectedBand, string.IsNullOrWhiteSpace(outcomeBand) ? "missing" : outcomeBand);
+                valid = false;
+            }
+        }
+
+        return valid;
+    }
+
+    private static int SumDiceAuditModifiers(
+        JsonObject audit,
+        string side,
+        string context,
+        List<ValidationIssue>? issues,
+        ref bool valid)
+    {
+        if (audit["modifierBreakdown"] is not JsonObject modifierBreakdown ||
+            modifierBreakdown[side] is not JsonArray modifiers)
+        {
+            AddDiceAuditIssue(
+                issues,
+                context,
+                "diceAudit.modifierBreakdown должен содержать player/opposition arrays.",
+                "afterlife_conflict_dice_missing_modifier_breakdown",
+                "modifierBreakdown.player[] and modifierBreakdown.opposition[]",
+                audit["modifierBreakdown"]?.GetType().Name ?? "missing");
+            valid = false;
+            return 0;
+        }
+
+        var total = 0;
+        for (var index = 0; index < modifiers.Count; index++)
+        {
+            if (modifiers[index] is not JsonObject modifier ||
+                !TryGetJsonNodeInt(modifier["value"], out var value))
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}[{index}].value",
+                    "modifierBreakdown item должен иметь integer value.",
+                    "afterlife_conflict_dice_invalid_modifier",
+                    "integer value",
+                    modifiers[index]?.ToJsonString() ?? "missing");
+                valid = false;
+                continue;
+            }
+
+            total += value;
+        }
+
+        return total;
+    }
+
+    private static string ExpectedAfterlifeConflictOutcomeBand(int margin) =>
+        margin >= 8 ? "decisive_player_success" :
+        margin >= 3 ? "player_success" :
+        margin >= -2 ? "mixed_or_no_effect" :
+        margin >= -7 ? "opposition_success" :
+        "decisive_opposition_success";
+
+    private static void AddDiceAuditIssue(
+        List<ValidationIssue>? issues,
+        string path,
+        string message,
+        string code,
+        string expected,
+        string actual)
+    {
+        issues?.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeSpiritualConflict",
+            expected: expected,
+            actual: actual));
+    }
+
+    private static bool ConflictNodeStringEquals(JsonObject root, string expected, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            if (string.Equals(AfterlifeSpiritualConflictState.GetNodeString(root[propertyName]), expected, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool ConflictNodeContainsAnyToken(JsonObject root, IEnumerable<string> propertyNames, params string[] acceptedTokens)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            var value = AfterlifeSpiritualConflictState.GetNodeString(root[propertyName]);
+            if (ConflictTokenEquals(value, acceptedTokens))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool ConflictTokenEquals(string? value, params string[] acceptedTokens)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return acceptedTokens.Any(token => string.Equals(value, token, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool TryGetJsonNodeInt(JsonNode? node, out int value)
+    {
+        value = 0;
+        return node is JsonValue jsonValue && jsonValue.TryGetValue<int>(out value);
+    }
+
+    private static bool TryGetJsonNodeBool(JsonNode? node, out bool value)
+    {
+        value = false;
+        return node is JsonValue jsonValue && jsonValue.TryGetValue<bool>(out value);
     }
 
     private string? ValidateEnumNode(
