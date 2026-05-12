@@ -6357,7 +6357,81 @@ or ordinary roleplay prose while this conflict is still active:
 Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented.
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented.
+
+Correct contested exchange response:
+
+```json
+{
+  "response": "Вы удерживаете своё право выбора. Лиора давит сильнее, но её связь с вратами на миг срывается, и позиция души становится устойчивее.",
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "exchange",
+    "exchange": {
+      "exchangeId": "afterlife_conflict_exchange_liora_001",
+      "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+      "operationType": "guard",
+      "outcome": "success",
+      "summary": "Игрок укрепил защиту права выбора против навязанной связи.",
+      "before": {
+        "conflictPosition": "contested",
+        "playerSideStrain": "clear",
+        "oppositionSideStrain": "clear"
+      },
+      "after": {
+        "conflictPosition": "player_advantaged",
+        "playerSideStrain": "clear",
+        "oppositionSideStrain": "strained"
+      },
+      "diceAudit": {
+        "formulaVersion": "afterlife_spiritual_conflict_v1",
+        "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+        "diceUsed": [
+          {
+            "side": "player",
+            "sourceIndex": 0,
+            "sides": 20,
+            "value": 14
+          },
+          {
+            "side": "opposition",
+            "sourceIndex": 1,
+            "sides": 20,
+            "value": 9
+          }
+        ],
+        "playerTotal": 18,
+        "oppositionTotal": 14,
+        "margin": 4,
+        "outcomeBand": "player_success",
+        "modifierBreakdown": {
+          "player": [
+            {
+              "source": "incarnation_resistance art tier",
+              "value": 2
+            },
+            {
+              "source": "current Enlightenment rank",
+              "value": 2
+            }
+          ],
+          "opposition": [
+            {
+              "source": "guardian force_incarnation art tier",
+              "value": 2
+            },
+            {
+              "source": "active Guardian Abode pressure",
+              "value": 3
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+`diceUsed[].sourceIndex` is zero-based and must point at actual values in the current `turn_request.json.preGeneratedDices1d20`. If the player writes only ordinary prose during an active conflict, use the same shape; do not demand that the text begin with `[AFTERLIFE_SPIRITUAL_ACTION: ...]`.
 
 If the conflict ends with Лиора forcing incarnation, the accepted turn must first close the conflict with current-turn proof and only then write the forced trigger:
 
@@ -6374,6 +6448,50 @@ If the conflict ends with Лиора forcing incarnation, the accepted turn must
       "operationType": "force_incarnation",
       "playerOutcome": "lost",
       "resolutionKind": "player_loss",
+      "diceAudit": {
+        "formulaVersion": "afterlife_spiritual_conflict_v1",
+        "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+        "diceUsed": [
+          {
+            "side": "player",
+            "sourceIndex": 2,
+            "sides": 20,
+            "value": 5
+          },
+          {
+            "side": "opposition",
+            "sourceIndex": 3,
+            "sides": 20,
+            "value": 18
+          }
+        ],
+        "playerTotal": 9,
+        "oppositionTotal": 23,
+        "margin": -14,
+        "outcomeBand": "decisive_opposition_success",
+        "modifierBreakdown": {
+          "player": [
+            {
+              "source": "incarnation_resistance art tier",
+              "value": 2
+            },
+            {
+              "source": "current Enlightenment rank",
+              "value": 2
+            }
+          ],
+          "opposition": [
+            {
+              "source": "guardian force_incarnation art tier",
+              "value": 2
+            },
+            {
+              "source": "active Guardian Abode pressure",
+              "value": 3
+            }
+          ]
+        }
+      },
       "summary": "Лиора выиграла духовный конфликт о навязанном воплощении; душа не дала добровольного согласия."
     }
   },
@@ -6396,6 +6514,7 @@ Why this is valid:
 - The GM starts the conflict from roleplay; the client did not pre-create a combat encounter.
 - The response uses `afterlifeSpiritualConflictUpdate`, which maps to `game_state/meta/afterlife_spiritual_conflict_state.json`.
 - Once `activeConflict` exists, ordinary player prose can advance it; `/spiritual_action` only adds an explicit conflict tag.
+- Contested outcomes include `diceAudit` from current turn visible d20 values; afterlife combat is not resolved by GM fiat.
 - It distinguishes coercive `guardian_forced` incarnation from voluntary `TriggerIncarnation`.
 - It uses side-vs-side fields, not root `opponent`, `playerStrain`, or `opponentStrain`.
 - It avoids `enemiesData`, `alliesData`, `combat_log_markdown`, HP, energy, XP, Mortal skills, Mortal NPCs, and Mortal world files.

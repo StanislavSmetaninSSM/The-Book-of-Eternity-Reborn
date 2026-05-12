@@ -1707,6 +1707,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("game_state/meta/afterlife_spiritual_conflict_state.json", text, StringComparison.Ordinal);
             Assert.Contains("Mortal combat", text, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("guardian_forced", text, StringComparison.Ordinal);
+            Assert.Contains("diceAudit", text, StringComparison.Ordinal);
+            Assert.Contains("preGeneratedDices1d20", text, StringComparison.Ordinal);
         }
 
         foreach (var text in new[] { matrix, examples, daemonSpec })
@@ -1715,13 +1717,19 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("playerSideStrain", text, StringComparison.Ordinal);
             Assert.Contains("oppositionSideStrain", text, StringComparison.Ordinal);
             Assert.Contains("actorArtTierSnapshot", text, StringComparison.Ordinal);
+            Assert.Contains("ordinary", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("prose", text, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.Contains("afterlife_spiritual_conflict_start_response", manifest, StringComparison.Ordinal);
         Assert.Contains("afterlife_conflict_liora_forced_incarnation_001", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_spiritual_conflict_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("sourceIndex", examples, StringComparison.Ordinal);
+        Assert.Contains("outcomeBand", examples, StringComparison.Ordinal);
         Assert.Contains("resolvedAtTurn", examples, StringComparison.Ordinal);
         Assert.Contains("operationType", examples, StringComparison.Ordinal);
         Assert.Contains("playerOutcome", examples, StringComparison.Ordinal);
+        Assert.Contains("GM preference", examples + matrix + apiSpec + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 24", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("examples 14-24", daemonSpec, StringComparison.OrdinalIgnoreCase);
     }
