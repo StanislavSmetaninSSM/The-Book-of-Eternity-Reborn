@@ -1698,6 +1698,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var apiSpec = ReadRepoFile("CLI_API_Specification.md");
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
         var docs = new[] { matrix, examples, apiSpec, daemonSpec, taskGuide };
 
@@ -1736,6 +1737,25 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("GM preference", examples + matrix + apiSpec + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 24", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("examples 14-24", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        foreach (var text in new[] { matrix, examples, apiSpec, daemonSpec })
+            Assert.Contains("OtherGuides/Afterlife_Combat_Terminology_Glossary.md", text, StringComparison.Ordinal);
+
+        foreach (var term in new[]
+        {
+            "духовный конфликт посмертия",
+            "духовное действие посмертия",
+            "духовные искусства",
+            "обмен действиями",
+            "аудит кубиков",
+            "принудительное воплощение",
+            "сохранённый ранг Сияния",
+            "уровень искусства",
+            "прямой поединок",
+            "поединок чемпиона"
+        })
+        {
+            Assert.Contains(term, glossary, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     [Fact]

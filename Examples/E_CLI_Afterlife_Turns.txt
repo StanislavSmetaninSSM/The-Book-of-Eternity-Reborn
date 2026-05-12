@@ -6289,6 +6289,7 @@ Scenario:
 - The player resists. This is not voluntary `TriggerIncarnation`.
 - The GM starts an afterlife spiritual conflict instead of writing Mortal combat state.
 - Conflict realm/mode is authorized from the validated pre-turn afterlife snapshot. Do not make the start legal by changing `soul_state.currentRealm` or Shining `availability`/`preparedIncarnationPackage` in the same accepted response.
+- Russian labels for this system are fixed in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`: "духовный конфликт посмертия" = `afterlife spiritual conflict`, "обмен действиями" = `exchange`, "аудит кубиков" = `diceAudit`. JSON keys and enum values remain English.
 
 Correct accepted response:
 

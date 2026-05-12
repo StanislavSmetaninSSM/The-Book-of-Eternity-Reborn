@@ -655,6 +655,7 @@ Quest state contract notes:
 
 #### **AFTERLIFE SPIRITUAL CONFLICT**
 - `afterlifeSpiritualConflictUpdate` is the only GM-authored response surface for afterlife duels/conflicts in ordinary `Chaos Sea` or ordinary active `Shining Abode`.
+- Russian player/GM labels are fixed in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`; keep canonical JSON keys and enum values in English.
 - It writes `game_state/meta/afterlife_spiritual_conflict_state.json`, whose canonical root is `{ "schemaVersion": 1, "activeConflict": object|null, "recentConflicts": [] }`.
 - Supported update modes are `start`, `exchange`, `resolve`, and `repair_cancel`.
 - The explicit `[AFTERLIFE_SPIRITUAL_ACTION: conflictId]` tag is optional routing help, not a requirement for roleplay. If `activeConflict` already exists and the player's ordinary prose is a clear action inside that conflict, the GM should resolve it as `mode=exchange` or `mode=resolve`; if the tag is present, its `conflictId` must match the active conflict.

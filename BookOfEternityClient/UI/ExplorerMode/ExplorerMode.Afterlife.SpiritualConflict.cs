@@ -32,7 +32,7 @@ public partial class ExplorerMode
 
         if (!_stateManager.CurrentState.IsInAfterlifeRealm)
         {
-            ShowEmptyPanel("Духовный конфликт", "Afterlife spiritual conflict доступен только в Море Хаоса и Сияющей Обители.");
+            ShowEmptyPanel("Духовный конфликт", "Духовный конфликт посмертия (afterlife spiritual conflict) доступен только в Море Хаоса и Сияющей Обители.");
             return;
         }
 
@@ -42,10 +42,10 @@ public partial class ExplorerMode
 
         var lines = new List<string>
         {
-            "[bold cyan]Afterlife spiritual conflict[/]",
+            "[bold cyan]Духовный конфликт посмертия[/] [dim](afterlife spiritual conflict)[/]",
             "",
-            "Это отдельная загробная система конфликтов. Она не использует Mortal combat files, HP, energy, enemiesData/alliesData или смертные боевые навыки.",
-            "Конфликт начинает GM по роли: по заявке игрока или когда afterlife actor сам инициирует давление.",
+            "Это отдельная загробная система конфликтов. Она не использует файлы смертного боя (Mortal combat files), HP, energy, enemiesData/alliesData или смертные боевые навыки.",
+            "Конфликт начинает GM по роли: по заявке игрока или когда актор посмертия (afterlife actor) сам инициирует давление.",
             ""
         };
 
@@ -53,37 +53,37 @@ public partial class ExplorerMode
         {
             lines.Add("[dim]Активного духовного конфликта нет.[/]");
             lines.Add("");
-            lines.Add("GM может начать конфликт только accepted-turn response surface:");
-            lines.Add($"  • `{AfterlifeSpiritualConflictState.ResponseField}` with `mode=start`");
-            lines.Add($"  • persisted state: `{AfterlifeSpiritualConflictState.StatePath}`");
+            lines.Add("GM может начать конфликт только через поверхность ответа принятого хода (accepted-turn response surface):");
+            lines.Add($"  • `{AfterlifeSpiritualConflictState.ResponseField}` с `mode=start`");
+            lines.Add($"  • сохраняемое состояние (persisted state): `{AfterlifeSpiritualConflictState.StatePath}`");
         }
         else
         {
             var conflictId = AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown";
             lines.Add($"[bold]Активный конфликт:[/] [white]{Markup.Escape(conflictId)}[/]");
-            lines.Add($"  • Realm: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["realm"]) ?? "?")}[/]");
-            lines.Add($"  • Model: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"]) ?? "?")}[/]");
-            lines.Add($"  • Position: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"]) ?? "?")}[/]");
-            lines.Add($"  • Player side strain: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"]) ?? "?")}[/]");
-            lines.Add($"  • Opposition side strain: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"]) ?? "?")}[/]");
-            lines.Add($"  • Resolution state: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"]) ?? "?")}[/]");
+            lines.Add($"  • Область (realm): [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["realm"]) ?? "?")}[/]");
+            lines.Add($"  • Модель сторон (sideModel): [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/]");
+            lines.Add($"  • Позиция конфликта (conflictPosition): [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
+            lines.Add($"  • Напряжение стороны игрока (playerSideStrain): [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/]");
+            lines.Add($"  • Напряжение противостоящей стороны (oppositionSideStrain): [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
+            lines.Add($"  • Состояние завершения (resolutionState): [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
             lines.Add("");
-            AppendConflictSideSummary(lines, "Player side", active["playerSide"] as JsonObject);
-            AppendConflictSideSummary(lines, "Opposition side", active["oppositionSide"] as JsonObject);
+            AppendConflictSideSummary(lines, "Сторона игрока (playerSide)", active["playerSide"] as JsonObject);
+            AppendConflictSideSummary(lines, "Противостоящая сторона (oppositionSide)", active["oppositionSide"] as JsonObject);
             lines.Add("");
-            lines.Add($"  • Exchanges recorded: [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
+            lines.Add($"  • Записано обменов действиями (exchangeLog): [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
         }
 
         lines.Add("");
         lines.Add("[bold]Команды:[/]");
-        lines.Add("  • /spiritual_action — отправить действие в активном конфликте GM с явным тегом.");
+        lines.Add("  • /spiritual_action — отправить действие в активном духовном конфликте с явным тегом для GM.");
         lines.Add("  • Обычная художественная заявка во время активного конфликта тоже должна резолвиться GM как действие конфликта.");
-        lines.Add("  • /spiritual_arts — посмотреть ранги, art tiers и применимые действия.");
+        lines.Add("  • /spiritual_arts — посмотреть ранги, уровни искусств (art tiers) и применимые действия.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" ⚔ Afterlife Spiritual Conflict ", Justify.Center),
+            Header = new PanelHeader(" ⚔ Духовный конфликт посмертия ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(_stateManager.CurrentState.IsInShiningAbode ? Color.Gold1 : Color.Cyan1),
             Padding = new Padding(2, 1),
@@ -91,7 +91,7 @@ public partial class ExplorerMode
         });
 
         if (root != null)
-            WriteJsonAuditPanel($"Full JSON {AfterlifeSpiritualConflictState.StatePath}", root, Color.Cyan1);
+            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", root, Color.Cyan1);
 
         WaitForKey();
     }
@@ -103,7 +103,7 @@ public partial class ExplorerMode
 
         if (!_stateManager.CurrentState.IsInAfterlifeRealm)
         {
-            ShowEmptyPanel("Духовные искусства", "Afterlife spiritual arts доступны только в Море Хаоса и Сияющей Обители.");
+            ShowEmptyPanel("Духовные искусства", "Духовные искусства посмертия (Spiritual Arts) доступны только в Море Хаоса и Сияющей Обители.");
             return;
         }
 
@@ -124,7 +124,7 @@ public partial class ExplorerMode
 
             Clear();
             Write(BuildSpiritualArtsPanel(soulRoot, shiningRoot, profile, quotes));
-            WriteJsonAuditPanel("Full JSON afterlifeCombatProfile", profile, Color.Cyan1);
+            WriteJsonAuditPanel("Полный JSON afterlifeCombatProfile", profile, Color.Cyan1);
 
             var choice = Prompt(new SelectionPrompt<string>()
                 .Title("[bold cyan]Действие духовных искусств[/]")
@@ -153,47 +153,47 @@ public partial class ExplorerMode
 
         var lines = new List<string>
         {
-            "[bold cyan]Afterlife spiritual arts[/]",
+            "[bold cyan]Духовные искусства посмертия[/] [dim](Spiritual Arts)[/]",
             "",
-            "[bold]Current profile:[/]",
-            $"  • Enlightenment rank: [white]{AfterlifeSpiritualConflictState.GetNodeInt(profile["enlightenmentRank"])}[/]",
-            $"  • Radiance rank: [white]{AfterlifeSpiritualConflictState.GetNodeInt(profile["radianceRank"])}[/]",
-            $"  • Retained Radiance rank: [white]{AfterlifeSpiritualConflictState.GetNodeInt(profile["retainedRadianceRank"])}[/]",
-            $"  • Soul enlightenment level: [white]{AfterlifeSpiritualConflictState.GetNodeInt(enlightenment?["level"])}[/] [dim]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(enlightenment?["currentTier"]) ?? "")}[/]",
-            $"  • Shining radiance: [white]{AfterlifeSpiritualConflictState.GetNodeInt(radiance?["experience"])} XP[/] / tier [white]{AfterlifeSpiritualConflictState.GetNodeInt(radiance?["tier"])}[/]",
-            $"  • Max unlocked art tier: [white]{maxUnlockedTier}[/]",
-            $"  • Spendable Ink Feathers: [white]{ShiningAbodeState.GetSoulSpendableInkFeathers(soulRoot)}[/]",
-            $"  • Light Sparks: [gold1]{AfterlifeSpiritualConflictState.GetNodeInt(shiningRoot?["lightSparks"])}[/] [dim](usable only in ordinary Shining Abode)[/]",
+            "[bold]Текущий боевой профиль:[/]",
+            $"  • Ранг Просветления (Enlightenment rank): [white]{AfterlifeSpiritualConflictState.GetNodeInt(profile["enlightenmentRank"])}[/]",
+            $"  • Ранг Сияния (Radiance rank): [white]{AfterlifeSpiritualConflictState.GetNodeInt(profile["radianceRank"])}[/]",
+            $"  • Сохранённый ранг Сияния (Retained Radiance rank): [white]{AfterlifeSpiritualConflictState.GetNodeInt(profile["retainedRadianceRank"])}[/]",
+            $"  • Уровень Просветления души: [white]{AfterlifeSpiritualConflictState.GetNodeInt(enlightenment?["level"])}[/] [dim]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(enlightenment?["currentTier"]) ?? "")}[/]",
+            $"  • Сияние Сияющей Обители (Shining radiance): [white]{AfterlifeSpiritualConflictState.GetNodeInt(radiance?["experience"])} XP[/] / tier [white]{AfterlifeSpiritualConflictState.GetNodeInt(radiance?["tier"])}[/]",
+            $"  • Максимальный открытый уровень искусства (art tier): [white]{maxUnlockedTier}[/]",
+            $"  • Доступные Чернильные Перья (Ink Feathers): [white]{ShiningAbodeState.GetSoulSpendableInkFeathers(soulRoot)}[/]",
+            $"  • Искры Света (Light Sparks): [gold1]{AfterlifeSpiritualConflictState.GetNodeInt(shiningRoot?["lightSparks"])}[/] [dim](тратятся только в обычной активной Сияющей Обители)[/]",
             "",
-            "[bold]Arts:[/]"
+            "[bold]Искусства:[/]"
         };
 
         foreach (var quote in quotes)
         {
             var tier = AfterlifeSpiritualConflictState.GetNodeInt(artTiers?[quote.Art.ArtId]);
             var blocked = quote.BlockReason == null
-                ? $"next tier {quote.NextTier}, cost {quote.InkFeatherCost} 🪶"
-                : $"blocked: {quote.BlockReason}";
+                ? $"следующий уровень {quote.NextTier}, цена {quote.InkFeatherCost} 🪶"
+                : $"заблокировано: {quote.BlockReason}";
             var sparkCost = _stateManager.CurrentState.IsInShiningAbode ? $" / {quote.LightSparkCost} ✨" : "";
-            lines.Add($"  • [white]{Markup.Escape(quote.Art.DisplayName)}[/] `[dim]{Markup.Escape(quote.Art.ArtId)}[/]`: tier [white]{tier}[/], rank gate [white]{quote.RequiredRankLabel}[/], {Markup.Escape(blocked)}{Markup.Escape(sparkCost)} — {Markup.Escape(quote.Art.MechanicalUse)}");
+            lines.Add($"  • [white]{Markup.Escape(FormatSpiritualArtLabel(quote.Art))}[/]: уровень (tier) [white]{tier}[/], порог ранга (rank gate) [white]{quote.RequiredRankLabel}[/], {Markup.Escape(blocked)}{Markup.Escape(sparkCost)} — {Markup.Escape(FormatSpiritualArtUse(quote.Art))}");
         }
 
         lines.Add("");
-        lines.Add("[bold]Enlightenment rank ladder:[/]");
+        lines.Add("[bold]Лестница рангов Просветления (Enlightenment ranks):[/]");
         foreach (var rank in AfterlifeSpiritualConflictState.EnlightenmentRanks)
-            lines.Add($"  • {rank.Rank}: `{rank.RankId}` requires {rank.RequiredProgress}, unlocks art tier {rank.UnlocksArtTier}. {Markup.Escape(rank.MechanicalEffect)}");
+            lines.Add($"  • {rank.Rank}: {Markup.Escape(FormatRankIdLabel(rank.RankId))}, требует {rank.RequiredProgress}, открывает уровень искусства (art tier) {rank.UnlocksArtTier}. {Markup.Escape(FormatRankMechanicalEffect(rank.MechanicalEffect))}");
 
         lines.Add("");
-        lines.Add("[bold]Radiance rank ladder:[/]");
+        lines.Add("[bold]Лестница рангов Сияния (Radiance ranks):[/]");
         foreach (var rank in AfterlifeSpiritualConflictState.RadianceRanks)
-            lines.Add($"  • {rank.Rank}: `{rank.RankId}` requires {rank.RequiredProgress}, unlocks art tier {rank.UnlocksArtTier}. {Markup.Escape(rank.MechanicalEffect)}");
+            lines.Add($"  • {rank.Rank}: {Markup.Escape(FormatRankIdLabel(rank.RankId))}, требует {rank.RequiredProgress}, открывает уровень искусства (art tier) {rank.UnlocksArtTier}. {Markup.Escape(FormatRankMechanicalEffect(rank.MechanicalEffect))}");
 
         lines.Add("");
-        lines.Add("[dim]Upgrade rule: ranks gate max art tier; the client writes soul_state.afterlifeCombatProfile locally and spends the selected currency. GM does not author upgrade receipts.[/]");
+        lines.Add("[dim]Правило прокачки: ранги ограничивают максимальный уровень искусства (art tier); клиент локально пишет soul_state.afterlifeCombatProfile и тратит выбранную валюту. GM не пишет receipt/report прокачки.[/]");
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" ✨ Spiritual Arts ", Justify.Center),
+            Header = new PanelHeader(" ✨ Духовные искусства ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(_stateManager.CurrentState.IsInShiningAbode ? Color.Gold1 : Color.Cyan1),
             Padding = new Padding(2, 1),
@@ -268,7 +268,7 @@ public partial class ExplorerMode
             return;
         }
 
-        MarkupLine($"[green]Прокачано: {Markup.Escape(quote.Art.DisplayName)} tier {quote.CurrentTier} -> {quote.NextTier}.[/]");
+        MarkupLine($"[green]Прокачано: {Markup.Escape(FormatSpiritualArtLabel(quote.Art))}, уровень (tier) {quote.CurrentTier} -> {quote.NextTier}.[/]");
         WaitForKey();
     }
 
@@ -283,32 +283,32 @@ public partial class ExplorerMode
             activeTurnArtifacts.Add("game_state/control/pending_turn_snapshot");
         if (activeTurnArtifacts.Count > 0)
         {
-            return "Прокачка духовных искусств заблокирована: найден активный GM-turn lifecycle. " +
-                   "Локальная прокачка меняет client-owned soul_state.afterlifeCombatProfile и валюту, поэтому дождитесь завершения/отмены/repair текущего хода. " +
+            return "Прокачка духовных искусств заблокирована: найден активный GM-turn lifecycle (жизненный цикл хода GM). " +
+                   "Локальная прокачка меняет принадлежащий клиенту (client-owned) soul_state.afterlifeCombatProfile и валюту, поэтому дождитесь завершения, отмены или repair текущего хода. " +
                    $"Найдено: {string.Join(", ", activeTurnArtifacts)}.";
         }
 
         var conflictRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeSpiritualConflictState.StatePath);
         if (conflictRead.Error != null)
         {
-            return $"Прокачка духовных искусств заблокирована: {AfterlifeSpiritualConflictState.StatePath} повреждён ({conflictRead.Error}). Сначала выполните repair.";
+            return $"Прокачка духовных искусств заблокирована: {AfterlifeSpiritualConflictState.StatePath} повреждён ({conflictRead.Error}). Сначала выполните repair (ремонт состояния).";
         }
 
         if (conflictRead.Root?["activeConflict"] is JsonObject)
         {
-            return "Прокачка духовных искусств заблокирована: сейчас активен afterlife spiritual conflict. Завершите exchange/resolve/repair_cancel перед изменением боевого профиля.";
+            return "Прокачка духовных искусств заблокирована: сейчас активен духовный конфликт посмертия (afterlife spiritual conflict). Завершите exchange (обмен действиями), resolve (разрешение) или repair_cancel (ремонтную отмену) перед изменением боевого профиля.";
         }
 
         if (conflictRead.Root != null &&
             conflictRead.Root.TryGetPropertyValue("activeConflict", out var activeConflict) &&
             activeConflict != null)
         {
-            return $"Прокачка духовных искусств заблокирована: {AfterlifeSpiritualConflictState.StatePath}.activeConflict повреждён. Сначала выполните repair.";
+            return $"Прокачка духовных искусств заблокирована: {AfterlifeSpiritualConflictState.StatePath}.activeConflict повреждён. Сначала выполните repair (ремонт состояния).";
         }
 
         if (_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath))
         {
-            return $"Прокачка духовных искусств заблокирована: найден unresolved cost-bearing contract {GuardianAbodeOfferingState.PendingRequestPath}. Дождитесь accepted/refused/repair closure.";
+            return $"Прокачка духовных искусств заблокирована: найден незакрытый контракт с зарезервированной ценой (cost-bearing contract) {GuardianAbodeOfferingState.PendingRequestPath}. Дождитесь закрытия со status=accepted | refused или repair.";
         }
 
         foreach (var archivePath in new[] { AfterlifeArchiveActionState.ConsultationRequestPath, AfterlifeArchiveActionState.ProjectFuelRequestPath })
@@ -321,7 +321,7 @@ public partial class ExplorerMode
         {
             var shiningBlocker = await TryDescribeShiningTreasuryPendingCostBlockerAsync();
             if (shiningBlocker != null)
-                return "Прокачка духовных искусств заблокирована из-за Shining cost-bearing pending contract. " + shiningBlocker;
+                return "Прокачка духовных искусств заблокирована из-за незакрытого контракта Сияющей Обители с зарезервированной ценой (Shining cost-bearing pending contract). " + shiningBlocker;
         }
 
         return null;
@@ -492,11 +492,11 @@ public partial class ExplorerMode
             var requiredRankLabel = DescribeRequiredRankForArtTier(Math.Max(art.MinUnlockTier, nextTier));
             string? blockReason = null;
             if (currentTier >= SpiritualArtMaxTier)
-                blockReason = "уже достигнут максимальный tier 5";
+                blockReason = "уже достигнут максимальный уровень искусства (tier 5)";
             else if (maxUnlockedTier < art.MinUnlockTier)
-                blockReason = $"нужен ранг, открывающий art tier {art.MinUnlockTier}: {DescribeRequiredRankForArtTier(art.MinUnlockTier)}";
+                blockReason = $"нужен ранг, открывающий уровень искусства (art tier) {art.MinUnlockTier}: {DescribeRequiredRankForArtTier(art.MinUnlockTier)}";
             else if (nextTier > maxUnlockedTier)
-                blockReason = $"нужен ранг, открывающий art tier {nextTier}: {requiredRankLabel}";
+                blockReason = $"нужен ранг, открывающий уровень искусства (art tier) {nextTier}: {requiredRankLabel}";
 
             result.Add(new SpiritualArtUpgradeQuote(
                 art,
@@ -588,11 +588,11 @@ public partial class ExplorerMode
 
         var parts = new List<string>();
         if (enlightenmentRank != null)
-            parts.Add($"Enlightenment {enlightenmentRank.Rank} `{enlightenmentRank.RankId}`");
+            parts.Add($"Просветление (Enlightenment) {enlightenmentRank.Rank} `{enlightenmentRank.RankId}`");
         if (radianceRank != null)
-            parts.Add($"Radiance {radianceRank.Rank} `{radianceRank.RankId}`");
+            parts.Add($"Сияние (Radiance) {radianceRank.Rank} `{radianceRank.RankId}`");
 
-        return parts.Count == 0 ? "not unlockable" : string.Join(" или ", parts);
+        return parts.Count == 0 ? "не открывается текущими шкалами" : string.Join(" или ", parts);
     }
 
     private static int ComputeSpiritualArtInkFeatherCost(
@@ -608,9 +608,9 @@ public partial class ExplorerMode
     private static string BuildSpiritualArtUpgradeChoiceLabel(SpiritualArtUpgradeQuote quote)
     {
         var status = quote.BlockReason == null
-            ? $"tier {quote.CurrentTier}->{quote.NextTier}, {quote.InkFeatherCost} 🪶"
-            : $"blocked: {quote.BlockReason}";
-        return $"{quote.Art.DisplayName} [{quote.Art.ArtId}] — {status}";
+            ? $"уровень {quote.CurrentTier}->{quote.NextTier}, {quote.InkFeatherCost} 🪶"
+            : $"заблокировано: {quote.BlockReason}";
+        return $"{FormatSpiritualArtLabel(quote.Art)} — {status}";
     }
 
     private static (int Current, int Total) ReadSoulInkFeathers(JsonObject soulRoot)
@@ -663,8 +663,8 @@ public partial class ExplorerMode
         {
             "[bold cyan]Предпросмотр локальной прокачки духовного искусства[/]",
             "",
-            $"  • Искусство: [white]{Markup.Escape(quote.Art.DisplayName)}[/] `[dim]{Markup.Escape(quote.Art.ArtId)}[/]`",
-            $"  • Tier: [white]{quote.CurrentTier}[/] -> [white]{quote.NextTier}[/]",
+            $"  • Искусство: [white]{Markup.Escape(FormatSpiritualArtLabel(quote.Art))}[/]",
+            $"  • Уровень (tier): [white]{quote.CurrentTier}[/] -> [white]{quote.NextTier}[/]",
             $"  • Валюта: [white]{DescribeSpiritualArtCurrency(currency)}[/]",
             $"  • Чернильные Перья: [white]{ReadSoulInkFeathers(beforeSoulRoot).Current}[/] -> [white]{ReadSoulInkFeathers(afterSoulRoot).Current}[/]",
             $"  • Искры Света: [white]{AfterlifeSpiritualConflictState.GetNodeInt(beforeShiningRoot?["lightSparks"])}[/] -> [white]{AfterlifeSpiritualConflictState.GetNodeInt(afterShiningRoot?["lightSparks"])}[/]",
@@ -674,7 +674,7 @@ public partial class ExplorerMode
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" Spiritual Art Upgrade ", Justify.Center),
+            Header = new PanelHeader(" Прокачка духовного искусства ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(currency == SpiritualArtCurrency.LightSparks ? Color.Gold1 : Color.Cyan1),
             Padding = new Padding(2, 1),
@@ -730,7 +730,7 @@ public partial class ExplorerMode
 
         if (!_stateManager.CurrentState.IsInAfterlifeRealm)
         {
-            ShowEmptyPanel("Духовное действие", "Afterlife spiritual action доступно только в Море Хаоса и Сияющей Обители.");
+            ShowEmptyPanel("Духовное действие", "Духовное действие посмертия (afterlife spiritual action) доступно только в Море Хаоса и Сияющей Обители.");
             return;
         }
 
@@ -738,23 +738,23 @@ public partial class ExplorerMode
         var active = root?["activeConflict"] as JsonObject;
         if (active == null)
         {
-            ShowEmptyPanel("Духовное действие", "Нет активного afterlife spiritual conflict. Конфликт должен начать GM через roleplay и accepted-turn update.");
+            ShowEmptyPanel("Духовное действие", "Нет активного духовного конфликта посмертия (afterlife spiritual conflict). Конфликт должен начать GM через roleplay (отыгрыш) и accepted-turn update (обновление принятого хода).");
             return;
         }
 
         var conflictId = AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown";
         Clear();
         MarkupLine($"[cyan]Активный конфликт:[/] [white]{Markup.Escape(conflictId)}[/]");
-        MarkupLine("[dim]Опишите одно намерение: давление, защита, манёвр, контр, разрыв/наложение binding, сдача, отступление или переговоры. Команда только добавляет явный тег; обычная ролевая заявка во время активного конфликта тоже валидна.[/]");
+        MarkupLine("[dim]Опишите одно намерение: давление (pressure), защита (guard), манёвр (maneuver), контрприём (counter), разрыв/наложение духовных оков (break_binding/binding), сдача, отступление или переговоры. Команда только добавляет явный тег; обычная ролевая заявка во время активного конфликта тоже валидна.[/]");
         var action = Ask("[cyan]Действие:[/]");
         if (string.IsNullOrWhiteSpace(action))
             return;
 
         var gmAction =
             $"[AFTERLIFE_SPIRITUAL_ACTION: {conflictId}] {action.Trim()}\n\n" +
-            "Resolve as an active afterlife spiritual conflict exchange. " +
-            $"If the conflict changes, write `{AfterlifeSpiritualConflictState.ResponseField}` with mode=exchange or mode=resolve. " +
-            "Do not use Mortal combat files, HP, energy, enemiesData/alliesData, NPC/world/faction Mortal surfaces, or direct currency rewards.";
+            "Разреши это как обмен действиями активного духовного конфликта посмертия (active afterlife spiritual conflict exchange). " +
+            $"Если конфликт меняется, запиши `{AfterlifeSpiritualConflictState.ResponseField}` с `mode=exchange` или `mode=resolve`. " +
+            "Не используй Mortal combat files, HP, energy, enemiesData/alliesData, NPC/world/faction Mortal surfaces или прямые награды валютой.";
 
         var preview = new JsonObject
         {
@@ -766,19 +766,19 @@ public partial class ExplorerMode
         };
 
         if (!ConfirmChaosSeaContractPreview(
-                "Afterlife spiritual action preview",
+                "Предпросмотр духовного действия посмертия",
                 new List<string>
                 {
-                    "[bold]GM contract:[/]",
-                    $"  • Active conflict: {Markup.Escape(conflictId)}",
-                    $"  • Response surface: `{AfterlifeSpiritualConflictState.ResponseField}`",
-                    $"  • State file: `{AfterlifeSpiritualConflictState.StatePath}`",
-                    "  • Conflict remains side-vs-side; use playerSide/oppositionSide and side strain fields.",
-                    "  • Forced incarnation by Guardian requires resolved conflict loss/surrender/concession proof.",
-                    "  • Mortal combat/state files are forbidden."
+                    "[bold]Контракт GM:[/]",
+                    $"  • Активный конфликт (active conflict): {Markup.Escape(conflictId)}",
+                    $"  • Поверхность ответа (response surface): `{AfterlifeSpiritualConflictState.ResponseField}`",
+                    $"  • Файл состояния (state file): `{AfterlifeSpiritualConflictState.StatePath}`",
+                    "  • Конфликт остаётся side-vs-side: используй playerSide/oppositionSide и поля напряжения сторон (side strain).",
+                    "  • Принудительное воплощение Хранителем (forced incarnation by Guardian) требует proof проигрыша/сдачи/уступки в resolve.",
+                    "  • Файлы смертного боя и состояния Mortal combat/state files запрещены."
                 },
                 preview,
-                "Spiritual action audit",
+                "Аудит духовного действия",
                 confirmChoice: "✅ Отправить действие GM"))
         {
             return;
@@ -786,6 +786,142 @@ public partial class ExplorerMode
 
         _pendingGmAction = gmAction;
     }
+
+    private static string FormatSideModelLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "direct_duel" => "прямой поединок (direct_duel)",
+            "assisted_duel" => "поединок с поддержкой (assisted_duel)",
+            "champion_duel" => "поединок чемпиона/союзника (champion_duel)",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string FormatConflictPositionLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "opposition_dominant" => "противник доминирует (opposition_dominant)",
+            "opposition_advantaged" => "преимущество противника (opposition_advantaged)",
+            "contested" => "спорная позиция (contested)",
+            "player_advantaged" => "преимущество игрока (player_advantaged)",
+            "player_dominant" => "игрок доминирует (player_dominant)",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string FormatSideStrainLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "clear" => "устойчиво (clear)",
+            "strained" => "напряжено (strained)",
+            "fractured" => "надломлено (fractured)",
+            "overwhelmed" => "подавлено (overwhelmed)",
+            "broken" => "сломлено (broken)",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string FormatResolutionStateLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "active" => "активен (active)",
+            "concession_pending" => "уступка ожидает закрытия (concession_pending)",
+            "surrender_pending" => "сдача ожидает закрытия (surrender_pending)",
+            "retreat_pending" => "отступление ожидает закрытия (retreat_pending)",
+            "ready_to_resolve" => "готов к завершению (ready_to_resolve)",
+            "resolved" => "завершён (resolved)",
+            "repair_cancelled" => "отменён repair-путём (repair_cancelled)",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string FormatActorTypeLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "player" => "игрок (player)",
+            "guardian" => "Хранитель (guardian)",
+            "resident" => "резидент Обители (resident)",
+            "radiant_actor" => "светозарный актор (radiant_actor)",
+            "custom_afterlife_actor" => "особый актор посмертия (custom_afterlife_actor)",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string FormatSpiritualArtLabel(AfterlifeSpiritualConflictState.SpiritualArtDefinition art) =>
+        NormalizeKey(art.ArtId) switch
+        {
+            "pressure" => "Давление [pressure; Pressure]",
+            "counter" => "Контрприём [counter; Counter]",
+            "guard" => "Защита [guard; Guard]",
+            "maneuver" => "Манёвр [maneuver; Maneuver]",
+            "break_binding" => "Разрыв оков [break_binding; Break Binding]",
+            "binding" => "Наложение оков [binding; Binding]",
+            "incarnation_resistance" => "Сопротивление воплощению [incarnation_resistance; Incarnation Resistance]",
+            "champion_coordination" => "Координация чемпиона [champion_coordination; Champion Coordination]",
+            _ => $"{art.DisplayName} [{art.ArtId}]"
+        };
+
+    private static string FormatSpiritualArtUse(AfterlifeSpiritualConflictState.SpiritualArtDefinition art) =>
+        NormalizeKey(art.ArtId) switch
+        {
+            "pressure" => "усиливает прямое духовное давление на ведущего противника",
+            "counter" => "усиливает отражение и разворот заявленного действия противника",
+            "guard" => "снижает входящее напряжение или последствия для своей стороны",
+            "maneuver" => "улучшает позиционный сдвиг без грубого подавления",
+            "break_binding" => "помогает сопротивляться оковам и принудительным handoff/воплощениям",
+            "binding" => "помогает наложить ограничивающие духовные оковы после получения преимущества",
+            "incarnation_resistance" => "усиливает сопротивление принудительному воплощению от Хранителя",
+            "champion_coordination" => "усиливает поддержку, когда ведущим бойцом выступает союзник/чемпион",
+            _ => art.MechanicalUse
+        };
+
+    private static string FormatRankIdLabel(string? rankId) =>
+        NormalizeKey(rankId) switch
+        {
+            "dormant" => "дремлющий (dormant)",
+            "stirring" => "пробуждающийся (stirring)",
+            "focused" => "собранный (focused)",
+            "tempered" => "закалённый (tempered)",
+            "lucid" => "ясный (lucid)",
+            "illuminated" => "просветлённый (illuminated)",
+            "unlit" => "не зажжён (unlit)",
+            "spark" => "искра (spark)",
+            "gleam" => "проблеск (gleam)",
+            "ray" => "луч (ray)",
+            "halo" => "ореол (halo)",
+            "suncrest" => "солнечный гребень (suncrest)",
+            "aurora" => "аврора (aurora)",
+            "dawn_throne" => "трон рассвета (dawn_throne)",
+            "stellar_mantle" => "звёздная мантия (stellar_mantle)",
+            "radiant_sovereign" => "сияющий владыка (radiant_sovereign)",
+            "" => "?",
+            _ => rankId ?? "?"
+        };
+
+    private static string FormatRankMechanicalEffect(string? effect) =>
+        effect switch
+        {
+            "Baseline afterlife conflict participation." => "Базовое участие в духовных конфликтах посмертия.",
+            "Unlocks tier-1 spiritual art upgrades." => "Открывает прокачку духовных искусств до уровня (tier) 1.",
+            "Improves strain recovery after ordinary Chaos Sea conflicts." => "Улучшает восстановление напряжения (strain) после обычных конфликтов Моря Хаоса.",
+            "Unlocks tier-2 spiritual art upgrades." => "Открывает прокачку духовных искусств до уровня (tier) 2.",
+            "Improves resistance against ordinary Guardian pressure." => "Улучшает сопротивление обычному давлению Хранителя.",
+            "Unlocks tier-3 spiritual art upgrades and ascension-ready conflict scale." => "Открывает прокачку духовных искусств до уровня (tier) 3 и масштаб конфликтов перед восхождением.",
+            "No persistent Radiant combat advantage." => "Нет постоянного боевого преимущества Сияния.",
+            "Radiance begins to count as retained combat authority after Shining return." => "Сияние начинает учитываться как сохранённый боевой авторитет после возвращения из Обители.",
+            "Unlocks tier-1 Radiant art upgrades." => "Открывает Сияющие духовные искусства до уровня (tier) 1.",
+            "Unlocks tier-2 Radiant art upgrades." => "Открывает Сияющие духовные искусства до уровня (tier) 2.",
+            "Improves side support when a Shining ally is the lead contestant." => "Улучшает поддержку стороны, когда ведущим бойцом является союзник из Сияющей Обители.",
+            "Unlocks tier-3 Radiant art upgrades." => "Открывает Сияющие духовные искусства до уровня (tier) 3.",
+            "Retained Radiance strongly influences Chaos Sea conflicts after return." => "Сохранённое Сияние заметно влияет на конфликты Моря Хаоса после возвращения.",
+            "Unlocks tier-4 Radiant art upgrades." => "Открывает Сияющие духовные искусства до уровня (tier) 4.",
+            "High-rank Abode actors recognize the soul as a major spiritual combatant." => "Высокоранговые акторы Обители распознают душу как значимого духовного бойца.",
+            "Unlocks tier-5 Radiant art upgrades and top-end afterlife conflict authority." => "Открывает Сияющие духовные искусства до уровня (tier) 5 и верхний предел авторитета в конфликтах посмертия.",
+            _ => effect ?? ""
+        };
+
+    private static string NormalizeKey(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? "" : value.Trim().ToLowerInvariant();
 
     private static void AppendConflictSideSummary(List<string> lines, string label, JsonObject? side)
     {
@@ -801,6 +937,6 @@ public partial class ExplorerMode
                           "unknown";
         var actorType = AfterlifeSpiritualConflictState.GetNodeString(lead?["actorType"]) ?? "?";
         var supporters = (side["supporters"] as JsonArray)?.Count ?? 0;
-        lines.Add($"  • {label}: [white]{Markup.Escape(displayName)}[/] [dim]({Markup.Escape(actorType)} lead, supporters={supporters})[/]");
+        lines.Add($"  • {label}: [white]{Markup.Escape(displayName)}[/] [dim]({Markup.Escape(FormatActorTypeLabel(actorType))}; ведущий, поддержка={supporters})[/]");
     }
 }

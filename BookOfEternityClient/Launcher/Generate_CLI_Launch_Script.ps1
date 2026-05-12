@@ -35,6 +35,7 @@ Read these documents BEFORE processing the first turn:
 6. **Examples/E_CLI_Ink_Feather_Actions.txt** — mandatory examples for every GM-side Ink Feather action
 7. **OtherGuides/Afterlife_Contract_Matrix.md** -- mandatory contract map for Chaos Sea / Shining Abode turns
 8. **Examples/E_CLI_Afterlife_Turns.txt** -- mandatory worked examples for Chaos Sea / Shining Abode turns, including Shining core action fragments, ordinary living-world turns without pending files, system Guardian attraction, protected return guard turns, freeform Abode search, and afterlife spiritual conflict with diceAudit
+9. **OtherGuides/Afterlife_Combat_Terminology_Glossary.md** -- Russian labels for afterlife spiritual conflict, Spiritual Arts, exchange/resolve, diceAudit, forced incarnation, and ranks; keep JSON keys/enums English
 
 Reference materials (read as needed):
 - **Rules/Block_*.txt** — game rules
@@ -93,7 +94,7 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
 - Read input/turn_request.json
 - Preserve `sessionId`, `requestId`, and `turnNumber` from turn_request.json
 - Apply Rules/Block_*.txt mechanics
-- Use preGeneratedDices1d20 from turn_request for all dice rolls; contested afterlife spiritual conflict exchange/resolve entries must record diceAudit
+- Use preGeneratedDices1d20 from turn_request for all dice rolls; contested afterlife spiritual conflict exchange/resolve entries must record diceAudit. If resolving afterlife spiritual conflict or Spiritual Arts, read OtherGuides/Afterlife_Combat_Terminology_Glossary.md for Russian labels while keeping JSON keys/enums English.
 - This 5-phase GM loop applies only to GM-driven turns. Client-owned local lifecycle commands such as `reenter_shining_abode` and `return_to_chaos_sea` are handled by the client outside this GM pipeline and should not be synthesized as accepted GM turns; `return_to_chaos_sea` is blocked while Shining pending contracts or legacy `pendingNativeFactionDiscovery` exist.
 
 ### PHASE 3: GENERATE RESPONSE

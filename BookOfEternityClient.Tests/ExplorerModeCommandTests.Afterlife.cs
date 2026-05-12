@@ -7202,7 +7202,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("afterlife_spiritual_arts_shining_radiance");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Shining radiance:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Духовные искусства посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ранг Просветления", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Shining radiance", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сияние Сияющей Обители", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("540 XP", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("tier 3", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Shining radiance value: 0", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -7252,7 +7255,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         });
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
-        _console.QueueSelection("Выберите духовное искусство", "Break Binding [break_binding] — tier 0->1, 150 🪶");
+        _console.QueueSelection("Выберите духовное искусство", "Разрыв оков [break_binding; Break Binding] — уровень 0->1, 150 🪶");
         _console.QueueAnyConfirmResponse(true);
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
@@ -7332,7 +7335,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("spiritual_arts_blocks_active_conflict");
         Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
         var renderedText = ExtractRenderedText();
-        Assert.Contains("активен afterlife spiritual conflict", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("активен духовный конфликт посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -7410,6 +7413,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("spiritual_conflict_prose_routing_rule");
         var renderedText = ExtractRenderedText();
+        Assert.Contains("Духовный конфликт посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("afterlife spiritual conflict", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Обычная художественная заявка", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("действие конфликта", renderedText, StringComparison.OrdinalIgnoreCase);
     }
