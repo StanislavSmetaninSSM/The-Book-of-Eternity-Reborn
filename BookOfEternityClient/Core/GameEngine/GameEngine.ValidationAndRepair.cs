@@ -163,6 +163,7 @@ public partial class GameEngine
             if (!await ValidateCurrentGameStateOrShowErrorsAsync(source, rollbackSnapshot, progressionControl, allowRepairLoop: true))
                 return false;
 
+            await CleanupAcceptedTurnCommandSurfacesAsync();
             await RefreshRuntimeStateAsync();
             return true;
         }
@@ -176,6 +177,34 @@ public partial class GameEngine
 
         await RefreshCanonicalStateAsync(snapshot);
         return true;
+    }
+
+    private async Task CleanupAcceptedTurnCommandSurfacesAsync()
+    {
+        await RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync();
+    }
+
+    private async Task RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync()
+    {
+        const string path = "game_state/meta/guardians.json";
+        var json = await _fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(json) is not JsonObject root ||
+                !root.Remove(GuardianProjectState.QuestProgressUpdatesProperty))
+            {
+                return;
+            }
+
+            await _fs.WriteFileAtomicAsync(path, root.ToJsonString(JsonOpts));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to remove accepted-turn Guardian quest progress command surface.");
+        }
     }
 
     private static bool RequiresFreshNarrativePayload(string source)

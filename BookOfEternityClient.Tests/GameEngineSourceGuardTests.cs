@@ -654,6 +654,17 @@ public sealed class GameEngineSourceGuardTests
     }
 
     [Fact]
+    public void TurnReminder_MortalWorldMustSurfaceGuardianQuestProgressException()
+    {
+        var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
+
+        Assert.Contains("guardianQuestProgressUpdates", source, StringComparison.Ordinal);
+        Assert.Contains("ready_to_turn_in", source, StringComparison.Ordinal);
+        Assert.Contains("non-physical echo/memory/imprint/resonance", source, StringComparison.Ordinal);
+        Assert.Contains("does NOT receive a physical mortal inventory item", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void GuardianForcedIncarnation_RuntimeGate_MustFailClosedOnInvalidReturnGuard()
     {
         var source = ReadGameEngineSource();

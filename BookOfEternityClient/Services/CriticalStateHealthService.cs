@@ -210,11 +210,11 @@ public sealed class CriticalStateHealthService
                         section: section,
                         expected: requireCanonicalShape
                             ? "guardians array and/or activeGuardian/pendingGuardianCreation/chaosSeaNavigation object"
-                            : "canonical guardians object or UpdateGuardians command surface",
+                            : "canonical guardians object, UpdateGuardians command surface, or guardianQuestProgressUpdates command surface",
                         actual: "unknown guardians root shape",
                         repairHint: requireCanonicalShape
                             ? "Сохрани guardians.json как canonical state object с guardians array и сопутствующими guardian sections."
-                            : "Передай guardians.json либо как canonical guardian state, либо как допустимый raw surface с UpdateGuardians/guardian sections, без посторонних serializer artifacts.",
+                            : "Передай guardians.json либо как canonical guardian state, либо как допустимый raw surface с UpdateGuardians/guardianQuestProgressUpdates/guardian sections, без посторонних serializer artifacts.",
                         category: IssueCategory.ProtocolViolation));
                 }
 
@@ -266,8 +266,10 @@ public sealed class CriticalStateHealthService
             return true;
 
         return allowGuardiansCommandSurface &&
-               root.TryGetProperty("UpdateGuardians", out var updates) &&
-               updates.ValueKind == JsonValueKind.Array;
+               ((root.TryGetProperty("UpdateGuardians", out var updates) &&
+                 updates.ValueKind == JsonValueKind.Array) ||
+                (root.TryGetProperty(GuardianProjectState.QuestProgressUpdatesProperty, out var questProgressUpdates) &&
+                 questProgressUpdates.ValueKind == JsonValueKind.Array));
     }
 
     private static bool HasOptionalObjectOrNull(JsonElement root, string propertyName)

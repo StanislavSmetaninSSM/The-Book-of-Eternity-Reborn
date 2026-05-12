@@ -910,6 +910,57 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
     }
 
     [Fact]
+    public async Task SyncFromCurrentStateAsync_BaselineGuardianQuestAvailable_CreatesNotification()
+    {
+        await WriteJsonAsync("game_state/meta/guardians.json", new
+        {
+            guardians = new[]
+            {
+                new
+                {
+                    guardianId = "guardian_alpha",
+                    canonicalName = "Азалия",
+                    nameVariants = new { @default = "Азалия", feminine = "Азалия", masculine = (string?)null, neutral = (string?)null },
+                    manifestation = new
+                    {
+                        currentDisplayName = "Азалия",
+                        formFlexibility = "selective",
+                        currentPresentationStyle = "feminine",
+                        currentPronouns = "она/её",
+                        appearanceDescription = "Тестовая форма."
+                    },
+                    questManagement = new
+                    {
+                        availableQuests = new[]
+                        {
+                            new
+                            {
+                                questId = "quest_baseline_1",
+                                title = "Первое поручение",
+                                description = "Добровольная проверка для следующей жизни.",
+                                status = "available",
+                                difficulty = "normal",
+                                questOrigin = GuardianProjectState.BaselineMortalLifeHookOrigin
+                            }
+                        },
+                        activeQuests = Array.Empty<object>(),
+                        completedQuests = Array.Empty<object>()
+                    }
+                }
+            }
+        });
+
+        await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
+
+        var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
+        var notification = Assert.Single(notifications);
+        Assert.Equal(AfterlifeNotificationState.TypeGuardianQuestAvailable, notification.NotificationType);
+        Assert.Equal("guardian_alpha:quest_baseline_1", notification.RequestId);
+        Assert.Contains("добровольное поручение", notification.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Первое поручение", notification.Summary, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task SyncFromCurrentStateAsync_GuardianQuestWithoutQuestId_DoesNotCreateNotification()
     {
         await WriteJsonAsync("game_state/meta/guardians.json", new

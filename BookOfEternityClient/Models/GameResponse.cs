@@ -378,6 +378,9 @@ public class GameResponse
     [JsonPropertyName("UpdateGuardians")]
     public JsonElement[]? UpdateGuardians { get; set; }
 
+    [JsonPropertyName("guardianQuestProgressUpdates")]
+    public JsonElement[]? GuardianQuestProgressUpdates { get; set; }
+
     [JsonPropertyName("UpdateGuardianTradeInventoryReceipts")]
     public JsonElement[]? UpdateGuardianTradeInventoryReceipts { get; set; }
 

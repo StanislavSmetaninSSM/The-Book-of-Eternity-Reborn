@@ -996,6 +996,8 @@ public partial class ValidationService
         var forbiddenFiles = IsChaosSeaRealm(preTurnRealm)
             ? changedFiles.Where(IsForbiddenChaosSeaChangedFile).ToList()
             : changedFiles.Where(IsForbiddenMortalWorldChangedFile).ToList();
+        if (!IsChaosSeaRealm(preTurnRealm))
+            forbiddenFiles = await FilterAllowedMortalGuardianQuestProgressFilesAsync(manifest, forbiddenFiles, preTurnRealm);
 
         if (forbiddenFiles.Count == 0)
             return;
@@ -1020,6 +1022,475 @@ public partial class ValidationService
             expected: expected,
             actual: actual,
             repairHint: repairHint));
+    }
+
+    private async Task<List<string>> FilterAllowedMortalGuardianQuestProgressFilesAsync(
+        ValidationPendingTurnSnapshotManifest manifest,
+        List<string> forbiddenFiles,
+        string? preTurnRealm)
+    {
+        if (!forbiddenFiles.Any(path => path.Replace('\\', '/').Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase)))
+            return forbiddenFiles;
+
+        if (!RealmSemantics.IsMortalRealm(preTurnRealm) ||
+            !await IsAllowedMortalGuardianQuestProgressDeltaAsync(manifest))
+        {
+            return forbiddenFiles;
+        }
+
+        return forbiddenFiles
+            .Where(path => !path.Replace('\\', '/').Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    private async Task<bool> IsAllowedMortalGuardianQuestProgressDeltaAsync(ValidationPendingTurnSnapshotManifest manifest)
+    {
+        try
+        {
+            var preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, "game_state/meta/guardians.json");
+            var currentJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
+            if (string.IsNullOrWhiteSpace(preTurnJson) || string.IsNullOrWhiteSpace(currentJson))
+                return false;
+
+            if (JsonNode.Parse(preTurnJson) is not JsonObject preTurnRoot ||
+                JsonNode.Parse(currentJson) is not JsonObject currentRoot)
+            {
+                return false;
+            }
+
+            if (TryBuildAuthorizedMortalGuardianQuestProgressUpdates(preTurnRoot, currentRoot, out _))
+                return true;
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryBuildAuthorizedMortalGuardianQuestProgressUpdates(
+        JsonObject preTurnRoot,
+        JsonObject currentRoot,
+        out List<JsonObject> updates)
+    {
+        updates = new List<JsonObject>();
+        if (!TryCollectExplicitGuardianQuestProgressUpdates(currentRoot, out var explicitUpdates))
+            return false;
+
+        var comparablePreTurn = preTurnRoot.DeepClone().AsObject();
+        var comparableCurrent = currentRoot.DeepClone().AsObject();
+        NormalizeGuardianQuestProgressDeltaComparableRoot(comparablePreTurn);
+        NormalizeGuardianQuestProgressDeltaComparableRoot(comparableCurrent);
+
+        var resetCurrent = comparableCurrent.DeepClone().AsObject();
+        if (!TryResetAllowedGuardianQuestProgressDeltas(comparablePreTurn.DeepClone().AsObject(), resetCurrent))
+            return false;
+
+        if (!JsonNode.DeepEquals(comparablePreTurn, resetCurrent))
+            return false;
+
+        var materializedUpdates = new List<JsonObject>();
+        CollectGuardianQuestProgressAuthorityUpdates(comparablePreTurn, comparableCurrent, materializedUpdates);
+        if (!MaterializedGuardianQuestProgressUpdatesMatchExplicitCommands(comparablePreTurn, materializedUpdates, explicitUpdates))
+            return false;
+
+        updates.AddRange(materializedUpdates.Select(update => update.DeepClone().AsObject()));
+        return true;
+    }
+
+    private static bool TryCollectExplicitGuardianQuestProgressUpdates(
+        JsonObject currentRoot,
+        out List<JsonObject> updates)
+    {
+        updates = new List<JsonObject>();
+        if (currentRoot[GuardianProjectState.QuestProgressUpdatesProperty] is not JsonArray arr ||
+            arr.Count == 0)
+        {
+            return false;
+        }
+
+        var seenKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in arr)
+        {
+            if (item is not JsonObject update)
+                return false;
+
+            var guardianId = GetNodeString(update["guardianId"]);
+            var questId = GetNodeString(update["questId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(questId))
+                return false;
+
+            var key = $"{guardianId}::{questId}";
+            if (!seenKeys.Add(key))
+                return false;
+
+            updates.Add(update.DeepClone().AsObject());
+        }
+
+        return true;
+    }
+
+    private static bool MaterializedGuardianQuestProgressUpdatesMatchExplicitCommands(
+        JsonObject preTurnRoot,
+        IReadOnlyCollection<JsonObject> materializedUpdates,
+        IReadOnlyCollection<JsonObject> explicitUpdates)
+    {
+        var explicitByKey = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        foreach (var update in explicitUpdates)
+        {
+            var guardianId = GetNodeString(update["guardianId"]);
+            var questId = GetNodeString(update["questId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(questId))
+                return false;
+
+            explicitByKey[$"{guardianId}::{questId}"] = update;
+        }
+
+        foreach (var materialized in materializedUpdates)
+        {
+            var guardianId = GetNodeString(materialized["guardianId"]);
+            var questId = GetNodeString(materialized["questId"]);
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(questId))
+                return false;
+
+            if (!explicitByKey.TryGetValue($"{guardianId}::{questId}", out var explicitUpdate))
+                return false;
+
+            if (!TryFindGuardianQuest(preTurnRoot, guardianId!, questId!, out var preTurnQuest) ||
+                preTurnQuest == null ||
+                !GuardianQuestProgressMaterializedUpdateMatchesExplicitCommand(preTurnQuest, materialized, explicitUpdate))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TryFindGuardianQuest(JsonObject root, string guardianId, string questId, out JsonObject? quest)
+    {
+        quest = null;
+        if (root["guardians"] is not JsonArray guardians)
+            return false;
+
+        var guardian = guardians
+            .OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
+        if (guardian?["questManagement"] is not JsonObject questManagement ||
+            questManagement["activeQuests"] is not JsonArray activeQuests)
+        {
+            return false;
+        }
+
+        quest = activeQuests
+            .OfType<JsonObject>()
+            .FirstOrDefault(item => string.Equals(GetNodeString(item["questId"]), questId, StringComparison.OrdinalIgnoreCase));
+        return quest != null;
+    }
+
+    private static bool GuardianQuestProgressMaterializedUpdateMatchesExplicitCommand(
+        JsonObject preTurnQuest,
+        JsonObject materialized,
+        JsonObject explicitUpdate)
+    {
+        foreach (var fieldName in GuardianQuestProgressExplicitCommandFields)
+        {
+            var hasMaterializedValue = materialized.TryGetPropertyValue(fieldName, out var materializedValue);
+            var hasExplicitValue = explicitUpdate.TryGetPropertyValue(fieldName, out var explicitValue);
+            var fieldChanged = GuardianQuestProgressFieldChanged(preTurnQuest, materialized, fieldName);
+            if (fieldChanged && (!hasMaterializedValue || !hasExplicitValue))
+                return false;
+
+            if (hasExplicitValue &&
+                (!hasMaterializedValue || !JsonNode.DeepEquals(materializedValue, explicitValue)))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool GuardianQuestProgressFieldChanged(JsonObject preTurnQuest, JsonObject materialized, string fieldName)
+    {
+        var hasPreTurnValue = preTurnQuest.TryGetPropertyValue(fieldName, out var preTurnValue);
+        var hasMaterializedValue = materialized.TryGetPropertyValue(fieldName, out var materializedValue);
+        return hasPreTurnValue != hasMaterializedValue ||
+               (hasPreTurnValue && hasMaterializedValue && !JsonNode.DeepEquals(preTurnValue, materializedValue));
+    }
+
+    private static void NormalizeGuardianQuestProgressDeltaComparableRoot(JsonObject root)
+    {
+        root.Remove("_lastUpdated");
+        root.Remove(GuardianProjectState.QuestProgressUpdatesProperty);
+
+        if (root["guardians"] is JsonArray guardians)
+        {
+            foreach (var guardian in guardians.OfType<JsonObject>())
+                GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(guardian);
+        }
+
+        if (root["activeGuardian"] is JsonObject activeGuardian)
+            GuardianTradeRequestState.NormalizeGuardianTradeReceiptsShape(activeGuardian);
+    }
+
+    private static void CollectGuardianQuestProgressAuthorityUpdates(
+        JsonObject preTurnRoot,
+        JsonObject currentRoot,
+        List<JsonObject> updates)
+    {
+        if (preTurnRoot["guardians"] is not JsonArray preTurnGuardians ||
+            currentRoot["guardians"] is not JsonArray currentGuardians)
+        {
+            return;
+        }
+
+        foreach (var currentGuardian in currentGuardians.OfType<JsonObject>())
+        {
+            var guardianId = GetNodeString(currentGuardian["guardianId"]);
+            if (string.IsNullOrWhiteSpace(guardianId))
+                continue;
+
+            var preTurnGuardian = preTurnGuardians
+                .OfType<JsonObject>()
+                .FirstOrDefault(guardian => string.Equals(GetNodeString(guardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
+            if (preTurnGuardian == null)
+                continue;
+
+            CollectGuardianQuestProgressAuthorityUpdatesForGuardian(guardianId!, preTurnGuardian, currentGuardian, updates);
+        }
+    }
+
+    private static void CollectGuardianQuestProgressAuthorityUpdatesForGuardian(
+        string guardianId,
+        JsonObject preTurnGuardian,
+        JsonObject currentGuardian,
+        List<JsonObject> updates)
+    {
+        if (currentGuardian["questManagement"] is not JsonObject currentQuestManagement ||
+            currentQuestManagement["activeQuests"] is not JsonArray currentActiveQuests)
+        {
+            return;
+        }
+
+        if (preTurnGuardian["questManagement"] is not JsonObject preTurnQuestManagement ||
+            preTurnQuestManagement["activeQuests"] is not JsonArray preTurnActiveQuests)
+        {
+            return;
+        }
+
+        foreach (var currentQuest in currentActiveQuests.OfType<JsonObject>())
+        {
+            var questId = GetNodeString(currentQuest["questId"]);
+            if (string.IsNullOrWhiteSpace(questId))
+                continue;
+
+            var preTurnQuest = preTurnActiveQuests
+                .OfType<JsonObject>()
+                .FirstOrDefault(quest => string.Equals(GetNodeString(quest["questId"]), questId, StringComparison.OrdinalIgnoreCase));
+            if (preTurnQuest == null)
+                continue;
+
+            if (!TryBuildGuardianQuestProgressAuthorityUpdate(guardianId, questId!, preTurnQuest, currentQuest, out var update))
+                continue;
+
+            if (update != null)
+                updates.Add(update);
+        }
+    }
+
+    private static bool TryBuildGuardianQuestProgressAuthorityUpdate(
+        string guardianId,
+        string questId,
+        JsonObject preTurnQuest,
+        JsonObject currentQuest,
+        out JsonObject? update)
+    {
+        update = null;
+
+        if (!IsAllowedMortalGuardianQuestProgressState(preTurnQuest, currentQuest))
+            return false;
+
+        var changed = false;
+        var result = new JsonObject
+        {
+            ["guardianId"] = guardianId,
+            ["questId"] = questId
+        };
+
+        foreach (var fieldName in GuardianQuestProgressMutableFields)
+        {
+            var hasPreTurnValue = preTurnQuest.TryGetPropertyValue(fieldName, out var preTurnValue);
+            var hasCurrentValue = currentQuest.TryGetPropertyValue(fieldName, out var currentValue);
+            if (hasPreTurnValue != hasCurrentValue ||
+                (hasPreTurnValue && hasCurrentValue && !JsonNode.DeepEquals(preTurnValue, currentValue)))
+            {
+                changed = true;
+            }
+
+            if (hasCurrentValue)
+                result[fieldName] = currentValue?.DeepClone();
+        }
+
+        if (!changed)
+            return true;
+
+        update = result;
+        return true;
+    }
+
+    private static bool TryResetAllowedGuardianQuestProgressDeltas(JsonObject preTurnRoot, JsonObject currentRoot)
+    {
+        if (preTurnRoot["guardians"] is JsonArray preTurnGuardians &&
+            currentRoot["guardians"] is JsonArray currentGuardians)
+        {
+            foreach (var currentGuardian in currentGuardians.OfType<JsonObject>())
+            {
+                var guardianId = GetNodeString(currentGuardian["guardianId"]);
+                if (string.IsNullOrWhiteSpace(guardianId))
+                    return false;
+
+                var preTurnGuardian = preTurnGuardians
+                    .OfType<JsonObject>()
+                    .FirstOrDefault(guardian => string.Equals(GetNodeString(guardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase));
+                if (preTurnGuardian == null ||
+                    !TryResetAllowedGuardianQuestProgressDeltasForGuardian(preTurnGuardian, currentGuardian))
+                {
+                    return false;
+                }
+            }
+        }
+
+        if (currentRoot["activeGuardian"] is JsonObject currentActiveGuardian)
+        {
+            if (preTurnRoot["activeGuardian"] is not JsonObject preTurnActiveGuardian)
+                return false;
+            if (!TryResetAllowedGuardianQuestProgressDeltasForGuardian(preTurnActiveGuardian, currentActiveGuardian))
+                return false;
+        }
+
+        return true;
+    }
+
+    private static bool TryResetAllowedGuardianQuestProgressDeltasForGuardian(JsonObject preTurnGuardian, JsonObject currentGuardian)
+    {
+        if (currentGuardian["questManagement"] is not JsonObject currentQuestManagement ||
+            currentQuestManagement["activeQuests"] is not JsonArray currentActiveQuests)
+        {
+            return true;
+        }
+
+        if (preTurnGuardian["questManagement"] is not JsonObject preTurnQuestManagement ||
+            preTurnQuestManagement["activeQuests"] is not JsonArray preTurnActiveQuests)
+        {
+            return false;
+        }
+
+        foreach (var currentQuest in currentActiveQuests.OfType<JsonObject>())
+        {
+            var questId = GetNodeString(currentQuest["questId"]);
+            if (string.IsNullOrWhiteSpace(questId))
+                return false;
+
+            var preTurnQuest = preTurnActiveQuests
+                .OfType<JsonObject>()
+                .FirstOrDefault(quest => string.Equals(GetNodeString(quest["questId"]), questId, StringComparison.OrdinalIgnoreCase));
+            if (preTurnQuest == null)
+                return false;
+
+            if (!IsAllowedMortalGuardianQuestProgressState(preTurnQuest, currentQuest))
+                return false;
+
+            foreach (var fieldName in GuardianQuestProgressMutableFields)
+            {
+                if (preTurnQuest.TryGetPropertyValue(fieldName, out var preTurnValue))
+                    currentQuest[fieldName] = preTurnValue?.DeepClone();
+                else
+                    currentQuest.Remove(fieldName);
+            }
+        }
+
+        return true;
+    }
+
+    private static readonly string[] GuardianQuestProgressMutableFields =
+    {
+        "status",
+        "progressSummary",
+        "objectiveState",
+        "readyToTurnInEvidence",
+        "turnInRequirement",
+        "readyToTurnInAtTurn",
+        "updatedAtTurn",
+        "updatedAtUtc"
+    };
+
+    private static readonly string[] GuardianQuestProgressExplicitCommandFields =
+    {
+        "status",
+        "progressSummary",
+        "objectiveState",
+        "readyToTurnInEvidence",
+        "turnInRequirement"
+    };
+
+    private static bool IsAllowedMortalGuardianQuestProgressState(JsonObject preTurnQuest, JsonObject currentQuest)
+    {
+        var status = GetNodeString(currentQuest["status"]);
+        if (string.IsNullOrWhiteSpace(status))
+            return !HasGuardianQuestProgressMutableDelta(preTurnQuest, currentQuest);
+
+        if (!GuardianProjectState.IsSupportedActiveQuestProgressStatus(status))
+            return false;
+
+        var evidenceNode = currentQuest["readyToTurnInEvidence"];
+        if (evidenceNode != null && evidenceNode is not JsonObject)
+            return false;
+        var evidence = evidenceNode as JsonObject;
+        if (evidence != null && GuardianProjectState.ContainsForbiddenQuestPhysicalEvidenceField(evidence))
+            return false;
+
+        if (!string.Equals(status, GuardianProjectState.QuestStatusReadyToTurnIn, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (evidence == null)
+            return false;
+
+        if (!GuardianQuestProgressEvidenceHasAllowedProof(evidence))
+            return false;
+
+        return true;
+    }
+
+    private static bool HasGuardianQuestProgressMutableDelta(JsonObject preTurnQuest, JsonObject currentQuest)
+    {
+        foreach (var fieldName in GuardianQuestProgressMutableFields)
+        {
+            var hasPreTurnValue = preTurnQuest.TryGetPropertyValue(fieldName, out var preTurnValue);
+            var hasCurrentValue = currentQuest.TryGetPropertyValue(fieldName, out var currentValue);
+            if (hasPreTurnValue != hasCurrentValue ||
+                (hasPreTurnValue && hasCurrentValue && !JsonNode.DeepEquals(preTurnValue, currentValue)))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool GuardianQuestProgressEvidenceHasAllowedProof(JsonObject evidence)
+    {
+        foreach (var fieldName in new[] { "memoryImprint", "lifeEventEvidence", "itemEcho", "locationWitness", "craftedOutcome", "knowledgeTrace", "soulResonance" })
+        {
+            var node = evidence[fieldName];
+            if (node is JsonObject or JsonArray)
+                return true;
+            if (node is JsonValue value && value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text))
+                return true;
+        }
+
+        return false;
     }
 
 }

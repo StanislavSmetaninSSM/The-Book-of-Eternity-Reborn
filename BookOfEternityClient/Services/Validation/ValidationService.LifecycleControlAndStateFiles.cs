@@ -245,6 +245,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "UpdateGuardians", "guardianPowerEvents", "guardians", "activeGuardian", "chaosSeaNavigation", "pendingGuardianCreation",
+                GuardianProjectState.QuestProgressUpdatesProperty,
                 PlayerGuardianFoundationState.HistoryProperty
             }, issues, ValidateMetaMiscContract);
         await ValidateFlexibleStateFile(PlayerGuardianFoundationState.PendingRequestPath,

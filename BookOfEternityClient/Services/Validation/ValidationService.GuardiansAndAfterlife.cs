@@ -23,6 +23,66 @@ public partial class ValidationService
         AuthorizeGuardianCommandsForPolicy(root, contextPrefix, issues);
     }
 
+    private void ValidateGuardianQuestProgressUpdates(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(GuardianProjectState.QuestProgressUpdatesProperty, out var updates) ||
+            updates.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (!TryGetArray(root, GuardianProjectState.QuestProgressUpdatesProperty, $"{contextPrefix}.{GuardianProjectState.QuestProgressUpdatesProperty}", issues, out var arr))
+            return;
+
+        var guardianStates = CollectKnownGuardianSequentialStatesForCommandValidation();
+        var index = 0;
+        foreach (var item in arr.EnumerateArray())
+        {
+            var itemContext = $"{contextPrefix}.{GuardianProjectState.QuestProgressUpdatesProperty}[{index++}]";
+            if (!RequireObject(item, itemContext, issues))
+                continue;
+
+            var guardianId = RequireString(item, itemContext, issues, "guardianId");
+            var questId = RequireString(item, itemContext, issues, "questId");
+            var status = RequireString(item, itemContext, issues, "status");
+            ValidateOptionalString(item, itemContext, issues, "progressSummary");
+            ValidateOptionalString(item, itemContext, issues, "turnInRequirement");
+            ValidateNonNegativeIntegerField(item, itemContext, issues, "readyToTurnInAtTurn", "GuardianQuestProgress");
+
+            if (!string.IsNullOrWhiteSpace(status) &&
+                !GuardianProjectState.IsSupportedActiveQuestProgressStatus(status))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.status",
+                    IssueSeverity.Error,
+                    "guardianQuestProgressUpdates.status должен быть active, ready_to_turn_in, failed или expired",
+                    code: "guardian_quest_progress_invalid_status",
+                    section: "GuardianQuestProgress",
+                    expected: "active | ready_to_turn_in | failed | expired",
+                    actual: status,
+                    repairHint: "Для предложения квеста используй availableQuests; для завершения у Хранителя используй UpdateGuardians.completeQuest. Progress update меняет только active quest."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(guardianId) &&
+                !string.IsNullOrWhiteSpace(questId) &&
+                (!guardianStates.TryGetValue(guardianId, out var guardianState) ||
+                 !guardianState.ActiveQuestIds.Contains(questId)))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{itemContext}.questId",
+                    IssueSeverity.Error,
+                    "guardianQuestProgressUpdates может менять только существующий active quest Хранителя",
+                    code: "guardian_quest_progress_unknown_active_quest",
+                    section: "GuardianQuestProgress",
+                    expected: "questId from pre-turn guardian.questManagement.activeQuests[]",
+                    actual: questId,
+                    repairHint: "Сначала квест должен быть принят и находиться в activeQuests. Не создавай новые квесты и не закрывай completed quest через progress update."));
+            }
+
+            ValidateGuardianReadyToTurnInEvidence(item, itemContext, issues, status, evidenceRequired: true);
+        }
+    }
+
     private GuardianCommandAuthorizationResult AuthorizeGuardianCommandsForPolicy(
         JsonElement root,
         string contextPrefix,
@@ -171,10 +231,9 @@ public partial class ValidationService
                         !string.IsNullOrWhiteSpace(questId) &&
                         proposedGuardianState != null)
                     {
-                        var knownQuest =
-                            proposedGuardianState.AvailableQuestIds.Contains(questId) ||
-                            proposedGuardianState.ActiveQuestIds.Contains(questId);
-                        if (!knownQuest)
+                        var isAvailableQuest = proposedGuardianState.AvailableQuestIds.Contains(questId);
+                        var isActiveQuest = proposedGuardianState.ActiveQuestIds.Contains(questId);
+                        if (!isAvailableQuest && !isActiveQuest)
                         {
                             issueSink.Add(new ValidationIssue(
                                 $"{itemContext}.questId",
@@ -186,10 +245,40 @@ public partial class ValidationService
                                 actual: questId,
                                 repairHint: "Завершай только тот guardian quest, который реально существует у этого Хранителя в canonical questManagement. Сначала добавь квест в questManagement этого Хранителя, затем закрывай его через completeQuest."));
                         }
+                        else if (!isActiveQuest)
+                        {
+                            issueSink.Add(new ValidationIssue(
+                                $"{itemContext}.questId",
+                                IssueSeverity.Error,
+                                "UpdateGuardians.completeQuest не может закрывать available-only квест, который игрок ещё не принял",
+                                code: "guardian_complete_quest_not_active",
+                                section: "UpdateGuardians.completeQuest",
+                                expected: "questId from this Guardian's activeQuests[]",
+                                actual: "questId exists only in availableQuests[]",
+                                repairHint: "Сначала игрок должен принять предложение квеста, затем квест должен находиться в activeQuests[] и прогрессировать через guardianQuestProgressUpdates; completeQuest закрывает только active quest после возврата к Хранителю."));
+                        }
                         else
                         {
-                            proposedGuardianState.AvailableQuestIds.Remove(questId);
-                            proposedGuardianState.ActiveQuestIds.Remove(questId);
+                            var canCompleteQuest = true;
+                            if (proposedGuardianState.ActiveQuestStatusById.TryGetValue(questId, out var activeQuestStatus) &&
+                                !IsGuardianCompleteQuestAllowedForStatus(activeQuestStatus, outcome))
+                            {
+                                canCompleteQuest = false;
+                                issueSink.Add(new ValidationIssue(
+                                    $"{itemContext}.questId",
+                                    IssueSeverity.Error,
+                                    "UpdateGuardians.completeQuest должен закрывать active quest с outcome, совместимым с текущим статусом квеста",
+                                    code: "guardian_complete_quest_not_ready_to_turn_in",
+                                    section: "UpdateGuardians.completeQuest",
+                                    expected: "ready_to_turn_in for normal turn-in; failed|expired only with outcome=failure|partial; legacy active quest without explicit status remains allowed",
+                                    actual: $"status={activeQuestStatus}; outcome={outcome}",
+                                    repairHint: "Для успеха сначала отметь квест через guardianQuestProgressUpdates со status=ready_to_turn_in и духовным evidence. Для failed/expired закрывай квест только outcome=failure или partial."));
+                            }
+                            if (canCompleteQuest)
+                            {
+                                proposedGuardianState.AvailableQuestIds.Remove(questId);
+                                proposedGuardianState.ActiveQuestIds.Remove(questId);
+                            }
                         }
 
                         ValidateGuardianQuestPowerAudit(
@@ -2163,6 +2252,10 @@ public partial class ValidationService
                 $"{questContext}.availableQuests",
                 derivedState.GuardianQuestDifficultyCeiling,
                 issues);
+            ValidateGuardianAvailableQuestStatuses(
+                availableQuests,
+                $"{questContext}.availableQuests",
+                issues);
 
             if (HasTrackerBackedQuestOrigins(availableQuests) &&
                 TryEnsureQuestTrackerValidationRoot($"{questContext}.availableQuests"))
@@ -2185,6 +2278,10 @@ public partial class ValidationService
         else
         {
             RequireArrayOfObjects(activeQuests, $"{questContext}.activeQuests", issues);
+            ValidateGuardianActiveQuestStatuses(
+                activeQuests,
+                $"{questContext}.activeQuests",
+                issues);
             if (HasTrackerBackedQuestOrigins(activeQuests) &&
                 TryEnsureQuestTrackerValidationRoot($"{questContext}.activeQuests"))
                 ValidateGuardianLoreResearchQuestOrigins(activeQuests, $"{questContext}.activeQuests", guardianId ?? string.Empty, trackerRoot, issues);
@@ -2375,6 +2472,192 @@ public partial class ValidationService
                     repairHint: "Не превышай число quest hook / special line / guaranteed archive quest tokens, выданных completed lore_research проектом."));
             }
         }
+    }
+
+    private void ValidateGuardianAvailableQuestStatuses(
+        JsonElement questArray,
+        string arrayContext,
+        List<ValidationIssue> issues)
+    {
+        if (questArray.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var quest in questArray.EnumerateArray())
+        {
+            var questContext = $"{arrayContext}[{index++}]";
+            if (quest.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var status = GetFirstNonEmptyString(quest, "status");
+            if (!string.IsNullOrWhiteSpace(status) &&
+                !string.Equals(status, GuardianProjectState.QuestStatusAvailable, StringComparison.OrdinalIgnoreCase))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{questContext}.status",
+                    IssueSeverity.Error,
+                    "Guardian availableQuests[].status может быть только available",
+                    code: "guardian_available_quest_invalid_status",
+                    section: "Guardians",
+                    expected: "available or omitted",
+                    actual: status,
+                    repairHint: "Не помещай active/ready/completed status в availableQuests. Принятый квест должен жить в activeQuests."));
+            }
+        }
+    }
+
+    private void ValidateGuardianActiveQuestStatuses(
+        JsonElement questArray,
+        string arrayContext,
+        List<ValidationIssue> issues)
+    {
+        if (questArray.ValueKind != JsonValueKind.Array)
+            return;
+
+        var index = 0;
+        foreach (var quest in questArray.EnumerateArray())
+        {
+            var questContext = $"{arrayContext}[{index++}]";
+            if (quest.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var status = GetFirstNonEmptyString(quest, "status");
+            if (!string.IsNullOrWhiteSpace(status) &&
+                !GuardianProjectState.IsSupportedActiveQuestProgressStatus(status))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{questContext}.status",
+                    IssueSeverity.Error,
+                    "Guardian activeQuests[].status должен быть active, ready_to_turn_in, failed или expired",
+                    code: "guardian_active_quest_invalid_status",
+                    section: "Guardians",
+                    expected: "active | ready_to_turn_in | failed | expired, or omitted for legacy active quests",
+                    actual: status,
+                    repairHint: "Для выполненного в смертной жизни квеста используй ready_to_turn_in; для окончательного закрытия у Хранителя используй completedQuests через completeQuest."));
+            }
+
+            ValidateGuardianReadyToTurnInEvidence(quest, questContext, issues, status, evidenceRequired: true);
+        }
+    }
+
+    private static bool IsGuardianCompleteQuestAllowedForStatus(string? status, string? outcome)
+    {
+        if (string.IsNullOrWhiteSpace(status))
+            return true;
+
+        if (string.Equals(status, GuardianProjectState.QuestStatusReadyToTurnIn, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (string.Equals(status, GuardianProjectState.QuestStatusFailed, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(status, GuardianProjectState.QuestStatusExpired, StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(outcome, "failure", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(outcome, "partial", StringComparison.OrdinalIgnoreCase);
+        }
+
+        return false;
+    }
+
+    private void ValidateGuardianReadyToTurnInEvidence(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues,
+        string? status,
+        bool evidenceRequired)
+    {
+        var isReadyToTurnIn = string.Equals(status, GuardianProjectState.QuestStatusReadyToTurnIn, StringComparison.OrdinalIgnoreCase);
+
+        if (!root.TryGetProperty("readyToTurnInEvidence", out var evidence) ||
+            evidence.ValueKind == JsonValueKind.Null ||
+            evidence.ValueKind == JsonValueKind.Undefined)
+        {
+            if (isReadyToTurnIn && evidenceRequired)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.readyToTurnInEvidence",
+                    IssueSeverity.Error,
+                    "ready_to_turn_in Guardian quest требует духовное evidence выполнения",
+                    code: "guardian_ready_to_turn_in_missing_evidence",
+                    section: "GuardianQuestProgress",
+                    expected: "readyToTurnInEvidence object with memory/echo/proof fields",
+                    actual: "missing",
+                    repairHint: "Запиши memoryImprint, lifeEventEvidence, itemEcho, locationWitness, craftedOutcome, knowledgeTrace или soulResonance. Не требуй перенос физического предмета из mortal inventory."));
+            }
+            return;
+        }
+
+        if (!RequireObject(evidence, $"{context}.readyToTurnInEvidence", issues))
+            return;
+
+        if (isReadyToTurnIn && !GuardianEvidenceHasAllowedProof(evidence))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.readyToTurnInEvidence",
+                IssueSeverity.Error,
+                "readyToTurnInEvidence должен содержать хотя бы один не-физический proof результата",
+                code: "guardian_ready_to_turn_in_evidence_missing_proof",
+                section: "GuardianQuestProgress",
+                expected: "memoryImprint | lifeEventEvidence | itemEcho | locationWitness | craftedOutcome | knowledgeTrace | soulResonance",
+                actual: "no supported proof field",
+                repairHint: "Хранитель принимает слепок/память/резонанс результата, а не mortal inventory item."));
+        }
+
+        foreach (var forbidden in EnumerateForbiddenGuardianEvidenceFields(evidence))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.readyToTurnInEvidence.{forbidden.Path}",
+                IssueSeverity.Error,
+                "Guardian quest turn-in не может переносить физический предмет из смертной жизни",
+                code: "guardian_ready_to_turn_in_physical_item_transfer",
+                section: "GuardianQuestProgress",
+                expected: "non-physical proof only",
+                actual: forbidden.FieldName,
+                repairHint: "Замени физический item transfer на memoryImprint, itemEcho, lifeEventEvidence, locationWitness, craftedOutcome, knowledgeTrace или soulResonance."));
+        }
+    }
+
+    private static IEnumerable<(string Path, string FieldName)> EnumerateForbiddenGuardianEvidenceFields(JsonElement node, string pathPrefix = "")
+    {
+        if (node.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var property in node.EnumerateObject())
+            {
+                var path = string.IsNullOrWhiteSpace(pathPrefix)
+                    ? property.Name
+                    : $"{pathPrefix}.{property.Name}";
+                if (GuardianProjectState.IsForbiddenQuestPhysicalEvidenceField(property.Name))
+                    yield return (path, property.Name);
+
+                foreach (var nested in EnumerateForbiddenGuardianEvidenceFields(property.Value, path))
+                    yield return nested;
+            }
+        }
+        else if (node.ValueKind == JsonValueKind.Array)
+        {
+            var index = 0;
+            foreach (var item in node.EnumerateArray())
+            {
+                var path = $"{pathPrefix}[{index++}]";
+                foreach (var nested in EnumerateForbiddenGuardianEvidenceFields(item, path))
+                    yield return nested;
+            }
+        }
+    }
+
+    private static bool GuardianEvidenceHasAllowedProof(JsonElement evidence)
+    {
+        foreach (var fieldName in new[] { "memoryImprint", "lifeEventEvidence", "itemEcho", "locationWitness", "craftedOutcome", "knowledgeTrace", "soulResonance" })
+        {
+            if (!evidence.TryGetProperty(fieldName, out var field))
+                continue;
+
+            if (field.ValueKind == JsonValueKind.Object || field.ValueKind == JsonValueKind.Array)
+                return true;
+            if (field.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(field.GetString()))
+                return true;
+        }
+
+        return false;
     }
 
     private void ValidateGuardianAbodeResidentsStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)

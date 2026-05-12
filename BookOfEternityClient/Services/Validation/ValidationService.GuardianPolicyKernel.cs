@@ -70,6 +70,7 @@ public partial class ValidationService
         public Dictionary<string, JsonElement> AuthorizedSameTurnCreateGuardiansById { get; } = new(StringComparer.OrdinalIgnoreCase);
         public List<JsonObject> AuthorizedSameTurnGuardianCommands { get; } = new();
         public List<JsonObject> AuthorizedCurrentGuardianPowerEvents { get; } = new();
+        public List<JsonObject> AuthorizedSameTurnGuardianQuestProgressUpdates { get; } = new();
         public GuardianPowerEventAuthorityStatus CurrentGuardianPowerEventAuthorityStatus { get; set; } = GuardianPowerEventAuthorityStatus.None;
         public string? CurrentGuardianPowerEventAuthorityFailureDescription { get; set; }
         public Dictionary<string, List<string>> ReasoningAliasLookup { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -262,6 +263,7 @@ public partial class ValidationService
                     context.CurrentGuardiansById[guardianId] = guardian;
 
                 BuildGuardianIdentityAuthority(context);
+                BuildAuthorizedGuardianQuestProgressUpdatesForAuthority(context);
                 BuildGuardianAuthorityRoots(context);
                 BuildAuthorizedGuardianPowerEventsForAuthority(context);
                 if (context.AuthorizedCurrentGuardianPowerEvents.Count > 0 &&
@@ -313,6 +315,48 @@ public partial class ValidationService
 
             context.AuthorizedSameTurnGuardianCommands.Clear();
             context.AuthorizedSameTurnGuardianCommands.AddRange(authorizationResult.AuthorizedCommands);
+        }
+    }
+
+    private void BuildAuthorizedGuardianQuestProgressUpdatesForAuthority(GuardianPolicyContext context)
+    {
+        context.AuthorizedSameTurnGuardianQuestProgressUpdates.Clear();
+
+        var preTurnRealm = TryResolvePreTurnRealmSync();
+        if (!RealmSemantics.IsMortalRealm(preTurnRealm) ||
+            !context.HasPreTurnRoot ||
+            !context.HasCurrentRoot)
+        {
+            return;
+        }
+
+        var preTurnRoot = TryParseJsonObject(context.PreTurnRoot);
+        var currentRoot = TryParseJsonObject(context.CurrentRoot);
+        if (preTurnRoot == null || currentRoot == null)
+            return;
+
+        if (TryBuildAuthorizedMortalGuardianQuestProgressUpdates(preTurnRoot, currentRoot, out var updates))
+            context.AuthorizedSameTurnGuardianQuestProgressUpdates.AddRange(updates);
+    }
+
+    private string? TryResolvePreTurnRealmSync()
+    {
+        var soulJson = ReadValidatedCurrentPreTurnTrackedFileSync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return null;
+
+        try
+        {
+            using var doc = JsonDocument.Parse(soulJson);
+            return doc.RootElement.ValueKind == JsonValueKind.Object &&
+                   doc.RootElement.TryGetProperty("currentRealm", out var realm) &&
+                   realm.ValueKind == JsonValueKind.String
+                ? realm.GetString()
+                : null;
+        }
+        catch
+        {
+            return null;
         }
     }
 
@@ -477,7 +521,8 @@ public partial class ValidationService
                     context.AuthorizedSameTurnGuardianCommands,
                     authorizedCreatesById,
                     context.AuthorizedCurrentGuardianPowerEvents,
-                    currentTurn);
+                    currentTurn,
+                    context.AuthorizedSameTurnGuardianQuestProgressUpdates);
                 context.CurrentAuthorityRoot = CloneJsonObjectToElement(currentAuthorityRoot);
                 context.HasCurrentAuthorityRoot = true;
             }
@@ -496,7 +541,8 @@ public partial class ValidationService
             context.AuthorizedSameTurnGuardianCommands,
             authorizedCreatesById,
             context.AuthorizedCurrentGuardianPowerEvents,
-            currentTurn);
+            currentTurn,
+            context.AuthorizedSameTurnGuardianQuestProgressUpdates);
         context.StrictCurrentAuthorityRoot = CloneJsonObjectToElement(strictCurrentAuthorityRoot);
         context.HasStrictCurrentAuthorityRoot = true;
         }

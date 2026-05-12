@@ -5271,6 +5271,7 @@ public partial class ValidationService
         ValidateAfterlifeSpiritualConflictUpdateContract(root, contextPrefix, issues);
         ValidatePlayerGuardianFoundationSoulStateFields(root, contextPrefix, issues);
         ValidateGuardianCommands(root, contextPrefix, issues);
+        ValidateGuardianQuestProgressUpdates(root, contextPrefix, issues);
         ValidateGuardianStateData(root, contextPrefix, issues);
         ValidateGuardianPowerEventData(root, contextPrefix, issues);
         ValidateGuardianPowerJournalData(root, contextPrefix, issues);

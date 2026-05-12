@@ -23,6 +23,56 @@ internal static class GuardianProjectState
     public const string LoreResearchHookOrigin = "lore_research_hook";
     public const string LoreResearchSpecialLineOrigin = "lore_research_special_line";
     public const string ArchiveConsultationHookOrigin = "archive_consultation_hook";
+    public const string BaselineMortalLifeHookOrigin = "guardian_baseline_mortal_life_hook";
+    public const string QuestProgressUpdatesProperty = "guardianQuestProgressUpdates";
+    public const string QuestStatusAvailable = "available";
+    public const string QuestStatusActive = "active";
+    public const string QuestStatusReadyToTurnIn = "ready_to_turn_in";
+    public const string QuestStatusFailed = "failed";
+    public const string QuestStatusExpired = "expired";
+
+    public static bool IsSupportedActiveQuestProgressStatus(string? status)
+    {
+        if (string.IsNullOrWhiteSpace(status))
+            return false;
+
+        return string.Equals(status, QuestStatusActive, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(status, QuestStatusReadyToTurnIn, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(status, QuestStatusFailed, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(status, QuestStatusExpired, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static bool IsForbiddenQuestPhysicalEvidenceField(string? fieldName) =>
+        string.Equals(fieldName, "physicalItem", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "inventoryItem", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "transferredItem", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "transferredItemId", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(fieldName, "mortalInventoryTransfer", StringComparison.OrdinalIgnoreCase);
+
+    public static bool ContainsForbiddenQuestPhysicalEvidenceField(JsonNode? node)
+    {
+        if (node is JsonObject obj)
+        {
+            foreach (var property in obj)
+            {
+                if (IsForbiddenQuestPhysicalEvidenceField(property.Key) ||
+                    ContainsForbiddenQuestPhysicalEvidenceField(property.Value))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var item in array)
+            {
+                if (ContainsForbiddenQuestPhysicalEvidenceField(item))
+                    return true;
+            }
+        }
+
+        return false;
+    }
 
     public static readonly string[] AllowedProjectTiers = { "minor", "major", "grand" };
     public static readonly string[] AllowedProjectModes = { "internal", "supportive", "offensive" };
