@@ -135,7 +135,7 @@ public partial class ExplorerMode
     private static void AppendAfterlifeSpiritualConflictStatusLines(List<string> lines, JsonObject? conflictRoot)
     {
         lines.Add("");
-        lines.Add("[bold]Afterlife spiritual conflict:[/]");
+        lines.Add("[bold]Духовный конфликт посмертия[/] [dim](afterlife spiritual conflict)[/]:");
         var active = conflictRoot?["activeConflict"] as JsonObject;
         if (active == null)
         {
@@ -143,11 +143,11 @@ public partial class ExplorerMode
             return;
         }
 
-        lines.Add($"  • Conflict id: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown")}[/]");
-        lines.Add($"  • Model/position: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"]) ?? "?")}[/] / [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"]) ?? "?")}[/]");
-        lines.Add($"  • Side strain: player=[white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"]) ?? "?")}[/], opposition=[white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"]) ?? "?")}[/]");
-        lines.Add($"  • Resolution state: [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"]) ?? "?")}[/]");
-        lines.Add($"  • Exchanges: [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
+        lines.Add($"  • ID конфликта (conflictId): [white]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(active["conflictId"]) ?? "unknown")}[/]");
+        lines.Add($"  • Модель/позиция (sideModel/conflictPosition): [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/] / [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
+        lines.Add($"  • Напряжение сторон (side strain): игрок=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/], противник=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
+        lines.Add($"  • Состояние завершения (resolutionState): [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
+        lines.Add($"  • Обмены действиями (exchangeLog): [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
     }
 
     private static void AppendMalformedAfterlifeStateStatusLines(

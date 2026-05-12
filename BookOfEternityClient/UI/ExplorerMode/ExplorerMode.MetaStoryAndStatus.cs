@@ -186,7 +186,7 @@ public partial class ExplorerMode
             table.AddRow("[yellow]/afterlife_archive[/]", "[yellow]/архив_души[/]", "[yellow]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[yellow]/archive_candidates[/]", "[yellow]/архив_кандидаты[/]", "[yellow]Выбрать, что сохранить в Архив по итогам жизни[/]");
             table.AddRow("[yellow]/afterlife_inbox[/]", "[yellow]/уведомления_загробья[/]", "[yellow]Ответы GM по торговле, Архиву и резидентам Обители[/]");
-            table.AddRow("[yellow]/spiritual_conflict[/]", "[yellow]/духовный_конфликт[/]", "[yellow]Активный afterlife spiritual conflict: стороны, позиция, strain и exchange log[/]");
+            table.AddRow("[yellow]/spiritual_conflict[/]", "[yellow]/духовный_конфликт[/]", "[yellow]Активный духовный конфликт посмертия (afterlife spiritual conflict): стороны, позиция, напряжение (strain) и журнал обменов (exchange log)[/]");
             table.AddRow("[yellow]/spiritual_arts[/]", "[yellow]/духовные_искусства[/]", "[yellow]Ранги Просветления/Сияния и tiers духовных искусств[/]");
             table.AddRow("[yellow]/spiritual_action[/]", "[yellow]/духовное_действие[/]", "[yellow]Отправить действие GM в активном духовном конфликте с явным тегом; обычная проза тоже валидна[/]");
             table.AddRow("[yellow]/shining_abode[/]", "[yellow]/сияющая_обитель[/]", "[yellow]Обзор сияния, залов, фракций, Врат и текущего состояния Сияющей Обители[/]");
@@ -220,7 +220,7 @@ public partial class ExplorerMode
             table.AddRow("[blue]/afterlife_archive[/]", "[blue]/архив_души[/]", "[blue]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[blue]/archive_candidates[/]", "[blue]/архив_кандидаты[/]", "[blue]Выбрать записи Кодекса, которые переживут смерть[/]");
             table.AddRow("[blue]/afterlife_inbox[/]", "[blue]/уведомления_загробья[/]", "[blue]Ответы GM по торговле, Архиву и резидентам Обители[/]");
-            table.AddRow("[blue]/spiritual_conflict[/]", "[blue]/духовный_конфликт[/]", "[blue]Активный afterlife spiritual conflict: стороны, позиция, strain и exchange log[/]");
+            table.AddRow("[blue]/spiritual_conflict[/]", "[blue]/духовный_конфликт[/]", "[blue]Активный духовный конфликт посмертия (afterlife spiritual conflict): стороны, позиция, напряжение (strain) и журнал обменов (exchange log)[/]");
             table.AddRow("[blue]/spiritual_arts[/]", "[blue]/духовные_искусства[/]", "[blue]Ранги Просветления/Сияния и tiers духовных искусств[/]");
             table.AddRow("[blue]/spiritual_action[/]", "[blue]/духовное_действие[/]", "[blue]Отправить действие GM в активном духовном конфликте с явным тегом; обычная проза тоже валидна[/]");
             table.AddRow("[blue]/shining_abode[/]", "[blue]/сияющая_обитель[/]", "[blue]Обзор сохранённого состояния Сияющей Обители: сияние, фракции и Врата[/]");
