@@ -64,9 +64,12 @@ public static class AfterlifeSpiritualConflictState
         "counter",
         "guard",
         "maneuver",
+        "binding",
         "break_binding",
         "force_binding",
         "force_incarnation",
+        "incarnation_resistance",
+        "champion_coordination",
         "withdraw",
         "surrender",
         "negotiate"

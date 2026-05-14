@@ -885,7 +885,7 @@ public partial class ValidationService
         AfterlifeConflictDiceContext diceContext)
     {
         RequireNodeString(exchange, context, issues, "exchangeId");
-        ValidateEnumNode(exchange, context, issues, "operationType", AfterlifeSpiritualConflictState.OperationTypes, "afterlife_conflict_invalid_operation_type");
+        var operationType = ValidateEnumNode(exchange, context, issues, "operationType", AfterlifeSpiritualConflictState.OperationTypes, "afterlife_conflict_invalid_operation_type");
         var outcome = ValidateEnumNode(exchange, context, issues, "outcome", AfterlifeSpiritualConflictState.OperationOutcomes, "afterlife_conflict_invalid_operation_outcome");
 
         if (string.Equals(outcome, "blocked", StringComparison.OrdinalIgnoreCase) &&
@@ -971,6 +971,9 @@ public partial class ValidationService
                 actual: "before == after"));
         }
 
+        if (before != null && after != null)
+            ValidateSpiritualArtOperationRules(exchange, before, after, operationType, outcome, context, issues);
+
         var diceRequired = ExchangeDiceAuditRequired(exchange, outcome);
         if (diceRequired && exchange["diceAudit"] is not JsonObject)
         {
@@ -989,6 +992,244 @@ public partial class ValidationService
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
             ValidateLightIncarnateDiceAuditModifier(exchange, diceAudit, $"{context}.diceAudit", issues, diceContext);
         }
+    }
+
+    private static void ValidateSpiritualArtOperationRules(
+        JsonObject exchange,
+        JsonObject before,
+        JsonObject after,
+        string? operationType,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (string.IsNullOrWhiteSpace(operationType))
+            return;
+
+        if (ConflictTokenEquals(operationType, "counter") &&
+            exchange["incomingAction"] is not JsonObject)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.incomingAction",
+                "Контрприём (counter) является реакцией и должен указывать incomingAction.",
+                "afterlife_conflict_counter_missing_incoming_action",
+                "incomingAction object that names the operation being countered",
+                exchange["incomingAction"]?.GetType().Name ?? "missing");
+        }
+
+        if (ConflictTokenEquals(operationType, "maneuver"))
+            ValidateManeuverRule(before, after, outcome, context, issues);
+
+        if (ConflictTokenEquals(operationType, "binding", "force_binding") &&
+            IsSuccessfulArtOutcome(outcome) &&
+            !HasBindingLeverage(exchange, before))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.operationType",
+                "Наложение оков (binding/force_binding) требует преимущества, setup или decisive_player_success.",
+                "afterlife_conflict_binding_without_leverage",
+                "before.conflictPosition=player_advantaged|player_dominant, setup=true, or diceAudit.outcomeBand=decisive_player_success",
+                DescribeConflictPosition(before));
+        }
+
+        if (ConflictTokenEquals(operationType, "break_binding") &&
+            !HasBindingOrCoerciveContext(exchange, before, after))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.operationType",
+                "Разрыв оков (break_binding) должен ссылаться на binding/coercive context.",
+                "afterlife_conflict_break_binding_without_binding",
+                "incomingAction or before/after snapshot with binding/forced handoff context",
+                "missing binding/coercive context");
+        }
+
+        if (ConflictTokenEquals(operationType, "incarnation_resistance") &&
+            !HasForcedIncarnationContext(exchange, before, after))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.operationType",
+                "Сопротивление воплощению (incarnation_resistance) применимо только против force_incarnation/guardian_forced.",
+                "afterlife_conflict_incarnation_resistance_without_force",
+                "force_incarnation incomingAction/resolution/source context",
+                "missing forced-incarnation context");
+        }
+
+        if (ConflictTokenEquals(operationType, "champion_coordination") &&
+            !HasChampionDuelContext(exchange, before, after))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.operationType",
+                "Координация чемпиона (champion_coordination) применима только в champion_duel.",
+                "afterlife_conflict_champion_coordination_without_champion",
+                "sideModel/conflictMode=champion_duel",
+                "missing champion_duel context");
+        }
+    }
+
+    private static void ValidateManeuverRule(
+        JsonObject before,
+        JsonObject after,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (TryGetStrainRank(before["playerSideStrain"], out var beforePlayerStrain) &&
+            TryGetStrainRank(after["playerSideStrain"], out var afterPlayerStrain) &&
+            beforePlayerStrain != afterPlayerStrain)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.playerSideStrain",
+                "Манёвр (maneuver) меняет позицию, а не side strain.",
+                "afterlife_conflict_maneuver_changes_strain",
+                "playerSideStrain unchanged for maneuver",
+                $"{beforePlayerStrain}->{afterPlayerStrain}");
+        }
+
+        if (TryGetStrainRank(before["oppositionSideStrain"], out var beforeOppositionStrain) &&
+            TryGetStrainRank(after["oppositionSideStrain"], out var afterOppositionStrain) &&
+            beforeOppositionStrain != afterOppositionStrain)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.oppositionSideStrain",
+                "Манёвр (maneuver) меняет позицию, а не side strain.",
+                "afterlife_conflict_maneuver_changes_strain",
+                "oppositionSideStrain unchanged for maneuver",
+                $"{beforeOppositionStrain}->{afterOppositionStrain}");
+        }
+
+        if (IsSuccessfulArtOutcome(outcome) &&
+            TryGetPositionRank(before["conflictPosition"], out var beforePosition) &&
+            TryGetPositionRank(after["conflictPosition"], out var afterPosition) &&
+            beforePosition == afterPosition)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.conflictPosition",
+                "Успешный манёвр (maneuver) должен измеримо менять conflictPosition.",
+                "afterlife_conflict_maneuver_missing_position_shift",
+                "conflictPosition changed on success/partial_success",
+                "unchanged");
+        }
+    }
+
+    private static bool HasBindingLeverage(JsonObject exchange, JsonObject before)
+    {
+        if (TryGetPositionRank(before["conflictPosition"], out var position) && position >= 1)
+            return true;
+
+        if (TryGetJsonNodeBool(exchange["setup"], out var setup) && setup)
+            return true;
+
+        if (string.Equals(AfterlifeSpiritualConflictState.GetNodeString(exchange["setupState"]), "ready", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(AfterlifeSpiritualConflictState.GetNodeString(exchange["bindingSetup"]), "ready", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        if (exchange["diceAudit"] is JsonObject diceAudit &&
+            string.Equals(AfterlifeSpiritualConflictState.GetNodeString(diceAudit["outcomeBand"]), "decisive_player_success", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool HasBindingOrCoerciveContext(params JsonObject[] roots) =>
+        roots.Any(root =>
+            ConflictNodeStringEquals(root, "binding", "operationType", "finalOperationType") ||
+            ConflictNodeStringEquals(root, "force_binding", "operationType", "finalOperationType") ||
+            ConflictNodeStringEquals(root, "force_incarnation", "operationType", "finalOperationType") ||
+            ConflictNodeStringEquals(root, "guardian_forced", "source", "reason", "consequence") ||
+            root.ContainsKey("bindingState") ||
+            root.ContainsKey("bindingId") ||
+            root.ContainsKey("activeBinding") ||
+            root.ContainsKey("forcedHandoff") ||
+            root.ContainsKey("forceIncarnation") ||
+            root.ContainsKey("forcedIncarnation") ||
+            root["incomingAction"] is JsonObject incoming && HasBindingOrCoerciveContext(incoming));
+
+    private static bool HasForcedIncarnationContext(params JsonObject[] roots) =>
+        roots.Any(root =>
+            ConflictNodeStringEquals(root, "force_incarnation", "operationType", "finalOperationType") ||
+            ConflictNodeStringEquals(root, "guardian_forced", "source", "reason", "consequence") ||
+            root.ContainsKey("forceIncarnation") ||
+            root.ContainsKey("forcedIncarnation") ||
+            root["incomingAction"] is JsonObject incoming && HasForcedIncarnationContext(incoming));
+
+    private static bool HasChampionDuelContext(params JsonObject[] roots) =>
+        roots.Any(root =>
+            ConflictNodeStringEquals(root, "champion_duel", "sideModel", "conflictMode", "conflictModel", "duelType") ||
+            root["playerSide"]?["leadContestant"] is JsonObject lead &&
+            !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(lead["actorType"]), "player", "soul"));
+
+    private static bool IsSuccessfulArtOutcome(string? outcome) =>
+        ConflictTokenEquals(outcome, "success", "partial_success");
+
+    private static bool TryGetPositionRank(JsonNode? node, out int rank)
+    {
+        rank = 0;
+        var value = AfterlifeSpiritualConflictState.GetNodeString(node);
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        rank = value.Trim().ToLowerInvariant() switch
+        {
+            "opposition_dominant" => -2,
+            "opposition_advantaged" => -1,
+            "contested" => 0,
+            "player_advantaged" => 1,
+            "player_dominant" => 2,
+            _ => 0
+        };
+        return AfterlifeSpiritualConflictState.ConflictPositions.Contains(value);
+    }
+
+    private static bool TryGetStrainRank(JsonNode? node, out int rank)
+    {
+        rank = 0;
+        var value = AfterlifeSpiritualConflictState.GetNodeString(node);
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        rank = value.Trim().ToLowerInvariant() switch
+        {
+            "clear" => 0,
+            "strained" => 1,
+            "fractured" => 2,
+            "overwhelmed" => 3,
+            "broken" => 4,
+            _ => 0
+        };
+        return AfterlifeSpiritualConflictState.StrainStates.Contains(value);
+    }
+
+    private static string DescribeConflictPosition(JsonObject root) =>
+        AfterlifeSpiritualConflictState.GetNodeString(root["conflictPosition"]) ?? "missing";
+
+    private static void AddSpiritualArtRuleIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string message,
+        string code,
+        string expected,
+        string actual)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeSpiritualConflict",
+            expected: expected,
+            actual: actual));
     }
 
     private static bool ExchangeDiceAuditRequired(JsonObject exchange, string? outcome)

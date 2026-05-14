@@ -176,6 +176,8 @@ public partial class ExplorerMode
                 : $"заблокировано: {quote.BlockReason}";
             var sparkCost = _stateManager.CurrentState.IsInShiningAbode ? $" / {quote.LightSparkCost} ✨" : "";
             lines.Add($"  • [white]{Markup.Escape(FormatSpiritualArtLabel(quote.Art))}[/]: уровень (tier) [white]{tier}[/], порог ранга (rank gate) [white]{quote.RequiredRankLabel}[/], {Markup.Escape(blocked)}{Markup.Escape(sparkCost)} — {Markup.Escape(FormatSpiritualArtUse(quote.Art))}");
+            lines.Add($"    Правило: {Markup.Escape(FormatSpiritualArtRule(quote.Art))}");
+            lines.Add($"    Пример: {Markup.Escape(FormatSpiritualArtExample(quote.Art))}");
         }
 
         lines.Add("");
@@ -746,6 +748,7 @@ public partial class ExplorerMode
         Clear();
         MarkupLine($"[cyan]Активный конфликт:[/] [white]{Markup.Escape(conflictId)}[/]");
         MarkupLine("[dim]Опишите одно намерение: давление (pressure), защита (guard), манёвр (maneuver), контрприём (counter), разрыв/наложение духовных оков (break_binding/binding), сдача, отступление или переговоры. Команда только добавляет явный тег; обычная ролевая заявка во время активного конфликта тоже валидна.[/]");
+        MarkupLine("[dim]Выберите действие по механике: pressure бьёт по strain противника; guard защищает свою сторону; maneuver двигает conflictPosition; counter требует incomingAction; binding требует преимущества/setup; break_binding и incarnation_resistance работают только против контроля/принуждения; champion_coordination — только в champion_duel.[/]");
         var action = Ask("[cyan]Действие:[/]");
         if (string.IsNullOrWhiteSpace(action))
             return;
@@ -774,6 +777,7 @@ public partial class ExplorerMode
                     $"  • Поверхность ответа (response surface): `{AfterlifeSpiritualConflictState.ResponseField}`",
                     $"  • Файл состояния (state file): `{AfterlifeSpiritualConflictState.StatePath}`",
                     "  • Конфликт остаётся side-vs-side: используй playerSide/oppositionSide и поля напряжения сторон (side strain).",
+                    "  • Духовное искусство должно менять только разрешённые поля: pressure=strain противника, guard=защита своей стороны, maneuver=позиция, counter=incomingAction, binding=контроль после преимущества, break_binding/incarnation_resistance=анти-принуждение, champion_coordination=champion_duel.",
                     "  • Принудительное воплощение Хранителем (forced incarnation by Guardian) требует proof проигрыша/сдачи/уступки в resolve.",
                     "  • Файлы смертного боя и состояния Mortal combat/state files запрещены."
                 },
@@ -872,6 +876,34 @@ public partial class ExplorerMode
             "binding" => "помогает наложить ограничивающие духовные оковы после получения преимущества",
             "incarnation_resistance" => "усиливает сопротивление принудительному воплощению от Хранителя",
             "champion_coordination" => "усиливает поддержку, когда ведущим бойцом выступает союзник/чемпион",
+            _ => art.MechanicalUse
+        };
+
+    private static string FormatSpiritualArtRule(AfterlifeSpiritualConflictState.SpiritualArtDefinition art) =>
+        NormalizeKey(art.ArtId) switch
+        {
+            "pressure" => "Может ухудшать oppositionSideStrain; не является позиционным манёвром и не должен сам по себе закрывать конфликт без resolve.",
+            "counter" => "Только реакция на конкретный incomingAction; без incomingAction это не самостоятельная атака.",
+            "guard" => "Защищает playerSide от strain/consequence; не наносит прямой strain противнику и не заменяет counter.",
+            "maneuver" => "Меняет conflictPosition; успешный maneuver должен двигать позицию и не должен напрямую менять side strain.",
+            "break_binding" => "Работает только против binding, forced handoff или coercive context; не является универсальной атакой.",
+            "binding" => "Требует player_advantaged/player_dominant, setup=true или decisive_player_success; накладывает ограничение, а не наносит обычный strain.",
+            "incarnation_resistance" => "Только против force_incarnation/guardian_forced; против обычного pressure используй guard/counter/maneuver.",
+            "champion_coordination" => "Только в champion_duel, когда союзник/чемпион ведёт сторону; игрок усиливает сторону, а не становится lead.",
+            _ => art.MechanicalUse
+        };
+
+    private static string FormatSpiritualArtExample(AfterlifeSpiritualConflictState.SpiritualArtDefinition art) =>
+        NormalizeKey(art.ArtId) switch
+        {
+            "pressure" => "«Я давлю на клятву Хранителя» -> при успехе oppositionSideStrain clear->strained.",
+            "counter" => "«Когда он тянет меня в сон, я разворачиваю поток памяти» -> incomingAction описывает force_binding/pressure.",
+            "guard" => "«Я закрываю трещину в душе сияющим щитом» -> playerSideStrain не ухудшается или снижается.",
+            "maneuver" => "«Я смещаюсь к спокойному течению Моря» -> conflictPosition contested->player_advantaged без strain-урона.",
+            "break_binding" => "«Я разрываю печать на имени» -> снимает/ослабляет bindingState или forcedHandoff.",
+            "binding" => "«Удерживаю противника печатью рассвета» -> возможно только после преимущества/setup.",
+            "incarnation_resistance" => "«Я сопротивляюсь навязанной жизни» -> применяется против force_incarnation.",
+            "champion_coordination" => "«Я направляю союзного Хранителя через слабое место врага» -> работает в champion_duel.",
             _ => art.MechanicalUse
         };
 
