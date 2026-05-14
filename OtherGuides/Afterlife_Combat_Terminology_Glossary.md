@@ -12,6 +12,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | repair_cancel | repair-отмена / ремонтная отмена | Non-reward cleanup of malformed or impossible conflict state. |
 | diceAudit | аудит кубиков | Required visible-dice proof for contested exchanges and contested terminal resolutions. |
 | rewardAudit | аудит награды | Required proof when a resolved victorious conflict grants Ink Feathers or Light Sparks. |
+| criticalResult | аудит критического исхода | Required normalization proof when natural 20/1 changes the margin-derived `outcomeBand`. |
 | operationType | тип операции | Mechanical type of an exchange/resolution, such as `pressure`, `guard`, or `force_incarnation`. |
 | outcome | исход | Mechanical outcome of an exchange, such as `success`, `blocked`, `countered`, or `no_effect`. |
 | side strain | напряжение стороны | `playerSideStrain` / `oppositionSideStrain`; tracks pressure on each side, not hit points. |
@@ -67,6 +68,12 @@ Afterlife conflict rewards are mechanical, not flavor. A reward is allowed only 
 | `Shining Abode` | `light_sparks` | Искры Света | `shining_abode_state.json.lightSparks` must increase by `rewardAudit.finalAmount`. |
 
 `rewardAudit` must include `realm`, `currency`, `baseAmount`, `opposingLeadStrength`, `sideModel`, `startingConflictPosition`, `challengeTier`, `outcomeMultiplierPercent`, `riskMultiplierPercent`, `riskReason`, `finalAmount`, and `narrativeReason`. No reward is allowed for `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, pure negotiation/no-contest, duplicate reward for the same `conflictId`, wrong realm, or wrong currency.
+
+## Critical Result Audit
+
+Natural 20 / натуральная 20 and natural 1 / натуральная 1 are bounded criticals. Player-side natural 20 or opposition-side natural 1 gives at least `player_success`; player-side natural 1 or opposition-side natural 20 gives at most `opposition_success`; opposed criticals cancel and use the margin band. A critical does not create `decisive_player_success` or `decisive_opposition_success` by itself.
+
+When a critical changes the margin-derived band, `diceAudit.criticalResult` must include `playerNaturalRoll`, `oppositionNaturalRoll`, `marginOutcomeBand`, `normalizedOutcomeBand`, `scaleLimit`, and `narrativeConstraint`. `scaleLimit` is the "no impossible mosquito victory" field: it explains the maximum plausible effect for this action, power gap, side model, and current conflict position.
 
 ## State Value Labels
 

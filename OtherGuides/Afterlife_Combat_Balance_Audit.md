@@ -24,6 +24,17 @@ margin -7..-3     -> opposition_success
 margin <= -8      -> decisive_opposition_success
 ```
 
+Natural criticals are a bounded override, not a replacement for the balance model:
+
+```text
+player natural 20 or opposition natural 1   -> at least player_success
+player natural 1 or opposition natural 20   -> at most opposition_success
+opposed natural criticals on both sides      -> cancel and use the margin band
+critical override never creates decisive success/failure by itself
+```
+
+If a natural 20/1 changes the result that the margin would have produced, `diceAudit.criticalResult` must record the actual natural rolls, the margin band, the normalized band, and a prose `scaleLimit` / `narrativeConstraint`. This is the anti-"mosquito defeats a giant" rule: a weak actor's natural 20 can create the best plausible success for that action, but not an impossible total victory over a vastly stronger side.
+
 Balance assumptions:
 
 - A one-to-two tier advantage should matter on average dice, but should not guarantee victory against a strong opposing roll.
@@ -31,6 +42,8 @@ Balance assumptions:
 - A weak player helped by a strong champion should be represented through `sideModel=champion_duel` or the ally's support modifier, not through mass combat.
 - A returned Shining soul keeps retained Radiance as real combat authority in Chaos Sea conflicts, even after Enlightenment is reset.
 - Source of Light / Light Incarnate is a major capstone bonus, but it is still applied as an explicit modifier inside the same dice envelope, not as automatic victory.
+- Non-critical high rolls do not beat overwhelming progression/authority by themselves.
+- Natural 20/1 changes success/failure, but the result is normalized to the current side strength, operation type, and fictional leverage.
 
 ## Deterministic Matrix
 
@@ -50,6 +63,9 @@ The following rows are encoded in `AfterlifeSpiritualConflictBalanceTests`. Fixe
 | Source of Light lead, average roll | player 11 vs opposition 9 | +8 vs +6 | +4 | `player_success` | Light Incarnate strongly shifts an even lead duel without forcing decisive success. |
 | Source of Light lead, extreme bad roll | player 5 vs opposition 18 | +8 vs +6 | -11 | `decisive_opposition_success` | Light Incarnate does not erase extreme dice reversals against strong opposition. |
 | Source of Light support role | player 13 vs opposition 6 | +4 vs +6 | +5 | `player_success` | Support-role Light Incarnate is useful, but smaller than the lead-contestant bonus. |
+| High non-critical roll vs overwhelming authority | player 19 vs opposition 2 | 0 vs +20 | -3 | `opposition_success` | A high d20 result alone does not dominate progression/authority. |
+| Natural 20 vs overwhelming authority | player 20 vs opposition 18 | 0 vs +20 | -18 | `player_success` | Critical success gives the best plausible success, not impossible domination. |
+| Natural 1 with overwhelming advantage | player 1 vs opposition 2 | +20 vs 0 | +19 | `opposition_success` | Critical failure creates a bounded failure, not arbitrary disaster. |
 
 If a future change alters the formula, thresholds, or modifier scale, update this table and the matching tests in the same change.
 

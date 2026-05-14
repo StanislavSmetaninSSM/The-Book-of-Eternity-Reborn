@@ -2099,12 +2099,23 @@ public partial class ValidationService
         var outcomeBand = AfterlifeSpiritualConflictState.GetNodeString(audit["outcomeBand"]);
         if (TryGetJsonNodeInt(audit["margin"], out margin))
         {
-            var expectedBand = ExpectedAfterlifeConflictOutcomeBand(margin);
+            var marginBand = ExpectedAfterlifeConflictOutcomeBand(margin);
+            var expectedBand = ExpectedAfterlifeConflictOutcomeBand(margin, playerDie, oppositionDie);
             if (!string.Equals(outcomeBand, expectedBand, StringComparison.Ordinal))
             {
-                AddDiceAuditIssue(issues, $"{context}.outcomeBand", "diceAudit.outcomeBand должен соответствовать margin.", "afterlife_conflict_dice_outcome_band_mismatch", expectedBand, string.IsNullOrWhiteSpace(outcomeBand) ? "missing" : outcomeBand);
+                AddDiceAuditIssue(issues, $"{context}.outcomeBand", "diceAudit.outcomeBand должен соответствовать margin и natural critical rules.", "afterlife_conflict_dice_outcome_band_mismatch", expectedBand, string.IsNullOrWhiteSpace(outcomeBand) ? "missing" : outcomeBand);
                 valid = false;
             }
+
+            ValidateAfterlifeConflictCriticalResult(
+                audit,
+                context,
+                playerDie,
+                oppositionDie,
+                marginBand,
+                expectedBand,
+                issues,
+                ref valid);
         }
 
         return valid;
@@ -2160,6 +2171,184 @@ public partial class ValidationService
         margin >= -2 ? "mixed_or_no_effect" :
         margin >= -7 ? "opposition_success" :
         "decisive_opposition_success";
+
+    private static string ExpectedAfterlifeConflictOutcomeBand(int margin, int? playerDie, int? oppositionDie)
+    {
+        var marginBand = ExpectedAfterlifeConflictOutcomeBand(margin);
+        if (playerDie == null || oppositionDie == null)
+            return marginBand;
+
+        var playerCriticalSuccess = (playerDie.Value == 20 ? 1 : 0) + (oppositionDie.Value == 1 ? 1 : 0);
+        var playerCriticalFailure = (playerDie.Value == 1 ? 1 : 0) + (oppositionDie.Value == 20 ? 1 : 0);
+
+        if (playerCriticalSuccess > playerCriticalFailure)
+            return OutcomeBandRank(marginBand) < 1 ? "player_success" : marginBand;
+
+        if (playerCriticalFailure > playerCriticalSuccess)
+            return OutcomeBandRank(marginBand) > -1 ? "opposition_success" : marginBand;
+
+        return marginBand;
+    }
+
+    private static int OutcomeBandRank(string? band) =>
+        band?.Trim().ToLowerInvariant() switch
+        {
+            "decisive_player_success" => 2,
+            "player_success" => 1,
+            "mixed_or_no_effect" => 0,
+            "opposition_success" => -1,
+            "decisive_opposition_success" => -2,
+            _ => 0
+        };
+
+    private static void ValidateAfterlifeConflictCriticalResult(
+        JsonObject audit,
+        string context,
+        int? playerDie,
+        int? oppositionDie,
+        string marginBand,
+        string expectedBand,
+        List<ValidationIssue>? issues,
+        ref bool valid)
+    {
+        if (playerDie == null || oppositionDie == null)
+            return;
+
+        var hasNaturalCritical =
+            playerDie.Value is 1 or 20 ||
+            oppositionDie.Value is 1 or 20;
+        var criticalChangedOutcome = hasNaturalCritical &&
+                                     !string.Equals(marginBand, expectedBand, StringComparison.Ordinal);
+        if (!hasNaturalCritical)
+        {
+            if (audit.ContainsKey("criticalResult"))
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.criticalResult",
+                    "criticalResult допустим только если player/opposition d20 содержит natural 1 или 20.",
+                    "afterlife_conflict_dice_critical_result_without_critical_roll",
+                    "no criticalResult without natural 1/20",
+                    audit["criticalResult"]?.ToJsonString() ?? "missing");
+                valid = false;
+            }
+
+            return;
+        }
+
+        if (audit["criticalResult"] is not JsonObject criticalResult)
+        {
+            if (criticalChangedOutcome || audit.ContainsKey("criticalResult"))
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.criticalResult",
+                    criticalChangedOutcome
+                        ? "Natural 1/20, изменивший outcomeBand относительно margin, требует criticalResult с нормализацией масштаба."
+                        : "criticalResult должен быть object.",
+                    criticalChangedOutcome
+                        ? "afterlife_conflict_dice_missing_critical_result"
+                        : "afterlife_conflict_dice_invalid_critical_result",
+                    "criticalResult object with playerNaturalRoll, oppositionNaturalRoll, marginOutcomeBand, normalizedOutcomeBand, scaleLimit, narrativeConstraint",
+                    audit["criticalResult"]?.GetType().Name ?? "missing");
+                valid = false;
+            }
+
+            return;
+        }
+
+        ValidateCriticalResultInt(
+            criticalResult,
+            context,
+            "playerNaturalRoll",
+            playerDie.Value,
+            issues,
+            ref valid);
+        ValidateCriticalResultInt(
+            criticalResult,
+            context,
+            "oppositionNaturalRoll",
+            oppositionDie.Value,
+            issues,
+            ref valid);
+        ValidateCriticalResultString(
+            criticalResult,
+            context,
+            "marginOutcomeBand",
+            marginBand,
+            "afterlife_conflict_dice_critical_margin_band_mismatch",
+            issues,
+            ref valid);
+        ValidateCriticalResultString(
+            criticalResult,
+            context,
+            "normalizedOutcomeBand",
+            expectedBand,
+            "afterlife_conflict_dice_critical_normalized_band_mismatch",
+            issues,
+            ref valid);
+
+        foreach (var fieldName in new[] { "scaleLimit", "narrativeConstraint" })
+        {
+            if (string.IsNullOrWhiteSpace(AfterlifeSpiritualConflictState.GetNodeString(criticalResult[fieldName])))
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.criticalResult.{fieldName}",
+                    "criticalResult должен явно ограничивать художественный масштаб natural critical под текущую ситуацию и силы сторон.",
+                    fieldName == "scaleLimit"
+                        ? "afterlife_conflict_dice_critical_missing_scale_limit"
+                        : "afterlife_conflict_dice_critical_missing_narrative_constraint",
+                    "non-empty text",
+                    criticalResult[fieldName]?.ToJsonString() ?? "missing");
+                valid = false;
+            }
+        }
+    }
+
+    private static void ValidateCriticalResultInt(
+        JsonObject criticalResult,
+        string context,
+        string fieldName,
+        int expected,
+        List<ValidationIssue>? issues,
+        ref bool valid)
+    {
+        if (!TryGetJsonNodeInt(criticalResult[fieldName], out var actual) || actual != expected)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.criticalResult.{fieldName}",
+                "criticalResult должен повторять фактические natural d20 rolls из diceUsed[].",
+                "afterlife_conflict_dice_critical_roll_mismatch",
+                expected.ToString(),
+                criticalResult[fieldName]?.ToJsonString() ?? "missing");
+            valid = false;
+        }
+    }
+
+    private static void ValidateCriticalResultString(
+        JsonObject criticalResult,
+        string context,
+        string fieldName,
+        string expected,
+        string code,
+        List<ValidationIssue>? issues,
+        ref bool valid)
+    {
+        var actual = AfterlifeSpiritualConflictState.GetNodeString(criticalResult[fieldName]);
+        if (!string.Equals(actual, expected, StringComparison.Ordinal))
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.criticalResult.{fieldName}",
+                "criticalResult должен фиксировать margin outcome и normalized critical outcome.",
+                code,
+                expected,
+                string.IsNullOrWhiteSpace(actual) ? "missing/empty" : actual);
+            valid = false;
+        }
+    }
 
     private static void AddDiceAuditIssue(
         List<ValidationIssue>? issues,

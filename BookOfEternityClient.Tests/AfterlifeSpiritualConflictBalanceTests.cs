@@ -186,6 +186,45 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             BeforePosition: "contested",
             AfterPosition: "player_advantaged",
             Reading: "Support-role Light Incarnate is useful, but smaller than the lead-contestant bonus.")];
+
+        yield return [new BalanceCase(
+            "non_critical_high_roll_does_not_dominate_authority",
+            PlayerDieIndex: 19,
+            OppositionDieIndex: 18,
+            PlayerModifier: 0,
+            OppositionModifier: 20,
+            ExpectedMargin: -3,
+            ExpectedBand: "opposition_success",
+            ExpectedOutcome: "setback",
+            BeforePosition: "contested",
+            AfterPosition: "opposition_advantaged",
+            Reading: "A high non-critical d20 roll does not beat overwhelming opposition authority by itself.")];
+
+        yield return [new BalanceCase(
+            "natural_twenty_normalized_success_against_overwhelming_authority",
+            PlayerDieIndex: 6,
+            OppositionDieIndex: 1,
+            PlayerModifier: 0,
+            OppositionModifier: 20,
+            ExpectedMargin: -18,
+            ExpectedBand: "player_success",
+            ExpectedOutcome: "success",
+            BeforePosition: "contested",
+            AfterPosition: "player_advantaged",
+            Reading: "Natural 20 makes the action succeed, but only as normalized success against superior authority.")];
+
+        yield return [new BalanceCase(
+            "natural_one_normalized_failure_despite_overwhelming_authority",
+            PlayerDieIndex: 7,
+            OppositionDieIndex: 18,
+            PlayerModifier: 20,
+            OppositionModifier: 0,
+            ExpectedMargin: 19,
+            ExpectedBand: "opposition_success",
+            ExpectedOutcome: "setback",
+            BeforePosition: "contested",
+            AfterPosition: "opposition_advantaged",
+            Reading: "Natural 1 makes the action fail, but only as normalized failure rather than impossible catastrophe.")];
     }
 
     public static IEnumerable<object[]> RewardBalanceMatrix()
@@ -277,6 +316,88 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             string.Equals(issue.Code, "afterlife_conflict_exchange_missing_dice_audit", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_NaturalTwentyCritical_RejectsMarginOnlyFailureBand()
+    {
+        await WriteSoulStateAsync();
+        var scenario = new BalanceCase(
+            "bad_critical_band",
+            PlayerDieIndex: 6,
+            OppositionDieIndex: 1,
+            PlayerModifier: 0,
+            OppositionModifier: 20,
+            ExpectedMargin: -18,
+            ExpectedBand: "player_success",
+            ExpectedOutcome: "success",
+            BeforePosition: "contested",
+            AfterPosition: "player_advantaged",
+            Reading: "Natural 20 cannot be recorded as a failed action.");
+        var diceAudit = BuildDiceAudit(scenario);
+        diceAudit["outcomeBand"] = "decisive_opposition_success";
+        await WriteConflictStateWithExchangeAsync(scenario, diceAudit);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_outcome_band_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CriticalOutcomeShift_RequiresNormalizationAudit()
+    {
+        await WriteSoulStateAsync();
+        var scenario = new BalanceCase(
+            "missing_critical_normalization",
+            PlayerDieIndex: 6,
+            OppositionDieIndex: 1,
+            PlayerModifier: 0,
+            OppositionModifier: 20,
+            ExpectedMargin: -18,
+            ExpectedBand: "player_success",
+            ExpectedOutcome: "success",
+            BeforePosition: "contested",
+            AfterPosition: "player_advantaged",
+            Reading: "Natural 20 needs scale normalization when it overrides a margin loss.");
+        var diceAudit = BuildDiceAudit(scenario);
+        diceAudit.Remove("criticalResult");
+        await WriteConflictStateWithExchangeAsync(scenario, diceAudit);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_missing_critical_result", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CriticalNormalizationAudit_RejectsContradictoryBand()
+    {
+        await WriteSoulStateAsync();
+        var scenario = new BalanceCase(
+            "contradictory_critical_normalization",
+            PlayerDieIndex: 7,
+            OppositionDieIndex: 18,
+            PlayerModifier: 20,
+            OppositionModifier: 0,
+            ExpectedMargin: 19,
+            ExpectedBand: "opposition_success",
+            ExpectedOutcome: "setback",
+            BeforePosition: "contested",
+            AfterPosition: "opposition_advantaged",
+            Reading: "Natural 1 normalization cannot claim player success.");
+        var diceAudit = BuildDiceAudit(scenario);
+        if (diceAudit["criticalResult"] is JsonObject criticalResult)
+            criticalResult["normalizedOutcomeBand"] = "player_success";
+        await WriteConflictStateWithExchangeAsync(scenario, diceAudit);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_critical_normalized_band_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Theory]
     [MemberData(nameof(RewardBalanceMatrix))]
     public async Task ValidateGameStateAsync_AfterlifeConflictRewardBalanceMatrix_AcceptsExpectedEnvelope(RewardBalanceCase scenario)
@@ -356,9 +477,10 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         var oppositionTotal = oppositionDie + scenario.OppositionModifier;
         var margin = playerTotal - oppositionTotal;
         Assert.Equal(scenario.ExpectedMargin, margin);
-        Assert.Equal(scenario.ExpectedBand, ExpectedBand(margin));
+        var marginBand = ExpectedBand(margin);
+        Assert.Equal(scenario.ExpectedBand, ExpectedBand(margin, playerDie, oppositionDie));
 
-        return new JsonObject
+        var audit = new JsonObject
         {
             ["formulaVersion"] = "afterlife_spiritual_conflict_v1",
             ["diceSource"] = "input/turn_request.json.preGeneratedDices1d20",
@@ -397,6 +519,21 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
                     })
             }
         };
+
+        if (!string.Equals(marginBand, scenario.ExpectedBand, StringComparison.Ordinal))
+        {
+            audit["criticalResult"] = new JsonObject
+            {
+                ["playerNaturalRoll"] = playerDie,
+                ["oppositionNaturalRoll"] = oppositionDie,
+                ["marginOutcomeBand"] = marginBand,
+                ["normalizedOutcomeBand"] = scenario.ExpectedBand,
+                ["scaleLimit"] = "Critical result changes success/failure only; it does not authorize impossible scale beyond the side authority.",
+                ["narrativeConstraint"] = scenario.Reading
+            };
+        }
+
+        return audit;
     }
 
     private static string ExpectedBand(int margin) =>
@@ -405,6 +542,32 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         margin >= -2 ? "mixed_or_no_effect" :
         margin >= -7 ? "opposition_success" :
         "decisive_opposition_success";
+
+    private static string ExpectedBand(int margin, int playerDie, int oppositionDie)
+    {
+        var marginBand = ExpectedBand(margin);
+        var playerCriticalSuccess = (playerDie == 20 ? 1 : 0) + (oppositionDie == 1 ? 1 : 0);
+        var playerCriticalFailure = (playerDie == 1 ? 1 : 0) + (oppositionDie == 20 ? 1 : 0);
+
+        if (playerCriticalSuccess > playerCriticalFailure)
+            return OutcomeBandRank(marginBand) < 1 ? "player_success" : marginBand;
+
+        if (playerCriticalFailure > playerCriticalSuccess)
+            return OutcomeBandRank(marginBand) > -1 ? "opposition_success" : marginBand;
+
+        return marginBand;
+    }
+
+    private static int OutcomeBandRank(string band) =>
+        band switch
+        {
+            "decisive_player_success" => 2,
+            "player_success" => 1,
+            "mixed_or_no_effect" => 0,
+            "opposition_success" => -1,
+            "decisive_opposition_success" => -2,
+            _ => 0
+        };
 
     private static int ComputeRewardFinalAmount(RewardBalanceCase scenario)
     {

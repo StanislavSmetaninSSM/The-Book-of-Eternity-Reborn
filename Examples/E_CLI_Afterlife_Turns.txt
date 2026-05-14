@@ -6441,6 +6441,21 @@ Correct contested exchange response:
 
 `diceUsed[].sourceIndex` is zero-based and must point at actual values in the current `turn_request.json.preGeneratedDices1d20`. If the player writes only ordinary prose during an active conflict, use the same shape; do not demand that the text begin with `[AFTERLIFE_SPIRITUAL_ACTION: ...]`.
 
+Natural 20 / natural 1 is bounded critical logic, not permission to narrate impossible scale. Player natural 20 or opposition natural 1 means at least `player_success`; player natural 1 or opposition natural 20 means at most `opposition_success`; opposed criticals cancel back to the margin band. If the critical changes the margin-derived band, include `diceAudit.criticalResult`:
+
+```json
+{
+  "criticalResult": {
+    "playerNaturalRoll": 20,
+    "oppositionNaturalRoll": 18,
+    "marginOutcomeBand": "decisive_opposition_success",
+    "normalizedOutcomeBand": "player_success",
+    "scaleLimit": "The soul gains a narrow opening; the stronger Guardian is not defeated or bound by this roll alone.",
+    "narrativeConstraint": "Resolve as a plausible successful resistance beat, not as total domination."
+  }
+}
+```
+
 If the player wins a contested conflict and the victory is not `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, or pure negotiation, the GM may grant a small validated currency reward. In `Chaos Sea`, reward currency is `ink_feathers` and must be mirrored by `metaStateUpdates.inkFeatherChanges.add`. In ordinary active `Shining Abode`, reward currency is `light_sparks` and must be mirrored by the exact `shining_abode_state.json.lightSparks` increase. Example Chaos Sea victory closure:
 
 ```json
