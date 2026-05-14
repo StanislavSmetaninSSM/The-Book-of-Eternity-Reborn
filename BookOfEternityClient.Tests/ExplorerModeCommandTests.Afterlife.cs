@@ -6951,10 +6951,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("/источник_света", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("локальные Врата", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("expected state delta", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Карта аудита Shining", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("full/canonical JSON", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("trade lifecycle", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ожидаемую дельту состояния", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Карта аудита Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("полный/канонический JSON", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("жизненный цикл торговли", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("New Game+ reset", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -7376,10 +7376,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Духовные искусства посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ранг Просветления", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Shining radiance", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Сияние Сияющей Обители", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("540 XP", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("tier 3", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("540", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("опыта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("уровень 3", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Shining radiance value: 0", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -7427,7 +7427,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         });
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
-        _console.QueueSelection("Выберите духовное искусство", "Разрыв оков [break_binding; Break Binding] — уровень 0->1, 150 🪶");
+        _console.QueueSelection("Выберите духовное искусство", "Разрыв оков — уровень 0->1, 150 🪶");
         _console.QueueAnyConfirmResponse(true);
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
@@ -7565,7 +7565,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("spiritual_arts_blocks_active_gm_turn");
         Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
         var renderedText = ExtractRenderedText();
-        Assert.Contains("активный GM-turn lifecycle", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("активный жизненный цикл хода ГМ", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("input/turn_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -7586,7 +7586,6 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("spiritual_conflict_prose_routing_rule");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Духовный конфликт посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("afterlife spiritual conflict", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Обычная художественная заявка", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("действие конфликта", renderedText, StringComparison.OrdinalIgnoreCase);
     }
@@ -7613,8 +7612,97 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Позиция конфликта", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("binding/force_binding", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("симметрично", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("не создаёт decisive", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не создаёт решительный", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/spiritual_arts", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualCombatLog_ShowsExchangeAndRecentConflictAudit()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1
+        });
+        await WriteJsonAsync(AfterlifeSpiritualConflictState.StatePath, JsonNode.Parse("""
+        {
+          "schemaVersion": 1,
+          "activeConflict": {
+            "conflictId": "afterlife_conflict_log_active_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged",
+            "resolutionState": "active",
+            "exchangeLog": [
+              {
+                "exchangeId": "exchange_log_pressure_001",
+                "operationType": "pressure",
+                "outcome": "success",
+                "before": {
+                  "playerSideStrain": "clear",
+                  "oppositionSideStrain": "clear",
+                  "conflictPosition": "contested"
+                },
+                "after": {
+                  "playerSideStrain": "clear",
+                  "oppositionSideStrain": "strained",
+                  "conflictPosition": "player_advantaged"
+                },
+                "diceAudit": {
+                  "formulaVersion": "afterlife_spiritual_conflict_v1",
+                  "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+                  "diceUsed": [
+                    { "side": "playerSide", "sourceIndex": 0, "sides": 20, "value": 14 },
+                    { "side": "guardian", "sourceIndex": 1, "sides": 20, "value": 9 }
+                  ],
+                  "playerTotal": 18,
+                  "oppositionTotal": 14,
+                  "margin": 4,
+                  "outcomeBand": "player_success",
+                  "modifierBreakdown": { "player": [], "opposition": [] }
+                }
+              }
+            ]
+          },
+          "recentConflicts": [
+            {
+              "mode": "resolve",
+              "conflictId": "afterlife_conflict_log_resolved_001",
+              "resolutionState": "resolved",
+              "resolvedAtTurn": 12,
+              "operationType": "pressure",
+              "playerOutcome": "won",
+              "rewardAudit": {
+                "currency": "ink_feathers",
+                "baseAmount": 3,
+                "challengeTier": 2,
+                "riskMultiplierPercent": 125,
+                "outcomeMultiplierPercent": 100,
+                "finalAmount": 4
+              },
+              "summary": "Игрок выиграл духовный спор."
+            }
+          ]
+        }
+        """)!.AsObject());
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_combat_log"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_combat_log_audit");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Журнал духовного боя", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("afterlife_conflict_log_active_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("exchange_log_pressure_001", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("d20 игрока=14", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("player_success", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("recentConflicts", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ink_feathers", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

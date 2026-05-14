@@ -114,7 +114,7 @@ Spiritual Arts are operation lanes, not prose labels. They matter because each u
 | --- | --- | --- | --- |
 | `pressure` | Offensive push | Increase `oppositionSideStrain`, improve position on success | Directly reduce player strain |
 | `guard` | Defensive stabilization | Reduce/prevent `playerSideStrain`, hold position | Directly strain the opponent as its main effect |
-| `counter` | Reactive punish | Requires `incomingAction`; can block/counter that action | Fire without an incoming action |
+| `counter` | Reactive punish | Requires `incomingAction`; on success/countered must also produce `counterPayoff`, improved `conflictPosition`, or worsened `oppositionSideStrain` | Fire without an incoming action or act as a renamed `pressure` |
 | `maneuver` | Positional play | Move `conflictPosition` | Directly change either side's strain |
 | `binding` / `force_binding` | Control after leverage | Add binding/control proof when leverage exists | Create control from neutral/no-leverage state |
 | `break_binding` | Escape coercive control | Remove binding/coercive handoff state | Act as generic attack |
@@ -122,3 +122,5 @@ Spiritual Arts are operation lanes, not prose labels. They matter because each u
 | `champion_coordination` | Player helps an allied lead | Improve champion-side result in `champion_duel` | Turn the conflict into mass combat |
 
 The balance goal is that a player chooses an operation because its state effect fits the situation, then upgrades that lane to improve the associated modifier. The GM must not treat all arts as interchangeable "do something spiritual" buttons.
+
+`conflictPosition` is also a mechanical dice input, not flavor. `player_advantaged` / `player_dominant` add +2 / +4 to the player side; `opposition_advantaged` / `opposition_dominant` add +2 / +4 to the opposition side. The modifier is recorded in `diceAudit.modifierBreakdown` with `modifierType="conflict_position"` so position matters without letting it replace the d20 or the art-specific modifiers.

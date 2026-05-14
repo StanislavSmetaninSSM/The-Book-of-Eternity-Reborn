@@ -132,6 +132,561 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_NonContestedPosition_RequiresDicePositionModifier()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_missing_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_missing_position_modifier", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DiceAuditMissingBeforePosition_IsRejected()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_missing_before_position_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_exchange_missing_before_position", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ContestedPosition_DoesNotRequireDicePositionModifier()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_contested_no_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_exchange_missing_before_position", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_missing_position_modifier", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ContestedPosition_RejectsPositionModifier()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAuditWithPositionModifier("contested");
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_contested_with_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier_for_contested", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NonContestedPosition_AcceptsCanonicalDicePositionModifier()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged");
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_missing_position_modifier", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_player_total_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_margin_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PositionModifierWithoutExactPosition_IsRejected()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAudit();
+        AddConflictPositionModifier(diceAudit, "player", null, 2, includePosition: false);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blank_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DuplicatePositionModifiers_AreRejected()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged");
+        AddConflictPositionModifier(diceAudit, "player", "player_advantaged", 2);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_duplicate_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_invalid_position_modifier_total", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ExtraDifferentPositionModifier_IsRejected()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged");
+        AddConflictPositionModifier(diceAudit, "player", "player_dominant", 2);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_extra_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ExtraOppositeSidePositionModifier_IsRejected()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged");
+        AddConflictPositionModifier(diceAudit, "opposition", "player_advantaged", 2);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_extra_opposite_side_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_advantaged"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier_side", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DominantPositionRequiresSinglePositionModifier()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAudit();
+        AddConflictPositionModifier(diceAudit, "player", "player_dominant", 2);
+        AddConflictPositionModifier(diceAudit, "player", "player_dominant", 2);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_split_dominant_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_dominant"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_dominant"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_invalid_position_modifier_total", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PositionModifierOnWrongSide_IsRejected()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAudit();
+        AddConflictPositionModifier(diceAudit, "player", "opposition_advantaged", 2);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_wrong_side_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "opposition_advantaged"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "opposition_advantaged"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_unexpected_position_modifier_side", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DominantPosition_AcceptsSingleCanonicalModifier()
+    {
+        await WriteSoulStateAsync();
+        var diceAudit = BuildPlayerSuccessDiceAuditWithPositionModifier("player_dominant", value: 4);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_dominant_position_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_dominant"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "player_dominant"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_missing_position_modifier", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_invalid_position_modifier_total", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_player_total_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_margin_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SuccessfulCounter_RequiresMeasuredPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_no_payoff_001",
+          "operationType": "counter",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "before": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SuccessfulCounter_RejectsEmptyCounterPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_empty_payoff_001",
+          "operationType": "counter",
+          "outcome": "countered",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "counterPayoff": {},
+          "before": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PartialSuccessCounter_RequiresMeasuredPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_partial_no_payoff_001",
+          "operationType": "counter",
+          "outcome": "partial_success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "before": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SuccessfulCounter_AllowsMeaningfulCounterPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_meaningful_payoff_001",
+          "operationType": "counter",
+          "outcome": "countered",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "counterPayoff": {
+            "summary": "Игрок сорвал давление и получил безопасное окно для следующего действия."
+          },
+          "before": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SuccessfulCounter_AllowsPositionSwingPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_position_payoff_001",
+          "operationType": "counter",
+          "outcome": "countered",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ChaosSeaVictoryReward_AllowsInkFeatherDelta()
     {
         await WriteSoulStateWithInkFeathersAsync(50, "Chaos Sea");
@@ -3927,6 +4482,56 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         audit["outcomeBand"] = margin >= 8 ? "decisive_player_success" : "player_success";
         return audit;
     }
+
+    private static JsonObject BuildPlayerSuccessDiceAuditWithPositionModifier(string position, int value = 2)
+    {
+        var audit = BuildPlayerSuccessDiceAudit();
+        AddConflictPositionModifier(audit, "player", position, value);
+        return audit;
+    }
+
+    private static void AddConflictPositionModifier(
+        JsonObject audit,
+        string side,
+        string? position,
+        int value,
+        bool includePosition = true)
+    {
+        if (audit["modifierBreakdown"] is JsonObject modifierBreakdown &&
+            modifierBreakdown[side] is JsonArray modifiers)
+        {
+            var modifier = new JsonObject
+            {
+                ["modifierType"] = "conflict_position",
+                ["source"] = "conflictPosition",
+                ["value"] = value
+            };
+            if (includePosition)
+                modifier["position"] = position ?? "";
+
+            modifiers.Add(modifier);
+        }
+
+        var playerTotal = audit["playerTotal"]!.GetValue<int>();
+        var oppositionTotal = audit["oppositionTotal"]!.GetValue<int>();
+        if (string.Equals(side, "player", StringComparison.OrdinalIgnoreCase))
+            playerTotal += value;
+        else
+            oppositionTotal += value;
+
+        var margin = playerTotal - oppositionTotal;
+        audit["playerTotal"] = playerTotal;
+        audit["oppositionTotal"] = oppositionTotal;
+        audit["margin"] = margin;
+        audit["outcomeBand"] = ExpectedOutcomeBandForTest(margin);
+    }
+
+    private static string ExpectedOutcomeBandForTest(int margin) =>
+        margin >= 8 ? "decisive_player_success" :
+        margin >= 3 ? "player_success" :
+        margin >= -2 ? "mixed_or_no_effect" :
+        margin >= -7 ? "opposition_success" :
+        "decisive_opposition_success";
 
     private static string BuildActiveConflictRootJson(string conflictId = "afterlife_conflict_test_001", string realm = "Chaos Sea")
     {

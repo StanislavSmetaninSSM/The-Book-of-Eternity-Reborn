@@ -1595,6 +1595,8 @@ public partial class ValidationService
         if (exchange["diceAudit"] is JsonObject diceAudit)
         {
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+            if (before != null)
+                ValidateConflictPositionDiceModifier(diceAudit, before, context, issues);
             ValidateLightIncarnateDiceAuditModifier(exchange, diceAudit, $"{context}.diceAudit", issues, diceContext);
         }
     }
@@ -1621,6 +1623,19 @@ public partial class ValidationService
                 "afterlife_conflict_counter_missing_incoming_action",
                 "incomingAction object that names the operation being countered",
                 exchange["incomingAction"]?.GetType().Name ?? "missing");
+        }
+
+        if (ConflictTokenEquals(operationType, "counter") &&
+            IsCounterPayoffOutcome(outcome) &&
+            !HasCounterPayoff(exchange, before, after))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.counterPayoff",
+                "Успешный контрприём (counter) должен иметь измеримый payoff: сорвать входящее действие и получить встречный выигрыш.",
+                "afterlife_conflict_counter_missing_payoff",
+                "counterPayoff object, improved conflictPosition, or worsened oppositionSideStrain",
+                "no counter payoff");
         }
 
         if (ConflictTokenEquals(operationType, "maneuver"))
@@ -1778,6 +1793,51 @@ public partial class ValidationService
     private static bool IsSuccessfulArtOutcome(string? outcome) =>
         ConflictTokenEquals(outcome, "success", "partial_success");
 
+    private static bool IsCounterPayoffOutcome(string? outcome) =>
+        ConflictTokenEquals(outcome, "success", "partial_success", "countered");
+
+    private static bool HasCounterPayoff(JsonObject exchange, JsonObject before, JsonObject after)
+    {
+        if (exchange["counterPayoff"] is JsonObject counterPayoff &&
+            HasMeaningfulCounterPayoff(counterPayoff))
+        {
+            return true;
+        }
+
+        if (TryGetPositionRank(before["conflictPosition"], out var beforePosition) &&
+            TryGetPositionRank(after["conflictPosition"], out var afterPosition) &&
+            afterPosition > beforePosition)
+        {
+            return true;
+        }
+
+        if (TryGetStrainRank(before["oppositionSideStrain"], out var beforeOppositionStrain) &&
+            TryGetStrainRank(after["oppositionSideStrain"], out var afterOppositionStrain) &&
+            afterOppositionStrain > beforeOppositionStrain)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool HasMeaningfulCounterPayoff(JsonObject counterPayoff) =>
+        counterPayoff.Any(property => HasMeaningfulJsonValue(property.Value));
+
+    private static bool HasMeaningfulJsonValue(JsonNode? node) =>
+        node switch
+        {
+            null => false,
+            JsonValue value => !string.IsNullOrWhiteSpace(AfterlifeSpiritualConflictState.GetNodeString(value)) ||
+                value.TryGetValue<int>(out _) ||
+                value.TryGetValue<long>(out _) ||
+                value.TryGetValue<double>(out _) ||
+                value.TryGetValue<bool>(out _),
+            JsonObject obj => obj.Any(property => HasMeaningfulJsonValue(property.Value)),
+            JsonArray array => array.Any(HasMeaningfulJsonValue),
+            _ => true
+        };
+
     private static bool TryGetPositionRank(JsonNode? node, out int rank)
     {
         rank = 0;
@@ -1814,6 +1874,152 @@ public partial class ValidationService
             _ => 0
         };
         return AfterlifeSpiritualConflictState.StrainStates.Contains(value);
+    }
+
+    private static void ValidateConflictPositionDiceModifier(
+        JsonObject diceAudit,
+        JsonObject before,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var positionNode = before["conflictPosition"];
+        if (!TryGetPositionRank(positionNode, out var positionRank))
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.before.conflictPosition",
+                "exchange.before.conflictPosition обязателен для diceAudit, чтобы стартовая позиция не обходила позиционный модификатор.",
+                "afterlife_conflict_exchange_missing_before_position",
+                "supported conflictPosition snapshot value",
+                positionNode?.ToJsonString() ?? "missing");
+            return;
+        }
+
+        var positionModifiers = CollectConflictPositionModifiers(diceAudit);
+        if (positionRank == 0)
+        {
+            if (positionModifiers.Count > 0)
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceAudit.modifierBreakdown",
+                    "diceAudit не должен содержать conflict_position modifiers, когда before.conflictPosition=contested.",
+                    "afterlife_conflict_dice_unexpected_position_modifier_for_contested",
+                    "no conflict_position modifiers for contested starting position",
+                    DescribeConflictPositionModifiers(positionModifiers));
+            }
+
+            return;
+        }
+
+        var position = AfterlifeSpiritualConflictState.GetNodeString(positionNode) ?? "missing";
+        var expectedSide = positionRank > 0 ? "player" : "opposition";
+        var expectedValue = Math.Abs(positionRank) * 2;
+        var expectedModifiers = positionModifiers
+            .Where(modifier =>
+                string.Equals(modifier.Side, expectedSide, StringComparison.Ordinal) &&
+                string.Equals(modifier.Position, position, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var unexpectedSide = string.Equals(expectedSide, "player", StringComparison.Ordinal) ? "opposition" : "player";
+        var unexpectedSideModifiers = positionModifiers
+            .Where(modifier =>
+                string.Equals(modifier.Side, unexpectedSide, StringComparison.Ordinal) &&
+                string.Equals(modifier.Position, position, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (unexpectedSideModifiers.Count > 0)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceAudit.modifierBreakdown.{unexpectedSide}",
+                "diceAudit не должен учитывать стартовую conflictPosition на противоположной стороне.",
+                "afterlife_conflict_dice_unexpected_position_modifier_side",
+                $"no conflict_position modifiers for {position} on {unexpectedSide}",
+                DescribeConflictPositionModifiers(unexpectedSideModifiers));
+        }
+
+        var unexpectedModifiers = positionModifiers
+            .Where(modifier =>
+                !string.Equals(modifier.Side, expectedSide, StringComparison.Ordinal) ||
+                !string.Equals(modifier.Position, position, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (unexpectedModifiers.Count > 0)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceAudit.modifierBreakdown",
+                "diceAudit должен содержать только один conflict_position modifier, точно совпадающий с before.conflictPosition.",
+                "afterlife_conflict_dice_unexpected_position_modifier",
+                $"only one conflict_position modifier for {position} on {expectedSide}",
+                DescribeConflictPositionModifiers(unexpectedModifiers));
+        }
+
+        if (expectedModifiers.Count == 0)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceAudit.modifierBreakdown.{expectedSide}",
+                "diceAudit должен явно учитывать non-contested conflictPosition как позиционный модификатор.",
+                "afterlife_conflict_dice_missing_position_modifier",
+                $"modifierBreakdown.{expectedSide}[] item {{ modifierType: \"conflict_position\", position: \"{position}\", value: {expectedValue} }}",
+                "missing");
+            return;
+        }
+
+        var expectedTotal = expectedModifiers.Sum(modifier => modifier.Value);
+        if (expectedModifiers.Count != 1 || expectedTotal != expectedValue)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceAudit.modifierBreakdown.{expectedSide}",
+                "diceAudit должен учитывать стартовую conflictPosition ровно одним позиционным модификатором без задвоения.",
+                "afterlife_conflict_dice_invalid_position_modifier_total",
+                $"exactly one conflict_position modifier for {position} with value {expectedValue}",
+                $"{expectedModifiers.Count} entries, total {expectedTotal}");
+        }
+    }
+
+    private static List<(string Side, string? Position, int Value)> CollectConflictPositionModifiers(JsonObject diceAudit)
+    {
+        var result = new List<(string Side, string? Position, int Value)>();
+        if (diceAudit["modifierBreakdown"] is not JsonObject modifierBreakdown)
+            return result;
+
+        CollectConflictPositionModifiers(modifierBreakdown, "player", result);
+        CollectConflictPositionModifiers(modifierBreakdown, "opposition", result);
+        return result;
+    }
+
+    private static void CollectConflictPositionModifiers(
+        JsonObject modifierBreakdown,
+        string side,
+        List<(string Side, string? Position, int Value)> result)
+    {
+        if (modifierBreakdown[side] is not JsonArray modifiers)
+            return;
+
+        foreach (var item in modifiers.OfType<JsonObject>())
+        {
+            var modifierType = AfterlifeSpiritualConflictState.GetNodeString(item["modifierType"]);
+            var source = AfterlifeSpiritualConflictState.GetNodeString(item["source"]);
+            var modifierPosition = AfterlifeSpiritualConflictState.GetNodeString(item["position"]);
+            var hasPositionIdentity =
+                string.Equals(modifierType, "conflict_position", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(source, "conflictPosition", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(source, "conflict_position", StringComparison.OrdinalIgnoreCase);
+
+            if (!hasPositionIdentity)
+                continue;
+
+            result.Add((side, modifierPosition, TryGetJsonNodeInt(item["value"], out var value) ? value : 0));
+        }
+    }
+
+    private static string DescribeConflictPositionModifiers(IReadOnlyCollection<(string Side, string? Position, int Value)> modifiers)
+    {
+        if (modifiers.Count == 0)
+            return "none";
+
+        return $"{modifiers.Count} entries, total {modifiers.Sum(modifier => modifier.Value)}";
     }
 
     private static string DescribeConflictPosition(JsonObject root) =>
