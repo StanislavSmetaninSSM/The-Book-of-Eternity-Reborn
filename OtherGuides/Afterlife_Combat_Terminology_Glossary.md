@@ -43,6 +43,15 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | `incarnation_resistance` | Сопротивление воплощению | Resisting `guardian_forced` incarnation attempts. |
 | `champion_coordination` | Координация чемпиона | Improving side-vs-side support when an ally is the lead contestant. |
 
+## Player Commands
+
+| Command | Russian alias | Use |
+|---|---|---|
+| `/spiritual_conflict` | `/духовный_конфликт` | Shows the active afterlife spiritual conflict, sides, `conflictPosition`, side strain, exchange count, and full JSON audit. |
+| `/spiritual_combat_help` | `/духовный_бой` | Shows the player-facing combat guide: commands, tactics, Spiritual Arts, position, dice, bounded criticals, rewards, and upgrades. |
+| `/spiritual_action` | `/духовное_действие` | Sends one explicit tagged action inside an active conflict. Ordinary roleplay prose is still valid when it clearly acts inside the active conflict. |
+| `/spiritual_arts` | `/духовные_искусства` | Shows ranks, art tiers, upgrade costs, and performs client-owned Spiritual Art upgrades. |
+
 ## Spiritual Art Operation Rules
 
 These are mechanical rules, not flavor synonyms. If a player writes prose, classify it into one primary operation and keep the state delta inside that operation's allowed lane.
@@ -71,7 +80,7 @@ Afterlife conflict rewards are mechanical, not flavor. A reward is allowed only 
 
 ## Critical Result Audit
 
-Natural 20 / натуральная 20 and natural 1 / натуральная 1 are bounded criticals. Player-side natural 20 or opposition-side natural 1 gives at least `player_success`; player-side natural 1 or opposition-side natural 20 gives at most `opposition_success`; opposed criticals cancel and use the margin band. A critical does not create `decisive_player_success` or `decisive_opposition_success` by itself.
+Natural 20 / натуральная 20 and natural 1 / натуральная 1 are bounded criticals. Bounded criticals are symmetric: a favorable critical for the player (player-side natural 20 or opposition-side natural 1) raises a worse margin result only to ordinary `player_success`, while an unfavorable critical for the player (player-side natural 1 or opposition-side natural 20) lowers a better margin result only to ordinary `opposition_success`. Opposed criticals cancel and use the margin band. A critical does not create `decisive_player_success` or `decisive_opposition_success` by itself; decisive outcomes still require the margin to already reach the decisive threshold.
 
 When a critical changes the margin-derived band, `diceAudit.criticalResult` must include `playerNaturalRoll`, `oppositionNaturalRoll`, `marginOutcomeBand`, `normalizedOutcomeBand`, `scaleLimit`, and `narrativeConstraint`. `scaleLimit` is the "no impossible mosquito victory" field: it explains the maximum plausible effect for this action, power gap, side model, and current conflict position.
 

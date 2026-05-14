@@ -78,6 +78,7 @@ public partial class ExplorerMode
 
         lines.Add("");
         lines.Add("[bold]Команды:[/]");
+        lines.Add("  • /spiritual_combat_help — подробная справка: тактика, позиция, кубики, криты, награды и прокачка.");
         lines.Add("  • /spiritual_action — отправить действие в активном духовном конфликте с явным тегом для GM.");
         lines.Add("  • Обычная художественная заявка во время активного конфликта тоже должна резолвиться GM как действие конфликта.");
         lines.Add("  • /spiritual_arts — посмотреть ранги, уровни искусств (art tiers) и применимые действия.");
@@ -96,6 +97,88 @@ public partial class ExplorerMode
             WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", root, Color.Cyan1);
 
         WaitForKey();
+    }
+
+    private Task ShowSpiritualCombatHelpAsync()
+    {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Справка по духовному бою"))
+            return Task.CompletedTask;
+
+        if (!_stateManager.CurrentState.IsInAfterlifeRealm)
+        {
+            ShowEmptyPanel("Справка по духовному бою", "Духовный бой посмертия доступен только в Море Хаоса и Сияющей Обители.");
+            return Task.CompletedTask;
+        }
+
+        var lines = new List<string>
+        {
+            "[bold cyan]Духовный бой посмертия[/] [dim](afterlife spiritual combat / afterlife spiritual conflict)[/]",
+            "",
+            "[bold]Что это такое[/]",
+            "  • Это ролевая система конфликтов загробной жизни, а не смертный бой: нет HP, энергии, enemiesData/alliesData и смертных боевых навыков.",
+            "  • Конфликт начинает GM по ситуации: по заявке игрока или когда Хранитель, резидент, светозарный актор или другой afterlife actor сам давит на душу.",
+            "  • После старта игрок может писать обычную прозу. Команда /spiritual_action только добавляет явный routing tag; она не обязательна, если действие очевидно относится к активному конфликту.",
+            "",
+            "[bold]Команды игрока[/]",
+            "  • /spiritual_conflict / /духовный_конфликт — показать активный конфликт, стороны, позицию, напряжение и полный JSON-аудит.",
+            "  • /spiritual_action / /духовное_действие — отправить GM явное действие в активном конфликте.",
+            "  • /spiritual_arts / /духовные_искусства — посмотреть и локально прокачать духовные искусства.",
+            "  • /spiritual_combat_help / /духовный_бой — эта подробная справка.",
+            "",
+            "[bold]Как выбирается исход[/]",
+            "  • В спорных обменах GM обязан использовать видимые d20 из preGeneratedDices1d20 и записать diceAudit.",
+            "  • Формула: playerTotal = d20 игрока + модификаторы; oppositionTotal = d20 противника + модификаторы; margin = playerTotal - oppositionTotal.",
+            "  • margin >= 8 — decisive_player_success; 3..7 — player_success; -2..2 — mixed_or_no_effect; -7..-3 — opposition_success; <= -8 — decisive_opposition_success.",
+            "  • Модификаторы идут от рангов Просветления/Сияния, tiers духовных искусств, силы ведущего бойца, поддержки, Воплощения Света и контекста сцены.",
+            "",
+            "[bold]Честные криты[/]",
+            "  • Благоприятный крит для игрока: player natural 20 или opposition natural 1. Если margin дал результат хуже обычного успеха, итог поднимается только до player_success.",
+            "  • Неблагоприятный крит для игрока: player natural 1 или opposition natural 20. Если margin дал результат лучше обычной неудачи, итог опускается только до opposition_success.",
+            "  • Это симметрично: крит сам по себе не создаёт decisive_player_success или decisive_opposition_success. Decisive возникает только если margin уже достаточно велик.",
+            "  • Если обе стороны получают natural critical, они отменяют друг друга, и используется обычный margin band.",
+            "  • Любой крит, изменивший исход, требует criticalResult с scaleLimit/narrativeConstraint: результат должен быть правдоподобен для силы сторон. Natural 20 комара не превращает в убийцу дракона.",
+            "",
+            "[bold]Позиция конфликта[/] [dim](conflictPosition)[/]",
+            "  • Позиция — это шкала рычага/инициативы: opposition_dominant, opposition_advantaged, contested, player_advantaged, player_dominant.",
+            "  • Она механически важна: successful maneuver обязан менять позицию и не должен напрямую менять strain.",
+            "  • Она открывает контроль: binding/force_binding требует player_advantaged, player_dominant, подготовку или decisive_player_success.",
+            "  • Она влияет на награду: победа из плохой стартовой позиции имеет больший riskMultiplier/challengeTier; победа из player_dominant платит меньше.",
+            "  • Она ограничивает масштаб нарратива: крит или успех в плохой позиции обычно даёт правдоподобный прорыв/срыв угрозы, а не мгновенную абсолютную победу.",
+            "",
+            "[bold]Духовные искусства: что выбирать[/]",
+            "  • Давление (pressure) — проактивная атака на устойчивость противника. Главный эффект: ухудшить oppositionSideStrain. Выбирай, когда хочешь продавить волю/клятву/обет противника.",
+            "  • Контрприём (counter) — реакция на конкретное incomingAction противника. Его преимущество над pressure: можно не просто ударить в ответ, а заблокировать, развернуть или наказать уже заявленное действие врага.",
+            "  • Защита (guard) — снижает или предотвращает playerSideStrain/последствие. Лучше counter, когда нечего разворачивать или нужно пережить удар без риска.",
+            "  • Манёвр (maneuver) — меняет позицию. Выбирай, когда прямое давление опасно, но можно занять лучший духовный угол, разорвать дистанцию, вывести спор из чужой зоны силы.",
+            "  • Наложение оков (binding/force_binding) — контроль после преимущества. Не стартовая кнопка победы: сначала получи leverage через позицию, setup или decisive success.",
+            "  • Разрыв оков (break_binding) — ответ на binding, forced handoff или coercive context. Это не универсальная атака.",
+            "  • Сопротивление воплощению (incarnation_resistance) — только против guardian_forced / force_incarnation.",
+            "  • Координация чемпиона (champion_coordination) — когда ведущий боец не игрок, а союзник/чемпион; игрок усиливает сторону, а не превращает сцену в массовый бой.",
+            "",
+            "[bold]Прокачка[/]",
+            "  • /spiritual_arts показывает ранги, текущие tiers и стоимость улучшений.",
+            "  • Ранги Просветления и Сияния открывают максимальный tier искусства; сохранённый ранг Сияния продолжает помогать после возвращения в Море Хаоса.",
+            "  • Прокачка client-owned: клиент локально тратит Чернильные Перья или, в активной Сияющей Обители, Искры Света. GM не пишет receipt/report прокачки.",
+            "  • Прокачка заблокирована во время активного конфликта, активного GM-turn lifecycle и открытых cost-bearing pending contracts.",
+            "",
+            "[bold]Награды[/]",
+            "  • Победа в проверяемом contested конфликте может дать валюту: Чернильные Перья в Море Хаоса или Искры Света в Сияющей Обители.",
+            "  • Награда маленькая и формульная: зависит от силы противника, модели сторон, стартовой позиции и outcomeBand.",
+            "  • Нет награды за repair_cancel, no_effect, добровольную сдачу/отступление, переговоры без состязания или повторную награду за тот же conflictId."
+        };
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" ⚔ Справка по духовному бою ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(_stateManager.CurrentState.IsInShiningAbode ? Color.Gold1 : Color.Cyan1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+
+        WaitForKey();
+        return Task.CompletedTask;
     }
 
     private async Task ShowSpiritualArtsAsync()
