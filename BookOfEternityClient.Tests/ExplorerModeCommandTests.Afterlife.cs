@@ -7592,6 +7592,32 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SpiritualCombatHelp_ExplainsTacticsPositionAndFairCriticals()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_combat_help"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_combat_help_tactics_position_critical_fairness");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Справка по духовному бою", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Давление", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Контрприём", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Позиция конфликта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("binding/force_binding", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("симметрично", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не создаёт decisive", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/spiritual_arts", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Status_ChaosSeaShowsNumericMemoryLegacyBonus()
     {
         await SeedGuardianTradeStateAsync(includeTradeInventory: false);

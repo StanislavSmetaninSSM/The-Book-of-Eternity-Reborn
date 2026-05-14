@@ -1739,7 +1739,10 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("rewardAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("criticalResult", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("natural 20", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("bounded criticals are symmetric", matrix + examples + apiSpec + daemonSpec + glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("scaleLimit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("/spiritual_combat_help", glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/духовный_бой", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ink_feathers", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("light_sparks", matrix + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("outcomeMultiplierPercent", matrix + examples + apiSpec + daemonSpec, StringComparison.Ordinal);

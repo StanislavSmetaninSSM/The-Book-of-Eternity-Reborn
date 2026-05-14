@@ -125,6 +125,8 @@ public partial class ExplorerMode
             ["/уведомления_загробья"] = ShowAfterlifeInbox,
             ["/spiritual_conflict"] = ShowSpiritualConflictAsync,
             ["/духовный_конфликт"] = ShowSpiritualConflictAsync,
+            ["/spiritual_combat_help"] = ShowSpiritualCombatHelpAsync,
+            ["/духовный_бой"] = ShowSpiritualCombatHelpAsync,
             ["/spiritual_arts"] = ShowSpiritualArtsAsync,
             ["/духовные_искусства"] = ShowSpiritualArtsAsync,
             ["/spiritual_action"] = ShowSpiritualActionAsync,

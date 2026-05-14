@@ -24,16 +24,16 @@ margin -7..-3     -> opposition_success
 margin <= -8      -> decisive_opposition_success
 ```
 
-Natural criticals are a bounded override, not a replacement for the balance model:
+Natural criticals are a bounded override, not a replacement for the balance model. Bounded criticals are symmetric:
 
 ```text
-player natural 20 or opposition natural 1   -> at least player_success
-player natural 1 or opposition natural 20   -> at most opposition_success
+player natural 20 or opposition natural 1   -> raise a worse margin result only to ordinary player_success
+player natural 1 or opposition natural 20   -> lower a better margin result only to ordinary opposition_success
 opposed natural criticals on both sides      -> cancel and use the margin band
 critical override never creates decisive success/failure by itself
 ```
 
-If a natural 20/1 changes the result that the margin would have produced, `diceAudit.criticalResult` must record the actual natural rolls, the margin band, the normalized band, and a prose `scaleLimit` / `narrativeConstraint`. This is the anti-"mosquito defeats a giant" rule: a weak actor's natural 20 can create the best plausible success for that action, but not an impossible total victory over a vastly stronger side.
+If a natural 20/1 changes the result that the margin would have produced, `diceAudit.criticalResult` must record the actual natural rolls, the margin band, the normalized band, and a prose `scaleLimit` / `narrativeConstraint`. This is the anti-"mosquito defeats a giant" rule: a weak actor's natural 20 can create the best plausible ordinary success for that action, but not an impossible total victory over a vastly stronger side; a natural 1 likewise creates a bounded ordinary failure, not arbitrary catastrophe.
 
 Balance assumptions:
 
