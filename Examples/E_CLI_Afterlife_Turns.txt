@@ -6359,7 +6359,7 @@ or ordinary roleplay prose while this conflict is still active:
 Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented.
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain, `guard` protects player strain, `maneuver` changes position, `counter` needs incomingAction, `binding` needs advantage/setup, `break_binding` needs binding/coercive context, `incarnation_resistance` is only for force_incarnation, and `champion_coordination` is only for champion_duel.
 
 Correct contested exchange response:
 
@@ -6371,9 +6371,15 @@ Correct contested exchange response:
     "exchange": {
       "exchangeId": "afterlife_conflict_exchange_liora_001",
       "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
-      "operationType": "guard",
+      "operationType": "incarnation_resistance",
       "outcome": "success",
-      "summary": "Игрок укрепил защиту права выбора против навязанной связи.",
+      "summary": "Игрок укрепил право выбора против попытки принудительного воплощения.",
+      "incomingAction": {
+        "operationType": "force_incarnation",
+        "source": "guardian_forced",
+        "guardianId": "guard_liora_silver_current_001",
+        "summary": "Лиора пытается навязать душе вход в подготовленную жизнь."
+      },
       "before": {
         "conflictPosition": "contested",
         "playerSideStrain": "clear",

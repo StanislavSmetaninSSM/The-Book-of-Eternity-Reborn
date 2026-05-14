@@ -132,6 +132,211 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CounterRequiresIncomingAction()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_without_incoming_001",
+          "operationType": "counter",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_incoming_action", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ManeuverCannotDirectlyChangeStrain()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_maneuver_strain_001",
+          "operationType": "maneuver",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_maneuver_changes_strain", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SuccessfulManeuverRequiresPositionShift()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_maneuver_no_shift_001",
+          "operationType": "maneuver",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_maneuver_missing_position_shift", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BindingRequiresLeverage()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_without_leverage_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "bindingState": "imposed"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_without_leverage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BindingWithAdvantageIsAllowed()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_with_leverage_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": { "conflictPosition": "player_advantaged" },
+          "after": {
+            "conflictPosition": "player_dominant",
+            "bindingState": "imposed"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_without_leverage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BreakBindingRequiresBindingContext()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_break_binding_without_context_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_without_binding", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_IncarnationResistanceRequiresForceIncarnationContext()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_incarnation_resistance_wrong_context_001",
+          "operationType": "incarnation_resistance",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ChampionCoordinationRequiresChampionDuel()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_champion_coordination_wrong_context_001",
+          "operationType": "champion_coordination",
+          "outcome": "success",
+          "sideModel": "direct_duel",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_champion_coordination_without_champion", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ChampionCoordinationInChampionDuelIsAllowed()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_champion_coordination_valid_001",
+          "operationType": "champion_coordination",
+          "outcome": "success",
+          "sideModel": "champion_duel",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_champion_coordination_without_champion", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_LightIncarnateConflictExchangeRequiresExplicitDiceModifier()
     {
         await WriteSoulStateWithLightIncarnateAsync();

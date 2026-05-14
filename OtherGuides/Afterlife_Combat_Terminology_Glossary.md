@@ -41,6 +41,21 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | `incarnation_resistance` | Сопротивление воплощению | Resisting `guardian_forced` incarnation attempts. |
 | `champion_coordination` | Координация чемпиона | Improving side-vs-side support when an ally is the lead contestant. |
 
+## Spiritual Art Operation Rules
+
+These are mechanical rules, not flavor synonyms. If a player writes prose, classify it into one primary operation and keep the state delta inside that operation's allowed lane.
+
+| Art / operation | Valid use | May change | Must not do | Example |
+|---|---|---|---|---|
+| `pressure` / Давление | Directly challenge the opposing lead contestant. | Mainly `oppositionSideStrain`; optionally terminal resolve after a later valid close. | Do not treat it as a free `conflictPosition` maneuver or binding. | "I press on the Guardian's broken oath" can move opposition strain `clear -> strained`. |
+| `guard` / Защита | Prevent or reduce incoming strain/consequence against the player side. | `playerSideStrain`, blocked consequence, defensive `incomingAction` audit. | Do not damage opposition strain directly; use `counter` for reversal. | "I shield the soul-fracture" can keep player strain from worsening. |
+| `counter` / Контрприём | React to a concrete incoming operation. | `incomingAction`, blocked/countered audit, possibly position/strain swing on success. | Cannot be used without `incomingAction`; it is not a standalone attack. | "As he binds me, I turn the thread back" must name the incoming bind/pressure. |
+| `maneuver` / Манёвр | Shift advantage without raw overpowering. | `conflictPosition`. | Successful maneuver must not directly change `playerSideStrain` or `oppositionSideStrain`. | `contested -> player_advantaged` without strain damage. |
+| `binding` / `force_binding` / Наложение оков | Control after leverage. Requires `player_advantaged`, `player_dominant`, setup, or `decisive_player_success`. | binding/lock state, restricted future actions, setup for resolve. | Cannot be spammed from neutral `contested` on ordinary success. | After gaining advantage, the soul seals the opponent's route. |
+| `break_binding` / Разрыв оков | Answer an existing binding, forced handoff, or coercive lock. | binding state, forced handoff state, position if the break creates leverage. | Not a generic attack or defense against ordinary pressure. | Break a name-seal before it becomes forced incarnation. |
+| `incarnation_resistance` / Сопротивление воплощению | Resist `force_incarnation` / `guardian_forced`. | forced-incarnation proof state, resistance audit, possibly `resolutionState`. | Not a replacement for `guard` against ordinary pressure. | Resist a Guardian trying to throw the soul into a life. |
+| `champion_coordination` / Координация чемпиона | Support a `champion_duel` where an ally is lead contestant. | champion-side support modifier, `conflictPosition`, side support audit. | Cannot be used in `direct_duel` as if the player were lead. | The soul guides an allied Guardian's strike while staying supporter. |
+
 ## State Value Labels
 
 | Canonical value | Russian label |
