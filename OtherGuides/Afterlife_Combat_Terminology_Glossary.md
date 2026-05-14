@@ -15,6 +15,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | rewardAudit | аудит награды | Required proof when a resolved victorious conflict grants Ink Feathers or Light Sparks. |
 | criticalResult | аудит критического исхода | Required normalization proof when natural 20/1 changes the margin-derived `outcomeBand`. |
 | counterPayoff | выигрыш контрприёма | Required measurable payoff for a `counter` with success/partial_success/countered: either `counterPayoff`, improved `conflictPosition`, or worsened `oppositionSideStrain`. |
+| matchupAudit | аудит сопоставления действий | Required on new/current contested exchanges with `diceAudit`; records the player's operation, opposition operation, resolution lane, risk profile, and rationale for the tactical matchup. |
 | operationType | тип операции | Mechanical type of an exchange/resolution, such as `pressure`, `guard`, or `force_incarnation`. |
 | outcome | исход | Mechanical outcome of an exchange, such as `success`, `blocked`, `countered`, or `no_effect`. |
 | side strain | напряжение стороны | `playerSideStrain` / `oppositionSideStrain`; tracks pressure on each side, not hit points. |
@@ -69,6 +70,28 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 | `break_binding` / Разрыв оков | Answer an existing binding, forced handoff, or coercive lock. | binding state, forced handoff state, position if the break creates leverage. | Not a generic attack or defense against ordinary pressure. | Break a name-seal before it becomes forced incarnation. |
 | `incarnation_resistance` / Сопротивление воплощению | Resist `force_incarnation` / `guardian_forced`. | forced-incarnation proof state, resistance audit, possibly `resolutionState`. | Not a replacement for `guard` against ordinary pressure. | Resist a Guardian trying to throw the soul into a life. |
 | `champion_coordination` / Координация чемпиона | Support a `champion_duel` where an ally is lead contestant. | champion-side support modifier, `conflictPosition`, side support audit. | Cannot be used in `direct_duel` as if the player were lead. | The soul guides an allied Guardian's strike while staying supporter. |
+
+## Tactical Matchup Matrix
+
+Every new/current contested exchange with `diceAudit` must also include `matchupAudit`. This is the "rock-paper-scissors" layer: the GM still narrates freely, but the state delta must follow one primary mechanical lane.
+
+`matchupAudit` required fields:
+- `playerOperation`: the player's primary operation, matching `exchange.operationType`.
+- `oppositionOperation`: the opposition's primary answer, incoming operation, or `none`/`passive`; if `incomingAction` is present, this must match `incomingAction.operationType` or `incomingAction.finalOperationType`.
+- `primaryResolutionLane`: the lane that decides the exchange; for ordinary player-led exchanges it matches `operationType`.
+- `riskProfile`: one of `offensive_pressure`, `safe_defense`, `risky_reversal`, `position_play`, `control_leverage`, `anti_control`, `champion_support`, or `terminal_choice`.
+- `matchupRationale`: one or two sentences explaining why this lane, not GM preference, decides the result.
+
+| Player operation | Strong against | Countered by | Required gameplay effect |
+|---|---|---|---|
+| `pressure` / Давление | `maneuver`, passive repositioning, exposed guard. | `guard`, `counter`, stronger opposing pressure. | Worsen `oppositionSideStrain`; cannot improve `conflictPosition` or add binding/control state. |
+| `guard` / Защита | `pressure`, immediate consequence, unsafe direct clash. | `maneuver`, leverage-backed binding, eventual position loss if used passively. | Reduce/prevent `playerSideStrain` or consequence; cannot worsen `oppositionSideStrain` or improve `conflictPosition`. |
+| `counter` / Контрприём | Named incoming `pressure`, binding/control, or coercive direct action. | `maneuver`, withdrawal, surrender, negotiate, `none`/`passive`; it also fails hard on bad rolls. | Requires `incomingAction`; success/partial_success/countered needs payoff; setback needs downside (`playerSideStrain`, worse `conflictPosition`, or `counterBackfire`). |
+| `maneuver` / Манёвр | Passive guard, waiting, positional weakness. | `pressure`, opposing maneuver, binding/control. | Move `conflictPosition`; cannot directly change side strain. |
+| `binding` / `force_binding` / Наложение оков | Opponent after leverage or decisive success. | `break_binding`, counter-control, lack of leverage. | Add/advance control only after advantage, setup, or decisive success. |
+| `break_binding` / Разрыв оков | Binding, forced handoff, coercive lock. | Stronger control, dominant opposition position. | Remove/weaken control; not a generic attack. |
+| `incarnation_resistance` / Сопротивление воплощению | `force_incarnation` / `guardian_forced`. | Winning forced-incarnation pressure after the player loses/surrenders/concedes. | Resist forced lifecycle handoff only; voluntary incarnation is not combat. |
+| `champion_coordination` / Координация чемпиона | `champion_duel` where an ally is lead. | Pressure against the champion side, disrupted support, invalid side model. | Improve champion-side support/position; cannot replace direct-duel actions. |
 
 ## Position Modifiers
 

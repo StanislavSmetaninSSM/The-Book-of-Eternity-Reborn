@@ -1701,6 +1701,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
         var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var uiHelp = ReadRepoFile("BookOfEternityClient", "UI", "ExplorerMode", "ExplorerMode.Afterlife.SpiritualConflict.cs");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
         var docs = new[] { matrix, examples, apiSpec, daemonSpec, taskGuide };
 
@@ -1754,6 +1755,18 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("Do not split or duplicate", apiSpec + daemonSpec + matrix + examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("zero `conflict_position` entries", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("exact matching `position`", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("matchupAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("playerOperation", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("oppositionOperation", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("primaryResolutionLane", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("riskProfile", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("matchupRationale", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("safe_defense", matrix + glossary, StringComparison.Ordinal);
+        Assert.Contains("risky_reversal", matrix + glossary, StringComparison.Ordinal);
+        Assert.Contains("position_play", matrix + glossary, StringComparison.Ordinal);
+        Assert.Contains("Матрица приём-контрприём", uiHelp, StringComparison.Ordinal);
+        Assert.Contains("Сильнее против", uiHelp, StringComparison.Ordinal);
+        Assert.Contains("Контрится", uiHelp, StringComparison.Ordinal);
         Assert.Contains("ink_feathers", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("light_sparks", matrix + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("outcomeMultiplierPercent", matrix + examples + apiSpec + daemonSpec, StringComparison.Ordinal);

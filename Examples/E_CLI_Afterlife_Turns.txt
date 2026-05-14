@@ -6359,7 +6359,7 @@ or ordinary roleplay prose while this conflict is still active:
 Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain, `guard` protects player strain, `maneuver` changes position, `counter` needs incomingAction and a non-empty measured payoff on success/partial_success/countered, `binding` needs advantage/setup, `break_binding` needs binding/coercive context, `incarnation_resistance` is only for force_incarnation, and `champion_coordination` is only for champion_duel. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and beats maneuver/passive repositioning, `guard` safely protects player strain and beats pressure without damaging the opponent, `counter` needs incomingAction and a non-empty measured payoff on success/partial_success/countered, `maneuver` changes position and is stopped by pressure/opposing maneuver/control, `binding` needs advantage/setup, `break_binding` needs binding/coercive context, `incarnation_resistance` is only for force_incarnation, and `champion_coordination` is only for champion_duel. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
 
 Correct contested exchange response:
 
@@ -6379,6 +6379,13 @@ Correct contested exchange response:
         "source": "guardian_forced",
         "guardianId": "guard_liora_silver_current_001",
         "summary": "Лиора пытается навязать душе вход в подготовленную жизнь."
+      },
+      "matchupAudit": {
+        "playerOperation": "incarnation_resistance",
+        "oppositionOperation": "force_incarnation",
+        "primaryResolutionLane": "incarnation_resistance",
+        "riskProfile": "anti_control",
+        "matchupRationale": "Игрок не атакует напрямую; он отвечает на конкретную попытку принудительного воплощения, поэтому исход решает сопротивление воплощению как анти-принуждение."
       },
       "before": {
         "conflictPosition": "contested",
