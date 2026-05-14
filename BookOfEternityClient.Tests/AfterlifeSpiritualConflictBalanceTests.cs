@@ -147,6 +147,104 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             BeforePosition: "contested",
             AfterPosition: "opposition_dominant",
             Reading: "Even a large advantage does not erase rare dramatic reversals.")];
+
+        yield return [new BalanceCase(
+            "source_of_light_lead_average_roll",
+            PlayerDieIndex: 4,
+            OppositionDieIndex: 3,
+            PlayerModifier: SourceOfLightCapstoneState.LeadDiceBonus,
+            OppositionModifier: 6,
+            ExpectedMargin: 4,
+            ExpectedBand: "player_success",
+            ExpectedOutcome: "success",
+            BeforePosition: "contested",
+            AfterPosition: "player_advantaged",
+            Reading: "Light Incarnate strongly shifts a lead duel without forcing decisive success.")];
+
+        yield return [new BalanceCase(
+            "source_of_light_lead_extreme_bad_roll",
+            PlayerDieIndex: 0,
+            OppositionDieIndex: 1,
+            PlayerModifier: SourceOfLightCapstoneState.LeadDiceBonus,
+            OppositionModifier: 6,
+            ExpectedMargin: -11,
+            ExpectedBand: "decisive_opposition_success",
+            ExpectedOutcome: "setback",
+            BeforePosition: "contested",
+            AfterPosition: "opposition_dominant",
+            Reading: "Light Incarnate does not erase extreme dice reversals against strong opposition.")];
+
+        yield return [new BalanceCase(
+            "source_of_light_support_role",
+            PlayerDieIndex: 8,
+            OppositionDieIndex: 9,
+            PlayerModifier: SourceOfLightCapstoneState.SupportDiceBonus,
+            OppositionModifier: 6,
+            ExpectedMargin: 5,
+            ExpectedBand: "player_success",
+            ExpectedOutcome: "success",
+            BeforePosition: "contested",
+            AfterPosition: "player_advantaged",
+            Reading: "Support-role Light Incarnate is useful, but smaller than the lead-contestant bonus.")];
+    }
+
+    public static IEnumerable<object[]> RewardBalanceMatrix()
+    {
+        yield return [new RewardBalanceCase(
+            "chaos_contested_victory",
+            Realm: "Chaos Sea",
+            Currency: AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            OpposingLeadStrength: 3,
+            SideModel: "direct_duel",
+            StartingConflictPosition: "contested",
+            OutcomeBand: "player_success",
+            ExpectedChallengeTier: 3,
+            ExpectedOutcomeMultiplierPercent: 100,
+            ExpectedRiskMultiplierPercent: 100,
+            ExpectedFinalAmount: 30,
+            Reading: "A normal contested Chaos Sea win gives a noticeable but bounded Feather reward.")];
+
+        yield return [new RewardBalanceCase(
+            "chaos_low_risk_weak_conflict",
+            Realm: "Chaos Sea",
+            Currency: AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            OpposingLeadStrength: 1,
+            SideModel: "champion_duel",
+            StartingConflictPosition: "player_dominant",
+            OutcomeBand: "player_success",
+            ExpectedChallengeTier: 1,
+            ExpectedOutcomeMultiplierPercent: 100,
+            ExpectedRiskMultiplierPercent: 50,
+            ExpectedFinalAmount: 5,
+            Reading: "Weak/no-risk Chaos Sea wins stay low-value and should not become a farm loop.")];
+
+        yield return [new RewardBalanceCase(
+            "shining_low_risk_weak_conflict",
+            Realm: "Shining Abode",
+            Currency: AfterlifeSpiritualConflictState.RewardCurrencyLightSparks,
+            OpposingLeadStrength: 1,
+            SideModel: "champion_duel",
+            StartingConflictPosition: "player_dominant",
+            OutcomeBand: "player_success",
+            ExpectedChallengeTier: 1,
+            ExpectedOutcomeMultiplierPercent: 100,
+            ExpectedRiskMultiplierPercent: 50,
+            ExpectedFinalAmount: 0,
+            Reading: "Trivial Shining wins may pay zero Light Sparks because that currency is intentionally scarce.")];
+
+        yield return [new RewardBalanceCase(
+            "shining_high_risk_decisive_cap",
+            Realm: "Shining Abode",
+            Currency: AfterlifeSpiritualConflictState.RewardCurrencyLightSparks,
+            OpposingLeadStrength: 12,
+            SideModel: "direct_duel",
+            StartingConflictPosition: "opposition_dominant",
+            OutcomeBand: "decisive_player_success",
+            ExpectedChallengeTier: 5,
+            ExpectedOutcomeMultiplierPercent: 150,
+            ExpectedRiskMultiplierPercent: 150,
+            ExpectedFinalAmount: AfterlifeSpiritualConflictState.ShiningConflictRewardMaxAmount,
+            Reading: "Even the hardest Shining victory is capped so Light Sparks stay scarce.")];
     }
 
     [Fact]
@@ -177,6 +275,77 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_conflict_dice_", StringComparison.OrdinalIgnoreCase) == true ||
             string.Equals(issue.Code, "afterlife_conflict_exchange_missing_dice_audit", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [MemberData(nameof(RewardBalanceMatrix))]
+    public async Task ValidateGameStateAsync_AfterlifeConflictRewardBalanceMatrix_AcceptsExpectedEnvelope(RewardBalanceCase scenario)
+    {
+        Assert.Equal(scenario.ExpectedFinalAmount, ComputeRewardFinalAmount(scenario));
+
+        await WriteRewardBalanceCurrentStateAsync(scenario);
+        await WriteResolvedConflictRewardStateAsync(scenario);
+        await WriteRewardBalanceSnapshotAsync(scenario);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_conflict_reward_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AfterlifeRewardBalance_RejectsWrongRealmCurrency()
+    {
+        var scenario = new RewardBalanceCase(
+            "chaos_wrong_currency",
+            Realm: "Chaos Sea",
+            Currency: AfterlifeSpiritualConflictState.RewardCurrencyLightSparks,
+            OpposingLeadStrength: 3,
+            SideModel: "direct_duel",
+            StartingConflictPosition: "contested",
+            OutcomeBand: "player_success",
+            ExpectedChallengeTier: 3,
+            ExpectedOutcomeMultiplierPercent: 100,
+            ExpectedRiskMultiplierPercent: 100,
+            ExpectedFinalAmount: 30,
+            Reading: "Chaos Sea rewards must not mint Light Sparks.");
+
+        await WriteSoulStateAsync("Chaos Sea", inkFeathers: 50);
+        await WriteResolvedConflictRewardStateAsync(scenario);
+        await WriteRewardBalanceSnapshotAsync(scenario, preTurnInkFeathers: 20);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_wrong_currency", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AfterlifeRewardBalance_RejectsAmountAboveRealmCap()
+    {
+        var scenario = new RewardBalanceCase(
+            "shining_reward_over_cap",
+            Realm: "Shining Abode",
+            Currency: AfterlifeSpiritualConflictState.RewardCurrencyLightSparks,
+            OpposingLeadStrength: 12,
+            SideModel: "direct_duel",
+            StartingConflictPosition: "opposition_dominant",
+            OutcomeBand: "decisive_player_success",
+            ExpectedChallengeTier: 5,
+            ExpectedOutcomeMultiplierPercent: 150,
+            ExpectedRiskMultiplierPercent: 150,
+            ExpectedFinalAmount: AfterlifeSpiritualConflictState.ShiningConflictRewardMaxAmount + 1,
+            Reading: "Realm caps must remain authoritative even if the GM overstates finalAmount.");
+
+        await WriteSoulStateAsync("Shining Abode", inkFeathers: 20);
+        await WriteShiningStateAsync(lightSparks: 5 + scenario.ExpectedFinalAmount);
+        await WriteResolvedConflictRewardStateAsync(scenario);
+        await WriteRewardBalanceSnapshotAsync(scenario, preTurnLightSparks: 5);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_amount_over_cap", StringComparison.OrdinalIgnoreCase));
     }
 
     private static JsonObject BuildDiceAudit(BalanceCase scenario)
@@ -237,6 +406,24 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         margin >= -7 ? "opposition_success" :
         "decisive_opposition_success";
 
+    private static int ComputeRewardFinalAmount(RewardBalanceCase scenario)
+    {
+        var rewardRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(scenario.Realm);
+        var baseAmount = string.Equals(rewardRealmKey, "shining_abode", StringComparison.Ordinal)
+            ? AfterlifeSpiritualConflictState.ShiningConflictRewardBaseAmount
+            : AfterlifeSpiritualConflictState.ChaosSeaConflictRewardBaseAmount;
+        var cap = string.Equals(rewardRealmKey, "shining_abode", StringComparison.Ordinal)
+            ? AfterlifeSpiritualConflictState.ShiningConflictRewardMaxAmount
+            : AfterlifeSpiritualConflictState.ChaosSeaConflictRewardMaxAmount;
+
+        var raw = (long)baseAmount *
+                  scenario.ExpectedChallengeTier *
+                  scenario.ExpectedOutcomeMultiplierPercent *
+                  scenario.ExpectedRiskMultiplierPercent /
+                  10_000L;
+        return (int)Math.Clamp(raw, 0, cap);
+    }
+
     private Task WriteSoulStateAsync()
     {
         return _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -246,6 +433,182 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         }
         """);
     }
+
+    private Task WriteSoulStateAsync(string realm, int inkFeathers)
+    {
+        return _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", BuildSoulStateJson(realm, inkFeathers));
+    }
+
+    private Task WriteShiningStateAsync(int lightSparks)
+    {
+        return _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningStateJson(lightSparks));
+    }
+
+    private async Task WriteRewardBalanceCurrentStateAsync(RewardBalanceCase scenario)
+    {
+        if (IsShiningRealm(scenario))
+        {
+            await WriteSoulStateAsync("Shining Abode", inkFeathers: 20);
+            await WriteShiningStateAsync(lightSparks: 5 + scenario.ExpectedFinalAmount);
+            return;
+        }
+
+        await WriteSoulStateAsync("Chaos Sea", inkFeathers: 20 + scenario.ExpectedFinalAmount);
+    }
+
+    private Task WriteResolvedConflictRewardStateAsync(RewardBalanceCase scenario)
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "mode": "resolve",
+              "conflictId": "afterlife_conflict_balance_001",
+              "realm": {{JsonSerializer.Serialize(scenario.Realm)}},
+              "sideModel": {{JsonSerializer.Serialize(scenario.SideModel)}},
+              "resolutionState": "resolved",
+              "resolvedAtTurn": 7,
+              "operationType": "pressure",
+              "playerOutcome": "won",
+              "diceAudit": {{BuildRewardDiceAudit(scenario).ToJsonString()}},
+              "summary": {{JsonSerializer.Serialize(scenario.Reading)}},
+              "{{AfterlifeSpiritualConflictState.RewardAuditProperty}}": {{BuildRewardAudit(scenario).ToJsonString()}}
+            }
+          ]
+        }
+        """);
+    }
+
+    private static JsonObject BuildRewardDiceAudit(RewardBalanceCase scenario)
+    {
+        var playerDieIndex = string.Equals(scenario.OutcomeBand, "decisive_player_success", StringComparison.OrdinalIgnoreCase)
+            ? 6
+            : 2;
+        var oppositionDieIndex = string.Equals(scenario.OutcomeBand, "decisive_player_success", StringComparison.OrdinalIgnoreCase)
+            ? 7
+            : 3;
+        var playerDie = AuthoritativeConflictDice[playerDieIndex];
+        var oppositionDie = AuthoritativeConflictDice[oppositionDieIndex];
+        var playerModifier = string.Equals(scenario.OutcomeBand, "decisive_player_success", StringComparison.OrdinalIgnoreCase)
+            ? 0
+            : 1;
+        var oppositionModifier = 0;
+        var playerTotal = playerDie + playerModifier;
+        var oppositionTotal = oppositionDie + oppositionModifier;
+        var margin = playerTotal - oppositionTotal;
+
+        Assert.Equal(scenario.OutcomeBand, ExpectedBand(margin));
+
+        return new JsonObject
+        {
+            ["formulaVersion"] = "afterlife_spiritual_conflict_v1",
+            ["diceSource"] = "input/turn_request.json.preGeneratedDices1d20",
+            ["diceUsed"] = new JsonArray(
+                new JsonObject
+                {
+                    ["side"] = "player",
+                    ["sourceIndex"] = playerDieIndex,
+                    ["sides"] = 20,
+                    ["value"] = playerDie
+                },
+                new JsonObject
+                {
+                    ["side"] = "opposition",
+                    ["sourceIndex"] = oppositionDieIndex,
+                    ["sides"] = 20,
+                    ["value"] = oppositionDie
+                }),
+            ["playerTotal"] = playerTotal,
+            ["oppositionTotal"] = oppositionTotal,
+            ["margin"] = margin,
+            ["outcomeBand"] = scenario.OutcomeBand,
+            ["modifierBreakdown"] = new JsonObject
+            {
+                ["player"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["source"] = "reward balance audit player modifier",
+                        ["value"] = playerModifier
+                    }),
+                ["opposition"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["source"] = "reward balance audit opposition modifier",
+                        ["value"] = oppositionModifier
+                    })
+            }
+        };
+    }
+
+    private static JsonObject BuildRewardAudit(RewardBalanceCase scenario)
+    {
+        var rewardRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(scenario.Realm);
+        var baseAmount = string.Equals(rewardRealmKey, "shining_abode", StringComparison.Ordinal)
+            ? AfterlifeSpiritualConflictState.ShiningConflictRewardBaseAmount
+            : AfterlifeSpiritualConflictState.ChaosSeaConflictRewardBaseAmount;
+
+        return new JsonObject
+        {
+            ["realm"] = scenario.Realm,
+            ["currency"] = scenario.Currency,
+            ["baseAmount"] = baseAmount,
+            ["opposingLeadStrength"] = scenario.OpposingLeadStrength,
+            ["sideModel"] = scenario.SideModel,
+            ["startingConflictPosition"] = scenario.StartingConflictPosition,
+            ["challengeTier"] = scenario.ExpectedChallengeTier,
+            ["outcomeMultiplierPercent"] = scenario.ExpectedOutcomeMultiplierPercent,
+            ["riskMultiplierPercent"] = scenario.ExpectedRiskMultiplierPercent,
+            ["riskReason"] = $"Started from {scenario.StartingConflictPosition} for balance audit.",
+            ["finalAmount"] = scenario.ExpectedFinalAmount,
+            ["resolvedAtTurn"] = 7,
+            ["narrativeReason"] = scenario.Reading
+        };
+    }
+
+    private static string BuildSoulStateJson(string realm, int inkFeathers) => $$"""
+    {
+      "soulName": "Асуран",
+      "currentRealm": {{JsonSerializer.Serialize(realm)}},
+      "inkFeathers": {
+        "current": {{inkFeathers}},
+        "total": {{inkFeathers}}
+      }
+    }
+    """;
+
+    private static string BuildShiningStateJson(int lightSparks) => $$"""
+    {
+      "availability": "active",
+      "radiance": {
+        "experience": 250,
+        "tier": 2
+      },
+      "lightSparks": {{lightSparks}},
+      "halls": [],
+      "factions": [],
+      "shiningPoliticalActors": [],
+      "gates": {
+        "draftVersion": 0,
+        "hasOpenDraft": false,
+        "isStale": false,
+        "nextCandidateCursor": 0,
+        "rerollsRemaining": 0,
+        "allCandidateBlessingCards": [],
+        "availableBlessingCards": [],
+        "shownBlessingCardIds": [],
+        "selectedBlessingCardIds": []
+      },
+      "preparedIncarnationPackage": null,
+      "gachaSystem": {
+        "chargesPerReturn": 0,
+        "chargesUsedThisReturn": 0,
+        "currentReturnCycleId": "",
+        "gachaHistory": []
+      }
+    }
+    """;
 
     private Task WriteConflictStateWithExchangeAsync(BalanceCase scenario, JsonObject diceAudit)
     {
@@ -358,6 +721,76 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             (AfterlifeSpiritualConflictState.StatePath, conflict));
     }
 
+    private async Task WriteRewardBalanceSnapshotAsync(
+        RewardBalanceCase scenario,
+        int? preTurnInkFeathers = null,
+        int? preTurnLightSparks = null)
+    {
+        var soul = BuildSoulStateJson(scenario.Realm, preTurnInkFeathers ?? 20);
+        var conflict = BuildRewardPreTurnActiveConflictRootJson(scenario);
+
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", soul);
+        await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, conflict);
+
+        if (IsShiningRealm(scenario))
+        {
+            var shining = BuildShiningStateJson(preTurnLightSparks ?? 5);
+            await WriteSnapshotFileAsync(ShiningAbodeState.StatePath, shining);
+            await WriteValidatedSnapshotManifestAsync(
+                ("game_state/meta/soul_state.json", soul),
+                (AfterlifeSpiritualConflictState.StatePath, conflict),
+                (ShiningAbodeState.StatePath, shining));
+            return;
+        }
+
+        await WriteValidatedSnapshotManifestAsync(
+            ("game_state/meta/soul_state.json", soul),
+            (AfterlifeSpiritualConflictState.StatePath, conflict));
+    }
+
+    private static string BuildRewardPreTurnActiveConflictRootJson(RewardBalanceCase scenario) => $$"""
+    {
+      "schemaVersion": 1,
+      "activeConflict": {
+        "conflictId": "afterlife_conflict_balance_001",
+        "realm": {{JsonSerializer.Serialize(scenario.Realm)}},
+        "sideModel": {{JsonSerializer.Serialize(scenario.SideModel)}},
+        "playerSide": {
+          "leadContestant": {
+            "actorType": "player",
+            "actorId": "player_soul",
+            "displayName": "Асуран"
+          },
+          "supporters": []
+        },
+        "oppositionSide": {
+          "leadContestant": {
+            "actorType": "guardian",
+            "actorId": "guardian_liora",
+            "displayName": "Лиора",
+            "actorArtTierSnapshot": {
+              "pressure": {{Math.Max(1, scenario.OpposingLeadStrength)}}
+            },
+            "artAuthoritySource": "guardian_state"
+          },
+          "supporters": []
+        },
+        "playerSideStrain": "clear",
+        "oppositionSideStrain": "clear",
+        "conflictPosition": {{JsonSerializer.Serialize(scenario.StartingConflictPosition)}},
+        "resolutionState": "active",
+        "exchangeLog": []
+      },
+      "recentConflicts": []
+    }
+    """;
+
+    private static bool IsShiningRealm(RewardBalanceCase scenario) =>
+        string.Equals(
+            AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(scenario.Realm),
+            "shining_abode",
+            StringComparison.Ordinal);
+
     private Task WriteSnapshotFileAsync(string logicalPath, string json)
     {
         return _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{logicalPath}", json);
@@ -437,5 +870,19 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         string ExpectedOutcome,
         string BeforePosition,
         string AfterPosition,
+        string Reading);
+
+    public sealed record RewardBalanceCase(
+        string Name,
+        string Realm,
+        string Currency,
+        int OpposingLeadStrength,
+        string SideModel,
+        string StartingConflictPosition,
+        string OutcomeBand,
+        int ExpectedChallengeTier,
+        int ExpectedOutcomeMultiplierPercent,
+        int ExpectedRiskMultiplierPercent,
+        int ExpectedFinalAmount,
         string Reading);
 }
