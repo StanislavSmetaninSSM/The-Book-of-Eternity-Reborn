@@ -6638,7 +6638,7 @@ Correct accepted state fragments:
 }
 ```
 
-After this reward, any contested afterlife spiritual conflict must account for `light_incarnate` in `diceAudit.modifierBreakdown.player[]`. Example player-led coercive action:
+After this reward, any contested afterlife spiritual conflict at or after `grantedAtTurn` must include explicit turn evidence (`exchangeAtTurn`, `resolvedAtTurn`, or `turnNumber`) and account for `light_incarnate` in `diceAudit.modifierBreakdown.player[]`. The modifier is valid only after the full Source of Light closure exists: completed Shining marker, soul passive, and exactly one matching Incarnated Light Soul Relic. Historical conflict logs before `grantedAtTurn` are not rewritten, and pre-unlock or incomplete-closure `light_incarnate` modifiers are invalid. Example player-led coercive action:
 
 ```json
 {
@@ -6691,7 +6691,7 @@ Correct reasoning checklist:
 - Do not write `coreActionReceipts[]`.
 - Grant exactly one `light_incarnate` passive and exactly one `source_of_light_incarnated_light` Soul Relic.
 - `source_of_light_incarnated_light` is a Soul Relic, not a Mortal inventory item. It affects Mortal characteristics only through the existing Soul Relic characteristic bonus path when equipped.
-- Future afterlife conflict dice must explicitly include `light_incarnate`; do not leave the bonus implicit in prose.
+- Future afterlife conflict dice from `grantedAtTurn` onward must explicitly include turn evidence and `light_incarnate`; do not leave the bonus implicit in prose, and do not add it to pre-unlock, incomplete-closure, or historical dice audits.
 
 ==================================================
 COMMON INVALID PATTERNS

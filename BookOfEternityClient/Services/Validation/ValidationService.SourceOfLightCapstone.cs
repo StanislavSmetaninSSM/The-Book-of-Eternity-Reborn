@@ -76,6 +76,21 @@ public partial class ValidationService
 
         var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
         var shiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
+        var isResolvingValidatedRequest = await IsResolvingValidatedSourceOfLightRequestAsync(state.Request);
+        if (!isResolvingValidatedRequest && HasAnySourceOfLightRewardSurface(soulRoot, shiningRoot))
+        {
+            issues.Add(new ValidationIssue(
+                SourceOfLightCapstoneState.PendingRequestPath,
+                IssueSeverity.Error,
+                "Source of Light pending request нельзя держать после уже выданной или частично записанной Source reward.",
+                code: "source_of_light_pending_duplicate_reward_state",
+                section: "ShiningAbode",
+                expected: "no existing sourceOfLightCapstone marker, light_incarnate passive, or source_of_light_incarnated_light relic before opening pending request",
+                actual: DescribeSourceOfLightRewardSurfaceState(soulRoot, shiningRoot),
+                repairHint: "Удалите stale pending_source_of_light_capstone.json или repair уже записанный Source of Light reward tuple; не запускайте второй capstone request."));
+            return;
+        }
+
         if (!SourceOfLightCapstoneState.IsUnlockSatisfied(soulRoot, shiningRoot, out var blocker))
         {
             issues.Add(new ValidationIssue(
@@ -90,11 +105,25 @@ public partial class ValidationService
             return;
         }
 
-        var radiance = shiningRoot?["radiance"] as JsonObject;
-        var experience = SourceOfLightCapstoneState.GetNodeInt(radiance?["experience"]);
-        var tier = SourceOfLightCapstoneState.GetNodeInt(radiance?["tier"]);
-        if (state.Request.RadianceExperienceAtRequest != experience ||
-            state.Request.RadianceTierAtRequest != tier)
+        var pendingBlocker = await SourceOfLightCapstoneState.TryDescribeBlockingPendingContractAsync(_fs, shiningRoot);
+        if (pendingBlocker != null)
+        {
+            issues.Add(new ValidationIssue(
+                SourceOfLightCapstoneState.PendingRequestPath,
+                IssueSeverity.Error,
+                "Source of Light pending request нельзя держать рядом с другим active/malformed afterlife pending/control contract.",
+                code: "source_of_light_pending_blocked_by_other_contract",
+                section: "ShiningAbode",
+                expected: "no other active/malformed afterlife pending/control contract",
+                actual: pendingBlocker,
+                repairHint: "Закрой или repair другой afterlife pending/control contract до Source of Light; не запускай GM с взаимоисключающими pending contracts."));
+            return;
+        }
+
+        var radianceBaseline = await ResolvePendingSourceOfLightRadianceBaselineAsync(state.Request, shiningRoot);
+        if (radianceBaseline is { } baseline &&
+            (state.Request.RadianceExperienceAtRequest != baseline.Experience ||
+             state.Request.RadianceTierAtRequest != baseline.Tier))
         {
             issues.Add(new ValidationIssue(
                 SourceOfLightCapstoneState.PendingRequestPath,
@@ -102,10 +131,83 @@ public partial class ValidationService
                 "Source of Light pending request должен сохранять exact Radiance snapshot на момент создания.",
                 code: "source_of_light_pending_radiance_snapshot_mismatch",
                 section: "ShiningAbode",
-                expected: $"radianceExperienceAtRequest={experience}; radianceTierAtRequest={tier}",
+                expected: $"{baseline.Label} radianceExperienceAtRequest={baseline.Experience}; radianceTierAtRequest={baseline.Tier}",
                 actual: $"{state.Request.RadianceExperienceAtRequest}; {state.Request.RadianceTierAtRequest}",
                 repairHint: "Не редактируй pending_source_of_light_capstone.json после создания клиентом."));
         }
+    }
+
+    private async Task<bool> IsResolvingValidatedSourceOfLightRequestAsync(SourceOfLightCapstoneState.SourceOfLightCapstoneRequest request)
+    {
+        var preTurnRequestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(SourceOfLightCapstoneState.PendingRequestPath);
+        if (string.IsNullOrWhiteSpace(preTurnRequestJson))
+            return false;
+
+        var preTurnRequest = SourceOfLightCapstoneState.ReadRequestState(preTurnRequestJson, exists: true).Request;
+        if (preTurnRequest == null ||
+            !string.Equals(preTurnRequest.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        try
+        {
+            var preTurnSoulJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json");
+            var preTurnShiningJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath);
+            if (string.IsNullOrWhiteSpace(preTurnSoulJson) || string.IsNullOrWhiteSpace(preTurnShiningJson))
+                return false;
+
+            var preTurnSoulRoot = JsonNode.Parse(preTurnSoulJson) as JsonObject;
+            var preTurnShiningRoot = JsonNode.Parse(preTurnShiningJson) as JsonObject;
+            return preTurnSoulRoot != null &&
+                   preTurnShiningRoot != null &&
+                   !HasAnySourceOfLightRewardSurface(preTurnSoulRoot, preTurnShiningRoot);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private async Task<(int Experience, int Tier, string Label)?> ResolvePendingSourceOfLightRadianceBaselineAsync(
+        SourceOfLightCapstoneState.SourceOfLightCapstoneRequest request,
+        JsonObject? currentShiningRoot)
+    {
+        var preTurnRequestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(SourceOfLightCapstoneState.PendingRequestPath);
+        if (!string.IsNullOrWhiteSpace(preTurnRequestJson))
+        {
+            var preTurnRequest = SourceOfLightCapstoneState.ReadRequestState(preTurnRequestJson, exists: true).Request;
+            if (preTurnRequest != null &&
+                string.Equals(preTurnRequest.RequestId, request.RequestId, StringComparison.OrdinalIgnoreCase))
+            {
+                var preTurnShiningJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath);
+                if (string.IsNullOrWhiteSpace(preTurnShiningJson))
+                    return null;
+
+                try
+                {
+                    if (JsonNode.Parse(preTurnShiningJson) is not JsonObject preTurnShiningRoot)
+                        return null;
+
+                    ShiningAbodeState.NormalizeStateRoot(preTurnShiningRoot, residentRoot: null);
+                    var preTurnRadiance = preTurnShiningRoot["radiance"] as JsonObject;
+                    return (
+                        SourceOfLightCapstoneState.GetNodeInt(preTurnRadiance?["experience"]),
+                        SourceOfLightCapstoneState.GetNodeInt(preTurnRadiance?["tier"]),
+                        "validated pre-turn");
+                }
+                catch (JsonException)
+                {
+                    return null;
+                }
+            }
+        }
+
+        var currentRadiance = currentShiningRoot?["radiance"] as JsonObject;
+        return (
+            SourceOfLightCapstoneState.GetNodeInt(currentRadiance?["experience"]),
+            SourceOfLightCapstoneState.GetNodeInt(currentRadiance?["tier"]),
+            "current");
     }
 
     private async Task ValidatePendingSourceOfLightCapstoneResolutionAsync(List<ValidationIssue> issues)
@@ -167,7 +269,6 @@ public partial class ValidationService
                 return;
 
             ShiningAbodeState.NormalizeStateRoot(preTurnShiningRoot, residentRoot: null);
-            ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, residentRoot: null);
 
             if (!SourceOfLightCapstoneState.IsUnlockSatisfied(preTurnSoulRoot, preTurnShiningRoot, out var unlockBlocker))
             {
@@ -209,7 +310,8 @@ public partial class ValidationService
                     actual: "pre-turn capstone reward already present"));
             }
 
-            if (!SourceOfLightCapstoneState.HasCompletedCapstone(currentShiningRoot, request))
+            var rawCurrentMarkerMatches = SourceOfLightCapstoneState.HasCompletedCapstone(currentShiningRoot, request);
+            if (!rawCurrentMarkerMatches)
             {
                 issues.Add(new ValidationIssue(
                     $"{ShiningAbodeState.StatePath}.{SourceOfLightCapstoneState.ShiningStateProperty}",
@@ -220,6 +322,8 @@ public partial class ValidationService
                     expected: "sourceOfLightCapstone.completed=true with matching request/radiance/reward ids",
                     actual: currentShiningRoot[SourceOfLightCapstoneState.ShiningStateProperty]?.ToJsonString() ?? "missing"));
             }
+
+            ShiningAbodeState.NormalizeStateRoot(currentShiningRoot, residentRoot: null);
 
             if (!SourceOfLightCapstoneState.HasLightIncarnate(currentSoulRoot))
             {
@@ -245,14 +349,52 @@ public partial class ValidationService
                     expected: "exactly one source_of_light_incarnated_light relic",
                     actual: relicCount.ToString()));
             }
+            else if (CountIncarnatedLightStoredRelics(currentSoulRoot) != 1)
+            {
+                issues.Add(new ValidationIssue(
+                    "game_state/meta/soul_state.json.soulRelics.stored",
+                    IssueSeverity.Error,
+                    "Accepted Source of Light closure должен материализовать Воплощенный Свет в soulRelics.stored[], не сразу в equipped[].",
+                    code: "source_of_light_relic_not_stored_on_closure",
+                    section: "ShiningAbode",
+                    expected: "exactly one source_of_light_incarnated_light relic in soulRelics.stored[]",
+                    actual: "matching relic is not in soulRelics.stored[]",
+                    repairHint: "Добавь новую Source of Light Soul Relic в soulRelics.stored[]; экипировка должна происходить отдельным player/client action."));
+            }
 
-            if (SourceOfLightCapstoneState.HasMatchingClosure(currentShiningRoot, currentSoulRoot, request))
+            if (rawCurrentMarkerMatches &&
+                SourceOfLightCapstoneState.HasLightIncarnate(currentSoulRoot) &&
+                relicCount == 1)
+            {
                 ValidateIncarnatedLightRelicPayload(currentSoulRoot, issues);
+            }
+
+            var allowShiningProgressionDeltas = await AllowsSourceOfLightShiningProgressionDeltasAsync();
+            ValidateSourceOfLightClosureDiffs(
+                preTurnSoulRoot,
+                preTurnShiningRoot,
+                currentSoulRoot,
+                currentShiningRoot,
+                request,
+                allowShiningProgressionDeltas,
+                issues);
         }
         catch (JsonException)
         {
             // JSON integrity and state-file validators report malformed roots.
         }
+    }
+
+    private async Task<bool> AllowsSourceOfLightShiningProgressionDeltasAsync()
+    {
+        var progressionControl = await ResolveValidatedCurrentProgressionControlAsync();
+        var hasVerifiedProgressionReport = await HasVerifiedAfterlifeProgressionReportForCompositeAsync(progressionControl);
+        return hasVerifiedProgressionReport &&
+               progressionControl != null &&
+               (progressionControl.ShiningAbodeCyclesExpectedThisTurn > 0 ||
+                progressionControl.ShiningFactionCyclesExpectedThisTurn > 0 ||
+                progressionControl.ShiningTradeCyclesExpectedThisTurn > 0 ||
+                progressionControl.AfterlifeCatchupRequired);
     }
 
     private async Task ValidateSourceOfLightCapstoneGlobalStateAsync(List<ValidationIssue> issues)
@@ -275,18 +417,96 @@ public partial class ValidationService
                 actual: relicCount.ToString()));
         }
 
-        if (SourceOfLightCapstoneState.HasCompletedCapstone(shiningRoot) &&
-            (!SourceOfLightCapstoneState.HasLightIncarnate(soulRoot) || relicCount != 1))
+        var lightIncarnateGrantTurn = SourceOfLightCapstoneState.GetLightIncarnateGrantTurn(soulRoot, shiningRoot);
+        if (HasAnySourceOfLightRewardSurface(soulRoot, shiningRoot) &&
+            await IsNewSourceOfLightRewardWithoutValidatedPendingRequestAsync(soulRoot, shiningRoot))
+        {
+            issues.Add(new ValidationIssue(
+                SourceOfLightCapstoneState.PendingRequestPath,
+                IssueSeverity.Error,
+                "Source of Light reward tuple нельзя создавать без validated pre-turn pending_source_of_light_capstone.json.",
+                code: "source_of_light_missing_validated_pending_request",
+                section: "ShiningAbode",
+                expected: "validated pre-turn pending_source_of_light_capstone.json matching the current Source of Light reward tuple",
+                actual: "current accepted turn has new Source of Light reward surfaces but no validated pending request",
+                repairHint: "Запускай Source of Light только через client-authored /source_of_light pending request; не добавляй marker/passive/relic из обычного GM response."));
+        }
+
+        if (HasAnySourceOfLightRewardSurface(soulRoot, shiningRoot) &&
+            lightIncarnateGrantTurn is not > 0)
         {
             issues.Add(new ValidationIssue(
                 $"{ShiningAbodeState.StatePath}.{SourceOfLightCapstoneState.ShiningStateProperty}",
                 IssueSeverity.Error,
-                "Completed Source of Light marker должен быть согласован с passive light_incarnate и одной relic Воплощенный Свет.",
-                code: "source_of_light_completed_marker_reward_mismatch",
+                "Source of Light reward tuple должен быть полностью согласован: marker, passive и relic обязаны ссылаться на один request/turn.",
+                code: "source_of_light_closure_tuple_mismatch",
                 section: "ShiningAbode",
-                expected: "completed marker + light_incarnate + exactly one source_of_light_incarnated_light",
-                actual: $"hasPassive={SourceOfLightCapstoneState.HasLightIncarnate(soulRoot)}, relicCount={relicCount}"));
+                expected: "completed marker + light_incarnate passive with matching requestId/grantedAtTurn + exactly one source_of_light_incarnated_light relic with matching sourceRequestId",
+                actual: DescribeSourceOfLightRewardSurfaceState(soulRoot, shiningRoot),
+                repairHint: "Repair Source of Light tuple so sourceOfLightCapstone.requestId, lightIncarnate.requestId, completedAtTurn/grantedAtTurn, and relic.sourceRequestId all agree."));
         }
+        else if (lightIncarnateGrantTurn is > 0 && relicCount == 1)
+        {
+            ValidateIncarnatedLightRelicPayload(soulRoot, issues);
+        }
+    }
+
+    private async Task<bool> IsNewSourceOfLightRewardWithoutValidatedPendingRequestAsync(JsonObject? soulRoot, JsonObject? shiningRoot)
+    {
+        if (!_fs.FileExists("ready/turn_complete.json"))
+            return false;
+
+        if (await LoadValidatedCurrentPendingTurnSnapshotManifestAsync() == null)
+            return false;
+
+        var preTurnRequestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(SourceOfLightCapstoneState.PendingRequestPath);
+        if (!string.IsNullOrWhiteSpace(preTurnRequestJson))
+            return false;
+
+        var preTurnSoulJson = await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json");
+        var preTurnShiningJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(preTurnSoulJson) || string.IsNullOrWhiteSpace(preTurnShiningJson))
+            return false;
+
+        try
+        {
+            var preTurnSoulRoot = JsonNode.Parse(preTurnSoulJson) as JsonObject;
+            var preTurnShiningRoot = JsonNode.Parse(preTurnShiningJson) as JsonObject;
+            return preTurnSoulRoot != null &&
+                   preTurnShiningRoot != null &&
+                   !HasAnySourceOfLightRewardSurface(preTurnSoulRoot, preTurnShiningRoot) &&
+                   HasAnySourceOfLightRewardSurface(soulRoot, shiningRoot);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static bool HasAnySourceOfLightRewardSurface(JsonObject? soulRoot, JsonObject? shiningRoot) =>
+        SourceOfLightCapstoneState.HasCompletedCapstone(shiningRoot) ||
+        SourceOfLightCapstoneState.HasLightIncarnate(soulRoot) ||
+        SourceOfLightCapstoneState.CountIncarnatedLightRelics(soulRoot) > 0;
+
+    private static string DescribeSourceOfLightRewardSurfaceState(JsonObject? soulRoot, JsonObject? shiningRoot)
+    {
+        var marker = shiningRoot?[SourceOfLightCapstoneState.ShiningStateProperty] as JsonObject;
+        JsonObject? passive = null;
+        if (soulRoot?[AfterlifeSpiritualConflictState.SoulStateProfileProperty] is JsonObject profile &&
+            profile[SourceOfLightCapstoneState.CapstonesProperty] is JsonObject capstones)
+        {
+            passive = capstones[SourceOfLightCapstoneState.LightIncarnateProperty] as JsonObject;
+        }
+
+        var relicCount = SourceOfLightCapstoneState.CountIncarnatedLightRelics(soulRoot);
+        return "markerCompleted=" + SourceOfLightCapstoneState.HasCompletedCapstone(shiningRoot) +
+               "; markerRequestId=" + (SourceOfLightCapstoneState.GetNodeString(marker?["requestId"]) ?? "missing") +
+               "; markerCompletedAtTurn=" + SourceOfLightCapstoneState.GetNodeInt(marker?["completedAtTurn"]) +
+               "; hasPassive=" + SourceOfLightCapstoneState.HasLightIncarnate(soulRoot) +
+               "; passiveRequestId=" + (SourceOfLightCapstoneState.GetNodeString(passive?["requestId"]) ?? "missing") +
+               "; passiveGrantedAtTurn=" + SourceOfLightCapstoneState.GetNodeInt(passive?["grantedAtTurn"]) +
+               "; relicCount=" + relicCount +
+               "; trustedGrantTurn=" + (SourceOfLightCapstoneState.GetLightIncarnateGrantTurn(soulRoot, shiningRoot)?.ToString() ?? "missing");
     }
 
     private void ValidateSourceOfLightCapstoneMarker(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -303,10 +523,14 @@ public partial class ValidationService
 
         RequireBooleanField(marker, context, issues, "completed");
         RequireString(marker, context, issues, "requestId");
+        ValidateIntegerField(marker, context, issues, "completedAtTurn");
         RequireString(marker, context, issues, "rewardPassiveId");
         RequireString(marker, context, issues, "rewardRelicId");
         ValidateIntegerField(marker, context, issues, "radianceExperienceAtRequest");
         ValidateIntegerField(marker, context, issues, "radianceTierAtRequest");
+
+        if (TryReadInt(marker, "completedAtTurn", out var completedAtTurn) && completedAtTurn <= 0)
+            AddSourceOfLightFieldIssue(issues, $"{context}.completedAtTurn", "source_of_light_marker_completed_turn_mismatch", "positive Source closure turn", completedAtTurn.ToString());
 
         var passiveId = GetFirstNonEmptyString(marker, "rewardPassiveId");
         if (!string.IsNullOrWhiteSpace(passiveId) && !string.Equals(passiveId, SourceOfLightCapstoneState.PassiveId, StringComparison.OrdinalIgnoreCase))
@@ -315,6 +539,182 @@ public partial class ValidationService
         var relicId = GetFirstNonEmptyString(marker, "rewardRelicId");
         if (!string.IsNullOrWhiteSpace(relicId) && !string.Equals(relicId, SourceOfLightCapstoneState.RelicId, StringComparison.OrdinalIgnoreCase))
             AddSourceOfLightFieldIssue(issues, $"{context}.rewardRelicId", "source_of_light_marker_relic_mismatch", SourceOfLightCapstoneState.RelicId, relicId);
+    }
+
+    private static void ValidateSourceOfLightClosureDiffs(
+        JsonObject preTurnSoulRoot,
+        JsonObject preTurnShiningRoot,
+        JsonObject currentSoulRoot,
+        JsonObject currentShiningRoot,
+        SourceOfLightCapstoneState.SourceOfLightCapstoneRequest request,
+        bool allowShiningProgressionDeltas,
+        List<ValidationIssue> issues)
+    {
+        var expectedShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var expectedMarker = SourceOfLightCapstoneState.CreateCompletedShiningMarker(request);
+        if (currentShiningRoot[SourceOfLightCapstoneState.ShiningStateProperty] is JsonObject currentMarker &&
+            currentMarker["completedAtUtc"] != null)
+        {
+            expectedMarker["completedAtUtc"] = currentMarker["completedAtUtc"]!.DeepClone();
+        }
+
+        expectedShiningRoot[SourceOfLightCapstoneState.ShiningStateProperty] = expectedMarker;
+        ShiningAbodeState.NormalizeStateRoot(expectedShiningRoot, residentRoot: null);
+
+        if (allowShiningProgressionDeltas)
+            ValidateSourceOfLightForbiddenShiningProgressionDeltas(expectedShiningRoot, currentShiningRoot, issues);
+
+        if (!allowShiningProgressionDeltas && !JsonNode.DeepEquals(expectedShiningRoot, currentShiningRoot))
+        {
+            issues.Add(new ValidationIssue(
+                ShiningAbodeState.StatePath,
+                IssueSeverity.Error,
+                "Source of Light closure содержит посторонние изменения shining_abode_state.json.",
+                code: "source_of_light_unexpected_shining_state_diff",
+                section: "ShiningAbode",
+                expected: "validated pre-turn Shining state plus only sourceOfLightCapstone completed marker",
+                actual: "current shining_abode_state.json differs from projected Source-only closure state",
+                repairHint: "Откати unrelated Shining mutations; Source of Light closure может добавлять только completed marker."));
+        }
+
+        var expectedSoulRoot = CloneJsonObject(preTurnSoulRoot);
+        ApplyExpectedSourceOfLightSoulDelta(expectedSoulRoot, currentSoulRoot, request);
+
+        if (!JsonNode.DeepEquals(expectedSoulRoot, currentSoulRoot))
+        {
+            issues.Add(new ValidationIssue(
+                "game_state/meta/soul_state.json",
+                IssueSeverity.Error,
+                "Source of Light closure содержит посторонние изменения soul_state.json.",
+                code: "source_of_light_unexpected_soul_state_diff",
+                section: "ShiningAbode",
+                expected: "validated pre-turn Soul state plus only light_incarnate passive and one canonical Incarnated Light Soul Relic",
+                actual: "current soul_state.json differs from projected Source-only closure state",
+                repairHint: "Откати unrelated Soul mutations; Source of Light closure не должна менять currencies, existing relics, inventory, skills, or unrelated profile fields."));
+        }
+    }
+
+    private static void ValidateSourceOfLightForbiddenShiningProgressionDeltas(
+        JsonObject expectedShiningRoot,
+        JsonObject currentShiningRoot,
+        List<ValidationIssue> issues)
+    {
+        foreach (var path in SourceOfLightForbiddenShiningProgressionDeltaPaths)
+        {
+            var expectedNode = GetNestedNode(expectedShiningRoot, path);
+            var currentNode = GetNestedNode(currentShiningRoot, path);
+            if (JsonNode.DeepEquals(expectedNode, currentNode))
+                continue;
+
+            var pathText = string.Join(".", path);
+            issues.Add(new ValidationIssue(
+                $"{ShiningAbodeState.StatePath}.{pathText}",
+                IssueSeverity.Error,
+                "Source of Light closure с progression/catch-up содержит запрещённые Shining изменения вне progression contract.",
+                code: "source_of_light_unexpected_shining_state_diff",
+                section: "ShiningAbode",
+                expected: $"validated pre-turn Shining {pathText}; Source closure is not a Shining action receipt/treasury/gates contract",
+                actual: $"current shining_abode_state.json.{pathText} differs during Source closure",
+                repairHint: "Оставь verified progression deltas только в scheduler-owned Shining fields; не добавляй core/founding/realignment/gacha/gates/treasury surfaces в Source of Light closure."));
+        }
+    }
+
+    private static readonly string[][] SourceOfLightForbiddenShiningProgressionDeltaPaths =
+    {
+        new[] { "coreActionReceipts" },
+        new[] { "factionFoundingReceipts" },
+        new[] { "factionRealignmentReceipts" },
+        new[] { "gates" },
+        new[] { "gachaSystem", "gachaHistory" },
+        new[] { "pendingNativeFactionDiscovery" },
+        new[] { "preparedIncarnationPackage" },
+        new[] { "lightSparks" },
+        new[] { "treasury" }
+    };
+
+    private static JsonNode? GetNestedNode(JsonObject root, IReadOnlyList<string> path)
+    {
+        JsonNode? current = root;
+        foreach (var segment in path)
+        {
+            if (current is not JsonObject obj)
+                return null;
+
+            current = obj[segment];
+        }
+
+        return current;
+    }
+
+    private static void ApplyExpectedSourceOfLightSoulDelta(
+        JsonObject expectedSoulRoot,
+        JsonObject currentSoulRoot,
+        SourceOfLightCapstoneState.SourceOfLightCapstoneRequest request)
+    {
+        if (expectedSoulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] is not JsonObject profile)
+        {
+            profile = new JsonObject();
+            expectedSoulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] = profile;
+        }
+
+        if (profile[SourceOfLightCapstoneState.CapstonesProperty] is not JsonObject capstones)
+        {
+            capstones = new JsonObject();
+            profile[SourceOfLightCapstoneState.CapstonesProperty] = capstones;
+        }
+
+        capstones[SourceOfLightCapstoneState.LightIncarnateProperty] =
+            SourceOfLightCapstoneState.CreateLightIncarnatePassive(request);
+
+        var relic = SourceOfLightCapstoneState.CreateIncarnatedLightRelic(request);
+        AppendExpectedIncarnatedLightRelic(expectedSoulRoot, relic);
+    }
+
+    private static void AppendExpectedIncarnatedLightRelic(
+        JsonObject expectedSoulRoot,
+        JsonObject relic)
+    {
+        if (expectedSoulRoot["soulRelics"] is JsonObject expectedRelics)
+        {
+            if (expectedRelics["stored"] is not JsonArray targetCollection)
+            {
+                targetCollection = new JsonArray();
+                expectedRelics["stored"] = targetCollection;
+            }
+
+            targetCollection.Add(relic.DeepClone());
+            return;
+        }
+
+        if (expectedSoulRoot["soulRelics"] is JsonArray expectedFlatRelics)
+        {
+            expectedFlatRelics.Add(relic.DeepClone());
+            return;
+        }
+
+        expectedSoulRoot["soulRelics"] = new JsonObject
+        {
+            ["equipped"] = new JsonArray(),
+            ["stored"] = new JsonArray(relic.DeepClone())
+        };
+    }
+
+    private static int CountIncarnatedLightStoredRelics(JsonObject soulRoot)
+    {
+        if (soulRoot["soulRelics"] is not JsonObject soulRelics ||
+            soulRelics["stored"] is not JsonArray storedRelics)
+        {
+            return 0;
+        }
+
+        return storedRelics.OfType<JsonObject>().Count(IsIncarnatedLightRelic);
+    }
+
+    private static bool IsIncarnatedLightRelic(JsonObject relic)
+    {
+        var id = SourceOfLightCapstoneState.GetNodeString(relic["relicId"]) ??
+                 SourceOfLightCapstoneState.GetNodeString(relic["id"]);
+        return string.Equals(id, SourceOfLightCapstoneState.RelicId, StringComparison.OrdinalIgnoreCase);
     }
 
     private void ValidateLightIncarnateCombatProfileCapstone(JsonElement profile, string context, List<ValidationIssue> issues)
@@ -376,11 +776,61 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         AfterlifeConflictDiceContext diceContext)
     {
+        var actual = SourceOfLightCapstoneState.SumLightIncarnatePlayerModifiers(diceAudit);
+        var auditTurn = ResolveLightIncarnateAuditTurn(payload, diceAudit);
         if (!diceContext.HasLightIncarnate)
+        {
+            if (actual != 0)
+            {
+                AddUnauthorizedLightIncarnateModifierIssue(
+                    context,
+                    issues,
+                    "no light_incarnate passive is present",
+                    actual,
+                    auditTurn,
+                    diceContext.LightIncarnateGrantTurn);
+            }
+
             return;
+        }
+
+        if (auditTurn is not > 0)
+        {
+            if (diceContext.IsPreTurnNoTurnDicePayload(payload))
+                return;
+
+            if (actual == 0 && !diceContext.HasAuthoritativeDice)
+                return;
+
+            issues.Add(new ValidationIssue(
+                $"{context}.turnNumber",
+                IssueSeverity.Error,
+                "Воплощение Света требует явный turn marker в contested diceAudit после Source of Light unlock.",
+                code: "afterlife_conflict_light_incarnate_modifier_mismatch",
+                section: "AfterlifeSpiritualConflict",
+                expected: $"exchangeAtTurn/resolvedAtTurn/turnNumber >= {diceContext.LightIncarnateGrantTurn!.Value} and modifier source/id/passiveId={SourceOfLightCapstoneState.PassiveId}",
+                actual: $"auditTurn=missing; modifier sum={actual}",
+                repairHint: "Добавь exchangeAtTurn/resolvedAtTurn/turnNumber к contested exchange/resolution audit и явный light_incarnate modifier, либо докажи, что audit predates grantedAtTurn."));
+            return;
+        }
+
+        if (auditTurn.Value < diceContext.LightIncarnateGrantTurn!.Value)
+        {
+            if (actual != 0)
+            {
+                AddUnauthorizedLightIncarnateModifierIssue(
+                    context,
+                    issues,
+                    "dice audit turn predates light_incarnate grant",
+                    actual,
+                    auditTurn,
+                    diceContext.LightIncarnateGrantTurn);
+            }
+
+            return;
+        }
 
         var expected = ResolveLightIncarnateExpectedDiceBonus(payload);
-        var actual = SourceOfLightCapstoneState.SumLightIncarnatePlayerModifiers(diceAudit);
         if (actual == expected)
             return;
 
@@ -393,6 +843,50 @@ public partial class ValidationService
             expected: $"modifier source/id/passiveId={SourceOfLightCapstoneState.PassiveId} sum {expected}",
             actual: actual.ToString(),
             repairHint: "Добавь в diceAudit.modifierBreakdown.player отдельный модификатор light_incarnate: +8 если игрок lead contestant, +4 если supporter/champion-side contributor, и ещё +4 для force_incarnation/force_binding/break_binding."));
+    }
+
+    private static void AddUnauthorizedLightIncarnateModifierIssue(
+        string context,
+        List<ValidationIssue> issues,
+        string reason,
+        int actual,
+        int? auditTurn,
+        int? grantTurn)
+    {
+        issues.Add(new ValidationIssue(
+            $"{context}.modifierBreakdown.player",
+            IssueSeverity.Error,
+            "Воплощение Света нельзя учитывать в diceAudit до доказанного unlock Source of Light.",
+            code: "afterlife_conflict_light_incarnate_modifier_unauthorized",
+            section: "AfterlifeSpiritualConflict",
+            expected: "no light_incarnate modifier before grant turn, or audit turn >= grantedAtTurn after unlock",
+            actual: $"sum={actual}; auditTurn={(auditTurn?.ToString() ?? "missing")}; grantedAtTurn={(grantTurn?.ToString() ?? "missing")}; reason={reason}"));
+    }
+
+    private static int? ResolveLightIncarnateAuditTurn(JsonObject payload, JsonObject diceAudit)
+    {
+        foreach (var key in new[] { "resolvedAtTurn", "exchangeAtTurn", "turnNumber" })
+        {
+            var value = SourceOfLightCapstoneState.GetNodeInt(payload[key]);
+            if (value > 0)
+                return value;
+        }
+
+        foreach (var key in new[] { "turnNumber", "resolvedAtTurn", "exchangeAtTurn" })
+        {
+            var value = SourceOfLightCapstoneState.GetNodeInt(diceAudit[key]);
+            if (value > 0)
+                return value;
+        }
+
+        if (payload["resolution"] is JsonObject resolution)
+        {
+            var value = SourceOfLightCapstoneState.GetNodeInt(resolution["resolvedAtTurn"]);
+            if (value > 0)
+                return value;
+        }
+
+        return null;
     }
 
     private static int ResolveLightIncarnateExpectedDiceBonus(JsonObject payload)
@@ -433,6 +927,12 @@ public partial class ValidationService
                 return "supporter";
         }
 
+        if (IsAssistedDuelConflict(payload))
+            return "lead";
+
+        if (IsChampionSideConflict(payload))
+            return "supporter";
+
         return "lead";
     }
 
@@ -462,6 +962,54 @@ public partial class ValidationService
         return supporters
             .OfType<JsonObject>()
             .Any(supporter => IsPlayerActorType(SourceOfLightCapstoneState.GetNodeString(supporter["actorType"])));
+    }
+
+    private static bool IsChampionSideConflict(JsonObject payload)
+    {
+        foreach (var candidate in EnumerateConflictSnapshots(payload))
+        {
+            foreach (var key in new[] { "sideModel", "conflictModel", "conflictMode", "conflictType", "duelType", "operationType", "mode" })
+            {
+                if (IsChampionSideValue(SourceOfLightCapstoneState.GetNodeString(candidate[key])))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsAssistedDuelConflict(JsonObject payload)
+    {
+        foreach (var candidate in EnumerateConflictSnapshots(payload))
+        {
+            foreach (var key in new[] { "sideModel", "conflictModel", "conflictMode", "conflictType", "duelType", "operationType", "mode" })
+            {
+                if (IsAssistedDuelValue(SourceOfLightCapstoneState.GetNodeString(candidate[key])))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsChampionSideValue(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var normalized = value.Trim().Replace('-', '_').Replace(' ', '_');
+        return normalized.Contains("champion", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsAssistedDuelValue(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var normalized = value.Trim().Replace('-', '_').Replace(' ', '_');
+        return normalized.Equals("assisted_duel", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Contains("_assisted_duel", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Contains("assisted_duel_", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsPlayerActorType(string? actorType) =>

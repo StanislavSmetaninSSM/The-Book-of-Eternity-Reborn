@@ -1,6 +1,4 @@
-using System.Text.Json;
 using System.Text.Json.Nodes;
-using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Spectre.Console;
 
@@ -235,63 +233,9 @@ public partial class ExplorerMode
             return "Источник Света заблокирован: найден активный GM-turn lifecycle. Дождитесь завершения, отмены или repair текущего хода.";
         }
 
-        var coreState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(_fs);
-        if (coreState.IsMalformed || coreState.Requests.Count > 0)
-            return $"Источник Света заблокирован: есть active/malformed {ShiningCoreActionRequestState.PendingActionsRequestPath}.";
-
-        var tradeState = await ShiningTradeRequestState.ReadRequestsStateAsync(_fs);
-        if (tradeState.IsMalformed || tradeState.Requests.Count > 0)
-            return $"Источник Света заблокирован: есть active/malformed {ShiningTradeRequestState.PendingRequestsPath}.";
-
-        var foundingMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
-            _fs,
-            ShiningFactionRequestState.PendingFoundingsRequestPath,
-            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        if (foundingMalformed || (await ShiningFactionRequestState.ReadFoundingRequestsAsync(_fs)).Count > 0)
-            return $"Источник Света заблокирован: есть active/malformed {ShiningFactionRequestState.PendingFoundingsRequestPath}.";
-
-        var realignmentMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
-            _fs,
-            ShiningFactionRequestState.PendingRealignmentsRequestPath,
-            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionRealignmentRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        if (realignmentMalformed || (await ShiningFactionRequestState.ReadRealignmentRequestsAsync(_fs)).Count > 0)
-            return $"Источник Света заблокирован: есть active/malformed {ShiningFactionRequestState.PendingRealignmentsRequestPath}.";
-
-        var leadershipMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
-            _fs,
-            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
-            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        if (leadershipMalformed || (await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(_fs)).Count > 0)
-            return $"Источник Света заблокирован: есть active/malformed {ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath}.";
-
-        if (shiningRoot.TryGetPropertyValue("pendingNativeFactionDiscovery", out var pendingDiscovery) &&
-            pendingDiscovery != null)
-        {
-            return $"Источник Света заблокирован: есть legacy pendingNativeFactionDiscovery в {ShiningAbodeState.StatePath}.";
-        }
-
-        foreach (var path in SourceOfLightBlockingAfterlifePendingPaths)
-        {
-            if (_fs.FileExists(path))
-                return $"Источник Света заблокирован: есть active/malformed afterlife pending/control contract {path}.";
-        }
-
-        return null;
+        var blocker = await SourceOfLightCapstoneState.TryDescribeBlockingPendingContractAsync(_fs, shiningRoot);
+        return blocker == null
+            ? null
+            : $"Источник Света заблокирован: есть {blocker}.";
     }
-
-    private static readonly string[] SourceOfLightBlockingAfterlifePendingPaths =
-    {
-        GuardianAbodeOfferingState.PendingRequestPath,
-        GuardianTradeRequestState.PendingRequestPath,
-        PlayerGuardianFoundationState.PendingRequestPath,
-        SystemGuardianLibraryService.AttractionRequestPath,
-        AfterlifeArchiveActionState.ConsultationRequestPath,
-        AfterlifeArchiveActionState.ProjectFuelRequestPath,
-        GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
-        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
-        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
-        ActorSocialInteractionRequestState.PendingGuardianRequestPath,
-        ActorSocialInteractionRequestState.PendingNpcRequestPath,
-        NpcTradeRequestState.PendingRequestPath
-    };
 }

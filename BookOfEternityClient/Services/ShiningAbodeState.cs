@@ -505,14 +505,6 @@ internal static partial class ShiningAbodeState
         capstone["completed"] = capstone["completed"] is JsonValue completed &&
                                  completed.TryGetValue<bool>(out var completedValue) &&
                                  completedValue;
-        if (string.IsNullOrWhiteSpace(GetNodeString(capstone["rewardPassiveId"])))
-            capstone["rewardPassiveId"] = SourceOfLightCapstoneState.PassiveId;
-        if (string.IsNullOrWhiteSpace(GetNodeString(capstone["rewardRelicId"])))
-            capstone["rewardRelicId"] = SourceOfLightCapstoneState.RelicId;
-        if (GetNodeInt(capstone["radianceExperienceAtRequest"], 0) < SourceOfLightCapstoneState.RequiredRadianceExperience)
-            capstone["radianceExperienceAtRequest"] = SourceOfLightCapstoneState.RequiredRadianceExperience;
-        if (GetNodeInt(capstone["radianceTierAtRequest"], 0) != SourceOfLightCapstoneState.RequiredRadianceTier)
-            capstone["radianceTierAtRequest"] = SourceOfLightCapstoneState.RequiredRadianceTier;
     }
 
     public static int ResolveRadianceTier(int experience)

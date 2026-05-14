@@ -22,7 +22,6 @@ public partial class GameEngine
         NpcTradeRequestState.PendingRequestPath,
         ShiningCoreActionRequestState.PendingActionsRequestPath,
         ShiningTradeRequestState.PendingRequestsPath,
-        SourceOfLightCapstoneState.PendingRequestPath,
         GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
         GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
         GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
@@ -188,6 +187,10 @@ public partial class GameEngine
 
         foreach (var file in GuardianPolicySnapshotRequestFiles)
             rollbackBaselineFiles.Add(file);
+        if (_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath))
+            rollbackBaselineFiles.Add(SourceOfLightCapstoneState.PendingRequestPath);
+        else
+            rollbackBaselineFiles.Remove(SourceOfLightCapstoneState.PendingRequestPath);
         if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
 

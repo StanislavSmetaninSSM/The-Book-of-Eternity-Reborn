@@ -150,6 +150,55 @@ internal static class SourceOfLightCapstoneState
         return sb.ToString();
     }
 
+    public static async Task<string?> TryDescribeBlockingPendingContractAsync(FileSystemManager fs, JsonObject? shiningRoot)
+    {
+        var coreState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs);
+        if (coreState.IsMalformed || coreState.Requests.Count > 0)
+            return $"active/malformed {ShiningCoreActionRequestState.PendingActionsRequestPath}";
+
+        var tradeState = await ShiningTradeRequestState.ReadRequestsStateAsync(fs);
+        if (tradeState.IsMalformed || tradeState.Requests.Count > 0)
+            return $"active/malformed {ShiningTradeRequestState.PendingRequestsPath}";
+
+        var foundingMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+            fs,
+            ShiningFactionRequestState.PendingFoundingsRequestPath,
+            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        if (foundingMalformed || (await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs)).Count > 0)
+            return $"active/malformed {ShiningFactionRequestState.PendingFoundingsRequestPath}";
+
+        var realignmentMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+            fs,
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionRealignmentRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        if (realignmentMalformed || (await ShiningFactionRequestState.ReadRealignmentRequestsAsync(fs)).Count > 0)
+            return $"active/malformed {ShiningFactionRequestState.PendingRealignmentsRequestPath}";
+
+        var leadershipMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+            fs,
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        if (leadershipMalformed || (await ShiningFactionRequestState.ReadLeadershipTransitionRequestsAsync(fs)).Count > 0)
+            return $"active/malformed {ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath}";
+
+        if (shiningRoot?.TryGetPropertyValue("pendingNativeFactionDiscovery", out var pendingDiscovery) == true &&
+            pendingDiscovery != null)
+        {
+            return $"legacy pendingNativeFactionDiscovery in {ShiningAbodeState.StatePath}";
+        }
+
+        if (await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(fs))
+            return $"malformed next-life manifestation handoff {GuardianAbodeResidentRequestState.PendingManifestationRequestPath}";
+
+        foreach (var path in BlockingAfterlifePendingPaths)
+        {
+            if (fs.FileExists(path))
+                return $"active/malformed afterlife pending/control contract {path}";
+        }
+
+        return null;
+    }
+
     public static string? ValidateRequest(SourceOfLightCapstoneRequest? request)
     {
         if (request == null)
@@ -221,8 +270,7 @@ internal static class SourceOfLightCapstoneState
 
     public static bool HasMatchingClosure(JsonObject? shiningRoot, JsonObject? soulRoot, SourceOfLightCapstoneRequest request) =>
         HasCompletedCapstone(shiningRoot, request) &&
-        HasLightIncarnate(soulRoot) &&
-        CountIncarnatedLightRelics(soulRoot) == 1;
+        GetLightIncarnateGrantTurn(soulRoot, shiningRoot) == request.CreatedAtTurn;
 
     public static bool HasCompletedCapstone(JsonObject? shiningRoot, SourceOfLightCapstoneRequest? request = null)
     {
@@ -238,6 +286,7 @@ internal static class SourceOfLightCapstoneState
         return string.Equals(GetNodeString(capstone["requestId"]), request.RequestId, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(capstone["rewardPassiveId"]), request.RewardPassiveId, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(GetNodeString(capstone["rewardRelicId"]), request.RewardRelicId, StringComparison.OrdinalIgnoreCase) &&
+               GetNodeInt(capstone["completedAtTurn"]) == request.CreatedAtTurn &&
                GetNodeInt(capstone["radianceExperienceAtRequest"]) == request.RadianceExperienceAtRequest &&
                GetNodeInt(capstone["radianceTierAtRequest"]) == request.RadianceTierAtRequest;
     }
@@ -248,6 +297,52 @@ internal static class SourceOfLightCapstoneState
         capstones[LightIncarnateProperty] is JsonObject lightIncarnate &&
         (string.Equals(GetNodeString(lightIncarnate["passiveId"]), PassiveId, StringComparison.OrdinalIgnoreCase) ||
          string.Equals(GetNodeString(lightIncarnate["id"]), PassiveId, StringComparison.OrdinalIgnoreCase));
+
+    public static int? GetLightIncarnateGrantTurn(JsonObject? soulRoot, JsonObject? shiningRoot = null)
+    {
+        if (soulRoot?[AfterlifeSpiritualConflictState.SoulStateProfileProperty] is not JsonObject profile ||
+            profile[CapstonesProperty] is not JsonObject capstones ||
+            capstones[LightIncarnateProperty] is not JsonObject lightIncarnate)
+        {
+            return null;
+        }
+
+        var passiveId = GetNodeString(lightIncarnate["passiveId"]) ?? GetNodeString(lightIncarnate["id"]);
+        if (!string.Equals(passiveId, PassiveId, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var grantedAtTurn = GetNodeInt(lightIncarnate["grantedAtTurn"]);
+        var requestId = GetNodeString(lightIncarnate["requestId"]);
+        if (grantedAtTurn <= 0 || string.IsNullOrWhiteSpace(requestId))
+            return null;
+
+        if (shiningRoot?[ShiningStateProperty] is not JsonObject marker ||
+            !GetNodeBool(marker["completed"]) ||
+            !string.Equals(GetNodeString(marker["requestId"]), requestId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(marker["rewardPassiveId"]), PassiveId, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(GetNodeString(marker["rewardRelicId"]), RelicId, StringComparison.OrdinalIgnoreCase) ||
+            GetNodeInt(marker["completedAtTurn"]) != grantedAtTurn ||
+            GetNodeInt(marker["radianceExperienceAtRequest"]) < RequiredRadianceExperience ||
+            GetNodeInt(marker["radianceTierAtRequest"]) != RequiredRadianceTier)
+        {
+            return null;
+        }
+
+        var matchingRelicCount = 0;
+        foreach (var relic in EnumerateSoulRelics(soulRoot))
+        {
+            var id = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]);
+            if (!string.Equals(id, RelicId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (!string.Equals(GetNodeString(relic["sourceRequestId"]), requestId, StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            matchingRelicCount++;
+        }
+
+        return matchingRelicCount == 1 ? grantedAtTurn : null;
+    }
 
     public static int CountIncarnatedLightRelics(JsonObject? soulRoot)
     {
@@ -417,4 +512,20 @@ internal static class SourceOfLightCapstoneState
 
         return false;
     }
+
+    private static readonly string[] BlockingAfterlifePendingPaths =
+    {
+        GuardianAbodeOfferingState.PendingRequestPath,
+        GuardianTradeRequestState.PendingRequestPath,
+        PlayerGuardianFoundationState.PendingRequestPath,
+        SystemGuardianLibraryService.AttractionRequestPath,
+        AfterlifeArchiveActionState.ConsultationRequestPath,
+        AfterlifeArchiveActionState.ProjectFuelRequestPath,
+        GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+        GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+        GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+        ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+        ActorSocialInteractionRequestState.PendingNpcRequestPath,
+        NpcTradeRequestState.PendingRequestPath
+    };
 }

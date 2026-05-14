@@ -516,7 +516,8 @@ public partial class ValidationService
             await ValidatePendingShiningFoundingResolutionAsync(issues);
             await ValidatePendingShiningRealignmentResolutionAsync(issues);
             await ValidatePendingShiningLeadershipTransitionResolutionAsync(issues);
-            await ValidatePendingSourceOfLightCapstoneResolutionAsync(issues);
+            if (_fs.FileExists("ready/turn_complete.json"))
+                await ValidatePendingSourceOfLightCapstoneResolutionAsync(issues);
             await ValidateShiningClosureCompositeDiffAsync(issues);
             await ValidatePendingGuardianSocialInteractionResolutionAsync(issues);
             await ValidatePendingNpcSocialInteractionResolutionAsync(issues);

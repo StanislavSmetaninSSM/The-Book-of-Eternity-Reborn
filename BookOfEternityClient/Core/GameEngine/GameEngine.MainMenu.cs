@@ -2097,7 +2097,30 @@ public partial class GameEngine
                 _fs.DeleteFile(path);
         }
 
+        var sourceOfLightState = await SourceOfLightCapstoneState.ReadRequestStateAsync(_fs);
+        if (sourceOfLightState.Exists)
+            blockingPaths.Add(DescribeBlockingSourceOfLightPendingContract(sourceOfLightState));
+
         return blockingPaths;
+    }
+
+    private static string DescribeBlockingSourceOfLightPendingContract(
+        SourceOfLightCapstoneState.SourceOfLightCapstoneReadState state)
+    {
+        if (state.IsMalformed || state.Request == null)
+        {
+            return $"{SourceOfLightCapstoneState.PendingRequestPath}: malformed Source of Light capstone pending contract\n" +
+                   "  закрытие: repair pending_source_of_light_capstone.json or close it through the Source of Light capstone scene before Soul Gates / return_to_chaos_sea";
+        }
+
+        var request = state.Request;
+        return string.Join("\n", new[]
+        {
+            $"{SourceOfLightCapstoneState.PendingRequestPath}: active Source of Light capstone pending contract blocks Soul Gates",
+            "  закрытие: Source of Light scene + sourceOfLightCapstone.completed + light_incarnate + source_of_light_incarnated_light",
+            $"  request: requestId={request.RequestId}; radiance={request.RadianceExperienceAtRequest}/tier {request.RadianceTierAtRequest}; passive={request.RewardPassiveId}; relic={request.RewardRelicId}",
+            $"  root full payload: {state.RawPayload}"
+        });
     }
 
     private async Task<string> DescribeBlockingShiningPendingContractAsync(string path)
@@ -2368,7 +2391,7 @@ public partial class GameEngine
             "  • shining_abode_state.availability == active",
             "  • preparedIncarnationPackage отсутствует",
             "  • legacy pendingNativeFactionDiscovery отсутствует",
-            "  • pending_shining_abode_actions.json / trade / founding / realignment / leadership отсутствуют или пусты",
+            "  • pending_shining_abode_actions.json / trade / founding / realignment / leadership / Source of Light отсутствуют или пусты",
             "",
             "[bold]Affected files:[/]",
             $"  • {ShiningAbodeState.StatePath} [dim](availability seal for Chaos Sea return)[/]",

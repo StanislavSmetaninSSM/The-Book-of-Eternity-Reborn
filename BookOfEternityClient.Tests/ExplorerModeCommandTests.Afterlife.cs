@@ -7042,6 +7042,78 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SourceOfLight_AllowsValidManifestationPendingRequest()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await SetShiningRadianceAsync(experience: 580, tier: 4);
+        _fs.DeleteFile("input/turn_request.json");
+        _fs.DeleteFile("game_state/control/pending_turn_snapshot.json");
+        var snapshotDir = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (Directory.Exists(snapshotDir))
+            Directory.Delete(snapshotDir, recursive: true);
+        _fs.DeleteFile(ShiningCoreActionRequestState.PendingActionsRequestPath);
+        _fs.DeleteFile(ShiningTradeRequestState.PendingRequestsPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingFoundingsRequestPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingRealignmentsRequestPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath);
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
+        {
+            requests = new[]
+            {
+                new
+                {
+                    requestId = "manifest_blocks_source_light_001",
+                    relicId = "relic_companion_echo_001",
+                    relicName = "Отзвук спутника",
+                    manifestationSource = "imprint_relic",
+                    targetIncarnation = 2,
+                    companionNameHint = "Спутник"
+                }
+            }
+        });
+        _console.QueueAnyConfirmResponse(true);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/source_of_light");
+
+        Assert.NotNull(result);
+        Assert.Contains("[SOURCE_OF_LIGHT_CAPSTONE:", result, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(SourceOfLightCapstoneState.PendingRequestPath, result, StringComparison.OrdinalIgnoreCase);
+        AssertNoHiddenExplorerErrors("source_of_light_allows_valid_manifestation_pending");
+        Assert.True(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
+        var renderedText = ExtractRenderedText();
+        Assert.DoesNotContain("Источник Света заблокирован", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SourceOfLight_BlocksMalformedManifestationPendingRequest()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await SetShiningRadianceAsync(experience: 580, tier: 4);
+        _fs.DeleteFile("input/turn_request.json");
+        _fs.DeleteFile("game_state/control/pending_turn_snapshot.json");
+        var snapshotDir = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (Directory.Exists(snapshotDir))
+            Directory.Delete(snapshotDir, recursive: true);
+        _fs.DeleteFile(ShiningCoreActionRequestState.PendingActionsRequestPath);
+        _fs.DeleteFile(ShiningTradeRequestState.PendingRequestsPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingFoundingsRequestPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingRealignmentsRequestPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath);
+        await _fs.WriteFileAtomicAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "{ malformed");
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/source_of_light");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("source_of_light_blocks_malformed_manifestation_pending");
+        Assert.False(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Источник Света заблокирован", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningTreasury_BlocksCostBearingCorePendingRequests()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);

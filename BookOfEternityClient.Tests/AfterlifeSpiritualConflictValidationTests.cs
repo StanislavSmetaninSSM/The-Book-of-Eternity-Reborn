@@ -138,6 +138,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         await WriteConflictStateWithRawExchangeAsync($$"""
         {
           "exchangeId": "exchange_light_incarnate_missing_001",
+          "exchangeAtTurn": 7,
           "operationType": "guard",
           "outcome": "success",
           "before": { "conflictPosition": "contested" },
@@ -154,12 +155,305 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateConflictExchangeWithoutTurnRequiresAuditTurn()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_missing_turn_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("auditTurn=missing", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateConflictExchangeWithOnlyCreatedAtTurnRequiresAuditTurn()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_created_turn_only_001",
+          "createdAtTurn": 1,
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("auditTurn=missing", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_HistoricalConflictBeforeLightIncarnate_DoesNotRequireRetroactiveModifier()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "conflictId": "afterlife_conflict_historical_001",
+              "resolutionState": "resolved",
+              "resolvedAtTurn": 6,
+              "operationType": "guard",
+              "playerOutcome": "won",
+              "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_HistoricalConflictWithoutTurnMarkerAfterLightIncarnate_DoesNotRequireRetroactiveModifier()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "conflictId": "afterlife_conflict_historical_no_turn_001",
+              "resolutionState": "resolved",
+              "operationType": "guard",
+              "playerOutcome": "won",
+              "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PersistedExchangeWithoutTurnMarkerAfterLightIncarnate_DoesNotRequireRetroactiveModifier()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_persisted_no_turn_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PreTurnRecentConflictWithoutTurnMarkerWithCurrentDice_DoesNotRequireRetroactiveModifier()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "conflictId": "afterlife_conflict_pre_turn_no_turn_001",
+              "resolutionState": "resolved",
+              "operationType": "guard",
+              "playerOutcome": "won",
+              "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+            }
+          ]
+        }
+        """);
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я делаю следующий ход после старого conflict log.");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PreTurnExchangeWithoutTurnMarkerWithCurrentDice_DoesNotRequireRetroactiveModifier()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_pre_turn_no_turn_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я продолжаю ход с уже существующим exchange log.");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ChangedNoTurnConflictWithCurrentDice_StillRequiresTurnMarker()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "conflictId": "afterlife_conflict_changed_no_turn_001",
+              "resolutionState": "resolved",
+              "operationType": "guard",
+              "playerOutcome": "won",
+              "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+            }
+          ]
+        }
+        """);
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я меняю conflict log текущим ходом.");
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "conflictId": "afterlife_conflict_changed_no_turn_001",
+              "resolutionState": "resolved",
+              "operationType": "pressure",
+              "playerOutcome": "won",
+              "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("auditTurn=missing", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateModifierBeforeUnlock_IsRejected()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_pre_unlock_001",
+          "exchangeAtTurn": 6,
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithLightIncarnate().ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateModifierWithoutFullSourceClosure_IsRejected()
+    {
+        await WriteSoulStateWithStandaloneLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_incomplete_closure_001",
+          "exchangeAtTurn": 7,
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithLightIncarnate().ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateModifierWithoutFullRadianceSourceMarker_IsRejected()
+    {
+        await WriteSoulStateWithLightIncarnateAsync(markerRadianceExperience: 0, markerRadianceTier: 0);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_low_radiance_marker_001",
+          "exchangeAtTurn": 7,
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithLightIncarnate().ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_LightIncarnateConflictExchangeAcceptsExplicitLeadModifier()
     {
         await WriteSoulStateWithLightIncarnateAsync();
         await WriteConflictStateWithRawExchangeAsync("""
         {
           "exchangeId": "exchange_light_incarnate_present_001",
+          "exchangeAtTurn": 7,
           "operationType": "guard",
           "outcome": "success",
           "before": { "conflictPosition": "contested" },
@@ -220,6 +514,94 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         var issues = await _validator.ValidateGameStateAsync();
 
         Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateChampionSideSupporterUsesSupportBonus()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_champion_support_001",
+          "exchangeAtTurn": 7,
+          "sideModel": "champion_duel",
+          "operationType": "guard",
+          "outcome": "success",
+          "playerSide": {
+            "leadContestant": {
+              "actorType": "guardian",
+              "actorId": "guardian_champion_ally"
+            },
+            "supporters": [
+              {
+                "actorType": "player",
+                "actorId": "player_soul"
+              }
+            ]
+          },
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithLightIncarnate(SourceOfLightCapstoneState.SupportDiceBonus).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateAssistedDuelUsesLeadBonus()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_assisted_duel_lead_001",
+          "exchangeAtTurn": 7,
+          "sideModel": "assisted_duel",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithLightIncarnate(SourceOfLightCapstoneState.LeadDiceBonus).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LightIncarnateAssistedDuelRejectsSupportBonus()
+    {
+        await WriteSoulStateWithLightIncarnateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_light_incarnate_assisted_duel_support_001",
+          "exchangeAtTurn": 7,
+          "conflictMode": "assisted_duel",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": { "conflictPosition": "contested" },
+          "after": { "conflictPosition": "player_advantaged" },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithLightIncarnate(SourceOfLightCapstoneState.SupportDiceBonus).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
@@ -3185,6 +3567,29 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
     """)!.AsObject();
 
+    private static JsonObject BuildPlayerSuccessDiceAuditWithLightIncarnate(int value = SourceOfLightCapstoneState.LeadDiceBonus)
+    {
+        var audit = BuildPlayerSuccessDiceAudit();
+        if (audit["modifierBreakdown"] is JsonObject modifierBreakdown &&
+            modifierBreakdown["player"] is JsonArray player)
+        {
+            player.Add(new JsonObject
+            {
+                ["passiveId"] = SourceOfLightCapstoneState.PassiveId,
+                ["source"] = SourceOfLightCapstoneState.PassiveId,
+                ["value"] = value
+            });
+        }
+
+        var playerTotal = audit["playerTotal"]!.GetValue<int>() + value;
+        var oppositionTotal = audit["oppositionTotal"]!.GetValue<int>();
+        var margin = playerTotal - oppositionTotal;
+        audit["playerTotal"] = playerTotal;
+        audit["margin"] = margin;
+        audit["outcomeBand"] = margin >= 8 ? "decisive_player_success" : "player_success";
+        return audit;
+    }
+
     private static string BuildActiveConflictRootJson(string conflictId = "afterlife_conflict_test_001")
     {
         var root = BuildRootWithActiveConflictAndInvalidMarkers();
@@ -3215,6 +3620,22 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
     }
 
+    private async Task WriteValidatedConflictSnapshotFromCurrentAsync(string playerAction)
+    {
+        var soul = await _fs.ReadFileAsync("game_state/meta/soul_state.json")
+            ?? throw new InvalidOperationException("Expected current soul_state.json before snapshot capture.");
+        var conflict = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath)
+            ?? throw new InvalidOperationException("Expected current afterlife_spiritual_conflict_state.json before snapshot capture.");
+
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", soul);
+        await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, conflict);
+        await WriteValidatedSnapshotManifestAsync(
+            "обработки хода",
+            playerAction,
+            ("game_state/meta/soul_state.json", soul),
+            (AfterlifeSpiritualConflictState.StatePath, conflict));
+    }
+
     private Task WriteSoulStateAsync() => WriteSoulStateAsync("Chaos Sea");
 
     private Task WriteSoulStateAsync(string realm)
@@ -3227,24 +3648,57 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
     }
 
-    private Task WriteSoulStateWithLightIncarnateAsync()
+    private async Task WriteSoulStateWithLightIncarnateAsync(
+        int markerRadianceExperience = SourceOfLightCapstoneState.RequiredRadianceExperience,
+        int markerRadianceTier = SourceOfLightCapstoneState.RequiredRadianceTier)
     {
-        return _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        var request = SourceOfLightCapstoneState.CreateRequest(7, 580, 4);
+        var sourceMarker = SourceOfLightCapstoneState.CreateCompletedShiningMarker(request);
+        sourceMarker["radianceExperienceAtRequest"] = markerRadianceExperience;
+        sourceMarker["radianceTierAtRequest"] = markerRadianceTier;
+        var soulRoot = BuildSoulRootWithLightIncarnate(request);
+        var shiningRoot = new JsonObject
         {
-          "soulName": "Асуран",
-          "currentRealm": "Chaos Sea",
-          "afterlifeCombatProfile": {
-            "capstones": {
-              "lightIncarnate": {
-                "passiveId": "light_incarnate",
-                "id": "light_incarnate",
-                "status": "completed"
-              }
-            }
-          }
-        }
-        """);
+            ["availability"] = ShiningAbodeState.AvailabilityActive,
+            ["radiance"] = new JsonObject
+            {
+                ["experience"] = 580,
+                ["tier"] = 4
+            },
+            ["preparedIncarnationPackage"] = null,
+            [SourceOfLightCapstoneState.ShiningStateProperty] = sourceMarker
+        };
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
     }
+
+    private async Task WriteSoulStateWithStandaloneLightIncarnateAsync()
+    {
+        var request = SourceOfLightCapstoneState.CreateRequest(7, 580, 4);
+        var soulRoot = BuildSoulRootWithLightIncarnate(request);
+        soulRoot.Remove("soulRelics");
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
+    }
+
+    private static JsonObject BuildSoulRootWithLightIncarnate(SourceOfLightCapstoneState.SourceOfLightCapstoneRequest request) =>
+        new()
+        {
+            ["soulName"] = "Асуран",
+            ["currentRealm"] = "Chaos Sea",
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = new JsonObject
+            {
+                [SourceOfLightCapstoneState.CapstonesProperty] = new JsonObject
+                {
+                    [SourceOfLightCapstoneState.LightIncarnateProperty] =
+                        SourceOfLightCapstoneState.CreateLightIncarnatePassive(request)
+                }
+            },
+            ["soulRelics"] = new JsonObject
+            {
+                ["stored"] = new JsonArray(SourceOfLightCapstoneState.CreateIncarnatedLightRelic(request))
+            }
+        };
 
     private Task WriteValidPreparedIncarnationPackageAsync()
     {
