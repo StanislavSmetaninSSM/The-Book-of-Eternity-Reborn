@@ -6,6 +6,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 |---|---|---|
 | afterlife spiritual conflict | духовный конфликт посмертия | The whole afterlife combat-like contest system in `Chaos Sea` or ordinary active `Shining Abode`. |
 | afterlife spiritual action | духовное действие посмертия | A player action inside an already active conflict; `/spiritual_action` only adds an explicit routing tag. |
+| afterlife spiritual combat log | журнал духовного боя | Read-only player-facing log of active `exchangeLog[]` and resolved `recentConflicts[]`; shown through `/spiritual_combat_log`. |
 | Spiritual Arts | духовные искусства | Client-owned afterlife combat upgrades stored in `soul_state.afterlifeCombatProfile.artTiers`. |
 | exchange | обмен действиями | One resolved beat inside an active conflict; written through `afterlifeSpiritualConflictUpdate.mode=exchange`. |
 | resolve | завершение конфликта | Terminal closure of an active conflict; written through `mode=resolve` and moved into `recentConflicts[]`. |
@@ -13,6 +14,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | diceAudit | аудит кубиков | Required visible-dice proof for contested exchanges and contested terminal resolutions. |
 | rewardAudit | аудит награды | Required proof when a resolved victorious conflict grants Ink Feathers or Light Sparks. |
 | criticalResult | аудит критического исхода | Required normalization proof when natural 20/1 changes the margin-derived `outcomeBand`. |
+| counterPayoff | выигрыш контрприёма | Required measurable payoff for a `counter` with success/partial_success/countered: either `counterPayoff`, improved `conflictPosition`, or worsened `oppositionSideStrain`. |
 | operationType | тип операции | Mechanical type of an exchange/resolution, such as `pressure`, `guard`, or `force_incarnation`. |
 | outcome | исход | Mechanical outcome of an exchange, such as `success`, `blocked`, `countered`, or `no_effect`. |
 | side strain | напряжение стороны | `playerSideStrain` / `oppositionSideStrain`; tracks pressure on each side, not hit points. |
@@ -48,6 +50,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | Command | Russian alias | Use |
 |---|---|---|
 | `/spiritual_conflict` | `/духовный_конфликт` | Shows the active afterlife spiritual conflict, sides, `conflictPosition`, side strain, exchange count, and full JSON audit. |
+| `/spiritual_combat_log` | `/журнал_духовного_боя` | Shows the afterlife combat log: active `exchangeLog[]`, resolved `recentConflicts[]`, dice, position/strain deltas, rewards, and full JSON audit. |
 | `/spiritual_combat_help` | `/духовный_бой` | Shows the player-facing combat guide: commands, tactics, Spiritual Arts, position, dice, bounded criticals, rewards, and upgrades. |
 | `/spiritual_action` | `/духовное_действие` | Sends one explicit tagged action inside an active conflict. Ordinary roleplay prose is still valid when it clearly acts inside the active conflict. |
 | `/spiritual_arts` | `/духовные_искусства` | Shows ranks, art tiers, upgrade costs, and performs client-owned Spiritual Art upgrades. |
@@ -60,12 +63,25 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 |---|---|---|---|---|
 | `pressure` / Давление | Directly challenge the opposing lead contestant. | Mainly `oppositionSideStrain`; optionally terminal resolve after a later valid close. | Do not treat it as a free `conflictPosition` maneuver or binding. | "I press on the Guardian's broken oath" can move opposition strain `clear -> strained`. |
 | `guard` / Защита | Prevent or reduce incoming strain/consequence against the player side. | `playerSideStrain`, blocked consequence, defensive `incomingAction` audit. | Do not damage opposition strain directly; use `counter` for reversal. | "I shield the soul-fracture" can keep player strain from worsening. |
-| `counter` / Контрприём | React to a concrete incoming operation. | `incomingAction`, blocked/countered audit, possibly position/strain swing on success. | Cannot be used without `incomingAction`; it is not a standalone attack. | "As he binds me, I turn the thread back" must name the incoming bind/pressure. |
+| `counter` / Контрприём | React to a concrete incoming operation. | `incomingAction`, blocked/countered audit, and a measured payoff on success/partial_success/countered: `counterPayoff`, better `conflictPosition`, or worse `oppositionSideStrain`. | Cannot be used without `incomingAction`; cannot be a standalone `pressure`; successful/partial_success/countered counters cannot only heal `playerSideStrain`. | "As he binds me, I turn the thread back" must name the incoming bind/pressure and show the reversal. |
 | `maneuver` / Манёвр | Shift advantage without raw overpowering. | `conflictPosition`. | Successful maneuver must not directly change `playerSideStrain` or `oppositionSideStrain`. | `contested -> player_advantaged` without strain damage. |
 | `binding` / `force_binding` / Наложение оков | Control after leverage. Requires `player_advantaged`, `player_dominant`, setup, or `decisive_player_success`. | binding/lock state, restricted future actions, setup for resolve. | Cannot be spammed from neutral `contested` on ordinary success. | After gaining advantage, the soul seals the opponent's route. |
 | `break_binding` / Разрыв оков | Answer an existing binding, forced handoff, or coercive lock. | binding state, forced handoff state, position if the break creates leverage. | Not a generic attack or defense against ordinary pressure. | Break a name-seal before it becomes forced incarnation. |
 | `incarnation_resistance` / Сопротивление воплощению | Resist `force_incarnation` / `guardian_forced`. | forced-incarnation proof state, resistance audit, possibly `resolutionState`. | Not a replacement for `guard` against ordinary pressure. | Resist a Guardian trying to throw the soul into a life. |
 | `champion_coordination` / Координация чемпиона | Support a `champion_duel` where an ally is lead contestant. | champion-side support modifier, `conflictPosition`, side support audit. | Cannot be used in `direct_duel` as if the player were lead. | The soul guides an allied Guardian's strike while staying supporter. |
+
+## Position Modifiers
+
+`conflictPosition` is not flavor. In every contested exchange with non-`contested` `before.conflictPosition`, `diceAudit.modifierBreakdown` must include the starting position as exactly one explicit modifier with exact matching `position`; do not split, duplicate, blank, omit, or add extra `conflict_position` entries:
+
+| Starting position | Required modifier |
+|---|---|
+| `player_advantaged` | `modifierBreakdown.player[]` contains `{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "player_advantaged", "value": 2 }` |
+| `player_dominant` | `modifierBreakdown.player[]` contains the same shape with `position="player_dominant"` and `value=4` |
+| `opposition_advantaged` | `modifierBreakdown.opposition[]` contains the same shape with `position="opposition_advantaged"` and `value=2` |
+| `opposition_dominant` | `modifierBreakdown.opposition[]` contains the same shape with `position="opposition_dominant"` and `value=4` |
+
+`contested` means zero `conflict_position` entries. The modifier uses the position before the exchange because the roll is made from the starting tactical state; the after-state records what changed.
 
 ## Conflict Reward Audit
 

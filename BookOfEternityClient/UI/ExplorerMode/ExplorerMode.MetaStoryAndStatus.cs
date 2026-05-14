@@ -169,15 +169,15 @@ public partial class ExplorerMode
         {
             table.AddRow("[bold khaki1]── SHINING ABODE HANDOFF ──[/]", "", "");
             table.AddRow("[khaki1]/help[/]", "[khaki1]/помощь[/]", "[khaki1]Показать этот экран; обычные команды Обители и Моря Хаоса пока недоступны[/]");
-            table.AddRow("[khaki1]/status[/]", "[khaki1]/статус[/]", "[khaki1]Read-only audit: blockers, frozen preparedIncarnationPackage, pending setup and next-life payloads[/]");
-            table.AddRow("[khaki1]/shining_abode[/]", "[khaki1]/сияющая_обитель[/]", "[khaki1]Read-only audit of gates, frozen package, selected cards and core receipts; no ordinary Shining actions[/]");
-            table.AddRow("[khaki1]/shining_politics[/]", "[khaki1]/сияющая_политика[/]", "[khaki1]Read-only audit of faction founding, realignment and leadership receipts/pending contracts[/]");
+            table.AddRow("[khaki1]/status[/]", "[khaki1]/статус[/]", "[khaki1]Аудит только для чтения: блокеры, замороженный пакет воплощения (preparedIncarnationPackage), ожидающая настройка и данные следующей жизни[/]");
+            table.AddRow("[khaki1]/shining_abode[/]", "[khaki1]/сияющая_обитель[/]", "[khaki1]Аудит только для чтения: Врата, замороженный пакет, выбранные карты и квитанции ядра (core receipts); обычные действия Обители недоступны[/]");
+            table.AddRow("[khaki1]/shining_politics[/]", "[khaki1]/сияющая_политика[/]", "[khaki1]Аудит только для чтения: основание фракций, переходы и лидерство, их квитанции и ожидающие контракты[/]");
         }
         else if (isShiningAbode)
         {
             table.AddRow("[bold yellow]── СИЯЮЩАЯ ОБИТЕЛЬ ──[/]", "", "");
             table.AddRow("[yellow]/guardians[/]", "[yellow]/хранители[/]", "[yellow]Информация о хранителях[/]");
-            table.AddRow("[yellow]/status[/]", "[yellow]/статус[/]", "[yellow]Полный статус afterlife: ресурсы души, blockers, pending contracts, Radiance, Light Sparks, Врата, trade/forge и политические сигналы[/]");
+            table.AddRow("[yellow]/status[/]", "[yellow]/статус[/]", "[yellow]Полный статус посмертия: ресурсы души, блокеры, ожидающие контракты, Сияние, Искры Света, Врата, торговля/кузня и политические сигналы[/]");
             table.AddRow("[yellow]/abode_power[/]", "[yellow]/сила_обители[/]", "[yellow]Журнал силы Обителей и её причин[/]");
             table.AddRow("[yellow]/abode_offering[/]", "[yellow]/подношение_обители[/]", "[yellow]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[yellow]/guardian_projects[/]", "[yellow]/проекты_хранителей[/]", "[yellow]Подробный журнал проектов хранителей[/]");
@@ -185,11 +185,12 @@ public partial class ExplorerMode
             table.AddRow("[yellow]/soul_relics[/]", "[yellow]/реликвии[/]", "[yellow]Реликвии души[/]");
             table.AddRow("[yellow]/afterlife_archive[/]", "[yellow]/архив_души[/]", "[yellow]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[yellow]/archive_candidates[/]", "[yellow]/архив_кандидаты[/]", "[yellow]Выбрать, что сохранить в Архив по итогам жизни[/]");
-            table.AddRow("[yellow]/afterlife_inbox[/]", "[yellow]/уведомления_загробья[/]", "[yellow]Ответы GM по торговле, Архиву и резидентам Обители[/]");
-            table.AddRow("[yellow]/spiritual_conflict[/]", "[yellow]/духовный_конфликт[/]", "[yellow]Активный духовный конфликт посмертия (afterlife spiritual conflict): стороны, позиция, напряжение (strain) и журнал обменов (exchange log)[/]");
+            table.AddRow("[yellow]/afterlife_inbox[/]", "[yellow]/уведомления_загробья[/]", "[yellow]Ответы ГМ по торговле, Архиву и резидентам Обители[/]");
+            table.AddRow("[yellow]/spiritual_conflict[/]", "[yellow]/духовный_конфликт[/]", "[yellow]Активный духовный конфликт посмертия: стороны, позиция, напряжение и журнал обменов[/]");
+            table.AddRow("[yellow]/spiritual_combat_log[/]", "[yellow]/журнал_духовного_боя[/]", "[yellow]Журнал духовного боя: обмены действиями (exchangeLog), недавние конфликты (recentConflicts), кубики, позиции, напряжение и награды[/]");
             table.AddRow("[yellow]/spiritual_combat_help[/]", "[yellow]/духовный_бой[/]", "[yellow]Подробная справка по духовному бою: команды, духовные искусства, позиция, кубики, криты и награды[/]");
-            table.AddRow("[yellow]/spiritual_arts[/]", "[yellow]/духовные_искусства[/]", "[yellow]Ранги Просветления/Сияния и tiers духовных искусств[/]");
-            table.AddRow("[yellow]/spiritual_action[/]", "[yellow]/духовное_действие[/]", "[yellow]Отправить действие GM в активном духовном конфликте с явным тегом; обычная проза тоже валидна[/]");
+            table.AddRow("[yellow]/spiritual_arts[/]", "[yellow]/духовные_искусства[/]", "[yellow]Ранги Просветления/Сияния и уровни духовных искусств[/]");
+            table.AddRow("[yellow]/spiritual_action[/]", "[yellow]/духовное_действие[/]", "[yellow]Отправить действие ГМ в активном духовном конфликте с явным тегом; обычная проза тоже валидна[/]");
             table.AddRow("[yellow]/shining_abode[/]", "[yellow]/сияющая_обитель[/]", "[yellow]Обзор сияния, залов, фракций, Врат и текущего состояния Сияющей Обители[/]");
             table.AddRow("[yellow]/shining_politics[/]", "[yellow]/сияющая_политика[/]", "[yellow]Фракционная политика Сияющей Обители: власть, основание и переходы между фракциями[/]");
             table.AddRow("[yellow]/shining_treasury[/]", "[yellow]/казначейство[/]", "[yellow]Локальное казначейство: вклад Чернильных Перьев, проценты и дорогой обмен Перьев на Искры Света[/]");
@@ -202,18 +203,18 @@ public partial class ExplorerMode
             table.AddRow("[bold gold1]/new_game_plus[/]", "[bold gold1]/новая_игра+[/]", "[bold gold1]Legacy alias того же безопасного Нового цикла Сияющей Обители[/]");
             table.AddRow("", "", "");
             table.AddRow("[dim]💡 Это финальная зона свободного ролеплея над Морем Хаоса[/]", "", "");
-            table.AddRow("[dim]💡 В /shining_abode локальные Врата/выбор карт отделены от GM-turn core actions; предпросмотры показывают receipt scaffold и expected state delta.[/]", "", "");
-            table.AddRow("[dim]💡 Карта аудита Shining: /status показывает compact state, blockers, selected cards and next-life payloads; /shining_abode → исходы/Врата показывает gates/package/core receipts and full JSON; /shining_politics показывает founding/realignment/leadership contracts; trade/forge previews live inside /shining_abode.[/]", "", "");
-            table.AddRow("[dim]💡 Где full/canonical JSON: pending core action preview, receipt inspection, gates/package inspection, trade lifecycle inspection, politics pending/resolution inspection. Human summaries are labels only; JSON panels are the contract audit.[/]", "", "");
+            table.AddRow("[dim]💡 В /shining_abode локальные Врата/выбор карт отделены от действий ядра в ходе ГМ; предпросмотры показывают шаблон квитанции и ожидаемую дельту состояния.[/]", "", "");
+            table.AddRow("[dim]💡 Карта аудита Обители: /status показывает компактное состояние, блокеры, выбранные карты и данные следующей жизни; /shining_abode → исходы/Врата показывает Врата, пакет, квитанции ядра и полный JSON; /shining_politics показывает контракты основания/переходов/лидерства; предпросмотры торговли/кузни находятся внутри /shining_abode.[/]", "", "");
+            table.AddRow("[dim]💡 Где полный/канонический JSON: предпросмотр ожидающего действия ядра, проверка квитанции, проверка Врат/пакета, жизненный цикл торговли, политика и ожидающие/закрытые контракты. Человеческие сводки — только подписи; JSON-панели являются аудитом контракта.[/]", "", "");
         }
         else if (isChaosSea)
         {
             // Chaos Sea commands
             table.AddRow("[bold blue]── МОРЕ ХАОСА (загробная жизнь) ──[/]", "", "");
-            table.AddRow("[blue]/chaos_sea[/]", "[blue]/море_хаоса[/]", "[blue]Обзор Моря Хаоса: активный Хранитель, навигация, pending contracts и доступные действия[/]");
-            table.AddRow("[blue]/status[/]", "[blue]/статус[/]", "[blue]Полный статус afterlife: ресурсы души, blockers, pending contracts, reward/delta hints и сохранённая Сияющая Обитель[/]");
+            table.AddRow("[blue]/chaos_sea[/]", "[blue]/море_хаоса[/]", "[blue]Обзор Моря Хаоса: активный Хранитель, навигация, ожидающие контракты и доступные действия[/]");
+            table.AddRow("[blue]/status[/]", "[blue]/статус[/]", "[blue]Полный статус посмертия: ресурсы души, блокеры, ожидающие контракты, подсказки наград/дельт и сохранённая Сияющая Обитель[/]");
             table.AddRow("[blue]/guardians[/]", "[blue]/хранители[/]", "[blue]Информация о хранителях[/]");
-            table.AddRow("[blue]/abodes[/]", "[blue]/обители[/]", "[blue]Навигация по Обителям Хранителей; Chaos Sea-only переходы без Mortal World travel[/]");
+            table.AddRow("[blue]/abodes[/]", "[blue]/обители[/]", "[blue]Навигация по Обителям Хранителей; переходы доступны только в Море Хаоса и не являются путешествием смертного мира[/]");
             table.AddRow("[blue]/abode_power[/]", "[blue]/сила_обители[/]", "[blue]Журнал силы Обителей и её причин[/]");
             table.AddRow("[blue]/abode_offering[/]", "[blue]/подношение_обители[/]", "[blue]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[blue]/guardian_projects[/]", "[blue]/проекты_хранителей[/]", "[blue]Подробный журнал проектов хранителей[/]");
@@ -221,15 +222,16 @@ public partial class ExplorerMode
             table.AddRow("[blue]/soul_relics[/]", "[blue]/реликвии[/]", "[blue]Реликвии души (экипировка, хранилище)[/]");
             table.AddRow("[blue]/afterlife_archive[/]", "[blue]/архив_души[/]", "[blue]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[blue]/archive_candidates[/]", "[blue]/архив_кандидаты[/]", "[blue]Выбрать записи Кодекса, которые переживут смерть[/]");
-            table.AddRow("[blue]/afterlife_inbox[/]", "[blue]/уведомления_загробья[/]", "[blue]Ответы GM по торговле, Архиву и резидентам Обители[/]");
-            table.AddRow("[blue]/spiritual_conflict[/]", "[blue]/духовный_конфликт[/]", "[blue]Активный духовный конфликт посмертия (afterlife spiritual conflict): стороны, позиция, напряжение (strain) и журнал обменов (exchange log)[/]");
+            table.AddRow("[blue]/afterlife_inbox[/]", "[blue]/уведомления_загробья[/]", "[blue]Ответы ГМ по торговле, Архиву и резидентам Обители[/]");
+            table.AddRow("[blue]/spiritual_conflict[/]", "[blue]/духовный_конфликт[/]", "[blue]Активный духовный конфликт посмертия: стороны, позиция, напряжение и журнал обменов[/]");
+            table.AddRow("[blue]/spiritual_combat_log[/]", "[blue]/журнал_духовного_боя[/]", "[blue]Журнал духовного боя: обмены действиями (exchangeLog), недавние конфликты (recentConflicts), кубики, позиции, напряжение и награды[/]");
             table.AddRow("[blue]/spiritual_combat_help[/]", "[blue]/духовный_бой[/]", "[blue]Подробная справка по духовному бою: команды, духовные искусства, позиция, кубики, криты и награды[/]");
-            table.AddRow("[blue]/spiritual_arts[/]", "[blue]/духовные_искусства[/]", "[blue]Ранги Просветления/Сияния и tiers духовных искусств[/]");
-            table.AddRow("[blue]/spiritual_action[/]", "[blue]/духовное_действие[/]", "[blue]Отправить действие GM в активном духовном конфликте с явным тегом; обычная проза тоже валидна[/]");
+            table.AddRow("[blue]/spiritual_arts[/]", "[blue]/духовные_искусства[/]", "[blue]Ранги Просветления/Сияния и уровни духовных искусств[/]");
+            table.AddRow("[blue]/spiritual_action[/]", "[blue]/духовное_действие[/]", "[blue]Отправить действие ГМ в активном духовном конфликте с явным тегом; обычная проза тоже валидна[/]");
             table.AddRow("[blue]/shining_abode[/]", "[blue]/сияющая_обитель[/]", "[blue]Обзор сохранённого состояния Сияющей Обители: сияние, фракции и Врата[/]");
             table.AddRow("[blue]/shining_politics[/]", "[blue]/сияющая_политика[/]", "[blue]Сохранённые решения Сияющей Обители по власти, основанию и переходам между фракциями[/]");
             table.AddRow("[blue]/shining_treasury[/]", "[blue]/казначейство[/]", "[blue]Казначейство доступно только в активной Сияющей Обители; в Chaos Sea показывает сохранённое состояние через /shining_abode[/]");
-            table.AddRow("[blue]/source_of_light[/]", "[blue]/источник_света[/]", "[blue]Источник Света доступен только в ordinary active Shining Abode после полного Сияния[/]");
+            table.AddRow("[blue]/source_of_light[/]", "[blue]/источник_света[/]", "[blue]Источник Света доступен только в обычной активной Сияющей Обители после полного Сияния[/]");
             table.AddRow("[blue]/soul_quests[/]", "[blue]/квесты_души[/]", "[blue]Квесты от хранителей[/]");
             table.AddRow("[blue]/found_guardian_mantle[/]", "[blue]/учредить_хранителя[/]", "[blue]Поздний ритуал основания собственного Хранителя после возвращения из Сияющей Обители[/]");
             table.AddRow("[gold1]/gacha[/]", "[gold1]/гача[/]", "[gold1]Прямое вытягивание реликвии из Моря Хаоса (без модификаторов Хранителя)[/]");
@@ -243,7 +245,7 @@ public partial class ExplorerMode
             table.AddRow("[dim]💡 Говорите с Хранителем свободным текстом:[/]", "", "");
             table.AddRow("[dim]   торговать, брать квесты, менять реликвии, сменить хранителя[/]", "", "");
             table.AddRow("[dim]💡 Для аудита перед ходом: /status, /afterlife_inbox, /feathers, /afterlife_archive, /guardian_projects, /abode_offering.[/]", "", "");
-            table.AddRow("[dim]💡 Если сохранённая Сияющая Обитель важна: /shining_abode показывает gates/package/core receipts/trade-forge previews, /shining_politics показывает political receipts and pending contracts, /status показывает compact Shining blockers.[/]", "", "");
+            table.AddRow("[dim]💡 Если сохранённая Сияющая Обитель важна: /shining_abode показывает Врата, пакет, квитанции ядра и предпросмотры торговли/кузни; /shining_politics показывает политические квитанции и ожидающие контракты; /status показывает компактные блокеры Обители.[/]", "", "");
         }
         else
         {

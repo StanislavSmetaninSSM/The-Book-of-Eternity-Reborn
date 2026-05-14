@@ -1743,6 +1743,17 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("scaleLimit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("/spiritual_combat_help", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/духовный_бой", glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/spiritual_combat_log", glossary + examples + matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/журнал_духовного_боя", glossary + examples + matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("counterPayoff", matrix + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("success/partial_success/countered", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("success/partial_success/countered", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("success/partial_success/countered", examples, StringComparison.Ordinal);
+        Assert.Contains("success/partial_success/countered", glossary, StringComparison.Ordinal);
+        Assert.Contains("conflict_position", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("Do not split or duplicate", apiSpec + daemonSpec + matrix + examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("zero `conflict_position` entries", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("exact matching `position`", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("ink_feathers", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("light_sparks", matrix + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("outcomeMultiplierPercent", matrix + examples + apiSpec + daemonSpec, StringComparison.Ordinal);
@@ -1760,7 +1771,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             "духовное действие посмертия",
             "духовные искусства",
             "обмен действиями",
+            "журнал духовного боя",
             "аудит кубиков",
+            "выигрыш контрприёма",
             "принудительное воплощение",
             "сохранённый ранг Сияния",
             "уровень искусства",
