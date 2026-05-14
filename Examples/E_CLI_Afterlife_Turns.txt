@@ -6441,6 +6441,94 @@ Correct contested exchange response:
 
 `diceUsed[].sourceIndex` is zero-based and must point at actual values in the current `turn_request.json.preGeneratedDices1d20`. If the player writes only ordinary prose during an active conflict, use the same shape; do not demand that the text begin with `[AFTERLIFE_SPIRITUAL_ACTION: ...]`.
 
+If the player wins a contested conflict and the victory is not `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, or pure negotiation, the GM may grant a small validated currency reward. In `Chaos Sea`, reward currency is `ink_feathers` and must be mirrored by `metaStateUpdates.inkFeatherChanges.add`. In ordinary active `Shining Abode`, reward currency is `light_sparks` and must be mirrored by the exact `shining_abode_state.json.lightSparks` increase. Example Chaos Sea victory closure:
+
+```json
+{
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "resolve",
+    "resolution": {
+      "mode": "resolve",
+      "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "resolutionState": "resolved",
+      "resolvedAtTurn": 42,
+      "guardianId": "guardian_liora_001",
+      "operationType": "incarnation_resistance",
+      "playerOutcome": "won",
+      "diceAudit": {
+        "formulaVersion": "afterlife_spiritual_conflict_v1",
+        "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+        "diceUsed": [
+          {
+            "side": "player",
+            "sourceIndex": 0,
+            "sides": 20,
+            "value": 14
+          },
+          {
+            "side": "opposition",
+            "sourceIndex": 1,
+            "sides": 20,
+            "value": 9
+          }
+        ],
+        "playerTotal": 18,
+        "oppositionTotal": 14,
+        "margin": 4,
+        "outcomeBand": "player_success",
+        "modifierBreakdown": {
+          "player": [
+            {
+              "source": "incarnation_resistance art tier",
+              "value": 2
+            },
+            {
+              "source": "current Enlightenment rank",
+              "value": 2
+            }
+          ],
+          "opposition": [
+            {
+              "source": "guardian force_incarnation art tier",
+              "value": 2
+            },
+            {
+              "source": "active Guardian Abode pressure",
+              "value": 3
+            }
+          ]
+        }
+      },
+      "rewardAudit": {
+        "realm": "Chaos Sea",
+        "currency": "ink_feathers",
+        "baseAmount": 10,
+        "opposingLeadStrength": 3,
+        "sideModel": "direct_duel",
+        "startingConflictPosition": "contested",
+        "challengeTier": 3,
+        "outcomeMultiplierPercent": 100,
+        "riskMultiplierPercent": 100,
+        "riskReason": "The conflict started from contested position against a measured Guardian lead.",
+        "finalAmount": 30,
+        "narrativeReason": "The soul won a contested resistance against a Guardian's coercive incarnation pressure."
+      },
+      "summary": "Игрок выиграл духовный конфликт и сорвал принудительное воплощение."
+    }
+  },
+  "metaStateUpdates": {
+    "inkFeatherChanges": {
+      "add": 30
+    }
+  },
+  "response": "Связь Лиоры с вратами рвётся. Душа не только сохраняет свободу выбора, но и собирает Чернильные Перья из рассеянного давления конфликта."
+}
+```
+
+Reward formula is deterministic: Chaos base `10`, Shining base `1`; `challengeTier` comes from opposing lead strength + side model + starting position; `outcomeMultiplierPercent` is `100` for `player_success` and `150` for `decisive_player_success`; risk is `150/125/100/75/50` for `opposition_dominant/opposition_advantaged/contested/player_advantaged/player_dominant`; cap is `120` Ink Feathers or `8` Light Sparks. Do not write reward fields outside `rewardAudit`, do not duplicate a reward for the same `conflictId`, and do not grant XP, Mortal items, Mortal skills, Radiance, or Enlightenment from this conflict reward.
+
 If the conflict ends with Лиора forcing incarnation, the accepted turn must first close the conflict with current-turn proof and only then write the forced trigger:
 
 ```json
@@ -6524,6 +6612,7 @@ Why this is valid:
 - Once `activeConflict` exists, ordinary player prose can advance it; `/spiritual_action` only adds an explicit conflict tag.
 - Contested outcomes include `diceAudit` from current turn visible d20 values; afterlife combat is not resolved by GM fiat.
 - It distinguishes coercive `guardian_forced` incarnation from voluntary `TriggerIncarnation`.
+- If the player wins instead, the optional reward path is audited by `rewardAudit` and exact currency delta, not by arbitrary GM currency edits.
 - It uses side-vs-side fields, not root `opponent`, `playerStrain`, or `opponentStrain`.
 - It avoids `enemiesData`, `alliesData`, `combat_log_markdown`, HP, energy, XP, Mortal skills, Mortal NPCs, and Mortal world files.
 
