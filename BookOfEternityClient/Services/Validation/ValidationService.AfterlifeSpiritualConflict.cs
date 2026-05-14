@@ -132,9 +132,16 @@ public partial class ValidationService
         bool UsesValidatedSnapshot,
         ValidationPendingTurnSnapshotManifest? Manifest);
 
-    private sealed record AfterlifeConflictDiceContext(int[]? AuthoritativeDice)
+    private sealed record AfterlifeConflictDiceContext(
+        int[]? AuthoritativeDice,
+        int? LightIncarnateGrantTurn = null,
+        IReadOnlyList<JsonObject>? PreTurnNoTurnDicePayloads = null)
     {
         public bool HasAuthoritativeDice => AuthoritativeDice is { Length: > 0 };
+        public bool HasLightIncarnate => LightIncarnateGrantTurn is > 0;
+
+        public bool IsPreTurnNoTurnDicePayload(JsonObject payload) =>
+            PreTurnNoTurnDicePayloads?.Any(preTurnPayload => JsonNode.DeepEquals(preTurnPayload, payload)) == true;
     }
 
     private async Task<AfterlifeSpiritualConflictGateContext> ResolveAfterlifeSpiritualConflictGateContextAsync()
@@ -157,12 +164,15 @@ public partial class ValidationService
     private async Task<AfterlifeConflictDiceContext> ResolveAfterlifeConflictDiceContextAsync(
         ValidationPendingTurnSnapshotManifest? manifest)
     {
+        var lightIncarnateGrantTurn = await ResolveLightIncarnateGrantTurnAsync();
+        var preTurnNoTurnDicePayloads = await ResolvePreTurnNoTurnConflictDicePayloadsAsync(manifest);
+
         if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
-            return new AfterlifeConflictDiceContext(manifestDice);
+            return new AfterlifeConflictDiceContext(manifestDice, lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
 
         var liveRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
         if (string.IsNullOrWhiteSpace(liveRequestJson))
-            return new AfterlifeConflictDiceContext(null);
+            return new AfterlifeConflictDiceContext(null, lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
 
         try
         {
@@ -177,7 +187,7 @@ public partial class ValidationService
                 }
 
                 if (dice.Count > 0)
-                    return new AfterlifeConflictDiceContext(dice.ToArray());
+                    return new AfterlifeConflictDiceContext(dice.ToArray(), lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
             }
         }
         catch
@@ -185,7 +195,67 @@ public partial class ValidationService
             // Other validators report malformed live turn requests; dice audit falls back to shape-only checks.
         }
 
-        return new AfterlifeConflictDiceContext(null);
+        return new AfterlifeConflictDiceContext(null, lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
+    }
+
+    private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnNoTurnConflictDicePayloadsAsync(
+        ValidationPendingTurnSnapshotManifest? manifest)
+    {
+        if (manifest == null)
+            return Array.Empty<JsonObject>();
+
+        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeSpiritualConflictState.StatePath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return Array.Empty<JsonObject>();
+
+        try
+        {
+            if (JsonNode.Parse(preTurnJson) is not JsonObject root)
+                return Array.Empty<JsonObject>();
+
+            var payloads = new List<JsonObject>();
+            if (root["recentConflicts"] is JsonArray recentConflicts)
+            {
+                foreach (var entry in recentConflicts.OfType<JsonObject>())
+                    TryAddPreTurnNoTurnDicePayload(payloads, entry);
+            }
+
+            if (root["activeConflict"] is JsonObject activeConflict &&
+                activeConflict["exchangeLog"] is JsonArray exchangeLog)
+            {
+                foreach (var entry in exchangeLog.OfType<JsonObject>())
+                    TryAddPreTurnNoTurnDicePayload(payloads, entry);
+            }
+
+            return payloads;
+        }
+        catch
+        {
+            // Malformed conflict state is reported by the normal state validator.
+            return Array.Empty<JsonObject>();
+        }
+    }
+
+    private static void TryAddPreTurnNoTurnDicePayload(List<JsonObject> payloads, JsonObject payload)
+    {
+        if (payload["diceAudit"] is not JsonObject diceAudit)
+            return;
+
+        if (ResolveLightIncarnateAuditTurn(payload, diceAudit) is > 0)
+            return;
+
+        if (payload.DeepClone() is JsonObject clone)
+            payloads.Add(clone);
+    }
+
+    private async Task<int?> ResolveLightIncarnateGrantTurnAsync()
+    {
+        var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
+        if (!SourceOfLightCapstoneState.HasLightIncarnate(soulRoot))
+            return null;
+
+        var shiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
+        return SourceOfLightCapstoneState.GetLightIncarnateGrantTurn(soulRoot, shiningRoot);
     }
 
     private async Task<string?> TryReadShiningAvailabilityForConflictGateAsync(AfterlifeSpiritualConflictGateContext gateContext)
@@ -404,6 +474,7 @@ public partial class ValidationService
         ValidateNonNegativeIntegerField(profile, context, issues, "radianceRank", "AfterlifeSpiritualConflict");
         ValidateNonNegativeIntegerField(profile, context, issues, "retainedRadianceRank", "AfterlifeSpiritualConflict");
         ValidateNonNegativeIntegerField(profile, context, issues, "lastRecoveryTurn", "AfterlifeSpiritualConflict");
+        ValidateLightIncarnateCombatProfileCapstone(profile, context, issues);
 
         if (!profile.TryGetProperty("artTiers", out var artTiers))
             return;
@@ -801,7 +872,10 @@ public partial class ValidationService
         }
 
         if (proof["diceAudit"] is JsonObject diceAudit)
+        {
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+            ValidateLightIncarnateDiceAuditModifier(proof, diceAudit, $"{context}.diceAudit", issues, diceContext);
+        }
     }
 
     private void ValidateConflictExchange(
@@ -911,7 +985,10 @@ public partial class ValidationService
         }
 
         if (exchange["diceAudit"] is JsonObject diceAudit)
+        {
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+            ValidateLightIncarnateDiceAuditModifier(exchange, diceAudit, $"{context}.diceAudit", issues, diceContext);
+        }
     }
 
     private static bool ExchangeDiceAuditRequired(JsonObject exchange, string? outcome)

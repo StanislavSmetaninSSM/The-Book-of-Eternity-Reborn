@@ -402,6 +402,22 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CollectIncarnationBlockersAsync_SourceOfLightPendingBlocksSoulGates()
+    {
+        await WriteJsonAsync(
+            SourceOfLightCapstoneState.PendingRequestPath,
+            SourceOfLightCapstoneState.CreateRequest(12, 580, 4));
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Contains(blockers, blocker =>
+            blocker.Contains(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains(SourceOfLightCapstoneState.PassiveId, StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains(SourceOfLightCapstoneState.RelicId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task CleanupAfterCancelledChaosSeaMarkerTurn_PreservesSystemGuardianAttractionForLateResponse()
     {
         await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new
@@ -1007,6 +1023,9 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         });
         await _fs.WriteFileAtomicAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, "{ malformed");
         await WriteJsonAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath, new { });
+        await WriteJsonAsync(
+            SourceOfLightCapstoneState.PendingRequestPath,
+            SourceOfLightCapstoneState.CreateRequest(12, 580, 4));
 
         var engine = CreateGameEngine();
 
@@ -1018,6 +1037,10 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             item.Contains(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) &&
             item.Contains("trade-request-1", StringComparison.OrdinalIgnoreCase) &&
             item.Contains("shining_return_4", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(blockingPaths, item =>
+            item.Contains(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) &&
+            item.Contains(SourceOfLightCapstoneState.PassiveId, StringComparison.OrdinalIgnoreCase) &&
+            item.Contains(SourceOfLightCapstoneState.RelicId, StringComparison.OrdinalIgnoreCase));
         Assert.Contains(blockingPaths, item =>
             item.Contains(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) &&
             item.Contains("malformed", StringComparison.OrdinalIgnoreCase));
@@ -1031,6 +1054,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.True(_fs.FileExists(ShiningTradeRequestState.PendingRequestsPath));
         Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingFoundingsRequestPath));
         Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
+        Assert.True(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
     }
 
     [Fact]
@@ -1407,6 +1431,66 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         Assert.False(_fs.FileExists(WorldDirectiveService.PendingSetupPath));
         Assert.False(_fs.FileExists(ScenarioCoreService.ManifestPath));
+    }
+
+    [Fact]
+    public async Task CreateCanonicalBaselineSnapshotAsync_AbsentSourceOfLightPending_IsNotRollbackBaseline()
+    {
+        var engine = CreateGameEngine();
+        var request = new TurnRequest
+        {
+            SessionId = "session_no_source_pending_snapshot",
+            RequestId = "request_no_source_pending_snapshot",
+            TurnNumber = 42,
+            PlayerAction = "ordinary turn without Source pending",
+            Timestamp = "2026-03-24T00:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Chaos Sea" }
+        };
+
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, null, "test");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"]);
+        var rollbackBaselineSet = rollbackBaselineFiles
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.False(files.ContainsKey(SourceOfLightCapstoneState.PendingRequestPath));
+        Assert.DoesNotContain(SourceOfLightCapstoneState.PendingRequestPath, rollbackBaselineSet);
+    }
+
+    [Fact]
+    public async Task CreateCanonicalBaselineSnapshotAsync_PresentSourceOfLightPending_IsRollbackBaseline()
+    {
+        var sourceRequest = SourceOfLightCapstoneState.CreateRequest(42, 580, 4);
+        await SourceOfLightCapstoneState.WriteRequestAsync(_fs, sourceRequest);
+        var engine = CreateGameEngine();
+        var request = new TurnRequest
+        {
+            SessionId = "session_source_pending_snapshot",
+            RequestId = "request_source_pending_snapshot",
+            TurnNumber = 42,
+            PlayerAction = "Source pending snapshot",
+            Timestamp = "2026-03-24T00:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Shining Abode" }
+        };
+
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, null, "test");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"]);
+        var rollbackBaselineSet = rollbackBaselineFiles
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.True(files.ContainsKey(SourceOfLightCapstoneState.PendingRequestPath));
+        Assert.Contains(SourceOfLightCapstoneState.PendingRequestPath, rollbackBaselineSet);
     }
 
     [Fact]

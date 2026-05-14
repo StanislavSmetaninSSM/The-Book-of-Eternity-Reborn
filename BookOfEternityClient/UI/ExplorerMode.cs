@@ -119,6 +119,8 @@ public partial class ExplorerMode
             ["/сияющая_политика"] = ShowShiningPoliticsOverview,
             ["/shining_treasury"] = ShowShiningTreasuryAsync,
             ["/казначейство"] = ShowShiningTreasuryAsync,
+            ["/source_of_light"] = ShowSourceOfLightAsync,
+            ["/источник_света"] = ShowSourceOfLightAsync,
             ["/afterlife_inbox"] = ShowAfterlifeInbox,
             ["/уведомления_загробья"] = ShowAfterlifeInbox,
             ["/spiritual_conflict"] = ShowSpiritualConflictAsync,

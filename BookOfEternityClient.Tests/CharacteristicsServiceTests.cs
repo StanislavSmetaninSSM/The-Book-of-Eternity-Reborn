@@ -88,6 +88,43 @@ public sealed class CharacteristicsServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ComputeAsync_SourceOfLightIncarnatedLight_AppliesAllCharacteristicBonuses()
+    {
+        var bonuses = Characteristics.All.ToDictionary(
+            characteristic => characteristic,
+            _ => SourceOfLightCapstoneState.MortalCharacteristicBonus,
+            StringComparer.Ordinal);
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulRelics = new
+            {
+                equipped = new object[]
+                {
+                    new
+                    {
+                        relicId = SourceOfLightCapstoneState.RelicId,
+                        name = "Воплощенный Свет",
+                        rarity = "legendary",
+                        effects = new
+                        {
+                            characteristicBonuses = bonuses
+                        }
+                    }
+                },
+                stored = Array.Empty<object>()
+            }
+        });
+
+        var result = await _service.ComputeAsync();
+
+        foreach (var characteristic in Characteristics.All)
+        {
+            Assert.Equal(SourceOfLightCapstoneState.MortalCharacteristicBonus, result.Stats[characteristic].PermanentBonus);
+            Assert.Equal(1 + SourceOfLightCapstoneState.MortalCharacteristicBonus, result.Stats[characteristic].PermanentlyModified);
+        }
+    }
+
+    [Fact]
     public async Task ComputeAsync_MalformedCurrentSoulRelics_DoesNotApplyRelicCharacteristicBonuses()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

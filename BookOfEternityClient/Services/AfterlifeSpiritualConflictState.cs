@@ -138,6 +138,7 @@ public static class AfterlifeSpiritualConflictState
             ["radianceRank"] = 0,
             ["retainedRadianceRank"] = 0,
             ["artTiers"] = new JsonObject(),
+            ["capstones"] = new JsonObject(),
             ["lastRecoveryTurn"] = 0
         };
 

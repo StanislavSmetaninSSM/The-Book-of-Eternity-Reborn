@@ -276,6 +276,10 @@ internal static partial class ShiningAbodeState
             return "gates object повреждён или отсутствует.";
         if (root.ContainsKey("gachaSystem") && root["gachaSystem"] is not JsonObject)
             return "gachaSystem object повреждён.";
+        if (root.ContainsKey(SourceOfLightCapstoneState.ShiningStateProperty) &&
+            root[SourceOfLightCapstoneState.ShiningStateProperty] is not null &&
+            root[SourceOfLightCapstoneState.ShiningStateProperty] is not JsonObject)
+            return "sourceOfLightCapstone повреждён и не позволяет надёжно определить capstone reward state.";
 
         var blessingCardIssue = ValidateRawBlessingCardContracts(root);
         if (!string.IsNullOrWhiteSpace(blessingCardIssue))
@@ -319,6 +323,7 @@ internal static partial class ShiningAbodeState
             ["preparedIncarnationPackage"] = null,
             ["gachaSystem"] = BuildDefaultGachaSystemObject(),
             ["treasury"] = BuildDefaultTreasuryObject(),
+            [SourceOfLightCapstoneState.ShiningStateProperty] = null,
             ["coreActionReceipts"] = new JsonArray(),
             ["factionFoundingReceipts"] = new JsonArray(),
             ["factionRealignmentReceipts"] = new JsonArray()
@@ -479,10 +484,27 @@ internal static partial class ShiningAbodeState
 
         NormalizeGachaSystemObject(gachaSystem, radianceTier);
         NormalizeTreasuryObject(root);
+        NormalizeSourceOfLightCapstoneObject(root);
 
         NormalizeReceiptArray(root, residentRoot, "coreActionReceipts");
         NormalizeReceiptArray(root, residentRoot, "factionFoundingReceipts");
         NormalizeReceiptArray(root, residentRoot, "factionRealignmentReceipts");
+    }
+
+    private static void NormalizeSourceOfLightCapstoneObject(JsonObject root)
+    {
+        if (!root.ContainsKey(SourceOfLightCapstoneState.ShiningStateProperty))
+            return;
+
+        if (root[SourceOfLightCapstoneState.ShiningStateProperty] is not JsonObject capstone)
+        {
+            root[SourceOfLightCapstoneState.ShiningStateProperty] = null;
+            return;
+        }
+
+        capstone["completed"] = capstone["completed"] is JsonValue completed &&
+                                 completed.TryGetValue<bool>(out var completedValue) &&
+                                 completedValue;
     }
 
     public static int ResolveRadianceTier(int experience)

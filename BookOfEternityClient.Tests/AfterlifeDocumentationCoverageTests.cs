@@ -1738,7 +1738,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("playerOutcome", examples, StringComparison.Ordinal);
         Assert.Contains("GM preference", examples + matrix + apiSpec + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 24", matrix, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("examples 14-24", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-25", daemonSpec, StringComparison.OrdinalIgnoreCase);
         foreach (var text in new[] { matrix, examples, apiSpec, daemonSpec })
             Assert.Contains("OtherGuides/Afterlife_Combat_Terminology_Glossary.md", text, StringComparison.Ordinal);
 
@@ -1758,6 +1758,53 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains(term, glossary, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    [Fact]
+    public void SourceOfLightCapstoneContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var docs = new[] { matrix, examples, apiSpec, daemonSpec, taskGuide, daemonScript };
+        const string pendingFileName = "pending_source_of_light_capstone.json";
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains(pendingFileName, doc, StringComparison.Ordinal);
+            Assert.Contains(SourceOfLightCapstoneState.PassiveId, doc, StringComparison.Ordinal);
+            Assert.Contains(SourceOfLightCapstoneState.RelicId, doc, StringComparison.Ordinal);
+            Assert.Contains(SourceOfLightCapstoneState.ShiningStateProperty, doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, examples, apiSpec, taskGuide })
+        {
+            Assert.Contains("/source_of_light", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("/источник_света", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("radiance.tier = 4", doc, StringComparison.Ordinal);
+            Assert.Contains("radiance.experience >= 580", doc, StringComparison.Ordinal);
+            Assert.Contains("not a Shining core action", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("coreActionReceipts[]", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var doc in new[] { matrix, examples, apiSpec })
+        {
+            Assert.Contains("Воплощение Света", doc, StringComparison.Ordinal);
+            Assert.Contains("Воплощенный Свет", doc, StringComparison.Ordinal);
+            Assert.Contains("afterlife_spiritual_conflict_v1", doc, StringComparison.Ordinal);
+            Assert.Contains("modifierBreakdown", doc, StringComparison.Ordinal);
+            Assert.Contains("+8", doc, StringComparison.Ordinal);
+            Assert.Contains("+4", doc, StringComparison.Ordinal);
+            Assert.Contains("+25", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var characteristic in Characteristics.All)
+            Assert.Contains(characteristic, examples, StringComparison.Ordinal);
+
+        Assert.Contains("example 25", daemonSpec + daemonScript + examples, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1894,13 +1941,14 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
 
         Assert.Contains("example 19", taskGuide, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("examples 14-24", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-25", daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 19", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 20", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 21", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 22", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 23", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 24", daemonScript, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("example 25", daemonScript, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -2032,6 +2080,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             "pending_archive_consultation_request.json" or
             "pending_archive_project_fuel_request.json" or
             "pending_player_guardian_foundation.json" or
+            "pending_source_of_light_capstone.json" or
             "pending_resident_companion_manifestation_request.json";
 
     private static string ExtractRequiredSection(string text, string startMarker, string endMarker)

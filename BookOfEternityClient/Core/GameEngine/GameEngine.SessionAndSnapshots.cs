@@ -187,6 +187,10 @@ public partial class GameEngine
 
         foreach (var file in GuardianPolicySnapshotRequestFiles)
             rollbackBaselineFiles.Add(file);
+        if (_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath))
+            rollbackBaselineFiles.Add(SourceOfLightCapstoneState.PendingRequestPath);
+        else
+            rollbackBaselineFiles.Remove(SourceOfLightCapstoneState.PendingRequestPath);
         if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
 
@@ -873,6 +877,7 @@ public partial class GameEngine
                 await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
                 await ShiningTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
                 await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+                await SourceOfLightCapstoneState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             }
             await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
@@ -937,6 +942,7 @@ public partial class GameEngine
         await ShiningCoreActionRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await ShiningTradeRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await ShiningFactionRequestState.EnsureHealthyAsync(_fs, currentRealm);
+        await SourceOfLightCapstoneState.EnsureHealthyAsync(_fs, currentRealm);
         await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, currentRealm);
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);

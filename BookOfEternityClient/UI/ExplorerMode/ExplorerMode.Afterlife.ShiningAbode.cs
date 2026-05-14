@@ -58,6 +58,7 @@ public partial class ExplorerMode
                 choices.Add("🚪 Врата и благословения");
                 choices.Add("⚒ Торговля и кузня");
                 choices.Add("🏦 Казначейство");
+                choices.Add("🌞 Источник Света");
             }
 
             if ((context.Root["gates"] is JsonObject gates && GetNodeBool(gates["hasOpenDraft"])) ||
@@ -98,6 +99,12 @@ public partial class ExplorerMode
             if (choice.Contains("Казначейство", StringComparison.Ordinal))
             {
                 await ShowShiningTreasuryAsync();
+                continue;
+            }
+
+            if (choice.Contains("Источник Света", StringComparison.Ordinal))
+            {
+                await ShowSourceOfLightAsync();
                 continue;
             }
 

@@ -192,6 +192,7 @@ public partial class ExplorerMode
             table.AddRow("[yellow]/shining_abode[/]", "[yellow]/сияющая_обитель[/]", "[yellow]Обзор сияния, залов, фракций, Врат и текущего состояния Сияющей Обители[/]");
             table.AddRow("[yellow]/shining_politics[/]", "[yellow]/сияющая_политика[/]", "[yellow]Фракционная политика Сияющей Обители: власть, основание и переходы между фракциями[/]");
             table.AddRow("[yellow]/shining_treasury[/]", "[yellow]/казначейство[/]", "[yellow]Локальное казначейство: вклад Чернильных Перьев, проценты и дорогой обмен Перьев на Искры Света[/]");
+            table.AddRow("[gold1]/source_of_light[/]", "[gold1]/источник_света[/]", "[gold1]Capstone полного Сияния: Источник Света, Воплощение Света и уникальная реликвия Воплощенный Свет[/]");
             table.AddRow("[yellow]/soul_quests[/]", "[yellow]/квесты_души[/]", "[yellow]Квесты хранителей[/]");
             table.AddRow("[gold1]/feathers[/]", "[gold1]/перья[/]", "[gold1]🪶 Чернильные перья[/]");
             table.AddRow("[cyan]/world_setup[/]", "[cyan]/настройка_мира[/]", "[cyan]Подготовить следующий смертный мир[/]");
@@ -226,6 +227,7 @@ public partial class ExplorerMode
             table.AddRow("[blue]/shining_abode[/]", "[blue]/сияющая_обитель[/]", "[blue]Обзор сохранённого состояния Сияющей Обители: сияние, фракции и Врата[/]");
             table.AddRow("[blue]/shining_politics[/]", "[blue]/сияющая_политика[/]", "[blue]Сохранённые решения Сияющей Обители по власти, основанию и переходам между фракциями[/]");
             table.AddRow("[blue]/shining_treasury[/]", "[blue]/казначейство[/]", "[blue]Казначейство доступно только в активной Сияющей Обители; в Chaos Sea показывает сохранённое состояние через /shining_abode[/]");
+            table.AddRow("[blue]/source_of_light[/]", "[blue]/источник_света[/]", "[blue]Источник Света доступен только в ordinary active Shining Abode после полного Сияния[/]");
             table.AddRow("[blue]/soul_quests[/]", "[blue]/квесты_души[/]", "[blue]Квесты от хранителей[/]");
             table.AddRow("[blue]/found_guardian_mantle[/]", "[blue]/учредить_хранителя[/]", "[blue]Поздний ритуал основания собственного Хранителя после возвращения из Сияющей Обители[/]");
             table.AddRow("[gold1]/gacha[/]", "[gold1]/гача[/]", "[gold1]Прямое вытягивание реликвии из Моря Хаоса (без модификаторов Хранителя)[/]");
