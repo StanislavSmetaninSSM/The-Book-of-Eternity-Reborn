@@ -137,13 +137,44 @@ public partial class ValidationService
     private sealed record AfterlifeConflictDiceContext(
         int[]? AuthoritativeDice,
         int? LightIncarnateGrantTurn = null,
-        IReadOnlyList<JsonObject>? PreTurnNoTurnDicePayloads = null)
+        IReadOnlyList<JsonObject>? PreTurnNoTurnDicePayloads = null,
+        IReadOnlyList<JsonObject>? PreTurnConflictPayloads = null,
+        bool HasValidatedTurnBaseline = false)
     {
         public bool HasAuthoritativeDice => AuthoritativeDice is { Length: > 0 };
         public bool HasLightIncarnate => LightIncarnateGrantTurn is > 0;
 
         public bool IsPreTurnNoTurnDicePayload(JsonObject payload) =>
             PreTurnNoTurnDicePayloads?.Any(preTurnPayload => JsonNode.DeepEquals(preTurnPayload, payload)) == true;
+    }
+
+    private sealed class PreTurnConflictPayloadTracker
+    {
+        private readonly IReadOnlyList<JsonObject> _payloads;
+        private readonly bool[] _consumed;
+
+        public PreTurnConflictPayloadTracker(IReadOnlyList<JsonObject>? payloads)
+        {
+            _payloads = payloads ?? Array.Empty<JsonObject>();
+            _consumed = new bool[_payloads.Count];
+        }
+
+        public bool TryConsume(JsonObject payload)
+        {
+            for (var index = 0; index < _payloads.Count; index++)
+            {
+                if (_consumed[index])
+                    continue;
+
+                if (!JsonNode.DeepEquals(_payloads[index], payload))
+                    continue;
+
+                _consumed[index] = true;
+                return true;
+            }
+
+            return false;
+        }
     }
 
     private sealed class AfterlifeConflictRewardContext
@@ -157,6 +188,8 @@ public partial class ValidationService
         public int? CurrentLightSparks { get; init; }
         public int ExpectedCurrentTurnInkFeatherReward { get; set; }
         public int ExpectedCurrentTurnLightSparkReward { get; set; }
+        public bool HasCurrentTurnInkFeatherRewardAudit { get; set; }
+        public bool HasCurrentTurnLightSparkRewardAudit { get; set; }
     }
 
     private async Task<AfterlifeSpiritualConflictGateContext> ResolveAfterlifeSpiritualConflictGateContextAsync()
@@ -180,14 +213,29 @@ public partial class ValidationService
         ValidationPendingTurnSnapshotManifest? manifest)
     {
         var lightIncarnateGrantTurn = await ResolveLightIncarnateGrantTurnAsync();
+        var preTurnConflictPayloads = await ResolvePreTurnConflictPayloadsAsync(manifest);
         var preTurnNoTurnDicePayloads = await ResolvePreTurnNoTurnConflictDicePayloadsAsync(manifest);
 
         if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
-            return new AfterlifeConflictDiceContext(manifestDice, lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
+        {
+            return new AfterlifeConflictDiceContext(
+                manifestDice,
+                lightIncarnateGrantTurn,
+                preTurnNoTurnDicePayloads,
+                preTurnConflictPayloads,
+                HasValidatedTurnBaseline: true);
+        }
 
         var liveRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
         if (string.IsNullOrWhiteSpace(liveRequestJson))
-            return new AfterlifeConflictDiceContext(null, lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
+        {
+            return new AfterlifeConflictDiceContext(
+                null,
+                lightIncarnateGrantTurn,
+                preTurnNoTurnDicePayloads,
+                preTurnConflictPayloads,
+                HasValidatedTurnBaseline: manifest != null);
+        }
 
         try
         {
@@ -202,7 +250,14 @@ public partial class ValidationService
                 }
 
                 if (dice.Count > 0)
-                    return new AfterlifeConflictDiceContext(dice.ToArray(), lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
+                {
+                    return new AfterlifeConflictDiceContext(
+                        dice.ToArray(),
+                        lightIncarnateGrantTurn,
+                        preTurnNoTurnDicePayloads,
+                        preTurnConflictPayloads,
+                        HasValidatedTurnBaseline: manifest != null);
+                }
             }
         }
         catch
@@ -210,7 +265,12 @@ public partial class ValidationService
             // Other validators report malformed live turn requests; dice audit falls back to shape-only checks.
         }
 
-        return new AfterlifeConflictDiceContext(null, lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
+        return new AfterlifeConflictDiceContext(
+            null,
+            lightIncarnateGrantTurn,
+            preTurnNoTurnDicePayloads,
+            preTurnConflictPayloads,
+            HasValidatedTurnBaseline: manifest != null);
     }
 
     private async Task<AfterlifeConflictRewardContext> ResolveAfterlifeConflictRewardContextAsync(
@@ -279,6 +339,43 @@ public partial class ValidationService
         if (ResolveLightIncarnateAuditTurn(payload, diceAudit) is > 0)
             return;
 
+        if (payload.DeepClone() is JsonObject clone)
+            payloads.Add(clone);
+    }
+
+    private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnConflictPayloadsAsync(
+        ValidationPendingTurnSnapshotManifest? manifest)
+    {
+        if (manifest == null)
+            return Array.Empty<JsonObject>();
+
+        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeSpiritualConflictState.StatePath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return Array.Empty<JsonObject>();
+
+        try
+        {
+            if (JsonNode.Parse(preTurnJson) is not JsonObject root)
+                return Array.Empty<JsonObject>();
+
+            var payloads = new List<JsonObject>();
+            if (root["activeConflict"] is JsonObject activeConflict &&
+                activeConflict["exchangeLog"] is JsonArray exchangeLog)
+            {
+                foreach (var entry in exchangeLog.OfType<JsonObject>())
+                    TryAddPreTurnConflictPayload(payloads, entry);
+            }
+
+            return payloads;
+        }
+        catch
+        {
+            return Array.Empty<JsonObject>();
+        }
+    }
+
+    private static void TryAddPreTurnConflictPayload(List<JsonObject> payloads, JsonObject payload)
+    {
         if (payload.DeepClone() is JsonObject clone)
             payloads.Add(clone);
     }
@@ -768,10 +865,14 @@ public partial class ValidationService
 
         if (conflict["exchangeLog"] is JsonArray exchangeLog)
         {
+            var preTurnExchangePayloads = new PreTurnConflictPayloadTracker(diceContext.PreTurnConflictPayloads);
             for (var index = 0; index < exchangeLog.Count; index++)
             {
                 if (exchangeLog[index] is JsonObject exchange)
-                    ValidateConflictExchange(exchange, $"{context}.exchangeLog[{index}]", issues, diceContext);
+                {
+                    var isPreTurnExchange = preTurnExchangePayloads.TryConsume(exchange);
+                    ValidateConflictExchange(exchange, $"{context}.exchangeLog[{index}]", issues, diceContext, isPreTurnExchange);
+                }
                 else
                     issues.Add(new ValidationIssue(
                         $"{context}.exchangeLog[{index}]",
@@ -984,7 +1085,8 @@ public partial class ValidationService
                 rewardRealm ?? "missing/empty");
         }
 
-        if (IsCurrentTurnReward(proof, rewardAudit, rewardContext) &&
+        var isCurrentTurnReward = IsCurrentTurnReward(proof, rewardAudit, rewardContext, context, issues);
+        if (isCurrentTurnReward &&
             rewardContext.AuthorityRealmKey != null &&
             !string.Equals(rewardContext.AuthorityRealmKey, rewardRealmKey, StringComparison.Ordinal))
         {
@@ -1234,13 +1336,19 @@ public partial class ValidationService
             return;
         }
 
-        if (!IsCurrentTurnReward(proof, rewardAudit, rewardContext))
+        if (!isCurrentTurnReward)
             return;
 
         if (string.Equals(expectedCurrency, AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers, StringComparison.OrdinalIgnoreCase))
+        {
+            rewardContext.HasCurrentTurnInkFeatherRewardAudit = true;
             rewardContext.ExpectedCurrentTurnInkFeatherReward += finalAmount;
+        }
         else if (string.Equals(expectedCurrency, AfterlifeSpiritualConflictState.RewardCurrencyLightSparks, StringComparison.OrdinalIgnoreCase))
+        {
+            rewardContext.HasCurrentTurnLightSparkRewardAudit = true;
             rewardContext.ExpectedCurrentTurnLightSparkReward += finalAmount;
+        }
     }
 
     private static bool ContainsRewardLikeFieldsWithoutAudit(JsonObject proof)
@@ -1303,15 +1411,36 @@ public partial class ValidationService
     private static bool IsCurrentTurnReward(
         JsonObject proof,
         JsonObject rewardAudit,
-        AfterlifeConflictRewardContext rewardContext)
+        AfterlifeConflictRewardContext rewardContext,
+        string context,
+        List<ValidationIssue> issues)
     {
         if (rewardContext.CurrentTurn is not > 0)
             return false;
 
-        var rewardTurn = AfterlifeSpiritualConflictState.GetNodeInt(rewardAudit["resolvedAtTurn"],
-            AfterlifeSpiritualConflictState.GetNodeInt(proof["resolvedAtTurn"],
-                AfterlifeSpiritualConflictState.GetNodeInt(proof["turnNumber"])));
-        return rewardTurn == rewardContext.CurrentTurn.Value;
+        var proofTurn = AfterlifeSpiritualConflictState.GetNodeInt(
+            proof["resolvedAtTurn"],
+            AfterlifeSpiritualConflictState.GetNodeInt(proof["turnNumber"]));
+        var hasRewardAuditTurn = TryGetJsonNodeInt(rewardAudit["resolvedAtTurn"], out var rewardAuditTurn);
+        if (proofTurn > 0 &&
+            hasRewardAuditTurn &&
+            rewardAuditTurn != proofTurn)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.resolvedAtTurn",
+                "rewardAudit.resolvedAtTurn должен совпадать с resolved conflict proof turn.",
+                "afterlife_conflict_reward_turn_mismatch",
+                proofTurn.ToString(),
+                rewardAuditTurn.ToString());
+        }
+
+        var effectiveRewardTurn = proofTurn > 0
+            ? proofTurn
+            : hasRewardAuditTurn
+                ? rewardAuditTurn
+                : 0;
+        return effectiveRewardTurn == rewardContext.CurrentTurn.Value;
     }
 
     private static string ResolveRewardCurrencyForRealm(string rewardRealmKey) =>
@@ -1408,7 +1537,7 @@ public partial class ValidationService
         AfterlifeConflictRewardContext rewardContext,
         List<ValidationIssue> issues)
     {
-        if (rewardContext.ExpectedCurrentTurnInkFeatherReward > 0)
+        if (rewardContext.HasCurrentTurnInkFeatherRewardAudit)
         {
             if (rewardContext.PreTurnInkFeathers == null || rewardContext.CurrentInkFeathers == null)
             {
@@ -1436,7 +1565,7 @@ public partial class ValidationService
             }
         }
 
-        if (rewardContext.ExpectedCurrentTurnLightSparkReward > 0)
+        if (rewardContext.HasCurrentTurnLightSparkRewardAudit)
         {
             if (rewardContext.PreTurnLightSparks == null || rewardContext.CurrentLightSparks == null)
             {
@@ -1487,7 +1616,8 @@ public partial class ValidationService
         JsonObject exchange,
         string context,
         List<ValidationIssue> issues,
-        AfterlifeConflictDiceContext diceContext)
+        AfterlifeConflictDiceContext diceContext,
+        bool isPreTurnExchange)
     {
         RequireNodeString(exchange, context, issues, "exchangeId");
         var operationType = ValidateEnumNode(exchange, context, issues, "operationType", AfterlifeSpiritualConflictState.OperationTypes, "afterlife_conflict_invalid_operation_type");
@@ -1576,10 +1706,25 @@ public partial class ValidationService
                 actual: "before == after"));
         }
 
-        if (before != null && after != null)
-            ValidateSpiritualArtOperationRules(exchange, before, after, operationType, outcome, context, issues);
-
         var diceRequired = ExchangeDiceAuditRequired(exchange, outcome);
+        var requiresCurrentMatchupAudit =
+            exchange["diceAudit"] is JsonObject &&
+            diceContext.HasValidatedTurnBaseline &&
+            !isPreTurnExchange;
+
+        if (before != null && after != null)
+        {
+            ValidateSpiritualArtOperationRules(
+                exchange,
+                before,
+                after,
+                operationType,
+                outcome,
+                context,
+                issues,
+                requiresCurrentMatchupAudit);
+        }
+
         if (diceRequired && exchange["diceAudit"] is not JsonObject)
         {
             issues.Add(new ValidationIssue(
@@ -1608,10 +1753,19 @@ public partial class ValidationService
         string? operationType,
         string? outcome,
         string context,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool requiresCurrentMatchupAudit)
     {
         if (string.IsNullOrWhiteSpace(operationType))
             return;
+
+        ValidateMatchupAudit(exchange, operationType, outcome, context, issues, requiresCurrentMatchupAudit);
+
+        if (ConflictTokenEquals(operationType, "pressure"))
+            ValidatePressureRule(exchange, before, after, outcome, context, issues);
+
+        if (ConflictTokenEquals(operationType, "guard"))
+            ValidateGuardRule(before, after, outcome, context, issues);
 
         if (ConflictTokenEquals(operationType, "counter") &&
             exchange["incomingAction"] is not JsonObject)
@@ -1637,6 +1791,9 @@ public partial class ValidationService
                 "counterPayoff object, improved conflictPosition, or worsened oppositionSideStrain",
                 "no counter payoff");
         }
+
+        if (ConflictTokenEquals(operationType, "counter"))
+            ValidateCounterMatchupRule(exchange, before, after, outcome, context, issues);
 
         if (ConflictTokenEquals(operationType, "maneuver"))
             ValidateManeuverRule(before, after, outcome, context, issues);
@@ -1688,6 +1845,280 @@ public partial class ValidationService
                 "afterlife_conflict_champion_coordination_without_champion",
                 "sideModel/conflictMode=champion_duel",
                 "missing champion_duel context");
+        }
+    }
+
+    private static void ValidateMatchupAudit(
+        JsonObject exchange,
+        string operationType,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues,
+        bool requiresCurrentMatchupAudit)
+    {
+        if (!IsTacticalCombatOperation(operationType) &&
+            !requiresCurrentMatchupAudit &&
+            exchange["matchupAudit"] is not JsonObject)
+        {
+            return;
+        }
+
+        if (exchange["matchupAudit"] is not JsonObject matchupAudit)
+        {
+            if (requiresCurrentMatchupAudit)
+            {
+                AddSpiritualArtRuleIssue(
+                    issues,
+                    $"{context}.matchupAudit",
+                    "Новый спорный обмен духовного боя должен иметь matchupAudit с приёмом, контрприёмом и профилем риска.",
+                    "afterlife_conflict_matchup_audit_missing",
+                    "matchupAudit object with playerOperation/oppositionOperation/primaryResolutionLane/matchupRationale/riskProfile",
+                    exchange["matchupAudit"]?.GetType().Name ?? "missing");
+            }
+
+            return;
+        }
+
+        var playerOperation = RequireMatchupString(matchupAudit, $"{context}.matchupAudit", issues, "playerOperation");
+        if (!string.IsNullOrWhiteSpace(playerOperation) &&
+            !ConflictTokenEquals(playerOperation, operationType))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.matchupAudit.playerOperation",
+                "matchupAudit.playerOperation должен совпадать с основным operationType обмена.",
+                "afterlife_conflict_matchup_player_operation_mismatch",
+                operationType,
+                playerOperation);
+        }
+
+        var oppositionOperation = RequireMatchupString(matchupAudit, $"{context}.matchupAudit", issues, "oppositionOperation");
+        if (!string.IsNullOrWhiteSpace(oppositionOperation) &&
+            !IsSupportedMatchupOperation(oppositionOperation))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.matchupAudit.oppositionOperation",
+                "matchupAudit.oppositionOperation должен быть supported combat operation или none/passive.",
+                "afterlife_conflict_matchup_invalid_opposition_operation",
+                string.Join("/", AfterlifeSpiritualConflictState.OperationTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)) + "/none/passive",
+                oppositionOperation);
+        }
+
+        var incomingActionOperations = ResolveIncomingActionOperations(exchange);
+        var hasIncomingAction = exchange["incomingAction"] is JsonObject;
+        if (!string.IsNullOrWhiteSpace(oppositionOperation) &&
+            IsSupportedMatchupOperation(oppositionOperation) &&
+            hasIncomingAction &&
+            (incomingActionOperations.Count == 0 ||
+             !incomingActionOperations.Any(incomingOperation => ConflictTokenEquals(oppositionOperation, incomingOperation))))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.matchupAudit.oppositionOperation",
+                "matchupAudit.oppositionOperation должен совпадать с incomingAction.operationType/finalOperationType, когда incomingAction присутствует.",
+                "afterlife_conflict_matchup_opposition_operation_mismatch",
+                incomingActionOperations.Count == 0
+                    ? "incomingAction.operationType or incomingAction.finalOperationType"
+                    : string.Join("/", incomingActionOperations),
+                oppositionOperation);
+        }
+
+        if (requiresCurrentMatchupAudit &&
+            !string.IsNullOrWhiteSpace(oppositionOperation) &&
+            IsSupportedMatchupOperation(oppositionOperation))
+        {
+            ValidateMatchupRelationship(operationType, oppositionOperation, outcome, context, issues);
+        }
+
+        var primaryResolutionLane = RequireMatchupString(matchupAudit, $"{context}.matchupAudit", issues, "primaryResolutionLane");
+        if (!string.IsNullOrWhiteSpace(primaryResolutionLane) &&
+            !ConflictTokenEquals(primaryResolutionLane, operationType))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.matchupAudit.primaryResolutionLane",
+                "matchupAudit.primaryResolutionLane должен указывать основной приём, который задаёт allowed state delta.",
+                "afterlife_conflict_matchup_primary_lane_mismatch",
+                operationType,
+                primaryResolutionLane);
+        }
+
+        var riskProfile = RequireMatchupString(matchupAudit, $"{context}.matchupAudit", issues, "riskProfile");
+        var expectedRiskProfile = ExpectedRiskProfileForOperation(operationType);
+        if (!string.IsNullOrWhiteSpace(riskProfile) &&
+            !string.Equals(riskProfile, expectedRiskProfile, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.matchupAudit.riskProfile",
+                "matchupAudit.riskProfile должен фиксировать tactical tradeoff выбранного приёма.",
+                "afterlife_conflict_matchup_invalid_risk_profile",
+                expectedRiskProfile,
+                riskProfile);
+        }
+
+        RequireMatchupString(matchupAudit, $"{context}.matchupAudit", issues, "matchupRationale");
+    }
+
+    private static void ValidateMatchupRelationship(
+        string operationType,
+        string oppositionOperation,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!IsSuccessfulArtOutcome(outcome) ||
+            !IsMatrixCounterForSuccessfulOperation(operationType, oppositionOperation))
+        {
+            return;
+        }
+
+        AddSpiritualArtRuleIssue(
+            issues,
+            $"{context}.matchupAudit.oppositionOperation",
+            "matchupAudit противоречит tactical matrix: успешный результат не может игнорировать прямо контрящий приём противника.",
+            "afterlife_conflict_matchup_matrix_violation",
+            "successful/partial_success only against an operation not listed as a direct counter",
+            $"{operationType} vs {oppositionOperation}");
+    }
+
+    private static void ValidatePressureRule(
+        JsonObject exchange,
+        JsonObject before,
+        JsonObject after,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (IsSuccessfulArtOutcome(outcome))
+        {
+            var hasBeforeOppositionStrain = TryGetStrainRank(before["oppositionSideStrain"], out var beforeOppositionStrain);
+            var hasAfterOppositionStrain = TryGetStrainRank(after["oppositionSideStrain"], out var afterOppositionStrain);
+            if (!hasBeforeOppositionStrain ||
+                !hasAfterOppositionStrain ||
+                afterOppositionStrain <= beforeOppositionStrain)
+            {
+                var actual = !hasBeforeOppositionStrain
+                    ? "before.oppositionSideStrain missing or invalid"
+                    : !hasAfterOppositionStrain
+                        ? "after.oppositionSideStrain missing or invalid"
+                        : $"{beforeOppositionStrain}->{afterOppositionStrain}";
+                AddSpiritualArtRuleIssue(
+                    issues,
+                    hasBeforeOppositionStrain
+                        ? $"{context}.after.oppositionSideStrain"
+                        : $"{context}.before.oppositionSideStrain",
+                    "Успешное давление (pressure) должно измеримо ухудшать oppositionSideStrain.",
+                    "afterlife_conflict_pressure_missing_opposition_strain_delta",
+                    "oppositionSideStrain worsened on success/partial_success",
+                    actual);
+            }
+        }
+
+        if (TryGetPositionRank(before["conflictPosition"], out var beforePosition) &&
+            TryGetPositionRank(after["conflictPosition"], out var afterPosition) &&
+            afterPosition > beforePosition)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.conflictPosition",
+                "Давление (pressure) не должно работать как бесплатный манёвр позиции.",
+                "afterlife_conflict_pressure_changes_position",
+                "use maneuver for conflictPosition improvement",
+                $"{beforePosition}->{afterPosition}");
+        }
+
+        if (AddsBindingOrControlState(exchange, before, after))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.operationType",
+                "Давление (pressure) не должно накладывать оковы или контроль; для этого используй binding/force_binding.",
+                "afterlife_conflict_pressure_adds_binding",
+                "pressure changes oppositionSideStrain only",
+                "binding/control state added");
+        }
+    }
+
+    private static void ValidateGuardRule(
+        JsonObject before,
+        JsonObject after,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (IsSuccessfulArtOutcome(outcome) &&
+            TryGetStrainRank(before["playerSideStrain"], out var beforePlayerStrain) &&
+            TryGetStrainRank(after["playerSideStrain"], out var afterPlayerStrain) &&
+            afterPlayerStrain > beforePlayerStrain)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.playerSideStrain",
+                "Успешная защита (guard) не должна ухудшать playerSideStrain.",
+                "afterlife_conflict_guard_worsens_player_strain",
+                "playerSideStrain unchanged or improved for successful guard",
+                $"{beforePlayerStrain}->{afterPlayerStrain}");
+        }
+
+        if (TryGetStrainRank(before["oppositionSideStrain"], out var beforeOppositionStrain) &&
+            TryGetStrainRank(after["oppositionSideStrain"], out var afterOppositionStrain) &&
+            afterOppositionStrain > beforeOppositionStrain)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.oppositionSideStrain",
+                "Защита (guard) не должна напрямую наносить strain противнику.",
+                "afterlife_conflict_guard_deals_opposition_strain",
+                "oppositionSideStrain unchanged for guard",
+                $"{beforeOppositionStrain}->{afterOppositionStrain}");
+        }
+
+        if (TryGetPositionRank(before["conflictPosition"], out var beforePosition) &&
+            TryGetPositionRank(after["conflictPosition"], out var afterPosition) &&
+            afterPosition > beforePosition)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.conflictPosition",
+                "Защита (guard) не должна напрямую улучшать conflictPosition; для этого используй maneuver или counter payoff.",
+                "afterlife_conflict_guard_improves_position",
+                "conflictPosition unchanged or preserved for guard",
+                $"{beforePosition}->{afterPosition}");
+        }
+    }
+
+    private static void ValidateCounterMatchupRule(
+        JsonObject exchange,
+        JsonObject before,
+        JsonObject after,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var incomingOperation = ResolveIncomingOperation(exchange);
+        if (!IsAllowedCounterTargetOperation(incomingOperation))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.incomingAction.operationType",
+                "Контрприём (counter) применим только против конкретного прямого давления, контроля или принуждения, а не против защиты, манёвра, пассивности, переговоров или выхода.",
+                "afterlife_conflict_counter_invalid_target_operation",
+                "pressure/binding/force_binding/force_incarnation/break_binding/incarnation_resistance",
+                string.IsNullOrWhiteSpace(incomingOperation) ? "missing" : incomingOperation);
+        }
+
+        if (ConflictTokenEquals(outcome, "setback") &&
+            !HasCounterFailureDownside(exchange, before, after))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after",
+                "Провал контрприёма (counter) должен быть рискованнее защиты: нужен worsened playerSideStrain, worsened conflictPosition или counterBackfire.",
+                "afterlife_conflict_counter_setback_without_downside",
+                "playerSideStrain worsened, conflictPosition worsened, or counterBackfire object",
+                "no counter downside");
         }
     }
 
@@ -1837,6 +2268,161 @@ public partial class ValidationService
             JsonArray array => array.Any(HasMeaningfulJsonValue),
             _ => true
         };
+
+    private static string? RequireMatchupString(
+        JsonObject matchupAudit,
+        string context,
+        List<ValidationIssue> issues,
+        string fieldName)
+    {
+        var value = AfterlifeSpiritualConflictState.GetNodeString(matchupAudit[fieldName]);
+        if (!string.IsNullOrWhiteSpace(value))
+            return value;
+
+        AddSpiritualArtRuleIssue(
+            issues,
+            $"{context}.{fieldName}",
+            $"matchupAudit.{fieldName} должен быть непустой строкой.",
+            "afterlife_conflict_matchup_missing_field",
+            "non-empty string",
+            matchupAudit[fieldName]?.GetType().Name ?? "missing");
+        return value;
+    }
+
+    private static bool IsTacticalCombatOperation(string? operationType) =>
+        !ConflictTokenEquals(operationType, "withdraw", "surrender", "negotiate");
+
+    private static bool IsSupportedMatchupOperation(string operationType) =>
+        AfterlifeSpiritualConflictState.OperationTypes.Contains(operationType) ||
+        ConflictTokenEquals(operationType, "none", "passive");
+
+    private static bool IsAllowedCounterTargetOperation(string? operationType) =>
+        ConflictTokenEquals(
+            operationType,
+            "pressure",
+            "binding",
+            "force_binding",
+            "force_incarnation",
+            "break_binding",
+            "incarnation_resistance");
+
+    private static bool IsMatrixCounterForSuccessfulOperation(string operationType, string oppositionOperation)
+    {
+        var operation = NormalizeConflictToken(operationType);
+        var opposition = NormalizeConflictToken(oppositionOperation);
+        return operation switch
+        {
+            "pressure" => ConflictTokenEquals(opposition, "guard", "counter"),
+            "guard" => ConflictTokenEquals(opposition, "maneuver", "binding", "force_binding"),
+            "maneuver" => ConflictTokenEquals(opposition, "pressure", "maneuver", "binding", "force_binding"),
+            "binding" or "force_binding" => ConflictTokenEquals(opposition, "break_binding"),
+            _ => false
+        };
+    }
+
+    private static string ExpectedRiskProfileForOperation(string operationType) =>
+        NormalizeConflictToken(operationType) switch
+        {
+            "pressure" => "offensive_pressure",
+            "guard" => "safe_defense",
+            "counter" => "risky_reversal",
+            "maneuver" => "position_play",
+            "binding" or "force_binding" => "control_leverage",
+            "break_binding" or "incarnation_resistance" => "anti_control",
+            "champion_coordination" => "champion_support",
+            _ => "terminal_choice"
+        };
+
+    private static string? ResolveIncomingOperation(JsonObject exchange)
+    {
+        var hasIncomingAction = exchange["incomingAction"] is JsonObject;
+        var incomingOperations = ResolveIncomingActionOperations(exchange);
+        if (incomingOperations.Count > 0 &&
+            exchange["matchupAudit"] is JsonObject matchupAudit)
+        {
+            var oppositionOperation = AfterlifeSpiritualConflictState.GetNodeString(matchupAudit["oppositionOperation"]);
+            if (!string.IsNullOrWhiteSpace(oppositionOperation) &&
+                incomingOperations.Any(incomingOperation => ConflictTokenEquals(oppositionOperation, incomingOperation)))
+            {
+                return oppositionOperation;
+            }
+        }
+
+        if (incomingOperations.Count > 0)
+            return incomingOperations[0];
+
+        if (hasIncomingAction)
+            return null;
+
+        if (exchange["matchupAudit"] is JsonObject fallbackMatchupAudit)
+            return AfterlifeSpiritualConflictState.GetNodeString(fallbackMatchupAudit["oppositionOperation"]);
+
+        return null;
+    }
+
+    private static IReadOnlyList<string> ResolveIncomingActionOperations(JsonObject exchange)
+    {
+        if (exchange["incomingAction"] is not JsonObject incomingAction)
+            return Array.Empty<string>();
+
+        var operations = new List<string>(capacity: 2);
+        AddIncomingActionOperation(operations, incomingAction["operationType"]);
+        AddIncomingActionOperation(operations, incomingAction["finalOperationType"]);
+        return operations;
+    }
+
+    private static void AddIncomingActionOperation(List<string> operations, JsonNode? node)
+    {
+        var operation = AfterlifeSpiritualConflictState.GetNodeString(node);
+        if (string.IsNullOrWhiteSpace(operation) ||
+            operations.Any(existing => ConflictTokenEquals(existing, operation)))
+        {
+            return;
+        }
+
+        operations.Add(operation);
+    }
+
+    private static bool HasCounterFailureDownside(JsonObject exchange, JsonObject before, JsonObject after)
+    {
+        if (exchange["counterBackfire"] is JsonObject backfire &&
+            HasMeaningfulCounterPayoff(backfire))
+        {
+            return true;
+        }
+
+        if (TryGetStrainRank(before["playerSideStrain"], out var beforePlayerStrain) &&
+            TryGetStrainRank(after["playerSideStrain"], out var afterPlayerStrain) &&
+            afterPlayerStrain > beforePlayerStrain)
+        {
+            return true;
+        }
+
+        if (TryGetPositionRank(before["conflictPosition"], out var beforePosition) &&
+            TryGetPositionRank(after["conflictPosition"], out var afterPosition) &&
+            afterPosition < beforePosition)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool AddsBindingOrControlState(JsonObject exchange, JsonObject before, JsonObject after)
+    {
+        foreach (var field in new[] { "bindingState", "bindingId", "activeBinding", "forcedHandoff", "forceIncarnation", "forcedIncarnation" })
+        {
+            if (after.ContainsKey(field) && !JsonNode.DeepEquals(before[field], after[field]))
+                return true;
+        }
+
+        return exchange.ContainsKey("bindingState") ||
+               exchange.ContainsKey("bindingId") ||
+               exchange.ContainsKey("activeBinding") ||
+               exchange.ContainsKey("forcedHandoff") ||
+               exchange.ContainsKey("forceIncarnation") ||
+               exchange.ContainsKey("forcedIncarnation");
+    }
 
     private static bool TryGetPositionRank(JsonNode? node, out int rank)
     {
@@ -2604,6 +3190,9 @@ public partial class ValidationService
 
         return acceptedTokens.Any(token => string.Equals(value, token, StringComparison.OrdinalIgnoreCase));
     }
+
+    private static string NormalizeConflictToken(string? value) =>
+        string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim().ToLowerInvariant();
 
     private static bool TryGetJsonNodeInt(JsonNode? node, out int value)
     {

@@ -7380,6 +7380,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("540", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("опыта", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("уровень 3", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сильнее против", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Контрится", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Shining radiance value: 0", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -7613,6 +7615,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("binding/force_binding", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("симметрично", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("не создаёт решительный", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Матрица приём-контрприём", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("защита безопаснее", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("контрприём сильнее", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("манёвр даёт будущий бонус", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/spiritual_arts", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
