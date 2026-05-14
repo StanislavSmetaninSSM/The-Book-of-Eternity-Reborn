@@ -49,8 +49,10 @@ public partial class ValidationService
 
         var gateContext = await ResolveAfterlifeSpiritualConflictGateContextAsync();
         var diceContext = await ResolveAfterlifeConflictDiceContextAsync(gateContext.Manifest);
+        var rewardContext = await ResolveAfterlifeConflictRewardContextAsync(gateContext);
         await ValidateActiveConflictRemovalHasTerminalProofAsync(root, issues);
-        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext);
+        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, rewardContext);
+        ValidateAfterlifeConflictRewardStateDeltas(rewardContext, issues);
 
         if (root["activeConflict"] is JsonObject activeConflict)
         {
@@ -144,6 +146,19 @@ public partial class ValidationService
             PreTurnNoTurnDicePayloads?.Any(preTurnPayload => JsonNode.DeepEquals(preTurnPayload, payload)) == true;
     }
 
+    private sealed class AfterlifeConflictRewardContext
+    {
+        public string? AuthorityRealmKey { get; init; }
+        public bool UsesValidatedSnapshot { get; init; }
+        public int? CurrentTurn { get; init; }
+        public int? PreTurnInkFeathers { get; init; }
+        public int? CurrentInkFeathers { get; init; }
+        public int? PreTurnLightSparks { get; init; }
+        public int? CurrentLightSparks { get; init; }
+        public int ExpectedCurrentTurnInkFeatherReward { get; set; }
+        public int ExpectedCurrentTurnLightSparkReward { get; set; }
+    }
+
     private async Task<AfterlifeSpiritualConflictGateContext> ResolveAfterlifeSpiritualConflictGateContextAsync()
     {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
@@ -196,6 +211,26 @@ public partial class ValidationService
         }
 
         return new AfterlifeConflictDiceContext(null, lightIncarnateGrantTurn, preTurnNoTurnDicePayloads);
+    }
+
+    private async Task<AfterlifeConflictRewardContext> ResolveAfterlifeConflictRewardContextAsync(
+        AfterlifeSpiritualConflictGateContext gateContext)
+    {
+        var currentSoulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
+        var preTurnSoulRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json"));
+        var currentShiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
+        var preTurnShiningRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath));
+
+        return new AfterlifeConflictRewardContext
+        {
+            AuthorityRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(gateContext.Realm),
+            UsesValidatedSnapshot = gateContext.UsesValidatedSnapshot,
+            CurrentTurn = gateContext.Manifest?.TurnNumber > 0 ? gateContext.Manifest.TurnNumber : null,
+            PreTurnInkFeathers = preTurnSoulRoot == null ? null : ShiningAbodeState.GetSoulSpendableInkFeathers(preTurnSoulRoot),
+            CurrentInkFeathers = currentSoulRoot == null ? null : ShiningAbodeState.GetSoulSpendableInkFeathers(currentSoulRoot),
+            PreTurnLightSparks = preTurnShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(preTurnShiningRoot["lightSparks"]),
+            CurrentLightSparks = currentShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(currentShiningRoot["lightSparks"])
+        };
     }
 
     private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnNoTurnConflictDicePayloadsAsync(
@@ -587,7 +622,8 @@ public partial class ValidationService
         JsonObject root,
         string context,
         List<ValidationIssue> issues,
-        AfterlifeConflictDiceContext diceContext)
+        AfterlifeConflictDiceContext diceContext,
+        AfterlifeConflictRewardContext rewardContext)
     {
         if (root.ContainsKey(AfterlifeSpiritualConflictState.ResponseField))
         {
@@ -630,10 +666,11 @@ public partial class ValidationService
 
         if (root["recentConflicts"] is JsonArray recentConflicts)
         {
+            var rewardConflictIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             for (var index = 0; index < recentConflicts.Count; index++)
             {
                 if (recentConflicts[index] is JsonObject proof)
-                    ValidateRecentConflictProof(proof, $"{context}.recentConflicts[{index}]", issues, diceContext);
+                    ValidateRecentConflictProof(proof, $"{context}.recentConflicts[{index}]", issues, diceContext, rewardContext, rewardConflictIds);
             }
         }
         else
@@ -855,7 +892,9 @@ public partial class ValidationService
         JsonObject proof,
         string context,
         List<ValidationIssue> issues,
-        AfterlifeConflictDiceContext diceContext)
+        AfterlifeConflictDiceContext diceContext,
+        AfterlifeConflictRewardContext rewardContext,
+        HashSet<string> rewardConflictIds)
     {
         var diceRequired = ResolveDiceAuditRequired(proof);
         if (diceRequired && proof["diceAudit"] is not JsonObject)
@@ -876,6 +915,572 @@ public partial class ValidationService
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
             ValidateLightIncarnateDiceAuditModifier(proof, diceAudit, $"{context}.diceAudit", issues, diceContext);
         }
+
+        ValidateConflictRewardAudit(proof, context, issues, rewardContext, rewardConflictIds);
+    }
+
+    private void ValidateConflictRewardAudit(
+        JsonObject proof,
+        string context,
+        List<ValidationIssue> issues,
+        AfterlifeConflictRewardContext rewardContext,
+        HashSet<string> rewardConflictIds)
+    {
+        if (proof[AfterlifeSpiritualConflictState.RewardAuditProperty] is null)
+        {
+            if (ContainsRewardLikeFieldsWithoutAudit(proof))
+            {
+                issues.Add(new ValidationIssue(
+                    context,
+                    IssueSeverity.Error,
+                    "Afterlife conflict reward должен быть записан только через rewardAudit.",
+                    code: "afterlife_conflict_reward_missing_audit",
+                    section: "AfterlifeSpiritualConflict",
+                    expected: "rewardAudit object with realm/currency/baseAmount/challengeTier/multipliers/finalAmount/narrativeReason",
+                    actual: "reward-like fields outside rewardAudit",
+                    repairHint: "Перенеси награду в recentConflicts[].rewardAudit или убери reward-поля для no-reward closure."));
+            }
+
+            return;
+        }
+
+        if (proof[AfterlifeSpiritualConflictState.RewardAuditProperty] is not JsonObject rewardAudit)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{AfterlifeSpiritualConflictState.RewardAuditProperty}",
+                IssueSeverity.Error,
+                "rewardAudit должен быть object.",
+                code: "afterlife_conflict_reward_invalid_audit_shape",
+                section: "AfterlifeSpiritualConflict",
+                expected: "object",
+                actual: proof[AfterlifeSpiritualConflictState.RewardAuditProperty]?.GetType().Name ?? "null"));
+            return;
+        }
+
+        var rewardRealm = AfterlifeSpiritualConflictState.GetNodeString(rewardAudit["realm"]);
+        var rewardRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(rewardRealm);
+        if (rewardRealmKey == null)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.realm",
+                "rewardAudit.realm должен быть Chaos Sea или Shining Abode.",
+                "afterlife_conflict_reward_invalid_realm",
+                "Chaos Sea or Shining Abode",
+                string.IsNullOrWhiteSpace(rewardRealm) ? "missing/empty" : rewardRealm);
+            return;
+        }
+
+        var proofRealm = AfterlifeSpiritualConflictState.GetNodeString(proof["realm"]);
+        var proofRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(proofRealm);
+        if (proofRealmKey != null && !string.Equals(proofRealmKey, rewardRealmKey, StringComparison.Ordinal))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.realm",
+                "rewardAudit.realm должен совпадать с realm resolved conflict proof.",
+                "afterlife_conflict_reward_realm_mismatch",
+                proofRealm ?? "missing/empty",
+                rewardRealm ?? "missing/empty");
+        }
+
+        if (IsCurrentTurnReward(proof, rewardAudit, rewardContext) &&
+            rewardContext.AuthorityRealmKey != null &&
+            !string.Equals(rewardContext.AuthorityRealmKey, rewardRealmKey, StringComparison.Ordinal))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.realm",
+                "Current-turn afterlife conflict reward должен совпадать с validated pre-turn authority realm.",
+                "afterlife_conflict_reward_authority_realm_mismatch",
+                rewardContext.AuthorityRealmKey,
+                rewardRealmKey);
+        }
+
+        var expectedCurrency = ResolveRewardCurrencyForRealm(rewardRealmKey);
+        var currency = AfterlifeSpiritualConflictState.GetNodeString(rewardAudit["currency"]);
+        if (!string.Equals(currency, expectedCurrency, StringComparison.OrdinalIgnoreCase))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.currency",
+                "rewardAudit.currency не соответствует realm награды.",
+                "afterlife_conflict_reward_wrong_currency",
+                expectedCurrency,
+                string.IsNullOrWhiteSpace(currency) ? "missing/empty" : currency);
+        }
+
+        if (!RewardAllowedForConflictProof(proof, rewardAudit))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit",
+                "Этот terminal afterlife conflict outcome не может выдавать currency reward.",
+                "afterlife_conflict_reward_not_allowed",
+                "resolved contested player victory with diceAudit.outcomeBand=player_success|decisive_player_success",
+                DescribeRewardOutcome(proof));
+            return;
+        }
+
+        var conflictId = AfterlifeSpiritualConflictState.GetNodeString(proof["conflictId"]) ??
+                         AfterlifeSpiritualConflictState.GetNodeString(proof["id"]);
+        if (string.IsNullOrWhiteSpace(conflictId))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.conflictId",
+                "Reward-bearing recentConflicts[] proof должен иметь conflictId для anti-farm проверки.",
+                "afterlife_conflict_reward_missing_conflict_id",
+                "non-empty conflictId",
+                "missing");
+        }
+        else if (!rewardConflictIds.Add(conflictId))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit",
+                "Один afterlife conflictId не может выдавать награду повторно в recentConflicts[].",
+                "afterlife_conflict_reward_duplicate_conflict",
+                "one rewardAudit per conflictId",
+                conflictId);
+        }
+
+        var expectedBaseAmount = ResolveRewardBaseAmount(rewardRealmKey);
+        if (!TryGetJsonNodeInt(rewardAudit["baseAmount"], out var baseAmount) || baseAmount != expectedBaseAmount)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.baseAmount",
+                "rewardAudit.baseAmount должен быть canonical base amount для realm/currency.",
+                "afterlife_conflict_reward_base_amount_mismatch",
+                expectedBaseAmount.ToString(),
+                rewardAudit["baseAmount"]?.ToJsonString() ?? "missing");
+        }
+
+        var outcomeBand = AfterlifeSpiritualConflictState.GetNodeString((proof["diceAudit"] as JsonObject)?["outcomeBand"]);
+        var expectedOutcomeMultiplier = ResolveRewardOutcomeMultiplierPercent(outcomeBand);
+        if (!TryGetJsonNodeInt(rewardAudit["outcomeMultiplierPercent"], out var outcomeMultiplier) ||
+            outcomeMultiplier != expectedOutcomeMultiplier)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.outcomeMultiplierPercent",
+                "rewardAudit.outcomeMultiplierPercent должен соответствовать diceAudit.outcomeBand.",
+                "afterlife_conflict_reward_outcome_multiplier_mismatch",
+                expectedOutcomeMultiplier.ToString(),
+                rewardAudit["outcomeMultiplierPercent"]?.ToJsonString() ?? "missing");
+        }
+
+        var auditSideModel = AfterlifeSpiritualConflictState.GetNodeString(rewardAudit["sideModel"]);
+        var proofSideModel = AfterlifeSpiritualConflictState.GetNodeString(proof["sideModel"]);
+        var sideModel = auditSideModel ?? proofSideModel;
+        if (string.IsNullOrWhiteSpace(auditSideModel))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.sideModel",
+                "rewardAudit.sideModel обязателен для deterministic challenge tier.",
+                "afterlife_conflict_reward_missing_side_model",
+                "direct_duel|assisted_duel|champion_duel",
+                "missing/empty");
+        }
+        else if (!AfterlifeSpiritualConflictState.SideModels.Contains(auditSideModel))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.sideModel",
+                "rewardAudit.sideModel должен быть supported side model.",
+                "afterlife_conflict_reward_invalid_side_model",
+                string.Join("/", AfterlifeSpiritualConflictState.SideModels.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                auditSideModel);
+        }
+        else if (!string.IsNullOrWhiteSpace(proofSideModel) &&
+                 !string.Equals(auditSideModel, proofSideModel, StringComparison.OrdinalIgnoreCase))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.sideModel",
+                "rewardAudit.sideModel должен совпадать с resolved conflict proof sideModel.",
+                "afterlife_conflict_reward_side_model_mismatch",
+                proofSideModel,
+                auditSideModel);
+        }
+
+        var startingPosition = AfterlifeSpiritualConflictState.GetNodeString(rewardAudit["startingConflictPosition"]);
+        if (string.IsNullOrWhiteSpace(startingPosition))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.startingConflictPosition",
+                "rewardAudit.startingConflictPosition обязателен для risk multiplier.",
+                "afterlife_conflict_reward_missing_starting_position",
+                string.Join("/", AfterlifeSpiritualConflictState.ConflictPositions.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                "missing/empty");
+        }
+        else if (!AfterlifeSpiritualConflictState.ConflictPositions.Contains(startingPosition))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.startingConflictPosition",
+                "rewardAudit.startingConflictPosition должен быть supported conflictPosition.",
+                "afterlife_conflict_reward_invalid_starting_position",
+                string.Join("/", AfterlifeSpiritualConflictState.ConflictPositions.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                startingPosition);
+        }
+
+        if (!TryGetJsonNodeInt(rewardAudit["opposingLeadStrength"], out var opposingLeadStrength) ||
+            opposingLeadStrength <= 0)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.opposingLeadStrength",
+                "rewardAudit.opposingLeadStrength должен быть positive integer.",
+                "afterlife_conflict_reward_missing_opposing_strength",
+                "positive integer derived from opposition lead art/authority snapshot",
+                rewardAudit["opposingLeadStrength"]?.ToJsonString() ?? "missing");
+        }
+
+        var expectedChallengeTier = ResolveRewardChallengeTier(opposingLeadStrength, sideModel, startingPosition);
+        if (!TryGetJsonNodeInt(rewardAudit["challengeTier"], out var challengeTier) ||
+            challengeTier != expectedChallengeTier)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.challengeTier",
+                "rewardAudit.challengeTier должен быть deterministic tier из opposingLeadStrength + sideModel + startingConflictPosition.",
+                "afterlife_conflict_reward_challenge_tier_mismatch",
+                expectedChallengeTier.ToString(),
+                rewardAudit["challengeTier"]?.ToJsonString() ?? "missing");
+        }
+
+        var expectedRiskMultiplier = ResolveRewardRiskMultiplierPercent(startingPosition);
+        if (!TryGetJsonNodeInt(rewardAudit["riskMultiplierPercent"], out var riskMultiplier) ||
+            riskMultiplier != expectedRiskMultiplier)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.riskMultiplierPercent",
+                "rewardAudit.riskMultiplierPercent должен соответствовать startingConflictPosition.",
+                "afterlife_conflict_reward_risk_multiplier_mismatch",
+                expectedRiskMultiplier.ToString(),
+                rewardAudit["riskMultiplierPercent"]?.ToJsonString() ?? "missing");
+        }
+
+        var riskReason = AfterlifeSpiritualConflictState.GetNodeString(rewardAudit["riskReason"]);
+        if (string.IsNullOrWhiteSpace(riskReason))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.riskReason",
+                "rewardAudit.riskReason должен объяснять стартовый риск/позицию.",
+                "afterlife_conflict_reward_missing_risk_reason",
+                "non-empty riskReason",
+                "missing/empty");
+        }
+
+        var narrativeReason = AfterlifeSpiritualConflictState.GetNodeString(rewardAudit["narrativeReason"]) ??
+                              AfterlifeSpiritualConflictState.GetNodeString(rewardAudit["reason"]);
+        if (string.IsNullOrWhiteSpace(narrativeReason))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.narrativeReason",
+                "rewardAudit.narrativeReason должен объяснять, за что получена награда.",
+                "afterlife_conflict_reward_missing_narrative_reason",
+                "non-empty narrativeReason",
+                "missing/empty");
+        }
+
+        var expectedFinalAmount = ResolveRewardFinalAmount(
+            expectedBaseAmount,
+            expectedChallengeTier,
+            expectedOutcomeMultiplier,
+            expectedRiskMultiplier,
+            rewardRealmKey);
+        if (!TryGetJsonNodeInt(rewardAudit["finalAmount"], out var finalAmount))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.finalAmount",
+                "rewardAudit.finalAmount должен быть integer.",
+                "afterlife_conflict_reward_final_amount_mismatch",
+                expectedFinalAmount.ToString(),
+                rewardAudit["finalAmount"]?.ToJsonString() ?? "missing");
+            return;
+        }
+
+        var cap = ResolveRewardMaxAmount(rewardRealmKey);
+        if (finalAmount > cap)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.finalAmount",
+                "rewardAudit.finalAmount превышает cap для realm/currency.",
+                "afterlife_conflict_reward_amount_over_cap",
+                $"<= {cap}",
+                finalAmount.ToString());
+            return;
+        }
+
+        if (finalAmount != expectedFinalAmount)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.finalAmount",
+                "rewardAudit.finalAmount должен совпадать с deterministic reward formula.",
+                "afterlife_conflict_reward_final_amount_mismatch",
+                expectedFinalAmount.ToString(),
+                finalAmount.ToString());
+            return;
+        }
+
+        if (!IsCurrentTurnReward(proof, rewardAudit, rewardContext))
+            return;
+
+        if (string.Equals(expectedCurrency, AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers, StringComparison.OrdinalIgnoreCase))
+            rewardContext.ExpectedCurrentTurnInkFeatherReward += finalAmount;
+        else if (string.Equals(expectedCurrency, AfterlifeSpiritualConflictState.RewardCurrencyLightSparks, StringComparison.OrdinalIgnoreCase))
+            rewardContext.ExpectedCurrentTurnLightSparkReward += finalAmount;
+    }
+
+    private static bool ContainsRewardLikeFieldsWithoutAudit(JsonObject proof)
+    {
+        foreach (var fieldName in new[]
+                 {
+                     "reward", "rewardCurrency", "currencyReward", "rewardAmount",
+                     "currencyAmount", "inkFeathersAwarded", "lightSparksAwarded"
+                 })
+        {
+            if (proof.ContainsKey(fieldName))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool RewardAllowedForConflictProof(JsonObject proof, JsonObject rewardAudit)
+    {
+        var mode = AfterlifeSpiritualConflictState.GetNodeString(proof["mode"]);
+        var resolutionState = AfterlifeSpiritualConflictState.GetNodeString(proof["resolutionState"]) ??
+                              AfterlifeSpiritualConflictState.GetNodeString(proof["status"]);
+        if (!ConflictTokenEquals(mode, AfterlifeSpiritualConflictState.ModeResolve) ||
+            !ConflictTokenEquals(resolutionState, "resolved"))
+        {
+            return false;
+        }
+
+        if (IsExplicitVoluntaryNonContest(proof))
+            return false;
+
+        var operationType = AfterlifeSpiritualConflictState.GetNodeString(proof["operationType"]) ??
+                            AfterlifeSpiritualConflictState.GetNodeString(proof["finalOperationType"]);
+        if (ConflictTokenEquals(operationType, "withdraw", "surrender", "negotiate"))
+            return false;
+
+        var outcome = AfterlifeSpiritualConflictState.GetNodeString(proof["outcome"]) ??
+                      AfterlifeSpiritualConflictState.GetNodeString(proof["result"]);
+        if (ConflictTokenEquals(outcome, "no_effect", "blocked"))
+            return false;
+
+        var outcomeBand = AfterlifeSpiritualConflictState.GetNodeString((proof["diceAudit"] as JsonObject)?["outcomeBand"]);
+        if (!ConflictTokenEquals(outcomeBand, "player_success", "decisive_player_success"))
+            return false;
+
+        var playerOutcome = AfterlifeSpiritualConflictState.GetNodeString(proof["playerOutcome"]);
+        if (!string.IsNullOrWhiteSpace(playerOutcome) &&
+            !ConflictTokenEquals(playerOutcome, "won", "win", "victory", "success", "prevailed"))
+        {
+            return false;
+        }
+
+        var farmRepeat = rewardAudit["farmRepeat"] as JsonValue;
+        if (farmRepeat != null && farmRepeat.TryGetValue<bool>(out var isFarmRepeat) && isFarmRepeat)
+            return false;
+
+        return true;
+    }
+
+    private static bool IsCurrentTurnReward(
+        JsonObject proof,
+        JsonObject rewardAudit,
+        AfterlifeConflictRewardContext rewardContext)
+    {
+        if (rewardContext.CurrentTurn is not > 0)
+            return false;
+
+        var rewardTurn = AfterlifeSpiritualConflictState.GetNodeInt(rewardAudit["resolvedAtTurn"],
+            AfterlifeSpiritualConflictState.GetNodeInt(proof["resolvedAtTurn"],
+                AfterlifeSpiritualConflictState.GetNodeInt(proof["turnNumber"])));
+        return rewardTurn == rewardContext.CurrentTurn.Value;
+    }
+
+    private static string ResolveRewardCurrencyForRealm(string rewardRealmKey) =>
+        string.Equals(rewardRealmKey, "shining_abode", StringComparison.Ordinal)
+            ? AfterlifeSpiritualConflictState.RewardCurrencyLightSparks
+            : AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers;
+
+    private static int ResolveRewardBaseAmount(string rewardRealmKey) =>
+        string.Equals(rewardRealmKey, "shining_abode", StringComparison.Ordinal)
+            ? AfterlifeSpiritualConflictState.ShiningConflictRewardBaseAmount
+            : AfterlifeSpiritualConflictState.ChaosSeaConflictRewardBaseAmount;
+
+    private static int ResolveRewardMaxAmount(string rewardRealmKey) =>
+        string.Equals(rewardRealmKey, "shining_abode", StringComparison.Ordinal)
+            ? AfterlifeSpiritualConflictState.ShiningConflictRewardMaxAmount
+            : AfterlifeSpiritualConflictState.ChaosSeaConflictRewardMaxAmount;
+
+    private static int ResolveRewardOutcomeMultiplierPercent(string? outcomeBand) =>
+        ConflictTokenEquals(outcomeBand, "decisive_player_success") ? 150 :
+        ConflictTokenEquals(outcomeBand, "player_success") ? 100 :
+        0;
+
+    private static int ResolveRewardRiskMultiplierPercent(string? startingPosition) =>
+        startingPosition?.Trim().ToLowerInvariant() switch
+        {
+            "opposition_dominant" => 150,
+            "opposition_advantaged" => 125,
+            "contested" => 100,
+            "player_advantaged" => 75,
+            "player_dominant" => 50,
+            _ => 100
+        };
+
+    private static int ResolveRewardChallengeTier(int opposingLeadStrength, string? sideModel, string? startingPosition)
+    {
+        var strengthTier = opposingLeadStrength switch
+        {
+            <= 0 => 1,
+            <= 2 => 1,
+            <= 5 => 2,
+            <= 8 => 3,
+            <= 11 => 4,
+            _ => 5
+        };
+        var sideModelAdjustment = sideModel?.Trim().ToLowerInvariant() switch
+        {
+            "direct_duel" => 1,
+            "assisted_duel" => 0,
+            "champion_duel" => 0,
+            _ => 0
+        };
+        var positionAdjustment = startingPosition?.Trim().ToLowerInvariant() switch
+        {
+            "opposition_dominant" => 2,
+            "opposition_advantaged" => 1,
+            "contested" => 0,
+            "player_advantaged" => -1,
+            "player_dominant" => -2,
+            _ => 0
+        };
+
+        return Math.Clamp(
+            strengthTier + sideModelAdjustment + positionAdjustment,
+            1,
+            AfterlifeSpiritualConflictState.ConflictRewardMaxChallengeTier);
+    }
+
+    private static int ResolveRewardFinalAmount(
+        int baseAmount,
+        int challengeTier,
+        int outcomeMultiplierPercent,
+        int riskMultiplierPercent,
+        string rewardRealmKey)
+    {
+        if (baseAmount <= 0 || challengeTier <= 0 || outcomeMultiplierPercent <= 0 || riskMultiplierPercent <= 0)
+            return 0;
+
+        var raw = (long)baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent / 10_000L;
+        return (int)Math.Clamp(raw, 0, ResolveRewardMaxAmount(rewardRealmKey));
+    }
+
+    private static string DescribeRewardOutcome(JsonObject proof)
+    {
+        var mode = AfterlifeSpiritualConflictState.GetNodeString(proof["mode"]) ?? "missing_mode";
+        var operation = AfterlifeSpiritualConflictState.GetNodeString(proof["operationType"]) ??
+                        AfterlifeSpiritualConflictState.GetNodeString(proof["finalOperationType"]) ??
+                        "missing_operation";
+        var outcomeBand = AfterlifeSpiritualConflictState.GetNodeString((proof["diceAudit"] as JsonObject)?["outcomeBand"]) ?? "missing_outcomeBand";
+        var playerOutcome = AfterlifeSpiritualConflictState.GetNodeString(proof["playerOutcome"]) ?? "missing_playerOutcome";
+        return $"mode={mode}; operationType={operation}; outcomeBand={outcomeBand}; playerOutcome={playerOutcome}";
+    }
+
+    private static void ValidateAfterlifeConflictRewardStateDeltas(
+        AfterlifeConflictRewardContext rewardContext,
+        List<ValidationIssue> issues)
+    {
+        if (rewardContext.ExpectedCurrentTurnInkFeatherReward > 0)
+        {
+            if (rewardContext.PreTurnInkFeathers == null || rewardContext.CurrentInkFeathers == null)
+            {
+                AddRewardIssue(
+                    issues,
+                    "game_state/meta/soul_state.json.inkFeathers",
+                    "Current-turn afterlife conflict Ink Feather reward требует pre-turn/current soul_state baseline.",
+                    "afterlife_conflict_reward_missing_currency_baseline",
+                    "validated pre-turn and current soul_state.inkFeathers",
+                    "missing/unreadable");
+            }
+            else
+            {
+                var actualDelta = rewardContext.CurrentInkFeathers.Value - rewardContext.PreTurnInkFeathers.Value;
+                if (actualDelta != rewardContext.ExpectedCurrentTurnInkFeatherReward)
+                {
+                    AddRewardIssue(
+                        issues,
+                        "game_state/meta/soul_state.json.inkFeathers",
+                        "Ink Feather rewardAudit.finalAmount должен совпадать с фактической дельтой валюты.",
+                        "afterlife_conflict_reward_currency_delta_mismatch",
+                        rewardContext.ExpectedCurrentTurnInkFeatherReward.ToString(),
+                        actualDelta.ToString());
+                }
+            }
+        }
+
+        if (rewardContext.ExpectedCurrentTurnLightSparkReward > 0)
+        {
+            if (rewardContext.PreTurnLightSparks == null || rewardContext.CurrentLightSparks == null)
+            {
+                AddRewardIssue(
+                    issues,
+                    $"{ShiningAbodeState.StatePath}.lightSparks",
+                    "Current-turn afterlife conflict Light Spark reward требует pre-turn/current shining_abode_state baseline.",
+                    "afterlife_conflict_reward_missing_currency_baseline",
+                    "validated pre-turn and current shining_abode_state.lightSparks",
+                    "missing/unreadable");
+            }
+            else
+            {
+                var actualDelta = rewardContext.CurrentLightSparks.Value - rewardContext.PreTurnLightSparks.Value;
+                if (actualDelta != rewardContext.ExpectedCurrentTurnLightSparkReward)
+                {
+                    AddRewardIssue(
+                        issues,
+                        $"{ShiningAbodeState.StatePath}.lightSparks",
+                        "Light Spark rewardAudit.finalAmount должен совпадать с фактической дельтой валюты.",
+                        "afterlife_conflict_reward_currency_delta_mismatch",
+                        rewardContext.ExpectedCurrentTurnLightSparkReward.ToString(),
+                        actualDelta.ToString());
+                }
+            }
+        }
+    }
+
+    private static void AddRewardIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string message,
+        string code,
+        string expected,
+        string actual)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeSpiritualConflict",
+            expected: expected,
+            actual: actual));
     }
 
     private void ValidateConflictExchange(

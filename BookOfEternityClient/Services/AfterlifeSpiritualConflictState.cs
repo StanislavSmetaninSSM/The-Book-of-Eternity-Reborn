@@ -8,6 +8,15 @@ public static class AfterlifeSpiritualConflictState
     public const string StatePath = "game_state/meta/afterlife_spiritual_conflict_state.json";
     public const string ResponseField = "afterlifeSpiritualConflictUpdate";
     public const string SoulStateProfileProperty = "afterlifeCombatProfile";
+    public const string RewardAuditProperty = "rewardAudit";
+    public const string RewardCurrencyInkFeathers = "ink_feathers";
+    public const string RewardCurrencyLightSparks = "light_sparks";
+
+    public const int ChaosSeaConflictRewardBaseAmount = 10;
+    public const int ShiningConflictRewardBaseAmount = 1;
+    public const int ChaosSeaConflictRewardMaxAmount = 120;
+    public const int ShiningConflictRewardMaxAmount = 8;
+    public const int ConflictRewardMaxChallengeTier = 5;
 
     public const string ModeStart = "start";
     public const string ModeExchange = "exchange";

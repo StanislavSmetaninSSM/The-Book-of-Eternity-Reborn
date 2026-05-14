@@ -11,6 +11,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | resolve | завершение конфликта | Terminal closure of an active conflict; written through `mode=resolve` and moved into `recentConflicts[]`. |
 | repair_cancel | repair-отмена / ремонтная отмена | Non-reward cleanup of malformed or impossible conflict state. |
 | diceAudit | аудит кубиков | Required visible-dice proof for contested exchanges and contested terminal resolutions. |
+| rewardAudit | аудит награды | Required proof when a resolved victorious conflict grants Ink Feathers or Light Sparks. |
 | operationType | тип операции | Mechanical type of an exchange/resolution, such as `pressure`, `guard`, or `force_incarnation`. |
 | outcome | исход | Mechanical outcome of an exchange, such as `success`, `blocked`, `countered`, or `no_effect`. |
 | side strain | напряжение стороны | `playerSideStrain` / `oppositionSideStrain`; tracks pressure on each side, not hit points. |
@@ -55,6 +56,17 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 | `break_binding` / Разрыв оков | Answer an existing binding, forced handoff, or coercive lock. | binding state, forced handoff state, position if the break creates leverage. | Not a generic attack or defense against ordinary pressure. | Break a name-seal before it becomes forced incarnation. |
 | `incarnation_resistance` / Сопротивление воплощению | Resist `force_incarnation` / `guardian_forced`. | forced-incarnation proof state, resistance audit, possibly `resolutionState`. | Not a replacement for `guard` against ordinary pressure. | Resist a Guardian trying to throw the soul into a life. |
 | `champion_coordination` / Координация чемпиона | Support a `champion_duel` where an ally is lead contestant. | champion-side support modifier, `conflictPosition`, side support audit. | Cannot be used in `direct_duel` as if the player were lead. | The soul guides an allied Guardian's strike while staying supporter. |
+
+## Conflict Reward Audit
+
+Afterlife conflict rewards are mechanical, not flavor. A reward is allowed only for a resolved contested player victory with `diceAudit.outcomeBand = player_success` or `decisive_player_success`.
+
+| Realm | Currency | Russian label | State delta |
+|---|---|---|---|
+| `Chaos Sea` | `ink_feathers` | Чернильные Перья | `metaStateUpdates.inkFeatherChanges.add` must equal `rewardAudit.finalAmount`. |
+| `Shining Abode` | `light_sparks` | Искры Света | `shining_abode_state.json.lightSparks` must increase by `rewardAudit.finalAmount`. |
+
+`rewardAudit` must include `realm`, `currency`, `baseAmount`, `opposingLeadStrength`, `sideModel`, `startingConflictPosition`, `challengeTier`, `outcomeMultiplierPercent`, `riskMultiplierPercent`, `riskReason`, `finalAmount`, and `narrativeReason`. No reward is allowed for `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, pure negotiation/no-contest, duplicate reward for the same `conflictId`, wrong realm, or wrong currency.
 
 ## State Value Labels
 

@@ -1736,6 +1736,12 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("resolvedAtTurn", examples, StringComparison.Ordinal);
         Assert.Contains("operationType", examples, StringComparison.Ordinal);
         Assert.Contains("playerOutcome", examples, StringComparison.Ordinal);
+        Assert.Contains("rewardAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("ink_feathers", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("light_sparks", matrix + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("outcomeMultiplierPercent", matrix + examples + apiSpec + daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("riskMultiplierPercent", matrix + examples + apiSpec + daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("metaStateUpdates.inkFeatherChanges.add", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("GM preference", examples + matrix + apiSpec + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 24", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("examples 14-25", daemonSpec, StringComparison.OrdinalIgnoreCase);

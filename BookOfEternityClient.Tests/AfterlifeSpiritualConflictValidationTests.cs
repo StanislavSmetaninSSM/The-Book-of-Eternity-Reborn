@@ -132,6 +132,139 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ChaosSeaVictoryReward_AllowsInkFeatherDelta()
+    {
+        await WriteSoulStateWithInkFeathersAsync(50, "Chaos Sea");
+        await WriteResolvedConflictRewardStateAsync(BuildConflictRewardAuditJson(
+            "Chaos Sea",
+            AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            finalAmount: 30));
+        await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_reward_wrong_currency", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_reward_not_allowed", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ShiningVictoryReward_AllowsLightSparkDelta()
+    {
+        await WriteSoulStateWithInkFeathersAsync(20, "Shining Abode");
+        await WriteShiningStateWithLightSparksAsync(8);
+        await WriteResolvedConflictRewardStateAsync(BuildConflictRewardAuditJson(
+            "Shining Abode",
+            AfterlifeSpiritualConflictState.RewardCurrencyLightSparks,
+            finalAmount: 3),
+            realm: "Shining Abode");
+        await WriteRewardTurnSnapshotAsync(
+            preTurnSoulJson: BuildSoulStateJson("Shining Abode", inkFeathers: 20),
+            preTurnShiningJson: BuildShiningStateJson(lightSparks: 5),
+            preTurnConflictJson: BuildActiveConflictRootJson(realm: "Shining Abode"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_reward_wrong_currency", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_reward_not_allowed", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RewardWrongCurrencyByRealm_IsRejected()
+    {
+        await WriteSoulStateWithInkFeathersAsync(20, "Chaos Sea");
+        await WriteResolvedConflictRewardStateAsync(BuildConflictRewardAuditJson(
+            "Chaos Sea",
+            AfterlifeSpiritualConflictState.RewardCurrencyLightSparks,
+            finalAmount: 30));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_wrong_currency", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RewardOverCap_IsRejected()
+    {
+        await WriteSoulStateWithInkFeathersAsync(20, "Chaos Sea");
+        await WriteResolvedConflictRewardStateAsync(BuildConflictRewardAuditJson(
+            "Chaos Sea",
+            AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            finalAmount: AfterlifeSpiritualConflictState.ChaosSeaConflictRewardMaxAmount + 1,
+            opposingLeadStrength: 20,
+            challengeTier: 5,
+            startingConflictPosition: "opposition_dominant",
+            riskMultiplierPercent: 150));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_amount_over_cap", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NoRewardClosuresRemainValid()
+    {
+        await WriteSoulStateAsync();
+        await WriteResolvedConflictRewardStateAsync(rewardAuditJson: null);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_conflict_reward_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Theory]
+    [InlineData("repair_cancel", "resolved", "pressure", "won")]
+    [InlineData("resolve", "resolved", "negotiate", "won")]
+    [InlineData("resolve", "resolved", "withdraw", "won")]
+    [InlineData("resolve", "resolved", "pressure", "voluntary_withdrawal")]
+    public async Task ValidateGameStateAsync_NoRewardOutcomes_CannotGrantCurrency(
+        string mode,
+        string resolutionState,
+        string operationType,
+        string playerOutcome)
+    {
+        await WriteSoulStateWithInkFeathersAsync(20, "Chaos Sea");
+        await WriteResolvedConflictRewardStateAsync(
+            BuildConflictRewardAuditJson(
+                "Chaos Sea",
+                AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+                finalAmount: 30),
+            mode: mode,
+            resolutionState: resolutionState,
+            operationType: operationType,
+            playerOutcome: playerOutcome,
+            voluntary: string.Equals(playerOutcome, "voluntary_withdrawal", StringComparison.OrdinalIgnoreCase));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_not_allowed", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RewardAuditMustMatchCurrencyDelta()
+    {
+        await WriteSoulStateWithInkFeathersAsync(49, "Chaos Sea");
+        await WriteResolvedConflictRewardStateAsync(BuildConflictRewardAuditJson(
+            "Chaos Sea",
+            AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            finalAmount: 30));
+        await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_CounterRequiresIncomingAction()
     {
         await WriteSoulStateAsync();
@@ -3795,15 +3928,164 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         return audit;
     }
 
-    private static string BuildActiveConflictRootJson(string conflictId = "afterlife_conflict_test_001")
+    private static string BuildActiveConflictRootJson(string conflictId = "afterlife_conflict_test_001", string realm = "Chaos Sea")
     {
         var root = BuildRootWithActiveConflictAndInvalidMarkers();
         root.Remove("lastInvalidUpdate");
         root.Remove("lastInvalidUpdateReason");
         root.Remove("lastInvalidUpdateAtUtc");
         if (root["activeConflict"] is JsonObject activeConflict)
+        {
             activeConflict["conflictId"] = conflictId;
+            activeConflict["realm"] = realm;
+        }
         return root.ToJsonString();
+    }
+
+    private static string BuildSoulStateJson(string realm, int inkFeathers = 0) => $$"""
+    {
+      "soulName": "Асуран",
+      "currentRealm": {{JsonSerializer.Serialize(realm)}},
+      "inkFeathers": {
+        "current": {{inkFeathers}},
+        "total": {{inkFeathers}}
+      }
+    }
+    """;
+
+    private static string BuildShiningStateJson(int lightSparks) => $$"""
+    {
+      "availability": "active",
+      "radiance": {
+        "experience": 250,
+        "tier": 2
+      },
+      "lightSparks": {{lightSparks}},
+      "halls": [],
+      "factions": [],
+      "shiningPoliticalActors": [],
+      "gates": {
+        "draftVersion": 0,
+        "hasOpenDraft": false,
+        "isStale": false,
+        "nextCandidateCursor": 0,
+        "rerollsRemaining": 0,
+        "allCandidateBlessingCards": [],
+        "availableBlessingCards": [],
+        "shownBlessingCardIds": [],
+        "selectedBlessingCardIds": []
+      },
+      "preparedIncarnationPackage": null,
+      "gachaSystem": {
+        "chargesPerReturn": 0,
+        "chargesUsedThisReturn": 0,
+        "currentReturnCycleId": "",
+        "gachaHistory": []
+      }
+    }
+    """;
+
+    private Task WriteSoulStateWithInkFeathersAsync(int inkFeathers, string realm) =>
+        _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", BuildSoulStateJson(realm, inkFeathers));
+
+    private Task WriteShiningStateWithLightSparksAsync(int lightSparks) =>
+        _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningStateJson(lightSparks));
+
+    private static string BuildConflictRewardAuditJson(
+        string realm,
+        string currency,
+        int finalAmount,
+        int opposingLeadStrength = 3,
+        int challengeTier = 3,
+        string sideModel = "direct_duel",
+        string startingConflictPosition = "contested",
+        int outcomeMultiplierPercent = 100,
+        int riskMultiplierPercent = 100,
+        int? baseAmount = null)
+    {
+        var resolvedBaseAmount = baseAmount ??
+                                 (AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(realm) == "shining_abode"
+                                     ? AfterlifeSpiritualConflictState.ShiningConflictRewardBaseAmount
+                                     : AfterlifeSpiritualConflictState.ChaosSeaConflictRewardBaseAmount);
+        return $$"""
+        {
+          "realm": {{JsonSerializer.Serialize(realm)}},
+          "currency": {{JsonSerializer.Serialize(currency)}},
+          "baseAmount": {{resolvedBaseAmount}},
+          "opposingLeadStrength": {{opposingLeadStrength}},
+          "sideModel": {{JsonSerializer.Serialize(sideModel)}},
+          "startingConflictPosition": {{JsonSerializer.Serialize(startingConflictPosition)}},
+          "challengeTier": {{challengeTier}},
+          "outcomeMultiplierPercent": {{outcomeMultiplierPercent}},
+          "riskMultiplierPercent": {{riskMultiplierPercent}},
+          "riskReason": "Started from {{startingConflictPosition}} against a measured opposition lead.",
+          "finalAmount": {{finalAmount}},
+          "narrativeReason": "Player won a contested afterlife spiritual conflict."
+        }
+        """;
+    }
+
+    private Task WriteResolvedConflictRewardStateAsync(
+        string? rewardAuditJson,
+        string realm = "Chaos Sea",
+        string mode = "resolve",
+        string resolutionState = "resolved",
+        string operationType = "pressure",
+        string playerOutcome = "won",
+        bool voluntary = false)
+    {
+        var rewardAuditFragment = string.IsNullOrWhiteSpace(rewardAuditJson)
+            ? string.Empty
+            : $",\n        \"{AfterlifeSpiritualConflictState.RewardAuditProperty}\": {rewardAuditJson}";
+        var voluntaryFragment = voluntary ? ",\n        \"voluntary\": true" : string.Empty;
+        return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "mode": "{{mode}}",
+              "conflictId": "afterlife_conflict_test_001",
+              "realm": {{JsonSerializer.Serialize(realm)}},
+              "sideModel": "direct_duel",
+              "resolutionState": "{{resolutionState}}",
+              "resolvedAtTurn": 7,
+              "operationType": "{{operationType}}",
+              "playerOutcome": "{{playerOutcome}}",
+              "diceAudit": {{BuildPlayerSuccessDiceAudit().ToJsonString()}},
+              "summary": "The player side won the spiritual conflict."{{voluntaryFragment}}{{rewardAuditFragment}}
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task WriteRewardTurnSnapshotAsync(
+        string preTurnSoulJson,
+        string? preTurnShiningJson = null,
+        string? preTurnConflictJson = null)
+    {
+        preTurnConflictJson ??= BuildActiveConflictRootJson();
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoulJson);
+        await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson);
+
+        if (preTurnShiningJson == null)
+        {
+            await WriteValidatedSnapshotManifestAsync(
+                "обработки хода",
+                "Я завершаю духовный конфликт посмертия.",
+                ("game_state/meta/soul_state.json", preTurnSoulJson),
+                (AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson));
+            return;
+        }
+
+        await WriteSnapshotFileAsync(ShiningAbodeState.StatePath, preTurnShiningJson);
+        await WriteValidatedSnapshotManifestAsync(
+            "обработки хода",
+            "Я завершаю духовный конфликт посмертия.",
+            ("game_state/meta/soul_state.json", preTurnSoulJson),
+            (AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson),
+            (ShiningAbodeState.StatePath, preTurnShiningJson));
     }
 
     private async Task WritePreTurnActiveConflictSnapshotAsync(string conflictId = "afterlife_conflict_test_001")
