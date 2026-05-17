@@ -6622,6 +6622,95 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task StateDistributor_StartConflict_InitializesPlayerActionEconomyFromSpiritFocus()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea",
+          "afterlifeCombatProfile": {
+            "schemaVersion": 1,
+            "spiritFocusTier": 2,
+            "artTiers": {}
+          }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": []
+        }
+        """);
+        using var updateDoc = JsonDocument.Parse("""
+        {
+          "mode": "start",
+          "conflictSeed": {
+            "conflictId": "afterlife_conflict_focus_start_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "playerSide": {
+              "leadContestant": {
+                "actorType": "player",
+                "actorId": "player_soul",
+                "displayName": "Асуран"
+              },
+              "supporters": []
+            },
+            "oppositionSide": {
+              "leadContestant": {
+                "actorType": "guardian",
+                "actorId": "guardian_liora",
+                "displayName": "Лиора",
+                "actorArtTierSnapshot": {
+                  "pressure": 2
+                },
+                "artAuthoritySource": "guardian_state"
+              },
+              "supporters": []
+            },
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          }
+        }
+        """);
+        var distributor = new StateDistributor(_fs, NullLogger<StateDistributor>.Instance);
+
+        await distributor.DistributeAsync(new GameResponse
+        {
+            AfterlifeSpiritualConflictUpdate = updateDoc.RootElement.Clone()
+        });
+
+        var projected = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath) ?? "{}")!.AsObject();
+        var playerPool = Assert.IsType<JsonObject>(projected["activeConflict"]?["actionEconomy"]?["player"]);
+        Assert.Equal(8, playerPool["current"]?.GetValue<int>());
+        Assert.Equal(8, playerPool["max"]?.GetValue<int>());
+        Assert.Equal("Средоточие Души tier 2", playerPool["source"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SpiritFocusTierOutsideBounds_FailsCombatProfileValidation()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea",
+          "afterlifeCombatProfile": {
+            "schemaVersion": 1,
+            "spiritFocusTier": 6,
+            "artTiers": {}
+          }
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_profile_invalid_spirit_focus_tier", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void CanonicalAccumulatedFiles_DoesNotRequireAfterlifeSpiritualConflictState()
     {
         Assert.DoesNotContain(

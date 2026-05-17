@@ -189,7 +189,10 @@ public class StateDistributor
                 var existingRoot = DictionaryToJsonObject(existingData);
                 existingRoot.Remove(AfterlifeSpiritualConflictState.ResponseField);
                 var updateRoot = AfterlifeSpiritualConflictState.CloneJsonElement(value) as JsonObject ?? new JsonObject();
-                var projected = AfterlifeSpiritualConflictState.ApplyUpdate(existingRoot, updateRoot);
+                var projected = AfterlifeSpiritualConflictState.ApplyUpdate(
+                    existingRoot,
+                    updateRoot,
+                    await ResolveCurrentSpiritFocusTierAsync());
                 projected.Remove(AfterlifeSpiritualConflictState.ResponseField);
                 existingData.Clear();
                 foreach (var prop in projected)
@@ -214,6 +217,24 @@ public class StateDistributor
         foreach (var (key, value) in data)
             root[key] = AfterlifeSpiritualConflictState.CloneJsonElement(value);
         return root;
+    }
+
+    private async Task<int> ResolveCurrentSpiritFocusTierAsync()
+    {
+        try
+        {
+            var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            if (string.IsNullOrWhiteSpace(soulJson))
+                return 0;
+
+            return JsonNode.Parse(soulJson) is JsonObject soulRoot
+                ? AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(soulRoot)
+                : 0;
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
     private static JsonElement JsonNodeToElement(JsonNode? node)

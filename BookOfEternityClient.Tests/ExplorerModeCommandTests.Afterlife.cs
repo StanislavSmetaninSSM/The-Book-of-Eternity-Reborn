@@ -7377,6 +7377,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Духовные искусства посмертия", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Ранг Просветления", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Сияние Сияющей Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Средоточие Души", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("макс ОД 6", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("следующий макс ОД 7", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("540", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("опыта", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("уровень 3", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -7412,6 +7415,37 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Equal(5, profile["enlightenmentRank"]?.GetValue<int>());
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
         Assert.Equal(375, inkFeathers["current"]?.GetValue<int>());
+        Assert.Equal(500, inkFeathers["total"]?.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_UpgradesSpiritFocusAndSpendsInkFeathers()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500, total = 500 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
+        });
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+        _console.QueueSelection("Выберите духовное искусство", "Средоточие Души — уровень 0->1, макс ОД 6->7, 200 🪶");
+        _console.QueueAnyConfirmResponse(true);
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_spirit_focus_ink_feathers");
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var profile = Assert.IsType<JsonObject>(soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]);
+        Assert.Equal(1, profile["spiritFocusTier"]?.GetValue<int>());
+        var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
+        Assert.False(artTiers.ContainsKey("pressure"));
+        var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
+        Assert.Equal(300, inkFeathers["current"]?.GetValue<int>());
         Assert.Equal(500, inkFeathers["total"]?.GetValue<int>());
     }
 

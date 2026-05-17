@@ -1716,6 +1716,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("actionEconomy", text, StringComparison.Ordinal);
             Assert.Contains("actionCostAudit", text, StringComparison.Ordinal);
             Assert.Contains("recover_spiritual_power", text, StringComparison.Ordinal);
+            Assert.Contains("spiritFocusTier", text, StringComparison.Ordinal);
+            Assert.Contains("Средоточие Души", text, StringComparison.Ordinal);
         }
 
         foreach (var text in new[] { matrix, examples, daemonSpec })
@@ -1801,6 +1803,13 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("pressure 3/1", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("force_binding 5/2", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("recover_spiritual_power 0/0", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("6/7/8/10/12/15", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("spiritFocusTier", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("Средоточие Души tier N", examples + apiSpec, StringComparison.Ordinal);
+        Assert.Contains("Ink Feathers = 100 + nextTier * 100", glossary, StringComparison.Ordinal);
+        Assert.Contains("Light Sparks = 8 + nextTier * 4", glossary, StringComparison.Ordinal);
+        Assert.Contains("artTiers` reduce action cost", matrix, StringComparison.Ordinal);
+        Assert.Contains("spiritFocusTier` sets max ОД", matrix, StringComparison.Ordinal);
         Assert.Contains("+0..1", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
         Assert.Contains("ОД и стоимость действий", uiHelp, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit", uiHelp, StringComparison.Ordinal);

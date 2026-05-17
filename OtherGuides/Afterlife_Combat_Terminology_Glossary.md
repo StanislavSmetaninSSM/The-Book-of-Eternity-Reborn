@@ -8,6 +8,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | afterlife spiritual action | духовное действие посмертия | A player action inside an already active conflict; `/spiritual_action` only adds an explicit routing tag. |
 | afterlife spiritual combat log | журнал духовного боя | Read-only player-facing log of active `exchangeLog[]` and resolved `recentConflicts[]`; shown through `/spiritual_combat_log`. |
 | Spiritual Arts | духовные искусства | Client-owned afterlife combat upgrades stored in `soul_state.afterlifeCombatProfile.artTiers`. |
+| Spirit Focus | Средоточие Души | Client-owned afterlife combat reserve stored in `soul_state.afterlifeCombatProfile.spiritFocusTier`; it sets the player's maximum ОД when a spiritual conflict starts. |
 | exchange | обмен действиями | One resolved beat inside an active conflict; written through `afterlifeSpiritualConflictUpdate.mode=exchange`. |
 | resolve | завершение конфликта | Terminal closure of an active conflict; written through `mode=resolve` and moved into `recentConflicts[]`. |
 | repair_cancel | repair-отмена / ремонтная отмена | Non-reward cleanup of malformed or impossible conflict state. |
@@ -56,7 +57,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | `/spiritual_combat_log` | `/журнал_духовного_боя` | Shows the afterlife combat log: active `exchangeLog[]`, resolved `recentConflicts[]`, dice, position/strain deltas, rewards, and full JSON audit. |
 | `/spiritual_combat_help` | `/духовный_бой` | Shows the player-facing combat guide: commands, tactics, Spiritual Arts, position, dice, bounded criticals, rewards, and upgrades. |
 | `/spiritual_action` | `/духовное_действие` | Sends one explicit tagged action inside an active conflict. Ordinary roleplay prose is still valid when it clearly acts inside the active conflict. |
-| `/spiritual_arts` | `/духовные_искусства` | Shows ranks, art tiers, upgrade costs, and performs client-owned Spiritual Art upgrades. |
+| `/spiritual_arts` | `/духовные_искусства` | Shows ranks, art tiers, `Средоточие Души`, upgrade costs, and performs client-owned Spiritual Art / Spirit Focus upgrades. |
 
 ## Spiritual Art Operation Rules
 
@@ -79,12 +80,28 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 ОД are afterlife-only spiritual action points. They are not Mortal HP, stamina, energy, or combat resources.
 
 - Active conflicts carry `actionEconomy.player` and `actionEconomy.opposition` with `current`, `max`, and `source`.
+- On `mode=start`, `actionEconomy.player.current/max` comes from `soul_state.afterlifeCombatProfile.spiritFocusTier`; source is `Средоточие Души tier N`.
 - Every new/current exchange that spends or restores ОД must carry `actionCostAudit.player`: `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`.
 - Formula: `effectiveCost = max(minCost, baseCost - artTier)`.
 - Base/min costs: `pressure 3/1`, `guard 2/1`, `counter 4/2`, `maneuver 3/1`, `binding 4/2`, `force_binding 5/2`, `break_binding 3/1`, `incarnation_resistance 3/1`, `champion_coordination 2/1`, `recover_spiritual_power 0/0`.
 - `recover_spiritual_power` restores ОД up to `actionEconomy.player.max`: success +3, partial_success +2, punished recovery +0..1.
 - Punished recovery happens against `pressure`, `maneuver`, `binding`, `force_binding`, or `force_incarnation`; strong timing is against `guard`, `counter`, `none`, or `passive`.
 - `withdraw`, `surrender`, and `negotiate` remain legal at 0 ОД unless a later contract explicitly changes terminal choice rules.
+
+## Средоточие Души / Spirit Focus
+
+`Средоточие Души` is permanent client-owned progression for maximum ОД. It is upgraded through `/spiritual_arts`; the GM reads the resulting `soul_state.afterlifeCombatProfile.spiritFocusTier`, but must not author it directly, invent upgrade receipts, or mutate it in an accepted turn. Spiritual Art tiers reduce action costs through `artTier`; `Средоточие Души` increases the maximum ОД reserve.
+
+| `spiritFocusTier` | Max ОД | Player meaning |
+|---:|---:|---|
+| 0 | 6 | Базовый запас души |
+| 1 | 7 | Короткий обмен без истощения |
+| 2 | 8 | Устойчивость в затяжном споре |
+| 3 | 10 | Тактический запас для дорогих приемов |
+| 4 | 12 | Сильное средоточие для длинного боя |
+| 5 | 15 | Мастерский запас духовной силы |
+
+Upgrade costs use the same local currency pattern as Spiritual Arts: Ink Feathers in Chaos Sea or, in ordinary active Shining Abode, Light Sparks. Current costs are `Ink Feathers = 100 + nextTier * 100` and `Light Sparks = 8 + nextTier * 4`.
 
 ## Tactical Matchup Matrix
 
