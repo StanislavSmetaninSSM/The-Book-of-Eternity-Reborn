@@ -96,11 +96,12 @@ public partial class ExplorerMode
         AppendAfterlifeEntityCustomStates(lines, profile[AfterlifeEntityProfileState.CustomStatesProperty] as JsonArray);
 
         var dissipationTier = AfterlifeEntityProfileState.GetNodeInt(profile["soulDissipationTier"]);
-        lines.Add($"  • Развеивание души: тир {dissipationTier}");
+        var stabilityCoefficient = AfterlifeEntityProfileState.ResolveSoulStabilityCoefficient(profile);
+        lines.Add($"  • Развеивание души: тир {dissipationTier}; устойчивость души цели: коэффициент {stabilityCoefficient}");
 
         var warnings = ReadProfileStringArray(profile["warnings"] as JsonArray).ToList();
         if (dissipationTier > 0)
-            warnings.Insert(0, "ОПАСНО: эта сущность потенциально может окончательно развеять душу после победы, если её мотивы это допускают.");
+            warnings.Insert(0, $"ОПАСНО: эта сущность потенциально может окончательно развеять душу после победы, если её tier Развеивания выше коэффициента устойчивости цели и её мотивы это допускают. Решение не автоматическое.");
         foreach (var warning in warnings.Distinct(StringComparer.OrdinalIgnoreCase))
             lines.Add($"  • [red]{Markup.Escape(warning)}[/]");
 

@@ -24,6 +24,12 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeSpecialArtLearningReceipts"
+    },
+    {
+      "contractId": "afterlife_soul_dissipation_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "responseSurface": "recentConflicts[].soulDissipationProof"
     }
   ],
   "syntaxExemptions": [

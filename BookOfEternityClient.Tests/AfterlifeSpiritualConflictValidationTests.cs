@@ -183,6 +183,183 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_conflict_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_SoulDissipationWithoutEnoughTier_ReportsIssue()
+    {
+        await WriteSoulStateAsync();
+        await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 2, targetEnlightenmentTier: 2);
+        await WriteResolvedConflictWithSoulDissipationAsync("""
+        {
+          "proofId": "soul_dissipation_proof_low_tier_001",
+          "actorType": "player_soul",
+          "actorId": "player_soul",
+          "targetActorType": "guardian",
+          "targetActorId": "guardian_liora",
+          "dissipationTier": 2,
+          "targetStabilityCoefficient": 2,
+          "resolvedAtTurn": 7,
+          "victoryProof": "player_victory",
+          "gmMotivation": "Душа пытается окончательно развеять побеждённого Хранителя.",
+          "outcome": "target_dispersed"
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_soul_dissipation_tier_too_low", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SoulDissipationWithoutVictory_ReportsIssue()
+    {
+        await WriteSoulStateAsync();
+        await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 3, targetEnlightenmentTier: 1);
+        await WriteResolvedConflictWithSoulDissipationAsync("""
+        {
+          "proofId": "soul_dissipation_proof_no_victory_001",
+          "actorType": "player_soul",
+          "actorId": "player_soul",
+          "targetActorType": "guardian",
+          "targetActorId": "guardian_liora",
+          "dissipationTier": 3,
+          "targetStabilityCoefficient": 1,
+          "resolvedAtTurn": 7,
+          "victoryProof": "player_victory",
+          "gmMotivation": "Душа пытается развеять цель без доказанной победы.",
+          "outcome": "target_dispersed"
+        }
+        """, playerOutcome: "lost", resolutionKind: "player_loss");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_soul_dissipation_missing_victory_proof", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PlayerSoulDissipationRequiresTerminalGameOver()
+    {
+        await WriteSoulStateAsync();
+        await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 0, targetEnlightenmentTier: 1, oppositionDissipationTier: 3);
+        await WriteResolvedConflictWithSoulDissipationAsync("""
+        {
+          "proofId": "soul_dissipation_proof_player_death_001",
+          "actorType": "guardian",
+          "actorId": "guardian_liora",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "dissipationTier": 3,
+          "targetStabilityCoefficient": 1,
+          "resolvedAtTurn": 7,
+          "victoryProof": "opposition_victory",
+          "gmMotivation": "Хранитель решает окончательно уничтожить душу после победы.",
+          "outcome": "player_soul_dispersed"
+        }
+        """, playerOutcome: "lost", resolutionKind: "player_loss");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_player_soul_dissipation_missing_game_over", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PlayerSoulDissipationGameOverWrongMessage_ReportsIssue()
+    {
+        await WriteSoulStateWithTerminalGameOverAsync("Вы почти мертвы.");
+        await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 0, targetEnlightenmentTier: 1, oppositionDissipationTier: 3);
+        await WriteResolvedConflictWithSoulDissipationAsync("""
+        {
+          "proofId": "soul_dissipation_proof_player_death_002",
+          "actorType": "guardian",
+          "actorId": "guardian_liora",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "dissipationTier": 3,
+          "targetStabilityCoefficient": 1,
+          "resolvedAtTurn": 7,
+          "victoryProof": "opposition_victory",
+          "gmMotivation": "Хранитель мотивирован окончательно развеять душу.",
+          "outcome": "player_soul_dispersed"
+        }
+        """, playerOutcome: "lost", resolutionKind: "player_loss");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_player_soul_dissipation_game_over_message_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ValidNpcSoulDissipationProof_DoesNotReportSoulDissipationIssue()
+    {
+        await WriteSoulStateAsync();
+        await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 3, targetEnlightenmentTier: 1);
+        await WriteResolvedConflictWithSoulDissipationAsync("""
+        {
+          "proofId": "soul_dissipation_proof_valid_target_001",
+          "actorType": "player_soul",
+          "actorId": "player_soul",
+          "targetActorType": "guardian",
+          "targetActorId": "guardian_liora",
+          "dissipationTier": 3,
+          "targetStabilityCoefficient": 1,
+          "resolvedAtTurn": 7,
+          "victoryProof": "player_victory",
+          "gmMotivation": "Игрок решает развеять побеждённого противника после доказанной победы.",
+          "outcome": "target_dispersed"
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_conflict_soul_dissipation", StringComparison.OrdinalIgnoreCase) == true ||
+            issue.Code?.StartsWith("afterlife_conflict_player_soul_dissipation", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ValidPlayerSoulDissipationTerminalGameOver_DoesNotReportPlayerGameOverIssue()
+    {
+        await WriteSoulStateWithTerminalGameOverAsync(AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage);
+        await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 0, targetEnlightenmentTier: 1, oppositionDissipationTier: 3);
+        await WriteResolvedConflictWithSoulDissipationAsync("""
+        {
+          "proofId": "soul_dissipation_proof_player_death_002",
+          "actorType": "guardian",
+          "actorId": "guardian_liora",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "dissipationTier": 3,
+          "targetStabilityCoefficient": 1,
+          "resolvedAtTurn": 7,
+          "victoryProof": "opposition_victory",
+          "gmMotivation": "Хранитель мотивирован окончательно развеять душу после победы.",
+          "outcome": "player_soul_dispersed"
+        }
+        """, playerOutcome: "lost", resolutionKind: "player_loss");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_conflict_soul_dissipation", StringComparison.OrdinalIgnoreCase) == true ||
+            issue.Code?.StartsWith("afterlife_conflict_player_soul_dissipation", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_TerminalGameOverWithoutSoulDissipationProof_ReportsIssue()
+    {
+        await WriteSoulStateWithTerminalGameOverAsync(AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage);
+        await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 0, targetEnlightenmentTier: 1, oppositionDissipationTier: 3);
+        await WriteResolvedConflictWithoutSoulDissipationAsync(playerOutcome: "lost", resolutionKind: "player_loss");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_player_soul_dissipation_unlinked_game_over", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Theory]
     [InlineData("playerTotal", 19, "afterlife_conflict_dice_player_total_mismatch")]
     [InlineData("margin", 5, "afterlife_conflict_dice_margin_mismatch")]
@@ -10506,6 +10683,156 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         {
           "soulName": "Асуран",
           "currentRealm": {{JsonSerializer.Serialize(realm)}}
+        }
+        """);
+    }
+
+    private Task WriteSoulStateWithTerminalGameOverAsync(string message)
+    {
+        return _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", $$"""
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea",
+          "terminalGameOver": {
+            "state": "soul_dispersed",
+            "message": {{JsonSerializer.Serialize(message)}},
+            "conflictId": "afterlife_conflict_test_001",
+            "proofId": "soul_dissipation_proof_player_death_002"
+          }
+        }
+        """);
+    }
+
+    private async Task WriteSoulDissipationProfileStateAsync(
+        int playerDissipationTier,
+        int targetEnlightenmentTier,
+        int oppositionDissipationTier = 1)
+    {
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """
+        {
+          "entries": []
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Асуран",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 12, "tier": 1 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 1, "guard": 1 },
+              "specialArts": [],
+              "soulDissipationTier": {{playerDissipationTier}},
+              "progressionStrategy": {
+                "strategyId": "strategy_player_soul",
+                "summary": "Игрок сам выбирает развитие.",
+                "priorityOrder": ["pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_player_soul_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль души игрока."
+                }
+              ]
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_liora",
+              "displayName": "Лиора",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 20, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 30, "tier": {{targetEnlightenmentTier}} },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [],
+              "soulDissipationTier": {{oppositionDissipationTier}},
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_liora",
+                "summary": "Лиора усиливает давление.",
+                "priorityOrder": ["pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": ["ОПАСНО: может развеять душу после победы, если решит это сделать."],
+              "ledger": [
+                {
+                  "entryId": "profile_guardian_liora_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль Лиоры."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
+    private Task WriteResolvedConflictWithSoulDissipationAsync(
+        string soulDissipationProofJson,
+        string playerOutcome = "won",
+        string resolutionKind = "player_victory")
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "mode": "resolve",
+              "conflictId": "afterlife_conflict_test_001",
+              "realm": "Chaos Sea",
+              "sideModel": "direct_duel",
+              "resolutionState": "resolved",
+              "operationType": "pressure",
+              "playerOutcome": "{{playerOutcome}}",
+              "resolutionKind": "{{resolutionKind}}",
+              "resolvedAtTurn": 7,
+              "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePower().ToJsonString()}},
+              "summary": "The spiritual conflict was resolved.",
+              "soulDissipationProof": {{soulDissipationProofJson}}
+            }
+          ]
+        }
+        """);
+    }
+
+    private Task WriteResolvedConflictWithoutSoulDissipationAsync(
+        string playerOutcome = "won",
+        string resolutionKind = "player_victory")
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "activeConflict": null,
+          "recentConflicts": [
+            {
+              "mode": "resolve",
+              "conflictId": "afterlife_conflict_test_001",
+              "realm": "Chaos Sea",
+              "sideModel": "direct_duel",
+              "resolutionState": "resolved",
+              "operationType": "pressure",
+              "playerOutcome": "{{playerOutcome}}",
+              "resolutionKind": "{{resolutionKind}}",
+              "resolvedAtTurn": 7,
+              "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePower().ToJsonString()}},
+              "summary": "The spiritual conflict was resolved without final soul dissipation."
+            }
+          ]
         }
         """);
     }

@@ -7237,6 +7237,7 @@ Correct reasoning checklist:
 - `progressionLedger[]` is mandatory audit evidence for auto-progression or `afterlifeEntityProgressionOverrides[]`; each cycle must have a clear `cycleKey`, `source`, income/spending, and summary. Do not hand-edit resources without this audit.
 - `lastAutoProgressionCycleKey` prevents the same existing afterlife/Shining progression cycle from being applied repeatedly.
 - `soulDissipationTier > 0` is a danger warning, not an automatic kill decision. Motives still decide whether the entity attempts final soul dissipation after a victory.
+- Final soul death uses resolved conflict proof, not a free narrative string: write `recentConflicts[].soulDissipationProof` with `targetStabilityCoefficient`, `dissipationTier > targetStabilityCoefficient`, victory proof, and `gmMotivation`. If the target is the player, also write `soul_state.terminalGameOver.message`: `Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова`.
 - Do not write Mortal NPC skills, Mortal combat logs, Mortal inventory, or Mortal profile files for afterlife actor progression.
 - In Mortal World turns, preserve `game_state/meta/afterlife_entity_profiles.json`; progress updates belong to afterlife turns unless a future matrix row explicitly says otherwise.
 

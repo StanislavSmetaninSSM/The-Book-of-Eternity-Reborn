@@ -79,8 +79,9 @@ public partial class ValidationService
         var gateContext = await ResolveAfterlifeSpiritualConflictGateContextAsync();
         var diceContext = await ResolveAfterlifeConflictDiceContextAsync(gateContext.Manifest);
         var rewardContext = await ResolveAfterlifeConflictRewardContextAsync(gateContext);
+        var soulDissipationContext = await ResolveAfterlifeSoulDissipationContextAsync();
         await ValidateActiveConflictRemovalHasTerminalProofAsync(root, issues);
-        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, rewardContext);
+        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, rewardContext, soulDissipationContext);
         ValidateAfterlifeConflictRewardStateDeltas(rewardContext, issues);
 
         if (root["activeConflict"] is JsonObject activeConflict)
@@ -227,6 +228,10 @@ public partial class ValidationService
         public bool HasCurrentTurnLightSparkRewardAudit { get; set; }
     }
 
+    private sealed record AfterlifeSoulDissipationContext(
+        JsonObject? SoulRoot,
+        IReadOnlyDictionary<string, JsonObject> Profiles);
+
     private async Task<AfterlifeSpiritualConflictGateContext> ResolveAfterlifeSpiritualConflictGateContextAsync()
     {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
@@ -367,6 +372,25 @@ public partial class ValidationService
             PreTurnLightSparks = preTurnShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(preTurnShiningRoot["lightSparks"]),
             CurrentLightSparks = currentShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(currentShiningRoot["lightSparks"])
         };
+    }
+
+    private async Task<AfterlifeSoulDissipationContext> ResolveAfterlifeSoulDissipationContextAsync()
+    {
+        var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
+        var profileRoot = await ReadJsonObjectAsync(AfterlifeEntityProfileState.StatePath);
+        var profiles = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+
+        if (profileRoot?[AfterlifeEntityProfileState.ProfilesProperty] is JsonArray profileArray)
+        {
+            foreach (var profile in profileArray.OfType<JsonObject>())
+            {
+                var key = AfterlifeEntityProfileState.BuildIdentityKey(profile);
+                if (!string.IsNullOrWhiteSpace(key))
+                    profiles[key] = profile;
+            }
+        }
+
+        return new AfterlifeSoulDissipationContext(soulRoot, profiles);
     }
 
     private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnNoTurnConflictDicePayloadsAsync(
@@ -847,7 +871,8 @@ public partial class ValidationService
         string context,
         List<ValidationIssue> issues,
         AfterlifeConflictDiceContext diceContext,
-        AfterlifeConflictRewardContext rewardContext)
+        AfterlifeConflictRewardContext rewardContext,
+        AfterlifeSoulDissipationContext soulDissipationContext)
     {
         if (root.ContainsKey(AfterlifeSpiritualConflictState.ResponseField))
         {
@@ -894,7 +919,7 @@ public partial class ValidationService
             for (var index = 0; index < recentConflicts.Count; index++)
             {
                 if (recentConflicts[index] is JsonObject proof)
-                    ValidateRecentConflictProof(proof, $"{context}.recentConflicts[{index}]", issues, diceContext, rewardContext, rewardConflictIds);
+                    ValidateRecentConflictProof(proof, $"{context}.recentConflicts[{index}]", issues, diceContext, rewardContext, rewardConflictIds, soulDissipationContext);
             }
         }
         else
@@ -908,6 +933,8 @@ public partial class ValidationService
                 expected: "array",
                 actual: root["recentConflicts"]?.GetType().Name ?? "missing"));
         }
+
+        ValidateTerminalGameOverHasSoulDissipationProof(root, issues, soulDissipationContext);
 
         if (root["activeConflict"] is JsonObject active)
             ValidateActiveAfterlifeConflict(active, $"{context}.activeConflict", issues, diceContext);
@@ -1179,7 +1206,8 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         AfterlifeConflictDiceContext diceContext,
         AfterlifeConflictRewardContext rewardContext,
-        HashSet<string> rewardConflictIds)
+        HashSet<string> rewardConflictIds,
+        AfterlifeSoulDissipationContext soulDissipationContext)
     {
         var diceRequired = ResolveDiceAuditRequired(proof);
         if (diceRequired && proof["diceAudit"] is not JsonObject)
@@ -1202,6 +1230,397 @@ public partial class ValidationService
         }
 
         ValidateConflictRewardAudit(proof, context, issues, rewardContext, rewardConflictIds);
+        ValidateSoulDissipationProof(proof, context, issues, soulDissipationContext);
+    }
+
+    private void ValidateSoulDissipationProof(
+        JsonObject conflictProof,
+        string context,
+        List<ValidationIssue> issues,
+        AfterlifeSoulDissipationContext soulDissipationContext)
+    {
+        if (conflictProof[AfterlifeSpiritualConflictState.SoulDissipationProofProperty] is null)
+            return;
+
+        var proofContext = $"{context}.{AfterlifeSpiritualConflictState.SoulDissipationProofProperty}";
+        if (conflictProof[AfterlifeSpiritualConflictState.SoulDissipationProofProperty] is not JsonObject proof)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                proofContext,
+                "soulDissipationProof должен быть object.",
+                "afterlife_conflict_soul_dissipation_invalid_shape",
+                "object",
+                conflictProof[AfterlifeSpiritualConflictState.SoulDissipationProofProperty]?.GetType().Name ?? "null");
+            return;
+        }
+
+        var proofId = RequireSoulDissipationString(proof, proofContext, issues, "proofId");
+        var actorType = RequireSoulDissipationString(proof, proofContext, issues, "actorType");
+        var actorId = RequireSoulDissipationString(proof, proofContext, issues, "actorId");
+        var targetActorType = RequireSoulDissipationString(proof, proofContext, issues, "targetActorType");
+        var targetActorId = RequireSoulDissipationString(proof, proofContext, issues, "targetActorId");
+        RequireSoulDissipationString(proof, proofContext, issues, "outcome");
+
+        if (string.IsNullOrWhiteSpace(GetFirstSoulDissipationString(proof, "gmMotivation", "motivation", "reason")))
+        {
+            AddSoulDissipationIssue(
+                issues,
+                $"{proofContext}.gmMotivation",
+                "Развеивание души требует явного решения и мотива ГМа; возможность развеять не означает автоматическое развеивание.",
+                "afterlife_conflict_soul_dissipation_missing_motivation",
+                "non-empty gmMotivation/motivation/reason",
+                "missing");
+        }
+
+        if (!TryGetJsonNodeInt(proof["resolvedAtTurn"], out var proofTurn) || proofTurn <= 0)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                $"{proofContext}.resolvedAtTurn",
+                "soulDissipationProof должен фиксировать resolvedAtTurn.",
+                "afterlife_conflict_soul_dissipation_missing_turn",
+                "positive integer resolvedAtTurn",
+                proof["resolvedAtTurn"]?.ToJsonString() ?? "missing");
+        }
+
+        var actorProfile = ResolveAfterlifeSoulDissipationProfile(soulDissipationContext, actorType, actorId);
+        var targetProfile = ResolveAfterlifeSoulDissipationProfile(soulDissipationContext, targetActorType, targetActorId);
+        var actorTierFromProfile = actorProfile == null
+            ? 0
+            : AfterlifeEntityProfileState.GetNodeInt(actorProfile[AfterlifeEntityProfileState.SoulDissipationTierProperty]);
+        var targetCoefficientFromProfile = AfterlifeEntityProfileState.ResolveSoulStabilityCoefficient(targetProfile);
+
+        if (actorProfile == null)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                proofContext,
+                "Развеивание души требует профиль действующей сущности в afterlife_entity_profiles.json.",
+                "afterlife_conflict_soul_dissipation_missing_actor_profile",
+                "matching actorType/actorId profile",
+                BuildActorDescription(actorType, actorId));
+        }
+
+        if (targetProfile == null)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                proofContext,
+                "Развеивание души требует профиль цели в afterlife_entity_profiles.json.",
+                "afterlife_conflict_soul_dissipation_missing_target_profile",
+                "matching targetActorType/targetActorId profile",
+                BuildActorDescription(targetActorType, targetActorId));
+        }
+
+        if (!TryGetJsonNodeInt(proof["dissipationTier"], out var proofTier) || proofTier < 0)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                $"{proofContext}.dissipationTier",
+                "soulDissipationProof должен указывать неотрицательный tier Развеивания души действующей сущности.",
+                "afterlife_conflict_soul_dissipation_invalid_tier",
+                "non-negative integer dissipationTier",
+                proof["dissipationTier"]?.ToJsonString() ?? "missing");
+        }
+        else if (actorProfile != null && proofTier != actorTierFromProfile)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                $"{proofContext}.dissipationTier",
+                "soulDissipationProof.dissipationTier должен совпадать с профилем действующей сущности.",
+                "afterlife_conflict_soul_dissipation_tier_mismatch",
+                actorTierFromProfile.ToString(),
+                proofTier.ToString());
+        }
+
+        if (!TryGetJsonNodeInt(proof["targetStabilityCoefficient"], out var proofCoefficient) || proofCoefficient < 0)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                $"{proofContext}.targetStabilityCoefficient",
+                "soulDissipationProof должен указывать targetStabilityCoefficient цели.",
+                "afterlife_conflict_soul_dissipation_invalid_target_coefficient",
+                "non-negative integer targetStabilityCoefficient",
+                proof["targetStabilityCoefficient"]?.ToJsonString() ?? "missing");
+        }
+        else if (targetProfile != null && proofCoefficient != targetCoefficientFromProfile)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                $"{proofContext}.targetStabilityCoefficient",
+                "targetStabilityCoefficient должен совпадать с коэффициентом устойчивости души из профиля цели.",
+                "afterlife_conflict_soul_dissipation_target_coefficient_mismatch",
+                targetCoefficientFromProfile.ToString(),
+                proofCoefficient.ToString());
+        }
+
+        var effectiveTier = actorProfile == null ? proofTier : actorTierFromProfile;
+        var effectiveCoefficient = targetProfile == null ? proofCoefficient : targetCoefficientFromProfile;
+        if (effectiveTier <= effectiveCoefficient)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                $"{proofContext}.dissipationTier",
+                "Развеивание души возможно только если tier Развеивания строго выше коэффициента устойчивости цели.",
+                "afterlife_conflict_soul_dissipation_tier_too_low",
+                $"dissipationTier > targetStabilityCoefficient ({effectiveCoefficient})",
+                effectiveTier.ToString());
+        }
+
+        var actorIsPlayer = IsPlayerSoulActor(actorType, actorId);
+        var targetIsPlayer = IsPlayerSoulActor(targetActorType, targetActorId);
+        if (actorIsPlayer && !PlayerWonConflictProof(conflictProof))
+        {
+            AddSoulDissipationIssue(
+                issues,
+                proofContext,
+                "Игрок может развеять душу только после доказанной победы/успеха в этом spiritual conflict.",
+                "afterlife_conflict_soul_dissipation_missing_victory_proof",
+                "playerOutcome=won/victory/success or resolutionKind=player_victory/player_success",
+                DescribeConflictOutcome(conflictProof));
+        }
+        else if (targetIsPlayer && !PlayerLostConflictProof(conflictProof))
+        {
+            AddSoulDissipationIssue(
+                issues,
+                proofContext,
+                "Душу игрока можно развеять только после доказанного поражения/сдачи/уступки игрока.",
+                "afterlife_conflict_soul_dissipation_missing_victory_proof",
+                "playerOutcome=lost/surrendered/conceded or resolutionKind=player_loss/player_surrender/player_concession",
+                DescribeConflictOutcome(conflictProof));
+        }
+        else if (!actorIsPlayer && !targetIsPlayer &&
+                 string.IsNullOrWhiteSpace(GetFirstSoulDissipationString(proof, "victoryProof", "conflictVictoryProof")))
+        {
+            AddSoulDissipationIssue(
+                issues,
+                $"{proofContext}.victoryProof",
+                "NPC-vs-NPC развеивание души требует явного victoryProof.",
+                "afterlife_conflict_soul_dissipation_missing_victory_proof",
+                "non-empty victoryProof/conflictVictoryProof",
+                "missing");
+        }
+
+        if (targetIsPlayer)
+            ValidatePlayerSoulDissipationTerminalGameOver(conflictProof, proof, proofId, proofContext, issues, soulDissipationContext);
+    }
+
+    private void ValidatePlayerSoulDissipationTerminalGameOver(
+        JsonObject conflictProof,
+        JsonObject proof,
+        string? proofId,
+        string proofContext,
+        List<ValidationIssue> issues,
+        AfterlifeSoulDissipationContext soulDissipationContext)
+    {
+        if (soulDissipationContext.SoulRoot?[AfterlifeSpiritualConflictState.TerminalGameOverProperty] is not JsonObject gameOver)
+        {
+            AddSoulDissipationIssue(
+                issues,
+                "game_state/meta/soul_state.json.terminalGameOver",
+                "Развеивание души игрока должно материализовать terminalGameOver в soul_state.json.",
+                "afterlife_conflict_player_soul_dissipation_missing_game_over",
+                "terminalGameOver object linked to the soulDissipationProof",
+                "missing");
+            return;
+        }
+
+        var message = AfterlifeSpiritualConflictState.GetNodeString(gameOver["message"]);
+        if (!string.Equals(message, AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage, StringComparison.Ordinal))
+        {
+            AddSoulDissipationIssue(
+                issues,
+                "game_state/meta/soul_state.json.terminalGameOver.message",
+                "terminalGameOver.message должен использовать точный текст окончательной смерти души.",
+                "afterlife_conflict_player_soul_dissipation_game_over_message_mismatch",
+                AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage,
+                message ?? "missing");
+        }
+
+        var state = AfterlifeSpiritualConflictState.GetNodeString(gameOver["state"]);
+        if (!ConflictTokenEquals(state, AfterlifeSpiritualConflictState.TerminalSoulDissipationState))
+        {
+            AddSoulDissipationIssue(
+                issues,
+                "game_state/meta/soul_state.json.terminalGameOver.state",
+                "terminalGameOver.state должен фиксировать soul_dispersed.",
+                "afterlife_conflict_player_soul_dissipation_game_over_state_mismatch",
+                AfterlifeSpiritualConflictState.TerminalSoulDissipationState,
+                state ?? "missing");
+        }
+
+        var conflictId = AfterlifeSpiritualConflictState.GetNodeString(conflictProof["conflictId"]) ??
+                         AfterlifeSpiritualConflictState.GetNodeString(conflictProof["id"]);
+        var gameOverConflictId = AfterlifeSpiritualConflictState.GetNodeString(gameOver["conflictId"]);
+        if (!string.IsNullOrWhiteSpace(conflictId) &&
+            !string.Equals(gameOverConflictId, conflictId, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSoulDissipationIssue(
+                issues,
+                "game_state/meta/soul_state.json.terminalGameOver.conflictId",
+                "terminalGameOver.conflictId должен ссылаться на тот же conflictId.",
+                "afterlife_conflict_player_soul_dissipation_game_over_conflict_mismatch",
+                conflictId,
+                gameOverConflictId ?? "missing");
+        }
+
+        var gameOverProofId = AfterlifeSpiritualConflictState.GetNodeString(gameOver["proofId"]);
+        if (!string.IsNullOrWhiteSpace(proofId) &&
+            !string.Equals(gameOverProofId, proofId, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSoulDissipationIssue(
+                issues,
+                "game_state/meta/soul_state.json.terminalGameOver.proofId",
+                "terminalGameOver.proofId должен ссылаться на soulDissipationProof.proofId.",
+                "afterlife_conflict_player_soul_dissipation_game_over_proof_mismatch",
+                proofId,
+                gameOverProofId ?? "missing");
+        }
+    }
+
+    private static void ValidateTerminalGameOverHasSoulDissipationProof(
+        JsonObject conflictRoot,
+        List<ValidationIssue> issues,
+        AfterlifeSoulDissipationContext soulDissipationContext)
+    {
+        if (soulDissipationContext.SoulRoot?[AfterlifeSpiritualConflictState.TerminalGameOverProperty] is not JsonObject)
+            return;
+
+        if (HasPlayerSoulDissipationProof(conflictRoot))
+            return;
+
+        AddSoulDissipationIssue(
+            issues,
+            "game_state/meta/soul_state.json.terminalGameOver",
+            "terminalGameOver нельзя записывать без связанного current recentConflicts[].soulDissipationProof по развеиванию души игрока.",
+            "afterlife_conflict_player_soul_dissipation_unlinked_game_over",
+            "recentConflicts[].soulDissipationProof with targetActorType=player_soul",
+            "missing");
+    }
+
+    private static bool HasPlayerSoulDissipationProof(JsonObject conflictRoot)
+    {
+        if (conflictRoot["recentConflicts"] is not JsonArray recentConflicts)
+            return false;
+
+        return recentConflicts
+            .OfType<JsonObject>()
+            .Any(proof =>
+            {
+                if (proof[AfterlifeSpiritualConflictState.SoulDissipationProofProperty] is not JsonObject soulDissipationProof)
+                    return false;
+
+                var targetActorType = AfterlifeSpiritualConflictState.GetNodeString(soulDissipationProof["targetActorType"]);
+                var targetActorId = AfterlifeSpiritualConflictState.GetNodeString(soulDissipationProof["targetActorId"]);
+                return IsPlayerSoulActor(targetActorType, targetActorId);
+            });
+    }
+
+    private static JsonObject? ResolveAfterlifeSoulDissipationProfile(
+        AfterlifeSoulDissipationContext context,
+        string? actorType,
+        string? actorId)
+    {
+        var key = BuildAfterlifeSoulDissipationProfileKey(actorType, actorId);
+        return key != null && context.Profiles.TryGetValue(key, out var profile)
+            ? profile
+            : null;
+    }
+
+    private static string? BuildAfterlifeSoulDissipationProfileKey(string? actorType, string? actorId)
+    {
+        if (string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId))
+            return null;
+
+        var normalizedActorType = IsPlayerSoulActor(actorType, actorId)
+            ? "player_soul"
+            : actorType.Trim();
+        var normalizedActorId = IsPlayerSoulActor(actorType, actorId)
+            ? "player_soul"
+            : actorId.Trim();
+        return $"{normalizedActorType}:{normalizedActorId}";
+    }
+
+    private static bool IsPlayerSoulActor(string? actorType, string? actorId)
+    {
+        if (ConflictTokenEquals(actorType, "player_soul", "player", "soul"))
+            return true;
+
+        return string.Equals(actorId, "player_soul", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool PlayerWonConflictProof(JsonObject proof)
+    {
+        var playerOutcome = AfterlifeSpiritualConflictState.GetNodeString(proof["playerOutcome"]);
+        var resolutionKind = AfterlifeSpiritualConflictState.GetNodeString(proof["resolutionKind"]);
+        return ConflictTokenEquals(playerOutcome, "won", "win", "victory", "success", "succeeded", "prevailed") ||
+               ConflictTokenEquals(resolutionKind, "player_victory", "player_success", "player_win");
+    }
+
+    private static bool PlayerLostConflictProof(JsonObject proof)
+    {
+        var playerOutcome = AfterlifeSpiritualConflictState.GetNodeString(proof["playerOutcome"]);
+        var resolutionKind = AfterlifeSpiritualConflictState.GetNodeString(proof["resolutionKind"]);
+        return ConflictTokenEquals(playerOutcome, "lost", "loss", "defeat", "surrendered", "conceded") ||
+               ConflictTokenEquals(resolutionKind, "player_loss", "player_surrender", "player_concession");
+    }
+
+    private static string? RequireSoulDissipationString(
+        JsonObject root,
+        string context,
+        List<ValidationIssue> issues,
+        string propertyName)
+    {
+        var value = AfterlifeSpiritualConflictState.GetNodeString(root[propertyName]);
+        if (!string.IsNullOrWhiteSpace(value))
+            return value;
+
+        AddSoulDissipationIssue(
+            issues,
+            $"{context}.{propertyName}",
+            $"soulDissipationProof.{propertyName} должен быть непустой строкой.",
+            $"afterlife_conflict_soul_dissipation_missing_{propertyName}",
+            "non-empty string",
+            root.ContainsKey(propertyName) ? root[propertyName]?.ToJsonString() ?? "null" : "missing");
+        return null;
+    }
+
+    private static string? GetFirstSoulDissipationString(JsonObject root, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            var value = AfterlifeSpiritualConflictState.GetNodeString(root[propertyName]);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return null;
+    }
+
+    private static string BuildActorDescription(string? actorType, string? actorId) =>
+        $"{(string.IsNullOrWhiteSpace(actorType) ? "missing_actorType" : actorType)}/{(string.IsNullOrWhiteSpace(actorId) ? "missing_actorId" : actorId)}";
+
+    private static string DescribeConflictOutcome(JsonObject proof) =>
+        $"playerOutcome={AfterlifeSpiritualConflictState.GetNodeString(proof["playerOutcome"]) ?? "missing"}; resolutionKind={AfterlifeSpiritualConflictState.GetNodeString(proof["resolutionKind"]) ?? "missing"}";
+
+    private static void AddSoulDissipationIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string message,
+        string code,
+        string? expected = null,
+        string? actual = null)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeSpiritualConflict",
+            expected: expected,
+            actual: actual,
+            repairHint: "Запиши Развеивание души только как финальный proof после победы/сдачи/разгрома, с профилями сущностей, достаточным tier и явным мотивом ГМа."));
     }
 
     private void ValidateConflictRewardAudit(

@@ -383,6 +383,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("standardArts", text, StringComparison.Ordinal);
             Assert.Contains("specialArts", text, StringComparison.Ordinal);
             Assert.Contains("soulDissipationTier", text, StringComparison.Ordinal);
+            Assert.Contains("targetStabilityCoefficient", text, StringComparison.Ordinal);
+            Assert.Contains("soulDissipationProof", text, StringComparison.Ordinal);
             Assert.Contains("progressionStrategy", text, StringComparison.Ordinal);
             Assert.Contains("customStates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
@@ -398,6 +400,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("/afterlife_profiles", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/профили_загробья", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("afterlife_entity_profiles_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_special_art_learning_v1", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_entity_profiles_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("afterlife_special_art_learning_v1", manifest, StringComparison.Ordinal);
