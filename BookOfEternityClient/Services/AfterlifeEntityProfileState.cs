@@ -13,6 +13,8 @@ internal static class AfterlifeEntityProfileState
     public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
     public const string SpecialArtLearningReceiptsProperty = "afterlifeSpecialArtLearningReceipts";
     public const string ProgressionLedgerProperty = "progressionLedger";
+    public const string SoulDissipationTierProperty = "soulDissipationTier";
+    public const int MaxSoulStabilityCoefficient = MaxProfileTier - 1;
     public const int SchemaVersion = 1;
     public const int MaxProfileTier = 5;
 
@@ -146,6 +148,45 @@ internal static class AfterlifeEntityProfileState
             return result;
 
         return 0;
+    }
+
+    public static int ResolveSoulStabilityCoefficient(JsonObject? profile)
+    {
+        if (profile == null)
+            return 0;
+
+        var progression = profile["progression"] as JsonObject;
+        var enlightenmentTier = ResolveProgressionTier(progression?["enlightenment"] as JsonObject);
+        var radianceTier = ResolveProgressionTier(progression?["radiance"] as JsonObject);
+        return Math.Clamp(Math.Max(enlightenmentTier, radianceTier), 0, MaxSoulStabilityCoefficient);
+    }
+
+    private static int ResolveProgressionTier(JsonObject? progression)
+    {
+        if (progression == null)
+            return 0;
+
+        var tier = GetNodeInt(progression["tier"]);
+        if (tier > 0)
+            return tier;
+
+        tier = GetNodeInt(progression["currentTier"]);
+        if (tier > 0)
+            return tier;
+
+        var tierName = GetNodeString(progression["tierName"]);
+        if (string.IsNullOrWhiteSpace(tierName))
+            return 0;
+
+        return tierName.Trim().ToLowerInvariant() switch
+        {
+            "dormant" or "unlit" => 0,
+            "stirring" or "spark" => 1,
+            "focused" or "gleam" => 2,
+            "tempered" or "ray" => 3,
+            "lucid" or "halo" => 4,
+            _ => MaxSoulStabilityCoefficient
+        };
     }
 
     private static void UpsertProfiles(JsonObject result, JsonNode? profilesNode)

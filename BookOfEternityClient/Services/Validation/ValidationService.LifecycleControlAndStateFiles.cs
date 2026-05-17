@@ -225,6 +225,7 @@ public partial class ValidationService
                 "soulName", "previousSoulNames", "currentRealm", "currentIncarnation", "enlightenment", "soulProgression",
                 "inkFeathers", "soulRelics", "afterlifeArchive", "livesHistory", "crossIncarnationData", "currentTier",
                 "soulImprint", "pendingMemoryLegacy", AfterlifeSpiritualConflictState.SoulStateProfileProperty,
+                AfterlifeSpiritualConflictState.TerminalGameOverProperty,
                 ShiningBlessingEffectState.SoulStateProperty,
                 PlayerGuardianFoundationState.SoulStateGuardianIdProperty,
                 PlayerGuardianFoundationState.SoulStateFoundationStatusProperty

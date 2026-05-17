@@ -10,6 +10,10 @@ public static class AfterlifeSpiritualConflictState
     public const string SoulStateProfileProperty = "afterlifeCombatProfile";
     public const string SpiritFocusTierProperty = "spiritFocusTier";
     public const string RewardAuditProperty = "rewardAudit";
+    public const string SoulDissipationProofProperty = "soulDissipationProof";
+    public const string TerminalGameOverProperty = "terminalGameOver";
+    public const string TerminalSoulDissipationState = "soul_dispersed";
+    public const string TerminalSoulDissipationMessage = "Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова";
     public const string RewardCurrencyInkFeathers = "ink_feathers";
     public const string RewardCurrencyLightSparks = "light_sparks";
     public const int SpiritFocusMaxTier = 5;
