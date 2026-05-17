@@ -407,6 +407,26 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeEntityProfileEntrypointsMentionRequiredContracts()
+    {
+        var launcherScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var launcherGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+        var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        foreach (var text in new[] { launcherScript, launcherGenerator, daemonScript })
+        {
+            Assert.Contains("example 26", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("afterlifeEntityProfileUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
+            Assert.Contains("soulDissipationProof", text, StringComparison.Ordinal);
+            Assert.Contains("targetStabilityCoefficient", text, StringComparison.Ordinal);
+            Assert.Contains("terminalGameOver", text, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ShiningLeadershipTransitionModesAndHistoryMappingsAreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
@@ -1891,6 +1911,18 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("examples 14-25", daemonSpec, StringComparison.OrdinalIgnoreCase);
         foreach (var text in new[] { matrix, examples, apiSpec, daemonSpec })
             Assert.Contains("OtherGuides/Afterlife_Combat_Terminology_Glossary.md", text, StringComparison.Ordinal);
+
+        foreach (var text in new[] { matrix, examples, apiSpec, daemonSpec, taskGuide })
+        {
+            Assert.Contains("difficultyAudit", text, StringComparison.Ordinal);
+            Assert.Contains("game_state/core/game_settings.json.difficulty", text, StringComparison.Ordinal);
+            Assert.Contains("game_difficulty", text, StringComparison.Ordinal);
+            Assert.Contains("oppositionModifier", text, StringComparison.Ordinal);
+            Assert.Contains("rewardMultiplierPercent", text, StringComparison.Ordinal);
+            Assert.Contains("normal` / Нормальная", text, StringComparison.Ordinal);
+            Assert.Contains("hard` / Тяжёлая", text, StringComparison.Ordinal);
+            Assert.Contains("impossible` / Невозможная", text, StringComparison.Ordinal);
+        }
 
         foreach (var term in new[]
         {
