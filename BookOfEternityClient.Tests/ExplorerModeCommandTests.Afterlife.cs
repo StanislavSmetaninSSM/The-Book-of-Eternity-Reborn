@@ -44,9 +44,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         {
                             artId = "mirror_guard",
                             displayName = "Зеркальная Защита",
+                            ownerActorType = "guardian",
+                            ownerActorId = "guardian_mirror",
                             baseOperation = "guard",
                             tier = 1,
                             costMultiplierPercent = 150,
+                            upgradeCost = new { inkFeathers = 30, lightSparks = 0 },
+                            canTeachPlayer = true,
+                            trainingConditions = new[] { "Провести сцену обучения с Хранителем Зеркал." },
                             effectSummary = "При успехе отражает часть давления в сторону противника."
                         }
                     },
@@ -112,6 +117,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Просветление: тир 4, опыт 48", text, StringComparison.Ordinal);
         Assert.Contains("Давление: 2", text, StringComparison.Ordinal);
         Assert.Contains("Зеркальная Защита", text, StringComparison.Ordinal);
+        Assert.Contains("может обучать игрока", text, StringComparison.Ordinal);
+        Assert.Contains("Провести сцену обучения", text, StringComparison.Ordinal);
         Assert.Contains("Кастомные состояния", text, StringComparison.Ordinal);
         Assert.Contains("Голод эха", text, StringComparison.Ordinal);
         Assert.Contains("3/10", text, StringComparison.Ordinal);

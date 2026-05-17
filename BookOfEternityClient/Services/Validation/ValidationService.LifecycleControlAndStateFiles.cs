@@ -249,6 +249,7 @@ public partial class ValidationService
                 AfterlifeEntityProfileState.UpdateProperty,
                 AfterlifeEntityProfileState.CustomStateChangesProperty,
                 AfterlifeEntityProfileState.ProgressionOverridesProperty,
+                AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty,
                 "_lastUpdated"
             }, issues, ValidateAfterlifeEntityProfileStateFile);
         await ValidateStrictTopLevelObjectFileAsync(AfterlifeEntityProfileState.StatePath,

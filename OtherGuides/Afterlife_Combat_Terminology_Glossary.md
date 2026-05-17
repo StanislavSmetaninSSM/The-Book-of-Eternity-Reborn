@@ -39,6 +39,9 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | afterlifeEntityProfileUpdates | обновления профилей сущностей посмертия | GM-authored response surface for `profiles[]` entries with `actorType`, `actorId`, `currencies`, `progression`, `standardArts`, `specialArts`, `customStates`, `soulDissipationTier`, and `progressionStrategy`. |
 | afterlifeEntityCustomStateChanges | изменения кастомных состояний сущностей посмертия | GM-authored response surface for targeted `customStates` maintenance on a known profile: `statesToAddOrUpdate[]` adds/replaces full state objects, while `statesToRemove[]` deletes ended states so they do not persist forever. |
 | afterlifeEntityProgressionOverrides | принудительная прокачка сущности посмертия | GM-authored override surface for cases where the living world logic should not follow deterministic `progressionStrategy`; each override needs `cycleKey`, `reason`, `summary`, explicit deltas, and produces `progressionLedger`. |
+| afterlifeSpecialArtLearningReceipts | квитанции обучения особым духовным искусствам | GM-authored receipt surface for roleplay training that teaches the player an entity's `specialArts[]`; each receipt names the teacher, player, `artId`, `learnedAtTurn`, `trainingConditionSatisfied=true`, `roleplayEvidence`, and summary. |
+| specialArts | особые духовные искусства | Named variants of standard spiritual actions. Each entry has owner identity, `baseOperation`, `costMultiplierPercent`, `upgradeCost`, `effectSummary`, and, if teachable, `trainingConditions`. |
+| specialArtAudit | аудит особого духовного искусства | Required on a conflict exchange that uses a special art: records `artId`, owner identity, `baseOperation`, `costMultiplierPercent`, and `effectNote` describing how the GM applied the special effect. |
 | progressionLedger | журнал прокачки сущности посмертия | Audit trail in each afterlife profile. It records deterministic income/spending/upgrades or a GM override for a specific cycle, including `lastAutoProgressionCycleKey` on the strategy. |
 
 ## Spiritual Art Names
@@ -89,6 +92,7 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 - On `mode=start`, `actionEconomy.player.current/max` comes from `soul_state.afterlifeCombatProfile.spiritFocusTier`; source is `Средоточие Души tier N`.
 - Every new/current exchange that spends or restores ОД must carry `actionCostAudit.player`: `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`.
 - Formula: `effectiveCost = max(minCost, baseCost - artTier)`.
+- Special arts multiply that standard cost: an exchange with `specialArtAudit` must also include `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and the multiplied `effectiveCost`.
 - Base/min costs: `pressure 3/1`, `guard 2/1`, `counter 4/2`, `maneuver 3/1`, `binding 4/2`, `force_binding 5/2`, `break_binding 3/1`, `incarnation_resistance 3/1`, `champion_coordination 2/1`, `recover_spiritual_power 0/0`.
 - `recover_spiritual_power` restores ОД up to `actionEconomy.player.max`: success +3, partial_success +2, punished recovery +0..1.
 - Punished recovery happens against `pressure`, `maneuver`, `binding`, `force_binding`, or `force_incarnation`; strong timing is against `guard`, `counter`, `none`, or `passive`.

@@ -96,6 +96,93 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_conflict_dice_value_not_authorized", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_SpecialArtExchange_RequiresEffectNote()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_special_missing_note_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 3,
+              "effectiveCost": 5,
+              "before": 6,
+              "after": 1
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_missing_effect_note", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SpecialArtExchange_RequiresScaledActionCost()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_special_cost_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Зеркальное давление раздваивает импульс и усиливает нажим на противника."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 3,
+              "effectiveCost": 3,
+              "before": 6,
+              "after": 3
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Theory]
     [InlineData("playerTotal", 19, "afterlife_conflict_dice_player_total_mismatch")]
     [InlineData("margin", 5, "afterlife_conflict_dice_margin_mismatch")]
