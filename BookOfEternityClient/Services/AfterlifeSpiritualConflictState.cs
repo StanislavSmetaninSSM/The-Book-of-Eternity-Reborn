@@ -8,9 +8,11 @@ public static class AfterlifeSpiritualConflictState
     public const string StatePath = "game_state/meta/afterlife_spiritual_conflict_state.json";
     public const string ResponseField = "afterlifeSpiritualConflictUpdate";
     public const string SoulStateProfileProperty = "afterlifeCombatProfile";
+    public const string SpiritFocusTierProperty = "spiritFocusTier";
     public const string RewardAuditProperty = "rewardAudit";
     public const string RewardCurrencyInkFeathers = "ink_feathers";
     public const string RewardCurrencyLightSparks = "light_sparks";
+    public const int SpiritFocusMaxTier = 5;
 
     public const int ChaosSeaConflictRewardBaseAmount = 10;
     public const int ShiningConflictRewardBaseAmount = 1;
@@ -145,9 +147,21 @@ public static class AfterlifeSpiritualConflictState
         new("champion_coordination", "Champion Coordination", "Improve side-vs-side support when an ally is the lead contestant.", 3)
     ];
 
+    public static readonly IReadOnlyList<SpiritFocusTierDefinition> SpiritFocusTiers =
+    [
+        new(0, 6, "Базовый запас души"),
+        new(1, 7, "Короткий обмен без истощения"),
+        new(2, 8, "Устойчивость в затяжном споре"),
+        new(3, 10, "Тактический запас для дорогих приемов"),
+        new(4, 12, "Сильное средоточие для длинного боя"),
+        new(5, 15, "Мастерский запас духовной силы")
+    ];
+
     public sealed record RankDefinition(int Rank, string RankId, int RequiredProgress, int UnlocksArtTier, string MechanicalEffect);
 
     public sealed record SpiritualArtDefinition(string ArtId, string DisplayName, string MechanicalUse, int MinUnlockTier);
+
+    public sealed record SpiritFocusTierDefinition(int Tier, int MaxActionPoints, string PlayerMeaning);
 
     public static JsonObject CreateDefaultRoot() =>
         new()
@@ -164,6 +178,7 @@ public static class AfterlifeSpiritualConflictState
             ["enlightenmentRank"] = 0,
             ["radianceRank"] = 0,
             ["retainedRadianceRank"] = 0,
+            [SpiritFocusTierProperty] = 0,
             ["artTiers"] = new JsonObject(),
             ["capstones"] = new JsonObject(),
             ["lastRecoveryTurn"] = 0
@@ -188,7 +203,10 @@ public static class AfterlifeSpiritualConflictState
         return normalized;
     }
 
-    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update)
+    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update) =>
+        ApplyUpdate(existingRoot, update, playerSpiritFocusTier: null);
+
+    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update, int? playerSpiritFocusTier)
     {
         var root = NormalizeRoot(existingRoot);
         var mode = GetNodeString(update["mode"]);
@@ -198,7 +216,7 @@ public static class AfterlifeSpiritualConflictState
         switch (mode.ToLowerInvariant())
         {
             case ModeStart:
-                return ApplyStart(root, update);
+                return ApplyStart(root, update, playerSpiritFocusTier);
             case ModeExchange:
                 return ApplyExchange(root, update);
             case ModeResolve:
@@ -209,6 +227,21 @@ public static class AfterlifeSpiritualConflictState
                 return MarkInvalidUpdate(root, update, "missing_or_invalid_mode");
         }
     }
+
+    public static int ResolveSpiritFocusTier(JsonObject? soulRoot)
+    {
+        var profile = soulRoot?[SoulStateProfileProperty] as JsonObject;
+        return Math.Clamp(GetNodeInt(profile?[SpiritFocusTierProperty]), 0, SpiritFocusMaxTier);
+    }
+
+    public static int GetSpiritFocusMaxActionPoints(int tier)
+    {
+        var normalizedTier = Math.Clamp(tier, 0, SpiritFocusMaxTier);
+        return SpiritFocusTiers.First(definition => definition.Tier == normalizedTier).MaxActionPoints;
+    }
+
+    public static string BuildSpiritFocusActionEconomySource(int tier) =>
+        $"Средоточие Души tier {Math.Clamp(tier, 0, SpiritFocusMaxTier)}";
 
     public static string? GetNodeString(JsonNode? node)
     {
@@ -254,7 +287,7 @@ public static class AfterlifeSpiritualConflictState
     public static bool IsAfterlifeRealm(string? realm) =>
         NormalizeAfterlifeRealmKey(realm) != null;
 
-    private static JsonObject ApplyStart(JsonObject root, JsonObject update)
+    private static JsonObject ApplyStart(JsonObject root, JsonObject update, int? playerSpiritFocusTier)
     {
         if (root.TryGetPropertyValue("activeConflict", out var activeConflict) && activeConflict != null)
             return MarkInvalidUpdate(root, update, "start_while_conflict_active");
@@ -277,10 +310,37 @@ public static class AfterlifeSpiritualConflictState
         conflict["realm"] = realm;
         if (conflict["exchangeLog"] is not JsonArray)
             conflict["exchangeLog"] = new JsonArray();
+        if (playerSpiritFocusTier.HasValue)
+            ApplySpiritFocusActionEconomy(conflict, playerSpiritFocusTier.Value);
 
         root["activeConflict"] = conflict;
         ClearInvalidUpdateMarkers(root);
         return root;
+    }
+
+    private static void ApplySpiritFocusActionEconomy(JsonObject conflict, int spiritFocusTier)
+    {
+        var normalizedTier = Math.Clamp(spiritFocusTier, 0, SpiritFocusMaxTier);
+        var playerMax = GetSpiritFocusMaxActionPoints(normalizedTier);
+        var actionEconomy = conflict["actionEconomy"] as JsonObject ?? new JsonObject();
+        actionEconomy["player"] = new JsonObject
+        {
+            ["current"] = playerMax,
+            ["max"] = playerMax,
+            ["source"] = BuildSpiritFocusActionEconomySource(normalizedTier)
+        };
+
+        if (actionEconomy["opposition"] is not JsonObject)
+        {
+            actionEconomy["opposition"] = new JsonObject
+            {
+                ["current"] = 6,
+                ["max"] = 6,
+                ["source"] = "opposition spiritual authority"
+            };
+        }
+
+        conflict["actionEconomy"] = actionEconomy;
     }
 
     private static JsonObject ApplyExchange(JsonObject root, JsonObject update)

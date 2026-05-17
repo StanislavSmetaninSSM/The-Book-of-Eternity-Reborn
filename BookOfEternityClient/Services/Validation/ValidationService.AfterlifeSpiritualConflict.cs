@@ -170,7 +170,9 @@ public partial class ValidationService
         IReadOnlyList<JsonObject>? PreTurnConflictPayloads = null,
         string? PreTurnActiveConflictId = null,
         JsonNode? PreTurnActiveControlState = null,
-        bool HasValidatedTurnBaseline = false)
+        bool HasValidatedTurnBaseline = false,
+        int SpiritFocusTier = 0,
+        int SpiritFocusMaxActionPoints = 6)
     {
         public bool HasAuthoritativeDice => AuthoritativeDice is { Length: > 0 };
         public bool HasLightIncarnate => LightIncarnateGrantTurn is > 0;
@@ -249,6 +251,8 @@ public partial class ValidationService
         var preTurnConflictPayloads = await ResolvePreTurnConflictPayloadsAsync(manifest);
         var preTurnActiveControl = await ResolvePreTurnActiveConflictControlContextAsync(manifest);
         var preTurnNoTurnDicePayloads = await ResolvePreTurnNoTurnConflictDicePayloadsAsync(manifest);
+        var spiritFocusTier = await ResolveAfterlifeConflictSpiritFocusTierAsync(manifest);
+        var spiritFocusMaxActionPoints = AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(spiritFocusTier);
 
         if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
         {
@@ -259,7 +263,9 @@ public partial class ValidationService
                 preTurnConflictPayloads,
                 preTurnActiveControl.ConflictId,
                 preTurnActiveControl.ControlState,
-                HasValidatedTurnBaseline: true);
+                HasValidatedTurnBaseline: true,
+                SpiritFocusTier: spiritFocusTier,
+                SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints);
         }
 
         var liveRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
@@ -272,7 +278,9 @@ public partial class ValidationService
                 preTurnConflictPayloads,
                 preTurnActiveControl.ConflictId,
                 preTurnActiveControl.ControlState,
-                HasValidatedTurnBaseline: manifest != null);
+                HasValidatedTurnBaseline: manifest != null,
+                SpiritFocusTier: spiritFocusTier,
+                SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints);
         }
 
         try
@@ -296,7 +304,9 @@ public partial class ValidationService
                         preTurnConflictPayloads,
                         preTurnActiveControl.ConflictId,
                         preTurnActiveControl.ControlState,
-                        HasValidatedTurnBaseline: manifest != null);
+                        HasValidatedTurnBaseline: manifest != null,
+                        SpiritFocusTier: spiritFocusTier,
+                        SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints);
                 }
             }
         }
@@ -312,7 +322,31 @@ public partial class ValidationService
             preTurnConflictPayloads,
             preTurnActiveControl.ConflictId,
             preTurnActiveControl.ControlState,
-            HasValidatedTurnBaseline: manifest != null);
+            HasValidatedTurnBaseline: manifest != null,
+            SpiritFocusTier: spiritFocusTier,
+            SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints);
+    }
+
+    private async Task<int> ResolveAfterlifeConflictSpiritFocusTierAsync(ValidationPendingTurnSnapshotManifest? manifest)
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        var json = manifest == null
+            ? await _fs.ReadFileAsync(soulStatePath)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulStatePath);
+
+        if (string.IsNullOrWhiteSpace(json))
+            return 0;
+
+        try
+        {
+            return JsonNode.Parse(json) is JsonObject soulRoot
+                ? AfterlifeSpiritualConflictState.ResolveSpiritFocusTier(soulRoot)
+                : 0;
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
     private async Task<AfterlifeConflictRewardContext> ResolveAfterlifeConflictRewardContextAsync(
@@ -683,6 +717,22 @@ public partial class ValidationService
         ValidateNonNegativeIntegerField(profile, context, issues, "radianceRank", "AfterlifeSpiritualConflict");
         ValidateNonNegativeIntegerField(profile, context, issues, "retainedRadianceRank", "AfterlifeSpiritualConflict");
         ValidateNonNegativeIntegerField(profile, context, issues, "lastRecoveryTurn", "AfterlifeSpiritualConflict");
+        if (profile.TryGetProperty(AfterlifeSpiritualConflictState.SpiritFocusTierProperty, out var spiritFocusTier) &&
+            (spiritFocusTier.ValueKind != JsonValueKind.Number ||
+             !spiritFocusTier.TryGetInt32(out var parsedSpiritFocusTier) ||
+             parsedSpiritFocusTier < 0 ||
+             parsedSpiritFocusTier > AfterlifeSpiritualConflictState.SpiritFocusMaxTier))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{AfterlifeSpiritualConflictState.SpiritFocusTierProperty}",
+                IssueSeverity.Error,
+                "afterlifeCombatProfile.spiritFocusTier должен быть integer 0..5.",
+                code: "afterlife_combat_profile_invalid_spirit_focus_tier",
+                section: "AfterlifeSpiritualConflict",
+                expected: "integer 0..5",
+                actual: spiritFocusTier.ValueKind == JsonValueKind.Number ? spiritFocusTier.GetRawText() : spiritFocusTier.ValueKind.ToString()));
+        }
+
         ValidateLightIncarnateCombatProfileCapstone(profile, context, issues);
 
         if (!profile.TryGetProperty("artTiers", out var artTiers))
@@ -1008,6 +1058,11 @@ public partial class ValidationService
             $"{context}.actionEconomy",
             issues,
             required: hasCurrentExchange);
+        ValidateActionEconomyMatchesSpiritFocus(
+            conflict["actionEconomy"] as JsonObject,
+            diceContext,
+            $"{context}.actionEconomy.player",
+            issues);
         ValidateActionEconomyMatchesLastCurrentExchange(
             conflict["actionEconomy"] as JsonObject,
             lastCurrentPlayerActionCostAfter,
@@ -2114,6 +2169,30 @@ public partial class ValidationService
                 expectedCurrent.Value.ToString(),
                 actualCurrent.ToString());
         }
+    }
+
+    private static void ValidateActionEconomyMatchesSpiritFocus(
+        JsonObject? actionEconomy,
+        AfterlifeConflictDiceContext diceContext,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (actionEconomy?["player"] is not JsonObject playerPool ||
+            !TryGetJsonNodeInt(playerPool["max"], out var actualMax))
+        {
+            return;
+        }
+
+        if (actualMax == diceContext.SpiritFocusMaxActionPoints)
+            return;
+
+        AddActionCostIssue(
+            issues,
+            $"{context}.max",
+            "Максимум ОД игрока в activeConflict должен соответствовать Средоточию Души из authority soul_state.",
+            "afterlife_conflict_action_economy_spirit_focus_mismatch",
+            $"{diceContext.SpiritFocusMaxActionPoints} ОД from spiritFocusTier={diceContext.SpiritFocusTier}",
+            actualMax.ToString());
     }
 
     private static bool TryGetPlayerActionCostBeforeAfter(JsonObject exchange, out int before, out int after)

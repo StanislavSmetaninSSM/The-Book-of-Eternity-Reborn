@@ -25,6 +25,21 @@ public partial class ExplorerMode
         string RequiredRankLabel,
         string? BlockReason);
 
+    private sealed record SpiritFocusUpgradeQuote(
+        int CurrentTier,
+        int NextTier,
+        int CurrentMaxActionPoints,
+        int NextMaxActionPoints,
+        int MaxUnlockedTier,
+        int InkFeatherCost,
+        int LightSparkCost,
+        string RequiredRankLabel,
+        string? BlockReason);
+
+    private sealed record SpiritualProfileUpgradeChoice(
+        SpiritualArtUpgradeQuote? ArtQuote,
+        SpiritFocusUpgradeQuote? SpiritFocusQuote);
+
     private async Task ShowSpiritualConflictAsync()
     {
         if (!EnsureOrdinaryAfterlifeInteractionAvailable("Духовный конфликт"))
@@ -233,6 +248,7 @@ public partial class ExplorerMode
             "  • Активный конфликт хранит ОД обеих сторон в actionEconomy: текущее значение (current), максимум (max) и источник расчёта (source).",
             "  • Каждый новый обмен, который тратит или восстанавливает ОД, обязан иметь actionCostAudit: тип действия, базовую стоимость, уровень искусства, итоговую стоимость, ОД до и после.",
             "  • Формула стоимости: итоговая стоимость = max(минимальная стоимость, базовая стоимость - уровень искусства). В JSON-аудите это effectiveCost = max(minCost, baseCost - artTier).",
+            "  • Уровни духовных искусств уменьшают стоимость действий; Средоточие Души увеличивает максимум ОД: уровни 0/1/2/3/4/5 дают 6/7/8/10/12/15 ОД. Всё это прокачивается локально через /spiritual_arts.",
             "  • Базовые стоимости: давление 3, защита 2, контрприём 4, манёвр 3, оковы 4, силовые оковы 5, разрыв оков 3, сопротивление воплощению 3, координация чемпиона 2.",
             "  • Собрать Средоточие (recover_spiritual_power) не тратит ОД и восстанавливает ОД: обычно +3 при успехе, +2 при частичном успехе, но не выше максимума.",
             "  • Собрать Средоточие выгодно против защиты, контрприёма, ожидания или пассивности; оно опасно против давления, манёвра, оков, силовых оков и принудительного воплощения — тогда восстановление ограничено 0..1 ОД, а действие противника проходит по своей линии.",
@@ -320,9 +336,10 @@ public partial class ExplorerMode
             var shiningRoot = await ReadJsonObjectForAfterlifeStatusAsync(ShiningAbodeState.StatePath);
             var profile = BuildSyncedAfterlifeCombatProfile(soulRoot, shiningRoot);
             var quotes = BuildSpiritualArtUpgradeQuotes(profile);
+            var spiritFocusQuote = BuildSpiritFocusUpgradeQuote(profile);
 
             Clear();
-            Write(BuildSpiritualArtsPanel(soulRoot, shiningRoot, profile, quotes));
+            Write(BuildSpiritualArtsPanel(soulRoot, shiningRoot, profile, quotes, spiritFocusQuote));
             WriteJsonAuditPanel("Полный JSON afterlifeCombatProfile", profile, Color.Cyan1);
 
             var choice = Prompt(new SelectionPrompt<string>()
@@ -335,7 +352,7 @@ public partial class ExplorerMode
             if (!choice.Contains("Прокачать", StringComparison.OrdinalIgnoreCase))
                 return;
 
-            await HandleSpiritualArtUpgradeAsync(soulRoot, shiningRoot, quotes);
+            await HandleSpiritualArtUpgradeAsync(soulRoot, shiningRoot, quotes, spiritFocusQuote);
         }
     }
 
@@ -343,7 +360,8 @@ public partial class ExplorerMode
         JsonObject soulRoot,
         JsonObject? shiningRoot,
         JsonObject profile,
-        IReadOnlyList<SpiritualArtUpgradeQuote> quotes)
+        IReadOnlyList<SpiritualArtUpgradeQuote> quotes,
+        SpiritFocusUpgradeQuote spiritFocusQuote)
     {
         var enlightenment = soulRoot["enlightenment"] as JsonObject;
         var radiance = shiningRoot?["radiance"] as JsonObject;
@@ -360,9 +378,14 @@ public partial class ExplorerMode
             $"  • Сохранённый ранг Сияния: [white]{AfterlifeSpiritualConflictState.GetNodeInt(profile["retainedRadianceRank"])}[/]",
             $"  • Уровень Просветления души: [white]{AfterlifeSpiritualConflictState.GetNodeInt(enlightenment?["level"])}[/] [dim]{Markup.Escape(AfterlifeSpiritualConflictState.GetNodeString(enlightenment?["currentTier"]) ?? "")}[/]",
             $"  • Сияние Сияющей Обители: [white]{AfterlifeSpiritualConflictState.GetNodeInt(radiance?["experience"])}[/] опыта / уровень [white]{AfterlifeSpiritualConflictState.GetNodeInt(radiance?["tier"])}[/]",
+            $"  • Средоточие Души: уровень [white]{spiritFocusQuote.CurrentTier}[/], макс ОД [white]{spiritFocusQuote.CurrentMaxActionPoints}[/], следующий макс ОД [white]{spiritFocusQuote.NextMaxActionPoints}[/]",
             $"  • Максимальный открытый уровень искусства: [white]{maxUnlockedTier}[/]",
             $"  • Доступные Чернильные Перья: [white]{ShiningAbodeState.GetSoulSpendableInkFeathers(soulRoot)}[/]",
             $"  • Искры Света: [gold1]{AfterlifeSpiritualConflictState.GetNodeInt(shiningRoot?["lightSparks"])}[/] [dim](тратятся только в обычной активной Сияющей Обители)[/]",
+            "",
+            "[bold]Средоточие Души:[/]",
+            $"  • Уровень [white]{spiritFocusQuote.CurrentTier}[/] -> [white]{spiritFocusQuote.NextTier}[/], макс ОД [white]{spiritFocusQuote.CurrentMaxActionPoints}[/] -> [white]{spiritFocusQuote.NextMaxActionPoints}[/], {Markup.Escape(spiritFocusQuote.BlockReason == null ? $"цена {spiritFocusQuote.InkFeatherCost} 🪶" : $"заблокировано: {spiritFocusQuote.BlockReason}")}{Markup.Escape(_stateManager.CurrentState.IsInShiningAbode ? $" / {spiritFocusQuote.LightSparkCost} ✨" : "")}",
+            $"    Смысл: {Markup.Escape(DescribeSpiritFocusTier(spiritFocusQuote.CurrentTier))}. Это увеличивает максимум ОД; уровни духовных искусств отдельно уменьшают стоимость действий.",
             "",
             "[bold]Искусства:[/]"
         };
@@ -407,7 +430,8 @@ public partial class ExplorerMode
     private async Task HandleSpiritualArtUpgradeAsync(
         JsonObject soulRoot,
         JsonObject? shiningRoot,
-        IReadOnlyList<SpiritualArtUpgradeQuote> quotes)
+        IReadOnlyList<SpiritualArtUpgradeQuote> quotes,
+        SpiritFocusUpgradeQuote spiritFocusQuote)
     {
         var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync();
         if (blocker != null)
@@ -417,11 +441,11 @@ public partial class ExplorerMode
             return;
         }
 
-        var choicesByLabel = quotes.ToDictionary(
-            quote => BuildSpiritualArtUpgradeChoiceLabel(quote),
-            quote => quote,
-            StringComparer.Ordinal);
-        choicesByLabel["← Назад"] = null!;
+        var choicesByLabel = new Dictionary<string, SpiritualProfileUpgradeChoice?>(StringComparer.Ordinal);
+        foreach (var quote in quotes)
+            choicesByLabel[BuildSpiritualArtUpgradeChoiceLabel(quote)] = new SpiritualProfileUpgradeChoice(quote, null);
+        choicesByLabel[BuildSpiritFocusUpgradeChoiceLabel(spiritFocusQuote)] = new SpiritualProfileUpgradeChoice(null, spiritFocusQuote);
+        choicesByLabel["← Назад"] = null;
 
         var selected = Prompt(new SelectionPrompt<string>()
             .Title("[bold cyan]Выберите духовное искусство для прокачки[/]")
@@ -429,9 +453,24 @@ public partial class ExplorerMode
             .PageSize(12)
             .AddChoices(choicesByLabel.Keys));
 
-        if (!choicesByLabel.TryGetValue(selected, out var quote) || quote == null)
+        if (!choicesByLabel.TryGetValue(selected, out var choice) || choice == null)
             return;
 
+        if (choice.ArtQuote is { } artQuote)
+        {
+            await HandleSpiritualArtUpgradeChoiceAsync(soulRoot, shiningRoot, artQuote);
+            return;
+        }
+
+        if (choice.SpiritFocusQuote is { } selectedSpiritFocusQuote)
+            await HandleSpiritFocusUpgradeChoiceAsync(soulRoot, shiningRoot, selectedSpiritFocusQuote);
+    }
+
+    private async Task HandleSpiritualArtUpgradeChoiceAsync(
+        JsonObject soulRoot,
+        JsonObject? shiningRoot,
+        SpiritualArtUpgradeQuote quote)
+    {
         if (quote.BlockReason != null)
         {
             ShowEmptyPanel("Прокачка духовных искусств", quote.BlockReason);
@@ -475,6 +514,54 @@ public partial class ExplorerMode
         WaitForKey();
     }
 
+    private async Task HandleSpiritFocusUpgradeChoiceAsync(
+        JsonObject soulRoot,
+        JsonObject? shiningRoot,
+        SpiritFocusUpgradeQuote quote)
+    {
+        if (quote.BlockReason != null)
+        {
+            ShowEmptyPanel("Прокачка духовных искусств", quote.BlockReason);
+            WaitForKey();
+            return;
+        }
+
+        var currency = PromptSpiritualArtCurrency(quote, shiningRoot);
+        if (currency == null)
+            return;
+
+        var beforeSoulRoot = soulRoot.DeepClone().AsObject();
+        var beforeShiningRoot = shiningRoot?.DeepClone()?.AsObject();
+        var projectedSoulRoot = soulRoot.DeepClone().AsObject();
+        var projectedShiningRoot = shiningRoot?.DeepClone()?.AsObject();
+        var result = ApplySpiritFocusUpgrade(projectedSoulRoot, projectedShiningRoot, quote, currency.Value);
+        if (!result.Success)
+        {
+            ShowEmptyPanel("Прокачка духовных искусств", result.Message);
+            WaitForKey();
+            return;
+        }
+
+        Write(BuildSpiritFocusUpgradePreviewPanel(beforeSoulRoot, beforeShiningRoot, projectedSoulRoot, projectedShiningRoot, quote, currency.Value));
+        WriteJsonAuditPanel("JSON локальной прокачки Средоточия Души", BuildSpiritFocusUpgradeAuditNode(beforeSoulRoot, beforeShiningRoot, projectedSoulRoot, projectedShiningRoot, quote, currency.Value), Color.Cyan1);
+
+        if (!Confirm("[yellow]Подтвердить локальную прокачку Средоточия Души?[/]", false))
+        {
+            MarkupLine("[dim]Прокачка отменена; состояние не изменено.[/]");
+            WaitForKey();
+            return;
+        }
+
+        if (!await SaveSpiritualArtUpgradeRootsAsync(projectedSoulRoot, projectedShiningRoot, currency.Value))
+        {
+            WaitForKey();
+            return;
+        }
+
+        MarkupLine($"[green]Прокачано: Средоточие Души, уровень {quote.CurrentTier} -> {quote.NextTier}, макс ОД {quote.CurrentMaxActionPoints} -> {quote.NextMaxActionPoints}.[/]");
+        WaitForKey();
+    }
+
     private async Task<string?> TryDescribeSpiritualArtUpgradeBlockerAsync()
     {
         var activeTurnArtifacts = new List<string>();
@@ -507,6 +594,15 @@ public partial class ExplorerMode
             activeConflict != null)
         {
             return $"Прокачка духовных искусств заблокирована: {AfterlifeSpiritualConflictState.StatePath}.activeConflict повреждён. Сначала выполните ремонт состояния (repair).";
+        }
+
+        var soulRead = await ReadJsonObjectForAfterlifeStatusResultAsync(SoulStatePath);
+        if (soulRead.Error != null)
+            return $"Прокачка духовных искусств заблокирована: {SoulStatePath} повреждён ({soulRead.Error}). Сначала исправьте состояние души.";
+        if (soulRead.Root != null &&
+            TryDescribeAfterlifeCombatProfileDamage(soulRead.Root, out var profileDamage))
+        {
+            return $"Прокачка духовных искусств заблокирована: {profileDamage}";
         }
 
         if (_fs.FileExists(GuardianAbodeOfferingState.PendingRequestPath))
@@ -558,6 +654,33 @@ public partial class ExplorerMode
             : SpiritualArtCurrency.InkFeathers;
     }
 
+    private SpiritualArtCurrency? PromptSpiritualArtCurrency(
+        SpiritFocusUpgradeQuote quote,
+        JsonObject? shiningRoot)
+    {
+        var choices = new List<string>
+        {
+            $"Чернильные Перья — {quote.InkFeatherCost} 🪶",
+        };
+
+        if (_stateManager.CurrentState.IsInShiningAbode && shiningRoot != null)
+            choices.Add($"Искры Света — {quote.LightSparkCost} ✨");
+
+        choices.Add("← Назад");
+
+        var selected = Prompt(new SelectionPrompt<string>()
+            .Title("[bold cyan]Выберите валюту прокачки[/]")
+            .HighlightStyle(new Style(_stateManager.CurrentState.IsInShiningAbode ? Color.Gold1 : Color.Cyan1))
+            .AddChoices(choices));
+
+        if (selected.Contains("Назад", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        return selected.Contains("Искры", StringComparison.OrdinalIgnoreCase)
+            ? SpiritualArtCurrency.LightSparks
+            : SpiritualArtCurrency.InkFeathers;
+    }
+
     private static (bool Success, string Message) ApplySpiritualArtUpgrade(
         JsonObject soulRoot,
         JsonObject? shiningRoot,
@@ -571,6 +694,39 @@ public partial class ExplorerMode
         var artTiers = profile["artTiers"] as JsonObject ?? new JsonObject();
         artTiers[quote.Art.ArtId] = quote.NextTier;
         profile["artTiers"] = artTiers;
+        soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] = profile;
+
+        if (currency == SpiritualArtCurrency.InkFeathers)
+        {
+            if (!TrySpendSoulInkFeathers(soulRoot, quote.InkFeatherCost, out var reason))
+                return (false, reason);
+        }
+        else
+        {
+            if (shiningRoot == null)
+                return (false, "Искры Света доступны для прокачки только в Сияющей Обители.");
+
+            var current = AfterlifeSpiritualConflictState.GetNodeInt(shiningRoot["lightSparks"]);
+            if (current < quote.LightSparkCost)
+                return (false, $"Недостаточно Искр Света: нужно {quote.LightSparkCost}, доступно {current}.");
+
+            shiningRoot["lightSparks"] = current - quote.LightSparkCost;
+        }
+
+        return (true, "ok");
+    }
+
+    private static (bool Success, string Message) ApplySpiritFocusUpgrade(
+        JsonObject soulRoot,
+        JsonObject? shiningRoot,
+        SpiritFocusUpgradeQuote quote,
+        SpiritualArtCurrency currency)
+    {
+        if (quote.BlockReason != null)
+            return (false, quote.BlockReason);
+
+        var profile = BuildSyncedAfterlifeCombatProfile(soulRoot, shiningRoot);
+        profile[AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = quote.NextTier;
         soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] = profile;
 
         if (currency == SpiritualArtCurrency.InkFeathers)
@@ -667,6 +823,8 @@ public partial class ExplorerMode
             profile["schemaVersion"] = 1;
         if (profile["artTiers"] is not JsonObject)
             profile["artTiers"] = new JsonObject();
+        if (!profile.ContainsKey(AfterlifeSpiritualConflictState.SpiritFocusTierProperty))
+            profile[AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0;
 
         var enlightenmentRank = ResolveEnlightenmentRank(soulRoot);
         var radianceRank = ResolveRadianceRank(shiningRoot);
@@ -713,6 +871,33 @@ public partial class ExplorerMode
         }
 
         return result;
+    }
+
+    private static SpiritFocusUpgradeQuote BuildSpiritFocusUpgradeQuote(JsonObject profile)
+    {
+        var maxUnlockedTier = ResolveMaxUnlockedSpiritualArtTier(profile);
+        var currentTier = Math.Clamp(
+            AfterlifeSpiritualConflictState.GetNodeInt(profile[AfterlifeSpiritualConflictState.SpiritFocusTierProperty]),
+            0,
+            AfterlifeSpiritualConflictState.SpiritFocusMaxTier);
+        var nextTier = Math.Min(AfterlifeSpiritualConflictState.SpiritFocusMaxTier, currentTier + 1);
+        var requiredRankLabel = DescribeRequiredRankForArtTier(nextTier);
+        string? blockReason = null;
+        if (currentTier >= AfterlifeSpiritualConflictState.SpiritFocusMaxTier)
+            blockReason = "уже достигнут максимальный уровень Средоточия Души 5";
+        else if (nextTier > maxUnlockedTier)
+            blockReason = $"нужен ранг, открывающий уровень {nextTier}: {requiredRankLabel}";
+
+        return new SpiritFocusUpgradeQuote(
+            currentTier,
+            nextTier,
+            AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(currentTier),
+            AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(nextTier),
+            maxUnlockedTier,
+            ComputeSpiritFocusInkFeatherCost(nextTier),
+            ComputeSpiritFocusLightSparkCost(nextTier),
+            requiredRankLabel,
+            blockReason);
     }
 
     private static int ResolveMaxUnlockedSpiritualArtTier(JsonObject profile)
@@ -808,12 +993,81 @@ public partial class ExplorerMode
         int nextTier) =>
         checked(4 + nextTier * 3 + art.MinUnlockTier);
 
+    private static int ComputeSpiritFocusInkFeatherCost(int nextTier) =>
+        checked(100 + nextTier * 100);
+
+    private static int ComputeSpiritFocusLightSparkCost(int nextTier) =>
+        checked(8 + nextTier * 4);
+
     private static string BuildSpiritualArtUpgradeChoiceLabel(SpiritualArtUpgradeQuote quote)
     {
         var status = quote.BlockReason == null
             ? $"уровень {quote.CurrentTier}->{quote.NextTier}, {quote.InkFeatherCost} 🪶"
             : $"заблокировано: {quote.BlockReason}";
         return $"{FormatSpiritualArtLabel(quote.Art)} — {status}";
+    }
+
+    private static string BuildSpiritFocusUpgradeChoiceLabel(SpiritFocusUpgradeQuote quote)
+    {
+        var status = quote.BlockReason == null
+            ? $"уровень {quote.CurrentTier}->{quote.NextTier}, макс ОД {quote.CurrentMaxActionPoints}->{quote.NextMaxActionPoints}, {quote.InkFeatherCost} 🪶"
+            : $"заблокировано: {quote.BlockReason}";
+        return $"Средоточие Души — {status}";
+    }
+
+    private static string DescribeSpiritFocusTier(int tier) =>
+        AfterlifeSpiritualConflictState.SpiritFocusTiers
+            .FirstOrDefault(definition => definition.Tier == Math.Clamp(tier, 0, AfterlifeSpiritualConflictState.SpiritFocusMaxTier))
+            ?.PlayerMeaning ?? "Базовый запас души";
+
+    private static bool TryDescribeAfterlifeCombatProfileDamage(JsonObject soulRoot, out string damage)
+    {
+        damage = "";
+        if (!soulRoot.TryGetPropertyValue(AfterlifeSpiritualConflictState.SoulStateProfileProperty, out var profileNode) ||
+            profileNode == null)
+        {
+            return false;
+        }
+
+        if (profileNode is not JsonObject profile)
+        {
+            damage = $"{SoulStatePath}.{AfterlifeSpiritualConflictState.SoulStateProfileProperty} должен быть object. Сначала исправьте боевой профиль души.";
+            return true;
+        }
+
+        if (profile.TryGetPropertyValue(AfterlifeSpiritualConflictState.SpiritFocusTierProperty, out var spiritFocusNode) &&
+            spiritFocusNode != null &&
+            (!TryGetJsonNodeInt(spiritFocusNode, out var spiritFocusTier) ||
+             spiritFocusTier < 0 ||
+             spiritFocusTier > AfterlifeSpiritualConflictState.SpiritFocusMaxTier))
+        {
+            damage = $"{SoulStatePath}.{AfterlifeSpiritualConflictState.SoulStateProfileProperty}.{AfterlifeSpiritualConflictState.SpiritFocusTierProperty} должен быть integer 0..5.";
+            return true;
+        }
+
+        if (profile.TryGetPropertyValue("artTiers", out var artTiersNode) &&
+            artTiersNode != null &&
+            artTiersNode is not JsonObject)
+        {
+            damage = $"{SoulStatePath}.{AfterlifeSpiritualConflictState.SoulStateProfileProperty}.artTiers должен быть object.";
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetJsonNodeInt(JsonNode? node, out int value)
+    {
+        value = 0;
+        if (node is JsonValue jsonValue)
+        {
+            if (jsonValue.TryGetValue<int>(out value))
+                return true;
+            if (jsonValue.TryGetValue<string>(out var text) && int.TryParse(text, out value))
+                return true;
+        }
+
+        return false;
     }
 
     private static (int Current, int Total) ReadSoulInkFeathers(JsonObject soulRoot)
@@ -901,6 +1155,75 @@ public partial class ExplorerMode
             ["displayName"] = quote.Art.DisplayName,
             ["tierBefore"] = quote.CurrentTier,
             ["tierAfter"] = quote.NextTier,
+            ["currency"] = DescribeSpiritualArtCurrencyToken(currency),
+            ["cost"] = currency == SpiritualArtCurrency.LightSparks ? quote.LightSparkCost : quote.InkFeatherCost,
+            ["before"] = new JsonObject
+            {
+                ["soulInkFeathersCurrent"] = ReadSoulInkFeathers(beforeSoulRoot).Current,
+                ["lightSparks"] = AfterlifeSpiritualConflictState.GetNodeInt(beforeShiningRoot?["lightSparks"]),
+                ["afterlifeCombatProfile"] = beforeSoulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]?.DeepClone()
+            },
+            ["after"] = new JsonObject
+            {
+                ["soulInkFeathersCurrent"] = ReadSoulInkFeathers(afterSoulRoot).Current,
+                ["lightSparks"] = AfterlifeSpiritualConflictState.GetNodeInt(afterShiningRoot?["lightSparks"]),
+                ["afterlifeCombatProfile"] = afterSoulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]?.DeepClone()
+            },
+            ["affectedFiles"] = currency == SpiritualArtCurrency.LightSparks
+                ? new JsonArray(SoulStatePath, ShiningAbodeState.StatePath)
+                : new JsonArray(SoulStatePath)
+        };
+
+    private static Panel BuildSpiritFocusUpgradePreviewPanel(
+        JsonObject beforeSoulRoot,
+        JsonObject? beforeShiningRoot,
+        JsonObject afterSoulRoot,
+        JsonObject? afterShiningRoot,
+        SpiritFocusUpgradeQuote quote,
+        SpiritualArtCurrency currency)
+    {
+        var lines = new List<string>
+        {
+            "[bold cyan]Предпросмотр локальной прокачки Средоточия Души[/]",
+            "",
+            "  • Параметр: [white]Средоточие Души[/]",
+            $"  • Уровень: [white]{quote.CurrentTier}[/] -> [white]{quote.NextTier}[/]",
+            $"  • Максимум ОД: [white]{quote.CurrentMaxActionPoints}[/] -> [white]{quote.NextMaxActionPoints}[/]",
+            $"  • Валюта: [white]{DescribeSpiritualArtCurrency(currency)}[/]",
+            $"  • Чернильные Перья: [white]{ReadSoulInkFeathers(beforeSoulRoot).Current}[/] -> [white]{ReadSoulInkFeathers(afterSoulRoot).Current}[/]",
+            $"  • Искры Света: [white]{AfterlifeSpiritualConflictState.GetNodeInt(beforeShiningRoot?["lightSparks"])}[/] -> [white]{AfterlifeSpiritualConflictState.GetNodeInt(afterShiningRoot?["lightSparks"])}[/]",
+            "",
+            "[dim]Это операция клиента: ГМ не пишет и не подтверждает Средоточие Души. В новом духовном конфликте максимум ОД берётся из этого уровня.[/]"
+        };
+
+        return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" Прокачка Средоточия Души ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(currency == SpiritualArtCurrency.LightSparks ? Color.Gold1 : Color.Cyan1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        };
+    }
+
+    private static JsonObject BuildSpiritFocusUpgradeAuditNode(
+        JsonObject beforeSoulRoot,
+        JsonObject? beforeShiningRoot,
+        JsonObject afterSoulRoot,
+        JsonObject? afterShiningRoot,
+        SpiritFocusUpgradeQuote quote,
+        SpiritualArtCurrency currency) =>
+        new()
+        {
+            ["sourceSurface"] = "spiritual_arts_local_upgrade",
+            ["upgradeType"] = "spirit_focus",
+            ["gmTurnSent"] = false,
+            ["receiptWritten"] = false,
+            ["displayName"] = "Средоточие Души",
+            ["tierBefore"] = quote.CurrentTier,
+            ["tierAfter"] = quote.NextTier,
+            ["maxActionPointsBefore"] = quote.CurrentMaxActionPoints,
+            ["maxActionPointsAfter"] = quote.NextMaxActionPoints,
             ["currency"] = DescribeSpiritualArtCurrencyToken(currency),
             ["cost"] = currency == SpiritualArtCurrency.LightSparks ? quote.LightSparkCost : quote.InkFeatherCost,
             ["before"] = new JsonObject
