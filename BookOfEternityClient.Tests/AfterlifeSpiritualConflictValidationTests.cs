@@ -266,8 +266,8 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
           "specialArtAudit": {
             "artId": "mirror_pressure",
             "displayName": "Зеркальное Давление",
-            "ownerActorType": "guardian",
-            "ownerActorId": "guardian_mirror",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
             "baseOperation": "pressure",
             "costMultiplierPercent": 150,
             "effectNote": "Зеркальное давление раздваивает импульс и усиливает нажим на противника."
@@ -471,6 +471,83 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_player_soul_dissipation_unlinked_game_over", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsSoulDissipationTierForgedBySameTurnProfileEdit()
+    {
+        await WriteSoulStateWithTerminalGameOverAsync(AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage);
+        await WriteSoulDissipationProfileStateAsync(playerDissipationTier: 0, targetEnlightenmentTier: 1, oppositionDissipationTier: 5);
+        await WriteResolvedConflictWithSoulDissipationAsync("""
+        {
+          "proofId": "soul_dissipation_proof_player_death_002",
+          "actorType": "guardian",
+          "actorId": "guardian_liora",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "dissipationTier": 5,
+          "targetStabilityCoefficient": 1,
+          "resolvedAtTurn": 7,
+          "victoryProof": "opposition_victory",
+          "gmMotivation": "Лиора решила окончательно уничтожить душу после победы.",
+          "outcome": "player_soul_dispersed"
+        }
+        """, playerOutcome: "lost", resolutionKind: "player_loss");
+
+        var preTurnProfiles = BuildSoulDissipationProfileStateJson(
+            playerDissipationTier: 0,
+            targetEnlightenmentTier: 1,
+            oppositionDissipationTier: 0);
+        await WriteSoulDissipationAuthoritySnapshotAsync(
+            preTurnProfiles,
+            "pre-turn soul dissipation authority",
+            "Душа проигрывает конфликт.");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_soul_dissipation_tier_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsSoulDissipationTargetCoefficientLoweredBySameTurnProfileEdit()
+    {
+        await WriteSoulStateWithTerminalGameOverAsync(AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage);
+        await WriteSoulDissipationProfileStateAsync(
+            playerDissipationTier: 0,
+            targetEnlightenmentTier: 1,
+            oppositionDissipationTier: 5,
+            playerEnlightenmentTier: 0);
+        await WriteResolvedConflictWithSoulDissipationAsync("""
+        {
+          "proofId": "soul_dissipation_proof_player_death_002",
+          "actorType": "guardian",
+          "actorId": "guardian_liora",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "dissipationTier": 5,
+          "targetStabilityCoefficient": 0,
+          "resolvedAtTurn": 7,
+          "victoryProof": "opposition_victory",
+          "gmMotivation": "Лиора решила окончательно уничтожить душу после победы.",
+          "outcome": "player_soul_dispersed"
+        }
+        """, playerOutcome: "lost", resolutionKind: "player_loss");
+
+        var preTurnProfiles = BuildSoulDissipationProfileStateJson(
+            playerDissipationTier: 0,
+            targetEnlightenmentTier: 1,
+            oppositionDissipationTier: 5,
+            playerEnlightenmentTier: 4);
+        await WriteSoulDissipationAuthoritySnapshotAsync(
+            preTurnProfiles,
+            "pre-turn soul stability authority",
+            "Душа проигрывает конфликт.");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_soul_dissipation_target_coefficient_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Theory]
@@ -2630,10 +2707,10 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
               "operationType": "pressure",
               "baseCost": 3,
               "minCost": 1,
-              "artTier": 1,
-              "effectiveCost": 3,
+              "artTier": 0,
+              "effectiveCost": 2,
               "before": 6,
-              "after": 3
+              "after": 4
             }
           }
         }
@@ -2644,6 +2721,336 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsActionCostArtTierAboveAuthorityProfile()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "pressure": 0 }
+        }
+        """);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_forged_action_tier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}},
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 5,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_cost_art_tier_authority_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsSpecialArtCostWhenPlayerHasNotLearnedArt()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "pressure": 2 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithPlayerSpecialArtsAsync("[]");
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_unlearned_special_art_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}},
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Зеркальное давление раздваивает импульс и усиливает нажим на противника."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 2,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_not_learned", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptsSpecialArtCostFromLearnedPlayerProfile()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "pressure": 2 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithPlayerSpecialArtsAsync("""
+        [
+          {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "pressure",
+            "tier": 2,
+            "costMultiplierPercent": 150,
+            "upgradeCost": { "inkFeathers": 40, "lightSparks": 0 },
+            "effectSummary": "Давление отражает часть обета."
+          }
+        ]
+        """);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_learned_special_art_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}},
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Зеркальное давление раздваивает импульс и усиливает нажим на противника."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 2,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_not_learned", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_action_cost_art_tier_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptsNonPlayerIncomingSpecialArtFromOwnerProfile()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_guardian_special_art_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Зеркальное давление Хранителя усилило входящий нажим, но защита игрока его остановила."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_base_operation_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_not_in_owner_profile", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsNonPlayerSpecialArtAuthorityMismatch()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_guardian_special_art_forged_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 250,
+            "effectNote": "ГМ завысил множитель особого искусства."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_authority_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -11167,6 +11574,193 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
     }
 
+    private Task WriteSoulStateWithAfterlifeCombatProfileAsync(string realm, string afterlifeCombatProfileJson)
+    {
+        return _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", $$"""
+        {
+          "soulName": "Асуран",
+          "currentRealm": {{JsonSerializer.Serialize(realm)}},
+          "afterlifeCombatProfile": {{afterlifeCombatProfileJson}}
+        }
+        """);
+    }
+
+    private async Task WritePreTurnActiveConflictSnapshotWithAuthorityAsync(string conflictId = "afterlife_conflict_test_001")
+    {
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """{ "entries": [] }""");
+        const string guardiansJson = """
+        {
+          "guardians": []
+        }
+        """;
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansJson);
+        var preTurnSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(preTurnSoulJson))
+            preTurnSoulJson = """
+            {
+              "soulName": "Асуран",
+              "currentRealm": "Chaos Sea"
+            }
+            """;
+
+        var journalJson = await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath) ?? """{ "entries": [] }""";
+        var preTurnConflictJson = BuildActiveConflictRootJson(conflictId);
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoulJson);
+        await WriteSnapshotFileAsync("game_state/meta/guardians.json", guardiansJson);
+        await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson);
+        await WriteSnapshotFileAsync(GuardianPowerEventState.JournalPath, journalJson);
+
+        var snapshotFiles = new List<(string Path, string Json)>
+        {
+            ("game_state/meta/soul_state.json", preTurnSoulJson),
+            ("game_state/meta/guardians.json", guardiansJson),
+            (AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson),
+            (GuardianPowerEventState.JournalPath, journalJson)
+        };
+
+        var profileJson = await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);
+        if (!string.IsNullOrWhiteSpace(profileJson))
+        {
+            await WriteSnapshotFileAsync(AfterlifeEntityProfileState.StatePath, profileJson);
+            snapshotFiles.Add((AfterlifeEntityProfileState.StatePath, profileJson));
+        }
+
+        var gameSettingsJson = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        if (!string.IsNullOrWhiteSpace(gameSettingsJson))
+        {
+            await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath, gameSettingsJson);
+            snapshotFiles.Add((AfterlifeSpiritualConflictState.DifficultySettingsPath, gameSettingsJson));
+        }
+
+        await WriteValidatedSnapshotManifestAsync(
+            "обработки хода",
+            "Я продолжаю активный afterlife spiritual conflict.",
+            snapshotFiles.ToArray());
+    }
+
+    private Task WriteAfterlifeEntityProfilesWithPlayerSpecialArtsAsync(string specialArtsJson)
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Асуран",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 12, "tier": 1 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": {{specialArtsJson}},
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_player_soul",
+                "summary": "Игрок сам выбирает развитие.",
+                "priorityOrder": ["pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_player_soul_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль души игрока."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
+    private Task WriteAfterlifeEntityProfilesWithGuardianSpecialArtsAsync()
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Асуран",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 12, "tier": 1 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 1 },
+              "specialArts": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_player_soul",
+                "summary": "Игрок сам выбирает развитие.",
+                "priorityOrder": ["guard"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_player_soul_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль души игрока."
+                }
+              ]
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Зеркальный Хранитель",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 80, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 30, "tier": 2 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 3, "guard": 1 },
+              "specialArts": [
+                {
+                  "artId": "mirror_pressure",
+                  "displayName": "Зеркальное Давление",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
+                  "baseOperation": "pressure",
+                  "tier": 3,
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 60, "lightSparks": 0 },
+                  "effectSummary": "Давление раздваивает импульс и сложнее читается защитой.",
+                  "canTeachPlayer": true,
+                  "trainingConditions": ["Заслужить доверие Зеркального Хранителя."]
+                }
+              ],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_mirror",
+                "summary": "Хранитель усиливает особые искусства давления.",
+                "priorityOrder": ["mirror_pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_guardian_mirror_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль Зеркального Хранителя."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
     private Task WriteSoulStateWithTerminalGameOverAsync(string message)
     {
         return _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", $$"""
@@ -11186,7 +11780,8 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     private async Task WriteSoulDissipationProfileStateAsync(
         int playerDissipationTier,
         int targetEnlightenmentTier,
-        int oppositionDissipationTier = 1)
+        int oppositionDissipationTier = 1,
+        int playerEnlightenmentTier = 1)
     {
         await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """
         {
@@ -11194,7 +11789,21 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
 
-        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, $$"""
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            BuildSoulDissipationProfileStateJson(
+                playerDissipationTier,
+                targetEnlightenmentTier,
+                oppositionDissipationTier,
+                playerEnlightenmentTier));
+    }
+
+    private static string BuildSoulDissipationProfileStateJson(
+        int playerDissipationTier,
+        int targetEnlightenmentTier,
+        int oppositionDissipationTier = 1,
+        int playerEnlightenmentTier = 1) =>
+        $$"""
         {
           "schemaVersion": 1,
           "profiles": [
@@ -11205,7 +11814,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
               "realm": "Chaos Sea",
               "currencies": { "inkFeathers": 0, "lightSparks": 0 },
               "progression": {
-                "enlightenment": { "experience": 12, "tier": 1 },
+                "enlightenment": { "experience": 12, "tier": {{playerEnlightenmentTier}} },
                 "radiance": { "experience": 0, "tier": 0 }
               },
               "standardArts": { "pressure": 1, "guard": 1 },
@@ -11258,8 +11867,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             }
           ]
         }
-        """);
-    }
+        """;
 
     private Task WriteResolvedConflictWithSoulDissipationAsync(
         string soulDissipationProofJson,
@@ -11315,6 +11923,46 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
           ]
         }
         """);
+    }
+
+    private async Task WriteSoulDissipationAuthoritySnapshotAsync(
+        string preTurnProfiles,
+        string sourceLabel,
+        string playerAction)
+    {
+        const string preTurnSoul = """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea"
+        }
+        """;
+        const string guardians = """
+        {
+          "guardians": []
+        }
+        """;
+        const string journal = """
+        {
+          "entries": []
+        }
+        """;
+        var preTurnConflict = BuildActiveConflictRootJson();
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardians);
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, journal);
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteSnapshotFileAsync("game_state/meta/guardians.json", guardians);
+        await WriteSnapshotFileAsync(GuardianPowerEventState.JournalPath, journal);
+        await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, preTurnConflict);
+        await WriteSnapshotFileAsync(AfterlifeEntityProfileState.StatePath, preTurnProfiles);
+        await WriteValidatedSnapshotManifestAsync(
+            sourceLabel,
+            playerAction,
+            ("game_state/meta/soul_state.json", preTurnSoul),
+            ("game_state/meta/guardians.json", guardians),
+            (GuardianPowerEventState.JournalPath, journal),
+            (AfterlifeSpiritualConflictState.StatePath, preTurnConflict),
+            (AfterlifeEntityProfileState.StatePath, preTurnProfiles));
     }
 
     private async Task WriteSoulStateWithLightIncarnateAsync(

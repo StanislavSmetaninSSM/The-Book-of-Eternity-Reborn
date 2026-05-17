@@ -7533,6 +7533,258 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SpiritualArts_UpgradesLearnedSpecialArtAndSpendsInkFeathers()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 120, total = 120 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
+        });
+        await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
+        {
+            schemaVersion = 1,
+            profiles = new[]
+            {
+                new
+                {
+                    actorType = "player_soul",
+                    actorId = "player_soul",
+                    displayName = "Тестовая Душа",
+                    realm = "Chaos Sea",
+                    currencies = new { inkFeathers = 0, lightSparks = 0 },
+                    progression = new
+                    {
+                        enlightenment = new { experience = 100, tier = 5 },
+                        radiance = new { experience = 0, tier = 0 }
+                    },
+                    standardArts = new { pressure = 0, guard = 0 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "mirror_guard",
+                            displayName = "Зеркальная Защита",
+                            ownerActorType = "player_soul",
+                            ownerActorId = "player_soul",
+                            baseOperation = "guard",
+                            tier = 1,
+                            costMultiplierPercent = 150,
+                            upgradeCost = new { inkFeathers = 30, lightSparks = 0 },
+                            effectSummary = "Отражает часть чужого давления."
+                        }
+                    },
+                    soulDissipationTier = 0,
+                    progressionStrategy = new
+                    {
+                        strategyId = "player_strategy",
+                        summary = "Сначала улучшает особую защиту.",
+                        priorityOrder = new[] { "mirror_guard" }
+                    },
+                    warnings = Array.Empty<object>(),
+                    ledger = Array.Empty<object>()
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+        _console.QueueSelection("Выберите духовное искусство", "Зеркальная Защита — уровень 1->2, 30 🪶");
+        _console.QueueSelection("Выберите валюту", "Чернильные Перья — 30 🪶");
+        _console.QueueAnyConfirmResponse(true);
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_special_art_ink_feathers");
+        var entityRoot = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath) ?? "{}")!.AsObject();
+        var playerProfile = entityRoot["profiles"]!.AsArray().OfType<JsonObject>()
+            .Single(profile => string.Equals(profile["actorType"]?.GetValue<string>(), "player_soul", StringComparison.OrdinalIgnoreCase));
+        var specialArt = playerProfile["specialArts"]!.AsArray().OfType<JsonObject>()
+            .Single(art => string.Equals(art["artId"]?.GetValue<string>(), "mirror_guard", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(2, specialArt["tier"]?.GetValue<int>());
+
+        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
+        Assert.Equal(90, inkFeathers["current"]?.GetValue<int>());
+        var profile = soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] as JsonObject;
+        var artTiers = profile?["artTiers"] as JsonObject;
+        Assert.True(artTiers == null || !artTiers.ContainsKey("mirror_guard"));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_UpgradesSparkOnlySpecialArtInShiningAbode()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Shining Abode",
+            currentIncarnation = 7,
+            inkFeathers = new { current = 0, total = 0 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 },
+            afterlifeCombatProfile = new
+            {
+                schemaVersion = 1,
+                enlightenmentRank = 5,
+                radianceRank = 3,
+                retainedRadianceRank = 3,
+                spiritFocusTier = 0,
+                artTiers = new { guard = 1 }
+            }
+        });
+        await WriteJsonAsync(ShiningAbodeState.StatePath, new
+        {
+            availability = "active",
+            radiance = new { experience = 540, tier = 3 },
+            lightSparks = 5
+        });
+        await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
+        {
+            schemaVersion = 1,
+            profiles = new[]
+            {
+                new
+                {
+                    actorType = "player_soul",
+                    actorId = "player_soul",
+                    displayName = "Тестовая Душа",
+                    realm = "Shining Abode",
+                    currencies = new { inkFeathers = 0, lightSparks = 0 },
+                    progression = new
+                    {
+                        enlightenment = new { experience = 100, tier = 5 },
+                        radiance = new { experience = 540, tier = 3 }
+                    },
+                    standardArts = new { pressure = 0, guard = 1 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "radiant_guard",
+                            displayName = "Сияющая Защита",
+                            ownerActorType = "player_soul",
+                            ownerActorId = "player_soul",
+                            baseOperation = "guard",
+                            tier = 1,
+                            costMultiplierPercent = 150,
+                            upgradeCost = new { inkFeathers = 0, lightSparks = 2 },
+                            effectSummary = "Сияющий щит гасит давление без расхода Перьев."
+                        }
+                    },
+                    soulDissipationTier = 0,
+                    progressionStrategy = new
+                    {
+                        strategyId = "player_strategy",
+                        summary = "Сначала улучшает сияющую защиту.",
+                        priorityOrder = new[] { "radiant_guard" }
+                    },
+                    warnings = Array.Empty<object>(),
+                    ledger = Array.Empty<object>()
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+        _console.QueueSelection("Выберите духовное искусство", "Сияющая Защита — уровень 1->2, 2 ✨");
+        _console.QueueSelection("Выберите валюту", "Искры Света — 2 ✨");
+        _console.QueueAnyConfirmResponse(true);
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_special_art_light_sparks");
+        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        Assert.Equal(3, shiningRoot["lightSparks"]?.GetValue<int>());
+        var entityRoot = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath) ?? "{}")!.AsObject();
+        var playerProfile = entityRoot["profiles"]!.AsArray().OfType<JsonObject>()
+            .Single(profile => string.Equals(profile["actorType"]?.GetValue<string>(), "player_soul", StringComparison.OrdinalIgnoreCase));
+        var specialArt = playerProfile["specialArts"]!.AsArray().OfType<JsonObject>()
+            .Single(art => string.Equals(art["artId"]?.GetValue<string>(), "radiant_guard", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(2, specialArt["tier"]?.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SpiritualArts_BlocksSparkOnlySpecialArtOutsideShiningAbode()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 7,
+            inkFeathers = new { current = 0, total = 0 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 },
+            afterlifeCombatProfile = new
+            {
+                schemaVersion = 1,
+                enlightenmentRank = 5,
+                radianceRank = 0,
+                retainedRadianceRank = 0,
+                spiritFocusTier = 0,
+                artTiers = new { guard = 1 }
+            }
+        });
+        await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
+        {
+            schemaVersion = 1,
+            profiles = new[]
+            {
+                new
+                {
+                    actorType = "player_soul",
+                    actorId = "player_soul",
+                    displayName = "Тестовая Душа",
+                    realm = "Chaos Sea",
+                    currencies = new { inkFeathers = 0, lightSparks = 0 },
+                    progression = new
+                    {
+                        enlightenment = new { experience = 100, tier = 5 },
+                        radiance = new { experience = 0, tier = 0 }
+                    },
+                    standardArts = new { pressure = 0, guard = 1 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "radiant_guard",
+                            displayName = "Сияющая Защита",
+                            ownerActorType = "player_soul",
+                            ownerActorId = "player_soul",
+                            baseOperation = "guard",
+                            tier = 1,
+                            costMultiplierPercent = 150,
+                            upgradeCost = new { inkFeathers = 0, lightSparks = 2 },
+                            effectSummary = "Сияющий щит гасит давление без расхода Перьев."
+                        }
+                    },
+                    soulDissipationTier = 0,
+                    progressionStrategy = new
+                    {
+                        strategyId = "player_strategy",
+                        summary = "Сначала улучшает сияющую защиту.",
+                        priorityOrder = new[] { "radiant_guard" }
+                    },
+                    warnings = Array.Empty<object>(),
+                    ledger = Array.Empty<object>()
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_spark_only_special_art_chaos_blocker");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Сияющая Защита", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("цена указана только в Искрах Света", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("доступна только в обычной активной Сияющей Обители", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_SpiritualArts_UpgradesSpiritFocusAndSpendsInkFeathers()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

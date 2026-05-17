@@ -78,10 +78,11 @@ public partial class ValidationService
 
         var gateContext = await ResolveAfterlifeSpiritualConflictGateContextAsync();
         var diceContext = await ResolveAfterlifeConflictDiceContextAsync(gateContext.Manifest);
+        var actionCostAuthority = await ResolveAfterlifeActionCostAuthorityContextAsync(gateContext.Manifest);
         var rewardContext = await ResolveAfterlifeConflictRewardContextAsync(gateContext);
-        var soulDissipationContext = await ResolveAfterlifeSoulDissipationContextAsync();
+        var soulDissipationContext = await ResolveAfterlifeSoulDissipationContextAsync(gateContext.Manifest);
         await ValidateActiveConflictRemovalHasTerminalProofAsync(root, issues);
-        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, rewardContext, soulDissipationContext);
+        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, actionCostAuthority, rewardContext, soulDissipationContext);
         ValidateAfterlifeConflictRewardStateDeltas(rewardContext, issues);
 
         if (root["activeConflict"] is JsonObject activeConflict)
@@ -185,6 +186,11 @@ public partial class ValidationService
 
     private sealed record PreTurnActiveConflictControlContext(string? ConflictId, JsonNode? ControlState);
 
+    private sealed record AfterlifeActionCostAuthorityContext(
+        IReadOnlyDictionary<string, int> StandardArtTiers,
+        IReadOnlyDictionary<string, JsonObject> PlayerSpecialArts,
+        IReadOnlyDictionary<string, JsonObject> SpecialArtsByOwner);
+
     private sealed class PreTurnConflictPayloadTracker
     {
         private readonly IReadOnlyList<JsonObject> _payloads;
@@ -237,8 +243,8 @@ public partial class ValidationService
         int RewardMultiplierPercent);
 
     private sealed record AfterlifeSoulDissipationContext(
-        JsonObject? SoulRoot,
-        IReadOnlyDictionary<string, JsonObject> Profiles);
+        JsonObject? CurrentSoulRoot,
+        IReadOnlyDictionary<string, JsonObject> AuthorityProfiles);
 
     private async Task<AfterlifeSpiritualConflictGateContext> ResolveAfterlifeSpiritualConflictGateContextAsync()
     {
@@ -367,6 +373,102 @@ public partial class ValidationService
         }
     }
 
+    private async Task<AfterlifeActionCostAuthorityContext> ResolveAfterlifeActionCostAuthorityContextAsync(
+        ValidationPendingTurnSnapshotManifest? manifest)
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        var soulJson = manifest == null
+            ? await _fs.ReadFileAsync(soulStatePath)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulStatePath);
+        var profileJson = manifest == null
+            ? await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, AfterlifeEntityProfileState.StatePath);
+
+        var profilesRoot = TryParseJsonObject(profileJson);
+        return new AfterlifeActionCostAuthorityContext(
+            ReadAfterlifeCombatProfileArtTiers(TryParseJsonObject(soulJson)),
+            ReadPlayerSpecialArts(profilesRoot),
+            ReadSpecialArtsByOwner(profilesRoot));
+    }
+
+    private static IReadOnlyDictionary<string, int> ReadAfterlifeCombatProfileArtTiers(JsonObject? soulRoot)
+    {
+        var result = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        if (soulRoot?[AfterlifeSpiritualConflictState.SoulStateProfileProperty] is not JsonObject profile ||
+            profile["artTiers"] is not JsonObject artTiers)
+        {
+            return result;
+        }
+
+        foreach (var property in artTiers)
+        {
+            if (TryGetJsonNodeInt(property.Value, out var tier))
+                result[property.Key] = Math.Clamp(tier, 0, 5);
+        }
+
+        return result;
+    }
+
+    private static IReadOnlyDictionary<string, JsonObject> ReadPlayerSpecialArts(JsonObject? profilesRoot)
+    {
+        var result = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        if (profilesRoot?[AfterlifeEntityProfileState.ProfilesProperty] is not JsonArray profiles)
+            return result;
+
+        foreach (var profile in profiles.OfType<JsonObject>())
+        {
+            var actorType = AfterlifeSpiritualConflictState.GetNodeString(profile["actorType"]);
+            var actorId = AfterlifeSpiritualConflictState.GetNodeString(profile["actorId"]);
+            if (!ConflictTokenEquals(actorType, "player_soul", "player", "soul") &&
+                !ConflictTokenEquals(actorId, "player_soul", "player", "soul"))
+            {
+                continue;
+            }
+
+            if (profile["specialArts"] is not JsonArray specialArts)
+                continue;
+
+            foreach (var specialArt in specialArts.OfType<JsonObject>())
+            {
+                var artId = AfterlifeSpiritualConflictState.GetNodeString(specialArt["artId"]);
+                if (!string.IsNullOrWhiteSpace(artId))
+                    result[artId] = specialArt;
+            }
+        }
+
+        return result;
+    }
+
+    private static IReadOnlyDictionary<string, JsonObject> ReadSpecialArtsByOwner(JsonObject? profilesRoot)
+    {
+        var result = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        if (profilesRoot?[AfterlifeEntityProfileState.ProfilesProperty] is not JsonArray profiles)
+            return result;
+
+        foreach (var profile in profiles.OfType<JsonObject>())
+        {
+            var profileActorType = AfterlifeSpiritualConflictState.GetNodeString(profile["actorType"]);
+            var profileActorId = AfterlifeSpiritualConflictState.GetNodeString(profile["actorId"]) ??
+                                 AfterlifeSpiritualConflictState.GetNodeString(profile["actorRef"]);
+            if (profile["specialArts"] is not JsonArray specialArts)
+                continue;
+
+            foreach (var specialArt in specialArts.OfType<JsonObject>())
+            {
+                var artId = AfterlifeSpiritualConflictState.GetNodeString(specialArt["artId"]);
+                var ownerActorType = AfterlifeSpiritualConflictState.GetNodeString(specialArt["ownerActorType"]) ??
+                                     profileActorType;
+                var ownerActorId = AfterlifeSpiritualConflictState.GetNodeString(specialArt["ownerActorId"]) ??
+                                   profileActorId;
+                var key = BuildSpecialArtAuthorityKey(ownerActorType, ownerActorId, artId);
+                if (key != null)
+                    result[key] = specialArt;
+            }
+        }
+
+        return result;
+    }
+
     private async Task<AfterlifeConflictRewardContext> ResolveAfterlifeConflictRewardContextAsync(
         AfterlifeSpiritualConflictGateContext gateContext)
     {
@@ -434,10 +536,13 @@ public partial class ValidationService
             definition.RewardMultiplierPercent);
     }
 
-    private async Task<AfterlifeSoulDissipationContext> ResolveAfterlifeSoulDissipationContextAsync()
+    private async Task<AfterlifeSoulDissipationContext> ResolveAfterlifeSoulDissipationContextAsync(
+        ValidationPendingTurnSnapshotManifest? manifest)
     {
         var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
-        var profileRoot = await ReadJsonObjectAsync(AfterlifeEntityProfileState.StatePath);
+        var profileRoot = manifest == null
+            ? await ReadJsonObjectAsync(AfterlifeEntityProfileState.StatePath)
+            : TryParseJsonObject(await ReadValidatedPendingTurnSnapshotFileAsync(manifest, AfterlifeEntityProfileState.StatePath));
         var profiles = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
 
         if (profileRoot?[AfterlifeEntityProfileState.ProfilesProperty] is JsonArray profileArray)
@@ -931,6 +1036,7 @@ public partial class ValidationService
         string context,
         List<ValidationIssue> issues,
         AfterlifeConflictDiceContext diceContext,
+        AfterlifeActionCostAuthorityContext actionCostAuthority,
         AfterlifeConflictRewardContext rewardContext,
         AfterlifeSoulDissipationContext soulDissipationContext)
     {
@@ -997,7 +1103,7 @@ public partial class ValidationService
         ValidateTerminalGameOverHasSoulDissipationProof(root, issues, soulDissipationContext);
 
         if (root["activeConflict"] is JsonObject active)
-            ValidateActiveAfterlifeConflict(active, $"{context}.activeConflict", issues, diceContext);
+            ValidateActiveAfterlifeConflict(active, $"{context}.activeConflict", issues, diceContext, actionCostAuthority);
         else if (root.ContainsKey("activeConflict") && root["activeConflict"] != null)
             issues.Add(new ValidationIssue(
                 $"{context}.activeConflict",
@@ -1013,7 +1119,8 @@ public partial class ValidationService
         JsonObject conflict,
         string context,
         List<ValidationIssue> issues,
-        AfterlifeConflictDiceContext diceContext)
+        AfterlifeConflictDiceContext diceContext,
+        AfterlifeActionCostAuthorityContext actionCostAuthority)
     {
         RequireNodeString(conflict, context, issues, "conflictId");
         var realm = RequireNodeString(conflict, context, issues, "realm");
@@ -1099,6 +1206,7 @@ public partial class ValidationService
                         $"{context}.exchangeLog[{index}]",
                         issues,
                         diceContext,
+                        actionCostAuthority,
                         isPreTurnExchange);
                     if (isCurrentExchange)
                     {
@@ -1474,7 +1582,7 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         AfterlifeSoulDissipationContext soulDissipationContext)
     {
-        if (soulDissipationContext.SoulRoot?[AfterlifeSpiritualConflictState.TerminalGameOverProperty] is not JsonObject gameOver)
+        if (soulDissipationContext.CurrentSoulRoot?[AfterlifeSpiritualConflictState.TerminalGameOverProperty] is not JsonObject gameOver)
         {
             AddSoulDissipationIssue(
                 issues,
@@ -1544,7 +1652,7 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         AfterlifeSoulDissipationContext soulDissipationContext)
     {
-        if (soulDissipationContext.SoulRoot?[AfterlifeSpiritualConflictState.TerminalGameOverProperty] is not JsonObject)
+        if (soulDissipationContext.CurrentSoulRoot?[AfterlifeSpiritualConflictState.TerminalGameOverProperty] is not JsonObject)
             return;
 
         if (HasPlayerSoulDissipationProof(conflictRoot))
@@ -1583,7 +1691,7 @@ public partial class ValidationService
         string? actorId)
     {
         var key = BuildAfterlifeSoulDissipationProfileKey(actorType, actorId);
-        return key != null && context.Profiles.TryGetValue(key, out var profile)
+        return key != null && context.AuthorityProfiles.TryGetValue(key, out var profile)
             ? profile
             : null;
     }
@@ -2385,6 +2493,7 @@ public partial class ValidationService
         string context,
         List<ValidationIssue> issues,
         AfterlifeConflictDiceContext diceContext,
+        AfterlifeActionCostAuthorityContext actionCostAuthority,
         bool isPreTurnExchange)
     {
         RequireNodeString(exchange, context, issues, "exchangeId");
@@ -2479,8 +2588,8 @@ public partial class ValidationService
         var requiresCurrentMatchupAudit =
             exchange["diceAudit"] is JsonObject &&
             isCurrentExchange;
-        ValidateSpecialArtAudit(exchange, operationType, context, issues);
-        ValidateActionCostAudit(exchange, activeActionEconomy, operationType, outcome, context, issues, isCurrentExchange);
+        ValidateSpecialArtAudit(exchange, operationType, actionCostAuthority, context, issues);
+        ValidateActionCostAudit(exchange, activeActionEconomy, operationType, outcome, context, issues, isCurrentExchange, actionCostAuthority);
 
         if (before != null && after != null)
         {
@@ -2603,7 +2712,8 @@ public partial class ValidationService
         string? outcome,
         string context,
         List<ValidationIssue> issues,
-        bool isCurrentExchange)
+        bool isCurrentExchange,
+        AfterlifeActionCostAuthorityContext actionCostAuthority)
     {
         if (!isCurrentExchange ||
             string.IsNullOrWhiteSpace(operationType) ||
@@ -2659,19 +2769,40 @@ public partial class ValidationService
             return;
         }
 
-        var standardEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, artTier));
-        var expectedEffectiveCost = standardEffectiveCost;
         var specialArtAudit = exchange["specialArtAudit"] as JsonObject;
-        if (specialArtAudit != null &&
-            TryGetJsonNodeInt(specialArtAudit["costMultiplierPercent"], out var specialMultiplier) &&
+        var playerSpecialArtAudit = specialArtAudit != null && SpecialArtAuditOwnerIsPlayer(specialArtAudit)
+            ? specialArtAudit
+            : null;
+        var authorityArtTier = ResolveAuthoritativeActionCostArtTier(
+            operationType,
+            specialArtAudit,
+            actionCostAuthority,
+            context,
+            issues);
+        if (artTier != authorityArtTier)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.artTier",
+                "actionCostAudit.player.artTier должен совпадать с pre-turn authority профилем, а не задаваться GM произвольно.",
+                "afterlife_conflict_action_cost_art_tier_authority_mismatch",
+                authorityArtTier.ToString(),
+                artTier.ToString());
+        }
+
+        var standardEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, authorityArtTier));
+        var expectedEffectiveCost = standardEffectiveCost;
+        if (playerSpecialArtAudit != null &&
+            TryGetJsonNodeInt(playerSpecialArtAudit["costMultiplierPercent"], out var specialMultiplier) &&
             specialMultiplier > 100)
         {
             expectedEffectiveCost = Math.Max(costDefinition.MinCost, (standardEffectiveCost * specialMultiplier + 99) / 100);
             var auditSpecialArtId = AfterlifeSpiritualConflictState.GetNodeString(playerAudit["specialArtId"]);
-            var specialArtId = AfterlifeSpiritualConflictState.GetNodeString(specialArtAudit["artId"]);
+            var specialArtId = AfterlifeSpiritualConflictState.GetNodeString(playerSpecialArtAudit["artId"]);
             var hasAuditMultiplier = TryGetJsonNodeInt(playerAudit["specialCostMultiplierPercent"], out var auditMultiplier);
             var hasStandardEffectiveCost = TryGetJsonNodeInt(playerAudit["standardEffectiveCost"], out var auditStandardEffectiveCost);
-            if (!ConflictTokenEquals(auditSpecialArtId, specialArtId) ||
+            if (string.IsNullOrWhiteSpace(specialArtId) ||
+                !ConflictTokenEquals(auditSpecialArtId, specialArtId) ||
                 !hasAuditMultiplier ||
                 auditMultiplier != specialMultiplier ||
                 !hasStandardEffectiveCost ||
@@ -2691,13 +2822,13 @@ public partial class ValidationService
             minCost != costDefinition.MinCost ||
             effectiveCost != expectedEffectiveCost)
         {
-            var mismatchCode = specialArtAudit == null
+            var mismatchCode = playerSpecialArtAudit == null
                 ? "afterlife_conflict_action_cost_mismatch"
                 : "afterlife_conflict_special_art_cost_mismatch";
             AddActionCostIssue(
                 issues,
                 $"{context}.actionCostAudit.player.effectiveCost",
-                specialArtAudit == null
+                playerSpecialArtAudit == null
                     ? "Стоимость ОД должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier)."
                     : "Стоимость ОД особого духовного искусства должна применять повышающий specialCostMultiplierPercent к стандартной стоимости.",
                 mismatchCode,
@@ -2734,9 +2865,66 @@ public partial class ValidationService
         }
     }
 
+    private static int ResolveAuthoritativeActionCostArtTier(
+        string operationType,
+        JsonObject? specialArtAudit,
+        AfterlifeActionCostAuthorityContext actionCostAuthority,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (specialArtAudit == null)
+        {
+            return actionCostAuthority.StandardArtTiers.TryGetValue(operationType, out var tier)
+                ? Math.Clamp(tier, 0, 5)
+                : 0;
+        }
+
+        if (!SpecialArtAuditOwnerIsPlayer(specialArtAudit))
+        {
+            return actionCostAuthority.StandardArtTiers.TryGetValue(operationType, out var tier)
+                ? Math.Clamp(tier, 0, 5)
+                : 0;
+        }
+
+        var specialArtId = AfterlifeSpiritualConflictState.GetNodeString(specialArtAudit["artId"]);
+        if (string.IsNullOrWhiteSpace(specialArtId) ||
+            !actionCostAuthority.PlayerSpecialArts.TryGetValue(specialArtId, out var learnedArt))
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.artId",
+                "Особое духовное искусство можно использовать только если оно уже есть в pre-turn профиле души игрока.",
+                "afterlife_conflict_special_art_not_learned",
+                "player_soul.specialArts[] contains artId",
+                string.IsNullOrWhiteSpace(specialArtId) ? "missing" : specialArtId);
+            return 0;
+        }
+
+        var learnedBaseOperation = AfterlifeSpiritualConflictState.GetNodeString(learnedArt["baseOperation"]);
+        var auditBaseOperation = AfterlifeSpiritualConflictState.GetNodeString(specialArtAudit["baseOperation"]);
+        var learnedTier = Math.Clamp(AfterlifeSpiritualConflictState.GetNodeInt(learnedArt["tier"]), 0, 5);
+        var learnedMultiplier = AfterlifeSpiritualConflictState.GetNodeInt(learnedArt["costMultiplierPercent"]);
+        var auditMultiplier = AfterlifeSpiritualConflictState.GetNodeInt(specialArtAudit["costMultiplierPercent"]);
+        if (!ConflictTokenEquals(learnedBaseOperation, operationType) ||
+            !ConflictTokenEquals(auditBaseOperation, operationType) ||
+            learnedMultiplier != auditMultiplier)
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit",
+                "specialArtAudit должен совпадать с pre-turn player_soul.specialArts[]: baseOperation и costMultiplierPercent являются authority-полями.",
+                "afterlife_conflict_special_art_authority_mismatch",
+                $"artId={specialArtId}, baseOperation={learnedBaseOperation}, costMultiplierPercent={learnedMultiplier}",
+                specialArtAudit.ToJsonString());
+        }
+
+        return learnedTier;
+    }
+
     private static void ValidateSpecialArtAudit(
         JsonObject exchange,
         string? operationType,
+        AfterlifeActionCostAuthorityContext actionCostAuthority,
         string context,
         List<ValidationIssue> issues)
     {
@@ -2802,17 +2990,21 @@ public partial class ValidationService
                 string.Join("/", AfterlifeEntityProfileState.SpecialArtBaseOperations.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
                 string.IsNullOrWhiteSpace(baseOperation) ? "missing" : baseOperation);
         }
-        else if (!string.IsNullOrWhiteSpace(operationType) &&
-                 !ConflictTokenEquals(baseOperation, operationType))
+        else if (!SpecialArtBaseOperationMatchesExchangeSide(exchange, operationType, audit, baseOperation))
         {
+            var expectedOperation = SpecialArtAuditOwnerIsPlayer(audit)
+                ? operationType ?? "exchange.operationType"
+                : "exchange.operationType or incomingAction.operationType/finalOperationType";
             AddSpecialArtIssue(
                 issues,
                 $"{context}.specialArtAudit.baseOperation",
-                "specialArtAudit.baseOperation должен совпадать с exchange.operationType.",
+                "specialArtAudit.baseOperation должен совпадать с действием стороны, чьё особое духовное искусство применено.",
                 "afterlife_conflict_special_art_base_operation_mismatch",
-                operationType,
+                expectedOperation,
                 baseOperation);
         }
+
+        ValidateSpecialArtAuthority(audit, actionCostAuthority, context, issues);
 
         if (!TryGetJsonNodeInt(audit["costMultiplierPercent"], out var multiplier) || multiplier <= 100)
         {
@@ -2835,6 +3027,106 @@ public partial class ValidationService
                 "non-empty effectNote",
                 audit["effectNote"]?.ToJsonString() ?? "missing");
         }
+    }
+
+    private static void ValidateSpecialArtAuthority(
+        JsonObject audit,
+        AfterlifeActionCostAuthorityContext actionCostAuthority,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var artId = AfterlifeSpiritualConflictState.GetNodeString(audit["artId"]);
+        var ownerActorType = AfterlifeSpiritualConflictState.GetNodeString(audit["ownerActorType"]);
+        var ownerActorId = AfterlifeSpiritualConflictState.GetNodeString(audit["ownerActorId"]);
+        if (string.IsNullOrWhiteSpace(artId) ||
+            string.IsNullOrWhiteSpace(ownerActorType) ||
+            string.IsNullOrWhiteSpace(ownerActorId))
+        {
+            return;
+        }
+
+        var authorityKey = BuildSpecialArtAuthorityKey(ownerActorType, ownerActorId, artId);
+        if (authorityKey == null ||
+            !actionCostAuthority.SpecialArtsByOwner.TryGetValue(authorityKey, out var authorityArt))
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.artId",
+                "Особое духовное искусство можно использовать только если оно уже есть в pre-turn профиле владельца.",
+                "afterlife_conflict_special_art_not_in_owner_profile",
+                "owner profile specialArts[] contains artId",
+                $"{ownerActorType}:{ownerActorId}:{artId}");
+            return;
+        }
+
+        var authorityBaseOperation = AfterlifeSpiritualConflictState.GetNodeString(authorityArt["baseOperation"]);
+        var authorityMultiplier = AfterlifeSpiritualConflictState.GetNodeInt(authorityArt["costMultiplierPercent"]);
+        var auditBaseOperation = AfterlifeSpiritualConflictState.GetNodeString(audit["baseOperation"]);
+        var auditMultiplier = AfterlifeSpiritualConflictState.GetNodeInt(audit["costMultiplierPercent"]);
+        if (!ConflictTokenEqualsSingle(authorityBaseOperation, auditBaseOperation) ||
+            authorityMultiplier != auditMultiplier)
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit",
+                "specialArtAudit должен совпадать с pre-turn профилем владельца: baseOperation и costMultiplierPercent являются authority-полями.",
+                "afterlife_conflict_special_art_authority_mismatch",
+                $"artId={artId}, baseOperation={authorityBaseOperation}, costMultiplierPercent={authorityMultiplier}",
+                audit.ToJsonString());
+        }
+    }
+
+    private static bool SpecialArtBaseOperationMatchesExchangeSide(
+        JsonObject exchange,
+        string? operationType,
+        JsonObject audit,
+        string baseOperation)
+    {
+        if (SpecialArtAuditOwnerIsPlayer(audit))
+            return !string.IsNullOrWhiteSpace(operationType) && ConflictTokenEquals(baseOperation, operationType);
+
+        if (!string.IsNullOrWhiteSpace(operationType) && ConflictTokenEquals(baseOperation, operationType))
+            return true;
+
+        if (exchange["incomingAction"] is not JsonObject incomingAction)
+            return false;
+
+        var incomingOperation = AfterlifeSpiritualConflictState.GetNodeString(incomingAction["operationType"]);
+        var incomingFinalOperation = AfterlifeSpiritualConflictState.GetNodeString(incomingAction["finalOperationType"]);
+        return ConflictTokenEqualsSingle(baseOperation, incomingOperation) ||
+               ConflictTokenEqualsSingle(baseOperation, incomingFinalOperation);
+    }
+
+    private static bool ConflictTokenEqualsSingle(string? value, string? acceptedToken) =>
+        !string.IsNullOrWhiteSpace(acceptedToken) &&
+        ConflictTokenEquals(value, acceptedToken!);
+
+    private static bool SpecialArtAuditOwnerIsPlayer(JsonObject specialArtAudit)
+    {
+        var ownerActorType = AfterlifeSpiritualConflictState.GetNodeString(specialArtAudit["ownerActorType"]);
+        var ownerActorId = AfterlifeSpiritualConflictState.GetNodeString(specialArtAudit["ownerActorId"]);
+        return IsPlayerSoulActor(ownerActorType, ownerActorId);
+    }
+
+    private static string? BuildSpecialArtAuthorityKey(string? ownerActorType, string? ownerActorId, string? artId)
+    {
+        if (string.IsNullOrWhiteSpace(artId))
+            return null;
+
+        var ownerKey = BuildSpecialArtOwnerKey(ownerActorType, ownerActorId);
+        return ownerKey == null
+            ? null
+            : $"{ownerKey}:{artId.Trim()}";
+    }
+
+    private static string? BuildSpecialArtOwnerKey(string? ownerActorType, string? ownerActorId)
+    {
+        if (IsPlayerSoulActor(ownerActorType, ownerActorId))
+            return "player_soul:player_soul";
+
+        return string.IsNullOrWhiteSpace(ownerActorType) || string.IsNullOrWhiteSpace(ownerActorId)
+            ? null
+            : $"{ownerActorType.Trim()}:{ownerActorId.Trim()}";
     }
 
     private static void ValidateCurrentActionCostSequence(

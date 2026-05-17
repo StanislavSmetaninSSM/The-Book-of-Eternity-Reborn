@@ -23,7 +23,13 @@ public partial class ExplorerMode
         int InkFeatherCost,
         int LightSparkCost,
         string RequiredRankLabel,
-        string? BlockReason);
+        string? BlockReason,
+        string? SpecialArtId = null,
+        string? SpecialArtDisplayName = null,
+        string? SpecialArtEffectSummary = null)
+    {
+        public bool IsSpecialArt => !string.IsNullOrWhiteSpace(SpecialArtId);
+    }
 
     private sealed record SpiritFocusUpgradeQuote(
         int CurrentTier,
@@ -336,8 +342,12 @@ public partial class ExplorerMode
             }
 
             var shiningRoot = await ReadJsonObjectForAfterlifeStatusAsync(ShiningAbodeState.StatePath);
+            var entityProfilesRoot = await ReadJsonObjectForAfterlifeStatusAsync(AfterlifeEntityProfileState.StatePath);
             var profile = BuildSyncedAfterlifeCombatProfile(soulRoot, shiningRoot);
-            var quotes = BuildSpiritualArtUpgradeQuotes(profile);
+            var quotes = BuildSpiritualArtUpgradeQuotes(
+                profile,
+                ReadPlayerLearnedSpecialArts(entityProfilesRoot),
+                _stateManager.CurrentState.IsInShiningAbode);
             var spiritFocusQuote = BuildSpiritFocusUpgradeQuote(profile);
 
             Clear();
@@ -394,13 +404,14 @@ public partial class ExplorerMode
 
         foreach (var quote in quotes)
         {
-            var tier = AfterlifeSpiritualConflictState.GetNodeInt(artTiers?[quote.Art.ArtId]);
+            var tier = quote.IsSpecialArt
+                ? quote.CurrentTier
+                : AfterlifeSpiritualConflictState.GetNodeInt(artTiers?[quote.Art.ArtId]);
             var blocked = quote.BlockReason == null
-                ? $"следующий уровень {quote.NextTier}, цена {quote.InkFeatherCost} 🪶"
+                ? $"следующий уровень {quote.NextTier}, цена {FormatSpiritualArtUpgradeCost(quote, _stateManager.CurrentState.IsInShiningAbode)}"
                 : $"заблокировано: {quote.BlockReason}";
-            var sparkCost = _stateManager.CurrentState.IsInShiningAbode ? $" / {quote.LightSparkCost} ✨" : "";
-            lines.Add($"  • [white]{Markup.Escape(FormatSpiritualArtLabel(quote.Art))}[/]: уровень [white]{tier}[/], порог ранга [white]{quote.RequiredRankLabel}[/], {Markup.Escape(blocked)}{Markup.Escape(sparkCost)} — {Markup.Escape(FormatSpiritualArtUse(quote.Art))}");
-            lines.Add($"    Правило: {Markup.Escape(FormatSpiritualArtRule(quote.Art))}");
+            lines.Add($"  • [white]{Markup.Escape(FormatSpiritualArtQuoteLabel(quote))}[/]: уровень [white]{tier}[/], порог ранга [white]{quote.RequiredRankLabel}[/], {Markup.Escape(blocked)} — {Markup.Escape(FormatSpiritualArtQuoteUse(quote))}");
+            lines.Add($"    Правило: {Markup.Escape(FormatSpiritualArtQuoteRule(quote))}");
             lines.Add($"    Сильнее против: {Markup.Escape(FormatSpiritualArtStrongAgainst(quote.Art))}");
             lines.Add($"    Контрится: {Markup.Escape(FormatSpiritualArtCounteredBy(quote.Art))}");
             lines.Add($"    Пример: {Markup.Escape(FormatSpiritualArtExample(quote.Art))}");
@@ -445,7 +456,7 @@ public partial class ExplorerMode
 
         var choicesByLabel = new Dictionary<string, SpiritualProfileUpgradeChoice?>(StringComparer.Ordinal);
         foreach (var quote in quotes)
-            choicesByLabel[BuildSpiritualArtUpgradeChoiceLabel(quote)] = new SpiritualProfileUpgradeChoice(quote, null);
+            choicesByLabel[BuildSpiritualArtUpgradeChoiceLabel(quote, _stateManager.CurrentState.IsInShiningAbode)] = new SpiritualProfileUpgradeChoice(quote, null);
         choicesByLabel[BuildSpiritFocusUpgradeChoiceLabel(spiritFocusQuote)] = new SpiritualProfileUpgradeChoice(null, spiritFocusQuote);
         choicesByLabel["← Назад"] = null;
 
@@ -484,11 +495,31 @@ public partial class ExplorerMode
         if (currency == null)
             return;
 
+        JsonObject? entityProfilesRoot = null;
+        if (quote.IsSpecialArt)
+        {
+            var entityProfilesRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeEntityProfileState.StatePath);
+            if (entityProfilesRead.Error != null || entityProfilesRead.Root == null)
+            {
+                ShowEmptyPanel(
+                    "Прокачка духовных искусств",
+                    $"Прокачка особого духовного искусства заблокирована: {AfterlifeEntityProfileState.StatePath} повреждён или отсутствует. Сначала исправьте профиль сущностей посмертия.");
+                WaitForKey();
+                return;
+            }
+
+            entityProfilesRoot = entityProfilesRead.Root;
+        }
+
         var beforeSoulRoot = soulRoot.DeepClone().AsObject();
         var beforeShiningRoot = shiningRoot?.DeepClone()?.AsObject();
+        var beforeEntityProfilesRoot = entityProfilesRoot?.DeepClone()?.AsObject();
         var projectedSoulRoot = soulRoot.DeepClone().AsObject();
         var projectedShiningRoot = shiningRoot?.DeepClone()?.AsObject();
-        var result = ApplySpiritualArtUpgrade(projectedSoulRoot, projectedShiningRoot, quote, currency.Value);
+        var projectedEntityProfilesRoot = entityProfilesRoot?.DeepClone()?.AsObject();
+        var result = quote.IsSpecialArt && projectedEntityProfilesRoot != null
+            ? ApplySpecialSpiritualArtUpgrade(projectedSoulRoot, projectedShiningRoot, projectedEntityProfilesRoot, quote, currency.Value)
+            : ApplySpiritualArtUpgrade(projectedSoulRoot, projectedShiningRoot, quote, currency.Value);
         if (!result.Success)
         {
             ShowEmptyPanel("Прокачка духовных искусств", result.Message);
@@ -497,7 +528,10 @@ public partial class ExplorerMode
         }
 
         Write(BuildSpiritualArtUpgradePreviewPanel(beforeSoulRoot, beforeShiningRoot, projectedSoulRoot, projectedShiningRoot, quote, currency.Value));
-        WriteJsonAuditPanel("JSON локальной прокачки духовного искусства", BuildSpiritualArtUpgradeAuditNode(beforeSoulRoot, beforeShiningRoot, projectedSoulRoot, projectedShiningRoot, quote, currency.Value), Color.Cyan1);
+        WriteJsonAuditPanel(
+            "JSON локальной прокачки духовного искусства",
+            BuildSpiritualArtUpgradeAuditNode(beforeSoulRoot, beforeShiningRoot, beforeEntityProfilesRoot, projectedSoulRoot, projectedShiningRoot, projectedEntityProfilesRoot, quote, currency.Value),
+            Color.Cyan1);
 
         if (!Confirm("[yellow]Подтвердить локальную прокачку духовного искусства?[/]", false))
         {
@@ -506,13 +540,13 @@ public partial class ExplorerMode
             return;
         }
 
-        if (!await SaveSpiritualArtUpgradeRootsAsync(projectedSoulRoot, projectedShiningRoot, currency.Value))
+        if (!await SaveSpiritualArtUpgradeRootsAsync(projectedSoulRoot, projectedShiningRoot, currency.Value, projectedEntityProfilesRoot))
         {
             WaitForKey();
             return;
         }
 
-        MarkupLine($"[green]Прокачано: {Markup.Escape(FormatSpiritualArtLabel(quote.Art))}, уровень {quote.CurrentTier} -> {quote.NextTier}.[/]");
+        MarkupLine($"[green]Прокачано: {Markup.Escape(FormatSpiritualArtQuoteLabel(quote))}, уровень {quote.CurrentTier} -> {quote.NextTier}.[/]");
         WaitForKey();
     }
 
@@ -633,13 +667,16 @@ public partial class ExplorerMode
         JsonObject soulRoot,
         JsonObject? shiningRoot)
     {
-        var choices = new List<string>
-        {
-            $"Чернильные Перья — {quote.InkFeatherCost} 🪶",
-        };
+        var choices = new List<string>();
 
-        if (_stateManager.CurrentState.IsInShiningAbode && shiningRoot != null)
+        if (quote.InkFeatherCost > 0)
+            choices.Add($"Чернильные Перья — {quote.InkFeatherCost} 🪶");
+
+        if (_stateManager.CurrentState.IsInShiningAbode && shiningRoot != null && quote.LightSparkCost > 0)
             choices.Add($"Искры Света — {quote.LightSparkCost} ✨");
+
+        if (choices.Count == 0)
+            return null;
 
         choices.Add("← Назад");
 
@@ -718,6 +755,55 @@ public partial class ExplorerMode
         return (true, "ok");
     }
 
+    private static (bool Success, string Message) ApplySpecialSpiritualArtUpgrade(
+        JsonObject soulRoot,
+        JsonObject? shiningRoot,
+        JsonObject entityProfilesRoot,
+        SpiritualArtUpgradeQuote quote,
+        SpiritualArtCurrency currency)
+    {
+        if (quote.BlockReason != null)
+            return (false, quote.BlockReason);
+
+        var artId = quote.SpecialArtId;
+        if (string.IsNullOrWhiteSpace(artId))
+            return (false, "Особое духовное искусство не содержит идентификатор.");
+
+        var playerProfile = FindPlayerSoulEntityProfile(entityProfilesRoot);
+        if (playerProfile == null)
+            return (false, $"В {AfterlifeEntityProfileState.StatePath} нет профиля души игрока (player_soul).");
+
+        var specialArt = FindSpecialArtById(playerProfile, artId);
+        if (specialArt == null)
+            return (false, $"Профиль души игрока не содержит особое духовное искусство {artId}.");
+
+        var currentTier = Math.Clamp(AfterlifeEntityProfileState.GetNodeInt(specialArt["tier"]), 0, SpiritualArtMaxTier);
+        if (currentTier != quote.CurrentTier)
+            return (false, $"Уровень особого духовного искусства изменился: ожидался {quote.CurrentTier}, сейчас {currentTier}. Обновите меню и повторите.");
+
+        specialArt["tier"] = quote.NextTier;
+        AppendSpecialArtUpgradeLedger(playerProfile, quote, currency);
+
+        if (currency == SpiritualArtCurrency.InkFeathers)
+        {
+            if (!TrySpendSoulInkFeathers(soulRoot, quote.InkFeatherCost, out var reason))
+                return (false, reason);
+        }
+        else
+        {
+            if (shiningRoot == null)
+                return (false, "Искры Света доступны для прокачки только в Сияющей Обители.");
+
+            var current = AfterlifeSpiritualConflictState.GetNodeInt(shiningRoot["lightSparks"]);
+            if (current < quote.LightSparkCost)
+                return (false, $"Недостаточно Искр Света: нужно {quote.LightSparkCost}, доступно {current}.");
+
+            shiningRoot["lightSparks"] = current - quote.LightSparkCost;
+        }
+
+        return (true, "ok");
+    }
+
     private static (bool Success, string Message) ApplySpiritFocusUpgrade(
         JsonObject soulRoot,
         JsonObject? shiningRoot,
@@ -754,7 +840,8 @@ public partial class ExplorerMode
     private async Task<bool> SaveSpiritualArtUpgradeRootsAsync(
         JsonObject soulRoot,
         JsonObject? shiningRoot,
-        SpiritualArtCurrency currency)
+        SpiritualArtCurrency currency,
+        JsonObject? entityProfilesRoot = null)
     {
         var blocker = await TryDescribeSpiritualArtUpgradeBlockerAsync();
         if (blocker != null)
@@ -765,6 +852,9 @@ public partial class ExplorerMode
 
         var previousSoulJson = await _fs.ReadFileAsync(SoulStatePath);
         var previousShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var previousEntityProfilesJson = entityProfilesRoot == null
+            ? null
+            : await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);
         JsonObject? previousSoulRoot = null;
 
         if (!string.IsNullOrWhiteSpace(previousSoulJson))
@@ -790,6 +880,8 @@ public partial class ExplorerMode
             await WriteCanonicalSoulStateJsonAsync(soulRoot);
             if (currency == SpiritualArtCurrency.LightSparks && shiningRoot != null)
                 await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            if (entityProfilesRoot != null)
+                await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, entityProfilesRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
             await _stateManager.RefreshGameStateAsync();
             return true;
@@ -809,6 +901,14 @@ public partial class ExplorerMode
                     await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, previousShiningJson);
                 else
                     _fs.DeleteFile(ShiningAbodeState.StatePath);
+            }
+
+            if (entityProfilesRoot != null)
+            {
+                if (previousEntityProfilesJson != null)
+                    await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, previousEntityProfilesJson);
+                else
+                    _fs.DeleteFile(AfterlifeEntityProfileState.StatePath);
             }
 
             MarkupLine($"[red]Не удалось сохранить прокачку духовного искусства; состояние восстановлено: {Markup.Escape(ex.Message)}[/]");
@@ -843,7 +943,75 @@ public partial class ExplorerMode
         return profile;
     }
 
-    private static IReadOnlyList<SpiritualArtUpgradeQuote> BuildSpiritualArtUpgradeQuotes(JsonObject profile)
+    private static IReadOnlyList<JsonObject> ReadPlayerLearnedSpecialArts(JsonObject? entityProfilesRoot)
+    {
+        var playerProfile = FindPlayerSoulEntityProfile(entityProfilesRoot);
+        if (playerProfile?["specialArts"] is not JsonArray specialArts)
+            return Array.Empty<JsonObject>();
+
+        return specialArts
+            .OfType<JsonObject>()
+            .Select(art => art.DeepClone() as JsonObject ?? new JsonObject())
+            .Where(art => !string.IsNullOrWhiteSpace(AfterlifeEntityProfileState.GetNodeString(art["artId"])))
+            .ToArray();
+    }
+
+    private static JsonObject? FindPlayerSoulEntityProfile(JsonObject? entityProfilesRoot)
+    {
+        if (entityProfilesRoot?[AfterlifeEntityProfileState.ProfilesProperty] is not JsonArray profiles)
+            return null;
+
+        return profiles
+            .OfType<JsonObject>()
+            .FirstOrDefault(profile =>
+                string.Equals(AfterlifeEntityProfileState.GetNodeString(profile["actorType"]), "player_soul", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static JsonObject? FindSpecialArtById(JsonObject profile, string artId)
+    {
+        if (profile["specialArts"] is not JsonArray specialArts)
+            return null;
+
+        return specialArts
+            .OfType<JsonObject>()
+            .FirstOrDefault(art => string.Equals(AfterlifeEntityProfileState.GetNodeString(art["artId"]), artId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static JsonArray EnsureSpiritualArtJsonArray(JsonObject root, string propertyName)
+    {
+        if (root[propertyName] is JsonArray array)
+            return array;
+
+        array = new JsonArray();
+        root[propertyName] = array;
+        return array;
+    }
+
+    private static void AppendSpecialArtUpgradeLedger(
+        JsonObject playerProfile,
+        SpiritualArtUpgradeQuote quote,
+        SpiritualArtCurrency currency)
+    {
+        var ledger = EnsureSpiritualArtJsonArray(playerProfile, "ledger");
+        ledger.Add(new JsonObject
+        {
+            ["entryId"] = $"special_art_local_upgrade_{quote.SpecialArtId}_{quote.NextTier}",
+            ["reason"] = "special_art_local_upgrade",
+            ["summary"] = "Игрок локально прокачал особое духовное искусство.",
+            ["sourceSurface"] = "spiritual_arts_local_upgrade",
+            ["artId"] = quote.SpecialArtId,
+            ["displayName"] = FormatSpiritualArtQuoteLabel(quote),
+            ["tierBefore"] = quote.CurrentTier,
+            ["tierAfter"] = quote.NextTier,
+            ["currency"] = DescribeSpiritualArtCurrencyToken(currency),
+            ["cost"] = currency == SpiritualArtCurrency.LightSparks ? quote.LightSparkCost : quote.InkFeatherCost
+        });
+    }
+
+    private static IReadOnlyList<SpiritualArtUpgradeQuote> BuildSpiritualArtUpgradeQuotes(
+        JsonObject profile,
+        IReadOnlyList<JsonObject> playerSpecialArts,
+        bool isInShiningAbode)
     {
         var maxUnlockedTier = ResolveMaxUnlockedSpiritualArtTier(profile);
         var artTiers = profile["artTiers"] as JsonObject;
@@ -870,6 +1038,51 @@ public partial class ExplorerMode
                 ComputeSpiritualArtLightSparkCost(art, nextTier),
                 requiredRankLabel,
                 blockReason));
+        }
+
+        foreach (var specialArt in playerSpecialArts)
+        {
+            var artId = AfterlifeEntityProfileState.GetNodeString(specialArt["artId"]);
+            var displayName = AfterlifeEntityProfileState.GetNodeString(specialArt["displayName"]) ?? artId;
+            var baseOperation = AfterlifeEntityProfileState.GetNodeString(specialArt["baseOperation"]);
+            if (string.IsNullOrWhiteSpace(artId) || string.IsNullOrWhiteSpace(displayName) || string.IsNullOrWhiteSpace(baseOperation))
+                continue;
+
+            var baseArt = AfterlifeSpiritualConflictState.SpiritualArts
+                .FirstOrDefault(art => string.Equals(art.ArtId, baseOperation, StringComparison.OrdinalIgnoreCase));
+            if (baseArt == null)
+                continue;
+
+            var currentTier = Math.Clamp(AfterlifeEntityProfileState.GetNodeInt(specialArt["tier"]), 0, SpiritualArtMaxTier);
+            var nextTier = Math.Min(SpiritualArtMaxTier, currentTier + 1);
+            var requiredRankLabel = DescribeRequiredRankForArtTier(Math.Max(baseArt.MinUnlockTier, nextTier));
+            var upgradeCost = specialArt["upgradeCost"] as JsonObject;
+            var inkCost = Math.Max(0, AfterlifeEntityProfileState.GetNodeInt(upgradeCost?["inkFeathers"]));
+            var sparkCost = Math.Max(0, AfterlifeEntityProfileState.GetNodeInt(upgradeCost?["lightSparks"]));
+            string? blockReason = null;
+            if (currentTier >= SpiritualArtMaxTier)
+                blockReason = "уже достигнут максимальный уровень особого искусства 5";
+            else if (maxUnlockedTier < baseArt.MinUnlockTier)
+                blockReason = $"нужен ранг, открывающий базовое действие уровня {baseArt.MinUnlockTier}: {DescribeRequiredRankForArtTier(baseArt.MinUnlockTier)}";
+            else if (nextTier > maxUnlockedTier)
+                blockReason = $"нужен ранг, открывающий уровень искусства {nextTier}: {requiredRankLabel}";
+            else if (inkCost <= 0 && sparkCost <= 0)
+                blockReason = "у особого искусства должна быть положительная цена прокачки в Чернильных Перьях или Искрах Света";
+            else if (inkCost <= 0 && sparkCost > 0 && !isInShiningAbode)
+                blockReason = "цена указана только в Искрах Света; такая прокачка доступна только в обычной активной Сияющей Обители";
+
+            result.Add(new SpiritualArtUpgradeQuote(
+                baseArt,
+                currentTier,
+                nextTier,
+                maxUnlockedTier,
+                inkCost,
+                sparkCost,
+                requiredRankLabel,
+                blockReason,
+                artId,
+                displayName,
+                AfterlifeEntityProfileState.GetNodeString(specialArt["effectSummary"])));
         }
 
         return result;
@@ -1001,12 +1214,50 @@ public partial class ExplorerMode
     private static int ComputeSpiritFocusLightSparkCost(int nextTier) =>
         checked(8 + nextTier * 4);
 
-    private static string BuildSpiritualArtUpgradeChoiceLabel(SpiritualArtUpgradeQuote quote)
+    private static string BuildSpiritualArtUpgradeChoiceLabel(SpiritualArtUpgradeQuote quote, bool includeLightSparks)
     {
         var status = quote.BlockReason == null
-            ? $"уровень {quote.CurrentTier}->{quote.NextTier}, {quote.InkFeatherCost} 🪶"
+            ? $"уровень {quote.CurrentTier}->{quote.NextTier}, {FormatSpiritualArtUpgradeCost(quote, includeLightSparks)}"
             : $"заблокировано: {quote.BlockReason}";
-        return $"{FormatSpiritualArtLabel(quote.Art)} — {status}";
+        return $"{FormatSpiritualArtQuoteLabel(quote)} — {status}";
+    }
+
+    private static string FormatSpiritualArtUpgradeCost(SpiritualArtUpgradeQuote quote, bool includeLightSparks)
+    {
+        var parts = new List<string>();
+        if (quote.InkFeatherCost > 0)
+            parts.Add($"{quote.InkFeatherCost} 🪶");
+        if (includeLightSparks && quote.LightSparkCost > 0)
+            parts.Add($"{quote.LightSparkCost} ✨");
+
+        return parts.Count == 0
+            ? "0 🪶"
+            : string.Join(" / ", parts);
+    }
+
+    private static string FormatSpiritualArtQuoteLabel(SpiritualArtUpgradeQuote quote) =>
+        quote.IsSpecialArt
+            ? quote.SpecialArtDisplayName ?? quote.SpecialArtId ?? FormatSpiritualArtLabel(quote.Art)
+            : FormatSpiritualArtLabel(quote.Art);
+
+    private static string FormatSpiritualArtQuoteUse(SpiritualArtUpgradeQuote quote)
+    {
+        if (!quote.IsSpecialArt)
+            return FormatSpiritualArtUse(quote.Art);
+
+        var effect = string.IsNullOrWhiteSpace(quote.SpecialArtEffectSummary)
+            ? "особый эффект должен быть описан ГМ при применении искусства"
+            : quote.SpecialArtEffectSummary;
+        return $"особое искусство на основе действия «{FormatSpiritualArtLabel(quote.Art)}»; {effect}";
+    }
+
+    private static string FormatSpiritualArtQuoteRule(SpiritualArtUpgradeQuote quote)
+    {
+        if (!quote.IsSpecialArt)
+            return FormatSpiritualArtRule(quote.Art);
+
+        return FormatSpiritualArtRule(quote.Art) +
+               " Особый эффект применяется только если ГМ записывает заметку о его влиянии в аудите обмена.";
     }
 
     private static string BuildSpiritFocusUpgradeChoiceLabel(SpiritFocusUpgradeQuote quote)
@@ -1122,7 +1373,7 @@ public partial class ExplorerMode
         {
             "[bold cyan]Предпросмотр локальной прокачки духовного искусства[/]",
             "",
-            $"  • Искусство: [white]{Markup.Escape(FormatSpiritualArtLabel(quote.Art))}[/]",
+            $"  • Искусство: [white]{Markup.Escape(FormatSpiritualArtQuoteLabel(quote))}[/]",
             $"  • Уровень: [white]{quote.CurrentTier}[/] -> [white]{quote.NextTier}[/]",
             $"  • Валюта: [white]{DescribeSpiritualArtCurrency(currency)}[/]",
             $"  • Чернильные Перья: [white]{ReadSoulInkFeathers(beforeSoulRoot).Current}[/] -> [white]{ReadSoulInkFeathers(afterSoulRoot).Current}[/]",
@@ -1144,8 +1395,10 @@ public partial class ExplorerMode
     private static JsonObject BuildSpiritualArtUpgradeAuditNode(
         JsonObject beforeSoulRoot,
         JsonObject? beforeShiningRoot,
+        JsonObject? beforeEntityProfilesRoot,
         JsonObject afterSoulRoot,
         JsonObject? afterShiningRoot,
+        JsonObject? afterEntityProfilesRoot,
         SpiritualArtUpgradeQuote quote,
         SpiritualArtCurrency currency) =>
         new()
@@ -1153,8 +1406,9 @@ public partial class ExplorerMode
             ["sourceSurface"] = "spiritual_arts_local_upgrade",
             ["gmTurnSent"] = false,
             ["receiptWritten"] = false,
-            ["artId"] = quote.Art.ArtId,
-            ["displayName"] = quote.Art.DisplayName,
+            ["upgradeType"] = quote.IsSpecialArt ? "special_art" : "standard_art",
+            ["artId"] = quote.SpecialArtId ?? quote.Art.ArtId,
+            ["displayName"] = FormatSpiritualArtQuoteLabel(quote),
             ["tierBefore"] = quote.CurrentTier,
             ["tierAfter"] = quote.NextTier,
             ["currency"] = DescribeSpiritualArtCurrencyToken(currency),
@@ -1163,17 +1417,17 @@ public partial class ExplorerMode
             {
                 ["soulInkFeathersCurrent"] = ReadSoulInkFeathers(beforeSoulRoot).Current,
                 ["lightSparks"] = AfterlifeSpiritualConflictState.GetNodeInt(beforeShiningRoot?["lightSparks"]),
-                ["afterlifeCombatProfile"] = beforeSoulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]?.DeepClone()
+                ["afterlifeCombatProfile"] = beforeSoulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]?.DeepClone(),
+                ["afterlifeEntityProfiles"] = beforeEntityProfilesRoot?[AfterlifeEntityProfileState.ProfilesProperty]?.DeepClone()
             },
             ["after"] = new JsonObject
             {
                 ["soulInkFeathersCurrent"] = ReadSoulInkFeathers(afterSoulRoot).Current,
                 ["lightSparks"] = AfterlifeSpiritualConflictState.GetNodeInt(afterShiningRoot?["lightSparks"]),
-                ["afterlifeCombatProfile"] = afterSoulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]?.DeepClone()
+                ["afterlifeCombatProfile"] = afterSoulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]?.DeepClone(),
+                ["afterlifeEntityProfiles"] = afterEntityProfilesRoot?[AfterlifeEntityProfileState.ProfilesProperty]?.DeepClone()
             },
-            ["affectedFiles"] = currency == SpiritualArtCurrency.LightSparks
-                ? new JsonArray(SoulStatePath, ShiningAbodeState.StatePath)
-                : new JsonArray(SoulStatePath)
+            ["affectedFiles"] = BuildSpiritualArtUpgradeAffectedFiles(currency, quote.IsSpecialArt)
         };
 
     private static Panel BuildSpiritFocusUpgradePreviewPanel(
@@ -1250,6 +1504,19 @@ public partial class ExplorerMode
 
     private static string DescribeSpiritualArtCurrencyToken(SpiritualArtCurrency currency) =>
         currency == SpiritualArtCurrency.LightSparks ? "light_sparks" : "ink_feathers";
+
+    private static JsonArray BuildSpiritualArtUpgradeAffectedFiles(
+        SpiritualArtCurrency currency,
+        bool isSpecialArt)
+    {
+        var files = new JsonArray(SoulStatePath);
+        if (currency == SpiritualArtCurrency.LightSparks)
+            files.Add(ShiningAbodeState.StatePath);
+        if (isSpecialArt)
+            files.Add(AfterlifeEntityProfileState.StatePath);
+
+        return files;
+    }
 
     private async Task ShowSpiritualActionAsync()
     {

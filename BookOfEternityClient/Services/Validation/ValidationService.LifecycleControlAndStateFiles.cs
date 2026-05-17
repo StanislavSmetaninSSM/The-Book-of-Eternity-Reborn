@@ -251,12 +251,17 @@ public partial class ValidationService
                 AfterlifeEntityProfileState.CustomStateChangesProperty,
                 AfterlifeEntityProfileState.ProgressionOverridesProperty,
                 AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty,
+                AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty,
+                AfterlifeEntityProfileState.LastInvalidProgressionOverrideReasonProperty,
                 "_lastUpdated"
             }, issues, ValidateAfterlifeEntityProfileStateFile);
         await ValidateStrictTopLevelObjectFileAsync(AfterlifeEntityProfileState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "schemaVersion", AfterlifeEntityProfileState.ProfilesProperty, "_lastUpdated"
+                "schemaVersion", AfterlifeEntityProfileState.ProfilesProperty,
+                AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty,
+                AfterlifeEntityProfileState.LastInvalidProgressionOverrideReasonProperty,
+                "_lastUpdated"
             }, issues);
         await ValidateFlexibleStateFile("game_state/meta/guardians.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)

@@ -13,6 +13,8 @@ internal static class AfterlifeEntityProfileState
     public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
     public const string SpecialArtLearningReceiptsProperty = "afterlifeSpecialArtLearningReceipts";
     public const string ProgressionLedgerProperty = "progressionLedger";
+    public const string LastInvalidProgressionOverrideProperty = "lastInvalidProgressionOverride";
+    public const string LastInvalidProgressionOverrideReasonProperty = "lastInvalidProgressionOverrideReason";
     public const string SoulDissipationTierProperty = "soulDissipationTier";
     public const int MaxSoulStabilityCoefficient = MaxProfileTier - 1;
     public const int SchemaVersion = 1;
@@ -322,11 +324,22 @@ internal static class AfterlifeEntityProfileState
                 .OfType<JsonObject>()
                 .FirstOrDefault(item => string.Equals(BuildIdentityKey(item), targetKey, StringComparison.OrdinalIgnoreCase));
             if (profile == null)
+            {
+                MarkInvalidProgressionOverride(result, overrideNode, "unknown_target_profile");
                 continue;
+            }
+
+            if (HasUnknownSpecialArtTierDelta(profile, overrideNode["specialArtTierDeltas"] as JsonObject, out _))
+            {
+                MarkInvalidProgressionOverride(result, overrideNode, "unknown_special_art");
+                continue;
+            }
 
             var cycleKey = GetNodeString(overrideNode["cycleKey"]) ?? "manual";
             ApplyCurrencyDeltas(profile, overrideNode["currencyDeltas"] as JsonObject);
             ApplyStandardArtTierDeltas(profile, overrideNode["standardArtTierDeltas"] as JsonObject);
+            ApplySpecialArtTierDeltas(profile, overrideNode["specialArtTierDeltas"] as JsonObject);
+            ApplySoulDissipationTierDelta(profile, overrideNode["soulDissipationTierDelta"]);
             ApplyProgressionExperienceDeltas(profile, overrideNode["progressionExperienceDeltas"] as JsonObject);
 
             var strategy = EnsureObject(profile, "progressionStrategy");
@@ -482,6 +495,15 @@ internal static class AfterlifeEntityProfileState
                 return;
             }
 
+            if (TryUpgradeSpecialArt(profile, currencies, priority, ref spending, upgrades))
+                return;
+
+            if (IsSoulDissipationPriority(priority) &&
+                TryUpgradeSoulDissipation(profile, currencies, ref spending, upgrades))
+            {
+                return;
+            }
+
             if (string.Equals(priority, "enlightenment", StringComparison.OrdinalIgnoreCase) &&
                 TryUpgradeProgressionTrack(profile, currencies, "enlightenment", useLightSparks: false, ref spending, upgrades))
             {
@@ -520,6 +542,69 @@ internal static class AfterlifeEntityProfileState
         return true;
     }
 
+    private static bool TryUpgradeSpecialArt(
+        JsonObject profile,
+        JsonObject currencies,
+        string artId,
+        ref CurrencyDelta spending,
+        JsonArray upgrades)
+    {
+        var specialArt = FindSpecialArtById(profile, artId);
+        if (specialArt == null)
+            return false;
+
+        var currentTier = Math.Clamp(GetNodeInt(specialArt["tier"]), 0, MaxProfileTier);
+        if (currentTier >= MaxProfileTier)
+            return false;
+
+        var cost = ResolveSpecialArtUpgradeCost(specialArt);
+        if (!CanAfford(currencies, cost))
+            return false;
+
+        Spend(currencies, cost);
+        specialArt["tier"] = currentTier + 1;
+        spending = AddSpending(spending, cost);
+        upgrades.Add($"specialArt:{artId}:{currentTier}->{currentTier + 1}");
+        return true;
+    }
+
+    private static bool TryUpgradeSoulDissipation(
+        JsonObject profile,
+        JsonObject currencies,
+        ref CurrencyDelta spending,
+        JsonArray upgrades)
+    {
+        var currentTier = Math.Clamp(GetNodeInt(profile[SoulDissipationTierProperty]), 0, MaxProfileTier);
+        if (currentTier >= MaxProfileTier)
+            return false;
+
+        var cost = ResolveSoulDissipationUpgradeCost(profile, currentTier + 1);
+        if (!CanAfford(currencies, cost))
+            return false;
+
+        Spend(currencies, cost);
+        profile[SoulDissipationTierProperty] = currentTier + 1;
+        spending = AddSpending(spending, cost);
+        upgrades.Add($"soulDissipation:{currentTier}->{currentTier + 1}");
+        return true;
+    }
+
+    private static CurrencyDelta ResolveSpecialArtUpgradeCost(JsonObject specialArt)
+    {
+        var upgradeCost = specialArt["upgradeCost"] as JsonObject;
+        return new CurrencyDelta(
+            Math.Max(0, GetNodeInt(upgradeCost?["inkFeathers"])),
+            Math.Max(0, GetNodeInt(upgradeCost?["lightSparks"])));
+    }
+
+    private static CurrencyDelta ResolveSoulDissipationUpgradeCost(JsonObject profile, int nextTier)
+    {
+        var tier = Math.Clamp(nextTier, 1, MaxProfileTier);
+        return IsShiningRealm(profile)
+            ? new CurrencyDelta(30 * tier, 2 * tier)
+            : new CurrencyDelta(50 * tier, 0);
+    }
+
     private static bool TryUpgradeProgressionTrack(
         JsonObject profile,
         JsonObject currencies,
@@ -550,6 +635,24 @@ internal static class AfterlifeEntityProfileState
         upgrades.Add($"{trackName}:experience+20");
         return true;
     }
+
+    private static bool IsSoulDissipationPriority(string priority) =>
+        string.Equals(priority, "soul_dissipation", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(priority, "soulDissipation", StringComparison.OrdinalIgnoreCase);
+
+    private static bool CanAfford(JsonObject currencies, CurrencyDelta cost) =>
+        GetNodeInt(currencies["inkFeathers"]) >= cost.InkFeathers &&
+        GetNodeInt(currencies["lightSparks"]) >= cost.LightSparks &&
+        (cost.InkFeathers > 0 || cost.LightSparks > 0);
+
+    private static void Spend(JsonObject currencies, CurrencyDelta cost)
+    {
+        AddCurrency(currencies, "inkFeathers", -cost.InkFeathers);
+        AddCurrency(currencies, "lightSparks", -cost.LightSparks);
+    }
+
+    private static CurrencyDelta AddSpending(CurrencyDelta spending, CurrencyDelta cost) =>
+        new(spending.InkFeathers + cost.InkFeathers, spending.LightSparks + cost.LightSparks);
 
     private static ProgressionCycle? ResolveProgressionCycle(JsonObject? root)
     {
@@ -630,6 +733,60 @@ internal static class AfterlifeEntityProfileState
 
             arts[delta.Key] = Math.Clamp(GetNodeInt(arts[delta.Key]) + GetNodeInt(delta.Value), 0, MaxProfileTier);
         }
+    }
+
+    private static void MarkInvalidProgressionOverride(JsonObject result, JsonObject overrideNode, string reason)
+    {
+        result[LastInvalidProgressionOverrideProperty] = CloneObject(overrideNode);
+        result[LastInvalidProgressionOverrideReasonProperty] = reason;
+    }
+
+    private static void ApplySpecialArtTierDeltas(JsonObject profile, JsonObject? deltas)
+    {
+        if (deltas == null)
+            return;
+
+        foreach (var delta in deltas)
+        {
+            var specialArt = FindSpecialArtById(profile, delta.Key);
+            if (specialArt == null)
+                continue;
+
+            specialArt["tier"] = Math.Clamp(GetNodeInt(specialArt["tier"]) + GetNodeInt(delta.Value), 0, MaxProfileTier);
+        }
+    }
+
+    private static bool HasUnknownSpecialArtTierDelta(JsonObject profile, JsonObject? deltas, out string? unknownArtId)
+    {
+        unknownArtId = null;
+        if (deltas == null)
+            return false;
+
+        foreach (var delta in deltas)
+        {
+            if (string.IsNullOrWhiteSpace(delta.Key))
+                continue;
+
+            if (FindSpecialArtById(profile, delta.Key) != null)
+                continue;
+
+            unknownArtId = delta.Key;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void ApplySoulDissipationTierDelta(JsonObject profile, JsonNode? deltaNode)
+    {
+        var delta = GetNodeInt(deltaNode);
+        if (delta == 0)
+            return;
+
+        profile[SoulDissipationTierProperty] = Math.Clamp(
+            GetNodeInt(profile[SoulDissipationTierProperty]) + delta,
+            0,
+            MaxProfileTier);
     }
 
     private static void ApplyProgressionExperienceDeltas(JsonObject profile, JsonObject? deltas)

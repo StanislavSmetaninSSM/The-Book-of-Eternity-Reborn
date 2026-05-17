@@ -390,11 +390,16 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
             Assert.Contains("statesToRemove", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
+            Assert.Contains("specialArtTierDeltas", text, StringComparison.Ordinal);
+            Assert.Contains("soulDissipationTierDelta", text, StringComparison.Ordinal);
             Assert.Contains("progressionLedger", text, StringComparison.Ordinal);
             Assert.Contains("lastAutoProgressionCycleKey", text, StringComparison.Ordinal);
+            Assert.Contains("soul_dissipation", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
             Assert.Contains("trainingConditions", text, StringComparison.Ordinal);
             Assert.Contains("costMultiplierPercent", text, StringComparison.Ordinal);
+            Assert.Contains("Spark-only", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("repair-blocking", text, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.Contains("/afterlife_profiles", glossary, StringComparison.OrdinalIgnoreCase);
@@ -402,6 +407,10 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("afterlife_entity_profiles_v1", examples, StringComparison.Ordinal);
         Assert.Contains("Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_special_art_learning_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("actionCostAudit.player.artTier", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
+        Assert.Contains("pre-turn authority", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("learned special arts", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/spiritual_arts", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
         Assert.Contains("afterlife_entity_profiles_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("afterlife_special_art_learning_v1", manifest, StringComparison.Ordinal);
     }
@@ -1887,6 +1896,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("specialArtAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("effectNote", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("specialCostMultiplierPercent", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("Non-player or incoming-action special arts", matrix, StringComparison.Ordinal);
+        Assert.Contains("non-player/incoming special arts", examples + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Матрица приём-контрприём", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Сильнее против", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Контрится", uiHelp, StringComparison.Ordinal);
