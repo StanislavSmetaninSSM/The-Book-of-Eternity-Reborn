@@ -2630,10 +2630,10 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
               "operationType": "pressure",
               "baseCost": 3,
               "minCost": 1,
-              "artTier": 1,
-              "effectiveCost": 3,
+              "artTier": 0,
+              "effectiveCost": 2,
               "before": 6,
-              "after": 3
+              "after": 4
             }
           }
         }
