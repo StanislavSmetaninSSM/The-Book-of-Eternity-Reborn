@@ -387,6 +387,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("customStates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
             Assert.Contains("statesToRemove", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
+            Assert.Contains("progressionLedger", text, StringComparison.Ordinal);
+            Assert.Contains("lastAutoProgressionCycleKey", text, StringComparison.Ordinal);
         }
 
         Assert.Contains("/afterlife_profiles", glossary, StringComparison.OrdinalIgnoreCase);

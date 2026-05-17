@@ -159,4 +159,134 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal("Голод эха", state["stateName"]?.GetValue<string>());
         Assert.Equal(3, state["currentValue"]?.GetValue<int>());
     }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_AppliesDeterministicEntityProgressionFromAfterlifeReport()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            ProgressionScheduleService.ReportPath,
+            """
+            {
+              "progressionProcessingReport": {
+                "sessionId": "session_1",
+                "requestId": "request_1",
+                "turnNumber": 7,
+                "chaosSeaCyclesProcessed": 1,
+                "guardianProjectCyclesProcessed": 1,
+                "newLastChaosSeaSimulationOrdinal": 5,
+                "newLastGuardianProjectCycleOrdinal": 5
+              }
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "guard": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_mirror",
+                    "summary": "Качать защиту.",
+                    "priorityOrder": ["guard"]
+                  },
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(1, profile["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.Equal(2, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal("chaos:5", profile["progressionStrategy"]?["lastAutoProgressionCycleKey"]?.GetValue<string>());
+
+        var ledger = Assert.IsType<JsonArray>(profile["progressionLedger"]);
+        var entry = Assert.Single(ledger.OfType<JsonObject>());
+        Assert.Equal("client_auto_strategy", entry["source"]?.GetValue<string>());
+        Assert.Equal("chaos:5", entry["cycleKey"]?.GetValue<string>());
+        Assert.Equal(12, entry["income"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(10, entry["spending"]?["inkFeathers"]?.GetValue<int>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_AppliesEntityProgressionOverrideWithLedger()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 10, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "pressure": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_mirror",
+                    "summary": "Качать давление.",
+                    "priorityOrder": ["pressure"]
+                  },
+                  "ledger": [],
+                  "afterlifeEntityProgressionOverrides": []
+                }
+              ],
+              "afterlifeEntityProgressionOverrides": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "cycleKey": "chaos:6",
+                  "reason": "GM решил, что хранитель сделал рывок после сцены.",
+                  "currencyDeltas": { "inkFeathers": -5 },
+                  "standardArtTierDeltas": { "pressure": 1 },
+                  "summary": "Хранитель потратил Перья на давление."
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        Assert.False(root.ContainsKey("afterlifeEntityProgressionOverrides"));
+
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(1, profile["standardArts"]?["pressure"]?.GetValue<int>());
+        Assert.Equal(5, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal("chaos:6", profile["progressionStrategy"]?["lastAutoProgressionCycleKey"]?.GetValue<string>());
+
+        var ledger = Assert.IsType<JsonArray>(profile["progressionLedger"]);
+        var entry = Assert.Single(ledger.OfType<JsonObject>());
+        Assert.Equal("gm_override", entry["source"]?.GetValue<string>());
+        Assert.Equal("chaos:6", entry["cycleKey"]?.GetValue<string>());
+        Assert.Equal("Хранитель потратил Перья на давление.", entry["summary"]?.GetValue<string>());
+    }
 }

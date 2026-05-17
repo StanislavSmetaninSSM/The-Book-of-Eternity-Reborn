@@ -112,6 +112,19 @@ public partial class ExplorerMode
         var priorities = ReadProfileStringArray(strategy?["priorityOrder"] as JsonArray).ToList();
         if (priorities.Count > 0)
             lines.Add($"  • Приоритеты: [dim]{Markup.Escape(string.Join(" → ", priorities))}[/]");
+
+        var lastCycleKey = AfterlifeEntityProfileState.GetNodeString(strategy?["lastAutoProgressionCycleKey"]);
+        var latestProgression = ReadLatestProgressionLedgerEntry(profile[AfterlifeEntityProfileState.ProgressionLedgerProperty] as JsonArray);
+        if (latestProgression != null)
+        {
+            var cycleKey = AfterlifeEntityProfileState.GetNodeString(latestProgression["cycleKey"]) ?? lastCycleKey ?? "?";
+            var summary = AfterlifeEntityProfileState.GetNodeString(latestProgression["summary"]) ?? "детали не указаны";
+            lines.Add($"  • Последняя автопрокачка: [white]{Markup.Escape(cycleKey)}[/] — [dim]{Markup.Escape(summary)}[/]");
+        }
+        else if (!string.IsNullOrWhiteSpace(lastCycleKey))
+        {
+            lines.Add($"  • Последняя автопрокачка: [white]{Markup.Escape(lastCycleKey)}[/]");
+        }
     }
 
     private static void AppendAfterlifeEntityStandardArts(List<string> lines, JsonObject? arts)
@@ -184,6 +197,14 @@ public partial class ExplorerMode
             if (!string.IsNullOrWhiteSpace(value))
                 yield return value;
         }
+    }
+
+    private static JsonObject? ReadLatestProgressionLedgerEntry(JsonArray? ledger)
+    {
+        if (ledger == null || ledger.Count == 0)
+            return null;
+
+        return ledger.OfType<JsonObject>().LastOrDefault();
     }
 
     private static string DescribeAfterlifeEntityActorType(string? actorType) =>

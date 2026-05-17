@@ -38,6 +38,8 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | afterlife entity profiles | Профили сущностей посмертия | Read-only/player-visible profile sidecar `game_state/meta/afterlife_entity_profiles.json`; GM updates it through `afterlifeEntityProfileUpdates` when significant afterlife actors are created, revealed, or materially changed. |
 | afterlifeEntityProfileUpdates | обновления профилей сущностей посмертия | GM-authored response surface for `profiles[]` entries with `actorType`, `actorId`, `currencies`, `progression`, `standardArts`, `specialArts`, `customStates`, `soulDissipationTier`, and `progressionStrategy`. |
 | afterlifeEntityCustomStateChanges | изменения кастомных состояний сущностей посмертия | GM-authored response surface for targeted `customStates` maintenance on a known profile: `statesToAddOrUpdate[]` adds/replaces full state objects, while `statesToRemove[]` deletes ended states so they do not persist forever. |
+| afterlifeEntityProgressionOverrides | принудительная прокачка сущности посмертия | GM-authored override surface for cases where the living world logic should not follow deterministic `progressionStrategy`; each override needs `cycleKey`, `reason`, `summary`, explicit deltas, and produces `progressionLedger`. |
+| progressionLedger | журнал прокачки сущности посмертия | Audit trail in each afterlife profile. It records deterministic income/spending/upgrades or a GM override for a specific cycle, including `lastAutoProgressionCycleKey` on the strategy. |
 
 ## Spiritual Art Names
 
@@ -61,7 +63,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | `/spiritual_combat_help` | `/духовный_бой` | Shows the player-facing combat guide: commands, tactics, Spiritual Arts, position, dice, bounded criticals, rewards, and upgrades. |
 | `/spiritual_action` | `/духовное_действие` | Sends one explicit tagged action inside an active conflict. Ordinary roleplay prose is still valid when it clearly acts inside the active conflict. |
 | `/spiritual_arts` | `/духовные_искусства` | Shows ranks, art tiers, `Средоточие Души`, upgrade costs, and performs client-owned Spiritual Art / Spirit Focus upgrades. |
-| `/afterlife_profiles` | `/профили_загробья` | Shows Профили сущностей посмертия: actor type, resources, progression, `standardArts`, `specialArts`, `customStates`, `soulDissipationTier`, danger warnings, and `progressionStrategy`. |
+| `/afterlife_profiles` | `/профили_загробья` | Shows Профили сущностей посмертия: actor type, resources, progression, `standardArts`, `specialArts`, `customStates`, `soulDissipationTier`, danger warnings, `progressionStrategy`, `lastAutoProgressionCycleKey`, and latest `progressionLedger` entry. |
 
 ## Spiritual Art Operation Rules
 
