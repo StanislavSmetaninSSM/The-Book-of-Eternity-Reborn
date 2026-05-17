@@ -93,6 +93,7 @@ public partial class ExplorerMode
 
         AppendAfterlifeEntityStandardArts(lines, profile["standardArts"] as JsonObject);
         AppendAfterlifeEntitySpecialArts(lines, profile["specialArts"] as JsonArray);
+        AppendAfterlifeEntityCustomStates(lines, profile[AfterlifeEntityProfileState.CustomStatesProperty] as JsonArray);
 
         var dissipationTier = AfterlifeEntityProfileState.GetNodeInt(profile["soulDissipationTier"]);
         lines.Add($"  • Развеивание души: тир {dissipationTier}");
@@ -143,6 +144,32 @@ public partial class ExplorerMode
             lines.Add($"    - {Markup.Escape(name)}: тир {tier}, основа — {Markup.Escape(DescribeAfterlifeEntityArt(baseOperation))}");
             if (!string.IsNullOrWhiteSpace(effect))
                 lines.Add($"      [dim]{Markup.Escape(effect)}[/]");
+        }
+    }
+
+    private static void AppendAfterlifeEntityCustomStates(List<string> lines, JsonArray? states)
+    {
+        if (states == null || states.Count == 0)
+            return;
+
+        lines.Add("  • Кастомные состояния:");
+        foreach (var state in states.OfType<JsonObject>())
+        {
+            var name = AfterlifeEntityProfileState.GetNodeString(state["stateName"]) ??
+                       AfterlifeEntityProfileState.GetNodeString(state["name"]) ??
+                       AfterlifeEntityProfileState.GetNodeString(state["title"]) ??
+                       AfterlifeEntityProfileState.GetNodeString(state["stateId"]) ??
+                       "Без названия";
+            var current = AfterlifeEntityProfileState.GetNodeString(state["currentValue"]) ??
+                          AfterlifeEntityProfileState.GetNodeInt(state["currentValue"]).ToString();
+            var max = AfterlifeEntityProfileState.GetNodeString(state["maxValue"]) ??
+                      AfterlifeEntityProfileState.GetNodeInt(state["maxValue"]).ToString();
+            var description = AfterlifeEntityProfileState.GetNodeString(state["description"]) ??
+                              AfterlifeEntityProfileState.GetNodeString(state["summary"]);
+
+            lines.Add($"    - {Markup.Escape(name)}: {Markup.Escape(current)}/{Markup.Escape(max)}");
+            if (!string.IsNullOrWhiteSpace(description))
+                lines.Add($"      [dim]{Markup.Escape(description)}[/]");
         }
     }
 

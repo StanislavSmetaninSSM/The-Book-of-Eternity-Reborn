@@ -247,6 +247,7 @@ public partial class ValidationService
                 "schemaVersion", AfterlifeEntityProfileState.ProfilesProperty,
                 AfterlifeEntityProfileState.ResponseProfilesProperty,
                 AfterlifeEntityProfileState.UpdateProperty,
+                AfterlifeEntityProfileState.CustomStateChangesProperty,
                 "_lastUpdated"
             }, issues, ValidateAfterlifeEntityProfileStateFile);
         await ValidateStrictTopLevelObjectFileAsync(AfterlifeEntityProfileState.StatePath,

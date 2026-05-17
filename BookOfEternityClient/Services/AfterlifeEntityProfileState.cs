@@ -8,6 +8,8 @@ internal static class AfterlifeEntityProfileState
     public const string ProfilesProperty = "profiles";
     public const string ResponseProfilesProperty = "afterlifeEntityProfiles";
     public const string UpdateProperty = "afterlifeEntityProfileUpdates";
+    public const string CustomStateChangesProperty = "afterlifeEntityCustomStateChanges";
+    public const string CustomStatesProperty = "customStates";
     public const int SchemaVersion = 1;
     public const int MaxProfileTier = 5;
 
@@ -72,9 +74,11 @@ internal static class AfterlifeEntityProfileState
         UpsertProfiles(result, currentRoot?[ProfilesProperty]);
         UpsertProfiles(result, currentRoot?[ResponseProfilesProperty]);
         UpsertProfiles(result, currentRoot?[UpdateProperty]);
+        ApplyCustomStateChanges(result, currentRoot?[CustomStateChangesProperty]);
 
         result.Remove(UpdateProperty);
         result.Remove(ResponseProfilesProperty);
+        result.Remove(CustomStateChangesProperty);
         return result;
     }
 
@@ -152,6 +156,103 @@ internal static class AfterlifeEntityProfileState
         root[ProfilesProperty] = profiles;
         return profiles;
     }
+
+    private static void ApplyCustomStateChanges(JsonObject result, JsonNode? changesNode)
+    {
+        if (changesNode is not JsonArray changes)
+            return;
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var change in changes.OfType<JsonObject>())
+        {
+            var targetKey = BuildIdentityKey(change);
+            if (string.IsNullOrWhiteSpace(targetKey))
+                continue;
+
+            var profile = profiles
+                .OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(BuildIdentityKey(item), targetKey, StringComparison.OrdinalIgnoreCase));
+            if (profile == null)
+                continue;
+
+            if (change["statesToRemove"] is JsonArray removals)
+                RemoveCustomStates(profile, removals);
+
+            if (change["statesToAddOrUpdate"] is JsonArray upserts)
+                UpsertCustomStates(profile, upserts);
+        }
+    }
+
+    private static void UpsertCustomStates(JsonObject profile, JsonArray upserts)
+    {
+        var states = EnsureCustomStatesArray(profile);
+        foreach (var state in upserts.OfType<JsonObject>())
+        {
+            var identity = BuildCustomStateIdentity(state);
+            if (string.IsNullOrWhiteSpace(identity))
+            {
+                states.Add(CloneObject(state));
+                continue;
+            }
+
+            var replaced = false;
+            for (var index = 0; index < states.Count; index++)
+            {
+                if (states[index] is not JsonObject existing)
+                    continue;
+
+                if (!string.Equals(BuildCustomStateIdentity(existing), identity, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                states[index] = CloneObject(state);
+                replaced = true;
+                break;
+            }
+
+            if (!replaced)
+                states.Add(CloneObject(state));
+        }
+    }
+
+    private static void RemoveCustomStates(JsonObject profile, JsonArray removals)
+    {
+        if (profile[CustomStatesProperty] is not JsonArray states)
+            return;
+
+        var removeIds = removals
+            .Select(GetNodeString)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        if (removeIds.Count == 0)
+            return;
+
+        for (var index = states.Count - 1; index >= 0; index--)
+        {
+            if (states[index] is JsonObject state &&
+                removeIds.Contains(BuildCustomStateIdentity(state) ?? string.Empty))
+            {
+                states.RemoveAt(index);
+            }
+        }
+    }
+
+    private static JsonArray EnsureCustomStatesArray(JsonObject profile)
+    {
+        if (profile[CustomStatesProperty] is JsonArray states)
+            return states;
+
+        states = new JsonArray();
+        profile[CustomStatesProperty] = states;
+        return states;
+    }
+
+    private static string? BuildCustomStateIdentity(JsonObject state) =>
+        GetNodeString(state["stateId"]) ??
+        GetNodeString(state["stateKey"]) ??
+        GetNodeString(state["key"]) ??
+        GetNodeString(state["name"]) ??
+        GetNodeString(state["title"]) ??
+        GetNodeString(state["stateName"]);
 
     private static JsonObject CloneObject(JsonObject source) =>
         source.DeepClone() as JsonObject ?? new JsonObject();
