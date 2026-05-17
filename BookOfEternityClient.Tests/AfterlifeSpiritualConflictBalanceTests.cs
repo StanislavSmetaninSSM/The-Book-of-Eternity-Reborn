@@ -244,6 +244,40 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             Reading: "A normal contested Chaos Sea win gives a noticeable but bounded Feather reward.")];
 
         yield return [new RewardBalanceCase(
+            "chaos_contested_victory_hard_difficulty",
+            Realm: "Chaos Sea",
+            Currency: AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            OpposingLeadStrength: 3,
+            SideModel: "direct_duel",
+            StartingConflictPosition: "contested",
+            OutcomeBand: "player_success",
+            ExpectedChallengeTier: 3,
+            ExpectedOutcomeMultiplierPercent: 100,
+            ExpectedRiskMultiplierPercent: 100,
+            ExpectedFinalAmount: 37,
+            Reading: "Hard difficulty raises a Chaos Sea victory reward without changing the strategic envelope.",
+            Difficulty: "hard",
+            ExpectedDifficultyOppositionModifier: 1,
+            ExpectedDifficultyRewardMultiplierPercent: 125)];
+
+        yield return [new RewardBalanceCase(
+            "chaos_contested_victory_impossible_difficulty",
+            Realm: "Chaos Sea",
+            Currency: AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            OpposingLeadStrength: 3,
+            SideModel: "direct_duel",
+            StartingConflictPosition: "contested",
+            OutcomeBand: "player_success",
+            ExpectedChallengeTier: 3,
+            ExpectedOutcomeMultiplierPercent: 100,
+            ExpectedRiskMultiplierPercent: 100,
+            ExpectedFinalAmount: 45,
+            Reading: "Impossible difficulty increases reward more strongly, while its combat modifier remains smaller than positional dominance.",
+            Difficulty: "impossible",
+            ExpectedDifficultyOppositionModifier: 2,
+            ExpectedDifficultyRewardMultiplierPercent: 150)];
+
+        yield return [new RewardBalanceCase(
             "chaos_low_risk_weak_conflict",
             Realm: "Chaos Sea",
             Currency: AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
@@ -296,6 +330,18 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         Assert.Equal(60, AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience);
         Assert.Equal(4, AfterlifeProgressionTuning.CultivateEnlightenmentExperiencePerFeather);
         Assert.Equal(80, AfterlifeProgressionTuning.ComputeCultivateEnlightenmentExperienceGain(20));
+    }
+
+    [Fact]
+    public void DifficultyModifiers_RemainBelowStrategicAfterlifeCombatBonuses()
+    {
+        var impossible = AfterlifeSpiritualConflictState.DifficultyDefinitions["impossible"];
+        const int dominantPositionModifier = 4;
+        const int lightIncarnateLeadModifier = 8;
+
+        Assert.Equal(2, impossible.OppositionDiceModifier);
+        Assert.True(impossible.OppositionDiceModifier < dominantPositionModifier);
+        Assert.True(impossible.OppositionDiceModifier < lightIncarnateLeadModifier);
     }
 
     [Theory]
@@ -412,6 +458,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("afterlife_conflict_reward_", StringComparison.OrdinalIgnoreCase) == true);
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_conflict_dice_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
     [Fact]
@@ -582,8 +630,9 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         var raw = (long)baseAmount *
                   scenario.ExpectedChallengeTier *
                   scenario.ExpectedOutcomeMultiplierPercent *
-                  scenario.ExpectedRiskMultiplierPercent /
-                  10_000L;
+                  scenario.ExpectedRiskMultiplierPercent *
+                  scenario.ExpectedDifficultyRewardMultiplierPercent /
+                  1_000_000L;
         return (int)Math.Clamp(raw, 0, cap);
     }
 
@@ -607,8 +656,23 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         return _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningStateJson(lightSparks));
     }
 
+    private Task WriteGameSettingsAsync(string difficulty)
+    {
+        var definition = AfterlifeSpiritualConflictState.DifficultyDefinitions[difficulty];
+        return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath, $$"""
+        {
+          "difficulty": "{{definition.Difficulty}}",
+          "hardMode": {{(string.Equals(definition.Difficulty, "hard", StringComparison.Ordinal) ? "true" : "false")}},
+          "impossibleMode": {{(string.Equals(definition.Difficulty, "impossible", StringComparison.Ordinal) ? "true" : "false")}}
+        }
+        """);
+    }
+
     private async Task WriteRewardBalanceCurrentStateAsync(RewardBalanceCase scenario)
     {
+        if (!string.IsNullOrWhiteSpace(scenario.Difficulty))
+            await WriteGameSettingsAsync(scenario.Difficulty);
+
         if (IsShiningRealm(scenario))
         {
             await WriteSoulStateAsync("Shining Abode", inkFeathers: 20);
@@ -657,14 +721,14 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         var playerModifier = string.Equals(scenario.OutcomeBand, "decisive_player_success", StringComparison.OrdinalIgnoreCase)
             ? 0
             : 1;
-        var oppositionModifier = 0;
+        var oppositionModifier = scenario.ExpectedDifficultyOppositionModifier;
         var playerTotal = playerDie + playerModifier;
         var oppositionTotal = oppositionDie + oppositionModifier;
         var margin = playerTotal - oppositionTotal;
 
         Assert.Equal(scenario.OutcomeBand, ExpectedBand(margin));
 
-        return new JsonObject
+        var audit = new JsonObject
         {
             ["formulaVersion"] = "afterlife_spiritual_conflict_v1",
             ["diceSource"] = "input/turn_request.json.preGeneratedDices1d20",
@@ -699,9 +763,39 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
                     new JsonObject
                     {
                         ["source"] = "reward balance audit opposition modifier",
-                        ["value"] = oppositionModifier
+                        ["value"] = 0
                     })
             }
+        };
+
+        if (!string.IsNullOrWhiteSpace(scenario.Difficulty))
+        {
+            audit["difficultyAudit"] = BuildDifficultyAudit(scenario);
+            if (audit["modifierBreakdown"] is JsonObject modifierBreakdown &&
+                modifierBreakdown["opposition"] is JsonArray oppositionModifiers)
+            {
+                oppositionModifiers.Add(new JsonObject
+                {
+                    ["modifierType"] = "game_difficulty",
+                    ["source"] = "Сложность игры",
+                    ["value"] = scenario.ExpectedDifficultyOppositionModifier
+                });
+            }
+        }
+
+        return audit;
+    }
+
+    private static JsonObject BuildDifficultyAudit(RewardBalanceCase scenario)
+    {
+        var definition = AfterlifeSpiritualConflictState.DifficultyDefinitions[scenario.Difficulty!];
+        return new JsonObject
+        {
+            ["difficulty"] = definition.Difficulty,
+            ["russianLabel"] = definition.RussianLabel,
+            ["source"] = $"{AfterlifeSpiritualConflictState.DifficultySettingsPath}.difficulty",
+            ["oppositionModifier"] = scenario.ExpectedDifficultyOppositionModifier,
+            ["rewardMultiplierPercent"] = scenario.ExpectedDifficultyRewardMultiplierPercent
         };
     }
 
@@ -712,7 +806,7 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             ? AfterlifeSpiritualConflictState.ShiningConflictRewardBaseAmount
             : AfterlifeSpiritualConflictState.ChaosSeaConflictRewardBaseAmount;
 
-        return new JsonObject
+        var audit = new JsonObject
         {
             ["realm"] = scenario.Realm,
             ["currency"] = scenario.Currency,
@@ -728,6 +822,11 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             ["resolvedAtTurn"] = 7,
             ["narrativeReason"] = scenario.Reading
         };
+
+        if (!string.IsNullOrWhiteSpace(scenario.Difficulty))
+            audit["difficultyAudit"] = BuildDifficultyAudit(scenario);
+
+        return audit;
     }
 
     private static string BuildSoulStateJson(string realm, int inkFeathers) => $$"""
@@ -891,24 +990,31 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
     {
         var soul = BuildSoulStateJson(scenario.Realm, preTurnInkFeathers ?? 20);
         var conflict = BuildRewardPreTurnActiveConflictRootJson(scenario);
+        var snapshotFiles = new List<(string Path, string Json)>
+        {
+            ("game_state/meta/soul_state.json", soul),
+            (AfterlifeSpiritualConflictState.StatePath, conflict)
+        };
 
         await WriteSnapshotFileAsync("game_state/meta/soul_state.json", soul);
         await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, conflict);
+        var settings = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        if (!string.IsNullOrWhiteSpace(settings))
+        {
+            await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath, settings);
+            snapshotFiles.Add((AfterlifeSpiritualConflictState.DifficultySettingsPath, settings));
+        }
 
         if (IsShiningRealm(scenario))
         {
             var shining = BuildShiningStateJson(preTurnLightSparks ?? 5);
             await WriteSnapshotFileAsync(ShiningAbodeState.StatePath, shining);
-            await WriteValidatedSnapshotManifestAsync(
-                ("game_state/meta/soul_state.json", soul),
-                (AfterlifeSpiritualConflictState.StatePath, conflict),
-                (ShiningAbodeState.StatePath, shining));
+            snapshotFiles.Add((ShiningAbodeState.StatePath, shining));
+            await WriteValidatedSnapshotManifestAsync(snapshotFiles.ToArray());
             return;
         }
 
-        await WriteValidatedSnapshotManifestAsync(
-            ("game_state/meta/soul_state.json", soul),
-            (AfterlifeSpiritualConflictState.StatePath, conflict));
+        await WriteValidatedSnapshotManifestAsync(snapshotFiles.ToArray());
     }
 
     private static string BuildRewardPreTurnActiveConflictRootJson(RewardBalanceCase scenario) => $$"""
@@ -1047,5 +1153,8 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         int ExpectedOutcomeMultiplierPercent,
         int ExpectedRiskMultiplierPercent,
         int ExpectedFinalAmount,
-        string Reading);
+        string Reading,
+        string? Difficulty = null,
+        int ExpectedDifficultyOppositionModifier = 0,
+        int ExpectedDifficultyRewardMultiplierPercent = 100);
 }

@@ -71,7 +71,7 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
 - Read input/turn_request.json
 - Preserve `sessionId`, `requestId`, and `turnNumber` from turn_request.json
 - Apply Rules/Block_*.txt mechanics
-- Use preGeneratedDices1d20 from turn_request for all dice rolls; contested afterlife spiritual conflict exchange/resolve entries must record diceAudit. If resolving afterlife spiritual conflict or Spiritual Arts, read OtherGuides/Afterlife_Combat_Terminology_Glossary.md for Russian labels while keeping JSON keys/enums English.
+- Use preGeneratedDices1d20 from turn_request for all dice rolls; contested afterlife spiritual conflict exchange/resolve entries must record diceAudit. If game_state/core/game_settings.json.difficulty is readable, current/new afterlife contested dice/reward audits must also record difficultyAudit from that difficulty. If resolving afterlife spiritual conflict or Spiritual Arts, read OtherGuides/Afterlife_Combat_Terminology_Glossary.md for Russian labels while keeping JSON keys/enums English.
 - This 5-phase GM loop applies only to GM-driven turns. Client-owned local lifecycle commands such as `reenter_shining_abode` and `return_to_chaos_sea` are handled by the client outside this GM pipeline and should not be synthesized as accepted GM turns; `return_to_chaos_sea` is blocked while Shining pending contracts or legacy `pendingNativeFactionDiscovery` exist.
 
 ### PHASE 3: GENERATE RESPONSE

@@ -23,6 +23,7 @@ public static class AfterlifeSpiritualConflictState
     public const int ChaosSeaConflictRewardMaxAmount = 120;
     public const int ShiningConflictRewardMaxAmount = 8;
     public const int ConflictRewardMaxChallengeTier = 5;
+    public const string DifficultySettingsPath = "game_state/core/game_settings.json";
 
     public const string ModeStart = "start";
     public const string ModeExchange = "exchange";
@@ -115,6 +116,14 @@ public static class AfterlifeSpiritualConflictState
         "no_effect"
     };
 
+    public static readonly IReadOnlyDictionary<string, DifficultyDefinition> DifficultyDefinitions =
+        new Dictionary<string, DifficultyDefinition>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["normal"] = new("normal", "Нормальная", 0, 100),
+            ["hard"] = new("hard", "Тяжёлая", 1, 125),
+            ["impossible"] = new("impossible", "Невозможная", 2, 150)
+        };
+
     public static readonly IReadOnlyList<RankDefinition> EnlightenmentRanks =
     [
         new(0, "dormant", 0, 0, "Baseline afterlife conflict participation."),
@@ -166,6 +175,12 @@ public static class AfterlifeSpiritualConflictState
     public sealed record SpiritualArtDefinition(string ArtId, string DisplayName, string MechanicalUse, int MinUnlockTier);
 
     public sealed record SpiritFocusTierDefinition(int Tier, int MaxActionPoints, string PlayerMeaning);
+
+    public sealed record DifficultyDefinition(
+        string Difficulty,
+        string RussianLabel,
+        int OppositionDiceModifier,
+        int RewardMultiplierPercent);
 
     public static JsonObject CreateDefaultRoot() =>
         new()

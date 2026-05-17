@@ -15,6 +15,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | diceAudit | аудит кубиков | Required visible-dice proof for contested exchanges and contested terminal resolutions. |
 | rollMode | режим броска | Part of `diceAudit`: records Преимущество / Помеха per side through `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`. |
 | selection | выбор кубика | Field on `diceUsed[]`: `selected` is the die used for totals and criticals, `discarded` is rolled but ignored because of Преимущество / Помеха. |
+| difficultyAudit | аудит сложности | Part of `diceAudit` and `rewardAudit` when `game_state/core/game_settings.json.difficulty` is readable; records selected difficulty, opposition modifier, and reward multiplier. |
 | rewardAudit | аудит награды | Required proof when a resolved victorious conflict grants Ink Feathers or Light Sparks. |
 | criticalResult | аудит критического исхода | Required normalization proof when natural 20/1 changes the margin-derived `outcomeBand`. |
 | counterPayoff | выигрыш контрприёма | Required measurable payoff for a `counter` with success/partial_success/countered: either `counterPayoff`, improved `conflictPosition`, or worsened `oppositionSideStrain`. |
@@ -163,6 +164,18 @@ Every new/current contested exchange with `diceAudit` must also include `matchup
 - Встречные Преимущество и Помеха гасятся: if both source arrays are non-empty, `effectiveMode=normal`, only one d20 is consumed for that side, and no discarded die is recorded.
 - Critical success/failure uses only the selected die. A discarded natural 20 or natural 1 has no critical effect.
 
+## Сложность Игры / Difficulty Audit
+
+When `game_state/core/game_settings.json.difficulty` is readable, current/new contested afterlife dice must include `difficultyAudit`. Difficulty is a transparent pressure source, not hidden GM permission to change outcomes.
+
+| Difficulty | Russian label | Opposition modifier | Reward multiplier |
+|---|---|---:|---:|
+| `normal` | Нормальная | `+0` | `100%` |
+| `hard` | Тяжёлая | `+1` | `125%` |
+| `impossible` | Невозможная | `+2` | `150%` |
+
+`difficultyAudit` must include `difficulty`, `source="game_state/core/game_settings.json.difficulty"`, `oppositionModifier`, and `rewardMultiplierPercent`. The opposition side's `modifierBreakdown` must contain exactly the canonical `game_difficulty` total; the player side must not receive a difficulty modifier. The largest difficulty modifier (`+2`) is below position dominance (`+4`) and `light_incarnate` lead bonus (`+8`), so difficulty raises risk and rewards without making dice dominate strategy.
+
 ## Control State
 
 `controlState` is the mechanical meaning of оковы / контроль. It does not deal strain and does not move position by itself; it restricts action freedom and creates leverage for later exchanges.
@@ -206,7 +219,7 @@ Afterlife conflict rewards are mechanical, not flavor. A reward is allowed only 
 | `Chaos Sea` | `ink_feathers` | Чернильные Перья | `metaStateUpdates.inkFeatherChanges.add` must equal `rewardAudit.finalAmount`. |
 | `Shining Abode` | `light_sparks` | Искры Света | `shining_abode_state.json.lightSparks` must increase by `rewardAudit.finalAmount`. |
 
-`rewardAudit` must include `realm`, `currency`, `baseAmount`, `opposingLeadStrength`, `sideModel`, `startingConflictPosition`, `challengeTier`, `outcomeMultiplierPercent`, `riskMultiplierPercent`, `riskReason`, `finalAmount`, and `narrativeReason`. No reward is allowed for `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, pure negotiation/no-contest, duplicate reward for the same `conflictId`, wrong realm, or wrong currency.
+`rewardAudit` must include `realm`, `currency`, `baseAmount`, `opposingLeadStrength`, `sideModel`, `startingConflictPosition`, `challengeTier`, `outcomeMultiplierPercent`, `riskMultiplierPercent`, `riskReason`, `difficultyAudit` when readable game difficulty exists, `finalAmount`, and `narrativeReason`. Reward formula: `finalAmount = clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyAudit.rewardMultiplierPercent / 1_000_000, 0, realmCap)`, where difficulty reward multiplier is `100/125/150` for `normal`/`hard`/`impossible`. No reward is allowed for `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, pure negotiation/no-contest, duplicate reward for the same `conflictId`, wrong realm, or wrong currency.
 
 ## Critical Result Audit
 

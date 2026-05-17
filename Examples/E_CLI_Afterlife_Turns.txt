@@ -6479,6 +6479,8 @@ Correct contested exchange response:
 
 Преимущество / Помеха uses `diceAudit.rollMode.<side>` with `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`; every consumed d20 is listed in `diceUsed[]` with `selection=selected|discarded`. Преимущество selects the highest die, Помеха selects the lowest die, and critical success/failure uses the selected die only. Встречные Преимущество и Помеха гасятся: both source arrays non-empty means `effectiveMode=normal` and exactly one die is consumed for that side.
 
+If `game_state/core/game_settings.json.difficulty` is readable, every new/current contested `diceAudit` and any matching `rewardAudit` must include `difficultyAudit`. Table: `normal` / Нормальная gives opposition `+0` and reward `100%`; `hard` / Тяжёлая gives opposition `+1` and reward `125%`; `impossible` / Невозможная gives opposition `+2` and reward `150%`. The GM records exactly that `game_difficulty` modifier on the opposition side, never on the player side. The largest difficulty modifier is still below position dominance `+4` and `light_incarnate` lead `+8`, so difficulty raises risk/reward without making dice dominate strategy.
+
 Correct control exchange: after the soul already has `player_advantaged`, `binding` creates measurable player control instead of pretending to be strain or position damage.
 
 ```json
@@ -6713,6 +6715,13 @@ If the player wins a contested conflict and the victory is not `repair_cancel`, 
         "oppositionTotal": 14,
         "margin": 4,
         "outcomeBand": "player_success",
+        "difficultyAudit": {
+          "difficulty": "normal",
+          "russianLabel": "Нормальная",
+          "source": "game_state/core/game_settings.json.difficulty",
+          "oppositionModifier": 0,
+          "rewardMultiplierPercent": 100
+        },
         "modifierBreakdown": {
           "player": [
             {
@@ -6747,6 +6756,13 @@ If the player wins a contested conflict and the victory is not `repair_cancel`, 
         "outcomeMultiplierPercent": 100,
         "riskMultiplierPercent": 100,
         "riskReason": "The conflict started from contested position against a measured Guardian lead.",
+        "difficultyAudit": {
+          "difficulty": "normal",
+          "russianLabel": "Нормальная",
+          "source": "game_state/core/game_settings.json.difficulty",
+          "oppositionModifier": 0,
+          "rewardMultiplierPercent": 100
+        },
         "finalAmount": 30,
         "narrativeReason": "The soul won a contested resistance against a Guardian's coercive incarnation pressure."
       },
@@ -6762,7 +6778,7 @@ If the player wins a contested conflict and the victory is not `repair_cancel`, 
 }
 ```
 
-Reward formula is deterministic: Chaos base `10`, Shining base `1`; `challengeTier` comes from opposing lead strength + side model + starting position; `outcomeMultiplierPercent` is `100` for `player_success` and `150` for `decisive_player_success`; risk is `150/125/100/75/50` for `opposition_dominant/opposition_advantaged/contested/player_advantaged/player_dominant`; cap is `120` Ink Feathers or `8` Light Sparks. Do not write reward fields outside `rewardAudit`, do not duplicate a reward for the same `conflictId`, and do not grant XP, Mortal items, Mortal skills, Radiance, or Enlightenment from this conflict reward.
+Reward formula is deterministic: Chaos base `10`, Shining base `1`; `challengeTier` comes from opposing lead strength + side model + starting position; `outcomeMultiplierPercent` is `100` for `player_success` and `150` for `decisive_player_success`; risk is `150/125/100/75/50` for `opposition_dominant/opposition_advantaged/contested/player_advantaged/player_dominant`; difficulty reward multiplier is `100/125/150` for `normal`/`hard`/`impossible`; cap is `120` Ink Feathers or `8` Light Sparks. Formula: `finalAmount = clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyAudit.rewardMultiplierPercent / 1_000_000, 0, realmCap)`. Do not write reward fields outside `rewardAudit`, do not duplicate a reward for the same `conflictId`, and do not grant XP, Mortal items, Mortal skills, Radiance, or Enlightenment from this conflict reward.
 
 If the conflict ends with Лиора forcing incarnation, the accepted turn must first close the conflict with current-turn proof and only then write the forced trigger:
 
