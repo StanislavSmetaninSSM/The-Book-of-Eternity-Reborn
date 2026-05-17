@@ -50,6 +50,20 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             effectSummary = "При успехе отражает часть давления в сторону противника."
                         }
                     },
+                    customStates = new[]
+                    {
+                        new
+                        {
+                            stateId = "echo_hunger",
+                            stateName = "Голод эха",
+                            currentValue = 3,
+                            minValue = 0,
+                            maxValue = 10,
+                            description = "Сущность тянется к повторяющимся клятвам.",
+                            progressionRule = new { changePerTurn = 1, description = "Растёт после сцен с повторением клятв." },
+                            thresholds = Array.Empty<object>()
+                        }
+                    },
                     soulDissipationTier = 1,
                     progressionStrategy = new
                     {
@@ -85,6 +99,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Просветление: тир 4, опыт 48", text, StringComparison.Ordinal);
         Assert.Contains("Давление: 2", text, StringComparison.Ordinal);
         Assert.Contains("Зеркальная Защита", text, StringComparison.Ordinal);
+        Assert.Contains("Кастомные состояния", text, StringComparison.Ordinal);
+        Assert.Contains("Голод эха", text, StringComparison.Ordinal);
+        Assert.Contains("3/10", text, StringComparison.Ordinal);
         Assert.Contains("Развеивание души: тир 1", text, StringComparison.Ordinal);
         Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
         Assert.Contains("Сначала укрепляет защиту", text, StringComparison.Ordinal);

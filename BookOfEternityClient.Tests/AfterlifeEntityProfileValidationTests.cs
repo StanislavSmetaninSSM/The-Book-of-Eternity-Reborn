@@ -89,6 +89,74 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_entity_profile_duplicate_actor", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_MalformedAfterlifeEntityCustomStates_ReportContractIssues()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": {},
+              "specialArts": [],
+              "customStates": [
+                {
+                  "stateName": "Без идентификатора",
+                  "currentValue": 1,
+                  "minValue": 0,
+                  "maxValue": 5,
+                  "description": "Это состояние нельзя удалить без stateId.",
+                  "progressionRule": { "changePerTurn": 0, "description": "Не меняется." },
+                  "thresholds": []
+                }
+              ],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeEntityCustomStateChanges": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "statesToAddOrUpdate": [
+                {
+                  "stateId": "bad_state",
+                  "stateName": "Неполное состояние",
+                  "currentValue": 1,
+                  "minValue": 0,
+                  "maxValue": 5,
+                  "description": "Нет progressionRule и thresholds."
+                }
+              ],
+              "statesToRemove": [""]
+            },
+            {
+              "actorType": "resident",
+              "actorId": "resident_echo"
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_custom_state_missing_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_custom_state_missing_required_fields", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_custom_state_remove_invalid_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_custom_state_change_empty", StringComparison.OrdinalIgnoreCase));
+    }
+
     private Task WriteProfileStateAsync(string json) =>
         _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, json);
 

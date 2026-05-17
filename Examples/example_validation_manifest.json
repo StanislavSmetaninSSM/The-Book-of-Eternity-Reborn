@@ -6,6 +6,12 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeEntityProfileUpdates"
+    },
+    {
+      "contractId": "afterlife_entity_custom_states_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeEntityCustomStateChanges"
     }
   ],
   "syntaxExemptions": [

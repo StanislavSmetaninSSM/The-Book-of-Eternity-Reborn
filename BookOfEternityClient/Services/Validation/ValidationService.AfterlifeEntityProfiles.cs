@@ -24,21 +24,27 @@ public partial class ValidationService
         var hasProfiles = root.TryGetProperty(AfterlifeEntityProfileState.ProfilesProperty, out var profiles);
         var hasResponseProfiles = root.TryGetProperty(AfterlifeEntityProfileState.ResponseProfilesProperty, out var responseProfiles);
         var hasUpdates = root.TryGetProperty(AfterlifeEntityProfileState.UpdateProperty, out var updates);
-        if (!hasProfiles && !hasResponseProfiles && !hasUpdates)
+        var hasCustomStateChanges = root.TryGetProperty(AfterlifeEntityProfileState.CustomStateChangesProperty, out var customStateChanges);
+        if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges)
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}",
                 IssueSeverity.Error,
-                "afterlife_entity_profiles.json должен содержать profiles[] или afterlifeEntityProfileUpdates[].",
+                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[] или afterlifeEntityCustomStateChanges[].",
                 code: "afterlife_entity_profile_missing_profiles",
                 section: "AfterlifeEntityProfiles",
-                expected: "profiles[] or afterlifeEntityProfileUpdates[]"));
+                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[]"));
         }
 
         var identities = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         ValidateProfileArrayIfPresent(profiles, hasProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}", identities, issues);
         ValidateProfileArrayIfPresent(responseProfiles, hasResponseProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ResponseProfilesProperty}", identities, issues);
         ValidateProfileArrayIfPresent(updates, hasUpdates, $"{contextPrefix}.{AfterlifeEntityProfileState.UpdateProperty}", identities, issues);
+        ValidateAfterlifeEntityCustomStateChangesIfPresent(
+            customStateChanges,
+            hasCustomStateChanges,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.CustomStateChangesProperty}",
+            issues);
     }
 
     private void ValidateProfileArrayIfPresent(
@@ -149,6 +155,7 @@ public partial class ValidationService
         ValidateAfterlifeProfileProgression(profile, context, issues);
         ValidateAfterlifeProfileStandardArts(profile, context, issues);
         ValidateAfterlifeProfileSpecialArts(profile, context, issues);
+        ValidateAfterlifeProfileCustomStates(profile, context, issues);
         ValidateAfterlifeProfileSoulDissipation(profile, context, issues);
         ValidateAfterlifeProfileProgressionStrategy(profile, context, issues);
         ValidateAfterlifeProfileLedger(profile, context, issues);
@@ -213,6 +220,274 @@ public partial class ValidationService
                     expected: "integer 0..5",
                     actual: property.Value.ToString()));
             }
+        }
+    }
+
+    private void ValidateAfterlifeProfileCustomStates(JsonElement profile, string context, List<ValidationIssue> issues)
+    {
+        if (!profile.TryGetProperty(AfterlifeEntityProfileState.CustomStatesProperty, out var customStates))
+            return;
+
+        if (customStates.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{AfterlifeEntityProfileState.CustomStatesProperty}",
+                IssueSeverity.Error,
+                "customStates профиля сущности посмертия должен быть array.",
+                code: "afterlife_entity_profile_custom_states_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: customStates.ValueKind.ToString()));
+            return;
+        }
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var state in customStates.EnumerateArray())
+        {
+            var stateContext = $"{context}.{AfterlifeEntityProfileState.CustomStatesProperty}[{index++}]";
+            ValidateAfterlifeEntityCustomStateObject(state, stateContext, issues, ids);
+        }
+    }
+
+    private void ValidateAfterlifeEntityCustomStateChangesIfPresent(
+        JsonElement changes,
+        bool hasChanges,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!hasChanges)
+            return;
+
+        if (changes.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "afterlifeEntityCustomStateChanges должен быть array.",
+                code: "afterlife_entity_profile_custom_state_changes_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: changes.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var change in changes.EnumerateArray())
+        {
+            var changeContext = $"{context}[{index++}]";
+            ValidateAfterlifeEntityCustomStateChange(change, changeContext, issues);
+        }
+    }
+
+    private void ValidateAfterlifeEntityCustomStateChange(JsonElement change, string context, List<ValidationIssue> issues)
+    {
+        if (change.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "afterlifeEntityCustomStateChanges entry должен быть object.",
+                code: "afterlife_entity_profile_custom_state_change_not_object",
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: change.ValueKind.ToString()));
+            return;
+        }
+
+        var actorType = RequireProfileString(change, context, "actorType", "afterlife_entity_profile_custom_state_change_missing_actor_type", issues);
+        if (!string.IsNullOrWhiteSpace(actorType) && !AfterlifeEntityProfileState.ActorTypes.Contains(actorType))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.actorType",
+                IssueSeverity.Error,
+                "actorType custom state change должен ссылаться на сущность посмертия.",
+                code: "afterlife_entity_profile_custom_state_change_invalid_actor_type",
+                section: "AfterlifeEntityProfiles",
+                expected: string.Join("/", AfterlifeEntityProfileState.ActorTypes.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                actual: actorType));
+        }
+
+        if (string.IsNullOrWhiteSpace(GetProfileString(change, "actorId")) &&
+            string.IsNullOrWhiteSpace(GetProfileString(change, "actorRef")))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.actorId",
+                IssueSeverity.Error,
+                "custom state change должен иметь actorId или actorRef target profile.",
+                code: "afterlife_entity_profile_custom_state_change_missing_actor_id",
+                section: "AfterlifeEntityProfiles",
+                expected: "non-empty actorId or actorRef"));
+        }
+
+        var hasUpserts = change.TryGetProperty("statesToAddOrUpdate", out var upserts);
+        var hasRemovals = change.TryGetProperty("statesToRemove", out var removals);
+        if (!hasUpserts && !hasRemovals)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "afterlifeEntityCustomStateChanges entry должен содержать statesToAddOrUpdate и/или statesToRemove.",
+                code: "afterlife_entity_profile_custom_state_change_empty",
+                section: "AfterlifeEntityProfiles",
+                expected: "statesToAddOrUpdate[] and/or statesToRemove[]"));
+        }
+
+        if (hasUpserts)
+        {
+            if (upserts.ValueKind != JsonValueKind.Array)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.statesToAddOrUpdate",
+                    IssueSeverity.Error,
+                    "statesToAddOrUpdate должен быть array.",
+                    code: "afterlife_entity_profile_custom_state_upserts_not_array",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "array",
+                    actual: upserts.ValueKind.ToString()));
+            }
+            else
+            {
+                var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var upsertIndex = 0;
+                foreach (var state in upserts.EnumerateArray())
+                    ValidateAfterlifeEntityCustomStateObject(state, $"{context}.statesToAddOrUpdate[{upsertIndex++}]", issues, ids);
+            }
+        }
+
+        if (hasRemovals)
+            ValidateAfterlifeEntityCustomStateRemovalArray(removals, $"{context}.statesToRemove", issues);
+    }
+
+    private void ValidateAfterlifeEntityCustomStateRemovalArray(JsonElement removals, string context, List<ValidationIssue> issues)
+    {
+        if (removals.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "statesToRemove должен быть array.",
+                code: "afterlife_entity_profile_custom_state_removals_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: removals.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var removal in removals.EnumerateArray())
+        {
+            if (removal.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(removal.GetString()))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}[{index}]",
+                    IssueSeverity.Error,
+                    "statesToRemove должен содержать non-empty stateId strings.",
+                    code: "afterlife_entity_profile_custom_state_remove_invalid_id",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "non-empty string",
+                    actual: removal.ToString()));
+            }
+
+            index++;
+        }
+    }
+
+    private void ValidateAfterlifeEntityCustomStateObject(
+        JsonElement state,
+        string context,
+        List<ValidationIssue> issues,
+        HashSet<string> ids)
+    {
+        if (state.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "custom state сущности посмертия должен быть object.",
+                code: "afterlife_entity_profile_custom_state_not_object",
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: state.ValueKind.ToString()));
+            return;
+        }
+
+        var stateId = RequireProfileString(state, context, "stateId", "afterlife_entity_profile_custom_state_missing_id", issues);
+        if (!string.IsNullOrWhiteSpace(stateId) && !ids.Add(stateId))
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Дубликат customStates.stateId в профиле/команде сущности посмертия.",
+                code: "afterlife_entity_profile_duplicate_custom_state",
+                section: "AfterlifeEntityProfiles",
+                expected: "unique stateId",
+                actual: stateId));
+        }
+
+        var missingCoreFields = new List<string>();
+        if (!HasAnyProfileString(state, "stateName", "name", "title"))
+            missingCoreFields.Add("stateName/name/title");
+        if (!state.TryGetProperty("currentValue", out _))
+            missingCoreFields.Add("currentValue");
+        if (!state.TryGetProperty("minValue", out _))
+            missingCoreFields.Add("minValue");
+        if (!state.TryGetProperty("maxValue", out _))
+            missingCoreFields.Add("maxValue");
+        if (!HasAnyProfileString(state, "description", "summary"))
+            missingCoreFields.Add("description/summary");
+        if (!state.TryGetProperty("progressionRule", out _))
+            missingCoreFields.Add("progressionRule");
+        if (!state.TryGetProperty("thresholds", out _))
+            missingCoreFields.Add("thresholds");
+
+        if (missingCoreFields.Count > 0)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "custom state сущности посмертия не содержит обязательные поля.",
+                code: "afterlife_entity_profile_custom_state_missing_required_fields",
+                section: "AfterlifeEntityProfiles",
+                expected: "stateId, stateName/name/title, currentValue, minValue, maxValue, description/summary, progressionRule, thresholds",
+                actual: string.Join(", ", missingCoreFields)));
+            return;
+        }
+
+        RequireNumberOrStringProfileField(state, context, "currentValue", issues);
+        RequireNumberOrStringProfileField(state, context, "minValue", issues);
+        RequireNumberOrStringProfileField(state, context, "maxValue", issues);
+
+        if (state.TryGetProperty("progressionRule", out var progressionRule))
+        {
+            if (progressionRule.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.progressionRule",
+                    IssueSeverity.Error,
+                    "progressionRule custom state должен быть object.",
+                    code: "afterlife_entity_profile_custom_state_progression_rule_not_object",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "object",
+                    actual: progressionRule.ValueKind.ToString()));
+            }
+            else
+            {
+                RequireNumberOrStringProfileField(progressionRule, $"{context}.progressionRule", "changePerTurn", issues);
+                RequireProfileString(progressionRule, $"{context}.progressionRule", "description", "afterlife_entity_profile_custom_state_progression_rule_missing_description", issues);
+            }
+        }
+
+        if (state.TryGetProperty("thresholds", out var thresholds) && thresholds.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.thresholds",
+                IssueSeverity.Error,
+                "thresholds custom state должен быть array.",
+                code: "afterlife_entity_profile_custom_state_thresholds_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: thresholds.ValueKind.ToString()));
         }
     }
 
@@ -575,6 +850,32 @@ public partial class ValidationService
                 expected: "non-negative integer",
                 actual: value.ToString()));
         }
+    }
+
+    private static bool HasAnyProfileString(JsonElement root, params string[] propertyNames) =>
+        propertyNames.Any(propertyName => !string.IsNullOrWhiteSpace(GetProfileString(root, propertyName)));
+
+    private static void RequireNumberOrStringProfileField(
+        JsonElement root,
+        string context,
+        string propertyName,
+        List<ValidationIssue> issues)
+    {
+        if (root.TryGetProperty(propertyName, out var value) &&
+            (value.ValueKind == JsonValueKind.Number ||
+             (value.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(value.GetString()))))
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            $"{context}.{propertyName}",
+            IssueSeverity.Error,
+            $"{propertyName} custom state должен быть number или non-empty string.",
+            code: "afterlife_entity_profile_custom_state_invalid_number_or_string",
+            section: "AfterlifeEntityProfiles",
+            expected: "number or non-empty string",
+            actual: root.TryGetProperty(propertyName, out var actual) ? actual.ToString() : "missing"));
     }
 
     private static bool TryGetProfileInt(JsonElement value, out int integer)

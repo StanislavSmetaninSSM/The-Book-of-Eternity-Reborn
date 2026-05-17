@@ -384,6 +384,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("specialArts", text, StringComparison.Ordinal);
             Assert.Contains("soulDissipationTier", text, StringComparison.Ordinal);
             Assert.Contains("progressionStrategy", text, StringComparison.Ordinal);
+            Assert.Contains("customStates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
+            Assert.Contains("statesToRemove", text, StringComparison.Ordinal);
         }
 
         Assert.Contains("/afterlife_profiles", glossary, StringComparison.OrdinalIgnoreCase);
