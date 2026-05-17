@@ -121,6 +121,8 @@ public partial class ExplorerMode
             ["/казначейство"] = ShowShiningTreasuryAsync,
             ["/source_of_light"] = ShowSourceOfLightAsync,
             ["/источник_света"] = ShowSourceOfLightAsync,
+            ["/afterlife_profiles"] = ShowAfterlifeEntityProfilesAsync,
+            ["/профили_загробья"] = ShowAfterlifeEntityProfilesAsync,
             ["/afterlife_inbox"] = ShowAfterlifeInbox,
             ["/уведомления_загробья"] = ShowAfterlifeInbox,
             ["/spiritual_conflict"] = ShowSpiritualConflictAsync,

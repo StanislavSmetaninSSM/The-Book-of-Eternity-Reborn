@@ -363,6 +363,36 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeEntityProfilesAreDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var text in new[] { matrix, examples, apiSpec, daemonSpec, taskGuide })
+        {
+            Assert.Contains("game_state/meta/afterlife_entity_profiles.json", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeEntityProfileUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("Профили сущностей посмертия", text, StringComparison.Ordinal);
+            Assert.Contains("actorType", text, StringComparison.Ordinal);
+            Assert.Contains("actorId", text, StringComparison.Ordinal);
+            Assert.Contains("standardArts", text, StringComparison.Ordinal);
+            Assert.Contains("specialArts", text, StringComparison.Ordinal);
+            Assert.Contains("soulDissipationTier", text, StringComparison.Ordinal);
+            Assert.Contains("progressionStrategy", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("/afterlife_profiles", glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/профили_загробья", glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("afterlife_entity_profiles_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_entity_profiles_v1", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShiningLeadershipTransitionModesAndHistoryMappingsAreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

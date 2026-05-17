@@ -35,6 +35,8 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | Source of Light | Источник Света | Full-Radiance Shining capstone scene closed through `pending_source_of_light_capstone.json`. |
 | light_incarnate | Воплощение Света | Soul-owned capstone passive that adds explicit player-side dice modifiers in afterlife spiritual conflicts. |
 | Incarnated Light | Воплощенный Свет | One-per-soul Soul Relic `source_of_light_incarnated_light`; in Mortal lives it gives characteristic bonuses through Soul Relic effects. |
+| afterlife entity profiles | Профили сущностей посмертия | Read-only/player-visible profile sidecar `game_state/meta/afterlife_entity_profiles.json`; GM updates it through `afterlifeEntityProfileUpdates` when significant afterlife actors are created, revealed, or materially changed. |
+| afterlifeEntityProfileUpdates | обновления профилей сущностей посмертия | GM-authored response surface for `profiles[]` entries with `actorType`, `actorId`, `currencies`, `progression`, `standardArts`, `specialArts`, `soulDissipationTier`, and `progressionStrategy`. |
 
 ## Spiritual Art Names
 
@@ -58,6 +60,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | `/spiritual_combat_help` | `/духовный_бой` | Shows the player-facing combat guide: commands, tactics, Spiritual Arts, position, dice, bounded criticals, rewards, and upgrades. |
 | `/spiritual_action` | `/духовное_действие` | Sends one explicit tagged action inside an active conflict. Ordinary roleplay prose is still valid when it clearly acts inside the active conflict. |
 | `/spiritual_arts` | `/духовные_искусства` | Shows ranks, art tiers, `Средоточие Души`, upgrade costs, and performs client-owned Spiritual Art / Spirit Focus upgrades. |
+| `/afterlife_profiles` | `/профили_загробья` | Shows Профили сущностей посмертия: actor type, resources, progression, `standardArts`, `specialArts`, `soulDissipationTier`, danger warnings, and `progressionStrategy`. |
 
 ## Spiritual Art Operation Rules
 

@@ -1,5 +1,13 @@
 {
   "version": 1,
+  "afterlifeEntityProfileCoverage": [
+    {
+      "contractId": "afterlife_entity_profiles_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeEntityProfileUpdates"
+    }
+  ],
   "syntaxExemptions": [
     {
       "file": "E_Block_10.txt",

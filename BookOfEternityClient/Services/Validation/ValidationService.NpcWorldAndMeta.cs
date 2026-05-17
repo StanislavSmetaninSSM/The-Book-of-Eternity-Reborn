@@ -388,6 +388,7 @@ public partial class ValidationService
         var normalized = relativePath.Replace('\\', '/');
         return normalized.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("lore/chaos_sea/", StringComparison.OrdinalIgnoreCase);
     }
 
@@ -453,6 +454,10 @@ public partial class ValidationService
             else if (normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase))
             {
                 groups.Add("afterlife spiritual conflict state");
+            }
+            else if (normalized.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase))
+            {
+                groups.Add("afterlife entity profiles");
             }
             else if (normalized.StartsWith("lore/chaos_sea/", StringComparison.OrdinalIgnoreCase))
             {

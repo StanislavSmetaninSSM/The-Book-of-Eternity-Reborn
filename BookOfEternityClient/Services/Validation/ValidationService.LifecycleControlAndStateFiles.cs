@@ -241,6 +241,19 @@ public partial class ValidationService
                 "schemaVersion", "activeConflict", "recentConflicts", "lastInvalidUpdate",
                 "lastInvalidUpdateReason", "lastInvalidUpdateAtUtc", "_lastUpdated"
             }, issues);
+        await ValidateFlexibleStateFile(AfterlifeEntityProfileState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", AfterlifeEntityProfileState.ProfilesProperty,
+                AfterlifeEntityProfileState.ResponseProfilesProperty,
+                AfterlifeEntityProfileState.UpdateProperty,
+                "_lastUpdated"
+            }, issues, ValidateAfterlifeEntityProfileStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(AfterlifeEntityProfileState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", AfterlifeEntityProfileState.ProfilesProperty, "_lastUpdated"
+            }, issues);
         await ValidateFlexibleStateFile("game_state/meta/guardians.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
