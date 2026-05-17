@@ -1420,6 +1420,116 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_HardDifficultyDiceAuditRequiresOppositionModifier()
+    {
+        await WriteSoulStateAsync();
+        await WriteGameSettingsAsync("hard");
+        var diceAudit = BuildPlayerSuccessDiceAudit();
+        diceAudit["difficultyAudit"] = BuildDifficultyAudit("hard");
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_hard_difficulty_missing_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_difficulty_modifier_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_HardDifficultyDiceAuditWithCanonicalModifierIsAllowed()
+    {
+        await WriteSoulStateAsync();
+        await WriteGameSettingsAsync("hard");
+        var diceAudit = BuildPlayerSuccessDiceAudit();
+        AddGameDifficultyModifier(diceAudit, "hard", value: 1);
+        diceAudit["oppositionTotal"] = diceAudit["oppositionTotal"]!.GetValue<int>() + 1;
+        diceAudit["margin"] = diceAudit["playerTotal"]!.GetValue<int>() - diceAudit["oppositionTotal"]!.GetValue<int>();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_hard_difficulty_valid_modifier_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{diceAudit.ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_difficulty_modifier_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_difficulty_audit_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_HardDifficultyRejectsWrongRewardMultiplier()
+    {
+        await WriteGameSettingsAsync("hard");
+        await WriteSoulStateWithInkFeathersAsync(50, "Chaos Sea");
+        await WriteResolvedConflictRewardStateAsync(BuildConflictRewardAuditJson(
+            "Chaos Sea",
+            AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            finalAmount: 30,
+            difficulty: "hard",
+            difficultyRewardMultiplierPercent: 100),
+            diceAuditJson: BuildHardDifficultyPlayerSuccessDiceAuditJson());
+        await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_difficulty_multiplier_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_HardDifficultyRewardRequiresDifficultyAdjustedCurrencyDelta()
+    {
+        await WriteGameSettingsAsync("hard");
+        await WriteSoulStateWithInkFeathersAsync(57, "Chaos Sea");
+        await WriteResolvedConflictRewardStateAsync(BuildConflictRewardAuditJson(
+            "Chaos Sea",
+            AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+            finalAmount: 37,
+            difficulty: "hard",
+            difficultyRewardMultiplierPercent: 125),
+            diceAuditJson: BuildHardDifficultyPlayerSuccessDiceAuditJson());
+        await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_final_amount_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_reward_currency_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ZeroLightSparkRewardRejectsPositiveCurrencyDelta()
     {
         await WriteSoulStateWithInkFeathersAsync(20, "Shining Abode");
@@ -10800,6 +10910,74 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     private Task WriteShiningStateWithLightSparksAsync(int lightSparks) =>
         _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningStateJson(lightSparks));
 
+    private Task WriteGameSettingsAsync(string difficulty) =>
+        _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", $$"""
+        {
+          "hardMode": {{JsonSerializer.Serialize(string.Equals(difficulty, "hard", StringComparison.OrdinalIgnoreCase))}},
+          "impossibleMode": {{JsonSerializer.Serialize(string.Equals(difficulty, "impossible", StringComparison.OrdinalIgnoreCase))}},
+          "difficulty": {{JsonSerializer.Serialize(difficulty)}},
+          "qteEventsEnabled": true
+        }
+        """);
+
+    private static JsonObject BuildDifficultyAudit(string difficulty, int? oppositionModifier = null, int? rewardMultiplierPercent = null) =>
+        new()
+        {
+            ["difficulty"] = difficulty,
+            ["source"] = "game_state/core/game_settings.json.difficulty",
+            ["oppositionModifier"] = oppositionModifier ?? ResolveTestDifficultyOppositionModifier(difficulty),
+            ["rewardMultiplierPercent"] = rewardMultiplierPercent ?? ResolveTestDifficultyRewardMultiplierPercent(difficulty)
+        };
+
+    private static void AddGameDifficultyModifier(JsonObject diceAudit, string difficulty, int value)
+    {
+        diceAudit["difficultyAudit"] = BuildDifficultyAudit(difficulty, oppositionModifier: value);
+        if (diceAudit["modifierBreakdown"] is not JsonObject modifierBreakdown)
+        {
+            modifierBreakdown = new JsonObject();
+            diceAudit["modifierBreakdown"] = modifierBreakdown;
+        }
+
+        if (modifierBreakdown["opposition"] is not JsonArray oppositionModifiers)
+        {
+            oppositionModifiers = new JsonArray();
+            modifierBreakdown["opposition"] = oppositionModifiers;
+        }
+
+        oppositionModifiers.Add(new JsonObject
+        {
+            ["modifierType"] = "game_difficulty",
+            ["source"] = "Сложность игры",
+            ["difficulty"] = difficulty,
+            ["value"] = value
+        });
+    }
+
+    private static string BuildHardDifficultyPlayerSuccessDiceAuditJson()
+    {
+        var diceAudit = BuildPlayerSuccessDiceAudit();
+        AddGameDifficultyModifier(diceAudit, "hard", value: 1);
+        diceAudit["oppositionTotal"] = diceAudit["oppositionTotal"]!.GetValue<int>() + 1;
+        diceAudit["margin"] = diceAudit["playerTotal"]!.GetValue<int>() - diceAudit["oppositionTotal"]!.GetValue<int>();
+        return diceAudit.ToJsonString();
+    }
+
+    private static int ResolveTestDifficultyOppositionModifier(string difficulty) =>
+        difficulty.Trim().ToLowerInvariant() switch
+        {
+            "hard" => 1,
+            "impossible" => 2,
+            _ => 0
+        };
+
+    private static int ResolveTestDifficultyRewardMultiplierPercent(string difficulty) =>
+        difficulty.Trim().ToLowerInvariant() switch
+        {
+            "hard" => 125,
+            "impossible" => 150,
+            _ => 100
+        };
+
     private static string BuildConflictRewardAuditJson(
         string realm,
         string currency,
@@ -10811,7 +10989,9 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         int outcomeMultiplierPercent = 100,
         int riskMultiplierPercent = 100,
         int? baseAmount = null,
-        int? resolvedAtTurn = null)
+        int? resolvedAtTurn = null,
+        string? difficulty = null,
+        int? difficultyRewardMultiplierPercent = null)
     {
         var resolvedBaseAmount = baseAmount ??
                                  (AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(realm) == "shining_abode"
@@ -10820,6 +11000,9 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         var resolvedAtTurnFragment = resolvedAtTurn == null
             ? string.Empty
             : $",\n          \"resolvedAtTurn\": {resolvedAtTurn.Value}";
+        var difficultyAuditFragment = string.IsNullOrWhiteSpace(difficulty)
+            ? string.Empty
+            : $",\n          \"difficultyAudit\": {BuildDifficultyAudit(difficulty, rewardMultiplierPercent: difficultyRewardMultiplierPercent).ToJsonString()}";
         return $$"""
         {
           "realm": {{JsonSerializer.Serialize(realm)}},
@@ -10833,7 +11016,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
           "riskMultiplierPercent": {{riskMultiplierPercent}},
           "riskReason": "Started from {{startingConflictPosition}} against a measured opposition lead.",
           "finalAmount": {{finalAmount}},
-          "narrativeReason": "Player won a contested afterlife spiritual conflict."{{resolvedAtTurnFragment}}
+          "narrativeReason": "Player won a contested afterlife spiritual conflict."{{resolvedAtTurnFragment}}{{difficultyAuditFragment}}
         }
         """;
     }
@@ -10846,7 +11029,8 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         string operationType = "pressure",
         string playerOutcome = "won",
         bool voluntary = false,
-        int? proofResolvedAtTurn = 7)
+        int? proofResolvedAtTurn = 7,
+        string? diceAuditJson = null)
     {
         var rewardAuditFragment = string.IsNullOrWhiteSpace(rewardAuditJson)
             ? string.Empty
@@ -10855,6 +11039,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         var proofResolvedAtTurnFragment = proofResolvedAtTurn == null
             ? string.Empty
             : $",\n              \"resolvedAtTurn\": {proofResolvedAtTurn.Value}";
+        var resolvedDiceAuditJson = diceAuditJson ?? BuildPlayerSuccessDiceAudit().ToJsonString();
         return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
         {
           "schemaVersion": 1,
@@ -10868,7 +11053,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
               "resolutionState": "{{resolutionState}}",
               "operationType": "{{operationType}}",
               "playerOutcome": "{{playerOutcome}}",
-              "diceAudit": {{BuildPlayerSuccessDiceAudit().ToJsonString()}},
+              "diceAudit": {{resolvedDiceAuditJson}},
               "summary": "The player side won the spiritual conflict."{{proofResolvedAtTurnFragment}}{{voluntaryFragment}}{{rewardAuditFragment}}
             }
           ]
@@ -10884,24 +11069,33 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         preTurnConflictJson ??= BuildActiveConflictRootJson();
         await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoulJson);
         await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson);
+        var snapshotFiles = new List<(string Path, string Json)>
+        {
+            ("game_state/meta/soul_state.json", preTurnSoulJson),
+            (AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson)
+        };
+        var gameSettingsJson = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        if (!string.IsNullOrWhiteSpace(gameSettingsJson))
+        {
+            await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath, gameSettingsJson);
+            snapshotFiles.Add((AfterlifeSpiritualConflictState.DifficultySettingsPath, gameSettingsJson));
+        }
 
         if (preTurnShiningJson == null)
         {
             await WriteValidatedSnapshotManifestAsync(
                 "обработки хода",
                 "Я завершаю духовный конфликт посмертия.",
-                ("game_state/meta/soul_state.json", preTurnSoulJson),
-                (AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson));
+                snapshotFiles.ToArray());
             return;
         }
 
         await WriteSnapshotFileAsync(ShiningAbodeState.StatePath, preTurnShiningJson);
+        snapshotFiles.Add((ShiningAbodeState.StatePath, preTurnShiningJson));
         await WriteValidatedSnapshotManifestAsync(
             "обработки хода",
             "Я завершаю духовный конфликт посмертия.",
-            ("game_state/meta/soul_state.json", preTurnSoulJson),
-            (AfterlifeSpiritualConflictState.StatePath, preTurnConflictJson),
-            (ShiningAbodeState.StatePath, preTurnShiningJson));
+            snapshotFiles.ToArray());
     }
 
     private async Task WritePreTurnActiveConflictSnapshotAsync(string conflictId = "afterlife_conflict_test_001")
@@ -10916,11 +11110,22 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         await WriteSnapshotFileAsync("game_state/meta/soul_state.json", soul);
         await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, preTurnConflict);
+        var snapshotFiles = new List<(string Path, string Json)>
+        {
+            ("game_state/meta/soul_state.json", soul),
+            (AfterlifeSpiritualConflictState.StatePath, preTurnConflict)
+        };
+        var gameSettingsJson = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        if (!string.IsNullOrWhiteSpace(gameSettingsJson))
+        {
+            await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath, gameSettingsJson);
+            snapshotFiles.Add((AfterlifeSpiritualConflictState.DifficultySettingsPath, gameSettingsJson));
+        }
+
         await WriteValidatedSnapshotManifestAsync(
             "обработки хода",
             "Я продолжаю активный afterlife spiritual conflict.",
-            ("game_state/meta/soul_state.json", soul),
-            (AfterlifeSpiritualConflictState.StatePath, preTurnConflict));
+            snapshotFiles.ToArray());
     }
 
     private async Task WriteValidatedConflictSnapshotFromCurrentAsync(string playerAction)
@@ -10932,11 +11137,22 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         await WriteSnapshotFileAsync("game_state/meta/soul_state.json", soul);
         await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.StatePath, conflict);
+        var snapshotFiles = new List<(string Path, string Json)>
+        {
+            ("game_state/meta/soul_state.json", soul),
+            (AfterlifeSpiritualConflictState.StatePath, conflict)
+        };
+        var gameSettingsJson = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        if (!string.IsNullOrWhiteSpace(gameSettingsJson))
+        {
+            await WriteSnapshotFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath, gameSettingsJson);
+            snapshotFiles.Add((AfterlifeSpiritualConflictState.DifficultySettingsPath, gameSettingsJson));
+        }
+
         await WriteValidatedSnapshotManifestAsync(
             "обработки хода",
             playerAction,
-            ("game_state/meta/soul_state.json", soul),
-            (AfterlifeSpiritualConflictState.StatePath, conflict));
+            snapshotFiles.ToArray());
     }
 
     private Task WriteSoulStateAsync() => WriteSoulStateAsync("Chaos Sea");

@@ -36,6 +36,12 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
       "responseSurface": "diceAudit.rollMode / diceUsed[].selection"
+    },
+    {
+      "contractId": "afterlife_spiritual_conflict_difficulty_audit_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "responseSurface": "diceAudit.difficultyAudit / rewardAudit.difficultyAudit"
     }
   ],
   "syntaxExemptions": [
@@ -198,6 +204,7 @@
       "runner": "gameResponseDistribution",
       "requiredText": [
         "\"rewardAudit\"",
+        "\"difficultyAudit\"",
         "\"currency\": \"ink_feathers\"",
         "\"inkFeatherChanges\"",
         "\"add\": 30"

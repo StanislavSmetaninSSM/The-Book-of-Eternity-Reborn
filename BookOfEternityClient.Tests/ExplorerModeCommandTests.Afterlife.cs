@@ -7830,6 +7830,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                   "oppositionTotal": 14,
                   "margin": 4,
                   "outcomeBand": "player_success",
+                  "difficultyAudit": {
+                    "difficulty": "hard",
+                    "russianLabel": "Тяжёлая",
+                    "source": "game_state/core/game_settings.json.difficulty",
+                    "oppositionModifier": 1,
+                    "rewardMultiplierPercent": 125
+                  },
                   "modifierBreakdown": { "player": [], "opposition": [] }
                 }
               }
@@ -7849,6 +7856,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 "challengeTier": 2,
                 "riskMultiplierPercent": 125,
                 "outcomeMultiplierPercent": 100,
+                "difficultyAudit": {
+                  "difficulty": "hard",
+                  "russianLabel": "Тяжёлая",
+                  "source": "game_state/core/game_settings.json.difficulty",
+                  "oppositionModifier": 1,
+                  "rewardMultiplierPercent": 125
+                },
                 "finalAmount": 4
               },
               "summary": "Игрок выиграл духовный спор."
@@ -7871,6 +7885,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("позиционное преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("сложность: Тяжёлая", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("модификатор противника +1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("множитель награды 125%", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("player_success", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("recentConflicts", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ink_feathers", renderedText, StringComparison.OrdinalIgnoreCase);

@@ -1475,7 +1475,18 @@ public partial class ExplorerMode
         var oppositionTotal = FormatIntOrUnknown(diceAudit["oppositionTotal"]);
         var margin = FormatIntOrUnknown(diceAudit["margin"]);
         var outcomeBand = AfterlifeSpiritualConflictState.GetNodeString(diceAudit["outcomeBand"]) ?? "?";
-        return $"d20 игрока={playerDie}, d20 противника={oppositionDie}, итоги (totals) {playerTotal}/{oppositionTotal}, разница (margin)={margin}, категория исхода (outcomeBand)={outcomeBand}";
+        var difficulty = FormatDifficultyAudit(diceAudit["difficultyAudit"] as JsonObject);
+        var parts = new List<string>
+        {
+            $"d20 игрока={playerDie}",
+            $"d20 противника={oppositionDie}",
+            $"итоги (totals) {playerTotal}/{oppositionTotal}",
+            $"разница (margin)={margin}",
+            $"категория исхода (outcomeBand)={outcomeBand}"
+        };
+        if (!string.IsNullOrWhiteSpace(difficulty))
+            parts.Add(difficulty);
+        return string.Join(", ", parts);
     }
 
     private static string DescribeRewardAudit(JsonObject rewardAudit)
@@ -1486,7 +1497,33 @@ public partial class ExplorerMode
         var challengeTier = FormatIntOrUnknown(rewardAudit["challengeTier"]);
         var riskMultiplier = FormatIntOrUnknown(rewardAudit["riskMultiplierPercent"]);
         var outcomeMultiplier = FormatIntOrUnknown(rewardAudit["outcomeMultiplierPercent"]);
-        return $"{currency}: итог (finalAmount)={finalAmount}, база (baseAmount)={baseAmount}, уровень вызова (challengeTier)={challengeTier}, риск (riskMultiplierPercent)={riskMultiplier}%, исход (outcomeMultiplierPercent)={outcomeMultiplier}%";
+        var difficulty = FormatDifficultyAudit(rewardAudit["difficultyAudit"] as JsonObject);
+        var parts = new List<string>
+        {
+            $"{currency}: итог (finalAmount)={finalAmount}",
+            $"база (baseAmount)={baseAmount}",
+            $"уровень вызова (challengeTier)={challengeTier}",
+            $"риск (riskMultiplierPercent)={riskMultiplier}%",
+            $"исход (outcomeMultiplierPercent)={outcomeMultiplier}%"
+        };
+        if (!string.IsNullOrWhiteSpace(difficulty))
+            parts.Add(difficulty);
+        return string.Join(", ", parts);
+    }
+
+    private static string FormatDifficultyAudit(JsonObject? difficultyAudit)
+    {
+        if (difficultyAudit == null)
+            return string.Empty;
+
+        var difficulty = AfterlifeSpiritualConflictState.GetNodeString(difficultyAudit["difficulty"]);
+        var label = AfterlifeSpiritualConflictState.GetNodeString(difficultyAudit["russianLabel"]);
+        if (string.IsNullOrWhiteSpace(label))
+            label = FormatDifficultyLabel(difficulty);
+
+        var oppositionModifier = FormatSignedIntOrUnknown(difficultyAudit["oppositionModifier"]);
+        var rewardMultiplier = FormatIntOrUnknown(difficultyAudit["rewardMultiplierPercent"]);
+        return $"сложность: {label}, модификатор противника {oppositionModifier}, множитель награды {rewardMultiplier}%";
     }
 
     private static string DescribeActionEconomy(JsonObject? actionEconomy)
@@ -1620,6 +1657,25 @@ public partial class ExplorerMode
         var text = AfterlifeSpiritualConflictState.GetNodeString(node);
         return string.IsNullOrWhiteSpace(text) ? "?" : text;
     }
+
+    private static string FormatSignedIntOrUnknown(JsonNode? node)
+    {
+        if (node is JsonValue value && value.TryGetValue<int>(out var number))
+            return number >= 0 ? $"+{number}" : number.ToString();
+
+        var text = AfterlifeSpiritualConflictState.GetNodeString(node);
+        return string.IsNullOrWhiteSpace(text) ? "?" : text;
+    }
+
+    private static string FormatDifficultyLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "normal" => "Нормальная",
+            "hard" => "Тяжёлая",
+            "impossible" => "Невозможная",
+            "" => "?",
+            _ => value ?? "?"
+        };
 
     private static string FormatRewardCurrencyLabel(string? value) =>
         NormalizeKey(value) switch

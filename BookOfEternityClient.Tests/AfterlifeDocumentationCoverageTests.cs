@@ -1874,6 +1874,17 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("light_sparks", matrix + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("outcomeMultiplierPercent", matrix + examples + apiSpec + daemonSpec, StringComparison.Ordinal);
         Assert.Contains("riskMultiplierPercent", matrix + examples + apiSpec + daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("difficultyAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("game_state/core/game_settings.json.difficulty", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("game_difficulty", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("normal` / Нормальная", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
+        Assert.Contains("hard` / Тяжёлая", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
+        Assert.Contains("impossible` / Невозможная", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
+        Assert.Contains("rewardMultiplierPercent", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("oppositionModifier", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("position dominance `+4`", matrix + examples + apiSpec + daemonSpec + glossary, StringComparison.Ordinal);
+        Assert.Contains("light_incarnate` lead `+8`", matrix + examples + apiSpec + daemonSpec + glossary, StringComparison.Ordinal);
+        Assert.Contains("afterlife_spiritual_conflict_difficulty_audit_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("metaStateUpdates.inkFeatherChanges.add", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("GM preference", examples + matrix + apiSpec + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 24", matrix, StringComparison.OrdinalIgnoreCase);

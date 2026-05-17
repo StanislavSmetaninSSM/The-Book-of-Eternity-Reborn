@@ -173,7 +173,8 @@ public partial class ValidationService
         JsonNode? PreTurnActiveControlState = null,
         bool HasValidatedTurnBaseline = false,
         int SpiritFocusTier = 0,
-        int SpiritFocusMaxActionPoints = 6)
+        int SpiritFocusMaxActionPoints = 6,
+        AfterlifeDifficultyDefinition? Difficulty = null)
     {
         public bool HasAuthoritativeDice => AuthoritativeDice is { Length: > 0 };
         public bool HasLightIncarnate => LightIncarnateGrantTurn is > 0;
@@ -222,11 +223,18 @@ public partial class ValidationService
         public int? CurrentInkFeathers { get; init; }
         public int? PreTurnLightSparks { get; init; }
         public int? CurrentLightSparks { get; init; }
+        public AfterlifeDifficultyDefinition? Difficulty { get; init; }
         public int ExpectedCurrentTurnInkFeatherReward { get; set; }
         public int ExpectedCurrentTurnLightSparkReward { get; set; }
         public bool HasCurrentTurnInkFeatherRewardAudit { get; set; }
         public bool HasCurrentTurnLightSparkRewardAudit { get; set; }
     }
+
+    private sealed record AfterlifeDifficultyDefinition(
+        string Difficulty,
+        string RussianLabel,
+        int OppositionDiceModifier,
+        int RewardMultiplierPercent);
 
     private sealed record AfterlifeSoulDissipationContext(
         JsonObject? SoulRoot,
@@ -258,6 +266,7 @@ public partial class ValidationService
         var preTurnNoTurnDicePayloads = await ResolvePreTurnNoTurnConflictDicePayloadsAsync(manifest);
         var spiritFocusTier = await ResolveAfterlifeConflictSpiritFocusTierAsync(manifest);
         var spiritFocusMaxActionPoints = AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(spiritFocusTier);
+        var difficulty = await ResolveAfterlifeConflictDifficultyDefinitionAsync();
 
         if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
         {
@@ -270,7 +279,8 @@ public partial class ValidationService
                 preTurnActiveControl.ControlState,
                 HasValidatedTurnBaseline: true,
                 SpiritFocusTier: spiritFocusTier,
-                SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints);
+                SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
+                Difficulty: difficulty);
         }
 
         var liveRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
@@ -285,7 +295,8 @@ public partial class ValidationService
                 preTurnActiveControl.ControlState,
                 HasValidatedTurnBaseline: manifest != null,
                 SpiritFocusTier: spiritFocusTier,
-                SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints);
+                SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
+                Difficulty: difficulty);
         }
 
         try
@@ -311,7 +322,8 @@ public partial class ValidationService
                         preTurnActiveControl.ControlState,
                         HasValidatedTurnBaseline: manifest != null,
                         SpiritFocusTier: spiritFocusTier,
-                        SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints);
+                        SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
+                        Difficulty: difficulty);
                 }
             }
         }
@@ -329,7 +341,8 @@ public partial class ValidationService
             preTurnActiveControl.ControlState,
             HasValidatedTurnBaseline: manifest != null,
             SpiritFocusTier: spiritFocusTier,
-            SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints);
+            SpiritFocusMaxActionPoints: spiritFocusMaxActionPoints,
+            Difficulty: difficulty);
     }
 
     private async Task<int> ResolveAfterlifeConflictSpiritFocusTierAsync(ValidationPendingTurnSnapshotManifest? manifest)
@@ -370,8 +383,55 @@ public partial class ValidationService
             PreTurnInkFeathers = preTurnSoulRoot == null ? null : ShiningAbodeState.GetSoulSpendableInkFeathers(preTurnSoulRoot),
             CurrentInkFeathers = currentSoulRoot == null ? null : ShiningAbodeState.GetSoulSpendableInkFeathers(currentSoulRoot),
             PreTurnLightSparks = preTurnShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(preTurnShiningRoot["lightSparks"]),
-            CurrentLightSparks = currentShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(currentShiningRoot["lightSparks"])
+            CurrentLightSparks = currentShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(currentShiningRoot["lightSparks"]),
+            Difficulty = await ResolveAfterlifeConflictDifficultyDefinitionAsync()
         };
+    }
+
+    private async Task<AfterlifeDifficultyDefinition?> ResolveAfterlifeConflictDifficultyDefinitionAsync()
+    {
+        var settingsJson = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
+        if (string.IsNullOrWhiteSpace(settingsJson))
+            return null;
+
+        try
+        {
+            if (JsonNode.Parse(settingsJson) is not JsonObject settingsRoot)
+                return null;
+
+            var difficulty = AfterlifeSpiritualConflictState.GetNodeString(settingsRoot["difficulty"]);
+            if (string.IsNullOrWhiteSpace(difficulty))
+            {
+                if (TryGetJsonNodeBool(settingsRoot["impossibleMode"], out var impossibleMode) && impossibleMode)
+                    difficulty = "impossible";
+                else if (TryGetJsonNodeBool(settingsRoot["hardMode"], out var hardMode) && hardMode)
+                    difficulty = "hard";
+                else
+                    difficulty = "normal";
+            }
+
+            return ResolveAfterlifeDifficultyDefinition(difficulty);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static AfterlifeDifficultyDefinition ResolveAfterlifeDifficultyDefinition(string? difficulty)
+    {
+        var normalized = difficulty?.Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(normalized) ||
+            !AfterlifeSpiritualConflictState.DifficultyDefinitions.TryGetValue(normalized, out var definition))
+        {
+            definition = AfterlifeSpiritualConflictState.DifficultyDefinitions["normal"];
+        }
+
+        return new AfterlifeDifficultyDefinition(
+            definition.Difficulty,
+            definition.RussianLabel,
+            definition.OppositionDiceModifier,
+            definition.RewardMultiplierPercent);
     }
 
     private async Task<AfterlifeSoulDissipationContext> ResolveAfterlifeSoulDissipationContextAsync()
@@ -1640,7 +1700,7 @@ public partial class ValidationService
                     "Afterlife conflict reward должен быть записан только через rewardAudit.",
                     code: "afterlife_conflict_reward_missing_audit",
                     section: "AfterlifeSpiritualConflict",
-                    expected: "rewardAudit object with realm/currency/baseAmount/challengeTier/multipliers/finalAmount/narrativeReason",
+                    expected: "rewardAudit object with realm/currency/baseAmount/challengeTier/multipliers/difficultyAudit/finalAmount/narrativeReason",
                     actual: "reward-like fields outside rewardAudit",
                     repairHint: "Перенеси награду в recentConflicts[].rewardAudit или убери reward-поля для no-reward closure."));
             }
@@ -1896,11 +1956,17 @@ public partial class ValidationService
                 "missing/empty");
         }
 
+        var expectedDifficultyMultiplier = ValidateAfterlifeConflictRewardDifficultyAudit(
+            rewardAudit,
+            context,
+            issues,
+            rewardContext);
         var expectedFinalAmount = ResolveRewardFinalAmount(
             expectedBaseAmount,
             expectedChallengeTier,
             expectedOutcomeMultiplier,
             expectedRiskMultiplier,
+            expectedDifficultyMultiplier,
             rewardRealmKey);
         if (!TryGetJsonNodeInt(rewardAudit["finalAmount"], out var finalAmount))
         {
@@ -2116,13 +2182,110 @@ public partial class ValidationService
         int challengeTier,
         int outcomeMultiplierPercent,
         int riskMultiplierPercent,
+        int difficultyRewardMultiplierPercent,
         string rewardRealmKey)
     {
-        if (baseAmount <= 0 || challengeTier <= 0 || outcomeMultiplierPercent <= 0 || riskMultiplierPercent <= 0)
+        if (baseAmount <= 0 ||
+            challengeTier <= 0 ||
+            outcomeMultiplierPercent <= 0 ||
+            riskMultiplierPercent <= 0 ||
+            difficultyRewardMultiplierPercent <= 0)
+        {
             return 0;
+        }
 
-        var raw = (long)baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent / 10_000L;
+        var raw = (long)baseAmount *
+                  challengeTier *
+                  outcomeMultiplierPercent *
+                  riskMultiplierPercent *
+                  difficultyRewardMultiplierPercent /
+                  1_000_000L;
         return (int)Math.Clamp(raw, 0, ResolveRewardMaxAmount(rewardRealmKey));
+    }
+
+    private static int ValidateAfterlifeConflictRewardDifficultyAudit(
+        JsonObject rewardAudit,
+        string context,
+        List<ValidationIssue> issues,
+        AfterlifeConflictRewardContext rewardContext)
+    {
+        if (rewardContext.Difficulty == null)
+        {
+            if (rewardAudit.ContainsKey("difficultyAudit"))
+            {
+                AddRewardIssue(
+                    issues,
+                    $"{context}.rewardAudit.difficultyAudit",
+                    "rewardAudit.difficultyAudit допустим только при readable game_settings difficulty.",
+                    "afterlife_conflict_reward_difficulty_without_settings",
+                    "readable game_state/core/game_settings.json.difficulty",
+                    rewardAudit["difficultyAudit"]?.ToJsonString() ?? "missing");
+            }
+
+            return 100;
+        }
+
+        if (rewardAudit["difficultyAudit"] is not JsonObject difficultyAudit)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.difficultyAudit",
+                "rewardAudit должен фиксировать difficultyAudit для множителя награды.",
+                "afterlife_conflict_reward_difficulty_audit_missing",
+                "difficultyAudit object",
+                rewardAudit["difficultyAudit"]?.GetType().Name ?? "missing");
+            return rewardContext.Difficulty.RewardMultiplierPercent;
+        }
+
+        var difficulty = AfterlifeSpiritualConflictState.GetNodeString(difficultyAudit["difficulty"]);
+        if (!string.Equals(difficulty, rewardContext.Difficulty.Difficulty, StringComparison.OrdinalIgnoreCase))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.difficultyAudit.difficulty",
+                "rewardAudit.difficultyAudit.difficulty должен совпадать с game_settings difficulty.",
+                "afterlife_conflict_reward_difficulty_mismatch",
+                rewardContext.Difficulty.Difficulty,
+                string.IsNullOrWhiteSpace(difficulty) ? "missing/empty" : difficulty);
+        }
+
+        var source = AfterlifeSpiritualConflictState.GetNodeString(difficultyAudit["source"]);
+        if (!string.Equals(source, $"{AfterlifeSpiritualConflictState.DifficultySettingsPath}.difficulty", StringComparison.Ordinal))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.difficultyAudit.source",
+                "rewardAudit.difficultyAudit.source должен ссылаться на authoritative game_settings difficulty.",
+                "afterlife_conflict_reward_difficulty_source_mismatch",
+                $"{AfterlifeSpiritualConflictState.DifficultySettingsPath}.difficulty",
+                string.IsNullOrWhiteSpace(source) ? "missing/empty" : source);
+        }
+
+        if (!TryGetJsonNodeInt(difficultyAudit["oppositionModifier"], out var oppositionModifier) ||
+            oppositionModifier != rewardContext.Difficulty.OppositionDiceModifier)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.difficultyAudit.oppositionModifier",
+                "rewardAudit.difficultyAudit.oppositionModifier должен совпадать с таблицей сложности.",
+                "afterlife_conflict_reward_difficulty_opposition_modifier_mismatch",
+                rewardContext.Difficulty.OppositionDiceModifier.ToString(),
+                difficultyAudit["oppositionModifier"]?.ToJsonString() ?? "missing");
+        }
+
+        if (!TryGetJsonNodeInt(difficultyAudit["rewardMultiplierPercent"], out var rewardMultiplier) ||
+            rewardMultiplier != rewardContext.Difficulty.RewardMultiplierPercent)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.difficultyAudit.rewardMultiplierPercent",
+                "rewardAudit.difficultyAudit.rewardMultiplierPercent должен совпадать с таблицей сложности.",
+                "afterlife_conflict_reward_difficulty_multiplier_mismatch",
+                rewardContext.Difficulty.RewardMultiplierPercent.ToString(),
+                difficultyAudit["rewardMultiplierPercent"]?.ToJsonString() ?? "missing");
+        }
+
+        return rewardContext.Difficulty.RewardMultiplierPercent;
     }
 
     private static string DescribeRewardOutcome(JsonObject proof)
@@ -4953,6 +5116,7 @@ public partial class ValidationService
 
         var playerModifier = SumDiceAuditModifiers(audit, "player", $"{context}.modifierBreakdown.player", issues, ref valid);
         var oppositionModifier = SumDiceAuditModifiers(audit, "opposition", $"{context}.modifierBreakdown.opposition", issues, ref valid);
+        ValidateAfterlifeConflictDifficultyDiceAudit(audit, context, diceContext, issues, ref valid);
 
         if (!TryGetJsonNodeInt(audit["playerTotal"], out var playerTotal))
         {
@@ -5012,6 +5176,140 @@ public partial class ValidationService
         }
 
         return valid;
+    }
+
+    private static void ValidateAfterlifeConflictDifficultyDiceAudit(
+        JsonObject audit,
+        string context,
+        AfterlifeConflictDiceContext diceContext,
+        List<ValidationIssue>? issues,
+        ref bool valid)
+    {
+        var playerDifficultyModifier = SumDifficultyModifiers(audit, "player");
+        var oppositionDifficultyModifier = SumDifficultyModifiers(audit, "opposition");
+
+        if (playerDifficultyModifier != 0)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.modifierBreakdown.player",
+                "Сложность игры не должна давать dice modifier стороне игрока.",
+                "afterlife_conflict_dice_difficulty_wrong_side",
+                "no player-side game_difficulty modifier",
+                playerDifficultyModifier.ToString());
+            valid = false;
+        }
+
+        if (diceContext.Difficulty == null)
+        {
+            if (oppositionDifficultyModifier != 0 || audit.ContainsKey("difficultyAudit"))
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.difficultyAudit",
+                    "difficultyAudit допустим только при readable game_settings difficulty.",
+                    "afterlife_conflict_dice_difficulty_without_settings",
+                    "readable game_state/core/game_settings.json.difficulty",
+                    audit["difficultyAudit"]?.ToJsonString() ?? oppositionDifficultyModifier.ToString());
+                valid = false;
+            }
+
+            return;
+        }
+
+        if (audit["difficultyAudit"] is not JsonObject difficultyAudit)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.difficultyAudit",
+                "diceAudit должен фиксировать difficultyAudit из game_settings для afterlife combat.",
+                "afterlife_conflict_dice_difficulty_audit_missing",
+                "difficultyAudit object",
+                audit["difficultyAudit"]?.GetType().Name ?? "missing");
+            valid = false;
+            return;
+        }
+
+        ValidateDifficultyAuditCommonFields(
+            difficultyAudit,
+            $"{context}.difficultyAudit",
+            diceContext.Difficulty,
+            issues,
+            ref valid,
+            issuePrefix: "afterlife_conflict_dice");
+
+        if (!TryGetJsonNodeInt(difficultyAudit["oppositionModifier"], out var auditOppositionModifier) ||
+            auditOppositionModifier != diceContext.Difficulty.OppositionDiceModifier)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.difficultyAudit.oppositionModifier",
+                "difficultyAudit.oppositionModifier должен совпадать с таблицей сложности.",
+                "afterlife_conflict_dice_difficulty_opposition_modifier_mismatch",
+                diceContext.Difficulty.OppositionDiceModifier.ToString(),
+                difficultyAudit["oppositionModifier"]?.ToJsonString() ?? "missing");
+            valid = false;
+        }
+
+        if (oppositionDifficultyModifier != diceContext.Difficulty.OppositionDiceModifier)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.modifierBreakdown.opposition",
+                "modifierBreakdown.opposition должен содержать ровно canonical modifier сложности игры.",
+                "afterlife_conflict_dice_difficulty_modifier_mismatch",
+                diceContext.Difficulty.OppositionDiceModifier.ToString(),
+                oppositionDifficultyModifier.ToString());
+            valid = false;
+        }
+    }
+
+    private static void ValidateDifficultyAuditCommonFields(
+        JsonObject difficultyAudit,
+        string context,
+        AfterlifeDifficultyDefinition expectedDifficulty,
+        List<ValidationIssue>? issues,
+        ref bool valid,
+        string issuePrefix)
+    {
+        var difficulty = AfterlifeSpiritualConflictState.GetNodeString(difficultyAudit["difficulty"]);
+        if (!string.Equals(difficulty, expectedDifficulty.Difficulty, StringComparison.OrdinalIgnoreCase))
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.difficulty",
+                "difficultyAudit.difficulty должен совпадать с game_settings difficulty.",
+                $"{issuePrefix}_difficulty_mismatch",
+                expectedDifficulty.Difficulty,
+                string.IsNullOrWhiteSpace(difficulty) ? "missing/empty" : difficulty);
+            valid = false;
+        }
+
+        var source = AfterlifeSpiritualConflictState.GetNodeString(difficultyAudit["source"]);
+        if (!string.Equals(source, $"{AfterlifeSpiritualConflictState.DifficultySettingsPath}.difficulty", StringComparison.Ordinal))
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.source",
+                "difficultyAudit.source должен ссылаться на authoritative game_settings difficulty.",
+                $"{issuePrefix}_difficulty_source_mismatch",
+                $"{AfterlifeSpiritualConflictState.DifficultySettingsPath}.difficulty",
+                string.IsNullOrWhiteSpace(source) ? "missing/empty" : source);
+            valid = false;
+        }
+
+        if (!TryGetJsonNodeInt(difficultyAudit["rewardMultiplierPercent"], out var rewardMultiplier) ||
+            rewardMultiplier != expectedDifficulty.RewardMultiplierPercent)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.rewardMultiplierPercent",
+                "difficultyAudit.rewardMultiplierPercent должен совпадать с таблицей сложности.",
+                $"{issuePrefix}_difficulty_reward_multiplier_mismatch",
+                expectedDifficulty.RewardMultiplierPercent.ToString(),
+                difficultyAudit["rewardMultiplierPercent"]?.ToJsonString() ?? "missing");
+            valid = false;
+        }
     }
 
     private static int? ValidateDiceRollSelection(
@@ -5273,6 +5571,33 @@ public partial class ValidationService
             }
 
             total += value;
+        }
+
+        return total;
+    }
+
+    private static int SumDifficultyModifiers(JsonObject audit, string side)
+    {
+        if (audit["modifierBreakdown"] is not JsonObject modifierBreakdown ||
+            modifierBreakdown[side] is not JsonArray modifiers)
+        {
+            return 0;
+        }
+
+        var total = 0;
+        foreach (var item in modifiers.OfType<JsonObject>())
+        {
+            if (!TryGetJsonNodeInt(item["value"], out var value))
+                continue;
+
+            var modifierType = AfterlifeSpiritualConflictState.GetNodeString(item["modifierType"]);
+            var source = AfterlifeSpiritualConflictState.GetNodeString(item["source"]);
+            if (ConflictTokenEquals(modifierType, "game_difficulty", "difficulty") ||
+                (!string.IsNullOrWhiteSpace(source) &&
+                 source.Contains("difficulty", StringComparison.OrdinalIgnoreCase)))
+            {
+                total += value;
+            }
         }
 
         return total;
