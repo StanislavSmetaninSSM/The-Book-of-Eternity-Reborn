@@ -1973,6 +1973,40 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_SetbackGuardAgainstPressureMustStillMitigatePlayerStrain()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_guard_setback_no_mitigation_001",
+          "operationType": "guard",
+          "outcome": "setback",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "fractured",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildMixedNoEffectDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_guard_missing_mitigation_floor", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PressureCannotActAsFreeManeuver()
     {
         await WriteSoulStateAsync();
@@ -2000,6 +2034,58 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_pressure_changes_position", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_OppositionControlRestrictsListedSuccessfulOperation()
+    {
+        const string activeControl = """
+        {
+          "level": "hindered",
+          "controllerSide": "opposition",
+          "controlId": "control_restricts_pressure_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "pressure" ],
+          "summary": "Оковы мешают игроку давить напрямую."
+        }
+        """;
+
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        preTurnActive["controlState"] = JsonNode.Parse(activeControl);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я продолжаю духовный бой под оковами противника.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_restricted_pressure_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": {{activeControl}}
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested",
+            "controlState": {{activeControl}}
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_operation_restricted_by_control", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2563,6 +2649,42 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_force_binding_without_strong_leverage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ForceBindingRequiresBroaderControlPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_force_binding_narrow_payoff_001",
+          "operationType": "force_binding",
+          "outcome": "success",
+          "bindingSetup": "ready",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_force_binding_narrow_payoff_001",
+              "sourceOperation": "force_binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Силовые оковы не должны давать тот же узкий эффект, что обычные оковы."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_force_binding_without_broad_control_payoff", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

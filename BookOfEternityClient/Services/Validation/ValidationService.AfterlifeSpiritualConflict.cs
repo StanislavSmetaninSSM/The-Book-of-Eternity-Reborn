@@ -1947,6 +1947,7 @@ public partial class ValidationService
             return;
 
         ValidateMatchupAudit(exchange, operationType, outcome, context, issues, requiresCurrentMatchupAudit);
+        ValidateOperationIsNotRestrictedByOppositionControl(operationType, outcome, before, context, issues);
 
         if (ConflictTokenEquals(operationType, "pressure"))
             ValidatePressureRule(exchange, before, after, outcome, context, issues);
@@ -2046,6 +2047,19 @@ public partial class ValidationService
                     "afterlife_conflict_binding_control_step_too_large",
                     "control rank increases by exactly one step",
                     $"{beforePlayerControlRank}->{afterPlayerControlRank}");
+            }
+
+            if (ConflictTokenEquals(operationType, "force_binding") &&
+                after["controlState"] is JsonObject afterControl &&
+                GetControlRestrictionSet(afterControl).Count < 2)
+            {
+                AddSpiritualArtRuleIssue(
+                    issues,
+                    $"{context}.after.controlState.restrictedOperations",
+                    "Силовые оковы (force_binding) должны отличаться от обычных оков более широким payoff: минимум две ограниченные операции.",
+                    "afterlife_conflict_force_binding_without_broad_control_payoff",
+                    "restrictedOperations contains at least two distinct operation ids for force_binding",
+                    afterControl["restrictedOperations"]?.ToJsonString() ?? "missing");
             }
         }
         else if (ConflictTokenEquals(operationType, "binding", "force_binding") &&
@@ -2376,6 +2390,30 @@ public partial class ValidationService
                 "afterlife_conflict_guard_worsens_player_strain",
                 "playerSideStrain unchanged or improved for successful guard",
                 $"{beforePlayerStrain}->{afterPlayerStrain}");
+        }
+
+        if (ConflictTokenEquals(outcome, "setback") &&
+            IncomingActionHasOperation(exchange, "pressure"))
+        {
+            var hasBeforeGuardStrain = TryGetStrainRank(before["playerSideStrain"], out var beforeGuardStrain);
+            var hasAfterGuardStrain = TryGetStrainRank(after["playerSideStrain"], out var afterGuardStrain);
+            if (!hasBeforeGuardStrain || !hasAfterGuardStrain || afterGuardStrain - beforeGuardStrain > 1)
+            {
+                var actual = !hasBeforeGuardStrain
+                    ? "before.playerSideStrain missing or invalid"
+                    : !hasAfterGuardStrain
+                        ? "after.playerSideStrain missing or invalid"
+                        : $"{beforeGuardStrain}->{afterGuardStrain}";
+                AddSpiritualArtRuleIssue(
+                    issues,
+                    hasBeforeGuardStrain
+                        ? $"{context}.after.playerSideStrain"
+                        : $"{context}.before.playerSideStrain",
+                    "Даже проваленная защита (guard) против давления должна смягчать удар: playerSideStrain не может ухудшиться больше чем на один уровень.",
+                    "afterlife_conflict_guard_missing_mitigation_floor",
+                    "playerSideStrain worsens by at most one rank on setback guard against pressure",
+                    actual);
+            }
         }
 
         if (TryGetStrainRank(before["oppositionSideStrain"], out var beforeOppositionStrain) &&
@@ -2794,6 +2832,34 @@ public partial class ValidationService
         AfterlifeSpiritualConflictState.OperationTypes.Contains(operationType) ||
         ConflictTokenEquals(operationType, "none", "passive");
 
+    private static void ValidateOperationIsNotRestrictedByOppositionControl(
+        string operationType,
+        string? outcome,
+        JsonObject before,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!IsSuccessfulArtOutcome(outcome) ||
+            ConflictTokenEquals(operationType, "break_binding", "incarnation_resistance", "counter", "withdraw", "surrender", "negotiate") ||
+            before["controlState"] is not JsonObject beforeControl ||
+            !HasActiveOppositionControl(before))
+        {
+            return;
+        }
+
+        var restrictedOperations = GetControlRestrictionSet(beforeControl);
+        if (!restrictedOperations.Contains(operationType))
+            return;
+
+        AddSpiritualArtRuleIssue(
+            issues,
+            $"{context}.before.controlState.restrictedOperations",
+            "Активный контроль противника запрещает успешное применение указанного духовного искусства до разрыва/ослабления контроля.",
+            "afterlife_conflict_operation_restricted_by_control",
+            "answer the control first with break_binding, valid counter, incarnation_resistance for force_incarnation, negotiate, surrender, or fail/block the restricted action",
+            operationType);
+    }
+
     private static bool IsAllowedCounterTargetOperation(string? operationType) =>
         ConflictTokenEquals(
             operationType,
@@ -2810,6 +2876,13 @@ public partial class ValidationService
         var finalOperationType = AfterlifeSpiritualConflictState.GetNodeString(incomingAction["finalOperationType"]);
         return ConflictTokenEquals(operationType, "binding", "force_binding", "force_incarnation") ||
                ConflictTokenEquals(finalOperationType, "binding", "force_binding", "force_incarnation");
+    }
+
+    private static bool IncomingActionHasOperation(JsonObject exchange, params string[] operationTypes)
+    {
+        var incomingOperations = ResolveIncomingActionOperations(exchange);
+        return incomingOperations.Any(incomingOperation =>
+            operationTypes.Any(operationType => ConflictTokenEquals(incomingOperation, operationType)));
     }
 
     private static bool IsMatrixCounterForSuccessfulOperation(string operationType, string oppositionOperation)

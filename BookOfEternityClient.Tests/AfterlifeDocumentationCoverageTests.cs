@@ -1760,6 +1760,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("matchupAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
         Assert.Contains("same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("equal/reordered sets do not count", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("at most one", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("at least two distinct", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("cannot succeed until", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
         foreach (var text in new[] { matrix, apiSpec, daemonSpec, taskGuide, glossary })
         {
             Assert.Contains("controlState", text, StringComparison.Ordinal);
@@ -1770,6 +1773,10 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("locked", text, StringComparison.Ordinal);
             Assert.Contains("failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides", text, StringComparison.Ordinal);
             Assert.Contains("failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged", text, StringComparison.Ordinal);
+            Assert.Contains("force_binding", text, StringComparison.Ordinal);
+            Assert.Contains("at most one", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("at least two distinct", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("cannot succeed until", text, StringComparison.OrdinalIgnoreCase);
         }
         Assert.Contains("controlState", examples + uiHelp, StringComparison.Ordinal);
         Assert.Contains("restrictedOperations", examples + uiHelp, StringComparison.Ordinal);
