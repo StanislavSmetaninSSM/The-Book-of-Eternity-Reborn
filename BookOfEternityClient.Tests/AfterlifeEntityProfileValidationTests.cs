@@ -282,6 +282,109 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_entity_profile_progression_override_empty", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_UnknownProgressionStrategyPriority_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": { "guard": 0 },
+              "specialArts": [
+                {
+                  "artId": "mirror_guard",
+                  "displayName": "Зеркальная Защита",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
+                  "baseOperation": "guard",
+                  "tier": 1,
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 30, "lightSparks": 0 },
+                  "canTeachPlayer": true,
+                  "trainingConditions": ["Провести сцену обучения с Хранителем Зеркал."],
+                  "effectSummary": "При успехе отражает часть давления."
+                }
+              ],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать непонятное.", "priorityOrder": ["unknown_art"] },
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_strategy_unknown_priority", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MalformedSpecialArtAndSoulDissipationOverrides_ReportContractIssues()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": { "guard": 0 },
+              "specialArts": [
+                {
+                  "artId": "mirror_guard",
+                  "displayName": "Зеркальная Защита",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
+                  "baseOperation": "guard",
+                  "tier": 1,
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 30, "lightSparks": 0 },
+                  "canTeachPlayer": true,
+                  "trainingConditions": ["Провести сцену обучения с Хранителем Зеркал."],
+                  "effectSummary": "При успехе отражает часть давления."
+                }
+              ],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать защиту.", "priorityOrder": ["mirror_guard", "soul_dissipation"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeEntityProgressionOverrides": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "cycleKey": "chaos:7",
+              "reason": "Некорректное изменение.",
+              "summary": "Неверные поля.",
+              "specialArtTierDeltas": [],
+              "soulDissipationTierDelta": "up"
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_override_invalid_special_art_delta", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_override_invalid_soul_dissipation_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
     private Task WriteProfileStateAsync(string json) =>
         _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, json);
 
