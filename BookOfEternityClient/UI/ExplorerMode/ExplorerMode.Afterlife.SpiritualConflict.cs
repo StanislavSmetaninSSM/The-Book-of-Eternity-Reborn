@@ -227,6 +227,8 @@ public partial class ExplorerMode
             "  • Формула: итог игрока (playerTotal) = d20 игрока + модификаторы; итог противника (oppositionTotal) = d20 противника + модификаторы; разница (margin) = playerTotal - oppositionTotal.",
             "  • Разница (margin) >= 8 — решительный успех игрока (decisive_player_success); 3..7 — успех игрока (player_success); -2..2 — смешанный или нулевой эффект (mixed_or_no_effect); -7..-3 — успех противника (opposition_success); <= -8 — решительный успех противника (decisive_opposition_success).",
             "  • Модификаторы идут от рангов Просветления/Сияния, уровней духовных искусств, силы ведущего бойца, поддержки, Воплощения Света и контекста сцены.",
+            "  • Преимущество и Помеха записываются в rollMode: Преимущество выбирает лучший d20, Помеха выбирает худший d20, выбранный куб помечается selection=selected, отброшенные — selection=discarded.",
+            "  • Встречные Преимущество и Помеха гасятся: если у стороны есть оба источника, используется обычный один d20; крит считается только по выбранному кубу.",
             "",
             "[bold]Честные криты[/]",
             "  • Благоприятный крит для игрока: натуральная 20 игрока или натуральная 1 противника. Если разница (margin) дала результат хуже обычного успеха, итог поднимается только до успеха игрока (player_success).",
@@ -1529,14 +1531,77 @@ public partial class ExplorerMode
             return "?";
 
         var normalizedSide = NormalizeDiceSide(side);
-        foreach (var die in diceUsed.OfType<JsonObject>())
+        var sideDice = diceUsed
+            .OfType<JsonObject>()
+            .Where(die => string.Equals(
+                NormalizeDiceSide(AfterlifeSpiritualConflictState.GetNodeString(die["side"])),
+                normalizedSide,
+                StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (sideDice.Count == 0)
+            return "?";
+
+        var selected = sideDice.FirstOrDefault(die =>
+            string.Equals(AfterlifeSpiritualConflictState.GetNodeString(die["selection"]), "selected", StringComparison.OrdinalIgnoreCase)) ??
+            sideDice[0];
+        var selectedValue = FormatIntOrUnknown(selected["value"]);
+        var details = new List<string>();
+        var mode = DescribeDiceRollMode(diceAudit, normalizedSide);
+        if (!string.IsNullOrWhiteSpace(mode))
+            details.Add(mode);
+
+        var discardedValues = sideDice
+            .Where(die => string.Equals(AfterlifeSpiritualConflictState.GetNodeString(die["selection"]), "discarded", StringComparison.OrdinalIgnoreCase))
+            .Select(die => FormatIntOrUnknown(die["value"]))
+            .Where(value => value != "?")
+            .ToList();
+        if (discardedValues.Count > 0)
+            details.Add($"отброшено: {string.Join(", ", discardedValues)}");
+
+        return details.Count == 0
+            ? selectedValue
+            : $"{selectedValue} ({string.Join("; ", details)})";
+    }
+
+    private static string DescribeDiceRollMode(JsonObject diceAudit, string normalizedSide)
+    {
+        if (diceAudit["rollMode"] is not JsonObject rollModeRoot ||
+            rollModeRoot[normalizedSide] is not JsonObject sideMode)
         {
-            var dieSide = NormalizeDiceSide(AfterlifeSpiritualConflictState.GetNodeString(die["side"]));
-            if (string.Equals(dieSide, normalizedSide, StringComparison.OrdinalIgnoreCase))
-                return FormatIntOrUnknown(die["value"]);
+            return string.Empty;
         }
 
-        return "?";
+        var advantageSources = ReadDiceRollModeSources(sideMode, "advantageSources");
+        var disadvantageSources = ReadDiceRollModeSources(sideMode, "disadvantageSources");
+        var effectiveMode = NormalizeKey(AfterlifeSpiritualConflictState.GetNodeString(sideMode["effectiveMode"]));
+        var label = effectiveMode switch
+        {
+            "advantage" => "Преимущество",
+            "disadvantage" => "Помеха",
+            "normal" when advantageSources.Count > 0 && disadvantageSources.Count > 0 => "Преимущество и Помеха погашены",
+            _ => string.Empty
+        };
+
+        var allSources = advantageSources.Concat(disadvantageSources).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if (allSources.Count == 0)
+            return label;
+
+        var sourceText = $"источник: {string.Join(", ", allSources)}";
+        return string.IsNullOrWhiteSpace(label)
+            ? sourceText
+            : $"{label}; {sourceText}";
+    }
+
+    private static List<string> ReadDiceRollModeSources(JsonObject sideMode, string propertyName)
+    {
+        if (sideMode[propertyName] is not JsonArray sources)
+            return new List<string>();
+
+        return sources
+            .Select(AfterlifeSpiritualConflictState.GetNodeString)
+            .Where(source => !string.IsNullOrWhiteSpace(source))
+            .Select(source => source!)
+            .ToList();
     }
 
     private static string NormalizeDiceSide(string? side) =>

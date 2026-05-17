@@ -7810,9 +7810,22 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                   "formulaVersion": "afterlife_spiritual_conflict_v1",
                   "diceSource": "input/turn_request.json.preGeneratedDices1d20",
                   "diceUsed": [
-                    { "side": "playerSide", "sourceIndex": 0, "sides": 20, "value": 14 },
-                    { "side": "guardian", "sourceIndex": 1, "sides": 20, "value": 9 }
+                    { "side": "playerSide", "sourceIndex": 0, "sides": 20, "value": 5, "selection": "discarded" },
+                    { "side": "playerSide", "sourceIndex": 2, "sides": 20, "value": 14, "selection": "selected" },
+                    { "side": "guardian", "sourceIndex": 1, "sides": 20, "value": 9, "selection": "selected" }
                   ],
+                  "rollMode": {
+                    "player": {
+                      "effectiveMode": "advantage",
+                      "advantageSources": [ "позиционное преимущество" ],
+                      "disadvantageSources": []
+                    },
+                    "opposition": {
+                      "effectiveMode": "normal",
+                      "advantageSources": [],
+                      "disadvantageSources": []
+                    }
+                  },
                   "playerTotal": 18,
                   "oppositionTotal": 14,
                   "margin": 4,
@@ -7854,6 +7867,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("afterlife_conflict_log_active_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("exchange_log_pressure_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("d20 игрока=14", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("позиционное преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("player_success", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("recentConflicts", renderedText, StringComparison.OrdinalIgnoreCase);

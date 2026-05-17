@@ -6428,15 +6428,21 @@ Correct contested exchange response:
             "side": "player",
             "sourceIndex": 0,
             "sides": 20,
-            "value": 14
+            "value": 14,
+            "selection": "selected"
           },
           {
             "side": "opposition",
             "sourceIndex": 1,
             "sides": 20,
-            "value": 9
+            "value": 9,
+            "selection": "selected"
           }
         ],
+        "rollMode": {
+          "player": { "effectiveMode": "normal", "advantageSources": [], "disadvantageSources": [] },
+          "opposition": { "effectiveMode": "normal", "advantageSources": [], "disadvantageSources": [] }
+        },
         "playerTotal": 18,
         "oppositionTotal": 14,
         "margin": 4,
@@ -6470,6 +6476,8 @@ Correct contested exchange response:
 ```
 
 `diceUsed[].sourceIndex` is zero-based and must point at actual values in the current `turn_request.json.preGeneratedDices1d20`. This example starts from `before.conflictPosition = "contested"`, so no `conflict_position` modifier is present. If the player writes only ordinary prose during an active conflict, use the same shape; do not demand that the text begin with `[AFTERLIFE_SPIRITUAL_ACTION: ...]`.
+
+Преимущество / Помеха uses `diceAudit.rollMode.<side>` with `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`; every consumed d20 is listed in `diceUsed[]` with `selection=selected|discarded`. Преимущество selects the highest die, Помеха selects the lowest die, and critical success/failure uses the selected die only. Встречные Преимущество и Помеха гасятся: both source arrays non-empty means `effectiveMode=normal` and exactly one die is consumed for that side.
 
 Correct control exchange: after the soul already has `player_advantaged`, `binding` creates measurable player control instead of pretending to be strain or position damage.
 

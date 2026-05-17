@@ -97,6 +97,119 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_AdvantageDiceAudit_SelectingLowerDie_ReportsIssue()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_advantage_wrong_selection_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerAdvantageDiceAudit(selectBest: false).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_advantage_selected_die_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AdvantageDiceAudit_SelectingBestDie_Allows()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_advantage_valid_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerAdvantageDiceAudit(selectBest: true).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_conflict_dice_advantage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DisadvantageDiceAudit_SelectingHigherDie_ReportsIssue()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_disadvantage_wrong_selection_001",
+          "operationType": "pressure",
+          "outcome": "setback",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "strained", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerDisadvantageDiceAudit(selectLowest: false).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_disadvantage_selected_die_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CancelledAdvantageDisadvantage_RejectsExtraDice()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_cancelled_roll_extra_die_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildCancelledPlayerRollWithExtraDieAudit().ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_cancelled_roll_uses_extra_dice", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DisadvantageDiceAudit_DiscardedNatural20DoesNotTriggerCritical()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_discarded_critical_001",
+          "operationType": "pressure",
+          "outcome": "setback",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "strained", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerDisadvantageDiceAuditWithDiscardedNatural20().ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_missing_critical_result", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_critical_result_without_critical_roll", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_dice_disadvantage_selected_die_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_SpecialArtExchange_RequiresEffectNote()
     {
         await WriteSoulStateAsync();
@@ -10355,6 +10468,157 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
       }
     }
     """)!.AsObject();
+
+    private static JsonObject BuildPlayerAdvantageDiceAudit(bool selectBest)
+    {
+        var selectedIndex = selectBest ? 2 : 0;
+        var selectedValue = selectBest ? 14 : 5;
+        var discardedIndex = selectBest ? 0 : 2;
+        var discardedValue = selectBest ? 5 : 14;
+        return BuildPlayerMultiRollDiceAudit(
+            "advantage",
+            new[] { "позиционное преимущество игрока" },
+            Array.Empty<string>(),
+            selectedIndex,
+            selectedValue,
+            discardedIndex,
+            discardedValue);
+    }
+
+    private static JsonObject BuildPlayerDisadvantageDiceAudit(bool selectLowest)
+    {
+        var selectedIndex = selectLowest ? 0 : 2;
+        var selectedValue = selectLowest ? 5 : 14;
+        var discardedIndex = selectLowest ? 2 : 0;
+        var discardedValue = selectLowest ? 14 : 5;
+        return BuildPlayerMultiRollDiceAudit(
+            "disadvantage",
+            Array.Empty<string>(),
+            new[] { "активные оковы мешают действию" },
+            selectedIndex,
+            selectedValue,
+            discardedIndex,
+            discardedValue);
+    }
+
+    private static JsonObject BuildPlayerDisadvantageDiceAuditWithDiscardedNatural20() =>
+        BuildPlayerMultiRollDiceAudit(
+            "disadvantage",
+            Array.Empty<string>(),
+            new[] { "активные оковы мешают действию" },
+            selectedIndex: 0,
+            selectedValue: 5,
+            discardedIndex: 6,
+            discardedValue: 20);
+
+    private static JsonObject BuildCancelledPlayerRollWithExtraDieAudit() =>
+        BuildPlayerMultiRollDiceAudit(
+            "normal",
+            new[] { "позиционное преимущество игрока" },
+            new[] { "активные оковы мешают действию" },
+            selectedIndex: 2,
+            selectedValue: 14,
+            discardedIndex: 0,
+            discardedValue: 5);
+
+    private static JsonObject BuildPlayerMultiRollDiceAudit(
+        string effectiveMode,
+        IReadOnlyCollection<string> advantageSources,
+        IReadOnlyCollection<string> disadvantageSources,
+        int selectedIndex,
+        int selectedValue,
+        int discardedIndex,
+        int discardedValue)
+    {
+        var playerModifier = 4;
+        var oppositionModifier = 5;
+        var playerTotal = selectedValue + playerModifier;
+        var oppositionTotal = 9 + oppositionModifier;
+        var margin = playerTotal - oppositionTotal;
+
+        var audit = new JsonObject
+        {
+            ["formulaVersion"] = "afterlife_spiritual_conflict_v1",
+            ["diceSource"] = "input/turn_request.json.preGeneratedDices1d20",
+            ["diceUsed"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["side"] = "player",
+                    ["sourceIndex"] = discardedIndex,
+                    ["sides"] = 20,
+                    ["value"] = discardedValue,
+                    ["selection"] = "discarded"
+                },
+                new JsonObject
+                {
+                    ["side"] = "player",
+                    ["sourceIndex"] = selectedIndex,
+                    ["sides"] = 20,
+                    ["value"] = selectedValue,
+                    ["selection"] = "selected"
+                },
+                new JsonObject
+                {
+                    ["side"] = "opposition",
+                    ["sourceIndex"] = 3,
+                    ["sides"] = 20,
+                    ["value"] = 9,
+                    ["selection"] = "selected"
+                }
+            },
+            ["rollMode"] = new JsonObject
+            {
+                ["player"] = new JsonObject
+                {
+                    ["effectiveMode"] = effectiveMode,
+                    ["advantageSources"] = new JsonArray(advantageSources.Select(source => JsonValue.Create(source)).ToArray<JsonNode?>()),
+                    ["disadvantageSources"] = new JsonArray(disadvantageSources.Select(source => JsonValue.Create(source)).ToArray<JsonNode?>())
+                },
+                ["opposition"] = new JsonObject
+                {
+                    ["effectiveMode"] = "normal",
+                    ["advantageSources"] = new JsonArray(),
+                    ["disadvantageSources"] = new JsonArray()
+                }
+            },
+            ["playerTotal"] = playerTotal,
+            ["oppositionTotal"] = oppositionTotal,
+            ["margin"] = margin,
+            ["outcomeBand"] = ExpectedOutcomeBandForTest(margin),
+            ["modifierBreakdown"] = new JsonObject
+            {
+                ["player"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["source"] = "pressure art tier",
+                        ["value"] = 2
+                    },
+                    new JsonObject
+                    {
+                        ["source"] = "current Enlightenment rank",
+                        ["value"] = 2
+                    }
+                },
+                ["opposition"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["source"] = "guardian pressure art tier",
+                        ["value"] = 2
+                    },
+                    new JsonObject
+                    {
+                        ["source"] = "active Guardian Abode pressure",
+                        ["value"] = 3
+                    }
+                }
+            }
+        };
+
+        return audit;
+    }
 
     private static JsonObject BuildPlayerSuccessDiceAuditWithLightIncarnate(int value = SourceOfLightCapstoneState.LeadDiceBonus)
     {
