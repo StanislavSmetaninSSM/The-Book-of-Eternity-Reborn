@@ -1751,11 +1751,32 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("success/partial_success/countered", taskGuide, StringComparison.Ordinal);
         Assert.Contains("success/partial_success/countered", examples, StringComparison.Ordinal);
         Assert.Contains("success/partial_success/countered", glossary, StringComparison.Ordinal);
+        Assert.Contains("setback needs downside (`playerSideStrain`, worse `conflictPosition`, or `counterBackfire`)", glossary, StringComparison.Ordinal);
+        Assert.DoesNotContain("setback needs downside (`playerSideStrain`, worse `conflictPosition`, `counterBackfire`, or control reversal)", glossary, StringComparison.Ordinal);
         Assert.Contains("conflict_position", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("Do not split or duplicate", apiSpec + daemonSpec + matrix + examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("zero `conflict_position` entries", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("exact matching `position`", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("matchupAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("equal/reordered sets do not count", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        foreach (var text in new[] { matrix, apiSpec, daemonSpec, taskGuide, glossary })
+        {
+            Assert.Contains("controlState", text, StringComparison.Ordinal);
+            Assert.Contains("restrictedOperations", text, StringComparison.Ordinal);
+            Assert.Contains("sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair", text, StringComparison.Ordinal);
+            Assert.Contains("hindered", text, StringComparison.Ordinal);
+            Assert.Contains("bound", text, StringComparison.Ordinal);
+            Assert.Contains("locked", text, StringComparison.Ordinal);
+            Assert.Contains("failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides", text, StringComparison.Ordinal);
+            Assert.Contains("failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged", text, StringComparison.Ordinal);
+        }
+        Assert.Contains("controlState", examples + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("restrictedOperations", examples + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair", examples, StringComparison.Ordinal);
+        Assert.Contains("стесн", glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("скован", glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("запечатан", glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("playerOperation", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("oppositionOperation", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("primaryResolutionLane", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
@@ -1785,6 +1806,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             "духовные искусства",
             "обмен действиями",
             "журнал духовного боя",
+            "состояние контроля",
             "аудит кубиков",
             "выигрыш контрприёма",
             "принудительное воплощение",

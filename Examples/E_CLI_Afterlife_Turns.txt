@@ -6359,7 +6359,7 @@ or ordinary roleplay prose while this conflict is still active:
 Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and beats maneuver/passive repositioning, `guard` safely protects player strain and beats pressure without damaging the opponent, `counter` needs incomingAction and a non-empty measured payoff on success/partial_success/countered, `maneuver` changes position and is stopped by pressure/opposing maneuver/control, `binding` needs advantage/setup, `break_binding` needs binding/coercive context, `incarnation_resistance` is only for force_incarnation, and `champion_coordination` is only for champion_duel. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, and `champion_coordination` is only for champion_duel. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
 
 Correct contested exchange response:
 
@@ -6447,6 +6447,150 @@ Correct contested exchange response:
 ```
 
 `diceUsed[].sourceIndex` is zero-based and must point at actual values in the current `turn_request.json.preGeneratedDices1d20`. This example starts from `before.conflictPosition = "contested"`, so no `conflict_position` modifier is present. If the player writes only ordinary prose during an active conflict, use the same shape; do not demand that the text begin with `[AFTERLIFE_SPIRITUAL_ACTION: ...]`.
+
+Correct control exchange: after the soul already has `player_advantaged`, `binding` creates measurable player control instead of pretending to be strain or position damage.
+
+```json
+{
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "exchange",
+    "exchange": {
+      "exchangeId": "afterlife_conflict_exchange_binding_001",
+      "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+      "operationType": "binding",
+      "outcome": "success",
+      "summary": "Игрок использует полученное преимущество и накладывает мягкие оковы на маршрут Лиоры.",
+      "matchupAudit": {
+        "playerOperation": "binding",
+        "oppositionOperation": "none",
+        "primaryResolutionLane": "binding",
+        "riskProfile": "control_leverage",
+        "matchupRationale": "Игрок уже имеет преимущество позиции, поэтому обмен разрешается как наложение контроля после рычага."
+      },
+      "before": {
+        "conflictPosition": "player_advantaged",
+        "playerSideStrain": "clear",
+        "oppositionSideStrain": "strained",
+        "controlState": {
+          "level": "none",
+          "controllerSide": null
+        }
+      },
+      "after": {
+        "conflictPosition": "player_advantaged",
+        "playerSideStrain": "clear",
+        "oppositionSideStrain": "strained",
+        "controlState": {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_liora_route_hindered_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "force_incarnation" ],
+          "summary": "Лиора стеснена: она не может свободно перестроиться или навязать воплощение, пока не ответит на оковы."
+        }
+      },
+      "diceAudit": {
+        "formulaVersion": "afterlife_spiritual_conflict_v1",
+        "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+        "diceUsed": [
+          { "side": "player", "sourceIndex": 4, "sides": 20, "value": 14 },
+          { "side": "opposition", "sourceIndex": 5, "sides": 20, "value": 9 }
+        ],
+        "playerTotal": 18,
+        "oppositionTotal": 11,
+        "margin": 7,
+        "outcomeBand": "player_success",
+        "modifierBreakdown": {
+          "player": [
+            { "modifierType": "conflict_position", "source": "conflictPosition", "position": "player_advantaged", "value": 2 },
+            { "source": "binding art tier", "value": 2 }
+          ],
+          "opposition": [
+            { "source": "guardian resistance", "value": 2 }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+Correct break-binding exchange: `break_binding` is not a generic attack; it must weaken, remove, or reverse existing opposition control.
+
+```json
+{
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "exchange",
+    "exchange": {
+      "exchangeId": "afterlife_conflict_exchange_break_binding_001",
+      "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+      "operationType": "break_binding",
+      "outcome": "success",
+      "summary": "Игрок разрывает часть чужих оков и возвращает себе свободу движения.",
+      "incomingAction": {
+        "operationType": "binding",
+        "actorId": "guard_liora_silver_current_001",
+        "summary": "Лиора удерживает душу оковами маршрута."
+      },
+      "matchupAudit": {
+        "playerOperation": "break_binding",
+        "oppositionOperation": "binding",
+        "primaryResolutionLane": "break_binding",
+        "riskProfile": "anti_control",
+        "matchupRationale": "Игрок отвечает не давлением и не манёвром, а прямым разрывом уже действующих оков."
+      },
+      "before": {
+        "conflictPosition": "contested",
+        "playerSideStrain": "strained",
+        "oppositionSideStrain": "strained",
+        "controlState": {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_liora_binding_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Душа скована маршрутом Лиоры."
+        }
+      },
+      "after": {
+        "conflictPosition": "contested",
+        "playerSideStrain": "strained",
+        "oppositionSideStrain": "strained",
+        "controlState": {
+          "level": "hindered",
+          "controllerSide": "opposition",
+          "controlId": "control_liora_binding_001",
+          "sourceOperation": "break_binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Оковы ослаблены: душа всё ещё стеснена, но уже не скована полностью."
+        }
+      },
+      "diceAudit": {
+        "formulaVersion": "afterlife_spiritual_conflict_v1",
+        "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+        "diceUsed": [
+          { "side": "player", "sourceIndex": 6, "sides": 20, "value": 14 },
+          { "side": "opposition", "sourceIndex": 7, "sides": 20, "value": 9 }
+        ],
+        "playerTotal": 18,
+        "oppositionTotal": 14,
+        "margin": 4,
+        "outcomeBand": "player_success",
+        "modifierBreakdown": {
+          "player": [
+            { "source": "break_binding art tier", "value": 2 },
+            { "source": "current Enlightenment rank", "value": 2 }
+          ],
+          "opposition": [
+            { "source": "guardian binding art tier", "value": 2 },
+            { "source": "active Guardian Abode pressure", "value": 3 }
+          ]
+        }
+      }
+    }
+  }
+}
+```
 
 Natural 20 / natural 1 is bounded critical logic, not permission to narrate impossible scale, and bounded criticals are symmetric. A favorable critical for the player (player natural 20 or opposition natural 1) raises a worse margin result only to ordinary `player_success`; an unfavorable critical for the player (player natural 1 or opposition natural 20) lowers a better margin result only to ordinary `opposition_success`; opposed criticals cancel back to the margin band. If the critical changes the margin-derived band, include `diceAudit.criticalResult`:
 

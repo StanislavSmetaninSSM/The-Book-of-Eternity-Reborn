@@ -7618,6 +7618,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Матрица приём-контрприём", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("защита безопаснее", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("контрприём сильнее", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ослабить или развернуть", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("манёвр даёт будущий бонус", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/spiritual_arts", renderedText, StringComparison.OrdinalIgnoreCase);
     }
