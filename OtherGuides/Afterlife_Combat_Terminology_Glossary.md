@@ -16,6 +16,8 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | criticalResult | аудит критического исхода | Required normalization proof when natural 20/1 changes the margin-derived `outcomeBand`. |
 | counterPayoff | выигрыш контрприёма | Required measurable payoff for a `counter` with success/partial_success/countered: either `counterPayoff`, improved `conflictPosition`, or worsened `oppositionSideStrain`. |
 | matchupAudit | аудит сопоставления действий | Required on new/current contested exchanges with `diceAudit`; records the player's operation, opposition operation, resolution lane, risk profile, and rationale for the tactical matchup. |
+| controlState | состояние контроля / оков | Canonical control axis for afterlife spiritual combat. It is separate from strain and position: `level`, `controllerSide`, `controlId`, `sourceOperation`, `restrictedOperations`, and `summary` record who controls whom and what actions are restricted. Missing/null means no active control for legacy entries. `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`; it is not a free operation id. |
+| controlState.level | уровень контроля | `none` / нет контроля, `hindered` / стеснён, `bound` / скован, `locked` / запечатан. |
 | operationType | тип операции | Mechanical type of an exchange/resolution, such as `pressure`, `guard`, or `force_incarnation`. |
 | outcome | исход | Mechanical outcome of an exchange, such as `success`, `blocked`, `countered`, or `no_effect`. |
 | side strain | напряжение стороны | `playerSideStrain` / `oppositionSideStrain`; tracks pressure on each side, not hit points. |
@@ -64,11 +66,11 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 |---|---|---|---|---|
 | `pressure` / Давление | Directly challenge the opposing lead contestant. | Mainly `oppositionSideStrain`; optionally terminal resolve after a later valid close. | Do not treat it as a free `conflictPosition` maneuver or binding. | "I press on the Guardian's broken oath" can move opposition strain `clear -> strained`. |
 | `guard` / Защита | Prevent or reduce incoming strain/consequence against the player side. | `playerSideStrain`, blocked consequence, defensive `incomingAction` audit. | Do not damage opposition strain directly; use `counter` for reversal. | "I shield the soul-fracture" can keep player strain from worsening. |
-| `counter` / Контрприём | React to a concrete incoming operation. | `incomingAction`, blocked/countered audit, and a measured payoff on success/partial_success/countered: `counterPayoff`, better `conflictPosition`, or worse `oppositionSideStrain`. | Cannot be used without `incomingAction`; cannot be a standalone `pressure`; successful/partial_success/countered counters cannot only heal `playerSideStrain`. | "As he binds me, I turn the thread back" must name the incoming bind/pressure and show the reversal. |
-| `maneuver` / Манёвр | Shift advantage without raw overpowering. | `conflictPosition`. | Successful maneuver must not directly change `playerSideStrain` or `oppositionSideStrain`. | `contested -> player_advantaged` without strain damage. |
-| `binding` / `force_binding` / Наложение оков | Control after leverage. Requires `player_advantaged`, `player_dominant`, setup, or `decisive_player_success`. | binding/lock state, restricted future actions, setup for resolve. | Cannot be spammed from neutral `contested` on ordinary success. | After gaining advantage, the soul seals the opponent's route. |
-| `break_binding` / Разрыв оков | Answer an existing binding, forced handoff, or coercive lock. | binding state, forced handoff state, position if the break creates leverage. | Not a generic attack or defense against ordinary pressure. | Break a name-seal before it becomes forced incarnation. |
-| `incarnation_resistance` / Сопротивление воплощению | Resist `force_incarnation` / `guardian_forced`. | forced-incarnation proof state, resistance audit, possibly `resolutionState`. | Not a replacement for `guard` against ordinary pressure. | Resist a Guardian trying to throw the soul into a life. |
+| `counter` / Контрприём | React to a concrete incoming operation. | `incomingAction`, blocked/countered audit, and a measured payoff on success/partial_success/countered: `counterPayoff`, better `conflictPosition`, worse `oppositionSideStrain`, or reversed/weakened existing opposition `controlState`. | Cannot be used without `incomingAction`; cannot be a standalone `pressure`; cannot create fresh player control from none; successful/partial_success/countered counters cannot only heal `playerSideStrain`. | "As he binds me, I turn the thread back" must name the incoming bind/pressure and show the reversal. |
+| `maneuver` / Манёвр | Shift advantage without raw overpowering. | `conflictPosition`. | Successful maneuver must not directly change `playerSideStrain` or `oppositionSideStrain`, and cannot bypass active opposition `controlState` without first weakening/removing that control. | `contested -> player_advantaged` without strain damage. |
+| `binding` / `force_binding` / Наложение оков | Control after leverage. Requires `player_advantaged`, `player_dominant`, setup, or `decisive_player_success`; `force_binding` requires strong leverage. | `controlState`: create or strengthen player control only when active opposition control is absent. | Cannot be spammed from neutral `contested` on ordinary success; cannot answer active opposition control; cannot be recorded as strain or position only; failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas. | After gaining advantage, the soul seals the opponent's route: `controlState.level none -> hindered`. |
+| `break_binding` / Разрыв оков | Answer an existing binding, forced handoff, or coercive lock. | `controlState`: weaken, remove, or reverse opposition control; legacy forced handoff state if present. | Not a generic attack or defense against ordinary pressure; success must change the control/coercion state. Same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`; equal/reordered sets do not count. | Break a name-seal: `controlState.level bound -> hindered` or `bound -> none`. |
+| `incarnation_resistance` / Сопротивление воплощению | Resist `force_incarnation` / `guardian_forced`. | forced-incarnation proof state, resistance audit, possibly forced-incarnation `controlState`. | Not a replacement for `guard` against ordinary pressure or `break_binding` against ordinary binding control; failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged. | Resist a Guardian trying to throw the soul into a life. |
 | `champion_coordination` / Координация чемпиона | Support a `champion_duel` where an ally is lead contestant. | champion-side support modifier, `conflictPosition`, side support audit. | Cannot be used in `direct_duel` as if the player were lead. | The soul guides an allied Guardian's strike while staying supporter. |
 
 ## Tactical Matchup Matrix
@@ -87,9 +89,9 @@ Every new/current contested exchange with `diceAudit` must also include `matchup
 | `pressure` / Давление | `maneuver`, passive repositioning, exposed guard. | `guard`, `counter`, stronger opposing pressure. | Worsen `oppositionSideStrain`; cannot improve `conflictPosition` or add binding/control state. |
 | `guard` / Защита | `pressure`, immediate consequence, unsafe direct clash. | `maneuver`, leverage-backed binding, eventual position loss if used passively. | Reduce/prevent `playerSideStrain` or consequence; cannot worsen `oppositionSideStrain` or improve `conflictPosition`. |
 | `counter` / Контрприём | Named incoming `pressure`, binding/control, or coercive direct action. | `maneuver`, withdrawal, surrender, negotiate, `none`/`passive`; it also fails hard on bad rolls. | Requires `incomingAction`; success/partial_success/countered needs payoff; setback needs downside (`playerSideStrain`, worse `conflictPosition`, or `counterBackfire`). |
-| `maneuver` / Манёвр | Passive guard, waiting, positional weakness. | `pressure`, opposing maneuver, binding/control. | Move `conflictPosition`; cannot directly change side strain. |
-| `binding` / `force_binding` / Наложение оков | Opponent after leverage or decisive success. | `break_binding`, counter-control, lack of leverage. | Add/advance control only after advantage, setup, or decisive success. |
-| `break_binding` / Разрыв оков | Binding, forced handoff, coercive lock. | Stronger control, dominant opposition position. | Remove/weaken control; not a generic attack. |
+| `maneuver` / Манёвр | Passive guard, waiting, positional weakness. | `pressure`, opposing maneuver, binding/control. | Move `conflictPosition`; cannot directly change side strain or bypass active opposition `controlState`. |
+| `binding` / `force_binding` / Наложение оков | Opponent after leverage or decisive success. | `break_binding`, counter-control, lack of leverage. | Add/advance `controlState` only after advantage, setup, or decisive success. |
+| `break_binding` / Разрыв оков | Binding, forced handoff, coercive lock. | Stronger control, dominant opposition position. | Remove/weaken/reverse `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`; equal/reordered sets do not count. |
 | `incarnation_resistance` / Сопротивление воплощению | `force_incarnation` / `guardian_forced`. | Winning forced-incarnation pressure after the player loses/surrenders/concedes. | Resist forced lifecycle handoff only; voluntary incarnation is not combat. |
 | `champion_coordination` / Координация чемпиона | `champion_duel` where an ally is lead. | Pressure against the champion side, disrupted support, invalid side model. | Improve champion-side support/position; cannot replace direct-duel actions. |
 
@@ -105,6 +107,38 @@ Every new/current contested exchange with `diceAudit` must also include `matchup
 | `opposition_dominant` | `modifierBreakdown.opposition[]` contains the same shape with `position="opposition_dominant"` and `value=4` |
 
 `contested` means zero `conflict_position` entries. The modifier uses the position before the exchange because the roll is made from the starting tactical state; the after-state records what changed.
+
+## Control State
+
+`controlState` is the mechanical meaning of оковы / контроль. It does not deal strain and does not move position by itself; it restricts action freedom and creates leverage for later exchanges.
+
+Canonical shape:
+
+```json
+{
+  "level": "hindered",
+  "controllerSide": "player",
+  "controlId": "control_example_001",
+  "sourceOperation": "binding",
+  "restrictedOperations": [ "maneuver", "binding" ],
+  "summary": "The soul pins the opponent's route through the current."
+}
+```
+
+Rules:
+
+- Missing or `null` `controlState` is legacy-compatible and means `none`.
+- In a new/current exchange where active `controlState` already exists or the exchange creates/changes active control, write both `before.controlState` and `after.controlState`; if there is no active control on one side of the snapshot, write `null` or `{ "level": "none" }` instead of omitting the field.
+- Active control must use `level=hindered|bound|locked`, `controllerSide=player|opposition`, non-empty `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; `sourceOperation` is not a free operation id.
+- `binding` / `force_binding` on success/partial success must create or strengthen player control only after active opposition control is absent: `none -> hindered`, `hindered -> bound`, or `bound -> locked`.
+- Failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave player `controlState` unchanged, including same-level `controlId`/`restrictedOperations` rewrites.
+- `force_binding` requires strong leverage: `player_dominant`, ready setup, or `decisive_player_success`.
+- `break_binding` on success/partial success must weaken, remove, or reverse opposition control.
+- Same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`; equal/reordered sets do not count.
+- Failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged.
+- `pressure` must not create or change `controlState`.
+- `maneuver` cannot improve `conflictPosition` while opposition control is active unless the control is first answered through `break_binding`, valid `counter`, `incarnation_resistance` for forced-incarnation control, negotiation, surrender, or concession.
+- `guard` may stop a new incoming control from being applied, but it does not remove existing control.
 
 ## Conflict Reward Audit
 

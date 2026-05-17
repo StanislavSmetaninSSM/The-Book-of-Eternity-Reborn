@@ -68,6 +68,7 @@ public partial class ExplorerMode
             lines.Add($"  • Позиция конфликта (conflictPosition): [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
             lines.Add($"  • Напряжение стороны игрока (playerSideStrain): [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/]");
             lines.Add($"  • Напряжение противостоящей стороны (oppositionSideStrain): [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
+            lines.Add($"  • Контроль/оковы (controlState): [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
             lines.Add($"  • Состояние завершения (resolutionState): [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
             lines.Add("");
             AppendConflictSideSummary(lines, "Сторона игрока (playerSide)", active["playerSide"] as JsonObject);
@@ -133,6 +134,7 @@ public partial class ExplorerMode
             lines.Add($"  • Модель сторон (sideModel): [white]{Markup.Escape(FormatSideModelLabel(AfterlifeSpiritualConflictState.GetNodeString(active["sideModel"])))}[/]");
             lines.Add($"  • Текущая позиция: [white]{Markup.Escape(FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(active["conflictPosition"])))}[/]");
             lines.Add($"  • Текущее напряжение: игрок=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/], противник=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
+            lines.Add($"  • Текущий контроль/оковы: [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
             lines.Add("");
 
             if (active["exchangeLog"] is JsonArray activeExchangeLog && activeExchangeLog.Count > 0)
@@ -225,11 +227,19 @@ public partial class ExplorerMode
             "  • Она влияет на награду: победа из плохой стартовой позиции имеет больший множитель риска (riskMultiplier) и уровень вызова (challengeTier); победа из доминирования игрока (player_dominant) платит меньше.",
             "  • Она ограничивает масштаб нарратива: крит или успех в плохой позиции обычно даёт правдоподобный прорыв/срыв угрозы, а не мгновенную абсолютную победу.",
             "",
+            "[bold]Контроль и оковы[/] [dim](controlState)[/]",
+            "  • Контроль — отдельная ось боя, не урон и не позиция. Он ограничивает свободу действий стороны и создаёт рычаг для следующих ходов.",
+            "  • Уровни контроля: нет контроля (none), стеснён (hindered), скован (bound), запечатан (locked). Активный контроль всегда указывает сторону-контролёра (controllerSide), идентификатор (controlId), источник (sourceOperation), ограниченные действия (restrictedOperations) и краткое описание (summary).",
+            "  • Наложение оков (binding) при успехе должно создать или усилить контроль игрока: none -> hindered, hindered -> bound, bound -> locked. Силовые оковы (force_binding) требуют более сильного рычага: доминирование, готовая подготовка или решительный успех.",
+            "  • Разрыв оков (break_binding) при успехе должен ослабить, снять или развернуть контроль против игрока. Если контроль не меняется, это не разрыв оков.",
+            "  • Манёвр не проходит бесплатно сквозь активный контроль противника: сначала нужно ослабить контроль через разрыв оков, валидный контрприём, сопротивление воплощению, переговоры или сдачу.",
+            "  • Защита может не дать новому входящему контролю усилиться, но не снимает уже наложенные оковы. Для снятия нужны разрыв оков или контрприём против конкретного входящего контроля.",
+            "",
             "[bold]Духовные искусства: что выбирать[/]",
             "  • Давление (pressure) — проактивная атака на устойчивость противника. Главный эффект: ухудшить напряжение противостоящей стороны (oppositionSideStrain). Выбирай, когда хочешь продавить волю/клятву/обет противника.",
-            "  • Контрприём (counter) — реакция на конкретное входящее действие (incomingAction) противника. Его преимущество над давлением (pressure): можно не просто ударить в ответ, а заблокировать, развернуть или наказать уже заявленное действие врага. Успешный контрприём обязан дать выигрыш (counterPayoff): явно описанный выигрыш (payoff), улучшить позицию или ухудшить напряжение противника (oppositionSideStrain).",
+            "  • Контрприём (counter) — реакция на конкретное входящее действие (incomingAction) противника. Его преимущество над давлением (pressure): можно не просто ударить в ответ, а заблокировать, развернуть или наказать уже заявленное действие врага. Успешный контрприём обязан дать выигрыш (counterPayoff): явно описанный выигрыш (payoff), улучшить позицию, ухудшить напряжение противника (oppositionSideStrain), либо ослабить или развернуть уже существующие вражеские оковы/контроль (controlState).",
             "  • Защита (guard) — снижает или предотвращает напряжение стороны игрока (playerSideStrain) или последствие. Лучше контрприёма (counter), когда нечего разворачивать или нужно пережить удар без риска.",
-            "  • Манёвр (maneuver) — меняет позицию. Выбирай, когда прямое давление опасно, но можно занять лучший духовный угол, разорвать дистанцию, вывести спор из чужой зоны силы.",
+            "  • Манёвр (maneuver) — меняет позицию. Выбирай, когда прямое давление опасно, но можно занять лучший духовный угол, разорвать дистанцию, вывести спор из чужой зоны силы. Под активным контролем противника манёвр сначала требует анти-контрольный ответ.",
             "  • Наложение оков (binding/force_binding) — контроль после преимущества. Не стартовая кнопка победы: сначала получи рычаг через позицию, подготовку (setup) или решительный успех.",
             "  • Разрыв оков (break_binding) — ответ на оковы, принудительную передачу/выброс или контекст принуждения. Это не универсальная атака.",
             "  • Сопротивление воплощению (incarnation_resistance) — только против принудительного воплощения Хранителем (guardian_forced / force_incarnation).",
@@ -926,7 +936,7 @@ public partial class ExplorerMode
         Clear();
         MarkupLine($"[cyan]Активный конфликт:[/] [white]{Markup.Escape(conflictId)}[/]");
         MarkupLine("[dim]Опишите одно намерение: давление (pressure), защита (guard), манёвр (maneuver), контрприём (counter), разрыв/наложение духовных оков (break_binding/binding), сдача, отступление или переговоры. Команда только добавляет явный тег; обычная ролевая заявка во время активного конфликта тоже валидна.[/]");
-        MarkupLine("[dim]Выберите действие по механике: давление (pressure) бьёт по напряжению противника (oppositionSideStrain); защита (guard) защищает свою сторону; манёвр (maneuver) двигает позицию конфликта (conflictPosition); контрприём (counter) требует входящее действие (incomingAction); оковы (binding) требуют преимущества или подготовки (setup); разрыв оков (break_binding) и сопротивление воплощению (incarnation_resistance) работают только против контроля/принуждения; координация чемпиона (champion_coordination) — только в поединке чемпиона (champion_duel).[/]");
+        MarkupLine("[dim]Выберите действие по механике: давление (pressure) бьёт по напряжению противника (oppositionSideStrain); защита (guard) защищает свою сторону; манёвр (maneuver) двигает позицию конфликта (conflictPosition), но не проходит бесплатно сквозь активный контроль; контрприём (counter) требует входящее действие (incomingAction); оковы (binding) требуют преимущества или подготовки и меняют controlState; разрыв оков (break_binding) и сопротивление воплощению (incarnation_resistance) работают только против контроля/принуждения; координация чемпиона (champion_coordination) — только в поединке чемпиона (champion_duel).[/]");
         MarkupLine("[dim]Сопоставление действий: защита безопаснее контрприёма против давления; контрприём сильнее только против конкретного входящего действия и рискован при провале; манёвр даёт будущий бонус позиции, но его останавливают давление, встречный манёвр или контроль.[/]");
         var action = Ask("[cyan]Действие:[/]");
         if (string.IsNullOrWhiteSpace(action))
@@ -956,7 +966,7 @@ public partial class ExplorerMode
                     $"  • Поверхность ответа (response surface): `{AfterlifeSpiritualConflictState.ResponseField}`",
                     $"  • Файл состояния (state file): `{AfterlifeSpiritualConflictState.StatePath}`",
                     "  • Конфликт остаётся сторона-против-стороны: используй сторону игрока (playerSide), противостоящую сторону (oppositionSide) и поля напряжения сторон.",
-                    "  • Духовное искусство должно менять только разрешённые поля: давление (pressure)=напряжение противника, защита (guard)=защита своей стороны, манёвр (maneuver)=позиция, контрприём (counter)=входящее действие (incomingAction), оковы (binding)=контроль после преимущества, разрыв/сопротивление (break_binding/incarnation_resistance)=анти-принуждение, координация чемпиона (champion_coordination)=поединок чемпиона (champion_duel).",
+            "  • Духовное искусство должно менять только разрешённые поля: давление (pressure)=напряжение противника, защита (guard)=защита своей стороны, манёвр (maneuver)=позиция, контрприём (counter)=входящее действие (incomingAction), оковы (binding)=controlState после преимущества, разрыв/сопротивление (break_binding/incarnation_resistance)=анти-принуждение, координация чемпиона (champion_coordination)=поединок чемпиона (champion_duel).",
                     "  • Для спорного обмена с кубиками ГМ должен указать аудит сопоставления действий (matchupAudit): действие игрока, действие противника, линию разрешения, профиль риска и объяснение выбора.",
                     "  • Принудительное воплощение Хранителем требует доказательство проигрыша/сдачи/уступки в завершении (resolve).",
                     "  • Файлы смертного боя и смертного состояния запрещены."
@@ -1098,7 +1108,8 @@ public partial class ExplorerMode
         return
             $"позиция (conflictPosition) {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["conflictPosition"]))} -> {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["conflictPosition"]))}; " +
             $"напряжение игрока (playerSideStrain) {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["playerSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["playerSideStrain"]))}; " +
-            $"напряжение противника (oppositionSideStrain) {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["oppositionSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["oppositionSideStrain"]))}";
+            $"напряжение противника (oppositionSideStrain) {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["oppositionSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["oppositionSideStrain"]))}; " +
+            $"контроль/оковы (controlState) {DescribeControlState(before?["controlState"] as JsonObject)} -> {DescribeControlState(after?["controlState"] as JsonObject)}";
     }
 
     private static string DescribeIncomingAction(JsonObject incomingAction)
@@ -1174,6 +1185,56 @@ public partial class ExplorerMode
         {
             "ink_feathers" => "Чернильные Перья (ink_feathers)",
             "light_sparks" => "Искры Света (light_sparks)",
+            "" => "?",
+            _ => value ?? "?"
+        };
+
+    private static string DescribeControlState(JsonObject? controlState)
+    {
+        if (controlState == null)
+            return "нет контроля (none)";
+
+        var level = NormalizeKey(AfterlifeSpiritualConflictState.GetNodeString(controlState["level"]));
+        if (string.IsNullOrWhiteSpace(level) || level == "none")
+            return "нет контроля (none)";
+
+        var controllerSide = FormatControlSideLabel(AfterlifeSpiritualConflictState.GetNodeString(controlState["controllerSide"]));
+        var controlId = AfterlifeSpiritualConflictState.GetNodeString(controlState["controlId"]);
+        var sourceOperation = FormatOperationTypeLabel(AfterlifeSpiritualConflictState.GetNodeString(controlState["sourceOperation"]));
+        var restrictions = controlState["restrictedOperations"] is JsonArray restrictedOperations
+            ? string.Join(", ", restrictedOperations.Select(item => AfterlifeSpiritualConflictState.GetNodeString(item)).Where(item => !string.IsNullOrWhiteSpace(item)))
+            : "?";
+        var summary = AfterlifeSpiritualConflictState.GetNodeString(controlState["summary"]);
+        var parts = new List<string>
+        {
+            FormatControlLevelLabel(level),
+            $"контролирует: {controllerSide}",
+            $"ограничено: {restrictions}"
+        };
+        if (!string.IsNullOrWhiteSpace(controlId))
+            parts.Add($"id={controlId}");
+        if (!string.IsNullOrWhiteSpace(sourceOperation) && sourceOperation != "?")
+            parts.Add($"источник: {sourceOperation}");
+        if (!string.IsNullOrWhiteSpace(summary))
+            parts.Add(summary);
+        return string.Join("; ", parts);
+    }
+
+    private static string FormatControlLevelLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "hindered" => "стеснён (hindered)",
+            "bound" => "скован (bound)",
+            "locked" => "запечатан (locked)",
+            "none" or "" => "нет контроля (none)",
+            _ => value ?? "?"
+        };
+
+    private static string FormatControlSideLabel(string? value) =>
+        NormalizeKey(value) switch
+        {
+            "player" => "игрок (player)",
+            "opposition" => "противник (opposition)",
             "" => "?",
             _ => value ?? "?"
         };
@@ -1255,11 +1316,11 @@ public partial class ExplorerMode
         NormalizeKey(art.ArtId) switch
         {
             "pressure" => "Может ухудшать напряжение противника (oppositionSideStrain); не является позиционным манёвром и не должен сам по себе закрывать конфликт без завершения (resolve).",
-            "counter" => "Только реакция на конкретное входящее действие (incomingAction); успех/контрирование (success/countered) требует выигрыш (payoff): counterPayoff, лучшую позицию (conflictPosition) или худшее напряжение противника (oppositionSideStrain).",
+            "counter" => "Только реакция на конкретное входящее действие (incomingAction); успех/контрирование (success/countered) требует выигрыш (payoff): counterPayoff, лучшую позицию (conflictPosition), худшее напряжение противника (oppositionSideStrain) или разворот/ослабление контроля (controlState).",
             "guard" => "Защищает сторону игрока (playerSide) от напряжения/последствия (strain/consequence); не наносит прямое напряжение (strain) противнику и не заменяет контрприём (counter).",
-            "maneuver" => "Меняет позицию конфликта (conflictPosition); успешный манёвр (maneuver) должен двигать позицию и не должен напрямую менять напряжение сторон (side strain).",
-            "break_binding" => "Работает только против оков, принудительной передачи/выброса или контекста принуждения; не является универсальной атакой.",
-            "binding" => "Требует преимущество/доминирование игрока (player_advantaged/player_dominant), подготовку (setup=true) или решительный успех игрока (decisive_player_success); накладывает ограничение, а не наносит обычное напряжение (strain).",
+            "maneuver" => "Меняет позицию конфликта (conflictPosition); успешный манёвр (maneuver) должен двигать позицию, не должен напрямую менять напряжение сторон (side strain) и не проходит бесплатно через активный контроль противника (controlState).",
+            "break_binding" => "Работает только против оков, принудительной передачи/выброса или контекста принуждения; при успехе должен ослабить, снять или развернуть controlState; не является универсальной атакой.",
+            "binding" => "Требует преимущество/доминирование игрока (player_advantaged/player_dominant), подготовку (setup=true) или решительный успех игрока (decisive_player_success); при успехе создаёт или усиливает controlState, а не наносит обычное напряжение (strain).",
             "incarnation_resistance" => "Только против принудительного воплощения (force_incarnation/guardian_forced); против обычного давления (pressure) используй защиту, контрприём или манёвр (guard/counter/maneuver).",
             "champion_coordination" => "Только в поединке чемпиона (champion_duel), когда союзник/чемпион ведёт сторону; игрок усиливает сторону, а не становится ведущим бойцом.",
             _ => art.MechanicalUse

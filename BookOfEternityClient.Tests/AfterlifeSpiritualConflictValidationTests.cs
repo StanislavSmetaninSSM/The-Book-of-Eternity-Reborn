@@ -339,6 +339,78 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_PressureAllowsEquivalentNoControlEncodings()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_pressure_equivalent_no_control_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "none"
+            }
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildMixedNoEffectDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_pressure_adds_binding", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PressureStillRejectsRealControlCreation()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_pressure_adds_real_control_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_pressure_should_not_create_001",
+              "sourceOperation": "pressure",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Pressure must not create control."
+            }
+          },
+          "diceAudit": {{BuildMixedNoEffectDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_pressure_adds_binding", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ContestedPosition_RejectsPositionModifier()
     {
         await WriteSoulStateAsync();
@@ -2319,6 +2391,985 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_PreTurnLegacyBindingWithoutControlState_RemainsCompatible()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_legacy_binding_pre_turn_without_control_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "bindingState": "none"
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "bindingState": "imposed"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """);
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Legacy binding history remains canonical after loading a save.");
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentLegacyBindingWithoutControlState_RequiresCanonicalControlDelta()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Current binding must use canonical controlState.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var activeConflict = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        var exchangeLog = Assert.IsType<JsonArray>(activeConflict["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_current_legacy_binding_without_control_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "bindingState": "none"
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "bindingState": "imposed"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BindingWithGenericSetupIsAllowed()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_generic_setup_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "setup": true,
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_binding_generic_setup_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Generic setup gives ordinary binding enough leverage."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_without_leverage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ForceBindingRejectsGenericSetupTrueWithoutStrongLeverage()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_force_binding_generic_setup_001",
+          "operationType": "force_binding",
+          "outcome": "success",
+          "setup": true,
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_force_binding_generic_setup_001",
+              "sourceOperation": "force_binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Generic setup is not strong enough for force binding."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_without_leverage", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_force_binding_without_strong_leverage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("setupState")]
+    [InlineData("bindingSetup")]
+    public async Task ValidateGameStateAsync_ForceBindingWithReadySetupIsAllowed(string setupField)
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_force_binding_ready_{{setupField}}_001",
+          "operationType": "force_binding",
+          "outcome": "success",
+          "{{setupField}}": "ready",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_force_binding_ready_{{setupField}}_001",
+              "sourceOperation": "force_binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Ready setup gives force binding strong leverage."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_force_binding_without_strong_leverage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BindingWithAdvantageRequiresControlDelta()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_no_control_delta_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": { "level": "none", "controllerSide": null }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": { "level": "none", "controllerSide": null }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ControlStateRejectsUnknownRestrictedOperation()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_unknown_restricted_operation_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_unknown_restricted_operation_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "manuever" ],
+              "summary": "Typo in restrictedOperations must not pass validation."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_unknown_restricted_operation_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "manuever" ],
+          "summary": "Typo in restrictedOperations must not pass validation."
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_state_invalid_restricted_operation", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BindingControlSourceMustMatchOperation()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_wrong_control_source_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_binding_wrong_source_001",
+              "sourceOperation": "pressure",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Binding-created control must not claim pressure as its source."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_binding_wrong_source_001",
+          "sourceOperation": "pressure",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Binding-created control must not claim pressure as its source."
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_source_operation_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ControlStateRejectsNegotiateSourceOperation()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_negotiate_creates_control_001",
+          "operationType": "negotiate",
+          "outcome": "success",
+          "voluntary": true,
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_negotiate_invalid_source_001",
+              "sourceOperation": "negotiate",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Negotiation is not a control-source operation."
+            }
+          }
+        }
+        """, addDefaultMatchupAudit: false, activeControlStateJson: """
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_negotiate_invalid_source_001",
+          "sourceOperation": "negotiate",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Negotiation is not a control-source operation."
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_state_invalid_source_operation", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ControlStateRejectsChampionCoordinationSourceOperation()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_champion_coordination_creates_control_001",
+          "operationType": "champion_coordination",
+          "outcome": "success",
+          "before": {
+            "sideModel": "champion_duel",
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "sideModel": "champion_duel",
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_champion_coordination_invalid_source_001",
+              "sourceOperation": "champion_coordination",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Champion coordination is support, not a control-source operation."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_champion_coordination_invalid_source_001",
+          "sourceOperation": "champion_coordination",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Champion coordination is support, not a control-source operation."
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_state_invalid_source_operation", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UnchangedControlCanKeepOriginalSourceOperation()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_pressure_preserves_existing_control_source_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_preserved_source_binding_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Existing binding control remains unchanged."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "strained",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_preserved_source_binding_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Existing binding control remains unchanged."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_preserved_source_binding_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Existing binding control remains unchanged."
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_source_operation_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BlockedBindingCannotCreatePlayerControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blocked_binding_creates_control_001",
+          "operationType": "binding",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "break_binding",
+            "summary": "The opposing side cuts the binding before it takes hold."
+          },
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_blocked_binding_illegal_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Blocked binding must not create player control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SetbackForceBindingCannotCreatePlayerControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_setback_force_binding_creates_control_001",
+          "operationType": "force_binding",
+          "outcome": "setback",
+          "before": {
+            "conflictPosition": "player_dominant",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "player_dominant",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_setback_force_binding_illegal_001",
+              "sourceOperation": "force_binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Setback force binding must not create player control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier("player_dominant", value: 4).ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BlockedBindingCannotRewriteSameLevelPlayerControl()
+    {
+        await WriteSoulStateAsync();
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """{ "entries": [] }""");
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blocked_binding_rewrites_same_level_control_001",
+          "operationType": "binding",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "guard",
+            "summary": "The opposing side prevents the binding from changing."
+          },
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_blocked_binding_existing_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Existing player control before the failed binding."
+            }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_blocked_binding_rewritten_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "guard" ],
+              "summary": "Failed binding must not rewrite same-level player control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_blocked_binding_rewritten_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "guard" ],
+          "summary": "Failed binding must not rewrite same-level player control."
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CounteredForceBindingCannotRewriteSameLevelPlayerControl()
+    {
+        await WriteSoulStateAsync();
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """{ "entries": [] }""");
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_countered_force_binding_rewrites_same_level_control_001",
+          "operationType": "force_binding",
+          "outcome": "countered",
+          "incomingAction": {
+            "operationType": "counter",
+            "summary": "The opposing side counters the force binding before it changes."
+          },
+          "before": {
+            "conflictPosition": "player_dominant",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "player",
+              "controlId": "control_countered_force_binding_existing_001",
+              "sourceOperation": "force_binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Existing player control before the countered force binding."
+            }
+          },
+          "after": {
+            "conflictPosition": "player_dominant",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "player",
+              "controlId": "control_countered_force_binding_rewritten_001",
+              "sourceOperation": "force_binding",
+              "restrictedOperations": [ "maneuver", "binding", "guard" ],
+              "summary": "Countered force binding must not rewrite same-level player control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier("player_dominant", value: 4).ToJsonString()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "bound",
+          "controllerSide": "player",
+          "controlId": "control_countered_force_binding_rewritten_001",
+          "sourceOperation": "force_binding",
+          "restrictedOperations": [ "maneuver", "binding", "guard" ],
+          "summary": "Countered force binding must not rewrite same-level player control."
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BlockedBindingCannotClearOppositionControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blocked_binding_clears_opposition_control_001",
+          "operationType": "binding",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "guard",
+            "summary": "The opposition holds the soul inside the binding instead of letting a new seal form."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_blocked_binding_opposition_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opposition control is active before the failed binding."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SetbackForceBindingCannotWeakenOppositionControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_setback_force_binding_weakens_opposition_control_001",
+          "operationType": "force_binding",
+          "outcome": "setback",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "locked",
+              "controllerSide": "opposition",
+              "controlId": "control_setback_force_binding_opposition_001",
+              "sourceOperation": "force_binding",
+              "restrictedOperations": [ "maneuver", "binding", "pressure" ],
+              "summary": "Opposition control is locked before the failed force binding."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_setback_force_binding_opposition_001",
+              "sourceOperation": "force_binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Failed force binding must not weaken opposition control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_setback_force_binding_opposition_001",
+          "sourceOperation": "force_binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Failed force binding must not weaken opposition control."
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardCannotCreateCanonicalControlState()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_guard_adds_control_state_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_guard_should_not_create_001",
+              "sourceOperation": "guard",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Guard illegally creates player control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BindingCannotJumpFromNoneToLocked()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_none_to_locked_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "locked",
+              "controllerSide": "player",
+              "controlId": "control_binding_jump_locked_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "break_binding" ],
+              "summary": "Binding illegally jumps straight to locked."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_step_too_large", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BindingCannotReverseActiveOppositionControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_reverses_opposition_control_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_binding_active_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "The opponent's binding is still active."
+            }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_player_binding_illegal_reversal_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Binding must not reverse active opposition control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_under_opposition_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BindingCannotJumpFromHinderedToLocked()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_hindered_to_locked_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_binding_hindered_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Player has light control."
+            }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "locked",
+              "controllerSide": "player",
+              "controlId": "control_binding_hindered_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "break_binding" ],
+              "summary": "Binding illegally skips bound."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_step_too_large", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("none", "hindered")]
+    [InlineData("hindered", "bound")]
+    [InlineData("bound", "locked")]
+    public async Task ValidateGameStateAsync_BindingCanAdvanceControlByOneStep(string beforeLevel, string afterLevel)
+    {
+        await WriteSoulStateAsync();
+        var beforeControl = string.Equals(beforeLevel, "none", StringComparison.OrdinalIgnoreCase)
+            ? """{ "level": "none" }"""
+            : $$"""
+              {
+                "level": "{{beforeLevel}}",
+                "controllerSide": "player",
+                "controlId": "control_binding_one_step_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver" ],
+                "summary": "Player control before one-step binding."
+              }
+              """;
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_binding_one_step_{{beforeLevel}}_to_{{afterLevel}}",
+          "operationType": "binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {{beforeControl}}
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {
+              "level": "{{afterLevel}}",
+              "controllerSide": "player",
+              "controlId": "control_binding_one_step_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "break_binding" ],
+              "summary": "Binding advances player control by one step."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_binding_control_step_too_large", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PressureCannotCreateCanonicalControlState()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_pressure_adds_control_state_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": { "level": "none", "controllerSide": null }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "strained",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_pressure_illegal_001",
+              "sourceOperation": "pressure",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Pressure illegally created control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_pressure_adds_binding", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PressureCannotRemoveCanonicalControlState()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_pressure_removes_control_state_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_pressure_should_not_remove_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Opponent control is active before pressure."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "strained"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_pressure_adds_binding", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_BreakBindingRequiresBindingContext()
     {
         await WriteSoulStateAsync();
@@ -2337,6 +3388,1896 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_break_binding_without_binding", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BreakBindingRequiresControlReduction()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_break_binding_no_control_delta_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent binds the soul."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent bind did not weaken."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BreakBindingCannotUseLegacyDeltaWhenCanonicalControlUnchanged()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_break_binding_legacy_delta_canonical_unchanged_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "bindingState": "active",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_legacy_bypass_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Canonical opposition control is active."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "bindingState": "broken",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_legacy_bypass_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Canonical opposition control is still active and unchanged."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BreakBindingAllowsLegacyOnlyBindingDelta()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_break_binding_legacy_only_delta_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "bindingState": "active"
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "bindingState": "broken"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_without_binding", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BreakBindingCanWeakenCanonicalControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_break_binding_weakens_control_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_002",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent binds the soul."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_002",
+              "sourceOperation": "break_binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "The bind weakens but is not gone."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_without_binding", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BreakBindingCanReduceSameLevelControlRestrictions()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_break_binding_reduces_same_level_restrictions_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_restrictions_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent bind restricts two spiritual lanes."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_restrictions_001",
+              "sourceOperation": "break_binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "The break narrows the bind while level remains bound."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BreakBindingSameLevelReorderedRestrictionsDoNotCountAsReduction()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_break_binding_reorders_same_level_restrictions_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_reorder_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent bind restricts two lanes."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_reorder_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "binding", "maneuver" ],
+              "summary": "Reordered restrictions do not weaken control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BlockedBreakBindingCannotReduceSameLevelControlRestrictions()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blocked_break_binding_reduces_same_level_restrictions_001",
+          "operationType": "break_binding",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "binding",
+            "summary": "The opposing binding holds."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_blocked_restriction_reduction_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent control is active before the failed break."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_blocked_restriction_reduction_001",
+              "sourceOperation": "break_binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Failed break must not narrow restrictions."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BlockedBreakBindingCannotClearControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blocked_break_binding_clears_control_001",
+          "operationType": "break_binding",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "binding",
+            "summary": "The opposing binding holds."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_blocked_break_binding_should_not_clear_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent control is active before the failed break."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SuccessfulBreakBindingCanClearControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_success_break_binding_clears_control_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_success_break_binding_clear_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent control is active before the successful break."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_break_binding_missing_control_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_IncarnationResistanceAcceptsForceIncarnationControlState()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_incarnation_resistance_control_context_001",
+          "operationType": "incarnation_resistance",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_force_incarnation_context_001",
+              "sourceOperation": "force_incarnation",
+              "restrictedOperations": [ "withdraw", "surrender", "negotiate" ],
+              "summary": "The Guardian is forcing the soul toward incarnation."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_clears_non_force_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_IncarnationResistanceCanWeakenForcedControlAndKeepSource()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_incarnation_resistance_weakens_force_control_001",
+          "operationType": "incarnation_resistance",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "locked",
+              "controllerSide": "opposition",
+              "controlId": "control_force_incarnation_residual_001",
+              "sourceOperation": "force_incarnation",
+              "restrictedOperations": [ "withdraw", "surrender", "negotiate" ],
+              "summary": "The Guardian is forcing the soul toward incarnation."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_force_incarnation_residual_001",
+              "sourceOperation": "force_incarnation",
+              "restrictedOperations": [ "withdraw", "surrender" ],
+              "summary": "The forced incarnation control weakens but remains active."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_force_incarnation_residual_001",
+          "sourceOperation": "force_incarnation",
+          "restrictedOperations": [ "withdraw", "surrender" ],
+          "summary": "The forced incarnation control weakens but remains active."
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_source_operation_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NextIncarnationResistanceAcceptsResidualForcedControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_incarnation_resistance_residual_force_context_001",
+          "operationType": "incarnation_resistance",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_force_incarnation_residual_002",
+              "sourceOperation": "force_incarnation",
+              "restrictedOperations": [ "withdraw", "surrender" ],
+              "summary": "The forced incarnation control remains after a previous resistance."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          }
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BlockedIncarnationResistanceCannotClearForcedControl()
+    {
+        await WriteSoulStateAsync();
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """{ "entries": [] }""");
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blocked_incarnation_resistance_clears_force_control_001",
+          "operationType": "incarnation_resistance",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "force_incarnation",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian's forced incarnation pressure holds."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_blocked_force_incarnation_001",
+              "sourceOperation": "force_incarnation",
+              "restrictedOperations": [ "withdraw", "surrender", "negotiate" ],
+              "summary": "The Guardian is forcing the soul toward incarnation."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SetbackIncarnationResistanceCannotWeakenForcedControl()
+    {
+        await WriteSoulStateAsync();
+        await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """{ "entries": [] }""");
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_setback_incarnation_resistance_weakens_force_control_001",
+          "operationType": "incarnation_resistance",
+          "outcome": "setback",
+          "incomingAction": {
+            "operationType": "force_incarnation",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian's forced incarnation pressure intensifies."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "locked",
+              "controllerSide": "opposition",
+              "controlId": "control_setback_force_incarnation_001",
+              "sourceOperation": "force_incarnation",
+              "restrictedOperations": [ "withdraw", "surrender", "negotiate" ],
+              "summary": "The Guardian is forcing the soul toward incarnation."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_setback_force_incarnation_001",
+              "sourceOperation": "force_incarnation",
+              "restrictedOperations": [ "withdraw", "surrender" ],
+              "summary": "Failed resistance must not weaken forced incarnation control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """, activeControlStateJson: """
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_setback_force_incarnation_001",
+          "sourceOperation": "force_incarnation",
+          "restrictedOperations": [ "withdraw", "surrender" ],
+          "summary": "Failed resistance must not weaken forced incarnation control."
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_control_delta_on_failed_outcome", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_IncarnationResistanceCannotCreateFreshPlayerControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_incarnation_resistance_creates_fresh_control_001",
+          "operationType": "incarnation_resistance",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "force_incarnation",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian tries to force incarnation from an uncontrolled state."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_incarnation_resistance_fresh_player_001",
+              "sourceOperation": "incarnation_resistance",
+              "restrictedOperations": [ "force_incarnation" ],
+              "summary": "Incarnation resistance must not create fresh player control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_creates_fresh_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_IncarnationResistanceCannotClearOrdinaryBindingControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_incarnation_resistance_clears_binding_control_001",
+          "operationType": "incarnation_resistance",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "force_incarnation",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian tries to force incarnation while an ordinary binding is active."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_ordinary_binding_incarnation_resistance_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "An ordinary binding is active and must be answered by break_binding or a valid counter."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_without_force", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_incarnation_resistance_clears_non_force_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ManeuverCannotImprovePositionWhileOppositionControlIsActive()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_maneuver_under_control_001",
+          "operationType": "maneuver",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_003",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Opponent controls the soul's movement."
+            }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_003",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Opponent control remains unchanged."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_maneuver_blocked_by_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentExchangeUnderActiveControlRequiresControlSnapshots()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        preTurnActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_active_snapshot_required_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Opponent control already restricts maneuver before this exchange."
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я продолжаю духовный бой под активным контролем противника.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_maneuver_omits_control_snapshots_001",
+          "operationType": "maneuver",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentExchangeBeforeControlMustMatchPreTurnControl()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        preTurnActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_pre_turn_snapshot_mismatch_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Opponent control is active before this exchange."
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я пытаюсь стереть активный контроль, подделав before snapshot.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["controlState"] = null;
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_break_binding_falsifies_pre_turn_control_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "bindingState": "active",
+            "controlState": null
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "bindingState": "broken",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentExchangeBeforeControlMustMatchFullPreTurnControl()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        var activeControl = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_pre_turn_full_snapshot_mismatch_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Opponent control restricts several spiritual actions before this exchange."
+        }
+        """)!;
+        preTurnActive["controlState"] = activeControl.DeepClone();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я пытаюсь ослабить оковы, подделав список запретов в before snapshot.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["controlState"] = null;
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_break_binding_falsifies_full_pre_turn_control_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_pre_turn_full_snapshot_mismatch_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Opponent control restricts several spiritual actions before this exchange."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentExchangeBeforeControlAcceptsFullPreTurnControl()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        var activeControl = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_pre_turn_full_snapshot_match_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Opponent control restricts several spiritual actions before this exchange."
+        }
+        """)!;
+        preTurnActive["controlState"] = activeControl.DeepClone();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я честно фиксирую активный контроль перед снятием оков.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["controlState"] = null;
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_break_binding_uses_full_pre_turn_control_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": {{activeControl.ToJsonString()}}
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_EarlierCurrentExchangeDoesNotRequireControlSnapshotsFromLaterControl()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я делаю несколько обменов, и контроль появляется только позже.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        var finalControl = JsonNode.Parse("""
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_later_binding_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Control appears only after the second exchange."
+        }
+        """)!;
+        currentActive["controlState"] = finalControl.DeepClone();
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_pressure_before_later_control_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_binding_creates_later_control_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "setup": true,
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {{finalControl.ToJsonString()}}
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FinalControlStateRequiresCurrentExchangeSnapshots()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я давлю на противника, но итоговый контроль должен быть объяснен обменом.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_root_only_without_exchange_audit_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Control appears only on the canonical active conflict root."
+        }
+        """);
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_pressure_root_only_control_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FinalControlStateCannotChangeWithoutCurrentExchange()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        preTurnActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_root_direct_clear_without_exchange_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Opponent control is active before this turn."
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я пытаюсь убрать контроль без обмена.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["controlState"] = null;
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FinalControlStateCannotChangeWhenExchangeLogIsOmitted()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        preTurnActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_root_omitted_exchange_log_clear_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Opponent control is active before this turn."
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я пытаюсь убрать контроль без exchangeLog.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive.Remove("exchangeLog");
+        currentActive["controlState"] = null;
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FinalControlStateCannotBeCreatedWhenExchangeLogIsOmitted()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я пытаюсь создать контроль без exchangeLog.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive.Remove("exchangeLog");
+        currentActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_root_omitted_exchange_log_create_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Player control appears only on the active conflict root."
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PreTurnControlDoesNotApplyToReplacementConflictWithTerminalProof()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson("afterlife_conflict_old_control_001"))!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        preTurnActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_old_conflict_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "This control belongs to the old conflict only."
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я закрываю старый конфликт и начинаю другой.");
+
+        var currentRoot = JsonNode.Parse(BuildActiveConflictRootJson("afterlife_conflict_replacement_001"))!.AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["exchangeLog"] = new JsonArray();
+        currentRoot["recentConflicts"] = JsonNode.Parse("""
+        [
+          {
+            "mode": "resolve",
+            "conflictId": "afterlife_conflict_old_control_001",
+            "resolutionState": "resolved",
+            "resolvedAtTurn": 7,
+            "operationType": "negotiate",
+            "playerOutcome": "conceded"
+          }
+        ]
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_active_removed_without_terminal_proof", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentExchangeBeforeControlMustMatchPreviousCurrentExchangeControl()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я создаю контроль, а затем пытаюсь стереть его поддельным before snapshot.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["controlState"] = null;
+        var createdControl = JsonNode.Parse("""
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_previous_current_snapshot_mismatch_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Player control was created by the previous exchange."
+        }
+        """)!;
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_binding_creates_control_before_mismatch_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "setup": true,
+          "before": {
+            "conflictPosition": "contested",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "controlState": {{createdControl.ToJsonString()}}
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_break_binding_falsifies_previous_current_control_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "bindingState": "active",
+            "controlState": null
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "bindingState": "broken",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentExchangeBeforeControlClearRequiresControlSnapshots()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        var activeControl = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_pre_turn_clear_later_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Opponent control is active before the multi-exchange turn."
+        }
+        """)!;
+        preTurnActive["controlState"] = activeControl.DeepClone();
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я сначала пытаюсь маневрировать под контролем, а затем срываю оковы.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["controlState"] = null;
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_maneuver_before_control_clear_001",
+          "operationType": "maneuver",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_break_binding_clears_control_later_001",
+          "operationType": "break_binding",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "controlState": {{activeControl.ToJsonString()}}
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "controlState": null
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithPositionModifier("player_advantaged").ToJsonString()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_control_snapshot_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ManeuverCannotRemoveControlWhileImprovingPosition()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_maneuver_removes_control_001",
+          "operationType": "maneuver",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_005",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Opponent controls the soul's movement."
+            }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_maneuver_blocked_by_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ManeuverCannotWeakenControlWhileImprovingPosition()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_maneuver_weakens_control_001",
+          "operationType": "maneuver",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_006",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Opponent control is active."
+            }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_006",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Maneuver improperly weakens the existing control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_maneuver_blocked_by_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BlockedManeuverCannotRemoveExistingControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blocked_maneuver_removes_control_001",
+          "operationType": "maneuver",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "guard",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian prevents the attempted repositioning."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_maneuver_should_not_remove_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Existing opposition control is active."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": null
+          },
+          "diceAudit": {{BuildMixedNoEffectDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_maneuver_changes_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ManeuverSetbackCannotCreateControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_maneuver_setback_creates_control_001",
+          "operationType": "maneuver",
+          "outcome": "setback",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian punishes the failed repositioning with pressure."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "none"
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "opposition",
+              "controlId": "control_maneuver_setback_illegal_001",
+              "sourceOperation": "maneuver",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Maneuver should not create control even on setback."
+            }
+          },
+          "diceAudit": {{BuildValidForcedIncarnationDiceAudit().ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_maneuver_changes_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BlockedGuardCannotRemoveExistingControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_blocked_guard_removes_control_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian keeps pressure while existing binding remains active."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_blocked_guard_should_not_remove_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Existing opposition control is active."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": null
+          },
+          "diceAudit": {{BuildMixedNoEffectDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardSetbackCanRecordIncomingControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_guard_setback_records_incoming_control_001",
+          "operationType": "guard",
+          "outcome": "setback",
+          "incomingAction": {
+            "operationType": "binding",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian pushes through the guard and binds the soul."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "opposition",
+              "controlId": "control_guard_setback_incoming_binding_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "The failed guard lets the incoming binding take hold."
+            }
+          },
+          "diceAudit": {{BuildValidForcedIncarnationDiceAudit().ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardSetbackCanRecordIncomingControlAfterExplicitNoControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_guard_setback_records_incoming_control_after_none_001",
+          "operationType": "guard",
+          "outcome": "setback",
+          "incomingAction": {
+            "operationType": "binding",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian pushes through the guard and binds the soul."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "none"
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "opposition",
+              "controlId": "control_guard_setback_incoming_binding_after_none_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "The failed guard lets the incoming binding take hold."
+            }
+          },
+          "diceAudit": {{BuildValidForcedIncarnationDiceAudit().ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardSetbackWithoutIncomingControlStillCannotChangeControl()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_guard_setback_illegal_control_001",
+          "operationType": "guard",
+          "outcome": "setback",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorId": "guardian_liora",
+            "summary": "The Guardian pressures the soul without a control action."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "opposition",
+              "controlId": "control_guard_setback_illegal_pressure_001",
+              "sourceOperation": "pressure",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Pressure should not become control through guard."
+            }
+          },
+          "diceAudit": {{BuildValidForcedIncarnationDiceAudit().ToJsonString()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CounterAgainstControlCanUseControlReversalAsPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_reverses_control_001",
+          "operationType": "counter",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "binding",
+            "actorId": "guardian_opponent",
+            "summary": "The Guardian tries to bind the soul."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_opposition_bind_004",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent bind is active."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_player_reversal_001",
+              "sourceOperation": "counter",
+              "restrictedOperations": [ "binding" ],
+              "summary": "The soul turns the bind back into a weaker counter-control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CounterAgainstControlCanUseSameLevelRestrictionReductionAsPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_reduces_control_restrictions_001",
+          "operationType": "counter",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "binding",
+            "actorId": "guardian_opponent",
+            "summary": "The Guardian's bind is the incoming action being countered."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_counter_restrictions_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "binding" ],
+              "summary": "Opponent bind restricts two lanes."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "opposition",
+              "controlId": "control_counter_restrictions_001",
+              "sourceOperation": "counter",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "The counter narrows the bind without fully breaking it."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CounterAgainstPressureCannotCreateFreshControlAsPayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_pressure_fresh_control_001",
+          "operationType": "counter",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorId": "guardian_opponent",
+            "summary": "The Guardian pressures the soul without existing control."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "none"
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_counter_pressure_fresh_001",
+              "sourceOperation": "counter",
+              "restrictedOperations": [ "pressure" ],
+              "summary": "A fresh player-side control state should require the binding lane."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_missing_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CounterAgainstPressureCannotCreateFreshControlWithSeparatePayoff()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_counter_pressure_fresh_control_with_payoff_001",
+          "operationType": "counter",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorId": "guardian_opponent",
+            "summary": "The Guardian pressures the soul without existing control."
+          },
+          "counterPayoff": {
+            "payoffType": "strain_reversal",
+            "summary": "The counter also strains the opponent."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": { "level": "none" }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "strained",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_counter_pressure_fresh_with_payoff_001",
+              "sourceOperation": "counter",
+              "restrictedOperations": [ "pressure" ],
+              "summary": "A separate payoff must not let counter create fresh control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_creates_fresh_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CounterCannotStrengthenExistingPlayerControl()
+    {
+        await WriteSoulStateAsync();
+        var preTurnRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        var preTurnActive = Assert.IsType<JsonObject>(preTurnRoot["activeConflict"]);
+        preTurnActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "hindered",
+          "controllerSide": "player",
+          "controlId": "control_counter_player_growth_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver" ],
+          "summary": "Player control already exists before the counter."
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, preTurnRoot.ToJsonString());
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Я пытаюсь усилить контроль контрприёмом вместо оков.");
+
+        var currentRoot = preTurnRoot.DeepClone().AsObject();
+        var currentActive = Assert.IsType<JsonObject>(currentRoot["activeConflict"]);
+        currentActive["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "player",
+          "controlId": "control_counter_player_growth_001",
+          "sourceOperation": "counter",
+          "restrictedOperations": [ "maneuver", "pressure" ],
+          "summary": "Counter must not strengthen player control."
+        }
+        """);
+        var exchangeLog = Assert.IsType<JsonArray>(currentActive["exchangeLog"]);
+        exchangeLog.Add(JsonNode.Parse(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_counter_strengthens_player_control_001",
+          "operationType": "counter",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorId": "guardian_opponent",
+            "summary": "The Guardian pressures the soul while player control already exists."
+          },
+          "counterPayoff": {
+            "payoffType": "strain_reversal",
+            "summary": "The counter also strains the opponent."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_counter_player_growth_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Player control already exists before the counter."
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "oppositionSideStrain": "strained",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "player",
+              "controlId": "control_counter_player_growth_001",
+              "sourceOperation": "counter",
+              "restrictedOperations": [ "maneuver", "pressure" ],
+              "summary": "Counter must not strengthen player control."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """)));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, currentRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_counter_creates_fresh_control", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2953,6 +5894,68 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_SuccessExchange_RejectsNoControlEncodingOnlyDelta()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_no_control_encoding_no_delta_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear"
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": { "level": "none" }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_exchange_no_state_delta", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_guard_changes_control", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NoEffectExchange_AllowsNoControlEncodingOnlyDelta()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_no_effect_no_control_encoding_001",
+          "operationType": "guard",
+          "outcome": "no_effect",
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": null
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": { "level": "none" }
+          }
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_no_effect_has_state_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ExchangeMissingBefore_FailsAuditSnapshotValidation()
     {
         await WriteSoulStateAsync();
@@ -3488,6 +6491,14 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
               "playerSideStrain": "strained",
               "oppositionSideStrain": "clear",
               "conflictPosition": "player_advantaged",
+              "controlState": {
+                "level": "hindered",
+                "controllerSide": "player",
+                "controlId": "control_after_projection_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver" ],
+                "summary": "Projected control state."
+              },
               "resolutionState": "active",
               "status": "active"
             }
@@ -3502,6 +6513,8 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         Assert.Equal("player_advantaged", active["conflictPosition"]?.GetValue<string>());
         Assert.Equal("strained", active["playerSideStrain"]?.GetValue<string>());
         Assert.Equal("clear", active["oppositionSideStrain"]?.GetValue<string>());
+        Assert.Equal("hindered", active["controlState"]?["level"]?.GetValue<string>());
+        Assert.Equal("player", active["controlState"]?["controllerSide"]?.GetValue<string>());
         Assert.Equal("active", active["resolutionState"]?.GetValue<string>());
         Assert.Equal("active", active["status"]?.GetValue<string>());
         var exchangeLog = Assert.IsType<JsonArray>(active["exchangeLog"]);
@@ -3536,6 +6549,376 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         var active = Assert.IsType<JsonObject>(projected["activeConflict"]);
         Assert.Equal("opposition_advantaged", active["conflictPosition"]?.GetValue<string>());
         Assert.Equal("clear", active["playerSideStrain"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_ExchangeRootControlStateDoesNotOverrideValidatedAfterSnapshot()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var activeBefore = Assert.IsType<JsonObject>(root["activeConflict"]);
+        activeBefore["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_root_override_should_not_clear_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Existing opposition control is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "controlState": null,
+          "exchange": {
+            "exchangeId": "exchange_root_control_override_001",
+            "operationType": "pressure",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "oppositionSideStrain": "clear",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_root_override_should_not_clear_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "Existing opposition control is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested",
+              "oppositionSideStrain": "strained",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_root_override_should_not_clear_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "Existing opposition control is still active."
+              }
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var active = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var control = Assert.IsType<JsonObject>(active["controlState"]);
+        Assert.Equal("bound", control["level"]?.GetValue<string>());
+        Assert.Equal("opposition", control["controllerSide"]?.GetValue<string>());
+        Assert.Equal("control_root_override_should_not_clear_001", control["controlId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_ExchangeReplacementPreservesControlStateWhenAfterSnapshotKeepsControl()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var activeBefore = Assert.IsType<JsonObject>(root["activeConflict"]);
+        activeBefore["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_replacement_should_preserve_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Existing opposition control is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "activeConflictAfter": {
+            "conflictId": "afterlife_conflict_test_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "resolutionState": "active",
+            "exchangeLog": []
+          },
+          "exchange": {
+            "exchangeId": "exchange_replacement_preserve_control_001",
+            "operationType": "pressure",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "oppositionSideStrain": "clear",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_replacement_should_preserve_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "Existing opposition control is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested",
+              "oppositionSideStrain": "strained",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_replacement_should_preserve_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "Existing opposition control is still active."
+              }
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var active = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var control = Assert.IsType<JsonObject>(active["controlState"]);
+        Assert.Equal("bound", control["level"]?.GetValue<string>());
+        Assert.Equal("opposition", control["controllerSide"]?.GetValue<string>());
+        Assert.Equal("control_replacement_should_preserve_001", control["controlId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_ExchangeReplacementDoesNotClearControlForNonAntiControlOperation()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var activeBefore = Assert.IsType<JsonObject>(root["activeConflict"]);
+        activeBefore["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_replacement_non_anti_preserve_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Existing opposition control is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "activeConflictAfter": {
+            "conflictId": "afterlife_conflict_test_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "resolutionState": "active",
+            "exchangeLog": []
+          },
+          "exchange": {
+            "exchangeId": "exchange_replacement_non_anti_control_001",
+            "operationType": "pressure",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "oppositionSideStrain": "clear"
+            },
+            "after": {
+              "conflictPosition": "contested",
+              "oppositionSideStrain": "strained"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var active = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var control = Assert.IsType<JsonObject>(active["controlState"]);
+        Assert.Equal("control_replacement_non_anti_preserve_001", control["controlId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_ExchangeReplacementWithOmittedAntiControlSnapshot_PreservesActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var activeBefore = Assert.IsType<JsonObject>(root["activeConflict"]);
+        activeBefore["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_replacement_anti_omitted_preserve_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Existing opposition control is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "activeConflictAfter": {
+            "conflictId": "afterlife_conflict_test_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "resolutionState": "active",
+            "exchangeLog": []
+          },
+          "exchange": {
+            "exchangeId": "exchange_replacement_break_binding_omits_control_001",
+            "operationType": "break_binding",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_replacement_anti_omitted_preserve_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "Existing opposition control is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var active = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var control = Assert.IsType<JsonObject>(active["controlState"]);
+        Assert.Equal("control_replacement_anti_omitted_preserve_001", control["controlId"]?.GetValue<string>());
+        Assert.Equal("bound", control["level"]?.GetValue<string>());
+        Assert.Equal("opposition", control["controllerSide"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_ExchangeReplacementWithExplicitNullControlState_IsRespectedWhenAfterOmitsControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var activeBefore = Assert.IsType<JsonObject>(root["activeConflict"]);
+        activeBefore["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_replacement_null_should_win_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Existing opposition control is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "activeConflictAfter": {
+            "conflictId": "afterlife_conflict_test_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": null,
+            "resolutionState": "active",
+            "exchangeLog": []
+          },
+          "exchange": {
+            "exchangeId": "exchange_replacement_null_control_omitted_after_001",
+            "operationType": "break_binding",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_replacement_null_should_win_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "Existing opposition control is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var active = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        Assert.True(active.ContainsKey("controlState"));
+        Assert.Null(active["controlState"]);
+    }
+
+    [Fact]
+    public void ApplyUpdate_ExchangeReplacementWithExplicitControlState_IsRespectedWhenAfterOmitsControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var activeBefore = Assert.IsType<JsonObject>(root["activeConflict"]);
+        activeBefore["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_replacement_object_old_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "Existing opposition control is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "activeConflictAfter": {
+            "conflictId": "afterlife_conflict_test_001",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "opposition",
+              "controlId": "control_replacement_object_new_001",
+              "sourceOperation": "break_binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "The replacement state weakens the old control."
+            },
+            "resolutionState": "active",
+            "exchangeLog": []
+          },
+          "exchange": {
+            "exchangeId": "exchange_replacement_object_control_omitted_after_001",
+            "operationType": "break_binding",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_replacement_object_old_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "Existing opposition control is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var active = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var control = Assert.IsType<JsonObject>(active["controlState"]);
+        Assert.Equal("control_replacement_object_new_001", control["controlId"]?.GetValue<string>());
+        Assert.Equal("hindered", control["level"]?.GetValue<string>());
+        Assert.Equal("opposition", control["controllerSide"]?.GetValue<string>());
     }
 
     [Fact]
@@ -4055,6 +7438,411 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         Assert.IsType<JsonObject>(exchange["before"]);
         Assert.IsType<JsonObject>(exchange["after"]);
         Assert.False(exchange.ContainsKey("summary"));
+    }
+
+    [Fact]
+    public void ApplyUpdate_BreakBindingWithNullControlState_ClearsActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        active["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_opposition_bind_projection_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "The opponent's binding is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "exchange": {
+            "exchangeId": "exchange_break_binding_null_control_001",
+            "operationType": "break_binding",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_opposition_bind_projection_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "The opponent's binding is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested",
+              "controlState": null
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var projectedActive = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        Assert.Null(projectedActive["controlState"]);
+    }
+
+    [Fact]
+    public void ApplyUpdate_BreakBindingWithOmittedControlState_PreservesActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        active["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_opposition_bind_projection_002",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "The opponent's binding is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "exchange": {
+            "exchangeId": "exchange_break_binding_omitted_control_001",
+            "operationType": "break_binding",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_opposition_bind_projection_002",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "The opponent's binding is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var projectedActive = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var projectedControl = Assert.IsType<JsonObject>(projectedActive["controlState"]);
+        Assert.Equal("control_opposition_bind_projection_002", projectedControl["controlId"]?.GetValue<string>());
+        Assert.Equal("bound", projectedControl["level"]?.GetValue<string>());
+        Assert.Equal("opposition", projectedControl["controllerSide"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_IncarnationResistanceWithOmittedBindingControl_PreservesActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        active["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_opposition_bind_projection_incarnation_resistance_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "The opponent's ordinary binding is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "exchange": {
+            "exchangeId": "exchange_incarnation_resistance_omits_binding_control_001",
+            "operationType": "incarnation_resistance",
+            "outcome": "success",
+            "incomingAction": {
+              "operationType": "force_incarnation",
+              "actorId": "guardian_liora",
+              "summary": "The Guardian tries to force a handoff while a separate binding is active."
+            },
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_opposition_bind_projection_incarnation_resistance_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "The opponent's ordinary binding is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var projectedActive = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var projectedControl = Assert.IsType<JsonObject>(projectedActive["controlState"]);
+        Assert.Equal("control_opposition_bind_projection_incarnation_resistance_001", projectedControl["controlId"]?.GetValue<string>());
+        Assert.Equal("binding", projectedControl["sourceOperation"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_IncarnationResistanceWithOmittedForcedIncarnationControl_PreservesActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        active["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_force_incarnation_projection_001",
+          "sourceOperation": "force_incarnation",
+          "restrictedOperations": [ "withdraw", "surrender", "negotiate" ],
+          "summary": "The opponent is forcing an incarnation handoff."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "exchange": {
+            "exchangeId": "exchange_incarnation_resistance_omits_force_control_001",
+            "operationType": "incarnation_resistance",
+            "outcome": "success",
+            "incomingAction": {
+              "operationType": "force_incarnation",
+              "actorId": "guardian_liora",
+              "summary": "The Guardian tries to force a handoff."
+            },
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_force_incarnation_projection_001",
+                "sourceOperation": "force_incarnation",
+                "restrictedOperations": [ "withdraw", "surrender", "negotiate" ],
+                "summary": "The opponent is forcing an incarnation handoff."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var projectedActive = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var projectedControl = Assert.IsType<JsonObject>(projectedActive["controlState"]);
+        Assert.Equal("control_force_incarnation_projection_001", projectedControl["controlId"]?.GetValue<string>());
+        Assert.Equal("bound", projectedControl["level"]?.GetValue<string>());
+        Assert.Equal("opposition", projectedControl["controllerSide"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_BreakBindingWithOmittedStaleControlState_PreservesActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        active["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_current_opposition_bind_projection_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "The current opponent binding is active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "exchange": {
+            "exchangeId": "exchange_break_binding_stale_omitted_control_001",
+            "operationType": "break_binding",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_stale_opposition_bind_projection_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "A stale opponent binding snapshot is active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var projectedActive = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var projectedControl = Assert.IsType<JsonObject>(projectedActive["controlState"]);
+        Assert.Equal("control_current_opposition_bind_projection_001", projectedControl["controlId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_BreakBindingWithOmittedSameIdDifferentLevel_PreservesActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        active["controlState"] = JsonNode.Parse("""
+        {
+          "level": "locked",
+          "controllerSide": "opposition",
+          "controlId": "control_reused_opposition_bind_projection_001",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding", "withdraw" ],
+          "summary": "The current opponent binding strengthened after the stale snapshot."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "exchange": {
+            "exchangeId": "exchange_break_binding_stale_same_id_level_001",
+            "operationType": "break_binding",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_reused_opposition_bind_projection_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "A stale lower-level binding snapshot."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var projectedActive = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var projectedControl = Assert.IsType<JsonObject>(projectedActive["controlState"]);
+        Assert.Equal("locked", projectedControl["level"]?.GetValue<string>());
+        Assert.Equal("opposition", projectedControl["controllerSide"]?.GetValue<string>());
+        Assert.Equal("control_reused_opposition_bind_projection_001", projectedControl["controlId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_BreakBindingWithOmittedSameIdDifferentController_PreservesActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        active["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "player",
+          "controlId": "control_reused_reversed_projection_001",
+          "sourceOperation": "counter",
+          "restrictedOperations": [ "binding" ],
+          "summary": "The current control was already reversed to the player."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "exchange": {
+            "exchangeId": "exchange_break_binding_stale_same_id_controller_001",
+            "operationType": "break_binding",
+            "outcome": "success",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_reused_reversed_projection_001",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "A stale opponent binding snapshot."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var projectedActive = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var projectedControl = Assert.IsType<JsonObject>(projectedActive["controlState"]);
+        Assert.Equal("bound", projectedControl["level"]?.GetValue<string>());
+        Assert.Equal("player", projectedControl["controllerSide"]?.GetValue<string>());
+        Assert.Equal("control_reused_reversed_projection_001", projectedControl["controlId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public void ApplyUpdate_CounteredBreakBindingWithOmittedControlState_PreservesActiveControlState()
+    {
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        active["controlState"] = JsonNode.Parse("""
+        {
+          "level": "bound",
+          "controllerSide": "opposition",
+          "controlId": "control_opposition_bind_projection_003",
+          "sourceOperation": "binding",
+          "restrictedOperations": [ "maneuver", "binding" ],
+          "summary": "The opponent's binding remains active."
+        }
+        """);
+        var update = JsonNode.Parse("""
+        {
+          "mode": "exchange",
+          "exchange": {
+            "exchangeId": "exchange_break_binding_countered_control_001",
+            "operationType": "break_binding",
+            "outcome": "countered",
+            "before": {
+              "conflictPosition": "contested",
+              "controlState": {
+                "level": "bound",
+                "controllerSide": "opposition",
+                "controlId": "control_opposition_bind_projection_003",
+                "sourceOperation": "binding",
+                "restrictedOperations": [ "maneuver", "binding" ],
+                "summary": "The opponent's binding remains active."
+              }
+            },
+            "after": {
+              "conflictPosition": "contested"
+            }
+          }
+        }
+        """)!.AsObject();
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+
+        AssertNoInvalidMarkers(projected);
+        var projectedActive = Assert.IsType<JsonObject>(projected["activeConflict"]);
+        var projectedControl = Assert.IsType<JsonObject>(projectedActive["controlState"]);
+        Assert.Equal("bound", projectedControl["level"]?.GetValue<string>());
+        Assert.Equal("opposition", projectedControl["controllerSide"]?.GetValue<string>());
+        Assert.Equal("control_opposition_bind_projection_003", projectedControl["controlId"]?.GetValue<string>());
     }
 
     [Fact]
@@ -5904,6 +9692,50 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         return audit;
     }
 
+    private static string BuildPlayerSuccessDiceAuditWithoutAbodePowerJson() =>
+        BuildPlayerSuccessDiceAuditWithoutAbodePower().ToJsonString();
+
+    private static JsonObject BuildPlayerSuccessDiceAuditWithoutAbodePowerWithPositionModifier(string position, int value = 2)
+    {
+        var audit = BuildPlayerSuccessDiceAuditWithoutAbodePower();
+        AddConflictPositionModifier(audit, "player", position, value);
+        return audit;
+    }
+
+    private static JsonObject BuildPlayerSuccessDiceAuditWithoutAbodePower()
+    {
+        var audit = BuildPlayerSuccessDiceAudit();
+        var removedValue = 0;
+        if (audit["modifierBreakdown"] is JsonObject modifierBreakdown &&
+            modifierBreakdown["opposition"] is JsonArray oppositionModifiers)
+        {
+            for (var i = oppositionModifiers.Count - 1; i >= 0; i--)
+            {
+                if (oppositionModifiers[i] is not JsonObject modifier ||
+                    !string.Equals(modifier["source"]?.GetValue<string>(), "active Guardian Abode pressure", StringComparison.OrdinalIgnoreCase) ||
+                    modifier["value"] is not JsonValue valueNode)
+                {
+                    continue;
+                }
+
+                removedValue += valueNode.GetValue<int>();
+                oppositionModifiers.RemoveAt(i);
+            }
+        }
+
+        if (removedValue != 0)
+        {
+            var playerTotal = audit["playerTotal"]!.GetValue<int>();
+            var oppositionTotal = audit["oppositionTotal"]!.GetValue<int>() - removedValue;
+            var margin = playerTotal - oppositionTotal;
+            audit["oppositionTotal"] = oppositionTotal;
+            audit["margin"] = margin;
+            audit["outcomeBand"] = ExpectedOutcomeBandForTest(margin);
+        }
+
+        return audit;
+    }
+
     private static void AddConflictPositionModifier(
         JsonObject audit,
         string side,
@@ -6309,11 +10141,17 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
     }
 
-    private Task WriteConflictStateWithRawExchangeAsync(string exchangeJson, bool addDefaultMatchupAudit = true)
+    private Task WriteConflictStateWithRawExchangeAsync(
+        string exchangeJson,
+        bool addDefaultMatchupAudit = true,
+        string? activeControlStateJson = null)
     {
         var projectedExchangeJson = addDefaultMatchupAudit
             ? AddDefaultMatchupAudit(exchangeJson)
             : exchangeJson;
+        var activeControlStateFragment = string.IsNullOrWhiteSpace(activeControlStateJson)
+            ? string.Empty
+            : $",\n            \"controlState\": {activeControlStateJson}";
 
         return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
         {
@@ -6346,7 +10184,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "playerSideStrain": "clear",
             "oppositionSideStrain": "clear",
             "conflictPosition": "contested",
-            "resolutionState": "active",
+            "resolutionState": "active"{{activeControlStateFragment}},
             "exchangeLog": [
               {{projectedExchangeJson}}
             ]

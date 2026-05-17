@@ -56,6 +56,20 @@ public static class AfterlifeSpiritualConflictState
         "player_dominant"
     };
 
+    public static readonly HashSet<string> ControlLevels = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "none",
+        "hindered",
+        "bound",
+        "locked"
+    };
+
+    public static readonly HashSet<string> ControlSides = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "player",
+        "opposition"
+    };
+
     public static readonly HashSet<string> ResolutionStates = new(StringComparer.OrdinalIgnoreCase)
     {
         "active",
@@ -307,6 +321,7 @@ public static class AfterlifeSpiritualConflictState
             if (string.IsNullOrWhiteSpace(replacementConflictId))
                 replacement["conflictId"] = active["conflictId"]?.DeepClone();
 
+            ApplyExchangeControlStateToReplacement(replacement, exchange, active);
             log.Add(exchange.DeepClone());
             replacement["exchangeLog"] = MergeExchangeLogs(log, replacement["exchangeLog"] as JsonArray);
             root["activeConflict"] = replacement;
@@ -323,7 +338,9 @@ public static class AfterlifeSpiritualConflictState
         }
 
         if (exchange["after"] is JsonObject exchangeAfter)
+        {
             CopyConflictStateFields(exchangeAfter, active);
+        }
 
         CopyIfPresent(update, active, "conflictPosition");
         CopyIfPresent(update, active, "playerSideStrain");
@@ -519,8 +536,29 @@ public static class AfterlifeSpiritualConflictState
         CopyIfPresent(source, target, "conflictPosition");
         CopyIfPresent(source, target, "playerSideStrain");
         CopyIfPresent(source, target, "oppositionSideStrain");
+        CopyIfPresentOrNull(source, target, "controlState");
         CopyIfPresent(source, target, "resolutionState");
         CopyIfPresent(source, target, "status");
+    }
+
+    private static void ApplyExchangeControlStateToReplacement(JsonObject replacement, JsonObject exchange, JsonObject active)
+    {
+        if (exchange["after"] is JsonObject exchangeAfter && exchangeAfter.ContainsKey("controlState"))
+        {
+            replacement["controlState"] = exchangeAfter["controlState"]?.DeepClone();
+            return;
+        }
+
+        if (replacement.ContainsKey("controlState"))
+            return;
+
+        if (active.ContainsKey("controlState"))
+        {
+            replacement["controlState"] = active["controlState"]?.DeepClone();
+            return;
+        }
+
+        replacement.Remove("controlState");
     }
 
     private static JsonArray MergeExchangeLogs(JsonArray canonicalLog, JsonArray? replacementLog)
@@ -566,6 +604,12 @@ public static class AfterlifeSpiritualConflictState
     {
         if (source.TryGetPropertyValue(propertyName, out var node) && node != null)
             target[propertyName] = node.DeepClone();
+    }
+
+    private static void CopyIfPresentOrNull(JsonObject source, JsonObject target, string propertyName)
+    {
+        if (source.ContainsKey(propertyName))
+            target[propertyName] = source[propertyName]?.DeepClone();
     }
 
     public static JsonNode? CloneJsonElement(JsonElement element)
