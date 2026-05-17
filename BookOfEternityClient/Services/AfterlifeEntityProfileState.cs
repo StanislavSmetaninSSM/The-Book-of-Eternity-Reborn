@@ -10,6 +10,8 @@ internal static class AfterlifeEntityProfileState
     public const string UpdateProperty = "afterlifeEntityProfileUpdates";
     public const string CustomStateChangesProperty = "afterlifeEntityCustomStateChanges";
     public const string CustomStatesProperty = "customStates";
+    public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
+    public const string ProgressionLedgerProperty = "progressionLedger";
     public const int SchemaVersion = 1;
     public const int MaxProfileTier = 5;
 
@@ -66,7 +68,10 @@ internal static class AfterlifeEntityProfileState
             [ProfilesProperty] = new JsonArray()
         };
 
-    public static JsonObject ProjectCanonicalRoot(JsonObject? currentRoot, JsonObject? previousRoot)
+    public static JsonObject ProjectCanonicalRoot(
+        JsonObject? currentRoot,
+        JsonObject? previousRoot,
+        JsonObject? progressionReportRoot = null)
     {
         var result = CreateDefaultRoot();
 
@@ -75,10 +80,13 @@ internal static class AfterlifeEntityProfileState
         UpsertProfiles(result, currentRoot?[ResponseProfilesProperty]);
         UpsertProfiles(result, currentRoot?[UpdateProperty]);
         ApplyCustomStateChanges(result, currentRoot?[CustomStateChangesProperty]);
+        ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
+        ApplyAutomaticProgression(result, progressionReportRoot);
 
         result.Remove(UpdateProperty);
         result.Remove(ResponseProfilesProperty);
         result.Remove(CustomStateChangesProperty);
+        result.Remove(ProgressionOverridesProperty);
         return result;
     }
 
@@ -254,6 +262,341 @@ internal static class AfterlifeEntityProfileState
         GetNodeString(state["title"]) ??
         GetNodeString(state["stateName"]);
 
+    private static void ApplyProgressionOverrides(JsonObject result, JsonNode? overridesNode)
+    {
+        if (overridesNode is not JsonArray overrides)
+            return;
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var overrideNode in overrides.OfType<JsonObject>())
+        {
+            var targetKey = BuildIdentityKey(overrideNode);
+            if (string.IsNullOrWhiteSpace(targetKey))
+                continue;
+
+            var profile = profiles
+                .OfType<JsonObject>()
+                .FirstOrDefault(item => string.Equals(BuildIdentityKey(item), targetKey, StringComparison.OrdinalIgnoreCase));
+            if (profile == null)
+                continue;
+
+            var cycleKey = GetNodeString(overrideNode["cycleKey"]) ?? "manual";
+            ApplyCurrencyDeltas(profile, overrideNode["currencyDeltas"] as JsonObject);
+            ApplyStandardArtTierDeltas(profile, overrideNode["standardArtTierDeltas"] as JsonObject);
+            ApplyProgressionExperienceDeltas(profile, overrideNode["progressionExperienceDeltas"] as JsonObject);
+
+            var strategy = EnsureObject(profile, "progressionStrategy");
+            strategy["lastAutoProgressionCycleKey"] = cycleKey;
+            AppendProgressionLedger(profile, new JsonObject
+            {
+                ["entryId"] = BuildProgressionLedgerEntryId(profile, cycleKey, "gm_override"),
+                ["cycleKey"] = cycleKey,
+                ["source"] = "gm_override",
+                ["summary"] = GetNodeString(overrideNode["summary"]) ??
+                              GetNodeString(overrideNode["reason"]) ??
+                              "GM override применил прокачку сущности посмертия.",
+                ["income"] = new JsonObject
+                {
+                    ["inkFeathers"] = 0,
+                    ["lightSparks"] = 0
+                },
+                ["spending"] = CloneObject(overrideNode["currencyDeltas"] as JsonObject ?? new JsonObject())
+            });
+        }
+    }
+
+    private static void ApplyAutomaticProgression(JsonObject result, JsonObject? progressionReportRoot)
+    {
+        var cycle = ResolveProgressionCycle(progressionReportRoot);
+        if (cycle == null)
+            return;
+
+        if (result[ProfilesProperty] is not JsonArray profiles)
+            return;
+
+        foreach (var profile in profiles.OfType<JsonObject>())
+            ApplyAutomaticProgression(profile, cycle.Value);
+    }
+
+    private static void ApplyAutomaticProgression(JsonObject profile, ProgressionCycle cycle)
+    {
+        var strategy = profile["progressionStrategy"] as JsonObject;
+        if (strategy == null)
+            return;
+
+        if (strategy["autoProgressionEnabled"] is JsonValue enabledValue &&
+            enabledValue.TryGetValue<bool>(out var enabled) &&
+            !enabled)
+        {
+            return;
+        }
+
+        if (string.Equals(GetNodeString(strategy["lastAutoProgressionCycleKey"]), cycle.CycleKey, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var currencies = EnsureObject(profile, "currencies");
+        var income = ResolveIncome(profile, cycle);
+        AddCurrency(currencies, "inkFeathers", income.InkFeathers);
+        AddCurrency(currencies, "lightSparks", income.LightSparks);
+
+        var spending = new CurrencyDelta(0, 0);
+        var upgrades = new JsonArray();
+        ApplyStrategyUpgrade(profile, cycle, strategy, currencies, ref spending, upgrades);
+
+        strategy["lastAutoProgressionCycleKey"] = cycle.CycleKey;
+        AppendProgressionLedger(profile, new JsonObject
+        {
+            ["entryId"] = BuildProgressionLedgerEntryId(profile, cycle.CycleKey, "auto"),
+            ["cycleKey"] = cycle.CycleKey,
+            ["source"] = "client_auto_strategy",
+            ["summary"] = upgrades.Count > 0
+                ? "Автопрокачка по стратегии применила доход и один приоритетный апгрейд."
+                : "Автопрокачка по стратегии применила доход; доступного апгрейда не было.",
+            ["income"] = new JsonObject
+            {
+                ["inkFeathers"] = income.InkFeathers,
+                ["lightSparks"] = income.LightSparks
+            },
+            ["spending"] = new JsonObject
+            {
+                ["inkFeathers"] = spending.InkFeathers,
+                ["lightSparks"] = spending.LightSparks
+            },
+            ["upgrades"] = upgrades
+        });
+    }
+
+    private static void ApplyStrategyUpgrade(
+        JsonObject profile,
+        ProgressionCycle cycle,
+        JsonObject strategy,
+        JsonObject currencies,
+        ref CurrencyDelta spending,
+        JsonArray upgrades)
+    {
+        if (strategy["priorityOrder"] is not JsonArray priorities)
+            return;
+
+        foreach (var priorityNode in priorities)
+        {
+            var priority = GetNodeString(priorityNode);
+            if (string.IsNullOrWhiteSpace(priority))
+                continue;
+
+            if (StandardArtIds.Contains(priority) &&
+                TryUpgradeStandardArt(profile, currencies, priority, ref spending, upgrades))
+            {
+                return;
+            }
+
+            if (string.Equals(priority, "enlightenment", StringComparison.OrdinalIgnoreCase) &&
+                TryUpgradeProgressionTrack(profile, currencies, "enlightenment", useLightSparks: false, ref spending, upgrades))
+            {
+                return;
+            }
+
+            if (cycle.IsShining &&
+                string.Equals(priority, "radiance", StringComparison.OrdinalIgnoreCase) &&
+                TryUpgradeProgressionTrack(profile, currencies, "radiance", useLightSparks: true, ref spending, upgrades))
+            {
+                return;
+            }
+        }
+    }
+
+    private static bool TryUpgradeStandardArt(
+        JsonObject profile,
+        JsonObject currencies,
+        string artId,
+        ref CurrencyDelta spending,
+        JsonArray upgrades)
+    {
+        var arts = EnsureObject(profile, "standardArts");
+        var currentTier = Math.Clamp(GetNodeInt(arts[artId]), 0, MaxProfileTier);
+        if (currentTier >= MaxProfileTier)
+            return false;
+
+        var cost = 10 * (currentTier + 1);
+        if (GetNodeInt(currencies["inkFeathers"]) < cost)
+            return false;
+
+        AddCurrency(currencies, "inkFeathers", -cost);
+        arts[artId] = currentTier + 1;
+        spending = spending with { InkFeathers = spending.InkFeathers + cost };
+        upgrades.Add($"{artId}:{currentTier}->{currentTier + 1}");
+        return true;
+    }
+
+    private static bool TryUpgradeProgressionTrack(
+        JsonObject profile,
+        JsonObject currencies,
+        string trackName,
+        bool useLightSparks,
+        ref CurrencyDelta spending,
+        JsonArray upgrades)
+    {
+        var progression = EnsureObject(profile, "progression");
+        var track = EnsureObject(progression, trackName);
+        var tier = Math.Clamp(GetNodeInt(track["tier"]), 0, MaxProfileTier);
+        if (tier >= MaxProfileTier)
+            return false;
+
+        var currencyName = useLightSparks ? "lightSparks" : "inkFeathers";
+        var cost = useLightSparks ? tier + 1 : 10 * (tier + 1);
+        if (GetNodeInt(currencies[currencyName]) < cost)
+            return false;
+
+        AddCurrency(currencies, currencyName, -cost);
+        var nextExperience = Math.Max(0, GetNodeInt(track["experience"])) + 20;
+        track["experience"] = nextExperience;
+        track["tier"] = Math.Min(MaxProfileTier, Math.Max(tier, nextExperience / 20));
+
+        spending = useLightSparks
+            ? spending with { LightSparks = spending.LightSparks + cost }
+            : spending with { InkFeathers = spending.InkFeathers + cost };
+        upgrades.Add($"{trackName}:experience+20");
+        return true;
+    }
+
+    private static ProgressionCycle? ResolveProgressionCycle(JsonObject? root)
+    {
+        if (root == null)
+            return null;
+
+        var report = root["progressionProcessingReport"] as JsonObject ?? root;
+        var shiningCycles = new[]
+        {
+            GetNodeInt(report["shiningAbodeCyclesProcessed"]),
+            GetNodeInt(report["shiningFactionCyclesProcessed"]),
+            GetNodeInt(report["shiningTradeCyclesProcessed"])
+        }.Max();
+        if (shiningCycles > 0)
+        {
+            var ordinal = new[]
+            {
+                GetNodeInt(report["newLastShiningAbodeCycleOrdinal"]),
+                GetNodeInt(report["newLastShiningFactionCycleOrdinal"]),
+                GetNodeInt(report["newLastShiningTradeCycleOrdinal"])
+            }.Max();
+            return new ProgressionCycle($"shining:{Math.Max(1, ordinal)}", shiningCycles, IsShining: true);
+        }
+
+        var chaosCycles = new[]
+        {
+            GetNodeInt(report["chaosSeaCyclesProcessed"]),
+            GetNodeInt(report["guardianProjectCyclesProcessed"]),
+            GetNodeInt(report["residentAgencyCyclesProcessed"])
+        }.Max();
+        if (chaosCycles <= 0)
+            return null;
+
+        var chaosOrdinal = new[]
+        {
+            GetNodeInt(report["newLastChaosSeaSimulationOrdinal"]),
+            GetNodeInt(report["newLastGuardianProjectCycleOrdinal"]),
+            GetNodeInt(report["newLastResidentAgencyCycleOrdinal"])
+        }.Max();
+        return new ProgressionCycle($"chaos:{Math.Max(1, chaosOrdinal)}", chaosCycles, IsShining: false);
+    }
+
+    private static CurrencyDelta ResolveIncome(JsonObject profile, ProgressionCycle cycle)
+    {
+        var multiplier = Math.Max(1, cycle.CyclesProcessed);
+        return cycle.IsShining || IsShiningRealm(profile)
+            ? new CurrencyDelta(6 * multiplier, 1 * multiplier)
+            : new CurrencyDelta(12 * multiplier, 0);
+    }
+
+    private static bool IsShiningRealm(JsonObject profile)
+    {
+        var realm = GetNodeString(profile["realm"]);
+        return string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void ApplyCurrencyDeltas(JsonObject profile, JsonObject? deltas)
+    {
+        if (deltas == null)
+            return;
+
+        var currencies = EnsureObject(profile, "currencies");
+        AddCurrency(currencies, "inkFeathers", GetNodeInt(deltas["inkFeathers"]));
+        AddCurrency(currencies, "lightSparks", GetNodeInt(deltas["lightSparks"]));
+    }
+
+    private static void ApplyStandardArtTierDeltas(JsonObject profile, JsonObject? deltas)
+    {
+        if (deltas == null)
+            return;
+
+        var arts = EnsureObject(profile, "standardArts");
+        foreach (var delta in deltas)
+        {
+            if (!StandardArtIds.Contains(delta.Key))
+                continue;
+
+            arts[delta.Key] = Math.Clamp(GetNodeInt(arts[delta.Key]) + GetNodeInt(delta.Value), 0, MaxProfileTier);
+        }
+    }
+
+    private static void ApplyProgressionExperienceDeltas(JsonObject profile, JsonObject? deltas)
+    {
+        if (deltas == null)
+            return;
+
+        var progression = EnsureObject(profile, "progression");
+        foreach (var trackName in new[] { "enlightenment", "radiance" })
+        {
+            var delta = GetNodeInt(deltas[trackName]);
+            if (delta == 0)
+                continue;
+
+            var track = EnsureObject(progression, trackName);
+            var nextExperience = Math.Max(0, GetNodeInt(track["experience"]) + delta);
+            track["experience"] = nextExperience;
+            track["tier"] = Math.Min(MaxProfileTier, Math.Max(GetNodeInt(track["tier"]), nextExperience / 20));
+        }
+    }
+
+    private static void AddCurrency(JsonObject currencies, string propertyName, int delta)
+    {
+        currencies[propertyName] = Math.Max(0, GetNodeInt(currencies[propertyName]) + delta);
+    }
+
+    private static JsonObject EnsureObject(JsonObject root, string propertyName)
+    {
+        if (root[propertyName] is JsonObject obj)
+            return obj;
+
+        obj = new JsonObject();
+        root[propertyName] = obj;
+        return obj;
+    }
+
+    private static void AppendProgressionLedger(JsonObject profile, JsonObject entry)
+    {
+        var ledger = profile[ProgressionLedgerProperty] as JsonArray;
+        if (ledger == null)
+        {
+            ledger = new JsonArray();
+            profile[ProgressionLedgerProperty] = ledger;
+        }
+
+        ledger.Add(entry);
+    }
+
+    private static string BuildProgressionLedgerEntryId(JsonObject profile, string cycleKey, string source)
+    {
+        var identity = BuildIdentityKey(profile) ?? "unknown";
+        var safeIdentity = new string(identity.Select(ch => char.IsLetterOrDigit(ch) ? ch : '_').ToArray());
+        var safeCycle = new string(cycleKey.Select(ch => char.IsLetterOrDigit(ch) ? ch : '_').ToArray());
+        return $"entity_progression_{source}_{safeIdentity}_{safeCycle}";
+    }
+
     private static JsonObject CloneObject(JsonObject source) =>
         source.DeepClone() as JsonObject ?? new JsonObject();
+
+    private readonly record struct ProgressionCycle(string CycleKey, int CyclesProcessed, bool IsShining);
+
+    private readonly record struct CurrencyDelta(int InkFeathers, int LightSparks);
 }

@@ -25,15 +25,16 @@ public partial class ValidationService
         var hasResponseProfiles = root.TryGetProperty(AfterlifeEntityProfileState.ResponseProfilesProperty, out var responseProfiles);
         var hasUpdates = root.TryGetProperty(AfterlifeEntityProfileState.UpdateProperty, out var updates);
         var hasCustomStateChanges = root.TryGetProperty(AfterlifeEntityProfileState.CustomStateChangesProperty, out var customStateChanges);
-        if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges)
+        var hasProgressionOverrides = root.TryGetProperty(AfterlifeEntityProfileState.ProgressionOverridesProperty, out var progressionOverrides);
+        if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges && !hasProgressionOverrides)
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}",
                 IssueSeverity.Error,
-                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[] или afterlifeEntityCustomStateChanges[].",
+                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[] или afterlifeEntityProgressionOverrides[].",
                 code: "afterlife_entity_profile_missing_profiles",
                 section: "AfterlifeEntityProfiles",
-                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[]"));
+                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeEntityProgressionOverrides[]"));
         }
 
         var identities = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -44,6 +45,11 @@ public partial class ValidationService
             customStateChanges,
             hasCustomStateChanges,
             $"{contextPrefix}.{AfterlifeEntityProfileState.CustomStateChangesProperty}",
+            issues);
+        ValidateAfterlifeEntityProgressionOverridesIfPresent(
+            progressionOverrides,
+            hasProgressionOverrides,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.ProgressionOverridesProperty}",
             issues);
     }
 
@@ -158,6 +164,7 @@ public partial class ValidationService
         ValidateAfterlifeProfileCustomStates(profile, context, issues);
         ValidateAfterlifeProfileSoulDissipation(profile, context, issues);
         ValidateAfterlifeProfileProgressionStrategy(profile, context, issues);
+        ValidateAfterlifeProfileProgressionLedger(profile, context, issues);
         ValidateAfterlifeProfileLedger(profile, context, issues);
         ValidateStringArrayIfPresent(profile, context, "warnings", "afterlife_entity_profile_warnings_not_array", issues);
     }
@@ -559,6 +566,90 @@ public partial class ValidationService
         }
     }
 
+    private void ValidateAfterlifeEntityProgressionOverridesIfPresent(
+        JsonElement overrides,
+        bool hasOverrides,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!hasOverrides)
+            return;
+
+        if (overrides.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "afterlifeEntityProgressionOverrides должен быть array.",
+                code: "afterlife_entity_profile_progression_overrides_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: overrides.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var item in overrides.EnumerateArray())
+            ValidateAfterlifeEntityProgressionOverride(item, $"{context}[{index++}]", issues);
+    }
+
+    private void ValidateAfterlifeEntityProgressionOverride(
+        JsonElement item,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (item.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "afterlifeEntityProgressionOverrides entry должен быть object.",
+                code: "afterlife_entity_profile_progression_override_not_object",
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: item.ValueKind.ToString()));
+            return;
+        }
+
+        RequireProfileString(item, context, "actorType", "afterlife_entity_profile_progression_override_missing_actor_type", issues);
+        if (string.IsNullOrWhiteSpace(GetProfileString(item, "actorId")) &&
+            string.IsNullOrWhiteSpace(GetProfileString(item, "actorRef")))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.actorId",
+                IssueSeverity.Error,
+                "progression override должен иметь actorId или actorRef.",
+                code: "afterlife_entity_profile_progression_override_missing_actor_id",
+                section: "AfterlifeEntityProfiles",
+                expected: "non-empty actorId or actorRef"));
+        }
+
+        RequireProfileString(item, context, "cycleKey", "afterlife_entity_profile_progression_override_missing_cycle_key", issues);
+        RequireProfileString(item, context, "reason", "afterlife_entity_profile_progression_override_missing_reason", issues);
+        RequireProfileString(item, context, "summary", "afterlife_entity_profile_progression_override_missing_summary", issues);
+
+        var hasCurrencyDeltas = item.TryGetProperty("currencyDeltas", out var currencyDeltas);
+        var hasStandardArtDeltas = item.TryGetProperty("standardArtTierDeltas", out var artDeltas);
+        var hasProgressionDeltas = item.TryGetProperty("progressionExperienceDeltas", out var progressionDeltas);
+        if (!hasCurrencyDeltas && !hasStandardArtDeltas && !hasProgressionDeltas)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "progression override должен содержать хотя бы одну дельту.",
+                code: "afterlife_entity_profile_progression_override_empty",
+                section: "AfterlifeEntityProfiles",
+                expected: "currencyDeltas / standardArtTierDeltas / progressionExperienceDeltas"));
+        }
+
+        if (hasCurrencyDeltas)
+            ValidateSignedIntegerObject(currencyDeltas, $"{context}.currencyDeltas", issues, "afterlife_entity_profile_progression_override_invalid_currency_delta");
+        if (hasStandardArtDeltas)
+            ValidateStandardArtTierDeltaObject(artDeltas, $"{context}.standardArtTierDeltas", issues);
+        if (hasProgressionDeltas)
+            ValidateSignedIntegerObject(progressionDeltas, $"{context}.progressionExperienceDeltas", issues, "afterlife_entity_profile_progression_override_invalid_progression_delta");
+    }
+
     private void ValidateAfterlifeProfileSoulDissipation(JsonElement profile, string context, List<ValidationIssue> issues)
     {
         if (!profile.TryGetProperty("soulDissipationTier", out var value))
@@ -605,6 +696,82 @@ public partial class ValidationService
         }
 
         ValidateProfileNonNegativeIntIfPresent(strategy, $"{context}.progressionStrategy", "lastUpdatedAtTurn", "afterlife_entity_profile_strategy_invalid_turn", issues);
+        if (strategy.TryGetProperty("resourceReserve", out var reserve))
+            ValidateNonNegativeIntegerObject(reserve, $"{context}.progressionStrategy.resourceReserve", issues, "afterlife_entity_profile_strategy_invalid_reserve");
+        ValidateStringArrayIfPresent(strategy, $"{context}.progressionStrategy", "allowedSpends", "afterlife_entity_profile_strategy_allowed_spends_not_array", issues);
+        ValidateStringArrayIfPresent(strategy, $"{context}.progressionStrategy", "forbiddenSpends", "afterlife_entity_profile_strategy_forbidden_spends_not_array", issues);
+        if (strategy.TryGetProperty("lastAutoProgressionCycleKey", out var lastCycleKey) &&
+            (lastCycleKey.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(lastCycleKey.GetString())))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.progressionStrategy.lastAutoProgressionCycleKey",
+                IssueSeverity.Error,
+                "lastAutoProgressionCycleKey должен быть non-empty string, если указан.",
+                code: "afterlife_entity_profile_strategy_invalid_last_auto_cycle",
+                section: "AfterlifeEntityProfiles",
+                expected: "non-empty string",
+                actual: lastCycleKey.ToString()));
+        }
+    }
+
+    private void ValidateAfterlifeProfileProgressionLedger(JsonElement profile, string context, List<ValidationIssue> issues)
+    {
+        if (!profile.TryGetProperty(AfterlifeEntityProfileState.ProgressionLedgerProperty, out var ledger))
+            return;
+
+        if (ledger.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{AfterlifeEntityProfileState.ProgressionLedgerProperty}",
+                IssueSeverity.Error,
+                "progressionLedger должен быть array.",
+                code: "afterlife_entity_profile_progression_ledger_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: ledger.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var entry in ledger.EnumerateArray())
+            ValidateAfterlifeProfileProgressionLedgerEntry(entry, $"{context}.{AfterlifeEntityProfileState.ProgressionLedgerProperty}[{index++}]", issues);
+    }
+
+    private void ValidateAfterlifeProfileProgressionLedgerEntry(JsonElement entry, string context, List<ValidationIssue> issues)
+    {
+        if (entry.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "progressionLedger entry должен быть object.",
+                code: "afterlife_entity_profile_progression_ledger_entry_not_object",
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: entry.ValueKind.ToString()));
+            return;
+        }
+
+        RequireProfileString(entry, context, "entryId", "afterlife_entity_profile_progression_ledger_missing_entry_id", issues);
+        RequireProfileString(entry, context, "cycleKey", "afterlife_entity_profile_progression_ledger_missing_cycle_key", issues);
+        RequireProfileString(entry, context, "source", "afterlife_entity_profile_progression_ledger_missing_source", issues);
+        RequireProfileString(entry, context, "summary", "afterlife_entity_profile_progression_ledger_missing_summary", issues);
+
+        if (entry.TryGetProperty("income", out var income))
+            ValidateNonNegativeIntegerObject(income, $"{context}.income", issues, "afterlife_entity_profile_progression_ledger_negative_amount");
+        if (entry.TryGetProperty("spending", out var spending))
+            ValidateNonNegativeIntegerObject(spending, $"{context}.spending", issues, "afterlife_entity_profile_progression_ledger_negative_amount");
+        if (entry.TryGetProperty("upgrades", out var upgrades) && upgrades.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.upgrades",
+                IssueSeverity.Error,
+                "progressionLedger.upgrades должен быть array.",
+                code: "afterlife_entity_profile_progression_ledger_upgrades_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: upgrades.ValueKind.ToString()));
+        }
     }
 
     private void ValidateAfterlifeProfileLedger(JsonElement profile, string context, List<ValidationIssue> issues)
@@ -876,6 +1043,108 @@ public partial class ValidationService
             section: "AfterlifeEntityProfiles",
             expected: "number or non-empty string",
             actual: root.TryGetProperty(propertyName, out var actual) ? actual.ToString() : "missing"));
+    }
+
+    private static void ValidateNonNegativeIntegerObject(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues,
+        string code)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Поле должно быть object с неотрицательными integer values.",
+                code: code,
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: root.ValueKind.ToString()));
+            return;
+        }
+
+        foreach (var property in root.EnumerateObject())
+        {
+            if (!TryGetProfileInt(property.Value, out var value) || value < 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{property.Name}",
+                    IssueSeverity.Error,
+                    "Значение должно быть неотрицательным integer.",
+                    code: code,
+                    section: "AfterlifeEntityProfiles",
+                    expected: "non-negative integer",
+                    actual: property.Value.ToString()));
+            }
+        }
+    }
+
+    private static void ValidateSignedIntegerObject(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues,
+        string code)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Поле должно быть object с integer values.",
+                code: code,
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: root.ValueKind.ToString()));
+            return;
+        }
+
+        foreach (var property in root.EnumerateObject())
+        {
+            if (!TryGetProfileInt(property.Value, out _))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{property.Name}",
+                    IssueSeverity.Error,
+                    "Значение override delta должно быть integer.",
+                    code: code,
+                    section: "AfterlifeEntityProfiles",
+                    expected: "integer",
+                    actual: property.Value.ToString()));
+            }
+        }
+    }
+
+    private static void ValidateStandardArtTierDeltaObject(JsonElement root, string context, List<ValidationIssue> issues)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "standardArtTierDeltas должен быть object.",
+                code: "afterlife_entity_profile_progression_override_invalid_standard_art_delta",
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: root.ValueKind.ToString()));
+            return;
+        }
+
+        foreach (var property in root.EnumerateObject())
+        {
+            if (!AfterlifeEntityProfileState.StandardArtIds.Contains(property.Name) ||
+                !TryGetProfileInt(property.Value, out _))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{property.Name}",
+                    IssueSeverity.Error,
+                    "standardArtTierDeltas должен содержать известные standard art ids с integer delta.",
+                    code: "afterlife_entity_profile_progression_override_invalid_standard_art_delta",
+                    section: "AfterlifeEntityProfiles",
+                    expected: string.Join("/", AfterlifeEntityProfileState.StandardArtIds.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                    actual: property.Value.ToString()));
+            }
+        }
     }
 
     private static bool TryGetProfileInt(JsonElement value, out int integer)

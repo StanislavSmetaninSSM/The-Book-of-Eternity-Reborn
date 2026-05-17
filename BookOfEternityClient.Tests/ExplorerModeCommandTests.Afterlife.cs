@@ -70,7 +70,20 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         strategyId = "strategy_guardian_mirror",
                         summary = "Сначала укрепляет защиту, затем давление.",
                         priorityOrder = new[] { "guard", "pressure" },
+                        lastAutoProgressionCycleKey = "chaos:5",
                         lastUpdatedAtTurn = 22
+                    },
+                    progressionLedger = new[]
+                    {
+                        new
+                        {
+                            entryId = "entity_progression_guardian_mirror_5",
+                            cycleKey = "chaos:5",
+                            source = "client_auto_strategy",
+                            summary = "Автопрокачка: защита повышена до тира 1.",
+                            income = new { inkFeathers = 12, lightSparks = 0 },
+                            spending = new { inkFeathers = 10, lightSparks = 0 }
+                        }
                     },
                     warnings = new[] { "ОПАСНО: может развеять душу после победы, если решит это сделать." },
                     ledger = new[]
@@ -103,6 +116,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Голод эха", text, StringComparison.Ordinal);
         Assert.Contains("3/10", text, StringComparison.Ordinal);
         Assert.Contains("Развеивание души: тир 1", text, StringComparison.Ordinal);
+        Assert.Contains("Последняя автопрокачка", text, StringComparison.Ordinal);
+        Assert.Contains("chaos:5", text, StringComparison.Ordinal);
         Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
         Assert.Contains("Сначала укрепляет защиту", text, StringComparison.Ordinal);
     }

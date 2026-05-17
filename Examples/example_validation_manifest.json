@@ -12,6 +12,12 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeEntityCustomStateChanges"
+    },
+    {
+      "contractId": "afterlife_entity_auto_progression_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeEntityProgressionOverrides"
     }
   ],
   "syntaxExemptions": [

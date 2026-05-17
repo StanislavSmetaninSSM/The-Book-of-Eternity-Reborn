@@ -157,6 +157,70 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_entity_profile_custom_state_change_empty", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_MalformedEntityProgressionLedgerAndOverride_ReportContractIssues()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": {},
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "progressionLedger": [
+                {
+                  "entryId": "",
+                  "source": "client_auto_strategy",
+                  "income": { "inkFeathers": -1 },
+                  "spending": { "inkFeathers": 0 }
+                }
+              ],
+              "ledger": []
+            }
+          ],
+          "afterlifeEntityProgressionOverrides": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "cycleKey": "",
+              "currencyDeltas": { "inkFeathers": -5 }
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "cycleKey": "chaos:7",
+              "reason": "Без дельт.",
+              "summary": "Ничего не меняет."
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_ledger_missing_entry_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_ledger_missing_cycle_key", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_ledger_negative_amount", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_override_missing_cycle_key", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_override_missing_reason", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_override_empty", StringComparison.OrdinalIgnoreCase));
+    }
+
     private Task WriteProfileStateAsync(string json) =>
         _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, json);
 

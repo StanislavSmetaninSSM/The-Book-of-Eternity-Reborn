@@ -7026,6 +7026,7 @@ Scenario:
 - The canonical file is `game_state/meta/afterlife_entity_profiles.json`.
 - The accepted response uses `afterlifeEntityProfileUpdates[]`; the client normalizes it into `profiles[]`.
 - Targeted custom state maintenance uses `afterlifeEntityCustomStateChanges[]`; `statesToAddOrUpdate[]` adds/replaces full `customStates` entries and `statesToRemove[]` deletes ended states.
+- If the GM does not write `afterlifeEntityProgressionOverrides[]`, the client uses existing `progression_report.json` afterlife/Shining cycle counts to apply deterministic income, one affordable `progressionStrategy.priorityOrder` upgrade, `lastAutoProgressionCycleKey`, and `progressionLedger[]`.
 
 Valid response fragment:
 
@@ -7107,8 +7108,39 @@ Valid response fragment:
           "guard",
           "pressure"
         ],
+        "resourceReserve": {
+          "inkFeathers": 20,
+          "lightSparks": 0
+        },
+        "allowedSpends": [
+          "standardArts",
+          "enlightenment"
+        ],
+        "forbiddenSpends": [
+          "soulDissipationTier"
+        ],
+        "lastAutoProgressionCycleKey": "chaos:5",
         "lastUpdatedAtTurn": 22
       },
+      "progressionLedger": [
+        {
+          "entryId": "entity_progression_auto_guardian_mirror_chaos_5",
+          "cycleKey": "chaos:5",
+          "source": "client_auto_strategy",
+          "summary": "Автопрокачка по стратегии применила доход и повысила guard.",
+          "income": {
+            "inkFeathers": 12,
+            "lightSparks": 0
+          },
+          "spending": {
+            "inkFeathers": 10,
+            "lightSparks": 0
+          },
+          "upgrades": [
+            "guard:0->1"
+          ]
+        }
+      ],
       "warnings": [
         "ОПАСНО: может развеять душу после победы, если решит это сделать."
       ],
@@ -7145,6 +7177,26 @@ Valid response fragment:
         "obsolete_echo_mark"
       ]
     }
+  ],
+  "afterlifeEntityProgressionOverrides": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "cycleKey": "chaos:6",
+      "reason": "GM override: Хранитель резко меняет приоритет после сюжетной сцены.",
+      "summary": "Хранитель принудительно вложил Перья в Давление вместо обычного guard priority.",
+      "currencyDeltas": {
+        "inkFeathers": -10,
+        "lightSparks": 0
+      },
+      "standardArtTierDeltas": {
+        "pressure": 1
+      },
+      "progressionExperienceDeltas": {
+        "enlightenment": 0,
+        "radiance": 0
+      }
+    }
   ]
 }
 ```
@@ -7153,6 +7205,8 @@ Correct reasoning checklist:
 - `actorType + actorId` is the identity key; do not create duplicate profiles for the same entity.
 - `standardArts` and `specialArts[].baseOperation` use the canonical spiritual action ids, while player-facing prose may show Russian labels.
 - `customStates[]` is visible in `/afterlife_profiles`; remove ended states through `afterlifeEntityCustomStateChanges[].statesToRemove[]` instead of leaving stale states forever.
+- `progressionLedger[]` is mandatory audit evidence for auto-progression or `afterlifeEntityProgressionOverrides[]`; each cycle must have a clear `cycleKey`, `source`, income/spending, and summary. Do not hand-edit resources without this audit.
+- `lastAutoProgressionCycleKey` prevents the same existing afterlife/Shining progression cycle from being applied repeatedly.
 - `soulDissipationTier > 0` is a danger warning, not an automatic kill decision. Motives still decide whether the entity attempts final soul dissipation after a victory.
 - Do not write Mortal NPC skills, Mortal combat logs, Mortal inventory, or Mortal profile files for afterlife actor progression.
 - In Mortal World turns, preserve `game_state/meta/afterlife_entity_profiles.json`; progress updates belong to afterlife turns unless a future matrix row explicitly says otherwise.

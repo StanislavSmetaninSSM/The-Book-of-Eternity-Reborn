@@ -14,7 +14,8 @@ public partial class CanonicalStateNormalizer
             return;
 
         var previousRoot = await ReadBackupObjectAsync(AfterlifeEntityProfileState.StatePath, backups);
-        var result = AfterlifeEntityProfileState.ProjectCanonicalRoot(currentRoot, previousRoot);
+        var progressionReportRoot = await ReadNodeAsync(ProgressionScheduleService.ReportPath) as JsonObject;
+        var result = AfterlifeEntityProfileState.ProjectCanonicalRoot(currentRoot, previousRoot, progressionReportRoot);
         await WriteIfChangedAsync(AfterlifeEntityProfileState.StatePath, currentNode, result);
     }
 }
