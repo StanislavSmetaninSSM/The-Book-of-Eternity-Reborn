@@ -7050,10 +7050,10 @@ Scenario:
 - The canonical file is `game_state/meta/afterlife_entity_profiles.json`.
 - The accepted response uses `afterlifeEntityProfileUpdates[]`; the client normalizes it into `profiles[]`.
 - Targeted custom state maintenance uses `afterlifeEntityCustomStateChanges[]`; `statesToAddOrUpdate[]` adds/replaces full `customStates` entries and `statesToRemove[]` deletes ended states.
-- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, and `trainingConditions` when teachable.
+- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, and `trainingConditions` when teachable; `upgradeCost` may be Ink-only, Spark-only, or mixed, and Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
 - Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`.
 - Learned special arts / изученные особые духовные искусства are upgraded by the client through `/spiritual_arts`; GM conflict output may use them only from validated pre-turn authority.
-- If the GM does not write `afterlifeEntityProgressionOverrides[]`, the client uses existing `progression_report.json` afterlife/Shining cycle counts to apply deterministic income, one affordable `progressionStrategy.priorityOrder` upgrade, `lastAutoProgressionCycleKey`, and `progressionLedger[]`. Priority entries may be standard art ids, `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`.
+- If the GM does not write `afterlifeEntityProgressionOverrides[]`, the client uses existing `progression_report.json` afterlife/Shining cycle counts to apply deterministic income, one affordable `progressionStrategy.priorityOrder` upgrade, `lastAutoProgressionCycleKey`, and `progressionLedger[]`. Priority entries may be standard art ids, `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`. Forced `specialArtTierDeltas` must target an existing `specialArts[].artId` on the same profile; unknown ids are repair-blocking, not no-op.
 
 Valid response fragment:
 
@@ -7260,11 +7260,12 @@ Valid response fragment:
 Correct reasoning checklist:
 - `actorType + actorId` is the identity key; do not create duplicate profiles for the same entity.
 - `standardArts` and `specialArts[].baseOperation` use the canonical spiritual action ids, while player-facing prose may show Russian labels.
-- `specialArts[]` is more expensive than the base action: `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, and teachable arts must list `trainingConditions`.
+- `specialArts[]` is more expensive than the base action: `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, and teachable arts must list `trainingConditions`. Spark-only `upgradeCost` is valid only as a learned-art upgrade path in ordinary active Shining Abode.
 - If a learned art is recognized, write `afterlifeSpecialArtLearningReceipts[]`; do not silently add it to the player without a receipt.
-- If a conflict exchange uses a learned special art, include `specialArtAudit` with `effectNote`, and in `actionCostAudit.player` include `specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; `actionCostAudit.player.artTier` must match validated pre-turn authority, not a GM-invented value.
+- If a conflict exchange uses a special art, include `specialArtAudit` with `effectNote`, owner identity, `baseOperation`, and `costMultiplierPercent`; it must match the validated pre-turn profile of that owner. Only player-owned learned special arts that power the player's exchange operation require `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; non-player/incoming special arts keep the player's ordinary ОД cost.
 - `customStates[]` is visible in `/afterlife_profiles`; remove ended states through `afterlifeEntityCustomStateChanges[].statesToRemove[]` instead of leaving stale states forever.
 - `progressionStrategy.priorityOrder` may target a standard art id, a `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`.
+- `afterlifeEntityProgressionOverrides[].specialArtTierDeltas` may only reference an existing `specialArts[].artId` on the target profile.
 - `afterlifeEntityProgressionOverrides[]` may include `specialArtTierDeltas` and `soulDissipationTierDelta` in addition to currency, standard art, and progression experience deltas.
 - `progressionLedger[]` is mandatory audit evidence for auto-progression or `afterlifeEntityProgressionOverrides[]`; each cycle must have a clear `cycleKey`, `source`, income/spending, and summary. Do not hand-edit resources without this audit.
 - `lastAutoProgressionCycleKey` prevents the same existing afterlife/Shining progression cycle from being applied repeatedly.

@@ -493,6 +493,65 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_PreservesInvalidOverrideMarkerForUnknownSpecialArtDelta()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        var backupPath = "game_state/control/test_backups/afterlife_entity_profiles.previous.json";
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 100, "lightSparks": 0 },
+                  "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+                  "standardArts": { "guard": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": { "strategyId": "strategy_guardian_mirror", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "afterlifeEntityProgressionOverrides": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "cycleKey": "chaos:9",
+                  "reason": "GM override.",
+                  "summary": "Опечатка в artId.",
+                  "specialArtTierDeltas": { "miror_guard": 1 }
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [AfterlifeEntityProfileState.StatePath] = backupPath
+        });
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        Assert.True(root.ContainsKey("lastInvalidProgressionOverride"));
+        Assert.Equal("unknown_special_art", root["lastInvalidProgressionOverrideReason"]?.GetValue<string>());
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Empty(profile["specialArts"]!.AsArray());
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.ProgressionOverridesProperty));
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_AppliesSpecialArtLearningReceiptToPlayerProfile()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);

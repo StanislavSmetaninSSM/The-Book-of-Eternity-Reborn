@@ -398,6 +398,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
             Assert.Contains("trainingConditions", text, StringComparison.Ordinal);
             Assert.Contains("costMultiplierPercent", text, StringComparison.Ordinal);
+            Assert.Contains("Spark-only", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("repair-blocking", text, StringComparison.OrdinalIgnoreCase);
         }
 
         Assert.Contains("/afterlife_profiles", glossary, StringComparison.OrdinalIgnoreCase);
@@ -1894,6 +1896,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("specialArtAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("effectNote", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("specialCostMultiplierPercent", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("Non-player or incoming-action special arts", matrix, StringComparison.Ordinal);
+        Assert.Contains("non-player/incoming special arts", examples + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Матрица приём-контрприём", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Сильнее против", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Контрится", uiHelp, StringComparison.Ordinal);

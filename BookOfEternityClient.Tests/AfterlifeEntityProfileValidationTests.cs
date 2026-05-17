@@ -328,6 +328,69 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_RejectsProgressionOverrideForUnknownSpecialArt()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 100, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": { "guard": 0 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeEntityProgressionOverrides": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "cycleKey": "chaos:9",
+              "reason": "GM override.",
+              "summary": "Опечатка в artId.",
+              "specialArtTierDeltas": { "miror_guard": 1 }
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_override_unknown_special_art", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsInvalidProgressionOverrideMarker()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [],
+          "lastInvalidProgressionOverride": {
+            "actorType": "guardian",
+            "actorId": "guardian_mirror",
+            "specialArtTierDeltas": { "miror_guard": 1 }
+          },
+          "lastInvalidProgressionOverrideReason": "unknown_special_art"
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_override_invalid_authority", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MalformedSpecialArtAndSoulDissipationOverrides_ReportContractIssues()
     {
         await WriteProfileStateAsync("""

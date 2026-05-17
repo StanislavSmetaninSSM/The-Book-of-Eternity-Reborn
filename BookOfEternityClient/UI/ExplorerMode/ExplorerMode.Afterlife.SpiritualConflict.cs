@@ -344,7 +344,10 @@ public partial class ExplorerMode
             var shiningRoot = await ReadJsonObjectForAfterlifeStatusAsync(ShiningAbodeState.StatePath);
             var entityProfilesRoot = await ReadJsonObjectForAfterlifeStatusAsync(AfterlifeEntityProfileState.StatePath);
             var profile = BuildSyncedAfterlifeCombatProfile(soulRoot, shiningRoot);
-            var quotes = BuildSpiritualArtUpgradeQuotes(profile, ReadPlayerLearnedSpecialArts(entityProfilesRoot));
+            var quotes = BuildSpiritualArtUpgradeQuotes(
+                profile,
+                ReadPlayerLearnedSpecialArts(entityProfilesRoot),
+                _stateManager.CurrentState.IsInShiningAbode);
             var spiritFocusQuote = BuildSpiritFocusUpgradeQuote(profile);
 
             Clear();
@@ -405,10 +408,9 @@ public partial class ExplorerMode
                 ? quote.CurrentTier
                 : AfterlifeSpiritualConflictState.GetNodeInt(artTiers?[quote.Art.ArtId]);
             var blocked = quote.BlockReason == null
-                ? $"следующий уровень {quote.NextTier}, цена {quote.InkFeatherCost} 🪶"
+                ? $"следующий уровень {quote.NextTier}, цена {FormatSpiritualArtUpgradeCost(quote, _stateManager.CurrentState.IsInShiningAbode)}"
                 : $"заблокировано: {quote.BlockReason}";
-            var sparkCost = _stateManager.CurrentState.IsInShiningAbode ? $" / {quote.LightSparkCost} ✨" : "";
-            lines.Add($"  • [white]{Markup.Escape(FormatSpiritualArtQuoteLabel(quote))}[/]: уровень [white]{tier}[/], порог ранга [white]{quote.RequiredRankLabel}[/], {Markup.Escape(blocked)}{Markup.Escape(sparkCost)} — {Markup.Escape(FormatSpiritualArtQuoteUse(quote))}");
+            lines.Add($"  • [white]{Markup.Escape(FormatSpiritualArtQuoteLabel(quote))}[/]: уровень [white]{tier}[/], порог ранга [white]{quote.RequiredRankLabel}[/], {Markup.Escape(blocked)} — {Markup.Escape(FormatSpiritualArtQuoteUse(quote))}");
             lines.Add($"    Правило: {Markup.Escape(FormatSpiritualArtQuoteRule(quote))}");
             lines.Add($"    Сильнее против: {Markup.Escape(FormatSpiritualArtStrongAgainst(quote.Art))}");
             lines.Add($"    Контрится: {Markup.Escape(FormatSpiritualArtCounteredBy(quote.Art))}");
@@ -454,7 +456,7 @@ public partial class ExplorerMode
 
         var choicesByLabel = new Dictionary<string, SpiritualProfileUpgradeChoice?>(StringComparer.Ordinal);
         foreach (var quote in quotes)
-            choicesByLabel[BuildSpiritualArtUpgradeChoiceLabel(quote)] = new SpiritualProfileUpgradeChoice(quote, null);
+            choicesByLabel[BuildSpiritualArtUpgradeChoiceLabel(quote, _stateManager.CurrentState.IsInShiningAbode)] = new SpiritualProfileUpgradeChoice(quote, null);
         choicesByLabel[BuildSpiritFocusUpgradeChoiceLabel(spiritFocusQuote)] = new SpiritualProfileUpgradeChoice(null, spiritFocusQuote);
         choicesByLabel["← Назад"] = null;
 
@@ -665,13 +667,16 @@ public partial class ExplorerMode
         JsonObject soulRoot,
         JsonObject? shiningRoot)
     {
-        var choices = new List<string>
-        {
-            $"Чернильные Перья — {quote.InkFeatherCost} 🪶",
-        };
+        var choices = new List<string>();
+
+        if (quote.InkFeatherCost > 0)
+            choices.Add($"Чернильные Перья — {quote.InkFeatherCost} 🪶");
 
         if (_stateManager.CurrentState.IsInShiningAbode && shiningRoot != null && quote.LightSparkCost > 0)
             choices.Add($"Искры Света — {quote.LightSparkCost} ✨");
+
+        if (choices.Count == 0)
+            return null;
 
         choices.Add("← Назад");
 
@@ -1005,7 +1010,8 @@ public partial class ExplorerMode
 
     private static IReadOnlyList<SpiritualArtUpgradeQuote> BuildSpiritualArtUpgradeQuotes(
         JsonObject profile,
-        IReadOnlyList<JsonObject> playerSpecialArts)
+        IReadOnlyList<JsonObject> playerSpecialArts,
+        bool isInShiningAbode)
     {
         var maxUnlockedTier = ResolveMaxUnlockedSpiritualArtTier(profile);
         var artTiers = profile["artTiers"] as JsonObject;
@@ -1060,8 +1066,10 @@ public partial class ExplorerMode
                 blockReason = $"нужен ранг, открывающий базовое действие уровня {baseArt.MinUnlockTier}: {DescribeRequiredRankForArtTier(baseArt.MinUnlockTier)}";
             else if (nextTier > maxUnlockedTier)
                 blockReason = $"нужен ранг, открывающий уровень искусства {nextTier}: {requiredRankLabel}";
-            else if (inkCost <= 0)
-                blockReason = "у особого искусства должна быть положительная цена прокачки в Чернильных Перьях";
+            else if (inkCost <= 0 && sparkCost <= 0)
+                blockReason = "у особого искусства должна быть положительная цена прокачки в Чернильных Перьях или Искрах Света";
+            else if (inkCost <= 0 && sparkCost > 0 && !isInShiningAbode)
+                blockReason = "цена указана только в Искрах Света; такая прокачка доступна только в обычной активной Сияющей Обители";
 
             result.Add(new SpiritualArtUpgradeQuote(
                 baseArt,
@@ -1206,12 +1214,25 @@ public partial class ExplorerMode
     private static int ComputeSpiritFocusLightSparkCost(int nextTier) =>
         checked(8 + nextTier * 4);
 
-    private static string BuildSpiritualArtUpgradeChoiceLabel(SpiritualArtUpgradeQuote quote)
+    private static string BuildSpiritualArtUpgradeChoiceLabel(SpiritualArtUpgradeQuote quote, bool includeLightSparks)
     {
         var status = quote.BlockReason == null
-            ? $"уровень {quote.CurrentTier}->{quote.NextTier}, {quote.InkFeatherCost} 🪶"
+            ? $"уровень {quote.CurrentTier}->{quote.NextTier}, {FormatSpiritualArtUpgradeCost(quote, includeLightSparks)}"
             : $"заблокировано: {quote.BlockReason}";
         return $"{FormatSpiritualArtQuoteLabel(quote)} — {status}";
+    }
+
+    private static string FormatSpiritualArtUpgradeCost(SpiritualArtUpgradeQuote quote, bool includeLightSparks)
+    {
+        var parts = new List<string>();
+        if (quote.InkFeatherCost > 0)
+            parts.Add($"{quote.InkFeatherCost} 🪶");
+        if (includeLightSparks && quote.LightSparkCost > 0)
+            parts.Add($"{quote.LightSparkCost} ✨");
+
+        return parts.Count == 0
+            ? "0 🪶"
+            : string.Join(" / ", parts);
     }
 
     private static string FormatSpiritualArtQuoteLabel(SpiritualArtUpgradeQuote quote) =>

@@ -13,6 +13,8 @@ internal static class AfterlifeEntityProfileState
     public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
     public const string SpecialArtLearningReceiptsProperty = "afterlifeSpecialArtLearningReceipts";
     public const string ProgressionLedgerProperty = "progressionLedger";
+    public const string LastInvalidProgressionOverrideProperty = "lastInvalidProgressionOverride";
+    public const string LastInvalidProgressionOverrideReasonProperty = "lastInvalidProgressionOverrideReason";
     public const string SoulDissipationTierProperty = "soulDissipationTier";
     public const int MaxSoulStabilityCoefficient = MaxProfileTier - 1;
     public const int SchemaVersion = 1;
@@ -322,7 +324,16 @@ internal static class AfterlifeEntityProfileState
                 .OfType<JsonObject>()
                 .FirstOrDefault(item => string.Equals(BuildIdentityKey(item), targetKey, StringComparison.OrdinalIgnoreCase));
             if (profile == null)
+            {
+                MarkInvalidProgressionOverride(result, overrideNode, "unknown_target_profile");
                 continue;
+            }
+
+            if (HasUnknownSpecialArtTierDelta(profile, overrideNode["specialArtTierDeltas"] as JsonObject, out _))
+            {
+                MarkInvalidProgressionOverride(result, overrideNode, "unknown_special_art");
+                continue;
+            }
 
             var cycleKey = GetNodeString(overrideNode["cycleKey"]) ?? "manual";
             ApplyCurrencyDeltas(profile, overrideNode["currencyDeltas"] as JsonObject);
@@ -724,6 +735,12 @@ internal static class AfterlifeEntityProfileState
         }
     }
 
+    private static void MarkInvalidProgressionOverride(JsonObject result, JsonObject overrideNode, string reason)
+    {
+        result[LastInvalidProgressionOverrideProperty] = CloneObject(overrideNode);
+        result[LastInvalidProgressionOverrideReasonProperty] = reason;
+    }
+
     private static void ApplySpecialArtTierDeltas(JsonObject profile, JsonObject? deltas)
     {
         if (deltas == null)
@@ -737,6 +754,27 @@ internal static class AfterlifeEntityProfileState
 
             specialArt["tier"] = Math.Clamp(GetNodeInt(specialArt["tier"]) + GetNodeInt(delta.Value), 0, MaxProfileTier);
         }
+    }
+
+    private static bool HasUnknownSpecialArtTierDelta(JsonObject profile, JsonObject? deltas, out string? unknownArtId)
+    {
+        unknownArtId = null;
+        if (deltas == null)
+            return false;
+
+        foreach (var delta in deltas)
+        {
+            if (string.IsNullOrWhiteSpace(delta.Key))
+                continue;
+
+            if (FindSpecialArtById(profile, delta.Key) != null)
+                continue;
+
+            unknownArtId = delta.Key;
+            return true;
+        }
+
+        return false;
     }
 
     private static void ApplySoulDissipationTierDelta(JsonObject profile, JsonNode? deltaNode)
