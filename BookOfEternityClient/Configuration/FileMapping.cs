@@ -126,6 +126,8 @@ public static class FileMapping
         ["afterlifeArchiveUpdates"] = "game_state/meta/soul_state.json",
         ["archiveActionResolutions"] = "game_state/meta/soul_state.json",
         ["afterlifeSpiritualConflictUpdate"] = "game_state/meta/afterlife_spiritual_conflict_state.json",
+        ["afterlifeEntityProfiles"] = "game_state/meta/afterlife_entity_profiles.json",
+        ["afterlifeEntityProfileUpdates"] = "game_state/meta/afterlife_entity_profiles.json",
         ["UpdateGuardians"] = "game_state/meta/guardians.json",
         ["guardianQuestProgressUpdates"] = "game_state/meta/guardians.json",
         ["UpdateGuardianTradeInventoryReceipts"] = "game_state/meta/guardians.json",

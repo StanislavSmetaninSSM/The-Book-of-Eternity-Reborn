@@ -16,6 +16,81 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class ExplorerModeCommandTests : IDisposable
 {
     [Fact]
+    public async Task TryProcessCommand_AfterlifeProfiles_RendersFullEntityProfile()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
+        {
+            schemaVersion = 1,
+            profiles = new[]
+            {
+                new
+                {
+                    actorType = "guardian",
+                    actorId = "guardian_mirror",
+                    displayName = "Хранитель Зеркал",
+                    realm = "Chaos Sea",
+                    locationName = "Зеркальная Обитель",
+                    currencies = new { inkFeathers = 120, lightSparks = 0 },
+                    progression = new
+                    {
+                        enlightenment = new { experience = 48, tier = 4 },
+                        radiance = new { experience = 0, tier = 0 }
+                    },
+                    standardArts = new { pressure = 2, guard = 1 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "mirror_guard",
+                            displayName = "Зеркальная Защита",
+                            baseOperation = "guard",
+                            tier = 1,
+                            costMultiplierPercent = 150,
+                            effectSummary = "При успехе отражает часть давления в сторону противника."
+                        }
+                    },
+                    soulDissipationTier = 1,
+                    progressionStrategy = new
+                    {
+                        strategyId = "strategy_guardian_mirror",
+                        summary = "Сначала укрепляет защиту, затем давление.",
+                        priorityOrder = new[] { "guard", "pressure" },
+                        lastUpdatedAtTurn = 22
+                    },
+                    warnings = new[] { "ОПАСНО: может развеять душу после победы, если решит это сделать." },
+                    ledger = new[]
+                    {
+                        new
+                        {
+                            entryId = "profile_ledger_001",
+                            turnNumber = 22,
+                            reason = "initial_profile",
+                            summary = "Профиль создан при встрече с хранителем."
+                        }
+                    }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/afterlife_profiles");
+
+        Assert.Equal(string.Empty, result);
+        var text = ExtractRenderedText();
+        Assert.Contains("Профили сущностей посмертия", text, StringComparison.Ordinal);
+        Assert.Contains("Хранитель Зеркал", text, StringComparison.Ordinal);
+        Assert.Contains("Хранитель", text, StringComparison.Ordinal);
+        Assert.Contains("Чернильные Перья: 120", text, StringComparison.Ordinal);
+        Assert.Contains("Просветление: тир 4, опыт 48", text, StringComparison.Ordinal);
+        Assert.Contains("Давление: 2", text, StringComparison.Ordinal);
+        Assert.Contains("Зеркальная Защита", text, StringComparison.Ordinal);
+        Assert.Contains("Развеивание души: тир 1", text, StringComparison.Ordinal);
+        Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
+        Assert.Contains("Сначала укрепляет защиту", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NormalizeLegacyFlatSoulRelics_SplitsRelicsIntoCanonicalCollections()
     {
         var root = JsonNode.Parse("""

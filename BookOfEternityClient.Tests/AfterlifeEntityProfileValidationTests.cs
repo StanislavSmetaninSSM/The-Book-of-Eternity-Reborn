@@ -1,0 +1,155 @@
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed class AfterlifeEntityProfileValidationTests : IDisposable
+{
+    private readonly string _rootPath;
+    private readonly FileSystemManager _fs;
+    private readonly ValidationService _validator;
+
+    public AfterlifeEntityProfileValidationTests()
+    {
+        _rootPath = Path.Combine(Path.GetTempPath(), "boe-afterlife-entity-profile-validation-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(_rootPath);
+
+        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        _fs.EnsureDirectoryStructure();
+        _validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ValidAfterlifeEntityProfile_PassesProfileValidation()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_InvalidAfterlifeEntityProfile_ReportsContractIssues()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": -1, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 10, "tier": 1 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": { "pressure": 6 },
+              "specialArts": [
+                {
+                  "artId": "mirror_guard",
+                  "displayName": "Зеркальная Защита",
+                  "baseOperation": "unknown_art",
+                  "tier": 1,
+                  "effectSummary": "Отражает чужую защиту."
+                }
+              ],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать давление.", "priorityOrder": ["pressure"] },
+              "ledger": []
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Дубликат",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": {},
+              "specialArts": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_2", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_negative_currency", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_invalid_standard_art_tier", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_invalid_special_art_base_operation", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_duplicate_actor", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private Task WriteProfileStateAsync(string json) =>
+        _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, json);
+
+    private static string BuildValidProfileJson() =>
+        """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "locationName": "Зеркальная Обитель",
+              "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 48, "tier": 4 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [
+                {
+                  "artId": "mirror_guard",
+                  "displayName": "Зеркальная Защита",
+                  "baseOperation": "guard",
+                  "tier": 1,
+                  "costMultiplierPercent": 150,
+                  "effectSummary": "При успехе отражает часть давления в сторону противника."
+                }
+              ],
+              "soulDissipationTier": 1,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_mirror",
+                "summary": "Сначала укрепляет защиту, затем давление.",
+                "priorityOrder": ["guard", "pressure"],
+                "lastUpdatedAtTurn": 22
+              },
+              "warnings": ["ОПАСНО: может развеять душу после победы, если решит это сделать."],
+              "ledger": [
+                {
+                  "entryId": "profile_ledger_001",
+                  "turnNumber": 22,
+                  "reason": "initial_profile",
+                  "summary": "Профиль создан при встрече с хранителем."
+                }
+              ]
+            }
+          ]
+        }
+        """;
+
+    public void Dispose()
+    {
+        try
+        {
+            if (Directory.Exists(_rootPath))
+                Directory.Delete(_rootPath, recursive: true);
+        }
+        catch
+        {
+            // Ignore temp cleanup failures.
+        }
+    }
+}

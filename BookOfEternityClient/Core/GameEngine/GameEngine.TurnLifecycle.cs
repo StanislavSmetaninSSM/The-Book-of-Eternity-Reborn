@@ -656,6 +656,7 @@ public partial class GameEngine
         try
         {
             await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
+            await EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync();
 
             // Create backup of game state files before sending turn (for escape-rollback)
             var backupId = DateTime.UtcNow.Ticks.ToString();
