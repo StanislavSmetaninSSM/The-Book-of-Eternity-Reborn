@@ -1713,6 +1713,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("guardian_forced", text, StringComparison.Ordinal);
             Assert.Contains("diceAudit", text, StringComparison.Ordinal);
             Assert.Contains("preGeneratedDices1d20", text, StringComparison.Ordinal);
+            Assert.Contains("actionEconomy", text, StringComparison.Ordinal);
+            Assert.Contains("actionCostAudit", text, StringComparison.Ordinal);
+            Assert.Contains("recover_spiritual_power", text, StringComparison.Ordinal);
         }
 
         foreach (var text in new[] { matrix, examples, daemonSpec })
@@ -1792,6 +1795,15 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("safe_defense", matrix + glossary, StringComparison.Ordinal);
         Assert.Contains("risky_reversal", matrix + glossary, StringComparison.Ordinal);
         Assert.Contains("position_play", matrix + glossary, StringComparison.Ordinal);
+        Assert.Contains("recovery_timing", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("Собрать Средоточие", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("effectiveCost = max(minCost, baseCost - artTier)", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("pressure 3/1", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("force_binding 5/2", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("recover_spiritual_power 0/0", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("+0..1", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("ОД и стоимость действий", uiHelp, StringComparison.Ordinal);
+        Assert.Contains("actionCostAudit", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Матрица приём-контрприём", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Сильнее против", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Контрится", uiHelp, StringComparison.Ordinal);

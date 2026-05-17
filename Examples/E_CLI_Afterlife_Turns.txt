@@ -6341,6 +6341,10 @@ Correct accepted response:
         },
         "supporters": []
       },
+      "actionEconomy": {
+        "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
+        "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+      },
       "exchangeLog": []
     }
   }
@@ -6359,7 +6363,7 @@ or ordinary roleplay prose while this conflict is still active:
 Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, and `champion_coordination` is only for champion_duel. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. Active conflicts with current exchanges carry afterlife-only ОД in `actionEconomy.player` and `actionEconomy.opposition`; every new/current exchange that spends or restores ОД must include `actionCostAudit.player` with `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`, using `effectiveCost = max(minCost, baseCost - artTier)`. `recover_spiritual_power` / Собрать Средоточие restores +3 ОД on success, +2 on partial_success, and only +0..1 when punished by pressure, maneuver, binding, force_binding, or force_incarnation; use `riskProfile=recovery_timing` when rolled. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, `champion_coordination` is only for champion_duel, and `recover_spiritual_power` is timing-based recovery rather than attack/defense. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
 
 Correct contested exchange response:
 
@@ -6390,12 +6394,31 @@ Correct contested exchange response:
       "before": {
         "conflictPosition": "contested",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "clear"
+        "oppositionSideStrain": "clear",
+        "actionEconomy": {
+          "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
+          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+        }
       },
       "after": {
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
-        "oppositionSideStrain": "strained"
+        "oppositionSideStrain": "strained",
+        "actionEconomy": {
+          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
+          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+        }
+      },
+      "actionCostAudit": {
+        "player": {
+          "operationType": "incarnation_resistance",
+          "baseCost": 3,
+          "minCost": 1,
+          "artTier": 1,
+          "effectiveCost": 2,
+          "before": 6,
+          "after": 4
+        }
       },
       "diceAudit": {
         "formulaVersion": "afterlife_spiritual_conflict_v1",
@@ -6471,6 +6494,10 @@ Correct control exchange: after the soul already has `player_advantaged`, `bindi
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
         "oppositionSideStrain": "strained",
+        "actionEconomy": {
+          "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
+          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+        },
         "controlState": {
           "level": "none",
           "controllerSide": null
@@ -6480,6 +6507,10 @@ Correct control exchange: after the soul already has `player_advantaged`, `bindi
         "conflictPosition": "player_advantaged",
         "playerSideStrain": "clear",
         "oppositionSideStrain": "strained",
+        "actionEconomy": {
+          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
+          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+        },
         "controlState": {
           "level": "hindered",
           "controllerSide": "player",
@@ -6487,6 +6518,17 @@ Correct control exchange: after the soul already has `player_advantaged`, `bindi
           "sourceOperation": "binding",
           "restrictedOperations": [ "maneuver", "force_incarnation" ],
           "summary": "Лиора стеснена: она не может свободно перестроиться или навязать воплощение, пока не ответит на оковы."
+        }
+      },
+      "actionCostAudit": {
+        "player": {
+          "operationType": "binding",
+          "baseCost": 4,
+          "minCost": 2,
+          "artTier": 2,
+          "effectiveCost": 2,
+          "before": 6,
+          "after": 4
         }
       },
       "diceAudit": {
@@ -6543,6 +6585,10 @@ Correct break-binding exchange: `break_binding` is not a generic attack; it must
         "conflictPosition": "contested",
         "playerSideStrain": "strained",
         "oppositionSideStrain": "strained",
+        "actionEconomy": {
+          "player": { "current": 4, "max": 6, "source": "Средоточие Души tier 0" },
+          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+        },
         "controlState": {
           "level": "bound",
           "controllerSide": "opposition",
@@ -6556,6 +6602,10 @@ Correct break-binding exchange: `break_binding` is not a generic attack; it must
         "conflictPosition": "contested",
         "playerSideStrain": "strained",
         "oppositionSideStrain": "strained",
+        "actionEconomy": {
+          "player": { "current": 2, "max": 6, "source": "Средоточие Души tier 0" },
+          "opposition": { "current": 6, "max": 6, "source": "guardian spiritual authority" }
+        },
         "controlState": {
           "level": "hindered",
           "controllerSide": "opposition",
@@ -6563,6 +6613,17 @@ Correct break-binding exchange: `break_binding` is not a generic attack; it must
           "sourceOperation": "break_binding",
           "restrictedOperations": [ "maneuver" ],
           "summary": "Оковы ослаблены: душа всё ещё стеснена, но уже не скована полностью."
+        }
+      },
+      "actionCostAudit": {
+        "player": {
+          "operationType": "break_binding",
+          "baseCost": 3,
+          "minCost": 1,
+          "artTier": 1,
+          "effectiveCost": 2,
+          "before": 4,
+          "after": 2
         }
       },
       "diceAudit": {

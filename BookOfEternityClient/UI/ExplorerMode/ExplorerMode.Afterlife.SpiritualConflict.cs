@@ -69,6 +69,7 @@ public partial class ExplorerMode
             lines.Add($"  • Напряжение стороны игрока (playerSideStrain): [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/]");
             lines.Add($"  • Напряжение противостоящей стороны (oppositionSideStrain): [white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
             lines.Add($"  • Контроль/оковы (controlState): [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
+            lines.Add($"  • ОД (actionEconomy): [white]{Markup.Escape(DescribeActionEconomy(active["actionEconomy"] as JsonObject))}[/]");
             lines.Add($"  • Состояние завершения (resolutionState): [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
             lines.Add("");
             AppendConflictSideSummary(lines, "Сторона игрока (playerSide)", active["playerSide"] as JsonObject);
@@ -227,6 +228,16 @@ public partial class ExplorerMode
             "  • Она влияет на награду: победа из плохой стартовой позиции имеет больший множитель риска (riskMultiplier) и уровень вызова (challengeTier); победа из доминирования игрока (player_dominant) платит меньше.",
             "  • Она ограничивает масштаб нарратива: крит или успех в плохой позиции обычно даёт правдоподобный прорыв/срыв угрозы, а не мгновенную абсолютную победу.",
             "",
+            "[bold]ОД и стоимость действий[/] [dim](actionEconomy / actionCostAudit)[/]",
+            "  • ОД — очки духовного действия. Это ресурс духовного боя посмертия, не здоровье, не энергия и не выносливость смертного мира.",
+            "  • Активный конфликт хранит ОД обеих сторон в actionEconomy: текущее значение (current), максимум (max) и источник расчёта (source).",
+            "  • Каждый новый обмен, который тратит или восстанавливает ОД, обязан иметь actionCostAudit: тип действия, базовую стоимость, уровень искусства, итоговую стоимость, ОД до и после.",
+            "  • Формула стоимости: итоговая стоимость = max(минимальная стоимость, базовая стоимость - уровень искусства). В JSON-аудите это effectiveCost = max(minCost, baseCost - artTier).",
+            "  • Базовые стоимости: давление 3, защита 2, контрприём 4, манёвр 3, оковы 4, силовые оковы 5, разрыв оков 3, сопротивление воплощению 3, координация чемпиона 2.",
+            "  • Собрать Средоточие (recover_spiritual_power) не тратит ОД и восстанавливает ОД: обычно +3 при успехе, +2 при частичном успехе, но не выше максимума.",
+            "  • Собрать Средоточие выгодно против защиты, контрприёма, ожидания или пассивности; оно опасно против давления, манёвра, оков, силовых оков и принудительного воплощения — тогда восстановление ограничено 0..1 ОД, а действие противника проходит по своей линии.",
+            "  • Отступление, сдача и переговоры остаются допустимыми даже при 0 ОД, если сама сцена позволяет такой выбор.",
+            "",
             "[bold]Контроль и оковы[/] [dim](controlState)[/]",
             "  • Контроль — отдельная ось боя, не урон и не позиция. Он ограничивает свободу действий стороны и создаёт рычаг для следующих ходов.",
             "  • Уровни контроля: нет контроля (none), стеснён (hindered), скован (bound), запечатан (locked). Активный контроль всегда указывает сторону-контролёра (controllerSide), идентификатор (controlId), источник (sourceOperation), ограниченные действия (restrictedOperations) и краткое описание (summary).",
@@ -244,6 +255,7 @@ public partial class ExplorerMode
             "  • Разрыв оков (break_binding) — ответ на оковы, принудительную передачу/выброс или контекст принуждения. Это не универсальная атака.",
             "  • Сопротивление воплощению (incarnation_resistance) — только против принудительного воплощения Хранителем (guardian_forced / force_incarnation).",
             "  • Координация чемпиона (champion_coordination) — когда ведущий боец не игрок, а союзник/чемпион; игрок усиливает сторону, а не превращает сцену в массовый бой.",
+            "  • Собрать Средоточие (recover_spiritual_power) — восстановить ОД в момент, когда противник защищается, ждёт или не давит напрямую. Это не атака и не бесплатный пропуск опасного действия врага.",
             "",
             "[bold]Матрица приём-контрприём[/]",
             "  • Давление бьёт манёвр: если враг пытается занять позицию, прямой нажим может сорвать перестроение и ухудшить напряжение противника.",
@@ -254,6 +266,7 @@ public partial class ExplorerMode
             "  • Оковы бьют противника после рычага: сначала нужно преимущество, подготовка или решительный успех; затем оковы ограничивают будущие действия. Силовые оковы дороже по требованиям, зато обязаны ограничивать шире обычных оков.",
             "  • Разрыв оков бьёт контроль: применяй его против оков, принудительной передачи/выброса и другого принуждения, а не вместо обычной защиты.",
             "  • Сопротивление воплощению бьёт только принудительное воплощение; добровольный переход в смертную жизнь не является боем.",
+            "  • Собрать Средоточие бьёт пустой темп: защиту, контрприём без входящего действия, ожидание и пассивность. Его бьют давление, манёвр, оковы, силовые оковы и принудительное воплощение.",
             "  • Каждый новый спорный обмен с кубиками должен иметь аудит сопоставления действий (matchupAudit): что сделал игрок, что сделал противник, какая линия решала исход, профиль риска и краткое объяснение.",
             "",
             "[bold]Прокачка[/]",
@@ -1050,6 +1063,9 @@ public partial class ExplorerMode
             if (exchange["diceAudit"] is JsonObject diceAudit)
                 lines.Add($"    Кубики (diceAudit): {Markup.Escape(DescribeDiceAudit(diceAudit))}");
 
+            if (exchange["actionCostAudit"] is JsonObject actionCostAudit)
+                lines.Add($"    ОД (actionCostAudit): {Markup.Escape(DescribeActionCostAudit(actionCostAudit))}");
+
             if (exchange["rewardAudit"] is JsonObject rewardAudit)
                 lines.Add($"    Награда (rewardAudit): {Markup.Escape(DescribeRewardAudit(rewardAudit))}");
 
@@ -1109,7 +1125,8 @@ public partial class ExplorerMode
             $"позиция (conflictPosition) {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["conflictPosition"]))} -> {FormatConflictPositionLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["conflictPosition"]))}; " +
             $"напряжение игрока (playerSideStrain) {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["playerSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["playerSideStrain"]))}; " +
             $"напряжение противника (oppositionSideStrain) {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(before?["oppositionSideStrain"]))} -> {FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(after?["oppositionSideStrain"]))}; " +
-            $"контроль/оковы (controlState) {DescribeControlState(before?["controlState"] as JsonObject)} -> {DescribeControlState(after?["controlState"] as JsonObject)}";
+            $"контроль/оковы (controlState) {DescribeControlState(before?["controlState"] as JsonObject)} -> {DescribeControlState(after?["controlState"] as JsonObject)}; " +
+            $"ОД (actionEconomy) {DescribeActionEconomy(before?["actionEconomy"] as JsonObject)} -> {DescribeActionEconomy(after?["actionEconomy"] as JsonObject)}";
     }
 
     private static string DescribeIncomingAction(JsonObject incomingAction)
@@ -1145,6 +1162,42 @@ public partial class ExplorerMode
         var riskMultiplier = FormatIntOrUnknown(rewardAudit["riskMultiplierPercent"]);
         var outcomeMultiplier = FormatIntOrUnknown(rewardAudit["outcomeMultiplierPercent"]);
         return $"{currency}: итог (finalAmount)={finalAmount}, база (baseAmount)={baseAmount}, уровень вызова (challengeTier)={challengeTier}, риск (riskMultiplierPercent)={riskMultiplier}%, исход (outcomeMultiplierPercent)={outcomeMultiplier}%";
+    }
+
+    private static string DescribeActionEconomy(JsonObject? actionEconomy)
+    {
+        if (actionEconomy == null)
+            return "нет данных";
+
+        return $"игрок {DescribeActionPool(actionEconomy["player"] as JsonObject)}, противник {DescribeActionPool(actionEconomy["opposition"] as JsonObject)}";
+    }
+
+    private static string DescribeActionPool(JsonObject? pool)
+    {
+        if (pool == null)
+            return "?";
+
+        var current = FormatIntOrUnknown(pool["current"]);
+        var max = FormatIntOrUnknown(pool["max"]);
+        var source = AfterlifeSpiritualConflictState.GetNodeString(pool["source"]);
+        return string.IsNullOrWhiteSpace(source)
+            ? $"{current}/{max}"
+            : $"{current}/{max} ({source})";
+    }
+
+    private static string DescribeActionCostAudit(JsonObject actionCostAudit)
+    {
+        if (actionCostAudit["player"] is not JsonObject playerAudit)
+            return actionCostAudit.ToJsonString();
+
+        var operationType = FormatOperationTypeLabel(AfterlifeSpiritualConflictState.GetNodeString(playerAudit["operationType"]));
+        var before = FormatIntOrUnknown(playerAudit["before"]);
+        var after = FormatIntOrUnknown(playerAudit["after"]);
+        var baseCost = FormatIntOrUnknown(playerAudit["baseCost"]);
+        var minCost = FormatIntOrUnknown(playerAudit["minCost"]);
+        var artTier = FormatIntOrUnknown(playerAudit["artTier"]);
+        var effectiveCost = FormatIntOrUnknown(playerAudit["effectiveCost"]);
+        return $"игрок: {operationType}, ОД {before}->{after}, база={baseCost}, минимум={minCost}, уровень искусства={artTier}, итоговая стоимость={effectiveCost}";
     }
 
     private static string FormatDiceValue(JsonObject diceAudit, string side)
@@ -1252,6 +1305,7 @@ public partial class ExplorerMode
             "force_incarnation" => "Принудительное воплощение (force_incarnation)",
             "incarnation_resistance" => "Сопротивление воплощению (incarnation_resistance)",
             "champion_coordination" => "Координация чемпиона (champion_coordination)",
+            "recover_spiritual_power" => "Собрать Средоточие (recover_spiritual_power)",
             "withdraw" => "Отступление (withdraw)",
             "surrender" => "Сдача (surrender)",
             "negotiate" => "Переговоры (negotiate)",

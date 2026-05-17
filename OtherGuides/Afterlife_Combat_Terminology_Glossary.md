@@ -72,6 +72,19 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 | `break_binding` / Разрыв оков | Answer an existing binding, forced handoff, or coercive lock. | `controlState`: weaken, remove, or reverse opposition control; legacy forced handoff state if present. | Not a generic attack or defense against ordinary pressure; success must change the control/coercion state. Same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`; equal/reordered sets do not count. | Break a name-seal: `controlState.level bound -> hindered` or `bound -> none`. |
 | `incarnation_resistance` / Сопротивление воплощению | Resist `force_incarnation` / `guardian_forced`. | forced-incarnation proof state, resistance audit, possibly forced-incarnation `controlState`. | Not a replacement for `guard` against ordinary pressure or `break_binding` against ordinary binding control; failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged. | Resist a Guardian trying to throw the soul into a life. |
 | `champion_coordination` / Координация чемпиона | Support a `champion_duel` where an ally is lead contestant. | champion-side support modifier, `conflictPosition`, side support audit. | Cannot be used in `direct_duel` as if the player were lead. | The soul guides an allied Guardian's strike while staying supporter. |
+| `recover_spiritual_power` / Собрать Средоточие | Spend the turn gathering spiritual focus and restoring ОД. | `actionEconomy.player.current` through `actionCostAudit`. | Not an attack, not a defense against direct pressure, not a way to ignore incoming control. | Recovering against guard/passive can restore +3 ОД; recovering into pressure/control is punished and restores only 0..1 ОД. |
+
+## Action Economy / ОД
+
+ОД are afterlife-only spiritual action points. They are not Mortal HP, stamina, energy, or combat resources.
+
+- Active conflicts carry `actionEconomy.player` and `actionEconomy.opposition` with `current`, `max`, and `source`.
+- Every new/current exchange that spends or restores ОД must carry `actionCostAudit.player`: `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`.
+- Formula: `effectiveCost = max(minCost, baseCost - artTier)`.
+- Base/min costs: `pressure 3/1`, `guard 2/1`, `counter 4/2`, `maneuver 3/1`, `binding 4/2`, `force_binding 5/2`, `break_binding 3/1`, `incarnation_resistance 3/1`, `champion_coordination 2/1`, `recover_spiritual_power 0/0`.
+- `recover_spiritual_power` restores ОД up to `actionEconomy.player.max`: success +3, partial_success +2, punished recovery +0..1.
+- Punished recovery happens against `pressure`, `maneuver`, `binding`, `force_binding`, or `force_incarnation`; strong timing is against `guard`, `counter`, `none`, or `passive`.
+- `withdraw`, `surrender`, and `negotiate` remain legal at 0 ОД unless a later contract explicitly changes terminal choice rules.
 
 ## Tactical Matchup Matrix
 
@@ -81,7 +94,7 @@ Every new/current contested exchange with `diceAudit` must also include `matchup
 - `playerOperation`: the player's primary operation, matching `exchange.operationType`.
 - `oppositionOperation`: the opposition's primary answer, incoming operation, or `none`/`passive`; if `incomingAction` is present, this must match `incomingAction.operationType` or `incomingAction.finalOperationType`.
 - `primaryResolutionLane`: the lane that decides the exchange; for ordinary player-led exchanges it matches `operationType`.
-- `riskProfile`: one of `offensive_pressure`, `safe_defense`, `risky_reversal`, `position_play`, `control_leverage`, `anti_control`, `champion_support`, or `terminal_choice`.
+- `riskProfile`: one of `offensive_pressure`, `safe_defense`, `risky_reversal`, `position_play`, `control_leverage`, `anti_control`, `champion_support`, `recovery_timing`, or `terminal_choice`.
 - `matchupRationale`: one or two sentences explaining why this lane, not GM preference, decides the result.
 
 | Player operation | Strong against | Countered by | Required gameplay effect |
@@ -94,6 +107,7 @@ Every new/current contested exchange with `diceAudit` must also include `matchup
 | `break_binding` / Разрыв оков | Binding, forced handoff, coercive lock. | Stronger control, dominant opposition position. | Remove/weaken/reverse `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`; equal/reordered sets do not count. |
 | `incarnation_resistance` / Сопротивление воплощению | `force_incarnation` / `guardian_forced`. | Winning forced-incarnation pressure after the player loses/surrenders/concedes. | Resist forced lifecycle handoff only; voluntary incarnation is not combat. |
 | `champion_coordination` / Координация чемпиона | `champion_duel` where an ally is lead. | Pressure against the champion side, disrupted support, invalid side model. | Improve champion-side support/position; cannot replace direct-duel actions. |
+| `recover_spiritual_power` / Собрать Средоточие | `guard`, `counter`, `none`, `passive`. | `pressure`, `maneuver`, `binding`, `force_binding`, `force_incarnation`. | Restore ОД through `actionCostAudit`; capped by `actionEconomy.player.max`; punished timing restores only 0..1 ОД. |
 
 ## Position Modifiers
 

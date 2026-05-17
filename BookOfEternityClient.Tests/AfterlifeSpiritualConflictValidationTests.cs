@@ -2089,6 +2089,221 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CurrentExchangeRequiresActionCostAudit()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_missing_action_cost_audit_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """, addDefaultActionCostAudit: false);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ActionCostAuditMustMatchTierFormula()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_bad_action_cost_formula_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}},
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 3,
+              "before": 6,
+              "after": 3
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ActionCostAuditRejectsOverspend()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_action_cost_overspend_001",
+          "operationType": "counter",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "counterPayoff": {
+            "summary": "Игрок разворачивает нажим."
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}},
+          "actionCostAudit": {
+            "player": {
+              "operationType": "counter",
+              "baseCost": 4,
+              "minCost": 2,
+              "artTier": 0,
+              "effectiveCost": 4,
+              "before": 3,
+              "after": 0
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_points_insufficient", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ActionEconomyMustMatchLastCurrentCostAudit()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_action_economy_mismatch_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}},
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          }
+        }
+        """, syncRootActionEconomyToLastAudit: false);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_economy_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RecoverSpiritualPowerCannotExceedMaxActionPoints()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_recovery_over_cap_001",
+          "operationType": "recover_spiritual_power",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "actionEconomy": {
+              "player": { "current": 5, "max": 6, "source": "Средоточие Души tier 0" },
+              "opposition": { "current": 6, "max": 6, "source": "opposition spiritual authority" }
+            }
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "actionEconomy": {
+              "player": { "current": 9, "max": 6, "source": "Средоточие Души tier 0" },
+              "opposition": { "current": 6, "max": 6, "source": "opposition spiritual authority" }
+            }
+          },
+          "matchupAudit": {
+            "playerOperation": "recover_spiritual_power",
+            "oppositionOperation": "guard",
+            "primaryResolutionLane": "recover_spiritual_power",
+            "riskProfile": "recovery_timing",
+            "matchupRationale": "The player gathers focus while the opposition guards."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "recover_spiritual_power",
+              "baseCost": 0,
+              "minCost": 0,
+              "artTier": 0,
+              "effectiveCost": 0,
+              "before": 5,
+              "after": 9
+            }
+          }
+        }
+        """, addDefaultMatchupAudit: false);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_recovery_exceeds_max", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_CounterCannotTargetManeuver()
     {
         await WriteSoulStateAsync();
@@ -8523,6 +8738,10 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "playerSideStrain": "clear",
             "oppositionSideStrain": "clear",
             "conflictPosition": "contested",
+            "actionEconomy": {
+              "player": { "current": 6, "max": 6, "source": "Средоточие Души tier 0" },
+              "opposition": { "current": 6, "max": 6, "source": "opposition spiritual authority" }
+            },
             "resolutionState": "active",
             "exchangeLog": []
           },
@@ -10266,14 +10485,21 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     private Task WriteConflictStateWithRawExchangeAsync(
         string exchangeJson,
         bool addDefaultMatchupAudit = true,
-        string? activeControlStateJson = null)
+        string? activeControlStateJson = null,
+        bool addDefaultActionCostAudit = true,
+        bool syncRootActionEconomyToLastAudit = true)
     {
         var projectedExchangeJson = addDefaultMatchupAudit
             ? AddDefaultMatchupAudit(exchangeJson)
             : exchangeJson;
+        if (addDefaultActionCostAudit)
+            projectedExchangeJson = AddDefaultActionCostAudit(projectedExchangeJson);
         var activeControlStateFragment = string.IsNullOrWhiteSpace(activeControlStateJson)
             ? string.Empty
             : $",\n            \"controlState\": {activeControlStateJson}";
+        var playerActionCurrent = ResolveRootPlayerActionCurrentFromExchangeLog(
+            projectedExchangeJson,
+            syncRootActionEconomyToLastAudit);
 
         return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
         {
@@ -10306,6 +10532,10 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "playerSideStrain": "clear",
             "oppositionSideStrain": "clear",
             "conflictPosition": "contested",
+            "actionEconomy": {
+              "player": { "current": {{playerActionCurrent}}, "max": 6, "source": "Средоточие Души tier 0" },
+              "opposition": { "current": 6, "max": 6, "source": "opposition spiritual authority" }
+            },
             "resolutionState": "active"{{activeControlStateFragment}},
             "exchangeLog": [
               {{projectedExchangeJson}}
@@ -10316,8 +10546,13 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
     }
 
-    private Task WriteConflictStateWithRawExchangeLogAsync(string exchangeLogJson)
+    private Task WriteConflictStateWithRawExchangeLogAsync(
+        string exchangeLogJson,
+        bool syncRootActionEconomyToLastAudit = true)
     {
+        var playerActionCurrent = ResolveRootPlayerActionCurrentFromExchangeLog(
+            exchangeLogJson,
+            syncRootActionEconomyToLastAudit);
         return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
         {
           "schemaVersion": 1,
@@ -10349,6 +10584,10 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "playerSideStrain": "clear",
             "oppositionSideStrain": "clear",
             "conflictPosition": "contested",
+            "actionEconomy": {
+              "player": { "current": {{playerActionCurrent}}, "max": 6, "source": "Средоточие Души tier 0" },
+              "opposition": { "current": 6, "max": 6, "source": "opposition spiritual authority" }
+            },
             "resolutionState": "active",
             "exchangeLog": [
               {{exchangeLogJson}}
@@ -10381,6 +10620,100 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         return exchange.ToJsonString();
     }
 
+    private static string AddDefaultActionCostAudit(string exchangeJson)
+    {
+        if (JsonNode.Parse(exchangeJson) is not JsonObject exchange)
+            return exchangeJson;
+
+        if (exchange["actionCostAudit"] is JsonObject)
+            return exchange.ToJsonString();
+
+        var operationType = AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]);
+        if (string.IsNullOrWhiteSpace(operationType) ||
+            IsTerminalActionCostTestOperation(operationType) ||
+            !TryGetTestActionCost(operationType, out var baseCost, out var minCost))
+        {
+            return exchange.ToJsonString();
+        }
+
+        const int artTier = 0;
+        var effectiveCost = Math.Max(minCost, baseCost - artTier);
+        var before = string.Equals(operationType, "recover_spiritual_power", StringComparison.OrdinalIgnoreCase) ? 3 : 6;
+        var after = string.Equals(operationType, "recover_spiritual_power", StringComparison.OrdinalIgnoreCase)
+            ? 6
+            : before - effectiveCost;
+
+        exchange["actionCostAudit"] = new JsonObject
+        {
+            ["player"] = new JsonObject
+            {
+                ["operationType"] = operationType,
+                ["baseCost"] = baseCost,
+                ["minCost"] = minCost,
+                ["artTier"] = artTier,
+                ["effectiveCost"] = effectiveCost,
+                ["before"] = before,
+                ["after"] = after
+            }
+        };
+
+        return exchange.ToJsonString();
+    }
+
+    private static int ResolveRootPlayerActionCurrentFromExchangeLog(string exchangeLogJson, bool syncRootActionEconomyToLastAudit)
+    {
+        if (!syncRootActionEconomyToLastAudit)
+            return 6;
+
+        try
+        {
+            if (JsonNode.Parse($"[{exchangeLogJson}]") is not JsonArray exchangeLog)
+                return 6;
+
+            int? current = null;
+            foreach (var node in exchangeLog.OfType<JsonObject>())
+            {
+                if (node["actionCostAudit"] is JsonObject actionCostAudit &&
+                    actionCostAudit["player"] is JsonObject playerAudit &&
+                    playerAudit["after"] is JsonValue afterValue &&
+                    afterValue.TryGetValue<int>(out var after))
+                {
+                    current = after;
+                }
+            }
+
+            return current ?? 6;
+        }
+        catch (JsonException)
+        {
+            return 6;
+        }
+    }
+
+    private static bool IsTerminalActionCostTestOperation(string operationType) =>
+        string.Equals(operationType, "withdraw", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(operationType, "surrender", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(operationType, "negotiate", StringComparison.OrdinalIgnoreCase);
+
+    private static bool TryGetTestActionCost(string operationType, out int baseCost, out int minCost)
+    {
+        (baseCost, minCost) = NormalizeTestOperation(operationType) switch
+        {
+            "pressure" => (3, 1),
+            "guard" => (2, 1),
+            "counter" => (4, 2),
+            "maneuver" => (3, 1),
+            "binding" => (4, 2),
+            "force_binding" => (5, 2),
+            "break_binding" => (3, 1),
+            "incarnation_resistance" => (3, 1),
+            "champion_coordination" => (2, 1),
+            "recover_spiritual_power" => (0, 0),
+            _ => (-1, -1)
+        };
+        return baseCost >= 0;
+    }
+
     private static string ResolveDefaultOppositionOperation(JsonObject exchange, string operationType)
     {
         if (exchange["incomingAction"] is JsonObject incomingAction)
@@ -10401,6 +10734,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "break_binding" => "binding",
             "incarnation_resistance" => "force_incarnation",
             "champion_coordination" => "pressure",
+            "recover_spiritual_power" => "guard",
             _ => "none"
         };
     }
@@ -10415,6 +10749,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "binding" or "force_binding" => "control_leverage",
             "break_binding" or "incarnation_resistance" => "anti_control",
             "champion_coordination" => "champion_support",
+            "recover_spiritual_power" => "recovery_timing",
             _ => "terminal_choice"
         };
 

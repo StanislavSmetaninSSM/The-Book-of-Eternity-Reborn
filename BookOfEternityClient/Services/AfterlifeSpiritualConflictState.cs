@@ -93,6 +93,7 @@ public static class AfterlifeSpiritualConflictState
         "force_incarnation",
         "incarnation_resistance",
         "champion_coordination",
+        "recover_spiritual_power",
         "withdraw",
         "surrender",
         "negotiate"
@@ -345,6 +346,7 @@ public static class AfterlifeSpiritualConflictState
         CopyIfPresent(update, active, "conflictPosition");
         CopyIfPresent(update, active, "playerSideStrain");
         CopyIfPresent(update, active, "oppositionSideStrain");
+        CopyIfPresent(update, active, "actionEconomy");
         CopyIfPresent(update, active, "resolutionState");
         CopyIfPresent(update, active, "status");
         ClearInvalidUpdateMarkers(root);
@@ -536,6 +538,7 @@ public static class AfterlifeSpiritualConflictState
         CopyIfPresent(source, target, "conflictPosition");
         CopyIfPresent(source, target, "playerSideStrain");
         CopyIfPresent(source, target, "oppositionSideStrain");
+        CopyIfPresent(source, target, "actionEconomy");
         CopyIfPresentOrNull(source, target, "controlState");
         CopyIfPresent(source, target, "resolutionState");
         CopyIfPresent(source, target, "status");

@@ -17,6 +17,23 @@ public partial class ValidationService
         "repair"
     };
 
+    private static readonly IReadOnlyDictionary<string, ActionCostDefinition> AfterlifeActionCosts =
+        new Dictionary<string, ActionCostDefinition>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["pressure"] = new(3, 1),
+            ["guard"] = new(2, 1),
+            ["counter"] = new(4, 2),
+            ["maneuver"] = new(3, 1),
+            ["binding"] = new(4, 2),
+            ["force_binding"] = new(5, 2),
+            ["break_binding"] = new(3, 1),
+            ["incarnation_resistance"] = new(3, 1),
+            ["champion_coordination"] = new(2, 1),
+            ["recover_spiritual_power"] = new(0, 0)
+        };
+
+    private sealed record ActionCostDefinition(int BaseCost, int MinCost);
+
     private async Task ValidateAfterlifeSpiritualConflictStateAsync(List<ValidationIssue> issues)
     {
         var json = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath);
@@ -925,6 +942,9 @@ public partial class ValidationService
         }
 
         var priorControlState = ResolveScopedPreTurnActiveControlState(conflict, diceContext);
+        var hasCurrentExchange = false;
+        int? expectedNextPlayerActionCostBefore = null;
+        int? lastCurrentPlayerActionCostAfter = null;
         if (conflict["exchangeLog"] is JsonArray exchangeLog)
         {
             var preTurnExchangePayloads = new PreTurnConflictPayloadTracker(diceContext.PreTurnConflictPayloads);
@@ -933,7 +953,31 @@ public partial class ValidationService
                 if (exchangeLog[index] is JsonObject exchange)
                 {
                     var isPreTurnExchange = preTurnExchangePayloads.TryConsume(exchange);
-                    ValidateConflictExchange(exchange, priorControlState, $"{context}.exchangeLog[{index}]", issues, diceContext, isPreTurnExchange);
+                    var isCurrentExchange = diceContext.HasValidatedTurnBaseline && !isPreTurnExchange;
+                    hasCurrentExchange = hasCurrentExchange || isCurrentExchange;
+                    ValidateConflictExchange(
+                        exchange,
+                        priorControlState,
+                        conflict["actionEconomy"] as JsonObject,
+                        $"{context}.exchangeLog[{index}]",
+                        issues,
+                        diceContext,
+                        isPreTurnExchange);
+                    if (isCurrentExchange)
+                    {
+                        ValidateCurrentActionCostSequence(
+                            exchange,
+                            expectedNextPlayerActionCostBefore,
+                            $"{context}.exchangeLog[{index}]",
+                            issues,
+                            out var currentExchangeActionAfter);
+                        if (currentExchangeActionAfter.HasValue)
+                        {
+                            expectedNextPlayerActionCostBefore = currentExchangeActionAfter.Value;
+                            lastCurrentPlayerActionCostAfter = currentExchangeActionAfter.Value;
+                        }
+                    }
+
                     if (!isPreTurnExchange)
                     {
                         priorControlState = ResolveNextPriorControlState(priorControlState, exchange);
@@ -958,6 +1002,17 @@ public partial class ValidationService
                 code: "afterlife_conflict_invalid_exchange_log",
                 section: "AfterlifeSpiritualConflict"));
         }
+
+        ValidateActionEconomyShape(
+            conflict["actionEconomy"],
+            $"{context}.actionEconomy",
+            issues,
+            required: hasCurrentExchange);
+        ValidateActionEconomyMatchesLastCurrentExchange(
+            conflict["actionEconomy"] as JsonObject,
+            lastCurrentPlayerActionCostAfter,
+            $"{context}.actionEconomy.player.current",
+            issues);
 
         ValidateFinalActiveControlStateMatchesExchangeSnapshots(
             conflict,
@@ -1689,6 +1744,7 @@ public partial class ValidationService
     private void ValidateConflictExchange(
         JsonObject exchange,
         JsonNode? priorControlState,
+        JsonObject? activeActionEconomy,
         string context,
         List<ValidationIssue> issues,
         AfterlifeConflictDiceContext diceContext,
@@ -1786,6 +1842,7 @@ public partial class ValidationService
         var requiresCurrentMatchupAudit =
             exchange["diceAudit"] is JsonObject &&
             isCurrentExchange;
+        ValidateActionCostAudit(exchange, activeActionEconomy, operationType, outcome, context, issues, isCurrentExchange);
 
         if (before != null && after != null)
         {
@@ -1829,6 +1886,362 @@ public partial class ValidationService
                 ValidateConflictPositionDiceModifier(diceAudit, before, context, issues);
             ValidateLightIncarnateDiceAuditModifier(exchange, diceAudit, $"{context}.diceAudit", issues, diceContext);
         }
+    }
+
+    private static void ValidateActionEconomyShape(
+        JsonNode? actionEconomy,
+        string context,
+        List<ValidationIssue> issues,
+        bool required)
+    {
+        if (actionEconomy == null)
+        {
+            if (required)
+            {
+                issues.Add(new ValidationIssue(
+                    context,
+                    IssueSeverity.Error,
+                    "Активный духовный конфликт с новым обменом должен содержать actionEconomy для ОД обеих сторон.",
+                    code: "afterlife_conflict_action_economy_missing",
+                    section: "AfterlifeSpiritualConflict",
+                    expected: "actionEconomy object with player/opposition current/max",
+                    actual: "missing/null"));
+            }
+
+            return;
+        }
+
+        if (actionEconomy is not JsonObject actionEconomyObject)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "actionEconomy должен быть object.",
+                code: "afterlife_conflict_action_economy_invalid",
+                section: "AfterlifeSpiritualConflict",
+                expected: "object",
+                actual: actionEconomy.GetType().Name));
+            return;
+        }
+
+        ValidateActionPoolShape(actionEconomyObject["player"], $"{context}.player", issues);
+        ValidateActionPoolShape(actionEconomyObject["opposition"], $"{context}.opposition", issues);
+    }
+
+    private static void ValidateActionPoolShape(JsonNode? pool, string context, List<ValidationIssue> issues)
+    {
+        if (pool is not JsonObject poolObject)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Пул ОД должен быть object с current/max.",
+                code: "afterlife_conflict_action_pool_invalid",
+                section: "AfterlifeSpiritualConflict",
+                expected: "object with current/max/source",
+                actual: pool?.GetType().Name ?? "missing"));
+            return;
+        }
+
+        var hasCurrent = TryGetJsonNodeInt(poolObject["current"], out var current);
+        var hasMax = TryGetJsonNodeInt(poolObject["max"], out var max);
+        if (!hasCurrent || !hasMax || current < 0 || max < 0 || current > max)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Пул ОД должен иметь 0 <= current <= max.",
+                code: "afterlife_conflict_action_pool_bounds_invalid",
+                section: "AfterlifeSpiritualConflict",
+                expected: "0 <= current <= max",
+                actual: $"current={poolObject["current"]?.ToJsonString() ?? "missing"}, max={poolObject["max"]?.ToJsonString() ?? "missing"}"));
+        }
+    }
+
+    private static void ValidateActionCostAudit(
+        JsonObject exchange,
+        JsonObject? activeActionEconomy,
+        string? operationType,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues,
+        bool isCurrentExchange)
+    {
+        if (!isCurrentExchange ||
+            string.IsNullOrWhiteSpace(operationType) ||
+            IsTerminalNoCostOperation(operationType))
+        {
+            return;
+        }
+
+        if (!AfterlifeActionCosts.TryGetValue(operationType, out var costDefinition))
+            return;
+
+        if (exchange["actionCostAudit"] is not JsonObject actionCostAudit ||
+            actionCostAudit["player"] is not JsonObject playerAudit)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.actionCostAudit.player",
+                IssueSeverity.Error,
+                "Новый обмен духовного боя должен иметь actionCostAudit.player для стоимости/восстановления ОД.",
+                code: "afterlife_conflict_action_cost_audit_missing",
+                section: "AfterlifeSpiritualConflict",
+                expected: "actionCostAudit.player object",
+                actual: exchange["actionCostAudit"]?.GetType().Name ?? "missing"));
+            return;
+        }
+
+        var auditOperation = AfterlifeSpiritualConflictState.GetNodeString(playerAudit["operationType"]);
+        if (!ConflictTokenEquals(auditOperation, operationType))
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.operationType",
+                "actionCostAudit.player.operationType должен совпадать с exchange.operationType.",
+                "afterlife_conflict_action_cost_mismatch",
+                operationType,
+                string.IsNullOrWhiteSpace(auditOperation) ? "missing" : auditOperation);
+        }
+
+        var hasBaseCost = TryGetJsonNodeInt(playerAudit["baseCost"], out var baseCost);
+        var hasMinCost = TryGetJsonNodeInt(playerAudit["minCost"], out var minCost);
+        var hasArtTier = TryGetJsonNodeInt(playerAudit["artTier"], out var artTier);
+        var hasEffectiveCost = TryGetJsonNodeInt(playerAudit["effectiveCost"], out var effectiveCost);
+        var hasBefore = TryGetJsonNodeInt(playerAudit["before"], out var before);
+        var hasAfter = TryGetJsonNodeInt(playerAudit["after"], out var after);
+        if (!hasBaseCost || !hasMinCost || !hasArtTier || !hasEffectiveCost || !hasBefore || !hasAfter)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player",
+                "actionCostAudit.player должен содержать baseCost, minCost, artTier, effectiveCost, before и after.",
+                "afterlife_conflict_action_cost_audit_invalid",
+                "complete integer cost audit",
+                playerAudit.ToJsonString());
+            return;
+        }
+
+        var expectedEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, artTier));
+        if (baseCost != costDefinition.BaseCost ||
+            minCost != costDefinition.MinCost ||
+            effectiveCost != expectedEffectiveCost)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.effectiveCost",
+                "Стоимость ОД должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier).",
+                "afterlife_conflict_action_cost_mismatch",
+                $"baseCost={costDefinition.BaseCost}, minCost={costDefinition.MinCost}, effectiveCost={expectedEffectiveCost}",
+                $"baseCost={baseCost}, minCost={minCost}, effectiveCost={effectiveCost}");
+        }
+
+        if (ConflictTokenEquals(operationType, "recover_spiritual_power"))
+        {
+            ValidateRecoveryActionCost(exchange, activeActionEconomy, playerAudit, outcome, context, issues, before, after);
+            return;
+        }
+
+        if (before < effectiveCost)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.before",
+                "Духовное действие не может потратить больше ОД, чем было доступно до обмена.",
+                "afterlife_conflict_action_points_insufficient",
+                $"before >= effectiveCost ({effectiveCost})",
+                before.ToString());
+        }
+
+        if (after != before - effectiveCost)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.after",
+                "actionCostAudit.player.after должен точно равняться before - effectiveCost.",
+                "afterlife_conflict_action_cost_delta_mismatch",
+                (before - effectiveCost).ToString(),
+                after.ToString());
+        }
+    }
+
+    private static void ValidateCurrentActionCostSequence(
+        JsonObject exchange,
+        int? expectedBefore,
+        string context,
+        List<ValidationIssue> issues,
+        out int? currentExchangeActionAfter)
+    {
+        currentExchangeActionAfter = null;
+        if (!TryGetPlayerActionCostBeforeAfter(exchange, out var before, out var after))
+            return;
+
+        if (expectedBefore.HasValue && before != expectedBefore.Value)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.before",
+                "Последовательные текущие обмены должны расходовать/восстанавливать ОД от результата предыдущего обмена.",
+                "afterlife_conflict_action_cost_sequence_mismatch",
+                expectedBefore.Value.ToString(),
+                before.ToString());
+        }
+
+        currentExchangeActionAfter = after;
+    }
+
+    private static void ValidateActionEconomyMatchesLastCurrentExchange(
+        JsonObject? actionEconomy,
+        int? expectedCurrent,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!expectedCurrent.HasValue)
+            return;
+
+        if (actionEconomy?["player"] is not JsonObject playerPool ||
+            !TryGetJsonNodeInt(playerPool["current"], out var actualCurrent))
+        {
+            return;
+        }
+
+        if (actualCurrent != expectedCurrent.Value)
+        {
+            AddActionCostIssue(
+                issues,
+                context,
+                "Итоговый activeConflict.actionEconomy.player.current должен совпадать с последним текущим actionCostAudit.player.after.",
+                "afterlife_conflict_action_economy_delta_mismatch",
+                expectedCurrent.Value.ToString(),
+                actualCurrent.ToString());
+        }
+    }
+
+    private static bool TryGetPlayerActionCostBeforeAfter(JsonObject exchange, out int before, out int after)
+    {
+        before = 0;
+        after = 0;
+        return exchange["actionCostAudit"] is JsonObject actionCostAudit &&
+               actionCostAudit["player"] is JsonObject playerAudit &&
+               TryGetJsonNodeInt(playerAudit["before"], out before) &&
+               TryGetJsonNodeInt(playerAudit["after"], out after);
+    }
+
+    private static void ValidateRecoveryActionCost(
+        JsonObject exchange,
+        JsonObject? activeActionEconomy,
+        JsonObject playerAudit,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues,
+        int before,
+        int after)
+    {
+        var maxActionPoints = TryGetActionPoolMax(activeActionEconomy, "player", out var activeMax)
+            ? activeMax
+            : TryGetJsonNodeInt(playerAudit["max"], out var auditMax)
+                ? auditMax
+                : 0;
+
+        if (maxActionPoints <= 0)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.max",
+                "Для восстановления ОД нужен max из activeConflict.actionEconomy.player.max или actionCostAudit.player.max.",
+                "afterlife_conflict_action_recovery_missing_max",
+                "positive max action points",
+                "missing");
+            return;
+        }
+
+        if (after > maxActionPoints)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.after",
+                "Собрать Средоточие не может восстановить ОД выше максимума.",
+                "afterlife_conflict_action_recovery_exceeds_max",
+                $"after <= max ({maxActionPoints})",
+                after.ToString());
+        }
+
+        var delta = after - before;
+        var oppositionOperation = ResolveMatchupOppositionOperation(exchange);
+        var punishedRecovery = ConflictTokenEquals(
+            oppositionOperation,
+            "pressure",
+            "maneuver",
+            "binding",
+            "force_binding",
+            "force_incarnation");
+
+        if (punishedRecovery)
+        {
+            if (delta < 0 || delta > 1)
+            {
+                AddActionCostIssue(
+                    issues,
+                    $"{context}.actionCostAudit.player.after",
+                    "Собрать Средоточие под давлением/манёвром/оковами восстанавливает только 0..1 ОД.",
+                    "afterlife_conflict_action_recovery_delta_mismatch",
+                    "delta 0..1 against pressure/maneuver/control",
+                    delta.ToString());
+            }
+
+            return;
+        }
+
+        var expectedDelta = ConflictTokenEquals(outcome, "success")
+            ? 3
+            : ConflictTokenEquals(outcome, "partial_success")
+                ? 2
+                : 0;
+        var expectedAfter = Math.Min(maxActionPoints, before + expectedDelta);
+        if (after != expectedAfter)
+        {
+            AddActionCostIssue(
+                issues,
+                $"{context}.actionCostAudit.player.after",
+                "Собрать Средоточие должно восстановить ровно ожидаемое количество ОД с учётом максимума.",
+                "afterlife_conflict_action_recovery_delta_mismatch",
+                expectedAfter.ToString(),
+                after.ToString());
+        }
+    }
+
+    private static bool TryGetActionPoolMax(JsonObject? actionEconomy, string side, out int max)
+    {
+        max = 0;
+        return actionEconomy?[side] is JsonObject pool &&
+               TryGetJsonNodeInt(pool["max"], out max);
+    }
+
+    private static string? ResolveMatchupOppositionOperation(JsonObject exchange)
+    {
+        if (exchange["matchupAudit"] is JsonObject matchupAudit)
+            return AfterlifeSpiritualConflictState.GetNodeString(matchupAudit["oppositionOperation"]);
+        return null;
+    }
+
+    private static bool IsTerminalNoCostOperation(string operationType) =>
+        ConflictTokenEquals(operationType, "withdraw", "surrender", "negotiate");
+
+    private static void AddActionCostIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string message,
+        string code,
+        string expected,
+        string actual)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeSpiritualConflict",
+            expected: expected,
+            actual: actual));
     }
 
     private static void ValidateCurrentExchangeControlSnapshotCompleteness(
@@ -2895,6 +3308,7 @@ public partial class ValidationService
             "guard" => ConflictTokenEquals(opposition, "maneuver", "binding", "force_binding"),
             "maneuver" => ConflictTokenEquals(opposition, "pressure", "maneuver", "binding", "force_binding"),
             "binding" or "force_binding" => ConflictTokenEquals(opposition, "break_binding"),
+            "recover_spiritual_power" => ConflictTokenEquals(opposition, "pressure", "maneuver", "binding", "force_binding", "force_incarnation"),
             _ => false
         };
     }
@@ -2909,6 +3323,7 @@ public partial class ValidationService
             "binding" or "force_binding" => "control_leverage",
             "break_binding" or "incarnation_resistance" => "anti_control",
             "champion_coordination" => "champion_support",
+            "recover_spiritual_power" => "recovery_timing",
             _ => "terminal_choice"
         };
 
