@@ -11,6 +11,7 @@ internal static class AfterlifeEntityProfileState
     public const string CustomStateChangesProperty = "afterlifeEntityCustomStateChanges";
     public const string CustomStatesProperty = "customStates";
     public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
+    public const string SpecialArtLearningReceiptsProperty = "afterlifeSpecialArtLearningReceipts";
     public const string ProgressionLedgerProperty = "progressionLedger";
     public const int SchemaVersion = 1;
     public const int MaxProfileTier = 5;
@@ -80,6 +81,7 @@ internal static class AfterlifeEntityProfileState
         UpsertProfiles(result, currentRoot?[ResponseProfilesProperty]);
         UpsertProfiles(result, currentRoot?[UpdateProperty]);
         ApplyCustomStateChanges(result, currentRoot?[CustomStateChangesProperty]);
+        ApplySpecialArtLearningReceipts(result, currentRoot?[SpecialArtLearningReceiptsProperty]);
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
         ApplyAutomaticProgression(result, progressionReportRoot);
 
@@ -87,6 +89,7 @@ internal static class AfterlifeEntityProfileState
         result.Remove(ResponseProfilesProperty);
         result.Remove(CustomStateChangesProperty);
         result.Remove(ProgressionOverridesProperty);
+        result.Remove(SpecialArtLearningReceiptsProperty);
         return result;
     }
 
@@ -301,6 +304,55 @@ internal static class AfterlifeEntityProfileState
                     ["lightSparks"] = 0
                 },
                 ["spending"] = CloneObject(overrideNode["currencyDeltas"] as JsonObject ?? new JsonObject())
+            });
+        }
+    }
+
+    private static void ApplySpecialArtLearningReceipts(JsonObject result, JsonNode? receiptsNode)
+    {
+        if (receiptsNode is not JsonArray receipts)
+            return;
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var receipt in receipts.OfType<JsonObject>())
+        {
+            var artId = GetNodeString(receipt["artId"]);
+            var teacherActorType = GetNodeString(receipt["teacherActorType"]);
+            var teacherActorId = GetNodeString(receipt["teacherActorId"]) ?? GetNodeString(receipt["teacherActorRef"]);
+            var playerActorId = GetNodeString(receipt["playerActorId"]);
+            if (string.IsNullOrWhiteSpace(artId) ||
+                string.IsNullOrWhiteSpace(teacherActorType) ||
+                string.IsNullOrWhiteSpace(teacherActorId) ||
+                string.IsNullOrWhiteSpace(playerActorId))
+            {
+                continue;
+            }
+
+            var teacherProfile = FindProfileByIdentity(profiles, teacherActorType, teacherActorId);
+            var playerProfile = FindProfileByIdentity(profiles, "player_soul", playerActorId);
+            var sourceArt = FindSpecialArtById(teacherProfile, artId);
+            if (playerProfile == null || sourceArt == null)
+                continue;
+
+            var learnedArt = CloneObject(sourceArt);
+            learnedArt["ownerActorType"] = "player_soul";
+            learnedArt["ownerActorId"] = playerActorId;
+            learnedArt["tier"] = GetNodeInt(receipt["initialTier"]);
+            learnedArt["canTeachPlayer"] = false;
+            learnedArt["learnedFromActorType"] = teacherActorType;
+            learnedArt["learnedFromActorId"] = teacherActorId;
+            learnedArt["learnedAtTurn"] = GetNodeInt(receipt["learnedAtTurn"]);
+            learnedArt["learningReceiptId"] = GetNodeString(receipt["receiptId"]);
+
+            var playerArts = EnsureArray(playerProfile, "specialArts");
+            UpsertSpecialArt(playerArts, learnedArt);
+
+            AppendLedger(playerProfile, new JsonObject
+            {
+                ["entryId"] = GetNodeString(receipt["receiptId"]) ?? $"special_art_learning_{artId}",
+                ["turnNumber"] = GetNodeInt(receipt["learnedAtTurn"]),
+                ["reason"] = "learn_special_art",
+                ["summary"] = GetNodeString(receipt["summary"]) ?? $"Игрок изучил особое духовное искусство {artId}."
             });
         }
     }
@@ -571,6 +623,62 @@ internal static class AfterlifeEntityProfileState
         obj = new JsonObject();
         root[propertyName] = obj;
         return obj;
+    }
+
+    private static JsonArray EnsureArray(JsonObject root, string propertyName)
+    {
+        if (root[propertyName] is JsonArray array)
+            return array;
+
+        array = new JsonArray();
+        root[propertyName] = array;
+        return array;
+    }
+
+    private static JsonObject? FindProfileByIdentity(JsonArray profiles, string actorType, string actorId)
+    {
+        var expected = $"{actorType.Trim()}:{actorId.Trim()}";
+        return profiles
+            .OfType<JsonObject>()
+            .FirstOrDefault(profile => string.Equals(BuildIdentityKey(profile), expected, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static JsonObject? FindSpecialArtById(JsonObject? profile, string artId)
+    {
+        if (profile?["specialArts"] is not JsonArray arts)
+            return null;
+
+        return arts
+            .OfType<JsonObject>()
+            .FirstOrDefault(art => string.Equals(GetNodeString(art["artId"]), artId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static void UpsertSpecialArt(JsonArray arts, JsonObject art)
+    {
+        var artId = GetNodeString(art["artId"]);
+        if (string.IsNullOrWhiteSpace(artId))
+        {
+            arts.Add(CloneObject(art));
+            return;
+        }
+
+        for (var index = 0; index < arts.Count; index++)
+        {
+            if (arts[index] is JsonObject existing &&
+                string.Equals(GetNodeString(existing["artId"]), artId, StringComparison.OrdinalIgnoreCase))
+            {
+                arts[index] = CloneObject(art);
+                return;
+            }
+        }
+
+        arts.Add(CloneObject(art));
+    }
+
+    private static void AppendLedger(JsonObject profile, JsonObject entry)
+    {
+        var ledger = EnsureArray(profile, "ledger");
+        ledger.Add(entry);
     }
 
     private static void AppendProgressionLedger(JsonObject profile, JsonObject entry)

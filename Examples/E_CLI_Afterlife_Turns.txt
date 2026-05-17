@@ -7017,7 +7017,7 @@ Correct reasoning checklist:
 - Future afterlife conflict dice from `grantedAtTurn` onward must explicitly include turn evidence and `light_incarnate`; do not leave the bonus implicit in prose, and do not add it to pre-unlock, incomplete-closure, or historical dice audits.
 
 ==================================================
-EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`)
+EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`, `afterlife_special_art_learning_v1`)
 ==================================================
 
 Scenario:
@@ -7026,6 +7026,8 @@ Scenario:
 - The canonical file is `game_state/meta/afterlife_entity_profiles.json`.
 - The accepted response uses `afterlifeEntityProfileUpdates[]`; the client normalizes it into `profiles[]`.
 - Targeted custom state maintenance uses `afterlifeEntityCustomStateChanges[]`; `statesToAddOrUpdate[]` adds/replaces full `customStates` entries and `statesToRemove[]` deletes ended states.
+- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, and `trainingConditions` when teachable.
+- Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`.
 - If the GM does not write `afterlifeEntityProgressionOverrides[]`, the client uses existing `progression_report.json` afterlife/Shining cycle counts to apply deterministic income, one affordable `progressionStrategy.priorityOrder` upgrade, `lastAutoProgressionCycleKey`, and `progressionLedger[]`.
 
 Valid response fragment:
@@ -7072,10 +7074,21 @@ Valid response fragment:
         {
           "artId": "mirror_guard",
           "displayName": "Зеркальная Защита",
+          "ownerActorType": "guardian",
+          "ownerActorId": "guardian_mirror",
           "baseOperation": "guard",
           "tier": 1,
           "costMultiplierPercent": 150,
-          "effectSummary": "При успехе отражает часть давления в сторону противника."
+          "upgradeCost": {
+            "inkFeathers": 30,
+            "lightSparks": 0
+          },
+          "effectSummary": "При успехе отражает часть давления в сторону противника.",
+          "canTeachPlayer": true,
+          "trainingConditions": [
+            "Провести сцену обучения у Хранителя Зеркал.",
+            "Показать, что душа поняла отражение давления без физического предмета."
+          ]
         }
       ],
       "customStates": [
@@ -7197,6 +7210,19 @@ Valid response fragment:
         "radiance": 0
       }
     }
+  ],
+  "afterlifeSpecialArtLearningReceipts": [
+    {
+      "receiptId": "special_art_learning_mirror_guard_001",
+      "teacherActorType": "guardian",
+      "teacherActorId": "guardian_mirror",
+      "playerActorId": "player_soul",
+      "artId": "mirror_guard",
+      "learnedAtTurn": 23,
+      "trainingConditionSatisfied": true,
+      "roleplayEvidence": "Душа прошла сцену обучения и отразила давление собственным воспоминанием.",
+      "summary": "Зеркальная Защита добавлена в профиль игрока как особое духовное искусство."
+    }
   ]
 }
 ```
@@ -7204,6 +7230,9 @@ Valid response fragment:
 Correct reasoning checklist:
 - `actorType + actorId` is the identity key; do not create duplicate profiles for the same entity.
 - `standardArts` and `specialArts[].baseOperation` use the canonical spiritual action ids, while player-facing prose may show Russian labels.
+- `specialArts[]` is more expensive than the base action: `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, and teachable arts must list `trainingConditions`.
+- If a learned art is recognized, write `afterlifeSpecialArtLearningReceipts[]`; do not silently add it to the player without a receipt.
+- If a conflict exchange uses a learned special art, include `specialArtAudit` with `effectNote`, and in `actionCostAudit.player` include `specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`.
 - `customStates[]` is visible in `/afterlife_profiles`; remove ended states through `afterlifeEntityCustomStateChanges[].statesToRemove[]` instead of leaving stale states forever.
 - `progressionLedger[]` is mandatory audit evidence for auto-progression or `afterlifeEntityProgressionOverrides[]`; each cycle must have a clear `cycleKey`, `source`, income/spending, and summary. Do not hand-edit resources without this audit.
 - `lastAutoProgressionCycleKey` prevents the same existing afterlife/Shining progression cycle from being applied repeatedly.

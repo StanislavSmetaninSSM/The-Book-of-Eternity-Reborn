@@ -154,7 +154,18 @@ public partial class ExplorerMode
             var baseOperation = AfterlifeEntityProfileState.GetNodeString(art["baseOperation"]) ?? "?";
             var tier = AfterlifeEntityProfileState.GetNodeInt(art["tier"]);
             var effect = AfterlifeEntityProfileState.GetNodeString(art["effectSummary"]);
+            var costMultiplier = AfterlifeEntityProfileState.GetNodeInt(art["costMultiplierPercent"]);
+            var canTeach = art["canTeachPlayer"] is JsonValue canTeachValue &&
+                           canTeachValue.TryGetValue<bool>(out var teachValue) &&
+                           teachValue;
             lines.Add($"    - {Markup.Escape(name)}: тир {tier}, основа — {Markup.Escape(DescribeAfterlifeEntityArt(baseOperation))}");
+            if (costMultiplier > 0)
+                lines.Add($"      [dim]Стоимость применения: {costMultiplier}% от базовой стоимости действия.[/]");
+            if (canTeach)
+                lines.Add("      [green]может обучать игрока[/]");
+            var trainingConditions = ReadProfileStringArray(art["trainingConditions"] as JsonArray).ToList();
+            if (trainingConditions.Count > 0)
+                lines.Add($"      [dim]Условия обучения: {Markup.Escape(string.Join("; ", trainingConditions))}[/]");
             if (!string.IsNullOrWhiteSpace(effect))
                 lines.Add($"      [dim]{Markup.Escape(effect)}[/]");
         }

@@ -51,8 +51,14 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 {
                   "artId": "mirror_guard",
                   "displayName": "Зеркальная Защита",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
                   "baseOperation": "unknown_art",
                   "tier": 1,
+                  "costMultiplierPercent": 100,
+                  "upgradeCost": { "inkFeathers": 30, "lightSparks": 0 },
+                  "canTeachPlayer": true,
+                  "trainingConditions": [],
                   "effectSummary": "Отражает чужую защиту."
                 }
               ],
@@ -86,7 +92,62 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_invalid_special_art_base_operation", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_invalid_special_art_cost_multiplier", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_missing_training_conditions", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_duplicate_actor", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MalformedSpecialArtLearningReceipt_ReportsContractIssues()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": {},
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeSpecialArtLearningReceipts": [
+            {
+              "receiptId": "",
+              "teacherActorType": "guardian",
+              "teacherActorId": "guardian_mirror",
+              "artId": "",
+              "playerActorId": "",
+              "trainingConditionSatisfied": false,
+              "roleplayEvidence": "",
+              "summary": ""
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_missing_receipt_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_missing_art_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_missing_player_actor_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_condition_not_satisfied", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_missing_roleplay_evidence", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -245,9 +306,14 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 {
                   "artId": "mirror_guard",
                   "displayName": "Зеркальная Защита",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
                   "baseOperation": "guard",
                   "tier": 1,
                   "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 30, "lightSparks": 0 },
+                  "canTeachPlayer": true,
+                  "trainingConditions": ["Провести сцену обучения с Хранителем Зеркал."],
                   "effectSummary": "При успехе отражает часть давления в сторону противника."
                 }
               ],

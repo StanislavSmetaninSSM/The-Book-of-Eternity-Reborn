@@ -18,6 +18,12 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "afterlifeEntityProgressionOverrides"
+    },
+    {
+      "contractId": "afterlife_special_art_learning_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeSpecialArtLearningReceipts"
     }
   ],
   "syntaxExemptions": [

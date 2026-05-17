@@ -1897,6 +1897,7 @@ public partial class ValidationService
         var requiresCurrentMatchupAudit =
             exchange["diceAudit"] is JsonObject &&
             isCurrentExchange;
+        ValidateSpecialArtAudit(exchange, operationType, context, issues);
         ValidateActionCostAudit(exchange, activeActionEconomy, operationType, outcome, context, issues, isCurrentExchange);
 
         if (before != null && after != null)
@@ -2076,16 +2077,48 @@ public partial class ValidationService
             return;
         }
 
-        var expectedEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, artTier));
+        var standardEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, artTier));
+        var expectedEffectiveCost = standardEffectiveCost;
+        var specialArtAudit = exchange["specialArtAudit"] as JsonObject;
+        if (specialArtAudit != null &&
+            TryGetJsonNodeInt(specialArtAudit["costMultiplierPercent"], out var specialMultiplier) &&
+            specialMultiplier > 100)
+        {
+            expectedEffectiveCost = Math.Max(costDefinition.MinCost, (standardEffectiveCost * specialMultiplier + 99) / 100);
+            var auditSpecialArtId = AfterlifeSpiritualConflictState.GetNodeString(playerAudit["specialArtId"]);
+            var specialArtId = AfterlifeSpiritualConflictState.GetNodeString(specialArtAudit["artId"]);
+            var hasAuditMultiplier = TryGetJsonNodeInt(playerAudit["specialCostMultiplierPercent"], out var auditMultiplier);
+            var hasStandardEffectiveCost = TryGetJsonNodeInt(playerAudit["standardEffectiveCost"], out var auditStandardEffectiveCost);
+            if (!ConflictTokenEquals(auditSpecialArtId, specialArtId) ||
+                !hasAuditMultiplier ||
+                auditMultiplier != specialMultiplier ||
+                !hasStandardEffectiveCost ||
+                auditStandardEffectiveCost != standardEffectiveCost)
+            {
+                AddActionCostIssue(
+                    issues,
+                    $"{context}.actionCostAudit.player",
+                    "actionCostAudit.player для особого духовного искусства должен ссылаться на specialArtId, specialCostMultiplierPercent и standardEffectiveCost.",
+                    "afterlife_conflict_special_art_cost_audit_incomplete",
+                    $"specialArtId={specialArtId}, specialCostMultiplierPercent={specialMultiplier}, standardEffectiveCost={standardEffectiveCost}",
+                    playerAudit.ToJsonString());
+            }
+        }
+
         if (baseCost != costDefinition.BaseCost ||
             minCost != costDefinition.MinCost ||
             effectiveCost != expectedEffectiveCost)
         {
+            var mismatchCode = specialArtAudit == null
+                ? "afterlife_conflict_action_cost_mismatch"
+                : "afterlife_conflict_special_art_cost_mismatch";
             AddActionCostIssue(
                 issues,
                 $"{context}.actionCostAudit.player.effectiveCost",
-                "Стоимость ОД должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier).",
-                "afterlife_conflict_action_cost_mismatch",
+                specialArtAudit == null
+                    ? "Стоимость ОД должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier)."
+                    : "Стоимость ОД особого духовного искусства должна применять повышающий specialCostMultiplierPercent к стандартной стоимости.",
+                mismatchCode,
                 $"baseCost={costDefinition.BaseCost}, minCost={costDefinition.MinCost}, effectiveCost={expectedEffectiveCost}",
                 $"baseCost={baseCost}, minCost={minCost}, effectiveCost={effectiveCost}");
         }
@@ -2116,6 +2149,109 @@ public partial class ValidationService
                 "afterlife_conflict_action_cost_delta_mismatch",
                 (before - effectiveCost).ToString(),
                 after.ToString());
+        }
+    }
+
+    private static void ValidateSpecialArtAudit(
+        JsonObject exchange,
+        string? operationType,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!exchange.ContainsKey("specialArtAudit"))
+            return;
+
+        if (exchange["specialArtAudit"] is not JsonObject audit)
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit",
+                "specialArtAudit должен быть object, если обмен использует особое духовное искусство.",
+                "afterlife_conflict_special_art_audit_not_object",
+                "object",
+                exchange["specialArtAudit"]?.ToJsonString() ?? "null");
+            return;
+        }
+
+        var artId = AfterlifeSpiritualConflictState.GetNodeString(audit["artId"]);
+        if (string.IsNullOrWhiteSpace(artId))
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.artId",
+                "specialArtAudit.artId обязателен.",
+                "afterlife_conflict_special_art_missing_id",
+                "non-empty artId",
+                audit["artId"]?.ToJsonString() ?? "missing");
+        }
+
+        var ownerActorType = AfterlifeSpiritualConflictState.GetNodeString(audit["ownerActorType"]);
+        if (string.IsNullOrWhiteSpace(ownerActorType))
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.ownerActorType",
+                "specialArtAudit.ownerActorType обязателен.",
+                "afterlife_conflict_special_art_missing_owner",
+                "non-empty ownerActorType",
+                audit["ownerActorType"]?.ToJsonString() ?? "missing");
+        }
+
+        if (string.IsNullOrWhiteSpace(AfterlifeSpiritualConflictState.GetNodeString(audit["ownerActorId"])))
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.ownerActorId",
+                "specialArtAudit.ownerActorId обязателен.",
+                "afterlife_conflict_special_art_missing_owner",
+                "non-empty ownerActorId",
+                audit["ownerActorId"]?.ToJsonString() ?? "missing");
+        }
+
+        var baseOperation = AfterlifeSpiritualConflictState.GetNodeString(audit["baseOperation"]);
+        if (string.IsNullOrWhiteSpace(baseOperation) ||
+            !AfterlifeEntityProfileState.SpecialArtBaseOperations.Contains(baseOperation))
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.baseOperation",
+                "specialArtAudit.baseOperation должен ссылаться на стандартное духовное действие.",
+                "afterlife_conflict_special_art_invalid_base_operation",
+                string.Join("/", AfterlifeEntityProfileState.SpecialArtBaseOperations.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                string.IsNullOrWhiteSpace(baseOperation) ? "missing" : baseOperation);
+        }
+        else if (!string.IsNullOrWhiteSpace(operationType) &&
+                 !ConflictTokenEquals(baseOperation, operationType))
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.baseOperation",
+                "specialArtAudit.baseOperation должен совпадать с exchange.operationType.",
+                "afterlife_conflict_special_art_base_operation_mismatch",
+                operationType,
+                baseOperation);
+        }
+
+        if (!TryGetJsonNodeInt(audit["costMultiplierPercent"], out var multiplier) || multiplier <= 100)
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.costMultiplierPercent",
+                "Особое духовное искусство должно иметь повышенный costMultiplierPercent > 100.",
+                "afterlife_conflict_special_art_invalid_cost_multiplier",
+                "integer > 100",
+                audit["costMultiplierPercent"]?.ToJsonString() ?? "missing");
+        }
+
+        if (string.IsNullOrWhiteSpace(AfterlifeSpiritualConflictState.GetNodeString(audit["effectNote"])))
+        {
+            AddSpecialArtIssue(
+                issues,
+                $"{context}.specialArtAudit.effectNote",
+                "Если в бою используется особое духовное искусство, ГМ обязан записать effectNote о влиянии особого эффекта.",
+                "afterlife_conflict_special_art_missing_effect_note",
+                "non-empty effectNote",
+                audit["effectNote"]?.ToJsonString() ?? "missing");
         }
     }
 
@@ -2306,6 +2442,24 @@ public partial class ValidationService
         ConflictTokenEquals(operationType, "withdraw", "surrender", "negotiate");
 
     private static void AddActionCostIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string message,
+        string code,
+        string expected,
+        string actual)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeSpiritualConflict",
+            expected: expected,
+            actual: actual));
+    }
+
+    private static void AddSpecialArtIssue(
         List<ValidationIssue> issues,
         string path,
         string message,

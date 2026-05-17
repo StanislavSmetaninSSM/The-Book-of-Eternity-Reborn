@@ -26,15 +26,16 @@ public partial class ValidationService
         var hasUpdates = root.TryGetProperty(AfterlifeEntityProfileState.UpdateProperty, out var updates);
         var hasCustomStateChanges = root.TryGetProperty(AfterlifeEntityProfileState.CustomStateChangesProperty, out var customStateChanges);
         var hasProgressionOverrides = root.TryGetProperty(AfterlifeEntityProfileState.ProgressionOverridesProperty, out var progressionOverrides);
-        if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges && !hasProgressionOverrides)
+        var hasSpecialArtLearningReceipts = root.TryGetProperty(AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty, out var specialArtLearningReceipts);
+        if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges && !hasProgressionOverrides && !hasSpecialArtLearningReceipts)
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}",
                 IssueSeverity.Error,
-                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[] или afterlifeEntityProgressionOverrides[].",
+                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
                 code: "afterlife_entity_profile_missing_profiles",
                 section: "AfterlifeEntityProfiles",
-                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeEntityProgressionOverrides[]"));
+                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
         }
 
         var identities = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -50,6 +51,11 @@ public partial class ValidationService
             progressionOverrides,
             hasProgressionOverrides,
             $"{contextPrefix}.{AfterlifeEntityProfileState.ProgressionOverridesProperty}",
+            issues);
+        ValidateAfterlifeSpecialArtLearningReceiptsIfPresent(
+            specialArtLearningReceipts,
+            hasSpecialArtLearningReceipts,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty}",
             issues);
     }
 
@@ -536,6 +542,20 @@ public partial class ValidationService
 
             RequireProfileString(art, artContext, "displayName", "afterlife_entity_profile_special_art_missing_display_name", issues);
             RequireProfileString(art, artContext, "effectSummary", "afterlife_entity_profile_special_art_missing_effect", issues);
+            var ownerActorType = RequireProfileString(art, artContext, "ownerActorType", "afterlife_entity_profile_special_art_missing_owner_actor_type", issues);
+            RequireProfileString(art, artContext, "ownerActorId", "afterlife_entity_profile_special_art_missing_owner_actor_id", issues);
+            if (!string.IsNullOrWhiteSpace(ownerActorType) && !AfterlifeEntityProfileState.ActorTypes.Contains(ownerActorType))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{artContext}.ownerActorType",
+                    IssueSeverity.Error,
+                    "ownerActorType особого искусства должен быть известным afterlife actor type.",
+                    code: "afterlife_entity_profile_special_art_invalid_owner_actor_type",
+                    section: "AfterlifeEntityProfiles",
+                    expected: string.Join("/", AfterlifeEntityProfileState.ActorTypes.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                    actual: ownerActorType));
+            }
+
             var baseOperation = RequireProfileString(art, artContext, "baseOperation", "afterlife_entity_profile_special_art_missing_base_operation", issues);
             if (!string.IsNullOrWhiteSpace(baseOperation) &&
                 !AfterlifeEntityProfileState.SpecialArtBaseOperations.Contains(baseOperation))
@@ -551,17 +571,141 @@ public partial class ValidationService
             }
 
             ValidateProfileTier(art, artContext, "tier", "afterlife_entity_profile_invalid_special_art_tier", issues);
-            if (art.TryGetProperty("costMultiplierPercent", out var costMultiplier) &&
-                (!TryGetProfileInt(costMultiplier, out var multiplier) || multiplier < 100))
+            if (!art.TryGetProperty("costMultiplierPercent", out var costMultiplier) ||
+                !TryGetProfileInt(costMultiplier, out var multiplier) ||
+                multiplier <= 100)
             {
                 issues.Add(new ValidationIssue(
                     $"{artContext}.costMultiplierPercent",
                     IssueSeverity.Error,
-                    "costMultiplierPercent особого искусства должен быть >= 100.",
+                    "costMultiplierPercent особого искусства должен быть > 100, потому что особое искусство дороже базового действия.",
                     code: "afterlife_entity_profile_invalid_special_art_cost_multiplier",
                     section: "AfterlifeEntityProfiles",
-                    expected: "integer >= 100",
-                    actual: costMultiplier.ToString()));
+                    expected: "integer > 100",
+                    actual: art.TryGetProperty("costMultiplierPercent", out var actualCostMultiplier) ? actualCostMultiplier.ToString() : "missing"));
+            }
+
+            if (!art.TryGetProperty("upgradeCost", out var upgradeCost))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{artContext}.upgradeCost",
+                    IssueSeverity.Error,
+                    "upgradeCost особого искусства должен описывать цену прокачки.",
+                    code: "afterlife_entity_profile_special_art_missing_upgrade_cost",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "object with non-negative currency costs",
+                    actual: "missing"));
+            }
+            else
+            {
+                ValidateNonNegativeIntegerObject(upgradeCost, $"{artContext}.upgradeCost", issues, "afterlife_entity_profile_special_art_invalid_upgrade_cost");
+            }
+
+            if (art.TryGetProperty("canTeachPlayer", out var canTeachPlayerNode) &&
+                canTeachPlayerNode.ValueKind == JsonValueKind.True)
+            {
+                if (!art.TryGetProperty("trainingConditions", out var trainingConditions) ||
+                    trainingConditions.ValueKind != JsonValueKind.Array ||
+                    !trainingConditions.EnumerateArray().Any(condition =>
+                        condition.ValueKind == JsonValueKind.String &&
+                        !string.IsNullOrWhiteSpace(condition.GetString())))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{artContext}.trainingConditions",
+                        IssueSeverity.Error,
+                        "Если особое искусство можно преподавать игроку, trainingConditions должен содержать хотя бы одно условие обучения.",
+                        code: "afterlife_entity_profile_special_art_missing_training_conditions",
+                        section: "AfterlifeEntityProfiles",
+                        expected: "non-empty string array",
+                        actual: art.TryGetProperty("trainingConditions", out var actualTraining) ? actualTraining.ToString() : "missing"));
+                }
+            }
+            else if (art.TryGetProperty("trainingConditions", out var trainingConditions) &&
+                     trainingConditions.ValueKind != JsonValueKind.Array)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{artContext}.trainingConditions",
+                    IssueSeverity.Error,
+                    "trainingConditions особого искусства должен быть array.",
+                    code: "afterlife_entity_profile_special_art_training_conditions_not_array",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "array",
+                    actual: trainingConditions.ValueKind.ToString()));
+            }
+        }
+    }
+
+    private void ValidateAfterlifeSpecialArtLearningReceiptsIfPresent(
+        JsonElement receipts,
+        bool hasReceipts,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!hasReceipts)
+            return;
+
+        if (receipts.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "afterlifeSpecialArtLearningReceipts должен быть array.",
+                code: "afterlife_entity_profile_special_art_learning_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: receipts.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var receipt in receipts.EnumerateArray())
+        {
+            var receiptContext = $"{context}[{index++}]";
+            if (receipt.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    receiptContext,
+                    IssueSeverity.Error,
+                    "afterlifeSpecialArtLearningReceipts entry должен быть object.",
+                    code: "afterlife_entity_profile_special_art_learning_not_object",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "object",
+                    actual: receipt.ValueKind.ToString()));
+                continue;
+            }
+
+            RequireProfileString(receipt, receiptContext, "receiptId", "afterlife_entity_profile_special_art_learning_missing_receipt_id", issues);
+            var teacherActorType = RequireProfileString(receipt, receiptContext, "teacherActorType", "afterlife_entity_profile_special_art_learning_missing_teacher_actor_type", issues);
+            if (!string.IsNullOrWhiteSpace(teacherActorType) && !AfterlifeEntityProfileState.ActorTypes.Contains(teacherActorType))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.teacherActorType",
+                    IssueSeverity.Error,
+                    "teacherActorType должен быть known afterlife actor type.",
+                    code: "afterlife_entity_profile_special_art_learning_invalid_teacher_actor_type",
+                    section: "AfterlifeEntityProfiles",
+                    expected: string.Join("/", AfterlifeEntityProfileState.ActorTypes.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                    actual: teacherActorType));
+            }
+
+            RequireProfileString(receipt, receiptContext, "teacherActorId", "afterlife_entity_profile_special_art_learning_missing_teacher_actor_id", issues);
+            RequireProfileString(receipt, receiptContext, "artId", "afterlife_entity_profile_special_art_learning_missing_art_id", issues);
+            RequireProfileString(receipt, receiptContext, "playerActorId", "afterlife_entity_profile_special_art_learning_missing_player_actor_id", issues);
+            RequireProfileString(receipt, receiptContext, "roleplayEvidence", "afterlife_entity_profile_special_art_learning_missing_roleplay_evidence", issues);
+            RequireProfileString(receipt, receiptContext, "summary", "afterlife_entity_profile_special_art_learning_missing_summary", issues);
+            ValidateProfileNonNegativeInt(receipt, receiptContext, "learnedAtTurn", "afterlife_entity_profile_special_art_learning_invalid_turn", issues);
+
+            if (!receipt.TryGetProperty("trainingConditionSatisfied", out var condition) ||
+                condition.ValueKind != JsonValueKind.True)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.trainingConditionSatisfied",
+                    IssueSeverity.Error,
+                    "trainingConditionSatisfied должен быть true: ГМ должен явно признать ролевое обучение.",
+                    code: "afterlife_entity_profile_special_art_learning_condition_not_satisfied",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "true",
+                    actual: receipt.TryGetProperty("trainingConditionSatisfied", out var actual) ? actual.ToString() : "missing"));
             }
         }
     }

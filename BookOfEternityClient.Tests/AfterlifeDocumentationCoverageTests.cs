@@ -390,12 +390,17 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
             Assert.Contains("progressionLedger", text, StringComparison.Ordinal);
             Assert.Contains("lastAutoProgressionCycleKey", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
+            Assert.Contains("trainingConditions", text, StringComparison.Ordinal);
+            Assert.Contains("costMultiplierPercent", text, StringComparison.Ordinal);
         }
 
         Assert.Contains("/afterlife_profiles", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/профили_загробья", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("afterlife_entity_profiles_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_special_art_learning_v1", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_entity_profiles_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("afterlife_special_art_learning_v1", manifest, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1849,6 +1854,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("+0..1", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
         Assert.Contains("ОД и стоимость действий", uiHelp, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit", uiHelp, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("effectNote", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("specialCostMultiplierPercent", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("Матрица приём-контрприём", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Сильнее против", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Контрится", uiHelp, StringComparison.Ordinal);
