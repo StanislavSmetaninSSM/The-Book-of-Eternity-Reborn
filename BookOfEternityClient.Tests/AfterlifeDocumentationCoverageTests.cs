@@ -1791,6 +1791,13 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("natural 20", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("bounded criticals are symmetric", matrix + examples + apiSpec + daemonSpec + glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("scaleLimit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("rollMode", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("selection", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("Преимущество", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Помеха", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("advantageSources", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("disadvantageSources", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("Встречные Преимущество и Помеха гасятся", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/spiritual_combat_help", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/духовный_бой", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/spiritual_combat_log", glossary + examples + matrix, StringComparison.OrdinalIgnoreCase);

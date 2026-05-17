@@ -13,6 +13,8 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | resolve | завершение конфликта | Terminal closure of an active conflict; written through `mode=resolve` and moved into `recentConflicts[]`. |
 | repair_cancel | repair-отмена / ремонтная отмена | Non-reward cleanup of malformed or impossible conflict state. |
 | diceAudit | аудит кубиков | Required visible-dice proof for contested exchanges and contested terminal resolutions. |
+| rollMode | режим броска | Part of `diceAudit`: records Преимущество / Помеха per side through `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`. |
+| selection | выбор кубика | Field on `diceUsed[]`: `selected` is the die used for totals and criticals, `discarded` is rolled but ignored because of Преимущество / Помеха. |
 | rewardAudit | аудит награды | Required proof when a resolved victorious conflict grants Ink Feathers or Light Sparks. |
 | criticalResult | аудит критического исхода | Required normalization proof when natural 20/1 changes the margin-derived `outcomeBand`. |
 | counterPayoff | выигрыш контрприёма | Required measurable payoff for a `counter` with success/partial_success/countered: either `counterPayoff`, improved `conflictPosition`, or worsened `oppositionSideStrain`. |
@@ -151,6 +153,15 @@ Every new/current contested exchange with `diceAudit` must also include `matchup
 | `opposition_dominant` | `modifierBreakdown.opposition[]` contains the same shape with `position="opposition_dominant"` and `value=4` |
 
 `contested` means zero `conflict_position` entries. The modifier uses the position before the exchange because the roll is made from the starting tactical state; the after-state records what changed.
+
+## Преимущество / Помеха
+
+Преимущество and Помеха are visible dice modes inside `diceAudit`, not hidden GM judgment. `rollMode.<side>.advantageSources[]` lists why a side has Преимущество; `rollMode.<side>.disadvantageSources[]` lists why a side has Помеха; `effectiveMode` records the final mode after cancellation.
+
+- Преимущество rolls at least two d20 for that side, marks all entries in `diceUsed[]` with `selection`, and uses the highest `selected` die.
+- Помеха rolls at least two d20 for that side, marks all entries in `diceUsed[]` with `selection`, and uses the lowest `selected` die.
+- Встречные Преимущество и Помеха гасятся: if both source arrays are non-empty, `effectiveMode=normal`, only one d20 is consumed for that side, and no discarded die is recorded.
+- Critical success/failure uses only the selected die. A discarded natural 20 or natural 1 has no critical effect.
 
 ## Control State
 

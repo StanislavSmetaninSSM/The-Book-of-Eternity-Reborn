@@ -4805,8 +4805,8 @@ public partial class ValidationService
             return false;
         }
 
-        int? playerDie = null;
-        int? oppositionDie = null;
+        var playerRolls = new List<DiceRollEntry>();
+        var oppositionRolls = new List<DiceRollEntry>();
         var usedSourceIndices = new HashSet<int>();
         for (var index = 0; index < diceUsed.Count; index++)
         {
@@ -4824,7 +4824,8 @@ public partial class ValidationService
             }
 
             var side = AfterlifeSpiritualConflictState.GetNodeString(dieEntry["side"]);
-            if (!TryGetJsonNodeInt(dieEntry["sourceIndex"], out var sourceIndex) || sourceIndex < 0)
+            var sourceIndex = -1;
+            if (!TryGetJsonNodeInt(dieEntry["sourceIndex"], out sourceIndex) || sourceIndex < 0)
             {
                 AddDiceAuditIssue(
                     issues,
@@ -4847,6 +4848,7 @@ public partial class ValidationService
                 valid = false;
             }
 
+            var valueIsValid = true;
             if (!TryGetJsonNodeInt(dieEntry["sides"], out var sides) || sides != 20)
             {
                 AddDiceAuditIssue(
@@ -4869,7 +4871,7 @@ public partial class ValidationService
                     "1..20",
                     dieEntry["value"]?.ToJsonString() ?? "missing");
                 valid = false;
-                continue;
+                valueIsValid = false;
             }
 
             if (diceContext.AuthoritativeDice is { Length: > 0 } authoritativeDice &&
@@ -4900,9 +4902,15 @@ public partial class ValidationService
             }
 
             if (ConflictTokenEquals(side, "player", "playerSide", "soul"))
-                playerDie = value;
+            {
+                if (valueIsValid)
+                    playerRolls.Add(new DiceRollEntry(index, sourceIndex, value, AfterlifeSpiritualConflictState.GetNodeString(dieEntry["selection"])));
+            }
             else if (ConflictTokenEquals(side, "opposition", "oppositionSide", "guardian"))
-                oppositionDie = value;
+            {
+                if (valueIsValid)
+                    oppositionRolls.Add(new DiceRollEntry(index, sourceIndex, value, AfterlifeSpiritualConflictState.GetNodeString(dieEntry["selection"])));
+            }
             else
             {
                 AddDiceAuditIssue(
@@ -4916,7 +4924,7 @@ public partial class ValidationService
             }
         }
 
-        if (playerDie == null)
+        if (playerRolls.Count == 0)
         {
             AddDiceAuditIssue(
                 issues,
@@ -4928,7 +4936,7 @@ public partial class ValidationService
             valid = false;
         }
 
-        if (oppositionDie == null)
+        if (oppositionRolls.Count == 0)
         {
             AddDiceAuditIssue(
                 issues,
@@ -4939,6 +4947,9 @@ public partial class ValidationService
                 "missing");
             valid = false;
         }
+
+        var playerDie = ValidateDiceRollSelection(audit, "player", playerRolls, context, issues, ref valid);
+        var oppositionDie = ValidateDiceRollSelection(audit, "opposition", oppositionRolls, context, issues, ref valid);
 
         var playerModifier = SumDiceAuditModifiers(audit, "player", $"{context}.modifierBreakdown.player", issues, ref valid);
         var oppositionModifier = SumDiceAuditModifiers(audit, "opposition", $"{context}.modifierBreakdown.opposition", issues, ref valid);
@@ -5002,6 +5013,226 @@ public partial class ValidationService
 
         return valid;
     }
+
+    private static int? ValidateDiceRollSelection(
+        JsonObject audit,
+        string side,
+        IReadOnlyList<DiceRollEntry> rolls,
+        string context,
+        List<ValidationIssue>? issues,
+        ref bool valid)
+    {
+        if (rolls.Count == 0)
+            return null;
+
+        var rollMode = ReadDiceRollMode(audit, side, context, issues, ref valid);
+        var selectedRolls = rolls
+            .Where(roll => string.Equals(roll.Selection, "selected", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var hasExplicitSelection = rolls.Any(roll => !string.IsNullOrWhiteSpace(roll.Selection));
+
+        if (rolls.Count == 1 && !hasExplicitSelection)
+            selectedRolls.Add(rolls[0]);
+
+        if (hasExplicitSelection)
+        {
+            foreach (var roll in rolls)
+            {
+                if (ConflictTokenEquals(roll.Selection, "selected", "discarded"))
+                    continue;
+
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed[{roll.DiceUsedIndex}].selection",
+                    "diceUsed.selection должен быть selected или discarded, если audit использует Преимущество/Помеху.",
+                    "afterlife_conflict_dice_invalid_selection",
+                    "selected/discarded",
+                    string.IsNullOrWhiteSpace(roll.Selection) ? "missing" : roll.Selection!);
+                valid = false;
+            }
+        }
+
+        if (selectedRolls.Count != 1)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceUsed",
+                "diceAudit должен явно выбрать ровно один d20 для стороны.",
+                "afterlife_conflict_dice_selected_die_count_mismatch",
+                $"exactly one selected {side} die",
+                selectedRolls.Count.ToString());
+            valid = false;
+            return rolls[^1].Value;
+        }
+
+        var selectedRoll = selectedRolls[0];
+        var effectiveMode = rollMode.EffectiveMode;
+        var expectedMode = rollMode.ExpectedMode;
+
+        if (!string.Equals(effectiveMode, expectedMode, StringComparison.OrdinalIgnoreCase))
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.rollMode.{side}.effectiveMode",
+                "rollMode.effectiveMode должен учитывать гашение Преимущества и Помехи.",
+                "afterlife_conflict_dice_effective_roll_mode_mismatch",
+                expectedMode,
+                string.IsNullOrWhiteSpace(effectiveMode) ? "missing" : effectiveMode!);
+            valid = false;
+        }
+
+        if (string.Equals(expectedMode, "normal", StringComparison.OrdinalIgnoreCase))
+        {
+            if (rollMode.IsCancelled && rolls.Count > 1)
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed",
+                    "Встречные Преимущество и Помеха гасятся: после гашения используется один обычный d20 без дополнительных кубов.",
+                    "afterlife_conflict_dice_cancelled_roll_uses_extra_dice",
+                    $"one {side} die after advantage/disadvantage cancellation",
+                    rolls.Count.ToString());
+                valid = false;
+            }
+            else if (!rollMode.IsCancelled && rolls.Count > 1)
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}.diceUsed",
+                    "Обычный бросок без Преимущества/Помехи не должен использовать дополнительные d20.",
+                    "afterlife_conflict_dice_normal_roll_uses_extra_dice",
+                    $"one {side} die",
+                    rolls.Count.ToString());
+                valid = false;
+            }
+
+            return selectedRoll.Value;
+        }
+
+        if (rolls.Count < 2)
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceUsed",
+                "Преимущество/Помеха требуют минимум два d20 для стороны: выбранный и отброшенный.",
+                "afterlife_conflict_dice_multi_roll_missing_extra_die",
+                $"at least two {side} dice",
+                rolls.Count.ToString());
+            valid = false;
+            return selectedRoll.Value;
+        }
+
+        var expectedValue = string.Equals(expectedMode, "advantage", StringComparison.OrdinalIgnoreCase)
+            ? rolls.Max(roll => roll.Value)
+            : rolls.Min(roll => roll.Value);
+        if (selectedRoll.Value != expectedValue)
+        {
+            var code = string.Equals(expectedMode, "advantage", StringComparison.OrdinalIgnoreCase)
+                ? "afterlife_conflict_dice_advantage_selected_die_mismatch"
+                : "afterlife_conflict_dice_disadvantage_selected_die_mismatch";
+            var label = string.Equals(expectedMode, "advantage", StringComparison.OrdinalIgnoreCase)
+                ? "лучший"
+                : "худший";
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.diceUsed[{selectedRoll.DiceUsedIndex}].selection",
+                $"При {TranslateRollMode(expectedMode)} выбранным должен быть {label} d20.",
+                code,
+                expectedValue.ToString(),
+                selectedRoll.Value.ToString());
+            valid = false;
+        }
+
+        return selectedRoll.Value;
+    }
+
+    private static DiceRollModeAudit ReadDiceRollMode(
+        JsonObject audit,
+        string side,
+        string context,
+        List<ValidationIssue>? issues,
+        ref bool valid)
+    {
+        if (audit["rollMode"] is not JsonObject rollModeRoot ||
+            rollModeRoot[side] is not JsonObject sideMode)
+        {
+            return new DiceRollModeAudit("normal", "normal", false);
+        }
+
+        var advantageSources = ReadRollModeSources(sideMode, "advantageSources", $"{context}.rollMode.{side}.advantageSources", issues, ref valid);
+        var disadvantageSources = ReadRollModeSources(sideMode, "disadvantageSources", $"{context}.rollMode.{side}.disadvantageSources", issues, ref valid);
+        var expectedMode =
+            advantageSources > 0 && disadvantageSources > 0 ? "normal" :
+            advantageSources > 0 ? "advantage" :
+            disadvantageSources > 0 ? "disadvantage" :
+            "normal";
+        var effectiveMode = AfterlifeSpiritualConflictState.GetNodeString(sideMode["effectiveMode"]) ?? "normal";
+        if (!ConflictTokenEquals(effectiveMode, "normal", "advantage", "disadvantage"))
+        {
+            AddDiceAuditIssue(
+                issues,
+                $"{context}.rollMode.{side}.effectiveMode",
+                "rollMode.effectiveMode должен быть normal, advantage или disadvantage.",
+                "afterlife_conflict_dice_invalid_effective_roll_mode",
+                "normal/advantage/disadvantage",
+                string.IsNullOrWhiteSpace(effectiveMode) ? "missing" : effectiveMode);
+            valid = false;
+        }
+
+        return new DiceRollModeAudit(effectiveMode, expectedMode, advantageSources > 0 && disadvantageSources > 0);
+    }
+
+    private static int ReadRollModeSources(
+        JsonObject sideMode,
+        string propertyName,
+        string context,
+        List<ValidationIssue>? issues,
+        ref bool valid)
+    {
+        if (sideMode[propertyName] is not JsonArray sources)
+        {
+            AddDiceAuditIssue(
+                issues,
+                context,
+                "rollMode должен явно перечислять источники Преимущества и Помехи.",
+                "afterlife_conflict_dice_missing_roll_mode_sources",
+                "array of non-empty source strings",
+                sideMode[propertyName]?.GetType().Name ?? "missing");
+            valid = false;
+            return 0;
+        }
+
+        var count = 0;
+        for (var index = 0; index < sources.Count; index++)
+        {
+            var source = AfterlifeSpiritualConflictState.GetNodeString(sources[index]);
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                AddDiceAuditIssue(
+                    issues,
+                    $"{context}[{index}]",
+                    "Источник Преимущества/Помехи должен быть непустой строкой.",
+                    "afterlife_conflict_dice_empty_roll_mode_source",
+                    "non-empty source string",
+                    sources[index]?.ToJsonString() ?? "null");
+                valid = false;
+                continue;
+            }
+
+            count++;
+        }
+
+        return count;
+    }
+
+    private static string TranslateRollMode(string mode) =>
+        string.Equals(mode, "advantage", StringComparison.OrdinalIgnoreCase) ? "Преимуществе" :
+        string.Equals(mode, "disadvantage", StringComparison.OrdinalIgnoreCase) ? "Помехе" :
+        "обычном броске";
+
+    private readonly record struct DiceRollEntry(int DiceUsedIndex, int SourceIndex, int Value, string? Selection);
+
+    private readonly record struct DiceRollModeAudit(string? EffectiveMode, string ExpectedMode, bool IsCancelled);
 
     private static int SumDiceAuditModifiers(
         JsonObject audit,

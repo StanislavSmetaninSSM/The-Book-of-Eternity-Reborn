@@ -30,6 +30,12 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
       "responseSurface": "recentConflicts[].soulDissipationProof"
+    },
+    {
+      "contractId": "afterlife_spiritual_conflict_advantage_disadvantage_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "responseSurface": "diceAudit.rollMode / diceUsed[].selection"
     }
   ],
   "syntaxExemptions": [
