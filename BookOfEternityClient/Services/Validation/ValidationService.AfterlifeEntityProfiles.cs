@@ -893,8 +893,8 @@ public partial class ValidationService
         ValidateProfileNonNegativeIntIfPresent(strategy, $"{context}.progressionStrategy", "lastUpdatedAtTurn", "afterlife_entity_profile_strategy_invalid_turn", issues);
         if (strategy.TryGetProperty("resourceReserve", out var reserve))
             ValidateNonNegativeIntegerObject(reserve, $"{context}.progressionStrategy.resourceReserve", issues, "afterlife_entity_profile_strategy_invalid_reserve");
-        ValidateStringArrayIfPresent(strategy, $"{context}.progressionStrategy", "allowedSpends", "afterlife_entity_profile_strategy_allowed_spends_not_array", issues);
-        ValidateStringArrayIfPresent(strategy, $"{context}.progressionStrategy", "forbiddenSpends", "afterlife_entity_profile_strategy_forbidden_spends_not_array", issues);
+        ValidateStrategySpendCategoryArrayIfPresent(strategy, $"{context}.progressionStrategy", "allowedSpends", "afterlife_entity_profile_strategy_allowed_spends_not_array", issues);
+        ValidateStrategySpendCategoryArrayIfPresent(strategy, $"{context}.progressionStrategy", "forbiddenSpends", "afterlife_entity_profile_strategy_forbidden_spends_not_array", issues);
         if (strategy.TryGetProperty("lastAutoProgressionCycleKey", out var lastCycleKey) &&
             (lastCycleKey.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(lastCycleKey.GetString())))
         {
@@ -906,6 +906,64 @@ public partial class ValidationService
                 section: "AfterlifeEntityProfiles",
                 expected: "non-empty string",
                 actual: lastCycleKey.ToString()));
+        }
+    }
+
+    private void ValidateStrategySpendCategoryArrayIfPresent(
+        JsonElement root,
+        string context,
+        string propertyName,
+        string arrayCode,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(propertyName, out var array))
+            return;
+
+        if (array.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{propertyName}",
+                IssueSeverity.Error,
+                $"{propertyName} должен быть array.",
+                code: arrayCode,
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: array.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            var itemContext = $"{context}.{propertyName}[{index}]";
+            if (item.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(item.GetString()))
+            {
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    $"{propertyName} должен содержать non-empty string entries.",
+                    code: "afterlife_entity_profile_invalid_string_array_entry",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "non-empty string",
+                    actual: item.ToString()));
+                index++;
+                continue;
+            }
+
+            var category = item.GetString()!.Trim();
+            if (!AfterlifeEntityProfileState.ProgressionSpendCategories.Contains(category))
+            {
+                issues.Add(new ValidationIssue(
+                    itemContext,
+                    IssueSeverity.Error,
+                    $"{propertyName} содержит неизвестную категорию траты автопрокачки.",
+                    code: "afterlife_entity_profile_strategy_unknown_spend_category",
+                    section: "AfterlifeEntityProfiles",
+                    expected: string.Join("/", AfterlifeEntityProfileState.ProgressionSpendCategories.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    actual: category));
+            }
+
+            index++;
         }
     }
 

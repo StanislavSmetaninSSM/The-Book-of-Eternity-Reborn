@@ -371,6 +371,43 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_UnknownProgressionStrategySpendCategory_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": { "guard": 0 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_1",
+                "summary": "Качать непонятную категорию.",
+                "priorityOrder": ["guard"],
+                "allowedSpends": ["guard"],
+                "forbiddenSpends": ["unknownCategory"]
+              },
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_strategy_unknown_spend_category", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_RejectsProgressionOverrideForUnknownSpecialArt()
     {
         await WriteProfileStateAsync("""

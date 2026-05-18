@@ -66,6 +66,15 @@ internal static class AfterlifeEntityProfileState
         "recover_spiritual_power"
     };
 
+    public static readonly HashSet<string> ProgressionSpendCategories = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "standardArts",
+        "specialArts",
+        "enlightenment",
+        "radiance",
+        "soulDissipationTier"
+    };
+
     public static JsonObject CreateDefaultRoot() =>
         new()
         {
@@ -491,36 +500,41 @@ internal static class AfterlifeEntityProfileState
         if (strategy["priorityOrder"] is not JsonArray priorities)
             return;
 
+        var reserve = ResolveResourceReserve(strategy);
         foreach (var priorityNode in priorities)
         {
             var priority = GetNodeString(priorityNode);
             if (string.IsNullOrWhiteSpace(priority))
                 continue;
 
+            var spendCategory = ClassifyProgressionSpend(profile, priority);
+            if (string.IsNullOrWhiteSpace(spendCategory) || !SpendAllowedByStrategy(strategy, spendCategory))
+                continue;
+
             if (StandardArtIds.Contains(priority) &&
-                TryUpgradeStandardArt(profile, currencies, priority, ref spending, upgrades))
+                TryUpgradeStandardArt(profile, currencies, priority, reserve, ref spending, upgrades))
             {
                 return;
             }
 
-            if (TryUpgradeSpecialArt(profile, currencies, priority, ref spending, upgrades))
+            if (TryUpgradeSpecialArt(profile, currencies, priority, reserve, ref spending, upgrades))
                 return;
 
             if (IsSoulDissipationPriority(priority) &&
-                TryUpgradeSoulDissipation(profile, currencies, ref spending, upgrades))
+                TryUpgradeSoulDissipation(profile, currencies, reserve, ref spending, upgrades))
             {
                 return;
             }
 
             if (string.Equals(priority, "enlightenment", StringComparison.OrdinalIgnoreCase) &&
-                TryUpgradeProgressionTrack(profile, currencies, "enlightenment", useLightSparks: false, ref spending, upgrades))
+                TryUpgradeProgressionTrack(profile, currencies, "enlightenment", false, reserve, ref spending, upgrades))
             {
                 return;
             }
 
             if (cycle.IsShining &&
                 string.Equals(priority, "radiance", StringComparison.OrdinalIgnoreCase) &&
-                TryUpgradeProgressionTrack(profile, currencies, "radiance", useLightSparks: true, ref spending, upgrades))
+                TryUpgradeProgressionTrack(profile, currencies, "radiance", true, reserve, ref spending, upgrades))
             {
                 return;
             }
@@ -531,6 +545,7 @@ internal static class AfterlifeEntityProfileState
         JsonObject profile,
         JsonObject currencies,
         string artId,
+        CurrencyDelta reserve,
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
@@ -539,13 +554,13 @@ internal static class AfterlifeEntityProfileState
         if (currentTier >= MaxProfileTier)
             return false;
 
-        var cost = 10 * (currentTier + 1);
-        if (GetNodeInt(currencies["inkFeathers"]) < cost)
+        var cost = new CurrencyDelta(10 * (currentTier + 1), 0);
+        if (!CanAfford(currencies, cost, reserve))
             return false;
 
-        AddCurrency(currencies, "inkFeathers", -cost);
+        Spend(currencies, cost);
         arts[artId] = currentTier + 1;
-        spending = spending with { InkFeathers = spending.InkFeathers + cost };
+        spending = AddSpending(spending, cost);
         upgrades.Add($"{artId}:{currentTier}->{currentTier + 1}");
         return true;
     }
@@ -554,6 +569,7 @@ internal static class AfterlifeEntityProfileState
         JsonObject profile,
         JsonObject currencies,
         string artId,
+        CurrencyDelta reserve,
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
@@ -566,7 +582,7 @@ internal static class AfterlifeEntityProfileState
             return false;
 
         var cost = ResolveSpecialArtUpgradeCost(specialArt);
-        if (!CanAfford(currencies, cost))
+        if (!CanAfford(currencies, cost, reserve))
             return false;
 
         Spend(currencies, cost);
@@ -579,6 +595,7 @@ internal static class AfterlifeEntityProfileState
     private static bool TryUpgradeSoulDissipation(
         JsonObject profile,
         JsonObject currencies,
+        CurrencyDelta reserve,
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
@@ -587,7 +604,7 @@ internal static class AfterlifeEntityProfileState
             return false;
 
         var cost = ResolveSoulDissipationUpgradeCost(profile, currentTier + 1);
-        if (!CanAfford(currencies, cost))
+        if (!CanAfford(currencies, cost, reserve))
             return false;
 
         Spend(currencies, cost);
@@ -618,6 +635,7 @@ internal static class AfterlifeEntityProfileState
         JsonObject currencies,
         string trackName,
         bool useLightSparks,
+        CurrencyDelta reserve,
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
@@ -629,17 +647,16 @@ internal static class AfterlifeEntityProfileState
 
         var currencyName = useLightSparks ? "lightSparks" : "inkFeathers";
         var cost = useLightSparks ? tier + 1 : 10 * (tier + 1);
-        if (GetNodeInt(currencies[currencyName]) < cost)
+        var costDelta = useLightSparks ? new CurrencyDelta(0, cost) : new CurrencyDelta(cost, 0);
+        if (!CanAfford(currencies, costDelta, reserve))
             return false;
 
-        AddCurrency(currencies, currencyName, -cost);
+        Spend(currencies, costDelta);
         var nextExperience = Math.Max(0, GetNodeInt(track["experience"])) + 20;
         track["experience"] = nextExperience;
         track["tier"] = Math.Min(MaxProfileTier, Math.Max(tier, nextExperience / 20));
 
-        spending = useLightSparks
-            ? spending with { LightSparks = spending.LightSparks + cost }
-            : spending with { InkFeathers = spending.InkFeathers + cost };
+        spending = AddSpending(spending, costDelta);
         upgrades.Add($"{trackName}:experience+20");
         return true;
     }
@@ -648,9 +665,48 @@ internal static class AfterlifeEntityProfileState
         string.Equals(priority, "soul_dissipation", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(priority, "soulDissipation", StringComparison.OrdinalIgnoreCase);
 
-    private static bool CanAfford(JsonObject currencies, CurrencyDelta cost) =>
-        GetNodeInt(currencies["inkFeathers"]) >= cost.InkFeathers &&
-        GetNodeInt(currencies["lightSparks"]) >= cost.LightSparks &&
+    private static string? ClassifyProgressionSpend(JsonObject profile, string priority)
+    {
+        if (StandardArtIds.Contains(priority))
+            return "standardArts";
+
+        if (FindSpecialArtById(profile, priority) != null)
+            return "specialArts";
+
+        if (IsSoulDissipationPriority(priority))
+            return "soulDissipationTier";
+
+        if (string.Equals(priority, "enlightenment", StringComparison.OrdinalIgnoreCase))
+            return "enlightenment";
+
+        if (string.Equals(priority, "radiance", StringComparison.OrdinalIgnoreCase))
+            return "radiance";
+
+        return null;
+    }
+
+    private static bool SpendAllowedByStrategy(JsonObject strategy, string category)
+    {
+        if (strategy["allowedSpends"] is JsonArray allowed && !ArrayContainsString(allowed, category))
+            return false;
+
+        return strategy["forbiddenSpends"] is not JsonArray forbidden || !ArrayContainsString(forbidden, category);
+    }
+
+    private static bool ArrayContainsString(JsonArray array, string value) =>
+        array.Any(item => string.Equals(GetNodeString(item), value, StringComparison.OrdinalIgnoreCase));
+
+    private static CurrencyDelta ResolveResourceReserve(JsonObject strategy)
+    {
+        var reserve = strategy["resourceReserve"] as JsonObject;
+        return new CurrencyDelta(
+            Math.Max(0, GetNodeInt(reserve?["inkFeathers"])),
+            Math.Max(0, GetNodeInt(reserve?["lightSparks"])));
+    }
+
+    private static bool CanAfford(JsonObject currencies, CurrencyDelta cost, CurrencyDelta reserve) =>
+        GetNodeInt(currencies["inkFeathers"]) - reserve.InkFeathers >= cost.InkFeathers &&
+        GetNodeInt(currencies["lightSparks"]) - reserve.LightSparks >= cost.LightSparks &&
         (cost.InkFeathers > 0 || cost.LightSparks > 0);
 
     private static void Spend(JsonObject currencies, CurrencyDelta cost)
