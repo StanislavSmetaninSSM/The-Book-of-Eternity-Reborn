@@ -867,6 +867,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var apiSpec = ReadRepoFile("CLI_API_Specification.md");
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
 
         foreach (var routeName in new[] { "return_to_chaos_sea", "reenter_shining_abode" })
         {
@@ -881,6 +882,27 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("requests", doc, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("malformed", doc, StringComparison.OrdinalIgnoreCase);
         }
+
+        var daemonReturnSection = ExtractRequiredSection(
+            daemonSpec,
+            "- explicit client-owned local `return_to_chaos_sea`",
+            "- For Shining pending files with a `requests[]` root");
+        Assert.Contains("pending_source_of_light_capstone.json", daemonReturnSection, StringComparison.Ordinal);
+        var apiReturnSection = ExtractRequiredSection(
+            apiSpec,
+            "- Client-owned `return_to_chaos_sea`",
+            "- `Shining Abode pending-bootstrap handoff mode`");
+        Assert.Contains("pending_source_of_light_capstone.json", apiReturnSection, StringComparison.Ordinal);
+        var matrixReturnSection = ExtractRequiredSection(
+            matrix,
+            "| Client-owned `return_to_chaos_sea`",
+            "| Client-owned Shining Gates");
+        Assert.Contains("pending_source_of_light_capstone.json", matrixReturnSection, StringComparison.Ordinal);
+        var examplesReturnSection = ExtractRequiredSection(
+            examples,
+            "- For `return_to_chaos_sea`",
+            "- The response does not confuse");
+        Assert.Contains("pending_source_of_light_capstone.json", examplesReturnSection, StringComparison.Ordinal);
 
         Assert.Contains("{ \"requests\": [] }", matrix, StringComparison.Ordinal);
         Assert.Contains("{ \"requests\": [] }", apiSpec, StringComparison.Ordinal);
@@ -957,6 +979,32 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("incarnation_trigger_invalid_validated_snapshot_context", doc, StringComparison.Ordinal);
             Assert.Contains("no unresolved afterlife pending/control contracts", doc, StringComparison.OrdinalIgnoreCase);
         }
+
+        var matrixHandoffSection = ExtractRequiredSection(
+            matrix,
+            "| Shining pending-bootstrap `TriggerIncarnation`",
+            "| Client-owned `return_to_chaos_sea`");
+        Assert.Contains("pending_source_of_light_capstone.json", matrixHandoffSection, StringComparison.Ordinal);
+        var apiHandoffSection = ExtractRequiredSection(
+            apiSpec,
+            "- In `Shining Abode pending-bootstrap handoff mode`",
+            "- Client-owned `return_to_chaos_sea`");
+        Assert.Contains("pending_source_of_light_capstone.json", apiHandoffSection, StringComparison.Ordinal);
+        var launchHandoffSection = ExtractRequiredSection(
+            launchScript,
+            "- If `currentRealm = \"Shining Abode\"",
+            "- **null / empty / missing**");
+        Assert.Contains("pending_source_of_light_capstone.json", launchHandoffSection, StringComparison.Ordinal);
+        var launchGeneratorHandoffSection = ExtractRequiredSection(
+            launchGenerator,
+            "- If `currentRealm = \"Shining Abode\"",
+            "- **null / empty / missing**");
+        Assert.Contains("pending_source_of_light_capstone.json", launchGeneratorHandoffSection, StringComparison.Ordinal);
+        var examplesHandoffSection = ExtractRequiredSection(
+            examples,
+            "- No unresolved afterlife pending/control contracts remain;",
+            "- Ordinary Shining living-world progression must NOT run in this handoff turn.");
+        Assert.Contains("pending_source_of_light_capstone.json", examplesHandoffSection, StringComparison.Ordinal);
 
         Assert.Contains("game_state/control/pending_turn_snapshot.authority.json", apiSpec, StringComparison.Ordinal);
         Assert.Contains("client-owned transient authority", apiSpec, StringComparison.Ordinal);

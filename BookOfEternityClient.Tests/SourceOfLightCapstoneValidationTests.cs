@@ -334,6 +334,28 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_SourceOfLightPendingWithEmptyRequestsHygieneFiles_DoesNotReportOtherContractBlocker()
+    {
+        var request = SourceOfLightCapstoneState.CreateRequest(42, 580, 4);
+        await WriteCurrentStateAsync(CreatePreTurnSoulRoot(), CreatePreTurnShiningRoot(), request);
+        await _fs.WriteFileAtomicAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath, """
+        {
+          "requests": []
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(NpcTradeRequestState.PendingRequestPath, """
+        {
+          "requests": []
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "source_of_light_pending_blocked_by_other_contract", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_SourceOfLightPendingWithMalformedManifestationHandoff_IsRejected()
     {
         var request = SourceOfLightCapstoneState.CreateRequest(42, 580, 4);

@@ -190,13 +190,48 @@ internal static class SourceOfLightCapstoneState
         if (await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(fs))
             return $"malformed next-life manifestation handoff {GuardianAbodeResidentRequestState.PendingManifestationRequestPath}";
 
-        foreach (var path in BlockingAfterlifePendingPaths)
+        foreach (var path in BlockingAfterlifeSingletonPendingPaths)
         {
             if (fs.FileExists(path))
                 return $"active/malformed afterlife pending/control contract {path}";
         }
 
+        foreach (var path in BlockingAfterlifeRequestsPendingPaths)
+        {
+            var blocker = await DescribeBlockingRequestsPendingFileAsync(fs, path);
+            if (blocker != null)
+                return blocker;
+        }
+
         return null;
+    }
+
+    private static async Task<string?> DescribeBlockingRequestsPendingFileAsync(FileSystemManager fs, string path)
+    {
+        if (!fs.FileExists(path))
+            return null;
+
+        var raw = await fs.ReadFileAsync(path);
+        if (string.IsNullOrWhiteSpace(raw))
+            return $"active/malformed afterlife pending/control contract {path}";
+
+        try
+        {
+            if (JsonNode.Parse(raw) is not JsonObject root)
+                return $"active/malformed afterlife pending/control contract {path}";
+
+            if (root["requests"] is JsonArray requests)
+                return requests.Count == 0
+                    ? null
+                    : $"active/malformed afterlife pending/control contract {path}";
+
+            // Legacy single-object pending contracts are still active contracts.
+            return $"active/malformed afterlife pending/control contract {path}";
+        }
+        catch
+        {
+            return $"active/malformed afterlife pending/control contract {path}";
+        }
     }
 
     public static string? ValidateRequest(SourceOfLightCapstoneRequest? request)
@@ -513,7 +548,7 @@ internal static class SourceOfLightCapstoneState
         return false;
     }
 
-    private static readonly string[] BlockingAfterlifePendingPaths =
+    private static readonly string[] BlockingAfterlifeSingletonPendingPaths =
     {
         GuardianAbodeOfferingState.PendingRequestPath,
         GuardianTradeRequestState.PendingRequestPath,
@@ -521,6 +556,10 @@ internal static class SourceOfLightCapstoneState
         SystemGuardianLibraryService.AttractionRequestPath,
         AfterlifeArchiveActionState.ConsultationRequestPath,
         AfterlifeArchiveActionState.ProjectFuelRequestPath,
+    };
+
+    private static readonly string[] BlockingAfterlifeRequestsPendingPaths =
+    {
         GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
         GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
         GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
