@@ -848,7 +848,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 
 ### Forbidden In Mortal World
 - Guardian presence as active entities, Guardian reputation changes, Abode navigation, Gacha, afterlife-only Ink Feather spending.
-- Narrow exception: `guardianQuestProgressUpdates` may update only an existing pre-turn `guardian.questManagement.activeQuests[]` entry during Mortal World play. It cannot create Guardian quests, change reputation, change Guardian identity, navigate Abodes, process Gacha, or complete the quest. Use it to mark accepted Guardian work as `active`, `ready_to_turn_in`, `failed`, or `expired` with non-physical evidence; final hand-in still uses `UpdateGuardians.completeQuest` after the soul returns to the Guardian.
+- Narrow exception: `guardianQuestProgressUpdates` may update only an existing pre-turn `guardian.questManagement.activeQuests[]` entry during Mortal World play. It cannot create Guardian quests, change reputation, change Guardian identity, navigate Abodes, process Gacha, complete the quest, or directly write afterlife authority files such as `game_state/meta/guardian_abode_residents.json`, `game_state/meta/guardian_thought_journal.json`, `game_state/meta/guardian_social_journal.json`, `game_state/meta/guardian_projects.json`, `game_state/meta/guardian_project_journal.json`, or `game_state/meta/abode_power_journal.json`. Use it to mark accepted Guardian work as `active`, `ready_to_turn_in`, `failed`, or `expired` with non-physical evidence; final hand-in still uses `UpdateGuardians.completeQuest` after the soul returns to the Guardian.
 
 ### Mortal-World Ink Feather Exceptions
 The following spending-based Ink Feather actions are explicitly allowed in `Mortal World`:

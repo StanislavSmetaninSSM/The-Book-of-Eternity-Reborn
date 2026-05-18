@@ -1161,6 +1161,22 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("MortalWorldProfile-only", lifecyclePrompt, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("repair", lifecyclePrompt, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("wrong-realm", lifecyclePrompt, StringComparison.OrdinalIgnoreCase);
+        foreach (var afterlifeAuthorityPath in new[]
+        {
+            "game_state/meta/guardian_abode_residents.json",
+            "game_state/meta/guardian_thought_journal.json",
+            "game_state/meta/guardian_social_journal.json",
+            "game_state/meta/guardian_projects.json",
+            "game_state/meta/guardian_project_journal.json",
+            "game_state/meta/abode_power_journal.json"
+        })
+        {
+            Assert.Contains(afterlifeAuthorityPath, matrix, StringComparison.Ordinal);
+            Assert.Contains(afterlifeAuthorityPath, apiSpec, StringComparison.Ordinal);
+            Assert.Contains(afterlifeAuthorityPath, daemonSpec, StringComparison.Ordinal);
+            Assert.Contains(afterlifeAuthorityPath, taskGuide, StringComparison.Ordinal);
+            Assert.Contains(afterlifeAuthorityPath, lifecyclePrompt, StringComparison.Ordinal);
+        }
 
         Assert.NotEmpty(FileMapping.FieldToFile.Where(pair =>
             pair.Value.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||

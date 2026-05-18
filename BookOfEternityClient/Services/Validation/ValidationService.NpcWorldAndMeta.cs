@@ -387,6 +387,12 @@ public partial class ValidationService
     {
         var normalized = relativePath.Replace('\\', '/');
         return normalized.Equals("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(GuardianAbodeResidentState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(GuardianThoughtJournalState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(GuardianSocialJournalState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(GuardianProjectState.TrackerPath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(GuardianProjectState.JournalPath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(GuardianPowerEventState.JournalPath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("lore/chaos_sea/", StringComparison.OrdinalIgnoreCase);
