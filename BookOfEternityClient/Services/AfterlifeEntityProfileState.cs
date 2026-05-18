@@ -699,6 +699,13 @@ internal static class AfterlifeEntityProfileState
                 continue;
             }
 
+            if (receipt.ContainsKey("initialTier") &&
+                (!TryGetNodeInt(receipt["initialTier"], out var initialTier) || initialTier != 0))
+            {
+                MarkInvalidProfileCommand(result, receipt, "invalid_special_art_learning_initial_tier");
+                continue;
+            }
+
             var teacherProfile = FindProfileByIdentity(profiles, teacherActorType, teacherActorId);
             var playerProfile = FindProfileByIdentity(profiles, "player_soul", playerActorId);
             var sourceArt = FindSpecialArtById(teacherProfile, artId);
@@ -729,7 +736,7 @@ internal static class AfterlifeEntityProfileState
             var learnedArt = CloneObject(sourceArt);
             learnedArt["ownerActorType"] = "player_soul";
             learnedArt["ownerActorId"] = playerActorId;
-            learnedArt["tier"] = GetNodeInt(receipt["initialTier"]);
+            learnedArt["tier"] = 0;
             learnedArt["canTeachPlayer"] = false;
             learnedArt["learnedFromActorType"] = teacherActorType;
             learnedArt["learnedFromActorId"] = teacherActorId;
@@ -976,7 +983,7 @@ internal static class AfterlifeEntityProfileState
             return false;
 
         Spend(currencies, costDelta);
-        var nextExperience = Math.Max(0, GetNodeInt(track["experience"])) + 20;
+        var nextExperience = SaturatingAddNonNegative(GetNodeInt(track["experience"]), 20);
         track["experience"] = nextExperience;
         track["tier"] = Math.Min(MaxProfileTier, Math.Max(tier, nextExperience / 20));
 
@@ -1040,7 +1047,9 @@ internal static class AfterlifeEntityProfileState
     }
 
     private static CurrencyDelta AddSpending(CurrencyDelta spending, CurrencyDelta cost) =>
-        new(spending.InkFeathers + cost.InkFeathers, spending.LightSparks + cost.LightSparks);
+        new(
+            SaturateNonNegativeLongToInt((long)spending.InkFeathers + cost.InkFeathers),
+            SaturateNonNegativeLongToInt((long)spending.LightSparks + cost.LightSparks));
 
     private static ProgressionCycle? ResolveProgressionCycleForProfile(JsonObject profile, JsonObject root)
     {
@@ -1096,8 +1105,8 @@ internal static class AfterlifeEntityProfileState
     {
         var multiplier = Math.Max(1, cycle.CyclesProcessed);
         return cycle.IsShining
-            ? new CurrencyDelta(6 * multiplier, 1 * multiplier)
-            : new CurrencyDelta(12 * multiplier, 0);
+            ? new CurrencyDelta(SaturateNonNegativeLongToInt(6L * multiplier), SaturateNonNegativeLongToInt(1L * multiplier))
+            : new CurrencyDelta(SaturateNonNegativeLongToInt(12L * multiplier), 0);
     }
 
     private static bool IsShiningRealm(JsonObject profile)
@@ -1122,8 +1131,8 @@ internal static class AfterlifeEntityProfileState
         var inkFeathers = GetNodeInt(deltas?["inkFeathers"]);
         var lightSparks = GetNodeInt(deltas?["lightSparks"]);
         return (
-            new CurrencyDelta(Math.Max(0, inkFeathers), Math.Max(0, lightSparks)),
-            new CurrencyDelta(Math.Max(0, -inkFeathers), Math.Max(0, -lightSparks)));
+            new CurrencyDelta(SaturateNonNegativeLongToInt(Math.Max(0L, inkFeathers)), SaturateNonNegativeLongToInt(Math.Max(0L, lightSparks))),
+            new CurrencyDelta(SaturateNonNegativeLongToInt(Math.Max(0L, -(long)inkFeathers)), SaturateNonNegativeLongToInt(Math.Max(0L, -(long)lightSparks))));
     }
 
     private static void ApplyStandardArtTierDeltas(JsonObject profile, JsonObject? deltas)
@@ -1137,7 +1146,7 @@ internal static class AfterlifeEntityProfileState
             if (!StandardArtIds.Contains(delta.Key))
                 continue;
 
-            arts[delta.Key] = Math.Clamp(GetNodeInt(arts[delta.Key]) + GetNodeInt(delta.Value), 0, MaxProfileTier);
+            arts[delta.Key] = SaturatingAddThenClamp(GetNodeInt(arts[delta.Key]), GetNodeInt(delta.Value), 0, MaxProfileTier);
         }
     }
 
@@ -1174,7 +1183,7 @@ internal static class AfterlifeEntityProfileState
             if (specialArt == null)
                 continue;
 
-            specialArt["tier"] = Math.Clamp(GetNodeInt(specialArt["tier"]) + GetNodeInt(delta.Value), 0, MaxProfileTier);
+            specialArt["tier"] = SaturatingAddThenClamp(GetNodeInt(specialArt["tier"]), GetNodeInt(delta.Value), 0, MaxProfileTier);
         }
     }
 
@@ -1206,7 +1215,7 @@ internal static class AfterlifeEntityProfileState
             return;
 
         profile[SoulDissipationTierProperty] = Math.Clamp(
-            GetNodeInt(profile[SoulDissipationTierProperty]) + delta,
+            SaturatingAddThenClamp(GetNodeInt(profile[SoulDissipationTierProperty]), delta, 0, MaxProfileTier),
             0,
             MaxProfileTier);
     }
@@ -1224,7 +1233,7 @@ internal static class AfterlifeEntityProfileState
                 continue;
 
             var track = EnsureObject(progression, trackName);
-            var nextExperience = Math.Max(0, GetNodeInt(track["experience"]) + delta);
+            var nextExperience = SaturatingAddNonNegative(GetNodeInt(track["experience"]), delta);
             track["experience"] = nextExperience;
             track["tier"] = Math.Min(MaxProfileTier, Math.Max(GetNodeInt(track["tier"]), nextExperience / 20));
         }
@@ -1232,7 +1241,23 @@ internal static class AfterlifeEntityProfileState
 
     private static void AddCurrency(JsonObject currencies, string propertyName, int delta)
     {
-        currencies[propertyName] = Math.Max(0, GetNodeInt(currencies[propertyName]) + delta);
+        currencies[propertyName] = SaturatingAddNonNegative(GetNodeInt(currencies[propertyName]), delta);
+    }
+
+    private static int SaturatingAddNonNegative(int current, int delta) =>
+        SaturateNonNegativeLongToInt((long)Math.Max(0, current) + delta);
+
+    private static int SaturatingAddThenClamp(int current, int delta, int min, int max) =>
+        (int)Math.Clamp((long)current + delta, min, max);
+
+    private static int SaturateNonNegativeLongToInt(long value)
+    {
+        if (value <= 0)
+            return 0;
+
+        return value >= int.MaxValue
+            ? int.MaxValue
+            : (int)value;
     }
 
     private static JsonObject EnsureObject(JsonObject root, string propertyName)

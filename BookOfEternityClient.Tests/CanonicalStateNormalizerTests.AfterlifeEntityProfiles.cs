@@ -721,6 +721,62 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_SaturatesEntityProgressionOverrideArithmetic()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            $$"""
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": {{int.MaxValue - 5}}, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": {{int.MaxValue - 2}}, "tier": 4 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "pressure": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_mirror",
+                    "summary": "Качать давление.",
+                    "priorityOrder": ["pressure"]
+                  },
+                  "ledger": []
+                }
+              ],
+              "afterlifeEntityProgressionOverrides": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "cycleKey": "chaos:overflow",
+                  "reason": "GM проверяет верхнюю границу прогрессии.",
+                  "currencyDeltas": { "inkFeathers": 10 },
+                  "progressionExperienceDeltas": { "enlightenment": 10 },
+                  "summary": "Проверка насыщения вместо int overflow."
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(int.MaxValue, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(int.MaxValue, profile["progression"]?["enlightenment"]?["experience"]?.GetValue<int>());
+        Assert.Equal(AfterlifeEntityProfileState.MaxProfileTier, profile["progression"]?["enlightenment"]?["tier"]?.GetValue<int>());
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty));
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_AppliesSpecialArtAndSoulDissipationProgressionOverride()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
@@ -1642,9 +1698,93 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal("player_soul", learnedArt["ownerActorId"]?.GetValue<string>());
         Assert.Equal("guardian_mirror", learnedArt["learnedFromActorId"]?.GetValue<string>());
         Assert.Equal(31, learnedArt["learnedAtTurn"]?.GetValue<int>());
+        Assert.Equal(0, learnedArt["tier"]?.GetValue<int>());
 
         var ledger = Assert.IsType<JsonArray>(player["ledger"]);
         var entry = Assert.Single(ledger.OfType<JsonObject>());
         Assert.Equal("learn_special_art", entry["reason"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_RejectsSpecialArtLearningReceiptWithNonZeroInitialTier()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+                  "progression": { "enlightenment": { "experience": 48, "tier": 4 }, "radiance": { "experience": 0, "tier": 0 } },
+                  "standardArts": { "guard": 1 },
+                  "specialArts": [
+                    {
+                      "artId": "mirror_guard",
+                      "displayName": "Зеркальная Защита",
+                      "ownerActorType": "guardian",
+                      "ownerActorId": "guardian_mirror",
+                      "baseOperation": "guard",
+                      "tier": 2,
+                      "costMultiplierPercent": 150,
+                      "upgradeCost": { "inkFeathers": 30, "lightSparks": 0 },
+                      "canTeachPlayer": true,
+                      "trainingConditions": ["Провести сцену обучения с Хранителем Зеркал."],
+                      "effectSummary": "При успехе отражает часть давления в сторону противника."
+                    }
+                  ],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": { "strategyId": "strategy_guardian_mirror", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+                  "ledger": []
+                },
+                {
+                  "actorType": "player_soul",
+                  "actorId": "player_soul",
+                  "displayName": "Асуран",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+                  "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+                  "standardArts": { "guard": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": { "strategyId": "strategy_player", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+                  "ledger": []
+                }
+              ],
+              "afterlifeSpecialArtLearningReceipts": [
+                {
+                  "receiptId": "learn_mirror_guard_001",
+                  "teacherActorType": "guardian",
+                  "teacherActorId": "guardian_mirror",
+                  "playerActorId": "player_soul",
+                  "artId": "mirror_guard",
+                  "learnedAtTurn": 31,
+                  "trainingConditionSatisfied": true,
+                  "roleplayEvidence": "Игрок прошёл сцену отражения клятв и Хранитель признал обучение.",
+                  "summary": "Игрок изучил Зеркальную Защиту.",
+                  "initialTier": 5
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        Assert.True(root.ContainsKey("lastInvalidProfileCommand"));
+        Assert.Equal("invalid_special_art_learning_initial_tier", root["lastInvalidProfileCommandReason"]?.GetValue<string>());
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty));
+
+        var player = root["profiles"]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(profile => profile["actorType"]?.GetValue<string>() == "player_soul");
+        Assert.Empty(player["specialArts"]!.AsArray());
     }
 }

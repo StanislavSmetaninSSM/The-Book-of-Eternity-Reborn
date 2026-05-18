@@ -2167,6 +2167,111 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_OppositionActionCostUsesMatchedFinalOperationType()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_action_cost_incoming_final_match_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "finalOperationType": "force_binding",
+            "summary": "Лиора начинает давить, но финально стягивает силовые оковы."
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "force_binding",
+            "primaryResolutionLane": "guard",
+            "matchupRationale": "Защита игрока сдерживает финальное действие противника.",
+            "riskProfile": "safe_defense"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            },
+            "opposition": {
+              "operationType": "force_binding",
+              "baseCost": 5,
+              "minCost": 2,
+              "artTier": 0,
+              "effectiveCost": 5,
+              "before": 6,
+              "after": 1
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_art_tier_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsStaleIncomingOperationWhenFinalOperationTypeExists()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_matchup_stale_incoming_operation_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "finalOperationType": "force_binding",
+            "summary": "Лиора начинает давить, но финально стягивает силовые оковы."
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "guard",
+            "matchupRationale": "This audit uses the stale initial operation instead of finalOperationType.",
+            "riskProfile": "safe_defense"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_matchup_opposition_operation_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MatchupAuditOppositionOperationMustMatchAnyIncomingActionOperation()
     {
         await WriteSoulStateAsync();
@@ -3061,6 +3166,341 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_RejectsNonPlayerSpecialArtWithoutOppositionOperation()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "pressure": 2 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_non_player_special_art_without_opposition_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "matchupAudit": {
+            "playerOperation": "pressure",
+            "oppositionOperation": "none",
+            "primaryResolutionLane": "pressure",
+            "matchupRationale": "Игрок давит на противника без активного встречного приема.",
+            "riskProfile": "offensive_pressure"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}},
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Это особое искусство Хранителя ошибочно привязано к действию игрока."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 2,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_base_operation_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsNonPlayerSpecialArtThatDoesNotMatchResolvedOppositionOperation()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_non_player_special_art_wrong_resolved_operation_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "finalOperationType": "force_binding",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror",
+            "summary": "Хранитель начинает давить, но финально стягивает силовые оковы."
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "force_binding",
+            "primaryResolutionLane": "guard",
+            "matchupRationale": "Защита игрока сдерживает финальное действие противника.",
+            "riskProfile": "safe_defense"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}},
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Аудит ошибочно применяет особое давление к финальным силовым оковам."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            },
+            "opposition": {
+              "operationType": "force_binding",
+              "baseCost": 5,
+              "minCost": 2,
+              "artTier": 0,
+              "effectiveCost": 5,
+              "before": 6,
+              "after": 1
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_base_operation_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsMixedSingularAndArraySpecialArtAudits()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithPlayerAndGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_mixed_special_art_audit_surfaces_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror",
+            "summary": "Хранитель давит через Зеркальное Давление."
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "guard",
+            "matchupRationale": "Защита игрока сдерживает особое давление.",
+            "riskProfile": "safe_defense"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}},
+          "specialArtAudit": {
+            "artId": "mirror_guard",
+            "displayName": "Зеркальная Защита",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "guard",
+            "costMultiplierPercent": 150,
+            "effectNote": "Одиночный аудит описывает особую защиту игрока."
+          },
+          "specialArtAudits": [
+            {
+              "artId": "mirror_pressure",
+              "displayName": "Зеркальное Давление",
+              "ownerActorType": "guardian",
+              "ownerActorId": "guardian_mirror",
+              "baseOperation": "pressure",
+              "costMultiplierPercent": 150,
+              "effectNote": "Массивный аудит дублирует одиночный."
+            }
+          ],
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 2,
+              "specialArtId": "mirror_guard",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 3,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_audit_ambiguous", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsPlayerSpecialArtCostAuditWithMismatchedSpecialArtId()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "pressure": 2 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithPlayerSpecialArtsAsync("""
+        [
+          {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "pressure",
+            "tier": 2,
+            "costMultiplierPercent": 150,
+            "upgradeCost": { "inkFeathers": 40, "lightSparks": 0 },
+            "effectSummary": "Давление отражает часть обета."
+          }
+        ]
+        """);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_player_special_art_wrong_cost_id_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "matchupAudit": {
+            "playerOperation": "pressure",
+            "oppositionOperation": "none",
+            "primaryResolutionLane": "pressure",
+            "matchupRationale": "Противник не успевает оформить ответное действие.",
+            "riskProfile": "offensive_pressure"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}},
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Зеркальное давление раздваивает импульс и усиливает нажим на противника."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 2,
+              "specialArtId": "wrong_pressure",
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_AcceptsNonPlayerIncomingSpecialArtFromOwnerProfile()
     {
         await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
@@ -3142,6 +3582,458 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsOppositionSpecialArtCostAuditWithMismatchedSpecialArtId()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_opposition_special_art_wrong_cost_id_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror"
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "guard",
+            "matchupRationale": "Защита игрока блокирует прямое давление Хранителя.",
+            "riskProfile": "safe_defense"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Зеркальное давление Хранителя усилило входящий нажим, но защита игрока его остановила."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 3,
+              "specialArtId": "wrong_pressure",
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptsPlayerAndOppositionSpecialArtAuditsInSameExchange()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithPlayerAndGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_dual_special_art_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "specialArtAudits": [
+            {
+              "artId": "mirror_guard",
+              "displayName": "Зеркальная Защита",
+              "ownerActorType": "player_soul",
+              "ownerActorId": "player_soul",
+              "baseOperation": "guard",
+              "costMultiplierPercent": 150,
+              "effectNote": "Зеркальная защита игрока собрала удар в отражающую грань."
+            },
+            {
+              "artId": "mirror_pressure",
+              "displayName": "Зеркальное Давление",
+              "ownerActorType": "guardian",
+              "ownerActorId": "guardian_mirror",
+              "baseOperation": "pressure",
+              "costMultiplierPercent": 150,
+              "effectNote": "Зеркальное давление Хранителя раздвоило входящий нажим."
+            }
+          ],
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 2,
+              "specialArtId": "mirror_guard",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 3,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_action_cost_art_tier_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_art_tier_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_base_operation_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_not_in_owner_profile", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_special_art_authority_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsMultiplePlayerSpecialArtCostDriversForOneExchange()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithPlayerAndGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_ambiguous_player_special_art_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror"
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "guard",
+            "matchupRationale": "Защита игрока блокирует прямое давление Хранителя.",
+            "riskProfile": "safe_defense"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "specialArtAudits": [
+            {
+              "artId": "mirror_guard",
+              "displayName": "Зеркальная Защита",
+              "ownerActorType": "player_soul",
+              "ownerActorId": "player_soul",
+              "baseOperation": "guard",
+              "costMultiplierPercent": 150,
+              "effectNote": "Зеркальная защита игрока собрала удар в отражающую грань."
+            },
+            {
+              "artId": "echo_guard",
+              "displayName": "Эхо-Защита",
+              "ownerActorType": "player_soul",
+              "ownerActorId": "player_soul",
+              "baseOperation": "guard",
+              "costMultiplierPercent": 160,
+              "effectNote": "Эхо-Защита дополнительно исказила входящий нажим."
+            }
+          ],
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}},
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 2,
+              "specialArtId": "mirror_guard",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 3,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_binding_ambiguous", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UsesOppositionSpecialArtTierForActionCost()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithGuardianSpecialArtTierAsync(standardPressureTier: 0, specialPressureTier: 3);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_guardian_special_art_tier_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror"
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "guard",
+            "matchupRationale": "Защита игрока блокирует прямое давление Хранителя.",
+            "riskProfile": "safe_defense"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Хранитель использует развитое особое давление вместо обычного приема."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 3,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_art_tier_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsOppositionSpecialArtOwnedByDifferentActor()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithMirrorAndEchoGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_wrong_owner_special_art_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror"
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "guard",
+            "matchupRationale": "Защита игрока блокирует прямое давление Хранителя.",
+            "riskProfile": "safe_defense"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "specialArtAudit": {
+            "artId": "echo_pressure",
+            "displayName": "Эхо-Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_echo",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Аудит пытается списать особое искусство другого Хранителя."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 3,
+              "specialArtId": "echo_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_owner_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -3372,6 +4264,139 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_action_economy_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsUnauditedActionEconomyCurrentDeltas()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_action_economy_unaudited_delta_001",
+          "operationType": "negotiate",
+          "outcome": "success",
+          "matchupAudit": {
+            "playerOperation": "negotiate",
+            "oppositionOperation": "none",
+            "primaryResolutionLane": "negotiate",
+            "matchupRationale": "Переговоры решают терминальный выбор без платного приема.",
+            "riskProfile": "terminal_choice"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          }
+        }
+        """,
+        addDefaultMatchupAudit: false,
+        rootPlayerActionCurrentOverride: 1,
+        rootOppositionActionCurrentOverride: 2);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_economy_unaudited_delta", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_economy_opposition_unaudited_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsUnexpectedActionCostAuditForTerminalOperation()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_terminal_fake_action_cost_001",
+          "operationType": "negotiate",
+          "outcome": "success",
+          "matchupAudit": {
+            "playerOperation": "negotiate",
+            "oppositionOperation": "none",
+            "primaryResolutionLane": "negotiate",
+            "matchupRationale": "Переговоры разыграны как терминальный выбор, но не должны тратить ОД.",
+            "riskProfile": "terminal_choice"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_advantaged"
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "negotiate",
+              "baseCost": 0,
+              "minCost": 0,
+              "artTier": 0,
+              "effectiveCost": 0,
+              "before": 6,
+              "after": 1
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}}
+        }
+        """,
+        addDefaultMatchupAudit: false,
+        rootPlayerActionCurrentOverride: 1);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_cost_audit_unexpected", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_economy_unaudited_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RejectsFirstActionCostBeforeMismatchingPreTurnActionEconomy()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync("""
+        {
+          "exchangeId": "exchange_action_cost_pre_turn_anchor_001",
+          "operationType": "pressure",
+          "outcome": "no_effect",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 4,
+              "after": 1
+            }
+          }
+        }
+        """, addDefaultMatchupAudit: false);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_action_cost_sequence_mismatch", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -11993,6 +13018,303 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
     }
 
+    private Task WriteAfterlifeEntityProfilesWithPlayerAndGuardianSpecialArtsAsync()
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Асуран",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 12, "tier": 1 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 1 },
+              "specialArts": [
+                {
+                  "artId": "mirror_guard",
+                  "displayName": "Зеркальная Защита",
+                  "ownerActorType": "player_soul",
+                  "ownerActorId": "player_soul",
+                  "baseOperation": "guard",
+                  "tier": 2,
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 60, "lightSparks": 0 },
+                  "effectSummary": "Защита собирает входящий удар в отражающую грань."
+                },
+                {
+                  "artId": "echo_guard",
+                  "displayName": "Эхо-Защита",
+                  "ownerActorType": "player_soul",
+                  "ownerActorId": "player_soul",
+                  "baseOperation": "guard",
+                  "tier": 2,
+                  "costMultiplierPercent": 160,
+                  "upgradeCost": { "inkFeathers": 70, "lightSparks": 0 },
+                  "effectSummary": "Защита оставляет дополнительное эхо, которое тоже влияет на обмен."
+                }
+              ],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_player_soul",
+                "summary": "Игрок сам выбирает развитие.",
+                "priorityOrder": ["guard"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_player_soul_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль души игрока."
+                }
+              ]
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Зеркальный Хранитель",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 80, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 30, "tier": 2 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 3, "guard": 1 },
+              "specialArts": [
+                {
+                  "artId": "mirror_pressure",
+                  "displayName": "Зеркальное Давление",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
+                  "baseOperation": "pressure",
+                  "tier": 3,
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 60, "lightSparks": 0 },
+                  "effectSummary": "Давление раздваивает импульс и сложнее читается защитой.",
+                  "canTeachPlayer": true,
+                  "trainingConditions": ["Заслужить доверие Зеркального Хранителя."]
+                }
+              ],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_mirror",
+                "summary": "Хранитель усиливает особые искусства давления.",
+                "priorityOrder": ["mirror_pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_guardian_mirror_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль Зеркального Хранителя."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
+    private Task WriteAfterlifeEntityProfilesWithGuardianSpecialArtTierAsync(int standardPressureTier, int specialPressureTier)
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, $$"""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Асуран",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 12, "tier": 1 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 1 },
+              "specialArts": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_player_soul",
+                "summary": "Игрок сам выбирает развитие.",
+                "priorityOrder": ["guard"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_player_soul_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль души игрока."
+                }
+              ]
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Зеркальный Хранитель",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 80, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 30, "tier": 2 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": {{standardPressureTier}}, "guard": 1 },
+              "specialArts": [
+                {
+                  "artId": "mirror_pressure",
+                  "displayName": "Зеркальное Давление",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
+                  "baseOperation": "pressure",
+                  "tier": {{specialPressureTier}},
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 60, "lightSparks": 0 },
+                  "effectSummary": "Давление раздваивает импульс и сложнее читается защитой."
+                }
+              ],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_mirror",
+                "summary": "Хранитель усиливает особые искусства давления.",
+                "priorityOrder": ["mirror_pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_guardian_mirror_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль Зеркального Хранителя."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
+    private Task WriteAfterlifeEntityProfilesWithMirrorAndEchoGuardianSpecialArtsAsync()
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Асуран",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 12, "tier": 1 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "guard": 1 },
+              "specialArts": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_player_soul",
+                "summary": "Игрок сам выбирает развитие.",
+                "priorityOrder": ["guard"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_player_soul_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль души игрока."
+                }
+              ]
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Зеркальный Хранитель",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 80, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 30, "tier": 2 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 3, "guard": 1 },
+              "specialArts": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_mirror",
+                "summary": "Хранитель развивает обычное давление.",
+                "priorityOrder": ["pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_guardian_mirror_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль Зеркального Хранителя."
+                }
+              ]
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_echo",
+              "displayName": "Эхо-Хранитель",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 80, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 30, "tier": 2 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 3, "guard": 1 },
+              "specialArts": [
+                {
+                  "artId": "echo_pressure",
+                  "displayName": "Эхо-Давление",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_echo",
+                  "baseOperation": "pressure",
+                  "tier": 3,
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 60, "lightSparks": 0 },
+                  "effectSummary": "Давление расходится повторным эхом."
+                }
+              ],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_echo",
+                "summary": "Хранитель развивает особое давление.",
+                "priorityOrder": ["echo_pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "ledger": [
+                {
+                  "entryId": "profile_guardian_echo_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль Эхо-Хранителя."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
     private Task WriteAfterlifeEntityProfilesWithGuardianLioraStandardArtsAsync()
     {
         return _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, """
@@ -12392,7 +13714,9 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         bool addDefaultMatchupAudit = true,
         string? activeControlStateJson = null,
         bool addDefaultActionCostAudit = true,
-        bool syncRootActionEconomyToLastAudit = true)
+        bool syncRootActionEconomyToLastAudit = true,
+        int? rootPlayerActionCurrentOverride = null,
+        int? rootOppositionActionCurrentOverride = null)
     {
         var projectedExchangeJson = addDefaultMatchupAudit
             ? AddDefaultMatchupAudit(exchangeJson)
@@ -12409,6 +13733,8 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             projectedExchangeJson,
             "opposition",
             syncRootActionEconomyToLastAudit);
+        playerActionCurrent = rootPlayerActionCurrentOverride ?? playerActionCurrent;
+        oppositionActionCurrent = rootOppositionActionCurrentOverride ?? oppositionActionCurrent;
 
         return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
         {
@@ -12667,13 +13993,29 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
     private static string ResolveDefaultOppositionOperation(JsonObject exchange, string operationType)
     {
+        var incomingOperations = new List<string>();
         if (exchange["incomingAction"] is JsonObject incomingAction)
         {
-            var incomingOperation = AfterlifeSpiritualConflictState.GetNodeString(incomingAction["operationType"]) ??
-                                    AfterlifeSpiritualConflictState.GetNodeString(incomingAction["finalOperationType"]);
-            if (!string.IsNullOrWhiteSpace(incomingOperation))
-                return incomingOperation;
+            AddIncomingTestOperation(incomingOperations, incomingAction["operationType"]);
+            AddIncomingTestOperation(incomingOperations, incomingAction["finalOperationType"]);
         }
+
+        if (exchange["matchupAudit"] is JsonObject matchupAudit)
+        {
+            var matchupOperation = AfterlifeSpiritualConflictState.GetNodeString(matchupAudit["oppositionOperation"]);
+            if (!string.IsNullOrWhiteSpace(matchupOperation) &&
+                (incomingOperations.Count == 0 ||
+                 incomingOperations.Any(incomingOperation => string.Equals(
+                     NormalizeTestOperation(incomingOperation),
+                     NormalizeTestOperation(matchupOperation),
+                     StringComparison.OrdinalIgnoreCase))))
+            {
+                return matchupOperation;
+            }
+        }
+
+        if (incomingOperations.Count > 0)
+            return incomingOperations[0];
 
         return NormalizeTestOperation(operationType) switch
         {
@@ -12688,6 +14030,21 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "recover_spiritual_power" => "guard",
             _ => "none"
         };
+    }
+
+    private static void AddIncomingTestOperation(List<string> operations, JsonNode? node)
+    {
+        var operation = AfterlifeSpiritualConflictState.GetNodeString(node);
+        if (string.IsNullOrWhiteSpace(operation) ||
+            operations.Any(existing => string.Equals(
+                NormalizeTestOperation(existing),
+                NormalizeTestOperation(operation),
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        operations.Add(operation);
     }
 
     private static string DefaultRiskProfileForOperation(string operationType) =>

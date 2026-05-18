@@ -130,7 +130,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
               "playerActorId": "",
               "trainingConditionSatisfied": false,
               "roleplayEvidence": "",
-              "summary": ""
+              "summary": "",
+              "initialTier": 5
             }
           ]
         }
@@ -148,6 +149,23 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_condition_not_satisfied", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_missing_roleplay_evidence", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_invalid_initial_tier", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("{ }")]
+    [InlineData("{ \"gold\": 100 }")]
+    [InlineData("{ \"inkFeathers\": 0, \"lightSparks\": 0 }")]
+    public async Task ValidateGameStateAsync_InvalidSpecialArtUpgradeCost_ReportsContractIssue(string upgradeCost)
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson()
+            .Replace("{ \"inkFeathers\": 30, \"lightSparks\": 0 }", upgradeCost, StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_invalid_upgrade_cost", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

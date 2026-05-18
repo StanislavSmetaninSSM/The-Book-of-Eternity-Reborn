@@ -685,12 +685,12 @@ public partial class ValidationService
                     "upgradeCost особого искусства должен описывать цену прокачки.",
                     code: "afterlife_entity_profile_special_art_missing_upgrade_cost",
                     section: "AfterlifeEntityProfiles",
-                    expected: "object with non-negative currency costs",
+                    expected: "non-empty object with positive inkFeathers and/or lightSparks cost",
                     actual: "missing"));
             }
             else
             {
-                ValidateNonNegativeIntegerObject(upgradeCost, $"{artContext}.upgradeCost", issues, "afterlife_entity_profile_special_art_invalid_upgrade_cost");
+                ValidateSpecialArtUpgradeCost(upgradeCost, $"{artContext}.upgradeCost", issues);
             }
 
             if (art.TryGetProperty("canTeachPlayer", out var canTeachPlayerNode) &&
@@ -787,6 +787,19 @@ public partial class ValidationService
             RequireProfileString(receipt, receiptContext, "roleplayEvidence", "afterlife_entity_profile_special_art_learning_missing_roleplay_evidence", issues);
             RequireProfileString(receipt, receiptContext, "summary", "afterlife_entity_profile_special_art_learning_missing_summary", issues);
             ValidateProfileNonNegativeInt(receipt, receiptContext, "learnedAtTurn", "afterlife_entity_profile_special_art_learning_invalid_turn", issues);
+            if (receipt.TryGetProperty("initialTier", out var initialTier) &&
+                (!TryGetProfileInt(initialTier, out var resolvedInitialTier) || resolvedInitialTier != 0))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{receiptContext}.initialTier",
+                    IssueSeverity.Error,
+                    "initialTier в afterlifeSpecialArtLearningReceipts не может прокачивать изученное искусство: новое особое искусство игрока всегда начинается с tier 0.",
+                    code: "afterlife_entity_profile_special_art_learning_invalid_initial_tier",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "missing or 0",
+                    actual: initialTier.ToString(),
+                    repairHint: "Признай обучение receipt-ом, а последующую прокачку выполняй только клиентской командой /spiritual_arts."));
+            }
 
             if (!receipt.TryGetProperty("trainingConditionSatisfied", out var condition) ||
                 condition.ValueKind != JsonValueKind.True)
@@ -1421,6 +1434,58 @@ public partial class ValidationService
             section: "AfterlifeEntityProfiles",
             expected: "number or non-empty string",
             actual: root.TryGetProperty(propertyName, out var actual) ? actual.ToString() : "missing"));
+    }
+
+    private static void ValidateSpecialArtUpgradeCost(JsonElement root, string context, List<ValidationIssue> issues)
+    {
+        const string code = "afterlife_entity_profile_special_art_invalid_upgrade_cost";
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "upgradeCost особого искусства должен быть object с поддерживаемыми валютами прокачки.",
+                code: code,
+                section: "AfterlifeEntityProfiles",
+                expected: "object with inkFeathers/lightSparks integer costs",
+                actual: root.ValueKind.ToString()));
+            return;
+        }
+
+        var hasAnyProperty = false;
+        var hasPositiveSupportedCost = false;
+        foreach (var property in root.EnumerateObject())
+        {
+            hasAnyProperty = true;
+            if (!AfterlifeEntityCurrencyDeltaKeys.Contains(property.Name) ||
+                !TryGetProfileInt(property.Value, out var value) ||
+                value < 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{property.Name}",
+                    IssueSeverity.Error,
+                    "upgradeCost особого искусства может использовать только inkFeathers/lightSparks с неотрицательными integer values.",
+                    code: code,
+                    section: "AfterlifeEntityProfiles",
+                    expected: "inkFeathers/lightSparks -> non-negative integer",
+                    actual: $"{property.Name}: {property.Value}"));
+                continue;
+            }
+
+            hasPositiveSupportedCost = hasPositiveSupportedCost || value > 0;
+        }
+
+        if (!hasAnyProperty || !hasPositiveSupportedCost)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "upgradeCost особого искусства должен содержать хотя бы одну положительную стоимость в inkFeathers или lightSparks.",
+                code: code,
+                section: "AfterlifeEntityProfiles",
+                expected: "inkFeathers > 0 and/or lightSparks > 0",
+                actual: root.ToString()));
+        }
     }
 
     private static void ValidateNonNegativeIntegerObject(

@@ -405,6 +405,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("trainingConditions", text, StringComparison.Ordinal);
             Assert.Contains("costMultiplierPercent", text, StringComparison.Ordinal);
             Assert.Contains("Spark-only", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("at least one positive", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("initialTier", text, StringComparison.Ordinal);
             Assert.Contains("repair-blocking", text, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -435,6 +437,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
+            Assert.Contains("specialArtAudits[]", text, StringComparison.Ordinal);
             Assert.Contains("soulDissipationProof", text, StringComparison.Ordinal);
             Assert.Contains("targetStabilityCoefficient", text, StringComparison.Ordinal);
             Assert.Contains("terminalGameOver", text, StringComparison.Ordinal);
@@ -1901,13 +1904,26 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("ОД и стоимость действий", uiHelp, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit", uiHelp, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit.opposition", uiHelp, StringComparison.Ordinal);
+        Assert.Contains("no current `actionCostAudit.<side>`", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("validated pre-turn active conflict", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("specialArtAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudits[]", matrix, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudits[]", examples, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudits[]", apiSpec, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudits[]", daemonSpec, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudits[]", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudits[]", glossary, StringComparison.Ordinal);
+        Assert.Contains("never write both", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("effectNote", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("specialCostMultiplierPercent", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("Non-player or incoming-action special arts", matrix, StringComparison.Ordinal);
         Assert.Contains("non-player/incoming special arts", examples + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("when they power the opposition operation", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("resolved opposition operation used for `actionCostAudit.opposition`", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("terminal/free", matrix + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("`finalOperationType` is authoritative", matrix + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("never fall back to stale `incomingAction.operationType` when `finalOperationType` exists", examples, StringComparison.Ordinal);
         Assert.Contains("Матрица приём-контрприём", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Сильнее против", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Контрится", uiHelp, StringComparison.Ordinal);
