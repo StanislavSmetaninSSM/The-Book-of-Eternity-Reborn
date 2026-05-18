@@ -325,6 +325,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
         var apiSpec = ReadRepoFile("CLI_API_Specification.md");
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
 
         foreach (var doc in new[] { matrix, examples })
@@ -342,7 +344,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("ABODE_OFFERING", doc, StringComparison.Ordinal);
         }
 
-        foreach (var doc in new[] { matrix, examples, apiSpec, daemonSpec })
+        foreach (var doc in new[] { matrix, examples, apiSpec, daemonSpec, taskGuide, operations })
         {
             Assert.Contains("progressionProcessingReport", doc, StringComparison.Ordinal);
             Assert.Contains("scheduler-owned", doc, StringComparison.Ordinal);
