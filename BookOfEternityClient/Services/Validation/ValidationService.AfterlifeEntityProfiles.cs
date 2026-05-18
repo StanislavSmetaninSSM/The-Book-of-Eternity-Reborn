@@ -236,6 +236,20 @@ public partial class ValidationService
 
         ValidateProfileNonNegativeInt(currencies, $"{context}.currencies", "inkFeathers", "afterlife_entity_profile_negative_currency", issues);
         ValidateProfileNonNegativeInt(currencies, $"{context}.currencies", "lightSparks", "afterlife_entity_profile_negative_currency", issues);
+        if (IsChaosSeaProfile(profile) &&
+            currencies.TryGetProperty("lightSparks", out var lightSparksNode) &&
+            TryGetProfileInt(lightSparksNode, out var lightSparks) &&
+            lightSparks > 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.currencies.lightSparks",
+                IssueSeverity.Error,
+                "Профили сущностей Моря Хаоса не могут хранить Искры Света.",
+                code: "afterlife_entity_profile_chaos_light_sparks_forbidden",
+                section: "AfterlifeEntityProfiles",
+                expected: "lightSparks = 0 for Chaos Sea profiles",
+                actual: lightSparks.ToString()));
+        }
     }
 
     private void ValidateAfterlifeProfileProgression(JsonElement profile, string context, List<ValidationIssue> issues)
@@ -1341,6 +1355,13 @@ public partial class ValidationService
         !string.IsNullOrWhiteSpace(value.GetString())
             ? value.GetString()!.Trim()
             : null;
+
+    private static bool IsChaosSeaProfile(JsonElement profile)
+    {
+        var realm = GetProfileString(profile, "realm");
+        return string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase);
+    }
 
     private static void ValidateProfileTier(
         JsonElement root,

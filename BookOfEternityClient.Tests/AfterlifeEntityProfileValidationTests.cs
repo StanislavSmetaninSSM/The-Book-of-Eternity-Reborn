@@ -33,6 +33,20 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ChaosSeaProfileWithLightSparks_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson()
+            .Replace("\"currencies\": { \"inkFeathers\": 120, \"lightSparks\": 0 }",
+                "\"currencies\": { \"inkFeathers\": 120, \"lightSparks\": 3 }",
+                StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_chaos_light_sparks_forbidden", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_InvalidAfterlifeEntityProfile_ReportsContractIssues()
     {
         await WriteProfileStateAsync("""
@@ -484,7 +498,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
               "actorId": "guardian_mirror",
               "displayName": "Хранитель Зеркал",
               "realm": "Chaos Sea",
-              "currencies": { "inkFeathers": 5, "lightSparks": 3 },
+              "currencies": { "inkFeathers": 5, "lightSparks": 0 },
               "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
               "standardArts": { "pressure": 1 },
               "specialArts": [],
@@ -496,8 +510,8 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                   "entryId": "guardian_mirror_chaos_6_gm_override",
                   "cycleKey": "chaos:6",
                   "source": "gm_override",
-                  "summary": "Хранитель потратил Перья и получил Искры.",
-                  "income": { "inkFeathers": 0, "lightSparks": 2 },
+                  "summary": "Хранитель потратил Перья в Море Хаоса.",
+                  "income": { "inkFeathers": 0, "lightSparks": 0 },
                   "spending": { "inkFeathers": 5, "lightSparks": 0 }
                 }
               ],

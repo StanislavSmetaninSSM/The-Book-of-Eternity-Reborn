@@ -394,6 +394,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("progressionExperienceDeltas", text, StringComparison.Ordinal);
             Assert.Contains("inkFeathers", text, StringComparison.Ordinal);
             Assert.Contains("lightSparks", text, StringComparison.Ordinal);
+            Assert.Contains("Chaos Sea profiles must keep `currencies.lightSparks = 0`", text, StringComparison.Ordinal);
             Assert.Contains("enlightenment", text, StringComparison.Ordinal);
             Assert.Contains("radiance", text, StringComparison.Ordinal);
             Assert.Contains("specialArtTierDeltas", text, StringComparison.Ordinal);
