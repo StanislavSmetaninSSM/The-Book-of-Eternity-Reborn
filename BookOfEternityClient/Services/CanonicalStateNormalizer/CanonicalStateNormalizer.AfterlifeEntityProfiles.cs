@@ -14,8 +14,63 @@ public partial class CanonicalStateNormalizer
             return;
 
         var previousRoot = await ReadBackupObjectAsync(AfterlifeEntityProfileState.StatePath, backups);
-        var progressionReportRoot = await ReadNodeAsync(ProgressionScheduleService.ReportPath) as JsonObject;
+        var progressionReportRoot = await ReadCurrentTurnAfterlifeProgressionReportRootAsync();
         var result = AfterlifeEntityProfileState.ProjectCanonicalRoot(currentRoot, previousRoot, progressionReportRoot);
         await WriteIfChangedAsync(AfterlifeEntityProfileState.StatePath, currentNode, result);
     }
+
+    private async Task<JsonObject?> ReadCurrentTurnAfterlifeProgressionReportRootAsync()
+    {
+        var root = await ReadNodeAsync(ProgressionScheduleService.ReportPath) as JsonObject;
+        if (root == null)
+            return null;
+
+        var report = root["progressionProcessingReport"] as JsonObject ?? root;
+        var context = await ReadCurrentTurnRequestContextForAfterlifeEntityProgressionAsync();
+        if (context == null || !ProgressionReportMatchesTurnContext(report, context.Value))
+            return null;
+
+        return root;
+    }
+
+    private async Task<PendingTurnContext?> ReadCurrentTurnRequestContextForAfterlifeEntityProgressionAsync()
+    {
+        foreach (var path in new[]
+                 {
+                     "input/turn_request.json",
+                     "ready/turn_complete.json",
+                     "game_state/control/validation_repair_request.json"
+                 })
+        {
+            var root = await ReadNodeAsync(path) as JsonObject;
+            if (root == null)
+                continue;
+
+            var sessionId = GetNodeString(root["sessionId"]);
+            var requestId = GetNodeString(root["requestId"]);
+            var turnNumber = GetNodeInt(root["turnNumber"]);
+            if (!string.IsNullOrWhiteSpace(sessionId) &&
+                !string.IsNullOrWhiteSpace(requestId) &&
+                turnNumber > 0)
+            {
+                return new PendingTurnContext(sessionId, requestId, turnNumber);
+            }
+        }
+
+        return null;
+    }
+
+    private static bool ProgressionReportMatchesTurnContext(JsonObject report, PendingTurnContext context)
+    {
+        var sessionId = GetNodeString(report["sessionId"]);
+        var requestId = GetNodeString(report["requestId"]);
+        var turnNumber = GetNodeInt(report["turnNumber"]);
+        return turnNumber == context.TurnNumber &&
+               !string.IsNullOrWhiteSpace(sessionId) &&
+               string.Equals(sessionId, context.SessionId, StringComparison.OrdinalIgnoreCase) &&
+               !string.IsNullOrWhiteSpace(requestId) &&
+               string.Equals(requestId, context.RequestId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private readonly record struct PendingTurnContext(string SessionId, string RequestId, int TurnNumber);
 }

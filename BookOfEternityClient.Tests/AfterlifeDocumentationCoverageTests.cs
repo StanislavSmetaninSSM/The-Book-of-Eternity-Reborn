@@ -416,6 +416,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("soulDissipationTierDelta", text, StringComparison.Ordinal);
             Assert.Contains("progressionLedger", text, StringComparison.Ordinal);
             Assert.Contains("lastAutoProgressionCycleKey", text, StringComparison.Ordinal);
+            Assert.Contains("current-turn `progression_report.json`", text, StringComparison.Ordinal);
             Assert.Contains("soul_dissipation", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
             Assert.Contains("trainingConditions", text, StringComparison.Ordinal);

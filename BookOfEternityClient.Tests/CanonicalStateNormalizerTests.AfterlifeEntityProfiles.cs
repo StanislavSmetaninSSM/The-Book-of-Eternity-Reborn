@@ -184,6 +184,7 @@ public sealed partial class CanonicalStateNormalizerTests
               }
             }
             """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             """
@@ -232,6 +233,75 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotAutoProgressProfilesFromStaleAfterlifeReport()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            """
+            {
+              "sessionId": "session_current",
+              "requestId": "request_current",
+              "turnNumber": 8
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(
+            ProgressionScheduleService.ReportPath,
+            """
+            {
+              "progressionProcessingReport": {
+                "sessionId": "session_stale",
+                "requestId": "request_stale",
+                "turnNumber": 7,
+                "chaosSeaCyclesProcessed": 1,
+                "guardianProjectCyclesProcessed": 1,
+                "newLastChaosSeaSimulationOrdinal": 5,
+                "newLastGuardianProjectCycleOrdinal": 5
+              }
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "guard": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_mirror",
+                    "summary": "Качать защиту.",
+                    "priorityOrder": ["guard"]
+                  },
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(0, profile["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.Equal(0, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Null(profile["progressionStrategy"]?["lastAutoProgressionCycleKey"]);
+        Assert.Null(profile["progressionLedger"]);
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_AppliesEntityProgressionPerAfterlifeContour()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
@@ -250,6 +320,7 @@ public sealed partial class CanonicalStateNormalizerTests
               }
             }
             """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             """
@@ -346,6 +417,7 @@ public sealed partial class CanonicalStateNormalizerTests
               }
             }
             """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             """
@@ -428,6 +500,7 @@ public sealed partial class CanonicalStateNormalizerTests
               }
             }
             """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             """
@@ -482,6 +555,7 @@ public sealed partial class CanonicalStateNormalizerTests
               }
             }
             """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             """
@@ -538,6 +612,7 @@ public sealed partial class CanonicalStateNormalizerTests
               }
             }
             """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             """
@@ -609,6 +684,7 @@ public sealed partial class CanonicalStateNormalizerTests
               }
             }
             """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
         await _fs.WriteFileAtomicAsync(
             AfterlifeEntityProfileState.StatePath,
             """
@@ -1786,5 +1862,58 @@ public sealed partial class CanonicalStateNormalizerTests
             .OfType<JsonObject>()
             .Single(profile => profile["actorType"]?.GetValue<string>() == "player_soul");
         Assert.Empty(player["specialArts"]!.AsArray());
+    }
+
+    private async Task CorrelateAfterlifeProgressionReportWithTurnRequestAsync()
+    {
+        var reportRoot = JsonNode.Parse(
+            await _fs.ReadFileAsync(ProgressionScheduleService.ReportPath) ?? "{}")!.AsObject();
+        var report = reportRoot["progressionProcessingReport"] as JsonObject ?? reportRoot;
+        var sessionId = GetTestString(report["sessionId"]) ?? "session_entity_progression";
+        var requestId = GetTestString(report["requestId"]) ?? "request_entity_progression";
+        var turnNumber = GetTestInt(report["turnNumber"], 77);
+
+        report["sessionId"] = sessionId;
+        report["requestId"] = requestId;
+        report["turnNumber"] = turnNumber;
+
+        await _fs.WriteFileAtomicAsync(
+            "input/turn_request.json",
+            $$"""
+            {
+              "sessionId": "{{sessionId}}",
+              "requestId": "{{requestId}}",
+              "turnNumber": {{turnNumber}}
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, reportRoot.ToJsonString());
+    }
+
+    private static string? GetTestString(JsonNode? node)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var stringValue))
+                return stringValue;
+        }
+
+        return null;
+    }
+
+    private static int GetTestInt(JsonNode? node, int defaultValue)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue;
+            if (value.TryGetValue<long>(out var longValue) &&
+                longValue >= int.MinValue &&
+                longValue <= int.MaxValue)
+            {
+                return (int)longValue;
+            }
+        }
+
+        return defaultValue;
     }
 }
