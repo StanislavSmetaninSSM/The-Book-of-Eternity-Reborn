@@ -390,6 +390,12 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
             Assert.Contains("statesToRemove", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
+            Assert.Contains("currencyDeltas", text, StringComparison.Ordinal);
+            Assert.Contains("progressionExperienceDeltas", text, StringComparison.Ordinal);
+            Assert.Contains("inkFeathers", text, StringComparison.Ordinal);
+            Assert.Contains("lightSparks", text, StringComparison.Ordinal);
+            Assert.Contains("enlightenment", text, StringComparison.Ordinal);
+            Assert.Contains("radiance", text, StringComparison.Ordinal);
             Assert.Contains("specialArtTierDeltas", text, StringComparison.Ordinal);
             Assert.Contains("soulDissipationTierDelta", text, StringComparison.Ordinal);
             Assert.Contains("progressionLedger", text, StringComparison.Ordinal);
@@ -1900,6 +1906,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("specialCostMultiplierPercent", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("Non-player or incoming-action special arts", matrix, StringComparison.Ordinal);
         Assert.Contains("non-player/incoming special arts", examples + daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("when they power the opposition operation", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("terminal/free", matrix + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Матрица приём-контрприём", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Сильнее против", uiHelp, StringComparison.Ordinal);
         Assert.Contains("Контрится", uiHelp, StringComparison.Ordinal);

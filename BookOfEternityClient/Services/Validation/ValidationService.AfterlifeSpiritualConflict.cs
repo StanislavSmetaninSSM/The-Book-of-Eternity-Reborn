@@ -2818,8 +2818,14 @@ public partial class ValidationService
         bool isCurrentExchange,
         AfterlifeActionCostAuthorityContext actionCostAuthority)
     {
-        if (!isCurrentExchange ||
-            string.IsNullOrWhiteSpace(operationType) ||
+        if (!isCurrentExchange)
+        {
+            return;
+        }
+
+        ValidateOppositionActionCostAudit(exchange, activeConflict, activeActionEconomy, context, issues, actionCostAuthority);
+
+        if (string.IsNullOrWhiteSpace(operationType) ||
             IsTerminalNoCostOperation(operationType))
         {
             return;
@@ -2977,8 +2983,6 @@ public partial class ValidationService
                     after.ToString());
             }
         }
-
-        ValidateOppositionActionCostAudit(exchange, activeConflict, activeActionEconomy, context, issues, actionCostAuthority);
     }
 
     private static void ValidateOppositionActionCostAudit(
@@ -3052,16 +3056,49 @@ public partial class ValidationService
                 artTier.ToString());
         }
 
-        var expectedEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, authorityArtTier));
+        var standardEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, authorityArtTier));
+        var expectedEffectiveCost = standardEffectiveCost;
+        var oppositionSpecialArtAudit = ResolveOppositionSpecialArtAudit(exchange, oppositionOperation);
+        if (oppositionSpecialArtAudit != null &&
+            TryGetJsonNodeInt(oppositionSpecialArtAudit["costMultiplierPercent"], out var specialMultiplier) &&
+            specialMultiplier > 100)
+        {
+            expectedEffectiveCost = Math.Max(costDefinition.MinCost, (standardEffectiveCost * specialMultiplier + 99) / 100);
+            var auditSpecialArtId = AfterlifeSpiritualConflictState.GetNodeString(oppositionAudit["specialArtId"]);
+            var specialArtId = AfterlifeSpiritualConflictState.GetNodeString(oppositionSpecialArtAudit["artId"]);
+            var hasAuditMultiplier = TryGetJsonNodeInt(oppositionAudit["specialCostMultiplierPercent"], out var auditMultiplier);
+            var hasStandardEffectiveCost = TryGetJsonNodeInt(oppositionAudit["standardEffectiveCost"], out var auditStandardEffectiveCost);
+            if (string.IsNullOrWhiteSpace(specialArtId) ||
+                !ConflictTokenEquals(auditSpecialArtId, specialArtId) ||
+                !hasAuditMultiplier ||
+                auditMultiplier != specialMultiplier ||
+                !hasStandardEffectiveCost ||
+                auditStandardEffectiveCost != standardEffectiveCost)
+            {
+                AddActionCostIssue(
+                    issues,
+                    $"{context}.actionCostAudit.opposition",
+                    "actionCostAudit.opposition для особого духовного искусства противника должен ссылаться на specialArtId, specialCostMultiplierPercent и standardEffectiveCost.",
+                    "afterlife_conflict_opposition_special_art_cost_audit_incomplete",
+                    $"specialArtId={specialArtId}, specialCostMultiplierPercent={specialMultiplier}, standardEffectiveCost={standardEffectiveCost}",
+                    oppositionAudit.ToJsonString());
+            }
+        }
+
         if (baseCost != costDefinition.BaseCost ||
             minCost != costDefinition.MinCost ||
             effectiveCost != expectedEffectiveCost)
         {
+            var mismatchCode = oppositionSpecialArtAudit == null
+                ? "afterlife_conflict_opposition_action_cost_mismatch"
+                : "afterlife_conflict_opposition_special_art_cost_mismatch";
             AddActionCostIssue(
                 issues,
                 $"{context}.actionCostAudit.opposition.effectiveCost",
-                "Стоимость ОД противника должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier).",
-                "afterlife_conflict_opposition_action_cost_mismatch",
+                oppositionSpecialArtAudit == null
+                    ? "Стоимость ОД противника должна соответствовать формуле effectiveCost = max(minCost, baseCost - artTier)."
+                    : "Стоимость ОД особого духовного искусства противника должна применять повышающий specialCostMultiplierPercent к стандартной стоимости.",
+                mismatchCode,
                 $"baseCost={costDefinition.BaseCost}, minCost={costDefinition.MinCost}, effectiveCost={expectedEffectiveCost}",
                 $"baseCost={baseCost}, minCost={minCost}, effectiveCost={effectiveCost}");
         }
@@ -3213,6 +3250,20 @@ public partial class ValidationService
         }
 
         return 0;
+    }
+
+    private static JsonObject? ResolveOppositionSpecialArtAudit(JsonObject exchange, string oppositionOperation)
+    {
+        if (exchange["specialArtAudit"] is not JsonObject audit ||
+            SpecialArtAuditOwnerIsPlayer(audit))
+        {
+            return null;
+        }
+
+        var baseOperation = AfterlifeSpiritualConflictState.GetNodeString(audit["baseOperation"]);
+        return ConflictTokenEqualsSingle(baseOperation, oppositionOperation)
+            ? audit
+            : null;
     }
 
     private static string? ResolveOppositionActorAuthorityKey(JsonObject exchange, JsonObject activeConflict)
