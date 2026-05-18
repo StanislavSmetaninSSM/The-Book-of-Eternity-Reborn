@@ -8058,6 +8058,26 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                   "oppositionSideStrain": "strained",
                   "conflictPosition": "player_advantaged"
                 },
+                "actionCostAudit": {
+                  "player": {
+                    "operationType": "pressure",
+                    "baseCost": 3,
+                    "minCost": 1,
+                    "artTier": 0,
+                    "effectiveCost": 3,
+                    "before": 6,
+                    "after": 3
+                  },
+                  "opposition": {
+                    "operationType": "guard",
+                    "baseCost": 2,
+                    "minCost": 1,
+                    "artTier": 1,
+                    "effectiveCost": 1,
+                    "before": 6,
+                    "after": 5
+                  }
+                },
                 "diceAudit": {
                   "formulaVersion": "afterlife_spiritual_conflict_v1",
                   "diceSource": "input/turn_request.json.preGeneratedDices1d20",
@@ -8141,6 +8161,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("модификатор противника +1", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("множитель награды 125%", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("player_success", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("противник: защита", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ОД 6->5", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("recentConflicts", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ink_feathers", renderedText, StringComparison.OrdinalIgnoreCase);
     }

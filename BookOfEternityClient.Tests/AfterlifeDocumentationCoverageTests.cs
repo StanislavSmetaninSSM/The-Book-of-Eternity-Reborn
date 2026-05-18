@@ -1788,6 +1788,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("preGeneratedDices1d20", text, StringComparison.Ordinal);
             Assert.Contains("actionEconomy", text, StringComparison.Ordinal);
             Assert.Contains("actionCostAudit", text, StringComparison.Ordinal);
+            Assert.Contains("actionCostAudit.opposition", text, StringComparison.Ordinal);
             Assert.Contains("recover_spiritual_power", text, StringComparison.Ordinal);
             Assert.Contains("spiritFocusTier", text, StringComparison.Ordinal);
             Assert.Contains("Средоточие Души", text, StringComparison.Ordinal);
@@ -1893,6 +1894,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("+0..1", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
         Assert.Contains("ОД и стоимость действий", uiHelp, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit", uiHelp, StringComparison.Ordinal);
+        Assert.Contains("actionCostAudit.opposition", uiHelp, StringComparison.Ordinal);
         Assert.Contains("specialArtAudit", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("effectNote", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("specialCostMultiplierPercent", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);

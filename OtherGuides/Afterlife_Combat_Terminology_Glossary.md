@@ -97,10 +97,13 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 - Active conflicts carry `actionEconomy.player` and `actionEconomy.opposition` with `current`, `max`, and `source`.
 - On `mode=start`, `actionEconomy.player.current/max` comes from `soul_state.afterlifeCombatProfile.spiritFocusTier`; source is `Средоточие Души tier N`.
 - Every new/current exchange that spends or restores ОД must carry `actionCostAudit.player`: `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`.
+- Every new/current exchange that resolves an active costed opposition operation must also carry `actionCostAudit.opposition` in the same shape. The opposition operation is taken from `incomingAction.operationType` / `incomingAction.finalOperationType` or `matchupAudit.oppositionOperation`.
 - Formula: `effectiveCost = max(minCost, baseCost - artTier)`.
+- `actionCostAudit.player.artTier` comes from the validated pre-turn soul profile. `actionCostAudit.opposition.artTier` comes from the validated pre-turn afterlife entity profile for the opposition lead actor, with the pre-turn `oppositionSide.leadContestant.actorArtTierSnapshot` used only as compatibility fallback.
 - Special arts multiply that standard cost: an exchange with `specialArtAudit` must also include `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and the multiplied `effectiveCost`.
 - Base/min costs: `pressure 3/1`, `guard 2/1`, `counter 4/2`, `maneuver 3/1`, `binding 4/2`, `force_binding 5/2`, `break_binding 3/1`, `incarnation_resistance 3/1`, `champion_coordination 2/1`, `recover_spiritual_power 0/0`.
-- `recover_spiritual_power` restores ОД up to `actionEconomy.player.max`: success +3, partial_success +2, punished recovery +0..1.
+- `recover_spiritual_power` restores ОД up to the acting side's `actionEconomy.<side>.max`: success +3, partial_success +2, punished recovery +0..1.
+- The final `activeConflict.actionEconomy.player.current` and `activeConflict.actionEconomy.opposition.current` must match the last current `actionCostAudit.player.after` and `actionCostAudit.opposition.after` respectively.
 - Punished recovery happens against `pressure`, `maneuver`, `binding`, `force_binding`, or `force_incarnation`; strong timing is against `guard`, `counter`, `none`, or `passive`.
 - `withdraw`, `surrender`, and `negotiate` remain legal at 0 ОД unless a later contract explicitly changes terminal choice rules.
 
