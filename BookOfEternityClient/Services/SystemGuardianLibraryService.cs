@@ -471,6 +471,7 @@ public sealed class SystemGuardianLibraryService
                 parts.Add("  - This attraction is deterministic for this turn. Do NOT substitute a different guardian.");
                 parts.Add("  - If the guardian is not yet materialized in the session, create and materialize them from this preset now.");
                 parts.Add("  - If the guardian already exists, route the soul to that guardian and synchronize activeGuardian/current abode state.");
+                parts.Add("  - Canonical closure surfaces: use UpdateGuardians/canonical guardians, set activeGuardian to the requested Guardian, and update chaosSeaNavigation.currentAbodeId to that Guardian's Abode.");
                 parts.Add("  - The result must point to the requested guardian, not a nearby approximation.");
                 parts.Add("  - Keep the guardian's canonical identity stable even if their visible manifestation changes.");
                 parts.Add($"  - Target preset: {attractionRequest.TargetPresetDisplayName} ({attractionRequest.TargetPresetId}, {attractionRequest.SourceLibrary}, v{attractionRequest.TargetPresetVersion})");

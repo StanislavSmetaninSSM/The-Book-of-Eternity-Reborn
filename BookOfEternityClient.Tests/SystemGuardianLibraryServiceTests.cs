@@ -101,6 +101,10 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.Contains("ETERNAL GUARDIAN ATTRACTION:", reminder, StringComparison.Ordinal);
         Assert.Contains("create and materialize", reminder, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("route the soul", reminder, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("UpdateGuardians", reminder, StringComparison.Ordinal);
+        Assert.Contains("guardians", reminder, StringComparison.Ordinal);
+        Assert.Contains("activeGuardian", reminder, StringComparison.Ordinal);
+        Assert.Contains("chaosSeaNavigation", reminder, StringComparison.Ordinal);
         Assert.DoesNotContain("WRONG-REALM REPAIR", reminder, StringComparison.OrdinalIgnoreCase);
     }
 
