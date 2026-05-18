@@ -2683,6 +2683,147 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CurrentIncomingActionRequiresOppositionActionCostAudit()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_missing_opposition_action_cost_audit_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_liora",
+            "summary": "Лиора давит на клятву души."
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}},
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_TerminalPlayerActionStillRequiresOppositionActionCostAudit()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_terminal_missing_opposition_action_cost_audit_001",
+          "operationType": "negotiate",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_liora",
+            "summary": "Лиора давит на клятву души, пока игрок пытается договориться."
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_dominant"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "player_dominant"
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AcceptsOppositionActionCostAuditFromEntityProfile()
+    {
+        await WriteSoulStateAsync();
+        await WriteAfterlifeEntityProfilesWithGuardianLioraStandardArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_valid_opposition_action_cost_audit_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_liora",
+            "summary": "Лиора давит на клятву души."
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}},
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 2,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase) ||
+            issue.Code?.StartsWith("afterlife_conflict_opposition_action_cost", StringComparison.OrdinalIgnoreCase) == true ||
+            string.Equals(issue.Code, "afterlife_conflict_action_economy_opposition_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ActionCostAuditMustMatchTierFormula()
     {
         await WriteSoulStateAsync();
@@ -2972,6 +3113,18 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
               "effectiveCost": 1,
               "before": 6,
               "after": 5
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 3,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
             }
           }
         }
@@ -2985,7 +3138,86 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_conflict_special_art_not_in_owner_profile", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(issue.Code, "afterlife_conflict_special_art_authority_mismatch", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(issue.Code, "afterlife_conflict_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase));
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_action_cost_audit_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NonPlayerIncomingSpecialArtRequiresScaledOppositionCost()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "guard": 1 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithGuardianSpecialArtsAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_non_player_special_art_standard_opposition_cost_001",
+          "operationType": "guard",
+          "outcome": "blocked",
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_mirror"
+          },
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}},
+          "specialArtAudit": {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_mirror",
+            "baseOperation": "pressure",
+            "costMultiplierPercent": 150,
+            "effectNote": "Зеркальное давление Хранителя усилило входящий нажим, но защита игрока его остановила."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 3,
+              "effectiveCost": 1,
+              "before": 6,
+              "after": 5
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_opposition_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -11761,6 +11993,48 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         """);
     }
 
+    private Task WriteAfterlifeEntityProfilesWithGuardianLioraStandardArtsAsync()
+    {
+        return _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_liora",
+              "displayName": "Лиора",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 80, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 30, "tier": 2 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_liora",
+                "summary": "Лиора усиливает давление.",
+                "priorityOrder": ["pressure"],
+                "lastUpdatedAtTurn": 7
+              },
+              "warnings": [],
+              "progressionLedger": [],
+              "ledger": [
+                {
+                  "entryId": "profile_guardian_liora_001",
+                  "turnNumber": 7,
+                  "reason": "test_profile",
+                  "summary": "Профиль Лиоры."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+    }
+
     private Task WriteSoulStateWithTerminalGameOverAsync(string message)
     {
         return _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", $$"""
@@ -12131,6 +12405,10 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         var playerActionCurrent = ResolveRootPlayerActionCurrentFromExchangeLog(
             projectedExchangeJson,
             syncRootActionEconomyToLastAudit);
+        var oppositionActionCurrent = ResolveRootActionCurrentFromExchangeLog(
+            projectedExchangeJson,
+            "opposition",
+            syncRootActionEconomyToLastAudit);
 
         return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
         {
@@ -12165,7 +12443,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "conflictPosition": "contested",
             "actionEconomy": {
               "player": { "current": {{playerActionCurrent}}, "max": 6, "source": "Средоточие Души tier 0" },
-              "opposition": { "current": 6, "max": 6, "source": "opposition spiritual authority" }
+              "opposition": { "current": {{oppositionActionCurrent}}, "max": 6, "source": "opposition spiritual authority" }
             },
             "resolutionState": "active"{{activeControlStateFragment}},
             "exchangeLog": [
@@ -12183,6 +12461,10 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     {
         var playerActionCurrent = ResolveRootPlayerActionCurrentFromExchangeLog(
             exchangeLogJson,
+            syncRootActionEconomyToLastAudit);
+        var oppositionActionCurrent = ResolveRootActionCurrentFromExchangeLog(
+            exchangeLogJson,
+            "opposition",
             syncRootActionEconomyToLastAudit);
         return _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, $$"""
         {
@@ -12217,7 +12499,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             "conflictPosition": "contested",
             "actionEconomy": {
               "player": { "current": {{playerActionCurrent}}, "max": 6, "source": "Средоточие Души tier 0" },
-              "opposition": { "current": 6, "max": 6, "source": "opposition spiritual authority" }
+              "opposition": { "current": {{oppositionActionCurrent}}, "max": 6, "source": "opposition spiritual authority" }
             },
             "resolutionState": "active",
             "exchangeLog": [
@@ -12274,7 +12556,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             ? 6
             : before - effectiveCost;
 
-        exchange["actionCostAudit"] = new JsonObject
+        var actionCostAudit = new JsonObject
         {
             ["player"] = new JsonObject
             {
@@ -12288,10 +12570,40 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             }
         };
 
+        var oppositionOperation = ResolveDefaultOppositionOperation(exchange, operationType);
+        if (!IsTerminalActionCostTestOperation(oppositionOperation) &&
+            !string.Equals(oppositionOperation, "none", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(oppositionOperation, "passive", StringComparison.OrdinalIgnoreCase) &&
+            TryGetTestActionCost(oppositionOperation, out var oppositionBaseCost, out var oppositionMinCost))
+        {
+            var oppositionArtTier = ResolveDefaultOppositionArtTier(oppositionOperation);
+            var oppositionEffectiveCost = Math.Max(oppositionMinCost, oppositionBaseCost - oppositionArtTier);
+            var oppositionBefore = string.Equals(oppositionOperation, "recover_spiritual_power", StringComparison.OrdinalIgnoreCase) ? 3 : 6;
+            var oppositionAfter = string.Equals(oppositionOperation, "recover_spiritual_power", StringComparison.OrdinalIgnoreCase)
+                ? 6
+                : oppositionBefore - oppositionEffectiveCost;
+            actionCostAudit["opposition"] = new JsonObject
+            {
+                ["operationType"] = oppositionOperation,
+                ["baseCost"] = oppositionBaseCost,
+                ["minCost"] = oppositionMinCost,
+                ["artTier"] = oppositionArtTier,
+                ["effectiveCost"] = oppositionEffectiveCost,
+                ["before"] = oppositionBefore,
+                ["after"] = oppositionAfter
+            };
+        }
+
+        exchange["actionCostAudit"] = actionCostAudit;
         return exchange.ToJsonString();
     }
 
     private static int ResolveRootPlayerActionCurrentFromExchangeLog(string exchangeLogJson, bool syncRootActionEconomyToLastAudit)
+    {
+        return ResolveRootActionCurrentFromExchangeLog(exchangeLogJson, "player", syncRootActionEconomyToLastAudit);
+    }
+
+    private static int ResolveRootActionCurrentFromExchangeLog(string exchangeLogJson, string side, bool syncRootActionEconomyToLastAudit)
     {
         if (!syncRootActionEconomyToLastAudit)
             return 6;
@@ -12305,8 +12617,8 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             foreach (var node in exchangeLog.OfType<JsonObject>())
             {
                 if (node["actionCostAudit"] is JsonObject actionCostAudit &&
-                    actionCostAudit["player"] is JsonObject playerAudit &&
-                    playerAudit["after"] is JsonValue afterValue &&
+                    actionCostAudit[side] is JsonObject sideAudit &&
+                    sideAudit["after"] is JsonValue afterValue &&
                     afterValue.TryGetValue<int>(out var after))
                 {
                     current = after;
@@ -12344,6 +12656,14 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         };
         return baseCost >= 0;
     }
+
+    private static int ResolveDefaultOppositionArtTier(string operationType) =>
+        NormalizeTestOperation(operationType) switch
+        {
+            "pressure" => 2,
+            "guard" => 1,
+            _ => 0
+        };
 
     private static string ResolveDefaultOppositionOperation(JsonObject exchange, string operationType)
     {

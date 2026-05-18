@@ -151,6 +151,103 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_SpecialArtLearningReceiptWithoutAuthority_ReportsContractIssues()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": {},
+              "specialArts": [
+                {
+                  "artId": "closed_mirror",
+                  "displayName": "Закрытое Зеркало",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
+                  "baseOperation": "guard",
+                  "tier": 1,
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 30, "lightSparks": 0 },
+                  "canTeachPlayer": false,
+                  "effectSummary": "Не предназначено для обучения игрока."
+                }
+              ],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            },
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Душа игрока",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": {},
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_player", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeSpecialArtLearningReceipts": [
+            {
+              "receiptId": "learn_missing_art",
+              "teacherActorType": "guardian",
+              "teacherActorId": "guardian_mirror",
+              "artId": "missing_art",
+              "playerActorId": "player_soul",
+              "learnedAtTurn": 12,
+              "trainingConditionSatisfied": true,
+              "roleplayEvidence": "Игрок прошёл сцену обучения.",
+              "summary": "GM признал обучение."
+            },
+            {
+              "receiptId": "learn_not_teachable",
+              "teacherActorType": "guardian",
+              "teacherActorId": "guardian_mirror",
+              "artId": "closed_mirror",
+              "playerActorId": "player_soul",
+              "learnedAtTurn": 12,
+              "trainingConditionSatisfied": true,
+              "roleplayEvidence": "Игрок прошёл сцену обучения.",
+              "summary": "GM признал обучение."
+            },
+            {
+              "receiptId": "learn_unknown_teacher",
+              "teacherActorType": "resident",
+              "teacherActorId": "resident_missing",
+              "artId": "closed_mirror",
+              "playerActorId": "player_soul",
+              "learnedAtTurn": 12,
+              "trainingConditionSatisfied": true,
+              "roleplayEvidence": "Игрок прошёл сцену обучения.",
+              "summary": "GM признал обучение."
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_unknown_art", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_not_teachable", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_learning_unknown_teacher", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MalformedAfterlifeEntityCustomStates_ReportContractIssues()
     {
         await WriteProfileStateAsync("""
@@ -219,6 +316,81 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CustomStateChangeUnknownTarget_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": {},
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeEntityCustomStateChanges": [
+            {
+              "actorType": "resident",
+              "actorId": "resident_missing",
+              "statesToRemove": ["old_state"]
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_custom_state_change_unknown_target", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_InvalidProfileCommandMarker_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": {},
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "lastInvalidProfileCommand": {
+            "actorType": "resident",
+            "actorId": "resident_missing",
+            "statesToRemove": ["old_state"]
+          },
+          "lastInvalidProfileCommandReason": "unknown_custom_state_target"
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_command_invalid_authority", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MalformedEntityProgressionLedgerAndOverride_ReportContractIssues()
     {
         await WriteProfileStateAsync("""
@@ -283,6 +455,49 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_SplitProgressionOverrideLedger_PassesProfileValidation()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 5, "lightSparks": 3 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": { "pressure": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать давление.", "priorityOrder": ["pressure"], "lastAutoProgressionCycleKey": "chaos:6" },
+              "progressionLedger": [
+                {
+                  "entryId": "guardian_mirror_chaos_6_gm_override",
+                  "cycleKey": "chaos:6",
+                  "source": "gm_override",
+                  "summary": "Хранитель потратил Перья и получил Искры.",
+                  "income": { "inkFeathers": 0, "lightSparks": 2 },
+                  "spending": { "inkFeathers": 5, "lightSparks": 0 }
+                }
+              ],
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_ledger_negative_amount", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_UnknownProgressionStrategyPriority_ReportsContractIssue()
     {
         await WriteProfileStateAsync("""
@@ -325,6 +540,43 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_entity_profile_strategy_unknown_priority", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UnknownProgressionStrategySpendCategory_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": { "guard": 0 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_1",
+                "summary": "Качать непонятную категорию.",
+                "priorityOrder": ["guard"],
+                "allowedSpends": ["guard"],
+                "forbiddenSpends": ["unknownCategory"]
+              },
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_strategy_unknown_spend_category", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

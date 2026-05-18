@@ -15,6 +15,8 @@ internal static class AfterlifeEntityProfileState
     public const string ProgressionLedgerProperty = "progressionLedger";
     public const string LastInvalidProgressionOverrideProperty = "lastInvalidProgressionOverride";
     public const string LastInvalidProgressionOverrideReasonProperty = "lastInvalidProgressionOverrideReason";
+    public const string LastInvalidCommandProperty = "lastInvalidProfileCommand";
+    public const string LastInvalidCommandReasonProperty = "lastInvalidProfileCommandReason";
     public const string SoulDissipationTierProperty = "soulDissipationTier";
     public const int MaxSoulStabilityCoefficient = MaxProfileTier - 1;
     public const int SchemaVersion = 1;
@@ -66,6 +68,27 @@ internal static class AfterlifeEntityProfileState
         "recover_spiritual_power"
     };
 
+    public static readonly HashSet<string> ProgressionSpendCategories = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "standardArts",
+        "specialArts",
+        "enlightenment",
+        "radiance",
+        "soulDissipationTier"
+    };
+
+    private static readonly HashSet<string> CurrencyDeltaKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "inkFeathers",
+        "lightSparks"
+    };
+
+    private static readonly HashSet<string> ProgressionExperienceDeltaKeys = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "enlightenment",
+        "radiance"
+    };
+
     public static JsonObject CreateDefaultRoot() =>
         new()
         {
@@ -82,8 +105,8 @@ internal static class AfterlifeEntityProfileState
 
         UpsertProfiles(result, previousRoot?[ProfilesProperty]);
         UpsertProfiles(result, currentRoot?[ProfilesProperty]);
-        UpsertProfiles(result, currentRoot?[ResponseProfilesProperty]);
-        UpsertProfiles(result, currentRoot?[UpdateProperty]);
+        UpsertProfileCommands(result, currentRoot?[ResponseProfilesProperty], "profile_response_not_object", "profile_response_not_array");
+        UpsertProfileCommands(result, currentRoot?[UpdateProperty], "profile_update_not_object", "profile_update_not_array");
         ApplyCustomStateChanges(result, currentRoot?[CustomStateChangesProperty]);
         ApplySpecialArtLearningReceipts(result, currentRoot?[SpecialArtLearningReceiptsProperty]);
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
@@ -152,6 +175,15 @@ internal static class AfterlifeEntityProfileState
         return 0;
     }
 
+    private static bool TryGetNodeInt(JsonNode? node, out int result)
+    {
+        if (node is JsonValue value && value.TryGetValue<int>(out result))
+            return true;
+
+        result = 0;
+        return false;
+    }
+
     public static int ResolveSoulStabilityCoefficient(JsonObject? profile)
     {
         if (profile == null)
@@ -201,6 +233,34 @@ internal static class AfterlifeEntityProfileState
             UpsertProfile(resultProfiles, profile);
     }
 
+    private static void UpsertProfileCommands(
+        JsonObject result,
+        JsonNode? profilesNode,
+        string nonObjectReason,
+        string nonArrayReason)
+    {
+        if (profilesNode == null)
+            return;
+
+        if (profilesNode is not JsonArray profiles)
+        {
+            MarkInvalidProfileCommand(result, profilesNode, nonArrayReason);
+            return;
+        }
+
+        var resultProfiles = EnsureProfilesArray(result);
+        foreach (var profileNode in profiles)
+        {
+            if (profileNode is not JsonObject profile)
+            {
+                MarkInvalidProfileCommand(result, profileNode, nonObjectReason);
+                continue;
+            }
+
+            UpsertProfile(resultProfiles, profile);
+        }
+    }
+
     private static JsonArray EnsureProfilesArray(JsonObject root)
     {
         if (root[ProfilesProperty] is JsonArray profiles)
@@ -213,21 +273,79 @@ internal static class AfterlifeEntityProfileState
 
     private static void ApplyCustomStateChanges(JsonObject result, JsonNode? changesNode)
     {
-        if (changesNode is not JsonArray changes)
+        if (changesNode == null)
             return;
 
-        var profiles = EnsureProfilesArray(result);
-        foreach (var change in changes.OfType<JsonObject>())
+        if (changesNode is not JsonArray changes)
         {
+            MarkInvalidProfileCommand(result, changesNode, "custom_state_changes_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var changeNode in changes)
+        {
+            if (changeNode is not JsonObject change)
+            {
+                MarkInvalidProfileCommand(result, changeNode, "custom_state_change_not_object");
+                continue;
+            }
+
             var targetKey = BuildIdentityKey(change);
             if (string.IsNullOrWhiteSpace(targetKey))
+            {
+                MarkInvalidProfileCommand(result, change, "missing_custom_state_target");
                 continue;
+            }
 
             var profile = profiles
                 .OfType<JsonObject>()
                 .FirstOrDefault(item => string.Equals(BuildIdentityKey(item), targetKey, StringComparison.OrdinalIgnoreCase));
             if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, change, "unknown_custom_state_target");
                 continue;
+            }
+
+            if (change.ContainsKey("statesToRemove") && change["statesToRemove"] is not JsonArray)
+            {
+                MarkInvalidProfileCommand(result, change, "custom_state_removals_not_array");
+                continue;
+            }
+
+            if (change.ContainsKey("statesToAddOrUpdate") && change["statesToAddOrUpdate"] is not JsonArray)
+            {
+                MarkInvalidProfileCommand(result, change, "custom_state_upserts_not_array");
+                continue;
+            }
+
+            if (change["statesToRemove"] is not JsonArray && change["statesToAddOrUpdate"] is not JsonArray)
+            {
+                MarkInvalidProfileCommand(result, change, "empty_custom_state_change");
+                continue;
+            }
+
+            var hasRemovalOperations = change["statesToRemove"] is JsonArray removalsToCount && removalsToCount.Count > 0;
+            var hasUpsertOperations = change["statesToAddOrUpdate"] is JsonArray upsertsToCount && upsertsToCount.Count > 0;
+            if (!hasRemovalOperations && !hasUpsertOperations)
+            {
+                MarkInvalidProfileCommand(result, change, "empty_custom_state_change");
+                continue;
+            }
+
+            if (change["statesToRemove"] is JsonArray removalsToValidate &&
+                !CustomStateRemovalsAreProjectable(removalsToValidate))
+            {
+                MarkInvalidProfileCommand(result, change, "custom_state_remove_invalid_id");
+                continue;
+            }
+
+            if (change["statesToAddOrUpdate"] is JsonArray upsertsToValidate &&
+                !CustomStateUpsertsAreProjectable(upsertsToValidate))
+            {
+                MarkInvalidProfileCommand(result, change, "custom_state_upsert_not_object");
+                continue;
+            }
 
             if (change["statesToRemove"] is JsonArray removals)
                 RemoveCustomStates(profile, removals);
@@ -236,6 +354,12 @@ internal static class AfterlifeEntityProfileState
                 UpsertCustomStates(profile, upserts);
         }
     }
+
+    private static bool CustomStateRemovalsAreProjectable(JsonArray removals) =>
+        removals.All(item => !string.IsNullOrWhiteSpace(GetNodeString(item)));
+
+    private static bool CustomStateUpsertsAreProjectable(JsonArray upserts) =>
+        upserts.All(item => item is JsonObject);
 
     private static void UpsertCustomStates(JsonObject profile, JsonArray upserts)
     {
@@ -310,15 +434,30 @@ internal static class AfterlifeEntityProfileState
 
     private static void ApplyProgressionOverrides(JsonObject result, JsonNode? overridesNode)
     {
-        if (overridesNode is not JsonArray overrides)
+        if (overridesNode == null)
             return;
 
-        var profiles = EnsureProfilesArray(result);
-        foreach (var overrideNode in overrides.OfType<JsonObject>())
+        if (overridesNode is not JsonArray overrides)
         {
+            MarkInvalidProgressionOverride(result, overridesNode, "progression_overrides_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var overrideEntry in overrides)
+        {
+            if (overrideEntry is not JsonObject overrideNode)
+            {
+                MarkInvalidProgressionOverride(result, overrideEntry, "progression_override_not_object");
+                continue;
+            }
+
             var targetKey = BuildIdentityKey(overrideNode);
             if (string.IsNullOrWhiteSpace(targetKey))
+            {
+                MarkInvalidProgressionOverride(result, overrideNode, "missing_target_profile");
                 continue;
+            }
 
             var profile = profiles
                 .OfType<JsonObject>()
@@ -329,19 +468,30 @@ internal static class AfterlifeEntityProfileState
                 continue;
             }
 
-            if (HasUnknownSpecialArtTierDelta(profile, overrideNode["specialArtTierDeltas"] as JsonObject, out _))
+            var cycleKey = GetNodeString(overrideNode["cycleKey"]);
+            var reason = GetNodeString(overrideNode["reason"]);
+            var summary = GetNodeString(overrideNode["summary"]);
+            if (string.IsNullOrWhiteSpace(cycleKey) ||
+                string.IsNullOrWhiteSpace(reason) ||
+                string.IsNullOrWhiteSpace(summary))
             {
-                MarkInvalidProgressionOverride(result, overrideNode, "unknown_special_art");
+                MarkInvalidProgressionOverride(result, overrideNode, "incomplete_progression_override");
                 continue;
             }
 
-            var cycleKey = GetNodeString(overrideNode["cycleKey"]) ?? "manual";
+            if (!TryValidateProgressionOverrideDeltasForProjection(profile, overrideNode, out var invalidReason))
+            {
+                MarkInvalidProgressionOverride(result, overrideNode, invalidReason);
+                continue;
+            }
+
             ApplyCurrencyDeltas(profile, overrideNode["currencyDeltas"] as JsonObject);
             ApplyStandardArtTierDeltas(profile, overrideNode["standardArtTierDeltas"] as JsonObject);
             ApplySpecialArtTierDeltas(profile, overrideNode["specialArtTierDeltas"] as JsonObject);
             ApplySoulDissipationTierDelta(profile, overrideNode["soulDissipationTierDelta"]);
             ApplyProgressionExperienceDeltas(profile, overrideNode["progressionExperienceDeltas"] as JsonObject);
 
+            var (overrideIncome, overrideSpending) = SplitSignedCurrencyDeltasForLedger(overrideNode["currencyDeltas"] as JsonObject);
             var strategy = EnsureObject(profile, "progressionStrategy");
             strategy["lastAutoProgressionCycleKey"] = cycleKey;
             AppendProgressionLedger(profile, new JsonObject
@@ -349,44 +499,232 @@ internal static class AfterlifeEntityProfileState
                 ["entryId"] = BuildProgressionLedgerEntryId(profile, cycleKey, "gm_override"),
                 ["cycleKey"] = cycleKey,
                 ["source"] = "gm_override",
-                ["summary"] = GetNodeString(overrideNode["summary"]) ??
-                              GetNodeString(overrideNode["reason"]) ??
-                              "GM override применил прокачку сущности посмертия.",
+                ["summary"] = summary,
                 ["income"] = new JsonObject
                 {
-                    ["inkFeathers"] = 0,
-                    ["lightSparks"] = 0
+                    ["inkFeathers"] = overrideIncome.InkFeathers,
+                    ["lightSparks"] = overrideIncome.LightSparks
                 },
-                ["spending"] = CloneObject(overrideNode["currencyDeltas"] as JsonObject ?? new JsonObject())
+                ["spending"] = new JsonObject
+                {
+                    ["inkFeathers"] = overrideSpending.InkFeathers,
+                    ["lightSparks"] = overrideSpending.LightSparks
+                },
             });
         }
     }
 
+    private static bool TryValidateProgressionOverrideDeltasForProjection(
+        JsonObject profile,
+        JsonObject overrideNode,
+        out string invalidReason)
+    {
+        invalidReason = string.Empty;
+        var hasDelta = false;
+
+        if (overrideNode.ContainsKey("currencyDeltas"))
+        {
+            hasDelta = true;
+            if (!SignedIntegerObjectIsProjectable(overrideNode["currencyDeltas"], CurrencyDeltaKeys))
+            {
+                invalidReason = "invalid_currency_delta";
+                return false;
+            }
+        }
+
+        if (overrideNode.ContainsKey("standardArtTierDeltas"))
+        {
+            hasDelta = true;
+            if (!StandardArtTierDeltasAreProjectable(overrideNode["standardArtTierDeltas"]))
+            {
+                invalidReason = "invalid_standard_art_delta";
+                return false;
+            }
+        }
+
+        if (overrideNode.ContainsKey("specialArtTierDeltas"))
+        {
+            hasDelta = true;
+            if (!SpecialArtTierDeltasAreProjectable(profile, overrideNode["specialArtTierDeltas"], out invalidReason))
+                return false;
+        }
+
+        if (overrideNode.ContainsKey("soulDissipationTierDelta"))
+        {
+            hasDelta = true;
+            if (!TierDeltaIsProjectable(overrideNode["soulDissipationTierDelta"]))
+            {
+                invalidReason = "invalid_soul_dissipation_delta";
+                return false;
+            }
+        }
+
+        if (overrideNode.ContainsKey("progressionExperienceDeltas"))
+        {
+            hasDelta = true;
+            if (!SignedIntegerObjectIsProjectable(overrideNode["progressionExperienceDeltas"], ProgressionExperienceDeltaKeys))
+            {
+                invalidReason = "invalid_progression_delta";
+                return false;
+            }
+        }
+
+        if (!hasDelta)
+        {
+            invalidReason = "empty_progression_override";
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool SignedIntegerObjectIsProjectable(JsonNode? node, IReadOnlySet<string> allowedKeys)
+    {
+        if (node is not JsonObject deltas)
+            return false;
+
+        return deltas.Count > 0 &&
+               deltas.All(delta => allowedKeys.Contains(delta.Key) && TryGetNodeInt(delta.Value, out _));
+    }
+
+    private static bool StandardArtTierDeltasAreProjectable(JsonNode? node)
+    {
+        if (node is not JsonObject deltas)
+            return false;
+
+        return deltas.Count > 0 &&
+               deltas.All(delta => StandardArtIds.Contains(delta.Key) && TryGetNodeInt(delta.Value, out _));
+    }
+
+    private static bool SpecialArtTierDeltasAreProjectable(
+        JsonObject profile,
+        JsonNode? node,
+        out string invalidReason)
+    {
+        invalidReason = string.Empty;
+        if (node is not JsonObject deltas)
+        {
+            invalidReason = "invalid_special_art_delta";
+            return false;
+        }
+
+        if (deltas.Count == 0)
+        {
+            invalidReason = "invalid_special_art_delta";
+            return false;
+        }
+
+        foreach (var delta in deltas)
+        {
+            if (string.IsNullOrWhiteSpace(delta.Key) ||
+                !TryGetNodeInt(delta.Value, out var value) ||
+                value < -MaxProfileTier ||
+                value > MaxProfileTier)
+            {
+                invalidReason = "invalid_special_art_delta";
+                return false;
+            }
+
+            if (FindSpecialArtById(profile, delta.Key) == null)
+            {
+                invalidReason = "unknown_special_art";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TierDeltaIsProjectable(JsonNode? node) =>
+        TryGetNodeInt(node, out var value) &&
+        value >= -MaxProfileTier &&
+        value <= MaxProfileTier;
+
     private static void ApplySpecialArtLearningReceipts(JsonObject result, JsonNode? receiptsNode)
     {
-        if (receiptsNode is not JsonArray receipts)
+        if (receiptsNode == null)
             return;
 
-        var profiles = EnsureProfilesArray(result);
-        foreach (var receipt in receipts.OfType<JsonObject>())
+        if (receiptsNode is not JsonArray receipts)
         {
+            MarkInvalidProfileCommand(result, receiptsNode, "special_art_learning_receipts_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var receiptNode in receipts)
+        {
+            if (receiptNode is not JsonObject receipt)
+            {
+                MarkInvalidProfileCommand(result, receiptNode, "special_art_learning_receipt_not_object");
+                continue;
+            }
+
             var artId = GetNodeString(receipt["artId"]);
             var teacherActorType = GetNodeString(receipt["teacherActorType"]);
             var teacherActorId = GetNodeString(receipt["teacherActorId"]) ?? GetNodeString(receipt["teacherActorRef"]);
             var playerActorId = GetNodeString(receipt["playerActorId"]);
+            var receiptId = GetNodeString(receipt["receiptId"]);
+            var roleplayEvidence = GetNodeString(receipt["roleplayEvidence"]);
+            var summary = GetNodeString(receipt["summary"]);
             if (string.IsNullOrWhiteSpace(artId) ||
                 string.IsNullOrWhiteSpace(teacherActorType) ||
                 string.IsNullOrWhiteSpace(teacherActorId) ||
-                string.IsNullOrWhiteSpace(playerActorId))
+                string.IsNullOrWhiteSpace(playerActorId) ||
+                string.IsNullOrWhiteSpace(receiptId) ||
+                string.IsNullOrWhiteSpace(roleplayEvidence) ||
+                string.IsNullOrWhiteSpace(summary))
             {
+                MarkInvalidProfileCommand(result, receipt, "incomplete_special_art_learning_receipt");
+                continue;
+            }
+
+            if (!ActorTypes.Contains(teacherActorType))
+            {
+                MarkInvalidProfileCommand(result, receipt, "invalid_special_art_learning_teacher_actor_type");
+                continue;
+            }
+
+            if (receipt["trainingConditionSatisfied"] is not JsonValue conditionValue ||
+                !conditionValue.TryGetValue<bool>(out var conditionSatisfied) ||
+                !conditionSatisfied)
+            {
+                MarkInvalidProfileCommand(result, receipt, "special_art_learning_condition_not_satisfied");
+                continue;
+            }
+
+            if (!TryGetNodeInt(receipt["learnedAtTurn"], out var learnedAtTurn) || learnedAtTurn < 0)
+            {
+                MarkInvalidProfileCommand(result, receipt, "invalid_special_art_learning_turn");
                 continue;
             }
 
             var teacherProfile = FindProfileByIdentity(profiles, teacherActorType, teacherActorId);
             var playerProfile = FindProfileByIdentity(profiles, "player_soul", playerActorId);
             var sourceArt = FindSpecialArtById(teacherProfile, artId);
-            if (playerProfile == null || sourceArt == null)
+            if (teacherProfile == null)
+            {
+                MarkInvalidProfileCommand(result, receipt, "unknown_special_art_learning_teacher");
                 continue;
+            }
+
+            if (playerProfile == null)
+            {
+                MarkInvalidProfileCommand(result, receipt, "unknown_special_art_learning_player");
+                continue;
+            }
+
+            if (sourceArt == null)
+            {
+                MarkInvalidProfileCommand(result, receipt, "unknown_special_art_learning_art");
+                continue;
+            }
+
+            if (!CanTeachPlayer(sourceArt))
+            {
+                MarkInvalidProfileCommand(result, receipt, "special_art_learning_not_teachable");
+                continue;
+            }
 
             var learnedArt = CloneObject(sourceArt);
             learnedArt["ownerActorType"] = "player_soul";
@@ -395,33 +733,36 @@ internal static class AfterlifeEntityProfileState
             learnedArt["canTeachPlayer"] = false;
             learnedArt["learnedFromActorType"] = teacherActorType;
             learnedArt["learnedFromActorId"] = teacherActorId;
-            learnedArt["learnedAtTurn"] = GetNodeInt(receipt["learnedAtTurn"]);
-            learnedArt["learningReceiptId"] = GetNodeString(receipt["receiptId"]);
+            learnedArt["learnedAtTurn"] = learnedAtTurn;
+            learnedArt["learningReceiptId"] = receiptId;
 
             var playerArts = EnsureArray(playerProfile, "specialArts");
             UpsertSpecialArt(playerArts, learnedArt);
 
             AppendLedger(playerProfile, new JsonObject
             {
-                ["entryId"] = GetNodeString(receipt["receiptId"]) ?? $"special_art_learning_{artId}",
-                ["turnNumber"] = GetNodeInt(receipt["learnedAtTurn"]),
+                ["entryId"] = receiptId,
+                ["turnNumber"] = learnedAtTurn,
                 ["reason"] = "learn_special_art",
-                ["summary"] = GetNodeString(receipt["summary"]) ?? $"Игрок изучил особое духовное искусство {artId}."
+                ["summary"] = summary
             });
         }
     }
 
     private static void ApplyAutomaticProgression(JsonObject result, JsonObject? progressionReportRoot)
     {
-        var cycle = ResolveProgressionCycle(progressionReportRoot);
-        if (cycle == null)
+        if (progressionReportRoot == null)
             return;
 
         if (result[ProfilesProperty] is not JsonArray profiles)
             return;
 
         foreach (var profile in profiles.OfType<JsonObject>())
-            ApplyAutomaticProgression(profile, cycle.Value);
+        {
+            var cycle = ResolveProgressionCycleForProfile(profile, progressionReportRoot);
+            if (cycle != null)
+                ApplyAutomaticProgression(profile, cycle.Value);
+        }
     }
 
     private static void ApplyAutomaticProgression(JsonObject profile, ProgressionCycle cycle)
@@ -441,7 +782,7 @@ internal static class AfterlifeEntityProfileState
             return;
 
         var currencies = EnsureObject(profile, "currencies");
-        var income = ResolveIncome(profile, cycle);
+        var income = ResolveIncome(cycle);
         AddCurrency(currencies, "inkFeathers", income.InkFeathers);
         AddCurrency(currencies, "lightSparks", income.LightSparks);
 
@@ -483,36 +824,41 @@ internal static class AfterlifeEntityProfileState
         if (strategy["priorityOrder"] is not JsonArray priorities)
             return;
 
+        var reserve = ResolveResourceReserve(strategy);
         foreach (var priorityNode in priorities)
         {
             var priority = GetNodeString(priorityNode);
             if (string.IsNullOrWhiteSpace(priority))
                 continue;
 
+            var spendCategory = ClassifyProgressionSpend(profile, priority);
+            if (string.IsNullOrWhiteSpace(spendCategory) || !SpendAllowedByStrategy(strategy, spendCategory))
+                continue;
+
             if (StandardArtIds.Contains(priority) &&
-                TryUpgradeStandardArt(profile, currencies, priority, ref spending, upgrades))
+                TryUpgradeStandardArt(profile, currencies, priority, reserve, ref spending, upgrades))
             {
                 return;
             }
 
-            if (TryUpgradeSpecialArt(profile, currencies, priority, ref spending, upgrades))
+            if (TryUpgradeSpecialArt(profile, currencies, priority, reserve, ref spending, upgrades))
                 return;
 
             if (IsSoulDissipationPriority(priority) &&
-                TryUpgradeSoulDissipation(profile, currencies, ref spending, upgrades))
+                TryUpgradeSoulDissipation(profile, currencies, reserve, ref spending, upgrades))
             {
                 return;
             }
 
             if (string.Equals(priority, "enlightenment", StringComparison.OrdinalIgnoreCase) &&
-                TryUpgradeProgressionTrack(profile, currencies, "enlightenment", useLightSparks: false, ref spending, upgrades))
+                TryUpgradeProgressionTrack(profile, currencies, "enlightenment", false, reserve, ref spending, upgrades))
             {
                 return;
             }
 
             if (cycle.IsShining &&
                 string.Equals(priority, "radiance", StringComparison.OrdinalIgnoreCase) &&
-                TryUpgradeProgressionTrack(profile, currencies, "radiance", useLightSparks: true, ref spending, upgrades))
+                TryUpgradeProgressionTrack(profile, currencies, "radiance", true, reserve, ref spending, upgrades))
             {
                 return;
             }
@@ -523,6 +869,7 @@ internal static class AfterlifeEntityProfileState
         JsonObject profile,
         JsonObject currencies,
         string artId,
+        CurrencyDelta reserve,
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
@@ -531,13 +878,13 @@ internal static class AfterlifeEntityProfileState
         if (currentTier >= MaxProfileTier)
             return false;
 
-        var cost = 10 * (currentTier + 1);
-        if (GetNodeInt(currencies["inkFeathers"]) < cost)
+        var cost = new CurrencyDelta(10 * (currentTier + 1), 0);
+        if (!CanAfford(currencies, cost, reserve))
             return false;
 
-        AddCurrency(currencies, "inkFeathers", -cost);
+        Spend(currencies, cost);
         arts[artId] = currentTier + 1;
-        spending = spending with { InkFeathers = spending.InkFeathers + cost };
+        spending = AddSpending(spending, cost);
         upgrades.Add($"{artId}:{currentTier}->{currentTier + 1}");
         return true;
     }
@@ -546,6 +893,7 @@ internal static class AfterlifeEntityProfileState
         JsonObject profile,
         JsonObject currencies,
         string artId,
+        CurrencyDelta reserve,
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
@@ -558,7 +906,7 @@ internal static class AfterlifeEntityProfileState
             return false;
 
         var cost = ResolveSpecialArtUpgradeCost(specialArt);
-        if (!CanAfford(currencies, cost))
+        if (!CanAfford(currencies, cost, reserve))
             return false;
 
         Spend(currencies, cost);
@@ -571,6 +919,7 @@ internal static class AfterlifeEntityProfileState
     private static bool TryUpgradeSoulDissipation(
         JsonObject profile,
         JsonObject currencies,
+        CurrencyDelta reserve,
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
@@ -579,7 +928,7 @@ internal static class AfterlifeEntityProfileState
             return false;
 
         var cost = ResolveSoulDissipationUpgradeCost(profile, currentTier + 1);
-        if (!CanAfford(currencies, cost))
+        if (!CanAfford(currencies, cost, reserve))
             return false;
 
         Spend(currencies, cost);
@@ -610,6 +959,7 @@ internal static class AfterlifeEntityProfileState
         JsonObject currencies,
         string trackName,
         bool useLightSparks,
+        CurrencyDelta reserve,
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
@@ -621,17 +971,16 @@ internal static class AfterlifeEntityProfileState
 
         var currencyName = useLightSparks ? "lightSparks" : "inkFeathers";
         var cost = useLightSparks ? tier + 1 : 10 * (tier + 1);
-        if (GetNodeInt(currencies[currencyName]) < cost)
+        var costDelta = useLightSparks ? new CurrencyDelta(0, cost) : new CurrencyDelta(cost, 0);
+        if (!CanAfford(currencies, costDelta, reserve))
             return false;
 
-        AddCurrency(currencies, currencyName, -cost);
+        Spend(currencies, costDelta);
         var nextExperience = Math.Max(0, GetNodeInt(track["experience"])) + 20;
         track["experience"] = nextExperience;
         track["tier"] = Math.Min(MaxProfileTier, Math.Max(tier, nextExperience / 20));
 
-        spending = useLightSparks
-            ? spending with { LightSparks = spending.LightSparks + cost }
-            : spending with { InkFeathers = spending.InkFeathers + cost };
+        spending = AddSpending(spending, costDelta);
         upgrades.Add($"{trackName}:experience+20");
         return true;
     }
@@ -640,9 +989,48 @@ internal static class AfterlifeEntityProfileState
         string.Equals(priority, "soul_dissipation", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(priority, "soulDissipation", StringComparison.OrdinalIgnoreCase);
 
-    private static bool CanAfford(JsonObject currencies, CurrencyDelta cost) =>
-        GetNodeInt(currencies["inkFeathers"]) >= cost.InkFeathers &&
-        GetNodeInt(currencies["lightSparks"]) >= cost.LightSparks &&
+    private static string? ClassifyProgressionSpend(JsonObject profile, string priority)
+    {
+        if (StandardArtIds.Contains(priority))
+            return "standardArts";
+
+        if (FindSpecialArtById(profile, priority) != null)
+            return "specialArts";
+
+        if (IsSoulDissipationPriority(priority))
+            return "soulDissipationTier";
+
+        if (string.Equals(priority, "enlightenment", StringComparison.OrdinalIgnoreCase))
+            return "enlightenment";
+
+        if (string.Equals(priority, "radiance", StringComparison.OrdinalIgnoreCase))
+            return "radiance";
+
+        return null;
+    }
+
+    private static bool SpendAllowedByStrategy(JsonObject strategy, string category)
+    {
+        if (strategy["allowedSpends"] is JsonArray allowed && !ArrayContainsString(allowed, category))
+            return false;
+
+        return strategy["forbiddenSpends"] is not JsonArray forbidden || !ArrayContainsString(forbidden, category);
+    }
+
+    private static bool ArrayContainsString(JsonArray array, string value) =>
+        array.Any(item => string.Equals(GetNodeString(item), value, StringComparison.OrdinalIgnoreCase));
+
+    private static CurrencyDelta ResolveResourceReserve(JsonObject strategy)
+    {
+        var reserve = strategy["resourceReserve"] as JsonObject;
+        return new CurrencyDelta(
+            Math.Max(0, GetNodeInt(reserve?["inkFeathers"])),
+            Math.Max(0, GetNodeInt(reserve?["lightSparks"])));
+    }
+
+    private static bool CanAfford(JsonObject currencies, CurrencyDelta cost, CurrencyDelta reserve) =>
+        GetNodeInt(currencies["inkFeathers"]) - reserve.InkFeathers >= cost.InkFeathers &&
+        GetNodeInt(currencies["lightSparks"]) - reserve.LightSparks >= cost.LightSparks &&
         (cost.InkFeathers > 0 || cost.LightSparks > 0);
 
     private static void Spend(JsonObject currencies, CurrencyDelta cost)
@@ -654,12 +1042,16 @@ internal static class AfterlifeEntityProfileState
     private static CurrencyDelta AddSpending(CurrencyDelta spending, CurrencyDelta cost) =>
         new(spending.InkFeathers + cost.InkFeathers, spending.LightSparks + cost.LightSparks);
 
-    private static ProgressionCycle? ResolveProgressionCycle(JsonObject? root)
+    private static ProgressionCycle? ResolveProgressionCycleForProfile(JsonObject profile, JsonObject root)
     {
-        if (root == null)
-            return null;
-
         var report = root["progressionProcessingReport"] as JsonObject ?? root;
+        return IsShiningRealm(profile)
+            ? ResolveShiningProgressionCycle(report)
+            : ResolveChaosProgressionCycle(report);
+    }
+
+    private static ProgressionCycle? ResolveShiningProgressionCycle(JsonObject report)
+    {
         var shiningCycles = new[]
         {
             GetNodeInt(report["shiningAbodeCyclesProcessed"]),
@@ -677,6 +1069,11 @@ internal static class AfterlifeEntityProfileState
             return new ProgressionCycle($"shining:{Math.Max(1, ordinal)}", shiningCycles, IsShining: true);
         }
 
+        return null;
+    }
+
+    private static ProgressionCycle? ResolveChaosProgressionCycle(JsonObject report)
+    {
         var chaosCycles = new[]
         {
             GetNodeInt(report["chaosSeaCyclesProcessed"]),
@@ -695,10 +1092,10 @@ internal static class AfterlifeEntityProfileState
         return new ProgressionCycle($"chaos:{Math.Max(1, chaosOrdinal)}", chaosCycles, IsShining: false);
     }
 
-    private static CurrencyDelta ResolveIncome(JsonObject profile, ProgressionCycle cycle)
+    private static CurrencyDelta ResolveIncome(ProgressionCycle cycle)
     {
         var multiplier = Math.Max(1, cycle.CyclesProcessed);
-        return cycle.IsShining || IsShiningRealm(profile)
+        return cycle.IsShining
             ? new CurrencyDelta(6 * multiplier, 1 * multiplier)
             : new CurrencyDelta(12 * multiplier, 0);
     }
@@ -720,6 +1117,15 @@ internal static class AfterlifeEntityProfileState
         AddCurrency(currencies, "lightSparks", GetNodeInt(deltas["lightSparks"]));
     }
 
+    private static (CurrencyDelta Income, CurrencyDelta Spending) SplitSignedCurrencyDeltasForLedger(JsonObject? deltas)
+    {
+        var inkFeathers = GetNodeInt(deltas?["inkFeathers"]);
+        var lightSparks = GetNodeInt(deltas?["lightSparks"]);
+        return (
+            new CurrencyDelta(Math.Max(0, inkFeathers), Math.Max(0, lightSparks)),
+            new CurrencyDelta(Math.Max(0, -inkFeathers), Math.Max(0, -lightSparks)));
+    }
+
     private static void ApplyStandardArtTierDeltas(JsonObject profile, JsonObject? deltas)
     {
         if (deltas == null)
@@ -735,10 +1141,26 @@ internal static class AfterlifeEntityProfileState
         }
     }
 
-    private static void MarkInvalidProgressionOverride(JsonObject result, JsonObject overrideNode, string reason)
+    private static void MarkInvalidProgressionOverride(JsonObject result, JsonNode? overrideNode, string reason)
     {
-        result[LastInvalidProgressionOverrideProperty] = CloneObject(overrideNode);
+        result[LastInvalidProgressionOverrideProperty] = overrideNode is JsonObject overrideObject
+            ? CloneObject(overrideObject)
+            : new JsonObject
+            {
+                ["raw"] = overrideNode?.ToJsonString() ?? "missing"
+            };
         result[LastInvalidProgressionOverrideReasonProperty] = reason;
+    }
+
+    private static void MarkInvalidProfileCommand(JsonObject result, JsonNode? commandNode, string reason)
+    {
+        result[LastInvalidCommandProperty] = commandNode is JsonObject commandObject
+            ? CloneObject(commandObject)
+            : new JsonObject
+            {
+                ["raw"] = commandNode?.ToJsonString() ?? "missing"
+            };
+        result[LastInvalidCommandReasonProperty] = reason;
     }
 
     private static void ApplySpecialArtTierDeltas(JsonObject profile, JsonObject? deltas)
@@ -849,6 +1271,13 @@ internal static class AfterlifeEntityProfileState
         return arts
             .OfType<JsonObject>()
             .FirstOrDefault(art => string.Equals(GetNodeString(art["artId"]), artId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool CanTeachPlayer(JsonObject specialArt)
+    {
+        return specialArt["canTeachPlayer"] is JsonValue value &&
+               value.TryGetValue<bool>(out var canTeach) &&
+               canTeach;
     }
 
     private static void UpsertSpecialArt(JsonArray arts, JsonObject art)

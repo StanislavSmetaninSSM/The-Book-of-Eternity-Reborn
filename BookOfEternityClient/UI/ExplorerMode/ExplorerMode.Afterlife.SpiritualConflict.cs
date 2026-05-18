@@ -254,7 +254,8 @@ public partial class ExplorerMode
             "[bold]ОД и стоимость действий[/] [dim](actionEconomy / actionCostAudit)[/]",
             "  • ОД — очки духовного действия. Это ресурс духовного боя посмертия, не здоровье, не энергия и не выносливость смертного мира.",
             "  • Активный конфликт хранит ОД обеих сторон в actionEconomy: текущее значение (current), максимум (max) и источник расчёта (source).",
-            "  • Каждый новый обмен, который тратит или восстанавливает ОД, обязан иметь actionCostAudit: тип действия, базовую стоимость, уровень искусства, итоговую стоимость, ОД до и после.",
+            "  • Каждый новый обмен, который тратит или восстанавливает ОД игрока, обязан иметь actionCostAudit.player: тип действия, базовую стоимость, уровень искусства, итоговую стоимость, ОД до и после.",
+            "  • Если обмен разрешает активное затратное действие противника, нужен actionCostAudit.opposition в той же форме; журнал боя показывает оба расхода ОД.",
             "  • Формула стоимости: итоговая стоимость = max(минимальная стоимость, базовая стоимость - уровень искусства). В JSON-аудите это effectiveCost = max(minCost, baseCost - artTier).",
             "  • Уровни духовных искусств уменьшают стоимость действий; Средоточие Души увеличивает максимум ОД: уровни 0/1/2/3/4/5 дают 6/7/8/10/12/15 ОД. Всё это прокачивается локально через /spiritual_arts.",
             "  • Базовые стоимости: давление 3, защита 2, контрприём 4, манёвр 3, оковы 4, силовые оковы 5, разрыв оков 3, сопротивление воплощению 3, координация чемпиона 2.",
@@ -1816,17 +1817,27 @@ public partial class ExplorerMode
 
     private static string DescribeActionCostAudit(JsonObject actionCostAudit)
     {
-        if (actionCostAudit["player"] is not JsonObject playerAudit)
-            return actionCostAudit.ToJsonString();
+        var parts = new List<string>();
+        if (actionCostAudit["player"] is JsonObject playerAudit)
+            parts.Add(DescribeActionCostAuditSide("игрок", playerAudit));
+        if (actionCostAudit["opposition"] is JsonObject oppositionAudit)
+            parts.Add(DescribeActionCostAuditSide("противник", oppositionAudit));
 
-        var operationType = FormatOperationTypeLabel(AfterlifeSpiritualConflictState.GetNodeString(playerAudit["operationType"]));
-        var before = FormatIntOrUnknown(playerAudit["before"]);
-        var after = FormatIntOrUnknown(playerAudit["after"]);
-        var baseCost = FormatIntOrUnknown(playerAudit["baseCost"]);
-        var minCost = FormatIntOrUnknown(playerAudit["minCost"]);
-        var artTier = FormatIntOrUnknown(playerAudit["artTier"]);
-        var effectiveCost = FormatIntOrUnknown(playerAudit["effectiveCost"]);
-        return $"игрок: {operationType}, ОД {before}->{after}, база={baseCost}, минимум={minCost}, уровень искусства={artTier}, итоговая стоимость={effectiveCost}";
+        return parts.Count == 0
+            ? actionCostAudit.ToJsonString()
+            : string.Join("; ", parts);
+    }
+
+    private static string DescribeActionCostAuditSide(string label, JsonObject audit)
+    {
+        var operationType = FormatOperationTypeLabel(AfterlifeSpiritualConflictState.GetNodeString(audit["operationType"]));
+        var before = FormatIntOrUnknown(audit["before"]);
+        var after = FormatIntOrUnknown(audit["after"]);
+        var baseCost = FormatIntOrUnknown(audit["baseCost"]);
+        var minCost = FormatIntOrUnknown(audit["minCost"]);
+        var artTier = FormatIntOrUnknown(audit["artTier"]);
+        var effectiveCost = FormatIntOrUnknown(audit["effectiveCost"]);
+        return $"{label}: {operationType}, ОД {before}->{after}, база={baseCost}, минимум={minCost}, уровень искусства={artTier}, итоговая стоимость={effectiveCost}";
     }
 
     private static string FormatDiceValue(JsonObject diceAudit, string side)
