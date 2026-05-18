@@ -373,7 +373,7 @@ public sealed partial class CanonicalStateNormalizerTests
                   "actorId": "guardian_mirror",
                   "displayName": "Хранитель Зеркал",
                   "realm": "Chaos Sea",
-                  "currencies": { "inkFeathers": 10, "lightSparks": 0 },
+                  "currencies": { "inkFeathers": 10, "lightSparks": 1 },
                   "progression": {
                     "enlightenment": { "experience": 0, "tier": 0 },
                     "radiance": { "experience": 0, "tier": 0 }
@@ -397,7 +397,7 @@ public sealed partial class CanonicalStateNormalizerTests
                   "actorId": "guardian_mirror",
                   "cycleKey": "chaos:6",
                   "reason": "GM решил, что хранитель сделал рывок после сцены.",
-                  "currencyDeltas": { "inkFeathers": -5 },
+                  "currencyDeltas": { "inkFeathers": -5, "lightSparks": 2 },
                   "standardArtTierDeltas": { "pressure": 1 },
                   "summary": "Хранитель потратил Перья на давление."
                 }
@@ -413,6 +413,7 @@ public sealed partial class CanonicalStateNormalizerTests
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(1, profile["standardArts"]?["pressure"]?.GetValue<int>());
         Assert.Equal(5, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(3, profile["currencies"]?["lightSparks"]?.GetValue<int>());
         Assert.Equal("chaos:6", profile["progressionStrategy"]?["lastAutoProgressionCycleKey"]?.GetValue<string>());
 
         var ledger = Assert.IsType<JsonArray>(profile["progressionLedger"]);
@@ -420,6 +421,10 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal("gm_override", entry["source"]?.GetValue<string>());
         Assert.Equal("chaos:6", entry["cycleKey"]?.GetValue<string>());
         Assert.Equal("Хранитель потратил Перья на давление.", entry["summary"]?.GetValue<string>());
+        Assert.Equal(0, entry["income"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(2, entry["income"]?["lightSparks"]?.GetValue<int>());
+        Assert.Equal(5, entry["spending"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(0, entry["spending"]?["lightSparks"]?.GetValue<int>());
     }
 
     [Fact]

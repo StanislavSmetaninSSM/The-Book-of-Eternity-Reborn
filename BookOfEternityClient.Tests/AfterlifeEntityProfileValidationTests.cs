@@ -283,6 +283,49 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_SplitProgressionOverrideLedger_PassesProfileValidation()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 5, "lightSparks": 3 },
+              "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+              "standardArts": { "pressure": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_1", "summary": "Качать давление.", "priorityOrder": ["pressure"], "lastAutoProgressionCycleKey": "chaos:6" },
+              "progressionLedger": [
+                {
+                  "entryId": "guardian_mirror_chaos_6_gm_override",
+                  "cycleKey": "chaos:6",
+                  "source": "gm_override",
+                  "summary": "Хранитель потратил Перья и получил Искры.",
+                  "income": { "inkFeathers": 0, "lightSparks": 2 },
+                  "spending": { "inkFeathers": 5, "lightSparks": 0 }
+                }
+              ],
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_progression_ledger_negative_amount", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_UnknownProgressionStrategyPriority_ReportsContractIssue()
     {
         await WriteProfileStateAsync("""

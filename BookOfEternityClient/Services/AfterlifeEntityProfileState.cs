@@ -342,6 +342,7 @@ internal static class AfterlifeEntityProfileState
             ApplySoulDissipationTierDelta(profile, overrideNode["soulDissipationTierDelta"]);
             ApplyProgressionExperienceDeltas(profile, overrideNode["progressionExperienceDeltas"] as JsonObject);
 
+            var (overrideIncome, overrideSpending) = SplitSignedCurrencyDeltasForLedger(overrideNode["currencyDeltas"] as JsonObject);
             var strategy = EnsureObject(profile, "progressionStrategy");
             strategy["lastAutoProgressionCycleKey"] = cycleKey;
             AppendProgressionLedger(profile, new JsonObject
@@ -354,10 +355,14 @@ internal static class AfterlifeEntityProfileState
                               "GM override применил прокачку сущности посмертия.",
                 ["income"] = new JsonObject
                 {
-                    ["inkFeathers"] = 0,
-                    ["lightSparks"] = 0
+                    ["inkFeathers"] = overrideIncome.InkFeathers,
+                    ["lightSparks"] = overrideIncome.LightSparks
                 },
-                ["spending"] = CloneObject(overrideNode["currencyDeltas"] as JsonObject ?? new JsonObject())
+                ["spending"] = new JsonObject
+                {
+                    ["inkFeathers"] = overrideSpending.InkFeathers,
+                    ["lightSparks"] = overrideSpending.LightSparks
+                },
             });
         }
     }
@@ -718,6 +723,15 @@ internal static class AfterlifeEntityProfileState
         var currencies = EnsureObject(profile, "currencies");
         AddCurrency(currencies, "inkFeathers", GetNodeInt(deltas["inkFeathers"]));
         AddCurrency(currencies, "lightSparks", GetNodeInt(deltas["lightSparks"]));
+    }
+
+    private static (CurrencyDelta Income, CurrencyDelta Spending) SplitSignedCurrencyDeltasForLedger(JsonObject? deltas)
+    {
+        var inkFeathers = GetNodeInt(deltas?["inkFeathers"]);
+        var lightSparks = GetNodeInt(deltas?["lightSparks"]);
+        return (
+            new CurrencyDelta(Math.Max(0, inkFeathers), Math.Max(0, lightSparks)),
+            new CurrencyDelta(Math.Max(0, -inkFeathers), Math.Max(0, -lightSparks)));
     }
 
     private static void ApplyStandardArtTierDeltas(JsonObject profile, JsonObject? deltas)
