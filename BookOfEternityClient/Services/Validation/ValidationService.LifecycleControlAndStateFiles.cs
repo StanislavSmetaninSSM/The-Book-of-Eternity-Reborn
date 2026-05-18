@@ -2158,6 +2158,11 @@ public partial class ValidationService
                                                 (progressionControl.ResidentAgencyCyclesExpectedThisTurn > 0 ||
                                                  progressionControl.AfterlifeCatchupRequired);
 
+            if (allowShiningProgressionDeltas)
+            {
+                ValidateShiningClosureForbiddenProgressionDeltas(expectedShiningRoot, currentShiningRoot, issues);
+            }
+
             if (!allowShiningProgressionDeltas && !JsonNode.DeepEquals(expectedShiningRoot, currentShiningRoot))
             {
                 issues.Add(new ValidationIssue(
@@ -2213,6 +2218,43 @@ public partial class ValidationService
             // parse issues reported elsewhere
         }
     }
+
+    private static void ValidateShiningClosureForbiddenProgressionDeltas(
+        JsonObject expectedShiningRoot,
+        JsonObject currentShiningRoot,
+        List<ValidationIssue> issues)
+    {
+        foreach (var path in ShiningClosureForbiddenProgressionDeltaPaths)
+        {
+            var expectedNode = GetNestedNode(expectedShiningRoot, path);
+            var currentNode = GetNestedNode(currentShiningRoot, path);
+            if (JsonNode.DeepEquals(expectedNode, currentNode))
+                continue;
+
+            var pathText = string.Join(".", path);
+            issues.Add(new ValidationIssue(
+                $"{ShiningAbodeState.StatePath}.{pathText}",
+                IssueSeverity.Error,
+                "Shining closure с progression/catch-up содержит запрещённые Shining изменения вне scheduler contract.",
+                code: "shining_closure_unexpected_shining_state_diff",
+                section: "ShiningAbode",
+                expected: $"validated pre-turn Shining {pathText} plus exact pending closure deltas; scheduler may not author this surface",
+                actual: $"current shining_abode_state.json.{pathText} differs during Shining closure",
+                repairHint: "Оставь verified progression deltas только в scheduler-owned Shining fields; не добавляй core receipts, gates, gacha, treasury, Source of Light или lifecycle surfaces при закрытии Shining pending contract."));
+        }
+    }
+
+    private static readonly string[][] ShiningClosureForbiddenProgressionDeltaPaths =
+    {
+        new[] { "coreActionReceipts" },
+        new[] { "gates" },
+        new[] { "gachaSystem", "gachaHistory" },
+        new[] { "pendingNativeFactionDiscovery" },
+        new[] { "preparedIncarnationPackage" },
+        new[] { "lightSparks" },
+        new[] { "treasury" },
+        new[] { SourceOfLightCapstoneState.ShiningStateProperty }
+    };
 
     private async Task<ProgressionControl?> ResolveValidatedCurrentProgressionControlAsync()
     {

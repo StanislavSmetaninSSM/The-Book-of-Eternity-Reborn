@@ -451,6 +451,78 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithVerifiedSchedulerAndCoreReceipt_Fails()
+    {
+        var request = CreateFoundingRequest("founding_req_scheduler_forbidden", "faction_scheduler_forbidden", "hall_scheduler_forbidden");
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        AddAcceptedFoundingMaterialization(currentShiningRoot, currentResidentRoot, request);
+
+        currentShiningRoot["radiance"]!["experience"] = 999;
+        currentShiningRoot["lightSparks"] = 81;
+        var coreReceipts = currentShiningRoot["coreActionReceipts"] as JsonArray ?? new JsonArray();
+        coreReceipts.Add(new JsonObject
+        {
+            ["requestId"] = "core_receipt_without_core_request",
+            ["actionType"] = "open_gates",
+            ["status"] = "accepted",
+            ["quotedCostFeathers"] = 0,
+            ["quotedCostLightSparks"] = 0,
+            ["resolvedAtTurn"] = 12,
+            ["reason"] = "unrelated_core_action"
+        });
+        currentShiningRoot["coreActionReceipts"] = coreReceipts;
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentFeathers: 75);
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_scheduler_forbidden.json";
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(backupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteValidatedSnapshotStateAsync(
+            preTurnShiningRoot,
+            CreateSoulStateRoot(currentFeathers: 75),
+            preTurnResidentRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingFoundingsRequestPath] = backupPath
+            },
+            new ProgressionControl
+            {
+                CurrentRealm = "Shining Abode",
+                ShiningFactionCyclesExpectedThisTurn = 1
+            });
+        await WriteNodeAsync(ProgressionScheduleService.ReportPath, new JsonObject
+        {
+            ["progressionProcessingReport"] = new JsonObject
+            {
+                ["sessionId"] = "test-session",
+                ["requestId"] = "test-request",
+                ["turnNumber"] = 12,
+                ["worldCyclesProcessed"] = 0,
+                ["factionCyclesProcessed"] = 0,
+                ["chaosSeaCyclesProcessed"] = 0,
+                ["guardianProjectCyclesProcessed"] = 0,
+                ["residentAgencyCyclesProcessed"] = 0,
+                ["shiningAbodeCyclesProcessed"] = 0,
+                ["shiningFactionCyclesProcessed"] = 1,
+                ["shiningTradeCyclesProcessed"] = 0
+            }
+        });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithConcurrentAbodeOfferingSoulDelta_Passes()
     {
         var request = CreateFoundingRequest("founding_req_with_offering", "faction_with_offering", "hall_with_offering");
@@ -1413,24 +1485,24 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
             ["requestId"] = "test-request",
             ["turnNumber"] = 12,
             ["requestTimestamp"] = "2026-04-16T00:00:00Z",
-            ["playerAction"] = "test",
-            ["files"] = new JsonObject(),
-            ["snapshotFileHashes"] = new JsonObject(),
-            ["clientOwnedValidationHashes"] = new JsonObject(),
-            ["rollbackBackups"] = new JsonObject(rollbackBackups.ToDictionary(
-                pair => NormalizeRelativePath(pair.Key),
-                pair => (JsonNode?)NormalizeRelativePath(pair.Value),
-                StringComparer.OrdinalIgnoreCase)),
-            ["rollbackBaselineFiles"] = new JsonArray(rollbackBackups.Keys
-                .Select(NormalizeRelativePath)
-                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
-                .Select(path => (JsonNode?)path)
-                .ToArray()),
-            ["sourceLabel"] = "shining-political-resolution-tests",
-            ["manifestPayloadHash"] = string.Empty
+            ["playerAction"] = "test"
         };
         if (progressionControl != null)
             manifest["progressionControl"] = JsonSerializer.SerializeToNode(progressionControl);
+        manifest["files"] = new JsonObject();
+        manifest["snapshotFileHashes"] = new JsonObject();
+        manifest["clientOwnedValidationHashes"] = new JsonObject();
+        manifest["rollbackBackups"] = new JsonObject(rollbackBackups.ToDictionary(
+                pair => NormalizeRelativePath(pair.Key),
+                pair => (JsonNode?)NormalizeRelativePath(pair.Value),
+                StringComparer.OrdinalIgnoreCase));
+        manifest["rollbackBaselineFiles"] = new JsonArray(rollbackBackups.Keys
+            .Select(NormalizeRelativePath)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .Select(path => (JsonNode?)path)
+            .ToArray());
+        manifest["sourceLabel"] = "shining-political-resolution-tests";
+        manifest["manifestPayloadHash"] = string.Empty;
 
         await WriteNodeAsync("input/turn_request.json", new JsonObject
         {

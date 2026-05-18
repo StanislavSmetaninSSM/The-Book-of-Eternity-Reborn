@@ -323,6 +323,8 @@ public sealed class AfterlifeDocumentationCoverageTests
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
 
         foreach (var doc in new[] { matrix, examples })
@@ -338,6 +340,17 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("shining_closure_unexpected_resident_state_diff", doc, StringComparison.Ordinal);
             Assert.Contains("shining_closure_unexpected_soul_state_diff", doc, StringComparison.Ordinal);
             Assert.Contains("ABODE_OFFERING", doc, StringComparison.Ordinal);
+        }
+
+        foreach (var doc in new[] { matrix, examples, apiSpec, daemonSpec })
+        {
+            Assert.Contains("progressionProcessingReport", doc, StringComparison.Ordinal);
+            Assert.Contains("scheduler-owned", doc, StringComparison.Ordinal);
+            Assert.Contains("coreActionReceipts[]", doc, StringComparison.Ordinal);
+            Assert.Contains("gachaSystem.gachaHistory", doc, StringComparison.Ordinal);
+            Assert.Contains("lightSparks", doc, StringComparison.Ordinal);
+            Assert.Contains("treasury", doc, StringComparison.Ordinal);
+            Assert.Contains("sourceOfLightCapstone", doc, StringComparison.Ordinal);
         }
 
         Assert.Contains("shining_closure composite diff rules", manifest, StringComparison.Ordinal);
