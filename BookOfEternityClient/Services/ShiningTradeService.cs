@@ -372,6 +372,17 @@ internal static class ShiningTradeService
         if (currentTurn <= 0)
             return new ShiningTradeOperationResult(false, false, "Локальная покупка из сияющей витрины требует актуальный номер хода.");
 
+        var activeTurnBlocker = AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker(
+            fs,
+            "Локальная покупка сияющей витрины",
+            "soul_state.json.inkFeathers, soulRelics и shining_abode_state.json.tradeInventory");
+        if (activeTurnBlocker != null)
+            return new ShiningTradeOperationResult(false, false, activeTurnBlocker);
+
+        var pendingCostBlocker = await TryDescribePendingCostContractBlockerAsync(fs);
+        if (pendingCostBlocker != null)
+            return new ShiningTradeOperationResult(false, false, pendingCostBlocker);
+
         var readinessProbeRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
         var readinessProbeResidents = await ReadJsonObjectAsync(fs, GuardianAbodeResidentState.StatePath);
         var readinessProbeGuardians = await ReadJsonObjectAsync(fs, "game_state/meta/guardians.json");
@@ -493,6 +504,78 @@ internal static class ShiningTradeService
 
         var relicName = GetNodeString(relicData["name"]) ?? "Реликвия";
         return new ShiningTradeOperationResult(true, true, $"Куплена сияющая реликвия «{relicName}» за {price} 🪶.");
+    }
+
+    private static async Task<string?> TryDescribePendingCostContractBlockerAsync(FileSystemManager fs)
+    {
+        var coreBlocker = await TryDescribePendingCoreActionCostBlockerAsync(fs);
+        if (coreBlocker != null)
+            return coreBlocker;
+
+        var foundingMalformed = await ShiningFactionRequestState.IsRequestFileMalformedAsync(
+            fs,
+            ShiningFactionRequestState.PendingFoundingsRequestPath,
+            static json => JsonSerializer.Deserialize<ShiningFactionRequestState.PendingShiningFactionFoundingRequest>(
+                json,
+                JsonOpts));
+        if (foundingMalformed)
+        {
+            return "Локальная покупка сияющей витрины заблокирована: pending founding contract " +
+                   $"{ShiningFactionRequestState.PendingFoundingsRequestPath} повреждён. Выполните repair/closure перед покупкой.";
+        }
+
+        var foundingRequest = (await ShiningFactionRequestState.ReadFoundingRequestsAsync(fs)).FirstOrDefault();
+        if (foundingRequest != null)
+        {
+            return "Локальная покупка сияющей витрины заблокирована: pending founding request " +
+                   $"{foundingRequest.RequestId} уже зафиксировал стоимость {foundingRequest.QuotedCostFeathers} 🪶 / " +
+                   $"{foundingRequest.QuotedCostLightSparks} ✨. Дождитесь accepted/refused/withdrawn closure перед покупкой.";
+        }
+
+        return await TryDescribeLegacyDiscoveryCostBlockerAsync(fs);
+    }
+
+    private static async Task<string?> TryDescribePendingCoreActionCostBlockerAsync(FileSystemManager fs)
+    {
+        var pendingState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs);
+        if (pendingState.IsMalformed)
+        {
+            return "Локальная покупка сияющей витрины заблокирована: " +
+                   $"{ShiningCoreActionRequestState.PendingActionsRequestPath} повреждён. Выполните repair/closure перед покупкой.";
+        }
+
+        var costBearingRequest = pendingState.Requests.FirstOrDefault(request =>
+            request.QuotedCostFeathers > 0 ||
+            request.QuotedCostLightSparks > 0);
+        if (costBearingRequest == null)
+            return null;
+
+        return "Локальная покупка сияющей витрины заблокирована: pending Shining core action request " +
+               $"{costBearingRequest.RequestId} уже зафиксировал стоимость {costBearingRequest.QuotedCostFeathers} 🪶 / " +
+               $"{costBearingRequest.QuotedCostLightSparks} ✨. Дождитесь closure перед покупкой.";
+    }
+
+    private static async Task<string?> TryDescribeLegacyDiscoveryCostBlockerAsync(FileSystemManager fs)
+    {
+        var shiningRoot = await ReadJsonObjectAsync(fs, ShiningAbodeState.StatePath);
+        if (shiningRoot == null ||
+            !shiningRoot.TryGetPropertyValue("pendingNativeFactionDiscovery", out var pendingDiscovery) ||
+            pendingDiscovery == null)
+        {
+            return null;
+        }
+
+        if (pendingDiscovery is not JsonObject discovery)
+        {
+            return "Локальная покупка сияющей витрины заблокирована: " +
+                   $"{ShiningAbodeState.StatePath}.pendingNativeFactionDiscovery повреждён. Выполните repair/closure перед покупкой.";
+        }
+
+        var requestId = GetNodeString(discovery["requestId"]) ?? "unknown";
+        var costFeathers = GetNodeInt(discovery["costFeathers"], 0);
+        var costLightSparks = GetNodeInt(discovery["costLightSparks"], 0);
+        return "Локальная покупка сияющей витрины заблокирована: legacy pendingNativeFactionDiscovery " +
+               $"{requestId} уже зафиксировал стоимость {costFeathers} 🪶 / {costLightSparks} ✨. Дождитесь closure перед покупкой.";
     }
 
     private static string? ResolveTradeBlockedReason(JsonObject? soulRoot, JsonObject shiningRoot, int tradeTier)

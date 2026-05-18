@@ -9,9 +9,6 @@ namespace BookOfEternityClient.UI;
 public partial class ExplorerMode
 {
     private const string SoulStatePath = "game_state/meta/soul_state.json";
-    private const string ShiningTreasuryTurnRequestPath = "input/turn_request.json";
-    private const string ShiningTreasuryPendingTurnSnapshotManifestPath = "game_state/control/pending_turn_snapshot.json";
-    private const string ShiningTreasuryPendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
 
     private enum ShiningTreasuryAction
     {
@@ -371,38 +368,14 @@ public partial class ExplorerMode
 
     private string? TryDescribeShiningTreasuryActiveTurnBlocker()
     {
-        var artifacts = new List<string>();
-        if (_fs.FileExists(ShiningTreasuryTurnRequestPath))
-            artifacts.Add(ShiningTreasuryTurnRequestPath);
-        if (_fs.FileExists(ShiningTreasuryPendingTurnSnapshotManifestPath))
-            artifacts.Add(ShiningTreasuryPendingTurnSnapshotManifestPath);
-        if (HasAnyShiningTreasuryPendingTurnSnapshotFile())
-            artifacts.Add(ShiningTreasuryPendingTurnSnapshotDirectory);
-
-        if (artifacts.Count == 0)
-            return null;
-
-        return "Казначейство заблокировано: найден активный GM-turn lifecycle. " +
-               "Локальные операции казны меняют client-owned surfaces shining_abode_state.json.treasury и soul_state.json.inkFeathers, " +
-               "поэтому они запрещены до завершения, отмены или repair текущего хода. " +
-               $"Найдено: {string.Join(", ", artifacts)}.";
+        return AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker(
+            _fs,
+            "Казначейство",
+            "client-owned surfaces shining_abode_state.json.treasury и soul_state.json.inkFeathers");
     }
 
-    private bool HasAnyShiningTreasuryPendingTurnSnapshotFile()
-    {
-        var snapshotDirectoryPath = _fs.ResolvePath(ShiningTreasuryPendingTurnSnapshotDirectory);
-        if (!Directory.Exists(snapshotDirectoryPath))
-            return false;
-
-        try
-        {
-            return Directory.EnumerateFiles(snapshotDirectoryPath, "*", SearchOption.AllDirectories).Any();
-        }
-        catch
-        {
-            return true;
-        }
-    }
+    private bool HasAnyShiningTreasuryPendingTurnSnapshotFile() =>
+        AfterlifeLocalActionGuard.HasAnyPendingTurnSnapshotFile(_fs);
 
     private async Task<string?> TryDescribeShiningTreasuryPendingCostBlockerAsync()
     {

@@ -612,6 +612,94 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task BuyAsync_BlocksActiveGmTurnLifecycleWithoutMutatingState()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            await fs.WriteFileAtomicAsync("input/turn_request.json", new JsonObject
+            {
+                ["turnNumber"] = 11,
+                ["playerAction"] = "Shining turn awaiting GM response"
+            }.ToJsonString());
+            await fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", new JsonObject
+            {
+                ["turnNumber"] = 11
+            }.ToJsonString());
+
+            var beforeShiningJson = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var beforeSoulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+            var result = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.Contains("GM-turn", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(beforeShiningJson, await fs.ReadFileAsync(ShiningAbodeState.StatePath));
+            Assert.Equal(beforeSoulJson, await fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task BuyAsync_BlocksUnresolvedShiningCostContractsWithoutMutatingState()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            await ShiningFactionRequestState.WriteFoundingRequestAsync(
+                fs,
+                new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+                {
+                    RequestId = "founding_blocks_trade_buy_001",
+                    ProposedFactionId = "faction_reserved",
+                    ProposedHallId = "hall_reserved",
+                    ProposedHallName = "Зал Резерва",
+                    ProposedHallDescription = "Проверяет блокировку локальной покупки.",
+                    ProposedHallServiceTags = new List<string> { ShiningAbodeState.HallServiceTagSocial },
+                    Charter = new ShiningFactionRequestState.FactionCharterPayload
+                    {
+                        FactionName = "Резерв",
+                        FavoredArchetype = ShiningAbodeState.ProjectArchetypeAccord,
+                        PatronEffectFamily = ShiningAbodeState.EffectFamilySocial,
+                        Summary = "Заявка уже зарезервировала цену."
+                    },
+                    SupportingResidentIds = new List<string> { "resident_a", "resident_b", "resident_c" },
+                    QuotedCostFeathers = ShiningFactionRequestState.FactionFoundingCostFeathers,
+                    QuotedCostLightSparks = ShiningFactionRequestState.FactionFoundingCostLightSparks,
+                    ReservedInkFeathersBefore = 80,
+                    ReservedLightSparksBefore = 100,
+                    CreatedAtTurn = 12
+                });
+
+            var beforeShiningJson = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var beforeSoulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+            var result = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.Contains("pending", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("founding_blocks_trade_buy_001", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(beforeShiningJson, await fs.ReadFileAsync(ShiningAbodeState.StatePath));
+            Assert.Equal(beforeSoulJson, await fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuyAsync_LegacyNumericInkFeathers_PersistsCanonicalObjectShape()
     {
         var root = CreateTempRoot();

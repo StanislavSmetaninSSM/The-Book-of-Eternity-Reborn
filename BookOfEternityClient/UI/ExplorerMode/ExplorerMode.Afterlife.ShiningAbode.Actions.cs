@@ -93,6 +93,15 @@ public partial class ExplorerMode
 
     private async Task<bool> SaveShiningRootAsync(JsonObject root)
     {
+        var activeTurnBlocker = TryDescribeAfterlifeLocalMutationActiveTurnBlocker(
+            "локальное сохранение состояния Сияющей Обители",
+            ShiningAbodeState.StatePath);
+        if (activeTurnBlocker != null)
+        {
+            MarkupLine($"[yellow]{Markup.Escape(activeTurnBlocker)}[/]");
+            return false;
+        }
+
         if (!EnsureNoMalformedTreasuryForLocalShiningSave(root))
             return false;
 
@@ -130,6 +139,20 @@ public partial class ExplorerMode
         await _stateManager.RefreshGameStateAsync();
         return true;
     }
+
+    private bool EnsureNoActiveAfterlifeLocalMutationTurn(string operationLabel, string affectedSurfaces)
+    {
+        var blocker = TryDescribeAfterlifeLocalMutationActiveTurnBlocker(operationLabel, affectedSurfaces);
+        if (blocker == null)
+            return true;
+
+        MarkupLine($"[yellow]{Markup.Escape(blocker)}[/]");
+        WaitForKey();
+        return false;
+    }
+
+    private string? TryDescribeAfterlifeLocalMutationActiveTurnBlocker(string operationLabel, string affectedSurfaces) =>
+        AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker(_fs, operationLabel, affectedSurfaces);
 
     private bool EnsureNoMalformedLegacyPendingDiscoveryForLocalShiningSave(JsonObject root)
     {

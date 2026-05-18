@@ -10,6 +10,11 @@ public partial class ExplorerMode
 {
     private async Task HandleShiningProjectCompletionAsync(ShiningContext context, int feathers)
     {
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                "завершение сияющего проекта",
+                ShiningCoreActionRequestState.PendingActionsRequestPath))
+            return;
+
         var faction = PromptForFaction(context.Root, "Завершение проекта");
         if (faction == null)
             return;
@@ -69,6 +74,11 @@ public partial class ExplorerMode
 
     private async Task HandleProjectSupportMutationAsync(ShiningContext context, bool support)
     {
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                support ? "поддержка сияющего проекта" : "снятие поддержки сияющего проекта",
+                ShiningCoreActionRequestState.PendingActionsRequestPath))
+            return;
+
         var project = PromptForProject(context.Root, support ? "Поддержка проекта" : "Снятие поддержки", requireCompleted: true);
         if (project.Project == null)
             return;
@@ -105,6 +115,11 @@ public partial class ExplorerMode
 
     private async Task HandleProjectRetirementAsync(ShiningContext context)
     {
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                "отправка сияющего проекта в историю",
+                ShiningCoreActionRequestState.PendingActionsRequestPath))
+            return;
+
         var project = PromptForProject(context.Root, "Отправить проект в историю", requireCompleted: true);
         if (project.Project == null)
             return;
@@ -174,6 +189,11 @@ public partial class ExplorerMode
 
             if (choice.Contains("Открыть Врата", StringComparison.Ordinal))
             {
+                if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                        "открытие Врат",
+                        ShiningCoreActionRequestState.PendingActionsRequestPath))
+                    continue;
+
                 var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
                 {
                     ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
@@ -250,6 +270,11 @@ public partial class ExplorerMode
 
             if (choice.Contains("новую жизнь", StringComparison.Ordinal))
             {
+                if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                        "подготовка новой жизни",
+                        ShiningCoreActionRequestState.PendingActionsRequestPath))
+                    continue;
+
                 var selectedIds = (context.Root["gates"]?["selectedBlessingCardIds"] as JsonArray)?
                     .OfType<JsonValue>()
                     .Where(node => node.TryGetValue<string>(out _))
@@ -286,6 +311,9 @@ public partial class ExplorerMode
 
     private async Task<bool> EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync(string actionLabel)
     {
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(actionLabel, ShiningAbodeState.StatePath))
+            return false;
+
         var pendingState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(_fs);
         if (pendingState.IsMalformed)
         {

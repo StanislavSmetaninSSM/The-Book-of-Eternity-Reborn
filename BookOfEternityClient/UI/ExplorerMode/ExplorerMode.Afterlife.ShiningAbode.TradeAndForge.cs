@@ -748,6 +748,11 @@ public partial class ExplorerMode
                 if (!ConfirmShiningTradeInventoryRequestPreview(request))
                     continue;
 
+                if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                        "запрос сияющей витрины",
+                        ShiningTradeRequestState.PendingRequestsPath))
+                    continue;
+
                 error = await ShiningTradeRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
                 if (!string.IsNullOrWhiteSpace(error))
                 {
@@ -773,6 +778,11 @@ public partial class ExplorerMode
 
     private async Task HandleShiningRelicGachaRequestAsync(ShiningContext context)
     {
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                "сияющая гача реликвий",
+                ShiningCoreActionRequestState.PendingActionsRequestPath))
+            return;
+
         if (context.SoulRoot == null)
         {
             MarkupLine("[yellow]soul_state.json недоступен для сияющей гачи.[/]");
@@ -1203,6 +1213,11 @@ public partial class ExplorerMode
 
     private async Task HandleShiningForgeRequestAsync(ShiningContext context)
     {
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                "запрос перековки сияющей реликвии",
+                $"{ShiningCoreActionRequestState.PendingActionsRequestPath}, game_state/meta/soul_state.json"))
+            return;
+
         if (context.SoulRoot == null)
         {
             MarkupLine("[yellow]soul_state.json недоступен для кузни.[/]");

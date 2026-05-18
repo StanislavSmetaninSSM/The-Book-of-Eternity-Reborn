@@ -154,6 +154,39 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
     }
 
     [Fact]
+    public void ShiningLocalMutationCommands_MustUseActiveGmTurnBlocker()
+    {
+        var actionsSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.Actions.cs");
+        var gatesSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.Gates.cs");
+        var politicsSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.Politics.cs");
+        var tradeSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs");
+        var tradeServiceSource = ReadServiceSource("ShiningTradeService.cs");
+
+        Assert.Contains("AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker", actionsSource, StringComparison.Ordinal);
+        Assert.Contains("EnsureNoActiveAfterlifeLocalMutationTurn", actionsSource, StringComparison.Ordinal);
+
+        Assert.Contains("EnsureNoActiveAfterlifeLocalMutationTurn", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("\"завершение сияющего проекта\"", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("\"поддержка сияющего проекта\"", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("\"снятие поддержки сияющего проекта\"", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("\"отправка сияющего проекта в историю\"", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("\"открытие Врат\"", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("\"подготовка новой жизни\"", gatesSource, StringComparison.Ordinal);
+        Assert.Contains("EnsureNoActiveAfterlifeLocalMutationTurn(actionLabel", gatesSource, StringComparison.Ordinal);
+
+        Assert.Contains("EnsureNoActiveAfterlifeLocalMutationTurn", politicsSource, StringComparison.Ordinal);
+        Assert.Contains("\"основание сияющей фракции\"", politicsSource, StringComparison.Ordinal);
+        Assert.Contains("\"перестройка сияющего резидента\"", politicsSource, StringComparison.Ordinal);
+        Assert.Contains("\"смена главы сияющей фракции\"", politicsSource, StringComparison.Ordinal);
+
+        Assert.Contains("EnsureNoActiveAfterlifeLocalMutationTurn", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("\"запрос сияющей витрины\"", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("\"сияющая гача реликвий\"", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("\"запрос перековки сияющей реликвии\"", tradeSource, StringComparison.Ordinal);
+        Assert.Contains("AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker", tradeServiceSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShiningGatesRerollPreview_MustShowFullRemovedAddedAndFinalCards()
     {
         var source = ReadSource("ExplorerMode.Afterlife.ShiningAbode.Gates.cs");

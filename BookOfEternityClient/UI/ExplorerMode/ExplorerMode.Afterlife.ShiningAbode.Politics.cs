@@ -14,6 +14,10 @@ public partial class ExplorerMode
     {
         if (!EnsureActiveShiningAbodeAvailable("Политика Сияющей Обители"))
             return;
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                "основание сияющей фракции",
+                $"{ShiningFactionRequestState.PendingFoundingsRequestPath}, game_state/meta/soul_state.json, {ShiningAbodeState.StatePath}"))
+            return;
 
         var feathers = await ReadInkFeathersBalance();
         var cost = new
@@ -178,6 +182,10 @@ public partial class ExplorerMode
     {
         if (!EnsureActiveShiningAbodeAvailable("Политика Сияющей Обители"))
             return;
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                "перестройка сияющего резидента",
+                ShiningFactionRequestState.PendingRealignmentsRequestPath))
+            return;
 
         var resident = PromptForShiningResidentReadyToRealign(context.ResidentRoot);
         if (resident == null)
@@ -267,6 +275,10 @@ public partial class ExplorerMode
     private async Task HandleShiningLeadershipTransitionRequestAsync(ShiningContext context)
     {
         if (!EnsureActiveShiningAbodeAvailable("Политика Сияющей Обители"))
+            return;
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                "смена главы сияющей фракции",
+                ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath))
             return;
 
         var faction = PromptForFaction(context.Root, "Выберите фракцию для смены главы");
