@@ -418,15 +418,18 @@ internal static class AfterlifeEntityProfileState
 
     private static void ApplyAutomaticProgression(JsonObject result, JsonObject? progressionReportRoot)
     {
-        var cycle = ResolveProgressionCycle(progressionReportRoot);
-        if (cycle == null)
+        if (progressionReportRoot == null)
             return;
 
         if (result[ProfilesProperty] is not JsonArray profiles)
             return;
 
         foreach (var profile in profiles.OfType<JsonObject>())
-            ApplyAutomaticProgression(profile, cycle.Value);
+        {
+            var cycle = ResolveProgressionCycleForProfile(profile, progressionReportRoot);
+            if (cycle != null)
+                ApplyAutomaticProgression(profile, cycle.Value);
+        }
     }
 
     private static void ApplyAutomaticProgression(JsonObject profile, ProgressionCycle cycle)
@@ -446,7 +449,7 @@ internal static class AfterlifeEntityProfileState
             return;
 
         var currencies = EnsureObject(profile, "currencies");
-        var income = ResolveIncome(profile, cycle);
+        var income = ResolveIncome(cycle);
         AddCurrency(currencies, "inkFeathers", income.InkFeathers);
         AddCurrency(currencies, "lightSparks", income.LightSparks);
 
@@ -659,12 +662,16 @@ internal static class AfterlifeEntityProfileState
     private static CurrencyDelta AddSpending(CurrencyDelta spending, CurrencyDelta cost) =>
         new(spending.InkFeathers + cost.InkFeathers, spending.LightSparks + cost.LightSparks);
 
-    private static ProgressionCycle? ResolveProgressionCycle(JsonObject? root)
+    private static ProgressionCycle? ResolveProgressionCycleForProfile(JsonObject profile, JsonObject root)
     {
-        if (root == null)
-            return null;
-
         var report = root["progressionProcessingReport"] as JsonObject ?? root;
+        return IsShiningRealm(profile)
+            ? ResolveShiningProgressionCycle(report)
+            : ResolveChaosProgressionCycle(report);
+    }
+
+    private static ProgressionCycle? ResolveShiningProgressionCycle(JsonObject report)
+    {
         var shiningCycles = new[]
         {
             GetNodeInt(report["shiningAbodeCyclesProcessed"]),
@@ -682,6 +689,11 @@ internal static class AfterlifeEntityProfileState
             return new ProgressionCycle($"shining:{Math.Max(1, ordinal)}", shiningCycles, IsShining: true);
         }
 
+        return null;
+    }
+
+    private static ProgressionCycle? ResolveChaosProgressionCycle(JsonObject report)
+    {
         var chaosCycles = new[]
         {
             GetNodeInt(report["chaosSeaCyclesProcessed"]),
@@ -700,10 +712,10 @@ internal static class AfterlifeEntityProfileState
         return new ProgressionCycle($"chaos:{Math.Max(1, chaosOrdinal)}", chaosCycles, IsShining: false);
     }
 
-    private static CurrencyDelta ResolveIncome(JsonObject profile, ProgressionCycle cycle)
+    private static CurrencyDelta ResolveIncome(ProgressionCycle cycle)
     {
         var multiplier = Math.Max(1, cycle.CyclesProcessed);
-        return cycle.IsShining || IsShiningRealm(profile)
+        return cycle.IsShining
             ? new CurrencyDelta(6 * multiplier, 1 * multiplier)
             : new CurrencyDelta(12 * multiplier, 0);
     }

@@ -232,6 +232,107 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_AppliesEntityProgressionPerAfterlifeContour()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            ProgressionScheduleService.ReportPath,
+            """
+            {
+              "progressionProcessingReport": {
+                "sessionId": "session_mixed",
+                "requestId": "request_mixed",
+                "turnNumber": 30,
+                "guardianProjectCyclesProcessed": 1,
+                "newLastGuardianProjectCycleOrdinal": 20,
+                "shiningAbodeCyclesProcessed": 1,
+                "newLastShiningAbodeCycleOrdinal": 30
+              }
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_chaos",
+                  "displayName": "Хранитель Хаоса",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "guard": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_chaos_guardian",
+                    "summary": "Качать защиту.",
+                    "priorityOrder": ["guard"]
+                  },
+                  "ledger": []
+                },
+                {
+                  "actorType": "radiant_actor",
+                  "actorId": "resident_shining",
+                  "displayName": "Сияющий резидент",
+                  "realm": "Shining Abode",
+                  "currencies": { "inkFeathers": 0, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 0, "tier": 0 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "guard": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_shining_resident",
+                    "summary": "Качать сияние.",
+                    "priorityOrder": ["radiance"]
+                  },
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var profiles = root["profiles"]!.AsArray().OfType<JsonObject>().ToDictionary(
+            profile => profile["actorId"]!.GetValue<string>(),
+            StringComparer.OrdinalIgnoreCase);
+
+        var chaosProfile = profiles["guardian_chaos"];
+        Assert.Equal(1, chaosProfile["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.Equal(2, chaosProfile["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(0, chaosProfile["currencies"]?["lightSparks"]?.GetValue<int>());
+        Assert.Equal("chaos:20", chaosProfile["progressionStrategy"]?["lastAutoProgressionCycleKey"]?.GetValue<string>());
+        var chaosLedger = Assert.Single(chaosProfile["progressionLedger"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("chaos:20", chaosLedger["cycleKey"]?.GetValue<string>());
+        Assert.Equal(12, chaosLedger["income"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(0, chaosLedger["income"]?["lightSparks"]?.GetValue<int>());
+
+        var shiningProfile = profiles["resident_shining"];
+        Assert.Equal(20, shiningProfile["progression"]?["radiance"]?["experience"]?.GetValue<int>());
+        Assert.Equal(1, shiningProfile["progression"]?["radiance"]?["tier"]?.GetValue<int>());
+        Assert.Equal(6, shiningProfile["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(0, shiningProfile["currencies"]?["lightSparks"]?.GetValue<int>());
+        Assert.Equal("shining:30", shiningProfile["progressionStrategy"]?["lastAutoProgressionCycleKey"]?.GetValue<string>());
+        var shiningLedger = Assert.Single(shiningProfile["progressionLedger"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("shining:30", shiningLedger["cycleKey"]?.GetValue<string>());
+        Assert.Equal(6, shiningLedger["income"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(1, shiningLedger["income"]?["lightSparks"]?.GetValue<int>());
+        Assert.Equal(1, shiningLedger["spending"]?["lightSparks"]?.GetValue<int>());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_AutoProgressionUpgradesSpecialArtByStrategy()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
