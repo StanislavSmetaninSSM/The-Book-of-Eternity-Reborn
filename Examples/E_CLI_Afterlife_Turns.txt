@@ -42,7 +42,9 @@ Use this index before resolving an afterlife turn:
 - `afterlife_return_guard.json` protected first afterlife turn: see example 21.
 - Direct resident action tags and hidden pending-backed routing tags: see example 22.
 - Freeform Chaos Sea Abode search from `/обители`: see example 23.
+- Afterlife spiritual conflict / духовный бой посмертия: see example 24.
 - Source of Light capstone (`/source_of_light` / `/источник_света`): see example 25.
+- Afterlife entity profiles, special arts, custom states, auto-progression, and soul dissipation: see example 26.
 - Player-facing Chaos Sea audit previews and notification receipt detail surfaces: see the audit checklist after example 23.
 
 ==================================================

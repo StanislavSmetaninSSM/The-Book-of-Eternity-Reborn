@@ -1945,7 +1945,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("metaStateUpdates.inkFeatherChanges.add", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("GM preference", examples + matrix + apiSpec + daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 24", matrix, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("examples 14-25", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("see example 24", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("see example 26", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-26", daemonSpec, StringComparison.OrdinalIgnoreCase);
         foreach (var text in new[] { matrix, examples, apiSpec, daemonSpec })
             Assert.Contains("OtherGuides/Afterlife_Combat_Terminology_Glossary.md", text, StringComparison.Ordinal);
 
@@ -2163,7 +2165,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
 
         Assert.Contains("example 19", taskGuide, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("examples 14-25", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 14-26", daemonSpec, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 19", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 20", daemonScript, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 21", daemonScript, StringComparison.OrdinalIgnoreCase);
@@ -2230,12 +2232,13 @@ public sealed class AfterlifeDocumentationCoverageTests
             .Select(scenario => scenario.Id)
             .ToHashSet(StringComparer.Ordinal);
 
-        var exampleNumbers = Regex.Matches(examples, @"(?m)^(\d+)\. VALID ")
-            .Select(match => int.Parse(match.Groups[1].Value))
+        var exampleNumbers = Regex.Matches(examples, @"(?m)^(?:EXAMPLE\s+(\d+)\b|(\d+)\. VALID )")
+            .Select(match => int.Parse(match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value))
+            .Distinct()
             .OrderBy(number => number)
             .ToArray();
 
-        Assert.Equal(Enumerable.Range(1, 23).ToArray(), exampleNumbers);
+        Assert.Equal(Enumerable.Range(1, 26).ToArray(), exampleNumbers);
 
         var coverageByExample = manifest.AfterlifeExampleCoverage
             .GroupBy(entry => entry.ExampleNumber)

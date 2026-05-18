@@ -1482,6 +1482,23 @@
       "exampleNumber": 23,
       "runtimeScenarioIds": [],
       "exemptionReason": "The freeform Chaos Sea Abode search example documents a direct GM-authored contract with multiple outcome branches rather than one accepted response payload."
+    },
+    {
+      "exampleNumber": 24,
+      "runtimeScenarioIds": [
+        "afterlife_spiritual_conflict_start_response",
+        "afterlife_spiritual_conflict_reward_response"
+      ]
+    },
+    {
+      "exampleNumber": 25,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The Source of Light capstone example is a pending request plus closure checklist with dedicated SourceOfLightCapstone validation and documentation coverage tests, not one standalone GameResponse scenario."
+    },
+    {
+      "exampleNumber": 26,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The afterlife entity profile example documents multiple command surfaces and deterministic client progression; dedicated entity profile validation and normalizer tests cover the runtime behavior instead of one accepted response scenario."
     }
   ]
 }
