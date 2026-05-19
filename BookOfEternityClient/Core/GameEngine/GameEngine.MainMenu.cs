@@ -1035,23 +1035,68 @@ public partial class GameEngine
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath))
         {
-            blockers.Add(await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs)
-                ? await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "повреждённый запрос на обновление состава Обители", "UpdateGuardianAbodeResidents + roster receipts/history")
-                : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "незакрытый запрос на обновление состава Обители", "UpdateGuardianAbodeResidents + roster receipts/history"));
+            if (await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs))
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                    "повреждённый запрос на обновление состава Обители",
+                    "UpdateGuardianAbodeResidents + roster receipts/history"));
+            }
+            else if ((await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs)).Count == 0)
+            {
+                GuardianAbodeResidentRequestState.ClearResidentsRequest(_fs);
+            }
+            else
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+                    "незакрытый запрос на обновление состава Обители",
+                    "UpdateGuardianAbodeResidents + roster receipts/history"));
+            }
         }
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath))
         {
-            blockers.Add(await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs)
-                ? await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "повреждённый запрос общения с резидентом Обители", "residentInteractionLogUpdates + matching interaction receipts")
-                : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "незакрытый запрос общения с резидентом Обители", "residentInteractionLogUpdates + matching interaction receipts"));
+            if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs))
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                    "повреждённый запрос общения с резидентом Обители",
+                    "residentInteractionLogUpdates + matching interaction receipts"));
+            }
+            else if ((await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs)).Count == 0)
+            {
+                GuardianAbodeResidentRequestState.ClearInteractionRequests(_fs);
+            }
+            else
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+                    "незакрытый запрос общения с резидентом Обители",
+                    "residentInteractionLogUpdates + matching interaction receipts"));
+            }
         }
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingTransfersRequestPath))
         {
-            blockers.Add(await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs)
-                ? await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "повреждённый запрос перехода резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state")
-                : await BuildPendingFileBlockerAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "незакрытый запрос перехода резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"));
+            if (await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs))
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                    "повреждённый запрос перехода резидента между Обителями",
+                    "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"));
+            }
+            else if ((await GuardianAbodeResidentRequestState.ReadTransferRequestsAsync(_fs)).Count == 0)
+            {
+                GuardianAbodeResidentRequestState.ClearTransferRequests(_fs);
+            }
+            else
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+                    "незакрытый запрос перехода резидента между Обителями",
+                    "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"));
+            }
         }
 
         if (_fs.FileExists(GuardianAbodeResidentRequestState.PendingManifestationRequestPath))
@@ -1110,9 +1155,24 @@ public partial class GameEngine
         var guardianSocialState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
         if (guardianSocialState.FilePresent)
         {
-            blockers.Add(guardianSocialState.IsMalformed
-                ? await BuildPendingFileBlockerAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "повреждённый социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType")
-                : await BuildPendingFileBlockerAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "незакрытый социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"));
+            if (guardianSocialState.IsMalformed)
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                    "повреждённый социальный запрос к Хранителю",
+                    "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"));
+            }
+            else if (guardianSocialState.Requests.Count == 0)
+            {
+                ActorSocialInteractionRequestState.ClearGuardianRequests(_fs);
+            }
+            else
+            {
+                blockers.Add(await BuildPendingFileBlockerAsync(
+                    ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+                    "незакрытый социальный запрос к Хранителю",
+                    "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"));
+            }
         }
 
         foreach (var shiningPending in await GetBlockingShiningPendingContractPathsAsync())

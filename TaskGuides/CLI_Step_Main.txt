@@ -341,6 +341,7 @@
             - Abode offering contracts: `pending_abode_offering.json` is input-only and must always close through `guardianPowerEvents.reasonType = offering`
             - If `offeringType = ink_feathers`, close it as `[INK_FEATHER_ACTION: ABODE_OFFERING]` and also write `output/ink_feather_action_result.json`; if `offeringType` is `soul_relic`, `archive_lore_fragment`, or `archive_secret_record`, close it as plain `[ABODE_OFFERING]` and do not write an Ink Feather receipt
             - Guardian trade contracts: `pending_guardian_trade_request.json` must close through Guardian trade inventory plus `UpdateGuardianTradeInventoryReceipts`
+            - Requests-bundle hygiene: for resident roster/interactions/transfers and Guardian-social pending files, an explicit empty root `{ "requests": [] }` is stale client clutter and may be removed by runtime; malformed files or non-empty `requests[]` remain active blockers until repair or canonical closure
             - Resident roster contracts: `pending_guardian_abode_residents_request.json` must close through explicit `UpdateGuardianAbodeResidents` plus roster receipts
             - Resident social contracts: `pending_guardian_abode_resident_interactions.json` must close through interaction receipts, and accepted results need resident memory/history/state aftermath
             - Resident transfer contracts: `pending_guardian_abode_resident_transfers.json` must close through `UpdateGuardianAbodeResidentTransferReceipts`, matching history entries, and canonical resident source/target state

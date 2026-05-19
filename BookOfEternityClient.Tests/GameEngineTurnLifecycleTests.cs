@@ -327,6 +327,39 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CollectIncarnationBlockersAsync_EmptyGuardianSocialRequestsDoNotBlockSoulGates()
+    {
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, new
+        {
+            requests = Array.Empty<object>()
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Empty(blockers);
+        Assert.False(_fs.FileExists(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+    }
+
+    [Theory]
+    [InlineData(GuardianAbodeResidentRequestState.PendingResidentsRequestPath)]
+    [InlineData(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath)]
+    [InlineData(GuardianAbodeResidentRequestState.PendingTransfersRequestPath)]
+    public async Task CollectIncarnationBlockersAsync_EmptyResidentRequestBundlesDoNotBlockSoulGates(string pendingPath)
+    {
+        await WriteJsonAsync(pendingPath, new
+        {
+            requests = Array.Empty<object>()
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Empty(blockers);
+        Assert.False(_fs.FileExists(pendingPath));
+    }
+
+    [Fact]
     public async Task CollectIncarnationBlockersAsync_ValidManifestationRequestDoesNotBlockSoulGates()
     {
         await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, new
