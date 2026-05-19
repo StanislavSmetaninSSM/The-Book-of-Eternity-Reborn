@@ -700,6 +700,50 @@ public sealed class ShiningTradeRequestStateTests
     }
 
     [Fact]
+    public async Task BuyAsync_BlocksCostBearingCoreRequestWithMissingQuoteFieldsWithoutMutatingState()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
+            await fs.WriteFileAtomicAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, """
+            {
+              "requests": [
+                {
+                  "requestId": "core_missing_quote_blocks_trade_buy_001",
+                  "actionType": "pull_relic_gacha",
+                  "factionId": "faction_old",
+                  "factionName": "Старый Дом",
+                  "returnCycleId": "shining_return_2",
+                  "projectedGachaBonusSteps": 0,
+                  "createdAtTurn": 12,
+                  "createdAtUtc": "2026-04-17T00:12:00Z"
+                }
+              ]
+            }
+            """);
+
+            var beforeShiningJson = await fs.ReadFileAsync(ShiningAbodeState.StatePath);
+            var beforeSoulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+            var result = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
+
+            Assert.False(result.Success);
+            Assert.False(result.StateChanged);
+            Assert.Contains("quotedCostFeathers", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("core_missing_quote_blocks_trade_buy_001", result.Message, StringComparison.OrdinalIgnoreCase);
+            Assert.Equal(beforeShiningJson, await fs.ReadFileAsync(ShiningAbodeState.StatePath));
+            Assert.Equal(beforeSoulJson, await fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        }
+        finally
+        {
+            CleanupTempRoot(root);
+        }
+    }
+
+    [Fact]
     public async Task BuyAsync_LegacyNumericInkFeathers_PersistsCanonicalObjectShape()
     {
         var root = CreateTempRoot();

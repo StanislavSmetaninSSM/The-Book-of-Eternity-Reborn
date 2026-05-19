@@ -544,15 +544,75 @@ internal static class ShiningTradeService
                    $"{ShiningCoreActionRequestState.PendingActionsRequestPath} повреждён. Выполните repair/closure перед покупкой.";
         }
 
-        var costBearingRequest = pendingState.Requests.FirstOrDefault(request =>
-            request.QuotedCostFeathers > 0 ||
-            request.QuotedCostLightSparks > 0);
-        if (costBearingRequest == null)
+        var rawJson = await fs.ReadFileAsync(ShiningCoreActionRequestState.PendingActionsRequestPath);
+        if (string.IsNullOrWhiteSpace(rawJson))
             return null;
 
-        return "Локальная покупка сияющей витрины заблокирована: pending Shining core action request " +
-               $"{costBearingRequest.RequestId} уже зафиксировал стоимость {costBearingRequest.QuotedCostFeathers} 🪶 / " +
-               $"{costBearingRequest.QuotedCostLightSparks} ✨. Дождитесь closure перед покупкой.";
+        using var document = JsonDocument.Parse(rawJson);
+        if (!document.RootElement.TryGetProperty(ShiningCoreActionRequestState.RequestsProperty, out var requestsNode) ||
+            requestsNode.ValueKind != JsonValueKind.Array)
+        {
+            return "Локальная покупка сияющей витрины заблокирована: " +
+                   $"{ShiningCoreActionRequestState.PendingActionsRequestPath} не содержит machine-readable requests[].";
+        }
+
+        foreach (var requestNode in requestsNode.EnumerateArray())
+        {
+            if (requestNode.ValueKind != JsonValueKind.Object)
+            {
+                return "Локальная покупка сияющей витрины заблокирована: " +
+                       $"{ShiningCoreActionRequestState.PendingActionsRequestPath} содержит malformed request entry.";
+            }
+
+            var requestId = ReadJsonString(requestNode, "requestId") ?? "unknown";
+            var actionType = ReadJsonString(requestNode, "actionType") ?? string.Empty;
+            var hasFeathers = TryReadNonNegativeJsonInt(requestNode, "quotedCostFeathers", out var feathers);
+            var hasLightSparks = TryReadNonNegativeJsonInt(requestNode, "quotedCostLightSparks", out var lightSparks);
+
+            if ((hasFeathers && feathers > 0) || (hasLightSparks && lightSparks > 0))
+            {
+                return "Локальная покупка сияющей витрины заблокирована: pending Shining core action request " +
+                       $"{requestId} уже зафиксировал стоимость {feathers} 🪶 / {lightSparks} ✨. Дождитесь closure перед покупкой.";
+            }
+
+            if ((!hasFeathers || !hasLightSparks) && IsPotentiallyCostBearingShiningCoreAction(actionType))
+            {
+                return "Локальная покупка сияющей витрины заблокирована: pending Shining core action request " +
+                       $"{requestId} не имеет читаемых quotedCostFeathers/quotedCostLightSparks. Выполните repair/closure перед покупкой.";
+            }
+        }
+
+        return null;
+    }
+
+    private static bool IsPotentiallyCostBearingShiningCoreAction(string? actionType)
+    {
+        return actionType?.Trim().ToLowerInvariant() is
+            ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction or
+            ShiningCoreActionRequestState.ActionTypeInvestInFaction or
+            ShiningCoreActionRequestState.ActionTypeCompleteProject or
+            ShiningCoreActionRequestState.ActionTypePullRelicGacha or
+            ShiningCoreActionRequestState.ActionTypeForgeRelicReshape or
+            ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty or
+            ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand or
+            ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho or
+            ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity;
+    }
+
+    private static string? ReadJsonString(JsonElement root, string propertyName)
+    {
+        return root.TryGetProperty(propertyName, out var property) && property.ValueKind == JsonValueKind.String
+            ? property.GetString()
+            : null;
+    }
+
+    private static bool TryReadNonNegativeJsonInt(JsonElement root, string propertyName, out int value)
+    {
+        value = 0;
+        return root.TryGetProperty(propertyName, out var property) &&
+               property.ValueKind == JsonValueKind.Number &&
+               property.TryGetInt32(out value) &&
+               value >= 0;
     }
 
     private static async Task<string?> TryDescribeLegacyDiscoveryCostBlockerAsync(FileSystemManager fs)
