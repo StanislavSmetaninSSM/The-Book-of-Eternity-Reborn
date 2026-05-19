@@ -2829,15 +2829,15 @@ public partial class ExplorerMode
                 if (matchingPendingRequests.Count > 0)
                 {
                     pendingLines.Add("");
-                    pendingLines.Add("[bold]Живой pending contract:[/]");
+                    pendingLines.Add("[bold]Живой pending-контракт:[/]");
                     pendingLines.Add($"  • Файл: [dim]{Markup.Escape(GuardianAbodeResidentRequestState.PendingResidentsRequestPath)}[/]");
-                    pendingLines.Add("  • Закрытие: UpdateGuardianAbodeResidents + UpdateGuardianAbodeResidentRosterReceipts with matching requestId/guardianId/abodeId.");
+                    pendingLines.Add("  • Закрытие: UpdateGuardianAbodeResidents + UpdateGuardianAbodeResidentRosterReceipts с теми же requestId/guardianId/abodeId.");
                     foreach (var pendingRequest in matchingPendingRequests)
                     {
                         pendingLines.Add($"  • requestId: [white]{Markup.Escape(pendingRequest.RequestId)}[/]");
                         pendingLines.Add($"    guardianId: [dim]{Markup.Escape(pendingRequest.GuardianId)}[/], abodeId: [dim]{Markup.Escape(pendingRequest.AbodeId)}[/], requestMode: [dim]{Markup.Escape(pendingRequest.RequestMode)}[/]");
                         pendingLines.Add($"    createdAtTurn: [dim]{pendingRequest.CreatedAtTurn}[/], createdAtUtc: [dim]{Markup.Escape(pendingRequest.CreatedAtUtc)}[/], currentReputation: [dim]{pendingRequest.CurrentReputation}[/]");
-                        pendingLines.Add("    full payload:");
+                        pendingLines.Add("    полные данные:");
                         var payload = JsonSerializer.Serialize(pendingRequest, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
                         foreach (var payloadLine in payload.Split('\n'))
                             pendingLines.Add($"      [dim]{Markup.Escape(payloadLine.TrimEnd('\r'))}[/]");

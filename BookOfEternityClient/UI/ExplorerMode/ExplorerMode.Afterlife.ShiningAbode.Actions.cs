@@ -199,14 +199,14 @@ public partial class ExplorerMode
             lines.Add("");
             lines.Add("[bold orange1]Ожидает решения:[/]");
             lines.Add($"  • Открытие нативной фракции [dim](уровень сияния при запросе {GetNodeInt(pendingDiscovery["radianceTierAtRequest"])}, запрос {Markup.Escape(GetNodeString(pendingDiscovery["requestId"]) ?? "?")})[/]");
-            lines.Add("  • [dim]Откройте подробный осмотр в этом разделе, чтобы увидеть полную стоимость и payload запроса.[/]");
+            lines.Add("  • [dim]Откройте подробный осмотр в этом разделе, чтобы увидеть полную стоимость и данные запроса.[/]");
         }
         else if (shiningRoot.ContainsKey("pendingNativeFactionDiscovery") &&
                  shiningRoot["pendingNativeFactionDiscovery"] is not null)
         {
             lines.Add("");
-            lines.Add("[bold red]Repair-only blocker:[/]");
-            lines.Add($"  • {Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery повреждён; local saves/actions blocked until repair or closure.");
+            lines.Add("[bold red]Блокер ремонта:[/]");
+            lines.Add($"  • {Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery повреждён; локальные сохранения/действия заблокированы до ремонта или закрытия.");
         }
 
         if (shiningRoot["gates"] is JsonObject gates)
@@ -592,9 +592,9 @@ public partial class ExplorerMode
         }
         else if (pendingDiscovery == null)
         {
-            lines.Add("[bold red]Repair-only blocker:[/]");
+            lines.Add("[bold red]Блокер ремонта:[/]");
             lines.Add("  pendingNativeFactionDiscovery присутствует, но не является JSON object.");
-            lines.Add("  Это malformed legacy discovery evidence: local Shining saves/actions blocked until repair; GM не должен silently null/erase this value.");
+            lines.Add("  Это повреждённое legacy discovery evidence: локальные действия Сияющей Обители заблокированы до ремонта; GM не должен молча null/erase это значение.");
         }
         else
         {
@@ -604,7 +604,7 @@ public partial class ExplorerMode
             lines.Add($"  Уровень сияния при запросе: [white]{GetNodeInt(pendingDiscovery["radianceTierAtRequest"])}[/]");
             lines.Add($"  Стоимость: [white]{GetNodeInt(pendingDiscovery["costFeathers"])} Перьев[/] / [white]{GetNodeInt(pendingDiscovery["costLightSparks"])} Искр Света[/]");
             lines.Add($"  Действие: [white]{DescribeShiningCoreActionLabel(ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction)}[/]");
-            lines.Add("  [dim]Этот pending payload ждёт канонического materialization новой фракции и точного closure receipt.[/]");
+            lines.Add("  [dim]Этот pending payload ждёт канонической материализации новой фракции и точного closure receipt.[/]");
         }
 
         Clear();

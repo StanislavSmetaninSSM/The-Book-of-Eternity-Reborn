@@ -259,6 +259,8 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.DoesNotContain("GM closure contract", source, StringComparison.Ordinal);
         Assert.DoesNotContain("Ink Feathers:", source, StringComparison.Ordinal);
         Assert.DoesNotContain("Light Sparks:", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("Radiance XP", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("Light Sparks state", source, StringComparison.Ordinal);
         Assert.DoesNotContain("client-local mutation", source, StringComparison.Ordinal);
     }
 }

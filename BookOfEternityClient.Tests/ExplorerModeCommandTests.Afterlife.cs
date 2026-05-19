@@ -8210,7 +8210,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("afterlife_status_numeric_memory_bonus");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Next-life payloads", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Данные следующей жизни", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Next-life payloads", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("legacy_status_bonus_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("startingCharacteristicBonus", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("characteristic: intelligence", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -8280,7 +8281,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("afterlife_status_shining_malformed_legacy_discovery");
         var renderedText = ExtractRenderedText();
         Assert.Contains("Сияющая Обитель", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Repair-only blocker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Блокер ремонта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Repair-only blocker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("pendingNativeFactionDiscovery", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("повреж", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("shining_abode_state.json пока отсутствует или повреждён", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -8306,7 +8308,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("afterlife_status_malformed_spiritual_conflict_raw");
         var renderedText = ExtractRenderedText();
         Assert.Contains(AfterlifeSpiritualConflictState.StatePath, renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Raw malformed", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сырые данные повреждённого", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Raw malformed", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(rawConflict, ExtractRenderedLiteralText(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -8330,7 +8333,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("afterlife_status_malformed_entity_profiles_raw");
         var renderedText = ExtractRenderedText();
         Assert.Contains(AfterlifeEntityProfileState.StatePath, renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Raw malformed", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сырые данные повреждённого", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Raw malformed", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(rawProfiles, ExtractRenderedLiteralText(), StringComparison.OrdinalIgnoreCase);
     }
 
@@ -8405,7 +8409,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("pending_npc_social_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("npc_social_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("wrong-realm repair-only", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("неверной области", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -8501,9 +8505,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Полный статус загробного цикла", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("pending_abode_offering.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("offering_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("full payload", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("полные данные", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/afterlife_inbox", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Next-life payloads", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Данные следующей жизни", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Next-life payloads", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("legacy_status_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Echo Cartography", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("playerStatBonus", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -8526,11 +8531,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var renderedText = ExtractRenderedText();
         Assert.Contains("Сияющая Обитель", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Radiance", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Light Sparks", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Искры Света", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("draftVersion", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Selected blessing cards", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Выбранные карты благословений", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Тропа возвращения", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("effect:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("эффект:", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("pending_shining_trade_inventory_requests.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("shining_trade_memory_7", renderedText, StringComparison.OrdinalIgnoreCase);
     }
@@ -8560,7 +8565,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("afterlife_status_shining_package_card_fallback");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Prepared package selected cards", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Выбранные карты подготовленного пакета", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Тропа возвращения", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Открывает путь через память", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("frozen card snapshot unavailable", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -8600,7 +8605,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("pending_guardian_abode_resident_interactions.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("resident_talk_pending_001", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("residentInteractionLogUpdates", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("full payload", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("полные данные", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -8922,10 +8927,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("guardian_abode_residents_existing_pending");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("Живой pending contract", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Живой pending-контракт", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("pending_guardian_abode_residents_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("roster_pending_existing_001", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("full payload", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("полные данные", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("UpdateGuardianAbodeResidentRosterReceipts", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 

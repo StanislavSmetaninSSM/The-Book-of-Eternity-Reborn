@@ -256,7 +256,7 @@ public partial class ExplorerMode
                 lines.Add("  • Создать новый hall и новую `native_radiant` faction, которых не было в pre-turn state.");
                 lines.Add("  • Материализовать 2..4 новых ascended residents, сразу привязанных к новой фракции.");
                 lines.Add("  • Создать ровно 2 seeded completed projects внутри новой фракции.");
-                lines.Add("  • Radiance XP: +20; Light Sparks и Ink Feathers списываются по quoted cost.");
+                lines.Add("  • Сияние (radiance XP): +20; Искры Света и Чернильные Перья списываются по quoted cost.");
                 break;
 
             case ShiningCoreActionRequestState.ActionTypeInvestInFaction:
@@ -268,7 +268,7 @@ public partial class ExplorerMode
             case ShiningCoreActionRequestState.ActionTypeCompleteProject:
                 AppendProjectedFactionDelta(lines, context, request);
                 lines.Add("  • Новый project должен быть materialized as completed project с canonical strengthReward по tier.");
-                lines.Add("  • Если archetype ещё не считался в этом ascension, Radiance XP получает +10 и tier пересчитывается.");
+                lines.Add("  • Если archetype ещё не считался в этом ascension, опыт Сияния (radiance XP) получает +10 и tier пересчитывается.");
                 lines.Add("  • Если открыт draft Врат, он становится stale.");
                 break;
 
@@ -976,8 +976,8 @@ public partial class ExplorerMode
             return;
 
         lines.Add($"  • Сила фракции: {GetNodeInt(beforeFaction["factionStrength"])} -> {GetNodeInt(afterFaction["factionStrength"])}.");
-        lines.Add($"  • Light Sparks state: {GetNodeInt(context.Root["lightSparks"])} -> {GetNodeInt(projectedRoot["lightSparks"])}.");
-        lines.Add($"  • Radiance XP: {GetNodeInt(context.Root["radiance"]?["experience"])} -> {GetNodeInt(projectedRoot["radiance"]?["experience"])}.");
+        lines.Add($"  • Состояние Искр Света (lightSparks): {GetNodeInt(context.Root["lightSparks"])} -> {GetNodeInt(projectedRoot["lightSparks"])}.");
+        lines.Add($"  • Опыт Сияния (radiance XP): {GetNodeInt(context.Root["radiance"]?["experience"])} -> {GetNodeInt(projectedRoot["radiance"]?["experience"])}.");
     }
 
     private void AppendProjectedProjectSupportDelta(

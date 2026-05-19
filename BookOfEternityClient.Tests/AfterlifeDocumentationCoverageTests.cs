@@ -2161,7 +2161,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         foreach (var term in new[] { "residentFullJsonBefore", "soulQuestsFullJsonBefore", "Полный JSON transferReceipts резидента" })
             Assert.Contains(term, guardiansTrade, StringComparison.Ordinal);
 
-        foreach (var term in new[] { "Полный JSON game_state/meta/shining_abode_state.json", "Полный JSON Shining gates", "Полный JSON preparedIncarnationPackage" })
+        foreach (var term in new[] { "Полный JSON game_state/meta/shining_abode_state.json", "Полный JSON Врат Сияющей Обители", "Полный JSON preparedIncarnationPackage" })
             Assert.Contains(term, statusAudit, StringComparison.Ordinal);
 
         Assert.Contains("JSON shining_abode_state.factions/projects для просмотра", shiningOverview, StringComparison.Ordinal);
