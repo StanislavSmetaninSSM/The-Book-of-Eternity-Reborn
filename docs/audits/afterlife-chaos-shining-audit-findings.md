@@ -1,6 +1,6 @@
 # Afterlife Chaos Sea / Shining Abode Audit Findings
 
-Tracking issues: #470, #471, #472, #473, #474, #475, #476, #477, #478, #479, #480, #481, #482, #483, #484, #485, #486.
+Tracking issues: #470, #471, #472, #473, #474, #475, #476, #477, #478, #479, #480, #481, #482, #483, #484, #485, #486, #488, #489, #490, #491, #492, #493, #494, #495.
 
 ## Rules For This File
 
@@ -39,3 +39,4 @@ Tracking issues: #470, #471, #472, #473, #474, #475, #476, #477, #478, #479, #48
 | Date | Issue | Scope | Result | Verification |
 | --- | --- | --- | --- | --- |
 | 2026-05-19 | #478 | Source of Light capstone, Soul Gates blockers, `return_to_chaos_sea`, `reenter_shining_abode`, Shining pending-bootstrap `TriggerIncarnation`, pending-file cleanup, reward tuple trust, and rollback/snapshot handoff coverage. | No additional discrete handoff/rollback defect found after AFT-018/AFT-019. Runtime blockers, Source pending context, Shining pending-bootstrap docs, and lifecycle validation are covered by existing targeted tests. | `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "SourceOfLightCapstoneValidationTests|GameEngineTurnLifecycleTests|AfterlifeDocumentationCoverageTests"` passed 146/146. |
+| 2026-05-19 | #493 | Rollback and pending-turn snapshot baselines for `/incarnate`, Soul Gates, Source of Light, Shining local action guards, local setup files, restart/late-response rollback, absent optional afterlife pending files, and client-owned validation baselines. | No additional discrete rollback/baseline defect found after AFT-018/AFT-019/AFT-020. Existing setup files are backed up by the full pre-turn backup; locally-created setup files are added as validation snapshots but excluded from rollback baselines; explorer rollback backups survive `lore/current_world` cleanup and validated restart rollback; absent optional afterlife pending contracts are not registered as rollback baselines. | `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "GameEngineTurnLifecycleTests|AfterlifeLocalActionGuardTests|SourceOfLightCapstoneValidationTests|ValidationSourceGuardTests"` passed 108/108; `git diff --check` passed with CRLF warning only. |
