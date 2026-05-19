@@ -185,7 +185,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
 
         Assert.Contains("ActorSocialInteractionRequestState.PendingNpcRequestPath", statusAudit, StringComparison.Ordinal);
         Assert.Contains("NpcTradeRequestState.PendingRequestPath", statusAudit, StringComparison.Ordinal);
-        Assert.Contains("wrong-realm repair-only in Chaos Sea", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("repair-only в неверной области: Море Хаоса", statusAudit, StringComparison.Ordinal);
         Assert.Contains("ProgressionScheduleService.SchedulePath", statusAudit, StringComparison.Ordinal);
         Assert.Contains("ProgressionScheduleService.ReportPath", statusAudit, StringComparison.Ordinal);
         Assert.Contains("afterlifeCatchupContours", statusAudit, StringComparison.Ordinal);
