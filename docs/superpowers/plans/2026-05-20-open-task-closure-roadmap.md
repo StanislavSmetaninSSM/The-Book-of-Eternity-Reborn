@@ -366,4 +366,3 @@ git rev-parse origin/main
 ```
 
 Expected: no ahead/behind and identical hashes.
-
