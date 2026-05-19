@@ -1,9 +1,49 @@
+using System.Reflection;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class ValidationSourceGuardTests
 {
+    [Fact]
+    public void ClientOwnedSurfaceFilter_MustCoverAllValidatedAfterlifePendingContracts()
+    {
+        var method = typeof(ValidationService).GetMethod(
+            "IsClientOwnedSurfaceValidationPath",
+            BindingFlags.NonPublic | BindingFlags.Static);
+        Assert.NotNull(method);
+
+        var paths = new[]
+        {
+            GuardianAbodeOfferingState.PendingRequestPath,
+            GuardianTradeRequestState.PendingRequestPath,
+            PlayerGuardianFoundationState.PendingRequestPath,
+            NpcTradeRequestState.PendingRequestPath,
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+            ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+            ActorSocialInteractionRequestState.PendingNpcRequestPath,
+            SystemGuardianLibraryService.AttractionRequestPath,
+            ShiningCoreActionRequestState.PendingActionsRequestPath,
+            ShiningTradeRequestState.PendingRequestsPath,
+            ShiningFactionRequestState.PendingFoundingsRequestPath,
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            SourceOfLightCapstoneState.PendingRequestPath
+        };
+
+        foreach (var path in paths)
+        {
+            var isClientOwned = Assert.IsType<bool>(method.Invoke(null, new object[] { path }));
+            Assert.True(isClientOwned, $"{path} must be excluded from generic tracked-file validation and handled by the client-owned contract validator.");
+        }
+    }
+
     [Fact]
     public void PreTurnRealmResolution_MustNotFallbackToCurrentRealm()
     {

@@ -218,7 +218,12 @@ public partial class GameEngine
             : new HashSet<string>(EnumerateRollbackTrackedFiles(), StringComparer.OrdinalIgnoreCase);
 
         foreach (var file in GuardianPolicySnapshotRequestFiles)
-            rollbackBaselineFiles.Add(file);
+        {
+            if (_fs.FileExists(file))
+                rollbackBaselineFiles.Add(file);
+            else
+                rollbackBaselineFiles.Remove(file);
+        }
         if (_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath))
             rollbackBaselineFiles.Add(SourceOfLightCapstoneState.PendingRequestPath);
         else

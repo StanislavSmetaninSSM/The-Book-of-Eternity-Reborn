@@ -2242,6 +2242,8 @@ public partial class ValidationService
                normalizedPath.Equals(AfterlifeArchiveCandidateService.ManifestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(PlayerGuardianFoundationState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(ShiningCoreActionRequestState.PendingActionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(ShiningTradeRequestState.PendingRequestsPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) ||
@@ -2250,10 +2252,13 @@ public partial class ValidationService
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(AfterlifeArchiveActionState.ConsultationRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(AfterlifeArchiveActionState.ProjectFuelRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(SystemGuardianLibraryService.AttractionRequestPath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/afterlife_return_guard.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianCorrectionService.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/gm_cli_window_binding.json", StringComparison.OrdinalIgnoreCase) ||

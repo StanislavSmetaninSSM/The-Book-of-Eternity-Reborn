@@ -1496,6 +1496,54 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CreateCanonicalBaselineSnapshotAsync_AbsentAfterlifePendingContracts_AreNotRollbackBaseline()
+    {
+        var engine = CreateGameEngine();
+        var request = new TurnRequest
+        {
+            SessionId = "session_no_afterlife_pending_snapshot",
+            RequestId = "request_no_afterlife_pending_snapshot",
+            TurnNumber = 42,
+            PlayerAction = "ordinary turn without afterlife pending contracts",
+            Timestamp = "2026-03-24T00:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Chaos Sea" }
+        };
+
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, null, "test");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"]);
+        var rollbackBaselineSet = rollbackBaselineFiles
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var optionalPendingPaths = new[]
+        {
+            GuardianAbodeOfferingState.PendingRequestPath,
+            GuardianTradeRequestState.PendingRequestPath,
+            NpcTradeRequestState.PendingRequestPath,
+            ShiningCoreActionRequestState.PendingActionsRequestPath,
+            ShiningTradeRequestState.PendingRequestsPath,
+            GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+            ActorSocialInteractionRequestState.PendingNpcRequestPath,
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            AfterlifeArchiveActionState.ProjectFuelRequestPath
+        };
+
+        foreach (var pendingPath in optionalPendingPaths)
+        {
+            Assert.False(files.ContainsKey(pendingPath), $"{pendingPath} should not have a snapshot entry when absent.");
+            Assert.DoesNotContain(pendingPath, rollbackBaselineSet);
+        }
+    }
+
+    [Fact]
     public async Task CreateCanonicalBaselineSnapshotAsync_PresentSourceOfLightPending_IsRollbackBaseline()
     {
         var sourceRequest = SourceOfLightCapstoneState.CreateRequest(42, 580, 4);
