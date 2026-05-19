@@ -237,6 +237,10 @@ public partial class ValidationService
         public int? CurrentInkFeathers { get; init; }
         public int? PreTurnLightSparks { get; init; }
         public int? CurrentLightSparks { get; init; }
+        public string? PreTurnActiveConflictId { get; init; }
+        public string? PreTurnSideModel { get; init; }
+        public string? PreTurnConflictPosition { get; init; }
+        public int? PreTurnOpposingLeadStrength { get; init; }
         public AfterlifeDifficultyDefinition? Difficulty { get; init; }
         public int ExpectedCurrentTurnInkFeatherReward { get; set; }
         public int ExpectedCurrentTurnLightSparkReward { get; set; }
@@ -567,6 +571,8 @@ public partial class ValidationService
         var preTurnSoulRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json"));
         var currentShiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
         var preTurnShiningRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath));
+        var preTurnConflictRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeSpiritualConflictState.StatePath));
+        var preTurnActiveConflict = preTurnConflictRoot?["activeConflict"] as JsonObject;
 
         return new AfterlifeConflictRewardContext
         {
@@ -577,8 +583,38 @@ public partial class ValidationService
             CurrentInkFeathers = currentSoulRoot == null ? null : ShiningAbodeState.GetSoulSpendableInkFeathers(currentSoulRoot),
             PreTurnLightSparks = preTurnShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(preTurnShiningRoot["lightSparks"]),
             CurrentLightSparks = currentShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(currentShiningRoot["lightSparks"]),
+            PreTurnActiveConflictId = preTurnActiveConflict == null ? null : TryReadConflictId(preTurnActiveConflict),
+            PreTurnSideModel = AfterlifeSpiritualConflictState.GetNodeString(preTurnActiveConflict?["sideModel"]),
+            PreTurnConflictPosition = AfterlifeSpiritualConflictState.GetNodeString(preTurnActiveConflict?["conflictPosition"]),
+            PreTurnOpposingLeadStrength = ResolveRewardOpposingLeadStrength(preTurnActiveConflict),
             Difficulty = await ResolveAfterlifeConflictDifficultyDefinitionAsync()
         };
+    }
+
+    private static int? ResolveRewardOpposingLeadStrength(JsonObject? activeConflict)
+    {
+        if (activeConflict?["oppositionSide"] is not JsonObject oppositionSide ||
+            oppositionSide["leadContestant"] is not JsonObject lead ||
+            lead["actorArtTierSnapshot"] is not JsonObject snapshot)
+        {
+            return null;
+        }
+
+        var hasTier = false;
+        var maxTier = 0;
+        foreach (var property in snapshot)
+        {
+            if (!AfterlifeEntityProfileState.StandardArtIds.Contains(property.Key))
+                continue;
+
+            if (!TryGetJsonNodeInt(property.Value, out var tier))
+                continue;
+
+            hasTier = true;
+            maxTier = Math.Max(maxTier, Math.Max(0, tier));
+        }
+
+        return hasTier ? maxTier + 1 : null;
     }
 
     private async Task<AfterlifeDifficultyDefinition?> ResolveAfterlifeConflictDifficultyDefinitionAsync()
@@ -2068,6 +2104,11 @@ public partial class ValidationService
                 conflictId);
         }
 
+        var matchesPreTurnRewardConflict = isCurrentTurnReward &&
+                                           !string.IsNullOrWhiteSpace(conflictId) &&
+                                           !string.IsNullOrWhiteSpace(rewardContext.PreTurnActiveConflictId) &&
+                                           string.Equals(conflictId, rewardContext.PreTurnActiveConflictId, StringComparison.OrdinalIgnoreCase);
+
         var expectedBaseAmount = ResolveRewardBaseAmount(rewardRealmKey);
         if (!TryGetJsonNodeInt(rewardAudit["baseAmount"], out var baseAmount) || baseAmount != expectedBaseAmount)
         {
@@ -2129,6 +2170,20 @@ public partial class ValidationService
                 auditSideModel);
         }
 
+        if (matchesPreTurnRewardConflict &&
+            !string.IsNullOrWhiteSpace(rewardContext.PreTurnSideModel) &&
+            !string.IsNullOrWhiteSpace(auditSideModel) &&
+            !string.Equals(auditSideModel, rewardContext.PreTurnSideModel, StringComparison.OrdinalIgnoreCase))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.sideModel",
+                "Current-turn rewardAudit.sideModel должен совпадать с validated pre-turn activeConflict.sideModel.",
+                "afterlife_conflict_reward_side_model_mismatch",
+                rewardContext.PreTurnSideModel,
+                auditSideModel);
+        }
+
         var startingPosition = AfterlifeSpiritualConflictState.GetNodeString(rewardAudit["startingConflictPosition"]);
         if (string.IsNullOrWhiteSpace(startingPosition))
         {
@@ -2151,8 +2206,22 @@ public partial class ValidationService
                 startingPosition);
         }
 
-        if (!TryGetJsonNodeInt(rewardAudit["opposingLeadStrength"], out var opposingLeadStrength) ||
-            opposingLeadStrength <= 0)
+        if (matchesPreTurnRewardConflict &&
+            !string.IsNullOrWhiteSpace(rewardContext.PreTurnConflictPosition) &&
+            !string.IsNullOrWhiteSpace(startingPosition) &&
+            !string.Equals(startingPosition, rewardContext.PreTurnConflictPosition, StringComparison.OrdinalIgnoreCase))
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.startingConflictPosition",
+                "Current-turn rewardAudit.startingConflictPosition должен совпадать с validated pre-turn activeConflict.conflictPosition.",
+                "afterlife_conflict_reward_starting_position_mismatch",
+                rewardContext.PreTurnConflictPosition,
+                startingPosition);
+        }
+
+        var hasOpposingLeadStrength = TryGetJsonNodeInt(rewardAudit["opposingLeadStrength"], out var opposingLeadStrength);
+        if (!hasOpposingLeadStrength || opposingLeadStrength <= 0)
         {
             AddRewardIssue(
                 issues,
@@ -2161,6 +2230,18 @@ public partial class ValidationService
                 "afterlife_conflict_reward_missing_opposing_strength",
                 "positive integer derived from opposition lead art/authority snapshot",
                 rewardAudit["opposingLeadStrength"]?.ToJsonString() ?? "missing");
+        }
+        else if (matchesPreTurnRewardConflict &&
+                 rewardContext.PreTurnOpposingLeadStrength is int expectedOpposingLeadStrength &&
+                 opposingLeadStrength != expectedOpposingLeadStrength)
+        {
+            AddRewardIssue(
+                issues,
+                $"{context}.rewardAudit.opposingLeadStrength",
+                "Current-turn rewardAudit.opposingLeadStrength должен совпадать с validated pre-turn opposition lead art snapshot.",
+                "afterlife_conflict_reward_opposing_strength_mismatch",
+                expectedOpposingLeadStrength.ToString(),
+                opposingLeadStrength.ToString());
         }
 
         var expectedChallengeTier = ResolveRewardChallengeTier(opposingLeadStrength, sideModel, startingPosition);

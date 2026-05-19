@@ -1038,7 +1038,7 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
             "actorId": "guardian_liora",
             "displayName": "Лиора",
             "actorArtTierSnapshot": {
-              "pressure": {{Math.Max(1, scenario.OpposingLeadStrength)}}
+              "pressure": {{Math.Max(0, scenario.OpposingLeadStrength - 1)}}
             },
             "artAuthoritySource": "guardian_state"
           },

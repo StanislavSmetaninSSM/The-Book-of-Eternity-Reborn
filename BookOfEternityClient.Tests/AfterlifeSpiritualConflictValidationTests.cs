@@ -1724,6 +1724,31 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CurrentRewardAuditInflatingPreTurnInputs_IsRejected()
+    {
+        await WriteSoulStateWithInkFeathersAsync(95, "Chaos Sea");
+        await WriteResolvedConflictRewardStateAsync(
+            BuildConflictRewardAuditJson(
+                "Chaos Sea",
+                AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers,
+                finalAmount: 75,
+                opposingLeadStrength: 12,
+                challengeTier: 5,
+                startingConflictPosition: "opposition_dominant",
+                riskMultiplierPercent: 150,
+                resolvedAtTurn: 7),
+            proofResolvedAtTurn: 7);
+        await WriteRewardTurnSnapshotAsync(preTurnSoulJson: BuildSoulStateJson("Chaos Sea", inkFeathers: 20));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_starting_position_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_reward_opposing_strength_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_CounterRequiresIncomingAction()
     {
         await WriteSoulStateAsync();
