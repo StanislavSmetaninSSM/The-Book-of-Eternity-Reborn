@@ -62,6 +62,66 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
             """{ "schemaVersion": 1, "events": [] }""",
             """{ "schemaVersion": 1, "events": [{ "eventId": "power_1", "guardianId": "guardian_mirror", "reasonType": "test" }] }"""
         };
+        yield return new object[]
+        {
+            ShiningAbodeState.StatePath,
+            CreateShiningStateJson(availability: "active"),
+            CreateShiningStateJson(availability: "sealed_until_next_ascension")
+        };
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ChaosSeaTurnChangingShiningState_FailsRealmSegregation()
+    {
+        const string preTurnSoul = """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Chaos Sea"
+        }
+        """;
+        var preTurnShining = CreateShiningStateJson(availability: "active");
+        var currentShining = CreateShiningStateJson(availability: "sealed_until_next_ascension");
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, currentShining);
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteSnapshotFileAsync(ShiningAbodeState.StatePath, preTurnShining);
+        await WriteValidatedSnapshotManifestAsync(
+            ("game_state/meta/soul_state.json", preTurnSoul),
+            (ShiningAbodeState.StatePath, preTurnShining));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ShiningAbodeTurnChangingShiningState_DoesNotFailRealmSegregation()
+    {
+        const string preTurnSoul = """
+        {
+          "soulName": "Асуран",
+          "currentRealm": "Shining Abode"
+        }
+        """;
+        var preTurnShining = CreateShiningStateJson(availability: "active");
+        var currentShining = CreateShiningStateJson(availability: "sealed_until_next_ascension");
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, currentShining);
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", preTurnSoul);
+        await WriteSnapshotFileAsync(ShiningAbodeState.StatePath, preTurnShining);
+        await WriteValidatedSnapshotManifestAsync(
+            ("game_state/meta/soul_state.json", preTurnSoul),
+            (ShiningAbodeState.StatePath, preTurnShining));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase) == true);
     }
 
     [Theory]
@@ -96,6 +156,48 @@ public sealed class AfterlifeRealmSegregationValidationTests : IDisposable
     private Task WriteSnapshotFileAsync(string logicalPath, string json)
     {
         return _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{logicalPath}", json);
+    }
+
+    private static string CreateShiningStateJson(string availability)
+    {
+        var root = new JsonObject
+        {
+            ["availability"] = availability,
+            ["radiance"] = new JsonObject
+            {
+                ["experience"] = 0,
+                ["tier"] = 0
+            },
+            ["lightSparks"] = 0,
+            ["halls"] = new JsonArray(),
+            ["factions"] = new JsonArray(),
+            ["shiningPoliticalActors"] = new JsonArray(),
+            ["pendingNativeFactionDiscovery"] = null,
+            ["factionFoundingReceipts"] = new JsonArray(),
+            ["factionRealignmentReceipts"] = new JsonArray(),
+            ["coreActionReceipts"] = new JsonArray(),
+            ["gates"] = new JsonObject
+            {
+                ["draftVersion"] = 0,
+                ["hasOpenDraft"] = false,
+                ["isStale"] = false,
+                ["allCandidateBlessingCards"] = new JsonArray(),
+                ["availableBlessingCards"] = new JsonArray(),
+                ["shownBlessingCardIds"] = new JsonArray(),
+                ["selectedBlessingCardIds"] = new JsonArray(),
+                ["nextCandidateCursor"] = 0,
+                ["rerollsRemaining"] = 0
+            },
+            ["gachaSystem"] = new JsonObject
+            {
+                ["chargesPerReturn"] = 0,
+                ["chargesUsedThisReturn"] = 0,
+                ["currentReturnCycleId"] = "shining_return_1",
+                ["gachaHistory"] = new JsonArray()
+            }
+        };
+
+        return root.ToJsonString();
     }
 
     private async Task WriteValidatedSnapshotManifestAsync(params (string Path, string Json)[] snapshotFiles)

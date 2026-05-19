@@ -6060,7 +6060,7 @@ Guardian quest lifecycle through Mortal World:
 ```text
 Baseline Guardian hooks (`questOrigin=guardian_baseline_mortal_life_hook`) are voluntary offers. They stay in availableQuests until the player accepts them.
 
-If the player accepts a Guardian quest before incarnation, it becomes activeQuests[]. During Mortal World play the GM can update only that accepted quest through guardianQuestProgressUpdates[]. This is the narrow exception to the Mortal World "no Guardian mutation" rule.
+If the player accepts a Guardian quest before incarnation, it becomes activeQuests[]. During Mortal World play the GM can update only that accepted quest through guardianQuestProgressUpdates[]. This is the narrow exception to the Mortal World "no Guardian mutation" rule; it does not permit direct writes to afterlife authority files such as game_state/meta/guardian_abode_residents.json or game_state/meta/shining_abode_state.json.
 
 Use ready_to_turn_in when the mortal objective is satisfied but the soul has not yet returned to the Guardian.
 

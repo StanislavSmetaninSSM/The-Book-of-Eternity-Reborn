@@ -1191,7 +1191,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             "game_state/meta/guardian_social_journal.json",
             "game_state/meta/guardian_projects.json",
             "game_state/meta/guardian_project_journal.json",
-            "game_state/meta/abode_power_journal.json"
+            "game_state/meta/abode_power_journal.json",
+            "game_state/meta/shining_abode_state.json"
         })
         {
             Assert.Contains(afterlifeAuthorityPath, matrix, StringComparison.Ordinal);

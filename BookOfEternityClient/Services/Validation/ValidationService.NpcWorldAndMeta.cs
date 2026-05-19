@@ -373,6 +373,7 @@ public partial class ValidationService
                normalized.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("game_state/combat/", StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("lore/current_world/", StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals("game_state/quests/regular_quests.json", StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals("game_state/quests/quest_history.json", StringComparison.OrdinalIgnoreCase) ||
@@ -395,6 +396,7 @@ public partial class ValidationService
                normalized.Equals(GuardianPowerEventState.JournalPath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("lore/chaos_sea/", StringComparison.OrdinalIgnoreCase);
     }
 
@@ -432,6 +434,10 @@ public partial class ValidationService
             else if (normalized.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase))
             {
                 groups.Add("factions");
+            }
+            else if (normalized.Equals(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase))
+            {
+                groups.Add("Shining Abode state");
             }
             else if (normalized.StartsWith("lore/current_world/", StringComparison.OrdinalIgnoreCase))
             {
@@ -629,6 +635,12 @@ public partial class ValidationService
     {
         return string.Equals(realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(realm, "Море Хаоса", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsShiningAbodeRealm(string? realm)
+    {
+        return string.Equals(realm, "Shining Abode", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(realm, "Сияющая Обитель", StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task<HashSet<string>> CollectImportantGuardianNamesAsync(string realm)

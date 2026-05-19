@@ -1004,6 +1004,12 @@ public partial class ValidationService
         var forbiddenFiles = IsChaosSeaRealm(preTurnRealm)
             ? changedFiles.Where(IsForbiddenChaosSeaChangedFile).ToList()
             : changedFiles.Where(IsForbiddenMortalWorldChangedFile).ToList();
+        if (IsShiningAbodeRealm(preTurnRealm))
+        {
+            forbiddenFiles = forbiddenFiles
+                .Where(path => !path.Replace('\\', '/').Equals(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
         if (!IsChaosSeaRealm(preTurnRealm))
             forbiddenFiles = await FilterAllowedMortalGuardianQuestProgressFilesAsync(manifest, forbiddenFiles, preTurnRealm);
 
