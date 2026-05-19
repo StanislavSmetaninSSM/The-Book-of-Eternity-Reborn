@@ -982,6 +982,12 @@ public partial class GameEngine
     {
         var blockers = new List<string>();
 
+        var activeConflictBlocker = await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
+            _fs,
+            "resolve or repair_cancel the active afterlife spiritual conflict before Soul Gates");
+        if (activeConflictBlocker != null)
+            blockers.Add(activeConflictBlocker);
+
         var pendingConsultationState = await AfterlifeArchiveActionState.ReadConsultationStateAsync(_fs);
         if (pendingConsultationState.Exists)
         {
@@ -1812,6 +1818,16 @@ public partial class GameEngine
             return;
         }
 
+        var activeConflictBlocker = await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
+            _fs,
+            "закройте активный духовный конфликт через mode=resolve или mode=repair_cancel перед reenter_shining_abode");
+        if (activeConflictBlocker != null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Возврат в Сияющую Обитель заблокирован активным духовным конфликтом.[/]");
+            AnsiConsole.MarkupLine($"[dim]{Markup.Escape(activeConflictBlocker)}[/]");
+            return;
+        }
+
         var residentJson = await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath);
         JsonObject? residentRoot = null;
         if (!string.IsNullOrWhiteSpace(residentJson))
@@ -2058,6 +2074,16 @@ public partial class GameEngine
         {
             AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока legacy pendingNativeFactionDiscovery non-null или повреждён. Сначала дождитесь закрытия или repair/refund.[/]");
             AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery[/]");
+            return false;
+        }
+
+        var activeConflictBlocker = await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
+            _fs,
+            "закройте активный духовный конфликт через mode=resolve или mode=repair_cancel перед return_to_chaos_sea");
+        if (activeConflictBlocker != null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока активный духовный конфликт не закрыт.[/]");
+            AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(activeConflictBlocker)}[/]");
             return false;
         }
 
@@ -2387,6 +2413,16 @@ public partial class GameEngine
         {
             AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока legacy pendingNativeFactionDiscovery non-null или повреждён. Сначала дождитесь закрытия или repair/refund.[/]");
             AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(ShiningAbodeState.StatePath)}.pendingNativeFactionDiscovery[/]");
+            return false;
+        }
+
+        var activeConflictBlocker = await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
+            _fs,
+            "закройте активный духовный конфликт через mode=resolve или mode=repair_cancel перед return_to_chaos_sea");
+        if (activeConflictBlocker != null)
+        {
+            AnsiConsole.MarkupLine("[yellow]Нельзя запечатать Сияющую Обитель, пока активный духовный конфликт не закрыт.[/]");
+            AnsiConsole.MarkupLine($"[dim]• {Markup.Escape(activeConflictBlocker)}[/]");
             return false;
         }
 

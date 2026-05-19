@@ -308,6 +308,68 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_SourceOfLightPendingWithActiveSpiritualConflict_IsRejected()
+    {
+        var request = SourceOfLightCapstoneState.CreateRequest(42, 580, 4);
+        await WriteCurrentStateAsync(CreatePreTurnSoulRoot(), CreatePreTurnShiningRoot(), request);
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "activeConflict": {
+            "conflictId": "afterlife_conflict_source_blocker",
+            "realm": "Shining Abode",
+            "sideModel": "direct_duel",
+            "playerSide": {
+              "leadContestant": {
+                "actorType": "player",
+                "actorId": "player_soul",
+                "displayName": "Тестовая Душа"
+              },
+              "supporters": []
+            },
+            "oppositionSide": {
+              "leadContestant": {
+                "actorType": "resident",
+                "actorId": "resident_lumen",
+                "displayName": "Люмен",
+                "actorArtTierSnapshot": {
+                  "pressure": 1
+                },
+                "artAuthoritySource": "afterlife_entity_profiles"
+              },
+              "supporters": []
+            },
+            "operationType": "pressure",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "actionEconomy": {
+              "player": {
+                "current": 6,
+                "max": 6,
+                "source": "Средоточие Души tier 0"
+              },
+              "opposition": {
+                "current": 6,
+                "max": 6,
+                "source": "opposition spiritual authority"
+              }
+            },
+            "resolutionState": "active",
+            "exchangeLog": []
+          },
+          "recentConflicts": []
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "source_of_light_pending_blocked_by_other_contract", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual.Contains(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_SourceOfLightPendingWithValidManifestationHandoff_DoesNotReportOtherContractBlocker()
     {
         var request = SourceOfLightCapstoneState.CreateRequest(42, 580, 4);

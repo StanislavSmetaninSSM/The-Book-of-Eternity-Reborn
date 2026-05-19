@@ -187,6 +187,12 @@ internal static class SourceOfLightCapstoneState
             return $"legacy pendingNativeFactionDiscovery in {ShiningAbodeState.StatePath}";
         }
 
+        var activeConflictBlocker = await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
+            fs,
+            "resolve or repair_cancel the active afterlife spiritual conflict before Source of Light");
+        if (activeConflictBlocker != null)
+            return activeConflictBlocker;
+
         if (await GuardianAbodeResidentRequestState.IsManifestationRequestFileMalformedAsync(fs))
             return $"malformed next-life manifestation handoff {GuardianAbodeResidentRequestState.PendingManifestationRequestPath}";
 

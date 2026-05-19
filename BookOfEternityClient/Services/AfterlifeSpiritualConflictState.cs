@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
@@ -115,6 +116,42 @@ public static class AfterlifeSpiritualConflictState
         "setback",
         "no_effect"
     };
+
+    public static async Task<string?> TryDescribeActiveConflictBlockerAsync(
+        FileSystemManager fs,
+        string closureHint)
+    {
+        if (!fs.FileExists(StatePath))
+            return null;
+
+        var raw = await fs.ReadFileAsync(StatePath);
+        if (string.IsNullOrWhiteSpace(raw))
+            return $"{StatePath}: поврежденный файл духовного конфликта; {closureHint}";
+
+        try
+        {
+            if (JsonNode.Parse(raw) is not JsonObject root)
+                return $"{StatePath}: поврежденный root духовного конфликта; {closureHint}";
+
+            if (root["activeConflict"] is JsonObject activeConflict)
+            {
+                var conflictId = GetNodeString(activeConflict["conflictId"]) ?? "unknown";
+                var realm = GetNodeString(activeConflict["realm"]) ?? "unknown";
+                return $"{StatePath}.activeConflict: active spiritual conflict blocks afterlife lifecycle transition\n" +
+                       $"  conflictId={conflictId}; realm={realm}\n" +
+                       $"  закрытие: {closureHint}";
+            }
+
+            if (root.ContainsKey("activeConflict") && root["activeConflict"] != null)
+                return $"{StatePath}.activeConflict: поврежденный activeConflict; {closureHint}";
+
+            return null;
+        }
+        catch (JsonException)
+        {
+            return $"{StatePath}: поврежденный JSON духовного конфликта; {closureHint}";
+        }
+    }
 
     public static readonly IReadOnlyDictionary<string, DifficultyDefinition> DifficultyDefinitions =
         new Dictionary<string, DifficultyDefinition>(StringComparer.OrdinalIgnoreCase)

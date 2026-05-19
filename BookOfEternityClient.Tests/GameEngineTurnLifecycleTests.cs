@@ -451,6 +451,31 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CollectIncarnationBlockersAsync_ActiveSpiritualConflictBlocksSoulGates()
+    {
+        await WriteJsonAsync(AfterlifeSpiritualConflictState.StatePath, new
+        {
+            schemaVersion = 1,
+            activeConflict = new
+            {
+                conflictId = "afterlife_conflict_active_gate_blocker",
+                realm = "Chaos Sea",
+                operationType = "pressure",
+                resolutionState = "active"
+            },
+            recentConflicts = Array.Empty<object>()
+        });
+        var engine = CreateGameEngine();
+
+        var blockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Contains(blockers, blocker =>
+            blocker.Contains(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains("activeConflict", StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains("resolve", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task CleanupAfterCancelledChaosSeaMarkerTurn_PreservesSystemGuardianAttractionForLateResponse()
     {
         await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new
