@@ -465,6 +465,19 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeLiveSystemReminderMentionsEntityProfileSurfaces()
+    {
+        var lifecyclePrompt = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+
+        Assert.Contains("afterlifeEntityProfileUpdates", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeEntityCustomStateChanges", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeEntityProgressionOverrides", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeSpecialArtLearningReceipts", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("soulDissipationProof", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("terminalGameOver", lifecyclePrompt, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShiningLeadershipTransitionModesAndHistoryMappingsAreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
