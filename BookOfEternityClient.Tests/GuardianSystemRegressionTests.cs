@@ -13,6 +13,12 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class GuardianSystemRegressionTests : IDisposable
 {
+    private const string EmptyGuardianProjectTrackerJson =
+        "{\n  \"activeProjects\": [],\n  \"completedProjects\": [],\n  \"temporaryProjectModifiers\": []\n}";
+
+    private const string EmptyGuardianPowerJournalJson =
+        "{\n  \"entries\": []\n}";
+
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
 
@@ -160,6 +166,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
             "game_state/meta/guardians.json",
             "test_backups/preturn_guardians_mortal_guardian_quest_progress.json",
             NormalizeGuardianStateJson(preTurnGuardiansJson));
+        await EnsureEmptyCurrentGuardianProjectTrackerAndPowerJournalAsync();
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", NormalizeGuardianStateJson("""
@@ -211,7 +218,8 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_mortal_guardian_quest_progress.json"
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_mortal_guardian_quest_progress.json",
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_guardian_tracker_auto_baseline.json"
         });
 
         var normalizedGuardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
@@ -287,6 +295,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
             "game_state/meta/guardians.json",
             "test_backups/preturn_guardians_mortal_guardian_quest_progress_partial.json",
             NormalizeGuardianStateJson(preTurnGuardiansJson));
+        await EnsureEmptyCurrentGuardianProjectTrackerAndPowerJournalAsync();
         await EnsureValidatedPreTurnGuardianProjectTrackerSnapshotAsync();
 
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", NormalizeGuardianStateJson("""
@@ -334,7 +343,8 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_mortal_guardian_quest_progress_partial.json"
+            ["game_state/meta/guardians.json"] = "test_backups/preturn_guardians_mortal_guardian_quest_progress_partial.json",
+            [GuardianProjectState.TrackerPath] = "test_backups/preturn_guardian_tracker_auto_baseline.json"
         });
 
         var normalizedGuardiansJson = await _fs.ReadFileAsync("game_state/meta/guardians.json");
@@ -32036,12 +32046,7 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         await WritePreTurnTrackedFileAsync(
             GuardianProjectState.TrackerPath,
             "test_backups/preturn_guardian_tracker_auto_baseline.json",
-            """
-            {
-              "activeProjects": [],
-              "completedProjects": []
-            }
-            """);
+            EmptyGuardianProjectTrackerJson);
 
         if (File.Exists(_fs.ResolvePath("game_state/control/pending_turn_snapshot.json")))
         {
@@ -32056,11 +32061,13 @@ public sealed class GuardianSystemRegressionTests : IDisposable
         await WritePreTurnTrackedFileAsync(
             GuardianPowerEventState.JournalPath,
             "test_backups/preturn_abode_power_journal_auto_baseline.json",
-            """
-            {
-              "entries": []
-            }
-            """);
+            EmptyGuardianPowerJournalJson);
+    }
+
+    private async Task EnsureEmptyCurrentGuardianProjectTrackerAndPowerJournalAsync()
+    {
+        await WriteRawAsync(GuardianProjectState.TrackerPath, EmptyGuardianProjectTrackerJson);
+        await WriteRawAsync(GuardianPowerEventState.JournalPath, EmptyGuardianPowerJournalJson);
     }
 
     private static string NormalizeGuardianStateJson(string json)
