@@ -7085,7 +7085,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.False(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
         var renderedText = ExtractRenderedText();
         Assert.Contains("Источник Света", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Capstone ещё закрыт", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Вершина полного Сияния ещё закрыта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Capstone ещё закрыт", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("radiance.tier=4", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("radiance.experience>=580", renderedText, StringComparison.OrdinalIgnoreCase);
     }
@@ -7470,7 +7471,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("help_pending_bootstrap_read_only_audits");
         var renderedText = ExtractRenderedText();
-        Assert.Contains("SHINING ABODE HANDOFF", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ПЕРЕДАЧА ИЗ СИЯЮЩЕЙ ОБИТЕЛИ", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("SHINING ABODE HANDOFF", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/status", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/статус", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/shining_abode", renderedText, StringComparison.OrdinalIgnoreCase);

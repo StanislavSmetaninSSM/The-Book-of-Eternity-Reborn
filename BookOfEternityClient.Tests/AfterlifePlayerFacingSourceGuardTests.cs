@@ -75,6 +75,12 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("[blue]/chaos_sea", help, StringComparison.Ordinal);
         Assert.Contains("[blue]/море_хаоса", help, StringComparison.Ordinal);
         Assert.Contains("[blue]/abodes", help, StringComparison.Ordinal);
+        Assert.Contains("ПЕРЕДАЧА ИЗ СИЯЮЩЕЙ ОБИТЕЛИ", help, StringComparison.Ordinal);
+        Assert.Contains("Вершина полного Сияния: Источник Света", help, StringComparison.Ordinal);
+        Assert.Contains("Старое имя той же безопасной команды", help, StringComparison.Ordinal);
+        Assert.DoesNotContain("SHINING ABODE HANDOFF", help, StringComparison.Ordinal);
+        Assert.DoesNotContain("Capstone полного Сияния", help, StringComparison.Ordinal);
+        Assert.DoesNotContain("Legacy alias", help, StringComparison.Ordinal);
         Assert.DoesNotContain("/реликвии /хранители /обители /душа", lifecycle, StringComparison.Ordinal);
         Assert.Contains("/статус /реликвии /хранители /обители /гача /перья /архив_души", lifecycle, StringComparison.Ordinal);
         Assert.Contains("CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction)", lifecycle, StringComparison.Ordinal);
@@ -188,6 +194,24 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("Полный JSON progression_schedule.json", statusAudit, StringComparison.Ordinal);
         Assert.Contains("Полный JSON input/turn_request.json.progressionControl", statusAudit, StringComparison.Ordinal);
         Assert.Contains("Полный JSON progression_report.progressionProcessingReport", statusAudit, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void SourceOfLightScreensUseRussianPlayerFacingStateLabels()
+    {
+        var sourceOfLight = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.SourceOfLight.cs");
+
+        Assert.Contains("Вершинная сцена Сияющей Обители", sourceOfLight, StringComparison.Ordinal);
+        Assert.Contains("Источник Света закрыт", sourceOfLight, StringComparison.Ordinal);
+        Assert.Contains("Источник Света ожидает закрытия", sourceOfLight, StringComparison.Ordinal);
+        Assert.Contains("Источник Света завершён", sourceOfLight, StringComparison.Ordinal);
+        Assert.Contains("Награда выдаётся один раз на душу", sourceOfLight, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("Locked Source of Light", sourceOfLight, StringComparison.Ordinal);
+        Assert.DoesNotContain("Pending Source of Light", sourceOfLight, StringComparison.Ordinal);
+        Assert.DoesNotContain("Completed Source of Light", sourceOfLight, StringComparison.Ordinal);
+        Assert.DoesNotContain("capstone-сцена", sourceOfLight, StringComparison.Ordinal);
+        Assert.DoesNotContain("one-per-soul", sourceOfLight, StringComparison.Ordinal);
     }
 
     private static string ReadSource(params string[] pathParts) =>

@@ -78,9 +78,9 @@ public partial class ExplorerMode
         Write(BuildSourceOfLightAvailablePanel(request));
         WriteJsonAuditPanel("JSON pending_source_of_light_capstone.json", preview, Color.Gold1);
 
-        if (!Confirm("[yellow]Открыть Источник Света и отправить pending contract GM?[/]", false))
+        if (!Confirm("[yellow]Открыть Источник Света и отправить ожидающий контракт ГМ?[/]", false))
         {
-            MarkupLine("[dim]Источник Света не открыт; pending request не создан.[/]");
+            MarkupLine("[dim]Источник Света не открыт; ожидающий запрос не создан.[/]");
             WaitForKey();
             return;
         }
@@ -88,7 +88,7 @@ public partial class ExplorerMode
         await SourceOfLightCapstoneState.WriteRequestAsync(_fs, request);
         _pendingGmAction =
             $"[SOURCE_OF_LIGHT_CAPSTONE: {request.RequestId}] Душа входит в Источник Света.\n\n" +
-            "Разреши это как capstone-сцену Сияющей Обители: Источник Света / Source of Light. " +
+            "Разреши это как вершинную сцену Сияющей Обители: Источник Света. " +
             "Опиши ролевую сцену познания причин зарождения мироздания, начала существования и смысла всего сущего. " +
             $"Закрой {SourceOfLightCapstoneState.PendingRequestPath}: сохрани ordinary active Shining invariants, " +
             $"запиши shining_abode_state.{SourceOfLightCapstoneState.ShiningStateProperty}.completed=true, " +
@@ -106,13 +106,13 @@ public partial class ExplorerMode
         {
             "[bold gold1]Источник Света[/] [dim](Source of Light)[/]",
             "",
-            "Полное Сияние достигнуто. Доступна секретная capstone-сцена Сияющей Обители.",
+            "Полное Сияние достигнуто. Доступна секретная Вершинная сцена Сияющей Обители.",
             "",
             "[bold]Награды после accepted closure:[/]",
-            $"  • Воплощение Света (Light Incarnate), id={SourceOfLightCapstoneState.PassiveId}: +{SourceOfLightCapstoneState.LeadDiceBonus} к броску духовного конфликта, если игрок lead contestant; +{SourceOfLightCapstoneState.SupportDiceBonus}, если игрок supporter/champion-side contributor; ещё +{SourceOfLightCapstoneState.CoerciveOperationExtraBonus} против force_incarnation/force_binding/break_binding.",
-            $"  • Воплощенный Свет (Incarnated Light), relicId={SourceOfLightCapstoneState.RelicId}: уникальная реликвия души, при экипировке в смертной жизни даёт +{SourceOfLightCapstoneState.MortalCharacteristicBonus} ко всем основным характеристикам.",
+            $"  • Воплощение Света, id={SourceOfLightCapstoneState.PassiveId}: +{SourceOfLightCapstoneState.LeadDiceBonus} к броску духовного конфликта, если игрок ведёт сторону (leadContestant); +{SourceOfLightCapstoneState.SupportDiceBonus}, если игрок поддерживает чемпиона/союзную сторону; ещё +{SourceOfLightCapstoneState.CoerciveOperationExtraBonus} против force_incarnation/force_binding/break_binding.",
+            $"  • Воплощенный Свет, relicId={SourceOfLightCapstoneState.RelicId}: уникальная реликвия души, при экипировке в смертной жизни даёт +{SourceOfLightCapstoneState.MortalCharacteristicBonus} ко всем основным характеристикам.",
             "",
-            $"[dim]Pending request: {request.RequestId}[/]"
+            $"[dim]Ожидающий запрос: {request.RequestId}[/]"
         };
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -131,17 +131,17 @@ public partial class ExplorerMode
         {
             "[bold gold1]Источник Света[/]",
             "",
-            "[yellow]Capstone ещё закрыт.[/]",
+            "[yellow]Вершина полного Сияния ещё закрыта.[/]",
             $"  • Причина: {Markup.Escape(blocker)}",
             $"  • Требование: radiance.tier={SourceOfLightCapstoneState.RequiredRadianceTier}, radiance.experience>={SourceOfLightCapstoneState.RequiredRadianceExperience}.",
             $"  • Сейчас: radiance.tier={SourceOfLightCapstoneState.GetNodeInt(shiningRoot["radiance"]?["tier"])}, radiance.experience={SourceOfLightCapstoneState.GetNodeInt(shiningRoot["radiance"]?["experience"])}.",
             "",
-            "[dim]Команда не создаёт pending-файл и не отправляет GM turn, пока требования не выполнены.[/]"
+            "[dim]Команда не создаёт pending-файл и не отправляет ход ГМ, пока требования не выполнены.[/]"
         };
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" Locked Source of Light ", Justify.Center),
+            Header = new PanelHeader(" Источник Света закрыт ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Yellow),
             Padding = new Padding(2, 1),
@@ -153,20 +153,20 @@ public partial class ExplorerMode
     {
         var lines = new List<string>
         {
-            "[bold gold1]Источник Света уже ожидает closure GM.[/]",
+            "[bold gold1]Источник Света ожидает закрытия ГМ.[/]",
             "",
             $"  • requestId: [white]{Markup.Escape(request.RequestId)}[/]",
             $"  • createdAtTurn: [white]{request.CreatedAtTurn}[/]",
-            $"  • radiance snapshot: [white]{request.RadianceExperienceAtRequest} XP[/], tier [white]{request.RadianceTierAtRequest}[/]",
+            $"  • снимок Сияния: [white]{request.RadianceExperienceAtRequest} опыта[/], уровень [white]{request.RadianceTierAtRequest}[/]",
             $"  • rewardPassiveId: [white]{Markup.Escape(request.RewardPassiveId)}[/]",
             $"  • rewardRelicId: [white]{Markup.Escape(request.RewardRelicId)}[/]",
             "",
-            "[dim]Не создавайте второй запрос; дождитесь accepted/refused repair path или исправьте pending-файл.[/]"
+            "[dim]Не создавайте второй запрос; дождитесь принятого/отказанного закрытия или исправьте pending-файл через ремонт.[/]"
         };
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" Pending Source of Light ", Justify.Center),
+            Header = new PanelHeader(" Источник Света ожидает закрытия ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Gold1),
             Padding = new Padding(2, 1),
@@ -182,14 +182,14 @@ public partial class ExplorerMode
             "",
             $"  • Воплощение Света: [white]{(SourceOfLightCapstoneState.HasLightIncarnate(soulRoot) ? "получено" : "не найдено в soul_state.afterlifeCombatProfile")}[/]",
             $"  • Воплощенный Свет: [white]{SourceOfLightCapstoneState.CountIncarnatedLightRelics(soulRoot)}[/] экземпляр(ов) в soulRelics.",
-            $"  • Shining marker: [white]{(SourceOfLightCapstoneState.HasCompletedCapstone(shiningRoot) ? "completed" : "не найден")}[/]",
+            $"  • Метка Сияющей Обители: [white]{(SourceOfLightCapstoneState.HasCompletedCapstone(shiningRoot) ? "завершено" : "не найдена")}[/]",
             "",
-            "[dim]Награда one-per-soul; повторный запуск не создаёт новый pending request и не дублирует реликвию/пассив.[/]"
+            "[dim]Награда выдаётся один раз на душу; повторный запуск не создаёт новый ожидающий запрос и не дублирует реликвию/пассив.[/]"
         };
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" Completed Source of Light ", Justify.Center),
+            Header = new PanelHeader(" Источник Света завершён ", Justify.Center),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Gold1),
             Padding = new Padding(2, 1),
