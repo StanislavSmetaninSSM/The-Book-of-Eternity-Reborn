@@ -8311,6 +8311,30 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Status_ShowsRawMalformedAfterlifeEntityProfiles()
+    {
+        const string rawProfiles = "{ malformed afterlife entity profiles payload";
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 500 }
+        });
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, rawProfiles);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_status_malformed_entity_profiles_raw");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains(AfterlifeEntityProfileState.StatePath, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Raw malformed", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(rawProfiles, ExtractRenderedLiteralText(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_Status_SkipsEmptyNpcPendingQueues()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
@@ -8322,6 +8346,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         });
         await WriteJsonAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath, new { requests = Array.Empty<object>() });
         await WriteJsonAsync(NpcTradeRequestState.PendingRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(ShiningCoreActionRequestState.PendingActionsRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(ShiningTradeRequestState.PendingRequestsPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new { requests = Array.Empty<object>() });
         await _stateManager.RefreshGameStateAsync();
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/status"));
@@ -8333,6 +8364,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("pending_npc_trade_inventory_requests.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("NPC social request из смертного мира", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("NPC trade request из смертного мира", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(ActorSocialInteractionRequestState.PendingGuardianRequestPath, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(ShiningCoreActionRequestState.PendingActionsRequestPath, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(ShiningTradeRequestState.PendingRequestsPath, renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(ShiningFactionRequestState.PendingFoundingsRequestPath, renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

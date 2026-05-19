@@ -61,6 +61,7 @@ public partial class ExplorerMode
         var residentsStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync(GuardianAbodeResidentState.StatePath);
         var shiningStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync(ShiningAbodeState.StatePath);
         var spiritualConflictRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeSpiritualConflictState.StatePath);
+        var entityProfilesRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeEntityProfileState.StatePath);
         var soulRoot = soulStateRead.Root;
         var guardiansRoot = guardiansStateRead.Root;
         var residentsRoot = residentsStateRead.Root;
@@ -91,7 +92,7 @@ public partial class ExplorerMode
         AppendAfterlifeSpiritualConflictStatusLines(lines, spiritualConflictRead.Root);
         AppendMalformedAfterlifeStateStatusLines(
             lines,
-            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead },
+            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead },
             shiningContext?.ReadIssues);
         await AppendAfterlifeProgressionStatusLinesAsync(lines);
 
@@ -116,7 +117,7 @@ public partial class ExplorerMode
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardians.json", guardiansRoot, Color.Cyan1);
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardian_abode_residents.json", residentsRoot, Color.Cyan1);
         WriteMalformedAfterlifeStateAuditPanels(
-            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead },
+            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead },
             shiningContext?.ReadIssues);
         if (shiningContext != null)
         {
@@ -129,6 +130,7 @@ public partial class ExplorerMode
             WriteJsonAuditPanel("Полный JSON Shining treasury", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["treasury"]), Color.Gold1);
         }
         WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", spiritualConflictRead.Root, Color.Cyan1);
+        WriteJsonAuditPanel($"Полный JSON {AfterlifeEntityProfileState.StatePath}", entityProfilesRead.Root, Color.Cyan1);
         await WriteAfterlifeProgressionAuditPanelsAsync();
         WaitForKey();
     }
@@ -680,10 +682,6 @@ public partial class ExplorerMode
                 {
                     if (requests.Count == 0)
                     {
-                        if (ShouldSkipEmptyRequestsQueueInAfterlifeAudit(definition))
-                            continue;
-
-                        result.Add(new AfterlifePendingContractAuditEntry(definition, root, null, IsMalformed: false, Error: null, RawPayload: raw));
                         continue;
                     }
 
@@ -715,10 +713,6 @@ public partial class ExplorerMode
 
         return result;
     }
-
-    private static bool ShouldSkipEmptyRequestsQueueInAfterlifeAudit(AfterlifePendingContractDefinition definition) =>
-        string.Equals(definition.Path, ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(definition.Path, NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase);
 
     private static string BuildPendingContractIdentitySummary(JsonObject payload)
     {
