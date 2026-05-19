@@ -523,6 +523,68 @@ public sealed class ShiningPoliticalResolutionValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithVerifiedSchedulerAndAvailabilityChange_Fails()
+    {
+        var request = CreateFoundingRequest("founding_req_scheduler_availability", "faction_scheduler_availability", "hall_scheduler_availability");
+        var preTurnShiningRoot = CreateBaseShiningRoot();
+        var preTurnResidentRoot = CreateBaseResidentRoot();
+        var currentShiningRoot = CloneJsonObject(preTurnShiningRoot);
+        var currentResidentRoot = CloneJsonObject(preTurnResidentRoot);
+        AddAcceptedFoundingMaterialization(currentShiningRoot, currentResidentRoot, request);
+
+        currentShiningRoot["radiance"]!["experience"] = 999;
+        currentShiningRoot["availability"] = "sealed_until_next_ascension";
+
+        await SeedCurrentStateAsync(currentShiningRoot, currentResidentRoot, currentFeathers: 75);
+        const string backupPath = "game_state/control/pending_turn_snapshot/pre_shining_founding_scheduler_availability.json";
+        await WriteNodeAsync(ShiningFactionRequestState.PendingFoundingsRequestPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteNodeAsync(backupPath, new JsonObject
+        {
+            [ShiningFactionRequestState.RequestsProperty] = new JsonArray(request.DeepClone())
+        });
+        await WriteValidatedSnapshotStateAsync(
+            preTurnShiningRoot,
+            CreateSoulStateRoot(currentFeathers: 75),
+            preTurnResidentRoot);
+        await WritePendingTurnSnapshotManifestAsync(
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [ShiningFactionRequestState.PendingFoundingsRequestPath] = backupPath
+            },
+            new ProgressionControl
+            {
+                CurrentRealm = "Shining Abode",
+                ShiningFactionCyclesExpectedThisTurn = 1
+            });
+        await WriteNodeAsync(ProgressionScheduleService.ReportPath, new JsonObject
+        {
+            ["progressionProcessingReport"] = new JsonObject
+            {
+                ["sessionId"] = "test-session",
+                ["requestId"] = "test-request",
+                ["turnNumber"] = 12,
+                ["worldCyclesProcessed"] = 0,
+                ["factionCyclesProcessed"] = 0,
+                ["chaosSeaCyclesProcessed"] = 0,
+                ["guardianProjectCyclesProcessed"] = 0,
+                ["residentAgencyCyclesProcessed"] = 0,
+                ["shiningAbodeCyclesProcessed"] = 0,
+                ["shiningFactionCyclesProcessed"] = 1,
+                ["shiningTradeCyclesProcessed"] = 0
+            }
+        });
+
+        var issues = await InvokeValidationAsync("ValidateShiningClosureCompositeDiffAsync");
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "shining_closure_unexpected_shining_state_diff", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("availability", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateShiningClosureCompositeDiffAsync_AcceptedFoundingWithConcurrentAbodeOfferingSoulDelta_Passes()
     {
         var request = CreateFoundingRequest("founding_req_with_offering", "faction_with_offering", "hall_with_offering");

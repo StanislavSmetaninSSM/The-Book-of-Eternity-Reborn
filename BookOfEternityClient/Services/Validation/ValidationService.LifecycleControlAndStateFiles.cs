@@ -2246,6 +2246,7 @@ public partial class ValidationService
 
     private static readonly string[][] ShiningClosureForbiddenProgressionDeltaPaths =
     {
+        new[] { "availability" },
         new[] { "coreActionReceipts" },
         new[] { "gates" },
         new[] { "gachaSystem", "gachaHistory" },

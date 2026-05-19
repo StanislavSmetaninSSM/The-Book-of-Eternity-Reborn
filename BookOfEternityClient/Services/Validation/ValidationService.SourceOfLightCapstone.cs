@@ -621,6 +621,7 @@ public partial class ValidationService
 
     private static readonly string[][] SourceOfLightForbiddenShiningProgressionDeltaPaths =
     {
+        new[] { "availability" },
         new[] { "coreActionReceipts" },
         new[] { "factionFoundingReceipts" },
         new[] { "factionRealignmentReceipts" },

@@ -402,7 +402,7 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - `mustEvaluate* = true` означает, что соответствующий progression debt реально существует в этом ходу.
 - `mustEvaluate* = false` означает, что report по этому контуру не обязателен.
 Игнорирование `progressionControl` является нарушением контракта.
-Если accepted turn одновременно закрывает Shining pending/core contract и обрабатывает `progressionProcessingReport`, scheduler allowance узкий: он разрешает только scheduler-owned Shining/resident/trade progression fields. Он НЕ разрешает unrelated `coreActionReceipts[]`, `gates`, `gachaSystem.gachaHistory`, `pendingNativeFactionDiscovery`, `preparedIncarnationPackage`, `lightSparks`, `treasury` или `sourceOfLightCapstone`, если отдельный client-authored contract для этой поверхности не закрывается в том же accepted turn.
+Если accepted turn одновременно закрывает Shining pending/core contract и обрабатывает `progressionProcessingReport`, scheduler allowance узкий: он разрешает только scheduler-owned Shining/resident/trade progression fields. Он НЕ разрешает unrelated `availability`, `coreActionReceipts[]`, `gates`, `gachaSystem.gachaHistory`, `pendingNativeFactionDiscovery`, `preparedIncarnationPackage`, `lightSparks`, `treasury` или `sourceOfLightCapstone`, если отдельный client-authored contract для этой поверхности не закрывается в том же accepted turn.
 
 ---
 
