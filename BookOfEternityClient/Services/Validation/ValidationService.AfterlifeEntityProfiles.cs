@@ -175,6 +175,20 @@ public partial class ValidationService
                 expected: "non-empty actorId or actorRef"));
         }
 
+        var actorIsPlayerSoul = string.Equals(actorType, "player_soul", StringComparison.OrdinalIgnoreCase);
+        var idIsPlayerSoul = string.Equals(actorId, "player_soul", StringComparison.OrdinalIgnoreCase);
+        if (actorIsPlayerSoul != idIsPlayerSoul)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.actorId",
+                IssueSeverity.Error,
+                "Идентичность player_soul зарезервирована: профиль души игрока должен использовать actorType=player_soul и actorId/actorRef=player_soul, а не-профили игрока не могут использовать actorId=player_soul.",
+                code: "afterlife_entity_profile_player_identity_mismatch",
+                section: "AfterlifeEntityProfiles",
+                expected: "actorType=player_soul iff actorId/actorRef=player_soul",
+                actual: $"{actorType ?? "missing"}:{actorId ?? "missing"}"));
+        }
+
         RequireProfileString(profile, context, "displayName", "afterlife_entity_profile_missing_display_name", issues);
         var realm = RequireProfileString(profile, context, "realm", "afterlife_entity_profile_missing_realm", issues);
         if (!string.IsNullOrWhiteSpace(actorType) && !AfterlifeEntityProfileState.ActorTypes.Contains(actorType))
@@ -220,7 +234,7 @@ public partial class ValidationService
         ValidateAfterlifeProfileCurrencies(profile, context, issues);
         ValidateAfterlifeProfileProgression(profile, context, issues);
         ValidateAfterlifeProfileStandardArts(profile, context, issues);
-        ValidateAfterlifeProfileSpecialArts(profile, context, issues);
+        ValidateAfterlifeProfileSpecialArts(profile, context, actorType, actorId, issues);
         ValidateAfterlifeProfileCustomStates(profile, context, issues);
         ValidateAfterlifeProfileSoulDissipation(profile, context, issues);
         ValidateAfterlifeProfileProgressionStrategy(profile, context, issues);
@@ -610,7 +624,12 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateAfterlifeProfileSpecialArts(JsonElement profile, string context, List<ValidationIssue> issues)
+    private void ValidateAfterlifeProfileSpecialArts(
+        JsonElement profile,
+        string context,
+        string? profileActorType,
+        string? profileActorId,
+        List<ValidationIssue> issues)
     {
         if (!TryRequireProfileArray(profile, context, "specialArts", "afterlife_entity_profile_missing_special_arts", issues, out var specialArts))
             return;
@@ -660,6 +679,22 @@ public partial class ValidationService
                     section: "AfterlifeEntityProfiles",
                     expected: string.Join("/", AfterlifeEntityProfileState.ActorTypes.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
                     actual: ownerActorType));
+            }
+
+            var ownerActorId = GetProfileString(art, "ownerActorId");
+            if (!string.IsNullOrWhiteSpace(ownerActorType) &&
+                !string.IsNullOrWhiteSpace(ownerActorId) &&
+                (!string.Equals(ownerActorType, profileActorType, StringComparison.OrdinalIgnoreCase) ||
+                 !string.Equals(ownerActorId, profileActorId, StringComparison.OrdinalIgnoreCase)))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{artContext}.ownerActorId",
+                    IssueSeverity.Error,
+                    "ownerActorType/ownerActorId особого духовного искусства должны совпадать с профилем-владельцем.",
+                    code: "afterlife_entity_profile_special_art_owner_mismatch",
+                    section: "AfterlifeEntityProfiles",
+                    expected: $"{profileActorType}:{profileActorId}",
+                    actual: $"{ownerActorType}:{ownerActorId}"));
             }
 
             var baseOperation = RequireProfileString(art, artContext, "baseOperation", "afterlife_entity_profile_special_art_missing_base_operation", issues);

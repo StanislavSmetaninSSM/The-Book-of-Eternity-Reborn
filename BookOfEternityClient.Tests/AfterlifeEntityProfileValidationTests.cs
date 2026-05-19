@@ -47,6 +47,32 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_SpecialArtOwnerMustMatchProfileIdentity()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson()
+            .Replace("\"ownerActorType\": \"guardian\"", "\"ownerActorType\": \"player_soul\"", StringComparison.Ordinal)
+            .Replace("\"ownerActorId\": \"guardian_mirror\"", "\"ownerActorId\": \"player_soul\"", StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_owner_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PlayerSoulIdentityMustNotBeUsedByNonPlayerProfile()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson()
+            .Replace("\"actorId\": \"guardian_mirror\"", "\"actorId\": \"player_soul\"", StringComparison.Ordinal)
+            .Replace("\"ownerActorId\": \"guardian_mirror\"", "\"ownerActorId\": \"player_soul\"", StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_player_identity_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_InvalidAfterlifeEntityProfile_ReportsContractIssues()
     {
         await WriteProfileStateAsync("""

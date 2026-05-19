@@ -395,6 +395,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("Профили сущностей посмертия", text, StringComparison.Ordinal);
             Assert.Contains("actorType", text, StringComparison.Ordinal);
             Assert.Contains("actorId", text, StringComparison.Ordinal);
+            Assert.Contains("actorType=player_soul", text, StringComparison.Ordinal);
+            Assert.Contains("actorId=player_soul", text, StringComparison.Ordinal);
             Assert.Contains("standardArts", text, StringComparison.Ordinal);
             Assert.Contains("specialArts", text, StringComparison.Ordinal);
             Assert.Contains("soulDissipationTier", text, StringComparison.Ordinal);
@@ -420,6 +422,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("soul_dissipation", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
             Assert.Contains("trainingConditions", text, StringComparison.Ordinal);
+            Assert.Contains("ownerActorType/ownerActorId` must match", text, StringComparison.Ordinal);
             Assert.Contains("costMultiplierPercent", text, StringComparison.Ordinal);
             Assert.Contains("Spark-only", text, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("at least one positive", text, StringComparison.OrdinalIgnoreCase);
