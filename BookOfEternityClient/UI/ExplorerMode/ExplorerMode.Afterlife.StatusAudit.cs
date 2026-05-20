@@ -452,7 +452,8 @@ public partial class ExplorerMode
                 var projects = faction["projects"] as JsonArray;
                 var supported = projects?.OfType<JsonObject>().Count(project => GetNodeBool(project["isSupported"])) ?? 0;
                 var memberCount = CountResidentsInFaction(context.ResidentRoot, factionId);
-                lines.Add($"  • {Markup.Escape(name)} [dim]({Markup.Escape(factionId)})[/]: сила={strength}, торговый тир={ShiningAbodeState.GetTradeTier(strength)}, слоты={ShiningAbodeState.GetTradeStockItemCount(faction, context.ResidentRoot)}, редкость={Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(strength))}, множитель услуг x{ShiningAbodeState.GetServiceMultiplier(strength):0.00}, резиденты={memberCount}, проекты={projects?.Count ?? 0}, поддержано={supported}.");
+                var lifecycle = DescribeShiningFactionLifecycle(GetNodeString(faction["factionLifecycle"]?["state"]));
+                lines.Add($"  • {Markup.Escape(name)} [dim]({Markup.Escape(factionId)})[/]: жизненный цикл={Markup.Escape(lifecycle)}, сила={strength}, торговый тир={ShiningAbodeState.GetTradeTier(strength)}, слоты={ShiningAbodeState.GetTradeStockItemCount(faction, context.ResidentRoot)}, редкость={Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(strength))}, множитель услуг x{ShiningAbodeState.GetServiceMultiplier(strength):0.00}, резиденты={memberCount}, проекты={projects?.Count ?? 0}, поддержано={supported}.");
             }
         }
     }

@@ -57,6 +57,9 @@ internal static partial class ShiningAbodeState
 
     public static int GetTradeStockItemCount(JsonObject faction, JsonObject? residentRoot)
     {
+        if (!IsFactionOperational(faction))
+            return 0;
+
         var factionStrength = Math.Clamp(GetNodeInt(faction["factionStrength"], 0), 0, 100);
         var tradeTier = GetTradeTier(factionStrength);
         if (tradeTier <= 0)
@@ -88,10 +91,10 @@ internal static partial class ShiningAbodeState
     }
 
     public static bool FactionHasSupportedProjectArchetype(JsonObject? faction, string archetype) =>
-        CountSupportedProjectsByArchetypeForFaction(faction, archetype) > 0;
+        IsFactionOperational(faction) && CountSupportedProjectsByArchetypeForFaction(faction, archetype) > 0;
 
     public static bool FactionHasAvailableTrade(JsonObject? faction) =>
-        faction != null && GetTradeTier(GetNodeInt(faction["factionStrength"], 0)) >= 1;
+        faction != null && IsFactionOperational(faction) && GetTradeTier(GetNodeInt(faction["factionStrength"], 0)) >= 1;
 
     public static string GetTradeCycleId(int currentIncarnation) => $"shining_return_{Math.Max(0, currentIncarnation)}";
 

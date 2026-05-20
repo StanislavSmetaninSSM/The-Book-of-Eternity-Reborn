@@ -1848,6 +1848,39 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningFactionLifecycleContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var docs = new[] { matrix, examples, apiSpec, daemonSpec, taskGuide, operations };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains("factionLifecycle", doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionLifecycleStateActive, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionLifecycleStateWeakened, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionLifecycleStateLeaderless, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionLifecycleStateBroken, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionLifecycleStateDissolved, doc, StringComparison.Ordinal);
+            Assert.Contains("leadershipState=vacant", doc, StringComparison.Ordinal);
+            Assert.Contains("tradeInventory", doc, StringComparison.Ordinal);
+            Assert.Contains("isSupported=false", doc, StringComparison.Ordinal);
+            Assert.Contains("defeatedAtTurn", doc, StringComparison.Ordinal);
+            Assert.Contains("remnantsSummary", doc, StringComparison.Ordinal);
+            Assert.Contains("Do not delete", doc, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("shining_faction_lifecycle_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("factions[].factionLifecycle", manifest, StringComparison.Ordinal);
+        Assert.Contains("Крылья Ангелов", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeEnumContractsAreDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

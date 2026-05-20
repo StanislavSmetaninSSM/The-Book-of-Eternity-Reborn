@@ -563,6 +563,8 @@ internal static class ShiningTradeRequestState
         var faction = ShiningAbodeState.FindFaction(shiningRoot, request.FactionId);
         if (faction == null)
             return "Указанная фракция не найдена.";
+        if (!ShiningAbodeState.IsFactionOperational(faction))
+            return "Жизненный цикл фракции или её сила не позволяют открыть активную торговую витрину.";
 
         var strength = GetNodeInt(faction["factionStrength"], 0);
         var derivedTradeTier = ShiningAbodeState.GetTradeTier(strength);

@@ -693,6 +693,12 @@ internal static partial class ShiningAbodeState
             return false;
         }
 
+        if (!IsFactionOperational(faction))
+        {
+            error = "Жизненный цикл фракции не позволяет использовать её как активную цель обычных действий Сияющей Обители.";
+            return false;
+        }
+
         error = null;
         return true;
     }

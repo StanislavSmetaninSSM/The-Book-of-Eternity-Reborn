@@ -597,6 +597,55 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
+    public void ValidateShiningAbodeStateFile_InvalidFactionLifecycle_RaisesExplicitError()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        var faction = CreateFaction("faction_lifecycle_invalid", CreateSecureLeadership("guardian_a"));
+        faction["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = "conquered"
+        };
+        root["factions"] = new JsonArray(faction);
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_lifecycle_invalid_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_DefeatedFactionWithActiveSurfaces_RaisesExplicitErrors()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        var faction = CreateFaction("faction_defeated", CreateSecureLeadership("guardian_a"));
+        faction["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = ShiningAbodeState.FactionLifecycleStateBroken,
+            ["defeatedAtTurn"] = 77,
+            ["defeatedAtUtc"] = "2026-05-20T00:00:00Z",
+            ["defeatReason"] = "Разгромлена в Сияющей Обители.",
+            ["remnantsSummary"] = "Остались разрозненные осколки."
+        };
+        faction["projects"] = new JsonArray(CreateProject("project_should_not_stay_supported", isSupported: true));
+        faction["tradeInventory"] = new JsonObject
+        {
+            ["tradeCycleId"] = "shining_return_7",
+            ["generatedAtUtc"] = "2026-05-20T00:00:00Z",
+            ["generationTradeTier"] = 1,
+            ["generationRarityCeiling"] = ShiningAbodeState.RarityUncommon,
+            ["serviceMultiplierSnapshot"] = 1.0,
+            ["merchantProfile"] = ShiningTradeRequestState.MerchantProfileShiningFaction,
+            ["items"] = new JsonArray()
+        };
+        root["factions"] = new JsonArray(faction);
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_defeated_has_non_vacant_leadership", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_defeated_has_supported_project", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_defeated_has_trade_inventory", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateShiningAbodeStateFile_EmptyGachaCycleWithUsedCharges_RaisesExplicitError()
     {
         var root = CreateMinimalShiningStateForBlessingCardValidation();

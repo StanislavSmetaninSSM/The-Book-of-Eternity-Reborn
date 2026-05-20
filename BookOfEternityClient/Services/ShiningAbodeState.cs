@@ -20,6 +20,12 @@ internal static partial class ShiningAbodeState
     public const string LeadershipStateContested = "contested";
     public const string LeadershipStateVacant = "vacant";
 
+    public const string FactionLifecycleStateActive = "active";
+    public const string FactionLifecycleStateWeakened = "weakened";
+    public const string FactionLifecycleStateLeaderless = "leaderless";
+    public const string FactionLifecycleStateBroken = "broken";
+    public const string FactionLifecycleStateDissolved = "dissolved";
+
     public const string HeadActorTypeGuardian = "guardian";
     public const string HeadActorTypePlayerSoul = "player_soul";
     public const string HeadActorTypeResident = "resident";
@@ -107,6 +113,15 @@ internal static partial class ShiningAbodeState
         LeadershipStateSecure,
         LeadershipStateContested,
         LeadershipStateVacant
+    };
+
+    private static readonly HashSet<string> AllowedFactionLifecycleStates = new(StringComparer.OrdinalIgnoreCase)
+    {
+        FactionLifecycleStateActive,
+        FactionLifecycleStateWeakened,
+        FactionLifecycleStateLeaderless,
+        FactionLifecycleStateBroken,
+        FactionLifecycleStateDissolved
     };
 
     private static readonly HashSet<string> AllowedHeadActorTypes = new(StringComparer.OrdinalIgnoreCase)
@@ -220,6 +235,7 @@ internal static partial class ShiningAbodeState
 
     public static bool IsSupportedAvailability(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedAvailabilityValues.Contains(value);
     public static bool IsSupportedLeadershipState(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedLeadershipStates.Contains(value);
+    public static bool IsSupportedFactionLifecycleState(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionLifecycleStates.Contains(value);
     public static bool IsSupportedHeadActorType(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedHeadActorTypes.Contains(value);
     public static bool IsSupportedOriginType(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedOriginTypes.Contains(value);
     public static bool IsSupportedPoliticalStatus(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedPoliticalStatuses.Contains(value);
@@ -606,6 +622,32 @@ internal static partial class ShiningAbodeState
             string.Equals(GetNodeString(faction["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
     }
 
+    public static string GetFactionLifecycleState(JsonObject? faction)
+    {
+        var state = GetNodeString(faction?["factionLifecycle"]?["state"]);
+        return IsSupportedFactionLifecycleState(state) ? state! : FactionLifecycleStateActive;
+    }
+
+    public static bool IsFactionDefeated(JsonObject? faction)
+    {
+        var state = GetFactionLifecycleState(faction);
+        return string.Equals(state, FactionLifecycleStateBroken, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(state, FactionLifecycleStateDissolved, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static bool IsFactionOperational(JsonObject? faction)
+    {
+        var state = GetFactionLifecycleState(faction);
+        return string.Equals(state, FactionLifecycleStateActive, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(state, FactionLifecycleStateWeakened, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static bool IsFactionLeaderless(JsonObject? faction)
+    {
+        var state = GetFactionLifecycleState(faction);
+        return string.Equals(state, FactionLifecycleStateLeaderless, StringComparison.OrdinalIgnoreCase);
+    }
+
     public static int CountAscendedResidentsForFaction(JsonObject? residentRoot, string? factionId)
     {
         if (residentRoot == null || string.IsNullOrWhiteSpace(factionId) || residentRoot["entries"] is not JsonArray entries)
@@ -783,6 +825,7 @@ internal static partial class ShiningAbodeState
         var originType = GetNodeString(faction["originType"]);
         faction["originType"] = string.IsNullOrWhiteSpace(originType) ? OriginTypeAscendedGuardian : originType;
         faction["hallId"] = GetNodeString(faction["hallId"]) ?? string.Empty;
+        NormalizeFactionLifecycleObject(faction);
 
         if (faction["charter"] is not JsonObject charter)
         {
@@ -805,7 +848,13 @@ internal static partial class ShiningAbodeState
 
         var leadershipState = GetNodeString(leadership["leadershipState"]) ?? LeadershipStateSecure;
         leadership["leadershipState"] = IsSupportedLeadershipState(leadershipState) ? leadershipState : LeadershipStateSecure;
-        if (string.Equals(GetNodeString(leadership["leadershipState"]), LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
+        if (IsFactionDefeated(faction) || IsFactionLeaderless(faction))
+        {
+            leadership["leadershipState"] = LeadershipStateVacant;
+            leadership["headActorType"] = null;
+            leadership["headActorId"] = null;
+        }
+        else if (string.Equals(GetNodeString(leadership["leadershipState"]), LeadershipStateVacant, StringComparison.OrdinalIgnoreCase))
         {
             leadership["headActorType"] = null;
             leadership["headActorId"] = null;
@@ -833,12 +882,24 @@ internal static partial class ShiningAbodeState
 
         var projects = EnsureArray(faction, "projects");
         foreach (var project in projects.OfType<JsonObject>())
+        {
             NormalizeProjectObject(project, charter["favoredArchetype"]?.GetValue<string>() ?? ProjectArchetypeAccord);
+            if (IsFactionDefeated(faction))
+                project["isSupported"] = false;
+        }
 
-        if (faction["tradeInventory"] is JsonObject tradeInventory)
+        if (IsFactionDefeated(faction) && faction.ContainsKey("tradeInventory"))
+        {
+            faction["tradeInventory"] = null;
+        }
+        else if (faction["tradeInventory"] is JsonObject tradeInventory)
+        {
             NormalizeTradeInventoryObject(tradeInventory);
+        }
         else if (faction.ContainsKey("tradeInventory") && faction["tradeInventory"] is not null)
+        {
             faction.Remove("tradeInventory");
+        }
 
         ShiningTradeRequestState.NormalizeTradeInventoryReceiptsShape(faction);
         HydrateTradeInventoryReceiptSnapshots(faction);
@@ -852,6 +913,25 @@ internal static partial class ShiningAbodeState
         faction.Remove("patronEffectFamily");
         faction.Remove("headActorType");
         faction.Remove("headActorId");
+    }
+
+    private static void NormalizeFactionLifecycleObject(JsonObject faction)
+    {
+        if (faction["factionLifecycle"] is not JsonObject lifecycle)
+        {
+            lifecycle = new JsonObject();
+            faction["factionLifecycle"] = lifecycle;
+        }
+
+        var state = GetNodeString(lifecycle["state"]);
+        lifecycle["state"] = IsSupportedFactionLifecycleState(state) ? state : FactionLifecycleStateActive;
+        if (IsFactionDefeated(faction))
+        {
+            lifecycle["defeatedAtTurn"] = Math.Max(0, GetNodeInt(lifecycle["defeatedAtTurn"], 0));
+            lifecycle["defeatedAtUtc"] = GetNodeString(lifecycle["defeatedAtUtc"]) ?? string.Empty;
+            lifecycle["defeatReason"] = GetNodeString(lifecycle["defeatReason"]) ?? string.Empty;
+            lifecycle["remnantsSummary"] = GetNodeString(lifecycle["remnantsSummary"]) ?? string.Empty;
+        }
     }
 
     private static void NormalizeProjectObject(JsonObject project, string favoredArchetype)
@@ -1157,6 +1237,16 @@ internal static partial class ShiningAbodeState
             if (!IsSupportedOriginType(GetNodeString(faction["originType"])))
                 return "factions содержит неподдерживаемый originType и не может authorise actionable Shining mode.";
 
+            var lifecycleState = GetFactionLifecycleState(faction);
+            if (faction["factionLifecycle"] is JsonObject lifecycle &&
+                !IsSupportedFactionLifecycleState(GetNodeString(lifecycle["state"])))
+            {
+                return "factions содержит неподдерживаемый factionLifecycle.state и не может authorise actionable Shining mode.";
+            }
+            var isDefeatedFaction = string.Equals(lifecycleState, FactionLifecycleStateBroken, StringComparison.OrdinalIgnoreCase) ||
+                                    string.Equals(lifecycleState, FactionLifecycleStateDissolved, StringComparison.OrdinalIgnoreCase);
+            var isLeaderlessFaction = string.Equals(lifecycleState, FactionLifecycleStateLeaderless, StringComparison.OrdinalIgnoreCase);
+
             if (faction["charter"] is not JsonObject charter ||
                 !IsSupportedProjectArchetype(GetNodeString(charter["favoredArchetype"])) ||
                 !IsSupportedEffectFamily(GetNodeString(charter["patronEffectFamily"])))
@@ -1168,6 +1258,14 @@ internal static partial class ShiningAbodeState
                 return "factions содержит повреждённый leadership contract и не может authorise actionable Shining mode.";
 
             var leadershipState = GetNodeString(leadership["leadershipState"]);
+            if ((isDefeatedFaction || isLeaderlessFaction) &&
+                (!string.Equals(leadershipState, LeadershipStateVacant, StringComparison.OrdinalIgnoreCase) ||
+                 !string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorType"])) ||
+                 !string.IsNullOrWhiteSpace(GetNodeString(leadership["headActorId"]))))
+            {
+                return "leaderless/broken/dissolved faction содержит active leadership и не может authorise actionable Shining mode.";
+            }
+
             if (!IsSupportedLeadershipState(leadershipState))
                 return "factions содержит неподдерживаемый leadershipState и не может authorise actionable Shining mode.";
 
@@ -1208,9 +1306,15 @@ internal static partial class ShiningAbodeState
                 if (string.Equals(GetNodeString(project["status"]), ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase) &&
                     GetNodeBool(project["isSupported"]))
                 {
+                    if (isDefeatedFaction)
+                        return "broken/dissolved faction содержит supported project и не может authorise actionable Shining mode.";
+
                     supportedProjects++;
                 }
             }
+
+            if (isDefeatedFaction && faction["tradeInventory"] is JsonObject)
+                return "broken/dissolved faction содержит active tradeInventory и не может authorise actionable Shining mode.";
         }
 
         var supportedProjectCap = GetSupportedProjectCap(radianceTier);
@@ -1615,6 +1719,9 @@ internal static partial class ShiningAbodeState
 
     private static int ComputeFactionStrength(JsonObject faction, JsonObject? residentRoot, int radianceTier)
     {
+        if (IsFactionDefeated(faction))
+            return 0;
+
         var baseStrength = ResolveCanonicalBaseStrength(faction, radianceTier);
         var residentCount = CountAscendedResidentsForFaction(residentRoot, GetNodeString(faction["factionId"]));
         var residentBonus = Math.Min(15, residentCount * 3);
@@ -1629,7 +1736,8 @@ internal static partial class ShiningAbodeState
         }
 
         var investmentBonus = 8 * Math.Clamp(GetNodeInt(faction["investCountThisAscension"], 0), 0, 3);
-        return Math.Clamp(baseStrength + residentBonus + completedProjectBonus + investmentBonus, 0, GetFactionStrengthCap(radianceTier));
+        var lifecyclePenalty = IsFactionLeaderless(faction) ? 15 : 0;
+        return Math.Clamp(baseStrength + residentBonus + completedProjectBonus + investmentBonus - lifecyclePenalty, 0, GetFactionStrengthCap(radianceTier));
     }
 
     private static int ResolveCanonicalBaseStrength(JsonObject faction, int radianceTier)
