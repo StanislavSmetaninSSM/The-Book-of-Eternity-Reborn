@@ -97,6 +97,12 @@ public partial class ExplorerMode
             ["/галерея"] = ShowGallery,
             ["/status"] = ShowDetailedStatus,
             ["/статус"] = ShowDetailedStatus,
+            ["/saref"] = ShowSarefStoryAsync,
+            ["/сареф"] = ShowSarefStoryAsync,
+            ["/saref_story"] = ShowSarefStoryAsync,
+            ["/история_сарефа"] = ShowSarefStoryAsync,
+            ["/wings_of_angels"] = ShowSarefStoryAsync,
+            ["/крылья_над_бездной"] = ShowSarefStoryAsync,
         };
 
         _chaosSeaOnlyCommands = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
@@ -121,10 +127,6 @@ public partial class ExplorerMode
             ["/казначейство"] = ShowShiningTreasuryAsync,
             ["/source_of_light"] = ShowSourceOfLightAsync,
             ["/источник_света"] = ShowSourceOfLightAsync,
-            ["/saref_story"] = ShowSarefStoryAsync,
-            ["/история_сарефа"] = ShowSarefStoryAsync,
-            ["/wings_of_angels"] = ShowSarefStoryAsync,
-            ["/крылья_над_бездной"] = ShowSarefStoryAsync,
             ["/afterlife_profiles"] = ShowAfterlifeEntityProfilesAsync,
             ["/профили_загробья"] = ShowAfterlifeEntityProfilesAsync,
             ["/afterlife_inbox"] = ShowAfterlifeInbox,
