@@ -7654,6 +7654,75 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SpiritualArts_ShowsLearnedSpecialArtBaseAction()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 120, total = 120 },
+            enlightenment = new { currentTier = "Illuminated", experience = 100, level = 5 },
+            soulProgression = new { totalExperience = 100, tier = 5, progressPercent = 100 }
+        });
+        await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
+        {
+            schemaVersion = 1,
+            profiles = new[]
+            {
+                new
+                {
+                    actorType = "player_soul",
+                    actorId = "player_soul",
+                    displayName = "Тестовая Душа",
+                    realm = "Chaos Sea",
+                    currencies = new { inkFeathers = 0, lightSparks = 0 },
+                    progression = new
+                    {
+                        enlightenment = new { experience = 100, tier = 5 },
+                        radiance = new { experience = 0, tier = 0 }
+                    },
+                    standardArts = new { pressure = 0, guard = 0 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "mirror_guard",
+                            displayName = "Зеркальная Защита",
+                            ownerActorType = "player_soul",
+                            ownerActorId = "player_soul",
+                            baseOperation = "guard",
+                            tier = 1,
+                            costMultiplierPercent = 150,
+                            upgradeCost = new { inkFeathers = 30, lightSparks = 0 },
+                            effectSummary = "Отражает часть чужого давления."
+                        }
+                    },
+                    soulDissipationTier = 0,
+                    progressionStrategy = new
+                    {
+                        strategyId = "player_strategy",
+                        summary = "Сначала улучшает особую защиту.",
+                        priorityOrder = new[] { "mirror_guard" }
+                    },
+                    warnings = Array.Empty<object>(),
+                    ledger = Array.Empty<object>()
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("spiritual_arts_special_art_status");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Зеркальная Защита", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("особое искусство на основе действия «Защита»", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Отражает часть чужого давления", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_SpiritualArts_UpgradesArtAndSpendsInkFeathers()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
