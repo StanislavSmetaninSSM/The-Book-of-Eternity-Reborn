@@ -28,6 +28,22 @@ internal static class SarefMainStoryState
     public const string QuestStateReadyToTurnIn = "ready_to_turn_in";
     public const string QuestStateCompleted = "completed";
 
+    public const string AdvantageStateAvailable = "available";
+    public const string AdvantageStateSpent = "spent";
+    public const string AdvantageStatePassive = "passive";
+    public const string AdvantageStateDisabled = "disabled";
+    public const string AdvantageStateSuppressed = "suppressed";
+
+    public const string SceneAny = "any";
+    public const string SceneWingsInfiltration = "wings_infiltration";
+    public const string SceneSarefNegotiation = "saref_negotiation";
+    public const string SceneSarefConfrontation = "saref_confrontation";
+    public const string SceneOathBreak = "oath_break";
+    public const string SceneMemoryAttack = "memory_attack";
+    public const string SceneFactionConflict = "faction_conflict";
+    public const string SceneEscapeOrExile = "escape_or_exile";
+    public const string SceneFinalResolution = "final_resolution";
+
     public static readonly HashSet<string> RevealStages = new(StringComparer.OrdinalIgnoreCase)
     {
         RevealStageUnknown,
@@ -77,11 +93,24 @@ internal static class SarefMainStoryState
 
     public static readonly HashSet<string> AdvantageStates = new(StringComparer.OrdinalIgnoreCase)
     {
-        "available",
-        "spent",
-        "passive",
-        "disabled",
-        "suppressed"
+        AdvantageStateAvailable,
+        AdvantageStateSpent,
+        AdvantageStatePassive,
+        AdvantageStateDisabled,
+        AdvantageStateSuppressed
+    };
+
+    public static readonly HashSet<string> AdvantageSceneTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        SceneAny,
+        SceneWingsInfiltration,
+        SceneSarefNegotiation,
+        SceneSarefConfrontation,
+        SceneOathBreak,
+        SceneMemoryAttack,
+        SceneFactionConflict,
+        SceneEscapeOrExile,
+        SceneFinalResolution
     };
 
     public static readonly HashSet<string> FactionVisibilityStates = new(StringComparer.OrdinalIgnoreCase)
@@ -127,6 +156,7 @@ internal static class SarefMainStoryState
             ["latentTraces"] = new JsonArray(),
             ["sarefRevelations"] = new JsonArray(),
             ["sarefAdvantages"] = new JsonArray(),
+            ["sarefAdvantageUses"] = new JsonArray(),
             ["wingsInfiltration"] = null,
             ["factionLinks"] = new JsonObject
             {

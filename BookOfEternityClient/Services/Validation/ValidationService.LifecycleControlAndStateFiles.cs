@@ -271,7 +271,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
-                "sarefRevelations", "sarefAdvantages", "wingsInfiltration", "factionLinks",
+                "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "wingsInfiltration", "factionLinks",
                 "finalConfrontation", "defeatOutcomes", "endings", "playerOathState",
                 "sarefPersonalBond", "_lastUpdated"
             }, issues, ValidateSarefMainStoryStateFile);
@@ -279,7 +279,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
-                "sarefRevelations", "sarefAdvantages", "wingsInfiltration", "factionLinks",
+                "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "wingsInfiltration", "factionLinks",
                 "finalConfrontation", "defeatOutcomes", "endings", "playerOathState",
                 "sarefPersonalBond", "_lastUpdated"
             }, issues);
