@@ -139,6 +139,101 @@ public sealed class AfterlifeSpiritualCombatScenarioHarnessTests
         Assert.True(playerFumble.Margin >= 20);
         Assert.Equal("opposition_success", playerFumble.OutcomeBand);
     }
+
+    [Fact]
+    public void GeneratedScenarioHarness_PlayerNatural20_RaisesMarginLossOnlyToOrdinaryPlayerSuccess()
+    {
+        var contest = AfterlifeSpiritualCombatScenarioHarness.ResolveSingleContest(
+            BuildOverwhelmingOppositionScenario(),
+            playerDie: 20,
+            oppositionDie: 18);
+
+        Assert.Equal("player_favorable", contest.CriticalOverrideDirection);
+        Assert.Equal("decisive_opposition_success", contest.MarginOutcomeBand);
+        Assert.Equal("player_success", contest.OutcomeBand);
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_OppositionNatural1_RaisesMarginLossOnlyToOrdinaryPlayerSuccess()
+    {
+        var contest = AfterlifeSpiritualCombatScenarioHarness.ResolveSingleContest(
+            BuildOverwhelmingOppositionScenario(),
+            playerDie: 2,
+            oppositionDie: 1);
+
+        Assert.Equal("player_favorable", contest.CriticalOverrideDirection);
+        Assert.Equal("decisive_opposition_success", contest.MarginOutcomeBand);
+        Assert.Equal("player_success", contest.OutcomeBand);
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_PlayerNatural1_LowersMarginWinOnlyToOrdinaryOppositionSuccess()
+    {
+        var contest = AfterlifeSpiritualCombatScenarioHarness.ResolveSingleContest(
+            BuildOverwhelmingPlayerScenario(),
+            playerDie: 1,
+            oppositionDie: 2);
+
+        Assert.Equal("player_unfavorable", contest.CriticalOverrideDirection);
+        Assert.Equal("decisive_player_success", contest.MarginOutcomeBand);
+        Assert.Equal("opposition_success", contest.OutcomeBand);
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_OppositionNatural20_LowersMarginWinOnlyToOrdinaryOppositionSuccess()
+    {
+        var contest = AfterlifeSpiritualCombatScenarioHarness.ResolveSingleContest(
+            BuildOverwhelmingPlayerScenario(),
+            playerDie: 18,
+            oppositionDie: 20);
+
+        Assert.Equal("player_unfavorable", contest.CriticalOverrideDirection);
+        Assert.Equal("decisive_player_success", contest.MarginOutcomeBand);
+        Assert.Equal("opposition_success", contest.OutcomeBand);
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_OpposedNaturalCriticalsCancelAndUseMarginBand()
+    {
+        var contest = AfterlifeSpiritualCombatScenarioHarness.ResolveSingleContest(
+            BuildOverwhelmingPlayerScenario(),
+            playerDie: 20,
+            oppositionDie: 20);
+
+        Assert.Equal("cancelled", contest.CriticalOverrideDirection);
+        Assert.Equal(contest.MarginOutcomeBand, contest.OutcomeBand);
+        Assert.Equal("decisive_player_success", contest.OutcomeBand);
+    }
+
+    private static AfterlifeSpiritualCombatScenario BuildOverwhelmingOppositionScenario()
+    {
+        var baseScenario = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios()
+            .Single(scenario => scenario.Name == "direct_duel_even_pressure");
+
+        return baseScenario with
+        {
+            Name = "overwhelming_opposition_for_critical_symmetry",
+            PlayerArtTier = 0,
+            OppositionArtTier = 10,
+            StartingPosition = "opposition_dominant",
+            Difficulty = "impossible"
+        };
+    }
+
+    private static AfterlifeSpiritualCombatScenario BuildOverwhelmingPlayerScenario()
+    {
+        var baseScenario = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios()
+            .Single(scenario => scenario.Name == "direct_duel_even_pressure");
+
+        return baseScenario with
+        {
+            Name = "overwhelming_player_for_critical_symmetry",
+            PlayerArtTier = 10,
+            OppositionArtTier = 0,
+            StartingPosition = "player_dominant",
+            Difficulty = "normal"
+        };
+    }
 }
 
 internal static class AfterlifeSpiritualCombatScenarioHarness
@@ -335,6 +430,7 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
         var margin = playerTotal - oppositionTotal;
         var marginBand = ResolveMarginOutcomeBand(margin);
         var outcomeBand = NormalizeCriticalOutcomeBand(marginBand, playerDie, oppositionDie);
+        var criticalOverrideDirection = ResolveCriticalOverrideDirection(playerDie, oppositionDie);
 
         return new AfterlifeSpiritualCombatContestResult(
             PlayerDie: playerDie,
@@ -344,7 +440,8 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
             Margin: margin,
             MarginOutcomeBand: marginBand,
             OutcomeBand: outcomeBand,
-            HasNaturalCritical: playerDie is 1 or 20 || oppositionDie is 1 or 20);
+            HasNaturalCritical: playerDie is 1 or 20 || oppositionDie is 1 or 20,
+            CriticalOverrideDirection: criticalOverrideDirection);
     }
 
     private static int ComputePlayerModifier(AfterlifeSpiritualCombatScenario scenario) =>
@@ -428,6 +525,20 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
             return OutcomeBandRank(marginBand) > -1 ? "opposition_success" : marginBand;
 
         return marginBand;
+    }
+
+    private static string ResolveCriticalOverrideDirection(int playerDie, int oppositionDie)
+    {
+        var playerCriticalSuccess = (playerDie == 20 ? 1 : 0) + (oppositionDie == 1 ? 1 : 0);
+        var playerCriticalFailure = (playerDie == 1 ? 1 : 0) + (oppositionDie == 20 ? 1 : 0);
+
+        if (playerCriticalSuccess > playerCriticalFailure)
+            return "player_favorable";
+
+        if (playerCriticalFailure > playerCriticalSuccess)
+            return "player_unfavorable";
+
+        return playerCriticalSuccess > 0 ? "cancelled" : "none";
     }
 
     private static int OutcomeBandRank(string band) =>
@@ -564,4 +675,5 @@ internal sealed record AfterlifeSpiritualCombatContestResult(
     int Margin,
     string MarginOutcomeBand,
     string OutcomeBand,
-    bool HasNaturalCritical);
+    bool HasNaturalCritical,
+    string CriticalOverrideDirection);
