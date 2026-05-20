@@ -712,6 +712,7 @@ public class ValidationIssue
                normalizedPath.Equals("game_state/control/incarnation_world_setup.json", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(ScenarioCoreService.ManifestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(AfterlifeArchiveCandidateService.ManifestPath, StringComparison.OrdinalIgnoreCase) ||
+               AfterlifeContractRegistry.IsKnownClientOwnedSurface(normalizedPath) ||
                normalizedPath.Equals(GuardianAbodeOfferingState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(PlayerGuardianFoundationState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
