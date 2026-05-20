@@ -2640,6 +2640,17 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("applicableScenes", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("spentAudit", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("suppressed", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("knownAgents", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("knownAgents", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("shadowTraces", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("supporterArchetype", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("deceived", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("oathbound", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("fanatic", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("opportunist", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sarefFactionRole", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sarefVisibility", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("normal faction UI", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/сареф", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/крылья_над_бездной", examples, StringComparison.OrdinalIgnoreCase);
 

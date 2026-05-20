@@ -674,7 +674,7 @@ public partial class ExplorerMode
             return null;
         }
 
-        var options = factions.OfType<JsonObject>()
+        var options = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
             .OrderByDescending(faction => GetNodeInt(faction["factionStrength"]))
             .Select(faction =>
             {
@@ -687,6 +687,12 @@ public partial class ExplorerMode
                 return (label, faction);
             })
             .ToList();
+        if (options.Count == 0)
+        {
+            MarkupLine("[yellow]В Сияющей Обители пока нет раскрытых фракций, доступных для этого действия.[/]");
+            WaitForKey();
+            return null;
+        }
 
         var selected = Prompt(new SelectionPrompt<string>()
             .Title($"[bold yellow]{Markup.Escape(title)}[/]")

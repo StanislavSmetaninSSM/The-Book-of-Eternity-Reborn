@@ -293,11 +293,12 @@ public partial class ExplorerMode
             lines.Add("  • Перестройка резидента: требует вознесённого резидента с factionRealignmentState=ready_to_realign (колеблющийся тир сам по себе не открывает переход) и machine-readable target/source faction. Pending-модель не глобальная: блокируют foreign pending realignment для того же residentId, ordinary transfer или другой Shining flow этого резидента.");
             lines.Add("  • Смена власти: требует существующую faction, валидного incumbent и допустимого кандидата на главу. Pending-модель не глобальная: блокируют foreign pending leadership для той же factionId и supporter/candidate locks; pending других фракций сам по себе не запрещает проверку.");
 
-            if (context?.Root["factions"] is JsonArray factions && factions.Count > 0)
+            var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context?.Root).ToList();
+            if (visibleFactions.Count > 0 && context != null)
             {
                 lines.Add("");
-                lines.Add("[bold]Текущее распределение власти:[/] [dim](показаны все фракции без сокращения)[/]");
-                foreach (var faction in factions.OfType<JsonObject>())
+                lines.Add("[bold]Текущее распределение власти:[/] [dim](показаны раскрытые фракции без сокращения; скрытые сюжетные акторы не выводятся)[/]");
+                foreach (var faction in visibleFactions)
                 {
                     var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
                     var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "?";
@@ -391,7 +392,7 @@ public partial class ExplorerMode
                 choices.Add("👑 Создать запрос на смену власти");
             }
 
-            if (context?.Root["factions"] is JsonArray inspectableFactions && inspectableFactions.Count > 0)
+            if (visibleFactions.Count > 0 && context != null)
                 choices.Add("👥 Осмотреть политическое состояние фракции");
             if (foundingRequests.Count > 0 || realignmentRequests.Count > 0 || leadershipRequests.Count > 0)
                 choices.Add("📝 Осмотреть ожидающие политические запросы");
@@ -779,7 +780,12 @@ public partial class ExplorerMode
             var faction = factions.OfType<JsonObject>()
                 .FirstOrDefault(item => string.Equals(GetNodeString(item["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
             if (faction != null)
+            {
+                if (SarefMainStoryState.IsHiddenWingsFaction(faction))
+                    return "скрытая фракция";
+
                 return GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
+            }
         }
 
         return factionId;
@@ -1767,7 +1773,32 @@ public partial class ExplorerMode
 
         var clone = node.DeepClone();
         RemoveShiningBlessingRuntimePayloads(clone);
+        RemoveHiddenSarefWingsFactions(clone);
         return clone;
+    }
+
+    private static void RemoveHiddenSarefWingsFactions(JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                foreach (var child in obj.Select(pair => pair.Value).ToList())
+                    RemoveHiddenSarefWingsFactions(child);
+                break;
+            case JsonArray array:
+                for (var index = array.Count - 1; index >= 0; index--)
+                {
+                    if (array[index] is JsonObject faction &&
+                        SarefMainStoryState.IsHiddenWingsFaction(faction))
+                    {
+                        array.RemoveAt(index);
+                        continue;
+                    }
+
+                    RemoveHiddenSarefWingsFactions(array[index]);
+                }
+                break;
+        }
     }
 
     private static void RemoveShiningBlessingRuntimePayloads(JsonNode? node)

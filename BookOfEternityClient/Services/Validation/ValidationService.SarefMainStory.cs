@@ -242,6 +242,59 @@ public partial class ValidationService
         }
     }
 
+    private async Task ValidateSarefWingsFactionLinksContextAsync(List<ValidationIssue> issues)
+    {
+        var storyRoot = await ReadJsonObjectAsync(SarefMainStoryState.StatePath);
+        if (storyRoot == null)
+            return;
+
+        var revealStage = SarefMainStoryState.GetNodeString(storyRoot["revealStage"]);
+        var factionLinks = storyRoot["factionLinks"] as JsonObject;
+        var visibility = SarefMainStoryState.GetNodeString(factionLinks?["visibility"]);
+        if (!SarefMainStoryStageRequiresActionableFaction(revealStage, visibility))
+            return;
+
+        var wingsFactionId = SarefMainStoryState.GetNodeString(factionLinks?["wingsFactionId"]);
+        if (string.IsNullOrWhiteSpace(wingsFactionId))
+            return;
+
+        var shiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
+        if (shiningRoot == null)
+            return;
+
+        var factions = shiningRoot["factions"] as JsonArray;
+        var matchingFaction = factions?.OfType<JsonObject>()
+            .FirstOrDefault(faction => string.Equals(
+                SarefMainStoryState.GetNodeString(faction["factionId"]),
+                wingsFactionId,
+                StringComparison.OrdinalIgnoreCase));
+        if (matchingFaction == null)
+        {
+            AddSarefIssue(
+                issues,
+                $"{ShiningAbodeState.StatePath}.factions",
+                "После раскрытия Крылья Ангелов должны существовать как actionable Shining faction actor.",
+                "saref_main_story_wings_faction_missing_shining_actor",
+                $"factions[] contains factionId={wingsFactionId}",
+                "missing");
+            return;
+        }
+
+        var role = SarefMainStoryState.GetNodeString(matchingFaction["sarefFactionRole"]);
+        var factionVisibility = SarefMainStoryState.GetNodeString(matchingFaction["sarefVisibility"]);
+        if (string.Equals(role, SarefMainStoryState.WingsFactionRole, StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(factionVisibility, SarefMainStoryState.FactionVisibilityRevealed, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{ShiningAbodeState.StatePath}.factions[].sarefVisibility",
+                "Раскрытая faction actor Крыльев Ангелов должна быть видимой и actionable.",
+                "saref_main_story_wings_faction_not_revealed",
+                "sarefVisibility=revealed",
+                factionVisibility ?? "missing");
+        }
+    }
+
     private void ValidateSarefMainStoryStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (root.ValueKind != JsonValueKind.Object)
@@ -280,6 +333,7 @@ public partial class ValidationService
         ValidateSarefArray(root, contextPrefix, "defeatOutcomes", "outcomeId", "saref_main_story_duplicate_defeat_outcome", issues);
         ValidateSarefArray(root, contextPrefix, "endings", "endingId", "saref_main_story_duplicate_ending", issues);
         var factionVisibility = ValidateSarefFactionLinks(root, contextPrefix, issues);
+        ValidateSarefActionableFactionLink(revealStage, root, factionVisibility, contextPrefix, issues);
         ValidateSarefNullableStateObject(root, contextPrefix, "playerOathState", "state", SarefMainStoryState.PlayerOathStates, "saref_main_story_invalid_player_oath_state", issues);
         ValidateSarefNullableStateObject(root, contextPrefix, "sarefPersonalBond", "state", SarefMainStoryState.PersonalBondStates, "saref_main_story_invalid_personal_bond_state", issues);
         ValidateSarefNullableObject(root, contextPrefix, "wingsInfiltration", issues);
@@ -1204,7 +1258,233 @@ public partial class ValidationService
                 visibility);
         }
 
+        ValidateSarefWingsShadowTraces(factionLinks, $"{contextPrefix}.factionLinks", issues);
+        ValidateSarefWingsKnownAgents(factionLinks, $"{contextPrefix}.factionLinks", issues);
         return visibility;
+    }
+
+    private static void ValidateSarefActionableFactionLink(
+        string? revealStage,
+        JsonElement root,
+        string? factionVisibility,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (!SarefMainStoryStageRequiresActionableFaction(revealStage, factionVisibility))
+            return;
+
+        if (!root.TryGetProperty("factionLinks", out var factionLinks) ||
+            factionLinks.ValueKind != JsonValueKind.Object ||
+            !factionLinks.TryGetProperty("wingsFactionId", out var wingsFactionIdNode) ||
+            !TryGetSarefString(wingsFactionIdNode, out _))
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.factionLinks.wingsFactionId",
+                "Раскрытые Крылья Ангелов должны иметь wingsFactionId для actionable Shining faction actor.",
+                "saref_main_story_wings_revealed_missing_faction_id",
+                "non-empty factionLinks.wingsFactionId",
+                "missing");
+        }
+    }
+
+    private static bool SarefMainStoryStageRequiresActionableFaction(string? revealStage, string? factionVisibility) =>
+        (!string.IsNullOrWhiteSpace(revealStage) &&
+         SarefMainStoryState.RevealStages.Contains(revealStage) &&
+         StageRank(revealStage) >= StageRank(SarefMainStoryState.RevealStageWingsRevealed)) ||
+        string.Equals(factionVisibility, SarefMainStoryState.FactionVisibilityRevealed, StringComparison.OrdinalIgnoreCase);
+
+    private static void ValidateSarefWingsShadowTraces(JsonElement factionLinks, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!factionLinks.TryGetProperty("shadowTraces", out var traces) || traces.ValueKind == JsonValueKind.Null)
+            return;
+
+        if (traces.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.shadowTraces",
+                "factionLinks.shadowTraces должен быть массивом.",
+                "saref_main_story_wings_shadow_traces_not_array",
+                "array",
+                traces.ValueKind.ToString());
+            return;
+        }
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in traces.EnumerateArray())
+        {
+            var itemContext = $"{contextPrefix}.shadowTraces[{index++}]";
+            if (!ValidateSarefArrayObject(item, itemContext, issues))
+                continue;
+
+            var traceId = RequireSarefString(item, itemContext, "traceId", "saref_main_story_wings_shadow_trace_missing_id", issues);
+            if (!string.IsNullOrWhiteSpace(traceId) && !ids.Add(traceId))
+            {
+                AddSarefIssue(
+                    issues,
+                    itemContext,
+                    "Дубликат factionLinks.shadowTraces[].traceId.",
+                    "saref_main_story_wings_shadow_trace_duplicate_id",
+                    "unique traceId",
+                    traceId);
+            }
+
+            var stage = RequireSarefString(item, itemContext, "stage", "saref_main_story_wings_shadow_trace_missing_stage", issues);
+            if (!string.IsNullOrWhiteSpace(stage) && !SarefMainStoryState.WingsTraceStages.Contains(stage))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{itemContext}.stage",
+                    "stage следа Крыльев должен быть shadow/name/faction.",
+                    "saref_main_story_wings_shadow_trace_invalid_stage",
+                    string.Join("/", SarefMainStoryState.WingsTraceStages),
+                    stage);
+            }
+
+            RequireSarefString(item, itemContext, "summary", "saref_main_story_wings_shadow_trace_missing_summary", issues);
+            ValidateSarefTurnFields(item, itemContext, issues);
+        }
+    }
+
+    private static void ValidateSarefWingsKnownAgents(JsonElement factionLinks, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!factionLinks.TryGetProperty("knownAgents", out var agents) || agents.ValueKind == JsonValueKind.Null)
+            return;
+
+        if (agents.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.knownAgents",
+                "factionLinks.knownAgents должен быть массивом.",
+                "saref_main_story_wings_agents_not_array",
+                "array",
+                agents.ValueKind.ToString());
+            return;
+        }
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var archetypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var validAgentCount = 0;
+        var index = 0;
+        foreach (var item in agents.EnumerateArray())
+        {
+            var itemContext = $"{contextPrefix}.knownAgents[{index++}]";
+            if (!ValidateSarefArrayObject(item, itemContext, issues))
+                continue;
+
+            var agentId = RequireSarefString(item, itemContext, "agentId", "saref_main_story_wings_agent_missing_id", issues);
+            if (!string.IsNullOrWhiteSpace(agentId) && !ids.Add(agentId))
+            {
+                AddSarefIssue(
+                    issues,
+                    itemContext,
+                    "Дубликат factionLinks.knownAgents[].agentId.",
+                    "saref_main_story_wings_agent_duplicate_id",
+                    "unique agentId",
+                    agentId);
+            }
+
+            var archetype = RequireSarefString(item, itemContext, "supporterArchetype", "saref_main_story_wings_agent_missing_archetype", issues);
+            if (!string.IsNullOrWhiteSpace(archetype) && SarefMainStoryState.WingsSupporterArchetypes.Contains(archetype))
+            {
+                archetypes.Add(archetype);
+                validAgentCount++;
+            }
+            else if (!string.IsNullOrWhiteSpace(archetype))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{itemContext}.supporterArchetype",
+                    "supporterArchetype агента Крыльев не поддерживается.",
+                    "saref_main_story_wings_agent_invalid_archetype",
+                    string.Join("/", SarefMainStoryState.WingsSupporterArchetypes),
+                    archetype);
+            }
+
+            ValidateSarefWingsAgentInteractionRoutes(item, itemContext, issues);
+            ValidateSarefTurnFields(item, itemContext, issues);
+        }
+
+        if (validAgentCount >= 2 && archetypes.Count < 2)
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.knownAgents",
+                "Известные агенты Крыльев не могут все иметь один archetype; Сареф вербует обманутых, связанных клятвой, фанатиков и оппортунистов.",
+                "saref_main_story_wings_agents_need_mixed_archetypes",
+                "at least two supporterArchetype values when 2+ knownAgents are present",
+                string.Join(", ", archetypes));
+        }
+    }
+
+    private static void ValidateSarefWingsAgentInteractionRoutes(JsonElement item, string itemContext, List<ValidationIssue> issues)
+    {
+        var isImportant =
+            string.Equals(GetSarefOptionalString(item, "importance"), "important", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(GetSarefOptionalString(item, "importance"), "lieutenant", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(GetSarefOptionalString(item, "agentRank"), "important", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(GetSarefOptionalString(item, "agentRank"), "lieutenant", StringComparison.OrdinalIgnoreCase);
+
+        if (!item.TryGetProperty("interactionRoutes", out var routes))
+        {
+            if (isImportant)
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{itemContext}.interactionRoutes",
+                    "Важный агент/лейтенант Крыльев должен иметь route взаимодействия: убедить, освободить, разоблачить, шантажировать или победить.",
+                    "saref_main_story_wings_agent_missing_interaction_routes",
+                    string.Join("/", SarefMainStoryState.WingsAgentInteractionRoutes),
+                    "missing");
+            }
+
+            return;
+        }
+
+        if (routes.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{itemContext}.interactionRoutes",
+                "interactionRoutes агента Крыльев должен быть массивом.",
+                "saref_main_story_wings_agent_routes_not_array",
+                "array",
+                routes.ValueKind.ToString());
+            return;
+        }
+
+        var routeCount = 0;
+        foreach (var routeNode in routes.EnumerateArray())
+        {
+            if (TryGetSarefString(routeNode, out var route) &&
+                SarefMainStoryState.WingsAgentInteractionRoutes.Contains(route))
+            {
+                routeCount++;
+                continue;
+            }
+
+            AddSarefIssue(
+                issues,
+                $"{itemContext}.interactionRoutes",
+                "interactionRoutes агента Крыльев содержит неподдерживаемый route.",
+                "saref_main_story_wings_agent_invalid_interaction_route",
+                string.Join("/", SarefMainStoryState.WingsAgentInteractionRoutes),
+                routeNode.ValueKind.ToString());
+        }
+
+        if (isImportant && routeCount == 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{itemContext}.interactionRoutes",
+                "Важный агент/лейтенант Крыльев должен иметь хотя бы один valid interaction route.",
+                "saref_main_story_wings_agent_missing_interaction_routes",
+                string.Join("/", SarefMainStoryState.WingsAgentInteractionRoutes),
+                "empty");
+        }
     }
 
     private static void ValidateSarefNullableStateObject(
