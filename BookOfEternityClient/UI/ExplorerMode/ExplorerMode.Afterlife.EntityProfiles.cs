@@ -75,6 +75,7 @@ public partial class ExplorerMode
                       "?";
         var realm = AfterlifeEntityProfileState.GetNodeString(profile["realm"]) ?? "?";
         var location = AfterlifeEntityProfileState.GetNodeString(profile["location"]) ??
+                       AfterlifeEntityProfileState.GetNodeString(profile["locationName"]) ??
                        AfterlifeEntityProfileState.GetNodeString(profile["abodeName"]) ??
                        "место не указано";
 
