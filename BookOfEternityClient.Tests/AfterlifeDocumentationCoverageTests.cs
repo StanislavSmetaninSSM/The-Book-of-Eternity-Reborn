@@ -1407,6 +1407,43 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningSchedulerAllowanceDocsStayNarrowAcrossGmEntrypoints()
+    {
+        var docs = new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt"),
+            ReadRepoFile("Rules", "Block_CLI_Operations.txt"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt"),
+            ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md"),
+            ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1"),
+            ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1"),
+            ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs")
+        };
+
+        var requiredTokens = new[]
+        {
+            "scheduler-owned",
+            "progressionProcessingReport",
+            "availability",
+            "coreActionReceipts",
+            "gates",
+            "gachaSystem.gachaHistory",
+            "pendingNativeFactionDiscovery",
+            "preparedIncarnationPackage",
+            "lightSparks",
+            "treasury",
+            "sourceOfLightCapstone"
+        };
+
+        foreach (var doc in docs)
+        foreach (var token in requiredTokens)
+            Assert.Contains(token, doc, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifePromptDocsCoverGuardianProvocationAndArchiveCandidateManifest()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

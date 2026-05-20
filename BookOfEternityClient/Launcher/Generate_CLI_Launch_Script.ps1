@@ -89,6 +89,7 @@ Read canonical `game_state/meta/soul_state.json.currentRealm`; the runtime also 
 - Shining Abode pending-bootstrap handoff: do not advance ordinary afterlife systems; write only `TriggerIncarnation` and preserve the prepared package for client-side Mortal bootstrap
 - Shining Abode package fault: if `preparedIncarnationPackage` is present but invalid, preserve it and all pending Shining files for repair; do not process ordinary Shining gameplay
 - Active Shining Abode with `pendingNativeFactionDiscovery` is still blocked by that legacy discovery contract: close or repair it before any local `return_to_chaos_sea` path can seal the Abode.
+- If `progressionControl` requires Shining scheduler work, write `progressionProcessingReport`; this scheduler-owned allowance is narrow and permits only scheduler-owned Shining/resident/trade progression fields. It does NOT authorize unrelated `availability`, `coreActionReceipts[]`, `gates`, `gachaSystem.gachaHistory`, `pendingNativeFactionDiscovery`, `preparedIncarnationPackage`, `lightSparks`, `treasury`, or `sourceOfLightCapstone` unless that surface's own client-authored contract is also closed in the same accepted turn.
 
 ### PHASE 2: PROCESS PLAYER ACTION
 - Read input/turn_request.json
