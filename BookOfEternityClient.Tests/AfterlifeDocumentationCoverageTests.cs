@@ -2642,6 +2642,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "структур");
     }
 
+    [Fact]
+    public void SarefIlarionQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "ilarion.md",
+            "Иларион",
+            "method",
+            "Якорь памяти",
+            "памят",
+            "архив");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,
