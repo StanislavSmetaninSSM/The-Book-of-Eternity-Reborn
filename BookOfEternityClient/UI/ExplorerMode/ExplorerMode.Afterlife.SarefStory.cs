@@ -406,7 +406,35 @@ public partial class ExplorerMode
                 lines.Add($"    [dim]Ход {turn}[/]");
         }
 
+        AppendSarefOathBreakArc(lines, agenda["oathBreakArc"] as JsonObject);
+
         lines.Add("");
+    }
+
+    private static void AppendSarefOathBreakArc(List<string> lines, JsonObject? arc)
+    {
+        if (arc == null)
+            return;
+
+        var arcId = GetNodeString(arc["arcId"]) ?? "?";
+        var state = DescribeSarefOathBreakState(GetNodeString(arc["state"]));
+        var route = DescribeSarefOathBreakRoute(GetNodeString(arc["route"]));
+        var summary = GetNodeString(arc["summary"]);
+        var proofSummary = GetNodeString(arc["proofSummary"]);
+
+        lines.Add("  • Арка разрыва клятвы:");
+        lines.Add($"    - [white]{Markup.Escape(arcId)}[/] — {Markup.Escape(state)}; путь: {Markup.Escape(route)}");
+        if (!string.IsNullOrWhiteSpace(summary))
+            lines.Add($"      [dim]{Markup.Escape(summary)}[/]");
+        if (!string.IsNullOrWhiteSpace(proofSummary))
+            lines.Add($"      Доказательство: [dim]{Markup.Escape(proofSummary)}[/]");
+
+        var consequences = ReadSarefUiStringArray(arc["consequences"] as JsonArray)
+            .Select(DescribeSarefOathBreakConsequence)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+        if (consequences.Length > 0)
+            lines.Add($"      Последствия: [red]{Markup.Escape(string.Join(", ", consequences))}[/]");
     }
 
     private static void AppendSarefRewardBundle(List<string> lines, JsonObject rewards)
@@ -505,6 +533,37 @@ public partial class ExplorerMode
             "oathbound_to_saref" => "связан клятвой с Сарефом",
             "domination_completed" => "власть Сарефа закреплена",
             _ => state ?? "неизвестно"
+        };
+
+    private static string DescribeSarefOathBreakState(string? state) =>
+        state?.Trim().ToLowerInvariant() switch
+        {
+            "not_started" => "ещё не начато",
+            "active" => "идёт подготовка разрыва",
+            "failed" => "попытка провалена",
+            "broken" => "клятва разорвана",
+            _ => state ?? "неизвестно"
+        };
+
+    private static string DescribeSarefOathBreakRoute(string? route) =>
+        route?.Trim().ToLowerInvariant() switch
+        {
+            "seret" => "Серет: закон клятв",
+            "lucian" => "Люциан: светлая дуэль воли",
+            "ilarion" => "Иларион: якорь памяти",
+            "veyra" => "Вейра: разрез ложной верности",
+            "deep_story_evidence" => "глубокие доказательства о Сарефе",
+            _ => route ?? "неизвестно"
+        };
+
+    private static string DescribeSarefOathBreakConsequence(string consequence) =>
+        consequence.Trim().ToLowerInvariant() switch
+        {
+            "renegade_from_wings" => "изменник Крыльев",
+            "oath_reversed" => "клятва обращена против Сарефа",
+            "beloved_traitor" => "возлюбленный предатель",
+            "second_confrontation_unlocked" => "открыта вторая конфронтация",
+            _ => consequence
         };
 
     private static string DescribeSarefAssignmentStatus(string? status) =>

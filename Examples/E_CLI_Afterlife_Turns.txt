@@ -7973,6 +7973,51 @@ Valid direct deal ending:
 
 Deal aftermath rule: `postStoryAgenda.state=oathbound_to_saref` means the main quest ended, but the player is not game-over. The GM must keep Сареф's agenda visible, push assignments through Shining `factionConflictCampaigns[]` against non-Wings factions, and use `breakthroughLog[].type=saref_directive` when a direct order creates campaign progress. Later agenda-only changes use `sarefMainStoryUpdate.mode=record_oathbound_agenda`. The player cannot leave Крылья Ангелов by ordinary voluntary action while the oath is active; a separate oath-break arc is required. If all significant non-Wings factions become `broken` or `dissolved`, record `postStoryAgenda.dominationScene.status=completed`, `resolvedAtTurn`, and the final scene summary. For victory endings where `wingsFactionOutcome=broken|dissolved`, the linked `game_state/meta/shining_abode_state.json.factions[]` entry for `wings_of_angels` must carry matching `sarefFactionRole=wings_of_angels`, `sarefVisibility=revealed`, and `factionLifecycle.state`. Do not use an unsupported top-level `shiningAbodeState` response field; write through the canonical Shining state surface already used by accepted Shining faction updates.
 
+Oath-break aftermath rule: use `sarefMainStoryUpdate.mode=record_oath_break` only for a strong post-deal mini-arc. Store it as `postStoryAgenda.oathBreakArc`; `state` is `not_started`, `active`, `failed`, or `broken`; `route` is `seret`, `lucian`, `ilarion`, `veyra`, or `deep_story_evidence`. A `broken` arc requires `proofSummary`, route proof, `advantageUseIds[]` that reference `sarefAdvantageUses[]` in `sceneType=oath_break`, root `playerOathState.state=broken|oath_reversed`, and serious `consequences[]` such as `renegade_from_wings`, `oath_reversed`, `beloved_traitor`, or `second_confrontation_unlocked`. If the oath was romantic or intimate, include `beloved_traitor` or an explicit tragic romance outcome note; do not treat ordinary voluntary leaving as a valid oath break.
+
+Valid oath-break update:
+
+```json
+{
+  "sarefMainStoryUpdate": {
+    "mode": "record_oath_break",
+    "turnNumber": 219,
+    "oathBreakArc": {
+      "arcId": "saref_oath_break_seret_219",
+      "state": "broken",
+      "route": "seret",
+      "leadActorId": "seret",
+      "startedAtTurn": 212,
+      "resolvedAtTurn": 219,
+      "summary": "Серет помогает игроку разобрать клятву Сарефа по старому закону имен.",
+      "proofSummary": "Клятва больше не может принудить игрока к повиновению, но Крылья объявили охоту.",
+      "routeProofId": "seret_oath_law_proof_219",
+      "advantageUseIds": [ "use_seret_oath_law_219" ],
+      "consequences": [
+        "renegade_from_wings",
+        "oath_reversed",
+        "second_confrontation_unlocked"
+      ]
+    },
+    "sarefAdvantageUses": [
+      {
+        "usageId": "use_seret_oath_law_219",
+        "advantageId": "adv_seret_oath_law",
+        "sceneType": "oath_break",
+        "usedAtTurn": 219,
+        "consumesAdvantage": false,
+        "summary": "Серет использовала знание закона клятв, чтобы найти разрыв в формуле Сарефа."
+      }
+    ],
+    "playerOathState": {
+      "state": "oath_reversed",
+      "oathId": "saref_oath_206",
+      "summary": "Клятва обращена против Сарефа и больше не удерживает игрока в Крыльях."
+    }
+  }
+}
+```
+
 Final route proof reference:
 - `combat` requires `conflictId`.
 - `political` requires `factionCampaignId`.

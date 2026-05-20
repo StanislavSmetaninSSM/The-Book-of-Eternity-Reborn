@@ -1265,6 +1265,170 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     }
 
     [Fact]
+    public void ApplyUpdate_RecordOathBreak_MergesArcAndUpdatesOathState()
+    {
+        var root = SarefMainStoryState.ApplyUpdate(
+            JsonNode.Parse(BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: BuildSarefOathboundPayload(),
+                postStoryAgendaPayload: BuildSarefOathboundAgendaPayload()))!.AsObject(),
+            JsonNode.Parse("""
+            {
+              "mode": "record_oath_break",
+              "oathBreakArc": {
+                "arcId": "saref_oath_break_seret_001",
+                "state": "broken",
+                "route": "seret",
+                "leadActorId": "seret",
+                "startedAtTurn": 150,
+                "resolvedAtTurn": 166,
+                "proofSummary": "Серет нашёл лазейку в формуле клятвы.",
+                "consequences": [ "renegade_from_wings", "oath_reversed", "second_confrontation_unlocked" ],
+                "summary": "Клятва Сарефа разрушена, но игрок стал изменником Крыльев."
+              },
+              "playerOathState": {
+                "state": "broken",
+                "oathId": "saref_oath_001",
+                "brokenAtTurn": 166,
+                "summary": "Клятва Сарефа разорвана через закон Серета."
+              }
+            }
+            """)!.AsObject());
+
+        var agenda = Assert.IsType<JsonObject>(root["postStoryAgenda"]);
+        var arc = Assert.IsType<JsonObject>(agenda["oathBreakArc"]);
+        Assert.Equal("broken", SarefMainStoryState.GetNodeString(arc["state"]));
+        Assert.Equal("seret", SarefMainStoryState.GetNodeString(arc["route"]));
+        Assert.Equal("broken", SarefMainStoryState.GetNodeString(root["playerOathState"]?["state"]));
+        var consequences = Assert.IsType<JsonArray>(arc["consequences"]);
+        Assert.Contains(consequences.OfType<JsonValue>(), value =>
+            string.Equals(value.GetValue<string>(), "second_confrontation_unlocked", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BrokenOathWithoutOathBreakArc_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: """
+                {
+                  "state": "broken",
+                  "oathId": "saref_oath_001",
+                  "brokenAtTurn": 166,
+                  "summary": "Клятва якобы разорвана без арки."
+                }
+                """,
+                postStoryAgendaPayload: BuildSarefOathboundAgendaPayload()));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oath_break_missing_arc", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BrokenOathBreakArcWithoutProofAndConsequences_ReportsIssues()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: """
+                {
+                  "state": "broken",
+                  "oathId": "saref_oath_001",
+                  "brokenAtTurn": 166,
+                  "summary": "Клятва разорвана без доказанной цены."
+                }
+                """,
+                postStoryAgendaPayload: BuildSarefOathboundAgendaWithOathBreakPayload("""
+                {
+                  "arcId": "saref_oath_break_invalid_001",
+                  "state": "broken",
+                  "route": "seret",
+                  "leadActorId": "seret",
+                  "startedAtTurn": 150,
+                  "resolvedAtTurn": 166,
+                  "summary": "GM пытается разорвать клятву без доказательства и последствий."
+                }
+                """)));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oath_break_missing_proof", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oath_break_missing_consequence", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_OathBreakWithUnknownAdvantageUse_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: BuildSarefBrokenOathPayload(),
+                postStoryAgendaPayload: BuildSarefOathboundAgendaWithOathBreakPayload(BuildValidSarefOathBreakArcPayload(advantageUseId: "missing_use"))));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oath_break_unknown_advantage_use", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_OathBreakWithKnownAdvantageAndConsequences_Passes()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                advantagePayload: BuildSarefOathBreakAdvantagePayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: BuildSarefBrokenOathPayload(),
+                postStoryAgendaPayload: BuildSarefOathboundAgendaWithOathBreakPayload(BuildValidSarefOathBreakArcPayload())));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("saref_main_story_oath_break_", StringComparison.OrdinalIgnoreCase) == true ||
+            string.Equals(issue.Code, "saref_main_story_oathbound_left_without_oath_break", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RomanticOathBreakWithoutBelovedTraitor_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                advantagePayload: BuildSarefOathBreakAdvantagePayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: BuildSarefBrokenOathPayload(),
+                postStoryAgendaPayload: BuildSarefOathboundAgendaWithOathBreakPayload(BuildValidSarefOathBreakArcPayload(consequencesPayload: """
+                [ "renegade_from_wings", "oath_reversed", "second_confrontation_unlocked" ]
+                """)),
+                personalBondPayload: """
+                {
+                  "state": "intimate_oath",
+                  "summary": "Игрок и Сареф связали сделку с опасной романтической близостью."
+                }
+                """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oath_break_romance_missing_tragedy", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_OathboundAssignmentWithoutFactionCampaign_ReportsIssue()
     {
         await _fs.WriteFileAtomicAsync(
@@ -1547,7 +1711,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         """,
         string endingsPayload = "[]",
         string playerOathStatePayload = "null",
-        string postStoryAgendaPayload = "null") =>
+        string postStoryAgendaPayload = "null",
+        string personalBondPayload = "null") =>
         $$"""
         {
           "schemaVersion": 1,
@@ -1575,7 +1740,7 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "endings": {{endingsPayload}},
           "postStoryAgenda": {{postStoryAgendaPayload}},
           "playerOathState": {{playerOathStatePayload}},
-          "sarefPersonalBond": null
+          "sarefPersonalBond": {{personalBondPayload}}
         }
         """;
 
@@ -1621,6 +1786,15 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """;
 
+    private static string BuildSarefBrokenOathPayload() => """
+        {
+          "state": "broken",
+          "oathId": "saref_oath_001",
+          "brokenAtTurn": 166,
+          "summary": "Клятва Сарефа разорвана доказанной аркой."
+        }
+        """;
+
     private static string BuildSarefOathboundAgendaPayload(
         string assignmentsPayload = """
         [
@@ -1646,6 +1820,62 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "assignments": {{assignmentsPayload}},
           "dominationScene": {{dominationScenePayload}}
         }
+        """;
+
+    private static string BuildSarefOathboundAgendaWithOathBreakPayload(string oathBreakArcPayload) =>
+        $$"""
+        {
+          "state": "oathbound_to_saref",
+          "sourceFinalConfrontationId": "saref_deal_final_001",
+          "startedAtTurn": 130,
+          "currentObjective": "Выполнять поручения Сарефа против остальных фракций Сияющей Обители.",
+          "agendaSummary": "Сделка завершила главную линию, но Сареф продолжает вести игрока к власти Крыльев.",
+          "assignments": [],
+          "dominationScene": null,
+          "oathBreakArc": {{oathBreakArcPayload}}
+        }
+        """;
+
+    private static string BuildValidSarefOathBreakArcPayload(
+        string advantageUseId = "use_seret_oath_law_001",
+        string consequencesPayload = """
+        [ "renegade_from_wings", "oath_reversed", "beloved_traitor", "second_confrontation_unlocked" ]
+        """) =>
+        $$"""
+        {
+          "arcId": "saref_oath_break_seret_001",
+          "state": "broken",
+          "route": "seret",
+          "leadActorId": "seret",
+          "routeProofId": "seret_oath_law_proof_001",
+          "startedAtTurn": 150,
+          "resolvedAtTurn": 166,
+          "proofSummary": "Серет, старая защита от клятв и собственная воля игрока нашли лазейку в формуле Сарефа.",
+          "advantageUseIds": [ "{{advantageUseId}}" ],
+          "consequences": {{consequencesPayload}},
+          "summary": "Игрок разорвал клятву и стал изменником Крыльев, открыв вторую конфронтацию с Сарефом."
+        }
+        """;
+
+    private static string BuildSarefOathBreakAdvantagePayload() => """
+          "sarefAdvantages": [
+            {
+              "advantageId": "adv_seret_oath_law",
+              "state": "passive",
+              "applicableScenes": [ "oath_break" ],
+              "summary": "Серет оставил игроку законную лазейку против клятв Сарефа."
+            }
+          ],
+          "sarefAdvantageUses": [
+            {
+              "usageId": "use_seret_oath_law_001",
+              "advantageId": "adv_seret_oath_law",
+              "sceneType": "oath_break",
+              "usedAtTurn": 166,
+              "consumesAdvantage": false,
+              "summary": "Преимущество Серета стало ключом к разрыву клятвы."
+            }
+          ],
         """;
 
     private static string BuildSarefCleanFinalConfrontationPayload() => """

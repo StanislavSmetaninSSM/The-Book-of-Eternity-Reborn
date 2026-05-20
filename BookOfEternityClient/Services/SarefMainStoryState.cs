@@ -82,6 +82,20 @@ internal static class SarefMainStoryState
     public const string PostStoryAssignmentStatusCompleted = "completed";
     public const string PostStoryAssignmentStatusFailed = "failed";
     public const string PostStoryAssignmentStatusAbandoned = "abandoned";
+    public const string OathBreakUpdateModeRecord = "record_oath_break";
+    public const string OathBreakStateNotStarted = "not_started";
+    public const string OathBreakStateActive = "active";
+    public const string OathBreakStateFailed = "failed";
+    public const string OathBreakStateBroken = "broken";
+    public const string OathBreakRouteSeret = "seret";
+    public const string OathBreakRouteLucian = "lucian";
+    public const string OathBreakRouteIlarion = "ilarion";
+    public const string OathBreakRouteVeyra = "veyra";
+    public const string OathBreakRouteDeepStoryEvidence = "deep_story_evidence";
+    public const string OathBreakConsequenceRenegade = "renegade_from_wings";
+    public const string OathBreakConsequenceOathReversed = "oath_reversed";
+    public const string OathBreakConsequenceBelovedTraitor = "beloved_traitor";
+    public const string OathBreakConsequenceSecondConfrontation = "second_confrontation_unlocked";
 
     public const string WingsUpdateModeReveal = "reveal_wings";
     public const string WingsUpdateModeRefuse = "refuse_wings";
@@ -225,6 +239,7 @@ internal static class SarefMainStoryState
         "oathbound",
         "strained",
         "broken",
+        "oath_reversed",
         "escaped"
     };
 
@@ -306,6 +321,31 @@ internal static class SarefMainStoryState
         PostStoryAssignmentStatusCompleted,
         PostStoryAssignmentStatusFailed,
         PostStoryAssignmentStatusAbandoned
+    };
+
+    public static readonly HashSet<string> OathBreakStates = new(StringComparer.OrdinalIgnoreCase)
+    {
+        OathBreakStateNotStarted,
+        OathBreakStateActive,
+        OathBreakStateFailed,
+        OathBreakStateBroken
+    };
+
+    public static readonly HashSet<string> OathBreakRoutes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        OathBreakRouteSeret,
+        OathBreakRouteLucian,
+        OathBreakRouteIlarion,
+        OathBreakRouteVeyra,
+        OathBreakRouteDeepStoryEvidence
+    };
+
+    public static readonly HashSet<string> OathBreakConsequences = new(StringComparer.OrdinalIgnoreCase)
+    {
+        OathBreakConsequenceRenegade,
+        OathBreakConsequenceOathReversed,
+        OathBreakConsequenceBelovedTraitor,
+        OathBreakConsequenceSecondConfrontation
     };
 
     public static readonly HashSet<string> WingsRouteSafetyStates = new(StringComparer.OrdinalIgnoreCase)
@@ -589,6 +629,12 @@ internal static class SarefMainStoryState
             return root;
         }
 
+        if (string.Equals(mode, OathBreakUpdateModeRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            ApplyOathBreakUpdate(root, updateRoot);
+            return root;
+        }
+
         if (!WingsUpdateModes.Contains(mode))
             return root;
 
@@ -793,6 +839,68 @@ internal static class SarefMainStoryState
             target["dominationScene"] = updateRoot["dominationScene"]!.DeepClone();
 
         root["postStoryAgenda"] = target;
+    }
+
+    private static void ApplyOathBreakUpdate(JsonObject root, JsonObject updateRoot)
+    {
+        var agenda = root["postStoryAgenda"] as JsonObject ?? new JsonObject
+        {
+            ["state"] = PostStoryStateOathbound,
+            ["assignments"] = new JsonArray(),
+            ["dominationScene"] = null
+        };
+
+        if (updateRoot["postStoryAgenda"] is JsonObject replacementAgenda)
+            agenda = replacementAgenda.DeepClone().AsObject();
+
+        var arc = updateRoot["oathBreakArc"] is JsonObject oathBreakArc
+            ? oathBreakArc.DeepClone().AsObject()
+            : updateRoot["oathBreakAudit"] is JsonObject oathBreakAudit
+                ? oathBreakAudit.DeepClone().AsObject()
+                : agenda["oathBreakArc"] is JsonObject existingArc
+                    ? existingArc.DeepClone().AsObject()
+                    : new JsonObject();
+
+        foreach (var key in new[]
+                 {
+                     "arcId", "state", "route", "leadActorId", "routeProofId", "proofSummary",
+                     "summary", "romanceOutcome", "tragicRomanceNote", "secondConfrontationId"
+                 })
+        {
+            if (arc[key] == null && updateRoot[key] != null)
+                arc[key] = updateRoot[key]!.DeepClone();
+        }
+
+        var startedAtTurn = GetNodeInt(arc["startedAtTurn"]);
+        if (startedAtTurn <= 0)
+            startedAtTurn = GetNodeInt(updateRoot["startedAtTurn"]);
+        if (startedAtTurn <= 0)
+            startedAtTurn = GetNodeInt(updateRoot["turnNumber"]);
+        if (startedAtTurn > 0)
+            arc["startedAtTurn"] = startedAtTurn;
+
+        var resolvedAtTurn = GetNodeInt(arc["resolvedAtTurn"]);
+        if (resolvedAtTurn <= 0)
+            resolvedAtTurn = GetNodeInt(updateRoot["resolvedAtTurn"]);
+        if (resolvedAtTurn > 0)
+            arc["resolvedAtTurn"] = resolvedAtTurn;
+
+        if (arc["consequences"] == null && updateRoot["consequences"] is JsonArray consequences)
+            arc["consequences"] = consequences.DeepClone();
+        if (arc["advantageUseIds"] == null && updateRoot["advantageUseIds"] is JsonArray advantageUseIds)
+            arc["advantageUseIds"] = advantageUseIds.DeepClone();
+        if (arc["routeProof"] == null && updateRoot["routeProof"] is JsonObject routeProof)
+            arc["routeProof"] = routeProof.DeepClone();
+
+        agenda["oathBreakArc"] = arc;
+        root["postStoryAgenda"] = agenda;
+
+        if (updateRoot["playerOathState"] is JsonObject playerOathState)
+            root["playerOathState"] = playerOathState.DeepClone();
+        if (updateRoot["sarefPersonalBond"] is JsonObject personalBond)
+            root["sarefPersonalBond"] = personalBond.DeepClone();
+        if (updateRoot["sarefAdvantageUses"] is JsonArray advantageUses)
+            MergeArrayById(EnsureArray(root, "sarefAdvantageUses"), advantageUses, "usageId");
     }
 
     private static JsonArray EnsureAgendaArray(JsonObject agenda, string propertyName)
