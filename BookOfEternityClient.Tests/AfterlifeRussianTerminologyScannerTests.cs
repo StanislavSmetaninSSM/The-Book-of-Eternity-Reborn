@@ -85,6 +85,32 @@ public sealed class AfterlifeRussianTerminologyScannerTests
         Assert.Contains("только ремонт в неверной области", statusAudit, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void AfterlifeSpiritualCombatScreensMustUseRussianGameplayWording()
+    {
+        var source = ReadExplorerSource("ExplorerMode.Afterlife.SpiritualConflict.cs");
+
+        foreach (var forbidden in new[]
+        {
+            "persisted state",
+            "contested conflict",
+            "exchange history",
+            "итоги (totals)",
+            "выигрыш (payoff)",
+            "требует выигрыш (payoff)",
+            "актор (actor)=",
+            "side strain"
+        })
+        {
+            Assert.DoesNotContain(forbidden, source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("канонический файл состояния", source, StringComparison.Ordinal);
+        Assert.Contains("проверяемом спорном конфликте", source, StringComparison.Ordinal);
+        Assert.Contains("итоги бросков", source, StringComparison.Ordinal);
+        Assert.Contains("актор (actorId)=", source, StringComparison.Ordinal);
+    }
+
     private static bool IsAllowedTechnicalLiteral(string literal)
     {
         var text = literal.Trim();
