@@ -82,6 +82,7 @@ public partial class ValidationService
             ValidateDuplicateProjectIdsAcrossShiningFactions(factionIdentities, $"{contextPrefix}.factions", issues);
             ValidateShiningSupportedProjectCap(root, factionIdentities, contextPrefix, issues);
         }
+        ValidateShiningFactionConflictCampaigns(root, contextPrefix, issues);
         if (root.TryGetProperty("shiningPoliticalActors", out var politicalActors))
             ValidateDuplicateStringIdsInArray(politicalActors, $"{contextPrefix}.shiningPoliticalActors", issues, "actorId", "shining_abode_duplicate_political_actor_id");
 
@@ -382,6 +383,294 @@ public partial class ValidationService
             actual: supportedProjects.ToString(),
             repairHint: "Оставь supported=true только у allowed project cap; лишние completed projects должны быть unsupported через canonical unsupport_project closure."));
     }
+
+    private void ValidateShiningFactionConflictCampaigns(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(ShiningAbodeState.FactionConflictCampaignsProperty, out var campaigns))
+            return;
+
+        if (campaigns.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.{ShiningAbodeState.FactionConflictCampaignsProperty}",
+                IssueSeverity.Error,
+                "factionConflictCampaigns должен быть массивом кампаний против фракций.",
+                code: "shining_faction_campaigns_invalid_shape",
+                section: "ShiningAbode",
+                expected: "array",
+                actual: campaigns.ValueKind.ToString(),
+                repairHint: "Сохраняй factionConflictCampaigns как массив объектов кампаний; для отсутствия кампаний используй [] или отсутствующее поле."));
+            return;
+        }
+
+        var factionsById = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+        if (root.TryGetProperty("factions", out var factions) && factions.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var faction in factions.EnumerateArray())
+            {
+                if (faction.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var factionId = GetFirstNonEmptyString(faction, "factionId");
+                if (!string.IsNullOrWhiteSpace(factionId) && !factionsById.ContainsKey(factionId))
+                    factionsById[factionId] = faction;
+            }
+        }
+
+        var campaignIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var campaignIndex = 0;
+        foreach (var campaign in campaigns.EnumerateArray())
+        {
+            var campaignContext = $"{contextPrefix}.{ShiningAbodeState.FactionConflictCampaignsProperty}[{campaignIndex++}]";
+            if (!RequireObject(campaign, campaignContext, issues))
+                continue;
+
+            var campaignId = RequireString(campaign, campaignContext, issues, "campaignId");
+            var targetFactionId = RequireString(campaign, campaignContext, issues, "targetFactionId");
+            var goal = RequireString(campaign, campaignContext, issues, "goal");
+            var status = RequireString(campaign, campaignContext, issues, "status");
+            RequirePositiveNumberField(campaign, campaignContext, issues, "startedAtTurn");
+            ValidateOptionalString(campaign, campaignContext, issues, "startedAtUtc");
+            ValidateOptionalString(campaign, campaignContext, issues, "completedAtUtc");
+            ValidateOptionalString(campaign, campaignContext, issues, "playerIntent");
+            RequireString(campaign, campaignContext, issues, "summary");
+
+            if (!string.IsNullOrWhiteSpace(campaignId) && !campaignIds.Add(campaignId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{campaignContext}.campaignId",
+                    IssueSeverity.Error,
+                    "factionConflictCampaigns содержит duplicate campaignId.",
+                    code: "shining_faction_campaign_duplicate_id",
+                    section: "ShiningAbode",
+                    expected: "unique campaignId",
+                    actual: campaignId,
+                    repairHint: "Каждая кампания против фракции должна иметь стабильный уникальный campaignId."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(goal) && !ShiningAbodeState.IsSupportedFactionCampaignGoal(goal))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{campaignContext}.goal",
+                    IssueSeverity.Error,
+                    "Цель кампании против фракции использует неподдерживаемое значение.",
+                    code: "shining_faction_campaign_invalid_goal",
+                    section: "ShiningAbode",
+                    expected: "weaken | expose | depose_leader | break | dissolve",
+                    actual: goal,
+                    repairHint: "Выбери одну из поддерживаемых целей кампании: weaken, expose, depose_leader, break или dissolve."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(status) && !ShiningAbodeState.IsSupportedFactionCampaignStatus(status))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{campaignContext}.status",
+                    IssueSeverity.Error,
+                    "Статус кампании против фракции использует неподдерживаемое значение.",
+                    code: "shining_faction_campaign_invalid_status",
+                    section: "ShiningAbode",
+                    expected: "active | breakthrough_ready | completed | failed | abandoned",
+                    actual: status,
+                    repairHint: "Используй status active, breakthrough_ready, completed, failed или abandoned."));
+            }
+
+            JsonElement? targetFaction = null;
+            if (!string.IsNullOrWhiteSpace(targetFactionId))
+            {
+                if (factionsById.TryGetValue(targetFactionId, out var matchingFaction))
+                {
+                    targetFaction = matchingFaction;
+                }
+                else
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{campaignContext}.targetFactionId",
+                        IssueSeverity.Error,
+                        "Кампания против фракции должна ссылаться на существующую Shining faction.",
+                        code: "shining_faction_campaign_unknown_target",
+                        section: "ShiningAbode",
+                        expected: "existing factions[].factionId",
+                        actual: targetFactionId,
+                        repairHint: "Оставь campaign.targetFactionId равным существующей раскрытой/канонической фракции или очисти устаревшую кампанию."));
+                }
+            }
+
+            var breakthroughCount = ValidateShiningFactionCampaignBreakthroughLog(campaign, campaignContext, issues);
+            ValidateCompletedFactionConflictCampaignOutcome(
+                campaign,
+                campaignContext,
+                targetFaction,
+                goal,
+                status,
+                breakthroughCount,
+                issues);
+        }
+    }
+
+    private int ValidateShiningFactionCampaignBreakthroughLog(
+        JsonElement campaign,
+        string campaignContext,
+        List<ValidationIssue> issues)
+    {
+        if (!campaign.TryGetProperty("breakthroughLog", out var breakthroughs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{campaignContext}.breakthroughLog",
+                IssueSeverity.Error,
+                "Кампания против фракции должна иметь breakthroughLog[] даже если прорывов пока нет.",
+                code: "shining_faction_campaign_missing_breakthrough_log",
+                section: "ShiningAbode",
+                expected: "array",
+                actual: "missing",
+                repairHint: "Сохраняй breakthroughLog как массив: [] для активной кампании без прорывов или список подтверждённых breakthrough entries."));
+            return 0;
+        }
+
+        if (breakthroughs.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{campaignContext}.breakthroughLog",
+                IssueSeverity.Error,
+                "breakthroughLog должен быть массивом подтверждённых прорывов кампании.",
+                code: "shining_faction_campaign_breakthrough_log_invalid_shape",
+                section: "ShiningAbode",
+                expected: "array",
+                actual: breakthroughs.ValueKind.ToString(),
+                repairHint: "Сохраняй breakthroughLog как array; не заменяй его строкой, объектом или null."));
+            return 0;
+        }
+
+        var breakthroughIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var breakthrough in breakthroughs.EnumerateArray())
+        {
+            var breakthroughContext = $"{campaignContext}.breakthroughLog[{index++}]";
+            if (!RequireObject(breakthrough, breakthroughContext, issues))
+                continue;
+
+            var breakthroughId = RequireString(breakthrough, breakthroughContext, issues, "breakthroughId");
+            var type = RequireString(breakthrough, breakthroughContext, issues, "type");
+            RequirePositiveNumberField(breakthrough, breakthroughContext, issues, "resolvedAtTurn");
+            ValidateOptionalString(breakthrough, breakthroughContext, issues, "resolvedAtUtc");
+            RequireString(breakthrough, breakthroughContext, issues, "summary");
+
+            if (!string.IsNullOrWhiteSpace(breakthroughId) && !breakthroughIds.Add(breakthroughId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{breakthroughContext}.breakthroughId",
+                    IssueSeverity.Error,
+                    "breakthroughLog содержит duplicate breakthroughId.",
+                    code: "shining_faction_campaign_duplicate_breakthrough_id",
+                    section: "ShiningAbode",
+                    expected: "unique breakthroughId inside campaign",
+                    actual: breakthroughId,
+                    repairHint: "Каждый подтверждённый прорыв кампании должен иметь уникальный id внутри campaign.breakthroughLog[]."));
+            }
+
+            if (!string.IsNullOrWhiteSpace(type) && !ShiningAbodeState.IsSupportedFactionCampaignBreakthroughType(type))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{breakthroughContext}.type",
+                    IssueSeverity.Error,
+                    "Тип прорыва кампании против фракции использует неподдерживаемое значение.",
+                    code: "shining_faction_campaign_invalid_breakthrough_type",
+                    section: "ShiningAbode",
+                    expected: "exposure | duel_victory | defection | sabotage | resource_disruption | oath_break | trial | saref_directive",
+                    actual: type,
+                    repairHint: "Прорыв должен быть одним из documented breakthrough types; духовный бой может дать duel_victory, но это не единственный путь."));
+            }
+        }
+
+        return breakthroughs.GetArrayLength();
+    }
+
+    private void ValidateCompletedFactionConflictCampaignOutcome(
+        JsonElement campaign,
+        string campaignContext,
+        JsonElement? targetFaction,
+        string? goal,
+        string? status,
+        int breakthroughCount,
+        List<ValidationIssue> issues)
+    {
+        if (!string.Equals(status, ShiningAbodeState.FactionCampaignStatusCompleted, StringComparison.OrdinalIgnoreCase))
+            return;
+
+        RequirePositiveNumberField(campaign, campaignContext, issues, "completedAtTurn");
+        if (breakthroughCount <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{campaignContext}.breakthroughLog",
+                IssueSeverity.Error,
+                "Завершённая кампания против фракции должна иметь хотя бы один подтверждённый breakthrough.",
+                code: "shining_faction_campaign_completed_without_breakthrough",
+                section: "ShiningAbode",
+                expected: "breakthroughLog with at least one entry",
+                actual: "empty",
+                repairHint: "Добавь подтверждённый прорыв: exposure, duel_victory, defection, sabotage, resource_disruption, oath_break, trial или saref_directive."));
+        }
+
+        if (targetFaction == null || string.IsNullOrWhiteSpace(goal) || !ShiningAbodeState.IsSupportedFactionCampaignGoal(goal))
+            return;
+
+        var lifecycle = ShiningAbodeState.FactionLifecycleStateActive;
+        if (targetFaction.Value.TryGetProperty("factionLifecycle", out var lifecycleNode) &&
+            lifecycleNode.ValueKind == JsonValueKind.Object)
+        {
+            lifecycle = GetFirstNonEmptyString(lifecycleNode, "state") ?? ShiningAbodeState.FactionLifecycleStateActive;
+        }
+
+        var leadershipState = string.Empty;
+        if (targetFaction.Value.TryGetProperty("leadership", out var leadershipNode) &&
+            leadershipNode.ValueKind == JsonValueKind.Object)
+        {
+            leadershipState = GetFirstNonEmptyString(leadershipNode, "leadershipState") ?? string.Empty;
+        }
+
+        var lifecycleMatches = goal switch
+        {
+            ShiningAbodeState.FactionCampaignGoalWeaken =>
+                IsAny(lifecycle, ShiningAbodeState.FactionLifecycleStateWeakened, ShiningAbodeState.FactionLifecycleStateLeaderless, ShiningAbodeState.FactionLifecycleStateBroken, ShiningAbodeState.FactionLifecycleStateDissolved),
+            ShiningAbodeState.FactionCampaignGoalExpose => true,
+            ShiningAbodeState.FactionCampaignGoalDeposeLeader =>
+                IsAny(lifecycle, ShiningAbodeState.FactionLifecycleStateLeaderless, ShiningAbodeState.FactionLifecycleStateBroken, ShiningAbodeState.FactionLifecycleStateDissolved) ||
+                IsAny(leadershipState, ShiningAbodeState.LeadershipStateVacant, ShiningAbodeState.LeadershipStateContested),
+            ShiningAbodeState.FactionCampaignGoalBreak =>
+                IsAny(lifecycle, ShiningAbodeState.FactionLifecycleStateBroken, ShiningAbodeState.FactionLifecycleStateDissolved),
+            ShiningAbodeState.FactionCampaignGoalDissolve =>
+                IsAny(lifecycle, ShiningAbodeState.FactionLifecycleStateDissolved),
+            _ => true
+        };
+
+        if (lifecycleMatches)
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{campaignContext}.goal",
+            IssueSeverity.Error,
+            "Завершённая кампания против фракции не совпадает с итоговым lifecycle/leadership состоянием целевой фракции.",
+            code: "shining_faction_campaign_lifecycle_mismatch",
+            section: "ShiningAbode",
+            expected: DescribeExpectedCampaignLifecycle(goal),
+            actual: $"lifecycle={lifecycle}; leadership={leadershipState}",
+            repairHint: "Если кампания завершена, закрепи её результат в factions[].factionLifecycle или leadership; иначе оставь status active/breakthrough_ready."));
+    }
+
+    private static bool IsAny(string? value, params string[] expected) =>
+        expected.Any(item => string.Equals(value, item, StringComparison.OrdinalIgnoreCase));
+
+    private static string DescribeExpectedCampaignLifecycle(string goal) =>
+        goal switch
+        {
+            ShiningAbodeState.FactionCampaignGoalWeaken => "lifecycle weakened/leaderless/broken/dissolved",
+            ShiningAbodeState.FactionCampaignGoalDeposeLeader => "lifecycle leaderless/broken/dissolved or leadership vacant/contested",
+            ShiningAbodeState.FactionCampaignGoalBreak => "lifecycle broken/dissolved",
+            ShiningAbodeState.FactionCampaignGoalDissolve => "lifecycle dissolved",
+            _ => "matching campaign outcome"
+        };
 
     private void ValidatePendingShiningCoreActionsRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues) =>
         ValidateArrayItems(root, $"{contextPrefix}.{ShiningCoreActionRequestState.RequestsProperty}", issues, ShiningCoreActionRequestState.RequestsProperty, ValidatePendingShiningCoreActionRequestObject);

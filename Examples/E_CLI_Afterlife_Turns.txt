@@ -3494,6 +3494,9 @@ Canonical Shining vocabulary tables:
 | Field | Allowed values | Use |
 |---|---|---|
 | `factionLifecycle.state` | `active`, `weakened`, `leaderless`, `broken`, `dissolved` | Shining faction lifecycle. `broken`/`dissolved` are defeated historical/remnant states, not deletions. |
+| `factionConflictCampaigns[].goal` | `weaken`, `expose`, `depose_leader`, `break`, `dissolve` | Player-declared long campaign objective against a Shining faction. |
+| `factionConflictCampaigns[].status` | `active`, `breakthrough_ready`, `completed`, `failed`, `abandoned` | Campaign lifecycle. `completed` requires breakthrough proof and matching faction outcome. |
+| `factionConflictCampaigns[].breakthroughLog[].type` | `exposure`, `duel_victory`, `defection`, `sabotage`, `resource_disruption`, `oath_break`, `trial`, `saref_directive` | Valid breakthrough routes. Spiritual combat can supply `duel_victory`, but non-combat proof is also valid. |
 | `leadershipState` | `secure`, `contested`, `vacant` | Faction leadership status; `vacant` only when no head remains. |
 | faction `originType` | `ascended_guardian`, `native_radiant`, `player_founded` | Where a Shining faction came from. |
 | `residentRole` | `archive_support`, `forge_support`, `social_support`, `resource_support`, `descent_support` | Ascended resident's faction role and blessing/trade contribution. |
@@ -3513,6 +3516,44 @@ Canonical Abode resident disposition/devotion/migration tables:
 | `migrationState` | `ready_to_transfer` when devotion `<=15` and restlessness `>=70`; `considering_departure` when devotion `<=30` and restlessness `>=55`; `restless` when devotion `<=45` or restlessness `>=45`; `wavering` when devotion `<=60` or restlessness `>=30`; otherwise `settled`. |
 
 Accepted Shining core actions are strict diff contracts: mutate only the canonical state surfaces projected by that `actionType` plus the matching `coreActionReceipts[]` entry. `refused` and `withdrawn` outcomes close only through the receipt and must leave canonical Shining, Soul, and resident state unchanged. Supported receipt statuses are only `accepted`, `refused`, and `withdrawn`.
+
+Player-driven campaigns against Shining factions are stored in `shining_abode_state.json.factionConflictCampaigns[]`. The player starts them through `/фракции`; the GM progresses them by adding `breakthroughLog[]` entries during valid Shining turns and, when a goal is completed, by matching the target faction lifecycle/leadership state. Do not route these conflicts through Mortal `factionDataChanges`.
+
+Minimal campaign fragment:
+
+```json
+{
+  "factionConflictCampaigns": [
+    {
+      "campaignId": "shining_faction_campaign_wings_break_001",
+      "targetFactionId": "shine_faction_wings_of_angels_001",
+      "targetFactionName": "Крылья Ангелов",
+      "goal": "break",
+      "status": "active",
+      "startedAtTurn": 820,
+      "startedAtUtc": "2026-05-20T11:00:00Z",
+      "summary": "Игрок начал долгую кампанию, чтобы разгромить Крылья Ангелов.",
+      "playerIntent": "Найти союзников, вскрыть тайные ячейки и не дать Сарефу удержать фракцию страхом.",
+      "breakthroughLog": [
+        {
+          "breakthroughId": "breakthrough_wings_duel_001",
+          "type": "duel_victory",
+          "resolvedAtTurn": 824,
+          "resolvedAtUtc": "2026-05-20T11:15:00Z",
+          "summary": "Победа в духовном бою заставила одну ячейку Крыльев отступить."
+        },
+        {
+          "breakthroughId": "breakthrough_wings_exposure_001",
+          "type": "exposure",
+          "resolvedAtTurn": 826,
+          "resolvedAtUtc": "2026-05-20T11:25:00Z",
+          "summary": "Игрок вывел на свет доказательства тайных клятв Сарефа."
+        }
+      ]
+    }
+  ]
+}
+```
 
 The client preview may show a `projectedStateFragment` containing sanitized `beforeFullShiningRoot`, `afterFullShiningRoot`, and focused `gates`/faction/project fragments. Forge previews can also show sanitized `beforeFullSoulRoot`/`afterFullSoulRoot`; Shining gacha previews can show `gachaAccounting`, `expectedGachaHistoryEntryShape`, and `oneNewRelicEvidence`. Treat these as audit aids only: they are not GM output files and not new response fields. The accepted response still persists the full canonical `game_state/meta/shining_abode_state.json` root, `game_state/meta/soul_state.json` when listed in `changedSurfaces`, plus `coreActionReceipts[]`; hidden blessing `effectPayload` keys must not be copied from previews.
 

@@ -26,6 +26,29 @@ internal static partial class ShiningAbodeState
     public const string FactionLifecycleStateBroken = "broken";
     public const string FactionLifecycleStateDissolved = "dissolved";
 
+    public const string FactionConflictCampaignsProperty = "factionConflictCampaigns";
+
+    public const string FactionCampaignGoalWeaken = "weaken";
+    public const string FactionCampaignGoalExpose = "expose";
+    public const string FactionCampaignGoalDeposeLeader = "depose_leader";
+    public const string FactionCampaignGoalBreak = "break";
+    public const string FactionCampaignGoalDissolve = "dissolve";
+
+    public const string FactionCampaignStatusActive = "active";
+    public const string FactionCampaignStatusBreakthroughReady = "breakthrough_ready";
+    public const string FactionCampaignStatusCompleted = "completed";
+    public const string FactionCampaignStatusFailed = "failed";
+    public const string FactionCampaignStatusAbandoned = "abandoned";
+
+    public const string FactionCampaignBreakthroughExposure = "exposure";
+    public const string FactionCampaignBreakthroughDuelVictory = "duel_victory";
+    public const string FactionCampaignBreakthroughDefection = "defection";
+    public const string FactionCampaignBreakthroughSabotage = "sabotage";
+    public const string FactionCampaignBreakthroughResourceDisruption = "resource_disruption";
+    public const string FactionCampaignBreakthroughOathBreak = "oath_break";
+    public const string FactionCampaignBreakthroughTrial = "trial";
+    public const string FactionCampaignBreakthroughSarefDirective = "saref_directive";
+
     public const string HeadActorTypeGuardian = "guardian";
     public const string HeadActorTypePlayerSoul = "player_soul";
     public const string HeadActorTypeResident = "resident";
@@ -122,6 +145,36 @@ internal static partial class ShiningAbodeState
         FactionLifecycleStateLeaderless,
         FactionLifecycleStateBroken,
         FactionLifecycleStateDissolved
+    };
+
+    private static readonly HashSet<string> AllowedFactionCampaignGoals = new(StringComparer.OrdinalIgnoreCase)
+    {
+        FactionCampaignGoalWeaken,
+        FactionCampaignGoalExpose,
+        FactionCampaignGoalDeposeLeader,
+        FactionCampaignGoalBreak,
+        FactionCampaignGoalDissolve
+    };
+
+    private static readonly HashSet<string> AllowedFactionCampaignStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        FactionCampaignStatusActive,
+        FactionCampaignStatusBreakthroughReady,
+        FactionCampaignStatusCompleted,
+        FactionCampaignStatusFailed,
+        FactionCampaignStatusAbandoned
+    };
+
+    private static readonly HashSet<string> AllowedFactionCampaignBreakthroughTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        FactionCampaignBreakthroughExposure,
+        FactionCampaignBreakthroughDuelVictory,
+        FactionCampaignBreakthroughDefection,
+        FactionCampaignBreakthroughSabotage,
+        FactionCampaignBreakthroughResourceDisruption,
+        FactionCampaignBreakthroughOathBreak,
+        FactionCampaignBreakthroughTrial,
+        FactionCampaignBreakthroughSarefDirective
     };
 
     private static readonly HashSet<string> AllowedHeadActorTypes = new(StringComparer.OrdinalIgnoreCase)
@@ -236,6 +289,9 @@ internal static partial class ShiningAbodeState
     public static bool IsSupportedAvailability(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedAvailabilityValues.Contains(value);
     public static bool IsSupportedLeadershipState(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedLeadershipStates.Contains(value);
     public static bool IsSupportedFactionLifecycleState(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionLifecycleStates.Contains(value);
+    public static bool IsSupportedFactionCampaignGoal(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionCampaignGoals.Contains(value);
+    public static bool IsSupportedFactionCampaignStatus(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionCampaignStatuses.Contains(value);
+    public static bool IsSupportedFactionCampaignBreakthroughType(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedFactionCampaignBreakthroughTypes.Contains(value);
     public static bool IsSupportedHeadActorType(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedHeadActorTypes.Contains(value);
     public static bool IsSupportedOriginType(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedOriginTypes.Contains(value);
     public static bool IsSupportedPoliticalStatus(string? value) => !string.IsNullOrWhiteSpace(value) && AllowedPoliticalStatuses.Contains(value);
@@ -405,6 +461,7 @@ internal static partial class ShiningAbodeState
     public static JsonArray EnsureHallsArray(JsonObject root) => EnsureArray(root, "halls");
     public static JsonArray EnsureFactionsArray(JsonObject root) => EnsureArray(root, "factions");
     public static JsonArray EnsurePoliticalActorsArray(JsonObject root) => EnsureArray(root, "shiningPoliticalActors");
+    public static JsonArray EnsureFactionConflictCampaignsArray(JsonObject root) => EnsureArray(root, FactionConflictCampaignsProperty);
     public static JsonArray EnsureCoreActionReceiptsArray(JsonObject root) => EnsureArray(root, "coreActionReceipts");
     public static JsonArray EnsureFactionFoundingReceiptsArray(JsonObject root) => EnsureArray(root, "factionFoundingReceipts");
     public static JsonArray EnsureFactionRealignmentReceiptsArray(JsonObject root) => EnsureArray(root, "factionRealignmentReceipts");
@@ -473,6 +530,11 @@ internal static partial class ShiningAbodeState
             NormalizePoliticalActorObject(actor);
         foreach (var faction in EnsureFactionsArray(root).OfType<JsonObject>())
             NormalizeFactionObject(faction, residentRoot, radianceTier);
+        if (root[FactionConflictCampaignsProperty] is JsonArray campaigns)
+        {
+            foreach (var campaign in campaigns.OfType<JsonObject>())
+                NormalizeFactionConflictCampaignObject(campaign);
+        }
 
         if (root["pendingNativeFactionDiscovery"] is JsonObject pendingDiscovery)
             NormalizePendingNativeFactionDiscoveryObject(pendingDiscovery, radianceTier);
@@ -931,6 +993,33 @@ internal static partial class ShiningAbodeState
             lifecycle["defeatedAtUtc"] = GetNodeString(lifecycle["defeatedAtUtc"]) ?? string.Empty;
             lifecycle["defeatReason"] = GetNodeString(lifecycle["defeatReason"]) ?? string.Empty;
             lifecycle["remnantsSummary"] = GetNodeString(lifecycle["remnantsSummary"]) ?? string.Empty;
+        }
+    }
+
+    private static void NormalizeFactionConflictCampaignObject(JsonObject campaign)
+    {
+        campaign["campaignId"] = GetNodeString(campaign["campaignId"]) ?? string.Empty;
+        campaign["targetFactionId"] = GetNodeString(campaign["targetFactionId"]) ?? string.Empty;
+
+        campaign["goal"] = GetNodeString(campaign["goal"]) ?? string.Empty;
+        campaign["status"] = GetNodeString(campaign["status"]) ?? string.Empty;
+        campaign["startedAtTurn"] = Math.Max(0, GetNodeInt(campaign["startedAtTurn"], 0));
+        campaign["startedAtUtc"] = GetNodeString(campaign["startedAtUtc"]) ?? string.Empty;
+        campaign["completedAtTurn"] = Math.Max(0, GetNodeInt(campaign["completedAtTurn"], 0));
+        campaign["completedAtUtc"] = GetNodeString(campaign["completedAtUtc"]) ?? string.Empty;
+        campaign["summary"] = GetNodeString(campaign["summary"]) ?? string.Empty;
+        campaign["playerIntent"] = GetNodeString(campaign["playerIntent"]) ?? string.Empty;
+
+        if (campaign["breakthroughLog"] is not JsonArray breakthroughs)
+            return;
+
+        foreach (var breakthrough in breakthroughs.OfType<JsonObject>())
+        {
+            breakthrough["breakthroughId"] = GetNodeString(breakthrough["breakthroughId"]) ?? string.Empty;
+            breakthrough["type"] = GetNodeString(breakthrough["type"]) ?? string.Empty;
+            breakthrough["resolvedAtTurn"] = Math.Max(0, GetNodeInt(breakthrough["resolvedAtTurn"], 0));
+            breakthrough["resolvedAtUtc"] = GetNodeString(breakthrough["resolvedAtUtc"]) ?? string.Empty;
+            breakthrough["summary"] = GetNodeString(breakthrough["summary"]) ?? string.Empty;
         }
     }
 
