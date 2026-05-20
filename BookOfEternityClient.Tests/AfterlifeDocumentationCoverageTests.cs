@@ -2570,6 +2570,70 @@ public sealed class AfterlifeDocumentationCoverageTests
         }
     }
 
+    [Fact]
+    public void SarefAzaliaQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "azalia.md",
+            "Азалия",
+            "faction",
+            "Ложная преданность",
+            "политичес",
+            "преданность");
+    }
+
+    private static void AssertSarefGuardianQuestlineBible(
+        string fileName,
+        string guardianName,
+        string revelationCategory,
+        string advantageName,
+        params string[] identityTerms)
+    {
+        var bible = ReadRepoFile("OtherGuides", "Saref_Guardian_Questlines", fileName);
+
+        foreach (var requiredText in new[]
+                 {
+                     guardianName,
+                     "Крылья над Бездной",
+                     "Крылья Ангелов",
+                     "Сареф",
+                     revelationCategory,
+                     advantageName,
+                     "sarefRevelation",
+                     "sarefAdvantage",
+                     "духовный слепок",
+                     "не переносятся физически",
+                     "GM не должен"
+                 })
+        {
+            Assert.Contains(requiredText, bible, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var identityTerm in identityTerms)
+        {
+            Assert.Contains(identityTerm, bible, StringComparison.OrdinalIgnoreCase);
+        }
+
+        for (var questNumber = 1; questNumber <= 4; questNumber++)
+        {
+            Assert.Contains($"## Квест {questNumber}", bible, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var requiredSection in new[]
+                 {
+                     "Тип",
+                     "Смертная жизнь",
+                     "Что делает игрок",
+                     "Трагический конфликт",
+                     "Ключевая сцена",
+                     "Моральная цена",
+                     "Что раскрывается о Хранителе"
+                 })
+        {
+            Assert.Contains(requiredSection, bible, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     private static string[] ShiningConstantValues(params string[] prefixes) =>
         typeof(ShiningAbodeState)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
