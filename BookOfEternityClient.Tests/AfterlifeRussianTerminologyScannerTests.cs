@@ -51,6 +51,40 @@ public sealed class AfterlifeRussianTerminologyScannerTests
             "English afterlife player-facing terms found:\n" + string.Join("\n", findings.Take(50)));
     }
 
+    [Fact]
+    public void AfterlifeStatusAndPendingAuditPanelsMustUseRussianGameplayWording()
+    {
+        var sources = new[]
+        {
+            ReadExplorerSource("ExplorerMode.Afterlife.GuardiansProjectsTrade.cs"),
+            ReadExplorerSource("ExplorerMode.Afterlife.StatusAudit.cs"),
+            ReadExplorerSource("ExplorerMode.MetaStoryAndStatus.cs")
+        };
+
+        foreach (var source in sources)
+        foreach (var forbidden in new[]
+        {
+            "operational overview",
+            "read-only Guardian overview",
+            "audit-панели",
+            "afterlife ресурсов",
+            "blockers, contracts",
+            "state deltas",
+            "pending/control-контракты",
+            "repair-only в неверной области",
+            "receipts/state",
+            "audit/repair",
+            "no compact fields; inspect JSON/state file"
+        })
+        {
+            Assert.DoesNotContain(forbidden, source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var statusAudit = sources[1];
+        Assert.Contains("Активные ожидающие/контрольные контракты", statusAudit, StringComparison.Ordinal);
+        Assert.Contains("только ремонт в неверной области", statusAudit, StringComparison.Ordinal);
+    }
+
     private static bool IsAllowedTechnicalLiteral(string literal)
     {
         var text = literal.Trim();
@@ -133,4 +167,12 @@ public sealed class AfterlifeRussianTerminologyScannerTests
 
         return new string(output.ToArray());
     }
+
+    private static string ReadExplorerSource(string fileName) =>
+        File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            fileName));
 }

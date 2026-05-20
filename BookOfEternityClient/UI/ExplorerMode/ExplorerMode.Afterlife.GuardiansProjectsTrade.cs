@@ -271,22 +271,22 @@ public partial class ExplorerMode
             var overviewLines = new List<string>
             {
                 isChaosSea
-                    ? "[bold cyan]Море Хаоса: полный operational overview[/]"
-                    : "[bold cyan]Сияющая Обитель: read-only Guardian overview[/]",
+                    ? "[bold cyan]Море Хаоса: полный оперативный обзор[/]"
+                    : "[bold cyan]Сияющая Обитель: обзор Хранителей только для чтения[/]",
                 "",
                 $"  • Активный Хранитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(activeGuardianDisplayName) ? activeGuardianId : activeGuardianDisplayName)}[/] [dim]({Markup.Escape(activeGuardianId)})[/]",
                 $"  • Текущая Обитель: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeId) ? "не выбрана" : currentAbodeId)}[/]",
                 $"  • Известных Хранителей: [white]{guardians.Count}[/]",
                 "",
-                "[bold]Подробные audit-панели:[/]",
-                "  • /status — единый статус afterlife ресурсов, blockers, contracts и Shining-сигналов.",
-                "  • /afterlife_inbox — все ответы GM по торговле, архиву, резидентам и политике.",
-                "  • /feathers, /afterlife_archive, /guardian_projects, /abode_offering — детальные ресурсы и state deltas."
+                "[bold]Подробные аудит-панели:[/]",
+                "  • /status — единый статус ресурсов посмертия, блокеров, контрактов и сигналов Сияющей Обители.",
+                "  • /afterlife_inbox — все ответы ГМ по торговле, архиву, резидентам и политике.",
+                "  • /feathers, /afterlife_archive, /guardian_projects, /abode_offering — детальные ресурсы и изменения состояния."
             };
             if (!isChaosSea)
             {
                 overviewLines.Add("");
-                overviewLines.Add("[yellow]Chaos Sea-only действия скрыты:[/] поиск новой Обители и основание собственного Хранителя доступны только в обычном Море Хаоса.");
+                overviewLines.Add("[yellow]Действия только Моря Хаоса скрыты:[/] поиск новой Обители и основание собственного Хранителя доступны только в обычном Море Хаоса.");
             }
             overviewLines.Add("");
             overviewLines.AddRange(await BuildAfterlifePendingContractAuditLinesAsync(includeShining: true, includeFullPayload: true));

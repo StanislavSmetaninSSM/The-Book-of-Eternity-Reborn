@@ -32,20 +32,20 @@ public partial class ExplorerMode
     private static readonly AfterlifePendingContractDefinition[] AfterlifePendingContractDefinitions =
     {
         new(AfterlifeArchiveActionState.ConsultationRequestPath, "Архивная консультация", "archiveActionResolutions + soul_state.afterlifeArchive.actionReceipts[]"),
-        new(AfterlifeArchiveActionState.ProjectFuelRequestPath, "Подпитка проекта Архивом", "archiveActionResolutions + allowed project/log effect"),
-        new(GuardianAbodeOfferingState.PendingRequestPath, "Подношение Обители", "guardianPowerEvents.reasonType=offering; ink_feathers additionally require output/ink_feather_action_result.json"),
+        new(AfterlifeArchiveActionState.ProjectFuelRequestPath, "Подпитка проекта Архивом", "archiveActionResolutions + разрешённый эффект проекта/журнала"),
+        new(GuardianAbodeOfferingState.PendingRequestPath, "Подношение Обители", "guardianPowerEvents.reasonType=offering; для ink_feathers дополнительно нужен output/ink_feather_action_result.json"),
         new(GuardianTradeRequestState.PendingRequestPath, "Торговая витрина Хранителя", "UpdateGuardians + guardians[].tradeInventory + tradeInventoryReceipts[]"),
         new(PlayerGuardianFoundationState.PendingRequestPath, "Основание собственного Хранителя", "UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory"),
-        new(SystemGuardianLibraryService.AttractionRequestPath, "Притяжение извечного Хранителя", "Только Море Хаоса: UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation; вне Моря Хаоса сохранять как repair-only в неверной области или чистить явной клиентской отменой"),
-        new(AfterlifeReturnGuardService.GuardPath, "Защита возвращения после жизни", "клиентская защита; GM не должен очищать или обходить её"),
+        new(SystemGuardianLibraryService.AttractionRequestPath, "Притяжение извечного Хранителя", "Только Море Хаоса: UpdateGuardians + guardians/activeGuardian + chaosSeaNavigation; вне Моря Хаоса сохранять как только ремонт в неверной области или чистить явной клиентской отменой"),
+        new(AfterlifeReturnGuardService.GuardPath, "Защита возвращения после жизни", "клиентская защита; ГМ не должен очищать или обходить её"),
         new(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, "Состав резидентов Обители", "UpdateGuardianAbodeResidents + UpdateGuardianAbodeResidentRosterReceipts"),
-        new(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "Разговор/история резидента Обители", "residentInteractionLogUpdates or resident history log + matching interaction receipts"),
-        new(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "Переход резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + source/target resident state"),
+        new(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath, "Разговор/история резидента Обители", "residentInteractionLogUpdates или журнал истории резидента + совпадающие квитанции взаимодействия"),
+        new(GuardianAbodeResidentRequestState.PendingTransfersRequestPath, "Переход резидента между Обителями", "UpdateGuardianAbodeResidentTransferReceipts + состояние исходного/целевого резидента"),
         new(GuardianAbodeResidentRequestState.PendingManifestationRequestPath, "Манифестация резидента в следующей жизни", "закрывается только через MortalWorldProfile после bootstrap; валидные файлы сохраняются в посмертии, повреждённые требуют ремонта"),
-        new(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "Социальный запрос к Хранителю", "guardianSocialJournalUpdates with matching requestId/guardianId/interactionType"),
-        new(ActorSocialInteractionRequestState.PendingNpcRequestPath, "Социальный запрос NPC из смертного мира", "repair-only в неверной области посмертия; сохранить полные данные и не закрывать через посмертие"),
-        new(NpcTradeRequestState.PendingRequestPath, "Торговый запрос NPC из смертного мира", "repair-only в неверной области посмертия; сохранить полные данные и не создавать посмертные торговые receipts"),
-        new(ShiningCoreActionRequestState.PendingActionsRequestPath, "Core-действие Сияющей Обители", "shining_abode_state.coreActionReceipts[] + exact canonical state projection", ShiningOnly: true),
+        new(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "Социальный запрос к Хранителю", "guardianSocialJournalUpdates со совпадающими requestId/guardianId/interactionType"),
+        new(ActorSocialInteractionRequestState.PendingNpcRequestPath, "Социальный запрос NPC из смертного мира", "только ремонт в неверной области посмертия; сохранить полные данные и не закрывать через посмертие"),
+        new(NpcTradeRequestState.PendingRequestPath, "Торговый запрос NPC из смертного мира", "только ремонт в неверной области посмертия; сохранить полные данные и не создавать посмертные торговые квитанции"),
+        new(ShiningCoreActionRequestState.PendingActionsRequestPath, "Основное действие Сияющей Обители", "shining_abode_state.coreActionReceipts[] + точная каноническая проекция состояния", ShiningOnly: true),
         new(ShiningTradeRequestState.PendingRequestsPath, "Торговая витрина Сияющей фракции", "factions[].tradeInventory + tradeInventoryReceipts[]", ShiningOnly: true),
         new(ShiningFactionRequestState.PendingFoundingsRequestPath, "Основание сияющей фракции", "halls[]/factions[] + factionFoundingReceipts[]", ShiningOnly: true),
         new(ShiningFactionRequestState.PendingRealignmentsRequestPath, "Переход сияющего резидента", "guardian_abode_residents.json resident faction fields + factionRealignmentReceipts[]", ShiningOnly: true),
@@ -83,7 +83,7 @@ public partial class ExplorerMode
             $"  • Чернильные Перья: [gold1]{CurrentInkFeathersForPreview(soulRoot)}[/]",
             $"  • Просветление: [white]{Markup.Escape(GetNodeString(soulRoot?["enlightenment"]?["currentTier"]) ?? GetNodeString(soulRoot?["enlightenmentTier"]) ?? "не указано")}[/]",
             $"  • Реликвии души: в хранилище (stored) [white]{(soulRoot?["soulRelics"]?["stored"] as JsonArray)?.Count ?? 0}[/], экипировано (equipped) [white]{(soulRoot?["soulRelics"]?["equipped"] as JsonArray)?.Count ?? 0}[/]",
-            $"  • Архив души: в хранилище (stored) [white]{(soulRoot?["afterlifeArchive"]?["stored"] as JsonArray)?.Count ?? 0}[/], receipts [white]{(soulRoot?["afterlifeArchive"]?["actionReceipts"] as JsonArray)?.Count ?? 0}[/]"
+            $"  • Архив души: в хранилище (stored) [white]{(soulRoot?["afterlifeArchive"]?["stored"] as JsonArray)?.Count ?? 0}[/], квитанции (actionReceipts) [white]{(soulRoot?["afterlifeArchive"]?["actionReceipts"] as JsonArray)?.Count ?? 0}[/]"
         };
 
         AppendNextLifePayloadStatusLines(lines, soulRoot);
@@ -100,9 +100,9 @@ public partial class ExplorerMode
         lines.AddRange(pendingLines);
         lines.Add("");
         lines.Add("[bold]Куда смотреть дальше:[/]");
-        lines.Add("  • /chaos_sea — Хранители, Обители, pending/control-контракты и действия Моря Хаоса.");
-        lines.Add("  • /feathers, /afterlife_archive, /afterlife_inbox, /guardian_projects — детальные audit-панели ресурсов, архива, ответов GM и проектов.");
-        lines.Add("  • /shining_abode, /shining_politics — Сияющая Обитель, Врата, торговля/ковка, фракции, резиденты, проекты и политические receipts.");
+        lines.Add("  • /chaos_sea — Хранители, Обители, ожидающие/контрольные контракты и действия Моря Хаоса.");
+        lines.Add("  • /feathers, /afterlife_archive, /afterlife_inbox, /guardian_projects — детальные аудит-панели ресурсов, архива, ответов ГМ и проектов.");
+        lines.Add("  • /shining_abode, /shining_politics — Сияющая Обитель, Врата, торговля/ковка, фракции, резиденты, проекты и политические квитанции.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -178,7 +178,7 @@ public partial class ExplorerMode
         foreach (var issue in issues)
         {
             lines.Add($"  • {Markup.Escape(issue.Path)}: [red]{Markup.Escape(issue.Error)}[/]");
-            lines.Add("    Полные сырые данные выведены ниже отдельной repair-only audit-панелью; GM/client не должен молча нормализовать или перезаписывать этот файл.");
+            lines.Add("    Полные сырые данные выведены ниже отдельной аудит-панелью только для ремонта; ГМ/клиент не должен молча нормализовать или перезаписывать этот файл.");
         }
     }
 
@@ -390,7 +390,7 @@ public partial class ExplorerMode
             .ToList();
 
         lines.Add(parts.Count == 0
-            ? $"  • {label}: no compact fields; inspect JSON/state file."
+            ? $"  • {label}: нет кратких полей; см. JSON/файл состояния."
             : $"  • {label}: [dim]{Markup.Escape(string.Join("; ", parts))}[/]");
     }
 
@@ -422,7 +422,7 @@ public partial class ExplorerMode
         }
         lines.Add($"  • Заряды гачи Сияющей Обители (gachaSystem): [white]{ShiningAbodeState.GetRemainingShiningGachaCharges(root)}[/]/[white]{GetNodeInt(root["gachaSystem"]?["chargesPerReturn"])}[/] [dim]({BuildShiningReturnCycleStatusLabel(root)})[/]");
         lines.Add($"  • Фракций: [white]{(root["factions"] as JsonArray)?.Count ?? 0}[/], залов: [white]{(root["halls"] as JsonArray)?.Count ?? 0}[/], вознесённых резидентов: [white]{CountAscendedShiningResidents(context.ResidentRoot)}[/]");
-        lines.Add($"  • Журналы receipts: coreAction={(root["coreActionReceipts"] as JsonArray)?.Count ?? 0}, founding={CountNestedReceipts(root, "factionFoundingReceipts")}, realignment={CountNestedReceipts(root, "factionRealignmentReceipts")}, leadership={CountNestedReceipts(root, "leadershipReceipts")}, trade={CountNestedReceipts(root, ShiningTradeRequestState.ReceiptsProperty)}.");
+        lines.Add($"  • Журналы квитанций: coreAction={(root["coreActionReceipts"] as JsonArray)?.Count ?? 0}, founding={CountNestedReceipts(root, "factionFoundingReceipts")}, realignment={CountNestedReceipts(root, "factionRealignmentReceipts")}, leadership={CountNestedReceipts(root, "leadershipReceipts")}, trade={CountNestedReceipts(root, ShiningTradeRequestState.ReceiptsProperty)}.");
         var legacyPendingDiscoveryIssue = ShiningAbodeState.ValidateLegacyPendingNativeFactionDiscoveryShape(root);
         if (!string.IsNullOrWhiteSpace(legacyPendingDiscoveryIssue))
         {
@@ -451,7 +451,7 @@ public partial class ExplorerMode
                 var projects = faction["projects"] as JsonArray;
                 var supported = projects?.OfType<JsonObject>().Count(project => GetNodeBool(project["isSupported"])) ?? 0;
                 var memberCount = CountResidentsInFaction(context.ResidentRoot, factionId);
-                lines.Add($"  • {Markup.Escape(name)} [dim]({Markup.Escape(factionId)})[/]: сила={strength}, tradeTier={ShiningAbodeState.GetTradeTier(strength)}, слоты={ShiningAbodeState.GetTradeStockItemCount(faction, context.ResidentRoot)}, редкость={Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(strength))}, service x{ShiningAbodeState.GetServiceMultiplier(strength):0.00}, резиденты={memberCount}, проекты={projects?.Count ?? 0}, поддержано={supported}.");
+                lines.Add($"  • {Markup.Escape(name)} [dim]({Markup.Escape(factionId)})[/]: сила={strength}, торговый тир={ShiningAbodeState.GetTradeTier(strength)}, слоты={ShiningAbodeState.GetTradeStockItemCount(faction, context.ResidentRoot)}, редкость={Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(strength))}, множитель услуг x{ShiningAbodeState.GetServiceMultiplier(strength):0.00}, резиденты={memberCount}, проекты={projects?.Count ?? 0}, поддержано={supported}.");
             }
         }
     }
@@ -606,12 +606,12 @@ public partial class ExplorerMode
         var entries = await ReadAfterlifePendingContractAuditEntriesAsync(includeShining);
         var lines = new List<string>
         {
-            "[bold]Активные pending/control-контракты:[/]"
+            "[bold]Активные ожидающие/контрольные контракты:[/]"
         };
 
         if (entries.Count == 0)
         {
-            lines.Add("  • Нет активных pending/control-контрактов, блокирующих обычный посмертный ход.");
+            lines.Add("  • Нет активных ожидающих/контрольных контрактов, блокирующих обычный посмертный ход.");
             return lines;
         }
 
@@ -624,7 +624,7 @@ public partial class ExplorerMode
             lines.Add($"  • [white]{Markup.Escape(entry.Definition.Label)}[/] — [dim]{Markup.Escape(entry.Definition.Path)}[/] / {Markup.Escape(requestLabel)}");
             if (isWrongRealmShiningContract)
             {
-                lines.Add("    область: [yellow]repair-only в неверной области: Море Хаоса[/]; сохранить данные и не закрывать сияющими receipts/state, пока область не станет Сияющей Обителью.");
+                lines.Add("    область: [yellow]только ремонт в неверной области: Море Хаоса[/]; сохранить данные и не закрывать сияющими квитанциями/состоянием, пока область не станет Сияющей Обителью.");
             }
             if (entry.IsMalformed)
             {
@@ -644,7 +644,7 @@ public partial class ExplorerMode
                 lines.Add($"    идентификаторы: {Markup.Escape(string.IsNullOrWhiteSpace(identity) ? "поля не найдены; проверьте полные данные ниже" : identity)}");
             }
             lines.Add(isWrongRealmShiningContract
-                ? "    закрытие: [yellow]недоступно в Море Хаоса[/]; сияющий pending-контракт показан только для полного audit/repair."
+                ? "    закрытие: [yellow]недоступно в Море Хаоса[/]; сияющий ожидающий контракт показан только для полного аудита/ремонта."
                 : $"    закрытие: {Markup.Escape(entry.Definition.ClosureHint)}");
 
             if (includeFullPayload && entry.Payload != null)
@@ -671,7 +671,7 @@ public partial class ExplorerMode
             var raw = await _fs.ReadFileAsync(definition.Path);
             if (string.IsNullOrWhiteSpace(raw))
             {
-                result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: "empty file", RawPayload: raw));
+                result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: "пустой файл", RawPayload: raw));
                 continue;
             }
 
@@ -692,7 +692,7 @@ public partial class ExplorerMode
                             requests[i] as JsonObject,
                             i,
                             IsMalformed: requests[i] is not JsonObject,
-                            Error: requests[i] is JsonObject ? null : "request entry is not an object",
+                            Error: requests[i] is JsonObject ? null : "запись request не является объектом",
                             RawPayload: requests[i]?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) ?? raw));
                     }
                 }
@@ -702,7 +702,7 @@ public partial class ExplorerMode
                 }
                 else
                 {
-                    result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: "root is not an object", RawPayload: raw));
+                    result.Add(new AfterlifePendingContractAuditEntry(definition, null, null, IsMalformed: true, Error: "корень JSON не является объектом", RawPayload: raw));
                 }
             }
             catch (Exception ex)
@@ -776,7 +776,7 @@ public partial class ExplorerMode
         {
             var root = JsonNode.Parse(raw) as JsonObject;
             return root == null
-                ? new AfterlifeStatusJsonReadResult(path, null, raw, "root is not an object")
+                ? new AfterlifeStatusJsonReadResult(path, null, raw, "корень JSON не является объектом")
                 : new AfterlifeStatusJsonReadResult(path, root, raw, null);
         }
         catch (Exception ex)
