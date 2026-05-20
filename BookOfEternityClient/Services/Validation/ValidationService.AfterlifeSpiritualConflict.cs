@@ -3539,6 +3539,20 @@ public partial class ValidationService
                 SpecialArtAuditOwnerIsPlayer(audit) == playerSide &&
                 ConflictTokenEqualsSingle(AfterlifeSpiritualConflictState.GetNodeString(audit["baseOperation"]), operationType))
             .ToArray();
+        if (!string.IsNullOrWhiteSpace(requestedSpecialArtId) &&
+            matchingAudits.Length == 0)
+        {
+            var missingSideLabel = playerSide ? "player" : "opposition";
+            AddActionCostIssue(
+                issues,
+                context,
+                $"actionCostAudit.{missingSideLabel}.specialArtId требует ровно один specialArtAudit/specialArtAudits[] для той же стороны и операции, иначе особый эффект и effectNote не проверяются.",
+                "afterlife_conflict_special_art_cost_audit_incomplete",
+                $"one {missingSideLabel} special art audit for operationType={operationType}, specialArtId={requestedSpecialArtId}",
+                "missing matching specialArtAudit");
+            return;
+        }
+
         if (matchingAudits.Length <= 1)
             return;
 

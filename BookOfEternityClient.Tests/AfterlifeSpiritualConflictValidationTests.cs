@@ -3191,6 +3191,75 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_RejectsSpecialArtCostWithoutSpecialArtAudit()
+    {
+        await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
+        {
+          "schemaVersion": 1,
+          "enlightenmentRank": 1,
+          "radianceRank": 0,
+          "retainedRadianceRank": 0,
+          "spiritFocusTier": 0,
+          "lastRecoveryTurn": 0,
+          "artTiers": { "pressure": 2 }
+        }
+        """);
+        await WriteAfterlifeEntityProfilesWithPlayerSpecialArtsAsync("""
+        [
+          {
+            "artId": "mirror_pressure",
+            "displayName": "Зеркальное Давление",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "pressure",
+            "tier": 2,
+            "costMultiplierPercent": 150,
+            "upgradeCost": { "inkFeathers": 40, "lightSparks": 0 },
+            "effectSummary": "Давление отражает часть обета."
+          }
+        ]
+        """);
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_special_art_cost_without_audit_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditWithoutAbodePowerJson()}},
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 2,
+              "specialArtId": "mirror_pressure",
+              "specialCostMultiplierPercent": 150,
+              "standardEffectiveCost": 1,
+              "effectiveCost": 2,
+              "before": 6,
+              "after": 4
+            }
+          }
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotWithAuthorityAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_special_art_cost_audit_incomplete", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_RejectsNonPlayerSpecialArtWithoutOppositionOperation()
     {
         await WriteSoulStateWithAfterlifeCombatProfileAsync("Chaos Sea", """
