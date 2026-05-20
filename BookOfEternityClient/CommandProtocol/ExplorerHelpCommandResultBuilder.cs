@@ -1,0 +1,205 @@
+namespace BookOfEternityClient.CommandProtocol;
+
+internal static class ExplorerHelpCommandResultBuilder
+{
+    public static ExplorerCommandResult Build(ExplorerHelpCommandContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+
+        var table = new UiTableBlock
+        {
+            Title = string.IsNullOrWhiteSpace(context.Title) ? "Помощь" : context.Title,
+            Columns = ["EN", "RU", "Описание"]
+        };
+
+        if (context.IsPendingShiningAbodeBootstrap)
+            AddPendingShiningBootstrapRows(table);
+        else if (context.IsShiningAbode)
+            AddShiningAbodeRows(table);
+        else if (context.IsChaosSea)
+            AddChaosSeaRows(table, context.CanReenterShiningAbode);
+        else
+            AddMortalRows(table);
+
+        AddCommonRows(table);
+
+        return new ExplorerCommandResult
+        {
+            Command = context.Command,
+            State = CommandExecutionState.Completed,
+            Blocks = [table]
+        };
+    }
+
+    private static void AddPendingShiningBootstrapRows(UiTableBlock table)
+    {
+        Section(table, "ПЕРЕДАЧА ИЗ СИЯЮЩЕЙ ОБИТЕЛИ");
+        Add(table, "/help", "/помощь", "Показать этот экран; обычные команды Обители и Моря Хаоса пока недоступны");
+        Add(table, "/status", "/статус", "Аудит только для чтения: блокеры, замороженный пакет воплощения (preparedIncarnationPackage), ожидающая настройка и данные следующей жизни");
+        Add(table, "/shining_abode", "/сияющая_обитель", "Аудит только для чтения: Врата, замороженный пакет, выбранные карты и квитанции ядра; обычные действия Обители недоступны");
+        Add(table, "/shining_politics", "/сияющая_политика", "Аудит только для чтения: основание фракций, переходы и лидерство, их квитанции и ожидающие контракты");
+    }
+
+    private static void AddShiningAbodeRows(UiTableBlock table)
+    {
+        Section(table, "СИЯЮЩАЯ ОБИТЕЛЬ");
+        Add(table, "/guardians", "/хранители", "Информация о хранителях");
+        Add(table, "/status", "/статус", "Полный статус посмертия: ресурсы души, блокеры, ожидающие контракты, Сияние, Искры Света, Врата, торговля/кузня и политические сигналы");
+        Add(table, "/abode_power", "/сила_обители", "Журнал силы Обителей и её причин");
+        Add(table, "/abode_offering", "/подношение_обители", "Поднести Перья, Реликвию Души или запись Архива выбранной Обители");
+        Add(table, "/guardian_projects", "/проекты_хранителей", "Подробный журнал проектов хранителей");
+        Add(table, "/soul", "/душа", "Состояние души и мета-прогрессия");
+        Add(table, "/soul_relics", "/реликвии", "Реликвии души");
+        Add(table, "/afterlife_archive", "/архив_души", "Архив знаний и тайн, переживших смерть");
+        Add(table, "/archive_candidates", "/архив_кандидаты", "Выбрать, что сохранить в Архив по итогам жизни");
+        Add(table, "/afterlife_inbox", "/уведомления_загробья", "Ответы ГМ по торговле, Архиву и резидентам Обители");
+        Add(table, "/spiritual_conflict", "/духовный_конфликт", "Активный духовный конфликт посмертия: стороны, позиция, напряжение и журнал обменов");
+        Add(table, "/spiritual_combat_log", "/журнал_духовного_боя", "Журнал духовного боя: обмены действиями (exchangeLog), недавние конфликты (recentConflicts), кубики, позиции, напряжение и награды");
+        Add(table, "/spiritual_combat_help", "/духовный_бой", "Подробная справка по духовному бою: команды, духовные искусства, позиция, кубики, криты и награды");
+        Add(table, "/spiritual_arts", "/духовные_искусства", "Ранги Просветления/Сияния и уровни духовных искусств");
+        Add(table, "/spiritual_action", "/духовное_действие", "Отправить действие ГМ в активном духовном конфликте с явным тегом; обычная проза тоже валидна");
+        Add(table, "/shining_abode", "/сияющая_обитель", "Обзор сияния, залов, фракций, Врат и текущего состояния Сияющей Обители");
+        Add(table, "/shining_politics", "/сияющая_политика", "Фракционная политика Сияющей Обители: власть, основание и переходы между фракциями");
+        Add(table, "/shining_treasury", "/казначейство", "Локальное казначейство: вклад Чернильных Перьев, проценты и дорогой обмен Перьев на Искры Света");
+        Add(table, "/source_of_light", "/источник_света", "Вершина полного Сияния: Источник Света, Воплощение Света и уникальная реликвия Воплощенный Свет");
+        Add(table, "/saref", "/сареф", "Скрытая главная линия: до раскрытия показывает только «ты пока не знаешь, что искать»; после раскрытия показывает фрагменты, преимущества и журнал");
+        Add(table, "/soul_quests", "/квесты_души", "Квесты хранителей");
+        Add(table, "/feathers", "/перья", "Чернильные перья");
+        Add(table, "/world_setup", "/настройка_мира", "Подготовить следующий смертный мир");
+        Blank(table);
+        Add(table, "/return_to_chaos_sea", "/вернуться_в_море_хаоса", "Новый цикл: вернуться в Море Хаоса, сбросить Просветление, сохранить Перья и прогресс Обители; без запуска Нового Цикла как полного сброса");
+        Add(table, "/new_game_plus", "/новая_игра+", "Старое имя той же безопасной команды Нового цикла Сияющей Обители");
+        Blank(table);
+        Note(table, "Это финальная зона свободного ролеплея над Морем Хаоса");
+        Note(table, "В /shining_abode локальные Врата/выбор карт отделены от действий ядра в ходе ГМ; предпросмотры показывают шаблон квитанции и ожидаемую дельту состояния.");
+        Note(table, "Карта аудита Обители: /status показывает компактное состояние, блокеры, выбранные карты и данные следующей жизни; /shining_abode → исходы/Врата показывает Врата, пакет, квитанции ядра и полный JSON; /shining_politics показывает контракты основания/переходов/лидерства; предпросмотры торговли/кузни находятся внутри /shining_abode.");
+        Note(table, "Где полный/канонический JSON: предпросмотр ожидающего действия ядра, проверка квитанции, проверка Врат/пакета, жизненный цикл торговли, политика и ожидающие/закрытые контракты. Человеческие сводки — только подписи; JSON-панели являются аудитом контракта.");
+    }
+
+    private static void AddChaosSeaRows(UiTableBlock table, bool canReenterShiningAbode)
+    {
+        Section(table, "МОРЕ ХАОСА (загробная жизнь)");
+        Add(table, "/chaos_sea", "/море_хаоса", "Обзор Моря Хаоса: активный Хранитель, навигация, ожидающие контракты и доступные действия");
+        Add(table, "/status", "/статус", "Полный статус посмертия: ресурсы души, блокеры, ожидающие контракты, подсказки наград/дельт и сохранённая Сияющая Обитель");
+        Add(table, "/guardians", "/хранители", "Информация о хранителях");
+        Add(table, "/abodes", "/обители", "Навигация по Обителям Хранителей; переходы доступны только в Море Хаоса и не являются путешествием смертного мира");
+        Add(table, "/abode_power", "/сила_обители", "Журнал силы Обителей и её причин");
+        Add(table, "/abode_offering", "/подношение_обители", "Поднести Перья, Реликвию Души или запись Архива выбранной Обители");
+        Add(table, "/guardian_projects", "/проекты_хранителей", "Подробный журнал проектов хранителей");
+        Add(table, "/soul", "/душа", "Состояние души (перья, просветление, история жизней)");
+        Add(table, "/soul_relics", "/реликвии", "Реликвии души (экипировка, хранилище)");
+        Add(table, "/afterlife_archive", "/архив_души", "Архив знаний и тайн, переживших смерть");
+        Add(table, "/archive_candidates", "/архив_кандидаты", "Выбрать записи Кодекса, которые переживут смерть");
+        Add(table, "/afterlife_inbox", "/уведомления_загробья", "Ответы ГМ по торговле, Архиву и резидентам Обители");
+        Add(table, "/spiritual_conflict", "/духовный_конфликт", "Активный духовный конфликт посмертия: стороны, позиция, напряжение и журнал обменов");
+        Add(table, "/spiritual_combat_log", "/журнал_духовного_боя", "Журнал духовного боя: обмены действиями (exchangeLog), недавние конфликты (recentConflicts), кубики, позиции, напряжение и награды");
+        Add(table, "/spiritual_combat_help", "/духовный_бой", "Подробная справка по духовному бою: команды, духовные искусства, позиция, кубики, криты и награды");
+        Add(table, "/spiritual_arts", "/духовные_искусства", "Ранги Просветления/Сияния и уровни духовных искусств");
+        Add(table, "/spiritual_action", "/духовное_действие", "Отправить действие ГМ в активном духовном конфликте с явным тегом; обычная проза тоже валидна");
+        Add(table, "/shining_abode", "/сияющая_обитель", "Обзор сохранённого состояния Сияющей Обители: сияние, фракции и Врата");
+        Add(table, "/shining_politics", "/сияющая_политика", "Сохранённые решения Сияющей Обители по власти, основанию и переходам между фракциями");
+        Add(table, "/shining_treasury", "/казначейство", "Казначейство доступно только в активной Сияющей Обители; в Море Хаоса показывает сохранённое состояние через /shining_abode");
+        Add(table, "/source_of_light", "/источник_света", "Источник Света доступен только в обычной активной Сияющей Обители после полного Сияния");
+        Add(table, "/saref", "/сареф", "Скрытая главная линия: если ты пока не знаешь, что искать, команда не раскрывает спойлеры");
+        Add(table, "/soul_quests", "/квесты_души", "Квесты от хранителей");
+        Add(table, "/found_guardian_mantle", "/учредить_хранителя", "Поздний ритуал основания собственного Хранителя после возвращения из Сияющей Обители");
+        Add(table, "/gacha", "/гача", "Прямое вытягивание реликвии из Моря Хаоса (без модификаторов Хранителя)");
+        Add(table, "/feathers", "/перья", "Чернильные перья (способности души)");
+        Add(table, "/world_setup", "/настройка_мира", "Подготовить следующий смертный мир");
+        Blank(table);
+        Add(table, "/incarnate", "/воплотиться", "Войти в смертную жизнь через Врата Души");
+        if (canReenterShiningAbode)
+            Add(table, "/reenter_shining_abode", "/вернуться_в_обитель", "Вернуться в уже активную Сияющую Обитель");
+        Blank(table);
+        Note(table, "Говорите с Хранителем свободным текстом:");
+        Note(table, "торговать, брать квесты, менять реликвии, сменить хранителя");
+        Note(table, "Для аудита перед ходом: /status, /afterlife_inbox, /feathers, /afterlife_archive, /guardian_projects, /abode_offering.");
+        Note(table, "Если сохранённая Сияющая Обитель важна: /shining_abode показывает Врата, пакет, квитанции ядра и предпросмотры торговли/кузни; /shining_politics показывает политические квитанции и ожидающие контракты; /status показывает компактные блокеры Обители.");
+    }
+
+    private static void AddMortalRows(UiTableBlock table)
+    {
+        Section(table, "СМЕРТНАЯ ЖИЗНЬ");
+        Add(table, "/inv", "/инв", "Показать инвентарь");
+        Add(table, "/npc /npcs", "/нпс", "Показать персонажей");
+        Add(table, "/quests", "/квесты", "Показать квесты (смертные)");
+        Add(table, "/map", "/карта", "Показать карту");
+        Add(table, "/status", "/статус", "Детальный статус персонажа");
+        Add(table, "/skills", "/навыки", "Показать навыки");
+        Add(table, "/stats", "/статы", "Показать характеристики");
+        Add(table, "/distribute", "/распределить", "Распределить очки характеристик");
+        Add(table, "/companion_directive", "/директива_компаньону", "Задать указание компаньону");
+        Add(table, "/faction_directive", "/директива_фракции", "Задать стратегию фракции");
+        Add(table, "/effects", "/эффекты", "Эффекты, раны, состояния, опыт");
+        Add(table, "/combat", "/бой", "Боевая обстановка (враги, союзники)");
+        Add(table, "/factions", "/фракции", "Показать фракции");
+        Add(table, "/world_news", "/новости_мира", "Мировые события");
+        Add(table, "/rival_threads", "/чужие_нити", "Проявления чужих нитей судьбы");
+        Add(table, "/guardian_corrections", "/коррективы_хранителя", "Коррективы Хранителя в старт текущей жизни");
+        Add(table, "/abode_power", "/сила_обители", "Журнал силы Обителей и её изменений");
+        Add(table, "/afterlife_archive", "/архив_души", "Архив души (только просмотр)");
+        Add(table, "/archive_candidates", "/архив_кандидаты", "Кандидаты в Архив по итогам жизни");
+        Add(table, "/craft", "/ремесло", "Рецепты крафта");
+        Add(table, "/locations", "/локации", "Известные локации");
+        Add(table, "/where_am_i", "/где_я", "Текущая локация");
+        Add(table, "/weather", "/погода", "Время и погода");
+        Add(table, "/transport", "/транспорт", "Транспорт");
+        Add(table, "/books", "/книги", "Книги, письма, свитки");
+        Add(table, "/world_rules", "/правила_мира", "Досье и директивы текущего мира");
+        Add(table, "/storage_access", "/доступ_к_хранилищам", "Доступ к хранилищам");
+        Add(table, "/interactions", "/взаимодействия", "Взаимодействия других игроков");
+        Blank(table);
+        Add(table, "/soul_relics", "/реликвии", "Реликвии души (только просмотр!)");
+        Add(table, "/soul_quests", "/квесты_души", "Квесты хранителей (только просмотр)");
+        Add(table, "/soul", "/душа", "Состояние души");
+        Add(table, "/saref", "/сареф", "Скрытая главная линия: если ты пока не знаешь, что искать, команда не раскрывает спойлеры");
+        Add(table, "/feathers", "/перья", "Чернильные перья (способности судьбы)");
+        Blank(table);
+        Add(table, "/end_of_life", "/конец_жизни", "Завершить жизнь → вернуться в Море Хаоса");
+        Blank(table);
+        Note(table, "В смертной жизни нельзя: менять реликвии, общаться с хранителями");
+    }
+
+    private static void AddCommonRows(UiTableBlock table)
+    {
+        Blank(table);
+        Section(table, "Общие команды");
+        Add(table, "/codex", "/кодекс", "Лор и знания");
+        Add(table, "/chronicle", "/хроника", "Хроника и сюжет");
+        Add(table, "/story", "/рассказ", "Полная история (все ходы по главам)");
+        Add(table, "/achievements", "/достижения", "Достижения");
+        Add(table, "/behavior", "/поведение", "Оценка поведения и манипуляция историей");
+        Add(table, "/lives", "/жизни", "История прошлых жизней");
+        Add(table, "/validate", "/валидация", "Проверка файлов");
+        Add(table, "/mods", "/моды", "Глобальные системные моды");
+        Add(table, "/system_guardians", "/извечные_хранители", "Библиотека извечных хранителей");
+        Add(table, "/gallery", "/галерея", "Галерея изображений");
+        Add(table, "/options", "/опции", "Игровое меню");
+        Add(table, "/gm", "/гм", "Мысли Мастера Игры");
+        Add(table, "/debug", "/отладка", "Отладка");
+        Add(table, "/help", "/помощь", "Эта справка");
+        Add(table, "/refresh", "/обновить", "Перечитать все данные и перерисовать экран");
+    }
+
+    private static void Section(UiTableBlock table, string title) =>
+        Add(table, $"── {title} ──", string.Empty, string.Empty);
+
+    private static void Note(UiTableBlock table, string text) =>
+        Add(table, text, string.Empty, string.Empty);
+
+    private static void Blank(UiTableBlock table) =>
+        Add(table, string.Empty, string.Empty, string.Empty);
+
+    private static void Add(UiTableBlock table, string en, string ru, string description) =>
+        table.Rows.Add(new UiTableRow { Cells = [en, ru, description] });
+}
+
+internal sealed class ExplorerHelpCommandContext
+{
+    public string Command { get; init; } = string.Empty;
+    public string Title { get; init; } = "Помощь";
+    public bool IsChaosSea { get; init; }
+    public bool IsShiningAbode { get; init; }
+    public bool IsPendingShiningAbodeBootstrap { get; init; }
+    public bool CanReenterShiningAbode { get; init; }
+}

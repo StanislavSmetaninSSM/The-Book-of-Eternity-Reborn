@@ -51,8 +51,8 @@ public partial class ExplorerMode
 
         _universalCommands = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
         {
-            ["/help"] = ShowHelp,
-            ["/помощь"] = ShowHelp,
+            ["/help"] = ShowHelpDto,
+            ["/помощь"] = ShowHelpDto,
             ["/soul"] = ShowSoulInfo,
             ["/душа"] = ShowSoulInfo,
             ["/soul_relics"] = ShowSoulRelics,

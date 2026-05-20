@@ -74,6 +74,16 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
             "Blocked or temporary console-only commands must have a reason: " + string.Join(", ", blockedWithoutReason));
     }
 
+    [Fact]
+    public void HelpCommands_AreMarkedAsMigrated()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries["/help"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries["/помощь"].Status);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

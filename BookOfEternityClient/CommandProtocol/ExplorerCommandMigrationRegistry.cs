@@ -4,10 +4,14 @@ public static class ExplorerCommandMigrationRegistry
 {
     public static IReadOnlyList<ExplorerCommandMigrationEntry> Entries => BuildEntries();
 
-    private static readonly string[] UniversalReadOnlyCommands =
+    private static readonly string[] MigratedUniversalReadOnlyCommands =
     [
         "/help",
-        "/помощь",
+        "/помощь"
+    ];
+
+    private static readonly string[] UniversalReadOnlyCommands =
+    [
         "/soul",
         "/душа",
         "/soul_relics",
@@ -197,6 +201,7 @@ public static class ExplorerCommandMigrationRegistry
 
     private static IReadOnlyList<ExplorerCommandMigrationEntry> BuildEntries() =>
     [
+        ..Migrated(MigratedUniversalReadOnlyCommands, ExplorerCommandGroup.UniversalMeta),
         ..Planned(UniversalReadOnlyCommands, ExplorerCommandGroup.UniversalMeta, "#569"),
         ..TemporaryConsoleOnly(UniversalDiagnosticsCommands, ExplorerCommandGroup.UniversalMeta, "#569",
             "Диагностические и служебные команды должны получить явный browser-safe режим отображения."),
@@ -222,6 +227,11 @@ public static class ExplorerCommandMigrationRegistry
         ExplorerCommandGroup group,
         string followUpIssue) =>
         commands.Select(command => Entry(command, group, ExplorerCommandMigrationStatus.Planned, followUpIssue));
+
+    private static IEnumerable<ExplorerCommandMigrationEntry> Migrated(
+        IEnumerable<string> commands,
+        ExplorerCommandGroup group) =>
+        commands.Select(command => Entry(command, group, ExplorerCommandMigrationStatus.Migrated, string.Empty));
 
     private static IEnumerable<ExplorerCommandMigrationEntry> Blocked(
         IEnumerable<string> commands,
