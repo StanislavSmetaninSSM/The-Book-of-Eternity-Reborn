@@ -165,6 +165,93 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal(3, state["currentValue"]?.GetValue<int>());
     }
 
+    [Theory]
+    [InlineData("resident", "resident_oath_001", "Резидент Клятв", "Эхо клятвы", "oath_echo", "oath_released")]
+    [InlineData("shining_faction_head", "head_ember_001", "Глава Пепельной Хартии", "Брожение хартии", "charter_unrest", "charter_quieted")]
+    public async Task NormalizeAccumulatedStateAsync_AppliesCustomStateLifecycleForResidentAndFactionLeader(
+        string actorType,
+        string actorId,
+        string displayName,
+        string oldStateName,
+        string oldStateId,
+        string newStateId)
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            $$"""
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "{{actorType}}",
+                  "actorId": "{{actorId}}",
+                  "displayName": "{{displayName}}",
+                  "realm": "Shining Abode",
+                  "currencies": { "inkFeathers": 60, "lightSparks": 8 },
+                  "progression": {
+                    "enlightenment": { "experience": 30, "tier": 2 },
+                    "radiance": { "experience": 110, "tier": 3 }
+                  },
+                  "standardArts": { "pressure": 1, "guard": 1 },
+                  "specialArts": [],
+                  "customStates": [
+                    {
+                      "stateId": "{{oldStateId}}",
+                      "stateName": "{{oldStateName}}",
+                      "currentValue": 4,
+                      "minValue": 0,
+                      "maxValue": 10,
+                      "description": "Состояние должно быть удалено targeted lifecycle-командой.",
+                      "progressionRule": { "changePerTurn": 0, "description": "Не меняется автоматически." },
+                      "thresholds": []
+                    }
+                  ],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_{{actorId}}",
+                    "summary": "Поддерживает текущее состояние.",
+                    "priorityOrder": ["guard"]
+                  },
+                  "ledger": []
+                }
+              ],
+              "afterlifeEntityCustomStateChanges": [
+                {
+                  "actorType": "{{actorType}}",
+                  "actorId": "{{actorId}}",
+                  "statesToAddOrUpdate": [
+                    {
+                      "stateId": "{{newStateId}}",
+                      "stateName": "Новое состояние",
+                      "currentValue": 1,
+                      "minValue": 0,
+                      "maxValue": 5,
+                      "description": "Новое состояние остаётся видимым в профиле после нормализации.",
+                      "progressionRule": { "changePerTurn": 1, "description": "Растёт после тематических сцен." },
+                      "thresholds": []
+                    }
+                  ],
+                  "statesToRemove": ["{{oldStateId}}"]
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.CustomStateChangesProperty));
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(actorType, profile["actorType"]?.GetValue<string>());
+        var states = Assert.IsType<JsonArray>(profile["customStates"]);
+        var state = Assert.Single(states.OfType<JsonObject>());
+        Assert.Equal(newStateId, state["stateId"]?.GetValue<string>());
+        Assert.Equal("Новое состояние", state["stateName"]?.GetValue<string>());
+        Assert.DoesNotContain(states.OfType<JsonObject>(), item =>
+            string.Equals(item["stateId"]?.GetValue<string>(), oldStateId, StringComparison.OrdinalIgnoreCase));
+    }
+
     [Fact]
     public async Task NormalizeAccumulatedStateAsync_AppliesDeterministicEntityProgressionFromAfterlifeReport()
     {
