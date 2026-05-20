@@ -328,9 +328,9 @@ public partial class ValidationService
         ValidateSarefLatentTraces(root, contextPrefix, issues);
         ValidateSarefRevelations(root, contextPrefix, issues, out var revealedCategories, out var revelationCount, out var questFourRevelations);
         var advantages = ValidateSarefAdvantages(root, contextPrefix, issues, out var advantageCount, out var questFourAdvantages);
-        ValidateSarefAdvantageUses(root, contextPrefix, advantages, issues);
+        var advantageUses = ValidateSarefAdvantageUses(root, contextPrefix, advantages, issues);
         ValidateSarefQuestFourUnlockLinks(guardianQuestlines, questFourRevelations, questFourAdvantages, contextPrefix, issues);
-        ValidateSarefArray(root, contextPrefix, "defeatOutcomes", "outcomeId", "saref_main_story_duplicate_defeat_outcome", issues);
+        ValidateSarefDefeatOutcomes(root, contextPrefix, advantageUses, issues);
         ValidateSarefArray(root, contextPrefix, "endings", "endingId", "saref_main_story_duplicate_ending", issues);
         var factionVisibility = ValidateSarefFactionLinks(root, contextPrefix, issues);
         ValidateSarefActionableFactionLink(revealStage, root, factionVisibility, contextPrefix, issues);
@@ -996,14 +996,15 @@ public partial class ValidationService
         return usageId;
     }
 
-    private static void ValidateSarefAdvantageUses(
+    private static Dictionary<string, SarefAdvantageUse> ValidateSarefAdvantageUses(
         JsonElement root,
         string contextPrefix,
         IReadOnlyDictionary<string, SarefAdvantageState> advantages,
         List<ValidationIssue> issues)
     {
+        var result = new Dictionary<string, SarefAdvantageUse>(StringComparer.OrdinalIgnoreCase);
         if (!root.TryGetProperty("sarefAdvantageUses", out var usesNode))
-            return;
+            return result;
 
         if (usesNode.ValueKind != JsonValueKind.Array)
         {
@@ -1014,7 +1015,7 @@ public partial class ValidationService
                 "saref_main_story_advantage_uses_not_array",
                 "array",
                 usesNode.ValueKind.ToString());
-            return;
+            return result;
         }
 
         var usageIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1036,6 +1037,10 @@ public partial class ValidationService
                     "saref_main_story_duplicate_advantage_usage",
                     "unique usageId",
                     usage.UsageId);
+            }
+            else if (!string.IsNullOrWhiteSpace(usage.UsageId))
+            {
+                result[usage.UsageId] = usage;
             }
 
             if (string.IsNullOrWhiteSpace(usage.AdvantageId))
@@ -1122,9 +1127,11 @@ public partial class ValidationService
                     "Потраченное преимущество Сарефа должно иметь matching запись в sarefAdvantageUses[].",
                     "saref_main_story_spent_advantage_missing_usage_log",
                     "sarefAdvantageUses[] with matching usageId",
-                    advantage.SpentUsageId ?? "missing");
+                advantage.SpentUsageId ?? "missing");
             }
         }
+
+        return result;
     }
 
     private static SarefAdvantageUse ValidateSarefAdvantageUse(JsonElement item, string context, List<ValidationIssue> issues)
@@ -1169,6 +1176,323 @@ public partial class ValidationService
             "saref_main_story_advantage_usage_inapplicable_scene",
             string.Join("/", applicableScenes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
             sceneType);
+    }
+
+    private static void ValidateSarefDefeatOutcomes(
+        JsonElement root,
+        string contextPrefix,
+        IReadOnlyDictionary<string, SarefAdvantageUse> advantageUses,
+        List<ValidationIssue> issues)
+    {
+        if (!TryGetRequiredSarefArray(root, contextPrefix, "defeatOutcomes", issues, out var outcomes))
+            return;
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in outcomes.EnumerateArray())
+        {
+            var context = $"{contextPrefix}.defeatOutcomes[{index++}]";
+            if (!ValidateSarefArrayObject(item, context, issues))
+                continue;
+
+            var outcomeId = RequireSarefString(item, context, "outcomeId", "saref_main_story_defeat_missing_outcome_id", issues);
+            if (!string.IsNullOrWhiteSpace(outcomeId) && !ids.Add(outcomeId))
+            {
+                AddSarefIssue(
+                    issues,
+                    context,
+                    "Дубликат defeatOutcomes[].outcomeId.",
+                    "saref_main_story_duplicate_defeat_outcome",
+                    "unique outcomeId",
+                    outcomeId);
+            }
+
+            var outcomeType = RequireSarefString(item, context, "outcomeType", "saref_main_story_defeat_missing_outcome_type", issues);
+            if (!string.IsNullOrWhiteSpace(outcomeType) &&
+                !SarefMainStoryState.DefeatOutcomeTypes.Contains(outcomeType))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.outcomeType",
+                    "Тип поражения от Сарефа не поддерживается.",
+                    "saref_main_story_defeat_invalid_outcome_type",
+                    string.Join("/", SarefMainStoryState.DefeatOutcomeTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    outcomeType);
+            }
+
+            var sceneType = RequireSarefString(item, context, "sceneType", "saref_main_story_defeat_missing_scene_type", issues);
+            if (!string.IsNullOrWhiteSpace(sceneType) && !SarefMainStoryState.AdvantageSceneTypes.Contains(sceneType))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.sceneType",
+                    "sceneType поражения от Сарефа не поддерживается.",
+                    "saref_main_story_defeat_invalid_scene_type",
+                    string.Join("/", SarefMainStoryState.AdvantageSceneTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    sceneType);
+            }
+
+            var resolvedAtTurn = RequireSarefTurnNumber(item, context, "resolvedAtTurn", "saref_main_story_defeat_missing_resolved_turn", issues);
+            if (item.TryGetProperty("resolvedAtTurn", out _) && resolvedAtTurn <= 0)
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.resolvedAtTurn",
+                    "defeatOutcomes[].resolvedAtTurn должен быть положительным номером хода.",
+                    "saref_main_story_defeat_missing_resolved_turn",
+                    "integer > 0",
+                    resolvedAtTurn.ToString());
+            }
+
+            RequireSarefString(item, context, "summary", "saref_main_story_defeat_missing_summary", issues);
+            if (string.IsNullOrWhiteSpace(GetSarefOptionalString(item, "gmMotivation")) &&
+                string.IsNullOrWhiteSpace(GetSarefOptionalString(item, "motivation")) &&
+                string.IsNullOrWhiteSpace(GetSarefOptionalString(item, "reason")))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.gmMotivation",
+                    "Поражение от Сарефа требует явную мотивацию ГМ: почему он выбирает именно этот исход.",
+                    "saref_main_story_defeat_missing_motivation",
+                    "non-empty gmMotivation/motivation/reason",
+                    item.TryGetProperty("gmMotivation", out var motivation) ? motivation.ValueKind.ToString() : "missing");
+            }
+
+            ValidateSarefDefeatMitigation(item, context, advantageUses, issues, out var hasMitigation);
+
+            if (string.Equals(outcomeType, SarefMainStoryState.DefeatOutcomeForcedOath, StringComparison.OrdinalIgnoreCase))
+                ValidateSarefForcedOathDefeat(root, item, context, issues);
+            else if (string.Equals(outcomeType, SarefMainStoryState.DefeatOutcomeExileToChaosSea, StringComparison.OrdinalIgnoreCase))
+                ValidateSarefExileDefeat(item, context, issues);
+            else if (string.Equals(outcomeType, SarefMainStoryState.DefeatOutcomeMemorySuppression, StringComparison.OrdinalIgnoreCase))
+                ValidateSarefMemorySuppressionDefeat(item, context, issues);
+            else if (string.Equals(outcomeType, SarefMainStoryState.DefeatOutcomeSoulDissipation, StringComparison.OrdinalIgnoreCase))
+                ValidateSarefSoulDissipationDefeat(item, context, issues);
+            else if (string.Equals(outcomeType, SarefMainStoryState.DefeatOutcomePyrrhicEscape, StringComparison.OrdinalIgnoreCase))
+                ValidateSarefPyrrhicEscapeDefeat(item, context, hasMitigation, issues);
+
+            ValidateSarefTurnFields(item, context, issues);
+        }
+    }
+
+    private static void ValidateSarefDefeatMitigation(
+        JsonElement item,
+        string context,
+        IReadOnlyDictionary<string, SarefAdvantageUse> advantageUses,
+        List<ValidationIssue> issues,
+        out bool hasMitigation)
+    {
+        hasMitigation = false;
+        if (!item.TryGetProperty("mitigation", out var mitigation) || mitigation.ValueKind == JsonValueKind.Null)
+            return;
+
+        if (mitigation.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.mitigation",
+                "mitigation поражения от Сарефа должен быть object.",
+                "saref_main_story_defeat_mitigation_invalid_shape",
+                "object",
+                mitigation.ValueKind.ToString());
+            return;
+        }
+
+        RequireSarefString(mitigation, $"{context}.mitigation", "mitigationSummary", "saref_main_story_defeat_mitigation_missing_summary", issues);
+        if (!mitigation.TryGetProperty("mitigatedByAdvantages", out var refs) || refs.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.mitigation.mitigatedByAdvantages",
+                "mitigation должен ссылаться на sarefAdvantageUses[].usageId.",
+                "saref_main_story_defeat_missing_mitigation_advantage",
+                "non-empty mitigatedByAdvantages[]",
+                mitigation.TryGetProperty("mitigatedByAdvantages", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        var count = 0;
+        foreach (var refNode in refs.EnumerateArray())
+        {
+            if (!TryGetSarefString(refNode, out var usageId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.mitigation.mitigatedByAdvantages",
+                    "mitigatedByAdvantages[] должен содержать usageId строками.",
+                    "saref_main_story_defeat_invalid_mitigation_advantage",
+                    "sarefAdvantageUses[].usageId",
+                    refNode.ValueKind.ToString());
+                continue;
+            }
+
+            count++;
+            if (!advantageUses.ContainsKey(usageId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.mitigation.mitigatedByAdvantages",
+                    "mitigation ссылается на неизвестное использование преимущества.",
+                    "saref_main_story_defeat_unknown_mitigation_advantage",
+                    "existing sarefAdvantageUses[].usageId",
+                    usageId);
+            }
+        }
+
+        hasMitigation = count > 0;
+        if (count == 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.mitigation.mitigatedByAdvantages",
+                "mitigatedByAdvantages[] должен содержать хотя бы одно преимущество.",
+                "saref_main_story_defeat_missing_mitigation_advantage",
+                "non-empty mitigatedByAdvantages[]",
+                "empty");
+        }
+    }
+
+    private static void ValidateSarefForcedOathDefeat(
+        JsonElement root,
+        JsonElement item,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var outcomeOathId = RequireSarefString(item, context, "oathId", "saref_main_story_defeat_forced_oath_missing_oath_id", issues);
+        if (!root.TryGetProperty("playerOathState", out var oathState) ||
+            oathState.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.playerOathState",
+                "forced_oath требует playerOathState object со связанной клятвой Сарефа.",
+                "saref_main_story_defeat_forced_oath_missing_oath_state",
+                "playerOathState.state=oathbound/strained",
+                oathState.ValueKind == JsonValueKind.Undefined ? "missing" : oathState.ValueKind.ToString());
+            return;
+        }
+
+        var state = GetSarefOptionalString(oathState, "state");
+        if (!string.Equals(state, "oathbound", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(state, "strained", StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.playerOathState.state",
+                "forced_oath может завершаться только активной клятвой игрока.",
+                "saref_main_story_defeat_forced_oath_missing_oath_state",
+                "oathbound/strained",
+                state ?? "missing");
+        }
+
+        var stateOathId = GetSarefOptionalString(oathState, "oathId");
+        if (!string.IsNullOrWhiteSpace(outcomeOathId) &&
+            !string.IsNullOrWhiteSpace(stateOathId) &&
+            !string.Equals(outcomeOathId, stateOathId, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.oathId",
+                "defeatOutcomes[].oathId должен совпадать с playerOathState.oathId.",
+                "saref_main_story_defeat_forced_oath_mismatch",
+                stateOathId,
+                outcomeOathId);
+        }
+    }
+
+    private static void ValidateSarefExileDefeat(JsonElement item, string context, List<ValidationIssue> issues)
+    {
+        if (!item.TryGetProperty("exileAudit", out var exileAudit) || exileAudit.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.exileAudit",
+                "exile_to_chaos_sea требует exileAudit с destinationRealm=Chaos Sea и причиной изгнания.",
+                "saref_main_story_defeat_exile_missing_audit",
+                "exileAudit object",
+                item.TryGetProperty("exileAudit", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        var destinationRealm = RequireSarefString(exileAudit, $"{context}.exileAudit", "destinationRealm", "saref_main_story_defeat_exile_missing_audit", issues);
+        if (!RealmSemantics.IsChaosSea(destinationRealm))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.exileAudit.destinationRealm",
+                "exile_to_chaos_sea должен изгонять именно в Море Хаоса.",
+                "saref_main_story_defeat_exile_wrong_destination",
+                "Chaos Sea",
+                destinationRealm ?? "missing");
+        }
+
+        RequireSarefString(exileAudit, $"{context}.exileAudit", "reason", "saref_main_story_defeat_exile_missing_audit", issues);
+    }
+
+    private static void ValidateSarefMemorySuppressionDefeat(JsonElement item, string context, List<ValidationIssue> issues)
+    {
+        if (!item.TryGetProperty("memorySuppressionAudit", out var audit) || audit.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.memorySuppressionAudit",
+                "memory_suppression требует memorySuppressionAudit с областью и тяжестью подавления памяти.",
+                "saref_main_story_defeat_memory_missing_audit",
+                "memorySuppressionAudit object",
+                item.TryGetProperty("memorySuppressionAudit", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(GetSarefOptionalString(audit, "suppressedMemoryScope")) &&
+            string.IsNullOrWhiteSpace(GetSarefOptionalString(audit, "memoryScope")))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.memorySuppressionAudit.suppressedMemoryScope",
+                "memory_suppression должен фиксировать, какая память подавлена.",
+                "saref_main_story_defeat_memory_missing_scope",
+                "suppressedMemoryScope/memoryScope",
+                "missing");
+        }
+
+        RequireSarefString(audit, $"{context}.memorySuppressionAudit", "severity", "saref_main_story_defeat_memory_missing_audit", issues);
+        RequireSarefString(audit, $"{context}.memorySuppressionAudit", "summary", "saref_main_story_defeat_memory_missing_audit", issues);
+    }
+
+    private static void ValidateSarefSoulDissipationDefeat(JsonElement item, string context, List<ValidationIssue> issues)
+    {
+        var proofId = GetSarefOptionalString(item, "soulDissipationProofId") ??
+                      GetSarefOptionalString(item, "proofId");
+        var conflictId = GetSarefOptionalString(item, "conflictId");
+        if (string.IsNullOrWhiteSpace(proofId) || string.IsNullOrWhiteSpace(conflictId))
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "soul_dissipation как исход поражения Сарефу требует ссылку на afterlife conflict soulDissipationProof.",
+                "saref_main_story_defeat_soul_dissipation_missing_proof",
+                "conflictId + soulDissipationProofId",
+                $"conflictId={conflictId ?? "missing"}; proofId={proofId ?? "missing"}");
+        }
+    }
+
+    private static void ValidateSarefPyrrhicEscapeDefeat(
+        JsonElement item,
+        string context,
+        bool hasMitigation,
+        List<ValidationIssue> issues)
+    {
+        RequireSarefString(item, context, "escapeCost", "saref_main_story_defeat_pyrrhic_escape_missing_cost", issues);
+        if (!hasMitigation)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.mitigation",
+                "pyrrhic_escape должен быть результатом смягчения поражения преимуществом игрока.",
+                "saref_main_story_defeat_pyrrhic_escape_missing_mitigation",
+                "mitigation.mitigatedByAdvantages[]",
+                "missing");
+        }
     }
 
     private static void ValidateSarefArray(

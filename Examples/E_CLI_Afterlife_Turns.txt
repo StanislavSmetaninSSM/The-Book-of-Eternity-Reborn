@@ -7759,6 +7759,72 @@ Valid spent advantage audit after a memory-attack scene:
 }
 ```
 
+Valid Saref defeat outcome after a failed confrontation:
+
+```json
+{
+  "sarefMainStoryUpdate": {
+    "mode": "record_defeat_outcome",
+    "turnNumber": 191,
+    "defeatOutcome": {
+      "outcomeId": "saref_defeat_forced_oath_191",
+      "outcomeType": "forced_oath",
+      "sceneType": "saref_confrontation",
+      "resolvedAtTurn": 191,
+      "oathId": "saref_oath_191",
+      "summary": "Сареф не уничтожил душу, а связал ее клятвой и сделал игрока фигурой Крыльев Ангелов.",
+      "gmMotivation": "Сареф считает, что живой связанный свидетель полезнее мертвой души."
+    },
+    "playerOathState": {
+      "state": "oathbound",
+      "oathId": "saref_oath_191",
+      "boundTo": "saref",
+      "summary": "Игрок связан клятвой Сарефа и не может свободно выйти из Крыльев Ангелов."
+    }
+  }
+}
+```
+
+Supported defeat `outcomeType` values:
+- `forced_oath`: Сареф связывает игрока клятвой; requires matching `playerOathState` and `oathId`.
+- `exile_to_chaos_sea`: Сареф изгоняет игрока в Море Хаоса; requires `exileAudit.destinationRealm = "Chaos Sea"` and a reason.
+- `memory_suppression`: Сареф подавляет или вырезает часть памяти; requires `memorySuppressionAudit` with scope, severity, and summary.
+- `soul_dissipation`: Сареф окончательно развеивает душу only when the afterlife soul-dissipation proof already exists; requires `conflictId` and `soulDissipationProofId`.
+- `pyrrhic_escape`: игрок выживает или сбегает ценой потери; requires `escapeCost` plus `mitigation.mitigatedByAdvantages[]` referencing valid `sarefAdvantageUses[]`.
+
+Valid mitigated escape:
+
+```json
+{
+  "sarefMainStoryUpdate": {
+    "mode": "record_defeat_outcome",
+    "defeatOutcome": {
+      "outcomeId": "saref_defeat_pyrrhic_escape_192",
+      "outcomeType": "pyrrhic_escape",
+      "sceneType": "memory_attack",
+      "resolvedAtTurn": 192,
+      "escapeCost": "Игрок сохранил имя Сарефа, но потерял один маршрут к Крыльям Ангелов.",
+      "summary": "Якорь памяти Илариона превратил поражение в тяжелое бегство.",
+      "gmMotivation": "Сареф не преследует немедленно, потому что цена уже нанесена.",
+      "mitigation": {
+        "mitigationSummary": "Преимущество не отменило поражение, но не позволило Сарефу стереть ключевую истину.",
+        "mitigatedByAdvantages": [ "use_memory_anchor_escape" ]
+      }
+    },
+    "sarefAdvantageUses": [
+      {
+        "usageId": "use_memory_anchor_escape",
+        "advantageId": "adv_ilarion_memory_anchor",
+        "sceneType": "memory_attack",
+        "usedAtTurn": 192,
+        "consumesAdvantage": true,
+        "summary": "Якорь памяти удержал одно имя после атаки Сарефа."
+      }
+    ]
+  }
+}
+```
+
 ==================================================
 COMMON INVALID PATTERNS
 ==================================================

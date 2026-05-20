@@ -47,6 +47,50 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal(4, root["sarefRevelations"]!.AsArray().Count);
     }
 
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_SarefDefeatOutcomeUpdateWrapper_ProjectsAgainstBackupBaseline()
+    {
+        var backupPath = "test_backups/pre_saref_story_defeat.json";
+        await _fs.WriteFileAtomicAsync(backupPath, BuildSarefRouteBaseline());
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
+        {
+          "sarefMainStoryUpdate": {
+            "mode": "record_defeat_outcome",
+            "resolvedAtTurn": 91,
+            "defeatOutcome": {
+              "outcomeId": "saref_defeat_forced_oath_001",
+              "outcomeType": "forced_oath",
+              "sceneType": "saref_confrontation",
+              "oathId": "saref_oath_001",
+              "summary": "Сареф принудил душу к клятве после поражения.",
+              "gmMotivation": "Сареф хочет использовать игрока как связанную фигуру."
+            },
+            "playerOathState": {
+              "state": "oathbound",
+              "oathId": "saref_oath_001",
+              "summary": "Игрок связан клятвой Сарефа."
+            }
+          }
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [SarefMainStoryState.StatePath] = backupPath
+        });
+
+        var raw = await _fs.ReadFileAsync(SarefMainStoryState.StatePath);
+        var root = JsonNode.Parse(raw!)!.AsObject();
+
+        Assert.False(root.ContainsKey(SarefMainStoryState.ResponseField));
+        var outcome = Assert.IsType<JsonObject>(Assert.Single(root["defeatOutcomes"]!.AsArray()));
+        Assert.Equal("saref_defeat_forced_oath_001", outcome["outcomeId"]!.GetValue<string>());
+        Assert.Equal("forced_oath", outcome["outcomeType"]!.GetValue<string>());
+        Assert.Equal(91, outcome["resolvedAtTurn"]!.GetValue<int>());
+        Assert.Equal("oathbound", root["playerOathState"]!["state"]!.GetValue<string>());
+    }
+
     private static string BuildSarefRouteBaseline() => """
     {
       "schemaVersion": 1,
