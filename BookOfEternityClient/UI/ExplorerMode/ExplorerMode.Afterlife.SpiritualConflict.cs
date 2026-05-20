@@ -78,7 +78,7 @@ public partial class ExplorerMode
             lines.Add("");
             lines.Add("ГМ может начать конфликт только через ответ принятого хода:");
             lines.Add($"  • `{AfterlifeSpiritualConflictState.ResponseField}` с `mode=start`");
-            lines.Add($"  • сохраняемое состояние (persisted state): `{AfterlifeSpiritualConflictState.StatePath}`");
+            lines.Add($"  • канонический файл состояния: `{AfterlifeSpiritualConflictState.StatePath}`");
         }
         else
         {
@@ -273,7 +273,7 @@ public partial class ExplorerMode
             "",
             "[bold]Духовные искусства: что выбирать[/]",
             "  • Давление (pressure) — проактивная атака на устойчивость противника. Главный эффект: ухудшить напряжение противостоящей стороны (oppositionSideStrain). Выбирай, когда хочешь продавить волю/клятву/обет противника.",
-            "  • Контрприём (counter) — реакция на конкретное входящее действие (incomingAction) противника. Его преимущество над давлением (pressure): можно не просто ударить в ответ, а заблокировать, развернуть или наказать уже заявленное действие врага. Успешный контрприём обязан дать выигрыш (counterPayoff): явно описанный выигрыш (payoff), улучшить позицию, ухудшить напряжение противника (oppositionSideStrain), либо ослабить или развернуть уже существующие вражеские оковы/контроль (controlState).",
+            "  • Контрприём (counter) — реакция на конкретное входящее действие (incomingAction) противника. Его преимущество над давлением (pressure): можно не просто ударить в ответ, а заблокировать, развернуть или наказать уже заявленное действие врага. Успешный контрприём обязан дать выигрыш (counterPayoff): описать выигрыш в counterPayoff, улучшить позицию, ухудшить напряжение противника (oppositionSideStrain), либо ослабить или развернуть уже существующие вражеские оковы/контроль (controlState).",
             "  • Защита (guard) — снижает или предотвращает напряжение стороны игрока (playerSideStrain) или последствие. Лучше контрприёма (counter), когда нечего разворачивать или нужно пережить удар без риска: даже при провале против прямого давления ухудшение напряжения ограничено одним уровнем.",
             "  • Манёвр (maneuver) — меняет позицию. Выбирай, когда прямое давление опасно, но можно занять лучший духовный угол, разорвать дистанцию, вывести спор из чужой зоны силы. Под активным контролем противника манёвр сначала требует анти-контрольный ответ.",
             "  • Наложение оков (binding/force_binding) — контроль после преимущества. Не стартовая кнопка победы: сначала получи рычаг через позицию, подготовку (setup) или решительный успех.",
@@ -301,7 +301,7 @@ public partial class ExplorerMode
             "  • Прокачка заблокирована во время активного конфликта, активного жизненного цикла хода ГМ и открытых ожидающих контрактов со стоимостью.",
             "",
             "[bold]Награды[/]",
-            "  • Победа в проверяемом спорном конфликте (contested conflict) может дать валюту: Чернильные Перья в Море Хаоса или Искры Света в Сияющей Обители.",
+            "  • Победа в проверяемом спорном конфликте может дать валюту: Чернильные Перья в Море Хаоса или Искры Света в Сияющей Обители.",
             "  • Награда маленькая и формульная: зависит от силы противника, модели сторон, стартовой позиции и категории исхода (outcomeBand).",
             "  • Нет награды за ремонтную отмену (repair_cancel), отсутствие эффекта (no_effect), добровольную сдачу/отступление, переговоры без состязания или повторную награду за тот же конфликт (conflictId)."
         };
@@ -1698,7 +1698,7 @@ public partial class ExplorerMode
 
             if (conflict["exchangeLog"] is JsonArray exchangeLog && exchangeLog.Count > 0)
             {
-                lines.Add("    История обменов (exchange history):");
+                lines.Add("    История обменов (exchangeLog):");
                 foreach (var exchange in exchangeLog.OfType<JsonObject>())
                 {
                     var exchangeId = AfterlifeSpiritualConflictState.GetNodeString(exchange["exchangeId"]) ?? "?";
@@ -1729,7 +1729,7 @@ public partial class ExplorerMode
         var summary = AfterlifeSpiritualConflictState.GetNodeString(incomingAction["summary"]);
         var parts = new List<string> { operationType };
         if (!string.IsNullOrWhiteSpace(actorId))
-            parts.Add($"актор (actor)={actorId}");
+            parts.Add($"актор (actorId)={actorId}");
         if (!string.IsNullOrWhiteSpace(summary))
             parts.Add(summary);
         return string.Join("; ", parts);
@@ -1748,7 +1748,7 @@ public partial class ExplorerMode
         {
             $"d20 игрока={playerDie}",
             $"d20 противника={oppositionDie}",
-            $"итоги (totals) {playerTotal}/{oppositionTotal}",
+            $"итоги бросков {playerTotal}/{oppositionTotal}",
             $"разница (margin)={margin}",
             $"категория исхода (outcomeBand)={outcomeBand}"
         };
@@ -2092,9 +2092,9 @@ public partial class ExplorerMode
         NormalizeKey(art.ArtId) switch
         {
             "pressure" => "Может ухудшать напряжение противника (oppositionSideStrain); не является позиционным манёвром и не должен сам по себе закрывать конфликт без завершения (resolve).",
-            "counter" => "Только реакция на конкретное входящее действие (incomingAction); успех/контрирование (success/countered) требует выигрыш (payoff): counterPayoff, лучшую позицию (conflictPosition), худшее напряжение противника (oppositionSideStrain) или разворот/ослабление контроля (controlState).",
+            "counter" => "Только реакция на конкретное входящее действие (incomingAction); успех/контрирование (success/countered) требует подтверждённый выигрыш: counterPayoff, лучшую позицию (conflictPosition), худшее напряжение противника (oppositionSideStrain) или разворот/ослабление контроля (controlState).",
             "guard" => "Защищает сторону игрока (playerSide) от напряжения/последствия (strain/consequence); не наносит прямое напряжение (strain) противнику и не заменяет контрприём (counter).",
-            "maneuver" => "Меняет позицию конфликта (conflictPosition); успешный манёвр (maneuver) должен двигать позицию, не должен напрямую менять напряжение сторон (side strain) и не проходит бесплатно через активный контроль противника (controlState).",
+            "maneuver" => "Меняет позицию конфликта (conflictPosition); успешный манёвр (maneuver) должен двигать позицию, не должен напрямую менять напряжение сторон (playerSideStrain/oppositionSideStrain) и не проходит бесплатно через активный контроль противника (controlState).",
             "break_binding" => "Работает только против оков, принудительной передачи/выброса или контекста принуждения; при успехе должен ослабить, снять или развернуть controlState; не является универсальной атакой.",
             "binding" => "Требует преимущество/доминирование игрока (player_advantaged/player_dominant), подготовку (setup=true) или решительный успех игрока (decisive_player_success); при успехе создаёт или усиливает controlState, а не наносит обычное напряжение (strain).",
             "incarnation_resistance" => "Только против принудительного воплощения (force_incarnation/guardian_forced); против обычного давления (pressure) используй защиту, контрприём или манёвр (guard/counter/maneuver).",
