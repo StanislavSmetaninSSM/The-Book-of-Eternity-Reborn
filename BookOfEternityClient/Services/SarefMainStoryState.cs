@@ -22,6 +22,12 @@ internal static class SarefMainStoryState
     public const string CategoryFaction = "faction";
     public const string CategoryPath = "path";
 
+    public const string QuestStateLatent = "latent";
+    public const string QuestStateRecognized = "recognized";
+    public const string QuestStateActive = "active";
+    public const string QuestStateReadyToTurnIn = "ready_to_turn_in";
+    public const string QuestStateCompleted = "completed";
+
     public static readonly HashSet<string> RevealStages = new(StringComparer.OrdinalIgnoreCase)
     {
         RevealStageUnknown,
@@ -44,6 +50,21 @@ internal static class SarefMainStoryState
         "structural_weakness",
         "exile_survival",
         "false_light_cut"
+    };
+
+    public static readonly HashSet<string> QuestProgressStates = new(StringComparer.OrdinalIgnoreCase)
+    {
+        QuestStateLatent,
+        QuestStateRecognized,
+        QuestStateActive,
+        QuestStateReadyToTurnIn,
+        QuestStateCompleted
+    };
+
+    public static readonly HashSet<string> LatentTraceStates = new(StringComparer.OrdinalIgnoreCase)
+    {
+        QuestStateLatent,
+        QuestStateRecognized
     };
 
     public static readonly HashSet<string> MandatoryWingsCategories = new(StringComparer.OrdinalIgnoreCase)

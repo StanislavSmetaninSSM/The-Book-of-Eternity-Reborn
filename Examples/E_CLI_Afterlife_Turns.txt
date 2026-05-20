@@ -7336,12 +7336,11 @@ Valid route-unlocked fragment after enough Guardian questlines:
   "guardianQuestlines": [
     {
       "guardianId": "azalia",
-      "questlineState": "quest_4_completed",
-      "completedQuestIds": [
-        "azalia_saref_q1",
-        "azalia_saref_q2",
-        "azalia_saref_q3",
-        "azalia_saref_q4"
+      "questStates": [
+        { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+        { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+        { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+        { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
       ],
       "unlockedRevelationIds": [
         "rev_azalia_faction"
@@ -7350,6 +7349,54 @@ Valid route-unlocked fragment after enough Guardian questlines:
         "adv_azalia_false_loyalty"
       ],
       "lastUpdatedAtTurn": 144
+    },
+    {
+      "guardianId": "ilarion",
+      "questStates": [
+        { "questOrdinal": 1, "status": "completed", "questId": "ilarion_saref_q1" },
+        { "questOrdinal": 2, "status": "completed", "questId": "ilarion_saref_q2" },
+        { "questOrdinal": 3, "status": "completed", "questId": "ilarion_saref_q3" },
+        { "questOrdinal": 4, "status": "completed", "questId": "ilarion_saref_q4" }
+      ],
+      "unlockedRevelationIds": [
+        "rev_ilarion_method"
+      ],
+      "unlockedAdvantageIds": [
+        "adv_ilarion_memory_anchor"
+      ],
+      "lastUpdatedAtTurn": 151
+    },
+    {
+      "guardianId": "veyra",
+      "questStates": [
+        { "questOrdinal": 1, "status": "completed", "questId": "veyra_saref_q1" },
+        { "questOrdinal": 2, "status": "completed", "questId": "veyra_saref_q2" },
+        { "questOrdinal": 3, "status": "completed", "questId": "veyra_saref_q3" },
+        { "questOrdinal": 4, "status": "completed", "questId": "veyra_saref_q4" }
+      ],
+      "unlockedRevelationIds": [
+        "rev_veyra_path"
+      ],
+      "unlockedAdvantageIds": [
+        "adv_veyra_wing_mask"
+      ],
+      "lastUpdatedAtTurn": 158
+    },
+    {
+      "guardianId": "myriel",
+      "questStates": [
+        { "questOrdinal": 1, "status": "completed", "questId": "myriel_saref_q1" },
+        { "questOrdinal": 2, "status": "completed", "questId": "myriel_saref_q2" },
+        { "questOrdinal": 3, "status": "completed", "questId": "myriel_saref_q3" },
+        { "questOrdinal": 4, "status": "completed", "questId": "myriel_saref_q4" }
+      ],
+      "unlockedRevelationIds": [
+        "rev_myriel_identity"
+      ],
+      "unlockedAdvantageIds": [
+        "adv_myriel_ash_formula"
+      ],
+      "lastUpdatedAtTurn": 166
     }
   ],
   "latentTraces": [],
@@ -7359,6 +7406,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
       "category": "faction",
       "sourceGuardianId": "azalia",
       "sourceQuestId": "azalia_saref_q4",
+      "sourceQuestOrdinal": 4,
       "summary": "Азалия раскрыла, что тайная военизированная фракция Сияющей Обители служит неизвестному центру власти.",
       "revealedAtTurn": 144
     },
@@ -7367,6 +7415,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
       "category": "method",
       "sourceGuardianId": "ilarion",
       "sourceQuestId": "ilarion_saref_q4",
+      "sourceQuestOrdinal": 4,
       "summary": "Иларион восстановил доказательство стирания памяти и изгнания в Море Хаоса.",
       "revealedAtTurn": 151
     },
@@ -7375,6 +7424,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
       "category": "path",
       "sourceGuardianId": "veyra",
       "sourceQuestId": "veyra_saref_q4",
+      "sourceQuestOrdinal": 4,
       "summary": "Вейра оставила маршрут к тайному кругу Крыльев Ангелов.",
       "revealedAtTurn": 158
     },
@@ -7383,6 +7433,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
       "category": "identity",
       "sourceGuardianId": "myriel",
       "sourceQuestId": "myriel_saref_q4",
+      "sourceQuestOrdinal": 4,
       "summary": "Мириэль впервые связала имя Сарефа с чужемирной частицей нового порядка.",
       "revealedAtTurn": 166
     }
@@ -7391,9 +7442,38 @@ Valid route-unlocked fragment after enough Guardian questlines:
     {
       "advantageId": "adv_azalia_false_loyalty",
       "sourceGuardianId": "azalia",
+      "sourceQuestId": "azalia_saref_q4",
+      "sourceQuestOrdinal": 4,
       "state": "available",
       "summary": "Можно выдать себя за полезного перебежчика перед агентами Крыльев Ангелов.",
       "unlockedAtTurn": 144
+    },
+    {
+      "advantageId": "adv_ilarion_memory_anchor",
+      "sourceGuardianId": "ilarion",
+      "sourceQuestId": "ilarion_saref_q4",
+      "sourceQuestOrdinal": 4,
+      "state": "available",
+      "summary": "Можно закрепить одну важную правду против стирания памяти Сарефа.",
+      "unlockedAtTurn": 151
+    },
+    {
+      "advantageId": "adv_veyra_wing_mask",
+      "sourceGuardianId": "veyra",
+      "sourceQuestId": "veyra_saref_q4",
+      "sourceQuestOrdinal": 4,
+      "state": "available",
+      "summary": "Можно найти маску, пароль или маршрут к кругу Крыльев Ангелов.",
+      "unlockedAtTurn": 158
+    },
+    {
+      "advantageId": "adv_myriel_ash_formula",
+      "sourceGuardianId": "myriel",
+      "sourceQuestId": "myriel_saref_q4",
+      "sourceQuestOrdinal": 4,
+      "state": "available",
+      "summary": "Можно распознать иномировую природу Сарефа вместо обычной духовной силы.",
+      "unlockedAtTurn": 166
     }
   ],
   "wingsInfiltration": null,
@@ -7414,6 +7494,9 @@ Correct reasoning checklist:
 - `wings_revealed`, `infiltration_active`, `confrontation_available`, and `completed` require route evidence from Guardian questline fragments and advantages.
 - Route evidence is sufficient only if the state has all four mandatory revelation categories, or three mandatory categories plus two additional fragments, or two mandatory categories plus four additional fragments.
 - The canonical categories are `identity`, `method`, `faction`, and `path`.
+- Each Guardian questline stores `questStates[]` with `questOrdinal = 1..4` and status `latent`, `recognized`, `active`, `ready_to_turn_in`, or `completed`.
+- Quest 4 can unlock `sarefRevelation` / `sarefAdvantage` only after quests 1-3 for the same Guardian are completed.
+- A mortal objective item is never transferred as a physical mortal item; store only memory, image, echo, knowledge trace, or soul resonance proof.
 - Do not use Mortal quest files, Mortal faction files, or ordinary lore notes as authority for this hidden mainline state.
 - Keep arrays unique by ids such as `revelationId`, `advantageId`, `outcomeId`, and `endingId`.
 
