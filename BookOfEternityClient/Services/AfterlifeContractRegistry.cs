@@ -13,6 +13,7 @@ public static class AfterlifeContractRegistry
     {
         new(AfterlifeSpiritualConflictState.StatePath, "afterlife_spiritual_conflict", "Chaos Sea|Shining Abode", "GM-authored through afterlifeSpiritualConflictUpdate", false),
         new(AfterlifeEntityProfileState.StatePath, "afterlife_entity_profiles", "Chaos Sea|Shining Abode", "GM-authored profile/update surfaces plus client-owned local player upgrade paths", false),
+        new(SarefMainStoryState.StatePath, "saref_main_story", "Chaos Sea|Shining Abode", "GM-authored hidden main-story state; absent legacy file is valid", false),
         new(GuardianAbodeOfferingState.PendingRequestPath, "guardian_abode_offering", "Chaos Sea", "client-owned pending request", true),
         new(GuardianTradeRequestState.PendingRequestPath, "guardian_trade", "Chaos Sea", "client-owned pending request", true),
         new(PlayerGuardianFoundationState.PendingRequestPath, "player_guardian_foundation", "Chaos Sea", "client-owned pending request", true),

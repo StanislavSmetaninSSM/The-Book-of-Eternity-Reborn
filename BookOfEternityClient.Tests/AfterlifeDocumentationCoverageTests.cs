@@ -31,6 +31,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             AfterlifeSpiritualConflictState.StatePath,
             AfterlifeEntityProfileState.StatePath,
+            SarefMainStoryState.StatePath,
             GuardianAbodeOfferingState.PendingRequestPath,
             GuardianTradeRequestState.PendingRequestPath,
             PlayerGuardianFoundationState.PendingRequestPath,
@@ -2501,7 +2502,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             .OrderBy(number => number)
             .ToArray();
 
-        Assert.Equal(Enumerable.Range(1, 26).ToArray(), exampleNumbers);
+        Assert.Equal(Enumerable.Range(1, 27).ToArray(), exampleNumbers);
 
         var coverageByExample = manifest.AfterlifeExampleCoverage
             .GroupBy(entry => entry.ExampleNumber)
@@ -2568,6 +2569,27 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains(requiredText, bible, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    [Fact]
+    public void SarefMainStoryRuntimeContractIsDocumented()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var inventory = ReadRepoFile("OtherGuides", "Afterlife_Pending_Control_Surface_Inventory.json");
+
+        foreach (var text in new[] { matrix, examples, manifest, inventory })
+        {
+            Assert.Contains(SarefMainStoryState.StatePath, text, StringComparison.Ordinal);
+            Assert.Contains("main_story_saref_state", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Крылья над Бездной", text, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("saref_reveal_stage", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sarefMainStoryState", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("No-spoiler", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("wings_revealed", matrix, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
