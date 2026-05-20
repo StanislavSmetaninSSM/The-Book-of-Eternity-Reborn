@@ -296,6 +296,80 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SarefStory_RendersOathboundPostStoryAgenda()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "completed",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [
+            { "revelationId": "rev_identity", "category": "identity", "revealedAtTurn": 50 }
+          ],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "factionLinks": { "visibility": "revealed", "wingsFactionId": "wings_of_angels" },
+          "finalConfrontation": {
+            "confrontationId": "saref_deal_final_001",
+            "status": "resolved",
+            "routeType": "deal",
+            "victoryTier": "deal",
+            "directScene": true,
+            "sceneType": "saref_negotiation",
+            "resolvedAtTurn": 130,
+            "sarefOutcome": "allied",
+            "wingsFactionOutcome": "joined",
+            "summary": "Игрок принимает сделку Сарефа."
+          },
+          "defeatOutcomes": [],
+          "endings": [],
+          "postStoryAgenda": {
+            "state": "oathbound_to_saref",
+            "sourceFinalConfrontationId": "saref_deal_final_001",
+            "startedAtTurn": 130,
+            "currentObjective": "Выполнять поручения Сарефа против остальных фракций.",
+            "agendaSummary": "Сюжет завершён сделкой, но Сареф продолжает вести игрока к власти Крыльев.",
+            "assignments": [
+              {
+                "assignmentId": "saref_assignment_silver_chorus_001",
+                "status": "active",
+                "targetFactionId": "silver_chorus",
+                "campaignId": "campaign_saref_silver_chorus_001",
+                "objective": "Разрушить союз Серебряного Хора.",
+                "summary": "Сареф требует ударить по Серебряному Хору.",
+                "createdAtTurn": 131
+              }
+            ],
+            "dominationScene": {
+              "sceneId": "saref_domination_scene_001",
+              "status": "completed",
+              "resolvedAtTurn": 170,
+              "summary": "Больше не осталось никого, кто мог бы противостоять Сарефу."
+            }
+          },
+          "playerOathState": {
+            "state": "oathbound",
+            "oathId": "saref_oath_001",
+            "summary": "Клятва связывает игрока с Крыльями Ангелов."
+          },
+          "sarefPersonalBond": null
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/сареф");
+
+        var text = ExtractRenderedText();
+        Assert.Equal(string.Empty, result);
+        Assert.Contains("Послесюжетная линия Сарефа", text, StringComparison.Ordinal);
+        Assert.Contains("связан клятвой с Сарефом", text, StringComparison.Ordinal);
+        Assert.Contains("Сареф требует ударить по Серебряному Хору", text, StringComparison.Ordinal);
+        Assert.Contains("Больше не осталось никого", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeProfiles_RendersFullEntityProfile()
     {
         await SeedAfterlifeStateAsync();

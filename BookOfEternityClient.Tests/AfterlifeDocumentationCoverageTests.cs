@@ -2731,6 +2731,13 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("memorySuppressionAudit", text, StringComparison.Ordinal);
             Assert.Contains("soulDissipationProofId", text, StringComparison.Ordinal);
             Assert.Contains("mitigation", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("postStoryAgenda", text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.PostStoryUpdateModeRecordAgenda, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.PostStoryStateOathbound, text, StringComparison.Ordinal);
+            Assert.Contains("assignments", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("dominationScene", text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionConflictCampaignsProperty, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughSarefDirective, text, StringComparison.Ordinal);
         }
 
         foreach (var text in new[] { matrix, examples, inventory, daemonSpec, apiSpec, taskGuide, operations })

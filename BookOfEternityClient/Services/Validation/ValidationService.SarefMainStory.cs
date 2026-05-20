@@ -297,6 +297,183 @@ public partial class ValidationService
         ValidateSarefFinalWingsFactionOutcome(storyRoot, matchingFaction, issues);
     }
 
+    private async Task ValidateSarefOathboundPostStoryContextAsync(List<ValidationIssue> issues)
+    {
+        var storyRoot = await ReadJsonObjectAsync(SarefMainStoryState.StatePath);
+        if (storyRoot == null || storyRoot["postStoryAgenda"] is not JsonObject agenda)
+            return;
+
+        if (!IsSarefOathboundDealRoot(storyRoot))
+            return;
+
+        var shiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
+        if (shiningRoot == null)
+            return;
+
+        var factions = shiningRoot["factions"] as JsonArray;
+        var campaigns = shiningRoot[ShiningAbodeState.FactionConflictCampaignsProperty] as JsonArray;
+        var wingsFactionId = SarefMainStoryState.GetNodeString(storyRoot["factionLinks"]?["wingsFactionId"]);
+
+        ValidateSarefOathboundAssignmentsAgainstShining(agenda, factions, campaigns, wingsFactionId, issues);
+        ValidateSarefOathboundDominationScene(agenda, factions, wingsFactionId, issues);
+    }
+
+    private static void ValidateSarefOathboundAssignmentsAgainstShining(
+        JsonObject agenda,
+        JsonArray? factions,
+        JsonArray? campaigns,
+        string? wingsFactionId,
+        List<ValidationIssue> issues)
+    {
+        if (agenda["assignments"] is not JsonArray assignments)
+            return;
+
+        foreach (var assignment in assignments.OfType<JsonObject>())
+        {
+            var status = SarefMainStoryState.GetNodeString(assignment["status"]);
+            if (!string.Equals(status, SarefMainStoryState.PostStoryAssignmentStatusActive, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(status, SarefMainStoryState.PostStoryAssignmentStatusCompleted, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var assignmentId = SarefMainStoryState.GetNodeString(assignment["assignmentId"]) ?? "?";
+            var targetFactionId = SarefMainStoryState.GetNodeString(assignment["targetFactionId"]);
+            var campaignId = SarefMainStoryState.GetNodeString(assignment["campaignId"]);
+            if (string.IsNullOrWhiteSpace(targetFactionId) || string.IsNullOrWhiteSpace(campaignId))
+                continue;
+
+            var targetFaction = FindSarefShiningFaction(factions, targetFactionId);
+            if (targetFaction == null ||
+                IsSarefWingsFaction(targetFaction, wingsFactionId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{SarefMainStoryState.StatePath}.postStoryAgenda.assignments",
+                    "Поручение Сарефа должно ссылаться на существующую не-Wings faction Сияющей Обители.",
+                    "saref_main_story_oathbound_assignment_target_missing",
+                    "existing non-Wings factions[].factionId",
+                    targetFactionId);
+                continue;
+            }
+
+            var campaign = FindSarefShiningCampaign(campaigns, campaignId);
+            if (campaign == null ||
+                !string.Equals(SarefMainStoryState.GetNodeString(campaign["targetFactionId"]), targetFactionId, StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{SarefMainStoryState.StatePath}.postStoryAgenda.assignments",
+                    "Каждое active/completed поручение Сарефа должно быть связано с Shining factionConflictCampaigns[] против той же фракции.",
+                    "saref_main_story_oathbound_assignment_campaign_missing",
+                    $"campaignId={campaignId} targeting {targetFactionId}",
+                    assignmentId);
+                continue;
+            }
+
+            if (string.Equals(status, SarefMainStoryState.PostStoryAssignmentStatusCompleted, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(
+                    SarefMainStoryState.GetNodeString(campaign["status"]),
+                    ShiningAbodeState.FactionCampaignStatusCompleted,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{SarefMainStoryState.StatePath}.postStoryAgenda.assignments",
+                    "completed поручение Сарефа требует completed factionConflictCampaigns[] proof.",
+                    "saref_main_story_oathbound_assignment_campaign_not_completed",
+                    "campaign.status=completed",
+                    SarefMainStoryState.GetNodeString(campaign["status"]) ?? "missing");
+            }
+        }
+    }
+
+    private static void ValidateSarefOathboundDominationScene(
+        JsonObject agenda,
+        JsonArray? factions,
+        string? wingsFactionId,
+        List<ValidationIssue> issues)
+    {
+        if (!CanEvaluateSarefOpposition(factions, wingsFactionId))
+            return;
+
+        var hasOpposition = factions!.OfType<JsonObject>().Any(faction => IsSignificantSarefOppositionFaction(faction, wingsFactionId));
+        var hasCompletedDominationScene =
+            agenda["dominationScene"] is JsonObject scene &&
+            string.Equals(SarefMainStoryState.GetNodeString(scene["status"]), "completed", StringComparison.OrdinalIgnoreCase) &&
+            SarefMainStoryState.GetNodeInt(scene["resolvedAtTurn"]) > 0 &&
+            !string.IsNullOrWhiteSpace(SarefMainStoryState.GetNodeString(scene["summary"]));
+
+        if (!hasOpposition && !hasCompletedDominationScene)
+        {
+            AddSarefIssue(
+                issues,
+                $"{SarefMainStoryState.StatePath}.postStoryAgenda.dominationScene",
+                "Если в Сияющей Обители не осталось значимых фракций, способных противостоять Сарефу, нужно записать финальную сцену доминирования.",
+                "saref_main_story_oathbound_domination_scene_missing",
+                "dominationScene.status=completed with resolvedAtTurn and summary",
+                agenda["dominationScene"]?.GetType().Name ?? "missing");
+        }
+
+        if (hasOpposition && hasCompletedDominationScene)
+        {
+            AddSarefIssue(
+                issues,
+                $"{SarefMainStoryState.StatePath}.postStoryAgenda.dominationScene",
+                "Финальная сцена доминирования Сарефа недопустима, пока есть значимые несломленные фракции.",
+                "saref_main_story_oathbound_domination_scene_with_opposition",
+                "no significant non-Wings factions with active/weakened/leaderless lifecycle",
+                "opposition remains");
+        }
+    }
+
+    private static bool CanEvaluateSarefOpposition(JsonArray? factions, string? wingsFactionId) =>
+        factions != null &&
+        factions.OfType<JsonObject>().Any(faction => IsSarefWingsFaction(faction, wingsFactionId));
+
+    private static bool IsSignificantSarefOppositionFaction(JsonObject faction, string? wingsFactionId)
+    {
+        if (IsSarefWingsFaction(faction, wingsFactionId))
+            return false;
+
+        if (SarefMainStoryState.GetNodeString(faction["significance"]) is { } significance &&
+            string.Equals(significance, "minor", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (faction["isMinor"] is JsonValue minorValue &&
+            minorValue.TryGetValue<bool>(out var isMinor) &&
+            isMinor)
+        {
+            return false;
+        }
+
+        var lifecycle = faction["factionLifecycle"] is JsonObject lifecycleRoot
+            ? SarefMainStoryState.GetNodeString(lifecycleRoot["state"]) ?? ShiningAbodeState.FactionLifecycleStateActive
+            : ShiningAbodeState.FactionLifecycleStateActive;
+
+        return !string.Equals(lifecycle, ShiningAbodeState.FactionLifecycleStateBroken, StringComparison.OrdinalIgnoreCase) &&
+               !string.Equals(lifecycle, ShiningAbodeState.FactionLifecycleStateDissolved, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject? FindSarefShiningFaction(JsonArray? factions, string factionId) =>
+        factions?.OfType<JsonObject>().FirstOrDefault(faction =>
+            string.Equals(SarefMainStoryState.GetNodeString(faction["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+
+    private static JsonObject? FindSarefShiningCampaign(JsonArray? campaigns, string campaignId) =>
+        campaigns?.OfType<JsonObject>().FirstOrDefault(campaign =>
+            string.Equals(SarefMainStoryState.GetNodeString(campaign["campaignId"]), campaignId, StringComparison.OrdinalIgnoreCase));
+
+    private static bool IsSarefWingsFaction(JsonObject faction, string? wingsFactionId)
+    {
+        var factionId = SarefMainStoryState.GetNodeString(faction["factionId"]);
+        var role = SarefMainStoryState.GetNodeString(faction["sarefFactionRole"]);
+        return (!string.IsNullOrWhiteSpace(wingsFactionId) &&
+                string.Equals(factionId, wingsFactionId, StringComparison.OrdinalIgnoreCase)) ||
+               string.Equals(role, SarefMainStoryState.WingsFactionRole, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static void ValidateSarefFinalWingsFactionOutcome(
         JsonObject storyRoot,
         JsonObject matchingFaction,
@@ -382,6 +559,8 @@ public partial class ValidationService
         ValidateSarefDefeatOutcomes(root, contextPrefix, advantageUses, issues);
         ValidateSarefFinalConfrontation(root, contextPrefix, revealStage, guardianQuestlines, advantageUses, issues);
         ValidateSarefEndings(root, contextPrefix, issues);
+        ValidateSarefPostStoryAgenda(root, contextPrefix, issues);
+        ValidateSarefOathboundPostStoryRoot(root, contextPrefix, issues);
         var factionVisibility = ValidateSarefFactionLinks(root, contextPrefix, issues);
         ValidateSarefActionableFactionLink(revealStage, root, factionVisibility, contextPrefix, issues);
         ValidateSarefNullableStateObject(root, contextPrefix, "playerOathState", "state", SarefMainStoryState.PlayerOathStates, "saref_main_story_invalid_player_oath_state", issues);
@@ -1928,6 +2107,234 @@ public partial class ValidationService
                     "missing");
             }
         }
+    }
+
+    private static void ValidateSarefPostStoryAgenda(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("postStoryAgenda", out var agenda) || agenda.ValueKind == JsonValueKind.Null)
+            return;
+
+        var context = $"{contextPrefix}.postStoryAgenda";
+        if (agenda.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "postStoryAgenda должен быть null или object.",
+                "saref_main_story_oathbound_agenda_invalid_shape",
+                "object or null",
+                agenda.ValueKind.ToString());
+            return;
+        }
+
+        var state = RequireSarefString(agenda, context, "state", "saref_main_story_oathbound_agenda_missing_state", issues);
+        if (!string.IsNullOrWhiteSpace(state) && !SarefMainStoryState.PostStoryStates.Contains(state))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.state",
+                "postStoryAgenda.state не поддерживается.",
+                "saref_main_story_oathbound_agenda_invalid_state",
+                string.Join("/", SarefMainStoryState.PostStoryStates.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                state);
+        }
+
+        RequireSarefString(agenda, context, "sourceFinalConfrontationId", "saref_main_story_oathbound_agenda_missing_final_id", issues);
+        RequireSarefTurnNumber(agenda, context, "startedAtTurn", "saref_main_story_oathbound_agenda_missing_started_turn", issues);
+        RequireSarefString(agenda, context, "currentObjective", "saref_main_story_oathbound_agenda_missing_objective", issues);
+        RequireSarefString(agenda, context, "agendaSummary", "saref_main_story_oathbound_agenda_missing_summary", issues);
+        ValidateSarefPostStoryAssignments(agenda, context, issues);
+        ValidateSarefPostStoryDominationScene(agenda, context, issues);
+        ValidateSarefTurnFields(agenda, context, issues);
+    }
+
+    private static void ValidateSarefPostStoryAssignments(JsonElement agenda, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!agenda.TryGetProperty("assignments", out var assignments))
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.assignments",
+                "postStoryAgenda требует assignments[]; используй [] если новых поручений Сарефа пока нет.",
+                "saref_main_story_oathbound_assignments_missing",
+                "assignments[]",
+                "missing");
+            return;
+        }
+
+        if (assignments.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.assignments",
+                "postStoryAgenda.assignments должен быть массивом.",
+                "saref_main_story_oathbound_assignments_invalid_shape",
+                "array",
+                assignments.ValueKind.ToString());
+            return;
+        }
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var assignment in assignments.EnumerateArray())
+        {
+            var context = $"{contextPrefix}.assignments[{index++}]";
+            if (!ValidateSarefArrayObject(assignment, context, issues))
+                continue;
+
+            var assignmentId = RequireSarefString(assignment, context, "assignmentId", "saref_main_story_oathbound_assignment_missing_id", issues);
+            if (!string.IsNullOrWhiteSpace(assignmentId) && !seen.Add(assignmentId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.assignmentId",
+                    "postStoryAgenda.assignments содержит duplicate assignmentId.",
+                    "saref_main_story_oathbound_assignment_duplicate_id",
+                    "unique assignmentId",
+                    assignmentId);
+            }
+
+            var status = RequireSarefString(assignment, context, "status", "saref_main_story_oathbound_assignment_missing_status", issues);
+            if (!string.IsNullOrWhiteSpace(status) && !SarefMainStoryState.PostStoryAssignmentStatuses.Contains(status))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.status",
+                    "status поручения Сарефа не поддерживается.",
+                    "saref_main_story_oathbound_assignment_invalid_status",
+                    string.Join("/", SarefMainStoryState.PostStoryAssignmentStatuses.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    status);
+            }
+
+            RequireSarefString(assignment, context, "targetFactionId", "saref_main_story_oathbound_assignment_missing_target", issues);
+            RequireSarefString(assignment, context, "campaignId", "saref_main_story_oathbound_assignment_missing_campaign", issues);
+            RequireSarefString(assignment, context, "objective", "saref_main_story_oathbound_assignment_missing_objective", issues);
+            RequireSarefString(assignment, context, "summary", "saref_main_story_oathbound_assignment_missing_summary", issues);
+            RequireSarefTurnNumber(assignment, context, "createdAtTurn", "saref_main_story_oathbound_assignment_missing_created_turn", issues);
+            if (string.Equals(status, SarefMainStoryState.PostStoryAssignmentStatusCompleted, StringComparison.OrdinalIgnoreCase))
+                RequireSarefTurnNumber(assignment, context, "completedAtTurn", "saref_main_story_oathbound_assignment_missing_completed_turn", issues);
+            ValidateSarefTurnFields(assignment, context, issues);
+        }
+    }
+
+    private static void ValidateSarefPostStoryDominationScene(JsonElement agenda, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!agenda.TryGetProperty("dominationScene", out var scene) || scene.ValueKind == JsonValueKind.Null)
+            return;
+
+        var context = $"{contextPrefix}.dominationScene";
+        if (scene.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "dominationScene должен быть null или object.",
+                "saref_main_story_oathbound_domination_scene_invalid_shape",
+                "object or null",
+                scene.ValueKind.ToString());
+            return;
+        }
+
+        RequireSarefString(scene, context, "sceneId", "saref_main_story_oathbound_domination_scene_missing_id", issues);
+        var status = RequireSarefString(scene, context, "status", "saref_main_story_oathbound_domination_scene_missing_status", issues);
+        if (!string.IsNullOrWhiteSpace(status) &&
+            !string.Equals(status, "completed", StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.status",
+                "dominationScene поддерживает только completed: это финальная сцена, а не активная очередь.",
+                "saref_main_story_oathbound_domination_scene_invalid_status",
+                "completed",
+                status);
+        }
+
+        RequireSarefTurnNumber(scene, context, "resolvedAtTurn", "saref_main_story_oathbound_domination_scene_missing_turn", issues);
+        RequireSarefString(scene, context, "summary", "saref_main_story_oathbound_domination_scene_missing_summary", issues);
+        ValidateSarefTurnFields(scene, context, issues);
+    }
+
+    private static void ValidateSarefOathboundPostStoryRoot(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        var isDeal = IsSarefOathboundDealRoot(root);
+        var hasAgenda = root.TryGetProperty("postStoryAgenda", out var agenda) && agenda.ValueKind == JsonValueKind.Object;
+
+        if (isDeal && !hasAgenda)
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.postStoryAgenda",
+                "Сделка с Сарефом не завершает игру: нужен active postStoryAgenda со статусом oathbound_to_saref.",
+                "saref_main_story_oathbound_agenda_missing",
+                "postStoryAgenda.state=oathbound_to_saref",
+                root.TryGetProperty("postStoryAgenda", out var present) ? present.ValueKind.ToString() : "missing");
+        }
+
+        if (!isDeal && hasAgenda)
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.postStoryAgenda",
+                "postStoryAgenda допустим только после deal finalConfrontation с joined Wings outcome.",
+                "saref_main_story_oathbound_agenda_without_deal",
+                "deal/allied/joined finalConfrontation",
+                "agenda present");
+        }
+
+        if (!isDeal)
+            return;
+
+        var oathState = root.TryGetProperty("playerOathState", out var oath) && oath.ValueKind == JsonValueKind.Object
+            ? GetSarefOptionalString(oath, "state")
+            : null;
+        if (!string.Equals(oathState, "oathbound", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(oathState, "strained", StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.playerOathState.state",
+                "Обычным добровольным действием нельзя выйти из Крыльев после сделки с Сарефом; нужен отдельный oath-break contract.",
+                "saref_main_story_oathbound_left_without_oath_break",
+                "oathbound/strained until authorized oath break",
+                oathState ?? "missing");
+        }
+
+        if (hasAgenda)
+        {
+            var final = ResolveResolvedSarefFinal(root);
+            var sourceFinalId = GetSarefOptionalString(agenda, "sourceFinalConfrontationId");
+            if (!string.Equals(sourceFinalId, final?.ConfrontationId, StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{contextPrefix}.postStoryAgenda.sourceFinalConfrontationId",
+                    "postStoryAgenda должен ссылаться на deal finalConfrontation, который связал игрока с Сарефом.",
+                    "saref_main_story_oathbound_agenda_final_mismatch",
+                    final?.ConfrontationId ?? "deal final id",
+                    sourceFinalId ?? "missing");
+            }
+        }
+    }
+
+    private static bool IsSarefOathboundDealRoot(JsonElement root)
+    {
+        var final = ResolveResolvedSarefFinal(root);
+        return final != null &&
+               string.Equals(final.RouteType, SarefMainStoryState.FinalRouteDeal, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(final.VictoryTier, SarefMainStoryState.FinalVictoryDeal, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(final.SarefOutcome, SarefMainStoryState.FinalSarefOutcomeAllied, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(final.WingsFactionOutcome, SarefMainStoryState.FinalWingsOutcomeJoined, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsSarefOathboundDealRoot(JsonObject root)
+    {
+        var final = root["finalConfrontation"] as JsonObject;
+        return final != null &&
+               string.Equals(SarefMainStoryState.GetNodeString(final["status"]), SarefMainStoryState.FinalStatusResolved, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(SarefMainStoryState.GetNodeString(final["routeType"]), SarefMainStoryState.FinalRouteDeal, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(SarefMainStoryState.GetNodeString(final["victoryTier"]), SarefMainStoryState.FinalVictoryDeal, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(SarefMainStoryState.GetNodeString(final["sarefOutcome"]), SarefMainStoryState.FinalSarefOutcomeAllied, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(SarefMainStoryState.GetNodeString(final["wingsFactionOutcome"]), SarefMainStoryState.FinalWingsOutcomeJoined, StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool TryGetSarefObject(JsonElement root, string propertyName, out JsonElement value)

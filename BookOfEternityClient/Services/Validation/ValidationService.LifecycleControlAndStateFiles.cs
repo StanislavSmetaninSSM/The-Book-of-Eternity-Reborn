@@ -274,7 +274,7 @@ public partial class ValidationService
                 SarefMainStoryState.StateResponseField,
                 "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
                 "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "wingsInfiltration", "factionLinks",
-                "finalConfrontation", "defeatOutcomes", "endings", "playerOathState",
+                "finalConfrontation", "defeatOutcomes", "endings", "postStoryAgenda", "playerOathState",
                 "sarefPersonalBond", "_lastUpdated"
             }, issues, ValidateSarefMainStoryStateFile);
         await ValidateStrictTopLevelObjectFileAsync(SarefMainStoryState.StatePath,
@@ -282,7 +282,7 @@ public partial class ValidationService
             {
                 "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
                 "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "wingsInfiltration", "factionLinks",
-                "finalConfrontation", "defeatOutcomes", "endings", "playerOathState",
+                "finalConfrontation", "defeatOutcomes", "endings", "postStoryAgenda", "playerOathState",
                 "sarefPersonalBond", "_lastUpdated"
             }, issues);
         await ValidateFlexibleStateFile(SarefMainStoryState.PendingWingsInfiltrationPath,
@@ -887,6 +887,7 @@ public partial class ValidationService
         await ValidatePendingSourceOfLightCapstoneRequestContextAsync(issues);
         await ValidatePendingSarefWingsInfiltrationRequestContextAsync(issues);
         await ValidateSarefWingsFactionLinksContextAsync(issues);
+        await ValidateSarefOathboundPostStoryContextAsync(issues);
         await ValidateSystemGuardianAttractionContextAsync(issues);
     }
 

@@ -75,6 +75,13 @@ internal static class SarefMainStoryState
     public const string FinalWingsOutcomeJoined = "joined";
     public const string EndingTypeDeal = "deal";
     public const string EndingTypeVictory = "victory";
+    public const string PostStoryUpdateModeRecordAgenda = "record_oathbound_agenda";
+    public const string PostStoryStateOathbound = "oathbound_to_saref";
+    public const string PostStoryStateDominationCompleted = "domination_completed";
+    public const string PostStoryAssignmentStatusActive = "active";
+    public const string PostStoryAssignmentStatusCompleted = "completed";
+    public const string PostStoryAssignmentStatusFailed = "failed";
+    public const string PostStoryAssignmentStatusAbandoned = "abandoned";
 
     public const string WingsUpdateModeReveal = "reveal_wings";
     public const string WingsUpdateModeRefuse = "refuse_wings";
@@ -287,6 +294,20 @@ internal static class SarefMainStoryState
         EndingTypeVictory
     };
 
+    public static readonly HashSet<string> PostStoryStates = new(StringComparer.OrdinalIgnoreCase)
+    {
+        PostStoryStateOathbound,
+        PostStoryStateDominationCompleted
+    };
+
+    public static readonly HashSet<string> PostStoryAssignmentStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        PostStoryAssignmentStatusActive,
+        PostStoryAssignmentStatusCompleted,
+        PostStoryAssignmentStatusFailed,
+        PostStoryAssignmentStatusAbandoned
+    };
+
     public static readonly HashSet<string> WingsRouteSafetyStates = new(StringComparer.OrdinalIgnoreCase)
     {
         WingsRouteSafetySafe,
@@ -340,6 +361,7 @@ internal static class SarefMainStoryState
             ["finalConfrontation"] = null,
             ["defeatOutcomes"] = new JsonArray(),
             ["endings"] = new JsonArray(),
+            ["postStoryAgenda"] = null,
             ["playerOathState"] = null,
             ["sarefPersonalBond"] = null
         };
@@ -404,7 +426,7 @@ internal static class SarefMainStoryState
 
         var read = await ReadWingsInfiltrationRequestStateAsync(fs);
         if (!read.Exists)
-            return null;
+            return await BuildOathboundAgendaReminderFragmentAsync(fs);
 
         if (read.IsMalformed || read.Request == null)
         {
@@ -427,6 +449,23 @@ internal static class SarefMainStoryState
                $"  - Resolve through {ResponseField}.mode={WingsUpdateModeReveal}, {WingsUpdateModeRefuse}, or {WingsUpdateModeBlock}.\n" +
                "  - reveal_wings must set main_story_saref_state.revealStage=wings_revealed, wingsInfiltration.status=revealed, and factionLinks.visibility=revealed.\n" +
                "  - Risky/desperate routes require explicit GM disadvantages from the pending request.";
+    }
+
+    private static async Task<string?> BuildOathboundAgendaReminderFragmentAsync(FileSystemManager fs)
+    {
+        var storyRoot = await ReadJsonObjectAsync(fs, StatePath);
+        if (storyRoot?["postStoryAgenda"] is not JsonObject agenda ||
+            !string.Equals(GetNodeString(agenda["state"]), PostStoryStateOathbound, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        var objective = GetNodeString(agenda["currentObjective"]) ?? "advance Saref's Wings agenda against remaining Shining factions";
+        return "SAREF OATHBOUND POST-STORY:\n" +
+               "  - The main Saref line ended by deal, not game over. The player remains oathbound_to_saref and cannot leave Wings by ordinary voluntary action.\n" +
+               $"  - Current Saref objective: {objective}\n" +
+               "  - Advance assignments through Shining factionConflictCampaigns[] against non-Wings factions; use breakthroughLog[].type=saref_directive when Saref's order creates a breakthrough.\n" +
+               "  - If no significant non-Wings faction can oppose Saref, write postStoryAgenda.dominationScene with status=completed and the final domination scene summary.";
     }
 
     public static JsonObject? BuildWingsInfiltrationRequest(JsonObject? storyRoot, int createdAtTurn)
@@ -541,6 +580,12 @@ internal static class SarefMainStoryState
         if (string.Equals(mode, FinalUpdateModeRecord, StringComparison.OrdinalIgnoreCase))
         {
             ApplyFinalConfrontationUpdate(root, updateRoot);
+            return root;
+        }
+
+        if (string.Equals(mode, PostStoryUpdateModeRecordAgenda, StringComparison.OrdinalIgnoreCase))
+        {
+            ApplyPostStoryAgendaUpdate(root, updateRoot);
             return root;
         }
 
@@ -717,6 +762,69 @@ internal static class SarefMainStoryState
             MergeEnding(root, endingAudit, final, resolvedAtTurn);
         else if (updateRoot["endings"] is JsonArray endings)
             MergeArrayById(EnsureArray(root, "endings"), endings, "endingId");
+
+        if (updateRoot["postStoryAgenda"] is JsonObject agenda)
+            root["postStoryAgenda"] = agenda.DeepClone();
+        else if (IsResolvedDealFinal(final) && root["postStoryAgenda"] is not JsonObject)
+            root["postStoryAgenda"] = CreateDefaultOathboundAgenda(final, resolvedAtTurn);
+    }
+
+    private static void ApplyPostStoryAgendaUpdate(JsonObject root, JsonObject updateRoot)
+    {
+        if (updateRoot["postStoryAgenda"] is JsonObject agenda)
+        {
+            root["postStoryAgenda"] = agenda.DeepClone();
+            return;
+        }
+
+        var target = root["postStoryAgenda"] as JsonObject ?? new JsonObject();
+        foreach (var key in new[] { "state", "sourceFinalConfrontationId", "startedAtTurn", "currentObjective", "agendaSummary" })
+        {
+            if (updateRoot[key] != null)
+                target[key] = updateRoot[key]!.DeepClone();
+        }
+
+        if (updateRoot["assignment"] is JsonObject assignment)
+            MergeArrayById(EnsureAgendaArray(target, "assignments"), new JsonArray(assignment.DeepClone()), "assignmentId");
+        else if (updateRoot["assignments"] is JsonArray assignments)
+            MergeArrayById(EnsureAgendaArray(target, "assignments"), assignments, "assignmentId");
+
+        if (updateRoot["dominationScene"] != null)
+            target["dominationScene"] = updateRoot["dominationScene"]!.DeepClone();
+
+        root["postStoryAgenda"] = target;
+    }
+
+    private static JsonArray EnsureAgendaArray(JsonObject agenda, string propertyName)
+    {
+        if (agenda[propertyName] is JsonArray array)
+            return array;
+
+        array = new JsonArray();
+        agenda[propertyName] = array;
+        return array;
+    }
+
+    private static bool IsResolvedDealFinal(JsonObject final) =>
+        string.Equals(GetNodeString(final["status"]), FinalStatusResolved, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(GetNodeString(final["routeType"]), FinalRouteDeal, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(GetNodeString(final["victoryTier"]), FinalVictoryDeal, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(GetNodeString(final["sarefOutcome"]), FinalSarefOutcomeAllied, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(GetNodeString(final["wingsFactionOutcome"]), FinalWingsOutcomeJoined, StringComparison.OrdinalIgnoreCase);
+
+    private static JsonObject CreateDefaultOathboundAgenda(JsonObject final, int resolvedAtTurn)
+    {
+        var sourceFinalId = GetNodeString(final["confrontationId"]);
+        return new JsonObject
+        {
+            ["state"] = PostStoryStateOathbound,
+            ["sourceFinalConfrontationId"] = sourceFinalId,
+            ["startedAtTurn"] = resolvedAtTurn > 0 ? resolvedAtTurn : GetNodeInt(final["resolvedAtTurn"]),
+            ["currentObjective"] = "Выполнять поручения Сарефа против остальных фракций Сияющей Обители.",
+            ["agendaSummary"] = "Главная линия завершена сделкой, но Сареф продолжает вести игрока к власти Крыльев Ангелов.",
+            ["assignments"] = new JsonArray(),
+            ["dominationScene"] = null
+        };
     }
 
     private static void MergeEnding(JsonObject root, JsonObject endingSource, JsonObject final, int resolvedAtTurn)
