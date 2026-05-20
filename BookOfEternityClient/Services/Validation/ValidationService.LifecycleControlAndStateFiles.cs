@@ -886,6 +886,7 @@ public partial class ValidationService
         await ValidatePendingShiningLeadershipTransitionRequestContextAsync(issues);
         await ValidatePendingSourceOfLightCapstoneRequestContextAsync(issues);
         await ValidatePendingSarefWingsInfiltrationRequestContextAsync(issues);
+        await ValidateSarefWingsFactionLinksContextAsync(issues);
         await ValidateSystemGuardianAttractionContextAsync(issues);
     }
 

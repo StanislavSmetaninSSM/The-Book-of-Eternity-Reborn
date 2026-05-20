@@ -101,6 +101,143 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_WingsRevealedWithoutFactionId_ReportsActionableFactionIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState("""
+          "factionLinks": {
+            "visibility": "revealed"
+          }
+        """, revealStage: "wings_revealed"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_wings_revealed_missing_faction_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_WingsRevealedFactionIdMissingFromShiningFactions_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState("""
+          "factionLinks": {
+            "visibility": "revealed",
+            "wingsFactionId": "wings_of_angels"
+          }
+        """, revealStage: "wings_revealed"));
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "availability": "active",
+          "radiance": {
+            "experience": 0,
+            "tier": 0
+          },
+          "preparedIncarnationPackage": null,
+          "factions": []
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_wings_faction_missing_shining_actor", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_WingsKnownAgentsSingleArchetype_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState("""
+          "factionLinks": {
+            "visibility": "hidden",
+            "knownAgents": [
+              {
+                "agentId": "wing_agent_001",
+                "supporterArchetype": "fanatic",
+                "summary": "Слепо предан Сарефу."
+              },
+              {
+                "agentId": "wing_agent_002",
+                "supporterArchetype": "fanatic",
+                "summary": "Слепо предан Сарефу."
+              }
+            ]
+          }
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_wings_agents_need_mixed_archetypes", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_WingsKnownAgentsMixedArchetypes_PassesAgentValidation()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState("""
+          "factionLinks": {
+            "visibility": "hidden",
+            "knownAgents": [
+              {
+                "agentId": "wing_agent_001",
+                "supporterArchetype": "deceived",
+                "interactionRoutes": [ "persuade", "expose" ],
+                "summary": "Верит, что Крылья спасут Обитель."
+              },
+              {
+                "agentId": "wing_agent_002",
+                "supporterArchetype": "oathbound",
+                "importance": "important",
+                "interactionRoutes": [ "free", "defeat" ],
+                "summary": "Связан клятвой Сарефа."
+              }
+            ],
+            "shadowTraces": [
+              {
+                "traceId": "white_dead_feather",
+                "stage": "shadow",
+                "summary": "Белое мертвое перо в Море Хаоса."
+              }
+            ]
+          }
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("saref_main_story_wings_agent", StringComparison.OrdinalIgnoreCase) == true ||
+            issue.Code?.StartsWith("saref_main_story_wings_shadow_trace", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public void GetPlayerVisibleShiningFactions_HidesUnrevealedWingsFaction()
+    {
+        var shiningRoot = JsonNode.Parse("""
+        {
+          "factions": [
+            {
+              "factionId": "wings_of_angels",
+              "sarefFactionRole": "wings_of_angels",
+              "sarefVisibility": "hidden",
+              "charter": { "factionName": "Крылья Ангелов" },
+              "factionStrength": 99
+            },
+            {
+              "factionId": "radiant_accord",
+              "charter": { "factionName": "Сияющий Договор" },
+              "factionStrength": 20
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var visibleFactionIds = SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+            .Select(faction => SarefMainStoryState.GetNodeString(faction["factionId"]))
+            .ToList();
+
+        Assert.Equal(["radiant_accord"], visibleFactionIds);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_InvalidSarefState_ReportsShapeAndDuplicateIssues()
     {
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
@@ -743,10 +880,11 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
-    private static string BuildSarefWingsRouteState() => """
+    private static string BuildSarefWingsRouteState(string? factionLinksPayload = null, string revealStage = "name_revealed") =>
+        $$"""
     {
       "schemaVersion": 1,
-      "revealStage": "name_revealed",
+      "revealStage": "{{revealStage}}",
       "guardianQuestlines": [
         {
           "guardianId": "azalia",
@@ -768,7 +906,7 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
       "sarefAdvantages": [],
       "sarefAdvantageUses": [],
       "wingsInfiltration": null,
-      "factionLinks": { "visibility": "hidden" },
+      {{factionLinksPayload ?? "\"factionLinks\": { \"visibility\": \"hidden\" }"}},
       "finalConfrontation": null,
       "defeatOutcomes": [],
       "endings": [],

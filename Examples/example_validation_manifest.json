@@ -48,7 +48,7 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/main_story_saref_state.json",
       "responseSurface": "sarefMainStoryState / sarefAdvantageUses",
-      "description": "Hidden main story line Крылья над Бездной reveal-stage and Saref advantage-use contract."
+      "description": "Hidden main story line Крылья над Бездной reveal-stage, Saref advantage-use, shadowTraces, knownAgents/supporterArchetype, and hidden Shining faction visibility contract."
     },
     {
       "contractId": "shining_faction_lifecycle_v1",

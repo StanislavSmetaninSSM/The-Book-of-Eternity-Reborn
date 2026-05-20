@@ -61,6 +61,18 @@ internal static class SarefMainStoryState
     public const string WingsStatusRefused = "refused";
     public const string WingsStatusBlocked = "blocked";
 
+    public const string WingsFactionRole = "wings_of_angels";
+    public const string FactionVisibilityHidden = "hidden";
+    public const string FactionVisibilityRumored = "rumored";
+    public const string FactionVisibilityRevealed = "revealed";
+    public const string SupporterArchetypeDeceived = "deceived";
+    public const string SupporterArchetypeOathbound = "oathbound";
+    public const string SupporterArchetypeFanatic = "fanatic";
+    public const string SupporterArchetypeOpportunist = "opportunist";
+    public const string WingsTraceStageShadow = "shadow";
+    public const string WingsTraceStageName = "name";
+    public const string WingsTraceStageFaction = "faction";
+
     public static readonly HashSet<string> RevealStages = new(StringComparer.OrdinalIgnoreCase)
     {
         RevealStageUnknown,
@@ -132,9 +144,33 @@ internal static class SarefMainStoryState
 
     public static readonly HashSet<string> FactionVisibilityStates = new(StringComparer.OrdinalIgnoreCase)
     {
-        "hidden",
-        "rumored",
-        "revealed"
+        FactionVisibilityHidden,
+        FactionVisibilityRumored,
+        FactionVisibilityRevealed
+    };
+
+    public static readonly HashSet<string> WingsSupporterArchetypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        SupporterArchetypeDeceived,
+        SupporterArchetypeOathbound,
+        SupporterArchetypeFanatic,
+        SupporterArchetypeOpportunist
+    };
+
+    public static readonly HashSet<string> WingsAgentInteractionRoutes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "persuade",
+        "free",
+        "expose",
+        "blackmail",
+        "defeat"
+    };
+
+    public static readonly HashSet<string> WingsTraceStages = new(StringComparer.OrdinalIgnoreCase)
+    {
+        WingsTraceStageShadow,
+        WingsTraceStageName,
+        WingsTraceStageFaction
     };
 
     public static readonly HashSet<string> PersonalBondStates = new(StringComparer.OrdinalIgnoreCase)
@@ -211,7 +247,9 @@ internal static class SarefMainStoryState
             ["factionLinks"] = new JsonObject
             {
                 ["wingsFactionId"] = null,
-                ["visibility"] = "hidden"
+                ["visibility"] = FactionVisibilityHidden,
+                ["shadowTraces"] = new JsonArray(),
+                ["knownAgents"] = new JsonArray()
             },
             ["finalConfrontation"] = null,
             ["defeatOutcomes"] = new JsonArray(),
@@ -428,7 +466,7 @@ internal static class SarefMainStoryState
         {
             root["revealStage"] = RevealStageWingsRevealed;
             closure["status"] = WingsStatusRevealed;
-            EnsureFactionLinks(root)["visibility"] = "revealed";
+            EnsureFactionLinks(root)["visibility"] = FactionVisibilityRevealed;
         }
         else
         {
@@ -480,7 +518,30 @@ internal static class SarefMainStoryState
         var stage = GetNodeString(storyRoot["revealStage"]);
         var factionVisibility = GetNodeString(storyRoot["factionLinks"]?["visibility"]);
         return StageRank(stage) >= StageRank(RevealStageWingsRevealed) &&
-               string.Equals(factionVisibility, "revealed", StringComparison.OrdinalIgnoreCase);
+               string.Equals(factionVisibility, FactionVisibilityRevealed, StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static IEnumerable<JsonObject> GetPlayerVisibleShiningFactions(JsonObject? shiningRoot)
+    {
+        if (shiningRoot?["factions"] is not JsonArray factions)
+            yield break;
+
+        foreach (var faction in factions.OfType<JsonObject>())
+        {
+            if (!IsHiddenWingsFaction(faction))
+                yield return faction;
+        }
+    }
+
+    public static bool IsHiddenWingsFaction(JsonObject? faction)
+    {
+        if (faction == null)
+            return false;
+
+        var role = GetNodeString(faction["sarefFactionRole"]);
+        var visibility = GetNodeString(faction["sarefVisibility"]);
+        return string.Equals(role, WingsFactionRole, StringComparison.OrdinalIgnoreCase) &&
+               !string.Equals(visibility, FactionVisibilityRevealed, StringComparison.OrdinalIgnoreCase);
     }
 
     public static string? ValidateWingsInfiltrationRequestShape(JsonObject? request)
@@ -663,7 +724,9 @@ internal static class SarefMainStoryState
         factionLinks = new JsonObject
         {
             ["wingsFactionId"] = null,
-            ["visibility"] = "hidden"
+            ["visibility"] = FactionVisibilityHidden,
+            ["shadowTraces"] = new JsonArray(),
+            ["knownAgents"] = new JsonArray()
         };
         root["factionLinks"] = factionLinks;
         return factionLinks;

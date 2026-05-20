@@ -39,15 +39,15 @@
       "owner": "saref_main_story",
       "realm": "Chaos Sea|Shining Abode",
       "authority": "GM-authored hidden main-story state; absent legacy file is valid until the line is discovered",
-      "emptyWrapperSemantics": "Missing means legacy/no discovered Saref story state. If present, use canonical schemaVersion, revealStage, guardianQuestlines with questStates/questOrdinal 1..4, latentTraces, sarefRevelations, sarefAdvantages, sarefAdvantageUses, factionLinks, defeatOutcomes, endings, oath state, and personal bond.",
-      "malformedBehavior": "Fail closed with SarefMainStory validation issues; no-spoiler stages must not contain revealed Saref/Wings evidence, quest 4 unlocks require quests 1-3 completed, physical mortal item transfer is forbidden in proof, and Saref advantage uses must match known available/passive/spent advantages, applicableScenes, and spentAudit.",
+      "emptyWrapperSemantics": "Missing means legacy/no discovered Saref story state. If present, use canonical schemaVersion, revealStage, guardianQuestlines with questStates/questOrdinal 1..4, latentTraces, sarefRevelations, sarefAdvantages, sarefAdvantageUses, factionLinks.shadowTraces, factionLinks.knownAgents with supporterArchetype, defeatOutcomes, endings, oath state, and personal bond.",
+      "malformedBehavior": "Fail closed with SarefMainStory validation issues; no-spoiler stages must not contain revealed Saref/Wings evidence, quest 4 unlocks require quests 1-3 completed, physical mortal item transfer is forbidden in proof, Saref advantage uses must match known available/passive/spent advantages, applicableScenes, and spentAudit, and hidden Wings factions must use sarefFactionRole/sarefVisibility without appearing in normal faction UI before reveal.",
       "blockerBehavior": "Does not block ordinary afterlife play by existence; invalid current state blocks accepted-turn validation until repaired.",
       "closureSurface": "Canonical root game_state/meta/main_story_saref_state.json or sarefMainStoryUpdate for supported hidden-line transitions such as Wings search closure.",
       "docAnchors": [
         "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
         "Examples/E_CLI_Afterlife_Turns.txt#main_story_saref_state"
       ],
-      "notes": "Tracks Крылья над Бездной reveal stage, Guardian fragments, usable advantage state, advantage use audits, faction links, outcomes, endings, oath state, and personal bond."
+      "notes": "Tracks Крылья над Бездной reveal stage, Guardian fragments, usable advantage state, advantage use audits, shadowTraces, knownAgents/supporterArchetype, hidden/actionable Shining faction links, outcomes, endings, oath state, and personal bond."
     },
     {
       "path": "game_state/control/pending_saref_wings_infiltration.json",

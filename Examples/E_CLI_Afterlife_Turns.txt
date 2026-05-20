@@ -7339,6 +7339,7 @@ Scenario:
 - The player-facing action command `/сареф найти_крылья` / `/saref find_wings` creates client-owned `game_state/control/pending_saref_wings_infiltration.json` in ordinary active Shining Abode. Chaos Sea attempts are blocked with a player-facing explanation.
 - Missing file is valid legacy/no-discovery state.
 - If the file is present, it is not a loose GM note. It must use the canonical fields and pass reveal-stage validation.
+- Hidden Wings faction data lives under `factionLinks.shadowTraces[]` and `factionLinks.knownAgents[]`. Known agents use `supporterArchetype=deceived|oathbound|fanatic|opportunist`; important agents need `interactionRoutes[]`. A hidden Shining faction uses `sarefFactionRole=wings_of_angels` and `sarefVisibility=hidden|rumored` and is not shown in normal faction UI until `sarefVisibility=revealed`.
 
 Valid undiscovered root:
 
@@ -7354,7 +7355,9 @@ Valid undiscovered root:
   "wingsInfiltration": null,
   "factionLinks": {
     "wingsFactionId": null,
-    "visibility": "hidden"
+    "visibility": "hidden",
+    "shadowTraces": [],
+    "knownAgents": []
   },
   "finalConfrontation": null,
   "defeatOutcomes": [],
@@ -7521,7 +7524,34 @@ Valid route-unlocked fragment after enough Guardian questlines:
   "wingsInfiltration": null,
   "factionLinks": {
     "wingsFactionId": null,
-    "visibility": "rumored"
+    "visibility": "rumored",
+    "shadowTraces": [
+      {
+        "traceId": "white_dead_feather_001",
+        "stage": "shadow",
+        "summary": "Белое мертвое перо и вырезанное имя в памяти одной из жизней."
+      },
+      {
+        "traceId": "cut_oath_fragment_001",
+        "stage": "name",
+        "summary": "Фрагмент клятвы указывает, что за Крыльями стоит Сареф."
+      }
+    ],
+    "knownAgents": [
+      {
+        "agentId": "wing_agent_deceived_001",
+        "supporterArchetype": "deceived",
+        "interactionRoutes": [ "persuade", "expose" ],
+        "summary": "Агент верит, что Крылья спасут Обитель от слабости."
+      },
+      {
+        "agentId": "wing_agent_oathbound_001",
+        "supporterArchetype": "oathbound",
+        "importance": "important",
+        "interactionRoutes": [ "free", "defeat" ],
+        "summary": "Агент связан клятвой Сарефа и не может выйти сам."
+      }
+    ]
   },
   "finalConfrontation": null,
   "defeatOutcomes": [],
@@ -7544,6 +7574,8 @@ Correct reasoning checklist:
 - A mortal objective item is never transferred as a physical mortal item; store only memory, image, echo, knowledge trace, or soul resonance proof.
 - Do not use Mortal quest files, Mortal faction files, or ordinary lore notes as authority for this hidden mainline state.
 - Keep arrays unique by ids such as `revelationId`, `advantageId`, `outcomeId`, and `endingId`.
+- Hidden Wings agents must not all be one archetype. Use a mix of `deceived`, `oathbound`, `fanatic`, and `opportunist`, and give important agents at least one route: `persuade`, `free`, `expose`, `blackmail`, or `defeat`.
+- Before reveal, a materialized Shining faction with `sarefFactionRole=wings_of_angels` and `sarefVisibility=hidden|rumored` is hidden from normal faction UI and player-facing JSON audits. After reveal it must become `sarefVisibility=revealed` and `factionLinks.wingsFactionId` must point at that actionable `factions[]` entry.
 
 `/сареф найти_крылья` pending request shape:
 
@@ -7602,8 +7634,46 @@ GM closure for the pending Wings search:
     },
     "factionLinks": {
       "visibility": "revealed",
-      "wingsFactionId": "wings_of_angels"
+      "wingsFactionId": "wings_of_angels",
+      "knownAgents": [
+        {
+          "agentId": "wing_agent_deceived_001",
+          "supporterArchetype": "deceived",
+          "interactionRoutes": [ "persuade", "expose" ],
+          "summary": "Игрок может раскрыть агенту часть правды о Сарефе."
+        },
+        {
+          "agentId": "wing_agent_fanatic_001",
+          "supporterArchetype": "fanatic",
+          "interactionRoutes": [ "defeat" ],
+          "summary": "Фанатик остается препятствием, а не однотипным шаблоном для всех агентов."
+        }
+      ]
     }
+  }
+}
+```
+
+After `reveal_wings`, materialize or reveal the Shining faction actor:
+
+```json
+{
+  "shiningAbodeState": {
+    "factions": [
+      {
+        "factionId": "wings_of_angels",
+        "sarefFactionRole": "wings_of_angels",
+        "sarefVisibility": "revealed",
+        "charter": {
+          "factionName": "Крылья Ангелов",
+          "summary": "Тайная военизированная фракция Сарефа стала actionable actor Сияющей Обители."
+        },
+        "factionStrength": 95,
+        "factionLifecycle": {
+          "state": "active"
+        }
+      }
+    ]
   }
 }
 ```
