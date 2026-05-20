@@ -2666,6 +2666,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "путь");
     }
 
+    [Fact]
+    public void SarefLucianQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "lucian.md",
+            "Люциан",
+            "false_light_cut",
+            "Лунный Разрез Клятвы",
+            "клин",
+            "ложн");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,
