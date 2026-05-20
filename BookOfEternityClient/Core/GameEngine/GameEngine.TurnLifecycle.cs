@@ -2754,6 +2754,20 @@ Do NOT infer or generate Shining stock on the client.
 Answer each request by writing explicit faction.tradeInventory into shining_abode_state.json with matching tradeCycleId, generationTradeTier, generationRarityCeiling, serviceMultiplierSnapshot and a valid items array.
 Close each request canonically through faction.tradeInventoryReceipts[] with matching requestId, factionId, tradeCycleId, itemCount, soldOutCount, resolvedAtTurn and resolvedAtUtc.
 
+SHINING FACTION PENDING CONTRACTS — ORDINARY ACTIVE SHINING ABODE ONLY:
+If game_state/control/pending_shining_faction_foundings.json, pending_shining_faction_realignments.json, or pending_shining_faction_leadership_transitions.json exists, treat it as a client-authored Shining political contract.
+Resolve these only in ordinary active Shining Abode: currentRealm=Shining Abode, availability=active, and preparedIncarnationPackage null/absent.
+If any of these files appears in Chaos Sea, sealed Shining state, Shining pending-bootstrap handoff, or Shining package fault, preserve it as wrong-realm/mode repair-only context and do NOT use Mortal World factionDataChanges.
+Foundings close through canonical Shining faction state plus factionFoundingReceipts[] with exact quoted cost fields.
+Realignments close through canonical resident/faction alignment state plus factionRealignmentReceipts[] and required resident history when accepted/departed.
+Leadership transitions close through faction head state, leadership history, and leadershipReceipts[]; do not invent vacancy fills outside the explicit leadership contract.
+
+SOURCE OF LIGHT CAPSTONE — ORDINARY ACTIVE SHINING ABODE ONLY:
+If game_state/control/pending_source_of_light_capstone.json exists, treat it as a client-authored Source of Light capstone request, not a Shining core action.
+Resolve it only in ordinary active Shining Abode, after full Radiance, with no active spiritual conflict and no active/malformed overlapping afterlife pending/control contract.
+Close it by writing the Source of Light scene, setting shining_abode_state.json.sourceOfLightCapstone.completed, granting soul_state.afterlifeCombatProfile.capstones.lightIncarnate (light_incarnate / Воплощение Света), and adding exactly one stored Soul Relic source_of_light_incarnated_light / Воплощенный Свет.
+Do NOT write coreActionReceipts[] for Source of Light, do NOT equip the relic automatically, and do NOT clear the pending file unless the completed marker, passive, and stored relic tuple match the request.
+
 RIVAL SOUL ARCS — MORTAL WORLD ONLY:
 Use UpdateRivalSoulArcs to track parallel destiny lines for OTHER souls in the current mortal life.
 These arcs are milestone-based world pressures, not a full second-protagonist simulation.

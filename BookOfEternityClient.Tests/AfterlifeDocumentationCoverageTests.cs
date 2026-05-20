@@ -545,6 +545,37 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeLiveSystemReminderMentionsCriticalMatrixSurfaces()
+    {
+        var lifecyclePrompt = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.TurnLifecycle.cs");
+        var liveReminder = ExtractRequiredSection(
+            lifecyclePrompt,
+            "private string BuildSystemReminder()",
+            "\" + _storyService.BuildStoryContext();");
+
+        var requiredTokens = new[]
+        {
+            "afterlifeSpiritualConflictUpdate",
+            "afterlifeEntityProfileUpdates",
+            "afterlifeEntityCustomStateChanges",
+            "afterlifeEntityProgressionOverrides",
+            "afterlifeSpecialArtLearningReceipts",
+            "progressionProcessingReport",
+            "pending_shining_abode_actions.json",
+            "pending_shining_trade_inventory_requests.json",
+            "pending_shining_faction_foundings.json",
+            "pending_shining_faction_realignments.json",
+            "pending_shining_faction_leadership_transitions.json",
+            "pending_source_of_light_capstone.json",
+            "Source of Light",
+            "active spiritual conflict"
+        };
+
+        foreach (var token in requiredTokens)
+            Assert.Contains(token, liveReminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShiningLeadershipTransitionModesAndHistoryMappingsAreDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
