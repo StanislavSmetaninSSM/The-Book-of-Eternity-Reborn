@@ -46,6 +46,7 @@ public partial class ExplorerMode
         AppendSarefAdvantages(lines, root["sarefAdvantages"] as JsonArray);
         AppendSarefAdvantageUses(lines, root["sarefAdvantageUses"] as JsonArray);
         AppendSarefEndings(lines, root["endings"] as JsonArray);
+        AppendSarefPostStoryAgenda(lines, root["postStoryAgenda"] as JsonObject);
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -363,6 +364,51 @@ public partial class ExplorerMode
         lines.Add("");
     }
 
+    private static void AppendSarefPostStoryAgenda(List<string> lines, JsonObject? agenda)
+    {
+        if (agenda == null)
+            return;
+
+        var state = GetNodeString(agenda["state"]);
+        var objective = GetNodeString(agenda["currentObjective"]);
+        var summary = GetNodeString(agenda["agendaSummary"]);
+        lines.Add("[bold]Послесюжетная линия Сарефа[/]");
+        lines.Add($"  • Состояние: [white]{Markup.Escape(DescribeSarefPostStoryState(state))}[/]");
+        if (!string.IsNullOrWhiteSpace(objective))
+            lines.Add($"  • Текущая цель: [dim]{Markup.Escape(objective)}[/]");
+        if (!string.IsNullOrWhiteSpace(summary))
+            lines.Add($"    [dim]{Markup.Escape(summary)}[/]");
+
+        if (agenda["assignments"] is JsonArray { Count: > 0 } assignments)
+        {
+            lines.Add("  • Поручения Сарефа:");
+            foreach (var assignment in assignments.OfType<JsonObject>())
+            {
+                var assignmentId = GetNodeString(assignment["assignmentId"]) ?? "?";
+                var status = DescribeSarefAssignmentStatus(GetNodeString(assignment["status"]));
+                var target = GetNodeString(assignment["targetFactionId"]) ?? "?";
+                var campaignId = GetNodeString(assignment["campaignId"]) ?? "?";
+                var assignmentSummary = GetNodeString(assignment["summary"]) ?? GetNodeString(assignment["objective"]);
+                lines.Add($"    - [white]{Markup.Escape(assignmentId)}[/] — {Markup.Escape(status)}; цель: {Markup.Escape(target)}; кампания: {Markup.Escape(campaignId)}");
+                if (!string.IsNullOrWhiteSpace(assignmentSummary))
+                    lines.Add($"      [dim]{Markup.Escape(assignmentSummary)}[/]");
+            }
+        }
+
+        if (agenda["dominationScene"] is JsonObject dominationScene)
+        {
+            var sceneSummary = GetNodeString(dominationScene["summary"]);
+            var turn = GetNodeInt(dominationScene["resolvedAtTurn"]);
+            lines.Add("  • Финал власти Сарефа:");
+            if (!string.IsNullOrWhiteSpace(sceneSummary))
+                lines.Add($"    [red]{Markup.Escape(sceneSummary)}[/]");
+            if (turn > 0)
+                lines.Add($"    [dim]Ход {turn}[/]");
+        }
+
+        lines.Add("");
+    }
+
     private static void AppendSarefRewardBundle(List<string> lines, JsonObject rewards)
     {
         var rewardLines = new List<string>();
@@ -451,6 +497,24 @@ public partial class ExplorerMode
             "confrontation_available" => "доступна развязка с Сарефом",
             "completed" => "сюжетная линия завершена",
             _ => stage ?? "неизвестно"
+        };
+
+    private static string DescribeSarefPostStoryState(string? state) =>
+        state?.Trim().ToLowerInvariant() switch
+        {
+            "oathbound_to_saref" => "связан клятвой с Сарефом",
+            "domination_completed" => "власть Сарефа закреплена",
+            _ => state ?? "неизвестно"
+        };
+
+    private static string DescribeSarefAssignmentStatus(string? status) =>
+        status?.Trim().ToLowerInvariant() switch
+        {
+            "active" => "активно",
+            "completed" => "выполнено",
+            "failed" => "провалено",
+            "abandoned" => "оставлено",
+            _ => status ?? "неизвестно"
         };
 
     private static string DescribeSarefRevelationCategory(string? category) =>

@@ -1141,6 +1141,53 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     }
 
     [Fact]
+    public void ApplyUpdate_RecordFinalConfrontation_WithDealInitializesOathboundPostStoryAgenda()
+    {
+        var root = SarefMainStoryState.ApplyUpdate(
+            JsonNode.Parse(BuildSarefFinalConfrontationState("null"))!.AsObject(),
+            JsonNode.Parse("""
+            {
+              "mode": "record_final_confrontation",
+              "resolvedAtTurn": 130,
+              "finalConfrontation": {
+                "confrontationId": "saref_deal_final_001",
+                "status": "resolved",
+                "routeType": "deal",
+                "victoryTier": "deal",
+                "directScene": true,
+                "sceneType": "saref_negotiation",
+                "sarefOutcome": "allied",
+                "wingsFactionOutcome": "joined",
+                "summary": "Игрок принимает сделку Сарефа в прямой сцене."
+              },
+              "playerOathState": {
+                "state": "oathbound",
+                "oathId": "saref_oath_001",
+                "summary": "Клятва связывает игрока с Крыльями Ангелов."
+              },
+              "ending": {
+                "endingId": "saref_ending_deal_001",
+                "endingType": "deal",
+                "finalConfrontationId": "saref_deal_final_001",
+                "summary": "Сареф щедро награждает игрока и связывает клятвой.",
+                "rewardBundle": {
+                  "resourceReward": { "scale": "huge", "inkFeathers": 5000, "lightSparks": 250 },
+                  "wingsAccess": { "status": "joined", "accessLevel": "inner_circle" },
+                  "sarefArt": { "artId": "saref_false_light", "summary": "Особое искусство Сарефа." },
+                  "sarefPassive": { "passiveId": "saref_oathfire", "summary": "Пассивная метка Крыльев." },
+                  "oathCost": { "oathId": "saref_oath_001", "state": "oathbound", "summary": "Нельзя выйти из Крыльев без разрыва клятвы." }
+                }
+              }
+            }
+            """)!.AsObject());
+
+        var agenda = Assert.IsType<JsonObject>(root["postStoryAgenda"]);
+        Assert.Equal("oathbound_to_saref", SarefMainStoryState.GetNodeString(agenda["state"]));
+        Assert.Equal("saref_deal_final_001", SarefMainStoryState.GetNodeString(agenda["sourceFinalConfrontationId"]));
+        Assert.IsType<JsonArray>(agenda["assignments"]);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_DealEndingWithoutOathCost_ReportsIssue()
     {
         await _fs.WriteFileAtomicAsync(
@@ -1176,6 +1223,118 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "saref_main_story_ending_deal_missing_oath_cost", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_OathboundDealWithoutPostStoryAgenda_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: BuildSarefOathboundPayload()));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oathbound_agenda_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_OathboundDealWithEscapedOath_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: """
+                {
+                  "state": "escaped",
+                  "oathId": "saref_oath_001",
+                  "summary": "Игрок пытается выйти из Крыльев обычным добровольным действием."
+                }
+                """,
+                postStoryAgendaPayload: BuildSarefOathboundAgendaPayload()));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oathbound_left_without_oath_break", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_OathboundAssignmentWithoutFactionCampaign_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: BuildSarefOathboundPayload(),
+                postStoryAgendaPayload: BuildSarefOathboundAgendaPayload(assignmentsPayload: """
+                [
+                  {
+                    "assignmentId": "saref_assignment_silver_chorus_001",
+                    "status": "active",
+                    "targetFactionId": "silver_chorus",
+                    "campaignId": "missing_campaign",
+                    "objective": "Разрушить союз Серебряного Хора против Крыльев.",
+                    "summary": "Сареф требует начать давление на Серебряный Хор.",
+                    "createdAtTurn": 131
+                  }
+                ]
+                """)));
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningSarefAgendaState(includeCampaign: false));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oathbound_assignment_campaign_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_OathboundDominionWithoutScene_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: BuildSarefOathboundPayload(),
+                postStoryAgendaPayload: BuildSarefOathboundAgendaPayload(dominationScenePayload: "null")));
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningSarefAgendaState(rivalLifecycleState: "dissolved", includeCampaign: true, campaignStatus: "completed"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_oathbound_domination_scene_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_OathboundAgendaWithDirectiveCampaignAndDominationScene_PassesPostStoryValidation()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: BuildSarefDealEndingPayload(),
+                playerOathStatePayload: BuildSarefOathboundPayload(),
+                postStoryAgendaPayload: BuildSarefOathboundAgendaPayload(dominationScenePayload: """
+                {
+                  "sceneId": "saref_domination_scene_001",
+                  "status": "completed",
+                  "resolvedAtTurn": 170,
+                  "summary": "Больше не осталось никого, кто мог бы противостоять Сарефу."
+                }
+                """)));
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningSarefAgendaState(rivalLifecycleState: "dissolved", includeCampaign: true, campaignStatus: "completed"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("saref_main_story_oathbound_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
     [Fact]
@@ -1387,7 +1546,8 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "sarefAdvantageUses": [],
         """,
         string endingsPayload = "[]",
-        string playerOathStatePayload = "null") =>
+        string playerOathStatePayload = "null",
+        string postStoryAgendaPayload = "null") =>
         $$"""
         {
           "schemaVersion": 1,
@@ -1413,6 +1573,7 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "finalConfrontation": {{finalConfrontationPayload}},
           "defeatOutcomes": [],
           "endings": {{endingsPayload}},
+          "postStoryAgenda": {{postStoryAgendaPayload}},
           "playerOathState": {{playerOathStatePayload}},
           "sarefPersonalBond": null
         }
@@ -1430,6 +1591,60 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "sarefOutcome": "allied",
           "wingsFactionOutcome": "joined",
           "summary": "Игрок принимает сделку Сарефа в прямой сцене."
+        }
+        """;
+
+    private static string BuildSarefDealEndingPayload() => """
+        [
+          {
+            "endingId": "saref_ending_deal_001",
+            "endingType": "deal",
+            "finalConfrontationId": "saref_deal_final_001",
+            "resolvedAtTurn": 130,
+            "summary": "Сареф щедро награждает игрока и связывает клятвой.",
+            "rewardBundle": {
+              "resourceReward": { "scale": "huge", "inkFeathers": 5000, "lightSparks": 250 },
+              "wingsAccess": { "status": "joined", "accessLevel": "inner_circle" },
+              "sarefArt": { "artId": "saref_false_light", "summary": "Особое искусство Сарефа." },
+              "sarefPassive": { "passiveId": "saref_oathfire", "summary": "Пассивная метка Крыльев." },
+              "oathCost": { "oathId": "saref_oath_001", "state": "oathbound", "summary": "Нельзя выйти из Крыльев без разрыва клятвы." }
+            }
+          }
+        ]
+        """;
+
+    private static string BuildSarefOathboundPayload() => """
+        {
+          "state": "oathbound",
+          "oathId": "saref_oath_001",
+          "summary": "Клятва связывает игрока с Крыльями Ангелов."
+        }
+        """;
+
+    private static string BuildSarefOathboundAgendaPayload(
+        string assignmentsPayload = """
+        [
+          {
+            "assignmentId": "saref_assignment_silver_chorus_001",
+            "status": "active",
+            "targetFactionId": "silver_chorus",
+            "campaignId": "campaign_saref_silver_chorus_001",
+            "objective": "Разрушить союз Серебряного Хора против Крыльев.",
+            "summary": "Сареф требует начать давление на Серебряный Хор.",
+            "createdAtTurn": 131
+          }
+        ]
+        """,
+        string dominationScenePayload = "null") =>
+        $$"""
+        {
+          "state": "oathbound_to_saref",
+          "sourceFinalConfrontationId": "saref_deal_final_001",
+          "startedAtTurn": 130,
+          "currentObjective": "Выполнять поручения Сарефа против остальных фракций Сияющей Обители.",
+          "agendaSummary": "Сделка завершила главную линию, но Сареф продолжает вести игрока к власти Крыльев.",
+          "assignments": {{assignmentsPayload}},
+          "dominationScene": {{dominationScenePayload}}
         }
         """;
 
@@ -1502,6 +1717,70 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             ]
           }
         ]
+        """;
+
+    private static string BuildShiningSarefAgendaState(
+        string rivalLifecycleState = "active",
+        bool includeCampaign = true,
+        string campaignStatus = "active") =>
+        $$"""
+        {
+          "schemaVersion": 1,
+          "availability": "active",
+          "radiance": {
+            "experience": 0,
+            "tier": 0
+          },
+          "preparedIncarnationPackage": null,
+          "factions": [
+            {
+              "factionId": "wings_of_angels",
+              "sarefFactionRole": "wings_of_angels",
+              "sarefVisibility": "revealed",
+              "factionLifecycle": {
+                "state": "active"
+              }
+            },
+            {
+              "factionId": "silver_chorus",
+              "factionName": "Серебряный Хор",
+              "factionLifecycle": {
+                "state": "{{rivalLifecycleState}}",
+                "defeatedAtTurn": 160,
+                "defeatReason": "Директивы Сарефа разрушили власть фракции.",
+                "remnantsSummary": "Остались только разрозненные голоса."
+              },
+              "factionStrength": {{(rivalLifecycleState is "broken" or "dissolved" ? "0" : "40")}},
+              "leadership": {
+                "leadershipState": "{{(rivalLifecycleState is "broken" or "dissolved" or "leaderless" ? "vacant" : "stable")}}",
+                "headActorType": null,
+                "headActorId": null
+              }
+            }
+          ],
+          "factionConflictCampaigns": {{(includeCampaign ? $$"""
+          [
+            {
+              "campaignId": "campaign_saref_silver_chorus_001",
+              "targetFactionId": "silver_chorus",
+              "goal": "dissolve",
+              "status": "{{campaignStatus}}",
+              "startedAtTurn": 131,
+              "completedAtTurn": 160,
+              "playerIntent": "Выполнить приказ Сарефа.",
+              "summary": "Кампания Крыльев против Серебряного Хора.",
+              "breakthroughLog": [
+                {
+                  "breakthroughId": "saref_directive_breakthrough_001",
+                  "type": "saref_directive",
+                  "resolvedAtTurn": 150,
+                  "summary": "Директива Сарефа открыла путь к распаду фракции."
+                }
+              ]
+            }
+          ]
+          """ : "[]")}}
+        }
         """;
 
     private static string BuildShiningWingsFactionState(string lifecycleState) =>

@@ -7947,12 +7947,31 @@ Valid direct deal ending:
         "sarefPassive": { "passiveId": "saref_oathfire", "summary": "Пассив Крыльев усиливает игрока, пока клятва не разорвана." },
         "oathCost": { "oathId": "saref_oath_206", "state": "oathbound", "summary": "Цена сделки: игрок с Сарефом до конца, пока клятва не разрушена отдельной аркой." }
       }
+    },
+    "postStoryAgenda": {
+      "state": "oathbound_to_saref",
+      "sourceFinalConfrontationId": "saref_deal_final_206",
+      "startedAtTurn": 206,
+      "currentObjective": "Выполнять поручения Сарефа против остальных фракций Сияющей Обители.",
+      "agendaSummary": "Главная линия завершена сделкой, но игра продолжается: Сареф ведет игрока к власти Крыльев Ангелов.",
+      "assignments": [
+        {
+          "assignmentId": "saref_assignment_silver_chorus_207",
+          "status": "active",
+          "targetFactionId": "silver_chorus",
+          "campaignId": "campaign_saref_silver_chorus_207",
+          "objective": "Разрушить союз Серебряного Хора против Крыльев.",
+          "summary": "Сареф требует начать фракционную кампанию против Серебряного Хора.",
+          "createdAtTurn": 207
+        }
+      ],
+      "dominationScene": null
     }
   }
 }
 ```
 
-In the same accepted state, the linked `game_state/meta/shining_abode_state.json.factions[]` entry for `wings_of_angels` must carry matching `sarefFactionRole=wings_of_angels`, `sarefVisibility=revealed`, and `factionLifecycle.state=dissolved` with defeated-turn/remnants fields. Do not use an unsupported top-level `shiningAbodeState` response field; write through the canonical Shining state surface already used by accepted Shining faction updates.
+Deal aftermath rule: `postStoryAgenda.state=oathbound_to_saref` means the main quest ended, but the player is not game-over. The GM must keep Сареф's agenda visible, push assignments through Shining `factionConflictCampaigns[]` against non-Wings factions, and use `breakthroughLog[].type=saref_directive` when a direct order creates campaign progress. Later agenda-only changes use `sarefMainStoryUpdate.mode=record_oathbound_agenda`. The player cannot leave Крылья Ангелов by ordinary voluntary action while the oath is active; a separate oath-break arc is required. If all significant non-Wings factions become `broken` or `dissolved`, record `postStoryAgenda.dominationScene.status=completed`, `resolvedAtTurn`, and the final scene summary. For victory endings where `wingsFactionOutcome=broken|dissolved`, the linked `game_state/meta/shining_abode_state.json.factions[]` entry for `wings_of_angels` must carry matching `sarefFactionRole=wings_of_angels`, `sarefVisibility=revealed`, and `factionLifecycle.state`. Do not use an unsupported top-level `shiningAbodeState` response field; write through the canonical Shining state surface already used by accepted Shining faction updates.
 
 Final route proof reference:
 - `combat` requires `conflictId`.
