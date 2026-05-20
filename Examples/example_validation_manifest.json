@@ -56,6 +56,13 @@
       "statePath": "game_state/meta/shining_abode_state.json",
       "responseSurface": "factions[].factionLifecycle",
       "description": "Shining faction active/weakened/leaderless/broken/dissolved lifecycle, defeated remnants, and no-deletion historical references."
+    },
+    {
+      "contractId": "shining_faction_conflict_campaigns_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/shining_abode_state.json",
+      "responseSurface": "factionConflictCampaigns[]",
+      "description": "Player-driven Shining faction campaigns with goals, statuses, breakthroughLog[] proof, and lifecycle-linked completion."
     }
   ],
   "syntaxExemptions": [

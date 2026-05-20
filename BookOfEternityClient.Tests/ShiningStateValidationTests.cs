@@ -646,6 +646,121 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
+    public void ValidateShiningAbodeStateFile_InvalidFactionConflictCampaign_RaisesExplicitErrors()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        var faction = CreateFaction("faction_target", CreateSecureLeadership("guardian_a"));
+        root["factions"] = new JsonArray(faction);
+        root["factionConflictCampaigns"] = new JsonArray(
+            new JsonObject
+            {
+                ["campaignId"] = "campaign_invalid",
+                ["targetFactionId"] = "faction_missing",
+                ["goal"] = "conquer",
+                ["status"] = "winning",
+                ["startedAtTurn"] = 45,
+                ["summary"] = "Игрок пытается вести невозможную кампанию.",
+                ["breakthroughLog"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["breakthroughId"] = "breakthrough_invalid",
+                        ["type"] = "gossip",
+                        ["resolvedAtTurn"] = 46,
+                        ["summary"] = "Недопустимый прорыв."
+                    })
+            });
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_campaign_invalid_goal", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_campaign_invalid_status", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_campaign_unknown_target", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_campaign_invalid_breakthrough_type", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_CompletedBreakCampaignWithoutBrokenFaction_RaisesExplicitError()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        var faction = CreateFaction("faction_target", CreateSecureLeadership("guardian_a"));
+        faction["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = ShiningAbodeState.FactionLifecycleStateActive
+        };
+        root["factions"] = new JsonArray(faction);
+        root["factionConflictCampaigns"] = new JsonArray(
+            new JsonObject
+            {
+                ["campaignId"] = "campaign_break_target",
+                ["targetFactionId"] = "faction_target",
+                ["goal"] = "break",
+                ["status"] = "completed",
+                ["startedAtTurn"] = 45,
+                ["summary"] = "Игрок разгромил политическую основу фракции.",
+                ["breakthroughLog"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["breakthroughId"] = "breakthrough_duel",
+                        ["type"] = "duel_victory",
+                        ["resolvedAtTurn"] = 46,
+                        ["summary"] = "Дуэль вынудила сторонников отступить."
+                    })
+            });
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "missing_required_positive_integer_field", StringComparison.OrdinalIgnoreCase) &&
+                                         issue.FilePath.EndsWith(".completedAtTurn", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_campaign_lifecycle_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_CompletedDissolveCampaignWithDissolvedFaction_Passes()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        var faction = CreateFaction("faction_target", CreateSecureLeadership("guardian_a"));
+        faction["factionStrength"] = 0;
+        faction["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = ShiningAbodeState.FactionLifecycleStateDissolved,
+            ["defeatedAtTurn"] = 47,
+            ["defeatedAtUtc"] = "2026-05-20T00:00:00Z",
+            ["defeatReason"] = "Фракция распущена после долгой кампании игрока.",
+            ["remnantsSummary"] = "Остались только отдельные бывшие сторонники."
+        };
+        faction["leadership"] = new JsonObject
+        {
+            ["leadershipState"] = ShiningAbodeState.LeadershipStateVacant,
+            ["headActorType"] = null,
+            ["headActorId"] = null
+        };
+        root["factions"] = new JsonArray(faction);
+        root["factionConflictCampaigns"] = new JsonArray(
+            new JsonObject
+            {
+                ["campaignId"] = "campaign_dissolve_target",
+                ["targetFactionId"] = "faction_target",
+                ["goal"] = "dissolve",
+                ["status"] = "completed",
+                ["startedAtTurn"] = 45,
+                ["completedAtTurn"] = 47,
+                ["summary"] = "Игрок довёл кампанию до полного роспуска.",
+                ["breakthroughLog"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["breakthroughId"] = "breakthrough_trial",
+                        ["type"] = "trial",
+                        ["resolvedAtTurn"] = 47,
+                        ["summary"] = "Суд Обители закрепил роспуск."
+                    })
+            });
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.DoesNotContain(issues, issue => issue.Code != null && issue.Code.StartsWith("shining_faction_campaign_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateShiningAbodeStateFile_EmptyGachaCycleWithUsedCharges_RaisesExplicitError()
     {
         var root = CreateMinimalShiningStateForBlessingCardValidation();

@@ -114,6 +114,10 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         Assert.Contains("Pending-модель не глобальная", source, StringComparison.Ordinal);
         Assert.Contains("foreign pending realignment для того же residentId", source, StringComparison.Ordinal);
         Assert.Contains("foreign pending leadership для той же factionId", source, StringComparison.Ordinal);
+        Assert.Contains("Кампаний против фракций", source, StringComparison.Ordinal);
+        Assert.Contains("Начать кампанию против фракции", source, StringComparison.Ordinal);
+        Assert.Contains("factionConflictCampaigns", source, StringComparison.Ordinal);
+        Assert.Contains("duel_victory", source, StringComparison.Ordinal);
         Assert.Contains("requestId=", source, StringComparison.Ordinal);
         Assert.Contains("hallId=", source, StringComparison.Ordinal);
         Assert.Contains("factionId=", source, StringComparison.Ordinal);

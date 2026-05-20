@@ -10,6 +10,87 @@ public partial class ExplorerMode
 {
     private sealed record ShiningActorChoice(string Label, string ActorType, string ActorId);
 
+    private async Task HandleShiningFactionCampaignStartAsync(ShiningContext context)
+    {
+        if (!EnsureActiveShiningAbodeAvailable("Политика Сияющей Обители"))
+            return;
+        if (!EnsureNoActiveAfterlifeLocalMutationTurn(
+                "кампания против сияющей фракции",
+                ShiningAbodeState.StatePath))
+            return;
+
+        var faction = PromptForFaction(context.Root, "Целевая фракция кампании");
+        if (faction == null)
+            return;
+
+        if (ShiningAbodeState.IsFactionDefeated(faction))
+        {
+            MarkupLine("[yellow]Эта фракция уже разгромлена или распущена. Новая кампания против неё не нужна.[/]");
+            WaitForKey();
+            return;
+        }
+
+        var goalChoices = new[]
+        {
+            (Value: ShiningAbodeState.FactionCampaignGoalWeaken, Label: DescribeShiningFactionCampaignGoal(ShiningAbodeState.FactionCampaignGoalWeaken)),
+            (Value: ShiningAbodeState.FactionCampaignGoalExpose, Label: DescribeShiningFactionCampaignGoal(ShiningAbodeState.FactionCampaignGoalExpose)),
+            (Value: ShiningAbodeState.FactionCampaignGoalDeposeLeader, Label: DescribeShiningFactionCampaignGoal(ShiningAbodeState.FactionCampaignGoalDeposeLeader)),
+            (Value: ShiningAbodeState.FactionCampaignGoalBreak, Label: DescribeShiningFactionCampaignGoal(ShiningAbodeState.FactionCampaignGoalBreak)),
+            (Value: ShiningAbodeState.FactionCampaignGoalDissolve, Label: DescribeShiningFactionCampaignGoal(ShiningAbodeState.FactionCampaignGoalDissolve))
+        };
+        var selectedGoalLabel = Prompt(new SelectionPrompt<string>()
+            .Title("[bold yellow]Цель долгой кампании против фракции[/]")
+            .HighlightStyle(new Style(Color.Orange1))
+            .AddChoices(goalChoices.Select(choice => choice.Label)));
+        var selectedGoal = goalChoices.First(choice => choice.Label == selectedGoalLabel).Value;
+
+        var playerIntent = PromptLargeTextBlock(
+            "Как игрок хочет давить на фракцию",
+            "Опишите художественный план: союзники, интриги, дуэли, разоблачение, саботаж или другой путь.");
+        if (string.IsNullOrWhiteSpace(playerIntent))
+            return;
+
+        var factionId = GetNodeString(faction["factionId"]) ?? string.Empty;
+        var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
+        var campaigns = ShiningAbodeState.EnsureFactionConflictCampaignsArray(context.Root);
+        var hasLiveDuplicate = campaigns.OfType<JsonObject>().Any(campaign =>
+            string.Equals(GetNodeString(campaign["targetFactionId"]), factionId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(GetNodeString(campaign["goal"]), selectedGoal, StringComparison.OrdinalIgnoreCase) &&
+            (string.Equals(GetNodeString(campaign["status"]), ShiningAbodeState.FactionCampaignStatusActive, StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(GetNodeString(campaign["status"]), ShiningAbodeState.FactionCampaignStatusBreakthroughReady, StringComparison.OrdinalIgnoreCase)));
+        if (hasLiveDuplicate)
+        {
+            MarkupLine("[yellow]Против этой фракции уже есть живая кампания с такой целью.[/]");
+            WaitForKey();
+            return;
+        }
+
+        var campaignId = $"shining_faction_campaign_{Slugify(factionId)}_{selectedGoal}_{Guid.NewGuid():N}".ToLowerInvariant();
+        var startedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1);
+        var campaign = new JsonObject
+        {
+            ["campaignId"] = campaignId,
+            ["targetFactionId"] = factionId,
+            ["targetFactionName"] = factionName,
+            ["goal"] = selectedGoal,
+            ["status"] = ShiningAbodeState.FactionCampaignStatusActive,
+            ["startedAtTurn"] = startedAtTurn,
+            ["startedAtUtc"] = DateTime.UtcNow.ToString("o"),
+            ["summary"] = $"Игрок начал долгую кампанию против фракции «{factionName}».",
+            ["playerIntent"] = playerIntent.Trim(),
+            ["breakthroughLog"] = new JsonArray()
+        };
+
+        campaigns.Add(campaign);
+        ShiningAbodeState.NormalizeStateRoot(context.Root, context.ResidentRoot, context.GuardiansRoot);
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        MarkupLine($"[green]Кампания против фракции «{Markup.Escape(factionName)}» создана. ГМ должен развивать её через `factionConflictCampaigns[].breakthroughLog[]`.[/]");
+        MarkupLine("[dim]Поддержанные типы прорывов: exposure, duel_victory, defection, sabotage, resource_disruption, oath_break, trial, saref_directive.[/]");
+        WriteJsonAuditPanel("Полный JSON новой кампании против фракции", campaign, Color.Orange1);
+        WaitForKey();
+    }
+
     private async Task HandleShiningFoundingRequestAsync(ShiningContext context)
     {
         if (!EnsureActiveShiningAbodeAvailable("Политика Сияющей Обители"))

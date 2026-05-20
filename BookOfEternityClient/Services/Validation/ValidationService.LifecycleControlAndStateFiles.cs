@@ -321,7 +321,7 @@ public partial class ValidationService
         await ValidateFlexibleStateFile(ShiningAbodeState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors",
+                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 SourceOfLightCapstoneState.ShiningStateProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts"
@@ -329,7 +329,7 @@ public partial class ValidationService
         await ValidateStrictTopLevelObjectFileAsync(ShiningAbodeState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors",
+                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 SourceOfLightCapstoneState.ShiningStateProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts"

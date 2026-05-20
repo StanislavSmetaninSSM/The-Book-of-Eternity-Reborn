@@ -273,6 +273,9 @@ public partial class ExplorerMode
             var feathers = await ReadInkFeathersBalance();
             var lightSparks = GetNodeInt(context?.Root["lightSparks"]);
             var ascendedResidentCount = CountAscendedShiningResidents(context?.ResidentRoot);
+            var factionCampaigns = (context?.Root[ShiningAbodeState.FactionConflictCampaignsProperty] as JsonArray)?
+                .OfType<JsonObject>()
+                .ToList() ?? new List<JsonObject>();
             var foundingPreconditionsMet = feathers >= ShiningFactionRequestState.FactionFoundingCostFeathers &&
                                            lightSparks >= ShiningFactionRequestState.FactionFoundingCostLightSparks &&
                                            ascendedResidentCount >= 3;
@@ -284,7 +287,8 @@ public partial class ExplorerMode
                 "[bold]Политическое давление:[/]",
                 $"  • Оснований фракций в ожидании: [white]{foundingRequests.Count}[/]",
                 $"  • Переходов между фракциями в ожидании: [white]{realignmentRequests.Count}[/]",
-                $"  • Смен власти в ожидании: [white]{leadershipRequests.Count}[/]"
+                $"  • Смен власти в ожидании: [white]{leadershipRequests.Count}[/]",
+                $"  • Кампаний против фракций: [white]{factionCampaigns.Count}[/]"
             };
 
             lines.Add("");
@@ -292,6 +296,7 @@ public partial class ExplorerMode
             lines.Add($"  • Основание фракции: cost {ShiningFactionRequestState.FactionFoundingCostFeathers} Чернильных Перьев / {ShiningFactionRequestState.FactionFoundingCostLightSparks} Искр Света; баланс {feathers}/{lightSparks}; минимум 3 ascended supporters из {ascendedResidentCount}; {(foundingPreconditionsMet ? "базовые условия выполнены" : "не хватает ресурсов или ascended supporters")}. Pending-модель не является глобальным mutex: запись блокируют malformed founding file, founding с тем же proposedFactionId/proposedHallId или supporters, занятые другим Shining/ordinary flow.");
             lines.Add("  • Перестройка резидента: требует вознесённого резидента с factionRealignmentState=ready_to_realign (колеблющийся тир сам по себе не открывает переход) и machine-readable target/source faction. Pending-модель не глобальная: блокируют foreign pending realignment для того же residentId, ordinary transfer или другой Shining flow этого резидента.");
             lines.Add("  • Смена власти: требует существующую faction, валидного incumbent и допустимого кандидата на главу. Pending-модель не глобальная: блокируют foreign pending leadership для той же factionId и supporter/candidate locks; pending других фракций сам по себе не запрещает проверку.");
+            lines.Add("  • Кампания против фракции: создаёт запись `factionConflictCampaigns[]` с целью `weaken`/`expose`/`depose_leader`/`break`/`dissolve`. ГМ ведёт прогресс через `breakthroughLog[]`; духовный бой может дать `duel_victory`, но также допустимы `exposure`, `defection`, `sabotage`, `resource_disruption`, `oath_break`, `trial` и `saref_directive`.");
 
             var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context?.Root).ToList();
             if (visibleFactions.Count > 0 && context != null)
@@ -308,6 +313,26 @@ public partial class ExplorerMode
                     var headActorId = GetNodeString(faction["leadership"]?["headActorId"]) ?? "vacant";
                     var memberCount = CountResidentsInFaction(context.ResidentRoot, factionId);
                     lines.Add($"  • {Markup.Escape(factionName)} — зал {Markup.Escape(hallName)}, глава {Markup.Escape(BuildHeadActorLabel(headActorType, headActorId, context.ResidentRoot, context.GuardiansRoot, context.Root))}, участников {memberCount}, состояние {Markup.Escape(state)}");
+                }
+            }
+
+            if (factionCampaigns.Count > 0 && context != null)
+            {
+                lines.Add("");
+                lines.Add("[bold]Кампании против фракций:[/] [dim](долгие кампании игрока; ГМ продвигает их через `breakthroughLog[]`)[/]");
+                foreach (var campaign in factionCampaigns
+                             .OrderByDescending(item => GetNodeInt(item["startedAtTurn"]))
+                             .ThenBy(item => GetNodeString(item["campaignId"]), StringComparer.OrdinalIgnoreCase))
+                {
+                    var targetFactionId = GetNodeString(campaign["targetFactionId"]) ?? string.Empty;
+                    var targetLabel = ResolveShiningFactionLabel(context.Root, targetFactionId);
+                    var goal = DescribeShiningFactionCampaignGoal(GetNodeString(campaign["goal"]));
+                    var status = DescribeShiningFactionCampaignStatus(GetNodeString(campaign["status"]));
+                    var breakthroughCount = (campaign["breakthroughLog"] as JsonArray)?.Count ?? 0;
+                    lines.Add($"  • {Markup.Escape(targetLabel)} — цель {Markup.Escape(goal)}, статус {Markup.Escape(status)}, прорывов {breakthroughCount}, campaignId={Markup.Escape(GetNodeString(campaign["campaignId"]) ?? "?")}");
+                    var summary = GetNodeString(campaign["summary"]);
+                    if (!string.IsNullOrWhiteSpace(summary))
+                        lines.Add($"    Сводка: [dim]{Markup.Escape(summary!)}[/]");
                 }
             }
 
@@ -390,6 +415,8 @@ public partial class ExplorerMode
                 choices.Add("🏗 Создать запрос на основание фракции");
                 choices.Add("⇄ Создать запрос на переход между фракциями");
                 choices.Add("👑 Создать запрос на смену власти");
+                if (visibleFactions.Count > 0)
+                    choices.Add("⚔ Начать кампанию против фракции");
             }
 
             if (visibleFactions.Count > 0 && context != null)
@@ -445,6 +472,8 @@ public partial class ExplorerMode
                 await HandleShiningRealignmentRequestAsync(context);
             else if (choice.Contains("власти", StringComparison.OrdinalIgnoreCase))
                 await HandleShiningLeadershipTransitionRequestAsync(context);
+            else if (choice.Contains("кампанию против фракции", StringComparison.OrdinalIgnoreCase))
+                await HandleShiningFactionCampaignStartAsync(context);
         }
     }
 
@@ -971,6 +1000,40 @@ public partial class ExplorerMode
         };
         if (!string.IsNullOrWhiteSpace(charterSummary))
             lines.Add($"  • Устав: [dim]{Markup.Escape(charterSummary!)}[/]");
+
+        var campaigns = (context.Root[ShiningAbodeState.FactionConflictCampaignsProperty] as JsonArray)?
+            .OfType<JsonObject>()
+            .Where(campaign => string.Equals(GetNodeString(campaign["targetFactionId"]), factionId, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(campaign => GetNodeInt(campaign["startedAtTurn"]))
+            .ThenBy(campaign => GetNodeString(campaign["campaignId"]), StringComparer.OrdinalIgnoreCase)
+            .ToList() ?? new List<JsonObject>();
+        lines.Add("");
+        lines.Add("[bold]Кампании против этой фракции:[/]");
+        if (campaigns.Count == 0)
+        {
+            lines.Add("  • Нет активных или исторических кампаний.");
+        }
+        else
+        {
+            foreach (var campaign in campaigns)
+            {
+                lines.Add($"  • {Markup.Escape(GetNodeString(campaign["campaignId"]) ?? "?")} — {Markup.Escape(DescribeShiningFactionCampaignGoal(GetNodeString(campaign["goal"])))} / {Markup.Escape(DescribeShiningFactionCampaignStatus(GetNodeString(campaign["status"])))}");
+                if (!string.IsNullOrWhiteSpace(GetNodeString(campaign["summary"])))
+                    lines.Add($"    Сводка: [dim]{Markup.Escape(GetNodeString(campaign["summary"])!)}[/]");
+                if (!string.IsNullOrWhiteSpace(GetNodeString(campaign["playerIntent"])))
+                    lines.Add($"    Намерение игрока: [dim]{Markup.Escape(GetNodeString(campaign["playerIntent"])!)}[/]");
+                if (campaign["breakthroughLog"] is JsonArray breakthroughs && breakthroughs.Count > 0)
+                {
+                    lines.Add("    Прорывы:");
+                    foreach (var breakthrough in breakthroughs.OfType<JsonObject>())
+                    {
+                        var type = DescribeShiningFactionCampaignBreakthrough(GetNodeString(breakthrough["type"]));
+                        var summary = GetNodeString(breakthrough["summary"]) ?? "без сводки";
+                        lines.Add($"      - {Markup.Escape(type)}: {Markup.Escape(summary)}");
+                    }
+                }
+            }
+        }
 
         var residents = (context.ResidentRoot?["entries"] as JsonArray)?.OfType<JsonObject>()
             .Where(entry =>
@@ -2399,6 +2462,42 @@ public partial class ExplorerMode
             "contested" => "власть оспаривается",
             "vacant" => "место главы вакантно",
             _ => state ?? "?"
+        };
+
+    private static string DescribeShiningFactionCampaignGoal(string? goal) =>
+        (goal ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            ShiningAbodeState.FactionCampaignGoalWeaken => "ослабить фракцию",
+            ShiningAbodeState.FactionCampaignGoalExpose => "разоблачить фракцию",
+            ShiningAbodeState.FactionCampaignGoalDeposeLeader => "сместить главу",
+            ShiningAbodeState.FactionCampaignGoalBreak => "разгромить фракцию",
+            ShiningAbodeState.FactionCampaignGoalDissolve => "распустить фракцию",
+            _ => string.IsNullOrWhiteSpace(goal) ? "не задано" : HumanizeProtocolToken(goal)
+        };
+
+    private static string DescribeShiningFactionCampaignStatus(string? status) =>
+        (status ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            ShiningAbodeState.FactionCampaignStatusActive => "идёт",
+            ShiningAbodeState.FactionCampaignStatusBreakthroughReady => "прорыв готов к закреплению",
+            ShiningAbodeState.FactionCampaignStatusCompleted => "завершена",
+            ShiningAbodeState.FactionCampaignStatusFailed => "провалена",
+            ShiningAbodeState.FactionCampaignStatusAbandoned => "оставлена",
+            _ => string.IsNullOrWhiteSpace(status) ? "не задан" : HumanizeProtocolToken(status)
+        };
+
+    private static string DescribeShiningFactionCampaignBreakthrough(string? type) =>
+        (type ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            ShiningAbodeState.FactionCampaignBreakthroughExposure => "разоблачение",
+            ShiningAbodeState.FactionCampaignBreakthroughDuelVictory => "победа в духовном бою",
+            ShiningAbodeState.FactionCampaignBreakthroughDefection => "переход сторонника",
+            ShiningAbodeState.FactionCampaignBreakthroughSabotage => "саботаж",
+            ShiningAbodeState.FactionCampaignBreakthroughResourceDisruption => "срыв ресурсов",
+            ShiningAbodeState.FactionCampaignBreakthroughOathBreak => "разрыв клятвы",
+            ShiningAbodeState.FactionCampaignBreakthroughTrial => "суд Обители",
+            ShiningAbodeState.FactionCampaignBreakthroughSarefDirective => "директива Сарефа",
+            _ => string.IsNullOrWhiteSpace(type) ? "не задан" : HumanizeProtocolToken(type)
         };
 
     private static string DescribeShiningFactionLifecycle(string? state) =>

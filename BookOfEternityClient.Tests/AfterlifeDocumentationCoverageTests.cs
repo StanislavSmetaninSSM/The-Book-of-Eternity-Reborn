@@ -1881,6 +1881,43 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningFactionConflictCampaignContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var docs = new[] { matrix, examples, apiSpec, daemonSpec, taskGuide, operations };
+
+        foreach (var doc in docs)
+        {
+            Assert.Contains(ShiningAbodeState.FactionConflictCampaignsProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignGoalWeaken, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignGoalExpose, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignGoalDeposeLeader, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignGoalBreak, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignGoalDissolve, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignStatusBreakthroughReady, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughDuelVictory, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughExposure, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughDefection, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughSabotage, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughResourceDisruption, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughOathBreak, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughTrial, doc, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughSarefDirective, doc, StringComparison.Ordinal);
+            Assert.Contains("factionDataChanges", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("shining_faction_conflict_campaigns_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("factionConflictCampaigns[]", manifest, StringComparison.Ordinal);
+        Assert.Contains("breakthroughLog", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeEnumContractsAreDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
