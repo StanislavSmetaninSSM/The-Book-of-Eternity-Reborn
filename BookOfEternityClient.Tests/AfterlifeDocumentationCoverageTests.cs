@@ -2538,6 +2538,38 @@ public sealed class AfterlifeDocumentationCoverageTests
         }
     }
 
+    [Fact]
+    public void SarefCharacterBibleCoversRequiredRoleplayContract()
+    {
+        var bible = ReadRepoFile("OtherGuides", "Saref_Character_Bible.md");
+
+        foreach (var requiredText in new[]
+                 {
+                     "Крылья над Бездной",
+                     "Крылья Ангелов",
+                     "Сияющая Обитель",
+                     "Море Хаоса",
+                     "мужской облик",
+                     "женский облик",
+                     "публичная ложь",
+                     "истинная цель",
+                     "не карикатурный злодей",
+                     "не навязывает романтику",
+                     "не спойлерит Сарефа",
+                     "сделка",
+                     "конфликт",
+                     "романтика",
+                     "поражение",
+                     "победа",
+                     "стирание памяти",
+                     "клятва",
+                     "боевое поведение"
+                 })
+        {
+            Assert.Contains(requiredText, bible, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     private static string[] ShiningConstantValues(params string[] prefixes) =>
         typeof(ShiningAbodeState)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
