@@ -137,11 +137,29 @@ internal static class AfterlifeEntityProfileState
             if (!string.Equals(BuildIdentityKey(existing), identityKey, StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            profiles[index] = CloneObject(profile);
+            var replacement = CloneObject(profile);
+            PreserveProgressionSettlement(existing, replacement);
+            profiles[index] = replacement;
             return;
         }
 
         profiles.Add(CloneObject(profile));
+    }
+
+    private static void PreserveProgressionSettlement(JsonObject existing, JsonObject replacement)
+    {
+        if (replacement["progressionStrategy"] is not JsonObject replacementStrategy ||
+            existing["progressionStrategy"] is not JsonObject existingStrategy)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(GetNodeString(replacementStrategy["lastAutoProgressionCycleKey"])))
+            return;
+
+        var previousCycleKey = GetNodeString(existingStrategy["lastAutoProgressionCycleKey"]);
+        if (!string.IsNullOrWhiteSpace(previousCycleKey))
+            replacementStrategy["lastAutoProgressionCycleKey"] = previousCycleKey;
     }
 
     public static string? BuildIdentityKey(JsonObject? profile)

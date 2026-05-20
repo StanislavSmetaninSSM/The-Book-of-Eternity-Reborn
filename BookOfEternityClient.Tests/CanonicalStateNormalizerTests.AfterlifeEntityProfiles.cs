@@ -599,6 +599,119 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_DoesNotReapplySettledCycleAfterStrategyRefresh()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            ProgressionScheduleService.ReportPath,
+            """
+            {
+              "progressionProcessingReport": {
+                "sessionId": "session_refresh",
+                "requestId": "request_refresh",
+                "turnNumber": 40,
+                "chaosSeaCyclesProcessed": 1,
+                "newLastChaosSeaSimulationOrdinal": 40
+              }
+            }
+            """);
+        await CorrelateAfterlifeProgressionReportWithTurnRequestAsync();
+
+        var backupPath = "game_state/control/test_backups/afterlife_entity_profiles.refresh.previous.json";
+        await _fs.WriteFileAtomicAsync(
+            backupPath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_refresh",
+                  "displayName": "Хранитель Обновления",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 2, "lightSparks": 0 },
+                  "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+                  "standardArts": { "guard": 1, "pressure": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_refresh",
+                    "summary": "Сначала защита.",
+                    "priorityOrder": ["guard"],
+                    "lastAutoProgressionCycleKey": "chaos:40"
+                  },
+                  "progressionLedger": [
+                    {
+                      "entryId": "entity_progression_auto_guardian_guardian_refresh_chaos_40",
+                      "cycleKey": "chaos:40",
+                      "source": "client_auto_strategy",
+                      "summary": "Автопрокачка по стратегии применила доход и один приоритетный апгрейд.",
+                      "income": { "inkFeathers": 12, "lightSparks": 0 },
+                      "spending": { "inkFeathers": 10, "lightSparks": 0 },
+                      "upgrades": ["guard:0->1"]
+                    }
+                  ],
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "afterlifeEntityProfileUpdates": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_refresh",
+                  "displayName": "Хранитель Обновления",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 2, "lightSparks": 0 },
+                  "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
+                  "standardArts": { "guard": 1, "pressure": 0 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 0,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_refresh",
+                    "summary": "Теперь сначала давление.",
+                    "priorityOrder": ["pressure"]
+                  },
+                  "progressionLedger": [
+                    {
+                      "entryId": "entity_progression_auto_guardian_guardian_refresh_chaos_40",
+                      "cycleKey": "chaos:40",
+                      "source": "client_auto_strategy",
+                      "summary": "Автопрокачка по стратегии применила доход и один приоритетный апгрейд.",
+                      "income": { "inkFeathers": 12, "lightSparks": 0 },
+                      "spending": { "inkFeathers": 10, "lightSparks": 0 },
+                      "upgrades": ["guard:0->1"]
+                    }
+                  ],
+                  "ledger": []
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>
+        {
+            [AfterlifeEntityProfileState.StatePath] = backupPath
+        });
+
+        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(2, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
+        Assert.Equal(1, profile["standardArts"]?["guard"]?.GetValue<int>());
+        Assert.Equal(0, profile["standardArts"]?["pressure"]?.GetValue<int>());
+        Assert.Equal("Теперь сначала давление.", profile["progressionStrategy"]?["summary"]?.GetValue<string>());
+        Assert.Equal("chaos:40", profile["progressionStrategy"]?["lastAutoProgressionCycleKey"]?.GetValue<string>());
+        Assert.Single(profile["progressionLedger"]!.AsArray().OfType<JsonObject>());
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_AutoProgressionUpgradesSpecialArtByStrategy()
     {
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
