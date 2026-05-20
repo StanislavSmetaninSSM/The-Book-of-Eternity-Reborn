@@ -146,6 +146,32 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task HasCurrentSessionAsync_TerminalSoulDissipation_BlocksContinueSession()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Развеянная Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 3,
+            terminalGameOver = new
+            {
+                state = "soul_dispersed",
+                message = AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage,
+                conflictId = "afterlife_conflict_terminal_001",
+                proofId = "soul_dissipation_proof_terminal_001"
+            }
+        });
+        var engine = CreateGameEngine();
+
+        var hasCurrentSession = await InvokePrivateAsync<bool>(engine, "HasCurrentSessionAsync");
+
+        Assert.False(hasCurrentSession);
+        var warning = GetPrivateField<string>(engine, "_mainMenuSessionWarning");
+        Assert.Contains(AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage, warning, StringComparison.Ordinal);
+        Assert.Contains("загрузите сохранение", warning, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void TryDescribeMalformedPendingWorldSetup_RejectsNullWorldDirectives()
     {
         var method = typeof(GameEngine).GetMethod(

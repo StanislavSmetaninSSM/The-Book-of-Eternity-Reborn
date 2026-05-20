@@ -348,9 +348,46 @@ public partial class GameEngine
             return false;
         }
 
+        var terminalSoulDissipationMessage = await TryReadTerminalSoulDissipationMessageAsync();
+        if (!string.IsNullOrWhiteSpace(terminalSoulDissipationMessage))
+        {
+            _mainMenuSessionWarning =
+                $"{terminalSoulDissipationMessage} Текущую сессию продолжить нельзя; загрузите сохранение через меню загрузки.";
+            return false;
+        }
+
         await _stateManager.RefreshGameStateAsync();
         return !string.IsNullOrWhiteSpace(_stateManager.CurrentState.SoulName) ||
                !string.IsNullOrWhiteSpace(_stateManager.CurrentState.SessionId);
+    }
+
+    private async Task<string?> TryReadTerminalSoulDissipationMessageAsync()
+    {
+        try
+        {
+            var json = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+            if (string.IsNullOrWhiteSpace(json) || JsonNode.Parse(json) is not JsonObject root)
+                return null;
+
+            if (root[AfterlifeSpiritualConflictState.TerminalGameOverProperty] is not JsonObject gameOver)
+                return null;
+
+            var state = AfterlifeSpiritualConflictState.GetNodeString(gameOver["state"]);
+            var message = AfterlifeSpiritualConflictState.GetNodeString(gameOver["message"]);
+            if (!string.Equals(state, AfterlifeSpiritualConflictState.TerminalSoulDissipationState, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(message, AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage, StringComparison.Ordinal))
+            {
+                return null;
+            }
+
+            return string.IsNullOrWhiteSpace(message)
+                ? AfterlifeSpiritualConflictState.TerminalSoulDissipationMessage
+                : message;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private async Task<string> BuildContinueDescriptionAsync()
