@@ -2605,6 +2605,7 @@ This request contains a 'progressionControl' object. Treat it as authoritative s
 You MUST evaluate and process all required cycles for the active realm.
 If progression is processed, you MUST write progressionProcessingReport to game_state/control/progression_report.json and report the exact processed cycle counts and new last-* markers.
 If no cycles are due, you may write zero counts or omit the report.
+In Shining Abode, verified progressionProcessingReport is a narrow scheduler-owned allowance: it permits only scheduler-owned Shining/resident/trade progression fields. It does NOT authorize unrelated availability, coreActionReceipts[], gates, gachaSystem.gachaHistory, pendingNativeFactionDiscovery, preparedIncarnationPackage, lightSparks, treasury, or sourceOfLightCapstone unless that surface's own client-authored contract is also closed in the same accepted turn.
 
 If a forbidden key appears in your draft response for the active realm, REMOVE it before finalizing.
 
