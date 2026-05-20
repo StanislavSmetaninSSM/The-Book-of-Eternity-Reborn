@@ -2618,6 +2618,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "долг");
     }
 
+    [Fact]
+    public void SarefVarakQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "varak.md",
+            "Варак",
+            "war_doctrine",
+            "Трещина в строю",
+            "войн",
+            "стро");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,
