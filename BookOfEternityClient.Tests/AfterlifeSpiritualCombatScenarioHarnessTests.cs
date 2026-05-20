@@ -205,6 +205,88 @@ public sealed class AfterlifeSpiritualCombatScenarioHarnessTests
         Assert.Equal("decisive_player_success", contest.OutcomeBand);
     }
 
+    [Fact]
+    public void GeneratedScenarioHarness_ActionCostFormula_ReducesCostByTierButPreservesMinimumCost()
+    {
+        Assert.Equal(3, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("pressure", artTier: 0));
+        Assert.Equal(2, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("pressure", artTier: 1));
+        Assert.Equal(1, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("pressure", artTier: 2));
+        Assert.Equal(1, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("pressure", artTier: 5));
+
+        Assert.Equal(4, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("counter", artTier: 0));
+        Assert.Equal(3, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("counter", artTier: 1));
+        Assert.Equal(2, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("counter", artTier: 2));
+        Assert.Equal(2, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("counter", artTier: 5));
+
+        Assert.Equal(5, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("force_binding", artTier: 0));
+        Assert.Equal(2, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("force_binding", artTier: 3));
+        Assert.Equal(2, AfterlifeSpiritualCombatScenarioHarness.ResolveEffectiveActionCost("force_binding", artTier: 5));
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_RepeatedOneActionSpamRunsOutOfActionPoints()
+    {
+        var novicePlan = AfterlifeSpiritualCombatScenarioHarness.SimulateRepeatedActionPlan(
+            operationType: "force_binding",
+            artTier: 0,
+            spiritFocusTier: 0,
+            requestedRepetitions: 3);
+        var masteredPlan = AfterlifeSpiritualCombatScenarioHarness.SimulateRepeatedActionPlan(
+            operationType: "force_binding",
+            artTier: 5,
+            spiritFocusTier: 5,
+            requestedRepetitions: 10);
+
+        Assert.Equal(6, novicePlan.StartingActionPoints);
+        Assert.Equal(5, novicePlan.EffectiveCost);
+        Assert.Equal(1, novicePlan.ExecutedRepetitions);
+        Assert.True(novicePlan.WasStoppedByScarcity);
+
+        Assert.Equal(15, masteredPlan.StartingActionPoints);
+        Assert.Equal(2, masteredPlan.EffectiveCost);
+        Assert.Equal(7, masteredPlan.ExecutedRepetitions);
+        Assert.True(masteredPlan.WasStoppedByScarcity);
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_SpiritFocusTierIncreasesOptionsButDoesNotRemoveScarcity()
+    {
+        Assert.Equal(6, AfterlifeSpiritualCombatScenarioHarness.ResolveSpiritFocusMaxActionPoints(spiritFocusTier: 0));
+        Assert.Equal(7, AfterlifeSpiritualCombatScenarioHarness.ResolveSpiritFocusMaxActionPoints(spiritFocusTier: 1));
+        Assert.Equal(8, AfterlifeSpiritualCombatScenarioHarness.ResolveSpiritFocusMaxActionPoints(spiritFocusTier: 2));
+        Assert.Equal(10, AfterlifeSpiritualCombatScenarioHarness.ResolveSpiritFocusMaxActionPoints(spiritFocusTier: 3));
+        Assert.Equal(12, AfterlifeSpiritualCombatScenarioHarness.ResolveSpiritFocusMaxActionPoints(spiritFocusTier: 4));
+        Assert.Equal(15, AfterlifeSpiritualCombatScenarioHarness.ResolveSpiritFocusMaxActionPoints(spiritFocusTier: 5));
+
+        var tierZeroCounters = AfterlifeSpiritualCombatScenarioHarness.SimulateRepeatedActionPlan(
+            operationType: "counter",
+            artTier: 0,
+            spiritFocusTier: 0,
+            requestedRepetitions: 5);
+        var tierFiveCounters = AfterlifeSpiritualCombatScenarioHarness.SimulateRepeatedActionPlan(
+            operationType: "counter",
+            artTier: 5,
+            spiritFocusTier: 5,
+            requestedRepetitions: 9);
+
+        Assert.True(tierFiveCounters.ExecutedRepetitions > tierZeroCounters.ExecutedRepetitions);
+        Assert.True(tierFiveCounters.WasStoppedByScarcity);
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_RecoverSpiritualPowerRewardsSafeTimingAndPunishesPressureManeuverBinding()
+    {
+        Assert.Equal(3, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("guard", outcome: "success"));
+        Assert.Equal(3, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("counter", outcome: "success"));
+        Assert.Equal(2, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("guard", outcome: "partial_success"));
+
+        Assert.Equal(1, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("pressure", outcome: "success"));
+        Assert.Equal(1, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("maneuver", outcome: "success"));
+        Assert.Equal(1, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("binding", outcome: "success"));
+        Assert.Equal(1, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("force_binding", outcome: "success"));
+        Assert.Equal(1, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("force_incarnation", outcome: "success"));
+    }
+
     private static AfterlifeSpiritualCombatScenario BuildOverwhelmingOppositionScenario()
     {
         var baseScenario = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios()
@@ -239,6 +321,21 @@ public sealed class AfterlifeSpiritualCombatScenarioHarnessTests
 internal static class AfterlifeSpiritualCombatScenarioHarness
 {
     private const int DirectDuelRewardAdjustment = 1;
+
+    private static readonly IReadOnlyDictionary<string, ActionCostDefinition> ActionCosts =
+        new Dictionary<string, ActionCostDefinition>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["pressure"] = new(3, 1),
+            ["guard"] = new(2, 1),
+            ["counter"] = new(4, 2),
+            ["maneuver"] = new(3, 1),
+            ["binding"] = new(4, 2),
+            ["force_binding"] = new(5, 2),
+            ["break_binding"] = new(3, 1),
+            ["incarnation_resistance"] = new(3, 1),
+            ["champion_coordination"] = new(2, 1),
+            ["recover_spiritual_power"] = new(0, 0)
+        };
 
     public static IReadOnlyList<AfterlifeSpiritualCombatScenario> GenerateDefaultScenarios() =>
     [
@@ -444,6 +541,58 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
             CriticalOverrideDirection: criticalOverrideDirection);
     }
 
+    public static int ResolveEffectiveActionCost(string operationType, int artTier)
+    {
+        if (!ActionCosts.TryGetValue(operationType, out var cost))
+            throw new ArgumentOutOfRangeException(nameof(operationType), operationType, "Unsupported spiritual art operation.");
+
+        return Math.Max(cost.MinCost, cost.BaseCost - Math.Max(0, artTier));
+    }
+
+    public static int ResolveSpiritFocusMaxActionPoints(int spiritFocusTier) =>
+        AfterlifeSpiritualConflictState.GetSpiritFocusMaxActionPoints(spiritFocusTier);
+
+    public static AfterlifeSpiritualCombatActionPointPlanResult SimulateRepeatedActionPlan(
+        string operationType,
+        int artTier,
+        int spiritFocusTier,
+        int requestedRepetitions)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(requestedRepetitions, 0);
+
+        var current = ResolveSpiritFocusMaxActionPoints(spiritFocusTier);
+        var starting = current;
+        var cost = ResolveEffectiveActionCost(operationType, artTier);
+        var executed = 0;
+
+        while (executed < requestedRepetitions && current >= cost)
+        {
+            current -= cost;
+            executed++;
+        }
+
+        return new AfterlifeSpiritualCombatActionPointPlanResult(
+            StartingActionPoints: starting,
+            EffectiveCost: cost,
+            RequestedRepetitions: requestedRepetitions,
+            ExecutedRepetitions: executed,
+            RemainingActionPoints: current,
+            WasStoppedByScarcity: executed < requestedRepetitions);
+    }
+
+    public static int ResolveRecoveryDelta(string oppositionOperation, string outcome)
+    {
+        if (TokenEquals(oppositionOperation, "pressure", "maneuver", "binding", "force_binding", "force_incarnation"))
+            return 1;
+
+        return TokenEquals(outcome, "success") ? 3 :
+            TokenEquals(outcome, "partial_success") ? 2 :
+            0;
+    }
+
+    private static bool TokenEquals(string? actual, params string[] expected) =>
+        expected.Any(token => string.Equals(actual, token, StringComparison.OrdinalIgnoreCase));
+
     private static int ComputePlayerModifier(AfterlifeSpiritualCombatScenario scenario) =>
         scenario.PlayerArtTier * 2 +
         scenario.PlayerSupportModifier +
@@ -619,6 +768,8 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
         };
 
     private readonly record struct RewardPreview(int FinalAmount, int Cap);
+
+    private readonly record struct ActionCostDefinition(int BaseCost, int MinCost);
 }
 
 internal sealed record AfterlifeSpiritualCombatScenario(
@@ -677,3 +828,11 @@ internal sealed record AfterlifeSpiritualCombatContestResult(
     string OutcomeBand,
     bool HasNaturalCritical,
     string CriticalOverrideDirection);
+
+internal sealed record AfterlifeSpiritualCombatActionPointPlanResult(
+    int StartingActionPoints,
+    int EffectiveCost,
+    int RequestedRepetitions,
+    int ExecutedRepetitions,
+    int RemainingActionPoints,
+    bool WasStoppedByScarcity);
