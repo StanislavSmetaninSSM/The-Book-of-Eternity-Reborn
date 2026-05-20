@@ -34,6 +34,22 @@
       "notes": "Tracks entity currencies, progression, standard/special arts, custom states, and soul dissipation danger."
     },
     {
+      "path": "game_state/meta/main_story_saref_state.json",
+      "surfaceType": "meta_story_state",
+      "owner": "saref_main_story",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "GM-authored hidden main-story state; absent legacy file is valid until the line is discovered",
+      "emptyWrapperSemantics": "Missing means legacy/no discovered Saref story state. If present, use canonical schemaVersion, revealStage, guardianQuestlines, latentTraces, sarefRevelations, sarefAdvantages, factionLinks, defeatOutcomes, endings, oath state, and personal bond.",
+      "malformedBehavior": "Fail closed with SarefMainStory validation issues; no-spoiler stages must not contain revealed Saref/Wings evidence.",
+      "blockerBehavior": "Does not block ordinary afterlife play by existence; invalid current state blocks accepted-turn validation until repaired.",
+      "closureSurface": "Canonical root game_state/meta/main_story_saref_state.json. Future tasks may add sarefMainStoryUpdate; issue #533 exposes the direct canonical state only.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
+        "Examples/E_CLI_Afterlife_Turns.txt#main_story_saref_state"
+      ],
+      "notes": "Tracks Крылья над Бездной reveal stage, Guardian fragments, advantages, faction links, outcomes, endings, oath state, and personal bond."
+    },
+    {
       "path": "game_state/control/pending_abode_offering.json",
       "surfaceType": "pending_contract",
       "owner": "guardian_abode_offering",

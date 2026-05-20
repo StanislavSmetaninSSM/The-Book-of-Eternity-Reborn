@@ -267,6 +267,22 @@ public partial class ValidationService
                 AfterlifeEntityProfileState.LastInvalidCommandReasonProperty,
                 "_lastUpdated"
             }, issues);
+        await ValidateFlexibleStateFile(SarefMainStoryState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
+                "sarefRevelations", "sarefAdvantages", "wingsInfiltration", "factionLinks",
+                "finalConfrontation", "defeatOutcomes", "endings", "playerOathState",
+                "sarefPersonalBond", "_lastUpdated"
+            }, issues, ValidateSarefMainStoryStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(SarefMainStoryState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
+                "sarefRevelations", "sarefAdvantages", "wingsInfiltration", "factionLinks",
+                "finalConfrontation", "defeatOutcomes", "endings", "playerOathState",
+                "sarefPersonalBond", "_lastUpdated"
+            }, issues);
         await ValidateFlexibleStateFile("game_state/meta/guardians.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {

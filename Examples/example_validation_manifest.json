@@ -42,6 +42,13 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
       "responseSurface": "diceAudit.difficultyAudit / rewardAudit.difficultyAudit"
+    },
+    {
+      "contractId": "saref_reveal_stage_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/main_story_saref_state.json",
+      "responseSurface": "sarefMainStoryState",
+      "description": "Hidden main story line Крылья над Бездной reveal-stage contract."
     }
   ],
   "syntaxExemptions": [
@@ -1499,6 +1506,11 @@
       "exampleNumber": 26,
       "runtimeScenarioIds": [],
       "exemptionReason": "The afterlife entity profile example documents multiple command surfaces and deterministic client progression; dedicated entity profile validation and normalizer tests cover the runtime behavior instead of one accepted response scenario."
+    },
+    {
+      "exampleNumber": 27,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The Saref main-story example documents the canonical hidden-state contract and no-spoiler route invariants; dedicated SarefMainStoryState validation and documentation coverage tests cover runtime behavior."
     }
   ]
 }
