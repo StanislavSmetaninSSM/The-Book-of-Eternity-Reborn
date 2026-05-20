@@ -39,8 +39,8 @@
       "owner": "saref_main_story",
       "realm": "Chaos Sea|Shining Abode",
       "authority": "GM-authored hidden main-story state; absent legacy file is valid until the line is discovered",
-      "emptyWrapperSemantics": "Missing means legacy/no discovered Saref story state. If present, use canonical schemaVersion, revealStage, guardianQuestlines, latentTraces, sarefRevelations, sarefAdvantages, factionLinks, defeatOutcomes, endings, oath state, and personal bond.",
-      "malformedBehavior": "Fail closed with SarefMainStory validation issues; no-spoiler stages must not contain revealed Saref/Wings evidence.",
+      "emptyWrapperSemantics": "Missing means legacy/no discovered Saref story state. If present, use canonical schemaVersion, revealStage, guardianQuestlines with questStates/questOrdinal 1..4, latentTraces, sarefRevelations, sarefAdvantages, factionLinks, defeatOutcomes, endings, oath state, and personal bond.",
+      "malformedBehavior": "Fail closed with SarefMainStory validation issues; no-spoiler stages must not contain revealed Saref/Wings evidence, quest 4 unlocks require quests 1-3 completed, and physical mortal item transfer is forbidden in proof.",
       "blockerBehavior": "Does not block ordinary afterlife play by existence; invalid current state blocks accepted-turn validation until repaired.",
       "closureSurface": "Canonical root game_state/meta/main_story_saref_state.json. Future tasks may add sarefMainStoryUpdate; issue #533 exposes the direct canonical state only.",
       "docAnchors": [

@@ -4,6 +4,12 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
+    private sealed record SarefUnlockReference(
+        string Id,
+        string? SourceGuardianId,
+        int SourceQuestOrdinal,
+        string Context);
+
     private void ValidateSarefMainStoryStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (root.ValueKind != JsonValueKind.Object)
@@ -33,10 +39,11 @@ public partial class ValidationService
                 revealStage);
         }
 
-        ValidateSarefArray(root, contextPrefix, "guardianQuestlines", "guardianId", "saref_main_story_duplicate_guardian_questline", issues);
-        ValidateSarefArray(root, contextPrefix, "latentTraces", "traceId", "saref_main_story_duplicate_latent_trace", issues);
-        ValidateSarefRevelations(root, contextPrefix, issues, out var revealedCategories, out var revelationCount);
-        ValidateSarefAdvantages(root, contextPrefix, issues, out var advantageCount);
+        var guardianQuestlines = ValidateSarefGuardianQuestlines(root, contextPrefix, issues);
+        ValidateSarefLatentTraces(root, contextPrefix, issues);
+        ValidateSarefRevelations(root, contextPrefix, issues, out var revealedCategories, out var revelationCount, out var questFourRevelations);
+        ValidateSarefAdvantages(root, contextPrefix, issues, out var advantageCount, out var questFourAdvantages);
+        ValidateSarefQuestFourUnlockLinks(guardianQuestlines, questFourRevelations, questFourAdvantages, contextPrefix, issues);
         ValidateSarefArray(root, contextPrefix, "defeatOutcomes", "outcomeId", "saref_main_story_duplicate_defeat_outcome", issues);
         ValidateSarefArray(root, contextPrefix, "endings", "endingId", "saref_main_story_duplicate_ending", issues);
         var factionVisibility = ValidateSarefFactionLinks(root, contextPrefix, issues);
@@ -52,6 +59,306 @@ public partial class ValidationService
             factionVisibility,
             contextPrefix,
             issues);
+    }
+
+    private static Dictionary<string, Dictionary<int, string>> ValidateSarefGuardianQuestlines(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        var result = new Dictionary<string, Dictionary<int, string>>(StringComparer.OrdinalIgnoreCase);
+        if (!TryGetRequiredSarefArray(root, contextPrefix, "guardianQuestlines", issues, out var questlines))
+            return result;
+
+        var guardianIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in questlines.EnumerateArray())
+        {
+            var context = $"{contextPrefix}.guardianQuestlines[{index++}]";
+            if (!ValidateSarefArrayObject(item, context, issues))
+                continue;
+
+            var guardianId = RequireSarefString(item, context, "guardianId", "saref_main_story_missing_guardian_questline_guardian_id", issues);
+            if (!string.IsNullOrWhiteSpace(guardianId) && !guardianIds.Add(guardianId))
+            {
+                AddSarefIssue(
+                    issues,
+                    context,
+                    "Дубликат guardianQuestlines[].guardianId.",
+                    "saref_main_story_duplicate_guardian_questline",
+                    "unique guardianId",
+                    guardianId);
+            }
+
+            ValidateSarefTurnFields(item, context, issues);
+            var states = ValidateSarefQuestStates(item, context, issues);
+            if (!string.IsNullOrWhiteSpace(guardianId))
+                result[guardianId] = states;
+        }
+
+        return result;
+    }
+
+    private static Dictionary<int, string> ValidateSarefQuestStates(
+        JsonElement questline,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var states = new Dictionary<int, string>();
+        if (!questline.TryGetProperty("questStates", out var questStates))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.questStates",
+                "guardianQuestlines[] должен хранить questStates[] с questOrdinal 1..4.",
+                "saref_main_story_missing_quest_states",
+                "questStates[]",
+                "missing");
+            return states;
+        }
+
+        if (questStates.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.questStates",
+                "guardianQuestlines[].questStates должен быть массивом.",
+                "saref_main_story_array_not_array",
+                "array",
+                questStates.ValueKind.ToString());
+            return states;
+        }
+
+        var index = 0;
+        foreach (var item in questStates.EnumerateArray())
+        {
+            var itemContext = $"{context}.questStates[{index++}]";
+            if (!ValidateSarefArrayObject(item, itemContext, issues))
+                continue;
+
+            if (ContainsForbiddenSarefPhysicalEvidenceField(item))
+            {
+                AddSarefIssue(
+                    issues,
+                    itemContext,
+                    "Квесты Сарефа не могут переносить физические mortal предметы; используй memory/image/echo/proof.",
+                    "saref_main_story_physical_mortal_item_evidence",
+                    "memoryImprint/itemEcho/lifeEventEvidence/locationWitness/knowledgeTrace/soulResonance without physical transfer fields",
+                    "physical mortal item field");
+            }
+
+            var questOrdinal = RequireSarefQuestOrdinal(item, itemContext, issues);
+            var status = RequireSarefString(item, itemContext, "status", "saref_main_story_missing_quest_status", issues);
+            if (!string.IsNullOrWhiteSpace(status) && !SarefMainStoryState.QuestProgressStates.Contains(status))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{itemContext}.status",
+                    "Saref guardian quest status не поддерживается.",
+                    "saref_main_story_invalid_quest_status",
+                    string.Join("/", SarefMainStoryState.QuestProgressStates.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    status);
+            }
+
+            ValidateSarefTurnFields(item, itemContext, issues);
+            if (questOrdinal is < 1 or > 4 || string.IsNullOrWhiteSpace(status) ||
+                !SarefMainStoryState.QuestProgressStates.Contains(status))
+            {
+                continue;
+            }
+
+            if (states.ContainsKey(questOrdinal))
+            {
+                AddSarefIssue(
+                    issues,
+                    itemContext,
+                    "Дубликат questStates[].questOrdinal внутри guardianQuestline.",
+                    "saref_main_story_duplicate_quest_ordinal",
+                    "unique questOrdinal 1..4",
+                    questOrdinal.ToString());
+                continue;
+            }
+
+            states[questOrdinal] = status;
+        }
+
+        foreach (var (ordinal, status) in states.OrderBy(entry => entry.Key))
+        {
+            if (!string.Equals(status, SarefMainStoryState.QuestStateCompleted, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            for (var requiredOrdinal = 1; requiredOrdinal < ordinal; requiredOrdinal++)
+            {
+                if (states.TryGetValue(requiredOrdinal, out var priorStatus) &&
+                    string.Equals(priorStatus, SarefMainStoryState.QuestStateCompleted, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                AddSarefIssue(
+                    issues,
+                    $"{context}.questStates",
+                    "Официальное восстановление памяти Сарефа должно закрываться по порядку 1 -> 2 -> 3 -> 4.",
+                    "saref_main_story_questline_out_of_order",
+                    $"quest {requiredOrdinal} completed before quest {ordinal}",
+                    $"quest {ordinal}=completed");
+                break;
+            }
+        }
+
+        return states;
+    }
+
+    private static void ValidateSarefLatentTraces(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!TryGetRequiredSarefArray(root, contextPrefix, "latentTraces", issues, out var traces))
+            return;
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in traces.EnumerateArray())
+        {
+            var context = $"{contextPrefix}.latentTraces[{index++}]";
+            if (!ValidateSarefArrayObject(item, context, issues))
+                continue;
+
+            if (ContainsForbiddenSarefPhysicalEvidenceField(item))
+            {
+                AddSarefIssue(
+                    issues,
+                    context,
+                    "Latent trace Сарефа не может хранить физический mortal предмет.",
+                    "saref_main_story_physical_mortal_item_evidence",
+                    "non-physical memory/image/echo/proof",
+                    "physical mortal item field");
+            }
+
+            var traceId = RequireSarefString(item, context, "traceId", "saref_main_story_missing_trace_id", issues);
+            if (!string.IsNullOrWhiteSpace(traceId) && !ids.Add(traceId))
+            {
+                AddSarefIssue(
+                    issues,
+                    context,
+                    "Дубликат latentTraces[].traceId.",
+                    "saref_main_story_duplicate_latent_trace",
+                    "unique traceId",
+                    traceId);
+            }
+
+            if (item.TryGetProperty("questOrdinal", out _))
+                RequireSarefQuestOrdinal(item, context, issues);
+
+            if (item.TryGetProperty("status", out var statusNode) && TryGetSarefString(statusNode, out var status) &&
+                !SarefMainStoryState.LatentTraceStates.Contains(status))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.status",
+                    "latentTraces[].status может быть только latent или recognized.",
+                    "saref_main_story_invalid_latent_trace_status",
+                    string.Join("/", SarefMainStoryState.LatentTraceStates),
+                    status);
+            }
+
+            ValidateSarefTurnFields(item, context, issues);
+        }
+    }
+
+    private static void ValidateSarefQuestFourUnlockLinks(
+        IReadOnlyDictionary<string, Dictionary<int, string>> guardianQuestlines,
+        IReadOnlyList<SarefUnlockReference> questFourRevelations,
+        IReadOnlyList<SarefUnlockReference> questFourAdvantages,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        var revelationGuardians = questFourRevelations
+            .Where(reference => !string.IsNullOrWhiteSpace(reference.SourceGuardianId))
+            .Select(reference => reference.SourceGuardianId!)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var advantageGuardians = questFourAdvantages
+            .Where(reference => !string.IsNullOrWhiteSpace(reference.SourceGuardianId))
+            .Select(reference => reference.SourceGuardianId!)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var reference in questFourRevelations)
+        {
+            if (!HasCompletedSarefQuestlineThroughQuestFour(guardianQuestlines, reference.SourceGuardianId))
+            {
+                AddSarefIssue(
+                    issues,
+                    reference.Context,
+                    "sarefRevelation из 4-го квеста требует завершенные квесты 1-4 этого Хранителя.",
+                    "saref_main_story_revelation_without_questline_completion",
+                    "guardianQuestlines[].questStates 1..4 completed for sourceGuardianId",
+                    reference.SourceGuardianId ?? "missing");
+            }
+        }
+
+        foreach (var reference in questFourAdvantages)
+        {
+            if (!HasCompletedSarefQuestlineThroughQuestFour(guardianQuestlines, reference.SourceGuardianId))
+            {
+                AddSarefIssue(
+                    issues,
+                    reference.Context,
+                    "sarefAdvantage из 4-го квеста требует завершенные квесты 1-4 этого Хранителя.",
+                    "saref_main_story_advantage_without_questline_completion",
+                    "guardianQuestlines[].questStates 1..4 completed for sourceGuardianId",
+                    reference.SourceGuardianId ?? "missing");
+            }
+        }
+
+        foreach (var (guardianId, states) in guardianQuestlines)
+        {
+            if (!HasCompletedSarefQuestlineThroughQuestFour(states))
+                continue;
+
+            if (!revelationGuardians.Contains(guardianId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{contextPrefix}.sarefRevelations",
+                    "Завершенный 4-й квест Хранителя должен открыть canonical sarefRevelation.",
+                    "saref_main_story_completed_quest_four_missing_revelation",
+                    $"sarefRevelations[] with sourceGuardianId={guardianId} and sourceQuestOrdinal=4",
+                    "missing");
+            }
+
+            if (!advantageGuardians.Contains(guardianId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{contextPrefix}.sarefAdvantages",
+                    "Завершенный 4-й квест Хранителя должен открыть canonical sarefAdvantage.",
+                    "saref_main_story_completed_quest_four_missing_advantage",
+                    $"sarefAdvantages[] with sourceGuardianId={guardianId} and sourceQuestOrdinal=4",
+                    "missing");
+            }
+        }
+    }
+
+    private static bool HasCompletedSarefQuestlineThroughQuestFour(
+        IReadOnlyDictionary<string, Dictionary<int, string>> questlines,
+        string? guardianId)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId) || !questlines.TryGetValue(guardianId, out var states))
+            return false;
+
+        return HasCompletedSarefQuestlineThroughQuestFour(states);
+    }
+
+    private static bool HasCompletedSarefQuestlineThroughQuestFour(IReadOnlyDictionary<int, string> states)
+    {
+        for (var ordinal = 1; ordinal <= 4; ordinal++)
+        {
+            if (!states.TryGetValue(ordinal, out var status) ||
+                !string.Equals(status, SarefMainStoryState.QuestStateCompleted, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static void ValidateSarefRevealStageInvariants(
@@ -141,10 +448,12 @@ public partial class ValidationService
         string contextPrefix,
         List<ValidationIssue> issues,
         out HashSet<string> revealedCategories,
-        out int revelationCount)
+        out int revelationCount,
+        out List<SarefUnlockReference> questFourRevelations)
     {
         revealedCategories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         revelationCount = 0;
+        questFourRevelations = new List<SarefUnlockReference>();
         if (!TryGetRequiredSarefArray(root, contextPrefix, "sarefRevelations", issues, out var revelations))
             return;
 
@@ -188,7 +497,26 @@ public partial class ValidationService
                 }
             }
 
-            RequireSarefString(item, context, "sourceGuardianId", "saref_main_story_missing_revelation_source", issues);
+            var sourceGuardianId = RequireSarefString(item, context, "sourceGuardianId", "saref_main_story_missing_revelation_source", issues);
+            var sourceQuestOrdinal = ResolveSarefSourceQuestOrdinal(item, context, issues);
+            if (!string.IsNullOrWhiteSpace(sourceGuardianId))
+            {
+                if (sourceQuestOrdinal == 4)
+                {
+                    questFourRevelations.Add(new SarefUnlockReference(revelationId ?? string.Empty, sourceGuardianId, sourceQuestOrdinal, context));
+                }
+                else
+                {
+                    AddSarefIssue(
+                        issues,
+                        context,
+                        "Canonical sarefRevelation от Хранителя может открываться только 4-м квестом.",
+                        "saref_main_story_revelation_not_from_quest_four",
+                        "sourceQuestOrdinal=4 or sourceQuestId ending with q4",
+                        sourceQuestOrdinal <= 0 ? "missing" : sourceQuestOrdinal.ToString());
+                }
+            }
+
             ValidateSarefTurnFields(item, context, issues);
         }
     }
@@ -197,9 +525,11 @@ public partial class ValidationService
         JsonElement root,
         string contextPrefix,
         List<ValidationIssue> issues,
-        out int advantageCount)
+        out int advantageCount,
+        out List<SarefUnlockReference> questFourAdvantages)
     {
         advantageCount = 0;
+        questFourAdvantages = new List<SarefUnlockReference>();
         if (!TryGetRequiredSarefArray(root, contextPrefix, "sarefAdvantages", issues, out var advantages))
             return;
 
@@ -234,6 +564,26 @@ public partial class ValidationService
                     "saref_main_story_invalid_advantage_state",
                     string.Join("/", SarefMainStoryState.AdvantageStates.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
                     state);
+            }
+
+            var sourceGuardianId = GetSarefOptionalString(item, "sourceGuardianId");
+            var sourceQuestOrdinal = ResolveSarefSourceQuestOrdinal(item, context, issues);
+            if (!string.IsNullOrWhiteSpace(sourceGuardianId))
+            {
+                if (sourceQuestOrdinal == 4)
+                {
+                    questFourAdvantages.Add(new SarefUnlockReference(advantageId ?? string.Empty, sourceGuardianId, sourceQuestOrdinal, context));
+                }
+                else
+                {
+                    AddSarefIssue(
+                        issues,
+                        context,
+                        "Canonical sarefAdvantage от Хранителя может открываться только 4-м квестом.",
+                        "saref_main_story_advantage_not_from_quest_four",
+                        "sourceQuestOrdinal=4 or sourceQuestId ending with q4",
+                        sourceQuestOrdinal <= 0 ? "missing" : sourceQuestOrdinal.ToString());
+                }
             }
 
             ValidateSarefTurnFields(item, context, issues);
@@ -481,6 +831,99 @@ public partial class ValidationService
         }
     }
 
+    private static int RequireSarefQuestOrdinal(JsonElement item, string context, List<ValidationIssue> issues)
+    {
+        if (!item.TryGetProperty("questOrdinal", out var node))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.questOrdinal",
+                "questOrdinal должен быть целым числом от 1 до 4.",
+                "saref_main_story_missing_quest_ordinal",
+                "integer 1..4",
+                "missing");
+            return 0;
+        }
+
+        if (node.ValueKind != JsonValueKind.Number || !node.TryGetInt32(out var ordinal) || ordinal is < 1 or > 4)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.questOrdinal",
+                "questOrdinal должен быть целым числом от 1 до 4.",
+                "saref_main_story_invalid_quest_ordinal",
+                "integer 1..4",
+                node.ValueKind == JsonValueKind.Number ? node.ToString() : node.ValueKind.ToString());
+            return 0;
+        }
+
+        return ordinal;
+    }
+
+    private static int ResolveSarefSourceQuestOrdinal(JsonElement item, string context, List<ValidationIssue> issues)
+    {
+        if (item.TryGetProperty("sourceQuestOrdinal", out var ordinalNode))
+        {
+            if (ordinalNode.ValueKind == JsonValueKind.Number &&
+                ordinalNode.TryGetInt32(out var ordinal) &&
+                ordinal is >= 1 and <= 4)
+            {
+                return ordinal;
+            }
+
+            AddSarefIssue(
+                issues,
+                $"{context}.sourceQuestOrdinal",
+                "sourceQuestOrdinal должен быть целым числом от 1 до 4.",
+                "saref_main_story_invalid_source_quest_ordinal",
+                "integer 1..4",
+                ordinalNode.ValueKind == JsonValueKind.Number ? ordinalNode.ToString() : ordinalNode.ValueKind.ToString());
+            return 0;
+        }
+
+        var sourceQuestId = GetSarefOptionalString(item, "sourceQuestId");
+        if (string.IsNullOrWhiteSpace(sourceQuestId))
+            return 0;
+
+        var trimmed = sourceQuestId.Trim();
+        for (var ordinal = 1; ordinal <= 4; ordinal++)
+        {
+            if (trimmed.EndsWith($"q{ordinal}", StringComparison.OrdinalIgnoreCase) ||
+                trimmed.EndsWith($"quest_{ordinal}", StringComparison.OrdinalIgnoreCase) ||
+                trimmed.EndsWith($"quest{ordinal}", StringComparison.OrdinalIgnoreCase))
+            {
+                return ordinal;
+            }
+        }
+
+        return 0;
+    }
+
+    private static bool ContainsForbiddenSarefPhysicalEvidenceField(JsonElement node)
+    {
+        if (node.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var property in node.EnumerateObject())
+            {
+                if (GuardianProjectState.IsForbiddenQuestPhysicalEvidenceField(property.Name) ||
+                    ContainsForbiddenSarefPhysicalEvidenceField(property.Value))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (node.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in node.EnumerateArray())
+            {
+                if (ContainsForbiddenSarefPhysicalEvidenceField(item))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     private static string? RequireSarefString(
         JsonElement root,
         string context,
@@ -502,6 +945,14 @@ public partial class ValidationService
             "non-empty string",
             root.TryGetProperty(propertyName, out var present) ? present.ValueKind.ToString() : "missing");
         return null;
+    }
+
+    private static string? GetSarefOptionalString(JsonElement root, string propertyName)
+    {
+        if (!root.TryGetProperty(propertyName, out var node) || !TryGetSarefString(node, out var value))
+            return null;
+
+        return value;
     }
 
     private static bool TryGetSarefString(JsonElement node, out string value)

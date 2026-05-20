@@ -2590,6 +2590,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("sarefMainStoryState", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("No-spoiler", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("wings_revealed", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("questStates", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("questOrdinal", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("physical mortal item", examples, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
