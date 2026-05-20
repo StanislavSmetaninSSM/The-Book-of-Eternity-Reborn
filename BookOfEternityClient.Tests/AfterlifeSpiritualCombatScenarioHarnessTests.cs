@@ -287,6 +287,55 @@ public sealed class AfterlifeSpiritualCombatScenarioHarnessTests
         Assert.Equal(1, AfterlifeSpiritualCombatScenarioHarness.ResolveRecoveryDelta("force_incarnation", outcome: "success"));
     }
 
+    [Fact]
+    public void GeneratedScenarioHarness_RewardPreview_UsesRealmCurrencyAndCaps()
+    {
+        var scenarios = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios();
+
+        foreach (var scenario in scenarios)
+        {
+            var preview = AfterlifeSpiritualCombatScenarioHarness.PreviewReward(scenario, outcomeBand: "player_success");
+
+            Assert.Equal(scenario.Reward.Currency, preview.Currency);
+            Assert.InRange(preview.ChallengeTier, 1, AfterlifeSpiritualConflictState.ConflictRewardMaxChallengeTier);
+            Assert.InRange(preview.FinalAmount, 0, preview.Cap);
+            if (preview.RealmKey == "chaos_sea")
+            {
+                Assert.Equal(AfterlifeSpiritualConflictState.RewardCurrencyInkFeathers, preview.Currency);
+                Assert.Equal(AfterlifeSpiritualConflictState.ChaosSeaConflictRewardMaxAmount, preview.Cap);
+            }
+            else
+            {
+                Assert.Equal(AfterlifeSpiritualConflictState.RewardCurrencyLightSparks, preview.Currency);
+                Assert.Equal(AfterlifeSpiritualConflictState.ShiningConflictRewardMaxAmount, preview.Cap);
+            }
+        }
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_RewardPreview_DifficultyScalingIsDeterministicAndBounded()
+    {
+        var baseScenario = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios()
+            .Single(scenario => scenario.Name == "direct_duel_even_pressure");
+        var normal = baseScenario with { Difficulty = "normal" };
+        var hard = baseScenario with { Difficulty = "hard" };
+        var impossible = baseScenario with { Difficulty = "impossible" };
+
+        var normalPreview = AfterlifeSpiritualCombatScenarioHarness.PreviewReward(normal, outcomeBand: "player_success");
+        var repeatedNormalPreview = AfterlifeSpiritualCombatScenarioHarness.PreviewReward(normal, outcomeBand: "player_success");
+        var hardPreview = AfterlifeSpiritualCombatScenarioHarness.PreviewReward(hard, outcomeBand: "player_success");
+        var impossiblePreview = AfterlifeSpiritualCombatScenarioHarness.PreviewReward(impossible, outcomeBand: "player_success");
+
+        Assert.Equal(normalPreview, repeatedNormalPreview);
+        Assert.Equal(30, normalPreview.FinalAmount);
+        Assert.Equal(37, hardPreview.FinalAmount);
+        Assert.Equal(45, impossiblePreview.FinalAmount);
+        Assert.True(normalPreview.FinalAmount < hardPreview.FinalAmount);
+        Assert.True(hardPreview.FinalAmount < impossiblePreview.FinalAmount);
+        Assert.All(new[] { normalPreview, hardPreview, impossiblePreview }, preview =>
+            Assert.InRange(preview.FinalAmount, 0, preview.Cap));
+    }
+
     private static AfterlifeSpiritualCombatScenario BuildOverwhelmingOppositionScenario()
     {
         var baseScenario = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios()
@@ -710,7 +759,16 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
             .OrderByDescending(pair => pair.Value)
             .Select(pair => pair.Key)
             .FirstOrDefault() ?? "mixed_or_no_effect";
-        var rewardRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(scenario.Reward.Realm);
+        var preview = PreviewReward(scenario, mostLikelyPlayerBand);
+
+        return new RewardPreview(preview.FinalAmount, preview.Cap);
+    }
+
+    public static AfterlifeSpiritualCombatRewardPreview PreviewReward(
+        AfterlifeSpiritualCombatScenario scenario,
+        string outcomeBand)
+    {
+        var rewardRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(scenario.Reward.Realm) ?? "chaos_sea";
         var baseAmount = rewardRealmKey == "shining_abode"
             ? AfterlifeSpiritualConflictState.ShiningConflictRewardBaseAmount
             : AfterlifeSpiritualConflictState.ChaosSeaConflictRewardBaseAmount;
@@ -721,14 +779,22 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
             scenario.Reward.OpposingLeadStrength,
             scenario.SideModel,
             scenario.StartingPosition);
-        var outcomeMultiplier = mostLikelyPlayerBand == "decisive_player_success" ? 150 :
-            mostLikelyPlayerBand == "player_success" ? 100 :
+        var outcomeMultiplier = outcomeBand == "decisive_player_success" ? 150 :
+            outcomeBand == "player_success" ? 100 :
             0;
         var riskMultiplier = ResolveRiskMultiplier(scenario.StartingPosition);
         var difficultyMultiplier = AfterlifeSpiritualConflictState.DifficultyDefinitions[scenario.Difficulty].RewardMultiplierPercent;
         var raw = (long)baseAmount * challengeTier * outcomeMultiplier * riskMultiplier * difficultyMultiplier / 1_000_000L;
 
-        return new RewardPreview((int)Math.Clamp(raw, 0, cap), cap);
+        return new AfterlifeSpiritualCombatRewardPreview(
+            RealmKey: rewardRealmKey,
+            Currency: scenario.Reward.Currency,
+            ChallengeTier: challengeTier,
+            OutcomeMultiplierPercent: outcomeMultiplier,
+            RiskMultiplierPercent: riskMultiplier,
+            DifficultyMultiplierPercent: difficultyMultiplier,
+            FinalAmount: (int)Math.Clamp(raw, 0, cap),
+            Cap: cap);
     }
 
     private static int ResolveChallengeTier(int opposingLeadStrength, string sideModel, string startingPosition)
@@ -802,6 +868,16 @@ internal sealed record AfterlifeSpiritualCombatRewardContext(
     string Realm,
     string Currency,
     int OpposingLeadStrength);
+
+internal sealed record AfterlifeSpiritualCombatRewardPreview(
+    string RealmKey,
+    string Currency,
+    int ChallengeTier,
+    int OutcomeMultiplierPercent,
+    int RiskMultiplierPercent,
+    int DifficultyMultiplierPercent,
+    int FinalAmount,
+    int Cap);
 
 internal sealed record AfterlifeSpiritualCombatDistributionResult(
     string ScenarioName,
