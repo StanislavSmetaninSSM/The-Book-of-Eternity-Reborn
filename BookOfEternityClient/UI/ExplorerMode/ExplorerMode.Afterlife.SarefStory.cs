@@ -45,6 +45,7 @@ public partial class ExplorerMode
         AppendSarefRevelations(lines, root["sarefRevelations"] as JsonArray);
         AppendSarefAdvantages(lines, root["sarefAdvantages"] as JsonArray);
         AppendSarefAdvantageUses(lines, root["sarefAdvantageUses"] as JsonArray);
+        AppendSarefEndings(lines, root["endings"] as JsonArray);
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -335,6 +336,92 @@ public partial class ExplorerMode
             if (!string.IsNullOrWhiteSpace(summary))
                 lines.Add($"    [dim]{Markup.Escape(summary)}[/]");
         }
+        lines.Add("");
+    }
+
+    private static void AppendSarefEndings(List<string> lines, JsonArray? endings)
+    {
+        if (endings == null || endings.Count == 0)
+            return;
+
+        lines.Add("[bold]Итоги линии Сарефа[/]");
+        foreach (var ending in endings.OfType<JsonObject>()
+                     .OrderByDescending(ending => GetNodeInt(ending["resolvedAtTurn"])))
+        {
+            var endingId = GetNodeString(ending["endingId"]) ?? "?";
+            var endingType = DescribeSarefEndingType(GetNodeString(ending["endingType"]));
+            var victoryTier = DescribeSarefVictoryTier(GetNodeString(ending["victoryTier"]));
+            var summary = GetNodeString(ending["summary"]);
+
+            lines.Add($"  • [white]{Markup.Escape(endingId)}[/] — {Markup.Escape(endingType)}; {Markup.Escape(victoryTier)}; ход {GetNodeInt(ending["resolvedAtTurn"])}");
+            if (!string.IsNullOrWhiteSpace(summary))
+                lines.Add($"    [dim]{Markup.Escape(summary)}[/]");
+
+            if (ending["rewardBundle"] is JsonObject rewards)
+                AppendSarefRewardBundle(lines, rewards);
+        }
+        lines.Add("");
+    }
+
+    private static void AppendSarefRewardBundle(List<string> lines, JsonObject rewards)
+    {
+        var rewardLines = new List<string>();
+        AddSarefRewardObjectLine(rewardLines, rewards, "resourceReward", "Ресурсы");
+        AddSarefRewardObjectLine(rewardLines, rewards, "wingsAccess", "Доступ к Крыльям");
+        AddSarefRewardObjectLine(rewardLines, rewards, "sarefArt", "Искусство Сарефа");
+        AddSarefRewardObjectLine(rewardLines, rewards, "sarefPassive", "Пассив Сарефа");
+        AddSarefRewardObjectLine(rewardLines, rewards, "oathCost", "Цена клятвы");
+        AddSarefRewardObjectLine(rewardLines, rewards, "antiOathProtection", "Защита от клятв");
+        AddSarefRewardObjectLine(rewardLines, rewards, "antiForeignProtection", "Защита от чужемирного влияния");
+        AddSarefRewardObjectLine(rewardLines, rewards, "relic", "Реликвия");
+        AddSarefRewardObjectLine(rewardLines, rewards, "passive", "Пассив");
+        AddSarefRewardArrayLines(rewardLines, rewards, "guardianRelationshipEffects", "Эффекты для Хранителей");
+        AddSarefRewardArrayLines(rewardLines, rewards, "deepWorldStateEffects", "Глубокие эффекты мира");
+        AddSarefRewardArrayLines(rewardLines, rewards, "costs", "Цена победы");
+
+        if (rewardLines.Count == 0)
+            return;
+
+        lines.Add("    [bold]Награды и последствия:[/]");
+        foreach (var line in rewardLines)
+            lines.Add($"    {line}");
+    }
+
+    private static void AddSarefRewardObjectLine(List<string> lines, JsonObject rewards, string propertyName, string label)
+    {
+        if (rewards[propertyName] is not JsonObject reward)
+            return;
+
+        var id = GetNodeString(reward["protectionId"]) ??
+                 GetNodeString(reward["relicId"]) ??
+                 GetNodeString(reward["passiveId"]) ??
+                 GetNodeString(reward["artId"]) ??
+                 GetNodeString(reward["oathId"]) ??
+                 GetNodeString(reward["status"]) ??
+                 GetNodeString(reward["scale"]);
+        var summary = GetNodeString(reward["summary"]);
+        var suffix = !string.IsNullOrWhiteSpace(summary)
+            ? summary
+            : id;
+        if (!string.IsNullOrWhiteSpace(suffix))
+            lines.Add($"• {Markup.Escape(label)}: [dim]{Markup.Escape(suffix)}[/]");
+    }
+
+    private static void AddSarefRewardArrayLines(List<string> lines, JsonObject rewards, string propertyName, string label)
+    {
+        if (rewards[propertyName] is not JsonArray array || array.Count == 0)
+            return;
+
+        lines.Add($"• {Markup.Escape(label)}:");
+        foreach (var item in array.OfType<JsonObject>())
+        {
+            var summary = GetNodeString(item["summary"]) ??
+                          GetNodeString(item["effect"]) ??
+                          GetNodeString(item["effectId"]) ??
+                          GetNodeString(item["costId"]);
+            if (!string.IsNullOrWhiteSpace(summary))
+                lines.Add($"  - [dim]{Markup.Escape(summary)}[/]");
+        }
     }
 
     private static IEnumerable<string> ReadSarefUiStringArray(JsonArray? array)
@@ -399,5 +486,23 @@ public partial class ExplorerMode
             "disabled" => "[dim]Отключено[/]",
             "suppressed" => "[red]Подавлено[/]",
             _ => Markup.Escape(state ?? "неизвестно")
+        };
+
+    private static string DescribeSarefEndingType(string? endingType) =>
+        endingType?.Trim().ToLowerInvariant() switch
+        {
+            "deal" => "сделка с Сарефом",
+            "victory" => "победа над Сарефом",
+            _ => endingType ?? "неизвестно"
+        };
+
+    private static string DescribeSarefVictoryTier(string? tier) =>
+        tier?.Trim().ToLowerInvariant() switch
+        {
+            "deal" => "сделка",
+            "pyrrhic" => "пиррова победа",
+            "clean" => "чистая победа",
+            "deep" => "глубокая победа",
+            _ => tier ?? "уровень не указан"
         };
 }

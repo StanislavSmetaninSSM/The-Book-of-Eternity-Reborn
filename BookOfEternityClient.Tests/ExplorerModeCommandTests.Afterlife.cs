@@ -231,6 +231,71 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SarefStory_RendersEndingsAndRewardBundle()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "completed",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [
+            { "revelationId": "rev_identity", "category": "identity", "revealedAtTurn": 50 }
+          ],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "factionLinks": { "visibility": "revealed", "wingsFactionId": "wings_of_angels" },
+          "finalConfrontation": {
+            "confrontationId": "saref_final_clean_001",
+            "status": "resolved",
+            "routeType": "combat",
+            "victoryTier": "clean",
+            "directScene": true,
+            "sceneType": "saref_confrontation",
+            "resolvedAtTurn": 120,
+            "conflictId": "saref_conflict_001",
+            "sarefOutcome": "defeated",
+            "wingsFactionOutcome": "broken",
+            "summary": "Игрок побеждает Сарефа."
+          },
+          "defeatOutcomes": [],
+          "endings": [
+            {
+              "endingId": "saref_ending_clean_001",
+              "endingType": "victory",
+              "finalConfrontationId": "saref_final_clean_001",
+              "resolvedAtTurn": 120,
+              "victoryTier": "clean",
+              "summary": "Чистая победа над Сарефом.",
+              "rewardBundle": {
+                "antiOathProtection": { "protectionId": "anti_oath_clean", "summary": "Защита от клятв Сарефа." },
+                "antiForeignProtection": { "protectionId": "anti_foreign_clean", "summary": "Защита от чужемирного света." },
+                "relic": { "relicId": "saref_broken_crown", "summary": "Сломанная корона Сарефа." },
+                "guardianRelationshipEffects": [
+                  { "guardianId": "azalia", "effect": "respect", "summary": "Азалия признаёт победу." }
+                ]
+              }
+            }
+          ],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/сареф");
+
+        var text = ExtractRenderedText();
+        Assert.Equal(string.Empty, result);
+        Assert.Contains("Итоги линии Сарефа", text, StringComparison.Ordinal);
+        Assert.Contains("Чистая победа над Сарефом", text, StringComparison.Ordinal);
+        Assert.Contains("Защита от клятв Сарефа", text, StringComparison.Ordinal);
+        Assert.Contains("Сломанная корона Сарефа", text, StringComparison.Ordinal);
+        Assert.Contains("Азалия признаёт победу", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeProfiles_RendersFullEntityProfile()
     {
         await SeedAfterlifeStateAsync();

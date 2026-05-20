@@ -1092,6 +1092,216 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             issue.Code?.StartsWith("saref_main_story_final_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public void ApplyUpdate_RecordFinalConfrontation_WithDealEndingCopiesOathAndRewards()
+    {
+        var root = SarefMainStoryState.ApplyUpdate(
+            JsonNode.Parse(BuildSarefFinalConfrontationState("null"))!.AsObject(),
+            JsonNode.Parse("""
+            {
+              "mode": "record_final_confrontation",
+              "resolvedAtTurn": 130,
+              "finalConfrontation": {
+                "confrontationId": "saref_deal_final_001",
+                "status": "resolved",
+                "routeType": "deal",
+                "victoryTier": "deal",
+                "directScene": true,
+                "sceneType": "saref_negotiation",
+                "sarefOutcome": "allied",
+                "wingsFactionOutcome": "joined",
+                "summary": "Игрок принимает сделку Сарефа в прямой сцене."
+              },
+              "playerOathState": {
+                "state": "oathbound",
+                "oathId": "saref_oath_001",
+                "summary": "Клятва связывает игрока с Крыльями Ангелов."
+              },
+              "ending": {
+                "endingId": "saref_ending_deal_001",
+                "endingType": "deal",
+                "finalConfrontationId": "saref_deal_final_001",
+                "summary": "Сареф щедро награждает игрока и связывает клятвой.",
+                "rewardBundle": {
+                  "resourceReward": { "scale": "huge", "inkFeathers": 5000, "lightSparks": 250 },
+                  "wingsAccess": { "status": "joined", "accessLevel": "inner_circle" },
+                  "sarefArt": { "artId": "saref_false_light", "summary": "Особое искусство Сарефа." },
+                  "sarefPassive": { "passiveId": "saref_oathfire", "summary": "Пассивная метка Крыльев." },
+                  "oathCost": { "oathId": "saref_oath_001", "state": "oathbound", "summary": "Нельзя выйти из Крыльев без разрыва клятвы." }
+                }
+              }
+            }
+            """)!.AsObject());
+
+        Assert.Equal(SarefMainStoryState.RevealStageCompleted, SarefMainStoryState.GetNodeString(root["revealStage"]));
+        Assert.Equal("oathbound", SarefMainStoryState.GetNodeString(root["playerOathState"]?["state"]));
+        var ending = Assert.IsType<JsonObject>(Assert.Single(root["endings"]!.AsArray()));
+        Assert.Equal("deal", SarefMainStoryState.GetNodeString(ending["endingType"]));
+        Assert.Equal("huge", SarefMainStoryState.GetNodeString(ending["rewardBundle"]?["resourceReward"]?["scale"]));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DealEndingWithoutOathCost_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefDealFinalConfrontationPayload(),
+                endingsPayload: """
+                [
+                  {
+                    "endingId": "saref_ending_deal_001",
+                    "endingType": "deal",
+                    "finalConfrontationId": "saref_deal_final_001",
+                    "resolvedAtTurn": 130,
+                    "summary": "Сделка без цены.",
+                    "rewardBundle": {
+                      "resourceReward": { "scale": "huge", "inkFeathers": 5000, "lightSparks": 250 },
+                      "wingsAccess": { "status": "joined", "accessLevel": "inner_circle" },
+                      "sarefArt": { "artId": "saref_false_light", "summary": "Особое искусство Сарефа." },
+                      "sarefPassive": { "passiveId": "saref_oathfire", "summary": "Пассивная метка Крыльев." }
+                    }
+                  }
+                ]
+                """,
+                playerOathStatePayload: """
+                {
+                  "state": "oathbound",
+                  "oathId": "saref_oath_001",
+                  "summary": "Клятва связывает игрока с Крыльями Ангелов."
+                }
+                """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_ending_deal_missing_oath_cost", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CleanVictoryEndingMissingProtections_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefCleanFinalConfrontationPayload(),
+                endingsPayload: """
+                [
+                  {
+                    "endingId": "saref_ending_clean_001",
+                    "endingType": "victory",
+                    "finalConfrontationId": "saref_final_clean_001",
+                    "resolvedAtTurn": 120,
+                    "victoryTier": "clean",
+                    "summary": "Победа без обязательных защит.",
+                    "rewardBundle": {
+                      "relic": { "relicId": "saref_broken_crown", "summary": "Реликвия победы." },
+                      "guardianRelationshipEffects": [
+                        { "guardianId": "azalia", "effect": "respect", "summary": "Азалия признаёт победу." }
+                      ]
+                    }
+                  }
+                ]
+                """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_ending_victory_missing_protection", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_EndingWithoutMatchingFinal_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                BuildSarefCleanFinalConfrontationPayload(),
+                endingsPayload: """
+                [
+                  {
+                    "endingId": "saref_ending_orphan_001",
+                    "endingType": "victory",
+                    "finalConfrontationId": "other_final",
+                    "resolvedAtTurn": 120,
+                    "victoryTier": "clean",
+                    "summary": "Награда ссылается на другой финал.",
+                    "rewardBundle": {
+                      "antiOathProtection": { "protectionId": "anti_oath_clean", "summary": "Защита от клятв." },
+                      "antiForeignProtection": { "protectionId": "anti_foreign_clean", "summary": "Защита от чужемирного света." },
+                      "relic": { "relicId": "saref_broken_crown", "summary": "Реликвия победы." },
+                      "guardianRelationshipEffects": [
+                        { "guardianId": "azalia", "effect": "respect", "summary": "Азалия признаёт победу." }
+                      ]
+                    }
+                  }
+                ]
+                """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_ending_final_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DeepVictoryEndingWithFullRewardBundle_PassesEndingValidation()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                """
+                {
+                  "confrontationId": "saref_final_deep_001",
+                  "status": "resolved",
+                  "routeType": "hybrid",
+                  "routeComponents": [ "combat", "oath_law", "metaphysical" ],
+                  "victoryTier": "deep",
+                  "directScene": true,
+                  "sceneType": "final_resolution",
+                  "resolvedAtTurn": 140,
+                  "conflictId": "saref_conflict_001",
+                  "oathBreakProofId": "oath_break_001",
+                  "metaphysicalProofId": "source_truth_001",
+                  "sarefOutcome": "defeated",
+                  "wingsFactionOutcome": "dissolved",
+                  "summary": "Игрок раскрывает и уничтожает основу власти Сарефа."
+                }
+                """,
+                guardianQuestlinesPayload: BuildBroadGuardianQuestlinesPayload(),
+                endingsPayload: """
+                [
+                  {
+                    "endingId": "saref_ending_deep_001",
+                    "endingType": "victory",
+                    "finalConfrontationId": "saref_final_deep_001",
+                    "resolvedAtTurn": 140,
+                    "victoryTier": "deep",
+                    "summary": "Глубокая победа меняет устройство Обители.",
+                    "rewardBundle": {
+                      "antiOathProtection": { "protectionId": "anti_oath_deep", "summary": "Глубокая защита от клятв." },
+                      "antiForeignProtection": { "protectionId": "anti_foreign_deep", "summary": "Глубокая защита от чужемирного света." },
+                      "relic": { "relicId": "saref_true_crown", "summary": "Реликвия глубокой победы." },
+                      "passive": { "passiveId": "old_world_witness", "summary": "Пассив против чужого порядка." },
+                      "guardianRelationshipEffects": [
+                        { "guardianId": "azalia", "effect": "reverence", "summary": "Азалия видит полную правду." },
+                        { "guardianId": "ilarion", "effect": "reverence", "summary": "Иларион признаёт долг." }
+                      ],
+                      "deepWorldStateEffects": [
+                        { "effectId": "wings_dissolved", "summary": "Крылья Ангелов теряют структуру." }
+                      ]
+                    }
+                  }
+                ]
+                """));
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningWingsFactionState("dissolved"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("saref_main_story_ending_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     private static string BuildSarefAdvantageState(string advantagePayload) =>
         $$"""
         {
@@ -1175,7 +1385,9 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         string advantagePayload = """
           "sarefAdvantages": [],
           "sarefAdvantageUses": [],
-        """) =>
+        """,
+        string endingsPayload = "[]",
+        string playerOathStatePayload = "null") =>
         $$"""
         {
           "schemaVersion": 1,
@@ -1200,9 +1412,40 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           },
           "finalConfrontation": {{finalConfrontationPayload}},
           "defeatOutcomes": [],
-          "endings": [],
-          "playerOathState": null,
+          "endings": {{endingsPayload}},
+          "playerOathState": {{playerOathStatePayload}},
           "sarefPersonalBond": null
+        }
+        """;
+
+    private static string BuildSarefDealFinalConfrontationPayload() => """
+        {
+          "confrontationId": "saref_deal_final_001",
+          "status": "resolved",
+          "routeType": "deal",
+          "victoryTier": "deal",
+          "directScene": true,
+          "sceneType": "saref_negotiation",
+          "resolvedAtTurn": 130,
+          "sarefOutcome": "allied",
+          "wingsFactionOutcome": "joined",
+          "summary": "Игрок принимает сделку Сарефа в прямой сцене."
+        }
+        """;
+
+    private static string BuildSarefCleanFinalConfrontationPayload() => """
+        {
+          "confrontationId": "saref_final_clean_001",
+          "status": "resolved",
+          "routeType": "combat",
+          "victoryTier": "clean",
+          "directScene": true,
+          "sceneType": "saref_confrontation",
+          "resolvedAtTurn": 120,
+          "conflictId": "saref_conflict_001",
+          "sarefOutcome": "defeated",
+          "wingsFactionOutcome": "broken",
+          "summary": "Игрок побеждает Сарефа в прямой сцене."
         }
         """;
 

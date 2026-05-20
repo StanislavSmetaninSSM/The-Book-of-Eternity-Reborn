@@ -63,12 +63,18 @@ internal static class SarefMainStoryState
     public const string FinalRouteOathLaw = "oath_law";
     public const string FinalRouteMetaphysical = "metaphysical";
     public const string FinalRouteHybrid = "hybrid";
+    public const string FinalRouteDeal = "deal";
     public const string FinalVictoryPyrrhic = "pyrrhic";
     public const string FinalVictoryClean = "clean";
     public const string FinalVictoryDeep = "deep";
+    public const string FinalVictoryDeal = "deal";
     public const string FinalSarefOutcomeDefeated = "defeated";
+    public const string FinalSarefOutcomeAllied = "allied";
     public const string FinalWingsOutcomeBroken = "broken";
     public const string FinalWingsOutcomeDissolved = "dissolved";
+    public const string FinalWingsOutcomeJoined = "joined";
+    public const string EndingTypeDeal = "deal";
+    public const string EndingTypeVictory = "victory";
 
     public const string WingsUpdateModeReveal = "reveal_wings";
     public const string WingsUpdateModeRefuse = "refuse_wings";
@@ -243,19 +249,22 @@ internal static class SarefMainStoryState
         FinalRoutePolitical,
         FinalRouteOathLaw,
         FinalRouteMetaphysical,
-        FinalRouteHybrid
+        FinalRouteHybrid,
+        FinalRouteDeal
     };
 
     public static readonly HashSet<string> FinalVictoryTiers = new(StringComparer.OrdinalIgnoreCase)
     {
         FinalVictoryPyrrhic,
         FinalVictoryClean,
-        FinalVictoryDeep
+        FinalVictoryDeep,
+        FinalVictoryDeal
     };
 
     public static readonly HashSet<string> FinalSarefOutcomes = new(StringComparer.OrdinalIgnoreCase)
     {
         FinalSarefOutcomeDefeated,
+        FinalSarefOutcomeAllied,
         "destroyed",
         "banished",
         "redeemed",
@@ -266,9 +275,16 @@ internal static class SarefMainStoryState
     {
         FinalWingsOutcomeBroken,
         FinalWingsOutcomeDissolved,
+        FinalWingsOutcomeJoined,
         "leaderless",
         "reformed",
         "absorbed"
+    };
+
+    public static readonly HashSet<string> EndingTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        EndingTypeDeal,
+        EndingTypeVictory
     };
 
     public static readonly HashSet<string> WingsRouteSafetyStates = new(StringComparer.OrdinalIgnoreCase)
@@ -689,6 +705,11 @@ internal static class SarefMainStoryState
 
         if (updateRoot["sarefAdvantageUses"] is JsonArray advantageUses)
             MergeArrayById(EnsureArray(root, "sarefAdvantageUses"), advantageUses, "usageId");
+
+        if (updateRoot["playerOathState"] is JsonObject playerOathState)
+            root["playerOathState"] = playerOathState.DeepClone();
+        if (updateRoot["sarefPersonalBond"] is JsonObject personalBond)
+            root["sarefPersonalBond"] = personalBond.DeepClone();
 
         if (updateRoot["ending"] is JsonObject ending)
             MergeEnding(root, ending, final, resolvedAtTurn);
