@@ -7378,6 +7378,76 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SourceOfLight_BlocksActiveGmTurnAndPreservesSnapshotArtifacts()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await SetShiningRadianceAsync(experience: 580, tier: 4);
+        await WriteJsonAsync("input/turn_request.json", new
+        {
+            sessionId = "session_source_light_pending_turn_001",
+            requestId = "request_source_light_pending_turn_001",
+            turnNumber = 160,
+            playerAction = "Ordinary Shining turn still awaiting GM response"
+        });
+        await WriteJsonAsync("game_state/control/pending_turn_snapshot.json", new
+        {
+            sessionId = "session_source_light_pending_turn_001",
+            requestId = "request_source_light_pending_turn_001",
+            turnNumber = 160
+        });
+        const string snapshotFilePath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
+        await _fs.WriteFileAtomicAsync(snapshotFilePath, """{ "currentRealm": "Shining Abode" }""");
+        await _stateManager.RefreshGameStateAsync();
+
+        var beforeSoulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var beforeShiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var beforeTurnRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        var beforeSnapshotManifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        var beforeSnapshotFileJson = await _fs.ReadFileAsync(snapshotFilePath);
+        _console.QueueAnyConfirmResponse(true);
+
+        var result = await _explorer.TryProcessCommand("/source_of_light");
+
+        Assert.Equal("", result);
+        AssertNoHiddenExplorerErrors("source_of_light_blocks_active_gm_turn");
+        Assert.False(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
+        Assert.Equal(beforeSoulJson, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+        Assert.Equal(beforeShiningJson, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+        Assert.Equal(beforeTurnRequestJson, await _fs.ReadFileAsync("input/turn_request.json"));
+        Assert.Equal(beforeSnapshotManifestJson, await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json"));
+        Assert.Equal(beforeSnapshotFileJson, await _fs.ReadFileAsync(snapshotFilePath));
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Источник Света заблокирован", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("активный GM-turn", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SourceOfLight_IgnoresStaleEmptySnapshotDirectory()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        await SetShiningRadianceAsync(experience: 580, tier: 4);
+        _fs.DeleteFile("input/turn_request.json");
+        _fs.DeleteFile("game_state/control/pending_turn_snapshot.json");
+        _fs.DeleteFile(ShiningCoreActionRequestState.PendingActionsRequestPath);
+        _fs.DeleteFile(ShiningTradeRequestState.PendingRequestsPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingFoundingsRequestPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingRealignmentsRequestPath);
+        _fs.DeleteFile(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath);
+        Directory.CreateDirectory(_fs.ResolvePath("game_state/control/pending_turn_snapshot"));
+        _console.QueueAnyConfirmResponse(true);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/source_of_light");
+
+        Assert.NotNull(result);
+        Assert.Contains("[SOURCE_OF_LIGHT_CAPSTONE:", result, StringComparison.OrdinalIgnoreCase);
+        Assert.True(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
+        AssertNoHiddenExplorerErrors("source_of_light_ignores_stale_empty_snapshot_directory");
+        var renderedText = ExtractRenderedText();
+        Assert.DoesNotContain("активный GM-turn", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ShiningTreasury_BlocksCostBearingCorePendingRequests()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
