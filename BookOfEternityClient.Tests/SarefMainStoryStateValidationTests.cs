@@ -702,6 +702,183 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             string.Equals(issue.Code, "saref_main_story_spent_advantage_missing_audit", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public void ApplyUpdate_RecordDefeatOutcome_AppendsOutcomeAndOathState()
+    {
+        var root = SarefMainStoryState.ApplyUpdate(
+            JsonNode.Parse(BuildSarefDefeatState("[]"))!.AsObject(),
+            JsonNode.Parse("""
+            {
+              "mode": "record_defeat_outcome",
+              "resolvedAtTurn": 91,
+              "defeatOutcome": {
+                "outcomeId": "saref_defeat_forced_oath_001",
+                "outcomeType": "forced_oath",
+                "sceneType": "saref_confrontation",
+                "oathId": "saref_oath_001",
+                "summary": "Сареф принудил душу к клятве после поражения.",
+                "gmMotivation": "Сареф хочет не убить игрока, а связать его волю."
+              },
+              "playerOathState": {
+                "state": "oathbound",
+                "oathId": "saref_oath_001",
+                "boundAtTurn": 91,
+                "summary": "Игрок связан клятвой Сарефа."
+              }
+            }
+            """)!.AsObject());
+
+        var outcomes = Assert.IsType<JsonArray>(root["defeatOutcomes"]);
+        var outcome = Assert.IsType<JsonObject>(Assert.Single(outcomes));
+        Assert.Equal("saref_defeat_forced_oath_001", SarefMainStoryState.GetNodeString(outcome["outcomeId"]));
+        Assert.Equal(91, SarefMainStoryState.GetNodeInt(outcome["resolvedAtTurn"]));
+        Assert.Equal("oathbound", SarefMainStoryState.GetNodeString(root["playerOathState"]?["state"]));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_InvalidSarefDefeatOutcome_ReportsContractIssues()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefDefeatState("""
+        [
+          {
+            "outcomeId": "saref_defeat_invalid_001",
+            "outcomeType": "annihilate_everything",
+            "resolvedAtTurn": 91,
+            "sceneType": "saref_confrontation",
+            "summary": "Invalid outcome.",
+            "gmMotivation": ""
+          }
+        ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_defeat_invalid_outcome_type", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_defeat_missing_motivation", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ForcedOathDefeatWithoutOathState_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefDefeatState("""
+        [
+          {
+            "outcomeId": "saref_defeat_forced_oath_001",
+            "outcomeType": "forced_oath",
+            "resolvedAtTurn": 91,
+            "sceneType": "saref_confrontation",
+            "oathId": "saref_oath_001",
+            "summary": "Сареф принудил душу к клятве.",
+            "gmMotivation": "Сареф хочет использовать игрока как связанную фигуру."
+          }
+        ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_defeat_forced_oath_missing_oath_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SoulDissipationDefeatWithoutProofLink_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefDefeatState("""
+        [
+          {
+            "outcomeId": "saref_defeat_soul_dissipation_001",
+            "outcomeType": "soul_dissipation",
+            "resolvedAtTurn": 91,
+            "sceneType": "saref_confrontation",
+            "summary": "Сареф пытается окончательно развеять душу игрока.",
+            "gmMotivation": "Сареф считает игрока угрозой, которую нельзя оставить в Мироздании."
+          }
+        ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_defeat_soul_dissipation_missing_proof", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PyrrhicEscapeWithUnknownMitigationAdvantage_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefDefeatState("""
+        [
+          {
+            "outcomeId": "saref_defeat_pyrrhic_escape_001",
+            "outcomeType": "pyrrhic_escape",
+            "resolvedAtTurn": 91,
+            "sceneType": "saref_confrontation",
+            "escapeCost": "Игрок вырывается, но теряет маршрут и часть союзников.",
+            "summary": "Преимущество превращает поражение в тяжёлое бегство.",
+            "gmMotivation": "Сареф решает не преследовать мгновенно, потому что цена уже нанесена.",
+            "mitigation": {
+              "mitigatedByAdvantages": [ "use_missing_anchor" ],
+              "mitigationSummary": "Память удерживает душу от полного подавления."
+            }
+          }
+        ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_defeat_unknown_mitigation_advantage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PyrrhicEscapeWithKnownMitigationAdvantage_PassesDefeatValidation()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefDefeatState(
+            """
+            [
+              {
+                "outcomeId": "saref_defeat_pyrrhic_escape_001",
+                "outcomeType": "pyrrhic_escape",
+                "resolvedAtTurn": 91,
+                "sceneType": "saref_confrontation",
+                "escapeCost": "Игрок вырывается, но теряет маршрут и часть союзников.",
+                "summary": "Преимущество превращает поражение в тяжёлое бегство.",
+                "gmMotivation": "Сареф сохраняет угрозу, но позволяет бегству стать уроком.",
+                "mitigation": {
+                  "mitigatedByAdvantages": [ "use_memory_anchor_escape" ],
+                  "mitigationSummary": "Якорь памяти удержал личность игрока в момент подавления."
+                }
+              }
+            ]
+            """,
+            """
+            "sarefAdvantages": [
+              {
+                "advantageId": "adv_ilarion_memory_anchor",
+                "state": "passive",
+                "applicableScenes": [ "saref_confrontation", "memory_attack" ],
+                "summary": "Игрок может закрепить одну важную правду против подавления памяти."
+              }
+            ],
+            "sarefAdvantageUses": [
+              {
+                "usageId": "use_memory_anchor_escape",
+                "advantageId": "adv_ilarion_memory_anchor",
+                "usedAtTurn": 91,
+                "sceneType": "saref_confrontation",
+                "consumesAdvantage": false,
+                "summary": "Якорь памяти превратил поражение в бегство вместо стирания личности."
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("saref_main_story_defeat_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     private static string BuildSarefAdvantageState(string advantagePayload) =>
         $$"""
         {
@@ -732,6 +909,46 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           {{advantagePayload}},
           "factionLinks": { "visibility": "hidden" },
           "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """;
+
+    private static string BuildSarefDefeatState(string defeatOutcomesPayload, string advantagePayload = """
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+    """) =>
+        $$"""
+        {
+          "schemaVersion": 1,
+          "revealStage": "name_revealed",
+          "guardianQuestlines": [
+            {
+              "guardianId": "azalia",
+              "questStates": [
+                { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+                { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+                { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+                { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+              ]
+            }
+          ],
+          "latentTraces": [],
+          "sarefRevelations": [
+            {
+              "revelationId": "rev_azalia_faction",
+              "category": "faction",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "revealedAtTurn": 44
+            }
+          ],
+          {{advantagePayload}}
+          "factionLinks": { "visibility": "hidden" },
+          "finalConfrontation": null,
+          "defeatOutcomes": {{defeatOutcomesPayload}},
           "endings": [],
           "playerOathState": null,
           "sarefPersonalBond": null

@@ -2691,6 +2691,22 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("/сареф", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/крылья_над_бездной", examples, StringComparison.OrdinalIgnoreCase);
 
+        foreach (var text in new[] { matrix, examples, manifest, inventory, daemonSpec, apiSpec, taskGuide, operations })
+        {
+            Assert.Contains(SarefMainStoryState.DefeatUpdateModeRecord, text, StringComparison.Ordinal);
+            Assert.Contains("defeatOutcomes", text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.DefeatOutcomeForcedOath, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.DefeatOutcomeExileToChaosSea, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.DefeatOutcomeMemorySuppression, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.DefeatOutcomeSoulDissipation, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.DefeatOutcomePyrrhicEscape, text, StringComparison.Ordinal);
+            Assert.Contains("playerOathState", text, StringComparison.Ordinal);
+            Assert.Contains("exileAudit", text, StringComparison.Ordinal);
+            Assert.Contains("memorySuppressionAudit", text, StringComparison.Ordinal);
+            Assert.Contains("soulDissipationProofId", text, StringComparison.Ordinal);
+            Assert.Contains("mitigation", text, StringComparison.OrdinalIgnoreCase);
+        }
+
         foreach (var text in new[] { matrix, examples, inventory, daemonSpec, apiSpec, taskGuide, operations })
         {
             Assert.Contains(SarefMainStoryState.PendingWingsInfiltrationPath, text, StringComparison.Ordinal);

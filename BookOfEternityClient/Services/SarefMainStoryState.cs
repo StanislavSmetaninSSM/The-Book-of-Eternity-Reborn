@@ -49,6 +49,13 @@ internal static class SarefMainStoryState
     public const string SceneEscapeOrExile = "escape_or_exile";
     public const string SceneFinalResolution = "final_resolution";
 
+    public const string DefeatUpdateModeRecord = "record_defeat_outcome";
+    public const string DefeatOutcomeForcedOath = "forced_oath";
+    public const string DefeatOutcomeExileToChaosSea = "exile_to_chaos_sea";
+    public const string DefeatOutcomeMemorySuppression = "memory_suppression";
+    public const string DefeatOutcomeSoulDissipation = "soul_dissipation";
+    public const string DefeatOutcomePyrrhicEscape = "pyrrhic_escape";
+
     public const string WingsUpdateModeReveal = "reveal_wings";
     public const string WingsUpdateModeRefuse = "refuse_wings";
     public const string WingsUpdateModeBlock = "block_wings";
@@ -199,6 +206,15 @@ internal static class SarefMainStoryState
         WingsUpdateModeReveal,
         WingsUpdateModeRefuse,
         WingsUpdateModeBlock
+    };
+
+    public static readonly HashSet<string> DefeatOutcomeTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        DefeatOutcomeForcedOath,
+        DefeatOutcomeExileToChaosSea,
+        DefeatOutcomeMemorySuppression,
+        DefeatOutcomeSoulDissipation,
+        DefeatOutcomePyrrhicEscape
     };
 
     public static readonly HashSet<string> WingsRouteSafetyStates = new(StringComparer.OrdinalIgnoreCase)
@@ -443,7 +459,16 @@ internal static class SarefMainStoryState
         root.Remove(ResponseField);
 
         var mode = GetNodeString(updateRoot["mode"]);
-        if (string.IsNullOrWhiteSpace(mode) || !WingsUpdateModes.Contains(mode))
+        if (string.IsNullOrWhiteSpace(mode))
+            return root;
+
+        if (string.Equals(mode, DefeatUpdateModeRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            ApplyDefeatOutcomeUpdate(root, updateRoot);
+            return root;
+        }
+
+        if (!WingsUpdateModes.Contains(mode))
             return root;
 
         var requestId = GetNodeString(updateRoot["requestId"]) ??
@@ -490,6 +515,112 @@ internal static class SarefMainStoryState
 
         root["wingsInfiltration"] = closure;
         return root;
+    }
+
+    private static void ApplyDefeatOutcomeUpdate(JsonObject root, JsonObject updateRoot)
+    {
+        var outcome = updateRoot["defeatOutcome"] is JsonObject defeatOutcome
+            ? defeatOutcome.DeepClone().AsObject()
+            : updateRoot["defeatOutcomeAudit"] is JsonObject defeatOutcomeAudit
+                ? defeatOutcomeAudit.DeepClone().AsObject()
+                : new JsonObject();
+
+        foreach (var key in new[]
+                 {
+                     "outcomeId", "outcomeType", "sceneType", "conflictId", "soulDissipationProofId",
+                     "oathId", "summary", "gmMotivation", "reason", "escapeCost"
+                 })
+        {
+            if (outcome[key] == null && updateRoot[key] != null)
+                outcome[key] = updateRoot[key]!.DeepClone();
+        }
+
+        var resolvedAtTurn = GetNodeInt(outcome["resolvedAtTurn"]);
+        if (resolvedAtTurn <= 0)
+            resolvedAtTurn = GetNodeInt(updateRoot["resolvedAtTurn"]);
+        if (resolvedAtTurn <= 0)
+            resolvedAtTurn = GetNodeInt(updateRoot["turnNumber"]);
+        if (resolvedAtTurn > 0)
+            outcome["resolvedAtTurn"] = resolvedAtTurn;
+
+        if (outcome["sceneType"] == null)
+            outcome["sceneType"] = SceneSarefConfrontation;
+
+        if (updateRoot["mitigation"] is JsonObject mitigation && outcome["mitigation"] == null)
+            outcome["mitigation"] = mitigation.DeepClone();
+        if (updateRoot["memorySuppressionAudit"] is JsonObject memorySuppressionAudit && outcome["memorySuppressionAudit"] == null)
+            outcome["memorySuppressionAudit"] = memorySuppressionAudit.DeepClone();
+        if (updateRoot["exileAudit"] is JsonObject exileAudit && outcome["exileAudit"] == null)
+            outcome["exileAudit"] = exileAudit.DeepClone();
+
+        var outcomes = EnsureArray(root, "defeatOutcomes");
+        var outcomeId = GetNodeString(outcome["outcomeId"]);
+        if (!string.IsNullOrWhiteSpace(outcomeId))
+        {
+            for (var i = 0; i < outcomes.Count; i++)
+            {
+                if (outcomes[i] is JsonObject existing &&
+                    string.Equals(GetNodeString(existing["outcomeId"]), outcomeId, StringComparison.OrdinalIgnoreCase))
+                {
+                    outcomes[i] = outcome;
+                    ApplyDefeatOutcomeSideEffects(root, updateRoot);
+                    return;
+                }
+            }
+        }
+
+        outcomes.Add(outcome);
+        ApplyDefeatOutcomeSideEffects(root, updateRoot);
+    }
+
+    private static void ApplyDefeatOutcomeSideEffects(JsonObject root, JsonObject updateRoot)
+    {
+        if (updateRoot["playerOathState"] is JsonObject playerOathState)
+            root["playerOathState"] = playerOathState.DeepClone();
+        if (updateRoot["sarefPersonalBond"] is JsonObject personalBond)
+            root["sarefPersonalBond"] = personalBond.DeepClone();
+        if (updateRoot["finalConfrontation"] is JsonObject finalConfrontation)
+            root["finalConfrontation"] = finalConfrontation.DeepClone();
+
+        if (updateRoot["sarefAdvantageUses"] is JsonArray advantageUses)
+            MergeArrayById(EnsureArray(root, "sarefAdvantageUses"), advantageUses, "usageId");
+    }
+
+    private static JsonArray EnsureArray(JsonObject root, string propertyName)
+    {
+        if (root[propertyName] is JsonArray array)
+            return array;
+
+        array = new JsonArray();
+        root[propertyName] = array;
+        return array;
+    }
+
+    private static void MergeArrayById(JsonArray target, JsonArray source, string idProperty)
+    {
+        foreach (var item in source.OfType<JsonObject>())
+        {
+            var itemId = GetNodeString(item[idProperty]);
+            if (!string.IsNullOrWhiteSpace(itemId))
+            {
+                var replaced = false;
+                for (var i = 0; i < target.Count; i++)
+                {
+                    if (target[i] is JsonObject existing &&
+                        string.Equals(GetNodeString(existing[idProperty]), itemId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        target[i] = item.DeepClone();
+                        replaced = true;
+                        break;
+                    }
+                }
+
+                if (replaced)
+                    continue;
+            }
+
+            target.Add(item.DeepClone());
+        }
     }
 
     public static bool HasMatchingWingsInfiltrationClosure(JsonObject? storyRoot, JsonObject request)
