@@ -502,6 +502,127 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task ChaosSeaToSoulGatesJourney_HygieneBlockersAndSnapshotsRemainConsistent()
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 4,
+            inkFeathers = new { current = 40 }
+        });
+        await WriteJsonAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, new { requests = Array.Empty<object>() });
+        await WriteJsonAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, new { requests = Array.Empty<object>() });
+        Directory.CreateDirectory(_fs.ResolvePath("game_state/control/pending_turn_snapshot"));
+        await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new
+        {
+            mode = "system_guardian_attraction",
+            targetPresetId = "eternal_tide_001",
+            targetPresetDisplayName = "Прилив Памяти",
+            targetPresetVersion = "1.0",
+            sourceLibrary = "built_in",
+            targetSummary = "Извечный Хранитель памяти.",
+            renderedPromptPackage = "Досье Хранителя.",
+            _lastUpdated = "2026-04-27T12:00:00Z"
+        });
+        await WriteJsonAsync(AfterlifeSpiritualConflictState.StatePath, new
+        {
+            schemaVersion = 1,
+            activeConflict = new
+            {
+                conflictId = "afterlife_conflict_gate_journey",
+                realm = "Chaos Sea",
+                operationType = "pressure",
+                resolutionState = "active"
+            },
+            recentConflicts = Array.Empty<object>()
+        });
+        var engine = CreateGameEngine();
+
+        var initialBlockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Contains(initialBlockers, blocker =>
+            blocker.Contains("притяжение к извечному Хранителю", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(initialBlockers, blocker =>
+            blocker.Contains(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains("activeConflict", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(initialBlockers, blocker =>
+            blocker.Contains("pending_turn_snapshot", StringComparison.OrdinalIgnoreCase));
+        Assert.False(_fs.FileExists(ActorSocialInteractionRequestState.PendingGuardianRequestPath));
+        Assert.False(_fs.FileExists(GuardianAbodeResidentRequestState.PendingResidentsRequestPath));
+
+        _fs.DeleteFile(SystemGuardianLibraryService.AttractionRequestPath);
+        await WriteJsonAsync(AfterlifeSpiritualConflictState.StatePath, new
+        {
+            schemaVersion = 1,
+            activeConflict = (object?)null,
+            recentConflicts = new[]
+            {
+                new
+                {
+                    conflictId = "afterlife_conflict_gate_journey",
+                    realm = "Chaos Sea",
+                    resolutionState = "repair_cancelled",
+                    resolvedAtTurn = 40,
+                    repairReason = "test cleanup before Soul Gates"
+                }
+            }
+        });
+        await _fs.WriteFileAtomicAsync(GuardianTradeRequestState.PendingRequestPath, "{ malformed");
+
+        var malformedBlockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+
+        Assert.Contains(malformedBlockers, blocker =>
+            blocker.Contains(GuardianTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) &&
+            blocker.Contains("повреждённый", StringComparison.OrdinalIgnoreCase));
+
+        _fs.DeleteFile(GuardianTradeRequestState.PendingRequestPath);
+        var clearBlockers = await InvokePrivateAsync<List<string>>(engine, "CollectIncarnationBlockersAsync");
+        Assert.Empty(clearBlockers);
+
+        var request = new TurnRequest
+        {
+            SessionId = "session_chaos_soul_gates_journey",
+            RequestId = "request_chaos_soul_gates_journey",
+            TurnNumber = 41,
+            PlayerAction = "Soul Gates prep after Chaos Sea journey",
+            Timestamp = "2026-03-24T00:00:00Z",
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Chaos Sea" }
+        };
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, null, "chaos-to-soul-gates-journey");
+
+        var manifestJson = await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json");
+        Assert.NotNull(manifestJson);
+        var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(manifestJson!)!);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var snapshotHashes = Assert.IsType<JsonObject>(manifest["snapshotFileHashes"]);
+        var rollbackBaselineFiles = Assert.IsType<JsonArray>(manifest["rollbackBaselineFiles"])
+            .Select(node => node?.GetValue<string>() ?? string.Empty)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.True(files.ContainsKey("game_state/meta/soul_state.json"));
+        Assert.True(files.ContainsKey(AfterlifeSpiritualConflictState.StatePath));
+        Assert.False(files.ContainsKey(SystemGuardianLibraryService.AttractionRequestPath));
+        Assert.False(files.ContainsKey(GuardianTradeRequestState.PendingRequestPath));
+        Assert.Contains("game_state/meta/soul_state.json", rollbackBaselineFiles);
+        Assert.Contains(AfterlifeSpiritualConflictState.StatePath, rollbackBaselineFiles);
+        Assert.DoesNotContain(SystemGuardianLibraryService.AttractionRequestPath, rollbackBaselineFiles);
+
+        foreach (var fileEntry in files)
+        {
+            var snapshotPath = fileEntry.Value?.GetValue<string>();
+            Assert.False(string.IsNullOrWhiteSpace(snapshotPath));
+            Assert.True(_fs.FileExists(snapshotPath!), $"{snapshotPath} should exist for {fileEntry.Key}.");
+            Assert.True(snapshotHashes.TryGetPropertyValue(fileEntry.Key, out var hashNode));
+            var expectedHash = hashNode?.GetValue<string>();
+            Assert.False(string.IsNullOrWhiteSpace(expectedHash));
+            var snapshotContent = await _fs.ReadFileAsync(snapshotPath!);
+            Assert.NotNull(snapshotContent);
+            Assert.Equal(expectedHash, ComputeSha256(snapshotContent!), ignoreCase: true);
+        }
+    }
+
+    [Fact]
     public async Task CleanupAfterCancelledChaosSeaMarkerTurn_PreservesSystemGuardianAttractionForLateResponse()
     {
         await WriteJsonAsync(SystemGuardianLibraryService.AttractionRequestPath, new
