@@ -131,6 +131,8 @@ public static class FileMapping
         ["afterlifeEntityCustomStateChanges"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeEntityProgressionOverrides"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeSpecialArtLearningReceipts"] = "game_state/meta/afterlife_entity_profiles.json",
+        ["sarefMainStoryState"] = "game_state/meta/main_story_saref_state.json",
+        ["sarefMainStoryUpdate"] = "game_state/meta/main_story_saref_state.json",
         ["UpdateGuardians"] = "game_state/meta/guardians.json",
         ["guardianQuestProgressUpdates"] = "game_state/meta/guardians.json",
         ["UpdateGuardianTradeInventoryReceipts"] = "game_state/meta/guardians.json",

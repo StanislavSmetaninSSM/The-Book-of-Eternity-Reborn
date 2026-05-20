@@ -8,6 +8,12 @@ public partial class ExplorerMode
 {
     private async Task ShowSarefStoryAsync()
     {
+        if (IsSarefFindWingsSubcommand(_currentCommandRemainder))
+        {
+            await ShowSarefFindWingsAsync();
+            return;
+        }
+
         await _stateManager.RefreshGameStateAsync();
         var read = await ReadJsonObjectForAfterlifeStatusResultAsync(SarefMainStoryState.StatePath);
         if (read.Error != null)
@@ -52,6 +58,191 @@ public partial class ExplorerMode
 
         WriteJsonAuditPanel($"Полный JSON {SarefMainStoryState.StatePath}", root, Color.Gold1);
         WaitForKey();
+    }
+
+    private async Task ShowSarefFindWingsAsync()
+    {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Поиск Крыльев Ангелов"))
+            return;
+
+        await _stateManager.RefreshGameStateAsync();
+        if (!_stateManager.CurrentState.IsInShiningAbode)
+        {
+            ShowEmptyPanel(
+                "Поиск Крыльев Ангелов",
+                "Поиск Крыльев доступен только в обычной активной Сияющей Обители. В Море Хаоса можно собирать фрагменты, но нельзя начать внедрение.");
+            WaitForKey();
+            return;
+        }
+
+        var context = await LoadShiningContextAsync();
+        if (context == null)
+        {
+            ShowEmptyPanel(
+                "Поиск Крыльев Ангелов",
+                "Нужны читаемые game_state/meta/soul_state.json и game_state/meta/shining_abode_state.json.");
+            WaitForKey();
+            return;
+        }
+
+        var pending = await SarefMainStoryState.ReadWingsInfiltrationRequestStateAsync(_fs);
+        if (pending.IsMalformed)
+        {
+            ShowEmptyPanel(
+                "Поиск Крыльев Ангелов",
+                $"{SarefMainStoryState.PendingWingsInfiltrationPath} повреждён: {pending.Error}. Исправьте pending-файл перед повторной попыткой.");
+            WaitForKey();
+            return;
+        }
+
+        if (pending.Request != null)
+        {
+            Write(BuildSarefWingsPendingPanel(pending.Request));
+            WaitForKey();
+            return;
+        }
+
+        var pendingBlocker = await TryDescribeSarefWingsPendingBlockerAsync(context.Root);
+        if (pendingBlocker != null)
+        {
+            ShowEmptyPanel("Поиск Крыльев Ангелов", pendingBlocker);
+            WaitForKey();
+            return;
+        }
+
+        var read = await ReadJsonObjectForAfterlifeStatusResultAsync(SarefMainStoryState.StatePath);
+        if (read.Error != null)
+        {
+            ShowEmptyPanel(
+                "Поиск Крыльев Ангелов",
+                $"Состояние скрытой линии повреждено ({read.Error}). Сначала нужен repair состояния.");
+            WaitForKey();
+            return;
+        }
+
+        var request = SarefMainStoryState.BuildWingsInfiltrationRequest(
+            read.Root,
+            Math.Max(1, _stateManager.CurrentState.TurnNumber + 1));
+        if (request == null)
+        {
+            ShowEmptyPanel(
+                "Поиск Крыльев Ангелов",
+                "Ты пока не знаешь, что искать. Нужен маршрут: все четыре ключевых фрагмента Сарефа или достаточные замены по контракту.");
+            WaitForKey();
+            return;
+        }
+
+        Write(BuildSarefWingsAvailablePanel(request));
+        WriteJsonAuditPanel("JSON pending_saref_wings_infiltration.json", request, Color.Gold1);
+
+        if (!Confirm("[yellow]Начать поиск Крыльев Ангелов и отправить ожидающий контракт ГМ?[/]", false))
+        {
+            MarkupLine("[dim]Поиск Крыльев не начат; ожидающий запрос не создан.[/]");
+            WaitForKey();
+            return;
+        }
+
+        await SarefMainStoryState.WriteWingsInfiltrationRequestAsync(_fs, request);
+        var requestId = GetNodeString(request["requestId"]) ?? "?";
+        var routeSafety = GetNodeString(request["routeSafety"]) ?? "?";
+        var entryMode = GetNodeString(request["entryMode"]) ?? "?";
+        _pendingGmAction =
+            $"[SAREF_WINGS_INFILTRATION: {requestId}] Душа начинает поиск входа в Крылья Ангелов.\n\n" +
+            $"Закрой {SarefMainStoryState.PendingWingsInfiltrationPath} через sarefMainStoryUpdate.mode={SarefMainStoryState.WingsUpdateModeReveal}, " +
+            $"{SarefMainStoryState.WingsUpdateModeRefuse} или {SarefMainStoryState.WingsUpdateModeBlock}. " +
+            $"Маршрут: {routeSafety}, вход: {entryMode}. " +
+            "Если routeSafety=risky/desperate, обязательно примени перечисленные disadvantages. " +
+            "При reveal_wings запиши main_story_saref_state.revealStage=wings_revealed, wingsInfiltration.status=revealed, resolvedAtTurn и factionLinks.visibility=revealed. " +
+            "Не оставляй pending-файл без accepted closure/repair.";
+
+        MarkupLine("[green]Поиск Крыльев Ангелов начат: pending request создан и GM action подготовлен.[/]");
+        WaitForKey();
+    }
+
+    private async Task<string?> TryDescribeSarefWingsPendingBlockerAsync(JsonObject shiningRoot)
+    {
+        if (_fs.FileExists("input/turn_request.json") ||
+            _fs.FileExists("game_state/control/pending_turn_snapshot.json") ||
+            HasAnyShiningTreasuryPendingTurnSnapshotFile())
+        {
+            return "Поиск Крыльев заблокирован: найден активный GM-turn lifecycle. Дождитесь завершения, отмены или repair текущего хода.";
+        }
+
+        var blocker = await SourceOfLightCapstoneState.TryDescribeBlockingPendingContractAsync(_fs, shiningRoot);
+        return blocker == null
+            ? null
+            : $"Поиск Крыльев заблокирован: есть {blocker}.";
+    }
+
+    private static bool IsSarefFindWingsSubcommand(string? remainder)
+    {
+        if (string.IsNullOrWhiteSpace(remainder))
+            return false;
+
+        var normalized = remainder.Trim().ToLowerInvariant().Replace('-', '_');
+        normalized = string.Join(' ', normalized.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        return normalized is "найти_крылья" or "найти крылья" or "find_wings" or "find wings";
+    }
+
+    private static Panel BuildSarefWingsAvailablePanel(JsonObject request)
+    {
+        var routeSafety = GetNodeString(request["routeSafety"]) ?? "?";
+        var lines = new List<string>
+        {
+            "[bold gold1]Поиск Крыльев Ангелов[/]",
+            "",
+            $"Маршрут: [white]{Markup.Escape(DescribeSarefWingsRouteSafety(routeSafety))}[/]",
+            $"Режим входа: [white]{Markup.Escape(GetNodeString(request["entryMode"]) ?? "?")}[/]",
+            $"Фрагментов маршрута: [white]{CountArray(request["routeFragments"])}[/]; замен: [white]{CountArray(request["substituteFragments"])}[/]",
+            $"Доступных преимуществ: [white]{CountArray(request["availableAdvantages"])}[/]",
+            "",
+            "[dim]После подтверждения клиент создаст pending-файл, а ГМ будет обязан закрыть его accepted closure или repair.[/]"
+        };
+
+        if (request["disadvantages"] is JsonArray { Count: > 0 } disadvantages)
+        {
+            lines.Add("");
+            lines.Add("[yellow]Обязательные осложнения маршрута:[/]");
+            foreach (var disadvantage in disadvantages)
+            {
+                var text = GetNodeString(disadvantage);
+                if (!string.IsNullOrWhiteSpace(text))
+                    lines.Add($"  • {Markup.Escape(text)}");
+            }
+        }
+
+        return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 🪽 Поиск Крыльев Ангелов ", Justify.Center),
+            Border = BoxBorder.Double,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        };
+    }
+
+    private static Panel BuildSarefWingsPendingPanel(JsonObject request)
+    {
+        var lines = new List<string>
+        {
+            "[bold gold1]Поиск Крыльев Ангелов уже ожидает закрытия ГМ.[/]",
+            "",
+            $"  • requestId: [white]{Markup.Escape(GetNodeString(request["requestId"]) ?? "?")}[/]",
+            $"  • routeSafety: [white]{Markup.Escape(GetNodeString(request["routeSafety"]) ?? "?")}[/]",
+            $"  • entryMode: [white]{Markup.Escape(GetNodeString(request["entryMode"]) ?? "?")}[/]",
+            $"  • response surface: [white]{Markup.Escape(SarefMainStoryState.ResponseField)}[/]",
+            "",
+            "[dim]Не создавайте второй запрос; дождитесь reveal_wings/refuse_wings/block_wings или repair pending-файла.[/]"
+        };
+
+        return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" Поиск Крыльев ожидает закрытия ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Gold1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        };
     }
 
     private static bool IsSarefStoryStillUnknown(JsonObject root)
@@ -188,6 +379,15 @@ public partial class ExplorerMode
             "exile_survival" => "выживание после изгнания",
             "false_light_cut" => "разрез ложного света",
             _ => category ?? "неизвестно"
+        };
+
+    private static string DescribeSarefWingsRouteSafety(string? routeSafety) =>
+        routeSafety?.Trim().ToLowerInvariant() switch
+        {
+            "safe" => "безопасный маршрут",
+            "risky" => "рискованный маршрут",
+            "desperate" => "отчаянный маршрут",
+            _ => routeSafety ?? "неизвестно"
         };
 
     private static string FormatSarefAdvantageState(string? state) =>

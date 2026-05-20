@@ -517,7 +517,10 @@ public partial class ValidationService
             await ValidatePendingShiningRealignmentResolutionAsync(issues);
             await ValidatePendingShiningLeadershipTransitionResolutionAsync(issues);
             if (_fs.FileExists("ready/turn_complete.json"))
+            {
                 await ValidatePendingSourceOfLightCapstoneResolutionAsync(issues);
+                await ValidatePendingSarefWingsInfiltrationResolutionAsync(issues);
+            }
             await ValidateShiningClosureCompositeDiffAsync(issues);
             await ValidatePendingGuardianSocialInteractionResolutionAsync(issues);
             await ValidatePendingNpcSocialInteractionResolutionAsync(issues);
@@ -672,7 +675,8 @@ public partial class ValidationService
                      ShiningFactionRequestState.PendingFoundingsRequestPath,
                      ShiningFactionRequestState.PendingRealignmentsRequestPath,
                      ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
-                     SourceOfLightCapstoneState.PendingRequestPath
+                     SourceOfLightCapstoneState.PendingRequestPath,
+                     SarefMainStoryState.PendingWingsInfiltrationPath
                  })
         {
             switch (await DescribeTrackedFileChangeAgainstManifestAsync(manifest, clientOwnedPath))
@@ -708,6 +712,8 @@ public partial class ValidationService
                             : clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingGuardianRequestPath, StringComparison.OrdinalIgnoreCase)
                                 ? "GuardianSocial"
                             : clientOwnedPath.Equals(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                                ? "ShiningAbode"
+                            : clientOwnedPath.Equals(SarefMainStoryState.PendingWingsInfiltrationPath, StringComparison.OrdinalIgnoreCase)
                                 ? "ShiningAbode"
                                 : "BootstrapProtocol",
                         $"{Path.GetFileName(clientOwnedPath)} нельзя проверить строго: validated pre-turn baseline отсутствует.",
@@ -765,6 +771,8 @@ public partial class ValidationService
                                 ? "client_owned_shining_leadership_request_modified"
                     : clientOwnedPath.Equals(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_source_of_light_capstone_request_modified"
+                    : clientOwnedPath.Equals(SarefMainStoryState.PendingWingsInfiltrationPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_saref_wings_infiltration_request_modified"
                     : "client_owned_world_setup_state_modified",
                 section: clientOwnedPath.Equals(AfterlifeReturnGuardService.GuardPath, StringComparison.OrdinalIgnoreCase)
                     ? "Lifecycle"
@@ -798,7 +806,8 @@ public partial class ValidationService
                       clientOwnedPath.Equals(ShiningFactionRequestState.PendingFoundingsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                       clientOwnedPath.Equals(ShiningFactionRequestState.PendingRealignmentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
                       clientOwnedPath.Equals(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, StringComparison.OrdinalIgnoreCase) ||
-                      clientOwnedPath.Equals(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                      clientOwnedPath.Equals(SourceOfLightCapstoneState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(SarefMainStoryState.PendingWingsInfiltrationPath, StringComparison.OrdinalIgnoreCase)
                         ? "ShiningAbode"
                     : "WorldSetup",
                 repairHint: $"Не записывай {clientOwnedPath} в GM response; этот файл поддерживается клиентом/игроком и должен читаться GM как входной контракт."));

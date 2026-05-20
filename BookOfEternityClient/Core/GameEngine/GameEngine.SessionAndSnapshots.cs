@@ -228,6 +228,10 @@ public partial class GameEngine
             rollbackBaselineFiles.Add(SourceOfLightCapstoneState.PendingRequestPath);
         else
             rollbackBaselineFiles.Remove(SourceOfLightCapstoneState.PendingRequestPath);
+        if (_fs.FileExists(SarefMainStoryState.PendingWingsInfiltrationPath))
+            rollbackBaselineFiles.Add(SarefMainStoryState.PendingWingsInfiltrationPath);
+        else
+            rollbackBaselineFiles.Remove(SarefMainStoryState.PendingWingsInfiltrationPath);
         if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
         if (_fs.FileExists(AfterlifeEntityProfileState.StatePath))
@@ -948,6 +952,7 @@ public partial class GameEngine
                 await ShiningTradeRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
                 await ShiningFactionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
                 await SourceOfLightCapstoneState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+                await SarefMainStoryState.EnsureWingsInfiltrationHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             }
             await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, _stateManager.CurrentState.CurrentRealm);
             await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, _stateManager.CurrentState.CurrentRealm);
@@ -1013,6 +1018,7 @@ public partial class GameEngine
         await ShiningTradeRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await ShiningFactionRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await SourceOfLightCapstoneState.EnsureHealthyAsync(_fs, currentRealm);
+        await SarefMainStoryState.EnsureWingsInfiltrationHealthyAsync(_fs, currentRealm);
         await ActorSocialInteractionRequestState.EnsureHealthyAsync(_fs, currentRealm);
         await GuardianAbodeResidentRequestState.EnsureManifestationRequestForCurrentIncarnationAsync(_fs, currentRealm);
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);

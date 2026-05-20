@@ -218,7 +218,10 @@ public partial class ExplorerMode
     /// </summary>
     public async Task<string?> TryProcessCommand(string input)
     {
-        var cmd = input.Trim().Split(' ')[0].ToLower();
+        var trimmedInput = input.Trim();
+        var commandParts = trimmedInput.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        var cmd = commandParts.Length > 0 ? commandParts[0].ToLowerInvariant() : string.Empty;
+        _currentCommandRemainder = commandParts.Length > 1 ? commandParts[1].Trim() : string.Empty;
         var currentRealm = _stateManager.CurrentState.CurrentRealm;
         var hasResolvedRealm = RealmSemantics.HasResolvedRealm(currentRealm);
         var isAfterlife = RealmSemantics.IsAfterlifeRealm(currentRealm);

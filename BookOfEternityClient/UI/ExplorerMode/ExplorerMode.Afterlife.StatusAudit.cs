@@ -50,7 +50,8 @@ public partial class ExplorerMode
         new(ShiningFactionRequestState.PendingFoundingsRequestPath, "Основание сияющей фракции", "halls[]/factions[] + factionFoundingReceipts[]", ShiningOnly: true),
         new(ShiningFactionRequestState.PendingRealignmentsRequestPath, "Переход сияющего резидента", "guardian_abode_residents.json resident faction fields + factionRealignmentReceipts[]", ShiningOnly: true),
         new(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, "Смена власти сияющей фракции", "faction.leadership + leadershipReceipts[] + leadershipHistory[]", ShiningOnly: true),
-        new(SourceOfLightCapstoneState.PendingRequestPath, "Источник Света", "sourceOfLightCapstone + afterlifeCombatProfile.capstones.lightIncarnate + soulRelics.stored[]", ShiningOnly: true)
+        new(SourceOfLightCapstoneState.PendingRequestPath, "Источник Света", "sourceOfLightCapstone + afterlifeCombatProfile.capstones.lightIncarnate + soulRelics.stored[]", ShiningOnly: true),
+        new(SarefMainStoryState.PendingWingsInfiltrationPath, "Поиск Крыльев Ангелов", "sarefMainStoryUpdate.mode=reveal_wings/refuse_wings/block_wings + wingsInfiltration.status", ShiningOnly: true)
     };
 
     private async Task ShowAfterlifeDetailedStatusAsync()
