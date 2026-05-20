@@ -15,6 +15,68 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class ExplorerModeCommandTests : IDisposable
 {
+    [Theory]
+    [InlineData("/сареф")]
+    [InlineData("/saref")]
+    public async Task TryProcessCommand_SarefAliases_BeforeReveal_HideSpoilers(string command)
+    {
+        await SeedMortalStateAsync();
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand(command);
+
+        var text = ExtractRenderedText();
+        Assert.Equal(string.Empty, result);
+        Assert.Contains("Ты пока не знаешь, что искать", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Сареф", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Крыл", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Ангел", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Бездн", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/сареф")]
+    [InlineData("/saref")]
+    public async Task TryProcessCommand_SarefAliases_AfterReveal_RenderStoryState(string command)
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "name_revealed",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [
+            {
+              "revelationId": "rev_name",
+              "category": "identity",
+              "sourceGuardianId": "myriel",
+              "sourceQuestId": "myriel_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "summary": "Имя Сарефа впервые собрано из фрагментов памяти.",
+              "revealedAtTurn": 51
+            }
+          ],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand(command);
+
+        var text = ExtractRenderedText();
+        Assert.Equal(string.Empty, result);
+        Assert.Contains("Крылья над Бездной", text, StringComparison.Ordinal);
+        Assert.Contains("имя Сарефа раскрыто", text, StringComparison.Ordinal);
+        Assert.Contains("Имя Сарефа впервые собрано", text, StringComparison.Ordinal);
+    }
+
     [Fact]
     public async Task TryProcessCommand_SarefStory_RendersAdvantageStatesAndUsage()
     {

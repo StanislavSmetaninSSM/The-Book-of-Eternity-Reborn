@@ -8,28 +8,22 @@ public partial class ExplorerMode
 {
     private async Task ShowSarefStoryAsync()
     {
-        if (!_stateManager.CurrentState.IsInAfterlifeRealm)
-        {
-            ShowEmptyPanel("Крылья над Бездной", "Эта скрытая линия отслеживается в посмертии. В смертной жизни продолжай играть обычным текстом.");
-            return;
-        }
-
         await _stateManager.RefreshGameStateAsync();
         var read = await ReadJsonObjectForAfterlifeStatusResultAsync(SarefMainStoryState.StatePath);
         if (read.Error != null)
         {
             ShowEmptyPanel(
-                "Крылья над Бездной",
-                $"{SarefMainStoryState.StatePath} повреждён ({read.Error}). Сначала нужен repair состояния.");
+                "Скрытая нить",
+                $"Состояние скрытой линии повреждено ({read.Error}). Сначала нужен repair состояния.");
             if (!string.IsNullOrWhiteSpace(read.RawPayload))
-                WriteJsonAuditPanel($"Raw {SarefMainStoryState.StatePath}", JsonValue.Create(read.RawPayload), Color.Red);
+                WriteJsonAuditPanel("Raw hidden main story state", JsonValue.Create(read.RawPayload), Color.Red);
             return;
         }
 
         var root = read.Root;
         if (root == null || IsSarefStoryStillUnknown(root))
         {
-            ShowEmptyPanel("Крылья над Бездной", "Ты пока не знаешь, что искать.");
+            ShowEmptyPanel("Скрытая нить", "Ты пока не знаешь, что искать.");
             return;
         }
 

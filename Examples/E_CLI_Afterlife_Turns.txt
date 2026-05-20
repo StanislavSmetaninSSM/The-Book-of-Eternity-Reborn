@@ -7300,7 +7300,7 @@ EXAMPLE 27 — Скрытая главная линия Сарефа (`main_stor
 Scenario:
 - The hidden main line is `Крылья над Бездной`.
 - The canonical file is `game_state/meta/main_story_saref_state.json`.
-- The player-facing read-only command is `/saref_story` / `/крылья_над_бездной`; before discovery it must say only that the player does not yet know what to seek.
+- The player-facing read-only command is `/saref` / `/сареф` (legacy aliases `/saref_story` / `/крылья_над_бездной` still work); before discovery it must say only that the player does not yet know what to seek.
 - Documentation may refer to this contract as `sarefMainStoryState`; issue #533 uses the direct canonical root only, not a command wrapper.
 - Missing file is valid legacy/no-discovery state.
 - If the file is present, it is not a loose GM note. It must use the canonical fields and pass reveal-stage validation.

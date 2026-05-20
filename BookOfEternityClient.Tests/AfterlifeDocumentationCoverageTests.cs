@@ -2601,6 +2601,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("applicableScenes", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("spentAudit", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("suppressed", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/сареф", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/крылья_над_бездной", examples, StringComparison.OrdinalIgnoreCase);
     }
 
