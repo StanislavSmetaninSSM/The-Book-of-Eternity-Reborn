@@ -200,6 +200,31 @@ public class StateDistributor
                 continue;
             }
 
+            if (relativePath.Equals(SarefMainStoryState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+                key.Equals(SarefMainStoryState.StateResponseField, StringComparison.OrdinalIgnoreCase) &&
+                value.ValueKind == JsonValueKind.Object)
+            {
+                existingData.Clear();
+                foreach (var prop in value.EnumerateObject())
+                    existingData[prop.Name] = prop.Value.Clone();
+                continue;
+            }
+
+            if (relativePath.Equals(SarefMainStoryState.StatePath, StringComparison.OrdinalIgnoreCase) &&
+                key.Equals(SarefMainStoryState.ResponseField, StringComparison.OrdinalIgnoreCase) &&
+                value.ValueKind == JsonValueKind.Object)
+            {
+                var existingRoot = DictionaryToJsonObject(existingData);
+                existingRoot.Remove(SarefMainStoryState.ResponseField);
+                var updateRoot = AfterlifeSpiritualConflictState.CloneJsonElement(value) as JsonObject ?? new JsonObject();
+                var projected = SarefMainStoryState.ApplyUpdate(existingRoot, updateRoot);
+                projected.Remove(SarefMainStoryState.ResponseField);
+                existingData.Clear();
+                foreach (var prop in projected)
+                    existingData[prop.Key] = JsonNodeToElement(prop.Value);
+                continue;
+            }
+
             existingData[key] = value;
         }
 

@@ -42,12 +42,28 @@
       "emptyWrapperSemantics": "Missing means legacy/no discovered Saref story state. If present, use canonical schemaVersion, revealStage, guardianQuestlines with questStates/questOrdinal 1..4, latentTraces, sarefRevelations, sarefAdvantages, sarefAdvantageUses, factionLinks, defeatOutcomes, endings, oath state, and personal bond.",
       "malformedBehavior": "Fail closed with SarefMainStory validation issues; no-spoiler stages must not contain revealed Saref/Wings evidence, quest 4 unlocks require quests 1-3 completed, physical mortal item transfer is forbidden in proof, and Saref advantage uses must match known available/passive/spent advantages, applicableScenes, and spentAudit.",
       "blockerBehavior": "Does not block ordinary afterlife play by existence; invalid current state blocks accepted-turn validation until repaired.",
-      "closureSurface": "Canonical root game_state/meta/main_story_saref_state.json. Future tasks may add sarefMainStoryUpdate; issue #533 exposes the direct canonical state only.",
+      "closureSurface": "Canonical root game_state/meta/main_story_saref_state.json or sarefMainStoryUpdate for supported hidden-line transitions such as Wings search closure.",
       "docAnchors": [
         "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
         "Examples/E_CLI_Afterlife_Turns.txt#main_story_saref_state"
       ],
       "notes": "Tracks Крылья над Бездной reveal stage, Guardian fragments, usable advantage state, advantage use audits, faction links, outcomes, endings, oath state, and personal bond."
+    },
+    {
+      "path": "game_state/control/pending_saref_wings_infiltration.json",
+      "surfaceType": "pending_contract",
+      "owner": "saref_main_story",
+      "realm": "Shining Abode",
+      "authority": "client-owned /сареф найти_крылья pending request; GM closes through sarefMainStoryUpdate",
+      "emptyWrapperSemantics": "Missing means no active Wings search. Empty, non-object, or malformed present file is repair-blocking.",
+      "malformedBehavior": "Fail closed and preserve raw payload for repair; do not reveal/refuse Wings from a malformed request.",
+      "blockerBehavior": "Blocks Soul Gates, return_to_chaos_sea, and overlapping afterlife pending contracts until matching reveal/refuse/block closure or repair.",
+      "closureSurface": "sarefMainStoryUpdate.mode=reveal_wings|refuse_wings|block_wings into game_state/meta/main_story_saref_state.json wingsInfiltration.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#main_story_saref_state"
+      ],
+      "notes": "Stores routeSafety safe/risky/desperate, route fragments, substitute fragments, available Saref advantages, disadvantages, expectedResponseSurface=sarefMainStoryUpdate, and expectedClosure."
     },
     {
       "path": "game_state/control/pending_abode_offering.json",

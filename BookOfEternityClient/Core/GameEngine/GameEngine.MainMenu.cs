@@ -2224,6 +2224,10 @@ public partial class GameEngine
         if (sourceOfLightState.Exists)
             blockingPaths.Add(DescribeBlockingSourceOfLightPendingContract(sourceOfLightState));
 
+        var sarefWingsState = await SarefMainStoryState.ReadWingsInfiltrationRequestStateAsync(_fs);
+        if (sarefWingsState.Exists)
+            blockingPaths.Add(DescribeBlockingSarefWingsPendingContract(sarefWingsState));
+
         return blockingPaths;
     }
 
@@ -2242,6 +2246,25 @@ public partial class GameEngine
             $"{SourceOfLightCapstoneState.PendingRequestPath}: active Source of Light capstone pending contract blocks Soul Gates",
             "  закрытие: Source of Light scene + sourceOfLightCapstone.completed + light_incarnate + source_of_light_incarnated_light",
             $"  request: requestId={request.RequestId}; radiance={request.RadianceExperienceAtRequest}/tier {request.RadianceTierAtRequest}; passive={request.RewardPassiveId}; relic={request.RewardRelicId}",
+            $"  root full payload: {state.RawPayload}"
+        });
+    }
+
+    private static string DescribeBlockingSarefWingsPendingContract(
+        SarefMainStoryState.SarefWingsInfiltrationReadState state)
+    {
+        if (state.IsMalformed || state.Request == null)
+        {
+            return $"{SarefMainStoryState.PendingWingsInfiltrationPath}: malformed Saref Wings infiltration pending contract\n" +
+                   "  закрытие: repair pending_saref_wings_infiltration.json or close it through sarefMainStoryUpdate before Soul Gates / return_to_chaos_sea";
+        }
+
+        var request = state.Request;
+        return string.Join("\n", new[]
+        {
+            $"{SarefMainStoryState.PendingWingsInfiltrationPath}: active Saref Wings infiltration pending contract blocks Soul Gates",
+            "  закрытие: sarefMainStoryUpdate.mode=reveal_wings/refuse_wings/block_wings + matching wingsInfiltration closure",
+            $"  request: requestId={SarefMainStoryState.GetNodeString(request["requestId"])}; routeSafety={SarefMainStoryState.GetNodeString(request["routeSafety"])}; entryMode={SarefMainStoryState.GetNodeString(request["entryMode"])}",
             $"  root full payload: {state.RawPayload}"
         });
     }

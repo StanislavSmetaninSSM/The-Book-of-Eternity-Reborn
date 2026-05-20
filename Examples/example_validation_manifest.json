@@ -1510,7 +1510,7 @@
     {
       "exampleNumber": 27,
       "runtimeScenarioIds": [],
-      "exemptionReason": "The Saref main-story example documents the canonical hidden-state contract and no-spoiler route invariants; dedicated SarefMainStoryState validation and documentation coverage tests cover runtime behavior."
+      "exemptionReason": "The Saref main-story example documents the canonical hidden-state contract, no-spoiler route invariants, /сареф найти_крылья pending request, and sarefMainStoryUpdate closure modes; dedicated SarefMainStoryState validation and documentation coverage tests cover runtime behavior."
     }
   ]
 }

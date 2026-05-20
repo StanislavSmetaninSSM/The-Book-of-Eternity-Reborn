@@ -44,6 +44,7 @@ public partial class ExplorerMode
 
     // Set by interactive commands (equip/unequip) to signal an action to send to the GM
     private string? _pendingGmAction;
+    private string _currentCommandRemainder = string.Empty;
     private PendingLocalTurnRollbackSnapshot? _pendingLocalTurnRollbackSnapshot;
     // Set by Reveal Fate so Rewrite Fate becomes available
     private bool _diceRevealed;

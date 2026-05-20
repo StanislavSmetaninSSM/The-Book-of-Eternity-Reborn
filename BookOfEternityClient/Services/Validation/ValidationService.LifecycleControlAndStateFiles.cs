@@ -270,6 +270,8 @@ public partial class ValidationService
         await ValidateFlexibleStateFile(SarefMainStoryState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
+                SarefMainStoryState.ResponseField,
+                SarefMainStoryState.StateResponseField,
                 "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
                 "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "wingsInfiltration", "factionLinks",
                 "finalConfrontation", "defeatOutcomes", "endings", "playerOathState",
@@ -282,6 +284,20 @@ public partial class ValidationService
                 "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "wingsInfiltration", "factionLinks",
                 "finalConfrontation", "defeatOutcomes", "endings", "playerOathState",
                 "sarefPersonalBond", "_lastUpdated"
+            }, issues);
+        await ValidateFlexibleStateFile(SarefMainStoryState.PendingWingsInfiltrationPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "requestId", "createdAtTurn", "createdAtUtc", "routeSafety", "entryMode",
+                "routeFragments", "substituteFragments", "availableAdvantages", "disadvantages",
+                "expectedResponseSurface", "expectedClosure"
+            }, issues, ValidatePendingSarefWingsInfiltrationRequestFile);
+        await ValidateStrictTopLevelObjectFileAsync(SarefMainStoryState.PendingWingsInfiltrationPath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "requestId", "createdAtTurn", "createdAtUtc", "routeSafety", "entryMode",
+                "routeFragments", "substituteFragments", "availableAdvantages", "disadvantages",
+                "expectedResponseSurface", "expectedClosure"
             }, issues);
         await ValidateFlexibleStateFile("game_state/meta/guardians.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -869,6 +885,7 @@ public partial class ValidationService
         await ValidatePendingShiningRealignmentRequestContextAsync(issues);
         await ValidatePendingShiningLeadershipTransitionRequestContextAsync(issues);
         await ValidatePendingSourceOfLightCapstoneRequestContextAsync(issues);
+        await ValidatePendingSarefWingsInfiltrationRequestContextAsync(issues);
         await ValidateSystemGuardianAttractionContextAsync(issues);
     }
 

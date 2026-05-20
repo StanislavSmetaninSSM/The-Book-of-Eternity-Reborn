@@ -1,6 +1,8 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -39,6 +41,63 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
 
         Assert.DoesNotContain(issues, issue =>
             issue.Code?.StartsWith("saref_main_story_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SarefWingsPendingInChaosSea_ReportsContextIssue()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState());
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_saref_wings_infiltration.json", BuildValidSarefWingsPendingRequest());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_wings_pending_wrong_realm", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SarefWingsAcceptedTurnWithoutClosure_ReportsMissingClosure()
+    {
+        await SeedShiningWingsPendingAcceptedTurnAsync(BuildSarefWingsRouteState());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_wings_pending_missing_closure", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SarefWingsAcceptedTurnWithRevealClosure_PassesPendingClosureValidation()
+    {
+        var storyRoot = SarefMainStoryState.ApplyUpdate(
+            JsonNode.Parse(BuildSarefWingsRouteState())!.AsObject(),
+            JsonNode.Parse("""
+            {
+              "mode": "reveal_wings",
+              "requestId": "saref_wings_infiltration:42",
+              "resolvedAtTurn": 43,
+              "routeSafety": "safe",
+              "entryMode": "safe_infiltration",
+              "summary": "Игрок нашел внешний круг Крыльев Ангелов.",
+              "factionLinks": {
+                "wingsFactionId": "wings_of_angels"
+              }
+            }
+            """)!.AsObject());
+
+        await SeedShiningWingsPendingAcceptedTurnAsync(storyRoot.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "saref_wings_pending_missing_closure", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -541,6 +600,182 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "sarefPersonalBond": null
         }
         """;
+
+    private static string BuildValidSarefWingsPendingRequest() => """
+    {
+      "requestId": "saref_wings_infiltration:42",
+      "createdAtTurn": 42,
+      "createdAtUtc": "2026-05-20T00:00:00Z",
+      "routeSafety": "safe",
+      "entryMode": "safe_infiltration",
+      "routeFragments": [
+        { "revelationId": "rev_identity", "category": "identity", "summary": "Имя Сарефа." },
+        { "revelationId": "rev_method", "category": "method", "summary": "Метод стирания." },
+        { "revelationId": "rev_faction", "category": "faction", "summary": "Крылья Ангелов." },
+        { "revelationId": "rev_path", "category": "path", "summary": "Путь к внешнему кругу." }
+      ],
+      "substituteFragments": [],
+      "availableAdvantages": [],
+      "disadvantages": [],
+      "expectedResponseSurface": "sarefMainStoryUpdate",
+      "expectedClosure": {
+        "mode": "reveal_wings",
+        "requestId": "saref_wings_infiltration:42"
+      }
+    }
+    """;
+
+    private async Task SeedShiningWingsPendingAcceptedTurnAsync(string currentStoryRoot)
+    {
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """{ "accepted": true }""");
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Shining Abode",
+          "currentIncarnation": 1
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "availability": "active",
+          "radiance": {
+            "experience": 0,
+            "tier": 0
+          },
+          "preparedIncarnationPackage": null
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, currentStoryRoot);
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.PendingWingsInfiltrationPath, BuildValidSarefWingsPendingRequest());
+
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Shining Abode",
+          "currentIncarnation": 1
+        }
+        """);
+        await WriteSnapshotFileAsync(ShiningAbodeState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "availability": "active",
+          "radiance": {
+            "experience": 0,
+            "tier": 0
+          },
+          "preparedIncarnationPackage": null
+        }
+        """);
+        await WriteSnapshotFileAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState());
+        await WriteSnapshotFileAsync(SarefMainStoryState.PendingWingsInfiltrationPath, BuildValidSarefWingsPendingRequest());
+        await WriteValidatedSnapshotManifestAsync(
+            ("game_state/meta/soul_state.json", """
+            {
+              "soulName": "Тестовая Душа",
+              "currentRealm": "Shining Abode",
+              "currentIncarnation": 1
+            }
+            """),
+            (ShiningAbodeState.StatePath, """
+            {
+              "schemaVersion": 1,
+              "availability": "active",
+              "radiance": {
+                "experience": 0,
+                "tier": 0
+              },
+              "preparedIncarnationPackage": null
+            }
+            """),
+            (SarefMainStoryState.StatePath, BuildSarefWingsRouteState()),
+            (SarefMainStoryState.PendingWingsInfiltrationPath, BuildValidSarefWingsPendingRequest()));
+    }
+
+    private Task WriteSnapshotFileAsync(string logicalPath, string json) =>
+        _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{logicalPath}", json);
+
+    private async Task WriteValidatedSnapshotManifestAsync(params (string Path, string Json)[] snapshotFiles)
+    {
+        const string sessionId = "session_saref_wings_tests";
+        const string requestId = "request_saref_wings_tests";
+        const int turnNumber = 43;
+        const string playerAction = "[SAREF_WINGS_INFILTRATION: saref_wings_infiltration:42] Ищу Крылья Ангелов.";
+
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", $$"""
+        {
+          "sessionId": "{{sessionId}}",
+          "requestId": "{{requestId}}",
+          "turnNumber": {{turnNumber}},
+          "playerAction": {{JsonSerializer.Serialize(playerAction)}}
+        }
+        """);
+
+        var files = new JsonObject();
+        var snapshotFileHashes = new JsonObject();
+        var rollbackBaselineFiles = new JsonArray();
+
+        foreach (var (path, json) in snapshotFiles)
+        {
+            files[path] = $"game_state/control/pending_turn_snapshot/{path}";
+            snapshotFileHashes[path] = PendingTurnSnapshotAuthority.ComputeSha256(json);
+            rollbackBaselineFiles.Add(path);
+        }
+
+        var manifest = new JsonObject
+        {
+            ["sessionId"] = sessionId,
+            ["requestId"] = requestId,
+            ["turnNumber"] = turnNumber,
+            ["requestTimestamp"] = "2026-05-20T00:00:00Z",
+            ["playerAction"] = playerAction,
+            ["files"] = files,
+            ["snapshotFileHashes"] = snapshotFileHashes,
+            ["clientOwnedValidationHashes"] = new JsonObject(),
+            ["rollbackBackups"] = new JsonObject(),
+            ["rollbackBaselineFiles"] = rollbackBaselineFiles,
+            ["sourceLabel"] = "saref-wings-infiltration-tests",
+            ["manifestPayloadHash"] = string.Empty
+        };
+        manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
+    }
+
+    private static string BuildSarefWingsRouteState() => """
+    {
+      "schemaVersion": 1,
+      "revealStage": "name_revealed",
+      "guardianQuestlines": [
+        {
+          "guardianId": "azalia",
+          "questStates": [
+            { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+            { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+            { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+            { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+          ]
+        }
+      ],
+      "latentTraces": [],
+      "sarefRevelations": [
+        { "revelationId": "rev_identity", "category": "identity", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 50 },
+        { "revelationId": "rev_method", "category": "method", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 51 },
+        { "revelationId": "rev_faction", "category": "faction", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 52 },
+        { "revelationId": "rev_path", "category": "path", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 53 }
+      ],
+      "sarefAdvantages": [],
+      "sarefAdvantageUses": [],
+      "wingsInfiltration": null,
+      "factionLinks": { "visibility": "hidden" },
+      "finalConfrontation": null,
+      "defeatOutcomes": [],
+      "endings": [],
+      "playerOathState": null,
+      "sarefPersonalBond": null
+    }
+    """;
 
     public void Dispose()
     {

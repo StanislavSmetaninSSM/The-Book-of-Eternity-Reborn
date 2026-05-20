@@ -78,6 +78,52 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SarefFindWings_InChaosSea_BlocksWithoutPendingRequest()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState());
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/сареф найти_крылья");
+
+        Assert.Equal(string.Empty, result);
+        Assert.False(_fs.FileExists("game_state/control/pending_saref_wings_infiltration.json"));
+        var text = ExtractRenderedText();
+        Assert.Contains("Сияющей Обители", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("поиск Крыльев", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SarefFindWings_InShiningAbode_CreatesPendingRequestAndGmAction()
+    {
+        await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        DeleteShiningPendingBlockerFilesForSarefWingsTest();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState());
+        _console.QueueAnyConfirmResponse(true);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/сареф найти_крылья");
+
+        Assert.NotNull(result);
+        Assert.Contains("[SAREF_WINGS_INFILTRATION:", result, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pending_saref_wings_infiltration.json", result, StringComparison.OrdinalIgnoreCase);
+        Assert.True(_fs.FileExists("game_state/control/pending_saref_wings_infiltration.json"));
+
+        var pendingJson = await _fs.ReadFileAsync("game_state/control/pending_saref_wings_infiltration.json");
+        Assert.False(string.IsNullOrWhiteSpace(pendingJson));
+        var pendingRoot = JsonNode.Parse(pendingJson!)!.AsObject();
+        Assert.Equal("safe", pendingRoot["routeSafety"]!.GetValue<string>());
+        Assert.Equal("safe_infiltration", pendingRoot["entryMode"]!.GetValue<string>());
+        Assert.Equal("sarefMainStoryUpdate", pendingRoot["expectedResponseSurface"]!.GetValue<string>());
+        Assert.True(pendingRoot["routeFragments"] is JsonArray { Count: >= 4 });
+        Assert.Equal("reveal_wings", pendingRoot["expectedClosure"]!["mode"]!.GetValue<string>());
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Поиск Крыльев Ангелов", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("безопасный маршрут", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_SarefStory_RendersAdvantageStatesAndUsage()
     {
         await SeedAfterlifeStateAsync();
@@ -4848,6 +4894,73 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Пощадила дозорного — дорога открылась миру", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Освоенные навыки", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Просветление за жизнь: 14", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string BuildSarefWingsRouteState() => """
+    {
+      "schemaVersion": 1,
+      "revealStage": "name_revealed",
+      "guardianQuestlines": [
+        {
+          "guardianId": "azalia",
+          "questStates": [
+            { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+            { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+            { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+            { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+          ]
+        }
+      ],
+      "latentTraces": [],
+      "sarefRevelations": [
+        { "revelationId": "rev_identity", "category": "identity", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "summary": "Имя Сарефа собрано из осколков памяти.", "revealedAtTurn": 50 },
+        { "revelationId": "rev_method", "category": "method", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "summary": "Раскрыт метод стирания памяти.", "revealedAtTurn": 51 },
+        { "revelationId": "rev_faction", "category": "faction", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "summary": "Крылья Ангелов названы как тайная фракция.", "revealedAtTurn": 52 },
+        { "revelationId": "rev_path", "category": "path", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "summary": "Собран путь к внешнему кругу Крыльев.", "revealedAtTurn": 53 }
+      ],
+      "sarefAdvantages": [
+        {
+          "advantageId": "adv_azalia_false_loyalty",
+          "displayName": "Ложная лояльность",
+          "sourceGuardianId": "azalia",
+          "sourceQuestId": "azalia_saref_q4",
+          "sourceQuestOrdinal": 4,
+          "state": "available",
+          "applicableScenes": [ "wings_infiltration" ],
+          "summary": "Можно выдать себя за полезного перебежчика."
+        }
+      ],
+      "sarefAdvantageUses": [],
+      "wingsInfiltration": null,
+      "factionLinks": { "visibility": "hidden" },
+      "finalConfrontation": null,
+      "defeatOutcomes": [],
+      "endings": [],
+      "playerOathState": null,
+      "sarefPersonalBond": null
+    }
+    """;
+
+    private void DeleteShiningPendingBlockerFilesForSarefWingsTest()
+    {
+        _fs.DeleteFile("input/turn_request.json");
+        _fs.DeleteFile("game_state/control/pending_turn_snapshot.json");
+        var snapshotDir = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (Directory.Exists(snapshotDir))
+            Directory.Delete(snapshotDir, recursive: true);
+
+        foreach (var path in new[]
+                 {
+                     ShiningCoreActionRequestState.PendingActionsRequestPath,
+                     ShiningTradeRequestState.PendingRequestsPath,
+                     ShiningFactionRequestState.PendingFoundingsRequestPath,
+                     ShiningFactionRequestState.PendingRealignmentsRequestPath,
+                     ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+                     SourceOfLightCapstoneState.PendingRequestPath
+                 })
+        {
+            _fs.DeleteFile(path);
+        }
     }
 
     private async Task SeedShiningInspectionStateAsync(bool includePreparedPackage = true)

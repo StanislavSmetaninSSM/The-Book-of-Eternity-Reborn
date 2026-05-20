@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
@@ -23,6 +24,223 @@ public partial class ValidationService
         string? SceneType,
         bool ConsumesAdvantage,
         string Context);
+
+    private void ValidatePendingSarefWingsInfiltrationRequestFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefWingsIssue(
+                issues,
+                contextPrefix,
+                "pending_saref_wings_infiltration.json должен быть JSON object.",
+                "saref_wings_pending_invalid_root",
+                "object",
+                root.ValueKind.ToString());
+            return;
+        }
+
+        var requestId = RequireSarefString(root, contextPrefix, "requestId", "saref_wings_pending_missing_request_id", issues);
+        if (!string.IsNullOrWhiteSpace(requestId) &&
+            !requestId.StartsWith("saref_wings_infiltration:", StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.requestId",
+                "requestId поиска Крыльев должен начинаться с saref_wings_infiltration:.",
+                "saref_wings_pending_invalid_request_id",
+                "saref_wings_infiltration:<turn>",
+                requestId);
+        }
+
+        RequireSarefTurnNumber(root, contextPrefix, "createdAtTurn", "saref_wings_pending_missing_created_turn", issues);
+        RequireSarefString(root, contextPrefix, "createdAtUtc", "saref_wings_pending_missing_created_at_utc", issues);
+
+        var routeSafety = RequireSarefString(root, contextPrefix, "routeSafety", "saref_wings_pending_missing_route_safety", issues);
+        if (!string.IsNullOrWhiteSpace(routeSafety) && !SarefMainStoryState.WingsRouteSafetyStates.Contains(routeSafety))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.routeSafety",
+                "routeSafety поиска Крыльев не поддерживается.",
+                "saref_wings_pending_invalid_route_safety",
+                string.Join("/", SarefMainStoryState.WingsRouteSafetyStates),
+                routeSafety);
+        }
+
+        RequireSarefString(root, contextPrefix, "entryMode", "saref_wings_pending_missing_entry_mode", issues);
+        var responseSurface = RequireSarefString(root, contextPrefix, "expectedResponseSurface", "saref_wings_pending_missing_response_surface", issues);
+        if (!string.IsNullOrWhiteSpace(responseSurface) &&
+            !string.Equals(responseSurface, SarefMainStoryState.ResponseField, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.expectedResponseSurface",
+                "Поиск Крыльев должен закрываться через sarefMainStoryUpdate.",
+                "saref_wings_pending_response_surface_mismatch",
+                SarefMainStoryState.ResponseField,
+                responseSurface);
+        }
+
+        var categories = ValidateSarefWingsFragments(root, contextPrefix, "routeFragments", issues);
+        var substituteCategories = ValidateSarefWingsFragments(root, contextPrefix, "substituteFragments", issues, allowEmpty: true);
+        ValidateSarefWingsArray(root, contextPrefix, "availableAdvantages", issues);
+        var disadvantages = ValidateSarefWingsStringArray(root, contextPrefix, "disadvantages", issues);
+        ValidateSarefWingsExpectedClosure(root, contextPrefix, requestId, issues);
+
+        if (string.Equals(routeSafety, SarefMainStoryState.WingsRouteSafetySafe, StringComparison.OrdinalIgnoreCase) &&
+            !SarefMainStoryState.MandatoryWingsCategories.All(categories.Contains))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.routeFragments",
+                "safe route требует все четыре mandatory фрагмента identity/method/faction/path.",
+                "saref_wings_pending_safe_route_incomplete",
+                string.Join("/", SarefMainStoryState.MandatoryWingsCategories),
+                string.Join(", ", categories.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)));
+        }
+
+        if (string.Equals(routeSafety, SarefMainStoryState.WingsRouteSafetyRisky, StringComparison.OrdinalIgnoreCase) &&
+            (SarefMainStoryState.MandatoryWingsCategories.Count(categories.Contains) < 3 || substituteCategories.Count < 2 || disadvantages.Count == 0))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.routeFragments",
+                "risky route требует минимум 3 mandatory фрагмента, 2 substitute fragments и explicit disadvantages.",
+                "saref_wings_pending_risky_route_incomplete",
+                "3 mandatory + 2 substitutes + disadvantages[]",
+                $"mandatory={SarefMainStoryState.MandatoryWingsCategories.Count(categories.Contains)}, substitutes={substituteCategories.Count}, disadvantages={disadvantages.Count}");
+        }
+
+        if (string.Equals(routeSafety, SarefMainStoryState.WingsRouteSafetyDesperate, StringComparison.OrdinalIgnoreCase) &&
+            (SarefMainStoryState.MandatoryWingsCategories.Count(categories.Contains) < 2 || substituteCategories.Count < 4 || disadvantages.Count == 0))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.routeFragments",
+                "desperate route требует минимум 2 mandatory фрагмента, 4 substitute fragments и explicit disadvantages.",
+                "saref_wings_pending_desperate_route_incomplete",
+                "2 mandatory + 4 substitutes + disadvantages[]",
+                $"mandatory={SarefMainStoryState.MandatoryWingsCategories.Count(categories.Contains)}, substitutes={substituteCategories.Count}, disadvantages={disadvantages.Count}");
+        }
+    }
+
+    private async Task ValidatePendingSarefWingsInfiltrationRequestContextAsync(List<ValidationIssue> issues)
+    {
+        var read = await SarefMainStoryState.ReadWingsInfiltrationRequestStateAsync(_fs);
+        if (!read.Exists)
+            return;
+
+        if (read.IsMalformed || read.Request == null)
+        {
+            AddSarefWingsIssue(
+                issues,
+                SarefMainStoryState.PendingWingsInfiltrationPath,
+                "pending_saref_wings_infiltration.json повреждён и не может быть resolved.",
+                "saref_wings_pending_malformed",
+                "canonical Wings infiltration pending request",
+                read.Error ?? "malformed");
+            return;
+        }
+
+        var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
+        var shiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
+        var currentRealm = SarefMainStoryState.GetNodeString(soulRoot?["currentRealm"]);
+        if (!RealmSemantics.IsShiningRealm(currentRealm))
+        {
+            AddSarefWingsIssue(
+                issues,
+                SarefMainStoryState.PendingWingsInfiltrationPath,
+                "Поиск Крыльев Ангелов можно держать только в ordinary active Сияющей Обители.",
+                "saref_wings_pending_wrong_realm",
+                "soul_state.currentRealm=Shining Abode",
+                currentRealm ?? "missing");
+            return;
+        }
+
+        if (shiningRoot == null ||
+            !string.Equals(SarefMainStoryState.GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) ||
+            ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+        {
+            AddSarefWingsIssue(
+                issues,
+                SarefMainStoryState.PendingWingsInfiltrationPath,
+                "Поиск Крыльев требует ordinary active Shining Abode без preparedIncarnationPackage.",
+                "saref_wings_pending_invalid_shining_mode",
+                "availability=active and no preparedIncarnationPackage",
+                shiningRoot == null ? "missing shining state" : "inactive or handoff mode");
+            return;
+        }
+
+        var pendingBlocker = await SourceOfLightCapstoneState.TryDescribeBlockingPendingContractAsync(_fs, shiningRoot);
+        if (pendingBlocker != null)
+        {
+            AddSarefWingsIssue(
+                issues,
+                SarefMainStoryState.PendingWingsInfiltrationPath,
+                "Поиск Крыльев нельзя держать рядом с другим active/malformed afterlife pending/control contract.",
+                "saref_wings_pending_blocked_by_other_contract",
+                "no other active/malformed afterlife pending/control contract",
+                pendingBlocker);
+            return;
+        }
+
+        var storyRoot = await ReadJsonObjectAsync(SarefMainStoryState.StatePath);
+        if (!SarefMainStoryState.TryBuildWingsUnlockRoute(storyRoot, out var computedSafety, out _, out _, out _))
+        {
+            AddSarefWingsIssue(
+                issues,
+                SarefMainStoryState.PendingWingsInfiltrationPath,
+                "pending_saref_wings_infiltration.json требует достаточный маршрут раскрытия Крыльев в main_story_saref_state.json.",
+                "saref_wings_pending_missing_unlock_route",
+                "all four mandatory, or 3 mandatory + 2 additional, or 2 mandatory + 4 additional",
+                "route not available");
+            return;
+        }
+
+        var requestSafety = SarefMainStoryState.GetNodeString(read.Request["routeSafety"]);
+        if (!string.Equals(requestSafety, computedSafety, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefWingsIssue(
+                issues,
+                SarefMainStoryState.PendingWingsInfiltrationPath,
+                "routeSafety pending-файла должен совпадать с текущим маршрутом раскрытия.",
+                "saref_wings_pending_route_safety_mismatch",
+                computedSafety,
+                requestSafety ?? "missing");
+        }
+    }
+
+    private async Task ValidatePendingSarefWingsInfiltrationResolutionAsync(List<ValidationIssue> issues)
+    {
+        var preTurnRequestJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(SarefMainStoryState.PendingWingsInfiltrationPath);
+        if (string.IsNullOrWhiteSpace(preTurnRequestJson))
+            return;
+
+        var requestState = SarefMainStoryState.ReadWingsInfiltrationRequestState(preTurnRequestJson, exists: true);
+        if (requestState.IsMalformed || requestState.Request == null)
+        {
+            AddSarefWingsIssue(
+                issues,
+                SarefMainStoryState.PendingWingsInfiltrationPath,
+                "validated snapshot pending_saref_wings_infiltration.json malformed.",
+                "saref_wings_malformed_validated_snapshot_request",
+                "canonical pending request",
+                requestState.Error ?? "malformed");
+            return;
+        }
+
+        var storyRoot = await ReadJsonObjectAsync(SarefMainStoryState.StatePath);
+        if (!SarefMainStoryState.HasMatchingWingsInfiltrationClosure(storyRoot, requestState.Request))
+        {
+            AddSarefWingsIssue(
+                issues,
+                SarefMainStoryState.StatePath,
+                "Accepted closure поиска Крыльев должен закрыть pending request через wingsInfiltration с matching requestId/status/resolvedAtTurn.",
+                "saref_wings_pending_missing_closure",
+                "wingsInfiltration.status=revealed/refused/blocked with matching requestId and resolvedAtTurn",
+                "missing or mismatched closure");
+        }
+    }
 
     private void ValidateSarefMainStoryStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
@@ -1320,6 +1538,240 @@ public partial class ValidationService
 
         value = node.GetString()?.Trim() ?? string.Empty;
         return !string.IsNullOrWhiteSpace(value);
+    }
+
+    private static HashSet<string> ValidateSarefWingsFragments(
+        JsonElement root,
+        string contextPrefix,
+        string propertyName,
+        List<ValidationIssue> issues,
+        bool allowEmpty = false)
+    {
+        var categories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!root.TryGetProperty(propertyName, out var array))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.{propertyName}",
+                $"{propertyName} должен быть массивом фрагментов маршрута.",
+                "saref_wings_pending_missing_array",
+                "array",
+                "missing");
+            return categories;
+        }
+
+        if (array.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.{propertyName}",
+                $"{propertyName} должен быть массивом.",
+                "saref_wings_pending_array_not_array",
+                "array",
+                array.ValueKind.ToString());
+            return categories;
+        }
+
+        if (!allowEmpty && array.GetArrayLength() == 0)
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.{propertyName}",
+                $"{propertyName} не может быть пустым.",
+                "saref_wings_pending_empty_route_fragments",
+                "non-empty array",
+                "empty");
+        }
+
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            var itemContext = $"{contextPrefix}.{propertyName}[{index++}]";
+            if (item.ValueKind != JsonValueKind.Object)
+            {
+                AddSarefWingsIssue(
+                    issues,
+                    itemContext,
+                    "Фрагмент маршрута поиска Крыльев должен быть object.",
+                    "saref_wings_pending_fragment_not_object",
+                    "object",
+                    item.ValueKind.ToString());
+                continue;
+            }
+
+            RequireSarefString(item, itemContext, "revelationId", "saref_wings_pending_fragment_missing_revelation_id", issues);
+            var category = RequireSarefString(item, itemContext, "category", "saref_wings_pending_fragment_missing_category", issues);
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                if (!SarefMainStoryState.RevelationCategories.Contains(category))
+                {
+                    AddSarefWingsIssue(
+                        issues,
+                        $"{itemContext}.category",
+                        "Категория фрагмента маршрута поиска Крыльев не поддерживается.",
+                        "saref_wings_pending_invalid_fragment_category",
+                        string.Join("/", SarefMainStoryState.RevelationCategories),
+                        category);
+                }
+                else
+                {
+                    categories.Add(category);
+                }
+            }
+        }
+
+        return categories;
+    }
+
+    private static void ValidateSarefWingsArray(
+        JsonElement root,
+        string contextPrefix,
+        string propertyName,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(propertyName, out var array))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.{propertyName}",
+                $"{propertyName} должен быть массивом.",
+                "saref_wings_pending_missing_array",
+                "array",
+                "missing");
+            return;
+        }
+
+        if (array.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.{propertyName}",
+                $"{propertyName} должен быть массивом.",
+                "saref_wings_pending_array_not_array",
+                "array",
+                array.ValueKind.ToString());
+        }
+    }
+
+    private static List<string> ValidateSarefWingsStringArray(
+        JsonElement root,
+        string contextPrefix,
+        string propertyName,
+        List<ValidationIssue> issues)
+    {
+        var result = new List<string>();
+        if (!root.TryGetProperty(propertyName, out var array))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.{propertyName}",
+                $"{propertyName} должен быть массивом строк.",
+                "saref_wings_pending_missing_array",
+                "array",
+                "missing");
+            return result;
+        }
+
+        if (array.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.{propertyName}",
+                $"{propertyName} должен быть массивом строк.",
+                "saref_wings_pending_array_not_array",
+                "array",
+                array.ValueKind.ToString());
+            return result;
+        }
+
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            if (TryGetSarefString(item, out var value))
+            {
+                result.Add(value);
+            }
+            else
+            {
+                AddSarefWingsIssue(
+                    issues,
+                    $"{contextPrefix}.{propertyName}[{index}]",
+                    $"{propertyName} должен содержать только непустые строки.",
+                    "saref_wings_pending_invalid_string_array_item",
+                    "non-empty string",
+                    item.ValueKind.ToString());
+            }
+
+            index++;
+        }
+
+        return result;
+    }
+
+    private static void ValidateSarefWingsExpectedClosure(
+        JsonElement root,
+        string contextPrefix,
+        string? requestId,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("expectedClosure", out var expectedClosure) ||
+            expectedClosure.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.expectedClosure",
+                "expectedClosure должен быть object.",
+                "saref_wings_pending_missing_expected_closure",
+                "object",
+                root.TryGetProperty("expectedClosure", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        var mode = RequireSarefString(expectedClosure, $"{contextPrefix}.expectedClosure", "mode", "saref_wings_pending_missing_expected_mode", issues);
+        if (!string.IsNullOrWhiteSpace(mode) &&
+            !string.Equals(mode, SarefMainStoryState.WingsUpdateModeReveal, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.expectedClosure.mode",
+                "expectedClosure.mode должен быть reveal_wings.",
+                "saref_wings_pending_expected_mode_mismatch",
+                SarefMainStoryState.WingsUpdateModeReveal,
+                mode);
+        }
+
+        var closureRequestId = RequireSarefString(expectedClosure, $"{contextPrefix}.expectedClosure", "requestId", "saref_wings_pending_missing_expected_request_id", issues);
+        if (!string.IsNullOrWhiteSpace(requestId) &&
+            !string.IsNullOrWhiteSpace(closureRequestId) &&
+            !string.Equals(requestId, closureRequestId, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefWingsIssue(
+                issues,
+                $"{contextPrefix}.expectedClosure.requestId",
+                "expectedClosure.requestId должен совпадать с requestId.",
+                "saref_wings_pending_expected_request_id_mismatch",
+                requestId,
+                closureRequestId);
+        }
+    }
+
+    private static void AddSarefWingsIssue(
+        List<ValidationIssue> issues,
+        string path,
+        string message,
+        string code,
+        string? expected = null,
+        string? actual = null)
+    {
+        issues.Add(new ValidationIssue(
+            path,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "SarefWingsInfiltration",
+            expected: expected,
+            actual: actual,
+            repairHint: "Исправь pending_saref_wings_infiltration.json или main_story_saref_state.json по контракту поиска Крыльев Ангелов; не оставляй pending request без reveal_wings/refuse_wings/block_wings."));
     }
 
     private static void AddSarefIssue(

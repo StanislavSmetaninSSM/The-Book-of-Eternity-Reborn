@@ -591,6 +591,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             "pending_shining_faction_realignments.json",
             "pending_shining_faction_leadership_transitions.json",
             "pending_source_of_light_capstone.json",
+            "pending_saref_wings_infiltration.json",
+            "sarefMainStoryUpdate",
             "Source of Light",
             "active spiritual conflict"
         };
@@ -2578,8 +2580,12 @@ public sealed class AfterlifeDocumentationCoverageTests
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
         var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
         var inventory = ReadRepoFile("OtherGuides", "Afterlife_Pending_Control_Surface_Inventory.json");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
 
-        foreach (var text in new[] { matrix, examples, manifest, inventory })
+        foreach (var text in new[] { matrix, examples, manifest, inventory, daemonSpec, apiSpec, taskGuide, operations })
         {
             Assert.Contains(SarefMainStoryState.StatePath, text, StringComparison.Ordinal);
             Assert.Contains("main_story_saref_state", text, StringComparison.OrdinalIgnoreCase);
@@ -2603,6 +2609,19 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("suppressed", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/сареф", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/крылья_над_бездной", examples, StringComparison.OrdinalIgnoreCase);
+
+        foreach (var text in new[] { matrix, examples, inventory, daemonSpec, apiSpec, taskGuide, operations })
+        {
+            Assert.Contains(SarefMainStoryState.PendingWingsInfiltrationPath, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.ResponseField, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.WingsUpdateModeReveal, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.WingsUpdateModeRefuse, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.WingsUpdateModeBlock, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.WingsRouteSafetySafe, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.WingsRouteSafetyRisky, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.WingsRouteSafetyDesperate, text, StringComparison.Ordinal);
+            Assert.Contains("disadvantages", text, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     [Fact]
@@ -2796,6 +2815,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             "pending_archive_project_fuel_request.json" or
             "pending_player_guardian_foundation.json" or
             "pending_source_of_light_capstone.json" or
+            "pending_saref_wings_infiltration.json" or
             "pending_resident_companion_manifestation_request.json";
 
     private static string ExtractRequiredSection(string text, string startMarker, string endMarker)

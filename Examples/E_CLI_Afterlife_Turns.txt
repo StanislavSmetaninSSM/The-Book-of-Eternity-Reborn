@@ -7301,7 +7301,8 @@ Scenario:
 - The hidden main line is `Крылья над Бездной`.
 - The canonical file is `game_state/meta/main_story_saref_state.json`.
 - The player-facing read-only command is `/saref` / `/сареф` (legacy aliases `/saref_story` / `/крылья_над_бездной` still work); before discovery it must say only that the player does not yet know what to seek.
-- Documentation may refer to this contract as `sarefMainStoryState`; issue #533 uses the direct canonical root only, not a command wrapper.
+- Documentation may refer to this contract as `sarefMainStoryState`; the accepted-turn update wrapper is `sarefMainStoryUpdate`.
+- The player-facing action command `/сареф найти_крылья` / `/saref find_wings` creates client-owned `game_state/control/pending_saref_wings_infiltration.json` in ordinary active Shining Abode. Chaos Sea attempts are blocked with a player-facing explanation.
 - Missing file is valid legacy/no-discovery state.
 - If the file is present, it is not a loose GM note. It must use the canonical fields and pass reveal-stage validation.
 
@@ -7509,6 +7510,75 @@ Correct reasoning checklist:
 - A mortal objective item is never transferred as a physical mortal item; store only memory, image, echo, knowledge trace, or soul resonance proof.
 - Do not use Mortal quest files, Mortal faction files, or ordinary lore notes as authority for this hidden mainline state.
 - Keep arrays unique by ids such as `revelationId`, `advantageId`, `outcomeId`, and `endingId`.
+
+`/сареф найти_крылья` pending request shape:
+
+```json
+{
+  "requestId": "saref_wings_infiltration:170",
+  "createdAtTurn": 170,
+  "createdAtUtc": "2026-05-20T00:00:00Z",
+  "routeSafety": "safe",
+  "entryMode": "safe_infiltration",
+  "routeFragments": [
+    { "revelationId": "rev_azalia_faction", "category": "faction", "summary": "Азалия раскрыла структуру вербовки Крыльев Ангелов." },
+    { "revelationId": "rev_ilarion_method", "category": "method", "summary": "Иларион восстановил метод стирания памяти." },
+    { "revelationId": "rev_veyra_path", "category": "path", "summary": "Вейра оставила маршрут к внешнему кругу." },
+    { "revelationId": "rev_myriel_identity", "category": "identity", "summary": "Мириэль связала Сарефа с чужемирной частицей." }
+  ],
+  "substituteFragments": [],
+  "availableAdvantages": [
+    {
+      "advantageId": "adv_veyra_wing_mask",
+      "displayName": "Маска среди Крыльев",
+      "state": "available",
+      "summary": "Можно найти маску, пароль или маршрут к кругу Крыльев Ангелов.",
+      "applicableScenes": [ "wings_infiltration" ]
+    }
+  ],
+  "disadvantages": [],
+  "expectedResponseSurface": "sarefMainStoryUpdate",
+  "expectedClosure": {
+    "mode": "reveal_wings",
+    "requestId": "saref_wings_infiltration:170",
+    "supportedRefusalModes": [ "refuse_wings", "block_wings" ],
+    "requiredRevealStage": "wings_revealed",
+    "requiredSceneType": "wings_infiltration"
+  }
+}
+```
+
+GM closure for the pending Wings search:
+
+```json
+{
+  "sarefMainStoryUpdate": {
+    "mode": "reveal_wings",
+    "requestId": "saref_wings_infiltration:170",
+    "resolvedAtTurn": 171,
+    "routeSafety": "safe",
+    "entryMode": "safe_infiltration",
+    "summary": "Игрок использовал восстановленные следы Хранителей и вышел на внешний круг Крыльев Ангелов.",
+    "wingsInfiltration": {
+      "requestId": "saref_wings_infiltration:170",
+      "status": "revealed",
+      "sceneType": "wings_infiltration",
+      "resolvedAtTurn": 171,
+      "gmResolution": "Путь открыт, но Крылья сразу начали проверять, зачем душа ищет их."
+    },
+    "factionLinks": {
+      "visibility": "revealed",
+      "wingsFactionId": "wings_of_angels"
+    }
+  }
+}
+```
+
+Risky/desperate route rule:
+- `routeSafety=safe`: all four mandatory fragments `identity`, `method`, `faction`, `path`; `disadvantages[]` may be empty.
+- `routeSafety=risky`: at least three mandatory fragments plus two substitutes; `disadvantages[]` must explicitly tell the GM what suspicion, loyalty check, false contact, or cost is attached to the route.
+- `routeSafety=desperate`: at least two mandatory fragments plus four substitutes; `disadvantages[]` must include serious exposure/trap/price and the player starts from an unfavorable position.
+- `refuse_wings` and `block_wings` are supported only as explicit closure modes with matching `requestId`, `wingsInfiltration.status=refused|blocked`, and positive `resolvedAtTurn`.
 
 Valid spent advantage audit after a memory-attack scene:
 
