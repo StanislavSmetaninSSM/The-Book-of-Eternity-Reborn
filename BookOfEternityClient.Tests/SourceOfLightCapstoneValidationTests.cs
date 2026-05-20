@@ -44,6 +44,56 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ShiningAbodeJourney_SourceOfLightClosureWithProgression_CleansPendingAndLeavesTrustedTuple()
+    {
+        var request = SourceOfLightCapstoneState.CreateRequest(42, 580, 4);
+        var preTurnSoul = CreatePreTurnSoulRoot();
+        var preTurnShining = CreatePreTurnShiningRoot();
+        var currentSoul = preTurnSoul.DeepClone().AsObject();
+        var currentShining = preTurnShining.DeepClone().AsObject();
+        ApplySourceOfLightRewards(currentSoul, currentShining, request);
+        currentShining["radiance"]!["experience"] = SourceOfLightCapstoneState.RequiredRadianceExperience + 1;
+
+        await WriteCurrentStateAsync(currentSoul, currentShining, request);
+        await WriteValidatedSnapshotManifestAsync(
+            request,
+            preTurnSoul,
+            preTurnShining,
+            new ProgressionControl
+            {
+                CurrentRealm = "Shining Abode",
+                ShiningAbodeCyclesExpectedThisTurn = 1
+            });
+        await WriteVerifiedProgressionReportAsync(shiningAbodeCyclesProcessed: 1);
+
+        var issuesBeforeCleanup = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issuesBeforeCleanup, IsSourceOfLightIssue);
+        Assert.True(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
+
+        await SourceOfLightCapstoneState.EnsureHealthyAsync(_fs, "Shining Abode");
+
+        Assert.False(_fs.FileExists(SourceOfLightCapstoneState.PendingRequestPath));
+
+        var persistedSoul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var persistedShining = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
+        Assert.True(SourceOfLightCapstoneState.HasMatchingClosure(persistedShining, persistedSoul, request));
+        Assert.Equal(request.CreatedAtTurn, SourceOfLightCapstoneState.GetLightIncarnateGrantTurn(persistedSoul, persistedShining));
+        Assert.Equal(1, SourceOfLightCapstoneState.CountIncarnatedLightRelics(persistedSoul));
+
+        _fs.DeleteFile("input/turn_request.json");
+        _fs.DeleteFile("ready/turn_complete.json");
+        _fs.DeleteFile("game_state/control/pending_turn_snapshot.json");
+        _fs.DeleteFile(ProgressionScheduleService.ReportPath);
+        var snapshotDirectory = _fs.ResolvePath("game_state/control/pending_turn_snapshot");
+        if (Directory.Exists(snapshotDirectory))
+            Directory.Delete(snapshotDirectory, recursive: true);
+
+        var issuesAfterCleanup = await _validator.ValidateGameStateAsync();
+        Assert.DoesNotContain(issuesAfterCleanup, IsSourceOfLightIssue);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_SourceOfLightClosureWithoutRelic_ReportsMissingRelic()
     {
         var request = SourceOfLightCapstoneState.CreateRequest(42, 580, 4);
