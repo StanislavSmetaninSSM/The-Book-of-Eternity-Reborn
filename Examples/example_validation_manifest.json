@@ -47,8 +47,8 @@
       "contractId": "saref_reveal_stage_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/main_story_saref_state.json",
-      "responseSurface": "sarefMainStoryState / sarefMainStoryUpdate / sarefAdvantageUses / defeatOutcomes",
-      "description": "Hidden main story line Крылья над Бездной reveal-stage, Saref advantage-use, shadowTraces, knownAgents/supporterArchetype, hidden Shining faction visibility, and Saref defeat outcomes through record_defeat_outcome. Supported defeat outcomeType values: forced_oath, exile_to_chaos_sea, memory_suppression, soul_dissipation, pyrrhic_escape; defeat audits require playerOathState, memorySuppressionAudit, exileAudit, soulDissipationProofId, or mitigation as applicable."
+      "responseSurface": "sarefMainStoryState / sarefMainStoryUpdate / sarefAdvantageUses / finalConfrontation / defeatOutcomes",
+      "description": "Hidden main story line Крылья над Бездной reveal-stage, Saref advantage-use, shadowTraces, knownAgents/supporterArchetype, hidden Shining faction visibility, final confrontation routes through record_final_confrontation, and Saref defeat outcomes through record_defeat_outcome. Final routeType values: combat, political, oath_law, metaphysical, hybrid; victoryTier values: pyrrhic, clean, deep; finalConfrontation requires directScene, route proof, advantageUseIds, sarefOutcome, wingsFactionOutcome, and matching Wings factionLifecycle. Supported defeat outcomeType values: forced_oath, exile_to_chaos_sea, memory_suppression, soul_dissipation, pyrrhic_escape; defeat audits require playerOathState, memorySuppressionAudit, exileAudit, soulDissipationProofId, or mitigation as applicable."
     },
     {
       "contractId": "shining_faction_lifecycle_v1",

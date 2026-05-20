@@ -879,6 +879,219 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             issue.Code?.StartsWith("saref_main_story_defeat_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public void ApplyUpdate_RecordFinalConfrontation_SetsCompletedStateAndEnding()
+    {
+        var root = SarefMainStoryState.ApplyUpdate(
+            JsonNode.Parse(BuildSarefFinalConfrontationState("null"))!.AsObject(),
+            JsonNode.Parse("""
+            {
+              "mode": "record_final_confrontation",
+              "resolvedAtTurn": 120,
+              "finalConfrontation": {
+                "confrontationId": "saref_final_001",
+                "status": "resolved",
+                "routeType": "combat",
+                "victoryTier": "clean",
+                "directScene": true,
+                "sceneType": "saref_confrontation",
+                "conflictId": "saref_conflict_001",
+                "sarefOutcome": "defeated",
+                "wingsFactionOutcome": "broken",
+                "summary": "Игрок победил Сарефа в прямой финальной сцене."
+              },
+              "ending": {
+                "endingId": "saref_ending_clean_001",
+                "endingType": "victory",
+                "victoryTier": "clean",
+                "summary": "Крылья Ангелов сломлены."
+              }
+            }
+            """)!.AsObject());
+
+        Assert.Equal(SarefMainStoryState.RevealStageCompleted, SarefMainStoryState.GetNodeString(root["revealStage"]));
+        Assert.Equal("resolved", SarefMainStoryState.GetNodeString(root["finalConfrontation"]?["status"]));
+        Assert.Equal(120, SarefMainStoryState.GetNodeInt(root["finalConfrontation"]?["resolvedAtTurn"]));
+        var ending = Assert.IsType<JsonObject>(Assert.Single(root["endings"]!.AsArray()));
+        Assert.Equal("saref_ending_clean_001", SarefMainStoryState.GetNodeString(ending["endingId"]));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CompletedWithoutFinalConfrontation_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState("null", revealStage: "completed"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_completed_without_final_confrontation", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ResolvedFinalConfrontationWithoutDirectScene_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefFinalConfrontationState("""
+        {
+          "confrontationId": "saref_final_offscreen_001",
+          "status": "resolved",
+          "routeType": "combat",
+          "victoryTier": "clean",
+          "directScene": false,
+          "sceneType": "saref_confrontation",
+          "conflictId": "saref_conflict_001",
+          "sarefOutcome": "defeated",
+          "wingsFactionOutcome": "broken",
+          "summary": "Сареф исчез за кадром."
+        }
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_final_confrontation_offscreen", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DeepVictoryWithoutBroadGuardianPreparation_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefFinalConfrontationState("""
+        {
+          "confrontationId": "saref_final_deep_001",
+          "status": "resolved",
+          "routeType": "metaphysical",
+          "victoryTier": "deep",
+          "directScene": true,
+          "sceneType": "final_resolution",
+          "metaphysicalProofId": "source_truth_001",
+          "sarefOutcome": "defeated",
+          "wingsFactionOutcome": "dissolved",
+          "summary": "Игрок пытается раскрыть чужемирную природу Сарефа полностью."
+        }
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_final_deep_victory_insufficient_guardians", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_HybridVictoryWithoutRouteComponents_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefFinalConfrontationState("""
+        {
+          "confrontationId": "saref_final_hybrid_001",
+          "status": "resolved",
+          "routeType": "hybrid",
+          "victoryTier": "clean",
+          "directScene": true,
+          "sceneType": "final_resolution",
+          "sarefOutcome": "defeated",
+          "wingsFactionOutcome": "broken",
+          "summary": "Игрок заявляет смешанную победу без доказанных маршрутов."
+        }
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_final_hybrid_missing_components", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FinalConfrontationWithUnknownAdvantageUse_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefFinalConfrontationState("""
+        {
+          "confrontationId": "saref_final_advantage_001",
+          "status": "resolved",
+          "routeType": "oath_law",
+          "victoryTier": "clean",
+          "directScene": true,
+          "sceneType": "final_resolution",
+          "oathBreakProofId": "oath_break_001",
+          "advantageUseIds": [ "use_missing_advantage" ],
+          "sarefOutcome": "defeated",
+          "wingsFactionOutcome": "broken",
+          "summary": "Игрок ссылается на неизвестное преимущество."
+        }
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_final_unknown_advantage_use", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FinalVictoryWithMismatchedWingsLifecycle_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefFinalConfrontationState("""
+        {
+          "confrontationId": "saref_final_political_001",
+          "status": "resolved",
+          "routeType": "political",
+          "victoryTier": "clean",
+          "directScene": true,
+          "sceneType": "final_resolution",
+          "factionCampaignId": "campaign_wings_break_001",
+          "sarefOutcome": "defeated",
+          "wingsFactionOutcome": "broken",
+          "summary": "Игрок победил Сарефа через раскол Крыльев."
+        }
+        """));
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningWingsFactionState("active"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_final_wings_lifecycle_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DeepHybridVictoryWithBroadGuardianPreparation_PassesFinalValidation()
+    {
+        await _fs.WriteFileAtomicAsync(
+            SarefMainStoryState.StatePath,
+            BuildSarefFinalConfrontationState(
+                """
+                {
+                  "confrontationId": "saref_final_deep_hybrid_001",
+                  "status": "resolved",
+                  "routeType": "hybrid",
+                  "routeComponents": [ "combat", "oath_law", "metaphysical" ],
+                  "victoryTier": "deep",
+                  "directScene": true,
+                  "sceneType": "final_resolution",
+                  "resolvedAtTurn": 120,
+                  "conflictId": "saref_conflict_001",
+                  "oathBreakProofId": "oath_break_001",
+                  "metaphysicalProofId": "source_truth_001",
+                  "advantageUseIds": [ "use_azalia_false_loyalty" ],
+                  "sarefOutcome": "defeated",
+                  "wingsFactionOutcome": "dissolved",
+                  "summary": "Игрок одновременно разбил Сарефа, рассек клятву и раскрыл его иномировую природу."
+                }
+                """,
+                guardianQuestlinesPayload: BuildBroadGuardianQuestlinesPayload(),
+                advantagePayload: """
+                "sarefAdvantages": [
+                  { "advantageId": "adv_azalia_false_loyalty", "state": "passive", "applicableScenes": [ "final_resolution", "saref_confrontation" ], "summary": "Азалия учит лгать Крыльям." }
+                ],
+                "sarefAdvantageUses": [
+                  { "usageId": "use_azalia_false_loyalty", "advantageId": "adv_azalia_false_loyalty", "sceneType": "final_resolution", "usedAtTurn": 120, "consumesAdvantage": false, "summary": "Ложная верность открыла путь к ядру Крыльев." }
+                ],
+                """));
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, BuildShiningWingsFactionState("dissolved"));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("saref_main_story_final_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     private static string BuildSarefAdvantageState(string advantagePayload) =>
         $$"""
         {
@@ -952,6 +1165,122 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "endings": [],
           "playerOathState": null,
           "sarefPersonalBond": null
+        }
+        """;
+
+    private static string BuildSarefFinalConfrontationState(
+        string finalConfrontationPayload,
+        string revealStage = "confrontation_available",
+        string? guardianQuestlinesPayload = null,
+        string advantagePayload = """
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+        """) =>
+        $$"""
+        {
+          "schemaVersion": 1,
+          "revealStage": "{{revealStage}}",
+          "guardianQuestlines": {{guardianQuestlinesPayload ?? BuildSingleGuardianQuestlinePayload()}},
+          "latentTraces": [],
+          "sarefRevelations": [
+            { "revelationId": "rev_identity", "category": "identity", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 50 },
+            { "revelationId": "rev_method", "category": "method", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 51 },
+            { "revelationId": "rev_faction", "category": "faction", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 52 },
+            { "revelationId": "rev_path", "category": "path", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 53 }
+          ],
+          {{advantagePayload}}
+          "wingsInfiltration": { "status": "revealed", "requestId": "saref_wings_infiltration:42", "resolvedAtTurn": 90 },
+          "factionLinks": {
+            "visibility": "revealed",
+            "wingsFactionId": "wings_of_angels",
+            "knownAgents": [
+              { "agentId": "wing_agent_deceived", "supporterArchetype": "deceived", "interactionRoutes": [ "persuade" ], "summary": "Обманутый агент." },
+              { "agentId": "wing_agent_oathbound", "supporterArchetype": "oathbound", "importance": "important", "interactionRoutes": [ "free" ], "summary": "Связанный агент." }
+            ]
+          },
+          "finalConfrontation": {{finalConfrontationPayload}},
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """;
+
+    private static string BuildSingleGuardianQuestlinePayload() => """
+        [
+          {
+            "guardianId": "azalia",
+            "questStates": [
+              { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+              { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+              { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+              { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+            ]
+          }
+        ]
+        """;
+
+    private static string BuildBroadGuardianQuestlinesPayload() => """
+        [
+          {
+            "guardianId": "azalia",
+            "questStates": [
+              { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+              { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+              { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+              { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+            ]
+          },
+          {
+            "guardianId": "ilarion",
+            "questStates": [
+              { "questOrdinal": 1, "status": "completed", "questId": "ilarion_saref_q1" },
+              { "questOrdinal": 2, "status": "completed", "questId": "ilarion_saref_q2" },
+              { "questOrdinal": 3, "status": "completed", "questId": "ilarion_saref_q3" },
+              { "questOrdinal": 4, "status": "completed", "questId": "ilarion_saref_q4" }
+            ]
+          },
+          {
+            "guardianId": "veyra",
+            "questStates": [
+              { "questOrdinal": 1, "status": "completed", "questId": "veyra_saref_q1" },
+              { "questOrdinal": 2, "status": "completed", "questId": "veyra_saref_q2" },
+              { "questOrdinal": 3, "status": "completed", "questId": "veyra_saref_q3" },
+              { "questOrdinal": 4, "status": "completed", "questId": "veyra_saref_q4" }
+            ]
+          },
+          {
+            "guardianId": "myriel",
+            "questStates": [
+              { "questOrdinal": 1, "status": "completed", "questId": "myriel_saref_q1" },
+              { "questOrdinal": 2, "status": "completed", "questId": "myriel_saref_q2" },
+              { "questOrdinal": 3, "status": "completed", "questId": "myriel_saref_q3" },
+              { "questOrdinal": 4, "status": "completed", "questId": "myriel_saref_q4" }
+            ]
+          }
+        ]
+        """;
+
+    private static string BuildShiningWingsFactionState(string lifecycleState) =>
+        $$"""
+        {
+          "schemaVersion": 1,
+          "availability": "active",
+          "radiance": {
+            "experience": 0,
+            "tier": 0
+          },
+          "preparedIncarnationPackage": null,
+          "factions": [
+            {
+              "factionId": "wings_of_angels",
+              "sarefFactionRole": "wings_of_angels",
+              "sarefVisibility": "revealed",
+              "factionLifecycle": {
+                "state": "{{lifecycleState}}"
+              }
+            }
+          ]
         }
         """;
 

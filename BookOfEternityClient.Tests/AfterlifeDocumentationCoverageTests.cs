@@ -2693,6 +2693,21 @@ public sealed class AfterlifeDocumentationCoverageTests
 
         foreach (var text in new[] { matrix, examples, manifest, inventory, daemonSpec, apiSpec, taskGuide, operations })
         {
+            Assert.Contains(SarefMainStoryState.FinalUpdateModeRecord, text, StringComparison.Ordinal);
+            Assert.Contains("finalConfrontation", text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.FinalRouteCombat, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.FinalRoutePolitical, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.FinalRouteOathLaw, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.FinalRouteMetaphysical, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.FinalRouteHybrid, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.FinalVictoryPyrrhic, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.FinalVictoryClean, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.FinalVictoryDeep, text, StringComparison.Ordinal);
+            Assert.Contains("directScene", text, StringComparison.Ordinal);
+            Assert.Contains("advantageUseIds", text, StringComparison.Ordinal);
+            Assert.Contains("sarefOutcome", text, StringComparison.Ordinal);
+            Assert.Contains("wingsFactionOutcome", text, StringComparison.Ordinal);
+            Assert.Contains("factionLifecycle", text, StringComparison.Ordinal);
             Assert.Contains(SarefMainStoryState.DefeatUpdateModeRecord, text, StringComparison.Ordinal);
             Assert.Contains("defeatOutcomes", text, StringComparison.Ordinal);
             Assert.Contains(SarefMainStoryState.DefeatOutcomeForcedOath, text, StringComparison.Ordinal);

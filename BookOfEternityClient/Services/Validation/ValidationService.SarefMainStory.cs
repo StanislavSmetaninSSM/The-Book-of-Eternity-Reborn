@@ -293,6 +293,55 @@ public partial class ValidationService
                 "sarefVisibility=revealed",
                 factionVisibility ?? "missing");
         }
+
+        ValidateSarefFinalWingsFactionOutcome(storyRoot, matchingFaction, issues);
+    }
+
+    private static void ValidateSarefFinalWingsFactionOutcome(
+        JsonObject storyRoot,
+        JsonObject matchingFaction,
+        List<ValidationIssue> issues)
+    {
+        if (storyRoot["finalConfrontation"] is not JsonObject final)
+            return;
+
+        if (!string.Equals(
+                SarefMainStoryState.GetNodeString(final["status"]),
+                SarefMainStoryState.FinalStatusResolved,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var outcome = SarefMainStoryState.GetNodeString(final["wingsFactionOutcome"]);
+        if (string.IsNullOrWhiteSpace(outcome))
+            return;
+
+        var lifecycleState = matchingFaction["factionLifecycle"] is JsonObject lifecycle
+            ? SarefMainStoryState.GetNodeString(lifecycle["state"]) ?? ShiningAbodeState.FactionLifecycleStateActive
+            : ShiningAbodeState.FactionLifecycleStateActive;
+
+        var matches = string.Equals(outcome, SarefMainStoryState.FinalWingsOutcomeBroken, StringComparison.OrdinalIgnoreCase)
+            ? string.Equals(lifecycleState, ShiningAbodeState.FactionLifecycleStateBroken, StringComparison.OrdinalIgnoreCase) ||
+              string.Equals(lifecycleState, ShiningAbodeState.FactionLifecycleStateDissolved, StringComparison.OrdinalIgnoreCase)
+            : !string.Equals(outcome, SarefMainStoryState.FinalWingsOutcomeDissolved, StringComparison.OrdinalIgnoreCase) ||
+              string.Equals(lifecycleState, ShiningAbodeState.FactionLifecycleStateDissolved, StringComparison.OrdinalIgnoreCase);
+
+        if (matches)
+            return;
+
+        AddSarefIssue(
+            issues,
+            $"{ShiningAbodeState.StatePath}.factions[].factionLifecycle.state",
+            "Итог финальной конфронтации должен совпадать с lifecycle Крыльев Ангелов.",
+            "saref_main_story_final_wings_lifecycle_mismatch",
+            outcome switch
+            {
+                var value when string.Equals(value, SarefMainStoryState.FinalWingsOutcomeBroken, StringComparison.OrdinalIgnoreCase) => "broken/dissolved",
+                var value when string.Equals(value, SarefMainStoryState.FinalWingsOutcomeDissolved, StringComparison.OrdinalIgnoreCase) => "dissolved",
+                _ => "matching Wings faction lifecycle"
+            },
+            lifecycleState);
     }
 
     private void ValidateSarefMainStoryStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
@@ -331,13 +380,13 @@ public partial class ValidationService
         var advantageUses = ValidateSarefAdvantageUses(root, contextPrefix, advantages, issues);
         ValidateSarefQuestFourUnlockLinks(guardianQuestlines, questFourRevelations, questFourAdvantages, contextPrefix, issues);
         ValidateSarefDefeatOutcomes(root, contextPrefix, advantageUses, issues);
+        ValidateSarefFinalConfrontation(root, contextPrefix, revealStage, guardianQuestlines, advantageUses, issues);
         ValidateSarefArray(root, contextPrefix, "endings", "endingId", "saref_main_story_duplicate_ending", issues);
         var factionVisibility = ValidateSarefFactionLinks(root, contextPrefix, issues);
         ValidateSarefActionableFactionLink(revealStage, root, factionVisibility, contextPrefix, issues);
         ValidateSarefNullableStateObject(root, contextPrefix, "playerOathState", "state", SarefMainStoryState.PlayerOathStates, "saref_main_story_invalid_player_oath_state", issues);
         ValidateSarefNullableStateObject(root, contextPrefix, "sarefPersonalBond", "state", SarefMainStoryState.PersonalBondStates, "saref_main_story_invalid_personal_bond_state", issues);
         ValidateSarefNullableObject(root, contextPrefix, "wingsInfiltration", issues);
-        ValidateSarefNullableObject(root, contextPrefix, "finalConfrontation", issues);
         ValidateSarefRevealStageInvariants(
             revealStage,
             revelationCount,
@@ -1274,6 +1323,283 @@ public partial class ValidationService
             ValidateSarefTurnFields(item, context, issues);
         }
     }
+
+    private static void ValidateSarefFinalConfrontation(
+        JsonElement root,
+        string contextPrefix,
+        string? revealStage,
+        IReadOnlyDictionary<string, Dictionary<int, string>> guardianQuestlines,
+        IReadOnlyDictionary<string, SarefAdvantageUse> advantageUses,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("finalConfrontation", out var finalNode) || finalNode.ValueKind == JsonValueKind.Null)
+        {
+            if (string.Equals(revealStage, SarefMainStoryState.RevealStageCompleted, StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{contextPrefix}.finalConfrontation",
+                    "Завершенная сюжетная линия Сарефа требует canonical finalConfrontation.",
+                    "saref_main_story_completed_without_final_confrontation",
+                    "finalConfrontation.status=resolved",
+                    finalNode.ValueKind == JsonValueKind.Null ? "null" : "missing");
+            }
+
+            return;
+        }
+
+        var context = $"{contextPrefix}.finalConfrontation";
+        if (finalNode.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "finalConfrontation должен быть null или object.",
+                "saref_main_story_invalid_final_confrontation",
+                "object",
+                finalNode.ValueKind.ToString());
+            return;
+        }
+
+        var status = RequireSarefString(finalNode, context, "status", "saref_main_story_final_missing_status", issues);
+        if (!string.IsNullOrWhiteSpace(status) && !SarefMainStoryState.FinalConfrontationStatuses.Contains(status))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.status",
+                "status финальной конфронтации Сарефа не поддерживается.",
+                "saref_main_story_final_invalid_status",
+                string.Join("/", SarefMainStoryState.FinalConfrontationStatuses.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                status);
+        }
+
+        var routeType = RequireSarefString(finalNode, context, "routeType", "saref_main_story_final_missing_route_type", issues);
+        if (!string.IsNullOrWhiteSpace(routeType) && !SarefMainStoryState.FinalConfrontationRouteTypes.Contains(routeType))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.routeType",
+                "routeType финальной конфронтации Сарефа не поддерживается.",
+                "saref_main_story_final_invalid_route_type",
+                string.Join("/", SarefMainStoryState.FinalConfrontationRouteTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                routeType);
+        }
+
+        var victoryTier = RequireSarefString(finalNode, context, "victoryTier", "saref_main_story_final_missing_victory_tier", issues);
+        if (!string.IsNullOrWhiteSpace(victoryTier) && !SarefMainStoryState.FinalVictoryTiers.Contains(victoryTier))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.victoryTier",
+                "victoryTier финальной конфронтации Сарефа не поддерживается.",
+                "saref_main_story_final_invalid_victory_tier",
+                string.Join("/", SarefMainStoryState.FinalVictoryTiers.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                victoryTier);
+        }
+
+        RequireSarefString(finalNode, context, "confrontationId", "saref_main_story_final_missing_confrontation_id", issues);
+        RequireSarefString(finalNode, context, "summary", "saref_main_story_final_missing_summary", issues);
+        var resolvedAtTurn = RequireSarefTurnNumber(finalNode, context, "resolvedAtTurn", "saref_main_story_final_missing_resolved_turn", issues);
+        if (finalNode.TryGetProperty("resolvedAtTurn", out _) && resolvedAtTurn <= 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.resolvedAtTurn",
+                "finalConfrontation.resolvedAtTurn должен быть положительным номером хода.",
+                "saref_main_story_final_missing_resolved_turn",
+                "integer > 0",
+                resolvedAtTurn.ToString());
+        }
+
+        var sceneType = RequireSarefString(finalNode, context, "sceneType", "saref_main_story_final_missing_scene_type", issues);
+        if (!string.IsNullOrWhiteSpace(sceneType) && !SarefMainStoryState.AdvantageSceneTypes.Contains(sceneType))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.sceneType",
+                "sceneType финальной конфронтации Сарефа не поддерживается.",
+                "saref_main_story_final_invalid_scene_type",
+                string.Join("/", SarefMainStoryState.AdvantageSceneTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                sceneType);
+        }
+
+        if (string.Equals(status, SarefMainStoryState.FinalStatusResolved, StringComparison.OrdinalIgnoreCase) &&
+            GetSarefOptionalBool(finalNode, "directScene") != true)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.directScene",
+                "Финальная конфронтация с Сарефом не может быть закрыта за кадром.",
+                "saref_main_story_final_confrontation_offscreen",
+                "directScene=true",
+                finalNode.TryGetProperty("directScene", out var directScene) ? directScene.ValueKind.ToString() : "missing");
+        }
+
+        ValidateSarefFinalRouteProof(finalNode, context, routeType, issues);
+        ValidateSarefFinalAdvantageUses(finalNode, context, sceneType, advantageUses, issues);
+
+        if (string.Equals(victoryTier, SarefMainStoryState.FinalVictoryDeep, StringComparison.OrdinalIgnoreCase) &&
+            CountSarefQuestFourCompletedGuardians(guardianQuestlines) < 4)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.victoryTier",
+                "deep victory над Сарефом требует широкой подготовки через 4-х разных Предвечных Хранителей.",
+                "saref_main_story_final_deep_victory_insufficient_guardians",
+                "4 guardians with questOrdinal=4 completed",
+                CountSarefQuestFourCompletedGuardians(guardianQuestlines).ToString());
+        }
+
+        ValidateSarefTurnFields(finalNode, context, issues);
+    }
+
+    private static void ValidateSarefFinalRouteProof(
+        JsonElement finalNode,
+        string context,
+        string? routeType,
+        List<ValidationIssue> issues)
+    {
+        if (string.IsNullOrWhiteSpace(routeType))
+            return;
+
+        if (string.Equals(routeType, SarefMainStoryState.FinalRouteHybrid, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!finalNode.TryGetProperty("routeComponents", out var components) || components.ValueKind != JsonValueKind.Array)
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.routeComponents",
+                    "hybrid victory требует routeComponents[] минимум из двух distinct routeType.",
+                    "saref_main_story_final_hybrid_missing_components",
+                    "routeComponents[] with 2+ route types",
+                    finalNode.TryGetProperty("routeComponents", out var present) ? present.ValueKind.ToString() : "missing");
+                return;
+            }
+
+            var routeComponents = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var component in components.EnumerateArray())
+            {
+                if (!TryGetSarefString(component, out var componentRoute) ||
+                    string.Equals(componentRoute, SarefMainStoryState.FinalRouteHybrid, StringComparison.OrdinalIgnoreCase) ||
+                    !SarefMainStoryState.FinalConfrontationRouteTypes.Contains(componentRoute))
+                {
+                    AddSarefIssue(
+                        issues,
+                        $"{context}.routeComponents",
+                        "hybrid routeComponents[] должен перечислять supported non-hybrid routeType.",
+                        "saref_main_story_final_hybrid_invalid_component",
+                        "combat/political/oath_law/metaphysical",
+                        component.ValueKind.ToString());
+                    continue;
+                }
+
+                routeComponents.Add(componentRoute);
+            }
+
+            if (routeComponents.Count < 2)
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.routeComponents",
+                    "hybrid victory требует минимум два разных routeComponents.",
+                    "saref_main_story_final_hybrid_missing_components",
+                    "2+ distinct routeComponents",
+                    routeComponents.Count.ToString());
+            }
+
+            foreach (var componentRoute in routeComponents)
+                ValidateSarefFinalSingleRouteProof(finalNode, context, componentRoute, issues);
+            return;
+        }
+
+        ValidateSarefFinalSingleRouteProof(finalNode, context, routeType, issues);
+    }
+
+    private static void ValidateSarefFinalSingleRouteProof(
+        JsonElement finalNode,
+        string context,
+        string routeType,
+        List<ValidationIssue> issues)
+    {
+        if (string.Equals(routeType, SarefMainStoryState.FinalRouteCombat, StringComparison.OrdinalIgnoreCase))
+            RequireSarefString(finalNode, context, "conflictId", "saref_main_story_final_combat_missing_conflict", issues);
+        else if (string.Equals(routeType, SarefMainStoryState.FinalRoutePolitical, StringComparison.OrdinalIgnoreCase))
+            RequireSarefString(finalNode, context, "factionCampaignId", "saref_main_story_final_political_missing_campaign", issues);
+        else if (string.Equals(routeType, SarefMainStoryState.FinalRouteOathLaw, StringComparison.OrdinalIgnoreCase))
+            RequireSarefString(finalNode, context, "oathBreakProofId", "saref_main_story_final_oath_law_missing_proof", issues);
+        else if (string.Equals(routeType, SarefMainStoryState.FinalRouteMetaphysical, StringComparison.OrdinalIgnoreCase))
+            RequireSarefString(finalNode, context, "metaphysicalProofId", "saref_main_story_final_metaphysical_missing_proof", issues);
+    }
+
+    private static void ValidateSarefFinalAdvantageUses(
+        JsonElement finalNode,
+        string context,
+        string? sceneType,
+        IReadOnlyDictionary<string, SarefAdvantageUse> advantageUses,
+        List<ValidationIssue> issues)
+    {
+        if (!finalNode.TryGetProperty("advantageUseIds", out var refs) || refs.ValueKind == JsonValueKind.Null)
+            return;
+
+        if (refs.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.advantageUseIds",
+                "advantageUseIds финальной конфронтации должен быть массивом usageId.",
+                "saref_main_story_final_advantage_use_ids_not_array",
+                "array",
+                refs.ValueKind.ToString());
+            return;
+        }
+
+        foreach (var refNode in refs.EnumerateArray())
+        {
+            if (!TryGetSarefString(refNode, out var usageId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.advantageUseIds",
+                    "advantageUseIds[] должен содержать строки usageId.",
+                    "saref_main_story_final_invalid_advantage_use",
+                    "sarefAdvantageUses[].usageId",
+                    refNode.ValueKind.ToString());
+                continue;
+            }
+
+            if (!advantageUses.TryGetValue(usageId, out var use))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.advantageUseIds",
+                    "Финальная конфронтация ссылается на неизвестное использование преимущества.",
+                    "saref_main_story_final_unknown_advantage_use",
+                    "existing sarefAdvantageUses[].usageId",
+                    usageId);
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(sceneType) &&
+                !string.IsNullOrWhiteSpace(use.SceneType) &&
+                !string.Equals(use.SceneType, sceneType, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(use.SceneType, SarefMainStoryState.SceneAny, StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.advantageUseIds",
+                    "Преимущество финальной конфронтации должно быть использовано в этой же final scene.",
+                    "saref_main_story_final_advantage_wrong_scene",
+                    sceneType,
+                    use.SceneType);
+            }
+        }
+    }
+
+    private static int CountSarefQuestFourCompletedGuardians(
+        IReadOnlyDictionary<string, Dictionary<int, string>> guardianQuestlines) =>
+        guardianQuestlines.Count(pair =>
+            pair.Value.TryGetValue(4, out var status) &&
+            string.Equals(status, SarefMainStoryState.QuestStateCompleted, StringComparison.OrdinalIgnoreCase));
 
     private static void ValidateSarefDefeatMitigation(
         JsonElement item,
