@@ -108,7 +108,7 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
         var source = ReadSource("ExplorerMode.Afterlife.ShiningAbode.cs");
 
         Assert.Contains("factionRealignmentState=ready_to_realign", source, StringComparison.Ordinal);
-        Assert.Contains("wavering tier сам по себе не открывает переход", source, StringComparison.Ordinal);
+        Assert.Contains("колеблющийся тир сам по себе не открывает переход", source, StringComparison.Ordinal);
         Assert.DoesNotContain("ready_to_realign/wavering", source, StringComparison.Ordinal);
         Assert.Contains("Pending-модель не является глобальным mutex", source, StringComparison.Ordinal);
         Assert.Contains("Pending-модель не глобальная", source, StringComparison.Ordinal);

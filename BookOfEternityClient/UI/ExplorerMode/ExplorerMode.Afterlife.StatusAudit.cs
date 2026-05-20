@@ -406,7 +406,7 @@ public partial class ExplorerMode
 
         var root = context.Root;
         lines.Add($"  • Доступность: [white]{Markup.Escape(DescribeShiningAvailability(GetNodeString(root["availability"])))}[/]");
-        lines.Add($"  • Сияние (radiance): [yellow]{GetNodeInt(root["radiance"]?["experience"])} XP[/] [dim](tier {GetNodeInt(root["radiance"]?["tier"])})[/]");
+        lines.Add($"  • Сияние (radiance): [yellow]{GetNodeInt(root["radiance"]?["experience"])} XP[/] [dim](тир {GetNodeInt(root["radiance"]?["tier"])})[/]");
         var sourceStatus = root[SourceOfLightCapstoneState.ShiningStateProperty] is JsonObject sourceMarker &&
                            GetNodeBool(sourceMarker["completed"])
             ? "завершён: Воплощение Света + Воплощенный Свет"
