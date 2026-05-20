@@ -234,6 +234,40 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.Equal("built_in", creation["sourceLibrary"]?.GetValue<string>());
     }
 
+    [Fact]
+    public async Task BuiltInLucianPreset_IsMaterializableAndUsesRussianPlayerFacingBladeMagic()
+    {
+        var sourcePresetDir = GetRepoBuiltInPresetDirectory("lucian");
+
+        Assert.True(Directory.Exists(sourcePresetDir), "Built-in Lucian preset directory must exist.");
+
+        CopyDirectory(sourcePresetDir, Path.Combine(_service.GetBuiltInDirectoryPath(), "lucian"));
+
+        var preset = await _service.FindPresetAsync("lucian", includeDossier: true);
+
+        Assert.NotNull(preset);
+        Assert.Equal("Люциан Лунный Клинок", preset!.DisplayName);
+        Assert.Equal("built_in", preset.LibraryKind);
+        Assert.Equal("Люциан Лунный Клинок", preset.DefaultNameVariant);
+        Assert.Equal("он/его", preset.DefaultPronouns);
+        Assert.Equal("Чертог Лунного Клинка", preset.AbodeName);
+        Assert.Contains("клин", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("долг", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Притяжение к Люциану", preset.SearchLabel, StringComparison.Ordinal);
+        Assert.Contains("лунный клинок", preset.SearchKeywords);
+        Assert.Contains("одинокий трагический воитель-маг", preset.PromptPackage, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не военный командир", preset.PromptPackage, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("магия через движение клинка", preset.PromptPackage, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Warmaster", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("ritual research", preset.Summary, StringComparison.OrdinalIgnoreCase);
+
+        var creation = _service.BuildPendingGuardianCreationNode(preset, "Тестовая Душа");
+
+        Assert.Equal("lucian", creation["presetId"]?.GetValue<string>());
+        Assert.Equal("Люциан Лунный Клинок", creation["presetDisplayName"]?.GetValue<string>());
+        Assert.Equal("built_in", creation["sourceLibrary"]?.GetValue<string>());
+    }
+
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {
         var presetDir = Path.Combine(rootDir, presetId);
