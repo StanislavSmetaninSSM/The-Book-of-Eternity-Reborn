@@ -2606,6 +2606,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "знани");
     }
 
+    [Fact]
+    public void SarefSeretQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "seret.md",
+            "Серет",
+            "oath_break",
+            "Разомкнутый договор",
+            "клятв",
+            "долг");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,
