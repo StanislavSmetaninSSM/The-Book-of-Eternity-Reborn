@@ -2654,6 +2654,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "архив");
     }
 
+    [Fact]
+    public void SarefVeyraQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "veyra.md",
+            "Вейра",
+            "path",
+            "Маска среди Крыльев",
+            "маск",
+            "путь");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,
