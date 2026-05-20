@@ -520,6 +520,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         foreach (var text in new[] { launcherScript, launcherGenerator, daemonScript })
         {
             Assert.Contains("example 26", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("game_state/meta/afterlife_entity_profiles.json", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProfileUpdates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
@@ -541,7 +542,29 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("afterlifeEntityProgressionOverrides", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeSpecialArtLearningReceipts", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("soulDissipationProof", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("targetStabilityCoefficient", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("terminalGameOver", lifecyclePrompt, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AfterlifeEntityProfileOperationRulesMentionCommandSurfaces()
+    {
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+
+        foreach (var token in new[]
+        {
+            "game_state/meta/afterlife_entity_profiles.json",
+            "afterlifeEntityProfileUpdates",
+            "afterlifeEntityCustomStateChanges",
+            "afterlifeEntityProgressionOverrides",
+            "afterlifeSpecialArtLearningReceipts",
+            "soulDissipationProof",
+            "targetStabilityCoefficient",
+            "terminalGameOver"
+        })
+        {
+            Assert.Contains(token, operations, StringComparison.Ordinal);
+        }
     }
 
     [Fact]
