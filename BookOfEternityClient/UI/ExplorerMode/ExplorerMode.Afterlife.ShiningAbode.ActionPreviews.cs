@@ -154,7 +154,7 @@ public partial class ExplorerMode
             {
                 lines.Add($"    Текущая сила: [dim]{GetNodeInt(faction["factionStrength"])}[/]");
                 lines.Add($"    Инвестиций за восхождение: [dim]{GetNodeInt(faction["investCountThisAscension"])}/3[/]");
-                lines.Add($"    Торговый tier: [dim]{ShiningAbodeState.GetTradeTier(GetNodeInt(faction["factionStrength"]))}[/]");
+                lines.Add($"    Торговый тир: [dim]{ShiningAbodeState.GetTradeTier(GetNodeInt(faction["factionStrength"]))}[/]");
             }
         }
 
@@ -267,8 +267,8 @@ public partial class ExplorerMode
 
             case ShiningCoreActionRequestState.ActionTypeCompleteProject:
                 AppendProjectedFactionDelta(lines, context, request);
-                lines.Add("  • Новый project должен быть materialized as completed project с canonical strengthReward по tier.");
-                lines.Add("  • Если archetype ещё не считался в этом ascension, опыт Сияния (radiance XP) получает +10 и tier пересчитывается.");
+                lines.Add("  • Новый project должен быть materialized as completed project с canonical strengthReward по уровню проекта.");
+                lines.Add("  • Если archetype ещё не считался в этом ascension, опыт Сияния (radiance XP) получает +10 и тир пересчитывается.");
                 lines.Add("  • Если открыт draft Врат, он становится stale.");
                 break;
 
@@ -293,7 +293,7 @@ public partial class ExplorerMode
             case ShiningCoreActionRequestState.ActionTypeOpenGates:
                 var radianceTier = GetNodeInt(context.Root["radiance"]?["tier"]);
                 lines.Add($"  • Создать fresh gates draft: draftVersion +1, hasOpenDraft=true, isStale=false.");
-                lines.Add($"  • Размер набора по Radiance tier {radianceTier}: {ShiningAbodeState.GetDraftSize(radianceTier)}; лимит выбора: {ShiningAbodeState.GetPickCap(radianceTier)}.");
+                lines.Add($"  • Размер набора по тиру Сияния {radianceTier}: {ShiningAbodeState.GetDraftSize(radianceTier)}; лимит выбора: {ShiningAbodeState.GetPickCap(radianceTier)}.");
                 lines.Add("  • selectedBlessingCardIds очищается; shown/available/allCandidate card arrays фиксируются в state.");
                 lines.Add("  • rerollsRemaining = число supported Remembrance projects.");
                 break;
@@ -313,7 +313,7 @@ public partial class ExplorerMode
                 lines.Add($"  • chargesUsedThisReturn: {chargesUsed} -> {chargesUsed + 1} из {chargesPerReturn}; projected bonus ceiling: +{request.ProjectedGachaBonusSteps} rarity step(s).");
                 if (FindShiningFactionForPreview(context.Root, request.FactionId) is JsonObject gachaFaction)
                 {
-                    lines.Add($"  • Bonus contributors: Radiance tier {GetNodeInt(context.Root["radiance"]?["tier"])}, factionStrength {GetNodeInt(gachaFaction["factionStrength"])}, supported projects/residents from current Shining state.");
+                    lines.Add($"  • Вклад в бонус: тир Сияния {GetNodeInt(context.Root["radiance"]?["tier"])}, factionStrength {GetNodeInt(gachaFaction["factionStrength"])}, поддержанные проекты/резиденты из текущего состояния Сияющей Обители.");
                     lines.Add($"  • Trade/forge context for same faction: tradeTier {ShiningAbodeState.GetTradeTier(GetNodeInt(gachaFaction["factionStrength"]))}, rarity ceiling {Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(GetNodeInt(gachaFaction["factionStrength"])))}.");
                 }
                 lines.Add("  • GM берёт `turn_request.gachaBaseResult.baseRarity` as rarity floor, может поднять итог не выше projected bonus ceiling.");
@@ -994,8 +994,8 @@ public partial class ExplorerMode
         var supportedBefore = ShiningAbodeState.CountSupportedProjectsAcrossState(context.Root);
         var supportedCap = ShiningAbodeState.GetSupportedProjectCap(radianceTier);
         lines.Add($"  • Project support flag: {GetNodeBool(project["isSupported"])} -> {support}.");
-        lines.Add($"  • Support cap по Radiance tier {radianceTier}: {supportedBefore}/{supportedCap} сейчас.");
-        lines.Add($"  • Архетип: {Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(project["projectArchetype"])))}; effect family: {Markup.Escape(DescribeShiningEffectFamily(GetNodeString(project["outputEffectFamily"])))}; tier {GetNodeInt(project["tier"])}.");
+        lines.Add($"  • Лимит поддержки по тиру Сияния {radianceTier}: {supportedBefore}/{supportedCap} сейчас.");
+        lines.Add($"  • Архетип: {Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(project["projectArchetype"])))}; семейство эффекта: {Markup.Escape(DescribeShiningEffectFamily(GetNodeString(project["outputEffectFamily"])))}; уровень {GetNodeInt(project["tier"])}.");
         if (!string.IsNullOrWhiteSpace(GetNodeString(project["summary"])))
             lines.Add($"  • Summary: {Markup.Escape(GetNodeString(project["summary"])!)}");
         AppendShiningStringList(lines, "Тоновые метки", project["toneTags"] as JsonArray);
@@ -1011,7 +1011,7 @@ public partial class ExplorerMode
         {
             var beforeStrength = GetNodeInt(beforeFaction["factionStrength"]);
             var afterStrength = GetNodeInt(afterFaction["factionStrength"]);
-            lines.Add($"  • Faction strength/trade tier: {beforeStrength} / tier {ShiningAbodeState.GetTradeTier(beforeStrength)} -> {afterStrength} / tier {ShiningAbodeState.GetTradeTier(afterStrength)}.");
+            lines.Add($"  • Сила фракции / торговый тир: {beforeStrength} / тир {ShiningAbodeState.GetTradeTier(beforeStrength)} -> {afterStrength} / тир {ShiningAbodeState.GetTradeTier(afterStrength)}.");
             lines.Add($"  • Trade slots/rarity/service after mutation: {ShiningAbodeState.GetTradeStockItemCount(afterFaction, context.ResidentRoot)} slots, ceiling {Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(afterStrength))}, service x{ShiningAbodeState.GetServiceMultiplier(afterStrength):0.00}.");
             lines.Add($"  • Gacha bonus after mutation: +{ShiningAbodeState.GetProjectedShiningGachaBonusSteps(projectedRoot, context.ResidentRoot, afterFaction)} rarity step(s).");
         }

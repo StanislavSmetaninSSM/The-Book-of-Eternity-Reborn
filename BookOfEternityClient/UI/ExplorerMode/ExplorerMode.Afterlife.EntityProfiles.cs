@@ -101,7 +101,7 @@ public partial class ExplorerMode
 
         var warnings = ReadProfileStringArray(profile["warnings"] as JsonArray).ToList();
         if (dissipationTier > 0)
-            warnings.Insert(0, $"ОПАСНО: эта сущность потенциально может окончательно развеять душу после победы, если её tier Развеивания выше коэффициента устойчивости цели и её мотивы это допускают. Решение не автоматическое.");
+            warnings.Insert(0, $"ОПАСНО: эта сущность потенциально может окончательно развеять душу после победы, если её тир Развеивания выше коэффициента устойчивости цели и её мотивы это допускают. Решение не автоматическое.");
         foreach (var warning in warnings.Distinct(StringComparer.OrdinalIgnoreCase))
             lines.Add($"  • [red]{Markup.Escape(warning)}[/]");
 

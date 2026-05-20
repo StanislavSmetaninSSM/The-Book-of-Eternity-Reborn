@@ -207,7 +207,7 @@ public partial class ExplorerMode
             foreach (var project in projects)
             {
                 var projectName = GetNodeString(project["displayName"]) ?? GetNodeString(project["projectId"]) ?? "?";
-                lines.Add($"    - {Markup.Escape(projectName)} [dim]({Markup.Escape(GetNodeString(project["projectId"]) ?? "?")})[/]: status={Markup.Escape(DescribeShiningProjectStatus(GetNodeString(project["status"])))}, supported={GetNodeBool(project["isSupported"])}, tier={GetNodeInt(project["tier"])}, strengthReward={GetNodeInt(project["strengthReward"])}, archetype={Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(project["projectArchetype"])))}, effect={Markup.Escape(DescribeShiningEffectFamily(GetNodeString(project["outputEffectFamily"])))}.");
+                lines.Add($"    - {Markup.Escape(projectName)} [dim]({Markup.Escape(GetNodeString(project["projectId"]) ?? "?")})[/]: статус={Markup.Escape(DescribeShiningProjectStatus(GetNodeString(project["status"])))}, поддержан={GetNodeBool(project["isSupported"])}, уровень={GetNodeInt(project["tier"])}, награда силы={GetNodeInt(project["strengthReward"])}, архетип={Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(project["projectArchetype"])))}, эффект={Markup.Escape(DescribeShiningEffectFamily(GetNodeString(project["outputEffectFamily"])))}.");
             }
         }
 
@@ -289,7 +289,7 @@ public partial class ExplorerMode
             lines.Add("");
             lines.Add("[bold]Доступность политических действий:[/] [dim](стоимости, блокеры и минимальные требования до выбора)[/]");
             lines.Add($"  • Основание фракции: cost {ShiningFactionRequestState.FactionFoundingCostFeathers} Чернильных Перьев / {ShiningFactionRequestState.FactionFoundingCostLightSparks} Искр Света; баланс {feathers}/{lightSparks}; минимум 3 ascended supporters из {ascendedResidentCount}; {(foundingPreconditionsMet ? "базовые условия выполнены" : "не хватает ресурсов или ascended supporters")}. Pending-модель не является глобальным mutex: запись блокируют malformed founding file, founding с тем же proposedFactionId/proposedHallId или supporters, занятые другим Shining/ordinary flow.");
-            lines.Add("  • Перестройка резидента: требует ascended resident с factionRealignmentState=ready_to_realign (wavering tier сам по себе не открывает переход) и machine-readable target/source faction. Pending-модель не глобальная: блокируют foreign pending realignment для того же residentId, ordinary transfer или другой Shining flow этого резидента.");
+            lines.Add("  • Перестройка резидента: требует вознесённого резидента с factionRealignmentState=ready_to_realign (колеблющийся тир сам по себе не открывает переход) и machine-readable target/source faction. Pending-модель не глобальная: блокируют foreign pending realignment для того же residentId, ordinary transfer или другой Shining flow этого резидента.");
             lines.Add("  • Смена власти: требует существующую faction, валидного incumbent и допустимого кандидата на главу. Pending-модель не глобальная: блокируют foreign pending leadership для той же factionId и supporter/candidate locks; pending других фракций сам по себе не запрещает проверку.");
 
             if (context?.Root["factions"] is JsonArray factions && factions.Count > 0)
@@ -953,7 +953,7 @@ public partial class ExplorerMode
             $"  • Базовая сила: [white]{baseStrength}[/]",
             $"  • Происхождение: {Markup.Escape(originType)}",
             $"  • Любимый архетип проектов: {Markup.Escape(favoredArchetype)}",
-            "  • Точный эффект любимого архетипа: снижает только цену завершения matching проекта на 5 Перьев и 5 Искр Света; награда силы остаётся строго по tier: 8/12/16.",
+            "  • Точный эффект любимого архетипа: снижает только цену завершения matching проекта на 5 Перьев и 5 Искр Света; награда силы остаётся строго по уровню проекта: 8/12/16.",
             $"  • Покровительствующая семья эффекта: {Markup.Escape(patronEffectFamily)}",
             $"  • Инвестиций за это Вознесение: [white]{investCountThisAscension}[/]",
             $"  • Архетипы проектов, уже учтённые за это Вознесение: {Markup.Escape(countedArchetypes.Count == 0 ? "нет" : string.Join(", ", countedArchetypes))}",
@@ -1282,7 +1282,7 @@ public partial class ExplorerMode
                     lines.Add($"    Архетип: [dim]{Markup.Escape(DescribeShiningProjectArchetype(GetNodeString(projectDraft["projectArchetype"])))}[/]");
                     lines.Add($"    Семейство эффекта: [dim]{Markup.Escape(DescribeShiningEffectFamily(GetNodeString(projectDraft["outputEffectFamily"])))}[/]");
                     lines.Add($"    Уровень проекта: [dim]{GetNodeInt(projectDraft["tier"])}[/]");
-                    lines.Add("    Любимый архетип: [dim]может снизить цену completion, но не меняет strengthReward; сила проекта определяется только tier 8/12/16[/]");
+                    lines.Add("    Любимый архетип: [dim]может снизить цену completion, но не меняет strengthReward; сила проекта определяется только уровнем проекта 8/12/16[/]");
                     AppendShiningNamedIdList(
                         lines,
                         "Целевые фракции",

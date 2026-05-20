@@ -759,7 +759,7 @@ public partial class ExplorerMode
                         {
                             $"Формула: experienceGain = costInFeathers * {AfterlifeProgressionTuning.CultivateEnlightenmentExperiencePerFeather}.",
                             $"При текущей цене {cost} Чернильных Перьев expected experienceGain = {AfterlifeProgressionTuning.ComputeCultivateEnlightenmentExperienceGain(cost)}.",
-                            $"Порог для AscensionTrigger в Сияющую Обитель: {AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience} Enlightenment XP или legacy max/tier marker.",
+                            $"Порог для AscensionTrigger в Сияющую Обитель: {AfterlifeProgressionTuning.AscensionReadyEnlightenmentExperience} опыта Просветления или старый маркер максимума/тира.",
                             "GM обязан реально изменить game_state/meta/soul_state.json: enlightenment.experience должен вырасти не меньше заявленного gain.",
                             "output/ink_feather_action_result.json должен содержать stateEvidence.experienceGain."
                         },

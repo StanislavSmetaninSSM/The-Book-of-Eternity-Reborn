@@ -467,7 +467,7 @@ public partial class ExplorerMode
                 (shiningRoot["pendingNativeFactionDiscovery"] is JsonObject pendingDiscovery
                     ? $"legacy pendingNativeFactionDiscovery {GetNodeString(pendingDiscovery["requestId"]) ?? "без requestId"}"
                     : radianceTier < 1
-                        ? "нужен Radiance tier 1+"
+                        ? "нужен тир Сияния 1+"
                         : feathers < discoveryCost.Feathers
                             ? "не хватает Перьев"
                             : lightSparks < discoveryCost.LightSparks
@@ -500,7 +500,7 @@ public partial class ExplorerMode
             BuildShiningActionChoiceWithState(
                 "🧩 Завершить проект",
                 pendingBlocker == null && factionCount > 0,
-                "quote зависит от tier/projectDraft; preview покажет exact cost до записи pending",
+                "цена зависит от тира/projectDraft; preview покажет exact cost до записи pending",
                 pendingBlocker ?? (factionCount == 0 ? "нет фракций" : null)),
             BuildShiningActionChoiceWithState(
                 "🪄 Поддержать проект",
