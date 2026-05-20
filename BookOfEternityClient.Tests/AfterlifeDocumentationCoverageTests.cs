@@ -2594,6 +2594,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "изгнан");
     }
 
+    [Fact]
+    public void SarefMyrielQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "myriel.md",
+            "Мириэль",
+            "identity",
+            "Пепельная формула чужого мира",
+            "иномиров",
+            "знани");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,
