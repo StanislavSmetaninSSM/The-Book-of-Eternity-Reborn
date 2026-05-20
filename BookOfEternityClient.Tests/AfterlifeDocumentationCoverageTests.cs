@@ -2630,6 +2630,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "стро");
     }
 
+    [Fact]
+    public void SarefBrannQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "brann.md",
+            "Бранн",
+            "structural_weakness",
+            "Клеймо разлома",
+            "ремес",
+            "структур");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,
