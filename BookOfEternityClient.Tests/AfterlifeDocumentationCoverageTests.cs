@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
@@ -8,6 +9,72 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class AfterlifeDocumentationCoverageTests
 {
+    [Fact]
+    public void AfterlifePendingControlSurfaceInventoryIsMachineReadable()
+    {
+        var inventory = ReadRepoFile("OtherGuides", "Afterlife_Pending_Control_Surface_Inventory.json");
+        using var document = JsonDocument.Parse(inventory);
+
+        Assert.Equal(JsonValueKind.Object, document.RootElement.ValueKind);
+        Assert.Equal("afterlife_pending_control_surface_inventory_v1", document.RootElement.GetProperty("schema").GetString());
+        Assert.True(document.RootElement.TryGetProperty("surfaces", out var surfaces));
+        Assert.Equal(JsonValueKind.Array, surfaces.ValueKind);
+        var surfaceArray = surfaces.EnumerateArray().ToArray();
+        Assert.NotEmpty(surfaceArray);
+
+        var paths = surfaceArray
+            .Select(surface => surface.GetProperty("path").GetString())
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var requiredPaths = new[]
+        {
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeEntityProfileState.StatePath,
+            GuardianAbodeOfferingState.PendingRequestPath,
+            GuardianTradeRequestState.PendingRequestPath,
+            PlayerGuardianFoundationState.PendingRequestPath,
+            NpcTradeRequestState.PendingRequestPath,
+            AfterlifeArchiveActionState.ConsultationRequestPath,
+            AfterlifeArchiveActionState.ProjectFuelRequestPath,
+            GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
+            GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
+            GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
+            GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
+            ActorSocialInteractionRequestState.PendingGuardianRequestPath,
+            ActorSocialInteractionRequestState.PendingNpcRequestPath,
+            SystemGuardianLibraryService.AttractionRequestPath,
+            ShiningCoreActionRequestState.PendingActionsRequestPath,
+            ShiningTradeRequestState.PendingRequestsPath,
+            ShiningFactionRequestState.PendingFoundingsRequestPath,
+            ShiningFactionRequestState.PendingRealignmentsRequestPath,
+            ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
+            SourceOfLightCapstoneState.PendingRequestPath,
+            AfterlifeReturnGuardService.GuardPath,
+            ProgressionScheduleService.SchedulePath,
+            ProgressionScheduleService.ReportPath,
+            "game_state/control/life_transitions.json",
+            "game_state/control/incarnation_trigger.json",
+            "game_state/control/ascension.json",
+            WorldDirectiveService.PendingSetupPath,
+            ScenarioCoreService.ManifestPath,
+            AfterlifeArchiveCandidateService.ManifestPath,
+            AfterlifeNotificationState.NotificationsPath
+        };
+
+        foreach (var requiredPath in requiredPaths)
+            Assert.Contains(requiredPath, paths);
+
+        foreach (var surface in surfaceArray)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(surface.GetProperty("path").GetString()));
+            Assert.False(string.IsNullOrWhiteSpace(surface.GetProperty("owner").GetString()));
+            Assert.False(string.IsNullOrWhiteSpace(surface.GetProperty("realm").GetString()));
+            Assert.False(string.IsNullOrWhiteSpace(surface.GetProperty("authority").GetString()));
+            Assert.Equal(JsonValueKind.Array, surface.GetProperty("docAnchors").ValueKind);
+        }
+    }
+
     [Fact]
     public void ShiningCoreActionCoverageIncludesEverySupportedActionType()
     {

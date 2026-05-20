@@ -1,0 +1,544 @@
+{
+  "schema": "afterlife_pending_control_surface_inventory_v1",
+  "purpose": "Machine-readable inventory for Chaos Sea / Shining Abode pending, control, and meta lifecycle surfaces. This file is the audit baseline for issue #510; issue #511 migrates this data into runtime registry code.",
+  "surfaces": [
+    {
+      "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "surfaceType": "meta_state_with_response_wrapper",
+      "owner": "afterlife_spiritual_conflict",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "GM-authored through afterlifeSpiritualConflictUpdate; canonical state is validator-normalized",
+      "emptyWrapperSemantics": "No empty wrapper is meaningful; stale afterlifeSpiritualConflictUpdate wrappers are stripped before projection.",
+      "malformedBehavior": "Fail closed; preserve raw payload for repair audit.",
+      "blockerBehavior": "Active conflicts block incarnation handoffs until resolve or repair_cancel terminal proof.",
+      "closureSurface": "afterlifeSpiritualConflictUpdate mode=resolve|repair_cancel moves terminal proof to recentConflicts or clears malformed state.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#afterlifeSpiritualConflictUpdate"
+      ],
+      "notes": "Meta response surface rather than game_state/control pending file."
+    },
+    {
+      "path": "game_state/meta/afterlife_entity_profiles.json",
+      "surfaceType": "meta_state_with_progression_commands",
+      "owner": "afterlife_entity_profiles",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "GM-authored profile/update surfaces plus client-owned local player upgrade paths",
+      "emptyWrapperSemantics": "No empty wrapper semantics; absent legacy file is initialized/normalized as needed.",
+      "malformedBehavior": "Fail closed for malformed profile/update/custom-state/progression contracts.",
+      "blockerBehavior": "Does not block by existence; invalid profile updates block accepted-turn validation.",
+      "closureSurface": "afterlifeEntityProfileUpdates, afterlifeEntityCustomStateChanges, afterlifeSpecialArtLearningReceipts, afterlifeEntityProgressionOverrides.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules"
+      ],
+      "notes": "Tracks entity currencies, progression, standard/special arts, custom states, and soul dissipation danger."
+    },
+    {
+      "path": "game_state/control/pending_abode_offering.json",
+      "surfaceType": "pending_contract",
+      "owner": "guardian_abode_offering",
+      "realm": "Chaos Sea",
+      "authority": "client-owned pending request; GM closes via canonical offering response surfaces",
+      "emptyWrapperSemantics": "Missing means no pending offering; empty or malformed present file is repair-blocking.",
+      "malformedBehavior": "Fail closed and show raw payload in pending/status audits.",
+      "blockerBehavior": "Blocks Soul Gates and afterlife local routes that cannot safely overlap cost-bearing pending contracts.",
+      "closureSurface": "guardianPowerEvents reasonType=offering plus required Ink Feather result when applicable.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#ABODE_OFFERING"
+      ],
+      "notes": "Cost-bearing Chaos Sea contract."
+    },
+    {
+      "path": "game_state/control/pending_guardian_trade_request.json",
+      "surfaceType": "pending_contract",
+      "owner": "guardian_trade",
+      "realm": "Chaos Sea",
+      "authority": "client-owned pending request; GM materializes Guardian trade inventory",
+      "emptyWrapperSemantics": "Missing means no pending Guardian trade; malformed present file is preserved.",
+      "malformedBehavior": "Fail closed until repaired or resolved by valid turn output.",
+      "blockerBehavior": "Blocks incompatible lifecycle handoffs and local mutations that could invalidate quoted request state.",
+      "closureSurface": "UpdateGuardians + guardian tradeInventory + tradeInventoryReceipts[].",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#Guardian trade"
+      ],
+      "notes": "Return-cycle sensitive Guardian inventory contract."
+    },
+    {
+      "path": "game_state/control/pending_player_guardian_foundation.json",
+      "surfaceType": "pending_contract",
+      "owner": "player_guardian_foundation",
+      "realm": "Chaos Sea",
+      "authority": "client-owned pending request; GM closes through Guardian creation surfaces",
+      "emptyWrapperSemantics": "Missing means no foundation ritual; malformed present file blocks repair.",
+      "malformedBehavior": "Fail closed and keep raw pending file.",
+      "blockerBehavior": "Blocks Soul Gates/return paths until closure because it changes Guardian authority state.",
+      "closureSurface": "UpdateGuardians.create + guardians/activeGuardian + playerGuardianFoundationHistory.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#Player Guardian Foundation"
+      ],
+      "notes": "Late-game Chaos Sea mantle contract."
+    },
+    {
+      "path": "game_state/control/pending_guardian_abode_residents_request.json",
+      "surfaceType": "pending_contract",
+      "owner": "guardian_abode_residents",
+      "realm": "Chaos Sea",
+      "authority": "client-owned pending request; GM resolves resident roster/history changes",
+      "emptyWrapperSemantics": "Missing means no resident roster request; malformed present file blocks.",
+      "malformedBehavior": "Fail closed with raw payload available to repair audit.",
+      "blockerBehavior": "Blocks conflicting resident or lifecycle flows while live.",
+      "closureSurface": "UpdateGuardianAbodeResidents and matching resident history/journal surfaces.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#resident"
+      ],
+      "notes": "Resident roster request surface."
+    },
+    {
+      "path": "game_state/control/pending_guardian_abode_resident_interactions.json",
+      "surfaceType": "pending_contract",
+      "owner": "guardian_abode_resident_interactions",
+      "realm": "Chaos Sea",
+      "authority": "client-owned pending request; GM closes with resident interaction receipt/log",
+      "emptyWrapperSemantics": "Missing means no pending resident interaction; empty/malformed present file blocks.",
+      "malformedBehavior": "Fail closed and preserve file for repair.",
+      "blockerBehavior": "Blocks incompatible resident/local commands while unresolved.",
+      "closureSurface": "UpdateGuardianAbodeResidentInteractionReceipts plus resident interaction/history logs.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Social Response Modes And Transfer Metadata",
+        "Examples/E_CLI_Afterlife_Turns.txt#resident interaction"
+      ],
+      "notes": "Resident talk/lore/history response contract."
+    },
+    {
+      "path": "game_state/control/pending_guardian_abode_resident_transfers.json",
+      "surfaceType": "pending_contract",
+      "owner": "guardian_abode_resident_transfers",
+      "realm": "Chaos Sea",
+      "authority": "client-owned pending request; GM closes resident transfer/competition decision",
+      "emptyWrapperSemantics": "Missing means no transfer request; malformed present file blocks.",
+      "malformedBehavior": "Fail closed with repair guidance.",
+      "blockerBehavior": "Blocks Soul Gates and resident commands until resolved.",
+      "closureSurface": "UpdateGuardianAbodeResidents plus transfer receipt/history metadata.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Social Response Modes And Transfer Metadata",
+        "Examples/E_CLI_Afterlife_Turns.txt#resident transfer"
+      ],
+      "notes": "Selection metadata is canonical and must not be guessed by GM."
+    },
+    {
+      "path": "game_state/control/pending_resident_companion_manifestation_request.json",
+      "surfaceType": "pending_contract",
+      "owner": "resident_companion_manifestation",
+      "realm": "MortalWorldProfile handoff with afterlife validation awareness",
+      "authority": "client-owned manifestation handoff request",
+      "emptyWrapperSemantics": "Missing means no manifestation handoff; valid present file is preserved for next life when appropriate.",
+      "malformedBehavior": "Malformed file blocks repair-sensitive lifecycle paths.",
+      "blockerBehavior": "Valid next-life handoff is not an ordinary Shining blocker; malformed or wrong-context payload blocks.",
+      "closureSurface": "Mortal World manifestation bootstrap/receipt path, not ordinary Shining closure.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
+        "Examples/E_CLI_Afterlife_Turns.txt#manifestation"
+      ],
+      "notes": "Intentional realm bridge; do not resolve by inventing Shining receipts."
+    },
+    {
+      "path": "game_state/control/pending_guardian_social_interactions.json",
+      "surfaceType": "pending_contract",
+      "owner": "guardian_social_interactions",
+      "realm": "Chaos Sea",
+      "authority": "client-owned pending request; GM writes Guardian social closure",
+      "emptyWrapperSemantics": "Missing means no social request; present malformed file blocks.",
+      "malformedBehavior": "Fail closed and keep raw requests.",
+      "blockerBehavior": "Blocks overlapping social/lifecycle routes until closed.",
+      "closureSurface": "guardianSocialJournalUpdates and matching Guardian social closure entries.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Social Response Modes And Transfer Metadata",
+        "Examples/E_CLI_Afterlife_Turns.txt#guardian social"
+      ],
+      "notes": "Chaos Sea Guardian talk/lore response surface."
+    },
+    {
+      "path": "game_state/control/pending_npc_social_interactions.json",
+      "surfaceType": "realm_wrong_pending_blocker",
+      "owner": "mortal_npc_social_interactions",
+      "realm": "Mortal World; afterlife sees only blocker/preservation semantics",
+      "authority": "client-owned Mortal pending request",
+      "emptyWrapperSemantics": "Valid empty/stale files may be removed as clutter by lifecycle hygiene; malformed/non-empty files are preserved.",
+      "malformedBehavior": "Malformed file blocks afterlife lifecycle repair rather than being closed with afterlife output.",
+      "blockerBehavior": "Blocks Soul Gates/afterlife exits when non-empty or malformed.",
+      "closureSurface": "Mortal World NPC social closure only.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules"
+      ],
+      "notes": "Included because afterlife validators/blockers must handle it explicitly."
+    },
+    {
+      "path": "game_state/control/pending_npc_trade_inventory_requests.json",
+      "surfaceType": "realm_wrong_pending_blocker",
+      "owner": "mortal_npc_trade_inventory",
+      "realm": "Mortal World; afterlife sees only blocker/preservation semantics",
+      "authority": "client-owned Mortal pending request",
+      "emptyWrapperSemantics": "Valid empty/stale files may be removed as clutter; malformed/non-empty files are preserved.",
+      "malformedBehavior": "Malformed file blocks afterlife lifecycle repair.",
+      "blockerBehavior": "Blocks Soul Gates/afterlife exits when non-empty or malformed.",
+      "closureSurface": "Mortal World NPC trade closure only.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules"
+      ],
+      "notes": "Included because afterlife pending scans must not ignore Mortal leftovers."
+    },
+    {
+      "path": "game_state/control/pending_archive_consultation_request.json",
+      "surfaceType": "pending_contract",
+      "owner": "afterlife_archive_consultation",
+      "realm": "Chaos Sea",
+      "authority": "client-owned request; GM closes archive consultation",
+      "emptyWrapperSemantics": "Missing means no consultation; malformed present file blocks.",
+      "malformedBehavior": "Fail closed and require repair.",
+      "blockerBehavior": "Blocks overlapping archive/offering/lifecycle routes until closed.",
+      "closureSurface": "Archive consultation receipt and canonical afterlife archive outputs.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#archive consultation"
+      ],
+      "notes": "Archive knowledge contract."
+    },
+    {
+      "path": "game_state/control/pending_archive_project_fuel_request.json",
+      "surfaceType": "pending_contract",
+      "owner": "afterlife_archive_project_fuel",
+      "realm": "Chaos Sea",
+      "authority": "client-owned request; GM closes project fuel conversion",
+      "emptyWrapperSemantics": "Missing means no archive project fuel request; malformed present file blocks.",
+      "malformedBehavior": "Fail closed.",
+      "blockerBehavior": "Blocks overlapping project/archive/lifecycle routes until closed.",
+      "closureSurface": "Archive project fuel receipt and Guardian project canonical updates.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#archive project fuel"
+      ],
+      "notes": "Project resource contract."
+    },
+    {
+      "path": "game_state/control/system_guardian_attraction.json",
+      "surfaceType": "control_request",
+      "owner": "system_guardian_library",
+      "realm": "Chaos Sea",
+      "authority": "client-owned system Guardian attraction request",
+      "emptyWrapperSemantics": "Missing means no attraction request; malformed present file blocks.",
+      "malformedBehavior": "Fail closed.",
+      "blockerBehavior": "Blocks incompatible Guardian-library routes until resolved.",
+      "closureSurface": "System Guardian materialization/attraction canonical Guardian updates.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
+        "Examples/E_CLI_Afterlife_Turns.txt#system guardian"
+      ],
+      "notes": "Control file is not named pending_* but participates in afterlife pending scans."
+    },
+    {
+      "path": "game_state/control/afterlife_return_guard.json",
+      "surfaceType": "control_guard",
+      "owner": "afterlife_return_guard",
+      "realm": "Chaos Sea",
+      "authority": "client-owned guard after mortal-life return",
+      "emptyWrapperSemantics": "Missing means no protected return turn; malformed present file blocks forced-incarnation shortcuts.",
+      "malformedBehavior": "Fail closed: do not allow Guardian-forced incarnation while invalid guard exists.",
+      "blockerBehavior": "Blocks Guardian-forced incarnation while remainingProtectedTurns > 0.",
+      "closureSurface": "Client decrements/clears guard after ordinary afterlife turn.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
+        "Examples/E_CLI_Step_Main.txt#afterlife_return_guard"
+      ],
+      "notes": "Not a GM-authored pending contract."
+    },
+    {
+      "path": "game_state/control/progression_schedule.json",
+      "surfaceType": "client_owned_control_state",
+      "owner": "afterlife_scheduler",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "client-owned scheduler baseline",
+      "emptyWrapperSemantics": "Missing/legacy schedule can be initialized by client; GM must not author it.",
+      "malformedBehavior": "Fail closed and require repair.",
+      "blockerBehavior": "Invalid schedule blocks scheduler validation/turn processing.",
+      "closureSurface": "GM reads turn_request.progressionControl and writes progressionProcessingReport only.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Living-World Scheduler Matrix"
+      ],
+      "notes": "Paired with GM-authored progression_report.json."
+    },
+    {
+      "path": "game_state/control/progression_report.json",
+      "surfaceType": "gm_authored_report",
+      "owner": "afterlife_scheduler",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "GM-authored report through progressionProcessingReport response field",
+      "emptyWrapperSemantics": "Missing is valid only when no progressionControl debt requires a report.",
+      "malformedBehavior": "Invalid report rejects accepted turn.",
+      "blockerBehavior": "Does not block by existence after cleanup; required when scheduler debt is due.",
+      "closureSurface": "progressionProcessingReport with exact sessionId/requestId/turnNumber and contour counts.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Living-World Scheduler Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#progressionProcessingReport"
+      ],
+      "notes": "Report, not pending request."
+    },
+    {
+      "path": "game_state/control/pending_shining_abode_actions.json",
+      "surfaceType": "pending_contract",
+      "owner": "shining_core_actions",
+      "realm": "Shining Abode",
+      "authority": "client-owned request queue; GM closes one active Shining core action",
+      "emptyWrapperSemantics": "Valid empty wrapper may be deleted as hygiene; malformed/non-empty file blocks.",
+      "malformedBehavior": "Fail closed and preserve raw payload.",
+      "blockerBehavior": "Blocks Shining exits, treasury, Soul Gates, and overlapping pending contracts while live.",
+      "closureSurface": "shining_abode_state.json coreActionReceipts[] plus exact canonical Shining/Soul/resident diff.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Shining Core Action Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#pending_shining_abode_actions.json"
+      ],
+      "notes": "Supports Shining core actionType contracts."
+    },
+    {
+      "path": "game_state/control/pending_shining_trade_inventory_requests.json",
+      "surfaceType": "pending_contract",
+      "owner": "shining_trade",
+      "realm": "Shining Abode",
+      "authority": "client-owned request; GM materializes Shining faction trade inventory",
+      "emptyWrapperSemantics": "Valid empty wrapper may be deleted as stale; malformed/non-empty file blocks.",
+      "malformedBehavior": "Fail closed.",
+      "blockerBehavior": "Blocks Shining exits/treasury/local routes that would invalidate trade accounting.",
+      "closureSurface": "Shining faction tradeInventory and tradeInventoryReceipts[].",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Living-World Scheduler Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#Shining trade"
+      ],
+      "notes": "Return-cycle sensitive Shining trade contract."
+    },
+    {
+      "path": "game_state/control/pending_shining_faction_foundings.json",
+      "surfaceType": "pending_contract",
+      "owner": "shining_faction_foundings",
+      "realm": "Shining Abode",
+      "authority": "client-owned request; GM creates Shining faction/hall state",
+      "emptyWrapperSemantics": "Valid empty wrapper may be deleted; malformed/non-empty file blocks.",
+      "malformedBehavior": "Fail closed.",
+      "blockerBehavior": "Blocks Shining exits, treasury, Soul Gates, and overlapping political contracts.",
+      "closureSurface": "Shining faction state plus founding receipt/history.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Shining Faction Pending Contracts",
+        "Examples/E_CLI_Afterlife_Turns.txt#pending_shining_faction_foundings.json"
+      ],
+      "notes": "Cost-bearing political contract."
+    },
+    {
+      "path": "game_state/control/pending_shining_faction_realignments.json",
+      "surfaceType": "pending_contract",
+      "owner": "shining_faction_realignments",
+      "realm": "Shining Abode",
+      "authority": "client-owned request; GM resolves resident/faction realignment",
+      "emptyWrapperSemantics": "Valid empty wrapper may be deleted; malformed/non-empty file blocks.",
+      "malformedBehavior": "Fail closed.",
+      "blockerBehavior": "Blocks Shining exits and overlapping political contracts.",
+      "closureSurface": "Shining faction/resident alignment state plus realignment receipt.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Shining Faction Pending Contracts",
+        "Examples/E_CLI_Afterlife_Turns.txt#pending_shining_faction_realignments.json"
+      ],
+      "notes": "Political alignment request."
+    },
+    {
+      "path": "game_state/control/pending_shining_faction_leadership_transitions.json",
+      "surfaceType": "pending_contract",
+      "owner": "shining_faction_leadership",
+      "realm": "Shining Abode",
+      "authority": "client-owned request; GM resolves leadership transition",
+      "emptyWrapperSemantics": "Valid empty wrapper may be deleted; malformed/non-empty file blocks.",
+      "malformedBehavior": "Fail closed.",
+      "blockerBehavior": "Blocks Shining exits and overlapping political contracts.",
+      "closureSurface": "Faction head state, radiant actor registry, leadership history/receipt.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Shining Faction Pending Contracts",
+        "Examples/E_CLI_Afterlife_Turns.txt#pending_shining_faction_leadership_transitions.json"
+      ],
+      "notes": "Leadership validation requires current non-vacant incumbent where specified."
+    },
+    {
+      "path": "game_state/control/pending_source_of_light_capstone.json",
+      "surfaceType": "pending_contract",
+      "owner": "source_of_light_capstone",
+      "realm": "Shining Abode",
+      "authority": "client-owned capstone request; GM closes with Source of Light tuple",
+      "emptyWrapperSemantics": "Missing means no Source request; malformed present file blocks.",
+      "malformedBehavior": "Fail closed and preserve request.",
+      "blockerBehavior": "Blocks Shining exits/Soul Gates while active; rejects duplicate pending after reward tuple exists.",
+      "closureSurface": "Matching sourceOfLightCapstone marker, lightIncarnate passive, and stored Incarnated Light relic.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#Source of Light"
+      ],
+      "notes": "Full-Radiance capstone, not a Shining core action."
+    },
+    {
+      "path": "game_state/control/incarnation_trigger.json",
+      "surfaceType": "lifecycle_control",
+      "owner": "incarnation_trigger",
+      "realm": "Chaos Sea|Shining Abode pending-bootstrap handoff",
+      "authority": "GM-authored TriggerIncarnation; client consumes after accepted validation",
+      "emptyWrapperSemantics": "Missing means no incarnation trigger.",
+      "malformedBehavior": "Rejected and cleared/repair-routed depending on turn stage.",
+      "blockerBehavior": "Forbidden while unresolved afterlife pending/control contracts or active spiritual conflict remain.",
+      "closureSurface": "TriggerIncarnation response field mapped to this file.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Realm Mode Matrix",
+        "Examples/E_CLI_Step_Main.txt#TriggerIncarnation"
+      ],
+      "notes": "Shared lifecycle file; afterlife constraints are stricter than generic Mortal bootstrap."
+    },
+    {
+      "path": "game_state/control/ascension.json",
+      "surfaceType": "lifecycle_control",
+      "owner": "ascension_trigger",
+      "realm": "Mortal World to Chaos Sea/afterlife transition",
+      "authority": "GM-authored AscensionTrigger/playerChoice lifecycle output",
+      "emptyWrapperSemantics": "Missing means no ascension trigger.",
+      "malformedBehavior": "Rejected and cleaned/repair-routed.",
+      "blockerBehavior": "Not an afterlife pending blocker after transition cleanup.",
+      "closureSurface": "AscensionTrigger/playerChoice mapped to ascension.json.",
+      "docAnchors": [
+        "Examples/E_CLI_Step_Main.txt#AscensionTrigger"
+      ],
+      "notes": "Intentional shared lifecycle inclusion because it enters afterlife."
+    },
+    {
+      "path": "game_state/control/life_transitions.json",
+      "surfaceType": "lifecycle_control",
+      "owner": "life_transition",
+      "realm": "Mortal World / Life Evaluation / afterlife return setup",
+      "authority": "GM-authored TriggerLifeEnd lifecycle output",
+      "emptyWrapperSemantics": "Missing means no life-end trigger.",
+      "malformedBehavior": "Rejected and cleaned/repair-routed.",
+      "blockerBehavior": "Not ordinary afterlife pending; consumed by lifecycle runtime.",
+      "closureSurface": "TriggerLifeEnd mapped to life_transitions.json.",
+      "docAnchors": [
+        "Examples/E_CLI_Step_Main.txt#TriggerLifeEnd"
+      ],
+      "notes": "Included as shared lifecycle control because it creates afterlife return context."
+    },
+    {
+      "path": "game_state/control/incarnation_world_setup.json",
+      "surfaceType": "client_owned_setup",
+      "owner": "incarnation_world_setup",
+      "realm": "Afterlife local incarnation prep",
+      "authority": "client-owned setup prompt/prep file",
+      "emptyWrapperSemantics": "Missing means setup not staged; malformed present file blocks /incarnate with repair message.",
+      "malformedBehavior": "Fail closed and restore local prep on staging failure.",
+      "blockerBehavior": "Blocks invalid /incarnate flow until repaired or removed.",
+      "closureSurface": "Used as input to TriggerIncarnation; not GM-authored closure by itself.",
+      "docAnchors": [
+        "Examples/E_CLI_Step_Main.txt#incarnation_world_setup",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaWorldSetupAndDebug.cs"
+      ],
+      "notes": "Client-owned setup file, not an afterlife GM pending contract."
+    },
+    {
+      "path": "game_state/control/next_life_scenario_core.json",
+      "surfaceType": "client_owned_manifest",
+      "owner": "next_life_scenario_core",
+      "realm": "Afterlife local incarnation prep",
+      "authority": "client-owned next-life scenario manifest",
+      "emptyWrapperSemantics": "Missing means no scenario core staged.",
+      "malformedBehavior": "Invalid shape blocks strict setup/rollback validation where used.",
+      "blockerBehavior": "Part of local incarnation prep/rollback baseline, not a GM pending blocker.",
+      "closureSurface": "Consumed by client bootstrap/prep flow.",
+      "docAnchors": [
+        "Examples/E_CLI_Step_Main.txt#next_life_scenario_core"
+      ],
+      "notes": "Included because it participates in afterlife incarnation prep lifecycle."
+    },
+    {
+      "path": "game_state/control/archive_candidate_manifest.json",
+      "surfaceType": "client_owned_manifest",
+      "owner": "life_evaluation_archive_candidate",
+      "realm": "Life Evaluation / Chaos Sea transition",
+      "authority": "client-owned archive candidate manifest",
+      "emptyWrapperSemantics": "Missing means no archive candidate manifest.",
+      "malformedBehavior": "Invalid shape blocks strict archive candidate processing when used.",
+      "blockerBehavior": "Not ordinary afterlife pending; used in Life Evaluation archive flow.",
+      "closureSurface": "Consumed by archive candidate client services.",
+      "docAnchors": [
+        "Examples/E_CLI_Step_Main.txt#archive_candidate_manifest"
+      ],
+      "notes": "Intentional lifecycle bridge file."
+    },
+    {
+      "path": "game_state/control/afterlife_notifications.json",
+      "surfaceType": "client_owned_derived_control",
+      "owner": "afterlife_notifications",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "client-derived notifications; GM must not write",
+      "emptyWrapperSemantics": "Missing or empty means no notification list.",
+      "malformedBehavior": "Client repair/status audit handles malformed notification state.",
+      "blockerBehavior": "Does not block by itself; reflects other pending contracts and derived warnings.",
+      "closureSurface": "Derived from canonical state/receipts; not closed by GM output.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules"
+      ],
+      "notes": "Explicitly included because GM-facing docs forbid direct writes."
+    }
+  ],
+  "intentionalExclusions": [
+    {
+      "path": "game_state/control/pending_turn_snapshot.json",
+      "reason": "Validation infrastructure manifest, not an afterlife gameplay contract. It will be covered by registry completeness tests only as infrastructure."
+    },
+    {
+      "path": "game_state/control/pending_turn_snapshot.authority.json",
+      "reason": "Validation infrastructure authority file, not a GM-facing afterlife contract."
+    },
+    {
+      "path": "game_state/control/pending_turn_snapshot/**",
+      "reason": "Snapshot copies are derived validation baselines, not independent pending/control surfaces."
+    },
+    {
+      "path": "game_state/control/validation_repair_request.json",
+      "reason": "Generic validation repair protocol; not an afterlife-specific lifecycle contract."
+    },
+    {
+      "path": "game_state/control/validation_repair_ready.json",
+      "reason": "Generic repair-ready signal; not an afterlife-specific lifecycle contract."
+    },
+    {
+      "path": "game_state/control/terminal_protocol_failure_request.json",
+      "reason": "Generic protocol failure request; not an afterlife gameplay contract."
+    },
+    {
+      "path": "game_state/control/pending_dice_state.json",
+      "reason": "Dice staging infrastructure; afterlife combat consumes authoritative dice through turn_request and diceAudit validation."
+    },
+    {
+      "path": "game_state/control/pending_ink_actions.json",
+      "reason": "Legacy/private ink action validation surface outside current afterlife pending contract matrix."
+    },
+    {
+      "path": "game_state/control/gm_cli_window_binding.json",
+      "reason": "Local GM bridge/window infrastructure."
+    },
+    {
+      "path": "game_state/control/gm_bridge_status.json",
+      "reason": "Local GM bridge status infrastructure."
+    },
+    {
+      "path": "game_state/control/qte_normalizer_backups/**",
+      "reason": "QTE normalizer backup infrastructure, not a pending afterlife contract."
+    }
+  ],
+  "followUpNotes": [
+    "Issue #511 should migrate these inventory records into a typed runtime registry without behavior changes.",
+    "Issue #512 should assert registry coverage across blockers, status audit, docs, examples, and explicit exemptions.",
+    "Some lifecycle files are shared with Mortal World. They are included here only where afterlife validation or lifecycle handoff semantics depend on them."
+  ]
+}
