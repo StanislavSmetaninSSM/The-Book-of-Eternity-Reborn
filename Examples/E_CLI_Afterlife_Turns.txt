@@ -7617,8 +7617,10 @@ Correct reasoning checklist:
 - Keep arrays unique by ids such as `revelationId`, `advantageId`, `outcomeId`, and `endingId`.
 - Hidden Wings agents must not all be one archetype. Use a mix of `deceived`, `oathbound`, `fanatic`, and `opportunist`, and give important agents at least one route: `persuade`, `free`, `expose`, `blackmail`, or `defeat`.
 - Before reveal, a materialized Shining faction with `sarefFactionRole=wings_of_angels` and `sarefVisibility=hidden|rumored` is hidden from normal faction UI and player-facing JSON audits. After reveal it must become `sarefVisibility=revealed` and `factionLinks.wingsFactionId` must point at that actionable `factions[]` entry.
-- The final confrontation with Сареф cannot resolve off-screen. A victory must use `sarefMainStoryUpdate.mode=record_final_confrontation`, write `finalConfrontation.status=resolved`, `directScene=true`, `resolvedAtTurn`, `routeType`, `victoryTier`, `sarefOutcome`, `wingsFactionOutcome`, route proof, and any `advantageUseIds[]`.
-- Supported final `routeType` values are `combat`, `political`, `oath_law`, `metaphysical`, and `hybrid`; supported `victoryTier` values are `pyrrhic`, `clean`, and `deep`. `deep` requires four different Guardians with quest 4 completed. `hybrid` requires `routeComponents[]` with at least two non-hybrid route types and their proof fields.
+- The final confrontation with Сареф cannot resolve off-screen. A victory or deal must use `sarefMainStoryUpdate.mode=record_final_confrontation`, write `finalConfrontation.status=resolved`, `directScene=true`, `resolvedAtTurn`, `routeType`, `victoryTier`, `sarefOutcome`, `wingsFactionOutcome`, route proof where needed, and any `advantageUseIds[]`.
+- Supported final `routeType` values are `combat`, `political`, `oath_law`, `metaphysical`, `hybrid`, and `deal`; supported `victoryTier` values are `pyrrhic`, `clean`, `deep`, and `deal`. `deep` requires four different Guardians with quest 4 completed. `hybrid` requires `routeComponents[]` with at least two non-hybrid route types and their proof fields.
+- A deal uses `routeType=deal`, `victoryTier=deal`, `sarefOutcome=allied`, `wingsFactionOutcome=joined`, root `playerOathState.state=oathbound`, and `endings[].rewardBundle` with `resourceReward`, `wingsAccess`, `sarefArt`, `sarefPassive`, and `oathCost`.
+- A victory ending uses `endingType=victory`, references the matching `finalConfrontationId`, and records `rewardBundle.antiOathProtection`, `antiForeignProtection`, `guardianRelationshipEffects[]`, plus a `relic` or `passive`; `deep` also requires both relic and passive plus `deepWorldStateEffects[]`.
 - If final victory says the Крылья Ангелов are `broken` or `dissolved`, the linked Shining faction must carry matching `factionLifecycle.state` (`broken` may also accept `dissolved` as stronger closure).
 
 `/сареф найти_крылья` pending request shape:
@@ -7864,10 +7866,87 @@ Valid final confrontation victory:
     ],
     "ending": {
       "endingId": "saref_deep_hybrid_victory_205",
+      "endingType": "victory",
+      "finalConfrontationId": "saref_final_hybrid_205",
       "victoryTier": "deep",
       "sarefOutcome": "defeated",
       "resolvedAtTurn": 205,
-      "summary": "Крылья Ангелов распались, а Обитель получила доказательство, почему Сареф был угрозой всему Упорядоченному."
+      "summary": "Крылья Ангелов распались, а Обитель получила доказательство, почему Сареф был угрозой всему Упорядоченному.",
+      "rewardBundle": {
+        "antiOathProtection": {
+          "protectionId": "anti_oath_deep_205",
+          "summary": "Игрок получает устойчивую защиту от клятв Сарефа и сходных принудительных обетов."
+        },
+        "antiForeignProtection": {
+          "protectionId": "anti_foreign_light_205",
+          "summary": "Игрок получает защиту от чужемирного ложного света."
+        },
+        "relic": {
+          "relicId": "saref_true_crown_fragment",
+          "summary": "Фрагмент истинной короны Сарефа остается как реликвия победы."
+        },
+        "passive": {
+          "passiveId": "old_world_witness",
+          "summary": "Пассивное свидетельство Старого Мира помогает сопротивляться новому порядку."
+        },
+        "guardianRelationshipEffects": [
+          {
+            "guardianId": "azalia",
+            "effect": "reverence",
+            "summary": "Азалия признает, что игрок раскрыл всю глубину предательства Сарефа."
+          }
+        ],
+        "deepWorldStateEffects": [
+          {
+            "effectId": "wings_dissolved",
+            "summary": "Крылья Ангелов теряют структуру, а их клятвы становятся доказуемо разрываемыми."
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Valid direct deal ending:
+
+```json
+{
+  "sarefMainStoryUpdate": {
+    "mode": "record_final_confrontation",
+    "turnNumber": 206,
+    "finalConfrontation": {
+      "confrontationId": "saref_deal_final_206",
+      "status": "resolved",
+      "routeType": "deal",
+      "victoryTier": "deal",
+      "directScene": true,
+      "sceneType": "saref_negotiation",
+      "resolvedAtTurn": 206,
+      "sarefOutcome": "allied",
+      "wingsFactionOutcome": "joined",
+      "summary": "Игрок принимает предложение Сарефа и входит в Крылья Ангелов."
+    },
+    "playerOathState": {
+      "state": "oathbound",
+      "oathId": "saref_oath_206",
+      "boundTo": "saref",
+      "summary": "Сареф связал игрока клятвой: выйти из Крыльев нельзя без отдельного разрыва."
+    },
+    "ending": {
+      "endingId": "saref_deal_206",
+      "endingType": "deal",
+      "finalConfrontationId": "saref_deal_final_206",
+      "resolvedAtTurn": 206,
+      "victoryTier": "deal",
+      "summary": "Сделка дает огромную награду сразу, но принудительно привязывает игрока к Сарефу.",
+      "rewardBundle": {
+        "resourceReward": { "scale": "huge", "inkFeathers": 5000, "lightSparks": 250 },
+        "wingsAccess": { "status": "joined", "accessLevel": "inner_circle" },
+        "sarefArt": { "artId": "saref_false_light", "summary": "Сареф открывает игроку особое искусство ложного света." },
+        "sarefPassive": { "passiveId": "saref_oathfire", "summary": "Пассив Крыльев усиливает игрока, пока клятва не разорвана." },
+        "oathCost": { "oathId": "saref_oath_206", "state": "oathbound", "summary": "Цена сделки: игрок с Сарефом до конца, пока клятва не разрушена отдельной аркой." }
+      }
     }
   }
 }

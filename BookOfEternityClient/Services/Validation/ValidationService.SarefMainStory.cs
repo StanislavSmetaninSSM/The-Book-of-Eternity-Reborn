@@ -381,7 +381,7 @@ public partial class ValidationService
         ValidateSarefQuestFourUnlockLinks(guardianQuestlines, questFourRevelations, questFourAdvantages, contextPrefix, issues);
         ValidateSarefDefeatOutcomes(root, contextPrefix, advantageUses, issues);
         ValidateSarefFinalConfrontation(root, contextPrefix, revealStage, guardianQuestlines, advantageUses, issues);
-        ValidateSarefArray(root, contextPrefix, "endings", "endingId", "saref_main_story_duplicate_ending", issues);
+        ValidateSarefEndings(root, contextPrefix, issues);
         var factionVisibility = ValidateSarefFactionLinks(root, contextPrefix, issues);
         ValidateSarefActionableFactionLink(revealStage, root, factionVisibility, contextPrefix, issues);
         ValidateSarefNullableStateObject(root, contextPrefix, "playerOathState", "state", SarefMainStoryState.PlayerOathStates, "saref_main_story_invalid_player_oath_state", issues);
@@ -1437,6 +1437,29 @@ public partial class ValidationService
 
         ValidateSarefFinalRouteProof(finalNode, context, routeType, issues);
         ValidateSarefFinalAdvantageUses(finalNode, context, sceneType, advantageUses, issues);
+        var sarefOutcome = RequireSarefString(finalNode, context, "sarefOutcome", "saref_main_story_final_missing_saref_outcome", issues);
+        if (!string.IsNullOrWhiteSpace(sarefOutcome) && !SarefMainStoryState.FinalSarefOutcomes.Contains(sarefOutcome))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.sarefOutcome",
+                "sarefOutcome финальной конфронтации Сарефа не поддерживается.",
+                "saref_main_story_final_invalid_saref_outcome",
+                string.Join("/", SarefMainStoryState.FinalSarefOutcomes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                sarefOutcome);
+        }
+
+        var wingsOutcome = RequireSarefString(finalNode, context, "wingsFactionOutcome", "saref_main_story_final_missing_wings_outcome", issues);
+        if (!string.IsNullOrWhiteSpace(wingsOutcome) && !SarefMainStoryState.FinalWingsFactionOutcomes.Contains(wingsOutcome))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.wingsFactionOutcome",
+                "wingsFactionOutcome финальной конфронтации Сарефа не поддерживается.",
+                "saref_main_story_final_invalid_wings_outcome",
+                string.Join("/", SarefMainStoryState.FinalWingsFactionOutcomes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                wingsOutcome);
+        }
 
         if (string.Equals(victoryTier, SarefMainStoryState.FinalVictoryDeep, StringComparison.OrdinalIgnoreCase) &&
             CountSarefQuestFourCompletedGuardians(guardianQuestlines) < 4)
@@ -1460,6 +1483,9 @@ public partial class ValidationService
         List<ValidationIssue> issues)
     {
         if (string.IsNullOrWhiteSpace(routeType))
+            return;
+
+        if (string.Equals(routeType, SarefMainStoryState.FinalRouteDeal, StringComparison.OrdinalIgnoreCase))
             return;
 
         if (string.Equals(routeType, SarefMainStoryState.FinalRouteHybrid, StringComparison.OrdinalIgnoreCase))
@@ -1600,6 +1626,334 @@ public partial class ValidationService
         guardianQuestlines.Count(pair =>
             pair.Value.TryGetValue(4, out var status) &&
             string.Equals(status, SarefMainStoryState.QuestStateCompleted, StringComparison.OrdinalIgnoreCase));
+
+    private static void ValidateSarefEndings(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!TryGetRequiredSarefArray(root, contextPrefix, "endings", issues, out var endings))
+            return;
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var final = ResolveResolvedSarefFinal(root);
+        var index = 0;
+        foreach (var item in endings.EnumerateArray())
+        {
+            var context = $"{contextPrefix}.endings[{index++}]";
+            if (!ValidateSarefArrayObject(item, context, issues))
+                continue;
+
+            var endingId = RequireSarefString(item, context, "endingId", "saref_main_story_ending_missing_id", issues);
+            if (!string.IsNullOrWhiteSpace(endingId) && !seen.Add(endingId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.endingId",
+                    "Дубликат endings[].endingId.",
+                    "saref_main_story_duplicate_ending",
+                    "unique endingId",
+                    endingId);
+            }
+
+            var endingType = RequireSarefString(item, context, "endingType", "saref_main_story_ending_missing_type", issues);
+            if (!string.IsNullOrWhiteSpace(endingType) && !SarefMainStoryState.EndingTypes.Contains(endingType))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.endingType",
+                    "endingType линии Сарефа не поддерживается.",
+                    "saref_main_story_ending_invalid_type",
+                    string.Join("/", SarefMainStoryState.EndingTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    endingType);
+            }
+
+            RequireSarefString(item, context, "summary", "saref_main_story_ending_missing_summary", issues);
+            var finalId = RequireSarefString(item, context, "finalConfrontationId", "saref_main_story_ending_missing_final_id", issues);
+            var resolvedAtTurn = RequireSarefTurnNumber(item, context, "resolvedAtTurn", "saref_main_story_ending_missing_resolved_turn", issues);
+            ValidateSarefTurnFields(item, context, issues);
+
+            if (final == null ||
+                string.IsNullOrWhiteSpace(finalId) ||
+                !string.Equals(finalId, final.ConfrontationId, StringComparison.OrdinalIgnoreCase) ||
+                resolvedAtTurn <= 0 ||
+                resolvedAtTurn != final.ResolvedAtTurn)
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.finalConfrontationId",
+                    "Награда/концовка Сарефа должна ссылаться на текущий resolved finalConfrontation того же хода.",
+                    "saref_main_story_ending_final_mismatch",
+                    "matching finalConfrontation.confrontationId/resolvedAtTurn",
+                    finalId ?? "missing");
+            }
+
+            if (string.Equals(endingType, SarefMainStoryState.EndingTypeDeal, StringComparison.OrdinalIgnoreCase))
+                ValidateSarefDealEnding(root, item, context, final, issues);
+            else if (string.Equals(endingType, SarefMainStoryState.EndingTypeVictory, StringComparison.OrdinalIgnoreCase))
+                ValidateSarefVictoryEnding(item, context, final, issues);
+        }
+    }
+
+    private sealed record SarefResolvedFinal(
+        string? ConfrontationId,
+        int ResolvedAtTurn,
+        string? RouteType,
+        string? VictoryTier,
+        string? SarefOutcome,
+        string? WingsFactionOutcome);
+
+    private static SarefResolvedFinal? ResolveResolvedSarefFinal(JsonElement root)
+    {
+        if (!root.TryGetProperty("finalConfrontation", out var final) || final.ValueKind != JsonValueKind.Object)
+            return null;
+
+        if (!string.Equals(GetSarefOptionalString(final, "status"), SarefMainStoryState.FinalStatusResolved, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        return new SarefResolvedFinal(
+            GetSarefOptionalString(final, "confrontationId"),
+            GetSarefOptionalInt(final, "resolvedAtTurn"),
+            GetSarefOptionalString(final, "routeType"),
+            GetSarefOptionalString(final, "victoryTier"),
+            GetSarefOptionalString(final, "sarefOutcome"),
+            GetSarefOptionalString(final, "wingsFactionOutcome"));
+    }
+
+    private static void ValidateSarefDealEnding(
+        JsonElement root,
+        JsonElement ending,
+        string context,
+        SarefResolvedFinal? final,
+        List<ValidationIssue> issues)
+    {
+        if (final == null ||
+            !string.Equals(final.RouteType, SarefMainStoryState.FinalRouteDeal, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(final.VictoryTier, SarefMainStoryState.FinalVictoryDeal, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(final.SarefOutcome, SarefMainStoryState.FinalSarefOutcomeAllied, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(final.WingsFactionOutcome, SarefMainStoryState.FinalWingsOutcomeJoined, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "deal ending требует matching finalConfrontation: routeType=deal, victoryTier=deal, sarefOutcome=allied, wingsFactionOutcome=joined.",
+                "saref_main_story_ending_deal_final_mismatch",
+                "deal/allied/joined finalConfrontation",
+                final?.RouteType ?? "missing");
+        }
+
+        if (!TryGetSarefObject(ending, "rewardBundle", out var rewards))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle",
+                "deal ending требует rewardBundle.",
+                "saref_main_story_ending_missing_reward_bundle",
+                "rewardBundle object",
+                ending.TryGetProperty("rewardBundle", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        if (!TryGetSarefObject(rewards, "resourceReward", out var resourceReward) ||
+            !string.Equals(GetSarefOptionalString(resourceReward, "scale"), "huge", StringComparison.OrdinalIgnoreCase) ||
+            GetPositiveSarefRewardCurrency(resourceReward) <= 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle.resourceReward",
+                "deal ending должен быть немедленно соблазнительным: resourceReward.scale=huge и положительные ресурсы.",
+                "saref_main_story_ending_deal_missing_resource_reward",
+                "resourceReward.scale=huge with inkFeathers/lightSparks > 0",
+                rewards.TryGetProperty("resourceReward", out var present) ? present.ValueKind.ToString() : "missing");
+        }
+
+        if (!TryGetSarefObject(rewards, "wingsAccess", out var wingsAccess) ||
+            !string.Equals(GetSarefOptionalString(wingsAccess, "status"), SarefMainStoryState.FinalWingsOutcomeJoined, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle.wingsAccess",
+                "deal ending должен явно дать доступ к Крыльям Ангелов.",
+                "saref_main_story_ending_deal_missing_wings_access",
+                "wingsAccess.status=joined",
+                rewards.TryGetProperty("wingsAccess", out var present) ? present.ValueKind.ToString() : "missing");
+        }
+
+        if (!TryGetSarefObject(rewards, "sarefArt", out var sarefArt) ||
+            string.IsNullOrWhiteSpace(GetSarefOptionalString(sarefArt, "artId")))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle.sarefArt",
+                "deal ending должен выдать особое искусство Сарефа.",
+                "saref_main_story_ending_deal_missing_saref_art",
+                "sarefArt.artId",
+                rewards.TryGetProperty("sarefArt", out var present) ? present.ValueKind.ToString() : "missing");
+        }
+
+        if (!TryGetSarefObject(rewards, "sarefPassive", out var sarefPassive) ||
+            string.IsNullOrWhiteSpace(GetSarefOptionalString(sarefPassive, "passiveId")))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle.sarefPassive",
+                "deal ending должен выдать пассив Сарефа.",
+                "saref_main_story_ending_deal_missing_saref_passive",
+                "sarefPassive.passiveId",
+                rewards.TryGetProperty("sarefPassive", out var present) ? present.ValueKind.ToString() : "missing");
+        }
+
+        var oathState = root.TryGetProperty("playerOathState", out var rootOath) && rootOath.ValueKind == JsonValueKind.Object
+            ? GetSarefOptionalString(rootOath, "state")
+            : null;
+        if (!TryGetSarefObject(rewards, "oathCost", out var oathCost) ||
+            string.IsNullOrWhiteSpace(GetSarefOptionalString(oathCost, "oathId")) ||
+            !string.Equals(GetSarefOptionalString(oathCost, "state"), "oathbound", StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(oathState, "oathbound", StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle.oathCost",
+                "deal ending требует явную цену: oathCost + playerOathState.state=oathbound.",
+                "saref_main_story_ending_deal_missing_oath_cost",
+                "oathCost.state=oathbound and root playerOathState.state=oathbound",
+                rewards.TryGetProperty("oathCost", out var present) ? present.ValueKind.ToString() : "missing");
+        }
+    }
+
+    private static void ValidateSarefVictoryEnding(
+        JsonElement ending,
+        string context,
+        SarefResolvedFinal? final,
+        List<ValidationIssue> issues)
+    {
+        if (final == null ||
+            string.Equals(final.RouteType, SarefMainStoryState.FinalRouteDeal, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(final.SarefOutcome, SarefMainStoryState.FinalSarefOutcomeDefeated, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "victory ending требует resolved finalConfrontation, где Сареф побеждён, а не deal.",
+                "saref_main_story_ending_victory_final_mismatch",
+                "non-deal finalConfrontation with sarefOutcome=defeated",
+                final?.SarefOutcome ?? "missing");
+        }
+
+        var endingTier = GetSarefOptionalString(ending, "victoryTier");
+        if (!string.IsNullOrWhiteSpace(final?.VictoryTier) &&
+            !string.IsNullOrWhiteSpace(endingTier) &&
+            !string.Equals(endingTier, final.VictoryTier, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.victoryTier",
+                "victoryTier концовки должен совпадать с finalConfrontation.victoryTier.",
+                "saref_main_story_ending_victory_tier_mismatch",
+                final.VictoryTier,
+                endingTier);
+        }
+
+        if (!TryGetSarefObject(ending, "rewardBundle", out var rewards))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle",
+                "victory ending требует rewardBundle.",
+                "saref_main_story_ending_missing_reward_bundle",
+                "rewardBundle object",
+                ending.TryGetProperty("rewardBundle", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        if (!HasSarefObjectWithId(rewards, "antiOathProtection", "protectionId") ||
+            !HasSarefObjectWithId(rewards, "antiForeignProtection", "protectionId"))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle",
+                "victory rewards должны включать защиту от клятв и чужемирного влияния.",
+                "saref_main_story_ending_victory_missing_protection",
+                "antiOathProtection.protectionId + antiForeignProtection.protectionId",
+                "missing");
+        }
+
+        if (!HasSarefObjectWithId(rewards, "relic", "relicId") &&
+            !HasSarefObjectWithId(rewards, "passive", "passiveId"))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle",
+                "victory rewards должны включать реликвию или пассив.",
+                "saref_main_story_ending_victory_missing_reward",
+                "relic.relicId or passive.passiveId",
+                "missing");
+        }
+
+        if (!HasNonEmptySarefArray(rewards, "guardianRelationshipEffects"))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle.guardianRelationshipEffects",
+                "victory rewards должны фиксировать последствия для отношений с Хранителями.",
+                "saref_main_story_ending_victory_missing_guardian_effects",
+                "non-empty guardianRelationshipEffects[]",
+                rewards.TryGetProperty("guardianRelationshipEffects", out var present) ? present.ValueKind.ToString() : "missing");
+        }
+
+        var tier = final?.VictoryTier ?? endingTier;
+        if (string.Equals(tier, SarefMainStoryState.FinalVictoryPyrrhic, StringComparison.OrdinalIgnoreCase) &&
+            !HasNonEmptySarefArray(rewards, "costs") &&
+            !rewards.TryGetProperty("scar", out _))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.rewardBundle.costs",
+                "pyrrhic victory должна записать цену победы.",
+                "saref_main_story_ending_pyrrhic_missing_cost",
+                "costs[] or scar",
+                "missing");
+        }
+
+        if (string.Equals(tier, SarefMainStoryState.FinalVictoryDeep, StringComparison.OrdinalIgnoreCase))
+        {
+            if (!HasNonEmptySarefArray(rewards, "deepWorldStateEffects") ||
+                !HasSarefObjectWithId(rewards, "relic", "relicId") ||
+                !HasSarefObjectWithId(rewards, "passive", "passiveId") ||
+                !string.Equals(final?.WingsFactionOutcome, SarefMainStoryState.FinalWingsOutcomeDissolved, StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.rewardBundle.deepWorldStateEffects",
+                    "deep victory требует strongest reward: relic + passive + deepWorldStateEffects[] и dissolved Wings outcome.",
+                    "saref_main_story_ending_deep_missing_world_effect",
+                    "relic + passive + deepWorldStateEffects[] + wingsFactionOutcome=dissolved",
+                    "missing");
+            }
+        }
+    }
+
+    private static bool TryGetSarefObject(JsonElement root, string propertyName, out JsonElement value)
+    {
+        if (root.TryGetProperty(propertyName, out value) && value.ValueKind == JsonValueKind.Object)
+            return true;
+
+        value = default;
+        return false;
+    }
+
+    private static bool HasSarefObjectWithId(JsonElement root, string propertyName, string idProperty) =>
+        TryGetSarefObject(root, propertyName, out var value) &&
+        !string.IsNullOrWhiteSpace(GetSarefOptionalString(value, idProperty));
+
+    private static bool HasNonEmptySarefArray(JsonElement root, string propertyName) =>
+        root.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind == JsonValueKind.Array &&
+        value.GetArrayLength() > 0;
+
+    private static int GetPositiveSarefRewardCurrency(JsonElement resourceReward)
+    {
+        var ink = Math.Max(0, GetSarefOptionalInt(resourceReward, "inkFeathers"));
+        var sparks = Math.Max(0, GetSarefOptionalInt(resourceReward, "lightSparks"));
+        return ink + sparks;
+    }
 
     private static void ValidateSarefDefeatMitigation(
         JsonElement item,
@@ -2423,6 +2777,15 @@ public partial class ValidationService
             JsonValueKind.False => false,
             _ => null
         };
+    }
+
+    private static int GetSarefOptionalInt(JsonElement root, string propertyName)
+    {
+        if (!root.TryGetProperty(propertyName, out var node))
+            return 0;
+        return node.ValueKind == JsonValueKind.Number && node.TryGetInt32(out var value)
+            ? value
+            : 0;
     }
 
     private static int RequireSarefTurnNumber(
