@@ -2582,6 +2582,18 @@ public sealed class AfterlifeDocumentationCoverageTests
             "преданность");
     }
 
+    [Fact]
+    public void SarefLissaraQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "lissara.md",
+            "Лиссара",
+            "exile_survival",
+            "Тропа изгнанника",
+            "выжив",
+            "изгнан");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,
