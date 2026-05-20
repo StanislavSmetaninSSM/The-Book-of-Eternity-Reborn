@@ -113,6 +113,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Профили сущностей посмертия", text, StringComparison.Ordinal);
         Assert.Contains("Хранитель Зеркал", text, StringComparison.Ordinal);
         Assert.Contains("Хранитель", text, StringComparison.Ordinal);
+        Assert.Contains("Зеркальная Обитель", text, StringComparison.Ordinal);
         Assert.Contains("Чернильные Перья: 120", text, StringComparison.Ordinal);
         Assert.Contains("Просветление: тир 4, опыт 48", text, StringComparison.Ordinal);
         Assert.Contains("Давление: 2", text, StringComparison.Ordinal);
@@ -127,6 +128,154 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("chaos:5", text, StringComparison.Ordinal);
         Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
         Assert.Contains("Сначала укрепляет защиту", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_AfterlifeProfiles_RendersResidentAndFactionLeaderProfileFields()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
+        {
+            schemaVersion = 1,
+            profiles = new object[]
+            {
+                new
+                {
+                    actorType = "resident",
+                    actorId = "resident_oath_001",
+                    displayName = "Резидент Клятв",
+                    realm = "Shining Abode",
+                    locationName = "Зал Невозвратных Обетов",
+                    currencies = new { inkFeathers = 15, lightSparks = 4 },
+                    progression = new
+                    {
+                        enlightenment = new { experience = 12, tier = 1 },
+                        radiance = new { experience = 85, tier = 2 }
+                    },
+                    standardArts = new { guard = 2, maneuver = 1 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "oath_guard",
+                            displayName = "Оберег Клятвы",
+                            ownerActorType = "resident",
+                            ownerActorId = "resident_oath_001",
+                            baseOperation = "guard",
+                            tier = 2,
+                            costMultiplierPercent = 175,
+                            upgradeCost = new { inkFeathers = 20, lightSparks = 3 },
+                            canTeachPlayer = false,
+                            trainingConditions = Array.Empty<string>(),
+                            effectSummary = "Защищает союзника через память о нарушенной клятве."
+                        }
+                    },
+                    customStates = new[]
+                    {
+                        new
+                        {
+                            stateId = "oath_echo",
+                            stateName = "Эхо клятвы",
+                            currentValue = 2,
+                            minValue = 0,
+                            maxValue = 5,
+                            description = "Усиливается после сцен с нарушенными обещаниями."
+                        }
+                    },
+                    soulDissipationTier = 0,
+                    progressionStrategy = new
+                    {
+                        summary = "Копит Искры Света на защиту.",
+                        priorityOrder = new[] { "guard", "radiance" },
+                        lastAutoProgressionCycleKey = "shining:7"
+                    },
+                    progressionLedger = Array.Empty<object>()
+                },
+                new
+                {
+                    actorType = "shining_faction_head",
+                    actorId = "head_ember_001",
+                    displayName = "Глава Пепельной Хартии",
+                    realm = "Shining Abode",
+                    locationName = "Палата Пепельной Хартии",
+                    currencies = new { inkFeathers = 80, lightSparks = 12 },
+                    progression = new
+                    {
+                        enlightenment = new { experience = 130, tier = 3 },
+                        radiance = new { experience = 210, tier = 4 }
+                    },
+                    standardArts = new { pressure = 3, binding = 2, force_binding = 1 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "ember_decree",
+                            displayName = "Пепельный Эдикт",
+                            ownerActorType = "shining_faction_head",
+                            ownerActorId = "head_ember_001",
+                            baseOperation = "pressure",
+                            tier = 3,
+                            costMultiplierPercent = 200,
+                            upgradeCost = new { inkFeathers = 50, lightSparks = 8 },
+                            canTeachPlayer = true,
+                            trainingConditions = new[] { "Выдержать суд фракции." },
+                            effectSummary = "Усиливает давление через власть фракционной печати."
+                        }
+                    },
+                    customStates = new[]
+                    {
+                        new
+                        {
+                            stateId = "charter_unrest",
+                            stateName = "Брожение хартии",
+                            currentValue = 6,
+                            minValue = 0,
+                            maxValue = 10,
+                            description = "Отражает внутренний раскол фракции."
+                        }
+                    },
+                    soulDissipationTier = 5,
+                    progressionStrategy = new
+                    {
+                        summary = "Сначала развивает давление и развеивание души.",
+                        priorityOrder = new[] { "pressure", "soul_dissipation" },
+                        lastAutoProgressionCycleKey = "shining:8"
+                    },
+                    progressionLedger = new[]
+                    {
+                        new
+                        {
+                            cycleKey = "shining:8",
+                            summary = "Получил доход фракции и усилил давление."
+                        }
+                    }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/профили_загробья");
+
+        Assert.Equal(string.Empty, result);
+        var text = ExtractRenderedText();
+        Assert.Contains("Резидент Клятв", text, StringComparison.Ordinal);
+        Assert.Contains("Резидент", text, StringComparison.Ordinal);
+        Assert.Contains("Зал Невозвратных Обетов", text, StringComparison.Ordinal);
+        Assert.Contains("Искры Света: 4", text, StringComparison.Ordinal);
+        Assert.Contains("Сияние: тир 2, опыт 85", text, StringComparison.Ordinal);
+        Assert.Contains("Оберег Клятвы", text, StringComparison.Ordinal);
+        Assert.Contains("Эхо клятвы", text, StringComparison.Ordinal);
+        Assert.Contains("Копит Искры Света", text, StringComparison.Ordinal);
+        Assert.Contains("Глава Пепельной Хартии", text, StringComparison.Ordinal);
+        Assert.Contains("Глава фракции", text, StringComparison.Ordinal);
+        Assert.Contains("Палата Пепельной Хартии", text, StringComparison.Ordinal);
+        Assert.Contains("Силовые оковы: 1", text, StringComparison.Ordinal);
+        Assert.Contains("Пепельный Эдикт", text, StringComparison.Ordinal);
+        Assert.Contains("может обучать игрока", text, StringComparison.Ordinal);
+        Assert.Contains("Брожение хартии", text, StringComparison.Ordinal);
+        Assert.Contains("Развеивание души: тир 5", text, StringComparison.Ordinal);
+        Assert.Contains("ОПАСНО", text, StringComparison.Ordinal);
+        Assert.Contains("shining:8", text, StringComparison.Ordinal);
     }
 
     [Fact]
