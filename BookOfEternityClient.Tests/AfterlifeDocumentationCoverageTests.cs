@@ -2738,6 +2738,22 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("dominationScene", text, StringComparison.Ordinal);
             Assert.Contains(ShiningAbodeState.FactionConflictCampaignsProperty, text, StringComparison.Ordinal);
             Assert.Contains(ShiningAbodeState.FactionCampaignBreakthroughSarefDirective, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakUpdateModeRecord, text, StringComparison.Ordinal);
+            Assert.Contains("oathBreakArc", text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakStateNotStarted, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakStateActive, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakStateFailed, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakStateBroken, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakRouteSeret, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakRouteLucian, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakRouteIlarion, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakRouteVeyra, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakRouteDeepStoryEvidence, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakConsequenceRenegade, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakConsequenceOathReversed, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakConsequenceBelovedTraitor, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.OathBreakConsequenceSecondConfrontation, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.SceneOathBreak, text, StringComparison.Ordinal);
         }
 
         foreach (var text in new[] { matrix, examples, inventory, daemonSpec, apiSpec, taskGuide, operations })

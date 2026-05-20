@@ -370,6 +370,87 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_SarefStory_RendersOathBreakArc()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "completed",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [
+            { "revelationId": "rev_identity", "category": "identity", "revealedAtTurn": 50 }
+          ],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [
+            {
+              "usageId": "use_seret_oath_law_001",
+              "advantageId": "adv_seret_oath_law",
+              "usedAtTurn": 181,
+              "sceneType": "oath_break",
+              "summary": "Серет нашла старую формулу, которая выворачивает клятву Сарефа."
+            }
+          ],
+          "factionLinks": { "visibility": "revealed", "wingsFactionId": "wings_of_angels" },
+          "finalConfrontation": {
+            "confrontationId": "saref_deal_final_001",
+            "status": "resolved",
+            "routeType": "deal",
+            "victoryTier": "deal",
+            "directScene": true,
+            "sceneType": "saref_negotiation",
+            "resolvedAtTurn": 130,
+            "sarefOutcome": "allied",
+            "wingsFactionOutcome": "joined",
+            "summary": "Игрок принимает сделку Сарефа."
+          },
+          "defeatOutcomes": [],
+          "endings": [],
+          "postStoryAgenda": {
+            "state": "oathbound_to_saref",
+            "sourceFinalConfrontationId": "saref_deal_final_001",
+            "startedAtTurn": 130,
+            "currentObjective": "Скрыться от Крыльев после разрыва клятвы.",
+            "oathBreakArc": {
+              "arcId": "saref_oath_break_seret_001",
+              "state": "broken",
+              "route": "seret",
+              "leadActorId": "seret",
+              "startedAtTurn": 172,
+              "resolvedAtTurn": 181,
+              "summary": "Игрок и Серет готовят разрыв клятвы через закон старых имен.",
+              "proofSummary": "Клятва больше не держит душу игрока, но Крылья объявили охоту.",
+              "advantageUseIds": [ "use_seret_oath_law_001" ],
+              "consequences": [
+                "renegade_from_wings",
+                "oath_reversed",
+                "second_confrontation_unlocked"
+              ]
+            }
+          },
+          "playerOathState": {
+            "state": "oath_reversed",
+            "oathId": "saref_oath_001",
+            "summary": "Клятва обращена против Сарефа."
+          },
+          "sarefPersonalBond": null
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/сареф");
+
+        var text = ExtractRenderedText();
+        Assert.Equal(string.Empty, result);
+        Assert.Contains("Арка разрыва клятвы", text, StringComparison.Ordinal);
+        Assert.Contains("клятва разорвана", text, StringComparison.Ordinal);
+        Assert.Contains("Серет", text, StringComparison.Ordinal);
+        Assert.Contains("изменник Крыльев", text, StringComparison.Ordinal);
+        Assert.Contains("открыта вторая конфронтация", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeProfiles_RendersFullEntityProfile()
     {
         await SeedAfterlifeStateAsync();

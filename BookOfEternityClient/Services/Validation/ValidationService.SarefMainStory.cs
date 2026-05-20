@@ -559,7 +559,7 @@ public partial class ValidationService
         ValidateSarefDefeatOutcomes(root, contextPrefix, advantageUses, issues);
         ValidateSarefFinalConfrontation(root, contextPrefix, revealStage, guardianQuestlines, advantageUses, issues);
         ValidateSarefEndings(root, contextPrefix, issues);
-        ValidateSarefPostStoryAgenda(root, contextPrefix, issues);
+        ValidateSarefPostStoryAgenda(root, contextPrefix, advantageUses, issues);
         ValidateSarefOathboundPostStoryRoot(root, contextPrefix, issues);
         var factionVisibility = ValidateSarefFactionLinks(root, contextPrefix, issues);
         ValidateSarefActionableFactionLink(revealStage, root, factionVisibility, contextPrefix, issues);
@@ -1982,10 +1982,13 @@ public partial class ValidationService
         var oathState = root.TryGetProperty("playerOathState", out var rootOath) && rootOath.ValueKind == JsonValueKind.Object
             ? GetSarefOptionalString(rootOath, "state")
             : null;
+        var hasProvenOathBreak = HasProvenSarefOathBreakArc(root);
         if (!TryGetSarefObject(rewards, "oathCost", out var oathCost) ||
             string.IsNullOrWhiteSpace(GetSarefOptionalString(oathCost, "oathId")) ||
             !string.Equals(GetSarefOptionalString(oathCost, "state"), "oathbound", StringComparison.OrdinalIgnoreCase) ||
-            !string.Equals(oathState, "oathbound", StringComparison.OrdinalIgnoreCase))
+            (!string.Equals(oathState, "oathbound", StringComparison.OrdinalIgnoreCase) &&
+             !string.Equals(oathState, "strained", StringComparison.OrdinalIgnoreCase) &&
+             !hasProvenOathBreak))
         {
             AddSarefIssue(
                 issues,
@@ -2109,7 +2112,11 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateSarefPostStoryAgenda(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    private static void ValidateSarefPostStoryAgenda(
+        JsonElement root,
+        string contextPrefix,
+        IReadOnlyDictionary<string, SarefAdvantageUse> advantageUses,
+        List<ValidationIssue> issues)
     {
         if (!root.TryGetProperty("postStoryAgenda", out var agenda) || agenda.ValueKind == JsonValueKind.Null)
             return;
@@ -2145,7 +2152,278 @@ public partial class ValidationService
         RequireSarefString(agenda, context, "agendaSummary", "saref_main_story_oathbound_agenda_missing_summary", issues);
         ValidateSarefPostStoryAssignments(agenda, context, issues);
         ValidateSarefPostStoryDominationScene(agenda, context, issues);
+        ValidateSarefOathBreakArc(root, agenda, context, advantageUses, issues);
         ValidateSarefTurnFields(agenda, context, issues);
+    }
+
+    private static void ValidateSarefOathBreakArc(
+        JsonElement root,
+        JsonElement agenda,
+        string contextPrefix,
+        IReadOnlyDictionary<string, SarefAdvantageUse> advantageUses,
+        List<ValidationIssue> issues)
+    {
+        if (!agenda.TryGetProperty("oathBreakArc", out var arc) || arc.ValueKind == JsonValueKind.Null)
+            return;
+
+        var context = $"{contextPrefix}.oathBreakArc";
+        if (arc.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "oathBreakArc должен быть object или null.",
+                "saref_main_story_oath_break_invalid_shape",
+                "object or null",
+                arc.ValueKind.ToString());
+            return;
+        }
+
+        RequireSarefString(arc, context, "arcId", "saref_main_story_oath_break_missing_id", issues);
+        var state = RequireSarefString(arc, context, "state", "saref_main_story_oath_break_missing_state", issues);
+        if (!string.IsNullOrWhiteSpace(state) && !SarefMainStoryState.OathBreakStates.Contains(state))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.state",
+                "state арки разрыва клятвы Сарефа не поддерживается.",
+                "saref_main_story_oath_break_invalid_state",
+                string.Join("/", SarefMainStoryState.OathBreakStates.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                state);
+        }
+
+        var route = RequireSarefString(arc, context, "route", "saref_main_story_oath_break_missing_route", issues);
+        if (!string.IsNullOrWhiteSpace(route) && !SarefMainStoryState.OathBreakRoutes.Contains(route))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.route",
+                "route разрыва клятвы Сарефа не поддерживается.",
+                "saref_main_story_oath_break_invalid_route",
+                string.Join("/", SarefMainStoryState.OathBreakRoutes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                route);
+        }
+
+        RequireSarefString(arc, context, "leadActorId", "saref_main_story_oath_break_missing_lead", issues);
+        RequireSarefTurnNumber(arc, context, "startedAtTurn", "saref_main_story_oath_break_missing_started_turn", issues);
+        RequireSarefString(arc, context, "summary", "saref_main_story_oath_break_missing_summary", issues);
+
+        if (!string.Equals(state, SarefMainStoryState.OathBreakStateBroken, StringComparison.OrdinalIgnoreCase))
+        {
+            ValidateSarefTurnFields(arc, context, issues);
+            return;
+        }
+
+        RequireSarefTurnNumber(arc, context, "resolvedAtTurn", "saref_main_story_oath_break_missing_resolved_turn", issues);
+        var hasProofSummary = !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "proofSummary"));
+        var hasProofId = !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "routeProofId")) ||
+                         !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "oathBreakProofId")) ||
+                         !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "metaphysicalProofId"));
+        var hasProofObject = arc.TryGetProperty("routeProof", out var routeProof) && routeProof.ValueKind == JsonValueKind.Object;
+        if (!hasProofSummary || (!hasProofId && !hasProofObject))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.proofSummary",
+                "broken oathBreakArc требует сильное доказательство: proofSummary и routeProofId/oathBreakProofId/metaphysicalProofId или routeProof object.",
+                "saref_main_story_oath_break_missing_proof",
+                "proofSummary + routeProofId/oathBreakProofId/metaphysicalProofId/routeProof",
+                hasProofSummary ? "missing proof id/object" : "missing proofSummary");
+        }
+
+        ValidateSarefOathBreakAdvantageUses(arc, context, advantageUses, issues);
+        var consequences = ValidateSarefOathBreakConsequences(arc, context, issues);
+        ValidateSarefOathBreakRootOathState(root, context, issues);
+        ValidateSarefOathBreakRomance(root, arc, context, consequences, issues);
+        ValidateSarefTurnFields(arc, context, issues);
+    }
+
+    private static void ValidateSarefOathBreakAdvantageUses(
+        JsonElement arc,
+        string context,
+        IReadOnlyDictionary<string, SarefAdvantageUse> advantageUses,
+        List<ValidationIssue> issues)
+    {
+        if (!arc.TryGetProperty("advantageUseIds", out var refs) || refs.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.advantageUseIds",
+                "Разрыв клятвы Сарефа должен использовать хотя бы одно сохраненное anti-oath преимущество.",
+                "saref_main_story_oath_break_missing_advantage_use",
+                "non-empty advantageUseIds[] referencing sarefAdvantageUses[]",
+                arc.TryGetProperty("advantageUseIds", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        var count = 0;
+        foreach (var refNode in refs.EnumerateArray())
+        {
+            if (!TryGetSarefString(refNode, out var usageId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.advantageUseIds",
+                    "advantageUseIds[] должен содержать usageId строками.",
+                    "saref_main_story_oath_break_invalid_advantage_use",
+                    "sarefAdvantageUses[].usageId",
+                    refNode.ValueKind.ToString());
+                continue;
+            }
+
+            count++;
+            if (!advantageUses.TryGetValue(usageId, out var use))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.advantageUseIds",
+                    "Разрыв клятвы ссылается на неизвестное использование преимущества.",
+                    "saref_main_story_oath_break_unknown_advantage_use",
+                    "existing sarefAdvantageUses[].usageId",
+                    usageId);
+                continue;
+            }
+
+            if (!string.Equals(use.SceneType, SarefMainStoryState.SceneOathBreak, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(use.SceneType, SarefMainStoryState.SceneAny, StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.advantageUseIds",
+                    "Преимущество для разрыва клятвы должно быть использовано в sceneType=oath_break.",
+                    "saref_main_story_oath_break_wrong_advantage_scene",
+                    SarefMainStoryState.SceneOathBreak,
+                    use.SceneType ?? "missing");
+            }
+        }
+
+        if (count == 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.advantageUseIds",
+                "advantageUseIds[] для разрыва клятвы не должен быть пустым.",
+                "saref_main_story_oath_break_missing_advantage_use",
+                "non-empty advantageUseIds[]",
+                "empty");
+        }
+    }
+
+    private static HashSet<string> ValidateSarefOathBreakConsequences(JsonElement arc, string context, List<ValidationIssue> issues)
+    {
+        var consequences = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!arc.TryGetProperty("consequences", out var node) || node.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.consequences",
+                "Разрыв клятвы Сарефа требует явных серьезных последствий.",
+                "saref_main_story_oath_break_missing_consequence",
+                "consequences[]",
+                arc.TryGetProperty("consequences", out var present) ? present.ValueKind.ToString() : "missing");
+            return consequences;
+        }
+
+        foreach (var item in node.EnumerateArray())
+        {
+            if (!TryGetSarefString(item, out var consequence))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.consequences",
+                    "consequences[] должен содержать строки consequence id.",
+                    "saref_main_story_oath_break_invalid_consequence",
+                    string.Join("/", SarefMainStoryState.OathBreakConsequences.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    item.ValueKind.ToString());
+                continue;
+            }
+
+            if (!SarefMainStoryState.OathBreakConsequences.Contains(consequence))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.consequences",
+                    "Последствие разрыва клятвы Сарефа не поддерживается.",
+                    "saref_main_story_oath_break_invalid_consequence",
+                    string.Join("/", SarefMainStoryState.OathBreakConsequences.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    consequence);
+                continue;
+            }
+
+            consequences.Add(consequence);
+        }
+
+        foreach (var required in new[]
+                 {
+                     SarefMainStoryState.OathBreakConsequenceRenegade,
+                     SarefMainStoryState.OathBreakConsequenceSecondConfrontation
+                 })
+        {
+            if (!consequences.Contains(required))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.consequences",
+                    "Разрыв клятвы должен сделать игрока renegade_from_wings и открыть second_confrontation_unlocked.",
+                    "saref_main_story_oath_break_missing_consequence",
+                    $"{SarefMainStoryState.OathBreakConsequenceRenegade}+{SarefMainStoryState.OathBreakConsequenceSecondConfrontation}",
+                    string.Join(",", consequences));
+            }
+        }
+
+        return consequences;
+    }
+
+    private static void ValidateSarefOathBreakRootOathState(JsonElement root, string context, List<ValidationIssue> issues)
+    {
+        var oathState = root.TryGetProperty("playerOathState", out var oath) && oath.ValueKind == JsonValueKind.Object
+            ? GetSarefOptionalString(oath, "state")
+            : null;
+
+        if (!string.Equals(oathState, "broken", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(oathState, "oath_reversed", StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.playerOathState.state",
+                "broken oathBreakArc должен переводить playerOathState в broken или oath_reversed.",
+                "saref_main_story_oath_break_oath_state_mismatch",
+                "broken/oath_reversed",
+                oathState ?? "missing");
+        }
+    }
+
+    private static void ValidateSarefOathBreakRomance(
+        JsonElement root,
+        JsonElement arc,
+        string context,
+        IReadOnlySet<string> consequences,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("sarefPersonalBond", out var bond) || bond.ValueKind != JsonValueKind.Object)
+            return;
+
+        var bondState = GetSarefOptionalString(bond, "state");
+        var isRomantic =
+            string.Equals(bondState, "intimate_oath", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(bondState, "adversarial_romantic", StringComparison.OrdinalIgnoreCase);
+        if (!isRomantic)
+            return;
+
+        var hasTragedy =
+            consequences.Contains(SarefMainStoryState.OathBreakConsequenceBelovedTraitor) ||
+            !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "tragicRomanceNote")) ||
+            !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "romanceOutcome"));
+        if (!hasTragedy)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.romanceOutcome",
+                "Романтический разрыв клятвы Сарефа должен фиксировать трагическую цену: beloved_traitor, tragicRomanceNote или romanceOutcome.",
+                "saref_main_story_oath_break_romance_missing_tragedy",
+                "beloved_traitor or tragicRomanceNote/romanceOutcome",
+                "missing");
+        }
     }
 
     private static void ValidateSarefPostStoryAssignments(JsonElement agenda, string contextPrefix, List<ValidationIssue> issues)
@@ -2287,14 +2565,21 @@ public partial class ValidationService
         var oathState = root.TryGetProperty("playerOathState", out var oath) && oath.ValueKind == JsonValueKind.Object
             ? GetSarefOptionalString(oath, "state")
             : null;
+        var hasProvenOathBreak = HasProvenSarefOathBreakArc(root);
         if (!string.Equals(oathState, "oathbound", StringComparison.OrdinalIgnoreCase) &&
-            !string.Equals(oathState, "strained", StringComparison.OrdinalIgnoreCase))
+            !string.Equals(oathState, "strained", StringComparison.OrdinalIgnoreCase) &&
+            !hasProvenOathBreak)
         {
+            var issueCode =
+                string.Equals(oathState, "broken", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(oathState, "oath_reversed", StringComparison.OrdinalIgnoreCase)
+                    ? "saref_main_story_oath_break_missing_arc"
+                    : "saref_main_story_oathbound_left_without_oath_break";
             AddSarefIssue(
                 issues,
                 $"{contextPrefix}.playerOathState.state",
                 "Обычным добровольным действием нельзя выйти из Крыльев после сделки с Сарефом; нужен отдельный oath-break contract.",
-                "saref_main_story_oathbound_left_without_oath_break",
+                issueCode,
                 "oathbound/strained until authorized oath break",
                 oathState ?? "missing");
         }
@@ -2335,6 +2620,45 @@ public partial class ValidationService
                string.Equals(SarefMainStoryState.GetNodeString(final["victoryTier"]), SarefMainStoryState.FinalVictoryDeal, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(SarefMainStoryState.GetNodeString(final["sarefOutcome"]), SarefMainStoryState.FinalSarefOutcomeAllied, StringComparison.OrdinalIgnoreCase) &&
                string.Equals(SarefMainStoryState.GetNodeString(final["wingsFactionOutcome"]), SarefMainStoryState.FinalWingsOutcomeJoined, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool HasProvenSarefOathBreakArc(JsonElement root)
+    {
+        if (!root.TryGetProperty("postStoryAgenda", out var agenda) || agenda.ValueKind != JsonValueKind.Object)
+            return false;
+        if (!agenda.TryGetProperty("oathBreakArc", out var arc) || arc.ValueKind != JsonValueKind.Object)
+            return false;
+
+        if (!string.Equals(GetSarefOptionalString(arc, "state"), SarefMainStoryState.OathBreakStateBroken, StringComparison.OrdinalIgnoreCase))
+            return false;
+        if (string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "arcId")) ||
+            string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "route")) ||
+            string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "leadActorId")) ||
+            string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "proofSummary")) ||
+            GetSarefOptionalInt(arc, "resolvedAtTurn") <= 0)
+        {
+            return false;
+        }
+
+        var hasProofId = !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "routeProofId")) ||
+                         !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "oathBreakProofId")) ||
+                         !string.IsNullOrWhiteSpace(GetSarefOptionalString(arc, "metaphysicalProofId"));
+        var hasProofObject = arc.TryGetProperty("routeProof", out var routeProof) && routeProof.ValueKind == JsonValueKind.Object;
+        if (!hasProofId && !hasProofObject)
+            return false;
+
+        if (!arc.TryGetProperty("consequences", out var consequences) || consequences.ValueKind != JsonValueKind.Array)
+            return false;
+
+        var consequenceSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in consequences.EnumerateArray())
+        {
+            if (TryGetSarefString(item, out var consequence))
+                consequenceSet.Add(consequence);
+        }
+
+        return consequenceSet.Contains(SarefMainStoryState.OathBreakConsequenceRenegade) &&
+               consequenceSet.Contains(SarefMainStoryState.OathBreakConsequenceSecondConfrontation);
     }
 
     private static bool TryGetSarefObject(JsonElement root, string propertyName, out JsonElement value)
