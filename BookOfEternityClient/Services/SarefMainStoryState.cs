@@ -56,6 +56,20 @@ internal static class SarefMainStoryState
     public const string DefeatOutcomeSoulDissipation = "soul_dissipation";
     public const string DefeatOutcomePyrrhicEscape = "pyrrhic_escape";
 
+    public const string FinalUpdateModeRecord = "record_final_confrontation";
+    public const string FinalStatusResolved = "resolved";
+    public const string FinalRouteCombat = "combat";
+    public const string FinalRoutePolitical = "political";
+    public const string FinalRouteOathLaw = "oath_law";
+    public const string FinalRouteMetaphysical = "metaphysical";
+    public const string FinalRouteHybrid = "hybrid";
+    public const string FinalVictoryPyrrhic = "pyrrhic";
+    public const string FinalVictoryClean = "clean";
+    public const string FinalVictoryDeep = "deep";
+    public const string FinalSarefOutcomeDefeated = "defeated";
+    public const string FinalWingsOutcomeBroken = "broken";
+    public const string FinalWingsOutcomeDissolved = "dissolved";
+
     public const string WingsUpdateModeReveal = "reveal_wings";
     public const string WingsUpdateModeRefuse = "refuse_wings";
     public const string WingsUpdateModeBlock = "block_wings";
@@ -215,6 +229,46 @@ internal static class SarefMainStoryState
         DefeatOutcomeMemorySuppression,
         DefeatOutcomeSoulDissipation,
         DefeatOutcomePyrrhicEscape
+    };
+
+    public static readonly HashSet<string> FinalConfrontationStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "active",
+        FinalStatusResolved
+    };
+
+    public static readonly HashSet<string> FinalConfrontationRouteTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        FinalRouteCombat,
+        FinalRoutePolitical,
+        FinalRouteOathLaw,
+        FinalRouteMetaphysical,
+        FinalRouteHybrid
+    };
+
+    public static readonly HashSet<string> FinalVictoryTiers = new(StringComparer.OrdinalIgnoreCase)
+    {
+        FinalVictoryPyrrhic,
+        FinalVictoryClean,
+        FinalVictoryDeep
+    };
+
+    public static readonly HashSet<string> FinalSarefOutcomes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        FinalSarefOutcomeDefeated,
+        "destroyed",
+        "banished",
+        "redeemed",
+        "oathbound_bargain"
+    };
+
+    public static readonly HashSet<string> FinalWingsFactionOutcomes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        FinalWingsOutcomeBroken,
+        FinalWingsOutcomeDissolved,
+        "leaderless",
+        "reformed",
+        "absorbed"
     };
 
     public static readonly HashSet<string> WingsRouteSafetyStates = new(StringComparer.OrdinalIgnoreCase)
@@ -468,6 +522,12 @@ internal static class SarefMainStoryState
             return root;
         }
 
+        if (string.Equals(mode, FinalUpdateModeRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            ApplyFinalConfrontationUpdate(root, updateRoot);
+            return root;
+        }
+
         if (!WingsUpdateModes.Contains(mode))
             return root;
 
@@ -584,6 +644,86 @@ internal static class SarefMainStoryState
 
         if (updateRoot["sarefAdvantageUses"] is JsonArray advantageUses)
             MergeArrayById(EnsureArray(root, "sarefAdvantageUses"), advantageUses, "usageId");
+    }
+
+    private static void ApplyFinalConfrontationUpdate(JsonObject root, JsonObject updateRoot)
+    {
+        var final = updateRoot["finalConfrontation"] is JsonObject finalConfrontation
+            ? finalConfrontation.DeepClone().AsObject()
+            : updateRoot["finalConfrontationAudit"] is JsonObject finalConfrontationAudit
+                ? finalConfrontationAudit.DeepClone().AsObject()
+                : new JsonObject();
+
+        foreach (var key in new[]
+                 {
+                     "confrontationId", "status", "routeType", "victoryTier", "directScene", "sceneType",
+                     "conflictId", "factionCampaignId", "oathBreakProofId", "metaphysicalProofId",
+                     "sarefOutcome", "wingsFactionOutcome", "summary", "gmResolution", "reason"
+                 })
+        {
+            if (final[key] == null && updateRoot[key] != null)
+                final[key] = updateRoot[key]!.DeepClone();
+        }
+
+        if (final["routeComponents"] == null && updateRoot["routeComponents"] is JsonArray routeComponents)
+            final["routeComponents"] = routeComponents.DeepClone();
+        if (final["advantageUseIds"] == null && updateRoot["advantageUseIds"] is JsonArray advantageUseIds)
+            final["advantageUseIds"] = advantageUseIds.DeepClone();
+
+        var resolvedAtTurn = GetNodeInt(final["resolvedAtTurn"]);
+        if (resolvedAtTurn <= 0)
+            resolvedAtTurn = GetNodeInt(updateRoot["resolvedAtTurn"]);
+        if (resolvedAtTurn <= 0)
+            resolvedAtTurn = GetNodeInt(updateRoot["turnNumber"]);
+        if (resolvedAtTurn > 0)
+            final["resolvedAtTurn"] = resolvedAtTurn;
+
+        if (final["status"] == null)
+            final["status"] = FinalStatusResolved;
+        if (final["sceneType"] == null)
+            final["sceneType"] = SceneFinalResolution;
+
+        root["finalConfrontation"] = final;
+        if (string.Equals(GetNodeString(final["status"]), FinalStatusResolved, StringComparison.OrdinalIgnoreCase))
+            root["revealStage"] = RevealStageCompleted;
+
+        if (updateRoot["sarefAdvantageUses"] is JsonArray advantageUses)
+            MergeArrayById(EnsureArray(root, "sarefAdvantageUses"), advantageUses, "usageId");
+
+        if (updateRoot["ending"] is JsonObject ending)
+            MergeEnding(root, ending, final, resolvedAtTurn);
+        else if (updateRoot["endingAudit"] is JsonObject endingAudit)
+            MergeEnding(root, endingAudit, final, resolvedAtTurn);
+        else if (updateRoot["endings"] is JsonArray endings)
+            MergeArrayById(EnsureArray(root, "endings"), endings, "endingId");
+    }
+
+    private static void MergeEnding(JsonObject root, JsonObject endingSource, JsonObject final, int resolvedAtTurn)
+    {
+        var ending = endingSource.DeepClone().AsObject();
+        if (resolvedAtTurn > 0 && ending["resolvedAtTurn"] == null)
+            ending["resolvedAtTurn"] = resolvedAtTurn;
+        if (ending["victoryTier"] == null && final["victoryTier"] != null)
+            ending["victoryTier"] = final["victoryTier"]!.DeepClone();
+        if (ending["sarefOutcome"] == null && final["sarefOutcome"] != null)
+            ending["sarefOutcome"] = final["sarefOutcome"]!.DeepClone();
+
+        var endings = EnsureArray(root, "endings");
+        var endingId = GetNodeString(ending["endingId"]);
+        if (!string.IsNullOrWhiteSpace(endingId))
+        {
+            for (var i = 0; i < endings.Count; i++)
+            {
+                if (endings[i] is JsonObject existing &&
+                    string.Equals(GetNodeString(existing["endingId"]), endingId, StringComparison.OrdinalIgnoreCase))
+                {
+                    endings[i] = ending;
+                    return;
+                }
+            }
+        }
+
+        endings.Add(ending);
     }
 
     private static JsonArray EnsureArray(JsonObject root, string propertyName)

@@ -7617,6 +7617,9 @@ Correct reasoning checklist:
 - Keep arrays unique by ids such as `revelationId`, `advantageId`, `outcomeId`, and `endingId`.
 - Hidden Wings agents must not all be one archetype. Use a mix of `deceived`, `oathbound`, `fanatic`, and `opportunist`, and give important agents at least one route: `persuade`, `free`, `expose`, `blackmail`, or `defeat`.
 - Before reveal, a materialized Shining faction with `sarefFactionRole=wings_of_angels` and `sarefVisibility=hidden|rumored` is hidden from normal faction UI and player-facing JSON audits. After reveal it must become `sarefVisibility=revealed` and `factionLinks.wingsFactionId` must point at that actionable `factions[]` entry.
+- The final confrontation with Сареф cannot resolve off-screen. A victory must use `sarefMainStoryUpdate.mode=record_final_confrontation`, write `finalConfrontation.status=resolved`, `directScene=true`, `resolvedAtTurn`, `routeType`, `victoryTier`, `sarefOutcome`, `wingsFactionOutcome`, route proof, and any `advantageUseIds[]`.
+- Supported final `routeType` values are `combat`, `political`, `oath_law`, `metaphysical`, and `hybrid`; supported `victoryTier` values are `pyrrhic`, `clean`, and `deep`. `deep` requires four different Guardians with quest 4 completed. `hybrid` requires `routeComponents[]` with at least two non-hybrid route types and their proof fields.
+- If final victory says the Крылья Ангелов are `broken` or `dissolved`, the linked Shining faction must carry matching `factionLifecycle.state` (`broken` may also accept `dissolved` as stronger closure).
 
 `/сареф найти_крылья` pending request shape:
 
@@ -7824,6 +7827,61 @@ Valid mitigated escape:
   }
 }
 ```
+
+Valid final confrontation victory:
+
+```json
+{
+  "sarefMainStoryUpdate": {
+    "mode": "record_final_confrontation",
+    "turnNumber": 205,
+    "finalConfrontation": {
+      "confrontationId": "saref_final_hybrid_205",
+      "status": "resolved",
+      "routeType": "hybrid",
+      "routeComponents": [ "combat", "oath_law", "metaphysical" ],
+      "victoryTier": "deep",
+      "directScene": true,
+      "sceneType": "final_resolution",
+      "resolvedAtTurn": 205,
+      "conflictId": "afterlife_conflict_saref_205",
+      "oathBreakProofId": "saref_oath_law_proof_205",
+      "metaphysicalProofId": "source_truth_saref_205",
+      "advantageUseIds": [ "use_myriel_ash_formula_205" ],
+      "sarefOutcome": "defeated",
+      "wingsFactionOutcome": "dissolved",
+      "summary": "Игрок лично встретил Сарефа, разбил его духовное давление, рассек клятву и обнажил иномировое ядро Крыльев."
+    },
+    "sarefAdvantageUses": [
+      {
+        "usageId": "use_myriel_ash_formula_205",
+        "advantageId": "adv_myriel_ash_formula",
+        "sceneType": "final_resolution",
+        "usedAtTurn": 205,
+        "consumesAdvantage": false,
+        "summary": "Пепельная формула Мириэль позволила распознать силу Сарефа как чужемирную, а не сияющую."
+      }
+    ],
+    "ending": {
+      "endingId": "saref_deep_hybrid_victory_205",
+      "victoryTier": "deep",
+      "sarefOutcome": "defeated",
+      "resolvedAtTurn": 205,
+      "summary": "Крылья Ангелов распались, а Обитель получила доказательство, почему Сареф был угрозой всему Упорядоченному."
+    }
+  }
+}
+```
+
+In the same accepted state, the linked `game_state/meta/shining_abode_state.json.factions[]` entry for `wings_of_angels` must carry matching `sarefFactionRole=wings_of_angels`, `sarefVisibility=revealed`, and `factionLifecycle.state=dissolved` with defeated-turn/remnants fields. Do not use an unsupported top-level `shiningAbodeState` response field; write through the canonical Shining state surface already used by accepted Shining faction updates.
+
+Final route proof reference:
+- `combat` requires `conflictId`.
+- `political` requires `factionCampaignId`.
+- `oath_law` requires `oathBreakProofId`.
+- `metaphysical` requires `metaphysicalProofId`.
+- `hybrid` requires `routeComponents[]` and the proof fields for every listed component.
+- `advantageUseIds[]` must point to valid `sarefAdvantageUses[].usageId`; the use scene must be `saref_confrontation`, `final_resolution`, or another applicable scene declared by the advantage.
 
 ==================================================
 COMMON INVALID PATTERNS
