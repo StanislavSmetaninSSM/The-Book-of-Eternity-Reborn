@@ -1095,6 +1095,7 @@
                     - leadership state (`secure`, `contested`, `vacant`)
                     - head actor (`guardian`, `resident`, `player_soul`, `radiant_actor`); if `leadership.headActorType = radiant_actor`, `leadership.headActorId` must exist in `shiningPoliticalActors[].actorId`
                     - `shiningPoliticalActors` registry and political status (`head`, `former_head`, `claimant`, `elder`, `retired`)
+                    - `factionLifecycle.state` (`active`, `weakened`, `leaderless`, `broken`, `dissolved`): do not delete defeated factions from `factions[]`; `broken` and `dissolved` keep remnant/history data through `defeatedAtTurn`, `defeatedAtUtc`, `defeatReason`, and `remnantsSummary`, must have `factionStrength=0`, `leadershipState=vacant`, no `tradeInventory`, and all projects `isSupported=false`; `leaderless` also requires vacant leadership and cannot act as a normally headed faction until leadership is restored
                     - resident loyalty and restlessness
                     - project archetypes and completed projects
                     - pending founding, realignment, and leadership transition requests

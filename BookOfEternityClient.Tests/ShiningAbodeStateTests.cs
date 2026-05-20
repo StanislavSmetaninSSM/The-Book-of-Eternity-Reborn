@@ -1295,6 +1295,40 @@ public sealed class ShiningAbodeStateTests
         Assert.True(root["gates"]?["isStale"]?.GetValue<bool>());
     }
 
+    [Theory]
+    [InlineData(ShiningAbodeState.FactionLifecycleStateBroken)]
+    [InlineData(ShiningAbodeState.FactionLifecycleStateDissolved)]
+    public void FactionActions_DefeatedLifecycleRejectsOperationalMutations(string lifecycleState)
+    {
+        var root = CreateProjectSupportState(isSupported: false);
+        var faction = root["factions"]![0]!.AsObject();
+        faction["factionLifecycle"] = new JsonObject
+        {
+            ["state"] = lifecycleState,
+            ["defeatedAtTurn"] = 42,
+            ["defeatedAtUtc"] = "2026-05-20T00:00:00Z",
+            ["defeatReason"] = "Проверочный разгром.",
+            ["remnantsSummary"] = "Исторические остатки."
+        };
+
+        var investSuccess = ShiningAbodeState.TryInvestInFaction(root, residentRoot: null, "faction_dawn", out var investError);
+        var supportSuccess = ShiningAbodeState.TrySupportProject(root, "faction_dawn", "project_dawn", out var supportError);
+        var quoteSuccess = ShiningAbodeState.TryQuoteProjectCompletion(
+            root,
+            residentRoot: null,
+            "faction_dawn",
+            BuildProjectDraft("Проект", ShiningAbodeState.ProjectArchetypeAccord, ShiningAbodeState.EffectFamilySocial, tier: 1),
+            out _,
+            out var quoteError);
+
+        Assert.False(investSuccess);
+        Assert.Contains("жизненный цикл", investError, StringComparison.OrdinalIgnoreCase);
+        Assert.False(supportSuccess);
+        Assert.Contains("жизненный цикл", supportError, StringComparison.OrdinalIgnoreCase);
+        Assert.False(quoteSuccess);
+        Assert.Contains("жизненный цикл", quoteError, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public void OpenGates_ThenPreparePackage_BuildsFrozenSnapshot()
     {

@@ -3485,11 +3485,15 @@ Canonical Shining owner-state invariants:
 - `halls[].hallId`, `factions[].factionId`, `shiningPoliticalActors[].actorId`, and every `projects[].projectId` across all factions must be unique. Duplicate ids make runtime helpers choose the first match and are invalid.
 - Supported completed projects are globally capped by Radiance tier: tier `0..1` allows `1`, tier `2..3` allows `2`, tier `4` allows `3`. If more completed projects have `isSupported = true`, preserve for repair or close an explicit `unsupport_project`; do not keep the over-cap state.
 - `gachaSystem.currentReturnCycleId` may be empty only before the first Shining return-cycle sync. While it is empty, `gachaSystem.chargesUsedThisReturn` must be `0`; positive used charges without a cycle id are stale state.
+- Every Shining faction has a canonical `factionLifecycle.state`: `active`, `weakened`, `leaderless`, `broken`, or `dissolved`. Missing legacy lifecycle is read as `active`, but new faction updates should write the field explicitly.
+- Do not delete defeated factions from `factions[]`. `broken` and `dissolved` keep history/remnants through `factionLifecycle.defeatedAtTurn`, `defeatedAtUtc`, `defeatReason`, and `remnantsSummary`, while `factionStrength=0`, `leadership.leadershipState=vacant`, `tradeInventory=null`, and all projects have `isSupported=false`.
+- `leaderless` also requires vacant leadership and does not behave like a normally headed active faction until a later explicit leadership restoration. `active` and `weakened` are the operational lifecycle states.
 
 Canonical Shining vocabulary tables:
 
 | Field | Allowed values | Use |
 |---|---|---|
+| `factionLifecycle.state` | `active`, `weakened`, `leaderless`, `broken`, `dissolved` | Shining faction lifecycle. `broken`/`dissolved` are defeated historical/remnant states, not deletions. |
 | `leadershipState` | `secure`, `contested`, `vacant` | Faction leadership status; `vacant` only when no head remains. |
 | faction `originType` | `ascended_guardian`, `native_radiant`, `player_founded` | Where a Shining faction came from. |
 | `residentRole` | `archive_support`, `forge_support`, `social_support`, `resource_support`, `descent_support` | Ascended resident's faction role and blessing/trade contribution. |
@@ -3517,6 +3521,36 @@ If the same accepted turn also closes a Shining political/trade/resident pending
 The strict Shining closure validator uses pre-turn `game_state/control/pending_turn_snapshot` roots for `game_state/meta/shining_abode_state.json`, `game_state/meta/guardian_abode_residents.json`, and `game_state/meta/soul_state.json`. It accepts only the canonical projected diff for the Shining core request plus other explicitly closed afterlife contracts in the same accepted response. Unrelated edits fail as `shining_closure_unexpected_shining_state_diff`, `shining_closure_unexpected_resident_state_diff`, or `shining_closure_unexpected_soul_state_diff`; missing baseline files fail as `shining_closure_missing_pre_turn_shining_state`, `shining_closure_missing_pre_turn_resident_state`, or `shining_closure_missing_pre_turn_soul_state`. A legal concurrent Soul delta must be proved by its own contract, for example an `ABODE_OFFERING` receipt/state change, not by silently changing `soul_state.json` during Shining closure.
 
 If `progressionControl` also requires Shining scheduler work, the verified `progressionProcessingReport` allows only scheduler-owned Shining/resident/trade progression fields. It must not be used as permission to change `availability`, add unrelated `coreActionReceipts[]`, mutate `gates`, append `gachaSystem.gachaHistory`, edit `pendingNativeFactionDiscovery`, create/clear `preparedIncarnationPackage`, change `lightSparks`, mutate `treasury`, or write `sourceOfLightCapstone` unless a separate client-authored pending contract for that exact surface is also closed in the same accepted turn.
+
+Defeated faction patch example:
+
+```json
+{
+  "factionId": "shine_faction_wings_of_angels_001",
+  "factionName": "Крылья Ангелов",
+  "factionStrength": 0,
+  "factionLifecycle": {
+    "state": "broken",
+    "defeatedAtTurn": 812,
+    "defeatedAtUtc": "2026-05-20T10:12:00Z",
+    "defeatReason": "Сареф пал; тайная сеть потеряла командование.",
+    "remnantsSummary": "Разрозненные ячейки скрываются в дальних залах, но фракция больше не действует как единая сила."
+  },
+  "leadership": {
+    "leadershipState": "vacant",
+    "headActorType": null,
+    "headActorId": null
+  },
+  "projects": [
+    {
+      "projectId": "wings_hidden_oath_001",
+      "status": "completed",
+      "isSupported": false
+    }
+  ],
+  "tradeInventory": null
+}
+```
 
 Supported `actionType` values:
 

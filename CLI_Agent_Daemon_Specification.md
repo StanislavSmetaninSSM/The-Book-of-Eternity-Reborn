@@ -321,6 +321,7 @@ If the soul has `soul_state.afterlifeCombatProfile.capstones.lightIncarnate`, tr
 - `halls` — какие залы реально существуют, какие услуги они дают и кто с ними связан.
 - `factions` — сила, проекты, лидерство, лояльность, restlessness, completed projects, trade tier.
 - `shiningPoliticalActors` — реестр самостоятельных сияющих политических акторов; если `factions[].leadership.headActorType = radiant_actor`, `headActorId` обязан ссылаться на существующий `shiningPoliticalActors[].actorId`, а статус актора должен отражать роль (`head`, `former_head`, `claimant`, `elder`, `retired`).
+- `factions[].factionLifecycle.state` — жизненный цикл сияющей фракции: `active`, `weakened`, `leaderless`, `broken`, `dissolved`. Missing legacy lifecycle is read as `active`, but any changed/new faction should write the lifecycle explicitly. Do not delete defeated factions from `factions[]`; `broken`/`dissolved` keep historical/remnant references through `defeatedAtTurn`, `defeatedAtUtc`, `defeatReason`, and `remnantsSummary`, and must have `factionStrength=0`, `leadership.leadershipState=vacant`, no `tradeInventory`, and all projects `isSupported=false`. `leaderless` also requires vacant leadership and cannot be treated as a normally headed active faction until a leadership restoration contract/event resolves it.
 - `gates` — готовность к следующей смертной жизни и stale/open draft state.
 - `coreActionReceipts`, `factionFoundingReceipts`, `factionRealignmentReceipts`, `leadershipReceipts`, `tradeInventoryReceipts` — закрытие pending contracts и история решений.
 

@@ -49,6 +49,13 @@
       "statePath": "game_state/meta/main_story_saref_state.json",
       "responseSurface": "sarefMainStoryState / sarefAdvantageUses",
       "description": "Hidden main story line Крылья над Бездной reveal-stage and Saref advantage-use contract."
+    },
+    {
+      "contractId": "shining_faction_lifecycle_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/shining_abode_state.json",
+      "responseSurface": "factions[].factionLifecycle",
+      "description": "Shining faction active/weakened/leaderless/broken/dissolved lifecycle, defeated remnants, and no-deletion historical references."
     }
   ],
   "syntaxExemptions": [

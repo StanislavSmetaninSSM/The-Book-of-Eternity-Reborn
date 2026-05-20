@@ -186,6 +186,7 @@ public partial class ExplorerMode
             var strength = GetNodeInt(faction["factionStrength"]);
             lines.Add("");
             lines.Add($"[bold]{Markup.Escape(factionName)}[/] [dim]({Markup.Escape(factionId)})[/]");
+            lines.Add($"  • Жизненный цикл: [white]{Markup.Escape(DescribeShiningFactionLifecycle(GetNodeString(faction["factionLifecycle"]?["state"])))}[/].");
             lines.Add($"  • Strength: [white]{strength}[/] [dim]({Markup.Escape(ShiningAbodeState.GetFactionStrengthBand(strength))})[/], tradeTier={ShiningAbodeState.GetTradeTier(strength)}, slots={ShiningAbodeState.GetTradeStockItemCount(faction, context.ResidentRoot)}, rarity={Markup.Escape(ShiningAbodeState.GetTradeRarityCeiling(strength))}, service x{ShiningAbodeState.GetServiceMultiplier(strength):0.00}.");
             lines.Add($"  • Leadership: {Markup.Escape(BuildHeadActorLabel(GetNodeString(faction["leadership"]?["headActorType"]), GetNodeString(faction["leadership"]?["headActorId"]), context.ResidentRoot, context.GuardiansRoot, context.Root))} [dim]({Markup.Escape(DescribeShiningLeadershipState(GetNodeString(faction["leadership"]?["leadershipState"])))})[/].");
 
@@ -923,6 +924,7 @@ public partial class ExplorerMode
         var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? factionId;
         var hallName = ResolveShiningHallLabel(context.Root, GetNodeString(faction["hallId"]));
         var leadershipState = DescribeShiningLeadershipState(GetNodeString(faction["leadership"]?["leadershipState"]));
+        var lifecycleState = DescribeShiningFactionLifecycle(GetNodeString(faction["factionLifecycle"]?["state"]));
         var headLabel = BuildHeadActorLabel(
             GetNodeString(faction["leadership"]?["headActorType"]),
             GetNodeString(faction["leadership"]?["headActorId"]),
@@ -949,6 +951,7 @@ public partial class ExplorerMode
             $"  • Зал: {Markup.Escape(hallName)}",
             $"  • Идентификатор фракции: [dim]{Markup.Escape(factionId)}[/]",
             $"  • Идентификатор зала: [dim]{Markup.Escape(GetNodeString(faction["hallId"]) ?? string.Empty)}[/]",
+            $"  • Жизненный цикл: {Markup.Escape(lifecycleState)}",
             $"  • Сила: [white]{factionStrength}[/]",
             $"  • Базовая сила: [white]{baseStrength}[/]",
             $"  • Происхождение: {Markup.Escape(originType)}",
@@ -2364,6 +2367,17 @@ public partial class ExplorerMode
             "secure" => "власть устойчива",
             "contested" => "власть оспаривается",
             "vacant" => "место главы вакантно",
+            _ => state ?? "?"
+        };
+
+    private static string DescribeShiningFactionLifecycle(string? state) =>
+        (state ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "active" or "" => "активна",
+            "weakened" => "ослаблена",
+            "leaderless" => "без главы",
+            "broken" => "разгромлена; действуют только остатки",
+            "dissolved" => "распущена; осталось историческое упоминание",
             _ => state ?? "?"
         };
 

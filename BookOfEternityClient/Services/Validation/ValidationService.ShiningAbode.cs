@@ -820,6 +820,7 @@ public partial class ValidationService
                 section: "ShiningAbode",
                 repairHint: "Используй для faction.originType только ascended_guardian, native_radiant или player_founded."));
         }
+        var lifecycleState = ValidateShiningFactionLifecycleObject(faction, contextPrefix, issues);
         if (faction.TryGetProperty("charter", out var charter))
             ValidateShiningFactionCharterObject(charter, $"{contextPrefix}.charter", issues);
         else
@@ -829,12 +830,135 @@ public partial class ValidationService
         else
             issues.Add(new ValidationIssue($"{contextPrefix}.leadership", IssueSeverity.Error, "Faction должен содержать nested leadership object", code: "shining_abode_missing_faction_leadership", section: "ShiningAbode"));
         ValidateArrayItems(faction, $"{contextPrefix}.projects", issues, "projects", ValidateShiningProjectObject);
+        ValidateShiningFactionLifecycleBehavior(faction, lifecycleState, contextPrefix, issues);
         if (faction.TryGetProperty("tradeInventory", out var tradeInventory) && tradeInventory.ValueKind != JsonValueKind.Null)
             ValidateShiningTradeInventoryObject(tradeInventory, $"{contextPrefix}.tradeInventory", issues);
         if (faction.TryGetProperty("tradeInventoryReceipts", out _))
             ValidateArrayItems(faction, $"{contextPrefix}.tradeInventoryReceipts", issues, "tradeInventoryReceipts", ValidateShiningTradeInventoryReceiptObject);
         ValidateArrayItems(faction, $"{contextPrefix}.leadershipReceipts", issues, "leadershipReceipts", ValidateShiningLeadershipReceiptObject);
         ValidateArrayItems(faction, $"{contextPrefix}.leadershipHistory", issues, "leadershipHistory", ValidateShiningLeadershipHistoryObject);
+    }
+
+    private string ValidateShiningFactionLifecycleObject(JsonElement faction, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!faction.TryGetProperty("factionLifecycle", out var lifecycle))
+            return ShiningAbodeState.FactionLifecycleStateActive;
+
+        if (!RequireObject(lifecycle, $"{contextPrefix}.factionLifecycle", issues))
+            return ShiningAbodeState.FactionLifecycleStateActive;
+
+        var state = RequireString(lifecycle, $"{contextPrefix}.factionLifecycle", issues, "state");
+        if (!string.IsNullOrWhiteSpace(state) && !ShiningAbodeState.IsSupportedFactionLifecycleState(state))
+        {
+            issues.Add(new ValidationIssue(
+                $"{contextPrefix}.factionLifecycle.state",
+                IssueSeverity.Error,
+                "factionLifecycle.state использует неподдерживаемое canonical значение",
+                code: "shining_faction_lifecycle_invalid_state",
+                section: "ShiningAbode",
+                expected: "active | weakened | leaderless | broken | dissolved",
+                actual: state,
+                repairHint: "Не удаляй defeated factions; переводи их в active/weakened/leaderless/broken/dissolved."));
+        }
+
+        if (string.Equals(state, ShiningAbodeState.FactionLifecycleStateBroken, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(state, ShiningAbodeState.FactionLifecycleStateDissolved, StringComparison.OrdinalIgnoreCase))
+        {
+            ValidateIntegerField(lifecycle, $"{contextPrefix}.factionLifecycle", issues, "defeatedAtTurn");
+            ValidateOptionalString(lifecycle, $"{contextPrefix}.factionLifecycle", issues, "defeatedAtUtc");
+            RequireString(lifecycle, $"{contextPrefix}.factionLifecycle", issues, "defeatReason");
+            RequireString(lifecycle, $"{contextPrefix}.factionLifecycle", issues, "remnantsSummary");
+        }
+
+        return string.IsNullOrWhiteSpace(state) || !ShiningAbodeState.IsSupportedFactionLifecycleState(state)
+            ? ShiningAbodeState.FactionLifecycleStateActive
+            : state;
+    }
+
+    private void ValidateShiningFactionLifecycleBehavior(
+        JsonElement faction,
+        string lifecycleState,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        var isLeaderless = string.Equals(lifecycleState, ShiningAbodeState.FactionLifecycleStateLeaderless, StringComparison.OrdinalIgnoreCase);
+        var isDefeated = string.Equals(lifecycleState, ShiningAbodeState.FactionLifecycleStateBroken, StringComparison.OrdinalIgnoreCase) ||
+                         string.Equals(lifecycleState, ShiningAbodeState.FactionLifecycleStateDissolved, StringComparison.OrdinalIgnoreCase);
+
+        if (!isLeaderless && !isDefeated)
+            return;
+
+        if (faction.TryGetProperty("leadership", out var leadership) && leadership.ValueKind == JsonValueKind.Object)
+        {
+            var leadershipState = GetFirstNonEmptyString(leadership, "leadershipState");
+            var headActorType = GetFirstNonEmptyString(leadership, "headActorType");
+            var headActorId = GetFirstNonEmptyString(leadership, "headActorId");
+            if (!string.Equals(leadershipState, ShiningAbodeState.LeadershipStateVacant, StringComparison.OrdinalIgnoreCase) ||
+                !string.IsNullOrWhiteSpace(headActorType) ||
+                !string.IsNullOrWhiteSpace(headActorId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.leadership",
+                    IssueSeverity.Error,
+                    "leaderless/broken/dissolved Shining faction должна иметь vacant leadership без head binding.",
+                    code: isDefeated ? "shining_faction_defeated_has_non_vacant_leadership" : "shining_faction_leaderless_has_non_vacant_leadership",
+                    section: "ShiningAbode",
+                    expected: "leadershipState=vacant with null/empty headActorType/headActorId",
+                    actual: $"{leadershipState ?? "missing"} / {headActorType ?? "missing"}:{headActorId ?? "missing"}",
+                    repairHint: "Сначала переведи leadership в vacant; восстановление власти оформляй отдельной Shining leadership transition."));
+            }
+        }
+
+        if (isDefeated)
+        {
+            if (TryReadInt(faction, "factionStrength", out var strength) && strength != 0)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.factionStrength",
+                    IssueSeverity.Error,
+                    "broken/dissolved Shining faction не может сохранять active factionStrength.",
+                    code: "shining_faction_defeated_has_positive_strength",
+                    section: "ShiningAbode",
+                    expected: "0",
+                    actual: strength.ToString(),
+                    repairHint: "Исторические defeated factions остаются в factions[], но их operational strength равна 0."));
+            }
+
+            if (faction.TryGetProperty("tradeInventory", out var tradeInventory) && tradeInventory.ValueKind is not JsonValueKind.Null and not JsonValueKind.Undefined)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{contextPrefix}.tradeInventory",
+                    IssueSeverity.Error,
+                    "broken/dissolved Shining faction не может иметь active tradeInventory.",
+                    code: "shining_faction_defeated_has_trade_inventory",
+                    section: "ShiningAbode",
+                    expected: "missing or null tradeInventory",
+                    actual: "present",
+                    repairHint: "Сохраняй tradeInventoryReceipts[] как историю, но очищай текущую витрину defeated faction."));
+            }
+
+            if (faction.TryGetProperty("projects", out var projects) && projects.ValueKind == JsonValueKind.Array)
+            {
+                var index = 0;
+                foreach (var project in projects.EnumerateArray())
+                {
+                    if (project.ValueKind == JsonValueKind.Object && GetBoolean(project, "isSupported", defaultValue: false))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{contextPrefix}.projects[{index}].isSupported",
+                            IssueSeverity.Error,
+                            "broken/dissolved Shining faction не может держать supported project.",
+                            code: "shining_faction_defeated_has_supported_project",
+                            section: "ShiningAbode",
+                            expected: "false",
+                            actual: "true",
+                            repairHint: "Оставляй projects[] как историю, но снимай поддержку с defeated faction projects."));
+                    }
+
+                    index++;
+                }
+            }
+        }
     }
 
     private void ValidateShiningFactionCharterObject(JsonElement charter, string contextPrefix, List<ValidationIssue> issues)
