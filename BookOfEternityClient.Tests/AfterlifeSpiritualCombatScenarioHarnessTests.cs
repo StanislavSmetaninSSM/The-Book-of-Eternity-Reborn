@@ -47,6 +47,98 @@ public sealed class AfterlifeSpiritualCombatScenarioHarnessTests
             Assert.InRange(result.RewardPreviewFinalAmount, 0, result.RewardPreviewCap);
         }
     }
+
+    [Fact]
+    public void GeneratedScenarioHarness_NonCriticalDistribution_ProgressionPositionAndFocusOutweighDice()
+    {
+        var baseScenario = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios()
+            .Single(scenario => scenario.Name == "direct_duel_even_pressure");
+        var outmatched = baseScenario with
+        {
+            Name = "outmatched_noncritical_pressure",
+            PlayerArtTier = 0,
+            OppositionArtTier = 4,
+            PlayerActionPointsBudget = 1,
+            PlayerActionCost = 3,
+            StartingPosition = "opposition_advantaged",
+            Difficulty = "hard"
+        };
+        var prepared = baseScenario with
+        {
+            Name = "prepared_noncritical_pressure",
+            PlayerArtTier = 4,
+            OppositionArtTier = 1,
+            PlayerActionPointsBudget = 8,
+            PlayerActionCost = 1,
+            StartingPosition = "player_advantaged",
+            Difficulty = "normal"
+        };
+
+        var weakDistribution = AfterlifeSpiritualCombatScenarioHarness.RunSeededDistribution(outmatched, seed: 514, rollCount: 2_000);
+        var strongDistribution = AfterlifeSpiritualCombatScenarioHarness.RunSeededDistribution(prepared, seed: 514, rollCount: 2_000);
+
+        Assert.True(weakDistribution.NonCriticalRollCount > 1_200);
+        Assert.Equal(weakDistribution.NonCriticalRollCount, strongDistribution.NonCriticalRollCount);
+        Assert.True(strongDistribution.NonCriticalAverageMargin > weakDistribution.NonCriticalAverageMargin + 15);
+        Assert.True(strongDistribution.NonCriticalPlayerSuccessRate > weakDistribution.NonCriticalPlayerSuccessRate + 0.55);
+        Assert.True(weakDistribution.NonCriticalOppositionSuccessRate > 0.60);
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_NonCriticalDistribution_TacticalAntiControlBeatsIgnoringControl()
+    {
+        var antiControl = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios()
+            .Single(scenario => scenario.Name == "control_heavy_break_binding");
+        var ignoresControl = antiControl with
+        {
+            Name = "control_heavy_pressure_spam",
+            OperationType = "pressure"
+        };
+
+        var ignored = AfterlifeSpiritualCombatScenarioHarness.RunSeededDistribution(ignoresControl, seed: 516, rollCount: 2_000);
+        var answered = AfterlifeSpiritualCombatScenarioHarness.RunSeededDistribution(antiControl, seed: 516, rollCount: 2_000);
+
+        Assert.Equal(ignored.NonCriticalRollCount, answered.NonCriticalRollCount);
+        Assert.True(answered.NonCriticalAverageMargin > ignored.NonCriticalAverageMargin + 1.5);
+        Assert.True(answered.NonCriticalPlayerSuccessRate > ignored.NonCriticalPlayerSuccessRate + 0.06);
+    }
+
+    [Fact]
+    public void GeneratedScenarioHarness_CriticalsRemainBoundedByRelativePowerAndSituation()
+    {
+        var baseScenario = AfterlifeSpiritualCombatScenarioHarness.GenerateDefaultScenarios()
+            .Single(scenario => scenario.Name == "direct_duel_even_pressure");
+        var overwhelmingOpposition = baseScenario with
+        {
+            Name = "natural_twenty_against_overwhelming_opposition",
+            PlayerArtTier = 0,
+            OppositionArtTier = 10,
+            StartingPosition = "opposition_dominant",
+            Difficulty = "impossible"
+        };
+        var overwhelmingPlayer = baseScenario with
+        {
+            Name = "natural_one_with_overwhelming_player_advantage",
+            PlayerArtTier = 10,
+            OppositionArtTier = 0,
+            StartingPosition = "player_dominant",
+            Difficulty = "normal"
+        };
+
+        var playerCritical = AfterlifeSpiritualCombatScenarioHarness.ResolveSingleContest(
+            overwhelmingOpposition,
+            playerDie: 20,
+            oppositionDie: 18);
+        var playerFumble = AfterlifeSpiritualCombatScenarioHarness.ResolveSingleContest(
+            overwhelmingPlayer,
+            playerDie: 1,
+            oppositionDie: 2);
+
+        Assert.True(playerCritical.Margin <= -20);
+        Assert.Equal("player_success", playerCritical.OutcomeBand);
+        Assert.True(playerFumble.Margin >= 20);
+        Assert.Equal("opposition_success", playerFumble.OutcomeBand);
+    }
 }
 
 internal static class AfterlifeSpiritualCombatScenarioHarness
@@ -174,17 +266,20 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
         var oppositionSuccesses = 0;
         var criticalRolls = 0;
         var totalMargin = 0;
+        var nonCriticalRolls = 0;
+        var nonCriticalPlayerSuccesses = 0;
+        var nonCriticalOppositionSuccesses = 0;
+        var nonCriticalTotalMargin = 0;
 
         for (var i = 0; i < rollCount; i++)
         {
             var playerDie = random.Next(1, 21);
             var oppositionDie = random.Next(1, 21);
-            var playerTotal = playerDie + ComputePlayerModifier(scenario);
-            var oppositionTotal = oppositionDie + ComputeOppositionModifier(scenario);
-            var margin = playerTotal - oppositionTotal;
+            var contest = ResolveSingleContest(scenario, playerDie, oppositionDie);
+            var margin = contest.Margin;
             totalMargin += margin;
 
-            var band = NormalizeCriticalOutcomeBand(ResolveMarginOutcomeBand(margin), playerDie, oppositionDie);
+            var band = contest.OutcomeBand;
             outcomeCounts[band] = outcomeCounts.GetValueOrDefault(band) + 1;
 
             if (OutcomeBandRank(band) > 0)
@@ -192,8 +287,20 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
             else if (OutcomeBandRank(band) < 0)
                 oppositionSuccesses++;
 
-            if (playerDie is 1 or 20 || oppositionDie is 1 or 20)
+            if (contest.HasNaturalCritical)
+            {
                 criticalRolls++;
+            }
+            else
+            {
+                nonCriticalRolls++;
+                nonCriticalTotalMargin += margin;
+
+                if (OutcomeBandRank(band) > 0)
+                    nonCriticalPlayerSuccesses++;
+                else if (OutcomeBandRank(band) < 0)
+                    nonCriticalOppositionSuccesses++;
+            }
         }
 
         var rewardPreview = ComputeRewardPreview(scenario, outcomeCounts);
@@ -206,7 +313,38 @@ internal static class AfterlifeSpiritualCombatScenarioHarness
             AverageMargin: totalMargin / (double)rollCount,
             CriticalRollCount: criticalRolls,
             RewardPreviewFinalAmount: rewardPreview.FinalAmount,
-            RewardPreviewCap: rewardPreview.Cap);
+            RewardPreviewCap: rewardPreview.Cap,
+            NonCriticalRollCount: nonCriticalRolls,
+            NonCriticalPlayerSuccessRate: nonCriticalRolls == 0 ? 0 : nonCriticalPlayerSuccesses / (double)nonCriticalRolls,
+            NonCriticalOppositionSuccessRate: nonCriticalRolls == 0 ? 0 : nonCriticalOppositionSuccesses / (double)nonCriticalRolls,
+            NonCriticalAverageMargin: nonCriticalRolls == 0 ? 0 : nonCriticalTotalMargin / (double)nonCriticalRolls);
+    }
+
+    public static AfterlifeSpiritualCombatContestResult ResolveSingleContest(
+        AfterlifeSpiritualCombatScenario scenario,
+        int playerDie,
+        int oppositionDie)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(playerDie, 1);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(playerDie, 20);
+        ArgumentOutOfRangeException.ThrowIfLessThan(oppositionDie, 1);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(oppositionDie, 20);
+
+        var playerTotal = playerDie + ComputePlayerModifier(scenario);
+        var oppositionTotal = oppositionDie + ComputeOppositionModifier(scenario);
+        var margin = playerTotal - oppositionTotal;
+        var marginBand = ResolveMarginOutcomeBand(margin);
+        var outcomeBand = NormalizeCriticalOutcomeBand(marginBand, playerDie, oppositionDie);
+
+        return new AfterlifeSpiritualCombatContestResult(
+            PlayerDie: playerDie,
+            OppositionDie: oppositionDie,
+            PlayerTotal: playerTotal,
+            OppositionTotal: oppositionTotal,
+            Margin: margin,
+            MarginOutcomeBand: marginBand,
+            OutcomeBand: outcomeBand,
+            HasNaturalCritical: playerDie is 1 or 20 || oppositionDie is 1 or 20);
     }
 
     private static int ComputePlayerModifier(AfterlifeSpiritualCombatScenario scenario) =>
@@ -412,4 +550,18 @@ internal sealed record AfterlifeSpiritualCombatDistributionResult(
     double AverageMargin,
     int CriticalRollCount,
     int RewardPreviewFinalAmount,
-    int RewardPreviewCap);
+    int RewardPreviewCap,
+    int NonCriticalRollCount,
+    double NonCriticalPlayerSuccessRate,
+    double NonCriticalOppositionSuccessRate,
+    double NonCriticalAverageMargin);
+
+internal sealed record AfterlifeSpiritualCombatContestResult(
+    int PlayerDie,
+    int OppositionDie,
+    int PlayerTotal,
+    int OppositionTotal,
+    int Margin,
+    string MarginOutcomeBand,
+    string OutcomeBand,
+    bool HasNaturalCritical);
