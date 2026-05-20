@@ -2593,6 +2593,15 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("questStates", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("questOrdinal", examples, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("physical mortal item", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sarefAdvantageUses", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sarefAdvantageUses", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sarefAdvantageUses", manifest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("sarefAdvantageUses", inventory, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("applicableScenes", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("applicableScenes", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("spentAudit", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("suppressed", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("/крылья_над_бездной", examples, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

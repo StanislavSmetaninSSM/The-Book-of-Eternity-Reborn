@@ -10,6 +10,20 @@ public partial class ValidationService
         int SourceQuestOrdinal,
         string Context);
 
+    private sealed record SarefAdvantageState(
+        string AdvantageId,
+        string? State,
+        HashSet<string> ApplicableScenes,
+        string Context,
+        string? SpentUsageId);
+
+    private sealed record SarefAdvantageUse(
+        string? UsageId,
+        string? AdvantageId,
+        string? SceneType,
+        bool ConsumesAdvantage,
+        string Context);
+
     private void ValidateSarefMainStoryStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (root.ValueKind != JsonValueKind.Object)
@@ -42,7 +56,8 @@ public partial class ValidationService
         var guardianQuestlines = ValidateSarefGuardianQuestlines(root, contextPrefix, issues);
         ValidateSarefLatentTraces(root, contextPrefix, issues);
         ValidateSarefRevelations(root, contextPrefix, issues, out var revealedCategories, out var revelationCount, out var questFourRevelations);
-        ValidateSarefAdvantages(root, contextPrefix, issues, out var advantageCount, out var questFourAdvantages);
+        var advantages = ValidateSarefAdvantages(root, contextPrefix, issues, out var advantageCount, out var questFourAdvantages);
+        ValidateSarefAdvantageUses(root, contextPrefix, advantages, issues);
         ValidateSarefQuestFourUnlockLinks(guardianQuestlines, questFourRevelations, questFourAdvantages, contextPrefix, issues);
         ValidateSarefArray(root, contextPrefix, "defeatOutcomes", "outcomeId", "saref_main_story_duplicate_defeat_outcome", issues);
         ValidateSarefArray(root, contextPrefix, "endings", "endingId", "saref_main_story_duplicate_ending", issues);
@@ -521,7 +536,7 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateSarefAdvantages(
+    private static Dictionary<string, SarefAdvantageState> ValidateSarefAdvantages(
         JsonElement root,
         string contextPrefix,
         List<ValidationIssue> issues,
@@ -530,8 +545,9 @@ public partial class ValidationService
     {
         advantageCount = 0;
         questFourAdvantages = new List<SarefUnlockReference>();
+        var result = new Dictionary<string, SarefAdvantageState>(StringComparer.OrdinalIgnoreCase);
         if (!TryGetRequiredSarefArray(root, contextPrefix, "sarefAdvantages", issues, out var advantages))
-            return;
+            return result;
 
         var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var index = 0;
@@ -566,6 +582,11 @@ public partial class ValidationService
                     state);
             }
 
+            var applicableScenes = ValidateSarefAdvantageApplicableScenes(item, context, issues);
+            string? spentUsageId = null;
+            if (string.Equals(state, SarefMainStoryState.AdvantageStateSpent, StringComparison.OrdinalIgnoreCase))
+                spentUsageId = ValidateSarefSpentAdvantageAudit(item, context, applicableScenes, issues);
+
             var sourceGuardianId = GetSarefOptionalString(item, "sourceGuardianId");
             var sourceQuestOrdinal = ResolveSarefSourceQuestOrdinal(item, context, issues);
             if (!string.IsNullOrWhiteSpace(sourceGuardianId))
@@ -587,7 +608,295 @@ public partial class ValidationService
             }
 
             ValidateSarefTurnFields(item, context, issues);
+            if (!string.IsNullOrWhiteSpace(advantageId) && SarefMainStoryState.AdvantageStates.Contains(state ?? string.Empty))
+                result[advantageId] = new SarefAdvantageState(advantageId, state, applicableScenes, context, spentUsageId);
         }
+
+        return result;
+    }
+
+    private static HashSet<string> ValidateSarefAdvantageApplicableScenes(JsonElement item, string context, List<ValidationIssue> issues)
+    {
+        var scenes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!item.TryGetProperty("applicableScenes", out var scenesNode))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.applicableScenes",
+                "Преимущество Сарефа должно явно перечислять сцены, где его можно использовать.",
+                "saref_main_story_missing_advantage_applicable_scenes",
+                string.Join("/", SarefMainStoryState.AdvantageSceneTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                "missing");
+            return scenes;
+        }
+
+        if (scenesNode.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.applicableScenes",
+                "applicableScenes должен быть массивом sceneType.",
+                "saref_main_story_advantage_scenes_not_array",
+                "array",
+                scenesNode.ValueKind.ToString());
+            return scenes;
+        }
+
+        var index = 0;
+        foreach (var sceneNode in scenesNode.EnumerateArray())
+        {
+            var sceneContext = $"{context}.applicableScenes[{index++}]";
+            if (!TryGetSarefString(sceneNode, out var scene))
+            {
+                AddSarefIssue(
+                    issues,
+                    sceneContext,
+                    "applicableScenes[] должен содержать непустые sceneType строки.",
+                    "saref_main_story_invalid_advantage_scene",
+                    string.Join("/", SarefMainStoryState.AdvantageSceneTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    sceneNode.ValueKind.ToString());
+                continue;
+            }
+
+            if (!SarefMainStoryState.AdvantageSceneTypes.Contains(scene))
+            {
+                AddSarefIssue(
+                    issues,
+                    sceneContext,
+                    "sceneType преимущества Сарефа не поддерживается.",
+                    "saref_main_story_invalid_advantage_scene",
+                    string.Join("/", SarefMainStoryState.AdvantageSceneTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    scene);
+                continue;
+            }
+
+            if (!scenes.Add(scene))
+            {
+                AddSarefIssue(
+                    issues,
+                    sceneContext,
+                    "Дубликат applicableScenes[] у преимущества Сарефа.",
+                    "saref_main_story_duplicate_advantage_scene",
+                    "unique sceneType",
+                    scene);
+            }
+        }
+
+        if (scenes.Count == 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.applicableScenes",
+                "Преимущество Сарефа должно иметь хотя бы одну применимую сцену.",
+                "saref_main_story_empty_advantage_applicable_scenes",
+                "non-empty applicableScenes[]",
+                "empty");
+        }
+
+        return scenes;
+    }
+
+    private static string? ValidateSarefSpentAdvantageAudit(
+        JsonElement item,
+        string context,
+        IReadOnlySet<string> applicableScenes,
+        List<ValidationIssue> issues)
+    {
+        if (!item.TryGetProperty("spentAudit", out var audit) || audit.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.spentAudit",
+                "Потраченное преимущество Сарефа требует spentAudit с usageId, ходом, сценой и кратким итогом.",
+                "saref_main_story_spent_advantage_missing_audit",
+                "spentAudit object",
+                item.TryGetProperty("spentAudit", out var present) ? present.ValueKind.ToString() : "missing");
+            return null;
+        }
+
+        var usageId = RequireSarefString(audit, $"{context}.spentAudit", "usageId", "saref_main_story_spent_advantage_missing_audit", issues);
+        var sceneType = RequireSarefString(audit, $"{context}.spentAudit", "sceneType", "saref_main_story_spent_advantage_missing_audit", issues);
+        RequireSarefTurnNumber(audit, $"{context}.spentAudit", "usedAtTurn", "saref_main_story_spent_advantage_missing_audit", issues);
+        RequireSarefString(audit, $"{context}.spentAudit", "summary", "saref_main_story_spent_advantage_missing_audit", issues);
+        if (!string.IsNullOrWhiteSpace(sceneType))
+            ValidateSarefAdvantageSceneUsage(sceneType, applicableScenes, $"{context}.spentAudit.sceneType", issues);
+
+        return usageId;
+    }
+
+    private static void ValidateSarefAdvantageUses(
+        JsonElement root,
+        string contextPrefix,
+        IReadOnlyDictionary<string, SarefAdvantageState> advantages,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("sarefAdvantageUses", out var usesNode))
+            return;
+
+        if (usesNode.ValueKind != JsonValueKind.Array)
+        {
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.sarefAdvantageUses",
+                "sarefAdvantageUses должен быть массивом аудитов использования преимуществ.",
+                "saref_main_story_advantage_uses_not_array",
+                "array",
+                usesNode.ValueKind.ToString());
+            return;
+        }
+
+        var usageIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var consumedUsageIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in usesNode.EnumerateArray())
+        {
+            var context = $"{contextPrefix}.sarefAdvantageUses[{index++}]";
+            if (!ValidateSarefArrayObject(item, context, issues))
+                continue;
+
+            var usage = ValidateSarefAdvantageUse(item, context, issues);
+            if (!string.IsNullOrWhiteSpace(usage.UsageId) && !usageIds.Add(usage.UsageId))
+            {
+                AddSarefIssue(
+                    issues,
+                    context,
+                    "Дубликат sarefAdvantageUses[].usageId.",
+                    "saref_main_story_duplicate_advantage_usage",
+                    "unique usageId",
+                    usage.UsageId);
+            }
+
+            if (string.IsNullOrWhiteSpace(usage.AdvantageId))
+                continue;
+
+            if (!advantages.TryGetValue(usage.AdvantageId, out var advantage))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{context}.advantageId",
+                    "Использование преимущества Сарефа ссылается на неизвестный advantageId.",
+                    "saref_main_story_unknown_advantage_usage",
+                    "existing sarefAdvantages[].advantageId",
+                    usage.AdvantageId);
+                continue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(usage.SceneType))
+                ValidateSarefAdvantageSceneUsage(usage.SceneType, advantage.ApplicableScenes, $"{context}.sceneType", issues);
+
+            if (string.Equals(advantage.State, SarefMainStoryState.AdvantageStateSuppressed, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(advantage.State, SarefMainStoryState.AdvantageStateDisabled, StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    context,
+                    "Подавленное или отключённое преимущество Сарефа нельзя использовать.",
+                    "saref_main_story_advantage_usage_unauthorized_state",
+                    $"{SarefMainStoryState.AdvantageStateAvailable}/{SarefMainStoryState.AdvantageStatePassive} or matching spentAudit for consumed one-use",
+                    advantage.State);
+            }
+
+            if (string.Equals(advantage.State, SarefMainStoryState.AdvantageStateAvailable, StringComparison.OrdinalIgnoreCase))
+            {
+                AddSarefIssue(
+                    issues,
+                    context,
+                    "Если доступное одноразовое преимущество было использовано, финальное состояние должно стать spent с spentAudit.",
+                    "saref_main_story_consumed_advantage_not_spent",
+                    "state=spent + spentAudit matching usageId",
+                    "state=available");
+            }
+            else if (string.Equals(advantage.State, SarefMainStoryState.AdvantageStatePassive, StringComparison.OrdinalIgnoreCase) && usage.ConsumesAdvantage)
+            {
+                AddSarefIssue(
+                    issues,
+                    context,
+                    "Пассивное преимущество Сарефа не должно расходоваться как одноразовое.",
+                    "saref_main_story_passive_advantage_consumed",
+                    "consumesAdvantage=false",
+                    "consumesAdvantage=true");
+            }
+            else if (string.Equals(advantage.State, SarefMainStoryState.AdvantageStateSpent, StringComparison.OrdinalIgnoreCase))
+            {
+                if (!usage.ConsumesAdvantage ||
+                    string.IsNullOrWhiteSpace(usage.UsageId) ||
+                    !string.Equals(advantage.SpentUsageId, usage.UsageId, StringComparison.OrdinalIgnoreCase))
+                {
+                    AddSarefIssue(
+                        issues,
+                        context,
+                        "Потраченное преимущество должно ссылаться на тот же usageId в spentAudit и use log.",
+                        "saref_main_story_spent_advantage_audit_mismatch",
+                        "consumesAdvantage=true and usageId == spentAudit.usageId",
+                        usage.UsageId ?? "missing");
+                }
+                else
+                {
+                    consumedUsageIds.Add(usage.UsageId);
+                }
+            }
+        }
+
+        foreach (var advantage in advantages.Values)
+        {
+            if (!string.Equals(advantage.State, SarefMainStoryState.AdvantageStateSpent, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (string.IsNullOrWhiteSpace(advantage.SpentUsageId) || !consumedUsageIds.Contains(advantage.SpentUsageId))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{advantage.Context}.spentAudit",
+                    "Потраченное преимущество Сарефа должно иметь matching запись в sarefAdvantageUses[].",
+                    "saref_main_story_spent_advantage_missing_usage_log",
+                    "sarefAdvantageUses[] with matching usageId",
+                    advantage.SpentUsageId ?? "missing");
+            }
+        }
+    }
+
+    private static SarefAdvantageUse ValidateSarefAdvantageUse(JsonElement item, string context, List<ValidationIssue> issues)
+    {
+        var usageId = RequireSarefString(item, context, "usageId", "saref_main_story_missing_advantage_usage_id", issues);
+        var advantageId = RequireSarefString(item, context, "advantageId", "saref_main_story_missing_advantage_usage_advantage_id", issues);
+        var sceneType = RequireSarefString(item, context, "sceneType", "saref_main_story_missing_advantage_usage_scene", issues);
+        if (!string.IsNullOrWhiteSpace(sceneType) && !SarefMainStoryState.AdvantageSceneTypes.Contains(sceneType))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.sceneType",
+                "sceneType использования преимущества Сарефа не поддерживается.",
+                "saref_main_story_invalid_advantage_scene",
+                string.Join("/", SarefMainStoryState.AdvantageSceneTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                sceneType);
+        }
+
+        var consumesAdvantage = GetSarefOptionalBool(item, "consumesAdvantage") ?? true;
+        RequireSarefTurnNumber(item, context, "usedAtTurn", "saref_main_story_missing_advantage_usage_turn", issues);
+        RequireSarefString(item, context, "summary", "saref_main_story_missing_advantage_usage_summary", issues);
+        ValidateSarefTurnFields(item, context, issues);
+        return new SarefAdvantageUse(usageId, advantageId, sceneType, consumesAdvantage, context);
+    }
+
+    private static void ValidateSarefAdvantageSceneUsage(
+        string sceneType,
+        IReadOnlySet<string> applicableScenes,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (!SarefMainStoryState.AdvantageSceneTypes.Contains(sceneType))
+            return;
+
+        if (applicableScenes.Contains(SarefMainStoryState.SceneAny) || applicableScenes.Contains(sceneType))
+            return;
+
+        AddSarefIssue(
+            issues,
+            context,
+            "Преимущество Сарефа используется в сцене, для которой оно не применимо.",
+            "saref_main_story_advantage_usage_inapplicable_scene",
+            string.Join("/", applicableScenes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+            sceneType);
     }
 
     private static void ValidateSarefArray(
@@ -951,6 +1260,54 @@ public partial class ValidationService
     {
         if (!root.TryGetProperty(propertyName, out var node) || !TryGetSarefString(node, out var value))
             return null;
+
+        return value;
+    }
+
+    private static bool? GetSarefOptionalBool(JsonElement root, string propertyName)
+    {
+        if (!root.TryGetProperty(propertyName, out var node))
+            return null;
+
+        return node.ValueKind switch
+        {
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            _ => null
+        };
+    }
+
+    private static int RequireSarefTurnNumber(
+        JsonElement root,
+        string context,
+        string propertyName,
+        string missingCode,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(propertyName, out var node) ||
+            node.ValueKind != JsonValueKind.Number ||
+            !node.TryGetInt32(out var value))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.{propertyName}",
+                $"{propertyName} должен быть целым числом >= 0.",
+                missingCode,
+                "integer >= 0",
+                root.TryGetProperty(propertyName, out var present) ? present.ValueKind.ToString() : "missing");
+            return 0;
+        }
+
+        if (value < 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.{propertyName}",
+                $"{propertyName} не может быть отрицательным.",
+                "saref_main_story_negative_turn",
+                "integer >= 0",
+                value.ToString());
+        }
 
         return value;
     }

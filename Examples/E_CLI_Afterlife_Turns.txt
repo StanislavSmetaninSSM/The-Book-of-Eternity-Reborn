@@ -7300,6 +7300,7 @@ EXAMPLE 27 — Скрытая главная линия Сарефа (`main_stor
 Scenario:
 - The hidden main line is `Крылья над Бездной`.
 - The canonical file is `game_state/meta/main_story_saref_state.json`.
+- The player-facing read-only command is `/saref_story` / `/крылья_над_бездной`; before discovery it must say only that the player does not yet know what to seek.
 - Documentation may refer to this contract as `sarefMainStoryState`; issue #533 uses the direct canonical root only, not a command wrapper.
 - Missing file is valid legacy/no-discovery state.
 - If the file is present, it is not a loose GM note. It must use the canonical fields and pass reveal-stage validation.
@@ -7314,6 +7315,7 @@ Valid undiscovered root:
   "latentTraces": [],
   "sarefRevelations": [],
   "sarefAdvantages": [],
+  "sarefAdvantageUses": [],
   "wingsInfiltration": null,
   "factionLinks": {
     "wingsFactionId": null,
@@ -7445,6 +7447,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
       "sourceQuestId": "azalia_saref_q4",
       "sourceQuestOrdinal": 4,
       "state": "available",
+      "applicableScenes": [ "wings_infiltration", "saref_negotiation" ],
       "summary": "Можно выдать себя за полезного перебежчика перед агентами Крыльев Ангелов.",
       "unlockedAtTurn": 144
     },
@@ -7454,6 +7457,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
       "sourceQuestId": "ilarion_saref_q4",
       "sourceQuestOrdinal": 4,
       "state": "available",
+      "applicableScenes": [ "memory_attack", "saref_confrontation" ],
       "summary": "Можно закрепить одну важную правду против стирания памяти Сарефа.",
       "unlockedAtTurn": 151
     },
@@ -7463,6 +7467,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
       "sourceQuestId": "veyra_saref_q4",
       "sourceQuestOrdinal": 4,
       "state": "available",
+      "applicableScenes": [ "wings_infiltration" ],
       "summary": "Можно найти маску, пароль или маршрут к кругу Крыльев Ангелов.",
       "unlockedAtTurn": 158
     },
@@ -7472,10 +7477,12 @@ Valid route-unlocked fragment after enough Guardian questlines:
       "sourceQuestId": "myriel_saref_q4",
       "sourceQuestOrdinal": 4,
       "state": "available",
+      "applicableScenes": [ "saref_confrontation", "final_resolution" ],
       "summary": "Можно распознать иномировую природу Сарефа вместо обычной духовной силы.",
       "unlockedAtTurn": 166
     }
   ],
+  "sarefAdvantageUses": [],
   "wingsInfiltration": null,
   "factionLinks": {
     "wingsFactionId": null,
@@ -7496,9 +7503,46 @@ Correct reasoning checklist:
 - The canonical categories are `identity`, `method`, `faction`, and `path`.
 - Each Guardian questline stores `questStates[]` with `questOrdinal = 1..4` and status `latent`, `recognized`, `active`, `ready_to_turn_in`, or `completed`.
 - Quest 4 can unlock `sarefRevelation` / `sarefAdvantage` only after quests 1-3 for the same Guardian are completed.
+- `sarefAdvantages[]` are usable state, not loose story notes. Each advantage has `state=available|spent|passive|disabled|suppressed` and non-empty `applicableScenes[]`; supported scene ids include `wings_infiltration`, `saref_negotiation`, `saref_confrontation`, `oath_break`, `memory_attack`, `faction_conflict`, `escape_or_exile`, `final_resolution`, and `any`.
+- If the GM claims an advantage in a scene, record `sarefAdvantageUses[]` with `usageId`, `advantageId`, `sceneType`, `usedAtTurn`, `consumesAdvantage`, and `summary`. The `advantageId` must exist, the state must authorize use, and `sceneType` must match `applicableScenes[]` or `any`.
+- A consumed one-use advantage must end as `state=spent`, carry matching `spentAudit` (`usageId`, `usedAtTurn`, `sceneType`, `summary`), and have the matching `sarefAdvantageUses[]` entry. `passive` advantages may be referenced but not consumed. `suppressed`, `disabled`, unknown, or already spent advantages cannot be used for a new scene.
 - A mortal objective item is never transferred as a physical mortal item; store only memory, image, echo, knowledge trace, or soul resonance proof.
 - Do not use Mortal quest files, Mortal faction files, or ordinary lore notes as authority for this hidden mainline state.
 - Keep arrays unique by ids such as `revelationId`, `advantageId`, `outcomeId`, and `endingId`.
+
+Valid spent advantage audit after a memory-attack scene:
+
+```json
+{
+  "sarefAdvantages": [
+    {
+      "advantageId": "adv_ilarion_memory_anchor",
+      "sourceGuardianId": "ilarion",
+      "sourceQuestId": "ilarion_saref_q4",
+      "sourceQuestOrdinal": 4,
+      "state": "spent",
+      "applicableScenes": [ "memory_attack", "saref_confrontation" ],
+      "summary": "Можно закрепить одну важную правду против стирания памяти Сарефа.",
+      "spentAudit": {
+        "usageId": "use_memory_anchor_001",
+        "usedAtTurn": 170,
+        "sceneType": "memory_attack",
+        "summary": "Игрок удержал имя Сарефа, когда память попытались выскоблить."
+      }
+    }
+  ],
+  "sarefAdvantageUses": [
+    {
+      "usageId": "use_memory_anchor_001",
+      "advantageId": "adv_ilarion_memory_anchor",
+      "sceneType": "memory_attack",
+      "usedAtTurn": 170,
+      "consumesAdvantage": true,
+      "summary": "Якорь памяти был израсходован против стирания имени."
+    }
+  ]
+}
+```
 
 ==================================================
 COMMON INVALID PATTERNS

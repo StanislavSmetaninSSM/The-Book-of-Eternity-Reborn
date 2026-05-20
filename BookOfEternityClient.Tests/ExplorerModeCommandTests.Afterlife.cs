@@ -16,6 +16,113 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class ExplorerModeCommandTests : IDisposable
 {
     [Fact]
+    public async Task TryProcessCommand_SarefStory_RendersAdvantageStatesAndUsage()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "wings_revealed",
+          "guardianQuestlines": [
+            {
+              "guardianId": "azalia",
+              "questStates": [
+                { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+                { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+                { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+                { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+              ]
+            }
+          ],
+          "latentTraces": [],
+          "sarefRevelations": [
+            {
+              "revelationId": "rev_azalia_faction",
+              "category": "faction",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "summary": "Азалия раскрыла тень Крыльев Ангелов.",
+              "revealedAtTurn": 44
+            },
+            { "revelationId": "rev_identity", "category": "identity", "revealedAtTurn": 45 },
+            { "revelationId": "rev_method", "category": "method", "revealedAtTurn": 46 },
+            { "revelationId": "rev_path", "category": "path", "revealedAtTurn": 47 }
+          ],
+          "sarefAdvantages": [
+            {
+              "advantageId": "adv_azalia_false_loyalty",
+              "displayName": "Ложная лояльность",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "available",
+              "applicableScenes": [ "wings_infiltration" ],
+              "summary": "Можно выдать себя за полезного перебежчика."
+            },
+            {
+              "advantageId": "adv_ilarion_memory_anchor",
+              "displayName": "Якорь памяти",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "spent",
+              "applicableScenes": [ "memory_attack" ],
+              "summary": "Сохраняет одну правду против стирания памяти.",
+              "spentAudit": {
+                "usageId": "use_memory_anchor",
+                "usedAtTurn": 70,
+                "sceneType": "memory_attack",
+                "summary": "Игрок удержал имя Сарефа."
+              }
+            },
+            {
+              "advantageId": "adv_veyra_wing_mask",
+              "displayName": "Маска Крыла",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "suppressed",
+              "applicableScenes": [ "wings_infiltration" ],
+              "summary": "Проводит через внешний круг Крыльев.",
+              "suppressionReason": "Сареф перекрыл старый пароль."
+            }
+          ],
+          "sarefAdvantageUses": [
+            {
+              "usageId": "use_memory_anchor",
+              "advantageId": "adv_ilarion_memory_anchor",
+              "usedAtTurn": 70,
+              "sceneType": "memory_attack",
+              "consumesAdvantage": true,
+              "summary": "Якорь памяти был израсходован против стирания имени."
+            }
+          ],
+          "factionLinks": { "visibility": "revealed" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/крылья_над_бездной");
+
+        var text = ExtractRenderedText();
+        Assert.Equal(string.Empty, result);
+        Assert.Contains("Крылья над Бездной", text, StringComparison.Ordinal);
+        Assert.Contains("Ложная лояльность", text, StringComparison.Ordinal);
+        Assert.Contains("Доступно", text, StringComparison.Ordinal);
+        Assert.Contains("Якорь памяти", text, StringComparison.Ordinal);
+        Assert.Contains("Потрачено", text, StringComparison.Ordinal);
+        Assert.Contains("Маска Крыла", text, StringComparison.Ordinal);
+        Assert.Contains("Подавлено", text, StringComparison.Ordinal);
+        Assert.Contains("memory_attack", text, StringComparison.Ordinal);
+        Assert.Contains("Полный JSON", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeProfiles_RendersFullEntityProfile()
     {
         await SeedAfterlifeStateAsync();
@@ -888,7 +995,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var allChoices = _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices).ToArray();
         Assert.DoesNotContain(allChoices, choice => choice.Contains("Искать новую обитель", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(allChoices, choice => choice.Contains("Учредить собственного Хранителя", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains("Chaos Sea-only действия скрыты", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Действия только Моря Хаоса скрыты", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -7136,7 +7243,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             entry => entry.Title.Contains("Основные действия Сияющей Обители", StringComparison.OrdinalIgnoreCase) &&
                      entry.Choices.Any(choice =>
                          choice.Contains("Запросить открытие нативной фракции", StringComparison.OrdinalIgnoreCase) &&
-                         choice.Contains("нужен Radiance tier 1+", StringComparison.OrdinalIgnoreCase)));
+                         choice.Contains("нужен тир Сияния 1+", StringComparison.OrdinalIgnoreCase)));
     }
 
     [Fact]

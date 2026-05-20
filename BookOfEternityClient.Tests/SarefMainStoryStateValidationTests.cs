@@ -346,6 +346,202 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
             string.Equals(issue.Code, "saref_main_story_physical_mortal_item_evidence", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ValidateGameStateAsync_SpentSarefAdvantageWithMatchingUseAudit_Passes()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefAdvantageState("""
+          "sarefAdvantages": [
+            {
+              "advantageId": "adv_azalia_false_loyalty",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "spent",
+              "applicableScenes": [ "wings_infiltration" ],
+              "summary": "Можно выдать себя за полезного перебежчика перед агентами Крыльев Ангелов.",
+              "spentAudit": {
+                "usageId": "use_false_loyalty_001",
+                "usedAtTurn": 77,
+                "sceneType": "wings_infiltration",
+                "summary": "Игрок использовал легенду ложной лояльности при входе в круг Крыльев Ангелов."
+              }
+            }
+          ],
+          "sarefAdvantageUses": [
+            {
+              "usageId": "use_false_loyalty_001",
+              "advantageId": "adv_azalia_false_loyalty",
+              "usedAtTurn": 77,
+              "sceneType": "wings_infiltration",
+              "consumesAdvantage": true,
+              "summary": "Легенда ложной лояльности открыла доступ к закрытому собранию."
+            }
+          ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("saref_main_story_advantage_", StringComparison.OrdinalIgnoreCase) == true ||
+            issue.Code?.StartsWith("saref_main_story_spent_advantage", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UnknownSarefAdvantageUse_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefAdvantageState("""
+          "sarefAdvantages": [
+            {
+              "advantageId": "adv_azalia_false_loyalty",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "available",
+              "applicableScenes": [ "wings_infiltration" ]
+            }
+          ],
+          "sarefAdvantageUses": [
+            {
+              "usageId": "use_unknown_001",
+              "advantageId": "adv_missing",
+              "usedAtTurn": 77,
+              "sceneType": "wings_infiltration",
+              "consumesAdvantage": true,
+              "summary": "GM claimed an unknown advantage."
+            }
+          ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_unknown_advantage_usage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SuppressedSarefAdvantageUse_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefAdvantageState("""
+          "sarefAdvantages": [
+            {
+              "advantageId": "adv_ilarion_memory_anchor",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "suppressed",
+              "applicableScenes": [ "memory_attack" ],
+              "suppressionReason": "Сареф временно заглушил якорь памяти."
+            }
+          ],
+          "sarefAdvantageUses": [
+            {
+              "usageId": "use_suppressed_001",
+              "advantageId": "adv_ilarion_memory_anchor",
+              "usedAtTurn": 80,
+              "sceneType": "memory_attack",
+              "consumesAdvantage": true,
+              "summary": "GM attempted to use a suppressed advantage."
+            }
+          ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_advantage_usage_unauthorized_state", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_InapplicableSarefAdvantageUse_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefAdvantageState("""
+          "sarefAdvantages": [
+            {
+              "advantageId": "adv_veyra_wing_mask",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "available",
+              "applicableScenes": [ "wings_infiltration" ]
+            }
+          ],
+          "sarefAdvantageUses": [
+            {
+              "usageId": "use_wrong_scene_001",
+              "advantageId": "adv_veyra_wing_mask",
+              "usedAtTurn": 82,
+              "sceneType": "saref_confrontation",
+              "consumesAdvantage": true,
+              "summary": "GM claimed an infiltration mask as a final confrontation advantage."
+            }
+          ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_advantage_usage_inapplicable_scene", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SpentSarefAdvantageWithoutAudit_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefAdvantageState("""
+          "sarefAdvantages": [
+            {
+              "advantageId": "adv_myriel_ash_formula",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "spent",
+              "applicableScenes": [ "saref_confrontation" ]
+            }
+          ],
+          "sarefAdvantageUses": []
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_spent_advantage_missing_audit", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string BuildSarefAdvantageState(string advantagePayload) =>
+        $$"""
+        {
+          "schemaVersion": 1,
+          "revealStage": "name_revealed",
+          "guardianQuestlines": [
+            {
+              "guardianId": "azalia",
+              "questStates": [
+                { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+                { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+                { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+                { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+              ]
+            }
+          ],
+          "latentTraces": [],
+          "sarefRevelations": [
+            {
+              "revelationId": "rev_azalia_faction",
+              "category": "faction",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "revealedAtTurn": 44
+            }
+          ],
+          {{advantagePayload}},
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """;
+
     public void Dispose()
     {
         try
