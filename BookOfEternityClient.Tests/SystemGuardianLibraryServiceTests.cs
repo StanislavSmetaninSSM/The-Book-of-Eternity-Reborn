@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -200,6 +201,39 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.Equal("azalia", request!.TargetPresetId);
     }
 
+    [Fact]
+    public async Task BuiltInVeyraPreset_IsMaterializableAndUsesRussianPlayerFacingIntrigue()
+    {
+        var sourcePresetDir = GetRepoBuiltInPresetDirectory("veyra");
+
+        Assert.True(Directory.Exists(sourcePresetDir), "Built-in Veyra preset directory must exist.");
+
+        CopyDirectory(sourcePresetDir, Path.Combine(_service.GetBuiltInDirectoryPath(), "veyra"));
+
+        var preset = await _service.FindPresetAsync("veyra", includeDossier: true);
+
+        Assert.NotNull(preset);
+        Assert.Equal("Вейра Серебряная Улыбка", preset!.DisplayName);
+        Assert.Equal("built_in", preset.LibraryKind);
+        Assert.Equal("Вейра Серебряная Улыбка", preset.DefaultNameVariant);
+        Assert.Equal("она/её", preset.DefaultPronouns);
+        Assert.Equal("Зеркальный Двор Без Имени", preset.AbodeName);
+        Assert.Contains("мас", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ложн", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Притяжение к Вейре", preset.SearchLabel, StringComparison.Ordinal);
+        Assert.Contains("маски", preset.SearchKeywords);
+        Assert.Contains("двойные клятвы", preset.PromptPackage, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("дублир", preset.PromptPackage, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Passion", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Devotion", preset.Summary, StringComparison.OrdinalIgnoreCase);
+
+        var creation = _service.BuildPendingGuardianCreationNode(preset, "Тестовая Душа");
+
+        Assert.Equal("veyra", creation["presetId"]?.GetValue<string>());
+        Assert.Equal("Вейра Серебряная Улыбка", creation["presetDisplayName"]?.GetValue<string>());
+        Assert.Equal("built_in", creation["sourceLibrary"]?.GetValue<string>());
+    }
+
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {
         var presetDir = Path.Combine(rootDir, presetId);
@@ -251,6 +285,25 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         }
         """);
         await File.WriteAllTextAsync(Path.Combine(presetDir, "dossier.md"), $"# {displayName}\n\nТестовое досье.");
+    }
+
+    private static string GetRepoBuiltInPresetDirectory(string presetId) =>
+        Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            SystemGuardianLibraryService.RootDirectoryName,
+            SystemGuardianLibraryService.BuiltInDirectoryName,
+            presetId);
+
+    private static void CopyDirectory(string sourceDirectory, string targetDirectory)
+    {
+        Directory.CreateDirectory(targetDirectory);
+
+        foreach (var sourceFile in Directory.EnumerateFiles(sourceDirectory))
+        {
+            var targetFile = Path.Combine(targetDirectory, Path.GetFileName(sourceFile));
+            File.Copy(sourceFile, targetFile, overwrite: true);
+        }
     }
 
     public void Dispose()
