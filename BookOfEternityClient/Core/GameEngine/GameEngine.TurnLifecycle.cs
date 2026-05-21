@@ -2614,6 +2614,7 @@ If a forbidden key appears in your draft response for the active realm, REMOVE i
 MATH ASSISTANT / МАТЕМАТИК:
 Use `mathRequests[]` / `mathAudit[]` for non-trivial mechanical arithmetic instead of relying only on prose. These fields write `game_state/meta/math_audit.json`. `mathRequests[]` is only a calculation request; `mathAudit[]` records the checked result with `formulaVersion = math_assistant_v1`, numeric variables, rounding, and `applicationState` (`calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`). If the number changed game state, still write the actual target state/receipt surface and reference it through `mathAudit[].referencedBy[]`.
 For Mortal combat delta fields, references to `currentHealthChange`, `currentPoiseChange`, or `currentEnergyChange` require `mathAudit.result` to equal the exact signed numeric response change. A 13 damage hit to the player is `currentHealthChange: -13` and `result: -13`.
+For afterlife spiritual combat formulas, references to supported numeric paths such as `afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount` or a `diceAudit.margin` path require `mathAudit.result` to exactly equal that field. The afterlife validator still checks the full conflict/reward contract separately.
 
 NPC AGENCY — HARD REQUIREMENT:
 You MUST declare NPC reasoning scope BEFORE narration instead of silently skipping or guessing it.

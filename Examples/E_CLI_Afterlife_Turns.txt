@@ -6768,7 +6768,7 @@ Natural 20 / natural 1 is bounded critical logic, not permission to narrate impo
 }
 ```
 
-If the player wins a contested conflict and the victory is not `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, or pure negotiation, the GM may grant a small validated currency reward. In `Chaos Sea`, reward currency is `ink_feathers` and must be mirrored by `metaStateUpdates.inkFeatherChanges.add`. In ordinary active `Shining Abode`, reward currency is `light_sparks` and must be mirrored by the exact `shining_abode_state.json.lightSparks` increase. Example Chaos Sea victory closure:
+If the player wins a contested conflict and the victory is not `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, or pure negotiation, the GM may grant a small validated currency reward. In `Chaos Sea`, reward currency is `ink_feathers` and must be mirrored by `metaStateUpdates.inkFeatherChanges.add`. In ordinary active `Shining Abode`, reward currency is `light_sparks` and must be mirrored by the exact `shining_abode_state.json.lightSparks` increase. Use Math Assistant for non-trivial reward/margin arithmetic authored by the GM and copied into state; if `referencedBy[]` points to `afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount` or another supported afterlife numeric path, `mathAudit.result` must exactly equal that field. Example Chaos Sea victory closure:
 
 ```json
 {
@@ -6864,11 +6864,53 @@ If the player wins a contested conflict and the victory is not `repair_cancel`, 
       "add": 30
     }
   },
+  "mathRequests": [
+    {
+      "requestId": "calc_afterlife_reward_final_amount_1",
+      "purpose": "afterlife conflict reward final amount",
+      "expression": "clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyRewardMultiplierPercent / 1000000, 0, realmCap)",
+      "variables": {
+        "baseAmount": 10,
+        "challengeTier": 3,
+        "outcomeMultiplierPercent": 100,
+        "riskMultiplierPercent": 100,
+        "difficultyRewardMultiplierPercent": 100,
+        "realmCap": 120
+      },
+      "rounding": { "mode": "none" },
+      "expectedResult": 30,
+      "applicationState": "requested_only"
+    }
+  ],
+  "mathAudit": [
+    {
+      "auditId": "calc_afterlife_reward_final_amount_1",
+      "requestId": "calc_afterlife_reward_final_amount_1",
+      "purpose": "afterlife conflict reward final amount",
+      "expression": "clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyRewardMultiplierPercent / 1000000, 0, realmCap)",
+      "normalizedExpression": "clamp(baseAmount*challengeTier*outcomeMultiplierPercent*riskMultiplierPercent*difficultyRewardMultiplierPercent/1000000,0,realmCap)",
+      "variables": {
+        "baseAmount": 10,
+        "challengeTier": 3,
+        "outcomeMultiplierPercent": 100,
+        "riskMultiplierPercent": 100,
+        "difficultyRewardMultiplierPercent": 100,
+        "realmCap": 120
+      },
+      "rawResult": 30,
+      "result": 30,
+      "rounding": { "mode": "none" },
+      "formulaVersion": "math_assistant_v1",
+      "applicationState": "applied_to_state",
+      "referencedBy": [ "afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount" ],
+      "warnings": []
+    }
+  ],
   "response": "Связь Лиоры с вратами рвётся. Душа не только сохраняет свободу выбора, но и собирает Чернильные Перья из рассеянного давления конфликта."
 }
 ```
 
-Reward formula is deterministic: Chaos base `10`, Shining base `1`; `challengeTier` comes from opposing lead strength + side model + starting position; `outcomeMultiplierPercent` is `100` for `player_success` and `150` for `decisive_player_success`; risk is `150/125/100/75/50` for `opposition_dominant/opposition_advantaged/contested/player_advantaged/player_dominant`; difficulty reward multiplier is `100/125/150` for `normal`/`hard`/`impossible`; cap is `120` Ink Feathers or `8` Light Sparks. Formula: `finalAmount = clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyAudit.rewardMultiplierPercent / 1_000_000, 0, realmCap)`. For a current-turn reward resolving the validated pre-turn `activeConflict`, do not inflate formula inputs in `rewardAudit`: `sideModel` must match pre-turn `activeConflict.sideModel`, `startingConflictPosition` must match pre-turn `activeConflict.conflictPosition`, and `opposingLeadStrength` must be max standard art/authority value in pre-turn `oppositionSide.leadContestant.actorArtTierSnapshot` + 1. Do not write reward fields outside `rewardAudit`, do not duplicate a reward for the same `conflictId`, and do not grant XP, Mortal items, Mortal skills, Radiance, or Enlightenment from this conflict reward.
+Reward formula is deterministic: Chaos base `10`, Shining base `1`; `challengeTier` comes from opposing lead strength + side model + starting position; `outcomeMultiplierPercent` is `100` for `player_success` and `150` for `decisive_player_success`; risk is `150/125/100/75/50` for `opposition_dominant/opposition_advantaged/contested/player_advantaged/player_dominant`; difficulty reward multiplier is `100/125/150` for `normal`/`hard`/`impossible`; cap is `120` Ink Feathers or `8` Light Sparks. Formula: `finalAmount = clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyAudit.rewardMultiplierPercent / 1_000_000, 0, realmCap)`. For a current-turn reward resolving the validated pre-turn `activeConflict`, do not inflate formula inputs in `rewardAudit`: `sideModel` must match pre-turn `activeConflict.sideModel`, `startingConflictPosition` must match pre-turn `activeConflict.conflictPosition`, and `opposingLeadStrength` must be max standard art/authority value in pre-turn `oppositionSide.leadContestant.actorArtTierSnapshot` + 1. Math Assistant is optional for trivial one-step sums and unnecessary for client-owned deterministic calculations the GM never authors, but if the GM writes `mathAudit.referencedBy[]` for `rewardAudit.finalAmount` or `diceAudit.margin`, `mathAudit.result` must match the target number. Do not write reward fields outside `rewardAudit`, do not duplicate a reward for the same `conflictId`, and do not grant XP, Mortal items, Mortal skills, Radiance, or Enlightenment from this conflict reward.
 
 If the conflict ends with Лиора forcing incarnation, the accepted turn must first close the conflict with current-turn proof and only then write the forced trigger:
 

@@ -24,6 +24,14 @@ public partial class ValidationService
         "currentEnergyChange"
     };
 
+    private static readonly HashSet<string> MathAssistantAppliedNumericReferencePaths = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount",
+        "afterlifeSpiritualConflictUpdate.resolution.diceAudit.margin",
+        "afterlifeSpiritualConflictUpdate.exchange.diceAudit.margin",
+        "afterlifeSpiritualConflictUpdate.exchange.afterlifeActionResolution.diceAudit.margin"
+    };
+
     private sealed class MathContractRequestSnapshot
     {
         public string RequestId { get; init; } = "";
@@ -329,7 +337,7 @@ public partial class ValidationService
                 continue;
             }
 
-            var checkedFields = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var checkedReferences = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var referenceIndex = 0;
             foreach (var referenceNode in referencesNode.EnumerateArray())
             {
@@ -337,26 +345,26 @@ public partial class ValidationService
                 referenceIndex++;
 
                 if (!TryReadMathString(referenceNode, out var reference) ||
-                    !TryResolveMathAssistantAppliedDeltaReference(reference, out var deltaFieldName) ||
-                    !checkedFields.Add(deltaFieldName))
+                    !TryResolveMathAssistantAppliedNumericReference(root, reference, out var appliedPath, out var appliedNode) ||
+                    !checkedReferences.Add(appliedPath))
                 {
                     continue;
                 }
 
-                if (!root.TryGetProperty(deltaFieldName, out var deltaNode))
+                if (appliedNode.ValueKind == JsonValueKind.Undefined)
                 {
                     AddMathIssue(issues, referenceContext, "math_audit_missing_referenced_delta",
-                        "mathAudit помечен как применённый к боевому delta-полю, но само поле отсутствует в ответе.",
-                        deltaFieldName, "missing",
-                        "Добавь целевое delta-поле в ответ или убери ссылку из referencedBy, если число не применялось к состоянию.");
+                        "mathAudit помечен как применённый к числовому полю, но само поле отсутствует в ответе.",
+                        appliedPath, "missing",
+                        "Добавь целевое числовое поле в ответ или убери ссылку из referencedBy, если число не применялось к состоянию.");
                     continue;
                 }
 
-                if (!TryReadMathDecimal(deltaNode, out var appliedDelta))
+                if (!TryReadMathDecimal(appliedNode, out var appliedDelta))
                 {
-                    AddMathIssue(issues, $"{contextPrefix}.{deltaFieldName}", "math_audit_referenced_delta_invalid",
-                        "Боевое delta-поле, связанное с mathAudit, должно быть числом.",
-                        "number", deltaNode.ValueKind.ToString(),
+                    AddMathIssue(issues, $"{contextPrefix}.{appliedPath}", "math_audit_referenced_delta_invalid",
+                        "Числовое поле, связанное с mathAudit, должно быть числом.",
+                        "number", appliedNode.ValueKind.ToString(),
                         "Запиши применённое изменение как JSON number.");
                     continue;
                 }
@@ -364,31 +372,90 @@ public partial class ValidationService
                 if (appliedDelta != auditResult)
                 {
                     AddMathIssue(issues, referenceContext, "math_audit_applied_delta_mismatch",
-                        "Применённое боевое изменение не совпадает с mathAudit.result.",
+                        "Применённое числовое поле не совпадает с mathAudit.result.",
                         FormatMathDecimal(auditResult), FormatMathDecimal(appliedDelta),
-                        "Для currentHealthChange/currentPoiseChange/currentEnergyChange mathAudit.result должен быть числом со знаком, точно равным применённому полю.");
+                        "Для числовых полей, указанных в referencedBy[], mathAudit.result должен точно равняться применённому значению.");
                 }
             }
         }
     }
 
-    private static bool TryResolveMathAssistantAppliedDeltaReference(string? reference, out string deltaFieldName)
+    private static bool TryResolveMathAssistantAppliedNumericReference(
+        JsonElement root,
+        string? reference,
+        out string appliedPath,
+        out JsonElement appliedNode)
     {
-        deltaFieldName = "";
+        appliedPath = "";
+        appliedNode = default;
 
         var token = (reference ?? "").Trim();
         if (string.IsNullOrWhiteSpace(token))
             return false;
 
+        foreach (var candidate in BuildMathAssistantReferenceCandidates(token))
+        {
+            if (MathAssistantAppliedNumericReferencePaths.Contains(candidate))
+            {
+                appliedPath = candidate;
+                if (!TryGetMathAssistantReferencedNode(root, candidate, out appliedNode))
+                    appliedNode = default;
+
+                return true;
+            }
+
+            if (MathAssistantAppliedDeltaReferenceFields.Contains(candidate))
+            {
+                appliedPath = candidate;
+                if (!root.TryGetProperty(candidate, out appliedNode))
+                    appliedNode = default;
+
+                return true;
+            }
+        }
+
         var lastSeparator = token.LastIndexOfAny(new[] { ':', '/', '\\', '.' });
-        var candidate = lastSeparator >= 0 && lastSeparator + 1 < token.Length
+        var directCandidate = lastSeparator >= 0 && lastSeparator + 1 < token.Length
             ? token[(lastSeparator + 1)..].Trim()
             : token;
 
-        if (!MathAssistantAppliedDeltaReferenceFields.Contains(candidate))
+        if (!MathAssistantAppliedDeltaReferenceFields.Contains(directCandidate))
             return false;
 
-        deltaFieldName = candidate;
+        appliedPath = directCandidate;
+        if (!root.TryGetProperty(directCandidate, out appliedNode))
+            appliedNode = default;
+
+        return true;
+    }
+
+    private static IEnumerable<string> BuildMathAssistantReferenceCandidates(string token)
+    {
+        yield return NormalizeMathAssistantReferencePath(token);
+
+        var colonIndex = token.LastIndexOf(':');
+        if (colonIndex >= 0 && colonIndex + 1 < token.Length)
+            yield return NormalizeMathAssistantReferencePath(token[(colonIndex + 1)..]);
+
+        if (token.StartsWith("response.", StringComparison.OrdinalIgnoreCase) && token.Length > "response.".Length)
+            yield return NormalizeMathAssistantReferencePath(token["response.".Length..]);
+    }
+
+    private static string NormalizeMathAssistantReferencePath(string value) =>
+        value.Trim().TrimStart('$', '.').Replace('/', '.').Replace('\\', '.');
+
+    private static bool TryGetMathAssistantReferencedNode(JsonElement root, string path, out JsonElement node)
+    {
+        node = root;
+        foreach (var part in path.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (node.ValueKind != JsonValueKind.Object || !node.TryGetProperty(part, out node))
+            {
+                node = default;
+                return false;
+            }
+        }
+
         return true;
     }
 
