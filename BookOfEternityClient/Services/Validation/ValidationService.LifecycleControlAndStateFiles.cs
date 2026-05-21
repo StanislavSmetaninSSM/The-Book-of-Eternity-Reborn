@@ -476,6 +476,20 @@ public partial class ValidationService
             {
                 "achievementUnlocks", "unlockedAchievements", "trackedProgress", "stats"
             }, issues);
+        await ValidateFlexibleStateFile(MathAssistantContractState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                MathAssistantContractState.RequestsProperty,
+                MathAssistantContractState.AuditProperty,
+                "_lastUpdated"
+            }, issues, ValidateMathAssistantContractRoot);
+        await ValidateStrictTopLevelObjectFileAsync(MathAssistantContractState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                MathAssistantContractState.RequestsProperty,
+                MathAssistantContractState.AuditProperty,
+                "_lastUpdated"
+            }, issues);
         await ValidateFlexibleStateFile("lore/codex_entries.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {

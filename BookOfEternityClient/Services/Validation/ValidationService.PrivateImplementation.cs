@@ -607,6 +607,7 @@ public partial class ValidationService
         ValidateNpcContract(response, "response", issues);
         ValidateWorldQuestCombatFactionContract(response, "response", issues);
         ValidateMetaMiscContract(response, "response", issues);
+        ValidateMathAssistantContractRoot(response, "response", issues);
 
         return issues;
     }
