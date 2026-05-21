@@ -63,6 +63,13 @@ public sealed class ExplorerWebCommandService
         if (universalResult != null)
             return universalResult;
 
+        var mortalResult = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(
+            command,
+            _stateManager,
+            _fs);
+        if (mortalResult != null)
+            return mortalResult;
+
         return MessageResult(
             command,
             CommandExecutionState.Failed,

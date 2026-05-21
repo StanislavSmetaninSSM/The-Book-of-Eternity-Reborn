@@ -49,12 +49,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_PlannedCommand_ReturnsBlockedDto()
     {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inv"));
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/chaos_sea"));
 
-        Assert.Equal("/inv", result.Command);
+        Assert.Equal("/chaos_sea", result.Command);
         Assert.Equal(CommandExecutionState.Blocked, result.State);
         var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("#570", message.Message, StringComparison.Ordinal);
+        Assert.Contains("#571", message.Message, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -78,6 +78,46 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             result.Blocks,
             static block => block is UiMessageBlock message &&
                             message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("/inv")]
+    [InlineData("/npc")]
+    [InlineData("/quests")]
+    [InlineData("/map")]
+    [InlineData("/stats")]
+    [InlineData("/combat")]
+    [InlineData("/weather")]
+    [InlineData("/books")]
+    [InlineData("/interactions")]
+    public async Task ExecuteAsync_MigratedMortalReadOnlyCommands_ReturnCompletedDtos(string command)
+    {
+        await SeedMortalFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.NotEmpty(result.Blocks);
+        Assert.DoesNotContain(
+            result.Blocks,
+            static block => block is UiMessageBlock message &&
+                            message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("/distribute")]
+    [InlineData("/companion_directive")]
+    [InlineData("/faction_directive")]
+    [InlineData("/craft")]
+    public async Task ExecuteAsync_MortalMutatingCommands_ReturnBlockedDtos(string command)
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.Equal(CommandExecutionState.Blocked, result.State);
+        var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
+        Assert.Contains("local-turn", message.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -128,6 +168,81 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         await _fs.WriteFileAtomicAsync("stories/chaos_sea.jsonl", """
         {"turn":1,"timestamp":"2026-05-20T00:00:00Z","realm":"Chaos Sea","player":"test","narrative":"story"}
 
+        """);
+    }
+
+    private async Task SeedMortalFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            { "itemId": "blade_1", "itemName": "Старый клинок", "quantity": 1 }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "npcs": [
+            { "npcId": "npc_1", "name": "Мирра", "status": "alive" }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/quests/regular_quests.json", """
+        {
+          "activeQuests": [
+            { "questId": "quest_1", "title": "Найти след", "status": "active" }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationName": "Старый тракт",
+          "region": "Северный край",
+          "description": "Дорога под серым небом."
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
+        {
+          "newLocations": [
+            { "locationId": "old_road", "locationName": "Старый тракт" }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/combat/enemies.json", """
+        {
+          "enemies": [
+            { "enemyId": "wolf_1", "name": "Волк", "status": "hostile" }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
+        { "currentTime": "ночь" }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/weather.json", """
+        { "currentState": "дождь" }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_text_updates.json", """
+        {
+          "entries": [
+            { "itemId": "letter_1", "title": "Письмо" }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/misc/player_interactions.json", """
+        {
+          "interactions": [
+            { "interactionId": "int_1", "summary": "Игроки встретились на тракте." }
+          ]
+        }
         """);
     }
 }

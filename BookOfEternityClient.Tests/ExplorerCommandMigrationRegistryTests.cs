@@ -94,6 +94,39 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
             Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
     }
 
+    [Fact]
+    public void MortalReadOnlyCommands_AreMarkedAsMigrated()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var command in new[]
+                 {
+                     "/inv", "/inventory", "/инв", "/npc", "/npcs", "/quests", "/квесты", "/map", "/карта",
+                     "/where_am_i", "/где_я", "/factions", "/фракции", "/skills", "/навыки", "/stats", "/статы",
+                     "/world_news", "/новости_мира", "/rival_threads", "/чужие_нити", "/guardian_corrections",
+                     "/locations", "/локации", "/transport", "/effects", "/combat", "/weather", "/books",
+                     "/storage_access", "/interactions"
+                 })
+        {
+            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+        }
+    }
+
+    [Fact]
+    public void MortalMutatingCommands_RemainBlockedWithFollowUp()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var command in new[] { "/distribute", "/companion_directive", "/faction_directive", "/craft" })
+        {
+            Assert.Equal(ExplorerCommandMigrationStatus.Blocked, entries[command].Status);
+            Assert.Contains("#574", entries[command].FollowUpIssue, StringComparison.Ordinal);
+            Assert.Contains("local-turn", entries[command].Reason, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569  
+Tracked tasks: #565, #567, #569, #570  
 Parent epic: #559
 
 ## Local-Only Model
@@ -83,5 +83,30 @@ Migrated universal/meta read-only surfaces currently include:
 - `/gallery`, `/галерея`, `/gm`, `/гм`, `/debug`, `/отладка`, `/mods`, `/моды`, `/system_guardians`, `/системные_хранители`, `/извечные_хранители`
 - `/saref`, `/сареф`, `/saref_story`, `/история_сарефа`, `/wings_of_angels`, `/крылья_над_бездной` as the read-only hidden main-story view. The mutating Wings search subcommand remains outside this read-only migration.
 
-Interactive multi-step prompt submission, realm-specific command migration, lifecycle/local-turn operations such as `/validate` and `/world_setup`, and QTE support are tracked by the follow-up Web UI issues.
+Migrated Mortal World read-only surfaces currently include:
+
+- `/inv`, `/inventory`, `/инв`, `/инвентарь`
+- `/npc`, `/npcs`, `/characters`, `/нпс`, `/персонажи`
+- `/quests`, `/квесты`
+- `/map`, `/карта`, `/where_am_i`, `/где_я`
+- `/factions`, `/фракции`
+- `/skills`, `/навыки`, `/stats`, `/статы`, `/характеристики`
+- `/world_news`, `/новости_мира`
+- `/rival_threads`, `/чужие_нити`
+- `/guardian_corrections`, `/коррективы_хранителя`
+- `/locations`, `/локации`, `/transport`, `/транспорт`
+- `/effects`, `/эффекты`, `/combat`, `/бой`
+- `/weather`, `/погода`
+- `/books`, `/книги`, `/читать`
+- `/storage_access`, `/доступ_к_хранилищам`
+- `/interactions`, `/взаимодействия`
+
+Mortal World mutating commands remain blocked in the browser until the local-turn write UX is implemented in #574:
+
+- `/distribute`
+- `/companion_directive`
+- `/faction_directive`
+- `/craft`
+
+Interactive multi-step prompt submission, Chaos Sea/Shining Abode command migration, lifecycle/local-turn operations such as `/validate` and `/world_setup`, and QTE support are tracked by the follow-up Web UI issues.
 

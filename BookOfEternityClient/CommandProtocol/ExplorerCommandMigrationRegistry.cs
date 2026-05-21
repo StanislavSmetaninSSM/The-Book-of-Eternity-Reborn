@@ -60,19 +60,7 @@ public static class ExplorerCommandMigrationRegistry
         "/крылья_над_бездной"
     ];
 
-    private static readonly string[] UniversalReadOnlyCommands = [];
-
-    private static readonly string[] UniversalDiagnosticsCommands = [];
-
-    private static readonly string[] UniversalLifecycleCommands =
-    [
-        "/validate",
-        "/валидация",
-        "/world_setup",
-        "/настройка_мира"
-    ];
-
-    private static readonly string[] MortalReadOnlyCommands =
+    private static readonly string[] MigratedMortalReadOnlyCommands =
     [
         "/inv",
         "/inventory",
@@ -120,6 +108,20 @@ public static class ExplorerCommandMigrationRegistry
         "/interactions",
         "/взаимодействия"
     ];
+
+    private static readonly string[] UniversalReadOnlyCommands = [];
+
+    private static readonly string[] UniversalDiagnosticsCommands = [];
+
+    private static readonly string[] UniversalLifecycleCommands =
+    [
+        "/validate",
+        "/валидация",
+        "/world_setup",
+        "/настройка_мира"
+    ];
+
+    private static readonly string[] MortalReadOnlyCommands = [];
 
     private static readonly string[] MortalMutatingCommands =
     [
@@ -204,9 +206,10 @@ public static class ExplorerCommandMigrationRegistry
             "Диагностические и служебные команды должны получить явный browser-safe режим отображения."),
         ..Blocked(UniversalLifecycleCommands, ExplorerCommandGroup.Lifecycle, "#574",
             "Команды настройки/валидации связаны с локальными протоколами, repair flow или управлением файлами."),
+        ..Migrated(MigratedMortalReadOnlyCommands, ExplorerCommandGroup.MortalWorld),
         ..Planned(MortalReadOnlyCommands, ExplorerCommandGroup.MortalWorld, "#570"),
-        ..Blocked(MortalMutatingCommands, ExplorerCommandGroup.MortalWorld, "#568",
-            "Мутирующие mortal-команды нельзя открывать браузеру до local session lock."),
+        ..Blocked(MortalMutatingCommands, ExplorerCommandGroup.MortalWorld, "#574",
+            "Мутирующие Mortal World команды требуют browser local-turn/write UX поверх session lock; пока они заблокированы в браузере."),
         ..Planned(ChaosSeaReadOnlyCommands, ExplorerCommandGroup.ChaosSea, "#571"),
         ..Blocked(ChaosSeaMutatingCommands, ExplorerCommandGroup.ChaosSea, "#568",
             "Chaos Sea pending-contract и economy-команды требуют local session lock."),
