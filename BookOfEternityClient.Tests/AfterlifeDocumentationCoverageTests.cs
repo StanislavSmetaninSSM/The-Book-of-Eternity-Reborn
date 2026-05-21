@@ -2740,6 +2740,22 @@ public sealed class AfterlifeDocumentationCoverageTests
 
         foreach (var text in new[] { matrix, examples, manifest, inventory, daemonSpec, apiSpec, taskGuide, operations })
         {
+            Assert.Contains(SarefMainStoryState.MemorySceneUpdateModeRecord, text, StringComparison.Ordinal);
+            Assert.Contains("memoryScene", text, StringComparison.Ordinal);
+            Assert.Contains("memorySceneProof", text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.MemorySceneLayerName, text, StringComparison.Ordinal);
+            Assert.Contains("role", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("boundaries", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("abilities", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("requiredStoryNodes", text, StringComparison.Ordinal);
+            Assert.Contains("successCondition", text, StringComparison.Ordinal);
+            Assert.Contains("closureTarget", text, StringComparison.Ordinal);
+            Assert.Contains("Mortal World", text, StringComparison.Ordinal);
+            Assert.Contains("Memory Gates", text, StringComparison.Ordinal);
+        }
+
+        foreach (var text in new[] { matrix, examples, manifest, inventory, daemonSpec, apiSpec, taskGuide, operations })
+        {
             Assert.Contains(SarefMainStoryState.FinalUpdateModeRecord, text, StringComparison.Ordinal);
             Assert.Contains("finalConfrontation", text, StringComparison.Ordinal);
             Assert.Contains(SarefMainStoryState.FinalRouteCombat, text, StringComparison.Ordinal);

@@ -45,9 +45,19 @@ internal static class SarefMainStoryState
     public const string SceneSarefConfrontation = "saref_confrontation";
     public const string SceneOathBreak = "oath_break";
     public const string SceneMemoryAttack = "memory_attack";
+    public const string SceneMemoryScene = "memory_scene";
     public const string SceneFactionConflict = "faction_conflict";
     public const string SceneEscapeOrExile = "escape_or_exile";
     public const string SceneFinalResolution = "final_resolution";
+
+    public const string MemorySceneUpdateModeRecord = "record_memory_scene";
+    public const string MemorySceneLayerName = "Воспоминание";
+    public const string MemorySceneStatusActive = "active";
+    public const string MemorySceneStatusCompleted = "completed";
+    public const string MemorySceneStatusFailed = "failed";
+    public const string MemorySceneNodeStatusPending = "pending";
+    public const string MemorySceneNodeStatusCompleted = "completed";
+    public const string MemorySceneNodeStatusFailed = "failed";
 
     public const string DefeatUpdateModeRecord = "record_defeat_outcome";
     public const string DefeatOutcomeForcedOath = "forced_oath";
@@ -185,9 +195,24 @@ internal static class SarefMainStoryState
         SceneSarefConfrontation,
         SceneOathBreak,
         SceneMemoryAttack,
+        SceneMemoryScene,
         SceneFactionConflict,
         SceneEscapeOrExile,
         SceneFinalResolution
+    };
+
+    public static readonly HashSet<string> MemorySceneStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        MemorySceneStatusActive,
+        MemorySceneStatusCompleted,
+        MemorySceneStatusFailed
+    };
+
+    public static readonly HashSet<string> MemorySceneNodeStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        MemorySceneNodeStatusPending,
+        MemorySceneNodeStatusCompleted,
+        MemorySceneNodeStatusFailed
     };
 
     public static readonly HashSet<string> FactionVisibilityStates = new(StringComparer.OrdinalIgnoreCase)
@@ -390,6 +415,7 @@ internal static class SarefMainStoryState
             ["sarefRevelations"] = new JsonArray(),
             ["sarefAdvantages"] = new JsonArray(),
             ["sarefAdvantageUses"] = new JsonArray(),
+            ["memoryScene"] = null,
             ["wingsInfiltration"] = null,
             ["factionLinks"] = new JsonObject
             {
@@ -632,6 +658,12 @@ internal static class SarefMainStoryState
         if (string.Equals(mode, OathBreakUpdateModeRecord, StringComparison.OrdinalIgnoreCase))
         {
             ApplyOathBreakUpdate(root, updateRoot);
+            return root;
+        }
+
+        if (string.Equals(mode, MemorySceneUpdateModeRecord, StringComparison.OrdinalIgnoreCase))
+        {
+            ApplyMemorySceneUpdate(root, updateRoot);
             return root;
         }
 
@@ -901,6 +933,107 @@ internal static class SarefMainStoryState
             root["sarefPersonalBond"] = personalBond.DeepClone();
         if (updateRoot["sarefAdvantageUses"] is JsonArray advantageUses)
             MergeArrayById(EnsureArray(root, "sarefAdvantageUses"), advantageUses, "usageId");
+    }
+
+    private static void ApplyMemorySceneUpdate(JsonObject root, JsonObject updateRoot)
+    {
+        if (updateRoot["memoryScene"] is JsonObject memoryScene)
+            root["memoryScene"] = memoryScene.DeepClone();
+
+        if (updateRoot["guardianQuestline"] is JsonObject guardianQuestline)
+            MergeGuardianQuestline(root, guardianQuestline);
+        if (updateRoot["guardianQuestlines"] is JsonArray guardianQuestlines)
+        {
+            foreach (var item in guardianQuestlines.OfType<JsonObject>())
+                MergeGuardianQuestline(root, item);
+        }
+
+        if (updateRoot["latentTrace"] is JsonObject latentTrace)
+            MergeArrayById(EnsureArray(root, "latentTraces"), new JsonArray(latentTrace.DeepClone()), "traceId");
+        if (updateRoot["latentTraces"] is JsonArray latentTraces)
+            MergeArrayById(EnsureArray(root, "latentTraces"), latentTraces, "traceId");
+
+        if (updateRoot["sarefRevelation"] is JsonObject revelation)
+            MergeArrayById(EnsureArray(root, "sarefRevelations"), new JsonArray(revelation.DeepClone()), "revelationId");
+        if (updateRoot["sarefRevelations"] is JsonArray revelations)
+            MergeArrayById(EnsureArray(root, "sarefRevelations"), revelations, "revelationId");
+
+        if (updateRoot["sarefAdvantage"] is JsonObject advantage)
+            MergeArrayById(EnsureArray(root, "sarefAdvantages"), new JsonArray(advantage.DeepClone()), "advantageId");
+        if (updateRoot["sarefAdvantages"] is JsonArray advantages)
+            MergeArrayById(EnsureArray(root, "sarefAdvantages"), advantages, "advantageId");
+
+        if (updateRoot["sarefAdvantageUse"] is JsonObject advantageUse)
+            MergeArrayById(EnsureArray(root, "sarefAdvantageUses"), new JsonArray(advantageUse.DeepClone()), "usageId");
+        if (updateRoot["sarefAdvantageUses"] is JsonArray advantageUses)
+            MergeArrayById(EnsureArray(root, "sarefAdvantageUses"), advantageUses, "usageId");
+    }
+
+    private static void MergeGuardianQuestline(JsonObject root, JsonObject source)
+    {
+        var guardianId = GetNodeString(source["guardianId"]);
+        if (string.IsNullOrWhiteSpace(guardianId))
+        {
+            EnsureArray(root, "guardianQuestlines").Add(source.DeepClone());
+            return;
+        }
+
+        var questlines = EnsureArray(root, "guardianQuestlines");
+        JsonObject? target = null;
+        for (var i = 0; i < questlines.Count; i++)
+        {
+            if (questlines[i] is JsonObject existing &&
+                string.Equals(GetNodeString(existing["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase))
+            {
+                target = existing;
+                break;
+            }
+        }
+
+        if (target == null)
+        {
+            questlines.Add(source.DeepClone());
+            return;
+        }
+
+        foreach (var property in source)
+        {
+            if (string.Equals(property.Key, "questStates", StringComparison.OrdinalIgnoreCase) &&
+                property.Value is JsonArray questStates)
+            {
+                MergeQuestStates(EnsureArray(target, "questStates"), questStates);
+                continue;
+            }
+
+            target[property.Key] = property.Value?.DeepClone();
+        }
+    }
+
+    private static void MergeQuestStates(JsonArray target, JsonArray source)
+    {
+        foreach (var item in source.OfType<JsonObject>())
+        {
+            var ordinal = GetNodeInt(item["questOrdinal"]);
+            if (ordinal > 0)
+            {
+                var replaced = false;
+                for (var i = 0; i < target.Count; i++)
+                {
+                    if (target[i] is JsonObject existing &&
+                        GetNodeInt(existing["questOrdinal"]) == ordinal)
+                    {
+                        target[i] = item.DeepClone();
+                        replaced = true;
+                        break;
+                    }
+                }
+
+                if (replaced)
+                    continue;
+            }
+
+            target.Add(item.DeepClone());
+        }
     }
 
     private static JsonArray EnsureAgendaArray(JsonObject agenda, string propertyName)

@@ -502,6 +502,145 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_MalformedMemoryScene_ReportsRequiredShapeIssues()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "shadow",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "memoryScene": {
+            "sceneId": "memory_scene_azalia_q4",
+            "status": "active",
+            "guardianId": "azalia",
+            "questId": "azalia_saref_q4",
+            "questOrdinal": 4
+          },
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_memory_scene_missing_role", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_memory_scene_missing_boundaries", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_memory_scene_invalid_ability_count", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_memory_scene_missing_required_nodes", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_memory_scene_missing_success_condition", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "saref_main_story_memory_scene_missing_closure_target", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_QuestFourCompletedWithoutMemorySceneProof_ReportsIssue()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(includeMemoryProof: false));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_quest_four_missing_memory_scene_proof", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_QuestFourCompletedWithMemorySceneProof_PassesMemorySceneGate()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(includeMemoryProof: true));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_quest_four_missing_memory_scene_proof", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ApplyUpdate_RecordMemoryScene_MergesSceneQuestRevelationAndAdvantage()
+    {
+        var baseline = JsonNode.Parse("""
+        {
+          "schemaVersion": 1,
+          "revealStage": "shadow",
+          "guardianQuestlines": [
+            {
+              "guardianId": "azalia",
+              "questStates": [
+                { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+                { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+                { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" }
+              ]
+            }
+          ],
+          "latentTraces": [],
+          "sarefRevelations": [],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "memoryScene": null,
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """)!.AsObject();
+
+        var update = JsonNode.Parse($$"""
+        {
+          "mode": "record_memory_scene",
+          "memoryScene": {{BuildValidMemoryScenePayload()}},
+          "guardianQuestline": {
+            "guardianId": "azalia",
+            "questStates": [
+              {
+                "questOrdinal": 4,
+                "status": "completed",
+                "questId": "azalia_saref_q4",
+                "completedAtTurn": 44,
+                "memorySceneProof": {{BuildValidMemorySceneProofPayload()}}
+              }
+            ]
+          },
+          "sarefRevelation": {
+            "revelationId": "rev_azalia_faction",
+            "category": "faction",
+            "sourceGuardianId": "azalia",
+            "sourceQuestId": "azalia_saref_q4",
+            "sourceQuestOrdinal": 4,
+            "revealedAtTurn": 44
+          },
+          "sarefAdvantage": {
+            "advantageId": "adv_azalia_false_loyalty",
+            "sourceGuardianId": "azalia",
+            "sourceQuestId": "azalia_saref_q4",
+            "sourceQuestOrdinal": 4,
+            "state": "available",
+            "applicableScenes": [ "wings_infiltration" ],
+            "summary": "Можно выдать себя за полезного перебежчика.",
+            "unlockedAtTurn": 44
+          }
+        }
+        """)!.AsObject();
+
+        var root = SarefMainStoryState.ApplyUpdate(baseline, update);
+
+        Assert.Equal("completed", root["memoryScene"]!["status"]!.GetValue<string>());
+        var questline = Assert.IsType<JsonObject>(Assert.Single(root["guardianQuestlines"]!.AsArray()));
+        var questFour = questline["questStates"]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(state => state["questOrdinal"]!.GetValue<int>() == 4);
+        Assert.Equal("completed", questFour["status"]!.GetValue<string>());
+        Assert.Equal("memory_scene_azalia_q4", questFour["memorySceneProof"]!["sceneId"]!.GetValue<string>());
+        Assert.Equal("rev_azalia_faction", Assert.IsType<JsonObject>(Assert.Single(root["sarefRevelations"]!.AsArray()))["revelationId"]!.GetValue<string>());
+        Assert.Equal("adv_azalia_false_loyalty", Assert.IsType<JsonObject>(Assert.Single(root["sarefAdvantages"]!.AsArray()))["advantageId"]!.GetValue<string>());
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PhysicalMortalItemInSarefQuestEvidence_ReportsIssue()
     {
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
@@ -1658,6 +1797,126 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
           "endings": [],
           "playerOathState": null,
           "sarefPersonalBond": null
+        }
+        """;
+
+    private static string BuildSarefQuestFourCompletedState(bool includeMemoryProof)
+    {
+        var memoryProof = includeMemoryProof
+            ? $"""
+              ,
+                  "memorySceneProof": {BuildValidMemorySceneProofPayload()}
+              """
+            : string.Empty;
+
+        return $$"""
+        {
+          "schemaVersion": 1,
+          "revealStage": "name_revealed",
+          "guardianQuestlines": [
+            {
+              "guardianId": "azalia",
+              "questStates": [
+                { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+                { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+                { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+                {
+                  "questOrdinal": 4,
+                  "status": "completed",
+                  "questId": "azalia_saref_q4",
+                  "completedAtTurn": 44{{memoryProof}}
+                }
+              ]
+            }
+          ],
+          "latentTraces": [],
+          "sarefRevelations": [
+            {
+              "revelationId": "rev_azalia_faction",
+              "category": "faction",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "revealedAtTurn": 44
+            }
+          ],
+          "sarefAdvantages": [
+            {
+              "advantageId": "adv_azalia_false_loyalty",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "available",
+              "applicableScenes": [ "wings_infiltration" ],
+              "summary": "Можно выдать себя за полезного перебежчика.",
+              "unlockedAtTurn": 44
+            }
+          ],
+          "sarefAdvantageUses": [],
+          "memoryScene": null,
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """;
+    }
+
+    private static string BuildValidMemoryScenePayload() => """
+        {
+          "sceneId": "memory_scene_azalia_q4",
+          "status": "completed",
+          "layer": "Воспоминание",
+          "guardianId": "azalia",
+          "questId": "azalia_saref_q4",
+          "questOrdinal": 4,
+          "role": {
+            "roleId": "azalia_white_lodge_witness",
+            "displayName": "Свидетель ложи",
+            "summary": "Игрок действует через роль свидетеля старого предательства Азалии."
+          },
+          "boundaries": [
+            { "boundaryId": "past_is_fixed", "summary": "Сареф уже вошел в ложу; это нельзя отменить." }
+          ],
+          "abilities": [
+            { "abilityId": "read_oath", "name": "Прочитать клятву", "summary": "Увидеть скрытую цену белых перьев." },
+            { "abilityId": "hold_memory", "name": "Удержать память", "summary": "Не дать сцене рассыпаться." },
+            { "abilityId": "name_traitor", "name": "Назвать предателя", "summary": "Связать образ с будущей правдой о Сарефе." }
+          ],
+          "requiredStoryNodes": [
+            { "nodeId": "enter_lodge", "status": "completed", "summary": "Игрок вошел в ложу белых перьев." },
+            { "nodeId": "see_betrayal", "status": "completed", "summary": "Игрок увидел, как Сареф использовал доверие Азалии." }
+          ],
+          "successCondition": {
+            "conditionId": "truth_recognized",
+            "summary": "Игрок распознал связь ложи с Крыльями Ангелов.",
+            "satisfied": true
+          },
+          "closureTarget": {
+            "guardianId": "azalia",
+            "questId": "azalia_saref_q4",
+            "questOrdinal": 4,
+            "revelationId": "rev_azalia_faction",
+            "advantageId": "adv_azalia_false_loyalty"
+          },
+          "startedAtTurn": 43,
+          "resolvedAtTurn": 44,
+          "resolutionSummary": "Воспоминание завершено, Азалия получила правду о ложе белых перьев."
+        }
+        """;
+
+    private static string BuildValidMemorySceneProofPayload() => """
+        {
+          "sceneId": "memory_scene_azalia_q4",
+          "layer": "Воспоминание",
+          "roleId": "azalia_white_lodge_witness",
+          "guardianId": "azalia",
+          "questId": "azalia_saref_q4",
+          "questOrdinal": 4,
+          "completedAtTurn": 44,
+          "successConditionSatisfied": true,
+          "summary": "Игрок прошел роль свидетеля и восстановил правду о ложе белых перьев."
         }
         """;
 
