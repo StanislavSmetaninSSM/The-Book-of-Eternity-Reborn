@@ -8,6 +8,8 @@ public static class ExplorerCommandMigrationRegistry
     [
         "/help",
         "/помощь",
+        "/math",
+        "/математик",
         "/soul",
         "/душа",
         "/soul_relics",

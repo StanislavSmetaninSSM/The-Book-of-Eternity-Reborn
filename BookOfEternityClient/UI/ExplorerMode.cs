@@ -57,6 +57,8 @@ public partial class ExplorerMode
         {
             ["/help"] = ShowHelpDto,
             ["/помощь"] = ShowHelpDto,
+            ["/math"] = ShowMathAssistantAsync,
+            ["/математик"] = ShowMathAssistantAsync,
             ["/soul"] = ShowSoulInfo,
             ["/душа"] = ShowSoulInfo,
             ["/soul_relics"] = ShowSoulRelics,

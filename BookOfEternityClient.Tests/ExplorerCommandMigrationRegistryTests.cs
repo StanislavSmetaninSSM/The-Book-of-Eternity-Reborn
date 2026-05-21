@@ -223,6 +223,7 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
     private static bool HasWebDtoBuilder(string command) =>
         string.Equals(command, "/help", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/помощь", StringComparison.OrdinalIgnoreCase) ||
+        ExplorerMathCommandResultBuilder.CanBuild(command) ||
         ExplorerUniversalMetaCommandResultBuilder.CanBuild(command) ||
         ExplorerMortalWorldCommandResultBuilder.CanBuild(command) ||
         ExplorerChaosSeaCommandResultBuilder.CanBuild(command) ||
