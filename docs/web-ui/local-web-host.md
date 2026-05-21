@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573  
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574
 Parent epic: #559
 
 ## Local-Only Model
@@ -101,12 +101,14 @@ Migrated Mortal World read-only surfaces currently include:
 - `/storage_access`, `/доступ_к_хранилищам`
 - `/interactions`, `/взаимодействия`
 
-Mortal World mutating commands remain blocked in the browser until the local-turn write UX is implemented in #574:
+Migrated Mortal World local-turn protocol surfaces currently include:
 
 - `/distribute`
 - `/companion_directive`
 - `/faction_directive`
 - `/craft`
+
+These return `ExplorerCommandResult` DTOs with local GM-turn status, target lists, current raw JSON where useful, and input prompts. They do not yet commit multi-step prompt submissions from the browser; that interactive submit layer is tracked by #575.
 
 Migrated Chaos Sea read-only surfaces currently include:
 
@@ -117,10 +119,12 @@ Migrated Chaos Sea read-only surfaces currently include:
 - `/abodes`, `/обители`
 - `/gacha`, `/гача`
 
-Chaos Sea pending-contract commands remain blocked in the browser until the local-turn write UX is implemented in #574:
+Migrated Chaos Sea pending-contract protocol surfaces currently include:
 
 - `/abode_offering`, `/подношение_обители`
 - `/found_guardian_mantle`, `/учредить_хранителя`
+
+These show the pending contract state, active GM-turn blockers, target choices, and browser DTO prompts. Destructive local writes such as consuming a Soul Relic or Archive entry still require the interactive/write protocol tracked by #575 before the browser can submit them directly.
 
 Migrated Shining Abode read-only surfaces currently include:
 
@@ -129,7 +133,7 @@ Migrated Shining Abode read-only surfaces currently include:
 - `/shining_treasury`, `/казначейство`
 - `/source_of_light`, `/источник_света`
 
-The browser versions of `/shining_treasury` and `/source_of_light` are status-only surfaces for now. They do not mutate feathers, sparks, pending files, or capstone request state until the local-turn write UX is implemented in #574.
+The browser versions of `/shining_treasury` and `/source_of_light` are status-only surfaces for now. They do not mutate feathers, sparks, pending files, or capstone request state until the interactive/write protocol is implemented in #575.
 
 Migrated afterlife combat and entity read-only surfaces currently include:
 
@@ -140,7 +144,24 @@ Migrated afterlife combat and entity read-only surfaces currently include:
 - `/spiritual_combat_help`, `/духовный_бой`
 - `/spiritual_arts`, `/духовные_искусства`
 
-The browser afterlife combat/entity surfaces are read-only. `/afterlife_inbox` does not mark notifications as read, `/spiritual_arts` does not perform local upgrades, and `/spiritual_action` remains blocked until #574 implements local-turn/write UX.
+The browser afterlife combat/entity status surfaces are read-only. `/afterlife_inbox` does not mark notifications as read and `/spiritual_arts` does not perform local upgrades.
 
-Interactive multi-step prompt submission, lifecycle/local-turn operations such as `/validate` and `/world_setup`, and QTE support are tracked by the follow-up Web UI issues.
+Migrated lifecycle/local-turn protocol surfaces currently include:
+
+- `/validate`, `/валидация`: runs the same `ValidationService` as the console command and renders grouped issues.
+- `/world_setup`, `/настройка_мира`: shows `incarnation_world_setup.json`, `next_life_scenario_core.json`, current realm, and browser prompts for future editing/clearing.
+- `/spiritual_action`, `/духовное_действие`: shows active afterlife conflict state, response surface, and prompts for the player's spiritual action route tag.
+
+Every migrated local-turn protocol result includes a `Локальный ход / GM-turn protocol` panel. It reports whether these artifacts exist:
+
+- `input/turn_request.json`
+- `ready/turn_complete.json`
+- `ready/turn_error.json`
+- `game_state/control/pending_turn_snapshot.json`
+- `game_state/control/pending_turn_snapshot/`
+- `game_state/control/explorer_local_turn_rollback/`
+
+If any active GM-turn or rollback/snapshot artifact exists, local-turn command DTOs return `Pending` so the browser can observe the long-running or late-response state without invoking console-only prompts.
+
+Interactive multi-step prompt submission and QTE support are tracked by the follow-up Web UI issue #575.
 

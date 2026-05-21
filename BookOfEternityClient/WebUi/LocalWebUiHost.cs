@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +52,7 @@ public static class LocalWebUiHost
                 sp.GetRequiredService<GameSettings>(),
                 sp.GetRequiredService<ILogger<StateManager>>()));
         builder.Services.AddSingleton<LocalizationManager>();
+        builder.Services.AddSingleton<ValidationService>();
         builder.Services.AddSingleton<LocalWebUiSessionStatusService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
 

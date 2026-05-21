@@ -1,6 +1,7 @@
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -14,6 +15,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly ExplorerWebCommandService _service;
+    private readonly ValidationService _validationService;
 
     public ExplorerWebCommandServiceTests()
     {
@@ -22,7 +24,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _fs.EnsureDirectoryStructure();
         _stateManager = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        _service = new ExplorerWebCommandService(_fs, _stateManager, new LocalizationManager());
+        _validationService = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+        _service = new ExplorerWebCommandService(_fs, _stateManager, new LocalizationManager(), _validationService);
     }
 
     [Fact]
@@ -35,26 +38,62 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(result.Blocks, static block => block is UiTableBlock table && table.Columns.Contains("Описание"));
     }
 
-    [Fact]
-    public async Task ExecuteAsync_MutatingCommand_ReturnsBlockedDto()
+    [Theory]
+    [InlineData("/validate", "Валидация")]
+    [InlineData("/world_setup", "Подготовка следующего мира")]
+    [InlineData("/distribute", "Распределение характеристик")]
+    [InlineData("/companion_directive", "Директивы компаньонов")]
+    [InlineData("/faction_directive", "Директивы фракций")]
+    [InlineData("/craft", "Ремесло")]
+    [InlineData("/abode_offering", "Подношение Обители")]
+    [InlineData("/found_guardian_mantle", "Основание собственной мантии")]
+    [InlineData("/spiritual_action", "Духовное действие")]
+    public async Task ExecuteAsync_LifecycleAndLocalTurnCommands_ReturnProtocolDtos(string command, string expectedRussianLabel)
     {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_action"));
+        await SeedUniversalMetaFilesAsync();
+        await SeedMortalFilesAsync();
+        await SeedChaosSeaFilesAsync();
+        await SeedAfterlifeCombatAndEntityFilesAsync();
 
-        Assert.Equal("/spiritual_action", result.Command);
-        Assert.Equal(CommandExecutionState.Blocked, result.State);
-        var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("браузерном API", message.Title, StringComparison.OrdinalIgnoreCase);
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.NotEqual(CommandExecutionState.Blocked, result.State);
+        Assert.NotEmpty(result.Blocks);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(expectedRussianLabel, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Локальный ход", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public async Task ExecuteAsync_NonMigratedCommand_ReturnsBlockedDto()
+    public async Task ExecuteAsync_LocalTurnCommandWithActiveGmTurn_ShowsPendingTurnProtocolState()
     {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/validate"));
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", """
+        {
+          "sessionId": "session_web",
+          "requestId": "request_web",
+          "turnNumber": 12,
+          "playerAction": "Тестовый ход",
+          "timestamp": "2026-05-20T00:00:00Z"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", """
+        {
+          "sessionId": "session_web",
+          "requestId": "request_web",
+          "turnNumber": 12,
+          "files": {}
+        }
+        """);
 
-        Assert.Equal("/validate", result.Command);
-        Assert.Equal(CommandExecutionState.Blocked, result.State);
-        var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("#574", message.Message, StringComparison.Ordinal);
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/world_setup"));
+
+        Assert.Equal(CommandExecutionState.Pending, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Активный ход GM", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("input/turn_request.json", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("game_state/control/pending_turn_snapshot.json", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]
@@ -106,21 +145,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Theory]
-    [InlineData("/distribute")]
-    [InlineData("/companion_directive")]
-    [InlineData("/faction_directive")]
-    [InlineData("/craft")]
-    public async Task ExecuteAsync_MortalMutatingCommands_ReturnBlockedDtos(string command)
-    {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
-
-        Assert.Equal(command, result.Command);
-        Assert.Equal(CommandExecutionState.Blocked, result.State);
-        var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("local-turn", message.Message, StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Theory]
     [InlineData("/chaos_sea")]
     [InlineData("/guardians")]
     [InlineData("/abode_power")]
@@ -140,19 +164,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             result.Blocks,
             static block => block is UiMessageBlock message &&
                             message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
-    }
-
-    [Theory]
-    [InlineData("/abode_offering")]
-    [InlineData("/found_guardian_mantle")]
-    public async Task ExecuteAsync_ChaosSeaMutatingCommands_ReturnBlockedDtos(string command)
-    {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
-
-        Assert.Equal(command, result.Command);
-        Assert.Equal(CommandExecutionState.Blocked, result.State);
-        var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("local-turn", message.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]

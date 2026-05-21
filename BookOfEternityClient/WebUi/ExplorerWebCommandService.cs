@@ -1,5 +1,6 @@
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.WebUi;
@@ -11,12 +12,18 @@ public sealed class ExplorerWebCommandService
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly LocalizationManager _localization;
+    private readonly ValidationService _validationService;
 
-    public ExplorerWebCommandService(FileSystemManager fs, StateManager stateManager, LocalizationManager localization)
+    public ExplorerWebCommandService(
+        FileSystemManager fs,
+        StateManager stateManager,
+        LocalizationManager localization,
+        ValidationService validationService)
     {
         _fs = fs;
         _stateManager = stateManager;
         _localization = localization;
+        _validationService = validationService;
     }
 
     public async Task<ExplorerCommandResult> ExecuteAsync(ExplorerWebCommandRequest? request)
@@ -90,6 +97,14 @@ public sealed class ExplorerWebCommandService
             _fs);
         if (afterlifeCombatResult != null)
             return afterlifeCombatResult;
+
+        var lifecycleLocalTurnResult = await ExplorerLifecycleLocalTurnCommandResultBuilder.TryBuildAsync(
+            command,
+            _stateManager,
+            _fs,
+            _validationService);
+        if (lifecycleLocalTurnResult != null)
+            return lifecycleLocalTurnResult;
 
         return MessageResult(
             command,

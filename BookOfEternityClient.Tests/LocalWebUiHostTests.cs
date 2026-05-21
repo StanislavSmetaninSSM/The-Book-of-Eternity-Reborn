@@ -99,7 +99,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
-    public async Task ExplorerCommandEndpoint_BlocksMutatingCommands()
+    public async Task ExplorerCommandEndpoint_ReturnsLocalTurnProtocolForMutatingCommands()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
@@ -112,8 +112,10 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         response.EnsureSuccessStatusCode();
         Assert.Equal("/spiritual_action", root["command"]!.GetValue<string>());
-        Assert.Equal("Blocked", root["state"]!.GetValue<string>());
-        Assert.Equal("message", root["blocks"]![0]!["kind"]!.GetValue<string>());
+        Assert.Equal("RequiresInput", root["state"]!.GetValue<string>());
+        Assert.Equal("panel", root["blocks"]![0]!["kind"]!.GetValue<string>());
+        Assert.Contains("Локальный ход", root["blocks"]![0]!["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.NotEmpty(root["prompts"]!.AsArray());
     }
 
     private static int GetFreeLoopbackPort()

@@ -113,7 +113,7 @@ public static class ExplorerCommandMigrationRegistry
 
     private static readonly string[] UniversalDiagnosticsCommands = [];
 
-    private static readonly string[] UniversalLifecycleCommands =
+    private static readonly string[] MigratedUniversalLifecycleCommands =
     [
         "/validate",
         "/валидация",
@@ -123,7 +123,7 @@ public static class ExplorerCommandMigrationRegistry
 
     private static readonly string[] MortalReadOnlyCommands = [];
 
-    private static readonly string[] MortalMutatingCommands =
+    private static readonly string[] MigratedMortalMutatingCommands =
     [
         "/distribute",
         "/распределить",
@@ -153,7 +153,7 @@ public static class ExplorerCommandMigrationRegistry
 
     private static readonly string[] ChaosSeaReadOnlyCommands = [];
 
-    private static readonly string[] ChaosSeaMutatingCommands =
+    private static readonly string[] MigratedChaosSeaMutatingCommands =
     [
         "/abode_offering",
         "/подношение_обители",
@@ -195,7 +195,7 @@ public static class ExplorerCommandMigrationRegistry
 
     private static readonly string[] AfterlifeCombatReadOnlyCommands = [];
 
-    private static readonly string[] AfterlifeCombatMutatingCommands =
+    private static readonly string[] MigratedAfterlifeCombatMutatingCommands =
     [
         "/spiritual_action",
         "/духовное_действие"
@@ -208,24 +208,20 @@ public static class ExplorerCommandMigrationRegistry
         ..Planned(UniversalReadOnlyCommands, ExplorerCommandGroup.UniversalMeta, "#569"),
         ..TemporaryConsoleOnly(UniversalDiagnosticsCommands, ExplorerCommandGroup.UniversalMeta, "#569",
             "Диагностические и служебные команды должны получить явный browser-safe режим отображения."),
-        ..Blocked(UniversalLifecycleCommands, ExplorerCommandGroup.Lifecycle, "#574",
-            "Команды настройки/валидации связаны с локальными протоколами, repair flow или управлением файлами."),
+        ..Migrated(MigratedUniversalLifecycleCommands, ExplorerCommandGroup.Lifecycle),
         ..Migrated(MigratedMortalReadOnlyCommands, ExplorerCommandGroup.MortalWorld),
         ..Planned(MortalReadOnlyCommands, ExplorerCommandGroup.MortalWorld, "#570"),
-        ..Blocked(MortalMutatingCommands, ExplorerCommandGroup.MortalWorld, "#574",
-            "Мутирующие Mortal World команды требуют browser local-turn/write UX поверх session lock; пока они заблокированы в браузере."),
+        ..Migrated(MigratedMortalMutatingCommands, ExplorerCommandGroup.MortalWorld),
         ..Migrated(MigratedChaosSeaReadOnlyCommands, ExplorerCommandGroup.ChaosSea),
         ..Planned(ChaosSeaReadOnlyCommands, ExplorerCommandGroup.ChaosSea, "#571"),
-        ..Blocked(ChaosSeaMutatingCommands, ExplorerCommandGroup.ChaosSea, "#574",
-            "Chaos Sea pending-contract команды требуют browser local-turn/write UX поверх session lock; пока они заблокированы в браузере."),
+        ..Migrated(MigratedChaosSeaMutatingCommands, ExplorerCommandGroup.ChaosSea),
         ..Migrated(MigratedShiningCommands, ExplorerCommandGroup.ShiningAbode),
         ..Planned(ShiningReadOnlyCommands, ExplorerCommandGroup.ShiningAbode, "#572"),
         ..Blocked(ShiningMutatingCommands, ExplorerCommandGroup.ShiningAbode, "#574",
             "Shining Abode write operations require browser local-turn/write UX поверх session lock."),
         ..Migrated(MigratedAfterlifeCombatReadOnlyCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities),
         ..Planned(AfterlifeCombatReadOnlyCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities, "#573"),
-        ..Blocked(AfterlifeCombatMutatingCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities, "#574",
-            "Духовное действие меняет pending/local-turn state and must wait for local session lock.")
+        ..Migrated(MigratedAfterlifeCombatMutatingCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities)
     ];
 
     private static IEnumerable<ExplorerCommandMigrationEntry> Planned(
