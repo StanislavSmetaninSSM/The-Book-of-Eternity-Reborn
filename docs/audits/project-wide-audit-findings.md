@@ -42,12 +42,15 @@ Task order: `docs/audits/project-wide-audit-task-order.md`
 
 | ID | Status | Issue | Area | Severity | Summary | Source / Evidence | Expected Behavior | Proposed Fix | Verification |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| PWA-001 | split | #637 | Tests / Build hygiene | P3 | Clean test build passes but emits 169 warnings, making new warning regressions easy to miss. | `dotnet clean BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --nologo`, then `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --verbosity minimal`: 2821 tests passed, 0 failed, `TOTAL_WARNINGS=169`; warning families include `CS8600`, `CS8601`, `CS8602`, `CS8603`, `CS8604`, `CS8625`, `xUnit2030`, and `xUnit2031`. | Clean verification should either be warning-clean or have an explicit warning baseline/budget so new warnings cannot disappear into existing noise. | Triage warning clusters, fix low-risk analyzer/nullability warnings, and add a warning budget/gate if full zero-warning cleanup is too large for one branch. | Re-run clean `dotnet test` and compare warning count/budget. |
+| PWA-002 | split | #638 | CI / Repository automation | P2 | Repository has GitHub issue templates but no GitHub Actions workflow to run restore/build/test on pushes or pull requests. | `.github/ISSUE_TEMPLATE/*` exists, but `Get-ChildItem -LiteralPath '.github\workflows' -Force -ErrorAction SilentlyContinue` returns no directory (`NO_WORKFLOWS_DIR`). Local full test command passes only when run manually. | GitHub should automatically run the .NET restore/build/test verification on PRs and pushes to `main`. | Add `.github/workflows` CI for .NET 8 restore, build, and `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj`. | Workflow run should pass on the branch introducing it; local equivalent command remains green. |
 
 ## Audit Checkpoints
 
 | Date | Issue | Scope | Result | Verification |
 | --- | --- | --- | --- | --- |
 | 2026-05-21 | #626 | Created project-wide audit ledger and task closure order for issues #626-#636. | Ledger, taxonomy, severity/status rules, required finding fields, and checkpoint format are defined. | `git diff --check -- docs/audits/project-wide-audit-findings.md docs/audits/project-wide-audit-task-order.md` |
+| 2026-05-21 | #631 | Test coverage, fixtures, encoding, and CI reliability audit. Reviewed test project structure, fixture/test files, `.github` contents, mojibake markers in tracked `cs/md/txt/json/yml/yaml` files, and full clean test execution. | Two findings recorded: PWA-001 warning debt and PWA-002 missing CI workflow. Mojibake marker scan found no tracked matches for `�`, `Ð`, `Ñ`, `Рџ`, or `Р ` outside generated/untracked files. | `dotnet clean BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --nologo`; `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --verbosity minimal` passed 2821/2821 with 169 warnings; `Get-ChildItem .github\workflows` returned no workflow directory. |
 
 ## Related Specialized Audit Ledgers
 
