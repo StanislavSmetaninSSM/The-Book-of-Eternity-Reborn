@@ -11,6 +11,12 @@ public static class ExplorerCommandMigrationRegistry
                 descriptor.FollowUpIssue,
                 descriptor.Reason)))
             .ToArray();
+
+    public static bool IsBrowserExecutable(ExplorerCommandMigrationStatus status) =>
+        status is ExplorerCommandMigrationStatus.ReadOnlyParity
+            or ExplorerCommandMigrationStatus.InteractiveFormPending
+            or ExplorerCommandMigrationStatus.MutatingParity
+            or ExplorerCommandMigrationStatus.StatusOnly;
 }
 
 public sealed record ExplorerCommandMigrationEntry(
@@ -22,7 +28,10 @@ public sealed record ExplorerCommandMigrationEntry(
 
 public enum ExplorerCommandMigrationStatus
 {
-    Migrated,
+    ReadOnlyParity,
+    InteractiveFormPending,
+    MutatingParity,
+    StatusOnly,
     Planned,
     Blocked,
     ConsoleOnlyTemporarily

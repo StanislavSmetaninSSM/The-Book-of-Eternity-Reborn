@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #575, #576, #577, #585, #586
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594
 Parent epic: #559
 
 ## Local-Only Model
@@ -106,7 +106,7 @@ The renderer currently supports these DTO surfaces:
 }
 ```
 
-It returns an `ExplorerCommandResult` DTO. The command API uses the shared Explorer slash-command parser: the raw input is separated into canonical command identity, alias token, arguments, and recognized subcommand where applicable. This means browser calls may use the same base command aliases, argument tails, and supported subcommands as console-oriented command metadata. Migrated commands are executed through browser-safe DTO builders; planned, unknown, malformed, or blocked commands return structured `Blocked`/`Failed` DTOs in Russian instead of invoking console-bound handlers.
+It returns an `ExplorerCommandResult` DTO. The command API uses the shared Explorer slash-command parser: the raw input is separated into canonical command identity, alias token, arguments, and recognized subcommand where applicable. This means browser calls may use the same base command aliases, argument tails, and supported subcommands as console-oriented command metadata. Browser-executable commands are executed through browser-safe DTO builders; planned, unknown, malformed, or blocked commands return structured `Blocked`/`Failed` DTOs in Russian instead of invoking console-bound handlers.
 
 If a migrated command returns `RequiresInput`, the browser host creates a local prompt session and attaches:
 
@@ -149,7 +149,15 @@ For the first interactive protocol layer, successful submissions complete the br
 
 `POST /api/qte/action` accepts `{ "actionId": "...", "grade": "success|partial|fail" }`. Branch-choice actions can omit `grade`; timed/check actions currently submit the resolved grade from the browser UI. Terminal outcomes use the same local state distributor and normalizer as console QTE. The browser path tolerates pre-existing unrelated validation errors in the save, but still rejects new validation errors introduced by the QTE outcome.
 
-Migrated universal/meta read-only surfaces currently include:
+Browser command parity is tracked per command alias, not as a single coarse migrated flag:
+
+- `read-only parity`: the browser can execute the same non-mutating command surface as console and render the shared DTO.
+- `interactive form pending`: the browser can parse the command and render status/prompt DTOs, but the full domain write/repair flow is still tracked by the relevant follow-up task.
+- `status-only`: the browser shows current state for a command that mutates in console, but intentionally does not perform the mutation yet.
+- `mutating parity`: the browser owns the same write path, lock behavior, pending-turn behavior, and rollback behavior as console.
+- `planned`, `blocked`, and `console-only temporarily`: the command is known but not browser-executable yet, with an explicit follow-up or reason.
+
+Universal/meta read-only parity currently includes:
 
 - `/help`, `/помощь`
 - `/status`, `/статус`
@@ -161,7 +169,7 @@ Migrated universal/meta read-only surfaces currently include:
 
 `/math` and `/математик` are read-only calculator surfaces. They accept a formula plus optional `name=value` variables and return existing DTO block types (`panel`, `keyValueGrid`, `table`, `message`, `rawJson`) with the normalized expression, variables, result, rounding, warnings, and structured error details.
 
-Migrated Mortal World read-only surfaces currently include:
+Mortal World read-only parity currently includes:
 
 - `/inv`, `/inventory`, `/инв`, `/инвентарь`
 - `/npc`, `/npcs`, `/characters`, `/нпс`, `/персонажи`
@@ -179,16 +187,16 @@ Migrated Mortal World read-only surfaces currently include:
 - `/storage_access`, `/доступ_к_хранилищам`
 - `/interactions`, `/взаимодействия`
 
-Migrated Mortal World local-turn protocol surfaces currently include:
+Mortal World interactive form pending surfaces currently include:
 
 - `/distribute`
 - `/companion_directive`
 - `/faction_directive`
 - `/craft`
 
-These return `ExplorerCommandResult` DTOs with local GM-turn status, target lists, current raw JSON where useful, and input prompts. They do not yet commit multi-step prompt submissions from the browser; that interactive submit layer is tracked by #575.
+These return `ExplorerCommandResult` DTOs with local GM-turn status, target lists, current raw JSON where useful, and input prompts. They do not yet commit the full domain-specific write flow from the browser; that Mortal World write parity is tracked by #590.
 
-Migrated Chaos Sea read-only surfaces currently include:
+Chaos Sea read-only parity currently includes:
 
 - `/chaos_sea`, `/море_хаоса`
 - `/guardians`, `/хранители`
@@ -197,14 +205,14 @@ Migrated Chaos Sea read-only surfaces currently include:
 - `/abodes`, `/обители`
 - `/gacha`, `/гача`
 
-Migrated Chaos Sea pending-contract protocol surfaces currently include:
+Chaos Sea interactive form pending surfaces currently include:
 
 - `/abode_offering`, `/подношение_обители`
 - `/found_guardian_mantle`, `/учредить_хранителя`
 
-These show the pending contract state, active GM-turn blockers, target choices, and browser DTO prompts. Destructive local writes such as consuming a Soul Relic or Archive entry still require the interactive/write protocol tracked by #575 before the browser can submit them directly.
+These show the pending contract state, active GM-turn blockers, target choices, and browser DTO prompts. Destructive local writes such as consuming a Soul Relic or Archive entry still require the afterlife write protocol tracked by #591 before the browser can submit them directly.
 
-Migrated Shining Abode read-only surfaces currently include:
+Shining Abode browser surfaces currently include:
 
 - `/shining_abode`, `/сияющая_обитель`
 - `/shining_politics`, `/сияющая_политика`
@@ -213,7 +221,7 @@ Migrated Shining Abode read-only surfaces currently include:
 
 The browser versions of `/shining_treasury` and `/source_of_light` are status-only surfaces for now. They do not mutate feathers, sparks, pending files, or capstone request state until the broader interactive/write protocol is implemented.
 
-Migrated afterlife combat and entity read-only surfaces currently include:
+Afterlife combat and entity browser surfaces currently include:
 
 - `/afterlife_profiles`, `/профили_загробья`
 - `/afterlife_inbox`, `/уведомления_загробья`
@@ -224,7 +232,7 @@ Migrated afterlife combat and entity read-only surfaces currently include:
 
 The browser afterlife combat/entity status surfaces are read-only. `/afterlife_inbox` does not mark notifications as read and `/spiritual_arts` does not perform local upgrades.
 
-Migrated lifecycle/local-turn protocol surfaces currently include:
+Lifecycle/local-turn browser surfaces currently include:
 
 - `/validate`, `/валидация`: runs the same `ValidationService` as the console command and renders grouped issues.
 - `/world_setup`, `/настройка_мира`: shows `incarnation_world_setup.json`, `next_life_scenario_core.json`, current realm, and browser prompts for future editing/clearing.
