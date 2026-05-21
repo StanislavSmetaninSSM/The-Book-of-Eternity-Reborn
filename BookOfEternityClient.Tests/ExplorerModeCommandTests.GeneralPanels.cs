@@ -359,6 +359,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         AssertNoHiddenExplorerErrors("system_guardians");
         Assert.True(_console.SelectionTitles.Any(title => title.Contains("Извечные хранители", StringComparison.OrdinalIgnoreCase)),
             BuildConsoleDiagnostics("system_guardians"));
+        Assert.DoesNotContain(_console.SelectionTitles,
+            title => title.Contains("Built-in:", StringComparison.OrdinalIgnoreCase) ||
+                     title.Contains("User:", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.SelectionTitles,
+            title => title.Contains("Встроенные:", StringComparison.OrdinalIgnoreCase) &&
+                     title.Contains("Пользовательские:", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

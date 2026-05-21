@@ -906,7 +906,7 @@ public partial class ExplorerMode
             choices.Add("← Назад");
 
             var choice = Prompt(new SelectionPrompt<string>()
-                .Title($"[bold cyan]🛡️ Извечные хранители[/]\n[dim]Постоянные именованные хранители, доступные всегда. Внутри файлов эта библиотека технически называется system guardians.[/]\n[dim]Built-in: {presets.Count(p => p.LibraryKind == "built_in")} • User: {presets.Count(p => p.LibraryKind == "user")}[/]")
+                .Title($"[bold cyan]🛡️ Извечные хранители[/]\n[dim]Постоянные именованные хранители, доступные всегда. Внутри файлов эта библиотека технически называется system guardians.[/]\n[dim]Встроенные: {presets.Count(p => p.LibraryKind == "built_in")} • Пользовательские: {presets.Count(p => p.LibraryKind == "user")}[/]")
                 .HighlightStyle(new Style(Color.Cyan1))
                 .PageSize(14)
                 .AddChoices(choices));
