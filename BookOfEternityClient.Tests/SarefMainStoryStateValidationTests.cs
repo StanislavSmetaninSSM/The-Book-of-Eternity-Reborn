@@ -561,6 +561,100 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_QuestFourClosureWithProofRevelationAndAdvantage_PassesMemorySceneContract()
+    {
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(includeMemoryProof: true));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("saref_main_story_memory_scene", StringComparison.OrdinalIgnoreCase) == true ||
+            string.Equals(issue.Code, "saref_main_story_quest_four_missing_memory_scene_proof", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "saref_main_story_revelation_without_questline_completion", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "saref_main_story_advantage_without_questline_completion", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "saref_main_story_completed_quest_four_missing_revelation", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "saref_main_story_completed_quest_four_missing_advantage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MemorySceneProofForDifferentGuardianOrQuest_ReportsMismatch()
+    {
+        var mismatchedProof = BuildValidMemorySceneProofPayload()
+            .Replace("\"guardianId\": \"azalia\"", "\"guardianId\": \"myriel\"", StringComparison.Ordinal)
+            .Replace("\"questId\": \"azalia_saref_q4\"", "\"questId\": \"myriel_saref_q4\"", StringComparison.Ordinal);
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(mismatchedProof));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_memory_scene_proof_guardian_mismatch", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_memory_scene_proof_quest_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PhysicalMortalItemInsideMemorySceneProof_ReportsIssue()
+    {
+        var proofWithPhysicalTransfer = """
+        {
+          "sceneId": "memory_scene_azalia_q4",
+          "layer": "Воспоминание",
+          "roleId": "azalia_white_lodge_witness",
+          "guardianId": "azalia",
+          "questId": "azalia_saref_q4",
+          "questOrdinal": 4,
+          "completedAtTurn": 44,
+          "successConditionSatisfied": true,
+          "summary": "Игрок прошел роль свидетеля и восстановил правду о ложе белых перьев.",
+          "itemEcho": {
+            "transferredItemId": "rare_mortal_ore_001"
+          }
+        }
+        """;
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(proofWithPhysicalTransfer));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "saref_main_story_physical_mortal_item_evidence", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AfterlifeMemorySceneTurnChangingMortalQuests_ReportsRealmSegregation()
+    {
+        const string soulState = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 1
+        }
+        """;
+        const string preTurnRegularQuests = """{ "activeQuests": [] }""";
+        const string currentRegularQuests = """{ "activeQuests": [{ "questId": "mortal_leak", "status": "active" }] }""";
+
+        await _fs.WriteFileAtomicAsync("ready/turn_complete.json", """{ "accepted": true }""");
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulState);
+        await _fs.WriteFileAtomicAsync("game_state/quests/regular_quests.json", currentRegularQuests);
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefQuestFourCompletedState(includeMemoryProof: true));
+
+        await WriteSnapshotFileAsync("game_state/meta/soul_state.json", soulState);
+        await WriteSnapshotFileAsync("game_state/quests/regular_quests.json", preTurnRegularQuests);
+        await WriteSnapshotFileAsync(SarefMainStoryState.StatePath, SarefMainStoryState.SerializeDefaultRoot());
+        await WriteValidatedSnapshotManifestAsync(
+            turnNumber: 44,
+            playerAction: "[SAREF_MEMORY_SCENE: azalia_saref_q4] Завершаю Воспоминание Азалии.",
+            ("game_state/meta/soul_state.json", soulState),
+            ("game_state/quests/regular_quests.json", preTurnRegularQuests),
+            (SarefMainStoryState.StatePath, SarefMainStoryState.SerializeDefaultRoot()));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "realm_segregation_violation", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("game_state/quests/regular_quests.json", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
     public void ApplyUpdate_RecordMemoryScene_MergesSceneQuestRevelationAndAdvantage()
     {
         var baseline = JsonNode.Parse("""
@@ -1800,12 +1894,15 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
         }
         """;
 
-    private static string BuildSarefQuestFourCompletedState(bool includeMemoryProof)
+    private static string BuildSarefQuestFourCompletedState(bool includeMemoryProof) =>
+        BuildSarefQuestFourCompletedState(includeMemoryProof ? BuildValidMemorySceneProofPayload() : null);
+
+    private static string BuildSarefQuestFourCompletedState(string? memorySceneProofPayload)
     {
-        var memoryProof = includeMemoryProof
+        var memoryProof = !string.IsNullOrWhiteSpace(memorySceneProofPayload)
             ? $"""
               ,
-                  "memorySceneProof": {BuildValidMemorySceneProofPayload()}
+                  "memorySceneProof": {memorySceneProofPayload}
               """
             : string.Empty;
 
@@ -2389,12 +2486,19 @@ public sealed class SarefMainStoryStateValidationTests : IDisposable
     private Task WriteSnapshotFileAsync(string logicalPath, string json) =>
         _fs.WriteFileAtomicAsync($"game_state/control/pending_turn_snapshot/{logicalPath}", json);
 
-    private async Task WriteValidatedSnapshotManifestAsync(params (string Path, string Json)[] snapshotFiles)
+    private Task WriteValidatedSnapshotManifestAsync(params (string Path, string Json)[] snapshotFiles) =>
+        WriteValidatedSnapshotManifestAsync(
+            turnNumber: 43,
+            playerAction: "[SAREF_WINGS_INFILTRATION: saref_wings_infiltration:42] Ищу Крылья Ангелов.",
+            snapshotFiles);
+
+    private async Task WriteValidatedSnapshotManifestAsync(
+        int turnNumber,
+        string playerAction,
+        params (string Path, string Json)[] snapshotFiles)
     {
         const string sessionId = "session_saref_wings_tests";
         const string requestId = "request_saref_wings_tests";
-        const int turnNumber = 43;
-        const string playerAction = "[SAREF_WINGS_INFILTRATION: saref_wings_infiltration:42] Ищу Крылья Ангелов.";
 
         await _fs.WriteFileAtomicAsync("input/turn_request.json", $$"""
         {
