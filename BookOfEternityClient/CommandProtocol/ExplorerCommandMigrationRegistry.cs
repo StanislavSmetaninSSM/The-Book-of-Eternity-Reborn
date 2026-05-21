@@ -177,7 +177,7 @@ public static class ExplorerCommandMigrationRegistry
 
     private static readonly string[] ShiningMutatingCommands = [];
 
-    private static readonly string[] AfterlifeCombatReadOnlyCommands =
+    private static readonly string[] MigratedAfterlifeCombatReadOnlyCommands =
     [
         "/afterlife_profiles",
         "/профили_загробья",
@@ -192,6 +192,8 @@ public static class ExplorerCommandMigrationRegistry
         "/spiritual_arts",
         "/духовные_искусства"
     ];
+
+    private static readonly string[] AfterlifeCombatReadOnlyCommands = [];
 
     private static readonly string[] AfterlifeCombatMutatingCommands =
     [
@@ -220,9 +222,10 @@ public static class ExplorerCommandMigrationRegistry
         ..Planned(ShiningReadOnlyCommands, ExplorerCommandGroup.ShiningAbode, "#572"),
         ..Blocked(ShiningMutatingCommands, ExplorerCommandGroup.ShiningAbode, "#574",
             "Shining Abode write operations require browser local-turn/write UX поверх session lock."),
+        ..Migrated(MigratedAfterlifeCombatReadOnlyCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities),
         ..Planned(AfterlifeCombatReadOnlyCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities, "#573"),
-        ..Blocked(AfterlifeCombatMutatingCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities, "#568",
-            "Духовное действие меняет pending/local turn state and must wait for local session lock.")
+        ..Blocked(AfterlifeCombatMutatingCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities, "#574",
+            "Духовное действие меняет pending/local-turn state and must wait for local session lock.")
     ];
 
     private static IEnumerable<ExplorerCommandMigrationEntry> Planned(

@@ -47,14 +47,14 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ExecuteAsync_PlannedCommand_ReturnsBlockedDto()
+    public async Task ExecuteAsync_NonMigratedCommand_ReturnsBlockedDto()
     {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/validate"));
 
-        Assert.Equal("/afterlife_profiles", result.Command);
+        Assert.Equal("/validate", result.Command);
         Assert.Equal(CommandExecutionState.Blocked, result.State);
         var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("#573", message.Message, StringComparison.Ordinal);
+        Assert.Contains("#574", message.Message, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -169,6 +169,29 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(command, result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.NotEmpty(result.Blocks);
+        Assert.DoesNotContain(
+            result.Blocks,
+            static block => block is UiMessageBlock message &&
+                            message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("/afterlife_profiles", "Профили сущностей посмертия")]
+    [InlineData("/afterlife_inbox", "Уведомления загробья")]
+    [InlineData("/spiritual_conflict", "Духовный конфликт")]
+    [InlineData("/spiritual_combat_log", "Журнал духовного боя")]
+    [InlineData("/spiritual_combat_help", "Духовный бой")]
+    [InlineData("/spiritual_arts", "Духовные искусства")]
+    public async Task ExecuteAsync_MigratedAfterlifeCombatAndEntityCommands_ReturnCompletedDtos(string command, string expectedRussianLabel)
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.NotEmpty(result.Blocks);
+        Assert.Contains(expectedRussianLabel, CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(
             result.Blocks,
             static block => block is UiMessageBlock message &&
@@ -447,5 +470,203 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           ]
         }
         """);
+    }
+
+    private async Task SeedAfterlifeCombatAndEntityFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Test Soul",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 6,
+          "inkFeathers": { "current": 40, "total": 120 },
+          "enlightenment": { "currentTier": "Пламенный знак", "experience": 160 },
+          "afterlifeCombatProfile": {
+            "enlightenmentTier": 3,
+            "radianceTier": 1,
+            "spiritFocusTier": 2,
+            "standardArts": {
+              "pressure": 2,
+              "guard": 1,
+              "counter": 1,
+              "maneuver": 2,
+              "binding": 1
+            }
+          }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Test Soul",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 40, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "tier": 3, "experience": 160 },
+                "radiance": { "tier": 1, "experience": 20 }
+              },
+              "standardArts": {
+                "pressure": 2,
+                "guard": 1,
+                "counter": 1,
+                "maneuver": 2,
+                "binding": 1,
+                "recover_spiritual_power": 1
+              },
+              "specialArts": [
+                {
+                  "artId": "rose_mirror_counter",
+                  "displayName": "Зеркало Ночной Розы",
+                  "baseOperation": "counter",
+                  "tier": 1,
+                  "effectSummary": "Контрприём оставляет болезненный образ в клятве противника.",
+                  "costMultiplierPercent": 150,
+                  "canTeachPlayer": true
+                }
+              ],
+              "customStates": [
+                { "stateId": "memory_echo", "stateName": "Эхо памяти", "currentValue": 2, "maxValue": 5 }
+              ],
+              "soulDissipationTier": 1,
+              "progressionStrategy": {
+                "summary": "Сначала усилить защиту и манёвр.",
+                "priorityOrder": [ "guard", "maneuver", "pressure" ],
+                "lastAutoProgressionCycleKey": "cycle_6"
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_spiritual_conflict_state.json", """
+        {
+          "schemaVersion": 1,
+          "activeConflict": {
+            "conflictId": "conflict_1",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "resolutionState": "active",
+            "controlState": {
+              "controlId": "control_1",
+              "controllerSide": "player",
+              "level": "hindered",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver" ],
+              "summary": "Оковы держат противника у края клятвы."
+            },
+            "actionEconomy": {
+              "player": { "current": 7, "max": 8, "source": "spirit_focus" },
+              "opposition": { "current": 5, "max": 6, "source": "profile" }
+            },
+            "playerSide": { "leadContestant": { "actorId": "player_soul", "displayName": "Test Soul" } },
+            "oppositionSide": { "leadContestant": { "actorId": "guardian_shadow", "displayName": "Тень Хранителя" } },
+            "exchangeLog": [
+              {
+                "exchangeId": "exchange_1",
+                "operationType": "pressure",
+                "outcome": "success",
+                "exchangeAtTurn": 6,
+                "before": { "conflictPosition": "contested", "oppositionSideStrain": "clear" },
+                "after": { "conflictPosition": "player_advantaged", "oppositionSideStrain": "strained" },
+                "diceAudit": {
+                  "rolls": [
+                    { "side": "player", "value": 15 },
+                    { "side": "opposition", "value": 9 }
+                  ],
+                  "playerTotal": 18,
+                  "oppositionTotal": 11,
+                  "margin": 7
+                },
+                "rewardAudit": {
+                  "currency": "ink_feathers",
+                  "finalAmount": 3,
+                  "resolvedAtTurn": 6
+                }
+              }
+            ]
+          },
+          "recentConflicts": [
+            {
+              "conflictId": "conflict_done",
+              "resolutionState": "resolved",
+              "operationType": "pressure",
+              "playerOutcome": "victory",
+              "resolvedAtTurn": 5,
+              "rewardAudit": {
+                "currency": "ink_feathers",
+                "finalAmount": 2,
+                "resolvedAtTurn": 5
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/afterlife_notifications.json", """
+        {
+          "notifications": [
+            {
+              "notificationId": "notification_1",
+              "notificationType": "guardian_quest_available",
+              "requestId": "quest_req_1",
+              "status": "unread",
+              "guardianId": "guardian_azalia",
+              "guardianName": "Азалия",
+              "summary": "Хранитель предлагает тёмный след из прошлой жизни.",
+              "createdAtTurn": 6,
+              "createdAtUtc": "2026-05-20T00:00:00Z"
+            }
+          ]
+        }
+        """);
+    }
+
+    private static string CollectBlockText(IEnumerable<UiBlock> blocks)
+    {
+        var parts = new List<string>();
+        foreach (var block in blocks)
+            CollectBlockText(block, parts);
+        return string.Join("\n", parts);
+    }
+
+    private static void CollectBlockText(UiBlock block, List<string> parts)
+    {
+        switch (block)
+        {
+            case UiTextBlock text:
+                parts.Add(text.Text);
+                break;
+            case UiPanelBlock panel:
+                parts.Add(panel.Title);
+                foreach (var child in panel.Blocks)
+                    CollectBlockText(child, parts);
+                break;
+            case UiTableBlock table:
+                parts.Add(table.Title);
+                parts.AddRange(table.Columns);
+                parts.AddRange(table.Rows.SelectMany(static row => row.Cells));
+                break;
+            case UiListBlock list:
+                parts.AddRange(list.Items);
+                break;
+            case UiKeyValueGridBlock grid:
+                parts.AddRange(grid.Items.SelectMany(static item => new[] { item.Key, item.Value }));
+                break;
+            case UiMessageBlock message:
+                parts.Add(message.Title);
+                parts.Add(message.Message);
+                break;
+            case UiRawJsonBlock raw:
+                parts.Add(raw.Title);
+                break;
+        }
     }
 }
