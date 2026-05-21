@@ -70,6 +70,13 @@ public sealed class ExplorerWebCommandService
         if (mortalResult != null)
             return mortalResult;
 
+        var chaosSeaResult = await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(
+            command,
+            _stateManager,
+            _fs);
+        if (chaosSeaResult != null)
+            return chaosSeaResult;
+
         return MessageResult(
             command,
             CommandExecutionState.Failed,

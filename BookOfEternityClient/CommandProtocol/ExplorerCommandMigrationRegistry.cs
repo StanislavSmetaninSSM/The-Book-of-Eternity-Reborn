@@ -135,7 +135,7 @@ public static class ExplorerCommandMigrationRegistry
         "/ремесло"
     ];
 
-    private static readonly string[] ChaosSeaReadOnlyCommands =
+    private static readonly string[] MigratedChaosSeaReadOnlyCommands =
     [
         "/chaos_sea",
         "/море_хаоса",
@@ -150,6 +150,8 @@ public static class ExplorerCommandMigrationRegistry
         "/gacha",
         "/гача"
     ];
+
+    private static readonly string[] ChaosSeaReadOnlyCommands = [];
 
     private static readonly string[] ChaosSeaMutatingCommands =
     [
@@ -210,9 +212,10 @@ public static class ExplorerCommandMigrationRegistry
         ..Planned(MortalReadOnlyCommands, ExplorerCommandGroup.MortalWorld, "#570"),
         ..Blocked(MortalMutatingCommands, ExplorerCommandGroup.MortalWorld, "#574",
             "Мутирующие Mortal World команды требуют browser local-turn/write UX поверх session lock; пока они заблокированы в браузере."),
+        ..Migrated(MigratedChaosSeaReadOnlyCommands, ExplorerCommandGroup.ChaosSea),
         ..Planned(ChaosSeaReadOnlyCommands, ExplorerCommandGroup.ChaosSea, "#571"),
-        ..Blocked(ChaosSeaMutatingCommands, ExplorerCommandGroup.ChaosSea, "#568",
-            "Chaos Sea pending-contract и economy-команды требуют local session lock."),
+        ..Blocked(ChaosSeaMutatingCommands, ExplorerCommandGroup.ChaosSea, "#574",
+            "Chaos Sea pending-contract команды требуют browser local-turn/write UX поверх session lock; пока они заблокированы в браузере."),
         ..Planned(ShiningReadOnlyCommands, ExplorerCommandGroup.ShiningAbode, "#572"),
         ..Blocked(ShiningMutatingCommands, ExplorerCommandGroup.ShiningAbode, "#568",
             "Shining Abode economy, capstone, gates, and pending-contract commands require local session lock."),
