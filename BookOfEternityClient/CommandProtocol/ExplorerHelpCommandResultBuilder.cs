@@ -176,6 +176,7 @@ internal static class ExplorerHelpCommandResultBuilder
         Add(table, "/mods", "/моды", "Глобальные системные моды");
         Add(table, "/system_guardians", "/извечные_хранители", "Библиотека извечных хранителей");
         Add(table, "/gallery", "/галерея", "Галерея изображений");
+        Add(table, "/math", "/математик", "Локальный Математик: вычислить формулу без изменения состояния, например /math 2 + 3 * 5 или /math base * tier base=10 tier=3");
         Add(table, "/options", "/опции", "Игровое меню");
         Add(table, "/gm", "/гм", "Мысли Мастера Игры");
         Add(table, "/debug", "/отладка", "Отладка");

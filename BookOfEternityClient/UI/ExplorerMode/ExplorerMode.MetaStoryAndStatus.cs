@@ -308,6 +308,7 @@ public partial class ExplorerMode
         table.AddRow("[grey]/mods[/]", "[grey]/моды[/]", "🧩 Глобальные системные моды");
         table.AddRow("[grey]/system_guardians[/]", "[grey]/извечные_хранители[/]", "🛡 Библиотека извечных хранителей");
         table.AddRow("[grey]/gallery[/]", "[grey]/галерея[/]", "🖼 Галерея изображений");
+        table.AddRow("[grey]/math[/]", "[grey]/математик[/]", "🧮 Локально вычислить формулу без изменения состояния");
         table.AddRow("[grey]/options[/]", "[grey]/опции[/]", "⚙ Игровое меню");
         table.AddRow("[grey]/gm[/]", "[grey]/гм[/]", "🧠 Мысли Мастера Игры");
         table.AddRow("[grey]/debug[/]", "[grey]/отладка[/]", "🔧 Отладка");

@@ -90,6 +90,20 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.NotEmpty(console.Rendered);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_MathCommandWithExpression_ReturnsBrowserDto()
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/math 2 + 3 * 5"));
+
+        Assert.Equal("/math 2 + 3 * 5", result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(result.Blocks, static block => block is UiPanelBlock panel && panel.Title.Contains("Математик", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Blocks, static block => block is UiRawJsonBlock raw && raw.Title.Contains("JSON", StringComparison.OrdinalIgnoreCase));
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Результат", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("17", text, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("/validate", "Валидация")]
     [InlineData("/world_setup", "Подготовка следующего мира")]

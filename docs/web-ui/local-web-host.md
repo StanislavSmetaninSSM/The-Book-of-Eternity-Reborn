@@ -122,8 +122,10 @@ Migrated universal/meta read-only surfaces currently include:
 - `/status`, `/статус`
 - `/soul`, `/душа`, `/soul_relics`, `/реликвии`, `/afterlife_archive`, `/архив_души`, `/archive_candidates`, `/архив_кандидаты`, `/soul_quests`, `/квесты_души`
 - `/codex`, `/кодекс`, `/achievements`, `/достижения`, `/chronicle`, `/хроника`, `/story`, `/рассказ`, `/история`, `/behavior`, `/поведение`, `/lives`, `/жизни`, `/feathers`, `/перья`, `/world_rules`, `/правила_мира`
-- `/gallery`, `/галерея`, `/gm`, `/гм`, `/debug`, `/отладка`, `/mods`, `/моды`, `/system_guardians`, `/системные_хранители`, `/извечные_хранители`
+- `/gallery`, `/галерея`, `/math`, `/математик`, `/gm`, `/гм`, `/debug`, `/отладка`, `/mods`, `/моды`, `/system_guardians`, `/системные_хранители`, `/извечные_хранители`
 - `/saref`, `/сареф`, `/saref_story`, `/история_сарефа`, `/wings_of_angels`, `/крылья_над_бездной` as the read-only hidden main-story view. The mutating Wings search subcommand remains outside this read-only migration.
+
+`/math` and `/математик` are read-only calculator surfaces. They accept a formula plus optional `name=value` variables and return existing DTO block types (`panel`, `keyValueGrid`, `table`, `message`, `rawJson`) with the normalized expression, variables, result, rounding, warnings, and structured error details.
 
 Migrated Mortal World read-only surfaces currently include:
 

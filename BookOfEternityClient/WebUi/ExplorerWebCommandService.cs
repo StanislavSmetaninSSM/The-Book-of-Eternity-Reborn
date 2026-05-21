@@ -32,8 +32,14 @@ public sealed class ExplorerWebCommandService
         if (string.IsNullOrWhiteSpace(command))
             return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error, "Команда не выполнена", "Команда пустая.");
 
-        var entry = ExplorerCommandMigrationRegistry.Entries
+        var exactEntry = ExplorerCommandMigrationRegistry.Entries
             .FirstOrDefault(item => string.Equals(item.Command, command, StringComparison.OrdinalIgnoreCase));
+        var commandToken = exactEntry?.Command ?? ExtractCommandToken(command);
+
+        var entry = exactEntry ?? (ExplorerMathCommandResultBuilder.CanBuild(commandToken)
+            ? ExplorerCommandMigrationRegistry.Entries
+                .FirstOrDefault(item => string.Equals(item.Command, commandToken, StringComparison.OrdinalIgnoreCase))
+            : null);
 
         if (entry is null)
             return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error, "Команда не найдена", "Команда не зарегистрирована в ExplorerMode.");
@@ -41,19 +47,22 @@ public sealed class ExplorerWebCommandService
         if (entry.Status != ExplorerCommandMigrationStatus.Migrated)
             return BuildBlockedMigrationResult(command, entry);
 
-        return await BuildMigratedResultAsync(command);
+        return await BuildMigratedResultAsync(command, commandToken);
     }
 
-    private async Task<ExplorerCommandResult> BuildMigratedResultAsync(string command)
+    private async Task<ExplorerCommandResult> BuildMigratedResultAsync(string command, string commandToken)
     {
         await _stateManager.RefreshGameStateAsync();
-        if (string.Equals(command, "/help", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(command, "/помощь", StringComparison.OrdinalIgnoreCase))
+        if (ExplorerMathCommandResultBuilder.CanBuild(commandToken))
+            return ExplorerMathCommandResultBuilder.Build(command);
+
+        if (string.Equals(commandToken, "/help", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(commandToken, "/помощь", StringComparison.OrdinalIgnoreCase))
         {
             var state = _stateManager.CurrentState;
             return ExplorerHelpCommandResultBuilder.Build(new ExplorerHelpCommandContext
             {
-                Command = command,
+                Command = commandToken,
                 Title = _localization.T("help"),
                 IsChaosSea = state.IsInChaosSea,
                 IsShiningAbode = state.IsInShiningAbode,
@@ -63,7 +72,7 @@ public sealed class ExplorerWebCommandService
         }
 
         var universalResult = await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(
-            command,
+            commandToken,
             _stateManager,
             _fs,
             _localization);
@@ -71,35 +80,35 @@ public sealed class ExplorerWebCommandService
             return universalResult;
 
         var mortalResult = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(
-            command,
+            commandToken,
             _stateManager,
             _fs);
         if (mortalResult != null)
             return mortalResult;
 
         var chaosSeaResult = await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(
-            command,
+            commandToken,
             _stateManager,
             _fs);
         if (chaosSeaResult != null)
             return chaosSeaResult;
 
         var shiningResult = await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
-            command,
+            commandToken,
             _stateManager,
             _fs);
         if (shiningResult != null)
             return shiningResult;
 
         var afterlifeCombatResult = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
-            command,
+            commandToken,
             _stateManager,
             _fs);
         if (afterlifeCombatResult != null)
             return afterlifeCombatResult;
 
         var lifecycleLocalTurnResult = await ExplorerLifecycleLocalTurnCommandResultBuilder.TryBuildAsync(
-            command,
+            commandToken,
             _stateManager,
             _fs,
             _validationService);
@@ -112,6 +121,12 @@ public sealed class ExplorerWebCommandService
             UiNotificationSeverity.Error,
             "Команда не подключена",
             "Команда помечена как перенесенная, но web command service пока не знает, как ее построить.");
+    }
+
+    private static string ExtractCommandToken(string command)
+    {
+        var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length == 0 ? string.Empty : parts[0];
     }
 
     private static ExplorerCommandResult BuildBlockedMigrationResult(string command, ExplorerCommandMigrationEntry entry)
