@@ -28,6 +28,47 @@ public sealed class GuardianArchiveAndTradeRequestValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CommandOnlyArchiveActionResolutions_DoesNotReportUnknownStateKey()
+    {
+        await WriteJsonAsync(
+            "game_state/meta/soul_state.json",
+            new
+            {
+                currentRealm = "Chaos Sea",
+                currentIncarnation = 1,
+                archiveActionResolutions = Array.Empty<object>()
+            });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            IsFlexibleTopLevelKeyIssue(issue) &&
+            issue.FilePath.Contains("archiveActionResolutions", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CommandOnlyGuardianTradeReceipts_DoesNotReportUnknownStateKey()
+    {
+        await WriteJsonAsync(
+            "game_state/meta/guardians.json",
+            new
+            {
+                UpdateGuardianTradeInventoryReceipts = Array.Empty<object>()
+            });
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            IsFlexibleTopLevelKeyIssue(issue) &&
+            (issue.FilePath.Contains(GuardianTradeRequestState.UpdateReceiptsProperty, StringComparison.OrdinalIgnoreCase) ||
+             issue.FilePath.Contains("game_state/meta/guardians.json", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    private static bool IsFlexibleTopLevelKeyIssue(ValidationIssue issue) =>
+        string.Equals(issue.Code, "flexible_state_unknown_top_level_key", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(issue.Code, "missing_allowed_top_level_key", StringComparison.OrdinalIgnoreCase);
+
+    [Fact]
     public async Task ValidateGameStateAsync_PendingManifestationRequestWithInvalidResidentTierSnapshot_Fails()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

@@ -222,6 +222,7 @@ public partial class ValidationService
             {
                 "metaStateUpdates",
                 "afterlifeArchiveUpdates",
+                "archiveActionResolutions",
                 "soulName", "previousSoulNames", "currentRealm", "currentIncarnation", "enlightenment", "soulProgression",
                 "inkFeathers", "soulRelics", "afterlifeArchive", "livesHistory", "crossIncarnationData", "currentTier",
                 "soulImprint", "pendingMemoryLegacy", AfterlifeSpiritualConflictState.SoulStateProfileProperty,
@@ -304,6 +305,7 @@ public partial class ValidationService
             {
                 "UpdateGuardians", "guardianPowerEvents", "guardians", "activeGuardian", "chaosSeaNavigation", "pendingGuardianCreation",
                 GuardianProjectState.QuestProgressUpdatesProperty,
+                GuardianTradeRequestState.UpdateReceiptsProperty,
                 PlayerGuardianFoundationState.HistoryProperty
             }, issues, ValidateMetaMiscContract);
         await ValidateFlexibleStateFile(PlayerGuardianFoundationState.PendingRequestPath,
