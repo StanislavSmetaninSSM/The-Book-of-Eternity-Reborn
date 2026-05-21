@@ -30,7 +30,8 @@ public static class ExplorerUniversalMetaCommandResultBuilder
         Debug,
         Mods,
         SystemGuardians,
-        SarefStory
+        SarefStory,
+        MemoryScene
     }
 
     private static readonly IReadOnlyDictionary<string, CommandKind> CommandKinds =
@@ -81,7 +82,11 @@ public static class ExplorerUniversalMetaCommandResultBuilder
             ["/saref_story"] = CommandKind.SarefStory,
             ["/история_сарефа"] = CommandKind.SarefStory,
             ["/wings_of_angels"] = CommandKind.SarefStory,
-            ["/крылья_над_бездной"] = CommandKind.SarefStory
+            ["/крылья_над_бездной"] = CommandKind.SarefStory,
+            ["/воспоминание"] = CommandKind.MemoryScene,
+            ["/воспоминание_статус"] = CommandKind.MemoryScene,
+            ["/воспоминание_начать"] = CommandKind.MemoryScene,
+            ["/воспоминание_способности"] = CommandKind.MemoryScene
         };
 
     public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
@@ -120,6 +125,7 @@ public static class ExplorerUniversalMetaCommandResultBuilder
             CommandKind.Mods => BuildDirectoryList(normalizedCommand, fs, "Моды", "mods"),
             CommandKind.SystemGuardians => BuildSystemGuardians(normalizedCommand, fs),
             CommandKind.SarefStory => await BuildSarefStory(normalizedCommand, fs),
+            CommandKind.MemoryScene => await BuildSarefMemoryScene(normalizedCommand, fs),
             _ => null
         };
     }
@@ -418,6 +424,142 @@ public static class ExplorerUniversalMetaCommandResultBuilder
             Raw($"Полный JSON {SarefMainStoryState.StatePath}", root));
     }
 
+    private static async Task<ExplorerCommandResult> BuildSarefMemoryScene(string command, FileSystemManager fs)
+    {
+        var read = await ReadJson(fs, SarefMainStoryState.StatePath);
+        if (read.Node is not JsonObject root)
+        {
+            var message = read.FileExists
+                ? $"Файл найден, но не разобран как состояние скрытой линии: {read.Path}. {read.Error}"
+                : "Активного Воспоминания нет. Это не Врата Памяти: Воспоминание появляется только как особый слой 4-го квеста Хранителя в линии Сарефа.";
+            return Completed(command, Message(read.FileExists ? UiNotificationSeverity.Warning : UiNotificationSeverity.Info, "Воспоминание", message));
+        }
+
+        if (root["memoryScene"] is not JsonObject scene)
+        {
+            return Completed(command,
+                Message(
+                    UiNotificationSeverity.Info,
+                    "Воспоминание",
+                    "Активного Воспоминания нет. Это не Врата Памяти: Воспоминание появляется только как особый слой 4-го квеста Хранителя в линии Сарефа."));
+        }
+
+        var title = GetString(scene, "title", GetString(scene, "sceneTitle", GetString(scene, "sceneId", "без названия")));
+        var role = scene["role"] as JsonObject;
+        var roleName = role == null
+            ? "не указана"
+            : GetString(role, "displayName", GetString(role, "roleId", "не указана"));
+        var roleSummary = role == null ? string.Empty : GetString(role, "summary", string.Empty);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Воспоминание",
+                Grid(
+                    ("Сцена", title),
+                    ("Состояние", DescribeSarefMemorySceneStatus(GetString(scene, "status", string.Empty))),
+                    ("Память Хранителя", GetString(scene, "guardianId")),
+                    ("Квест", JoinNonEmpty(" / ", GetString(scene, "questId", string.Empty), GetNumberOrString(scene, "questOrdinal"))),
+                    ("Роль внутри сцены", JoinNonEmpty(" - ", roleName, roleSummary)))),
+            new UiTextBlock
+            {
+                Tone = UiTone.Warning,
+                Text = "Это не Врата Памяти. Смертный инвентарь не переносится; исторический факт нельзя напрямую переписать."
+            }
+        };
+
+        blocks.Add(BuildMemorySceneObjectTable("Границы сцены", scene["boundaries"] as JsonArray, "boundaryId", preferName: false));
+        blocks.Add(BuildMemorySceneObjectTable("Доступные способности", scene["abilities"] as JsonArray, "abilityId", preferName: true));
+        blocks.Add(BuildMemorySceneNodeTable(scene["requiredStoryNodes"] as JsonArray));
+        blocks.Add(BuildMemorySceneSuccessCondition(scene["successCondition"] as JsonObject));
+        blocks.Add(BuildMemorySceneClosureTarget(scene["closureTarget"] as JsonObject));
+        return Completed(command, blocks);
+    }
+
+    private static UiTableBlock BuildMemorySceneObjectTable(string title, JsonArray? array, string idProperty, bool preferName)
+    {
+        var rows = new List<UiTableRow>();
+        if (array != null)
+        {
+            foreach (var item in array.OfType<JsonObject>())
+            {
+                var name = preferName
+                    ? GetString(item, "name", GetString(item, "displayName", GetString(item, idProperty)))
+                    : GetString(item, "displayName", GetString(item, "name", GetString(item, idProperty)));
+                rows.Add(new UiTableRow
+                {
+                    Cells =
+                    [
+                        name,
+                        GetString(item, "summary", GetString(item, "description", "не указано"))
+                    ]
+                });
+            }
+        }
+
+        if (rows.Count == 0)
+            rows.Add(new UiTableRow { Cells = ["не указано", "не указано"] });
+
+        return new UiTableBlock
+        {
+            Title = title,
+            Columns = ["Название", "Описание"],
+            Rows = rows
+        };
+    }
+
+    private static UiTableBlock BuildMemorySceneNodeTable(JsonArray? nodes)
+    {
+        var rows = new List<UiTableRow>();
+        if (nodes != null)
+        {
+            foreach (var node in nodes.OfType<JsonObject>())
+            {
+                rows.Add(new UiTableRow
+                {
+                    Cells =
+                    [
+                        DescribeSarefMemorySceneNodeStatus(GetString(node, "status", string.Empty)),
+                        GetString(node, "summary", GetString(node, "title", GetString(node, "nodeId")))
+                    ]
+                });
+            }
+        }
+
+        if (rows.Count == 0)
+            rows.Add(new UiTableRow { Cells = ["не указано", "не указано"] });
+
+        return new UiTableBlock
+        {
+            Title = "Обязательные сюжетные узлы",
+            Columns = ["Состояние", "Узел"],
+            Rows = rows
+        };
+    }
+
+    private static UiPanelBlock BuildMemorySceneSuccessCondition(JsonObject? condition)
+    {
+        if (condition == null)
+            return Panel("Условие успеха", Grid(("Описание", "не указано")));
+
+        return Panel("Условие успеха",
+            Grid(
+                ("Описание", GetString(condition, "summary", GetString(condition, "conditionId"))),
+                ("Состояние", GetBool(condition, "satisfied") ? "выполнено" : "ещё не выполнено")));
+    }
+
+    private static UiPanelBlock BuildMemorySceneClosureTarget(JsonObject? target)
+    {
+        if (target == null)
+            return Panel("Что закрывает сцена", Grid(("Цель", "не указано")));
+
+        return Panel("Что закрывает сцена",
+            Grid(
+                ("Хранитель", GetString(target, "guardianId")),
+                ("Квест", JoinNonEmpty(" / ", GetString(target, "questId", string.Empty), GetNumberOrString(target, "questOrdinal"))),
+                ("Фрагмент истины", GetString(target, "revelationId")),
+                ("Преимущество", GetString(target, "advantageId"))));
+    }
+
     private static async Task<ExplorerCommandResult> BuildJsonFile(
         string command,
         FileSystemManager fs,
@@ -617,6 +759,11 @@ public static class ExplorerUniversalMetaCommandResultBuilder
         };
     }
 
+    private static bool GetBool(JsonObject obj, string propertyName) =>
+        obj[propertyName] is JsonValue value &&
+        value.TryGetValue<bool>(out var boolValue) &&
+        boolValue;
+
     private static int CountArray(JsonNode? node, string propertyName) =>
         node?[propertyName] is JsonArray array ? array.Count : 0;
 
@@ -649,6 +796,27 @@ public static class ExplorerUniversalMetaCommandResultBuilder
             "confrontation_available" => "можно выйти к финальному столкновению",
             "completed" => "линия завершена",
             _ => EmptyFallback(stage)
+        };
+
+    private static string DescribeSarefMemorySceneStatus(string status) =>
+        status.ToLowerInvariant() switch
+        {
+            "available" => "доступно",
+            "active" => "активно",
+            "blocked" => "заблокировано",
+            "completed" => "завершено",
+            "failed" => "провалено",
+            _ => EmptyFallback(status)
+        };
+
+    private static string DescribeSarefMemorySceneNodeStatus(string status) =>
+        status.ToLowerInvariant() switch
+        {
+            "pending" => "ожидает",
+            "active" => "активно",
+            "completed" => "выполнено",
+            "failed" => "провалено",
+            _ => EmptyFallback(status)
         };
 
     private static string JoinNonEmpty(string separator, params string?[] values)

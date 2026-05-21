@@ -77,6 +77,71 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Имя Сарефа впервые собрано", text, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("/воспоминание")]
+    [InlineData("/воспоминание статус")]
+    [InlineData("/воспоминание начать")]
+    [InlineData("/воспоминание способности")]
+    public async Task TryProcessCommand_MemoryScene_RenderActiveSceneForPlayer(string command)
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, BuildSarefActiveMemorySceneState());
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand(command);
+
+        Assert.Equal(string.Empty, result);
+        var text = ExtractRenderedText();
+        Assert.Contains("Воспоминание", text, StringComparison.Ordinal);
+        Assert.Contains("Ложа белых перьев", text, StringComparison.Ordinal);
+        Assert.Contains("Роль внутри сцены", text, StringComparison.Ordinal);
+        Assert.Contains("Свидетель ложи", text, StringComparison.Ordinal);
+        Assert.Contains("Прочитать клятву", text, StringComparison.Ordinal);
+        Assert.Contains("Удержать память", text, StringComparison.Ordinal);
+        Assert.Contains("Сареф уже вошёл в ложу", text, StringComparison.Ordinal);
+        Assert.Contains("Войти в ложу", text, StringComparison.Ordinal);
+        Assert.Contains("Увидеть предательство", text, StringComparison.Ordinal);
+        Assert.Contains("Условие успеха", text, StringComparison.Ordinal);
+        Assert.Contains("смертный инвентарь не переносится", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("исторический факт нельзя напрямую переписать", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Это не Врата Памяти", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/воспоминание")]
+    [InlineData("/воспоминание статус")]
+    public async Task TryProcessCommand_MemoryScene_NoActiveScene_ShowsUnavailableState(string command)
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteRawJsonAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "name_revealed",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "memoryScene": null,
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand(command);
+
+        Assert.Equal(string.Empty, result);
+        var text = ExtractRenderedText();
+        Assert.Contains("Активного Воспоминания нет", text, StringComparison.Ordinal);
+        Assert.Contains("Это не Врата Памяти", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task TryProcessCommand_SarefFindWings_InChaosSea_BlocksWithoutPendingRequest()
     {
@@ -5151,6 +5216,74 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         }
       ],
       "sarefAdvantageUses": [],
+      "wingsInfiltration": null,
+      "factionLinks": { "visibility": "hidden" },
+      "finalConfrontation": null,
+      "defeatOutcomes": [],
+      "endings": [],
+      "playerOathState": null,
+      "sarefPersonalBond": null
+    }
+    """;
+
+    private static string BuildSarefActiveMemorySceneState() => """
+    {
+      "schemaVersion": 1,
+      "revealStage": "name_revealed",
+      "guardianQuestlines": [
+        {
+          "guardianId": "azalia",
+          "questStates": [
+            { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+            { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+            { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+            { "questOrdinal": 4, "status": "active", "questId": "azalia_saref_q4" }
+          ]
+        }
+      ],
+      "latentTraces": [],
+      "sarefRevelations": [],
+      "sarefAdvantages": [],
+      "sarefAdvantageUses": [],
+      "memoryScene": {
+        "sceneId": "memory_scene_azalia_q4",
+        "title": "Ложа белых перьев",
+        "status": "active",
+        "layer": "Воспоминание",
+        "guardianId": "azalia",
+        "questId": "azalia_saref_q4",
+        "questOrdinal": 4,
+        "role": {
+          "roleId": "azalia_white_lodge_witness",
+          "displayName": "Свидетель ложи",
+          "summary": "Игрок действует через роль свидетеля старого предательства Азалии."
+        },
+        "boundaries": [
+          { "boundaryId": "past_is_fixed", "summary": "Сареф уже вошёл в ложу; это нельзя отменить." }
+        ],
+        "abilities": [
+          { "abilityId": "read_oath", "name": "Прочитать клятву", "summary": "Увидеть скрытую цену белых перьев." },
+          { "abilityId": "hold_memory", "name": "Удержать память", "summary": "Не дать сцене рассыпаться." },
+          { "abilityId": "name_traitor", "name": "Назвать предателя", "summary": "Связать образ с будущей правдой о Сарефе." }
+        ],
+        "requiredStoryNodes": [
+          { "nodeId": "enter_lodge", "status": "completed", "summary": "Войти в ложу белых перьев." },
+          { "nodeId": "see_betrayal", "status": "pending", "summary": "Увидеть предательство и назвать его цену." }
+        ],
+        "successCondition": {
+          "conditionId": "truth_recognized",
+          "summary": "Игрок распознал связь ложи с Крыльями Ангелов.",
+          "satisfied": false
+        },
+        "closureTarget": {
+          "guardianId": "azalia",
+          "questId": "azalia_saref_q4",
+          "questOrdinal": 4,
+          "revelationId": "rev_azalia_faction",
+          "advantageId": "adv_azalia_false_loyalty"
+        },
+        "startedAtTurn": 43
+      },
       "wingsInfiltration": null,
       "factionLinks": { "visibility": "hidden" },
       "finalConfrontation": null,

@@ -57,7 +57,11 @@ public static class ExplorerCommandMigrationRegistry
         "/saref_story",
         "/история_сарефа",
         "/wings_of_angels",
-        "/крылья_над_бездной"
+        "/крылья_над_бездной",
+        "/воспоминание",
+        "/воспоминание_статус",
+        "/воспоминание_начать",
+        "/воспоминание_способности"
     ];
 
     private static readonly string[] MigratedMortalReadOnlyCommands =
