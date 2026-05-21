@@ -57,6 +57,119 @@ public sealed partial class CanonicalStateNormalizerTests
     }
 
     [Fact]
+    public async Task NormalizeAccumulatedStateAsync_SarefMemorySceneUpdateWrapper_ProjectsQuestClosureAgainstBackupBaseline()
+    {
+        var backupPath = "test_backups/pre_saref_memory_scene.json";
+        await _fs.WriteFileAtomicAsync(backupPath, BuildSarefRouteBaseline());
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
+        {
+          "sarefMainStoryUpdate": {
+            "mode": "record_memory_scene",
+            "memoryScene": {
+              "sceneId": "memory_scene_azalia_q4",
+              "status": "completed",
+              "layer": "Воспоминание",
+              "guardianId": "azalia",
+              "questId": "azalia_saref_q4",
+              "questOrdinal": 4,
+              "role": {
+                "roleId": "azalia_white_lodge_witness",
+                "displayName": "Свидетель ложи",
+                "summary": "Игрок действует через роль свидетеля старого предательства Азалии."
+              },
+              "boundaries": [
+                { "boundaryId": "past_is_fixed", "summary": "Сареф уже вошел в ложу; это нельзя отменить." }
+              ],
+              "abilities": [
+                { "abilityId": "read_oath", "name": "Прочитать клятву", "summary": "Увидеть скрытую цену белых перьев." }
+              ],
+              "requiredStoryNodes": [
+                { "nodeId": "enter_lodge", "status": "completed", "summary": "Игрок вошел в ложу белых перьев." }
+              ],
+              "successCondition": {
+                "conditionId": "truth_recognized",
+                "summary": "Игрок распознал связь ложи с Крыльями Ангелов.",
+                "satisfied": true
+              },
+              "closureTarget": {
+                "guardianId": "azalia",
+                "questId": "azalia_saref_q4",
+                "questOrdinal": 4,
+                "revelationId": "rev_azalia_faction",
+                "advantageId": "adv_azalia_false_loyalty"
+              },
+              "resolvedAtTurn": 44,
+              "resolutionSummary": "Воспоминание завершено, Азалия получила правду о ложе белых перьев."
+            },
+            "guardianQuestline": {
+              "guardianId": "azalia",
+              "questStates": [
+                {
+                  "questOrdinal": 4,
+                  "status": "completed",
+                  "questId": "azalia_saref_q4",
+                  "completedAtTurn": 44,
+                  "memorySceneProof": {
+                    "sceneId": "memory_scene_azalia_q4",
+                    "layer": "Воспоминание",
+                    "roleId": "azalia_white_lodge_witness",
+                    "guardianId": "azalia",
+                    "questId": "azalia_saref_q4",
+                    "questOrdinal": 4,
+                    "completedAtTurn": 44,
+                    "successConditionSatisfied": true,
+                    "summary": "Игрок прошел роль свидетеля и восстановил правду о ложе белых перьев."
+                  }
+                }
+              ]
+            },
+            "sarefRevelation": {
+              "revelationId": "rev_azalia_faction",
+              "category": "faction",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "revealedAtTurn": 44
+            },
+            "sarefAdvantage": {
+              "advantageId": "adv_azalia_false_loyalty",
+              "sourceGuardianId": "azalia",
+              "sourceQuestId": "azalia_saref_q4",
+              "sourceQuestOrdinal": 4,
+              "state": "available",
+              "applicableScenes": [ "wings_infiltration" ],
+              "summary": "Можно выдать себя за полезного перебежчика.",
+              "unlockedAtTurn": 44
+            }
+          }
+        }
+        """);
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [SarefMainStoryState.StatePath] = backupPath
+        });
+
+        var raw = await _fs.ReadFileAsync(SarefMainStoryState.StatePath);
+        var root = JsonNode.Parse(raw!)!.AsObject();
+
+        Assert.False(root.ContainsKey(SarefMainStoryState.ResponseField));
+        Assert.Equal("completed", root["memoryScene"]!["status"]!.GetValue<string>());
+        Assert.Equal("Воспоминание", root["memoryScene"]!["layer"]!.GetValue<string>());
+        var questline = Assert.IsType<JsonObject>(Assert.Single(root["guardianQuestlines"]!.AsArray()));
+        var questFour = Assert.IsType<JsonObject>(questline["questStates"]!.AsArray().Single(node =>
+            node is JsonObject quest && quest["questOrdinal"]?.GetValue<int>() == 4));
+        Assert.Equal("memory_scene_azalia_q4", questFour["memorySceneProof"]!["sceneId"]!.GetValue<string>());
+        Assert.Contains(root["sarefRevelations"]!.AsArray(), node =>
+            node is JsonObject revelation &&
+            revelation["revelationId"]?.GetValue<string>() == "rev_azalia_faction");
+        Assert.Contains(root["sarefAdvantages"]!.AsArray(), node =>
+            node is JsonObject advantage &&
+            advantage["advantageId"]?.GetValue<string>() == "adv_azalia_false_loyalty");
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_SarefDefeatOutcomeUpdateWrapper_ProjectsAgainstBackupBaseline()
     {
         var backupPath = "test_backups/pre_saref_story_defeat.json";
