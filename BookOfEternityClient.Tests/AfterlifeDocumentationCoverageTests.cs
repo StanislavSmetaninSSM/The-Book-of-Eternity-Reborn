@@ -2843,6 +2843,56 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void SarefMemorySystemBoundariesAreDocumented()
+    {
+        var boundaries = ReadRepoFile("OtherGuides", "Saref_Memory_System_Boundaries.md");
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var inventory = ReadRepoFile("OtherGuides", "Afterlife_Pending_Control_Surface_Inventory.json");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+
+        Assert.Contains("`Воспоминание` - это игровой слой", boundaries, StringComparison.Ordinal);
+        Assert.Contains("не создает `pendingMemoryLegacy`", boundaries, StringComparison.Ordinal);
+        Assert.Contains("не выдает механическое Наследие Памяти", boundaries, StringComparison.Ordinal);
+        Assert.Contains("`Врата Памяти` (`Memory Gates`)", boundaries, StringComparison.Ordinal);
+        Assert.Contains("`metaStateUpdates.memoryLegacyGrant`", boundaries, StringComparison.Ordinal);
+        Assert.Contains("`memoryImprint`", boundaries, StringComparison.Ordinal);
+        Assert.Contains("`itemEcho`", boundaries, StringComparison.Ordinal);
+        Assert.Contains("`knowledgeTrace`", boundaries, StringComparison.Ordinal);
+        Assert.Contains("`memorySelection`", boundaries, StringComparison.Ordinal);
+        Assert.Contains("не являются игровым слоем", boundaries, StringComparison.Ordinal);
+        Assert.Contains("`memory_attack`", boundaries, StringComparison.Ordinal);
+        Assert.Contains("не 4-й квест Хранителя", boundaries, StringComparison.Ordinal);
+
+        foreach (var text in new[] { matrix, examples, manifest, inventory, daemonSpec, apiSpec, taskGuide, operations })
+        {
+            Assert.Contains(SarefMainStoryState.MemorySceneLayerName, text, StringComparison.Ordinal);
+            Assert.Contains(SarefMainStoryState.MemorySceneUpdateModeRecord, text, StringComparison.Ordinal);
+            Assert.True(
+                text.Contains("not `Memory Gates`", StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("not Memory Gates", StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("не `Memory Gates`", StringComparison.OrdinalIgnoreCase),
+                "Saref memory-scene docs must explicitly say the layer is not Memory Gates.");
+            Assert.True(
+                text.Contains("does not create `pendingMemoryLegacy`", StringComparison.OrdinalIgnoreCase) ||
+                text.Contains("does not create pendingMemoryLegacy", StringComparison.OrdinalIgnoreCase),
+                "Saref memory-scene docs must explicitly say the layer does not create pendingMemoryLegacy.");
+        }
+
+        foreach (var text in new[] { boundaries, matrix, examples, manifest, inventory, daemonSpec, apiSpec, taskGuide, operations })
+        {
+            Assert.DoesNotContain("Воспоминание (`Memory Gates`)", text, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Memory Gates (`Воспоминание`)", text, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Воспоминание = Memory Gates", text, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("Memory Gates = Воспоминание", text, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void SarefAzaliaQuestlineBibleCoversFourDarkFantasyQuests()
     {
         AssertSarefGuardianQuestlineBible(
