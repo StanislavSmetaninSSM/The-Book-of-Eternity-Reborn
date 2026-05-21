@@ -60,6 +60,27 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    public async Task RootEndpoint_IncludesCommandRendererAssets()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("id=\"command-form\"", html, StringComparison.Ordinal);
+        Assert.Contains("renderCommandResult", html, StringComparison.Ordinal);
+        Assert.Contains("renderBlock", html, StringComparison.Ordinal);
+        Assert.Contains("POST", html, StringComparison.Ordinal);
+        Assert.Contains("/api/explorer/command", html, StringComparison.Ordinal);
+        Assert.Contains("renderNotifications", html, StringComparison.Ordinal);
+        Assert.Contains("action.command", html, StringComparison.Ordinal);
+        Assert.Contains("prompt.prompt", html, StringComparison.Ordinal);
+        Assert.Contains("Пока нет результата", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task ExplorerCommandEndpoint_ReturnsMigratedHelpDto()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();

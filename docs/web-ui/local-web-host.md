@@ -41,9 +41,9 @@ Console mode remains the default:
 dotnet run --project BookOfEternityClient
 ```
 
-## Current Skeleton
+## Current Browser MVP
 
-The initial host exposes:
+The local host exposes:
 
 ```text
 GET /
@@ -52,7 +52,17 @@ GET /api/session
 POST /api/explorer/command
 ```
 
-`/` serves a basic browser shell. `/api/health` and `/api/session` return local session metadata: status, local-only flag, base path, `game_session` path, and whether the directory exists.
+`/` serves the first browser command shell. It renders `ExplorerCommandResult` DTOs from the command API and does not duplicate game logic in JavaScript.
+
+The renderer currently supports these DTO surfaces:
+
+- `text`, `panel`, `table`, `list`, `keyValueGrid`, `message`, and `rawJson` blocks.
+- `notifications` as message cards.
+- `actions` as command buttons when an action has a direct command.
+- `prompts` as read-only prompt cards showing prompt text, kind, requirement flag, and selection options.
+- empty, loading, HTTP error, and command failure states.
+
+`/api/health` and `/api/session` return local session metadata: status, local-only flag, base path, `game_session` path, and whether the directory exists.
 
 `/api/explorer/command` accepts a JSON body:
 
@@ -64,5 +74,5 @@ POST /api/explorer/command
 
 It returns an `ExplorerCommandResult` DTO. At this stage only migrated DTO commands are executed, currently `/help` and `/помощь`. Planned, temporary-console-only, unknown, or blocked commands return structured `Blocked`/`Failed` DTOs instead of invoking console-bound handlers.
 
-Browser rendering, interactive protocols, broad command migration, and QTE support are tracked by the follow-up Web UI issues.
+Interactive multi-step prompt submission, broad command migration, lifecycle/local-turn operations, and QTE support are tracked by the follow-up Web UI issues.
 
