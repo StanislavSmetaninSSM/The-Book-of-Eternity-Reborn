@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text.Json;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -42,7 +44,15 @@ public static class LocalWebUiHost
 
         builder.Services.AddSingleton(sp =>
             new FileSystemManager(options.BasePath, sp.GetRequiredService<ILogger<FileSystemManager>>()));
+        builder.Services.AddSingleton(new GameSettings());
+        builder.Services.AddSingleton(sp =>
+            new StateManager(
+                sp.GetRequiredService<FileSystemManager>(),
+                sp.GetRequiredService<GameSettings>(),
+                sp.GetRequiredService<ILogger<StateManager>>()));
+        builder.Services.AddSingleton<LocalizationManager>();
         builder.Services.AddSingleton<LocalWebUiSessionStatusService>();
+        builder.Services.AddSingleton<ExplorerWebCommandService>();
 
         var app = builder.Build();
         app.Services.GetRequiredService<FileSystemManager>().EnsureDirectoryStructure();
@@ -50,6 +60,8 @@ public static class LocalWebUiHost
         app.MapGet("/", () => Results.Content(BuildShellHtml(), "text/html; charset=utf-8"));
         app.MapGet("/api/health", (LocalWebUiSessionStatusService status) => status.BuildStatus());
         app.MapGet("/api/session", (LocalWebUiSessionStatusService status) => status.BuildStatus());
+        app.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
+            await commandService.ExecuteAsync(request));
 
         return app;
     }

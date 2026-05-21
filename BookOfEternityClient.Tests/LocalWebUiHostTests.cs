@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using System.Net.Sockets;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.WebUi;
@@ -56,6 +57,42 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("<!doctype html>", html, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("The Book of Eternity", html, StringComparison.Ordinal);
         Assert.Contains("/api/health", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExplorerCommandEndpoint_ReturnsMigratedHelpDto()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/explorer/command", new { command = "/help" });
+        var json = await response.Content.ReadAsStringAsync();
+        var root = JsonNode.Parse(json)!.AsObject();
+
+        response.EnsureSuccessStatusCode();
+        Assert.Equal("/help", root["command"]!.GetValue<string>());
+        Assert.Equal("Completed", root["state"]!.GetValue<string>());
+        Assert.Equal("table", root["blocks"]![0]!["kind"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task ExplorerCommandEndpoint_BlocksMutatingCommands()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/explorer/command", new { command = "/spiritual_action" });
+        var json = await response.Content.ReadAsStringAsync();
+        var root = JsonNode.Parse(json)!.AsObject();
+
+        response.EnsureSuccessStatusCode();
+        Assert.Equal("/spiritual_action", root["command"]!.GetValue<string>());
+        Assert.Equal("Blocked", root["state"]!.GetValue<string>());
+        Assert.Equal("message", root["blocks"]![0]!["kind"]!.GetValue<string>());
     }
 
     private static int GetFreeLoopbackPort()
