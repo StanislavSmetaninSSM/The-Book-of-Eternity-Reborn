@@ -81,6 +81,8 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ["/взаимодействия"] = CommandKind.Interactions
         };
 
+    public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
+
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
         StateManager stateManager,

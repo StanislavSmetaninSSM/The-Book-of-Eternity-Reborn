@@ -37,6 +37,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             ["/духовные_искусства"] = CommandKind.Arts
         };
 
+    public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
+
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
         StateManager stateManager,
