@@ -1042,7 +1042,7 @@ public partial class ExplorerMode
     }
 
     /// <summary>
-    /// After showing entity details, offer image actions if image_prompt exists.
+    /// After showing entity details, offer image actions for saved/generated entity images.
     /// </summary>
     private async Task RegenerateEntityImageAsync(string imagePrompt, string entityType, string entityKey)
     {
@@ -1062,21 +1062,71 @@ public partial class ExplorerMode
             _imageService.ShowEntityImage(entityType, entityKey, forceDisplay: true);
     }
 
+    private Task ExportEntityImageAsync(string entityType, string entityKey)
+    {
+        if (_imageService == null)
+            return Task.CompletedTask;
+
+        var targetPath = Ask("[cyan]Куда сохранить копию изображения? Укажите папку или полный путь файла:[/]", "").Trim();
+        if (string.IsNullOrWhiteSpace(targetPath))
+        {
+            MarkupLine("[grey]Экспорт изображения отменён.[/]");
+            return Task.CompletedTask;
+        }
+
+        var result = _imageService.ExportEntityImage(entityType, entityKey, targetPath);
+        if (!result.Success && result.FailureReason == ImageExportFailureReason.DestinationExists)
+        {
+            var overwrite = Prompt(new ConfirmationPrompt(
+                $"[yellow]Файл уже существует: {Markup.Escape(result.DestinationPath ?? targetPath)}. Перезаписать?[/]")
+            { DefaultValue = false });
+            if (overwrite)
+                result = _imageService.ExportEntityImage(entityType, entityKey, targetPath, overwrite: true);
+        }
+
+        if (result.Success)
+        {
+            MarkupLine($"[green]Изображение сохранено: {Markup.Escape(result.DestinationPath ?? targetPath)}[/]");
+        }
+        else
+        {
+            MarkupLine($"[yellow]{Markup.Escape(result.ErrorMessage)}[/]");
+        }
+
+        return Task.CompletedTask;
+    }
+
     private async Task WaitForKeyWithImage(string entityType, string entityName, string imagePrompt, string? entityKey = null)
     {
-        if (_imageService == null || string.IsNullOrWhiteSpace(imagePrompt))
+        if (_imageService == null)
         {
             WaitForKey();
             return;
         }
 
         var effectiveKey = string.IsNullOrWhiteSpace(entityKey) ? entityName : entityKey;
+        var hasPrompt = !string.IsNullOrWhiteSpace(imagePrompt);
+        if (!hasPrompt && !_imageService.EntityImageExists(entityType, effectiveKey))
+        {
+            WaitForKey();
+            return;
+        }
 
         while (true)
         {
             var hasImage = _imageService.EntityImageExists(entityType, effectiveKey);
-            var choices = new List<string> { "🖼 Показать изображение" };
+            var choices = new List<string>();
             if (hasImage)
+            {
+                choices.Add("🖼 Показать сохранённое изображение");
+                choices.Add("💾 Экспортировать изображение");
+            }
+            else if (hasPrompt)
+            {
+                choices.Add("🖼 Показать/создать изображение");
+            }
+
+            if (hasImage && hasPrompt)
                 choices.Add("♻ Пересоздать изображение");
             choices.Add("← Назад");
 
@@ -1097,7 +1147,17 @@ public partial class ExplorerMode
                 continue;
             }
 
-            await _imageService.ShowOrGenerateEntityImageAsync(imagePrompt, entityType, effectiveKey, forceDisplay: true);
+            if (action.Contains("Экспортировать"))
+            {
+                await ExportEntityImageAsync(entityType, effectiveKey);
+                WaitForKey();
+                continue;
+            }
+
+            if (hasImage)
+                _imageService.ShowEntityImage(entityType, effectiveKey, forceDisplay: true);
+            else if (hasPrompt)
+                await _imageService.ShowOrGenerateEntityImageAsync(imagePrompt, entityType, effectiveKey, forceDisplay: true);
             WaitForKey();
         }
     }

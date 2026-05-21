@@ -863,10 +863,14 @@ public partial class ExplorerMode
         // Image actions
         var itemImagePrompt = itemData.HasValue ? GetStr(itemData.Value, "image_prompt", "") : "";
         var itemImageKey = !string.IsNullOrWhiteSpace(itemIdentity) ? itemIdentity : name;
-        if (_imageService != null && !string.IsNullOrEmpty(itemImagePrompt))
+        var hasItemImagePrompt = !string.IsNullOrWhiteSpace(itemImagePrompt);
+        var hasItemImage = _imageService?.EntityImageExists("item", itemImageKey) == true;
+        if (_imageService != null && (hasItemImagePrompt || hasItemImage))
         {
-            actions.Add("🖼 Показать изображение");
-            if (_imageService.EntityImageExists("item", itemImageKey))
+            actions.Add(hasItemImage ? "🖼 Показать сохранённое изображение" : "🖼 Показать/создать изображение");
+            if (hasItemImage)
+                actions.Add("💾 Экспортировать изображение");
+            if (hasItemImage && hasItemImagePrompt)
                 actions.Add("♻ Пересоздать изображение");
         }
         if (!readOnly)
@@ -880,9 +884,17 @@ public partial class ExplorerMode
 
         if (readOnly)
         {
-            if (action.Contains("Показать изображение") && _imageService != null)
+            if (action.Contains("Показать", StringComparison.OrdinalIgnoreCase) && _imageService != null)
             {
-                await _imageService.ShowOrGenerateEntityImageAsync(itemImagePrompt, "item", itemImageKey, forceDisplay: true);
+                if (hasItemImage)
+                    _imageService.ShowEntityImage("item", itemImageKey, forceDisplay: true);
+                else if (hasItemImagePrompt)
+                    await _imageService.ShowOrGenerateEntityImageAsync(itemImagePrompt, "item", itemImageKey, forceDisplay: true);
+                WaitForKey();
+            }
+            else if (action.Contains("Экспортировать изображение") && _imageService != null)
+            {
+                await ExportEntityImageAsync("item", itemImageKey);
                 WaitForKey();
             }
             else if (action.Contains("Пересоздать изображение") && _imageService != null)
@@ -937,9 +949,18 @@ public partial class ExplorerMode
             await MergeItemStacks(itemIdentity, name);
             return true;
         }
-        if (action.Contains("Показать изображение") && _imageService != null)
+        if (action.Contains("Показать", StringComparison.OrdinalIgnoreCase) && _imageService != null)
         {
-            await _imageService.ShowOrGenerateEntityImageAsync(itemImagePrompt, "item", itemImageKey, forceDisplay: true);
+            if (hasItemImage)
+                _imageService.ShowEntityImage("item", itemImageKey, forceDisplay: true);
+            else if (hasItemImagePrompt)
+                await _imageService.ShowOrGenerateEntityImageAsync(itemImagePrompt, "item", itemImageKey, forceDisplay: true);
+            WaitForKey();
+            return false;
+        }
+        if (action.Contains("Экспортировать изображение") && _imageService != null)
+        {
+            await ExportEntityImageAsync("item", itemImageKey);
             WaitForKey();
             return false;
         }

@@ -6,6 +6,48 @@ using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.Services;
 
+public enum ImageExportFailureReason
+{
+    None,
+    SourceMissing,
+    DestinationExists,
+    InvalidTarget,
+    CopyFailed
+}
+
+public sealed class ImageExportResult
+{
+    private ImageExportResult(
+        bool success,
+        ImageExportFailureReason failureReason,
+        string? sourcePath,
+        string? destinationPath,
+        string errorMessage)
+    {
+        Success = success;
+        FailureReason = failureReason;
+        SourcePath = sourcePath;
+        DestinationPath = destinationPath;
+        ErrorMessage = errorMessage;
+    }
+
+    public bool Success { get; }
+    public ImageExportFailureReason FailureReason { get; }
+    public string? SourcePath { get; }
+    public string? DestinationPath { get; }
+    public string ErrorMessage { get; }
+
+    public static ImageExportResult SuccessResult(string sourcePath, string destinationPath) =>
+        new(true, ImageExportFailureReason.None, sourcePath, destinationPath, string.Empty);
+
+    public static ImageExportResult Failure(
+        ImageExportFailureReason failureReason,
+        string errorMessage,
+        string? sourcePath = null,
+        string? destinationPath = null) =>
+        new(false, failureReason, sourcePath, destinationPath, errorMessage);
+}
+
 /// <summary>
 /// Image generation and display service.
 /// Supports scene images (per-turn) and entity images (NPCs, items, locations, etc.)
@@ -223,6 +265,68 @@ public class ImageService
         return EnumerateEntityImageCandidates(dir, safeKey)
             .OrderByDescending(File.GetLastWriteTimeUtc)
             .FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Copy the current saved entity image to an external folder or explicit file path.
+    /// The source image is never modified; existing destination files require explicit overwrite.
+    /// </summary>
+    public ImageExportResult ExportEntityImage(
+        string entityType,
+        string entityKeyOrName,
+        string targetDirectoryOrFilePath,
+        bool overwrite = false)
+    {
+        var sourcePath = GetEntityImagePath(entityType, entityKeyOrName);
+        if (sourcePath == null || !File.Exists(sourcePath))
+        {
+            return ImageExportResult.Failure(
+                ImageExportFailureReason.SourceMissing,
+                "Сохранённое изображение не найдено.");
+        }
+
+        if (string.IsNullOrWhiteSpace(targetDirectoryOrFilePath))
+        {
+            return ImageExportResult.Failure(
+                ImageExportFailureReason.InvalidTarget,
+                "Не указан путь для сохранения изображения.",
+                sourcePath);
+        }
+
+        try
+        {
+            var destinationPath = ResolveExportDestinationPath(sourcePath, targetDirectoryOrFilePath);
+            var destinationDir = Path.GetDirectoryName(destinationPath);
+            if (string.IsNullOrWhiteSpace(destinationDir))
+            {
+                return ImageExportResult.Failure(
+                    ImageExportFailureReason.InvalidTarget,
+                    "Не удалось определить папку для сохранения изображения.",
+                    sourcePath,
+                    destinationPath);
+            }
+
+            Directory.CreateDirectory(destinationDir);
+
+            if (File.Exists(destinationPath) && !overwrite)
+            {
+                return ImageExportResult.Failure(
+                    ImageExportFailureReason.DestinationExists,
+                    "Файл уже существует. Подтвердите перезапись или выберите другой путь.",
+                    sourcePath,
+                    destinationPath);
+            }
+
+            File.Copy(sourcePath, destinationPath, overwrite);
+            return ImageExportResult.SuccessResult(sourcePath, destinationPath);
+        }
+        catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or UnauthorizedAccessException)
+        {
+            return ImageExportResult.Failure(
+                ImageExportFailureReason.CopyFailed,
+                $"Не удалось сохранить изображение: {ex.Message}",
+                sourcePath);
+        }
     }
 
     /// <summary>
@@ -485,6 +589,23 @@ public class ImageService
                 return stem.Equals(safeKey, StringComparison.OrdinalIgnoreCase) ||
                        stem.StartsWith(versionedPrefix, StringComparison.OrdinalIgnoreCase);
             });
+    }
+
+    private static string ResolveExportDestinationPath(string sourcePath, string targetDirectoryOrFilePath)
+    {
+        var trimmedTarget = targetDirectoryOrFilePath.Trim().Trim('"');
+        var expandedTarget = Environment.ExpandEnvironmentVariables(trimmedTarget);
+        var fullTarget = Path.GetFullPath(expandedTarget);
+
+        var targetLooksLikeDirectory =
+            Directory.Exists(fullTarget) ||
+            trimmedTarget.EndsWith(Path.DirectorySeparatorChar) ||
+            trimmedTarget.EndsWith(Path.AltDirectorySeparatorChar) ||
+            string.IsNullOrWhiteSpace(Path.GetExtension(fullTarget));
+
+        return targetLooksLikeDirectory
+            ? Path.Combine(fullTarget, Path.GetFileName(sourcePath))
+            : fullTarget;
     }
 
     private string GetEntityDir(string entityType)

@@ -875,7 +875,9 @@ private async Task ShowNPCs()
         var npcImageKey = GetPrimaryNpcId(npc);
         if (string.IsNullOrWhiteSpace(npcImageKey))
             npcImageKey = npcName;
-        var hasImageSupport = _imageService != null && !string.IsNullOrWhiteSpace(imagePrompt);
+        var hasImagePrompt = !string.IsNullOrWhiteSpace(imagePrompt);
+        var hasExistingImage = _imageService?.EntityImageExists("npc", npcImageKey) == true;
+        var hasImageSupport = _imageService != null && (hasImagePrompt || hasExistingImage);
         var npcId = GetPrimaryNpcId(npc);
         var npcInventoryDisplay = invDoc != null ? BuildNpcInventoryDisplay(invDoc, npcId, npcName) : new NpcInventoryDisplay();
         var hasInspectableItems = npcInventoryDisplay.Items.Count > 0;
@@ -904,8 +906,10 @@ private async Task ShowNPCs()
             if (hasImageSupport)
             {
                 var hasImage = _imageService!.EntityImageExists("npc", npcImageKey);
-                actions.Add("🖼 Показать изображение");
+                actions.Add(hasImage ? "🖼 Показать сохранённое изображение" : "🖼 Показать/создать изображение");
                 if (hasImage)
+                    actions.Add("💾 Экспортировать изображение");
+                if (hasImage && hasImagePrompt)
                     actions.Add("♻ Пересоздать изображение");
             }
 
@@ -960,7 +964,14 @@ private async Task ShowNPCs()
                 continue;
 
             var imageExists = _imageService!.EntityImageExists("npc", npcImageKey);
-            if (action.Contains("Пересоздать") && imageExists)
+            if (action.Contains("Экспортировать", StringComparison.OrdinalIgnoreCase) && imageExists)
+            {
+                await ExportEntityImageAsync("npc", npcImageKey);
+                WaitForKey();
+                return;
+            }
+
+            if (action.Contains("Пересоздать") && imageExists && hasImagePrompt)
             {
                 await RegenerateEntityImageAsync(imagePrompt, "npc", npcImageKey);
                 WaitForKey();
@@ -969,7 +980,10 @@ private async Task ShowNPCs()
 
             if (action.Contains("Показать"))
             {
-                await _imageService.ShowOrGenerateEntityImageAsync(imagePrompt, "npc", npcImageKey, forceDisplay: true);
+                if (imageExists)
+                    _imageService.ShowEntityImage("npc", npcImageKey, forceDisplay: true);
+                else if (hasImagePrompt)
+                    await _imageService.ShowOrGenerateEntityImageAsync(imagePrompt, "npc", npcImageKey, forceDisplay: true);
                 WaitForKey();
                 return;
             }

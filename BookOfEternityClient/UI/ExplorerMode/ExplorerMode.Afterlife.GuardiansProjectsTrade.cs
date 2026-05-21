@@ -2434,8 +2434,12 @@ public partial class ExplorerMode
                                   (TryGetActiveGuardianProject(trackerRoot, guardianId, out _) ||
                                    CollectCompletedGuardianProjects(trackerRoot, guardianId).Count > 0);
 
-        var hasImageSupport = _imageService != null && !string.IsNullOrWhiteSpace(imagePrompt);
-        var hasAbodeImageSupport = _imageService != null && !string.IsNullOrWhiteSpace(abodeImagePrompt);
+        var hasGuardianImagePrompt = !string.IsNullOrWhiteSpace(imagePrompt);
+        var hasExistingGuardianImage = _imageService?.EntityImageExists("guardian", guardianImageKey) == true;
+        var hasImageSupport = _imageService != null && (hasGuardianImagePrompt || hasExistingGuardianImage);
+        var hasAbodeImagePrompt = !string.IsNullOrWhiteSpace(abodeImagePrompt);
+        var hasExistingAbodeImage = _imageService?.EntityImageExists("abode", abodeImageKey) == true;
+        var hasAbodeImageSupport = _imageService != null && (hasAbodeImagePrompt || hasExistingAbodeImage);
         if (!tradeAvailable && !socialAvailable && !hasImageSupport && !hasAbodeImageSupport && !hasGuardianJournalEntries && !hasGuardianProjects)
         {
             WaitForKey();
@@ -2469,16 +2473,20 @@ public partial class ExplorerMode
             if (hasImageSupport)
             {
                 var hasImage = _imageService!.EntityImageExists("guardian", guardianImageKey);
-                actions.Add("🖼 Показать изображение хранителя");
+                actions.Add(hasImage ? "🖼 Показать сохранённое изображение хранителя" : "🖼 Показать/создать изображение хранителя");
                 if (hasImage)
+                    actions.Add("💾 Экспортировать изображение хранителя");
+                if (hasImage && hasGuardianImagePrompt)
                     actions.Add("♻ Пересоздать изображение хранителя");
             }
 
             if (hasAbodeImageSupport)
             {
                 var hasAbodeImage = _imageService!.EntityImageExists("abode", abodeImageKey);
-                actions.Add("🏛 Показать изображение обители");
+                actions.Add(hasAbodeImage ? "🏛 Показать сохранённое изображение обители" : "🏛 Показать/создать изображение обители");
                 if (hasAbodeImage)
+                    actions.Add("🏛 💾 Экспортировать изображение обители");
+                if (hasAbodeImage && hasAbodeImagePrompt)
                     actions.Add("🏛 ♻ Пересоздать изображение обители");
             }
 
@@ -2621,10 +2629,16 @@ public partial class ExplorerMode
             if (action.Contains("обители", StringComparison.OrdinalIgnoreCase))
             {
                 var abodeImageExists = _imageService!.EntityImageExists("abode", abodeImageKey);
-                if (action.Contains("Пересоздать", StringComparison.OrdinalIgnoreCase) && abodeImageExists)
+                if (action.Contains("Экспортировать", StringComparison.OrdinalIgnoreCase) && abodeImageExists)
+                    await ExportEntityImageAsync("abode", abodeImageKey);
+                else if (action.Contains("Пересоздать", StringComparison.OrdinalIgnoreCase) && abodeImageExists && hasAbodeImagePrompt)
                     await RegenerateEntityImageAsync(abodeImagePrompt, "abode", abodeImageKey);
-                else
+                else if (abodeImageExists)
+                    _imageService.ShowEntityImage("abode", abodeImageKey, forceDisplay: true);
+                else if (hasAbodeImagePrompt)
                     await _imageService.ShowOrGenerateEntityImageAsync(abodeImagePrompt, "abode", abodeImageKey, forceDisplay: true);
+                else
+                    MarkupLine("[yellow]Сохранённое изображение обители не найдено.[/]");
                 WaitForKey();
                 return;
             }
@@ -2633,7 +2647,14 @@ public partial class ExplorerMode
                 continue;
 
             var imageExists = _imageService!.EntityImageExists("guardian", guardianImageKey);
-            if (action.Contains("Пересоздать", StringComparison.OrdinalIgnoreCase) && imageExists)
+            if (action.Contains("Экспортировать", StringComparison.OrdinalIgnoreCase) && imageExists)
+            {
+                await ExportEntityImageAsync("guardian", guardianImageKey);
+                WaitForKey();
+                return;
+            }
+
+            if (action.Contains("Пересоздать", StringComparison.OrdinalIgnoreCase) && imageExists && hasGuardianImagePrompt)
             {
                 await RegenerateEntityImageAsync(imagePrompt, "guardian", guardianImageKey);
                 WaitForKey();
@@ -2642,7 +2663,10 @@ public partial class ExplorerMode
 
             if (action.Contains("Показать", StringComparison.OrdinalIgnoreCase))
             {
-                await _imageService.ShowOrGenerateEntityImageAsync(imagePrompt, "guardian", guardianImageKey, forceDisplay: true);
+                if (imageExists)
+                    _imageService.ShowEntityImage("guardian", guardianImageKey, forceDisplay: true);
+                else if (hasGuardianImagePrompt)
+                    await _imageService.ShowOrGenerateEntityImageAsync(imagePrompt, "guardian", guardianImageKey, forceDisplay: true);
                 WaitForKey();
                 return;
             }
