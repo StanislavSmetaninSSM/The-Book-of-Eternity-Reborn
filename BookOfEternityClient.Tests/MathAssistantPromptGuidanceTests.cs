@@ -29,6 +29,16 @@ public sealed class MathAssistantPromptGuidanceTests
         Assert.Contains("\"referencedBy\": [ \"currentHealthChange\"", text, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void AfterlifeRewardExample_UsesMathAuditFinalAmountReference()
+    {
+        var text = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        Assert.Contains("calc_afterlife_reward_final_amount_1", text, StringComparison.Ordinal);
+        Assert.Contains("\"afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount\"", text, StringComparison.Ordinal);
+        Assert.Contains("\"result\": 30", text, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("Examples/E_Block_6.txt", "calc_mortal_combat_damage_example")]
     [InlineData("Examples/E_CLI_Afterlife_Turns.txt", "calc_afterlife_conflict_margin_example")]

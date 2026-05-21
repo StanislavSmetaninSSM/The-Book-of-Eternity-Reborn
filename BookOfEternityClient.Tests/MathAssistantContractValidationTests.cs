@@ -168,6 +168,29 @@ public sealed class MathAssistantContractValidationTests : IDisposable
     }
 
     [Fact]
+    public void ValidateResponse_AfterlifeRewardMathAuditMatchingFinalAmount_DoesNotReportDeltaMismatch()
+    {
+        using var doc = JsonDocument.Parse(BuildAfterlifeRewardMathAuditResponseJson(finalAmount: 30));
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "math_audit_applied_delta_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "math_audit_missing_referenced_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateResponse_AfterlifeRewardMathAuditMismatchedFinalAmount_ReportsMismatch()
+    {
+        using var doc = JsonDocument.Parse(BuildAfterlifeRewardMathAuditResponseJson(finalAmount: 29));
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "math_audit_applied_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MathAuditStateFile_IsValidated()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/math_audit.json", """
@@ -277,6 +300,62 @@ public sealed class MathAssistantContractValidationTests : IDisposable
         }
         """;
     }
+
+    private static string BuildAfterlifeRewardMathAuditResponseJson(int finalAmount = 30) => $$"""
+    {
+      "response": "Духовная победа выдаёт награду после расчёта.",
+      "afterlifeSpiritualConflictUpdate": {
+        "mode": "resolve",
+        "resolution": {
+          "rewardAudit": {
+            "finalAmount": {{finalAmount}}
+          }
+        }
+      },
+      "mathRequests": [
+        {
+          "requestId": "calc_afterlife_reward_final_amount_1",
+          "purpose": "afterlife conflict reward final amount",
+          "expression": "clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyRewardMultiplierPercent / 1000000, 0, realmCap)",
+          "variables": {
+            "baseAmount": 10,
+            "challengeTier": 3,
+            "outcomeMultiplierPercent": 100,
+            "riskMultiplierPercent": 100,
+            "difficultyRewardMultiplierPercent": 100,
+            "realmCap": 120
+          },
+          "rounding": { "mode": "none" },
+          "expectedResult": 30,
+          "applicationState": "requested_only"
+        }
+      ],
+      "mathAudit": [
+        {
+          "auditId": "calc_afterlife_reward_final_amount_1",
+          "requestId": "calc_afterlife_reward_final_amount_1",
+          "purpose": "afterlife conflict reward final amount",
+          "expression": "clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyRewardMultiplierPercent / 1000000, 0, realmCap)",
+          "normalizedExpression": "clamp(baseAmount*challengeTier*outcomeMultiplierPercent*riskMultiplierPercent*difficultyRewardMultiplierPercent/1000000,0,realmCap)",
+          "variables": {
+            "baseAmount": 10,
+            "challengeTier": 3,
+            "outcomeMultiplierPercent": 100,
+            "riskMultiplierPercent": 100,
+            "difficultyRewardMultiplierPercent": 100,
+            "realmCap": 120
+          },
+          "rawResult": 30,
+          "result": 30,
+          "rounding": { "mode": "none" },
+          "formulaVersion": "math_assistant_v1",
+          "applicationState": "applied_to_state",
+          "referencedBy": [ "afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount" ],
+          "warnings": []
+        }
+      ]
+    }
+    """;
 
     private static string ReadRepoFile(params string[] segments)
     {
