@@ -648,6 +648,7 @@ Quest state contract notes:
 - `mathAudit[].applicationState` must be one of `calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`.
 - `calculated_only` means the number was calculated but not applied to state. `applied_to_state` means some other response/state surface actually used it. `mismatch_repair_blocking` means the GM saw a mismatch and intentionally leaves the turn blocked for repair; it is still a validation error, not silent acceptance.
 - Manual totals must match the local Math Assistant result. A mismatched `expectedResult`, `rawResult`, or `result` fails closed with repair hints.
+- For Mortal combat/status delta fields, if `mathAudit[].applicationState = applied_to_state` and `referencedBy[]` points to `currentHealthChange`, `currentPoiseChange`, or `currentEnergyChange`, then `mathAudit.result` must be the exact signed numeric change written to that response field. Example: a 13 damage hit to the player is `currentHealthChange: -13` and the audit result is also `-13`, not `13`.
 
 ```json
 {

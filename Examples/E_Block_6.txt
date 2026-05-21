@@ -1115,21 +1115,21 @@
     Example: Mortal combat damage must use Math Assistant audit for non-trivial arithmetic
    </title>
    <description>
-    Когда урон складывается из нескольких чисел, GM не должен оставлять расчёт только в тексте. Запиши `mathAudit` с явными variables и привяжи результат к combat log / damage application.
+    Когда урон складывается из нескольких чисел, GM не должен оставлять расчёт только в тексте. Запиши `mathAudit` с явными variables и привяжи результат к полю изменения со знаком, если число меняет состояние игрока.
    </description>
    <jsonresponse>
     <![CDATA[
 {
-  "response": "Удар пробивает защиту разбойника и оставляет глубокую рану.",
-  "gm_thoughts_markdown": "Математик использован для итогового урона: baseDamage + strengthBonus - armorReduction.",
+  "response": "Разбойник пробивает защиту героя и оставляет глубокую рану.",
+  "gm_thoughts_markdown": "Математик использован для изменения здоровья со знаком: armorReduction - (baseDamage + strengthBonus).",
   "mathRequests": [
     {
       "requestId": "calc_mortal_combat_damage_example",
-      "purpose": "mortal combat damage",
-      "expression": "baseDamage + strengthBonus - armorReduction",
+      "purpose": "mortal combat applied health delta",
+      "expression": "armorReduction - (baseDamage + strengthBonus)",
       "variables": { "baseDamage": 12, "strengthBonus": 4, "armorReduction": 3 },
       "rounding": { "mode": "none" },
-      "expectedResult": 13,
+      "expectedResult": -13,
       "applicationState": "requested_only"
     }
   ],
@@ -1137,20 +1137,21 @@
     {
       "auditId": "calc_mortal_combat_damage_example",
       "requestId": "calc_mortal_combat_damage_example",
-      "purpose": "mortal combat damage",
-      "expression": "baseDamage + strengthBonus - armorReduction",
-      "normalizedExpression": "baseDamage+strengthBonus-armorReduction",
+      "purpose": "mortal combat applied health delta",
+      "expression": "armorReduction - (baseDamage + strengthBonus)",
+      "normalizedExpression": "armorReduction-(baseDamage+strengthBonus)",
       "variables": { "baseDamage": 12, "strengthBonus": 4, "armorReduction": 3 },
-      "rawResult": 13,
-      "result": 13,
+      "rawResult": -13,
+      "result": -13,
       "rounding": { "mode": "none" },
       "formulaVersion": "math_assistant_v1",
       "applicationState": "applied_to_state",
-      "referencedBy": [ "combat_log_markdown:mortal_damage_1" ],
+      "referencedBy": [ "currentHealthChange", "combat_log_markdown:mortal_damage_1" ],
       "warnings": []
     }
   ],
-  "combat_log_markdown": "Игрок наносит 13 урона: 12 базового + 4 сила - 3 броня."
+  "currentHealthChange": -13,
+  "combat_log_markdown": "Герой получает 13 урона: 12 базового + 4 сила - 3 броня. Применено currentHealthChange = -13."
 }
                                         ]]>
    </jsonresponse>
