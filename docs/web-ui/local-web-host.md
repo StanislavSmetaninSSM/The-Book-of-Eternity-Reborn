@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #575, #576, #577
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #575, #576, #577, #585, #586
 Parent epic: #559
 
 ## Local-Only Model
@@ -106,7 +106,7 @@ The renderer currently supports these DTO surfaces:
 }
 ```
 
-It returns an `ExplorerCommandResult` DTO. Migrated commands are executed through browser-safe DTO builders; planned, unknown, or blocked commands return structured `Blocked`/`Failed` DTOs instead of invoking console-bound handlers.
+It returns an `ExplorerCommandResult` DTO. The command API uses the shared Explorer slash-command parser: the raw input is separated into canonical command identity, alias token, arguments, and recognized subcommand where applicable. This means browser calls may use the same base command aliases, argument tails, and supported subcommands as console-oriented command metadata. Migrated commands are executed through browser-safe DTO builders; planned, unknown, malformed, or blocked commands return structured `Blocked`/`Failed` DTOs in Russian instead of invoking console-bound handlers.
 
 If a migrated command returns `RequiresInput`, the browser host creates a local prompt session and attaches:
 
@@ -157,6 +157,7 @@ Migrated universal/meta read-only surfaces currently include:
 - `/codex`, `/кодекс`, `/achievements`, `/достижения`, `/chronicle`, `/хроника`, `/story`, `/рассказ`, `/история`, `/behavior`, `/поведение`, `/lives`, `/жизни`, `/feathers`, `/перья`, `/world_rules`, `/правила_мира`
 - `/gallery`, `/галерея`, `/math`, `/математик`, `/gm`, `/гм`, `/debug`, `/отладка`, `/mods`, `/моды`, `/system_guardians`, `/системные_хранители`, `/извечные_хранители`
 - `/saref`, `/сареф`, `/saref_story`, `/история_сарефа`, `/wings_of_angels`, `/крылья_над_бездной` as the read-only hidden main-story view. The mutating Wings search subcommand remains outside this read-only migration.
+- `/воспоминание`, `/воспоминание_статус`, `/воспоминание_начать`, `/воспоминание_способности`, plus spaced subcommand forms such as `/воспоминание начать`, as the read-only Saref memory-scene view.
 
 `/math` and `/математик` are read-only calculator surfaces. They accept a formula plus optional `name=value` variables and return existing DTO block types (`panel`, `keyValueGrid`, `table`, `message`, `rawJson`) with the normalized expression, variables, result, rounding, warnings, and structured error details.
 
@@ -285,7 +286,7 @@ The browser is no longer just a read-only shell, but several flows remain intent
 - `/shining_treasury` and `/source_of_light` are browser status surfaces. Use console mode for treasury mutations and Source of Light request creation until those write paths are explicitly migrated.
 - `/afterlife_inbox` does not mark notifications as read in the browser.
 - `/spiritual_arts` does not perform local spiritual-art upgrades in the browser.
-- The hidden Saref/Wings read-only views are migrated, but mutating search/join/story actions still need their own browser write protocol.
+- The hidden Saref/Wings read-only views are migrated. The parser recognizes `/сареф найти_крылья`, `/сареф find_wings`, and equivalent spaced forms, but the mutating Wings search/join/story actions still need their own browser write protocol (#592) and return a structured blocker instead of silently falling back to the story overview.
 
 These limitations are intentional migration boundaries, not separate game rules. Console and browser still use the same local `game_session` data.
 

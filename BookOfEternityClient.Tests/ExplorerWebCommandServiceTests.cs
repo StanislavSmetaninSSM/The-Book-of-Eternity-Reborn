@@ -327,6 +327,90 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_MemorySceneSubcommand_RoutesThroughSharedParser()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "name_revealed",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "memoryScene": {
+            "sceneId": "memory_scene_azalia_q4",
+            "title": "Ложа белых перьев",
+            "status": "active",
+            "layer": "Воспоминание",
+            "guardianId": "azalia",
+            "questId": "azalia_saref_q4",
+            "questOrdinal": 4,
+            "role": { "roleId": "azalia_white_lodge_witness", "displayName": "Свидетель ложи", "summary": "Роль внутри старого предательства." },
+            "boundaries": [ { "summary": "Сареф уже вошёл в ложу; это нельзя отменить." } ],
+            "abilities": [
+              { "abilityId": "read_oath", "name": "Прочитать клятву", "summary": "Увидеть скрытую цену белых перьев." }
+            ],
+            "requiredStoryNodes": [ { "status": "pending", "summary": "Увидеть предательство." } ],
+            "successCondition": { "summary": "Распознать связь ложи с Крыльями Ангелов.", "satisfied": false },
+            "closureTarget": { "guardianId": "azalia", "questId": "azalia_saref_q4", "questOrdinal": 4 }
+          },
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/воспоминание начать"));
+
+        Assert.Equal("/воспоминание_начать", result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Воспоминание", text, StringComparison.Ordinal);
+        Assert.Contains("Ложа белых перьев", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_UnknownSubcommand_ReturnsRussianParserError()
+    {
+        await SeedUniversalMetaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф неизвестная_ветка"));
+
+        Assert.Equal(CommandExecutionState.Failed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Неизвестная подкоманда", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("неизвестная_ветка", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_RecognizedSarefWriteSubcommand_ReturnsStructuredMigrationBlocker()
+    {
+        await SeedUniversalMetaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф найти_крылья"));
+
+        Assert.Equal(CommandExecutionState.Blocked, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Поиск Крыльев Ангелов распознан", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("#592", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_MalformedArguments_ReturnsRussianParserError()
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/math \"2 + 3"));
+
+        Assert.Equal(CommandExecutionState.Failed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Некорректные аргументы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("кавыч", text, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Theory]
     [InlineData("/inv")]
     [InlineData("/npc")]
