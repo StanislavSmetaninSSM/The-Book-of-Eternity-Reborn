@@ -2,9 +2,9 @@ using System.Diagnostics;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using BookOfEternityClient.Configuration;
 using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityGMBridge;
@@ -260,13 +260,11 @@ internal sealed class BridgeHost : IDisposable
                 {
                     long outputVersionBefore;
                     int outputLengthBefore;
-                    bool allowGeminiPasteMarker;
+                    var visibilitySettings = LoadBridgeConfig();
                     lock (_sync)
                     {
                         outputVersionBefore = _outputVersion;
                         outputLengthBefore = _recentOutput.Length;
-                        allowGeminiPasteMarker = (_status.CliLaunchCommand ?? string.Empty)
-                            .Contains("gemini", StringComparison.OrdinalIgnoreCase);
                     }
 
                     var payload = BuildBracketedPastePayload(request.Text ?? string.Empty);
@@ -277,7 +275,7 @@ internal sealed class BridgeHost : IDisposable
                             request.Text ?? string.Empty,
                             outputVersionBefore,
                             outputLengthBefore,
-                            allowGeminiPasteMarker,
+                            visibilitySettings,
                             TimeSpan.FromSeconds(3),
                             _cts.Token);
                         if (!visible)
@@ -605,15 +603,11 @@ internal sealed class BridgeHost : IDisposable
         string prompt,
         long outputVersionBefore,
         int outputLengthBefore,
-        bool allowGeminiPasteMarker,
+        GameSettings visibilitySettings,
         TimeSpan timeout,
         CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(prompt))
-            return true;
-
-        var needle = BuildPromptVisibilityNeedle(prompt);
-        if (string.IsNullOrWhiteSpace(needle))
             return true;
 
         var deadline = DateTime.UtcNow + timeout;
@@ -623,10 +617,8 @@ internal sealed class BridgeHost : IDisposable
             lock (_sync)
             {
                 var screen = ReadVisibleConsoleText();
-                var normalizedScreen = NormalizeVisibleText(screen);
                 if (_outputVersion > outputVersionBefore &&
-                    (normalizedScreen.Contains(needle, StringComparison.Ordinal) ||
-                     (allowGeminiPasteMarker && normalizedScreen.Contains("Pasted Text:", StringComparison.OrdinalIgnoreCase))))
+                    GmBridgePasteVisibilityPolicy.IsPromptVisible(prompt, screen, visibilitySettings))
                 {
                     return true;
                 }
@@ -679,28 +671,8 @@ internal sealed class BridgeHost : IDisposable
         }
     }
 
-    private static string BuildPromptVisibilityNeedle(string prompt)
-    {
-        var normalized = NormalizeVisibleText(prompt).Trim();
-        if (string.IsNullOrWhiteSpace(normalized))
-            return string.Empty;
-
-        var compact = Regex.Replace(normalized, @"\s+", " ");
-        var length = Math.Min(24, compact.Length);
-        return compact[..length];
-    }
-
     private static TaskCompletionSource<bool> CreateOutputSignal() =>
         new(TaskCreationOptions.RunContinuationsAsynchronously);
-
-    private static string NormalizeVisibleText(string value)
-    {
-        if (string.IsNullOrEmpty(value))
-            return string.Empty;
-
-        var withoutAnsi = Regex.Replace(value, @"\x1B\[[0-9;?]*[ -/]*[@-~]", string.Empty);
-        return withoutAnsi.Replace("\r", string.Empty);
-    }
 
     private static string ReadVisibleConsoleText()
     {
@@ -783,19 +755,23 @@ internal sealed class BridgeHost : IDisposable
         throw new InvalidOperationException("Neither pwsh.exe nor powershell.exe is available for bridge hosting.");
     }
 
-    private BridgeRuntimeConfig LoadBridgeConfig()
+    private GameSettings LoadBridgeConfig()
     {
         try
         {
             if (!File.Exists(_configPath))
-                return new BridgeRuntimeConfig();
+                return new GameSettings();
 
             var json = File.ReadAllText(_configPath, Encoding.UTF8);
-            return JsonSerializer.Deserialize<BridgeRuntimeConfig>(json, JsonOpts) ?? new BridgeRuntimeConfig();
+            var loaded = JsonSerializer.Deserialize<GameSettings>(json, JsonOpts);
+            var settings = new GameSettings();
+            if (loaded != null)
+                settings.ApplyLoadedValues(loaded);
+            return settings;
         }
         catch
         {
-            return new BridgeRuntimeConfig();
+            return new GameSettings();
         }
     }
 
@@ -913,11 +889,6 @@ internal sealed class BridgeHost : IDisposable
         var json = JsonSerializer.Serialize(payload, PipeJsonOpts);
         await writer.WriteLineAsync(json.AsMemory(), cancellationToken);
     }
-}
-
-internal sealed class BridgeRuntimeConfig
-{
-    public string GmCliLaunchCommand { get; set; } = "gemini";
 }
 
 internal sealed class BridgeRequest

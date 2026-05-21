@@ -37,6 +37,11 @@ public sealed class StateManagerTests
             Assert.Equal("ru", doc.RootElement.GetProperty("language").GetString());
             Assert.Equal("ConPTYBridge", doc.RootElement.GetProperty("gmBridgeBackend").GetString());
             Assert.Equal("gemini --yolo", doc.RootElement.GetProperty("gmCliLaunchCommand").GetString());
+            Assert.Equal("ExactTextOrConfiguredMarker", doc.RootElement.GetProperty("gmBridgePasteVisibilityPolicy").GetString());
+            Assert.Contains(
+                doc.RootElement.GetProperty("gmBridgePasteVisibilityMarkers").EnumerateArray(),
+                marker => string.Equals(marker.GetProperty("name").GetString(), "Codex", StringComparison.OrdinalIgnoreCase) &&
+                          string.Equals(marker.GetProperty("kind").GetString(), "regex", StringComparison.OrdinalIgnoreCase));
         }
         finally
         {

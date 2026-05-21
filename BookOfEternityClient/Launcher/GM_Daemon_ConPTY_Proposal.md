@@ -1,7 +1,7 @@
 # Windows-Native GM Bridge Proposal
 
 ## Status
-Draft design note. Not implemented yet.
+Historical design note. The C# helper exists as `BookOfEternityGMBridge`; this document still records the intended behavior and operator-facing configuration.
 
 This document captures the idea of replacing the current fragile `SendKeys`-based daemon transport with a proper Windows-native backend.
 
@@ -225,3 +225,24 @@ The idea is considered the preferred long-term Windows solution for the GM daemo
 Until then:
 - `Clipboard` remains the safest fallback
 - `WindowAutoPaste` remains best-effort only
+
+## Large Paste Visibility Markers
+
+Before the bridge sends `Enter` after a bracketed paste, it verifies that the prompt is visible in the hosted CLI. Some CLIs collapse large pasted text into a marker instead of rendering the full prompt. This is controlled by `game_session/config.json`:
+
+```json
+{
+  "gmBridgePasteVisibilityPolicy": "ExactTextOrConfiguredMarker",
+  "gmBridgePasteVisibilityMarkers": [
+    { "name": "Gemini", "kind": "contains", "pattern": "Pasted Text:" },
+    { "name": "Codex", "kind": "regex", "pattern": "\\[Pasted Content \\d+ chars\\]" }
+  ]
+}
+```
+
+`kind` supports:
+- `contains` - case-insensitive substring match.
+- `regex` - case-insensitive regular expression match; invalid regex markers are ignored instead of crashing the bridge.
+
+Use `ExactTextOnly` if a CLI must never rely on collapsed paste markers. Use `ExactTextOrConfiguredMarker` for Gemini, Codex, or any future local CLI that reports accepted large pastes with a stable marker.
+Configured custom markers are added on top of the built-in Gemini/Codex defaults, so adding one local CLI marker does not disable existing compatibility.

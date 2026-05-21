@@ -48,6 +48,15 @@ public class GameSettings
     /// Optional explicit named-pipe name override for bridge diagnostics / advanced setups.
     /// </summary>
     public string GmBridgePipeNameOverride { get; set; } = "";
+    /// <summary>
+    /// Controls when the GM bridge may press Enter after a bracketed paste.
+    /// </summary>
+    public string GmBridgePasteVisibilityPolicy { get; set; } = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.ExactTextOrConfiguredMarker;
+    /// <summary>
+    /// CLI-specific markers that prove a large pasted prompt was accepted even when the terminal collapses the text.
+    /// </summary>
+    public List<GmBridgePasteVisibilityMarker> GmBridgePasteVisibilityMarkers { get; set; } =
+        BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.CreateDefaultMarkers();
     public string GameVersion { get; set; } = "1.0.0";
     /// <summary>
     /// Game difficulty: "normal", "hard", or "impossible".
@@ -113,6 +122,8 @@ public class GameSettings
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList() ?? new List<string>();
+        GmBridgePasteVisibilityPolicy = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizePolicy(GmBridgePasteVisibilityPolicy);
+        GmBridgePasteVisibilityMarkers = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizeMarkers(GmBridgePasteVisibilityMarkers);
     }
 }
 
