@@ -593,6 +593,12 @@ public sealed class AfterlifeDocumentationCoverageTests
             "pending_source_of_light_capstone.json",
             "pending_saref_wings_infiltration.json",
             "sarefMainStoryUpdate",
+            "record_memory_scene",
+            "memorySceneProof",
+            "Memory Gates",
+            "pendingMemoryLegacy",
+            "knowledge trace",
+            "soul resonance",
             "Source of Light",
             "active spiritual conflict"
         };
@@ -2752,6 +2758,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("closureTarget", text, StringComparison.Ordinal);
             Assert.Contains("Mortal World", text, StringComparison.Ordinal);
             Assert.Contains("Memory Gates", text, StringComparison.Ordinal);
+            Assert.Contains("pendingMemoryLegacy", text, StringComparison.Ordinal);
+            Assert.Contains("knowledge trace", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("soul resonance", text, StringComparison.OrdinalIgnoreCase);
         }
 
         foreach (var text in new[] { matrix, examples, manifest, inventory, daemonSpec, apiSpec, taskGuide, operations })
