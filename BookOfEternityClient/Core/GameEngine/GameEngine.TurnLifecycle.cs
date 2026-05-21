@@ -2611,6 +2611,9 @@ In Shining Abode, verified progressionProcessingReport is a narrow scheduler-own
 
 If a forbidden key appears in your draft response for the active realm, REMOVE it before finalizing.
 
+MATH ASSISTANT / МАТЕМАТИК:
+Use `mathRequests[]` / `mathAudit[]` for non-trivial mechanical arithmetic instead of relying only on prose. These fields write `game_state/meta/math_audit.json`. `mathRequests[]` is only a calculation request; `mathAudit[]` records the checked result with `formulaVersion = math_assistant_v1`, numeric variables, rounding, and `applicationState` (`calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`). If the number changed game state, still write the actual target state/receipt surface and reference it through `mathAudit[].referencedBy[]`.
+
 NPC AGENCY — HARD REQUIREMENT:
 You MUST declare NPC reasoning scope BEFORE narration instead of silently skipping or guessing it.
 Your gm_thoughts_markdown MUST contain:

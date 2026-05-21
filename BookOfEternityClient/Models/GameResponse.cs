@@ -444,6 +444,12 @@ public class GameResponse
     [JsonPropertyName("achievementUnlocks")]
     public JsonElement[]? AchievementUnlocks { get; set; }
 
+    [JsonPropertyName("mathRequests")]
+    public JsonElement[]? MathRequests { get; set; }
+
+    [JsonPropertyName("mathAudit")]
+    public JsonElement[]? MathAudit { get; set; }
+
     // ═══════════════════════════════════════════════
     // MISCELLANEOUS
     // ═══════════════════════════════════════════════

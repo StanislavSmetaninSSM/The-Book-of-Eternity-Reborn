@@ -158,6 +158,8 @@ public static class FileMapping
         ["characterChronicleUpdates"] = "game_state/meta/character_chronicle.json",
         ["loreCodexUpdates"] = "lore/codex_entries.json",
         ["achievementUnlocks"] = "game_state/meta/achievements.json",
+        ["mathRequests"] = "game_state/meta/math_audit.json",
+        ["mathAudit"] = "game_state/meta/math_audit.json",
 
         // MISCELLANEOUS
         ["UpdateVehicles"] = "game_state/misc/vehicles.json",

@@ -366,6 +366,10 @@ CLI Agent automatically loads current game state from:
   
   // ACHIEVEMENT SYSTEM
   "achievementUnlocks": "array of achievement_unlock_objects (see Achievements section below)",
+
+  // MATH ASSISTANT / МАТЕМАТИК
+  "mathRequests": "array of deterministic calculation request objects for the local Math Assistant / Математик",
+  "mathAudit": "array of deterministic calculation audit objects with formulaVersion = math_assistant_v1",
   
   // MISCELLANEOUS
   "UpdateVehicles": "array of vehicle_command_objects",
@@ -632,6 +636,51 @@ Quest state contract notes:
 - `game_state/meta/player_behavior.json` ← `playerBehaviorAssessment`, `historyManipulationCoefficient`
 - `game_state/meta/character_chronicle.json` ← `characterChronicleUpdates`
 - `game_state/meta/achievements.json` ← `achievementUnlocks`
+- `game_state/meta/math_audit.json` ← `mathRequests`, `mathAudit`
+
+#### **MATH ASSISTANT / МАТЕМАТИК**
+- `mathRequests[]` is the GM-authored request surface for deterministic arithmetic that should be checked by the local client calculator. It is a calculation request only; it does not change game state by itself.
+- `mathAudit[]` is the GM-authored calculation proof surface. It records the normalized expression, resolved numeric variables, raw result, rounded result, rounding mode, `formulaVersion = math_assistant_v1`, warnings, and optional `referencedBy[]` links to combat logs, reward audits, economy receipts, project reports, or other state surfaces that used the number.
+- Both arrays are distributed to `game_state/meta/math_audit.json`.
+- Supported expression syntax is deliberately small: numbers, variables, parentheses, `+`, `-`, `*`, `/`, and functions `min`, `max`, `clamp`, `round`, `floor`, `ceil`/`ceiling`, `abs`. Do not use `%`; percentages must be explicit variables with division by `100`.
+- Supported rounding modes are `none`, `floor`, `ceiling`, `to_zero`, `away_from_zero`, and `to_nearest`. `decimalPlaces` is optional and must be `0..8`.
+- `mathRequests[].applicationState`, if present, must be `requested_only`.
+- `mathAudit[].applicationState` must be one of `calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`.
+- `calculated_only` means the number was calculated but not applied to state. `applied_to_state` means some other response/state surface actually used it. `mismatch_repair_blocking` means the GM saw a mismatch and intentionally leaves the turn blocked for repair; it is still a validation error, not silent acceptance.
+- Manual totals must match the local Math Assistant result. A mismatched `expectedResult`, `rawResult`, or `result` fails closed with repair hints.
+
+```json
+{
+  "mathRequests": [
+    {
+      "requestId": "calc_discount_1",
+      "purpose": "treasury exchange discount",
+      "expression": "baseCost * discountPercent / 100",
+      "variables": { "baseCost": 250, "discountPercent": 15 },
+      "rounding": { "mode": "away_from_zero", "decimalPlaces": 0 },
+      "expectedResult": 38,
+      "applicationState": "requested_only"
+    }
+  ],
+  "mathAudit": [
+    {
+      "auditId": "calc_discount_1",
+      "requestId": "calc_discount_1",
+      "purpose": "treasury exchange discount",
+      "expression": "baseCost * discountPercent / 100",
+      "normalizedExpression": "baseCost*discountPercent/100",
+      "variables": { "baseCost": 250, "discountPercent": 15 },
+      "rawResult": 37.5,
+      "result": 38,
+      "rounding": { "mode": "away_from_zero", "decimalPlaces": 0 },
+      "formulaVersion": "math_assistant_v1",
+      "applicationState": "applied_to_state",
+      "referencedBy": [ "treasuryReceipt:exchange_1" ],
+      "warnings": []
+    }
+  ]
+}
+```
 
 #### **AFTERLIFE CONTROL / REQUEST FILES**
 - `game_state/control/pending_abode_offering.json` ← client-authored Abode offering request; GM reads it as input only and always resolves through `guardianPowerEvents.reasonType = offering`. Only `offeringType = ink_feathers` is also `[INK_FEATHER_ACTION: ABODE_OFFERING]` and requires `output/ink_feather_action_result.json`; `soul_relic`, `archive_lore_fragment`, and `archive_secret_record` use plain `[ABODE_OFFERING]` and must not write an Ink Feather receipt.

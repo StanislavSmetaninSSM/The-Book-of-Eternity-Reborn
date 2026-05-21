@@ -426,6 +426,7 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - `response` — нарратив на языке игрока (см. `config.json` → `language`)
 - `gm_thoughts_markdown` — внутренние мысли, расчёты, обоснования решений
 - Все изменения состояния: статы, навыки, инвентарь, НПС, квесты, мир, бой, фракции, мета
+- `mathRequests` / `mathAudit` — структурированный контракт для локального Математика, если ход содержит нетривиальную арифметику; сохраняется в `game_state/meta/math_audit.json`
 - `progressionProcessingReport` — обязательный отчёт о реально обработанных progression cycles, если они были due
 - UI-элементы: `image_prompt`, `dialogueOptions`
 - Контроль жизни: `TriggerLifeEnd`, `TriggerIncarnation`, `AscensionTrigger`
@@ -450,6 +451,7 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - Guardian-to-guardian politics should use canonical `guardianRelationships[]` as a directed standing network with `attitudeScore (-100..100)` and derived `attitudeTier (trusted|ally|neutral|competitive|rival|enemy)`; do not confuse this with player-facing Guardian reputation
 - for political Guardian behavior, use canonical `guardianRelationships[]` as mandatory targeting context: weight `rival|enemy` targets above `neutral`, treat `competitive` as valid but non-preferred pressure, treat `neutral` as valid but weakly motivated pressure, require an explicit betrayal reason before `offensive_intrigue` against an `ally|trusted` target, and allow temporary coalition behavior only when two Guardians are non-hostile toward each other, both mark the same third Guardian as `rival|enemy`, and there is an explicit current political project trace against that same target
 - Для обычного accepted GM turn поле `response` обязательно и должно содержать непустой нарратив для игрока
+- Если ты используешь Математика, `mathRequests[]` только просит расчёт, а `mathAudit[]` фиксирует результат. `mathAudit[].formulaVersion` должен быть `math_assistant_v1`, `applicationState` должен явно отличать `calculated_only` от `applied_to_state`; само применение числа всё равно должно быть записано в целевой state/receipt surface.
 
 **Полная схема ответа (100+ полей):** см. секцию "JSON Response Schema" в `CLI_API_Specification.md`.
 
@@ -538,7 +540,7 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - [ ] Realm context явно задокументирован внутри structured scope/reasoning blocks
 - [ ] Время проанализировано (Mortal World)
 - [ ] Если ход реально меняет actor surfaces, соответствующие НПС/Хранители получили осмысленное reasoning и только те structured updates, которые этот ход действительно требует
-- [ ] Все механические расчёты задокументированы в `gm_thoughts_markdown`
+- [ ] Все механические расчёты задокументированы в `gm_thoughts_markdown`; нетривиальная арифметика также имеет `mathRequests` / `mathAudit` в `game_state/meta/math_audit.json` с `formulaVersion = math_assistant_v1`
 - [ ] JSON валиден, все обязательные поля присутствуют
 - [ ] Перекрёстные ссылки (ID НПС, предметов, локаций) консистентны
 - [ ] Весь текст для игрока на правильном языке (см. `language` в настройках)
@@ -679,6 +681,7 @@ $guardian | ConvertTo-Json -Depth 100 | Set-Content "game_state/meta/guardians.j
 | Scheduler Посмертия | Block_CLI_Operations CLI.10 | progressionControl, progressionProcessingReport | input/turn_request.json, game_state/control/progression_report.json |
 | Душа | Block 31 | metaStateUpdates, afterlifeArchiveUpdates, archiveActionResolutions | game_state/meta/soul_state.json |
 | Достижения | CLI_API_Spec | achievementUnlocks | game_state/meta/achievements.json |
+| Математик | CLI_API_Spec | mathRequests, mathAudit | game_state/meta/math_audit.json |
 | Лор-Кодекс | CLI_API_Spec | loreCodexUpdates | lore/codex_entries.json |
 | Транспорт | — | UpdateVehicles | game_state/misc/vehicles.json |
 
