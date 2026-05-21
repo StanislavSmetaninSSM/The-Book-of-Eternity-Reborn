@@ -2893,6 +2893,41 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void SystemGuardianExpandedDossierStandardIsDocumented()
+    {
+        var standard = ReadRepoFile("OtherGuides", "System_Guardian_Dossier_Standard.md");
+
+        foreach (var requiredSection in new[]
+                 {
+                     "### 1. Ядро личности",
+                     "### 2. Визуальное проявление",
+                     "### 3. Личность и ценности",
+                     "### 4. Манера речи",
+                     "### 5. Модель отношений",
+                     "### 6. Романтический профиль",
+                     "### 7. Наставничество и испытания",
+                     "### 8. Поведение в конфликте",
+                     "### 9. Библия Обители",
+                     "### 10. Духовно-боевой образ",
+                     "### 11. Рана Сарефа",
+                     "### 12. Обычные крючки сцен",
+                     "### 13. Не играть как"
+                 })
+        {
+            Assert.Contains(requiredSection, standard, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("`manifest.json` остается коротким техническим паспортом", standard, StringComparison.Ordinal);
+        Assert.Contains("Длинный ролевой материал", standard, StringComparison.Ordinal);
+        Assert.Contains("Английские идентификаторы допустимы только когда это реальные contract-поля игры", standard, StringComparison.Ordinal);
+        Assert.Contains("не должен копировать эти квесты целиком", standard, StringComparison.Ordinal);
+        Assert.Contains("романтика не навязывается", standard, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("anti-caricature rules", standard, StringComparison.Ordinal);
+        Assert.Contains("особые духовные искусства", standard, StringComparison.Ordinal);
+        Assert.Contains("GM prompt package", standard, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void SarefAzaliaQuestlineBibleCoversFourDarkFantasyQuests()
     {
         AssertSarefGuardianQuestlineBible(
