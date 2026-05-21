@@ -22,7 +22,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         _fs.EnsureDirectoryStructure();
         _stateManager = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        _service = new ExplorerWebCommandService(_stateManager, new LocalizationManager());
+        _service = new ExplorerWebCommandService(_fs, _stateManager, new LocalizationManager());
     }
 
     [Fact]
@@ -49,12 +49,35 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_PlannedCommand_ReturnsBlockedDto()
     {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/status"));
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inv"));
 
-        Assert.Equal("/status", result.Command);
+        Assert.Equal("/inv", result.Command);
         Assert.Equal(CommandExecutionState.Blocked, result.State);
         var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("#569", message.Message, StringComparison.Ordinal);
+        Assert.Contains("#570", message.Message, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("/status")]
+    [InlineData("/soul")]
+    [InlineData("/codex")]
+    [InlineData("/story")]
+    [InlineData("/debug")]
+    [InlineData("/галерея")]
+    [InlineData("/saref")]
+    public async Task ExecuteAsync_MigratedUniversalMetaCommands_ReturnCompletedDtos(string command)
+    {
+        await SeedUniversalMetaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.NotEmpty(result.Blocks);
+        Assert.DoesNotContain(
+            result.Blocks,
+            static block => block is UiMessageBlock message &&
+                            message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -71,5 +94,40 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     {
         if (Directory.Exists(_rootPath))
             Directory.Delete(_rootPath, recursive: true);
+    }
+
+    private async Task SeedUniversalMetaFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Test Soul",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 3,
+          "inkFeathers": { "current": 12, "total": 34 },
+          "enlightenment": { "currentTier": "Искра", "experience": 42 },
+          "livesHistory": [
+            { "incarnation": 1, "summary": "Первая жизнь" }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("lore/codex_entries.json", """
+        {
+          "entries": [
+            { "title": "Первый знак", "content": "Тестовая запись кодекса" }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("output/debug_logs.json", """
+        {
+          "gm_thoughts_markdown": "Тестовые мысли ГМ"
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("stories/chaos_sea.jsonl", """
+        {"turn":1,"timestamp":"2026-05-20T00:00:00Z","realm":"Chaos Sea","player":"test","narrative":"story"}
+
+        """);
     }
 }

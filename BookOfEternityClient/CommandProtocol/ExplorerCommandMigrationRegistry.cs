@@ -7,11 +7,7 @@ public static class ExplorerCommandMigrationRegistry
     private static readonly string[] MigratedUniversalReadOnlyCommands =
     [
         "/help",
-        "/помощь"
-    ];
-
-    private static readonly string[] UniversalReadOnlyCommands =
-    [
+        "/помощь",
         "/soul",
         "/душа",
         "/soul_relics",
@@ -42,11 +38,7 @@ public static class ExplorerCommandMigrationRegistry
         "/gallery",
         "/галерея",
         "/status",
-        "/статус"
-    ];
-
-    private static readonly string[] UniversalDiagnosticsCommands =
-    [
+        "/статус",
         "/gm",
         "/гм",
         "/debug",
@@ -58,15 +50,7 @@ public static class ExplorerCommandMigrationRegistry
         "/извечные_хранители"
     ];
 
-    private static readonly string[] UniversalLifecycleCommands =
-    [
-        "/validate",
-        "/валидация",
-        "/world_setup",
-        "/настройка_мира"
-    ];
-
-    private static readonly string[] SarefStoryCommands =
+    private static readonly string[] MigratedSarefStoryCommands =
     [
         "/saref",
         "/сареф",
@@ -74,6 +58,18 @@ public static class ExplorerCommandMigrationRegistry
         "/история_сарефа",
         "/wings_of_angels",
         "/крылья_над_бездной"
+    ];
+
+    private static readonly string[] UniversalReadOnlyCommands = [];
+
+    private static readonly string[] UniversalDiagnosticsCommands = [];
+
+    private static readonly string[] UniversalLifecycleCommands =
+    [
+        "/validate",
+        "/валидация",
+        "/world_setup",
+        "/настройка_мира"
     ];
 
     private static readonly string[] MortalReadOnlyCommands =
@@ -202,12 +198,12 @@ public static class ExplorerCommandMigrationRegistry
     private static IReadOnlyList<ExplorerCommandMigrationEntry> BuildEntries() =>
     [
         ..Migrated(MigratedUniversalReadOnlyCommands, ExplorerCommandGroup.UniversalMeta),
+        ..Migrated(MigratedSarefStoryCommands, ExplorerCommandGroup.SarefStory),
         ..Planned(UniversalReadOnlyCommands, ExplorerCommandGroup.UniversalMeta, "#569"),
         ..TemporaryConsoleOnly(UniversalDiagnosticsCommands, ExplorerCommandGroup.UniversalMeta, "#569",
             "Диагностические и служебные команды должны получить явный browser-safe режим отображения."),
         ..Blocked(UniversalLifecycleCommands, ExplorerCommandGroup.Lifecycle, "#574",
             "Команды настройки/валидации связаны с локальными протоколами, repair flow или управлением файлами."),
-        ..Planned(SarefStoryCommands, ExplorerCommandGroup.SarefStory, "#569"),
         ..Planned(MortalReadOnlyCommands, ExplorerCommandGroup.MortalWorld, "#570"),
         ..Blocked(MortalMutatingCommands, ExplorerCommandGroup.MortalWorld, "#568",
             "Мутирующие mortal-команды нельзя открывать браузеру до local session lock."),

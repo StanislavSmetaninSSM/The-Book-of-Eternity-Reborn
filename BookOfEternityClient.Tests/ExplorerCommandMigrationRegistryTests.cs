@@ -84,6 +84,16 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
         Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries["/помощь"].Status);
     }
 
+    [Fact]
+    public void UniversalMetaCommands_AreMarkedAsMigrated()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var command in new[] { "/status", "/статус", "/soul", "/душа", "/codex", "/кодекс", "/story", "/debug", "/галерея", "/saref", "/сареф" })
+            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))
