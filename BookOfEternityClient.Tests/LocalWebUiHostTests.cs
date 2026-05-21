@@ -1,8 +1,14 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Net.Sockets;
+using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using BookOfEternityClient.WebUi;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -99,6 +105,45 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Equal("/help", root["command"]!.GetValue<string>());
         Assert.Equal("Completed", root["state"]!.GetValue<string>());
         Assert.Equal("table", root["blocks"]![0]!["kind"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task ExplorerCommandEndpoint_MatchesDirectWebCommandDtoSerialization()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Web Soul",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 9,
+          "inkFeathers": { "current": 15, "total": 25 },
+          "enlightenment": { "currentTier": "Тлеющий знак", "experience": 80 }
+        }
+        """);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/explorer/command", new { command = "/status" });
+        var actual = JsonNode.Parse(await response.Content.ReadAsStringAsync())!;
+
+        var fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        var service = new ExplorerWebCommandService(
+            fs,
+            stateManager,
+            new LocalizationManager(),
+            new ValidationService(fs, NullLogger<ValidationService>.Instance));
+        var expected = JsonSerializer.SerializeToNode(
+            await service.ExecuteAsync(new ExplorerWebCommandRequest("/status")),
+            JsonOptions)!;
+
+        response.EnsureSuccessStatusCode();
+        Assert.True(
+            JsonNode.DeepEquals(expected, actual),
+            "/api/explorer/command must serialize the same logical DTO produced by ExplorerWebCommandService.");
     }
 
     [Fact]
@@ -266,6 +311,11 @@ public sealed class LocalWebUiHostTests : IDisposable
           ]
         }
         """;
+
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        WriteIndented = true
+    };
 
     public void Dispose()
     {

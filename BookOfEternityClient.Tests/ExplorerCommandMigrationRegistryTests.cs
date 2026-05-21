@@ -75,6 +75,22 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
     }
 
     [Fact]
+    public void EveryMigratedExplorerCommand_HasWebDtoBuilderCoverage()
+    {
+        var migratedWithoutBuilder = ExplorerCommandMigrationRegistry.Entries
+            .Where(static entry => entry.Status == ExplorerCommandMigrationStatus.Migrated)
+            .Where(static entry => !HasWebDtoBuilder(entry.Command))
+            .Select(static entry => entry.Command)
+            .Order(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.True(
+            migratedWithoutBuilder.Length == 0,
+            "Migrated commands must be backed by a shared ExplorerCommandResult DTO builder: " +
+            string.Join(", ", migratedWithoutBuilder));
+    }
+
+    [Fact]
     public void HelpCommands_AreMarkedAsMigrated()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries
@@ -203,4 +219,14 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
         var commands = Assert.IsAssignableFrom<IReadOnlyCollection<string>>(field.GetValue(explorer));
         return commands;
     }
+
+    private static bool HasWebDtoBuilder(string command) =>
+        string.Equals(command, "/help", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/помощь", StringComparison.OrdinalIgnoreCase) ||
+        ExplorerUniversalMetaCommandResultBuilder.CanBuild(command) ||
+        ExplorerMortalWorldCommandResultBuilder.CanBuild(command) ||
+        ExplorerChaosSeaCommandResultBuilder.CanBuild(command) ||
+        ExplorerShiningAbodeCommandResultBuilder.CanBuild(command) ||
+        ExplorerAfterlifeCombatCommandResultBuilder.CanBuild(command) ||
+        ExplorerLifecycleLocalTurnCommandResultBuilder.CanBuild(command);
 }

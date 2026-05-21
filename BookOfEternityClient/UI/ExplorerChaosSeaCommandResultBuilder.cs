@@ -39,6 +39,8 @@ public static class ExplorerChaosSeaCommandResultBuilder
             ["/гача"] = CommandKind.Gacha
         };
 
+    public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
+
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
         StateManager stateManager,

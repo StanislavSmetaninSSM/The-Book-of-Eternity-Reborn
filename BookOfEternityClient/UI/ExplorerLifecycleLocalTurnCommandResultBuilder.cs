@@ -16,6 +16,20 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
     private const string ExplorerRollbackDirectory = "game_state/control/explorer_local_turn_rollback";
 
+    public static bool CanBuild(string command) => NormalizeCommand(command) switch
+    {
+        "/validate" or "/валидация" or
+        "/world_setup" or "/настройка_мира" or
+        "/distribute" or "/распределить" or
+        "/companion_directive" or "/директива_компаньону" or
+        "/faction_directive" or "/директива_фракции" or
+        "/craft" or "/ремесло" or
+        "/abode_offering" or "/подношение_обители" or
+        "/found_guardian_mantle" or "/учредить_хранителя" or
+        "/spiritual_action" or "/духовное_действие" => true,
+        _ => false
+    };
+
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
         StateManager stateManager,

@@ -5,6 +5,8 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -36,6 +38,42 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("/help", result.Command);
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Contains(result.Blocks, static block => block is UiTableBlock table && table.Columns.Contains("Описание"));
+    }
+
+    [Theory]
+    [InlineData("/help")]
+    [InlineData("/status")]
+    [InlineData("/inv")]
+    [InlineData("/chaos_sea")]
+    [InlineData("/shining_abode")]
+    [InlineData("/spiritual_combat_help")]
+    [InlineData("/spiritual_action")]
+    public async Task ExecuteAsync_RepresentativeMigratedCommands_MatchDirectDtoBuilders(string command)
+    {
+        await SeedUniversalMetaFilesAsync();
+        await SeedMortalFilesAsync();
+        await SeedChaosSeaFilesAsync();
+        await SeedShiningAbodeFilesAsync();
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var expected = await BuildDirectMigratedResultAsync(command);
+        var actual = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.True(
+            JsonNode.DeepEquals(ToJsonNode(expected), ToJsonNode(actual)),
+            $"Web command service diverged from the shared DTO builder for {command}.");
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_RepresentativeMigratedDto_RendersThroughConsoleAdapter()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_combat_help"));
+        var console = new TestExplorerConsole();
+
+        ExplorerCommandResultConsoleRenderer.Render(console, result);
+
+        Assert.NotEmpty(console.Rendered);
     }
 
     [Theory]
@@ -680,4 +718,83 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 break;
         }
     }
+
+    private async Task<ExplorerCommandResult> BuildDirectMigratedResultAsync(string command)
+    {
+        await _stateManager.RefreshGameStateAsync();
+        if (string.Equals(command, "/help", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(command, "/помощь", StringComparison.OrdinalIgnoreCase))
+        {
+            var state = _stateManager.CurrentState;
+            return ExplorerHelpCommandResultBuilder.Build(new ExplorerHelpCommandContext
+            {
+                Command = command,
+                Title = new LocalizationManager().T("help"),
+                IsChaosSea = state.IsInChaosSea,
+                IsShiningAbode = state.IsInShiningAbode,
+                IsPendingShiningAbodeBootstrap = state.IsInShiningAbodePendingBootstrap,
+                CanReenterShiningAbode = state.CanReenterShiningAbode
+            });
+        }
+
+        if (ExplorerUniversalMetaCommandResultBuilder.CanBuild(command))
+        {
+            var universal = await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(
+                command,
+                _stateManager,
+                _fs,
+                new LocalizationManager());
+            if (universal != null)
+                return universal;
+        }
+
+        if (ExplorerMortalWorldCommandResultBuilder.CanBuild(command))
+        {
+            var mortal = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs);
+            if (mortal != null)
+                return mortal;
+        }
+
+        if (ExplorerChaosSeaCommandResultBuilder.CanBuild(command))
+        {
+            var chaos = await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs);
+            if (chaos != null)
+                return chaos;
+        }
+
+        if (ExplorerShiningAbodeCommandResultBuilder.CanBuild(command))
+        {
+            var shining = await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs);
+            if (shining != null)
+                return shining;
+        }
+
+        if (ExplorerAfterlifeCombatCommandResultBuilder.CanBuild(command))
+        {
+            var afterlife = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(command, _stateManager, _fs);
+            if (afterlife != null)
+                return afterlife;
+        }
+
+        if (ExplorerLifecycleLocalTurnCommandResultBuilder.CanBuild(command))
+        {
+            var lifecycle = await ExplorerLifecycleLocalTurnCommandResultBuilder.TryBuildAsync(
+                command,
+                _stateManager,
+                _fs,
+                _validationService);
+            if (lifecycle != null)
+                return lifecycle;
+        }
+
+        throw new InvalidOperationException($"No direct DTO builder for migrated command {command}.");
+    }
+
+    private static JsonNode ToJsonNode(ExplorerCommandResult result) =>
+        JsonSerializer.SerializeToNode(result, JsonOptions)!;
+
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        WriteIndented = true
+    };
 }
