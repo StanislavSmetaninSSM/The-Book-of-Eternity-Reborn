@@ -238,7 +238,7 @@ public partial class ExplorerMode
             $"[dim]После основания вы получите бонус основания: +{PlayerGuardianFoundationState.DefaultFounderExtraGachaChargesPerReturn} доп. попытка гачи за возвращение.[/]",
             "[dim]Новая Обитель будет притягивать собственных обитателей отдельной веткой заселения, а не автоматически забирать их у прежнего покровителя.[/]",
             "",
-            "[bold]GM closure contract:[/]",
+            "[bold]Техническое закрытие ГМ:[/]",
             "  • GM закрывает pending через UpdateGuardians.create, canonical guardians/activeGuardian и playerGuardianFoundationHistory.",
             "  • Старый Хранитель сохраняется как former_patron, новая мантия становится activeGuardian.",
             "  • Ритуал не переписывает душу игрока в Хранителя и не переносит жителей/торговлю/Сияющую политику автоматически.",

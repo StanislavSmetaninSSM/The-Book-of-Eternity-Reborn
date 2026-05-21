@@ -120,7 +120,7 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("statusAfter", trade, StringComparison.Ordinal);
         Assert.Contains("stateTransition", trade, StringComparison.Ordinal);
         Assert.Contains("generatedBuybackEntryFields", trade, StringComparison.Ordinal);
-        Assert.Contains("GM turn не отправляется: это client-local coordinated write with full audit JSON", trade, StringComparison.Ordinal);
+        Assert.Contains("Ход ГМ не отправляется: это согласованная локальная запись клиента с полным JSON-аудитом", trade, StringComparison.Ordinal);
         Assert.DoesNotContain(".Take(3)", trade, StringComparison.Ordinal);
 
         Assert.Contains("relicId=", inkFeathers, StringComparison.Ordinal);
@@ -212,6 +212,51 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.DoesNotContain("Completed Source of Light", sourceOfLight, StringComparison.Ordinal);
         Assert.DoesNotContain("capstone-сцена", sourceOfLight, StringComparison.Ordinal);
         Assert.DoesNotContain("one-per-soul", sourceOfLight, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AfterlifeExplorerPanelsAvoidEnglishContractJargonInVisibleText()
+    {
+        var sources = string.Join("\n", new[]
+        {
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.ChaosSea.ActionPreviews.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.GuardiansProjectsTrade.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.PrivateImplementation.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.PlayerGuardianFoundation.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.ShiningAbode.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.ShiningAbode.ActionPreviews.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.ShiningAbode.Treasury.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs"),
+            ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.StatusAudit.cs")
+        });
+
+        foreach (var leakedPhrase in new[]
+        {
+            "Lifecycle:",
+            "ordinary afterlife-turn contract",
+            "Guardian-forced incarnation exception",
+            "Mortal NPC/factions",
+            "Target guardian:",
+            "GM closure contract",
+            "Required fields:",
+            "Required receipt fields:",
+            "Action tag:",
+            "GM turn",
+            "client-authored contract",
+            "GM materialization contract",
+            "Return cycle:",
+            "Power gain formula:",
+            "client-local mutation",
+            "client-local coordinated write",
+            "afterlife Ink Feather action",
+            "fail-closed",
+            "before/after"
+        })
+        {
+            Assert.DoesNotContain(leakedPhrase, sources, StringComparison.Ordinal);
+        }
     }
 
     private static string ReadSource(params string[] pathParts) =>

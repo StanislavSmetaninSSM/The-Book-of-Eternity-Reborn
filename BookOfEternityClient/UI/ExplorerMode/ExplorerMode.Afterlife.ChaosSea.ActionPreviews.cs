@@ -82,28 +82,28 @@ public partial class ExplorerMode
     private static void AppendChaosSeaCommonContractRules(List<string> lines)
     {
         lines.Add("");
-        lines.Add("[bold]Realm rule matrix Моря Хаоса:[/]");
-        lines.Add("  • Lifecycle: это ordinary afterlife-turn contract; GM не запускает Mortal bootstrap, TriggerLifeEnd или смену currentRealm без явного /incarnate или Shining handoff.");
-        lines.Add("  • Guardian-forced incarnation exception: hostile active Guardian may write TriggerIncarnation.source=guardian_forced only on ordinary Chaos Sea turn with explicit provocation evidence, reputation <= -21, and no active/blocking afterlife_return_guard.json.");
-        lines.Add("  • State authority: GM закрывает машинный контракт canonical state/receipt-полями, а не только prose-описанием.");
-        lines.Add("  • Snapshot authority: accepted-turn validation compares against game_state/control/pending_turn_snapshot copies; do not reason from edited live pending files after request creation.");
-        lines.Add("  • Identity lock: все id/requestId/cost/actionTag/source/target из этого предпросмотра должны совпасть с turn_request и output файлами.");
-        lines.Add("  • Mortal location/time/weather: forbidden currentLocationData, world_time timeChange/currentWeather/worldEventsLog and mortal travel.");
-        lines.Add("  • Mortal NPC/factions: forbidden UpdateNPCs, Mortal World factions, companion materialization and local encounter creation unless a MortalWorldProfile-only bootstrap contract exists.");
-        lines.Add("  • Mortal inventory/money/XP/skills: forbidden money, mortal inventory, equipment, XP, level, skill, wounds/combat/status mutations; afterlife uses soul_state, guardians, residents, archive and receipt surfaces.");
-        lines.Add("  • Combat: no combat enemies/allies/round state; conflict in Chaos Sea must be represented as guardian/resident/social/project state, not mortal combat files.");
-        lines.Add("  • Scheduler: world/progression cycles may advance only through progressionControl + progression_report.json; GM must not invent uncorrelated live-world deltas.");
-        lines.Add("  • Repair mode: if any pending/control file is malformed, fail closed and ask for repair rather than silently dropping the contract.");
+        lines.Add("[bold]Матрица правил мира Моря Хаоса:[/]");
+        lines.Add("  • Жизненный цикл: это обычный контракт загробного хода; ГМ не запускает смертный мир, TriggerLifeEnd или смену currentRealm без явного /incarnate или передачи в Сияющую Обитель.");
+        lines.Add("  • Исключение принудительного воплощения Хранителем: враждебный активный Хранитель может записать TriggerIncarnation.source=guardian_forced только в обычный ход Моря Хаоса, с явным доказательством провокации, репутацией <= -21 и без активного/блокирующего afterlife_return_guard.json.");
+        lines.Add("  • Авторитет состояния: ГМ закрывает машинный контракт каноническими state/receipt-полями, а не только художественным описанием.");
+        lines.Add("  • Авторитет снимка: проверка принятого хода сверяется с копиями game_state/control/pending_turn_snapshot; после создания запроса нельзя опираться на уже изменённые живые pending-файлы.");
+        lines.Add("  • Блокировка идентичности: все id/requestId/cost/actionTag/source/target из этого предпросмотра должны совпасть с turn_request и output файлами.");
+        lines.Add("  • Локация/время/погода смертного мира: запрещены currentLocationData, world_time timeChange/currentWeather/worldEventsLog и смертное путешествие.");
+        lines.Add("  • НПС/фракции смертного мира: запрещены UpdateNPCs, фракции смертного мира, материализация спутников и создание локальных встреч, если нет отдельного MortalWorldProfile-only bootstrap-контракта.");
+        lines.Add("  • Инвентарь/деньги/опыт/навыки смертного мира: запрещены money, mortal inventory, equipment, XP, level, skill, wounds/combat/status mutations; загробье использует soul_state, guardians, residents, archive и receipt-поверхности.");
+        lines.Add("  • Бой смертного мира: нельзя писать combat enemies/allies/round state; конфликт в Море Хаоса должен быть представлен через состояние Хранителей/резидентов/социальных сцен/проектов, а не через файлы смертного боя.");
+        lines.Add("  • Планировщик: циклы мира/прогресса могут идти только через progressionControl + progression_report.json; ГМ не должен придумывать несвязанные дельты живого мира.");
+        lines.Add("  • Режим ремонта: если pending/control file повреждён, нужно остановиться и запросить ремонт, а не молча выбрасывать контракт.");
     }
 
     private static void AppendChaosSeaLocalPreviewRules(List<string> lines)
     {
         lines.Add("");
         lines.Add("[bold]Правила локального предпросмотра Посмертия:[/]");
-        lines.Add("  • Это client-local mutation, not an afterlife-turn contract.");
-        lines.Add("  • GM turn не отправляется; GM не пишет receipts, progression_report, gm_thoughts_markdown или output files.");
-        lines.Add("  • Pending/control file не создаётся и никакой existing pending contract не закрывается.");
-        lines.Add("  • После подтверждения клиент меняет только перечисленные local state surfaces.");
+        lines.Add("  • Это локальное изменение клиента, а не контракт загробного хода.");
+        lines.Add("  • Ход ГМ не отправляется; ГМ не пишет receipts, progression_report, gm_thoughts_markdown или output files.");
+        lines.Add("  • Pending/control file не создаётся и никакой существующий pending contract не закрывается.");
+        lines.Add("  • После подтверждения клиент меняет только перечисленные локальные поверхности состояния.");
     }
 
     private static void AppendChaosSeaPendingFileRule(List<string> lines, string path)

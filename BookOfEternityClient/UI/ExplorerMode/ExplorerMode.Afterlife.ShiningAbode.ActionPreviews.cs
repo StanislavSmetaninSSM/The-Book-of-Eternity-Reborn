@@ -306,7 +306,7 @@ public partial class ExplorerMode
                 break;
 
             case ShiningCoreActionRequestState.ActionTypePullRelicGacha:
-                lines.Add($"  • Return cycle: [dim]{Markup.Escape(request.ReturnCycleId)}[/].");
+                lines.Add($"  • Цикл возвращения: [dim]{Markup.Escape(request.ReturnCycleId)}[/].");
                 var gachaSystem = context.Root["gachaSystem"] as JsonObject;
                 var chargesUsed = GetNodeInt(gachaSystem?["chargesUsedThisReturn"]);
                 var chargesPerReturn = GetNodeInt(gachaSystem?["chargesPerReturn"]);
@@ -346,7 +346,7 @@ public partial class ExplorerMode
         lines.Add($"  • Echo quoted costs exactly: quotedCostFeathers={request.QuotedCostFeathers}, quotedCostLightSparks={request.QuotedCostLightSparks}; do not recompute them in prose.");
         lines.Add("  • For accepted status, canonical state must exactly match the action helper projection.");
         lines.Add("  • For refused/withdrawn status, state remains unchanged except `coreActionReceipts[]`.");
-        lines.Add("  • The accepted-state delta audit below exposes `changedSurfaces`, before/after state summaries, and targetFaction/targetProject details when applicable.");
+        lines.Add("  • Ниже показан аудит принятой дельты состояния: `changedSurfaces`, сводки состояния до/после и targetFaction/targetProject, если применимо.");
         lines.Add("  • `pending_shining_abode_actions.json` is client-owned input; GM must not rewrite it as output.");
 
         if (request.ActionType.Equals(ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction, StringComparison.OrdinalIgnoreCase))
@@ -478,7 +478,7 @@ public partial class ExplorerMode
         }
         else
         {
-            result["afterProjection"] = "not available before GM-authored accepted payload; validator still enforces exact canonical projection";
+            result["afterProjection"] = "недоступно до принятого ответа ГМ; валидатор всё равно требует точную каноническую проекцию";
         }
 
         var actionType = request.ActionType ?? string.Empty;
@@ -714,7 +714,7 @@ public partial class ExplorerMode
     {
         var fragment = new JsonObject
         {
-            ["purpose"] = "Full sanitized before/after Shining state fragment used by GM preview; hidden blessing effectPayload keys are replaced by safeEffectDetails.",
+            ["purpose"] = "Полный очищенный фрагмент состояния Сияющей Обители до/после для предпросмотра ГМ; скрытые blessing effectPayload keys заменены на safeEffectDetails.",
             ["actionType"] = request.ActionType,
             ["beforeFullShiningRoot"] = CloneShiningJsonForPlayerFacingAudit(beforeRoot),
             ["afterFullShiningRoot"] = CloneShiningJsonForPlayerFacingAudit(projectedRoot)

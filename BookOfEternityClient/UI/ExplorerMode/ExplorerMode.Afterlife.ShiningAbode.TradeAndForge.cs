@@ -922,7 +922,7 @@ public partial class ExplorerMode
         lines.Insert(3, $"  Цикл торговли: [dim]{Markup.Escape(view.TradeCycleId)}[/], уровень торговли {view.TradeTier}, потолок редкости {Markup.Escape(DescribeForgeRarity(view.RarityCeiling))}, услуги x{view.ServiceMultiplier:0.00}");
         lines.Insert(4, $"  Слот витрины: [dim]{Markup.Escape(offer.SlotId)}[/], распродан: {(offer.SoldOut ? "[red]да[/]" : "[green]нет[/]")}");
         lines.Insert(5, $"  🪶 Чернильные Перья: [gold1]{currentFeathers}[/] -> [gold1]{projectedFeathers}[/]");
-        lines.Insert(6, "  Канонический локальный исход: списать Перья, добавить Реликвию Души в soul_state, пометить слот витрины как soldOut=true; GM turn не отправляется.");
+        lines.Insert(6, "  Канонический локальный исход: списать Перья, добавить Реликвию Души в soul_state, пометить слот витрины как soldOut=true; ход ГМ не отправляется.");
 
         if (offer.SoldOut)
             lines.Insert(7, "  [red]Статус витрины: слот уже распродан.[/]");

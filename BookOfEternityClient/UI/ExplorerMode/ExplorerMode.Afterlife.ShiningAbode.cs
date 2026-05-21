@@ -1458,7 +1458,7 @@ public partial class ExplorerMode
                     lines.Add($"    Создан на ходу: [dim]{request.CreatedAtTurn}[/]");
                     if (!string.IsNullOrWhiteSpace(request.CreatedAtUtc))
                         lines.Add($"    Создан в UTC: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]");
-                    lines.Add("    GM closure contract:");
+                    lines.Add("    Техническое закрытие ГМ:");
                     lines.Add("      accepted: создать `halls[]`, `factions[]`, aligned supporter residents and `factionFoundingReceipts[]` with exact requestId/costs/supporters/status/time.");
                     lines.Add("      refused/withdrawn: не создавать hall/faction; закрыть только `factionFoundingReceipts[]` with canonical refusal status/reason/time.");
                 }
@@ -1483,7 +1483,7 @@ public partial class ExplorerMode
                     lines.Add($"    Создан на ходу: [dim]{request.CreatedAtTurn}[/]");
                     if (!string.IsNullOrWhiteSpace(request.CreatedAtUtc))
                         lines.Add($"    Создан в UTC: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]");
-                    lines.Add("    GM closure contract:");
+                    lines.Add("    Техническое закрытие ГМ:");
                     lines.Add("      accepted_transfer: обновить resident `shiningFactionId/name`, loyalty/restlessness/realignment state, history entry and `factionRealignmentReceipts[]`.");
                     lines.Add("      departure_to_neutral/refused/withdrawn: не изобретать новую фракцию; закрыть canonical receipt/status/reason and only apply the allowed resident binding change.");
                 }
@@ -1510,7 +1510,7 @@ public partial class ExplorerMode
                     lines.Add($"    Создан на ходу: [dim]{request.CreatedAtTurn}[/]");
                     if (!string.IsNullOrWhiteSpace(request.CreatedAtUtc))
                         lines.Add($"    Создан в UTC: [dim]{Markup.Escape(request.CreatedAtUtc)}[/]");
-                    lines.Add("    GM closure contract:");
+                    lines.Add("    Техническое закрытие ГМ:");
                     lines.Add("      accepted: обновить `factions[].leadership`, `leadershipReceipts[]`, `leadershipHistory[]` and matching `shiningPoliticalActors[]` when head is radiant_actor.");
                     lines.Add("      refused/withdrawn: leadership remains unchanged except canonical receipt/history refusal marker with exact requestId/candidate/supporters.");
                 }

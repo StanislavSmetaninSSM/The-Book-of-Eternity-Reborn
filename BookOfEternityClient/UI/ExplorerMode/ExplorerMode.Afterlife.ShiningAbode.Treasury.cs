@@ -105,11 +105,11 @@ public partial class ExplorerMode
         {
             "[bold yellow]🏦 Казначейство Сияющей Обители[/]",
             "",
-            "[bold]Локальная экономика:[/] [dim]GM turn не создаётся; казначейство не имеет receipts.[/]",
+            "[bold]Локальная экономика:[/] [dim]ход ГМ не создаётся; казначейство не имеет receipts.[/]",
             $"  • Доступные Чернильные Перья: [white]{spendableFeathers}[/]",
             $"  • Вклад Чернильных Перьев: [white]{deposited}[/]",
             $"  • Проценты к получению: [white]{claimable}[/] [dim](ожидаемое начисление за текущий цикл: {pendingInterest})[/]",
-            $"  • Ставка вклада: [white]{rateBasisPoints / 100.0:0.##}%[/] за Shining return cycle [dim](cap {ShiningAbodeState.TreasuryInterestClaimCap} 🪶/cycle)[/]",
+            $"  • Ставка вклада: [white]{rateBasisPoints / 100.0:0.##}%[/] за сияющий цикл возвращения [dim](лимит {ShiningAbodeState.TreasuryInterestClaimCap} 🪶/цикл)[/]",
             $"  • Искры Света: [gold1]{GetNodeInt(shiningRoot["lightSparks"])}[/]",
             $"  • Обмен: [white]{ShiningAbodeState.TreasuryFeathersPerLightSpark} 🪶 = 1 ✨[/], лимит [white]{ShiningAbodeState.TreasuryMaxLightSparksExchangePerCycle} ✨[/]/cycle, осталось [white]{exchangeRemaining}[/]",
             $"  • Текущий цикл: [dim]{Markup.Escape(cycleId)}[/]",
