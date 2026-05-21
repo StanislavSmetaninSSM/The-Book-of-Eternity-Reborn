@@ -3035,6 +3035,19 @@ public sealed class AfterlifeDocumentationCoverageTests
             "ложн");
     }
 
+    [Fact]
+    public void SarefElyaraQuestlineBibleCoversFourDarkFantasyQuests()
+    {
+        AssertSarefGuardianQuestlineBible(
+            "elyara.md",
+            "Элиара",
+            "mercy_wound",
+            "Милость Незаживающей Раны",
+            "исцел",
+            "рана",
+            "шрам");
+    }
+
     private static void AssertSarefGuardianQuestlineBible(
         string fileName,
         string guardianName,

@@ -269,6 +269,40 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuiltInElyaraPreset_IsMaterializableAndUsesRussianPlayerFacingHealing()
+    {
+        var sourcePresetDir = GetRepoBuiltInPresetDirectory("elyara");
+
+        Assert.True(Directory.Exists(sourcePresetDir), "Built-in Elyara preset directory must exist.");
+
+        CopyDirectory(sourcePresetDir, Path.Combine(_service.GetBuiltInDirectoryPath(), "elyara"));
+
+        var preset = await _service.FindPresetAsync("elyara", includeDossier: true);
+
+        Assert.NotNull(preset);
+        Assert.Equal("Элиара Последней Раны", preset!.DisplayName);
+        Assert.Equal("built_in", preset.LibraryKind);
+        Assert.Equal("Элиара Последней Раны", preset.DefaultNameVariant);
+        Assert.Equal("она/её", preset.DefaultPronouns);
+        Assert.Equal("Лазарет Незаживающего Света", preset.AbodeName);
+        Assert.Contains("исцел", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("шрам", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Притяжение к Элиаре", preset.SearchLabel, StringComparison.Ordinal);
+        Assert.Contains("исцеление", preset.SearchKeywords);
+        Assert.Contains("Милость Незаживающей Раны", preset.PromptPackage, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не делать её наивной", preset.PromptPackage, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("исцеление не стирает цену", preset.PromptPackage, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("safe paradise", preset.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("free healing", preset.Summary, StringComparison.OrdinalIgnoreCase);
+
+        var creation = _service.BuildPendingGuardianCreationNode(preset, "Тестовая Душа");
+
+        Assert.Equal("elyara", creation["presetId"]?.GetValue<string>());
+        Assert.Equal("Элиара Последней Раны", creation["presetDisplayName"]?.GetValue<string>());
+        Assert.Equal("built_in", creation["sourceLibrary"]?.GetValue<string>());
+    }
+
+    [Fact]
     public void BuiltInPermanentGuardianDossiers_FollowExpandedStandard()
     {
         var builtInRoot = Path.Combine(
@@ -285,7 +319,7 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
-        Assert.True(dossierPaths.Length >= 9, "Expected all permanent Guardian dossiers to be present.");
+        Assert.True(dossierPaths.Length >= 10, "Expected all permanent Guardian dossiers to be present.");
 
         var requiredHeadings = new[]
         {
