@@ -114,17 +114,20 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
     }
 
     [Fact]
-    public void MortalMutatingCommands_RemainBlockedWithFollowUp()
+    public void LifecycleAndLocalTurnCommands_AreMarkedAsMigrated()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries
             .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
 
-        foreach (var command in new[] { "/distribute", "/companion_directive", "/faction_directive", "/craft" })
-        {
-            Assert.Equal(ExplorerCommandMigrationStatus.Blocked, entries[command].Status);
-            Assert.Contains("#574", entries[command].FollowUpIssue, StringComparison.Ordinal);
-            Assert.Contains("local-turn", entries[command].Reason, StringComparison.OrdinalIgnoreCase);
-        }
+        foreach (var command in new[]
+                 {
+                     "/validate", "/валидация", "/world_setup", "/настройка_мира",
+                     "/distribute", "/распределить", "/companion_directive", "/директива_компаньону",
+                     "/faction_directive", "/директива_фракции", "/craft", "/ремесло",
+                     "/abode_offering", "/подношение_обители", "/found_guardian_mantle", "/учредить_хранителя",
+                     "/spiritual_action", "/духовное_действие"
+                 })
+            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
     }
 
     [Fact]
@@ -140,20 +143,6 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
                  })
         {
             Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
-        }
-    }
-
-    [Fact]
-    public void ChaosSeaMutatingCommands_RemainBlockedWithFollowUp()
-    {
-        var entries = ExplorerCommandMigrationRegistry.Entries
-            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
-
-        foreach (var command in new[] { "/abode_offering", "/подношение_обители", "/found_guardian_mantle", "/учредить_хранителя" })
-        {
-            Assert.Equal(ExplorerCommandMigrationStatus.Blocked, entries[command].Status);
-            Assert.Contains("#574", entries[command].FollowUpIssue, StringComparison.Ordinal);
-            Assert.Contains("local-turn", entries[command].Reason, StringComparison.OrdinalIgnoreCase);
         }
     }
 
@@ -187,20 +176,6 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
                  })
         {
             Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
-        }
-    }
-
-    [Fact]
-    public void SpiritualAction_RemainsBlockedWithLocalTurnFollowUp()
-    {
-        var entries = ExplorerCommandMigrationRegistry.Entries
-            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
-
-        foreach (var command in new[] { "/spiritual_action", "/духовное_действие" })
-        {
-            Assert.Equal(ExplorerCommandMigrationStatus.Blocked, entries[command].Status);
-            Assert.Contains("#574", entries[command].FollowUpIssue, StringComparison.Ordinal);
-            Assert.Contains("local-turn", entries[command].Reason, StringComparison.OrdinalIgnoreCase);
         }
     }
 
