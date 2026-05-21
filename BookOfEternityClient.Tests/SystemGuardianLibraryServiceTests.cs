@@ -268,6 +268,60 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         Assert.Equal("built_in", creation["sourceLibrary"]?.GetValue<string>());
     }
 
+    [Fact]
+    public void BuiltInPermanentGuardianDossiers_FollowExpandedStandard()
+    {
+        var builtInRoot = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            SystemGuardianLibraryService.RootDirectoryName,
+            SystemGuardianLibraryService.BuiltInDirectoryName);
+
+        Assert.True(Directory.Exists(builtInRoot), "Built-in system guardian library must exist.");
+
+        var dossierPaths = Directory.EnumerateDirectories(builtInRoot)
+            .Select(directory => Path.Combine(directory, "dossier.md"))
+            .Where(File.Exists)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.True(dossierPaths.Length >= 9, "Expected all permanent Guardian dossiers to be present.");
+
+        var requiredHeadings = new[]
+        {
+            "### 1. Ядро личности",
+            "### 2. Визуальное проявление",
+            "### 3. Личность и ценности",
+            "### 4. Манера речи",
+            "### 5. Модель отношений",
+            "### 6. Романтический профиль",
+            "### 7. Наставничество и испытания",
+            "### 8. Поведение в конфликте",
+            "### 9. Библия Обители",
+            "### 10. Духовно-боевой образ",
+            "### 11. Рана Сарефа",
+            "### 12. Обычные крючки сцен",
+            "### 13. Не играть как"
+        };
+
+        foreach (var dossierPath in dossierPaths)
+        {
+            var dossier = File.ReadAllText(dossierPath);
+
+            foreach (var heading in requiredHeadings)
+            {
+                Assert.Contains(heading, dossier, StringComparison.Ordinal);
+            }
+
+            Assert.Contains("Примерные реплики:", dossier, StringComparison.Ordinal);
+            Assert.Contains("Особое духовное искусство:", dossier, StringComparison.Ordinal);
+            Assert.Contains("Полные четыре квеста находятся", dossier, StringComparison.Ordinal);
+            Assert.Contains("Не играть", dossier, StringComparison.Ordinal);
+            Assert.DoesNotContain("TBD", dossier, StringComparison.OrdinalIgnoreCase);
+            Assert.True(dossier.Length > 6500, $"{Path.GetFileName(Path.GetDirectoryName(dossierPath))} dossier is too thin for the expanded standard.");
+        }
+    }
+
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {
         var presetDir = Path.Combine(rootDir, presetId);
