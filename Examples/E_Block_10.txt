@@ -1211,4 +1211,50 @@
    </jsonresponse>
   </example>
  </rule>
+ <rule id="10.math">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Economy price calculation uses Math Assistant audit
+   </title>
+   <description>
+    Торговая цена с наценкой, скидкой, дефицитом или налогом должна иметь `mathAudit`, если число не очевидно из одного значения.
+   </description>
+   <jsonresponse>
+    <![CDATA[
+{
+  "response": "Торговец называет цену: 110 монет за редкий реагент.",
+  "gm_thoughts_markdown": "Математик использован для цены: basePrice * merchantMarkup + scarcityFee.",
+  "mathRequests": [
+    {
+      "requestId": "calc_economy_price_example",
+      "purpose": "mortal economy item price",
+      "expression": "basePrice * merchantMarkup + scarcityFee",
+      "variables": { "basePrice": 80, "merchantMarkup": 1.25, "scarcityFee": 10 },
+      "rounding": { "mode": "none" },
+      "expectedResult": 110,
+      "applicationState": "requested_only"
+    }
+  ],
+  "mathAudit": [
+    {
+      "auditId": "calc_economy_price_example",
+      "requestId": "calc_economy_price_example",
+      "purpose": "mortal economy item price",
+      "expression": "basePrice * merchantMarkup + scarcityFee",
+      "normalizedExpression": "basePrice*merchantMarkup+scarcityFee",
+      "variables": { "basePrice": 80, "merchantMarkup": 1.25, "scarcityFee": 10 },
+      "rawResult": 110,
+      "result": 110,
+      "rounding": { "mode": "none" },
+      "formulaVersion": "math_assistant_v1",
+      "applicationState": "applied_to_state",
+      "referencedBy": [ "npcTradeReceipt:item_price_rare_reagent" ],
+      "warnings": []
+    }
+  ]
+}
+                        ]]>
+   </jsonresponse>
+  </example>
+ </rule>
 </instructionblock>

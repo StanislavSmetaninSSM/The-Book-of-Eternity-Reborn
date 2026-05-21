@@ -8177,3 +8177,81 @@ Shining faction change -> Shining faction state inside shining_abode_state.json
 Shining trade -> faction.tradeInventory + faction.tradeInventoryReceipts[]
 Player-facing notification -> derive from canonical state/receipts; do not author afterlife_notifications.json manually
 ```
+
+==================================================
+MATH ASSISTANT EXAMPLES
+==================================================
+
+Afterlife spiritual conflict margin:
+
+```json
+{
+  "response": "Духовное давление игрока проламывает защиту противника.",
+  "gm_thoughts_markdown": "Математик использован для contested margin: playerTotal - oppositionTotal.",
+  "mathRequests": [
+    {
+      "requestId": "calc_afterlife_conflict_margin_example",
+      "purpose": "afterlife spiritual conflict margin",
+      "expression": "playerTotal - oppositionTotal",
+      "variables": { "playerTotal": 24, "oppositionTotal": 18 },
+      "rounding": { "mode": "none" },
+      "expectedResult": 6,
+      "applicationState": "requested_only"
+    }
+  ],
+  "mathAudit": [
+    {
+      "auditId": "calc_afterlife_conflict_margin_example",
+      "requestId": "calc_afterlife_conflict_margin_example",
+      "purpose": "afterlife spiritual conflict margin",
+      "expression": "playerTotal - oppositionTotal",
+      "normalizedExpression": "playerTotal-oppositionTotal",
+      "variables": { "playerTotal": 24, "oppositionTotal": 18 },
+      "rawResult": 6,
+      "result": 6,
+      "rounding": { "mode": "none" },
+      "formulaVersion": "math_assistant_v1",
+      "applicationState": "applied_to_state",
+      "referencedBy": [ "afterlifeSpiritualConflictUpdate.exchange.exchangeId:exchange_pressure_1" ],
+      "warnings": []
+    }
+  ]
+}
+```
+
+Shining treasury interest:
+
+```json
+{
+  "response": "Казначейство начисляет 15 Чернильных Перьев процентов.",
+  "gm_thoughts_markdown": "Математик использован для процентов казначейства: min(depositedInkFeathers * basisPoints / 10000, cycleCap).",
+  "mathRequests": [
+    {
+      "requestId": "calc_shining_treasury_interest_example",
+      "purpose": "shining treasury interest",
+      "expression": "min(depositedInkFeathers * basisPoints / 10000, cycleCap)",
+      "variables": { "depositedInkFeathers": 1000, "basisPoints": 150, "cycleCap": 25 },
+      "rounding": { "mode": "floor", "decimalPlaces": 0 },
+      "expectedResult": 15,
+      "applicationState": "requested_only"
+    }
+  ],
+  "mathAudit": [
+    {
+      "auditId": "calc_shining_treasury_interest_example",
+      "requestId": "calc_shining_treasury_interest_example",
+      "purpose": "shining treasury interest",
+      "expression": "min(depositedInkFeathers * basisPoints / 10000, cycleCap)",
+      "normalizedExpression": "min(depositedInkFeathers*basisPoints/10000,cycleCap)",
+      "variables": { "depositedInkFeathers": 1000, "basisPoints": 150, "cycleCap": 25 },
+      "rawResult": 15,
+      "result": 15,
+      "rounding": { "mode": "floor", "decimalPlaces": 0 },
+      "formulaVersion": "math_assistant_v1",
+      "applicationState": "applied_to_state",
+      "referencedBy": [ "shiningTreasury:settlementCycle:shining_return_12" ],
+      "warnings": []
+    }
+  ]
+}
+```

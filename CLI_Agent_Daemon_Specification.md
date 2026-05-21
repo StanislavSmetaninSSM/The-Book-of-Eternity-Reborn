@@ -451,7 +451,11 @@ Direct `/gacha` remains neutral and does NOT consume Guardian charges.
 - Guardian-to-guardian politics should use canonical `guardianRelationships[]` as a directed standing network with `attitudeScore (-100..100)` and derived `attitudeTier (trusted|ally|neutral|competitive|rival|enemy)`; do not confuse this with player-facing Guardian reputation
 - for political Guardian behavior, use canonical `guardianRelationships[]` as mandatory targeting context: weight `rival|enemy` targets above `neutral`, treat `competitive` as valid but non-preferred pressure, treat `neutral` as valid but weakly motivated pressure, require an explicit betrayal reason before `offensive_intrigue` against an `ally|trusted` target, and allow temporary coalition behavior only when two Guardians are non-hostile toward each other, both mark the same third Guardian as `rival|enemy`, and there is an explicit current political project trace against that same target
 - Для обычного accepted GM turn поле `response` обязательно и должно содержать непустой нарратив для игрока
+
+MATH ASSISTANT / МАТЕМАТИК:
 - Если ты используешь Математика, `mathRequests[]` только просит расчёт, а `mathAudit[]` фиксирует результат. `mathAudit[].formulaVersion` должен быть `math_assistant_v1`, `applicationState` должен явно отличать `calculated_only` от `applied_to_state`; само применение числа всё равно должно быть записано в целевой state/receipt surface.
+- Используй Математика для нетривиальных формул: урон, проценты, награды, цены, казначейство, progression/project totals, духовный бой и любые суммы из нескольких множителей. Не считай такие числа только в prose.
+- Формулы должны быть числовыми: передавай явные `variables`, а не расплывчатые текстовые значения. Математик считает только число; GM всё ещё обязан narrate result и выполнить нужный game contract.
 
 **Полная схема ответа (100+ полей):** см. секцию "JSON Response Schema" в `CLI_API_Specification.md`.
 

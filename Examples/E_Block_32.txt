@@ -484,4 +484,58 @@
    </jsonresponse>
   </example>
  </rule>
+ <rule id="32.math">
+  <example contenttype="log_and_json_snippet" type="good">
+   <title>
+    Example: Guardian project progress calculation uses Math Assistant audit
+   </title>
+   <description>
+    Если ход продвигает проект Хранителя через несколько числовых факторов, GM обязан показать расчёт через `mathAudit`, а затем применить итог в `guardianProjectUpdates`.
+   </description>
+   <jsonresponse>
+    <![CDATA[
+{
+  "response": "Азалия принимает принесённые воспоминания, и её проект заметно продвигается.",
+  "gm_thoughts_markdown": "Математик использован для project progress: currentProgress + baseProgress + assistanceBonus.",
+  "mathRequests": [
+    {
+      "requestId": "calc_guardian_project_progress_example",
+      "purpose": "guardian project progress",
+      "expression": "currentProgress + baseProgress + assistanceBonus",
+      "variables": { "currentProgress": 20, "baseProgress": 8, "assistanceBonus": 4 },
+      "rounding": { "mode": "none" },
+      "expectedResult": 32,
+      "applicationState": "requested_only"
+    }
+  ],
+  "mathAudit": [
+    {
+      "auditId": "calc_guardian_project_progress_example",
+      "requestId": "calc_guardian_project_progress_example",
+      "purpose": "guardian project progress",
+      "expression": "currentProgress + baseProgress + assistanceBonus",
+      "normalizedExpression": "currentProgress+baseProgress+assistanceBonus",
+      "variables": { "currentProgress": 20, "baseProgress": 8, "assistanceBonus": 4 },
+      "rawResult": 32,
+      "result": 32,
+      "rounding": { "mode": "none" },
+      "formulaVersion": "math_assistant_v1",
+      "applicationState": "applied_to_state",
+      "referencedBy": [ "guardianProjectUpdates:guardian_project_azalia_memory_lattice" ],
+      "warnings": []
+    }
+  ],
+  "guardianProjectUpdates": [
+    {
+      "guardianId": "azalia",
+      "projectId": "guardian_project_azalia_memory_lattice",
+      "progressPercent": 32,
+      "progressReason": "Проект продвинут по аудиту calc_guardian_project_progress_example."
+    }
+  ]
+}
+    ]]>
+   </jsonresponse>
+  </example>
+ </rule>
 </instructionblock>
