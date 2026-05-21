@@ -2644,6 +2644,53 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void SarefCharacterBibleCoversExplicitRomanceProfile()
+    {
+        var bible = ReadRepoFile("OtherGuides", "Saref_Character_Bible.md");
+        var romanceProfile = ExtractRequiredSection(
+            bible,
+            "## Романтический профиль",
+            "## Боевое поведение");
+
+        foreach (var requiredText in new[]
+                 {
+                     "мужской облик",
+                     "женский облик",
+                     "игрок сам",
+                     "не навязывает",
+                     "антагонист",
+                     "искушение",
+                     "не романтический",
+                     "клятва",
+                     "разрыв клятвы",
+                     "трагический",
+                     "фан-сервис"
+                 })
+        {
+            Assert.Contains(requiredText, romanceProfile, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void TaskGuideRoutesSarefMainStoryTurnsToAfterlifeExample27()
+    {
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+
+        Assert.Contains("Examples/E_CLI_Afterlife_Turns.txt", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("examples 10-27", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("example 27", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(SarefMainStoryState.StatePath, taskGuide, StringComparison.Ordinal);
+        Assert.Contains(SarefMainStoryState.PendingWingsInfiltrationPath, taskGuide, StringComparison.Ordinal);
+        Assert.Contains("sarefAdvantages", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("finalConfrontation", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("playerOathState", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("defeatOutcomes", taskGuide, StringComparison.Ordinal);
+        Assert.Contains("Крылья над Бездной", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сареф", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не раскрывай", taskGuide, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void SarefMainStoryRuntimeContractIsDocumented()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
