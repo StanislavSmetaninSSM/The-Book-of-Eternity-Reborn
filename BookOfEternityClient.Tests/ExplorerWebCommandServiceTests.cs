@@ -49,12 +49,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_PlannedCommand_ReturnsBlockedDto()
     {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/chaos_sea"));
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/shining_abode"));
 
-        Assert.Equal("/chaos_sea", result.Command);
+        Assert.Equal("/shining_abode", result.Command);
         Assert.Equal(CommandExecutionState.Blocked, result.State);
         var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("#571", message.Message, StringComparison.Ordinal);
+        Assert.Contains("#572", message.Message, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -111,6 +111,41 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/faction_directive")]
     [InlineData("/craft")]
     public async Task ExecuteAsync_MortalMutatingCommands_ReturnBlockedDtos(string command)
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.Equal(CommandExecutionState.Blocked, result.State);
+        var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
+        Assert.Contains("local-turn", message.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/chaos_sea")]
+    [InlineData("/guardians")]
+    [InlineData("/abode_power")]
+    [InlineData("/guardian_projects")]
+    [InlineData("/abodes")]
+    [InlineData("/gacha")]
+    public async Task ExecuteAsync_MigratedChaosSeaReadOnlyCommands_ReturnCompletedDtos(string command)
+    {
+        await SeedChaosSeaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.NotEmpty(result.Blocks);
+        Assert.DoesNotContain(
+            result.Blocks,
+            static block => block is UiMessageBlock message &&
+                            message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("/abode_offering")]
+    [InlineData("/found_guardian_mantle")]
+    public async Task ExecuteAsync_ChaosSeaMutatingCommands_ReturnBlockedDtos(string command)
     {
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
@@ -241,6 +276,66 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {
           "interactions": [
             { "interactionId": "int_1", "summary": "Игроки встретились на тракте." }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedChaosSeaFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Test Soul",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 18, "total": 55 },
+          "enlightenment": { "currentTier": "Пепельная искра", "experience": 70 }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "activeGuardian": { "guardianId": "guardian_azalia", "guardianName": "Азалия" },
+          "chaosSeaNavigation": {
+            "currentAbodeId": "abode_azalia",
+            "currentAbodeName": "Сад Ночных Роз",
+            "knownAbodes": [
+              { "abodeId": "abode_azalia", "name": "Сад Ночных Роз", "guardianId": "guardian_azalia" }
+            ]
+          },
+          "guardians": [
+            {
+              "guardianId": "guardian_azalia",
+              "canonicalName": "Азалия",
+              "domain": "Social",
+              "relationshipData": { "currentReputation": 12 },
+              "abode": { "abodeId": "abode_azalia", "name": "Сад Ночных Роз" },
+              "abodePower": { "currentPower": 30, "maxPower": 100 },
+              "gachaSystem": {
+                "chargesPerReturn": 1,
+                "chargesUsedThisReturn": 0,
+                "gachaHistory": []
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardian_projects.json", """
+        {
+          "projects": [
+            { "projectId": "project_1", "guardianId": "guardian_azalia", "status": "active", "title": "Садовая клятва" }
+          ],
+          "journal": [
+            { "entryId": "entry_1", "guardianId": "guardian_azalia", "summary": "Проект начат." }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/abode_power_journal.json", """
+        {
+          "guardianPowerEvents": [
+            { "eventId": "power_1", "guardianId": "guardian_azalia", "reasonType": "offering", "finalDelta": 5 }
           ]
         }
         """);

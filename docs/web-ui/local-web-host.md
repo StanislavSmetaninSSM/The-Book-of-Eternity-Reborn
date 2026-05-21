@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570  
+Tracked tasks: #565, #567, #569, #570, #571  
 Parent epic: #559
 
 ## Local-Only Model
@@ -108,5 +108,19 @@ Mortal World mutating commands remain blocked in the browser until the local-tur
 - `/faction_directive`
 - `/craft`
 
-Interactive multi-step prompt submission, Chaos Sea/Shining Abode command migration, lifecycle/local-turn operations such as `/validate` and `/world_setup`, and QTE support are tracked by the follow-up Web UI issues.
+Migrated Chaos Sea read-only surfaces currently include:
+
+- `/chaos_sea`, `/море_хаоса`
+- `/guardians`, `/хранители`
+- `/abode_power`, `/сила_обители`
+- `/guardian_projects`, `/проекты_хранителей`
+- `/abodes`, `/обители`
+- `/gacha`, `/гача`
+
+Chaos Sea pending-contract commands remain blocked in the browser until the local-turn write UX is implemented in #574:
+
+- `/abode_offering`, `/подношение_обители`
+- `/found_guardian_mantle`, `/учредить_хранителя`
+
+Interactive multi-step prompt submission, Shining Abode command migration, lifecycle/local-turn operations such as `/validate` and `/world_setup`, and QTE support are tracked by the follow-up Web UI issues.
 
