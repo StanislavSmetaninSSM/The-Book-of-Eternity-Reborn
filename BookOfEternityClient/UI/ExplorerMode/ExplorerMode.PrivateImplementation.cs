@@ -41,6 +41,8 @@ public partial class ExplorerMode
     private readonly Services.GuardianCorrectionService? _guardianCorrectionService;
     private readonly Services.SoulIdentityService? _soulIdentityService;
     private readonly Services.IClipboardService? _clipboardService;
+    private readonly Services.LocalUiSessionLockService _localUiSessionLockService;
+    private readonly Services.LocalUiSessionLockOwner _localUiSessionLockOwner;
 
     // Set by interactive commands (equip/unequip) to signal an action to send to the GM
     private string? _pendingGmAction;
@@ -208,6 +210,48 @@ public partial class ExplorerMode
             MarkupLine($"[dim]{Markup.Escape(ex.GetType().Name)}[/]");
             WaitForKey();
         }
+    }
+
+    private static readonly HashSet<string> LocalUiSessionMutatingCommands = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "/validate",
+        "/валидация",
+        "/world_setup",
+        "/настройка_мира",
+        "/distribute",
+        "/распределить",
+        "/companion_directive",
+        "/директива_компаньону",
+        "/faction_directive",
+        "/директива_фракции",
+        "/craft",
+        "/ремесло",
+        "/abode_offering",
+        "/подношение_обители",
+        "/found_guardian_mantle",
+        "/учредить_хранителя",
+        "/shining_treasury",
+        "/казначейство",
+        "/source_of_light",
+        "/источник_света",
+        "/spiritual_action",
+        "/духовное_действие"
+    };
+
+    private async Task<bool> TryAcquireLocalUiSessionMutationLockAsync(string commandName)
+    {
+        if (!LocalUiSessionMutatingCommands.Contains(commandName))
+            return true;
+
+        var operationLabel = $"Команда {commandName}";
+        var result = await _localUiSessionLockService.AcquireOrRefreshAsync(_localUiSessionLockOwner, operationLabel);
+        if (result.Acquired)
+            return true;
+
+        MarkupLine($"[yellow]⚠️ {Markup.Escape(result.BlockerMessage)}[/]");
+        MarkupLine($"[dim]Lock-файл: {Markup.Escape(LocalUiSessionLockService.LockPath)}[/]");
+        WaitForKey();
+        return false;
     }
 
     private static int GetInt(JsonElement el, string prop, int def)

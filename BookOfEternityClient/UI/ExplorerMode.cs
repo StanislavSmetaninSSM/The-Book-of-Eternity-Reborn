@@ -25,7 +25,9 @@ public partial class ExplorerMode
         GuardianCorrectionService? guardianCorrectionService = null,
         SoulIdentityService? soulIdentityService = null,
         IClipboardService? clipboardService = null,
-        IExplorerConsole? console = null)
+        IExplorerConsole? console = null,
+        LocalUiSessionLockService? localUiSessionLockService = null,
+        LocalUiSessionLockOwner? localUiSessionLockOwner = null)
     {
         _console = console ?? new SpectreExplorerConsole(clipboardService);
         _stateManager = stateManager;
@@ -45,6 +47,8 @@ public partial class ExplorerMode
         _afterlifeArchiveProjectFuelService = afterlifeArchiveProjectFuelService;
         _guardianCorrectionService = guardianCorrectionService;
         _soulIdentityService = soulIdentityService;
+        _localUiSessionLockService = localUiSessionLockService ?? new LocalUiSessionLockService(fs);
+        _localUiSessionLockOwner = localUiSessionLockOwner ?? BuildDefaultConsoleLockOwner();
         _clipboardService = clipboardService;
         _fs = fs;
         _loc = loc;
@@ -210,6 +214,13 @@ public partial class ExplorerMode
         foreach (var key in _mortalOnlyCommands.Keys) _allCommandNames.Add(key);
     }
 
+    private static LocalUiSessionLockOwner BuildDefaultConsoleLockOwner() =>
+        new(
+            $"console:{Environment.MachineName}:{Environment.ProcessId}",
+            "console",
+            $"Консоль PID {Environment.ProcessId}",
+            TimeSpan.FromMinutes(2));
+
     /// <summary>
     /// Try to process as a local command. Returns:
     /// - null: not a recognized command
@@ -238,6 +249,9 @@ public partial class ExplorerMode
                 return "";
             }
 
+            if (!await TryAcquireLocalUiSessionMutationLockAsync(cmd))
+                return "";
+
             await SafeExecute(handler, cmd);
             if (string.IsNullOrEmpty(_pendingGmAction))
                 await DiscardPendingLocalTurnRollbackSnapshotAsync();
@@ -264,6 +278,9 @@ public partial class ExplorerMode
 
             if (isAfterlife)
             {
+                if (!await TryAcquireLocalUiSessionMutationLockAsync(cmd))
+                    return "";
+
                 await SafeExecute(chaosHandler, cmd);
                 if (string.IsNullOrEmpty(_pendingGmAction))
                     await DiscardPendingLocalTurnRollbackSnapshotAsync();
@@ -280,6 +297,9 @@ public partial class ExplorerMode
         {
             if (isMortal)
             {
+                if (!await TryAcquireLocalUiSessionMutationLockAsync(cmd))
+                    return "";
+
                 await SafeExecute(mortalHandler, cmd);
                 if (string.IsNullOrEmpty(_pendingGmAction))
                     await DiscardPendingLocalTurnRollbackSnapshotAsync();
