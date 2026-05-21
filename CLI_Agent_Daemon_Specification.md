@@ -39,9 +39,10 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 5. **TaskGuides/CLI_Step_Main.txt** — основной рабочий процесс
 6. **Examples/E_CLI_Step_Main.txt** — ОБЯЗАТЕЛЬНЫЕ примеры валидного NPC scope, reasoning blocks, contract repair loop и terminal protocol failures; читать перед каждым ходом и перечитывать перед каждым repair cycle и terminal protocol failure
 7. **Examples/E_CLI_Ink_Feather_Actions.txt** — ОБЯЗАТЕЛЬНЫЕ structured examples для всех GM-side Ink Feather actions; читать перед любым ходом с `[INK_FEATHER_ACTION: TAG]`
-8. **OtherGuides/Afterlife_Contract_Matrix.md** — ОБЯЗАТЕЛЬНАЯ матрица afterlife-контрактов; читать перед каждым ходом в `Chaos Sea` / `Shining Abode`, чтобы выбрать точные canonical state surfaces, receipts, reports и forbidden substitutions
-9. **Examples/E_CLI_Afterlife_Turns.txt** — ОБЯЗАТЕЛЬНЫЕ worked examples для ходов в `Chaos Sea` / `Shining Abode`; читать после матрицы перед каждым afterlife-ходом, а для Shining core actions, свободных Guardian-команд, combined scheduler+pending turns, ordinary living-world turns без pending-файлов, system Guardian attraction, protected return guard, direct resident / pending-backed playerAction tags, свободного поиска Обители (`freeform Abode search`), afterlife spiritual conflicts, Source of Light capstone и Профилей сущностей посмертия сверять examples 14-26; для скрытой линии `Крылья над Бездной` и преимуществ Сарефа дополнительно сверять example 27
-10. **OtherGuides/Afterlife_Combat_Terminology_Glossary.md** — русские термины для afterlife spiritual conflicts, Spiritual Arts, exchange/resolve, diceAudit, forced incarnation и рангов; читать вместе с matrix/example 24, если ход касается духовного конфликта посмертия или `/spiritual_arts`
+8. **Examples/E_CLI_QTE_Offer.txt** — ОБЯЗАТЕЛЬНЫЙ пример для редкого QTE-offer turn; читать перед любым ходом, где GM хочет предложить `output/qte_offer.json`
+9. **OtherGuides/Afterlife_Contract_Matrix.md** — ОБЯЗАТЕЛЬНАЯ матрица afterlife-контрактов; читать перед каждым ходом в `Chaos Sea` / `Shining Abode`, чтобы выбрать точные canonical state surfaces, receipts, reports и forbidden substitutions
+10. **Examples/E_CLI_Afterlife_Turns.txt** — ОБЯЗАТЕЛЬНЫЕ worked examples для ходов в `Chaos Sea` / `Shining Abode`; читать после матрицы перед каждым afterlife-ходом, а для Shining core actions, свободных Guardian-команд, combined scheduler+pending turns, ordinary living-world turns без pending-файлов, system Guardian attraction, protected return guard, direct resident / pending-backed playerAction tags, свободного поиска Обители (`freeform Abode search`), afterlife spiritual conflicts, Source of Light capstone и Профилей сущностей посмертия сверять examples 14-26; для скрытой линии `Крылья над Бездной` и преимуществ Сарефа дополнительно сверять example 27
+11. **OtherGuides/Afterlife_Combat_Terminology_Glossary.md** — русские термины для afterlife spiritual conflicts, Spiritual Arts, exchange/resolve, diceAudit, forced incarnation и рангов; читать вместе с matrix/example 24, если ход касается духовного конфликта посмертия или `/spiritual_arts`
 
 Остальные блоки правил (`Rules/Block_*.txt`) загружай по мере необходимости в зависимости от типа действия игрока.
 
@@ -104,7 +105,7 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
 | `null` / пусто / отсутствует | unresolved realm fault | не запускай игровые системы; сохрани state и требуй repair authoritative `soul_state.currentRealm` | не infer `Chaos Sea`, не запускай afterlife scheduler, не запускай Mortal World systems |
 | `"Chaos Sea"` / `"Море Хаоса"` | Посмертие | Хранители, Обители, Реликвии Души, Чернильные Перья, Гача, afterlife spiritual conflicts through `afterlifeSpiritualConflictUpdate` (духовные конфликты посмертия; terms in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`), Профили сущностей посмертия through `afterlifeEntityProfileUpdates` / `afterlifeEntityCustomStateChanges` / `afterlifeEntityProgressionOverrides` / `game_state/meta/afterlife_entity_profiles.json`, скрытая линия `Крылья над Бездной` through canonical `game_state/meta/main_story_saref_state.json`, afterlife living-world scheduler | Mortal combat files, опыт, уровни, навыки, НПС, квесты, деньги, инвентарь, погода, direct Shining owner-state writes to `game_state/meta/shining_abode_state.json` |
 | `"Shining Abode"` | Посмертие | Свободный ролеплей с Хранителями, Реликвии Души, afterlife spiritual conflicts through `afterlifeSpiritualConflictUpdate` (духовные конфликты посмертия; terms in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`), Профили сущностей посмертия through `afterlifeEntityProfileUpdates` / `afterlifeEntityCustomStateChanges` / `afterlifeEntityProgressionOverrides` / `game_state/meta/afterlife_entity_profiles.json`, скрытая линия `Крылья над Бездной` through canonical `game_state/meta/main_story_saref_state.json`, afterlife meta systems, Shining living-world scheduler | Mortal-world combat/NPC/faction/location mechanics |
-| `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев | Хранители, Обители, Гача, afterlife-only трата Чернильных Перьев |
+| `"Mortal World"` / иное | Смертный мир | Бой, навыки, НПС, квесты, фракции, инвентарь, погода, время, whitelist-действия Чернильных Перьев, редкий QTE-offer через `output/qte_offer.json` | Хранители, Обители, Гача, afterlife-only трата Чернильных Перьев |
 
 Пустой, отсутствующий или `null` `currentRealm` не является стартовым `Chaos Sea`. Это blocking unresolved realm fault: Do not infer Chaos Sea. GM не должен угадывать realm по pending-файлам, нарративу, scheduler state или старым логам.
 
@@ -161,6 +162,13 @@ C# Клиент → записывает turn_request.json → Скрипт-ак
   - продаёт только mortal-world goods, never Soul Relics
   - merchant NPC knows the goods from their own local stock and should not be surprised if the player asks about an item bought from that stock
   - examples: `Examples/E_CLI_NPC_Trade.txt`
+- QTE-offer — редкий cinematic tool только для ordinary player-driven Mortal World turn:
+  - перед использованием прочитай `Examples/E_CLI_QTE_Offer.txt`
+  - разрешён только если `game_state/core/game_settings.json.qteEventsEnabled = true`
+  - пиши предложение только в `output/qte_offer.json`
+  - QTE-offer turn не должен одновременно закрывать ту же ситуацию обычными state changes: не меняй `game_state/`, `lore/` или `stories/` для этой сцены
+  - можно писать narrative/interface/debug outputs, но `qte_offer.json` обязан содержать `qteId`, `title`, `offerText`, `introNarrative`, `startChapterId`, `chapters[]` и `terminalOutcomes[]`
+  - если игрок примет QTE, сцену и её `responseFragment` применит клиент локально; не планируй отдельный follow-up GM turn для механической награды QTE
 
 Если forbidden key появился в промежуточном черновике ответа, он ДОЛЖЕН быть удалён до финальной записи файлов.
 
