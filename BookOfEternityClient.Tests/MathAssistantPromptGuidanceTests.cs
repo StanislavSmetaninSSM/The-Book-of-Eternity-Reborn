@@ -19,6 +19,16 @@ public sealed class MathAssistantPromptGuidanceTests
         }
     }
 
+    [Fact]
+    public void MortalCombatExample_UsesSignedDeltaReference()
+    {
+        var text = ReadRepoFile("Examples", "E_Block_6.txt");
+
+        Assert.Contains("\"currentHealthChange\": -13", text, StringComparison.Ordinal);
+        Assert.Contains("\"result\": -13", text, StringComparison.Ordinal);
+        Assert.Contains("\"referencedBy\": [ \"currentHealthChange\"", text, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("Examples/E_Block_6.txt", "calc_mortal_combat_damage_example")]
     [InlineData("Examples/E_CLI_Afterlife_Turns.txt", "calc_afterlife_conflict_margin_example")]

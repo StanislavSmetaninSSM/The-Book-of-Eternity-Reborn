@@ -117,6 +117,57 @@ public sealed class MathAssistantContractValidationTests : IDisposable
     }
 
     [Fact]
+    public void ValidateResponse_MortalCombatMathAuditMatchingHealthDelta_DoesNotReportDeltaMismatch()
+    {
+        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(currentHealthChange: -13));
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "math_audit_applied_delta_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "math_audit_missing_referenced_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateResponse_MortalCombatMathAuditMismatchedHealthDelta_ReportsMismatch()
+    {
+        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(currentHealthChange: -12));
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "math_audit_applied_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateResponse_MortalCombatMathAuditReferencesMissingDelta_ReportsMissingDelta()
+    {
+        using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(includeHealthDelta: false));
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "math_audit_missing_referenced_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateResponse_SimpleCombatWithoutMathAudit_RemainsAcceptedByMathAssistant()
+    {
+        using var doc = JsonDocument.Parse("""
+        {
+          "response": "Обычный удар без сложной арифметики.",
+          "combat_log_markdown": "Враг задевает героя. Здоровье: -5.",
+          "currentHealthChange": -5
+        }
+        """);
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("math_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MathAuditStateFile_IsValidated()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/math_audit.json", """
@@ -193,6 +244,39 @@ public sealed class MathAssistantContractValidationTests : IDisposable
       ]
     }
     """;
+
+    private static string BuildMortalCombatMathAuditResponseJson(int currentHealthChange = -13, bool includeHealthDelta = true)
+    {
+        var healthDeltaLine = includeHealthDelta
+            ? $"""
+              "currentHealthChange": {currentHealthChange},
+            """
+            : "";
+
+        return $$"""
+        {
+          "response": "Удар пробил защиту после расчёта урона.",
+          "combat_log_markdown": "Расчёт: 12 базового урона + 4 сила - 3 броня = 13 урона; currentHealthChange = -13.",
+        {{healthDeltaLine}}  "mathAudit": [
+            {
+              "auditId": "calc_mortal_damage_1",
+              "requestId": "calc_mortal_damage_1",
+              "purpose": "mortal combat applied health delta",
+              "expression": "armorReduction - (baseDamage + strengthBonus)",
+              "normalizedExpression": "armorReduction-(baseDamage+strengthBonus)",
+              "variables": { "baseDamage": 12, "strengthBonus": 4, "armorReduction": 3 },
+              "rawResult": -13,
+              "result": -13,
+              "rounding": { "mode": "none" },
+              "formulaVersion": "math_assistant_v1",
+              "applicationState": "applied_to_state",
+              "referencedBy": [ "currentHealthChange", "combat_log_markdown:mortal_damage_1" ],
+              "warnings": []
+            }
+          ]
+        }
+        """;
+    }
 
     private static string ReadRepoFile(params string[] segments)
     {
