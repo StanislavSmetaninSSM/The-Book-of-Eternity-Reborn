@@ -117,6 +117,47 @@ public sealed class MathAssistantContractValidationTests : IDisposable
     }
 
     [Fact]
+    public void ValidateResponse_DuplicateAuditIds_ReportsDuplicate()
+    {
+        using var doc = JsonDocument.Parse("""
+        {
+          "response": "Два аудита ошибочно получили один auditId.",
+          "mathAudit": [
+            {
+              "auditId": "calc_duplicate_audit",
+              "requestId": "calc_duplicate_audit_a",
+              "purpose": "first audit",
+              "expression": "base + 1",
+              "variables": { "base": 1 },
+              "rawResult": 2,
+              "result": 2,
+              "rounding": { "mode": "none" },
+              "formulaVersion": "math_assistant_v1",
+              "applicationState": "calculated_only"
+            },
+            {
+              "auditId": "calc_duplicate_audit",
+              "requestId": "calc_duplicate_audit_b",
+              "purpose": "second audit",
+              "expression": "base + 2",
+              "variables": { "base": 1 },
+              "rawResult": 3,
+              "result": 3,
+              "rounding": { "mode": "none" },
+              "formulaVersion": "math_assistant_v1",
+              "applicationState": "calculated_only"
+            }
+          ]
+        }
+        """);
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "math_audit_duplicate_id", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateResponse_MortalCombatMathAuditMatchingHealthDelta_DoesNotReportDeltaMismatch()
     {
         using var doc = JsonDocument.Parse(BuildMortalCombatMathAuditResponseJson(currentHealthChange: -13));
@@ -183,6 +224,29 @@ public sealed class MathAssistantContractValidationTests : IDisposable
     public void ValidateResponse_AfterlifeRewardMathAuditMismatchedFinalAmount_ReportsMismatch()
     {
         using var doc = JsonDocument.Parse(BuildAfterlifeRewardMathAuditResponseJson(finalAmount: 29));
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "math_audit_applied_delta_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateResponse_AfterlifeDiceMarginMathAuditMatchingMargin_DoesNotReportDeltaMismatch()
+    {
+        using var doc = JsonDocument.Parse(BuildAfterlifeDiceMarginMathAuditResponseJson(margin: 6));
+
+        var issues = _validator.ValidateResponse(doc.RootElement);
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "math_audit_applied_delta_mismatch", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "math_audit_missing_referenced_delta", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateResponse_AfterlifeDiceMarginMathAuditMismatchedMargin_ReportsMismatch()
+    {
+        using var doc = JsonDocument.Parse(BuildAfterlifeDiceMarginMathAuditResponseJson(margin: 5));
 
         var issues = _validator.ValidateResponse(doc.RootElement);
 
@@ -351,6 +415,48 @@ public sealed class MathAssistantContractValidationTests : IDisposable
           "formulaVersion": "math_assistant_v1",
           "applicationState": "applied_to_state",
           "referencedBy": [ "afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount" ],
+          "warnings": []
+        }
+      ]
+    }
+    """;
+
+    private static string BuildAfterlifeDiceMarginMathAuditResponseJson(int margin = 6) => $$"""
+    {
+      "response": "Духовное давление игрока проламывает защиту противника.",
+      "afterlifeSpiritualConflictUpdate": {
+        "mode": "exchange",
+        "exchange": {
+          "diceAudit": {
+            "margin": {{margin}}
+          }
+        }
+      },
+      "mathRequests": [
+        {
+          "requestId": "calc_afterlife_conflict_margin_example",
+          "purpose": "afterlife spiritual conflict margin",
+          "expression": "playerTotal - oppositionTotal",
+          "variables": { "playerTotal": 24, "oppositionTotal": 18 },
+          "rounding": { "mode": "none" },
+          "expectedResult": 6,
+          "applicationState": "requested_only"
+        }
+      ],
+      "mathAudit": [
+        {
+          "auditId": "calc_afterlife_conflict_margin_example",
+          "requestId": "calc_afterlife_conflict_margin_example",
+          "purpose": "afterlife spiritual conflict margin",
+          "expression": "playerTotal - oppositionTotal",
+          "normalizedExpression": "playerTotal-oppositionTotal",
+          "variables": { "playerTotal": 24, "oppositionTotal": 18 },
+          "rawResult": 6,
+          "result": 6,
+          "rounding": { "mode": "none" },
+          "formulaVersion": "math_assistant_v1",
+          "applicationState": "applied_to_state",
+          "referencedBy": [ "afterlifeSpiritualConflictUpdate.exchange.diceAudit.margin" ],
           "warnings": []
         }
       ]

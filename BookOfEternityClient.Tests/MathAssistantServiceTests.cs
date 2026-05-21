@@ -126,6 +126,40 @@ public sealed class MathAssistantServiceTests
     }
 
     [Fact]
+    public void Evaluate_ExponentNotation_IsRejectedInsteadOfProducingNonFiniteNumber()
+    {
+        var result = _service.Evaluate(new MathAssistantEvaluationRequest("1e309"));
+
+        Assert.False(result.Success);
+        Assert.Equal(MathAssistantErrorCodes.UnexpectedToken, result.ErrorCode);
+    }
+
+    [Fact]
+    public void Evaluate_ShiningTreasuryInterestFormula_IsDeterministicAndCapped()
+    {
+        var request = new MathAssistantEvaluationRequest(
+            "min(depositedInkFeathers * basisPoints / 10000, cycleCap)",
+            new Dictionary<string, decimal>
+            {
+                ["depositedInkFeathers"] = 1_000m,
+                ["basisPoints"] = 150m,
+                ["cycleCap"] = 25m
+            },
+            RoundingMode: MathAssistantRoundingMode.Floor,
+            DecimalPlaces: 0);
+
+        var first = _service.Evaluate(request);
+        var second = _service.Evaluate(request);
+
+        Assert.True(first.Success, first.ErrorMessage);
+        Assert.True(second.Success, second.ErrorMessage);
+        Assert.Equal(15m, first.RawResult);
+        Assert.Equal(15m, first.Result);
+        Assert.Equal(first.Result, second.Result);
+        Assert.Equal(first.NormalizedExpression, second.NormalizedExpression);
+    }
+
+    [Fact]
     public void Evaluate_UnsupportedFunction_ReturnsStructuredError()
     {
         var result = _service.Evaluate(new MathAssistantEvaluationRequest("random(1, 20)"));
