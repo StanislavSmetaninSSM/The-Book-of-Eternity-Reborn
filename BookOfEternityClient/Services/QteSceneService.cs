@@ -282,6 +282,14 @@ public sealed class QteSceneService
 
     public async Task<QteSceneCompletion> StartAcceptedSceneAsync(QteOffer offer, int currentTurnNumber)
     {
+        var state = await BeginAcceptedSceneAsync(offer, currentTurnNumber);
+        return await ExecuteActiveSceneAsync(state, currentTurnNumber);
+    }
+
+    public Task<QteRuntimeState> ReadRuntimeStateAsync() => LoadRuntimeStateAsync();
+
+    public async Task<QteRuntimeState> BeginAcceptedSceneAsync(QteOffer offer, int currentTurnNumber)
+    {
         var state = await LoadRuntimeStateAsync();
         state.PendingOffer = offer;
         state.ActiveScene = new ActiveQteSceneState
@@ -294,7 +302,90 @@ public sealed class QteSceneService
         };
         await SaveRuntimeStateAsync(state);
         ClearOfferFile();
-        return await ExecuteActiveSceneAsync(state, currentTurnNumber);
+        return state;
+    }
+
+    public async Task<QteActionResolution> ResolveActiveActionAsync(
+        string actionId,
+        string? submittedGrade,
+        int currentTurnNumber,
+        bool allowPreexistingStateIssues = false)
+    {
+        var state = await LoadRuntimeStateAsync();
+        var active = state.ActiveScene ?? throw new InvalidOperationException("QTE scene is not active.");
+        var offer = active.Offer ?? throw new InvalidOperationException("QTE offer is missing.");
+
+        var chapter = offer.Chapters.FirstOrDefault(item =>
+            string.Equals(item.ChapterId, active.CurrentChapterId, StringComparison.OrdinalIgnoreCase));
+        if (chapter == null)
+            throw new InvalidOperationException($"QTE chapter '{active.CurrentChapterId}' not found.");
+
+        var action = chapter.Actions.FirstOrDefault(item =>
+            string.Equals(item.ActionId, actionId, StringComparison.OrdinalIgnoreCase));
+        if (action == null)
+            throw new InvalidOperationException($"QTE action '{actionId}' not found.");
+
+        var grade = ResolveBrowserSubmittedGrade(action, submittedGrade);
+        var target = grade switch
+        {
+            QteGrade.Success => action.Routing.Success,
+            QteGrade.Partial => action.Routing.Partial,
+            _ => action.Routing.Fail
+        };
+        var resultText = ResolveResultText(action, grade);
+
+        if (!string.IsNullOrWhiteSpace(target.TerminalOutcomeId))
+        {
+            var outcome = offer.TerminalOutcomes.FirstOrDefault(item =>
+                string.Equals(item.OutcomeId, target.TerminalOutcomeId, StringComparison.OrdinalIgnoreCase));
+            if (outcome == null)
+                throw new InvalidOperationException($"QTE outcome '{target.TerminalOutcomeId}' not found.");
+
+            var finalResponse = await ApplyTerminalOutcomeValidatedStateChangesAsync(
+                outcome,
+                allowPreexistingStateIssues);
+            var summary = $"QTE[{offer.QteId}] -> {outcome.Title} ({DisplayGrade(grade)})";
+            await AppendHistoryAsync(offer, outcome, grade, active.AcceptedAtTurn, currentTurnNumber, summary);
+
+            state.PendingOffer = null;
+            state.ActiveScene = null;
+            state.LastResolvedQteSummaryPendingReminder = $"{summary}. GM summary: {outcome.GmSummary}";
+            await SaveRuntimeStateAsync(state);
+
+            return new QteActionResolution
+            {
+                State = "Completed",
+                QteId = offer.QteId,
+                ChapterId = chapter.ChapterId,
+                ActionId = action.ActionId,
+                Grade = grade.ToString().ToLowerInvariant(),
+                ResultText = resultText,
+                Completion = new QteSceneCompletion
+                {
+                    QteId = offer.QteId,
+                    OutcomeId = outcome.OutcomeId,
+                    Summary = summary,
+                    Response = finalResponse
+                }
+            };
+        }
+
+        if (string.IsNullOrWhiteSpace(target.NextChapterId))
+            throw new InvalidOperationException($"QTE action '{action.ActionId}' has no nextChapterId or terminalOutcomeId.");
+
+        active.CurrentChapterId = target.NextChapterId;
+        await SaveRuntimeStateAsync(state);
+
+        return new QteActionResolution
+        {
+            State = "Active",
+            QteId = offer.QteId,
+            ChapterId = chapter.ChapterId,
+            ActionId = action.ActionId,
+            Grade = grade.ToString().ToLowerInvariant(),
+            ResultText = resultText,
+            NextChapterId = target.NextChapterId
+        };
     }
 
     private async Task<QteSceneCompletion> ExecuteActiveSceneAsync(QteRuntimeState state, int currentTurnNumber)
@@ -445,10 +536,22 @@ public sealed class QteSceneService
         return response;
     }
 
-    internal async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(QteTerminalOutcome outcome)
+    internal async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(
+        QteTerminalOutcome outcome,
+        bool allowPreexistingStateIssues = false)
     {
         var response = BuildTerminalOutcomeResponse(outcome);
         var baseline = await CaptureQteNormalizationBaselineAsync(response);
+        HashSet<string>? preexistingErrorFingerprints = null;
+        if (allowPreexistingStateIssues)
+        {
+            await _stateManager.RefreshGameStateAsync();
+            preexistingErrorFingerprints = (await _validator.ValidateGameStateAsync())
+                .Where(issue => issue.Severity == IssueSeverity.Error)
+                .Select(BuildValidationIssueFingerprint)
+                .ToHashSet(StringComparer.Ordinal);
+        }
+
         try
         {
             await ApplyTerminalOutcomeStateChangesCoreAsync(response, baseline.NormalizerBackupsByPath);
@@ -456,8 +559,21 @@ public sealed class QteSceneService
 
             var issues = await _validator.ValidateGameStateAsync();
             var errors = issues.Where(issue => issue.Severity == IssueSeverity.Error).ToList();
+            if (preexistingErrorFingerprints is { Count: > 0 })
+            {
+                errors = errors
+                    .Where(issue => !preexistingErrorFingerprints.Contains(BuildValidationIssueFingerprint(issue)))
+                    .ToList();
+            }
+
             if (errors.Count > 0)
-                throw new InvalidOperationException("Локальный QTE outcome нарушил контракт состояния.");
+            {
+                var summary = string.Join("; ", errors.Take(5).Select(issue =>
+                    string.IsNullOrWhiteSpace(issue.Code)
+                        ? $"{issue.FilePath}: {issue.Message}"
+                        : $"{issue.Code} at {issue.FilePath}"));
+                throw new InvalidOperationException($"Локальный QTE outcome нарушил контракт состояния: {summary}");
+            }
 
             return response;
         }
@@ -472,6 +588,13 @@ public sealed class QteSceneService
             CleanupQteNormalizationBaseline(baseline);
         }
     }
+
+    private static string BuildValidationIssueFingerprint(ValidationIssue issue) =>
+        string.Join('\u001f',
+            issue.FilePath ?? string.Empty,
+            issue.Code ?? string.Empty,
+            issue.Section ?? string.Empty,
+            issue.Message ?? string.Empty);
 
     internal async Task<GameResponse> ApplyTerminalOutcomeStateChangesAsync(QteTerminalOutcome outcome)
     {
@@ -907,6 +1030,21 @@ public sealed class QteSceneService
 
     private static QteGrade ResolveBranchChoiceGrade(QteAction action) =>
         ParseGrade(GetConfigString(action.Check.Config, "choiceGrade"));
+
+    private static QteGrade ResolveBrowserSubmittedGrade(QteAction action, string? submittedGrade)
+    {
+        if (string.Equals(action.Check.Type, "BranchChoice", StringComparison.OrdinalIgnoreCase))
+            return ResolveBranchChoiceGrade(action);
+
+        return ParseGrade(submittedGrade);
+    }
+
+    private static string ResolveResultText(QteAction action, QteGrade grade) => grade switch
+    {
+        QteGrade.Success => action.SuccessText ?? "Успешное выполнение.",
+        QteGrade.Partial => action.PartialText ?? "Частичный успех.",
+        _ => action.FailText ?? "Неудача."
+    };
 
     private async Task<QteGrade> RunTimingBarAsync(QteCheck check)
     {
@@ -1540,6 +1678,18 @@ public sealed class QteSceneService
         public string OutcomeId { get; set; } = "";
         public string Summary { get; set; } = "";
         public GameResponse Response { get; set; } = new();
+    }
+
+    public sealed class QteActionResolution
+    {
+        public string State { get; set; } = "Active";
+        public string QteId { get; set; } = "";
+        public string ChapterId { get; set; } = "";
+        public string ActionId { get; set; } = "";
+        public string Grade { get; set; } = "";
+        public string ResultText { get; set; } = "";
+        public string? NextChapterId { get; set; }
+        public QteSceneCompletion? Completion { get; set; }
     }
 
     public enum QteOfferDecision

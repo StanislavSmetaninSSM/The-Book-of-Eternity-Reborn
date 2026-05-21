@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.AspNetCore.Builder;
@@ -53,6 +54,13 @@ public static class LocalWebUiHost
                 sp.GetRequiredService<ILogger<StateManager>>()));
         builder.Services.AddSingleton<LocalizationManager>();
         builder.Services.AddSingleton<ValidationService>();
+        builder.Services.AddSingleton<CharacteristicsService>();
+        builder.Services.AddSingleton<ImageService>();
+        builder.Services.AddSingleton<AudioService>();
+        builder.Services.AddSingleton<StateDistributor>();
+        builder.Services.AddSingleton<CanonicalStateNormalizer>();
+        builder.Services.AddSingleton<QteSceneService>();
+        builder.Services.AddSingleton<QteWebInteractionService>();
         builder.Services.AddSingleton<LocalWebUiSessionStatusService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
 
@@ -64,6 +72,12 @@ public static class LocalWebUiHost
         app.MapGet("/api/session", (LocalWebUiSessionStatusService status) => status.BuildStatus());
         app.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
             await commandService.ExecuteAsync(request));
+        app.MapGet("/api/qte/state", async (QteWebInteractionService qte) =>
+            await qte.BuildStateAsync());
+        app.MapPost("/api/qte/offer", async (QteWebOfferDecisionRequest request, QteWebInteractionService qte) =>
+            await qte.ResolveOfferDecisionAsync(request));
+        app.MapPost("/api/qte/action", async (QteWebActionRequest request, QteWebInteractionService qte) =>
+            await qte.ResolveActionAsync(request));
 
         return app;
     }
@@ -217,6 +231,19 @@ public static class LocalWebUiHost
               padding: 1rem;
             }
             .actions, .prompts { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+            .qte-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
+            .qte-action-card {
+              border: 1px solid rgba(222, 183, 99, .18);
+              border-radius: .9rem;
+              background: rgba(0, 0, 0, .18);
+              padding: .85rem;
+              margin-top: .75rem;
+            }
+            .qte-meta {
+              color: var(--muted);
+              font-size: .92rem;
+              margin-top: .25rem;
+            }
             .prompt {
               flex: 1 1 18rem;
             }
@@ -248,7 +275,9 @@ public static class LocalWebUiHost
                 <h2>Статус</h2>
                 <p>Проверка сессии: <code>/api/health</code></p>
                 <p>Командный API: <code>POST /api/explorer/command</code></p>
+                <p>QTE API: <code>GET /api/qte/state</code></p>
                 <p>Сейчас доступны только перенесённые DTO-команды; остальные вернут структурный блокер.</p>
+                <button class="secondary" type="button" id="qte-button">Проверить QTE</button>
               </aside>
             </section>
             <section id="result" aria-live="polite">
@@ -263,6 +292,7 @@ public static class LocalWebUiHost
               input.value = '/help';
               executeCommand('/help');
             });
+            document.getElementById('qte-button').addEventListener('click', () => loadQteState());
             form.addEventListener('submit', event => {
               event.preventDefault();
               executeCommand(input.value);
@@ -287,6 +317,59 @@ public static class LocalWebUiHost
               }
             }
 
+            async function loadQteState() {
+              resultRoot.replaceChildren(el('div', 'loading', 'Проверяю QTE-сцену...'));
+              try {
+                const response = await fetch('/api/qte/state');
+                const payload = await response.json();
+                if (!response.ok) {
+                  renderError(`HTTP ${response.status}`, payload);
+                  return;
+                }
+                renderQteState(payload);
+              } catch (error) {
+                renderError('Не удалось прочитать QTE', error?.message ?? String(error));
+              }
+            }
+
+            async function postQteOffer(decision) {
+              resultRoot.replaceChildren(el('div', 'loading', 'Обрабатываю выбор QTE...'));
+              try {
+                const response = await fetch('/api/qte/offer', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ decision })
+                });
+                const payload = await response.json();
+                if (!response.ok) {
+                  renderError(`HTTP ${response.status}`, payload);
+                  return;
+                }
+                renderQteState(payload);
+              } catch (error) {
+                renderError('Не удалось обработать QTE', error?.message ?? String(error));
+              }
+            }
+
+            async function postQteAction(actionId, grade) {
+              resultRoot.replaceChildren(el('div', 'loading', 'Разрешаю QTE-действие...'));
+              try {
+                const response = await fetch('/api/qte/action', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ actionId, grade })
+                });
+                const payload = await response.json();
+                if (!response.ok) {
+                  renderError(`HTTP ${response.status}`, payload);
+                  return;
+                }
+                renderQteState(payload);
+              } catch (error) {
+                renderError('Не удалось разрешить QTE-действие', error?.message ?? String(error));
+              }
+            }
+
             function renderCommandResult(result) {
               resultRoot.replaceChildren();
               const blocks = result?.blocks ?? [];
@@ -297,6 +380,101 @@ public static class LocalWebUiHost
               for (const block of blocks) resultRoot.append(renderBlock(block));
               renderActions(result?.actions ?? []);
               renderPrompts(result?.prompts ?? []);
+            }
+
+            function renderQteState(state) {
+              resultRoot.replaceChildren();
+              if (state?.error) {
+                resultRoot.append(renderMessage({ severity: 'Error', title: 'QTE ошибка', message: state.error }));
+                return;
+              }
+              if (state?.notification) {
+                resultRoot.append(renderMessage({ severity: 'Info', title: 'QTE', message: state.notification }));
+              }
+              if (state?.state === 'Offer' && state.offer) {
+                resultRoot.append(renderQteOffer(state.offer));
+                return;
+              }
+              if ((state?.state === 'Active' || state?.activeScene) && state.activeScene) {
+                if (state.resolution?.resultText) {
+                  resultRoot.append(renderMessage({ severity: 'Info', title: 'Промежуточный результат', message: state.resolution.resultText }));
+                }
+                resultRoot.append(renderQteActiveScene(state.activeScene));
+                return;
+              }
+              if (state?.state === 'Completed' && state.completion) {
+                resultRoot.append(renderMessage({ severity: 'Success', title: 'QTE завершено', message: state.completion.summary ?? state.completion.outcomeId ?? 'Сцена завершена.' }));
+                return;
+              }
+              if (state?.state === 'Declined') {
+                resultRoot.append(renderMessage({ severity: 'Warning', title: 'QTE отклонено', message: state.notification ?? 'Сцена отклонена.' }));
+                return;
+              }
+              resultRoot.append(el('div', 'empty', state?.lastResolvedReminder ?? 'Активной QTE-сцены нет.'));
+            }
+
+            function renderQteOffer(offer) {
+              const node = el('section', 'block qte-offer');
+              node.append(el('h2', '', offer.title ?? 'QTE событие'));
+              if (offer.offerText) node.append(el('p', '', offer.offerText));
+              if (offer.introNarrative) node.append(el('p', '', offer.introNarrative));
+              if (offer.cinematicJustification) node.append(el('div', 'qte-meta', `Почему QTE: ${offer.cinematicJustification}`));
+              if (offer.declineHint) node.append(el('div', 'qte-meta', offer.declineHint));
+              const actions = el('div', 'qte-actions');
+              const accept = el('button', '', 'Принять QTE');
+              accept.type = 'button';
+              accept.addEventListener('click', () => postQteOffer('accept'));
+              const decline = el('button', 'secondary', 'Отклонить');
+              decline.type = 'button';
+              decline.addEventListener('click', () => postQteOffer('decline'));
+              actions.append(accept, decline);
+              node.append(actions);
+              return node;
+            }
+
+            function renderQteActiveScene(scene) {
+              const node = el('section', 'block qte-active');
+              node.append(el('h2', '', scene.title ?? 'QTE сцена'));
+              const chapter = scene.currentChapter;
+              if (!chapter) {
+                node.append(el('div', 'empty', 'Текущая глава QTE не найдена.'));
+                return node;
+              }
+              if (chapter.title) node.append(el('h3', '', chapter.title));
+              if (chapter.narrative) node.append(el('p', '', chapter.narrative));
+              for (const action of chapter.actions ?? []) node.append(renderQteAction(action));
+              return node;
+            }
+
+            function renderQteAction(action) {
+              const node = el('div', 'qte-action-card');
+              node.append(el('div', 'message-title', action.label ?? action.actionId ?? 'Действие'));
+              node.append(el('div', 'qte-meta', `Проверка: ${action.checkType ?? 'unknown'}, сложность ${action.baseDifficulty ?? '?'}, характеристика ${action.primaryCharacteristic ?? '-'}`));
+              const actions = el('div', 'qte-actions');
+              if (action.requiresSubmittedGrade === false) {
+                const button = el('button', '', 'Выбрать');
+                button.type = 'button';
+                button.addEventListener('click', () => postQteAction(action.actionId, null));
+                actions.append(button);
+              } else {
+                for (const grade of action.gradeOptions ?? ['success', 'partial', 'fail']) {
+                  const button = el('button', grade === 'fail' ? 'danger' : grade === 'partial' ? 'secondary' : '', qteGradeLabel(grade));
+                  button.type = 'button';
+                  button.addEventListener('click', () => postQteAction(action.actionId, grade));
+                  actions.append(button);
+                }
+              }
+              node.append(actions);
+              return node;
+            }
+
+            function qteGradeLabel(grade) {
+              switch (grade) {
+                case 'success': return 'Успех';
+                case 'partial': return 'Частичный успех';
+                case 'fail': return 'Провал';
+                default: return grade ?? 'Результат';
+              }
             }
 
             function renderBlock(block) {
