@@ -49,9 +49,20 @@ The initial host exposes:
 GET /
 GET /api/health
 GET /api/session
+POST /api/explorer/command
 ```
 
 `/` serves a basic browser shell. `/api/health` and `/api/session` return local session metadata: status, local-only flag, base path, `game_session` path, and whether the directory exists.
 
-Command execution, browser rendering, interactive protocols, and QTE support are tracked by the follow-up Web UI issues.
+`/api/explorer/command` accepts a JSON body:
+
+```json
+{
+  "command": "/help"
+}
+```
+
+It returns an `ExplorerCommandResult` DTO. At this stage only migrated DTO commands are executed, currently `/help` and `/помощь`. Planned, temporary-console-only, unknown, or blocked commands return structured `Blocked`/`Failed` DTOs instead of invoking console-bound handlers.
+
+Browser rendering, interactive protocols, broad command migration, and QTE support are tracked by the follow-up Web UI issues.
 
