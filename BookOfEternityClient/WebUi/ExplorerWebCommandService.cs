@@ -77,6 +77,13 @@ public sealed class ExplorerWebCommandService
         if (chaosSeaResult != null)
             return chaosSeaResult;
 
+        var shiningResult = await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
+            command,
+            _stateManager,
+            _fs);
+        if (shiningResult != null)
+            return shiningResult;
+
         return MessageResult(
             command,
             CommandExecutionState.Failed,

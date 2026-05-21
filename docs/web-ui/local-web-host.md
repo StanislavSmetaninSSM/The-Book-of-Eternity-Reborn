@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571  
+Tracked tasks: #565, #567, #569, #570, #571, #572  
 Parent epic: #559
 
 ## Local-Only Model
@@ -122,5 +122,14 @@ Chaos Sea pending-contract commands remain blocked in the browser until the loca
 - `/abode_offering`, `/подношение_обители`
 - `/found_guardian_mantle`, `/учредить_хранителя`
 
-Interactive multi-step prompt submission, Shining Abode command migration, lifecycle/local-turn operations such as `/validate` and `/world_setup`, and QTE support are tracked by the follow-up Web UI issues.
+Migrated Shining Abode read-only surfaces currently include:
+
+- `/shining_abode`, `/сияющая_обитель`
+- `/shining_politics`, `/сияющая_политика`
+- `/shining_treasury`, `/казначейство`
+- `/source_of_light`, `/источник_света`
+
+The browser versions of `/shining_treasury` and `/source_of_light` are status-only surfaces for now. They do not mutate feathers, sparks, pending files, or capstone request state until the local-turn write UX is implemented in #574.
+
+Interactive multi-step prompt submission, afterlife combat/entity commands, lifecycle/local-turn operations such as `/validate` and `/world_setup`, and QTE support are tracked by the follow-up Web UI issues.
 
