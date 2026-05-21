@@ -9,4 +9,8 @@
     <RootNamespace>BookOfEternityGMBridge</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BookOfEternityClient\BookOfEternityClient.csproj" />
+  </ItemGroup>
+
 </Project>
