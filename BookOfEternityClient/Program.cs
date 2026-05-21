@@ -6,6 +6,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
+using BookOfEternityClient.WebUi;
 
 // ═══════════════════════════════════════════════════
 // 📖 The Book of Eternity: Reborn - C# Client
@@ -40,11 +41,17 @@ static string ResolveDefaultBasePath()
 }
 
 // Determine base path: prefer the project root containing BookOfEternityClient.csproj.
-var basePath = ResolveDefaultBasePath();
+var startupOptions = ClientStartupOptions.Parse(args, ResolveDefaultBasePath());
+var basePath = startupOptions.BasePath;
 
-// Allow overriding via command line argument
-if (args.Length > 0 && Directory.Exists(args[0]))
-    basePath = args[0];
+if (startupOptions.WebMode)
+{
+    await using var webApp = LocalWebUiHost.Build(
+        args,
+        new LocalWebUiHostOptions(basePath, startupOptions.WebUrl));
+    await webApp.RunAsync();
+    return;
+}
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureLogging(logging =>
