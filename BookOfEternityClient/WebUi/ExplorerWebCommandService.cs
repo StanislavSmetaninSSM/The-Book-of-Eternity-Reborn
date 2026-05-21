@@ -41,10 +41,11 @@ public sealed class ExplorerWebCommandService
         var effectiveRequest = request ?? new ExplorerWebCommandRequest(command);
 
         var descriptor = parsed.Descriptor!;
-        if (descriptor.BrowserStatus != ExplorerCommandMigrationStatus.Migrated)
+        if (!ExplorerCommandMigrationRegistry.IsBrowserExecutable(descriptor.BrowserStatus))
             return BuildBlockedMigrationResult(command, descriptor);
 
-        if (parsed.Subcommand is { BrowserStatus: not ExplorerCommandMigrationStatus.Migrated } subcommand)
+        if (parsed.Subcommand is { } subcommand &&
+            !ExplorerCommandMigrationRegistry.IsBrowserExecutable(subcommand.BrowserStatus))
             return BuildBlockedMigrationResult(command, subcommand);
 
         var result = await BuildMigratedResultAsync(parsed, descriptor);

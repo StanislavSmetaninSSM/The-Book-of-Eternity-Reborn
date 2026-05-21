@@ -37,7 +37,7 @@ public static class ExplorerCommandCatalog
         ]),
 
         D("validate", ExplorerCommandGroup.Lifecycle, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/validate", "/валидация"]),
-        D("world_setup", ExplorerCommandGroup.Lifecycle, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/world_setup", "/настройка_мира"]),
+        D("world_setup", ExplorerCommandGroup.Lifecycle, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/world_setup", "/настройка_мира"], browserStatus: ExplorerCommandMigrationStatus.InteractiveFormPending, followUpIssue: "#589", reason: "Браузер показывает форму и prompt-session, но полный lifecycle/write/repair UX закрывается задачей #589."),
 
         D("inventory", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/inv", "/inventory", "/инв", "/инвентарь"]),
         D("npcs", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/npc", "/npcs", "/characters", "/нпс", "/персонажи"]),
@@ -58,10 +58,10 @@ public static class ExplorerCommandCatalog
         D("books", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/books", "/книги", "/читать"]),
         D("storage_access", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/storage_access", "/доступ_к_хранилищам"]),
         D("interactions", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/interactions", "/взаимодействия"]),
-        D("distribute", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/distribute", "/распределить"]),
-        D("companion_directive", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/companion_directive", "/директива_компаньону"]),
-        D("faction_directive", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/faction_directive", "/директива_фракции"]),
-        D("craft", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/craft", "/ремесло"]),
+        D("distribute", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/distribute", "/распределить"], browserStatus: ExplorerCommandMigrationStatus.InteractiveFormPending, followUpIssue: "#590", reason: "Браузер показывает форму/DTO, но полноценная запись Mortal World команды закрывается задачей #590."),
+        D("companion_directive", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/companion_directive", "/директива_компаньону"], browserStatus: ExplorerCommandMigrationStatus.InteractiveFormPending, followUpIssue: "#590", reason: "Браузер показывает форму/DTO, но полноценная запись Mortal World команды закрывается задачей #590."),
+        D("faction_directive", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/faction_directive", "/директива_фракции"], browserStatus: ExplorerCommandMigrationStatus.InteractiveFormPending, followUpIssue: "#590", reason: "Браузер показывает форму/DTO, но полноценная запись Mortal World команды закрывается задачей #590."),
+        D("craft", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/craft", "/ремесло"], browserStatus: ExplorerCommandMigrationStatus.InteractiveFormPending, followUpIssue: "#590", reason: "Браузер показывает форму/DTO, но полноценная запись Mortal World команды закрывается задачей #590."),
 
         D("chaos_sea", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/chaos_sea", "/море_хаоса"]),
         D("guardians", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/guardians", "/хранители"]),
@@ -69,21 +69,21 @@ public static class ExplorerCommandCatalog
         D("guardian_projects", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/guardian_projects", "/проекты_хранителей"]),
         D("abodes", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/abodes", "/обители"]),
         D("gacha", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/gacha", "/гача"]),
-        D("abode_offering", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/abode_offering", "/подношение_обители"]),
-        D("found_guardian_mantle", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/found_guardian_mantle", "/учредить_хранителя"]),
+        D("abode_offering", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/abode_offering", "/подношение_обители"], browserStatus: ExplorerCommandMigrationStatus.InteractiveFormPending, followUpIssue: "#591", reason: "Браузер показывает pending-contract DTO, но полноценная запись Chaos Sea команды закрывается задачей #591."),
+        D("found_guardian_mantle", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/found_guardian_mantle", "/учредить_хранителя"], browserStatus: ExplorerCommandMigrationStatus.InteractiveFormPending, followUpIssue: "#591", reason: "Браузер показывает pending-contract DTO, но полноценная запись Chaos Sea команды закрывается задачей #591."),
 
         D("shining_abode", ExplorerCommandGroup.ShiningAbode, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ShiningAbode, ["/shining_abode", "/сияющая_обитель"]),
         D("shining_politics", ExplorerCommandGroup.ShiningAbode, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ShiningAbode, ["/shining_politics", "/сияющая_политика"]),
-        D("shining_treasury", ExplorerCommandGroup.ShiningAbode, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ShiningAbode, ["/shining_treasury", "/казначейство"]),
-        D("source_of_light", ExplorerCommandGroup.ShiningAbode, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ShiningAbode, ["/source_of_light", "/источник_света"]),
+        D("shining_treasury", ExplorerCommandGroup.ShiningAbode, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.ShiningAbode, ["/shining_treasury", "/казначейство"], browserStatus: ExplorerCommandMigrationStatus.StatusOnly, followUpIssue: "#591", reason: "Браузер показывает состояние казначейства, но не выполняет локальные операции с перьями/искрами до #591."),
+        D("source_of_light", ExplorerCommandGroup.ShiningAbode, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.ShiningAbode, ["/source_of_light", "/источник_света"], browserStatus: ExplorerCommandMigrationStatus.StatusOnly, followUpIssue: "#591", reason: "Браузер показывает статус Источника Света, но не создаёт pending request до #591."),
 
         D("afterlife_profiles", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/afterlife_profiles", "/профили_загробья"]),
-        D("afterlife_inbox", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/afterlife_inbox", "/уведомления_загробья"]),
+        D("afterlife_inbox", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/afterlife_inbox", "/уведомления_загробья"], browserStatus: ExplorerCommandMigrationStatus.StatusOnly, followUpIssue: "#591", reason: "Браузер показывает уведомления, но не отмечает их прочитанными до #591."),
         D("spiritual_conflict", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/spiritual_conflict", "/духовный_конфликт"]),
         D("spiritual_combat_log", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/spiritual_combat_log", "/журнал_духовного_боя"]),
         D("spiritual_combat_help", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/spiritual_combat_help", "/духовный_бой"]),
-        D("spiritual_arts", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/spiritual_arts", "/духовные_искусства"]),
-        D("spiritual_action", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/spiritual_action", "/духовное_действие"])
+        D("spiritual_arts", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/spiritual_arts", "/духовные_искусства"], browserStatus: ExplorerCommandMigrationStatus.StatusOnly, followUpIssue: "#591", reason: "Браузер показывает духовные искусства, но не выполняет прокачку до #591."),
+        D("spiritual_action", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/spiritual_action", "/духовное_действие"], browserStatus: ExplorerCommandMigrationStatus.InteractiveFormPending, followUpIssue: "#591", reason: "Браузер показывает форму духовного действия, но полный afterlife write-flow закрывается задачей #591.")
     ];
 
     public static IReadOnlyList<string> AllAliases { get; } =
@@ -111,7 +111,7 @@ public static class ExplorerCommandCatalog
         ExplorerCommandMutationMode mutationMode,
         ExplorerCommandBrowserHandlerKind browserHandlerKind,
         IReadOnlyList<string> aliases,
-        ExplorerCommandMigrationStatus browserStatus = ExplorerCommandMigrationStatus.Migrated,
+        ExplorerCommandMigrationStatus browserStatus = ExplorerCommandMigrationStatus.ReadOnlyParity,
         string followUpIssue = "",
         string reason = "",
         bool acceptsArguments = false,
@@ -139,7 +139,7 @@ public sealed record ExplorerCommandSubcommandDescriptor(
     string Id,
     IReadOnlyList<string> Aliases,
     string CanonicalCommand,
-    ExplorerCommandMigrationStatus BrowserStatus = ExplorerCommandMigrationStatus.Migrated,
+    ExplorerCommandMigrationStatus BrowserStatus = ExplorerCommandMigrationStatus.ReadOnlyParity,
     string FollowUpIssue = "",
     string Reason = "");
 

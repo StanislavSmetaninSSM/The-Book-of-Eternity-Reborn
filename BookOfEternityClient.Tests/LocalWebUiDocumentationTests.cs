@@ -27,4 +27,17 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("/spiritual_arts", text, StringComparison.Ordinal);
         Assert.Contains("Troubleshooting", text, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void LocalWebHostDocs_UseCurrentParityTasksAndCategories()
+    {
+        var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+
+        Assert.Contains("read-only parity", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("interactive form pending", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("status-only", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("#590", text, StringComparison.Ordinal);
+        Assert.Contains("#591", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("#575", text, StringComparison.Ordinal);
+    }
 }

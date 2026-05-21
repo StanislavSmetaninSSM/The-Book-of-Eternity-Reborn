@@ -94,16 +94,16 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
             duplicateCommands.Length == 0,
             "Duplicate migration metadata entries: " + string.Join(", ", duplicateCommands));
 
-        var nonMigratedWithoutIssue = entries
-            .Where(static entry => entry.Status != ExplorerCommandMigrationStatus.Migrated)
+        var nonParityWithoutIssue = entries
+            .Where(static entry => entry.Status is not ExplorerCommandMigrationStatus.ReadOnlyParity and not ExplorerCommandMigrationStatus.MutatingParity)
             .Where(static entry => string.IsNullOrWhiteSpace(entry.FollowUpIssue) || !entry.FollowUpIssue.Contains('#', StringComparison.Ordinal))
             .Select(static entry => entry.Command)
             .Order(StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
         Assert.True(
-            nonMigratedWithoutIssue.Length == 0,
-            "Non-migrated commands must point to a follow-up issue: " + string.Join(", ", nonMigratedWithoutIssue));
+            nonParityWithoutIssue.Length == 0,
+            "Commands without full browser parity must point to a follow-up issue: " + string.Join(", ", nonParityWithoutIssue));
 
         var blockedWithoutReason = entries
             .Where(static entry => entry.Status is ExplorerCommandMigrationStatus.Blocked or ExplorerCommandMigrationStatus.ConsoleOnlyTemporarily)
@@ -118,43 +118,88 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
     }
 
     [Fact]
-    public void EveryMigratedExplorerCommand_HasWebDtoBuilderCoverage()
+    public void BrowserParityMatrix_UsesGranularStatuses()
     {
-        var migratedWithoutBuilder = ExplorerCommandMigrationRegistry.Entries
-            .Where(static entry => entry.Status == ExplorerCommandMigrationStatus.Migrated)
+        var statusNames = Enum.GetNames<ExplorerCommandMigrationStatus>();
+
+        Assert.Contains(nameof(ExplorerCommandMigrationStatus.ReadOnlyParity), statusNames);
+        Assert.Contains(nameof(ExplorerCommandMigrationStatus.InteractiveFormPending), statusNames);
+        Assert.Contains(nameof(ExplorerCommandMigrationStatus.MutatingParity), statusNames);
+        Assert.Contains(nameof(ExplorerCommandMigrationStatus.StatusOnly), statusNames);
+        Assert.Contains(nameof(ExplorerCommandMigrationStatus.ConsoleOnlyTemporarily), statusNames);
+        Assert.DoesNotContain("Migrated", statusNames);
+    }
+
+    [Fact]
+    public void BrowserParityMatrix_ClassifiesKnownPartialBrowserSurfaces()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries["/validate"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries["/world_setup"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries["/distribute"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries["/abode_offering"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries["/spiritual_action"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.StatusOnly, entries["/shining_treasury"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.StatusOnly, entries["/source_of_light"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.StatusOnly, entries["/afterlife_inbox"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.StatusOnly, entries["/spiritual_arts"].Status);
+    }
+
+    [Fact]
+    public void NonParityBrowserCommands_HaveFollowUpIssueOrExplicitReason()
+    {
+        var incomplete = ExplorerCommandMigrationRegistry.Entries
+            .Where(static entry => entry.Status is not ExplorerCommandMigrationStatus.ReadOnlyParity and not ExplorerCommandMigrationStatus.MutatingParity)
+            .Where(static entry => string.IsNullOrWhiteSpace(entry.FollowUpIssue) && string.IsNullOrWhiteSpace(entry.Reason))
+            .Select(static entry => $"{entry.Command} ({entry.Status})")
+            .Order(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.True(
+            incomplete.Length == 0,
+            "Commands without full browser parity must carry a follow-up issue or explicit reason: " + string.Join(", ", incomplete));
+    }
+
+    [Fact]
+    public void EveryBrowserExecutableExplorerCommand_HasWebDtoBuilderCoverage()
+    {
+        var executableWithoutBuilder = ExplorerCommandMigrationRegistry.Entries
+            .Where(static entry => ExplorerCommandMigrationRegistry.IsBrowserExecutable(entry.Status))
             .Where(static entry => !HasWebDtoBuilder(entry.Command))
             .Select(static entry => entry.Command)
             .Order(StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
         Assert.True(
-            migratedWithoutBuilder.Length == 0,
-            "Migrated commands must be backed by a shared ExplorerCommandResult DTO builder: " +
-            string.Join(", ", migratedWithoutBuilder));
+            executableWithoutBuilder.Length == 0,
+            "Browser-executable commands must be backed by a shared ExplorerCommandResult DTO builder: " +
+            string.Join(", ", executableWithoutBuilder));
     }
 
     [Fact]
-    public void HelpCommands_AreMarkedAsMigrated()
+    public void HelpCommands_HaveReadOnlyParity()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries
             .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
 
-        Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries["/help"].Status);
-        Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries["/помощь"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries["/help"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries["/помощь"].Status);
     }
 
     [Fact]
-    public void UniversalMetaCommands_AreMarkedAsMigrated()
+    public void UniversalMetaCommands_HaveReadOnlyParity()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries
             .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
 
         foreach (var command in new[] { "/status", "/статус", "/soul", "/душа", "/codex", "/кодекс", "/story", "/debug", "/галерея", "/saref", "/сареф" })
-            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+            Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);
     }
 
     [Fact]
-    public void MortalReadOnlyCommands_AreMarkedAsMigrated()
+    public void MortalReadOnlyCommands_HaveReadOnlyParity()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries
             .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
@@ -168,29 +213,34 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
                      "/storage_access", "/interactions"
                  })
         {
-            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+            Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);
         }
     }
 
     [Fact]
-    public void LifecycleAndLocalTurnCommands_AreMarkedAsMigrated()
+    public void LifecycleAndLocalTurnCommands_HaveAccurateBrowserParityStatus()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries
             .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
 
+        foreach (var command in new[] { "/validate", "/валидация" })
+            Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);
+
         foreach (var command in new[]
                  {
-                     "/validate", "/валидация", "/world_setup", "/настройка_мира",
+                     "/world_setup", "/настройка_мира",
                      "/distribute", "/распределить", "/companion_directive", "/директива_компаньону",
                      "/faction_directive", "/директива_фракции", "/craft", "/ремесло",
                      "/abode_offering", "/подношение_обители", "/found_guardian_mantle", "/учредить_хранителя",
                      "/spiritual_action", "/духовное_действие"
                  })
-            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+        {
+            Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries[command].Status);
+        }
     }
 
     [Fact]
-    public void ChaosSeaReadOnlyCommands_AreMarkedAsMigrated()
+    public void ChaosSeaReadOnlyCommands_HaveReadOnlyParity()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries
             .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
@@ -201,41 +251,41 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
                      "/guardian_projects", "/проекты_хранителей", "/abodes", "/обители", "/gacha", "/гача"
                  })
         {
-            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+            Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);
         }
     }
 
     [Fact]
-    public void ShiningAbodeCommands_AreMarkedAsMigrated()
+    public void ShiningAbodeCommands_HaveAccurateBrowserParityStatus()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var command in new[] { "/shining_abode", "/сияющая_обитель", "/shining_politics", "/сияющая_политика" })
+            Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);
+
+        foreach (var command in new[] { "/shining_treasury", "/казначейство", "/source_of_light", "/источник_света" })
+            Assert.Equal(ExplorerCommandMigrationStatus.StatusOnly, entries[command].Status);
+    }
+
+    [Fact]
+    public void AfterlifeCombatAndEntityCommands_HaveAccurateBrowserParityStatus()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries
             .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
 
         foreach (var command in new[]
                  {
-                     "/shining_abode", "/сияющая_обитель", "/shining_politics", "/сияющая_политика",
-                     "/shining_treasury", "/казначейство", "/source_of_light", "/источник_света"
-                 })
-        {
-            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
-        }
-    }
-
-    [Fact]
-    public void AfterlifeCombatAndEntityReadOnlyCommands_AreMarkedAsMigrated()
-    {
-        var entries = ExplorerCommandMigrationRegistry.Entries
-            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
-
-        foreach (var command in new[]
-                 {
-                     "/afterlife_profiles", "/профили_загробья", "/afterlife_inbox", "/уведомления_загробья",
+                     "/afterlife_profiles", "/профили_загробья",
                      "/spiritual_conflict", "/духовный_конфликт", "/spiritual_combat_log", "/журнал_духовного_боя",
-                     "/spiritual_combat_help", "/духовный_бой", "/spiritual_arts", "/духовные_искусства"
+                     "/spiritual_combat_help", "/духовный_бой"
                  })
         {
-            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+            Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);
         }
+
+        foreach (var command in new[] { "/afterlife_inbox", "/уведомления_загробья", "/spiritual_arts", "/духовные_искусства" })
+            Assert.Equal(ExplorerCommandMigrationStatus.StatusOnly, entries[command].Status);
     }
 
     public void Dispose()
