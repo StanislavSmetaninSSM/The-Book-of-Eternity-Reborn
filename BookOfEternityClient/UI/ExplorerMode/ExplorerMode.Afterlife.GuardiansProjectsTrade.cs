@@ -375,8 +375,8 @@ public partial class ExplorerMode
             "или довериться судьбе и отправиться в неизведанное.[/]",
             "[dim]Если нужен конкретный извечный Хранитель, используйте отдельный режим притяжения.[/]",
             "",
-            "[bold]GM contract после вашего свободного текста:[/]",
-            "  • Это GM-authored Chaos Sea turn, не client-local mutation.",
+            "[bold]Контракт ГМ после вашего свободного текста:[/]",
+            "  • Это authored-by-GM ход Моря Хаоса, а не локальное изменение клиента.",
             "  • Клиент не создаёт pending/control file для свободного поиска; GM сверяет контракт с Afterlife Matrix example 23.",
             "  • GM обязан явно показать бросок/исход поиска и не сокращать state consequences.",
             "  • При найденной Обители: материализовать или обновить guardian identity, abode/location binding, relationship/reputation context and current visit state через поддержанные guardian surfaces.",
@@ -1015,7 +1015,7 @@ public partial class ExplorerMode
                 $"  Source abode: [white]{Markup.Escape(string.IsNullOrWhiteSpace(currentAbodeName) ? "неизвестно" : currentAbodeName)}[/] [dim]({Markup.Escape(currentAbodeId)})[/]",
                 $"  Source activeGuardian: [white]{Markup.Escape(string.IsNullOrWhiteSpace(previousActiveGuardianName) ? "неизвестно" : previousActiveGuardianName)}[/] [dim]({Markup.Escape(previousActiveGuardianId)})[/]",
                 $"  Target abode: [white]{Markup.Escape(selAbodeName)}[/] [dim]({Markup.Escape(selAbodeId)})[/]",
-                $"  Target guardian: [white]{Markup.Escape(selGName)}[/] [dim]({Markup.Escape(selGuardianId)})[/]",
+                $"  Целевой Хранитель: [white]{Markup.Escape(selGName)}[/] [dim]({Markup.Escape(selGuardianId)})[/]",
                 $"  Уже открыта игроком: [dim]{targetAlreadyDiscovered.ToString().ToLowerInvariant()}[/]",
                 $"  discoveredAbodes до хода: [dim]{Markup.Escape(discoveredAbodesContract)}[/]",
                 "",
@@ -1044,7 +1044,7 @@ public partial class ExplorerMode
                         discoveredAbodeIds,
                         previousActiveGuardianNode,
                         selGuardian),
-                    "Полный JSON before/after перехода Моря Хаоса"))
+                    "Полный JSON до/после перехода Моря Хаоса"))
             {
                 continue;
             }
@@ -2519,7 +2519,7 @@ public partial class ExplorerMode
                     $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
                     $"  interactionType: [dim]{ActorSocialInteractionRequestState.GuardianInteractionTypeTalk}[/]",
                     "",
-                    "[bold]GM closure contract:[/]",
+                    "[bold]Техническое закрытие ГМ:[/]",
                     "  • Закрыть через guardian social journal receipt.",
                     "  • Обязательные поля: requestId, guardianId, interactionType=talk, status, title, summary, turn, timestamp.",
                     "  • status: accepted | rejected | cancelled.",
@@ -2569,7 +2569,7 @@ public partial class ExplorerMode
                     $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
                     $"  interactionType: [dim]{ActorSocialInteractionRequestState.GuardianInteractionTypeLore}[/]",
                     "",
-                    "[bold]GM closure contract:[/]",
+                    "[bold]Техническое закрытие ГМ:[/]",
                     "  • Закрыть через guardian social journal receipt.",
                     "  • Обязательные поля: requestId, guardianId, interactionType=lore, status, responseMode, title, summary, turn, timestamp.",
                     "  • responseMode whitelist: lore_revealed | lore_refused | warning | refusal.",
@@ -2778,12 +2778,12 @@ public partial class ExplorerMode
                     {
                         "[bold cyan]Запрос состава обитателей Обители[/]",
                         "",
-                        $"  Guardian: [white]{Markup.Escape(guardianName)}[/] [dim]({Markup.Escape(guardianId)})[/]",
-                        $"  Abode: [white]{Markup.Escape(abodeName)}[/] [dim]({Markup.Escape(abodeId)})[/]",
+                        $"  Хранитель: [white]{Markup.Escape(guardianName)}[/] [dim]({Markup.Escape(guardianId)})[/]",
+                        $"  Обитель: [white]{Markup.Escape(abodeName)}[/] [dim]({Markup.Escape(abodeId)})[/]",
                         $"  currentReputation: [dim]{reputation}[/]",
                         $"  requestMode: [dim]{Markup.Escape(request.RequestMode)}[/]",
                         "",
-                        "[bold]GM materialization contract:[/]",
+                        "[bold]Контракт материализации для ГМ:[/]",
                         "  • Создать явный guardian_abode_residents.json roster для указанной Обители.",
                         "  • Каждый resident должен иметь полный canonical resident object: residentKind, originType, bond/devotion/restlessness/migration, isPresent, futureCompanionPrompt и т.д.",
                         "  • Старые жители других Обителей не переносятся автоматически.",
@@ -2794,7 +2794,7 @@ public partial class ExplorerMode
                         rosterLines.Add("");
                         rosterLines.Add("[bold]Основанная мантия:[/]");
                         rosterLines.Add($"  • Дар основания: [white]{Markup.Escape(founderFeatureTitle)}[/]");
-                        rosterLines.Add($"  • Summary: [dim]{Markup.Escape(founderFeatureSummary)}[/]");
+                            rosterLines.Add($"  • Сводка: [dim]{Markup.Escape(founderFeatureSummary)}[/]");
                     }
                     AppendChaosSeaPendingFileRule(rosterLines, GuardianAbodeResidentRequestState.PendingResidentsRequestPath);
                     AppendChaosSeaCommonContractRules(rosterLines);
@@ -3297,7 +3297,7 @@ public partial class ExplorerMode
                 $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
                 $"  historyRevealed сейчас: [dim]{resident.HistoryRevealed.ToString().ToLowerInvariant()}[/]",
                 "",
-                "[bold]GM closure contract:[/]",
+                "[bold]Техническое закрытие ГМ:[/]",
                 "  • UpdateGuardianAbodeResidentInteractionReceipts с requestId, residentId, interactionType=history, status.",
                 "  • Если accepted: historyRevealed=true и/или UpdateGuardianAbodeResidentHistoryLog и/или mortalWorldImprint.",
                 "  • Добавить residentThoughtJournalUpdates и/или residentInteractionLogUpdates.",
@@ -3366,7 +3366,7 @@ public partial class ExplorerMode
                 $"  requestId: [dim]{Markup.Escape(request.RequestId)}[/]",
                 $"  bond/devotion: [dim]{Markup.Escape(resident.BondTier)} {resident.BondLevel}/100; {Markup.Escape(resident.AbodeDevotionTier)} {resident.AbodeDevotionLevel}/100[/]",
                 "",
-                "[bold]GM closure contract:[/]",
+                "[bold]Техническое закрытие ГМ:[/]",
                 "  • UpdateGuardianAbodeResidentInteractionReceipts с requestId, residentId, interactionType=talk, status.",
                 "  • accepted response должен оставить residentThoughtJournalUpdates и/или residentInteractionLogUpdates.",
                 "  • State changes только через UpdateGuardianAbodeResidents bounded steps.",
@@ -4047,7 +4047,7 @@ public partial class ExplorerMode
             transferLines.Add($"  competitionReason: [dim]{Markup.Escape(choice.CompetitionReason ?? string.Empty)}[/]");
         }
         transferLines.Add("");
-        transferLines.Add("[bold]GM closure contract:[/]");
+        transferLines.Add("[bold]Техническое закрытие ГМ:[/]");
         transferLines.Add("  • Закрыть через UpdateGuardianAbodeResidentTransferReceipts с requestId, residentId, transferMode, status.");
         transferLines.Add("  • accepted transfer: тот же residentId переносится в target guardian/abode, source departure и target arrival фиксируются history entries.");
         transferLines.Add("  • departure_only: resident перестаёт быть present в source roster и получает departure history entry.");
@@ -4135,14 +4135,14 @@ public partial class ExplorerMode
                 {
                     "[bold cyan]Подготовка торговой витрины Хранителя[/]",
                     "",
-                    $"  Guardian: [white]{Markup.Escape(view.GuardianName)}[/] [dim]({Markup.Escape(view.GuardianId)})[/]",
-                    $"  Return cycle: [dim]{Markup.Escape(view.TradeCycleId)}[/]",
+                    $"  Хранитель: [white]{Markup.Escape(view.GuardianName)}[/] [dim]({Markup.Escape(view.GuardianId)})[/]",
+                    $"  Цикл возвращения: [dim]{Markup.Escape(view.TradeCycleId)}[/]",
                     $"  Репутация: [dim]{view.CurrentReputation} / {Markup.Escape(view.ReputationTierLabel)}[/]",
                     $"  Домен: [dim]{Markup.Escape(view.DomainDisplay)}[/]",
                     "",
-                    "[bold]GM materialization contract:[/]",
-                    "  • Прочитать pending_guardian_trade_request.json как client-authored contract.",
-                    "  • Сгенерировать explicit guardian.tradeInventory для текущего return cycle.",
+                    "[bold]Контракт материализации для ГМ:[/]",
+                    "  • Прочитать pending_guardian_trade_request.json как контракт, созданный клиентом.",
+                    "  • Сгенерировать явный guardian.tradeInventory для текущего цикла возвращения.",
                     "  • Не выводить ассортимент только из prose/domain; слоты, потолок редкости и projectBonusSignature берутся из request.",
                     $"  • Закрыть через {GuardianTradeRequestState.UpdateReceiptsProperty} с requestId, tradeCycleId, itemCount, resolvedAtTurn, resolvedAtUtc.",
                     "  • До receipt-а покупки заблокированы, а витрина считается неподтверждённой."
@@ -4366,12 +4366,12 @@ public partial class ExplorerMode
             lines.Insert(9, "  [yellow]Статус покупки: пока не хватает Чернильных Перьев для покупки.[/]");
         }
         lines.Add("");
-        lines.Add("[bold]Canonical local transaction:[/]");
+        lines.Add("[bold]Каноническая локальная операция:[/]");
         lines.Add("  • game_state/meta/soul_state.json: Ink Feathers уменьшаются на priceInFeathers.");
         lines.Add("  • game_state/meta/soul_state.json: relicData клонируется в soulRelics.stored.");
         lines.Add("  • game_state/meta/guardians.json: выбранный tradeInventory.items[].soldOut=true.");
         lines.Add("  • Guardian buyback/sell history не создаётся при покупке; это именно покупка из готовой витрины.");
-        lines.Add("  • GM turn не отправляется: это client-local coordinated write.");
+        lines.Add("  • Ход ГМ не отправляется: это согласованная локальная запись клиента.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -4484,11 +4484,11 @@ public partial class ExplorerMode
         lines.Insert(7, "  🔁 После продажи реликвия будет удалена из хранилища души и появится у этого Хранителя в обратном выкупе.");
         lines.Insert(8, "  [yellow]Продажу нельзя откатить без будущего обратного выкупа у того же Хранителя.[/]");
         lines.Add("");
-        lines.Add("[bold]Canonical local transaction:[/]");
+        lines.Add("[bold]Каноническая локальная операция:[/]");
         lines.Add("  • game_state/meta/soul_state.json: Ink Feathers увеличиваются на sellPrice.");
         lines.Add("  • game_state/meta/soul_state.json: relicId удаляется из soulRelics.stored.");
         lines.Add("  • game_state/meta/guardians.json: buybackRelics[] получает новую available запись с relicData, soldForPrice, buybackPrice, soldAtTurn и guardianId.");
-        lines.Add("  • GM turn не отправляется: это client-local coordinated write with full audit JSON.");
+        lines.Add("  • Ход ГМ не отправляется: это согласованная локальная запись клиента с полным JSON-аудитом.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
@@ -4656,11 +4656,11 @@ public partial class ExplorerMode
         if (currentFeathers < offer.PriceInFeathers)
             lines.Insert(10, "  [yellow]Статус выкупа: пока не хватает Чернильных Перьев.[/]");
         lines.Add("");
-        lines.Add("[bold]Canonical local transaction:[/]");
+        lines.Add("[bold]Каноническая локальная операция:[/]");
         lines.Add("  • game_state/meta/soul_state.json: Ink Feathers уменьшаются на priceInFeathers.");
         lines.Add("  • game_state/meta/soul_state.json: relicData возвращается в soulRelics.stored.");
         lines.Add("  • game_state/meta/guardians.json: buybackRelics[].status меняется с available на rebought for matching buybackEntryId.");
-        lines.Add("  • GM turn не отправляется: это client-local coordinated write with full audit JSON.");
+        lines.Add("  • Ход ГМ не отправляется: это согласованная локальная запись клиента с полным JSON-аудитом.");
 
         Clear();
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))

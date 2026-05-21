@@ -276,10 +276,10 @@ public partial class ExplorerMode
         {
             "[bold cyan]Смена имени души[/]",
             "",
-            "[bold]Тип изменения:[/] client-local; GM turn не отправляется.",
+            "[bold]Тип изменения:[/] локальное изменение клиента; ход ГМ не отправляется.",
             $"[bold]Имя:[/] {Markup.Escape(currentSoulName)} -> {Markup.Escape(normalizedNewName)}",
-            $"[bold]Changed:[/] {(changed ? "yes" : "no; будет только canonical previousSoulNames normalization при необходимости")}",
-            "[bold]Affected files:[/]",
+            $"[bold]Имя изменится:[/] {(changed ? "да" : "нет; при необходимости будет только каноническая нормализация previousSoulNames")}",
+            "[bold]Затронутые файлы:[/]",
             "  • game_state/meta/soul_state.json",
             touchesPendingGuardianCreation
                 ? "  • game_state/meta/guardians.json [dim](pendingGuardianCreation.soulName sync)[/]"
@@ -880,10 +880,10 @@ public partial class ExplorerMode
             $"При текущей цене {cost} Чернильных Перьев expected reputationChange = {expectedDelta}.",
             $"Чернильные Перья: {currentFeathers} -> {Math.Max(0, currentFeathers - cost)}.",
             target == null
-                ? "Target guardian: activeGuardian не удалось прочитать; GM обязан fail-closed сверить guardianId/guardianName/abodeId из guardians.json."
-                : $"Target guardian: guardianId={target.GuardianId}; guardianName={target.GuardianName}; abodeId={target.AbodeId}; abodeName={target.AbodeName}; currentReputation={target.CurrentReputation}; expectedReputationAfter={projectedReputation}.",
+                ? "Целевой Хранитель: activeGuardian не удалось прочитать; ГМ обязан остановиться и сверить guardianId/guardianName/abodeId из guardians.json."
+                : $"Целевой Хранитель: guardianId={target.GuardianId}; guardianName={target.GuardianName}; abodeId={target.AbodeId}; abodeName={target.AbodeName}; currentReputation={target.CurrentReputation}; ожидаемая репутация после={projectedReputation}.",
             "GM обязан указать target guardian identity: guardianId, guardianName, abodeId и текущий relationship/reputation context.",
-            "GM обязан реально изменить game_state/meta/guardians.json для текущего Хранителя и показать before/after reputation delta.",
+            "GM обязан реально изменить game_state/meta/guardians.json для текущего Хранителя и показать дельту репутации до/после.",
             "output/ink_feather_action_result.json должен содержать stateEvidence.guardianId, stateEvidence.guardianName, stateEvidence.abodeId, stateEvidence.reputationChange и affectedFiles."
         };
 
@@ -1011,7 +1011,7 @@ public partial class ExplorerMode
             {
                 "affectedFiles",
                 "statefulResultId or domain-specific identity",
-                "before/after delta where applicable"
+                "дельта до/после, если применимо"
             },
             ["effectPreview"] = new JsonArray(effectLines.Select(line => JsonValue.Create(line)).ToArray<JsonNode?>())
         };
@@ -1250,13 +1250,13 @@ public partial class ExplorerMode
         var previewLines = new List<string>
         {
             $"[bold yellow]{Markup.Escape(actionName)}[/]",
-            $"Action tag: [white]{Markup.Escape(actionTag)}[/]",
+            $"Тег действия: [white]{Markup.Escape(actionTag)}[/]",
             $"Цена: [yellow]{cost} Чернильных Перьев[/]",
             $"Чернильные Перья: [gold1]{feathers}[/] -> [gold1]{Math.Max(0, feathers - cost)}[/]",
             "",
-            "[bold]GM closure contract:[/]",
+            "[bold]Техническое закрытие ГМ:[/]",
             "  • output/ink_feather_action_result.json обязателен.",
-            "  • Required receipt fields: sessionId, requestId, turnNumber, actionTag, resolved, costInFeathers, resolutionType, summary, stateEvidence.",
+            "  • Обязательные поля receipt: sessionId, requestId, turnNumber, actionTag, resolved, costInFeathers, resolutionType, summary, stateEvidence.",
             "  • stateEvidence обязан содержать affectedFiles и доказательство реального canonical state результата.",
             "  • Перья уже списывает клиент; GM не списывает их второй раз.",
             "",
@@ -1309,7 +1309,7 @@ public partial class ExplorerMode
 
         Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" Механика afterlife Ink Feather action ", Justify.Center),
+            Header = new PanelHeader(" Механика загробного действия Чернильных Перьев ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Gold1),
             Padding = new Padding(2, 1),
@@ -1341,23 +1341,23 @@ public partial class ExplorerMode
             "Дополнительная услуга может быть нарративной или stateful, но не заменяет обязательный рост репутации.",
             $"Чернильные Перья: {feathers} -> {Math.Max(0, feathers - inputCost)}.",
             targetGuardian == null
-                ? "Target guardian: activeGuardian не удалось прочитать; GM обязан fail-closed сверить guardianId/guardianName/abodeId из guardians.json."
-                : $"Target guardian: guardianId={targetGuardian.GuardianId}; guardianName={targetGuardian.GuardianName}; abodeId={targetGuardian.AbodeId}; abodeName={targetGuardian.AbodeName}; currentReputation={targetGuardian.CurrentReputation}; expectedReputationDelta=positive.",
-            "GM обязан указать target guardian identity: guardianId, guardianName и текущий relationship/reputation context.",
-            "GM обязан реально изменить game_state/meta/guardians.json, показать before/after reputation delta и записать guardianId/reputationChange в stateEvidence.",
+                ? "Целевой Хранитель: activeGuardian не удалось прочитать; ГМ обязан остановиться и сверить guardianId/guardianName/abodeId из guardians.json."
+                : $"Целевой Хранитель: guardianId={targetGuardian.GuardianId}; guardianName={targetGuardian.GuardianName}; abodeId={targetGuardian.AbodeId}; abodeName={targetGuardian.AbodeName}; currentReputation={targetGuardian.CurrentReputation}; ожидаемая дельта репутации=положительная.",
+            "ГМ обязан указать личность целевого Хранителя: guardianId, guardianName и текущий контекст relationship/reputation.",
+            "GM обязан реально изменить game_state/meta/guardians.json, показать дельту репутации до/после и записать guardianId/reputationChange в stateEvidence.",
             "Цена переменная; валидатор проверяет факт положительного reputationChange, а не фиксированную формулу."
         };
         var previewLines = new List<string>
         {
             "[bold yellow]🤝 Попросить Хранителя об услуге[/]",
-            "Action tag: [white]GUARDIAN_FAVOR[/]",
+            "Тег действия: [white]GUARDIAN_FAVOR[/]",
             $"Цена: [yellow]{inputCost} Чернильных Перьев[/]",
             $"Чернильные Перья: [gold1]{feathers}[/] -> [gold1]{Math.Max(0, feathers - inputCost)}[/]",
             "",
-            "[bold]GM closure contract:[/]",
+            "[bold]Техническое закрытие ГМ:[/]",
             "  • output/ink_feather_action_result.json обязателен.",
-            "  • Required fields: sessionId, requestId, turnNumber, actionTag, resolved, costInFeathers, resolutionType, summary, stateEvidence.",
-            "  • stateEvidence обязан содержать guardianId, guardianName, reputationChange, affectedFiles и before/after reputation audit.",
+            "  • Обязательные поля: sessionId, requestId, turnNumber, actionTag, resolved, costInFeathers, resolutionType, summary, stateEvidence.",
+            "  • stateEvidence обязан содержать guardianId, guardianName, reputationChange, affectedFiles и аудит репутации до/после.",
             "  • Перья уже списывает клиент; GM не списывает их второй раз.",
             "",
             "[bold]Ожидаемый результат:[/]"
@@ -1543,14 +1543,14 @@ public partial class ExplorerMode
             {
                 "[bold gold1]Подношение Реликвии Души Обители[/]",
                 "",
-                $"  Guardian: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
-                $"  Relic: [white]{Markup.Escape(relic.Name)}[/] [dim]({Markup.Escape(relic.RelicId)})[/]",
-                $"  Rarity: [dim]{Markup.Escape(relic.Rarity)}[/]",
-                $"  Power gain formula: [dim]ResolvePowerGainForSoulRelicOffering({Markup.Escape(relic.Rarity)}) = +{relicPowerGain}[/]",
+                $"  Хранитель: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
+                $"  Реликвия: [white]{Markup.Escape(relic.Name)}[/] [dim]({Markup.Escape(relic.RelicId)})[/]",
+                $"  Редкость: [dim]{Markup.Escape(relic.Rarity)}[/]",
+                $"  Формула прироста силы: [dim]ResolvePowerGainForSoulRelicOffering({Markup.Escape(relic.Rarity)}) = +{relicPowerGain}[/]",
                 "",
-                "[bold]Client-local pre-state change:[/]",
-                "  • Реликвия будет изъята из soulRelics.stored до отправки GM.",
-                "  • Pending request фиксирует offeringType=soul_relic и relic identity.",
+                "[bold]Предварительное локальное изменение клиента:[/]",
+                "  • Реликвия будет изъята из soulRelics.stored до отправки хода ГМ.",
+                "  • Ожидающий запрос фиксирует offeringType=soul_relic и идентичность реликвии.",
                 ""
             };
             relicLines.AddRange(BuildAbodeOfferingPreviewAuditLines(
@@ -1562,7 +1562,7 @@ public partial class ExplorerMode
                 currentAbodePowerChosen,
                 relicPowerGain));
             relicLines.Add("");
-            relicLines.Add("[bold]GM closure contract:[/]");
+            relicLines.Add("[bold]Техническое закрытие ГМ:[/]");
             relicLines.Add("  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.");
             relicLines.Add("  • audit: offeringType=soul_relic, relicId, relicName, relicRarity, returnCycleId, baseDelta, finalDelta.");
             relicLines.Add("  • guardian.abodePower.currentPower меняется только через power event.");
@@ -1577,7 +1577,7 @@ public partial class ExplorerMode
                         "game_state/meta/soul_state.json.soulRelics.stored[]",
                         currentAbodePowerChosen,
                         relicPowerGain),
-                    "Полный JSON подношения реликвии: pending request + consumed relic + before/after"))
+                    "Полный JSON подношения реликвии: pending request + consumed relic + до/после"))
             {
                 return;
             }
@@ -1608,7 +1608,7 @@ public partial class ExplorerMode
 
             _pendingGmAction =
                 $"[ABODE_OFFERING] Игрок подносит Реликвию Души {relic.Name} ({relic.RelicId}, rarity={relic.Rarity}) Обители Хранителя {guardianNameChosen} ({guardianIdChosen}). " +
-                $"Обязательно прочитай {GuardianAbodeOfferingState.PendingRequestPath} как client-authored contract. " +
+                $"Обязательно прочитай {GuardianAbodeOfferingState.PendingRequestPath} как контракт, созданный клиентом. " +
                 "Реликвия уже изъята клиентом из soulRelics.stored. " +
                 "Запиши guardianPowerEvents с reasonType=offering и audit { offeringType=soul_relic, relicId, relicName, relicRarity, returnCycleId, baseDelta, finalDelta }. " +
                 "Не меняй guardian.abodePower.currentPower напрямую без этого power event.";
@@ -1677,15 +1677,15 @@ public partial class ExplorerMode
             {
                 "[bold gold1]Подношение записи Архива души Обители[/]",
                 "",
-                $"  Guardian: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
-                $"  Archive entry: [white]{Markup.Escape(archiveEntry.Title)}[/] [dim]({Markup.Escape(archiveEntry.ArchiveId)})[/]",
-                $"  Type/rarity: [dim]{Markup.Escape(archiveEntry.EntryType)} / {Markup.Escape(archiveEntry.Rarity)}[/]",
+                $"  Хранитель: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
+                $"  Запись Архива: [white]{Markup.Escape(archiveEntry.Title)}[/] [dim]({Markup.Escape(archiveEntry.ArchiveId)})[/]",
+                $"  Тип/редкость: [dim]{Markup.Escape(archiveEntry.EntryType)} / {Markup.Escape(archiveEntry.Rarity)}[/]",
                 $"  offeringType: [dim]{Markup.Escape(archiveOfferingType)}[/]",
-                $"  Power gain formula: [dim]ResolvePowerGainForArchiveRarity({Markup.Escape(archiveEntry.Rarity)}) = +{archivePowerGain}[/]",
+                $"  Формула прироста силы: [dim]ResolvePowerGainForArchiveRarity({Markup.Escape(archiveEntry.Rarity)}) = +{archivePowerGain}[/]",
                 "",
-                "[bold]Client-local pre-state change:[/]",
-                "  • Запись будет изъята из soul_state.afterlifeArchive.stored до отправки GM.",
-                "  • Pending request фиксирует archive identity, entryType, rarity и returnCycleId.",
+                "[bold]Предварительное локальное изменение клиента:[/]",
+                "  • Запись будет изъята из soul_state.afterlifeArchive.stored до отправки хода ГМ.",
+                "  • Ожидающий запрос фиксирует идентичность записи Архива, entryType, rarity и returnCycleId.",
                 ""
             };
             archiveLines.AddRange(BuildAbodeOfferingPreviewAuditLines(
@@ -1697,7 +1697,7 @@ public partial class ExplorerMode
                 currentAbodePowerChosen,
                 archivePowerGain));
             archiveLines.Add("");
-            archiveLines.Add("[bold]GM closure contract:[/]");
+            archiveLines.Add("[bold]Техническое закрытие ГМ:[/]");
             archiveLines.Add("  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.");
             archiveLines.Add("  • audit: offeringType, archiveId, archiveTitle, archiveEntryType, archiveRarity, returnCycleId, baseDelta, finalDelta.");
             archiveLines.Add("  • output/ink_feather_action_result.json не нужен, если offeringType не ink_feathers.");
@@ -1712,7 +1712,7 @@ public partial class ExplorerMode
                         "game_state/meta/soul_state.json.afterlifeArchive.stored[]",
                         currentAbodePowerChosen,
                         archivePowerGain),
-                    "Полный JSON подношения Архива: pending request + consumed archive entry + before/after"))
+                    "Полный JSON подношения Архива: pending request + consumed archive entry + до/после"))
             {
                 return;
             }
@@ -1743,7 +1743,7 @@ public partial class ExplorerMode
 
             _pendingGmAction =
                 $"[ABODE_OFFERING] Игрок подносит запись Архива души {archiveEntry.Title} ({archiveEntry.ArchiveId}, type={archiveEntry.EntryType}, rarity={archiveEntry.Rarity}) Обители Хранителя {guardianNameChosen} ({guardianIdChosen}). " +
-                $"Обязательно прочитай {GuardianAbodeOfferingState.PendingRequestPath} как client-authored contract. " +
+                $"Обязательно прочитай {GuardianAbodeOfferingState.PendingRequestPath} как контракт, созданный клиентом. " +
                 "Запись уже изъята клиентом из soul_state.afterlifeArchive.stored. " +
                 "Запиши guardianPowerEvents с reasonType=offering и audit { offeringType, archiveId, archiveTitle, archiveEntryType, archiveRarity, returnCycleId, baseDelta, finalDelta }. " +
                 "Не меняй guardian.abodePower.currentPower напрямую без этого power event.";
@@ -1792,16 +1792,16 @@ public partial class ExplorerMode
         {
             "[bold gold1]Подношение Чернильных Перьев Обители[/]",
             "",
-            $"  Guardian: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
-            $"  Ink Feathers offered: [white]{inputCost}[/]",
-            $"  Balance: [white]{feathers}[/] -> [white]{feathers - inputCost}[/]",
-            $"  Return cycle: [dim]{Markup.Escape(returnCycleId)}[/]",
-            $"  Cap remaining before: [dim]{remainingCapChosen}[/]",
-            $"  Power gain formula: [dim]ResolvePowerGainForInkFeatherOffering({inputCost}) = +{powerGain}[/]",
+            $"  Хранитель: [white]{Markup.Escape(guardianNameChosen)}[/] [dim]({Markup.Escape(guardianIdChosen)})[/]",
+            $"  Поднесено Чернильных Перьев: [white]{inputCost}[/]",
+            $"  Баланс: [white]{feathers}[/] -> [white]{feathers - inputCost}[/]",
+            $"  Цикл возвращения: [dim]{Markup.Escape(returnCycleId)}[/]",
+            $"  Остаток лимита до действия: [dim]{remainingCapChosen}[/]",
+            $"  Формула прироста силы: [dim]ResolvePowerGainForInkFeatherOffering({inputCost}) = +{powerGain}[/]",
             "",
-            "[bold]Client-local pre-state change:[/]",
-            "  • Ink Feathers списываются клиентом до отправки GM.",
-            "  • Pending request фиксирует offeringType=ink_feathers и точную сумму.",
+            "[bold]Предварительное локальное изменение клиента:[/]",
+            "  • Чернильные Перья списываются клиентом до отправки хода ГМ.",
+            "  • Ожидающий запрос фиксирует offeringType=ink_feathers и точную сумму.",
             ""
         };
         featherLines.AddRange(BuildAbodeOfferingPreviewAuditLines(
@@ -1816,7 +1816,7 @@ public partial class ExplorerMode
             inputCost,
             remainingCapChosen));
         featherLines.Add("");
-        featherLines.Add("[bold]GM closure contract:[/]");
+        featherLines.Add("[bold]Техническое закрытие ГМ:[/]");
         featherLines.Add("  • guardianPowerEvents reasonType=offering, sourceSurface=guardianAbodeOffering.");
         featherLines.Add("  • output/ink_feather_action_result.json обязателен: actionTag=ABODE_OFFERING, resolved=true, costInFeathers, resolutionType=abodeOffering.");
         featherLines.Add("  • stateEvidence должен иметь powerGain, powerEventId, guardianId и affectedFiles.");
@@ -1833,7 +1833,7 @@ public partial class ExplorerMode
                     powerGain,
                     feathers,
                     inputCost),
-                "Полный JSON подношения Перьев: pending request + before/after"))
+                "Полный JSON подношения Перьев: pending request + до/после"))
         {
             return;
         }
@@ -1864,7 +1864,7 @@ public partial class ExplorerMode
 
         _pendingGmAction =
             $"[INK_FEATHER_ACTION: {GuardianAbodeOfferingState.ActionTag}] Игрок подносит {inputCost} Чернильных Перьев Обители Хранителя {guardianNameChosen} ({guardianIdChosen}). " +
-            $"Обязательно прочитай {GuardianAbodeOfferingState.PendingRequestPath} как client-authored contract. " +
+            $"Обязательно прочитай {GuardianAbodeOfferingState.PendingRequestPath} как контракт, созданный клиентом. " +
             "Перья уже списаны клиентом. " +
             "Запиши guardianPowerEvents с reasonType=offering и audit { offeringType=ink_feathers, inkFeathersOffered, returnCycleId, capRemainingBefore, baseDelta, finalDelta }. " +
             "Не меняй guardian.abodePower.currentPower напрямую без этого power event. " +
@@ -2145,15 +2145,15 @@ public partial class ExplorerMode
             "[bold yellow]Архивная консультация[/]",
             "",
             $"  Guardian: [white]{Markup.Escape(result.GuardianName)}[/] [dim]({Markup.Escape(result.GuardianId)})[/]",
-            $"  Archive entry: [white]{Markup.Escape(result.ArchiveTitle)}[/] [dim]({Markup.Escape(result.ArchiveId)})[/]",
-            $"  Type: [dim]{Markup.Escape(result.ArchiveEntryType)}[/]",
-            $"  Target incarnation: [dim]{result.TargetIncarnation}[/]",
+            $"  Запись Архива: [white]{Markup.Escape(result.ArchiveTitle)}[/] [dim]({Markup.Escape(result.ArchiveId)})[/]",
+            $"  Тип: [dim]{Markup.Escape(result.ArchiveEntryType)}[/]",
+            $"  Целевое воплощение: [dim]{result.TargetIncarnation}[/]",
             "",
-            "[bold]Client-local pre-state change:[/]",
-            "  • Запись резервируется в soul_state.afterlifeArchive.stored до ответа GM.",
-            "  • Pending request фиксирует requestedMode=consultation.",
+            "[bold]Предварительное локальное изменение клиента:[/]",
+            "  • Запись резервируется в soul_state.afterlifeArchive.stored до ответа ГМ.",
+            "  • Ожидающий запрос фиксирует requestedMode=consultation.",
             "",
-            "[bold]GM closure contract:[/]",
+            "[bold]Техническое закрытие ГМ:[/]",
             "  • archiveActionResolutions с requestId, archiveId, requestedMode=consultation, guardianId, status.",
             "  • accepted consultation требует machine-readable outcome fields.",
             "  • lore_fragment whitelist: guaranteedArchiveQuestCount, questHookCount, specialQuestLineUnlocks.",
@@ -2269,11 +2269,11 @@ public partial class ExplorerMode
             $"  Project: [white]{Markup.Escape(result.ProjectName)}[/] [dim]({Markup.Escape(result.ProjectId)})[/]",
             $"  Archive entry: [white]{Markup.Escape(result.ArchiveTitle)}[/] [dim]({Markup.Escape(result.ArchiveId)})[/]",
             "",
-            "[bold]Client-local pre-state change:[/]",
+            "[bold]Предварительное локальное изменение клиента:[/]",
             "  • Запись резервируется в soul_state.afterlifeArchive.stored до ответа GM.",
             "  • Pending request фиксирует requestedMode=project_fuel и targetProjectId.",
             "",
-            "[bold]GM closure contract:[/]",
+            "[bold]Техническое закрытие ГМ:[/]",
             "  • archiveActionResolutions с requestId, archiveId, requestedMode=project_fuel, guardianId, targetProjectId, status.",
             "  • Принятый результат должен иметь resultMode и resultAmount>0.",
             "  • lore_fragment разрешён только project_work.",

@@ -958,16 +958,16 @@ public partial class ExplorerMode
         {
             $"[bold cyan]{Markup.Escape(title)}[/]",
             "",
-            "[bold]Тип изменения:[/] client-local подготовка следующей смертной жизни; GM turn не отправляется.",
+            "[bold]Тип изменения:[/] локальная подготовка следующей смертной жизни; ход ГМ не отправляется.",
             $"[bold]Операция:[/] {Markup.Escape(operation)}",
-            "[bold]Affected files:[/]",
+            "[bold]Затронутые файлы:[/]",
             $"  • {WorldDirectiveService.PendingSetupPath}",
             $"  • {ScenarioCoreService.ManifestPath} [dim](перестраивается из pending setup или удаляется при очистке)[/]",
             "",
             "[bold]Последствия:[/]",
-            "  • Эти данные будут прочитаны при следующем /incarnate или bootstrap новой жизни.",
+            "  • Эти данные будут прочитаны при следующем /incarnate или начальной сборке новой жизни.",
             "  • Отмена на этом экране ничего не пишет и не очищает.",
-            "  • Это не Ascension, не New Game+ и не GM-authored contract."
+            "  • Это не Вознесение, не Новая игра+ и не контракт, создаваемый ГМ."
         };
 
         if (before != null)

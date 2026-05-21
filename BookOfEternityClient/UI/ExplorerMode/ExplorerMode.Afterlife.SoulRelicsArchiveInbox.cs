@@ -1549,19 +1549,19 @@ public partial class ExplorerMode
         {
             archive ? "[bold yellow]Сохранить кандидата в Архив души[/]" : "[bold yellow]Пропустить кандидата Архива[/]",
             "",
-            "[bold]Тип изменения:[/] client-local; GM turn не отправляется.",
-            $"[bold]Candidate:[/] {Markup.Escape(candidate.Title)} [dim]({Markup.Escape(candidate.CandidateId)})[/]",
-            $"[bold]Archive id:[/] [dim]{Markup.Escape(archiveId)}[/]",
-            $"[bold]Source:[/] life #{candidate.SourceLife}, {Markup.Escape(candidate.SourceKind)}, sourceEntryId={Markup.Escape(candidate.SourceEntryId)}",
-            $"[bold]Entry type/rarity:[/] {Markup.Escape(candidate.ProposedEntryType)} / {Markup.Escape(candidate.Rarity)}",
-            $"[bold]Limits:[/] archived {archivedCount}/{AfterlifeArchiveCandidateService.MaxArchivedPerLife}; secret {archivedSecretCount}/{AfterlifeArchiveCandidateService.MaxSecretArchivedPerLife}",
-            "[bold]Affected files:[/]",
+            "[bold]Тип изменения:[/] локальное изменение клиента; ход ГМ не отправляется.",
+            $"[bold]Кандидат:[/] {Markup.Escape(candidate.Title)} [dim]({Markup.Escape(candidate.CandidateId)})[/]",
+            $"[bold]Id Архива:[/] [dim]{Markup.Escape(archiveId)}[/]",
+            $"[bold]Источник:[/] жизнь #{candidate.SourceLife}, {Markup.Escape(candidate.SourceKind)}, sourceEntryId={Markup.Escape(candidate.SourceEntryId)}",
+            $"[bold]Тип/редкость записи:[/] {Markup.Escape(candidate.ProposedEntryType)} / {Markup.Escape(candidate.Rarity)}",
+            $"[bold]Лимиты:[/] архивировано {archivedCount}/{AfterlifeArchiveCandidateService.MaxArchivedPerLife}; тайных записей {archivedSecretCount}/{AfterlifeArchiveCandidateService.MaxSecretArchivedPerLife}",
+            "[bold]Затронутые файлы:[/]",
             $"  • {AfterlifeArchiveCandidateService.ManifestPath}",
-            archive ? "  • game_state/meta/soul_state.json [dim](afterlifeArchive.stored gains one entry)[/]" : "  • game_state/meta/soul_state.json [dim](unchanged)[/]",
+            archive ? "  • game_state/meta/soul_state.json [dim](afterlifeArchive.stored получает одну запись)[/]" : "  • game_state/meta/soul_state.json [dim](не меняется)[/]",
             "",
             archive
-                ? "[bold]После подтверждения:[/] candidate.status=archived, archivedAtUtc set, skippedAtUtc cleared; stored archive entry becomes usable for afterlife archive actions."
-                : "[bold]После подтверждения:[/] candidate.status=skipped, skippedAtUtc set; soul archive remains unchanged."
+                ? "[bold]После подтверждения:[/] candidate.status=archived, archivedAtUtc задан, skippedAtUtc очищен; сохранённая запись станет доступна для действий Архива души."
+                : "[bold]После подтверждения:[/] candidate.status=skipped, skippedAtUtc задан; Архив души не меняется."
         };
 
         if (blockers.Count > 0)
@@ -1874,12 +1874,12 @@ public partial class ExplorerMode
                     "  From: soulRelics.stored[]",
                     "  To: soulRelics.equipped[]",
                     "",
-                    "[bold]Canonical local state changes:[/]",
+                    "[bold]Канонические локальные изменения состояния:[/]",
                     "  • game_state/meta/soul_state.json: удалить реликвию из stored[].",
                     "  • game_state/meta/soul_state.json: добавить тот же JSON object в equipped[].",
                     "  • gameplayStatus.equipped=true.",
                     "  • gameplayStatus.currentSlot = выбранный слот.",
-                    "  • GM turn не отправляется: это client-local mutation."
+                    "  • Ход ГМ не отправляется: это локальное изменение клиента."
                 };
                 AppendChaosSeaLocalPreviewRules(equipLines);
                 if (!ConfirmChaosSeaContractPreview(
@@ -1906,12 +1906,12 @@ public partial class ExplorerMode
                     "  From: soulRelics.equipped[]",
                     "  To: soulRelics.stored[]",
                     "",
-                    "[bold]Canonical local state changes:[/]",
+                    "[bold]Канонические локальные изменения состояния:[/]",
                     "  • game_state/meta/soul_state.json: удалить реликвию из equipped[].",
                     "  • game_state/meta/soul_state.json: добавить тот же JSON object в stored[].",
                     "  • gameplayStatus.equipped=false.",
                     "  • gameplayStatus.currentSlot=\"\".",
-                    "  • GM turn не отправляется: это client-local mutation."
+                    "  • Ход ГМ не отправляется: это локальное изменение клиента."
                 };
                 AppendChaosSeaLocalPreviewRules(unequipLines);
                 if (!ConfirmChaosSeaContractPreview(

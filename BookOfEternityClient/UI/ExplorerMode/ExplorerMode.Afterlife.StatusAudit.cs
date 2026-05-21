@@ -248,7 +248,7 @@ public partial class ExplorerMode
             var guardLabel = guardState switch
             {
                 AfterlifeReturnGuardSemanticState.ActiveValid => $"защищено, remainingTurns={guard?.RemainingProtectedTurns ?? 0}",
-                AfterlifeReturnGuardSemanticState.BlockingInvalid => "блокирующая повреждённая защита; fail-closed",
+                AfterlifeReturnGuardSemanticState.BlockingInvalid => "блокирующая повреждённая защита; остановиться до ремонта",
                 _ => "не защищено"
             };
             var risk = reputation <= -21 ? "[red]доступно[/]" : "[green]недоступно[/]";
