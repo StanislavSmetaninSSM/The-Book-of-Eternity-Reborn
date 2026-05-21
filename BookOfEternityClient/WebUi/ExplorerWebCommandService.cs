@@ -8,11 +8,13 @@ public sealed record ExplorerWebCommandRequest(string Command);
 
 public sealed class ExplorerWebCommandService
 {
+    private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly LocalizationManager _localization;
 
-    public ExplorerWebCommandService(StateManager stateManager, LocalizationManager localization)
+    public ExplorerWebCommandService(FileSystemManager fs, StateManager stateManager, LocalizationManager localization)
     {
+        _fs = fs;
         _stateManager = stateManager;
         _localization = localization;
     }
@@ -52,6 +54,14 @@ public sealed class ExplorerWebCommandService
                 CanReenterShiningAbode = state.CanReenterShiningAbode
             });
         }
+
+        var universalResult = await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(
+            command,
+            _stateManager,
+            _fs,
+            _localization);
+        if (universalResult != null)
+            return universalResult;
 
         return MessageResult(
             command,

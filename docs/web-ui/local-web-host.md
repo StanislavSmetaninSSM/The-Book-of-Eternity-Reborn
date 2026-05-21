@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked task: #565  
+Tracked tasks: #565, #567, #569  
 Parent epic: #559
 
 ## Local-Only Model
@@ -72,7 +72,16 @@ The renderer currently supports these DTO surfaces:
 }
 ```
 
-It returns an `ExplorerCommandResult` DTO. At this stage only migrated DTO commands are executed, currently `/help` and `/помощь`. Planned, temporary-console-only, unknown, or blocked commands return structured `Blocked`/`Failed` DTOs instead of invoking console-bound handlers.
+It returns an `ExplorerCommandResult` DTO. Migrated commands are executed through browser-safe DTO builders; planned, unknown, or blocked commands return structured `Blocked`/`Failed` DTOs instead of invoking console-bound handlers.
 
-Interactive multi-step prompt submission, broad command migration, lifecycle/local-turn operations, and QTE support are tracked by the follow-up Web UI issues.
+Migrated universal/meta read-only surfaces currently include:
+
+- `/help`, `/помощь`
+- `/status`, `/статус`
+- `/soul`, `/душа`, `/soul_relics`, `/реликвии`, `/afterlife_archive`, `/архив_души`, `/archive_candidates`, `/архив_кандидаты`, `/soul_quests`, `/квесты_души`
+- `/codex`, `/кодекс`, `/achievements`, `/достижения`, `/chronicle`, `/хроника`, `/story`, `/рассказ`, `/история`, `/behavior`, `/поведение`, `/lives`, `/жизни`, `/feathers`, `/перья`, `/world_rules`, `/правила_мира`
+- `/gallery`, `/галерея`, `/gm`, `/гм`, `/debug`, `/отладка`, `/mods`, `/моды`, `/system_guardians`, `/системные_хранители`, `/извечные_хранители`
+- `/saref`, `/сареф`, `/saref_story`, `/история_сарефа`, `/wings_of_angels`, `/крылья_над_бездной` as the read-only hidden main-story view. The mutating Wings search subcommand remains outside this read-only migration.
+
+Interactive multi-step prompt submission, realm-specific command migration, lifecycle/local-turn operations such as `/validate` and `/world_setup`, and QTE support are tracked by the follow-up Web UI issues.
 
