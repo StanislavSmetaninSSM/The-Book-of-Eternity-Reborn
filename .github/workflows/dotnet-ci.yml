@@ -30,7 +30,11 @@ jobs:
         run: dotnet restore BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj
 
       - name: Build
-        run: dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --configuration Release --no-restore
+        shell: pwsh
+        run: |
+          dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --configuration Release --no-restore 2>&1 | Tee-Object -FilePath build-warnings.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./scripts/check-dotnet-warning-budget.ps1 -LogPath build-warnings.log -MaxWarnings 158
 
       - name: Test
         run: dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=tests.trx" --results-directory TestResults

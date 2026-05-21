@@ -1342,10 +1342,10 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains(afterlifeAuthorityPath, lifecyclePrompt, StringComparison.Ordinal);
         }
 
-        Assert.NotEmpty(FileMapping.FieldToFile.Where(pair =>
+        Assert.Contains(FileMapping.FieldToFile, pair =>
             pair.Value.StartsWith("game_state/world/", StringComparison.OrdinalIgnoreCase) ||
             pair.Value.StartsWith("game_state/npcs/", StringComparison.OrdinalIgnoreCase) ||
-            pair.Value.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase)));
+            pair.Value.StartsWith("game_state/factions/", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
