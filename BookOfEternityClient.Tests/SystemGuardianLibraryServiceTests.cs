@@ -184,7 +184,7 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     [Fact]
     public async Task WriteAttractionRequestAsync_ExistingLiveRequest_BlocksReplacement()
     {
-        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "РђР·Р°Р»РёСЏ", "Social", "built_in");
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
         await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "myriel", "Мириэль", "Lore", "built_in");
         var azalia = await _service.FindPresetAsync("azalia", includeDossier: true);
         var myriel = await _service.FindPresetAsync("myriel", includeDossier: true);
