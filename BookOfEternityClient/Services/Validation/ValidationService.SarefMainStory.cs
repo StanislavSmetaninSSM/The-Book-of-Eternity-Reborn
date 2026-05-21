@@ -11,6 +11,12 @@ public partial class ValidationService
         int SourceQuestOrdinal,
         string Context);
 
+    private sealed record SarefMemorySceneClosure(
+        string GuardianId,
+        string QuestId,
+        string SceneId,
+        string Context);
+
     private sealed record SarefAdvantageState(
         string AdvantageId,
         string? State,
@@ -550,12 +556,15 @@ public partial class ValidationService
                 revealStage);
         }
 
+        var memorySceneClosures = ValidateSarefMemoryScene(root, contextPrefix, issues);
         var guardianQuestlines = ValidateSarefGuardianQuestlines(root, contextPrefix, issues);
+        var questFourMemoryProofs = ValidateSarefQuestFourMemorySceneProofs(root, contextPrefix, issues);
         ValidateSarefLatentTraces(root, contextPrefix, issues);
         ValidateSarefRevelations(root, contextPrefix, issues, out var revealedCategories, out var revelationCount, out var questFourRevelations);
         var advantages = ValidateSarefAdvantages(root, contextPrefix, issues, out var advantageCount, out var questFourAdvantages);
         var advantageUses = ValidateSarefAdvantageUses(root, contextPrefix, advantages, issues);
         ValidateSarefQuestFourUnlockLinks(guardianQuestlines, questFourRevelations, questFourAdvantages, contextPrefix, issues);
+        ValidateSarefQuestFourMemorySceneGate(guardianQuestlines, questFourMemoryProofs, memorySceneClosures, contextPrefix, issues);
         ValidateSarefDefeatOutcomes(root, contextPrefix, advantageUses, issues);
         ValidateSarefFinalConfrontation(root, contextPrefix, revealStage, guardianQuestlines, advantageUses, issues);
         ValidateSarefEndings(root, contextPrefix, issues);
@@ -574,6 +583,580 @@ public partial class ValidationService
             factionVisibility,
             contextPrefix,
             issues);
+    }
+
+    private static Dictionary<string, SarefMemorySceneClosure> ValidateSarefMemoryScene(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        var closures = new Dictionary<string, SarefMemorySceneClosure>(StringComparer.OrdinalIgnoreCase);
+        if (!root.TryGetProperty("memoryScene", out var scene) || scene.ValueKind == JsonValueKind.Null)
+            return closures;
+
+        var context = $"{contextPrefix}.memoryScene";
+        if (scene.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "memoryScene должен быть null или object слоя «Воспоминание».",
+                "saref_main_story_memory_scene_not_object",
+                "null/object",
+                scene.ValueKind.ToString());
+            return closures;
+        }
+
+        var sceneId = RequireSarefString(scene, context, "sceneId", "saref_main_story_memory_scene_missing_scene_id", issues);
+        var status = RequireSarefString(scene, context, "status", "saref_main_story_memory_scene_missing_status", issues);
+        if (!string.IsNullOrWhiteSpace(status) && !SarefMainStoryState.MemorySceneStatuses.Contains(status))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.status",
+                "Статус memoryScene не поддерживается.",
+                "saref_main_story_memory_scene_invalid_status",
+                string.Join("/", SarefMainStoryState.MemorySceneStatuses.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                status);
+        }
+
+        var layer = RequireSarefString(scene, context, "layer", "saref_main_story_memory_scene_missing_layer", issues);
+        if (!string.IsNullOrWhiteSpace(layer) &&
+            !string.Equals(layer, SarefMainStoryState.MemorySceneLayerName, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.layer",
+                "Сцена памяти Сарефа должна быть явно помечена игровым слоем «Воспоминание», а не Mortal World или Memory Gates.",
+                "saref_main_story_memory_scene_invalid_layer",
+                SarefMainStoryState.MemorySceneLayerName,
+                layer);
+        }
+
+        var guardianId = RequireSarefString(scene, context, "guardianId", "saref_main_story_memory_scene_missing_guardian_id", issues);
+        var questId = RequireSarefString(scene, context, "questId", "saref_main_story_memory_scene_missing_quest_id", issues);
+        var questOrdinal = RequireSarefQuestOrdinal(scene, context, issues);
+        if (questOrdinal > 0 && questOrdinal != 4)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.questOrdinal",
+                "Слой «Воспоминание» закрывает только 4-й квест Хранителя по линии Сарефа.",
+                "saref_main_story_memory_scene_not_quest_four",
+                "questOrdinal=4",
+                questOrdinal.ToString());
+        }
+
+        ValidateSarefMemorySceneRole(scene, context, issues);
+        ValidateSarefMemorySceneBoundaries(scene, context, issues);
+        ValidateSarefMemorySceneAbilities(scene, context, issues);
+        var allRequiredNodesCompleted = ValidateSarefMemorySceneRequiredNodes(scene, context, issues);
+        var successConditionSatisfied = ValidateSarefMemorySceneSuccessCondition(scene, context, issues);
+        var closureTargetValid = ValidateSarefMemorySceneClosureTarget(
+            scene,
+            context,
+            guardianId,
+            questId,
+            questOrdinal,
+            issues);
+        ValidateSarefTurnFields(scene, context, issues);
+
+        if (!string.Equals(status, SarefMainStoryState.MemorySceneStatusCompleted, StringComparison.OrdinalIgnoreCase))
+            return closures;
+
+        if (GetSarefOptionalInt(scene, "resolvedAtTurn") <= 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.resolvedAtTurn",
+                "Завершенное «Воспоминание» должно иметь resolvedAtTurn.",
+                "saref_main_story_memory_scene_missing_resolved_turn",
+                "integer > 0",
+                scene.TryGetProperty("resolvedAtTurn", out var present) ? present.ToString() : "missing");
+        }
+
+        RequireSarefString(scene, context, "resolutionSummary", "saref_main_story_memory_scene_missing_resolution_summary", issues);
+
+        if (!successConditionSatisfied)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.successCondition.satisfied",
+                "Завершенное «Воспоминание» требует satisfied=true.",
+                "saref_main_story_memory_scene_success_not_satisfied",
+                "true",
+                "false or missing");
+        }
+
+        if (!allRequiredNodesCompleted)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.requiredStoryNodes",
+                "Завершенное «Воспоминание» требует completed для всех requiredStoryNodes[].",
+                "saref_main_story_memory_scene_required_nodes_incomplete",
+                "all requiredStoryNodes[].status=completed",
+                "incomplete");
+        }
+
+        if (!string.IsNullOrWhiteSpace(guardianId) &&
+            !string.IsNullOrWhiteSpace(questId) &&
+            !string.IsNullOrWhiteSpace(sceneId) &&
+            questOrdinal == 4 &&
+            closureTargetValid &&
+            successConditionSatisfied &&
+            allRequiredNodesCompleted &&
+            GetSarefOptionalInt(scene, "resolvedAtTurn") > 0)
+        {
+            closures[guardianId] = new SarefMemorySceneClosure(guardianId, questId, sceneId, context);
+        }
+
+        return closures;
+    }
+
+    private static void ValidateSarefMemorySceneRole(JsonElement scene, string context, List<ValidationIssue> issues)
+    {
+        if (!scene.TryGetProperty("role", out var role) || role.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.role",
+                "«Воспоминание» должно задавать роль игрока: roleId, displayName и summary.",
+                "saref_main_story_memory_scene_missing_role",
+                "object with roleId/displayName/summary",
+                scene.TryGetProperty("role", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        RequireSarefString(role, $"{context}.role", "roleId", "saref_main_story_memory_scene_missing_role", issues);
+        RequireSarefString(role, $"{context}.role", "displayName", "saref_main_story_memory_scene_missing_role", issues);
+        RequireSarefString(role, $"{context}.role", "summary", "saref_main_story_memory_scene_missing_role", issues);
+    }
+
+    private static void ValidateSarefMemorySceneBoundaries(JsonElement scene, string context, List<ValidationIssue> issues)
+    {
+        if (!scene.TryGetProperty("boundaries", out var boundaries) ||
+            boundaries.ValueKind != JsonValueKind.Array ||
+            boundaries.GetArrayLength() == 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.boundaries",
+                "«Воспоминание» должно явно задавать границы фиксированного прошлого.",
+                "saref_main_story_memory_scene_missing_boundaries",
+                "non-empty array of boundary objects",
+                scene.TryGetProperty("boundaries", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        var index = 0;
+        foreach (var item in boundaries.EnumerateArray())
+        {
+            var itemContext = $"{context}.boundaries[{index++}]";
+            if (!ValidateSarefArrayObject(item, itemContext, issues))
+                continue;
+
+            RequireSarefString(item, itemContext, "boundaryId", "saref_main_story_memory_scene_missing_boundary_id", issues);
+            RequireSarefString(item, itemContext, "summary", "saref_main_story_memory_scene_missing_boundary_summary", issues);
+        }
+    }
+
+    private static void ValidateSarefMemorySceneAbilities(JsonElement scene, string context, List<ValidationIssue> issues)
+    {
+        if (!scene.TryGetProperty("abilities", out var abilities) ||
+            abilities.ValueKind != JsonValueKind.Array ||
+            abilities.GetArrayLength() is < 3 or > 5)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.abilities",
+                "«Воспоминание» должно задавать 3-5 способностей роли.",
+                "saref_main_story_memory_scene_invalid_ability_count",
+                "array with 3..5 ability objects",
+                scene.TryGetProperty("abilities", out var present) ? present.ValueKind.ToString() : "missing");
+            return;
+        }
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in abilities.EnumerateArray())
+        {
+            var itemContext = $"{context}.abilities[{index++}]";
+            if (!ValidateSarefArrayObject(item, itemContext, issues))
+                continue;
+
+            var abilityId = RequireSarefString(item, itemContext, "abilityId", "saref_main_story_memory_scene_missing_ability_id", issues);
+            RequireSarefString(item, itemContext, "name", "saref_main_story_memory_scene_missing_ability_name", issues);
+            RequireSarefString(item, itemContext, "summary", "saref_main_story_memory_scene_missing_ability_summary", issues);
+            if (!string.IsNullOrWhiteSpace(abilityId) && !ids.Add(abilityId))
+            {
+                AddSarefIssue(
+                    issues,
+                    itemContext,
+                    "Дубликат abilities[].abilityId в «Воспоминании».",
+                    "saref_main_story_memory_scene_duplicate_ability",
+                    "unique abilityId",
+                    abilityId);
+            }
+        }
+    }
+
+    private static bool ValidateSarefMemorySceneRequiredNodes(JsonElement scene, string context, List<ValidationIssue> issues)
+    {
+        if (!scene.TryGetProperty("requiredStoryNodes", out var nodes) ||
+            nodes.ValueKind != JsonValueKind.Array ||
+            nodes.GetArrayLength() == 0)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.requiredStoryNodes",
+                "«Воспоминание» должно перечислять обязательные сюжетные узлы.",
+                "saref_main_story_memory_scene_missing_required_nodes",
+                "non-empty array of required story node objects",
+                scene.TryGetProperty("requiredStoryNodes", out var present) ? present.ValueKind.ToString() : "missing");
+            return false;
+        }
+
+        var allCompleted = true;
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var item in nodes.EnumerateArray())
+        {
+            var itemContext = $"{context}.requiredStoryNodes[{index++}]";
+            if (!ValidateSarefArrayObject(item, itemContext, issues))
+            {
+                allCompleted = false;
+                continue;
+            }
+
+            var nodeId = RequireSarefString(item, itemContext, "nodeId", "saref_main_story_memory_scene_missing_required_node_id", issues);
+            var status = RequireSarefString(item, itemContext, "status", "saref_main_story_memory_scene_missing_required_node_status", issues);
+            RequireSarefString(item, itemContext, "summary", "saref_main_story_memory_scene_missing_required_node_summary", issues);
+            if (!string.IsNullOrWhiteSpace(nodeId) && !ids.Add(nodeId))
+            {
+                AddSarefIssue(
+                    issues,
+                    itemContext,
+                    "Дубликат requiredStoryNodes[].nodeId в «Воспоминании».",
+                    "saref_main_story_memory_scene_duplicate_required_node",
+                    "unique nodeId",
+                    nodeId);
+            }
+
+            if (string.IsNullOrWhiteSpace(status) || !SarefMainStoryState.MemorySceneNodeStatuses.Contains(status))
+            {
+                AddSarefIssue(
+                    issues,
+                    $"{itemContext}.status",
+                    "Статус requiredStoryNodes[] в «Воспоминании» не поддерживается.",
+                    "saref_main_story_memory_scene_invalid_required_node_status",
+                    string.Join("/", SarefMainStoryState.MemorySceneNodeStatuses.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                    status ?? "missing");
+                allCompleted = false;
+            }
+            else if (!string.Equals(status, SarefMainStoryState.MemorySceneNodeStatusCompleted, StringComparison.OrdinalIgnoreCase))
+            {
+                allCompleted = false;
+            }
+        }
+
+        return allCompleted;
+    }
+
+    private static bool ValidateSarefMemorySceneSuccessCondition(JsonElement scene, string context, List<ValidationIssue> issues)
+    {
+        if (!scene.TryGetProperty("successCondition", out var condition) ||
+            condition.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.successCondition",
+                "«Воспоминание» должно задавать successCondition с явным satisfied.",
+                "saref_main_story_memory_scene_missing_success_condition",
+                "object with conditionId/summary/satisfied",
+                scene.TryGetProperty("successCondition", out var present) ? present.ValueKind.ToString() : "missing");
+            return false;
+        }
+
+        RequireSarefString(condition, $"{context}.successCondition", "conditionId", "saref_main_story_memory_scene_missing_success_condition_id", issues);
+        RequireSarefString(condition, $"{context}.successCondition", "summary", "saref_main_story_memory_scene_missing_success_condition_summary", issues);
+        if (!condition.TryGetProperty("satisfied", out var satisfied) ||
+            satisfied.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.successCondition.satisfied",
+                "successCondition.satisfied должен быть boolean.",
+                "saref_main_story_memory_scene_missing_success_condition_satisfied",
+                "boolean",
+                condition.TryGetProperty("satisfied", out var present) ? present.ValueKind.ToString() : "missing");
+            return false;
+        }
+
+        return satisfied.ValueKind == JsonValueKind.True;
+    }
+
+    private static bool ValidateSarefMemorySceneClosureTarget(
+        JsonElement scene,
+        string context,
+        string? guardianId,
+        string? questId,
+        int questOrdinal,
+        List<ValidationIssue> issues)
+    {
+        if (!scene.TryGetProperty("closureTarget", out var target) ||
+            target.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.closureTarget",
+                "«Воспоминание» должно указывать closureTarget на 4-й квест, revelation и advantage.",
+                "saref_main_story_memory_scene_missing_closure_target",
+                "object with guardianId/questId/questOrdinal/revelationId/advantageId",
+                scene.TryGetProperty("closureTarget", out var present) ? present.ValueKind.ToString() : "missing");
+            return false;
+        }
+
+        var targetGuardianId = RequireSarefString(target, $"{context}.closureTarget", "guardianId", "saref_main_story_memory_scene_missing_closure_guardian_id", issues);
+        var targetQuestId = RequireSarefString(target, $"{context}.closureTarget", "questId", "saref_main_story_memory_scene_missing_closure_quest_id", issues);
+        var targetOrdinal = RequireSarefQuestOrdinal(target, $"{context}.closureTarget", issues);
+        RequireSarefString(target, $"{context}.closureTarget", "revelationId", "saref_main_story_memory_scene_missing_closure_revelation_id", issues);
+        RequireSarefString(target, $"{context}.closureTarget", "advantageId", "saref_main_story_memory_scene_missing_closure_advantage_id", issues);
+
+        var valid = true;
+        if (!string.IsNullOrWhiteSpace(guardianId) &&
+            !string.IsNullOrWhiteSpace(targetGuardianId) &&
+            !string.Equals(guardianId, targetGuardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            valid = false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(questId) &&
+            !string.IsNullOrWhiteSpace(targetQuestId) &&
+            !string.Equals(questId, targetQuestId, StringComparison.OrdinalIgnoreCase))
+        {
+            valid = false;
+        }
+
+        if (questOrdinal > 0 && targetOrdinal > 0 && questOrdinal != targetOrdinal)
+            valid = false;
+
+        if (!valid)
+        {
+            AddSarefIssue(
+                issues,
+                $"{context}.closureTarget",
+                "closureTarget «Воспоминания» должен совпадать с guardianId/questId/questOrdinal самой сцены.",
+                "saref_main_story_memory_scene_closure_target_mismatch",
+                "matching guardianId/questId/questOrdinal",
+                "mismatch");
+        }
+
+        return valid && targetOrdinal == 4;
+    }
+
+    private static HashSet<string> ValidateSarefQuestFourMemorySceneProofs(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        var proofs = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!root.TryGetProperty("guardianQuestlines", out var questlines) ||
+            questlines.ValueKind != JsonValueKind.Array)
+        {
+            return proofs;
+        }
+
+        var lineIndex = 0;
+        foreach (var questline in questlines.EnumerateArray())
+        {
+            var lineContext = $"{contextPrefix}.guardianQuestlines[{lineIndex++}]";
+            if (questline.ValueKind != JsonValueKind.Object ||
+                !questline.TryGetProperty("questStates", out var questStates) ||
+                questStates.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            var guardianId = GetSarefOptionalString(questline, "guardianId");
+            var stateIndex = 0;
+            foreach (var questState in questStates.EnumerateArray())
+            {
+                var stateContext = $"{lineContext}.questStates[{stateIndex++}]";
+                if (questState.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var questOrdinal = GetSarefOptionalInt(questState, "questOrdinal");
+                var status = GetSarefOptionalString(questState, "status");
+                if (questOrdinal != 4 ||
+                    !string.Equals(status, SarefMainStoryState.QuestStateCompleted, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (!questState.TryGetProperty("memorySceneProof", out var proof))
+                    continue;
+
+                if (ValidateSarefMemorySceneProof(proof, stateContext, guardianId, questState, issues))
+                    proofs.Add(guardianId ?? string.Empty);
+            }
+        }
+
+        proofs.Remove(string.Empty);
+        return proofs;
+    }
+
+    private static bool ValidateSarefMemorySceneProof(
+        JsonElement proof,
+        string questStateContext,
+        string? questlineGuardianId,
+        JsonElement questState,
+        List<ValidationIssue> issues)
+    {
+        var context = $"{questStateContext}.memorySceneProof";
+        if (proof.ValueKind != JsonValueKind.Object)
+        {
+            AddSarefIssue(
+                issues,
+                context,
+                "memorySceneProof должен быть object с доказательством завершенного слоя «Воспоминание».",
+                "saref_main_story_memory_scene_proof_not_object",
+                "object",
+                proof.ValueKind.ToString());
+            return false;
+        }
+
+        var sceneId = RequireSarefString(proof, context, "sceneId", "saref_main_story_memory_scene_proof_missing_scene_id", issues);
+        var layer = RequireSarefString(proof, context, "layer", "saref_main_story_memory_scene_proof_missing_layer", issues);
+        var roleId = RequireSarefString(proof, context, "roleId", "saref_main_story_memory_scene_proof_missing_role_id", issues);
+        var guardianId = RequireSarefString(proof, context, "guardianId", "saref_main_story_memory_scene_proof_missing_guardian_id", issues);
+        var questId = RequireSarefString(proof, context, "questId", "saref_main_story_memory_scene_proof_missing_quest_id", issues);
+        var questOrdinal = RequireSarefQuestOrdinal(proof, context, issues);
+        RequireSarefString(proof, context, "summary", "saref_main_story_memory_scene_proof_missing_summary", issues);
+        var completedAtTurn = RequireSarefTurnNumber(proof, context, "completedAtTurn", "saref_main_story_memory_scene_proof_missing_completed_turn", issues);
+
+        var valid = true;
+        if (!string.Equals(layer, SarefMainStoryState.MemorySceneLayerName, StringComparison.OrdinalIgnoreCase))
+        {
+            valid = false;
+            AddSarefIssue(
+                issues,
+                $"{context}.layer",
+                "memorySceneProof должен ссылаться на слой «Воспоминание», а не Mortal World или Memory Gates.",
+                "saref_main_story_memory_scene_proof_invalid_layer",
+                SarefMainStoryState.MemorySceneLayerName,
+                layer ?? "missing");
+        }
+
+        if (questOrdinal != 4)
+        {
+            valid = false;
+            AddSarefIssue(
+                issues,
+                $"{context}.questOrdinal",
+                "memorySceneProof допускается только для 4-го квеста Хранителя.",
+                "saref_main_story_memory_scene_proof_not_quest_four",
+                "questOrdinal=4",
+                questOrdinal.ToString());
+        }
+
+        if (completedAtTurn <= 0)
+        {
+            valid = false;
+            AddSarefIssue(
+                issues,
+                $"{context}.completedAtTurn",
+                "memorySceneProof.completedAtTurn должен быть положительным.",
+                "saref_main_story_memory_scene_proof_invalid_completed_turn",
+                "integer > 0",
+                completedAtTurn.ToString());
+        }
+
+        if (proof.TryGetProperty("successConditionSatisfied", out var satisfied))
+        {
+            if (satisfied.ValueKind != JsonValueKind.True)
+            {
+                valid = false;
+                AddSarefIssue(
+                    issues,
+                    $"{context}.successConditionSatisfied",
+                    "memorySceneProof должен подтверждать successConditionSatisfied=true.",
+                    "saref_main_story_memory_scene_proof_success_not_satisfied",
+                    "true",
+                    satisfied.ValueKind.ToString());
+            }
+        }
+        else
+        {
+            valid = false;
+            AddSarefIssue(
+                issues,
+                $"{context}.successConditionSatisfied",
+                "memorySceneProof должен явно подтверждать successConditionSatisfied.",
+                "saref_main_story_memory_scene_proof_missing_success",
+                "true",
+                "missing");
+        }
+
+        var questStateQuestId = GetSarefOptionalString(questState, "questId");
+        if (!string.IsNullOrWhiteSpace(questlineGuardianId) &&
+            !string.IsNullOrWhiteSpace(guardianId) &&
+            !string.Equals(questlineGuardianId, guardianId, StringComparison.OrdinalIgnoreCase))
+        {
+            valid = false;
+            AddSarefIssue(
+                issues,
+                $"{context}.guardianId",
+                "memorySceneProof.guardianId должен совпадать с guardianQuestlines[].guardianId.",
+                "saref_main_story_memory_scene_proof_guardian_mismatch",
+                questlineGuardianId,
+                guardianId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(questStateQuestId) &&
+            !string.IsNullOrWhiteSpace(questId) &&
+            !string.Equals(questStateQuestId, questId, StringComparison.OrdinalIgnoreCase))
+        {
+            valid = false;
+            AddSarefIssue(
+                issues,
+                $"{context}.questId",
+                "memorySceneProof.questId должен совпадать с questStates[].questId.",
+                "saref_main_story_memory_scene_proof_quest_mismatch",
+                questStateQuestId,
+                questId);
+        }
+
+        return valid &&
+               !string.IsNullOrWhiteSpace(sceneId) &&
+               !string.IsNullOrWhiteSpace(roleId) &&
+               !string.IsNullOrWhiteSpace(guardianId) &&
+               !string.IsNullOrWhiteSpace(questId);
+    }
+
+    private static void ValidateSarefQuestFourMemorySceneGate(
+        IReadOnlyDictionary<string, Dictionary<int, string>> guardianQuestlines,
+        IReadOnlySet<string> questFourMemoryProofs,
+        IReadOnlyDictionary<string, SarefMemorySceneClosure> memorySceneClosures,
+        string contextPrefix,
+        List<ValidationIssue> issues)
+    {
+        foreach (var (guardianId, states) in guardianQuestlines)
+        {
+            if (!HasCompletedSarefQuestlineThroughQuestFour(states))
+                continue;
+
+            if (questFourMemoryProofs.Contains(guardianId) || memorySceneClosures.ContainsKey(guardianId))
+                continue;
+
+            AddSarefIssue(
+                issues,
+                $"{contextPrefix}.guardianQuestlines",
+                "Завершенный 4-й квест Хранителя по линии Сарефа требует proof слоя «Воспоминание».",
+                "saref_main_story_quest_four_missing_memory_scene_proof",
+                "completed memoryScene or guardianQuestlines[].questStates[].memorySceneProof",
+                guardianId);
+        }
     }
 
     private static Dictionary<string, Dictionary<int, string>> ValidateSarefGuardianQuestlines(

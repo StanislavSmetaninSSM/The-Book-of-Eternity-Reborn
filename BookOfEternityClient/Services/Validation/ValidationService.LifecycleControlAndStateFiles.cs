@@ -286,7 +286,7 @@ public partial class ValidationService
                 SarefMainStoryState.ResponseField,
                 SarefMainStoryState.StateResponseField,
                 "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
-                "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "wingsInfiltration", "factionLinks",
+                "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "memoryScene", "wingsInfiltration", "factionLinks",
                 "finalConfrontation", "defeatOutcomes", "endings", "postStoryAgenda", "playerOathState",
                 "sarefPersonalBond", "_lastUpdated"
             }, issues, ValidateSarefMainStoryStateFile);
@@ -294,7 +294,7 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "schemaVersion", "revealStage", "guardianQuestlines", "latentTraces",
-                "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "wingsInfiltration", "factionLinks",
+                "sarefRevelations", "sarefAdvantages", "sarefAdvantageUses", "memoryScene", "wingsInfiltration", "factionLinks",
                 "finalConfrontation", "defeatOutcomes", "endings", "postStoryAgenda", "playerOathState",
                 "sarefPersonalBond", "_lastUpdated"
             }, issues);

@@ -7393,6 +7393,7 @@ Valid undiscovered root:
   "sarefRevelations": [],
   "sarefAdvantages": [],
   "sarefAdvantageUses": [],
+  "memoryScene": null,
   "wingsInfiltration": null,
   "factionLinks": {
     "wingsFactionId": null,
@@ -7421,7 +7422,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
         { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
         { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
         { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
-        { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+        { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4", "memorySceneProof": { "sceneId": "memory_scene_azalia_q4", "layer": "Воспоминание", "roleId": "azalia_white_lodge_witness", "guardianId": "azalia", "questId": "azalia_saref_q4", "questOrdinal": 4, "completedAtTurn": 144, "successConditionSatisfied": true, "summary": "Игрок прошел роль свидетеля ложи и восстановил правду о предательстве Азалии." } }
       ],
       "unlockedRevelationIds": [
         "rev_azalia_faction"
@@ -7437,7 +7438,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
         { "questOrdinal": 1, "status": "completed", "questId": "ilarion_saref_q1" },
         { "questOrdinal": 2, "status": "completed", "questId": "ilarion_saref_q2" },
         { "questOrdinal": 3, "status": "completed", "questId": "ilarion_saref_q3" },
-        { "questOrdinal": 4, "status": "completed", "questId": "ilarion_saref_q4" }
+        { "questOrdinal": 4, "status": "completed", "questId": "ilarion_saref_q4", "memorySceneProof": { "sceneId": "memory_scene_ilarion_q4", "layer": "Воспоминание", "roleId": "ilarion_oath_scribe", "guardianId": "ilarion", "questId": "ilarion_saref_q4", "questOrdinal": 4, "completedAtTurn": 151, "successConditionSatisfied": true, "summary": "Игрок прожил роль писца клятвы и увидел метод стирания памяти." } }
       ],
       "unlockedRevelationIds": [
         "rev_ilarion_method"
@@ -7453,7 +7454,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
         { "questOrdinal": 1, "status": "completed", "questId": "veyra_saref_q1" },
         { "questOrdinal": 2, "status": "completed", "questId": "veyra_saref_q2" },
         { "questOrdinal": 3, "status": "completed", "questId": "veyra_saref_q3" },
-        { "questOrdinal": 4, "status": "completed", "questId": "veyra_saref_q4" }
+        { "questOrdinal": 4, "status": "completed", "questId": "veyra_saref_q4", "memorySceneProof": { "sceneId": "memory_scene_veyra_q4", "layer": "Воспоминание", "roleId": "veyra_mask_bearer", "guardianId": "veyra", "questId": "veyra_saref_q4", "questOrdinal": 4, "completedAtTurn": 158, "successConditionSatisfied": true, "summary": "Игрок прошел роль носителя маски и восстановил маршрут к Крыльям Ангелов." } }
       ],
       "unlockedRevelationIds": [
         "rev_veyra_path"
@@ -7469,7 +7470,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
         { "questOrdinal": 1, "status": "completed", "questId": "myriel_saref_q1" },
         { "questOrdinal": 2, "status": "completed", "questId": "myriel_saref_q2" },
         { "questOrdinal": 3, "status": "completed", "questId": "myriel_saref_q3" },
-        { "questOrdinal": 4, "status": "completed", "questId": "myriel_saref_q4" }
+        { "questOrdinal": 4, "status": "completed", "questId": "myriel_saref_q4", "memorySceneProof": { "sceneId": "memory_scene_myriel_q4", "layer": "Воспоминание", "roleId": "myriel_ash_witness", "guardianId": "myriel", "questId": "myriel_saref_q4", "questOrdinal": 4, "completedAtTurn": 166, "successConditionSatisfied": true, "summary": "Игрок прожил роль свидетеля пепельной формулы и распознал чужемирное ядро Сарефа." } }
       ],
       "unlockedRevelationIds": [
         "rev_myriel_identity"
@@ -7562,6 +7563,7 @@ Valid route-unlocked fragment after enough Guardian questlines:
     }
   ],
   "sarefAdvantageUses": [],
+  "memoryScene": null,
   "wingsInfiltration": null,
   "factionLinks": {
     "wingsFactionId": null,
@@ -7609,6 +7611,7 @@ Correct reasoning checklist:
 - The canonical categories are `identity`, `method`, `faction`, and `path`.
 - Each Guardian questline stores `questStates[]` with `questOrdinal = 1..4` and status `latent`, `recognized`, `active`, `ready_to_turn_in`, or `completed`.
 - Quest 4 can unlock `sarefRevelation` / `sarefAdvantage` only after quests 1-3 for the same Guardian are completed.
+- Quest 4 is not an ordinary Mortal World life and not `Memory Gates`: it closes through the playable layer `Воспоминание`. A valid closure uses `sarefMainStoryUpdate.mode=record_memory_scene`, writes `memoryScene` with `layer="Воспоминание"`, `role`, `boundaries[]`, 3-5 `abilities[]`, `requiredStoryNodes[]`, `successCondition`, `closureTarget`, and then persists `guardianQuestlines[].questStates[].memorySceneProof`. Completed quest 4 without that proof is invalid.
 - `sarefAdvantages[]` are usable state, not loose story notes. Each advantage has `state=available|spent|passive|disabled|suppressed` and non-empty `applicableScenes[]`; supported scene ids include `wings_infiltration`, `saref_negotiation`, `saref_confrontation`, `oath_break`, `memory_attack`, `faction_conflict`, `escape_or_exile`, `final_resolution`, and `any`.
 - If the GM claims an advantage in a scene, record `sarefAdvantageUses[]` with `usageId`, `advantageId`, `sceneType`, `usedAtTurn`, `consumesAdvantage`, and `summary`. The `advantageId` must exist, the state must authorize use, and `sceneType` must match `applicableScenes[]` or `any`.
 - A consumed one-use advantage must end as `state=spent`, carry matching `spentAudit` (`usageId`, `usedAtTurn`, `sceneType`, `summary`), and have the matching `sarefAdvantageUses[]` entry. `passive` advantages may be referenced but not consumed. `suppressed`, `disabled`, unknown, or already spent advantages cannot be used for a new scene.
@@ -7622,6 +7625,96 @@ Correct reasoning checklist:
 - A deal uses `routeType=deal`, `victoryTier=deal`, `sarefOutcome=allied`, `wingsFactionOutcome=joined`, root `playerOathState.state=oathbound`, and `endings[].rewardBundle` with `resourceReward`, `wingsAccess`, `sarefArt`, `sarefPassive`, and `oathCost`.
 - A victory ending uses `endingType=victory`, references the matching `finalConfrontationId`, and records `rewardBundle.antiOathProtection`, `antiForeignProtection`, `guardianRelationshipEffects[]`, plus a `relic` or `passive`; `deep` also requires both relic and passive plus `deepWorldStateEffects[]`.
 - If final victory says the Крылья Ангелов are `broken` or `dissolved`, the linked Shining faction must carry matching `factionLifecycle.state` (`broken` may also accept `dissolved` as stronger closure).
+
+Valid `Воспоминание` closure for a Guardian quest 4:
+
+```json
+{
+  "sarefMainStoryUpdate": {
+    "mode": "record_memory_scene",
+    "memoryScene": {
+      "sceneId": "memory_scene_azalia_q4",
+      "status": "completed",
+      "layer": "Воспоминание",
+      "guardianId": "azalia",
+      "questId": "azalia_saref_q4",
+      "questOrdinal": 4,
+      "role": {
+        "roleId": "azalia_white_lodge_witness",
+        "displayName": "Свидетель ложи",
+        "summary": "Игрок действует через роль свидетеля старого предательства Азалии."
+      },
+      "boundaries": [
+        { "boundaryId": "past_is_fixed", "summary": "Сареф уже вошел в ложу; это нельзя отменить." }
+      ],
+      "abilities": [
+        { "abilityId": "read_oath", "name": "Прочитать клятву", "summary": "Увидеть скрытую цену белых перьев." },
+        { "abilityId": "hold_memory", "name": "Удержать память", "summary": "Не дать сцене рассыпаться." },
+        { "abilityId": "name_traitor", "name": "Назвать предателя", "summary": "Связать образ с будущей правдой о Сарефе." }
+      ],
+      "requiredStoryNodes": [
+        { "nodeId": "enter_lodge", "status": "completed", "summary": "Игрок вошел в ложу белых перьев." },
+        { "nodeId": "see_betrayal", "status": "completed", "summary": "Игрок увидел, как Сареф использовал доверие Азалии." }
+      ],
+      "successCondition": {
+        "conditionId": "truth_recognized",
+        "summary": "Игрок распознал связь ложи с Крыльями Ангелов.",
+        "satisfied": true
+      },
+      "closureTarget": {
+        "guardianId": "azalia",
+        "questId": "azalia_saref_q4",
+        "questOrdinal": 4,
+        "revelationId": "rev_azalia_faction",
+        "advantageId": "adv_azalia_false_loyalty"
+      },
+      "startedAtTurn": 143,
+      "resolvedAtTurn": 144,
+      "resolutionSummary": "Воспоминание завершено, Азалия получила правду о ложе белых перьев."
+    },
+    "guardianQuestline": {
+      "guardianId": "azalia",
+      "questStates": [
+        {
+          "questOrdinal": 4,
+          "status": "completed",
+          "questId": "azalia_saref_q4",
+          "completedAtTurn": 144,
+          "memorySceneProof": {
+            "sceneId": "memory_scene_azalia_q4",
+            "layer": "Воспоминание",
+            "roleId": "azalia_white_lodge_witness",
+            "guardianId": "azalia",
+            "questId": "azalia_saref_q4",
+            "questOrdinal": 4,
+            "completedAtTurn": 144,
+            "successConditionSatisfied": true,
+            "summary": "Игрок прошел роль свидетеля и восстановил правду о ложе белых перьев."
+          }
+        }
+      ]
+    },
+    "sarefRevelation": {
+      "revelationId": "rev_azalia_faction",
+      "category": "faction",
+      "sourceGuardianId": "azalia",
+      "sourceQuestId": "azalia_saref_q4",
+      "sourceQuestOrdinal": 4,
+      "revealedAtTurn": 144
+    },
+    "sarefAdvantage": {
+      "advantageId": "adv_azalia_false_loyalty",
+      "sourceGuardianId": "azalia",
+      "sourceQuestId": "azalia_saref_q4",
+      "sourceQuestOrdinal": 4,
+      "state": "available",
+      "applicableScenes": [ "wings_infiltration", "saref_negotiation" ],
+      "summary": "Можно выдать себя за полезного перебежчика перед агентами Крыльев Ангелов.",
+      "unlockedAtTurn": 144
+    }
+  }
+}
+```
 
 `/сареф найти_крылья` pending request shape:
 
