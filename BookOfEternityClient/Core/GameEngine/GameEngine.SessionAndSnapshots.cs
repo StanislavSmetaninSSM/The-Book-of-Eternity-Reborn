@@ -236,6 +236,8 @@ public partial class GameEngine
             rollbackBaselineFiles.Add(AfterlifeSpiritualConflictState.StatePath);
         if (_fs.FileExists(AfterlifeEntityProfileState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeEntityProfileState.StatePath);
+        if (_fs.FileExists(SarefMainStoryState.StatePath))
+            rollbackBaselineFiles.Add(SarefMainStoryState.StatePath);
 
         var snapshotFiles = new HashSet<string>(rollbackBaselineFiles, StringComparer.OrdinalIgnoreCase);
         if (rollbackSnapshot?.ValidationSnapshotFiles is { Count: > 0 })
@@ -446,6 +448,14 @@ public partial class GameEngine
                 payload,
                 snapshot,
                 AfterlifeEntityProfileState.StatePath))
+        {
+            return null;
+        }
+
+        if (!await TryAddOptionalCanonicalBaselineSnapshotAsync(
+                payload,
+                snapshot,
+                SarefMainStoryState.StatePath))
         {
             return null;
         }

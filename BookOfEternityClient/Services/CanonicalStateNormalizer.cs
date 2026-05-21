@@ -80,7 +80,8 @@ public partial class CanonicalStateNormalizer
     public static readonly string[] NormalizerBackupInputFiles = CanonicalAccumulatedFiles
         .Concat(new[]
         {
-            "game_state/world/world_events.json"
+            "game_state/world/world_events.json",
+            SarefMainStoryState.StatePath
         })
         .ToArray();
 

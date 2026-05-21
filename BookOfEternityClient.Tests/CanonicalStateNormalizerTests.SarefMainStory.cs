@@ -8,6 +8,15 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class CanonicalStateNormalizerTests
 {
     [Fact]
+    public void NormalizerBackupInputFiles_IncludesSarefMainStoryState()
+    {
+        Assert.Contains(
+            SarefMainStoryState.StatePath,
+            CanonicalStateNormalizer.NormalizerBackupInputFiles,
+            StringComparer.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task NormalizeAccumulatedStateAsync_SarefMainStoryUpdateWrapper_ProjectsAgainstBackupBaseline()
     {
         var backupPath = "test_backups/pre_saref_story.json";

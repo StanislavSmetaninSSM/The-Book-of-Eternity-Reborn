@@ -167,6 +167,22 @@ public sealed class ValidationSourceGuardTests
     }
 
     [Fact]
+    public void SarefMainStoryState_MustBeOptionalCanonicalBaseline()
+    {
+        var path = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "Core",
+            "GameEngine",
+            "GameEngine.SessionAndSnapshots.cs");
+        var source = File.ReadAllText(path);
+
+        Assert.Contains("if (_fs.FileExists(SarefMainStoryState.StatePath))", source, StringComparison.Ordinal);
+        Assert.Contains("TryAddOptionalCanonicalBaselineSnapshotAsync(", source, StringComparison.Ordinal);
+        Assert.Contains("SarefMainStoryState.StatePath))", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void PolicySensitiveSnapshotAuthorityConsumers_MustUseRollbackBackedParity()
     {
         var normalizerPath = Path.Combine(
