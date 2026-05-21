@@ -96,7 +96,11 @@ The renderer currently supports these DTO surfaces:
 - `prompts` as browser form cards when an `interactiveSession` is present, otherwise as read-only prompt cards showing prompt text, kind, requirement flag, and selection options.
 - empty, loading, HTTP error, and command failure states.
 
-`/api/health` and `/api/session` return local session metadata: status, local-only flag, base path, `game_session` path, and whether the directory exists.
+`/api/health` and `/api/session` return local session metadata: status, local-only flag, base path, `game_session` path, whether the directory exists, and the browser write-owner state. The write state includes:
+
+- `canStartBrowserWrite`: false when a GM turn, rollback/snapshot artifact, or active non-stale UI lock blocks local writes.
+- `pendingTurn`: the actionable list of GM-turn and rollback artifacts the player/repair flow must resolve first.
+- `localUiLock`: current owner, kind, heartbeat, lease, stale/readable flags, and last operation for stale lock recovery.
 
 `/api/explorer/command` accepts a JSON body:
 
@@ -263,6 +267,7 @@ Current rules:
 
 - Read-only command DTOs may render while another UI owner holds the lock.
 - Mutating console commands acquire or refresh the lock before writing local state.
+- Browser write flows use the shared browser write coordinator: it checks pending-turn artifacts, acquires or refreshes the local UI lock, captures rollback baselines for targeted files, restores those files on failed staging, and releases the lock after the write attempt.
 - Browser local-turn DTOs create interactive prompt sessions that can collect, validate, resume, submit, and cancel prompt answers. The shared prompt layer does not yet perform every domain-specific file write; those write paths are migrated command-by-command.
 - Browser QTE endpoints write through the QTE runtime and state distributor; do not run the same QTE flow simultaneously in console and browser.
 

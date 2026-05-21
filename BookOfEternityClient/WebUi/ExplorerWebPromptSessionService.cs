@@ -23,6 +23,7 @@ public sealed class ExplorerWebPromptSessionService
     private static readonly TimeSpan SessionLease = TimeSpan.FromMinutes(20);
     private static readonly TimeSpan LockLease = TimeSpan.FromSeconds(120);
 
+    private readonly FileSystemManager _fs;
     private readonly ConcurrentDictionary<string, PromptSessionSnapshot> _sessions = new(StringComparer.Ordinal);
     private readonly LocalUiSessionLockService _lockService;
     private readonly TimeProvider _timeProvider;
@@ -32,6 +33,7 @@ public sealed class ExplorerWebPromptSessionService
         LocalUiSessionLockService? lockService = null,
         TimeProvider? timeProvider = null)
     {
+        _fs = fs;
         _lockService = lockService ?? new LocalUiSessionLockService(fs, timeProvider);
         _timeProvider = timeProvider ?? TimeProvider.System;
     }
@@ -47,6 +49,34 @@ public sealed class ExplorerWebPromptSessionService
         var requiresLock = RequiresLocalUiLock(result.Command);
         if (requiresLock)
         {
+            var pending = BrowserPendingTurnInspector.Build(_fs);
+            if (pending.HasActiveGmTurn)
+            {
+                return new ExplorerCommandResult
+                {
+                    Command = result.Command,
+                    State = CommandExecutionState.Pending,
+                    Blocks =
+                    [
+                        new UiMessageBlock
+                        {
+                            Severity = UiNotificationSeverity.Warning,
+                            Title = "Активный ход GM",
+                            Message = pending.Message
+                        }
+                    ],
+                    Notifications =
+                    [
+                        new UiNotification
+                        {
+                            Severity = UiNotificationSeverity.Warning,
+                            Title = "Форма не открыта",
+                            Message = "Browser-write заблокирован до завершения текущего GM-turn/rollback протокола."
+                        }
+                    ]
+                };
+            }
+
             var lockResult = await _lockService.AcquireOrRefreshAsync(owner, $"Browser prompt session: {result.Command}");
             if (!lockResult.Acquired)
             {
