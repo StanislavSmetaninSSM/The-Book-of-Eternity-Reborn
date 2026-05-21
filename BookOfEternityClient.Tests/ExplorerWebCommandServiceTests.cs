@@ -40,6 +40,20 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(result.Blocks, static block => block is UiTableBlock table && table.Columns.Contains("Описание"));
     }
 
+    [Fact]
+    public async Task ExecuteAsync_HelpInAfterlife_IncludesMemorySceneCommand()
+    {
+        await SeedUniversalMetaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/help"));
+
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("/воспоминание", text, StringComparison.Ordinal);
+        Assert.Contains("/воспоминание_начать", text, StringComparison.Ordinal);
+        Assert.Contains("Воспоминание", text, StringComparison.Ordinal);
+        Assert.Contains("Врата Памяти", text, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("/help")]
     [InlineData("/status")]
@@ -155,6 +169,58 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             result.Blocks,
             static block => block is UiMessageBlock message &&
                             message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_MemoryScene_ReturnsPlayerReadableDto()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "revealStage": "name_revealed",
+          "guardianQuestlines": [],
+          "latentTraces": [],
+          "sarefRevelations": [],
+          "sarefAdvantages": [],
+          "sarefAdvantageUses": [],
+          "memoryScene": {
+            "sceneId": "memory_scene_azalia_q4",
+            "title": "Ложа белых перьев",
+            "status": "active",
+            "layer": "Воспоминание",
+            "guardianId": "azalia",
+            "questId": "azalia_saref_q4",
+            "questOrdinal": 4,
+            "role": { "roleId": "azalia_white_lodge_witness", "displayName": "Свидетель ложи", "summary": "Роль внутри старого предательства." },
+            "boundaries": [ { "summary": "Сареф уже вошёл в ложу; это нельзя отменить." } ],
+            "abilities": [
+              { "abilityId": "read_oath", "name": "Прочитать клятву", "summary": "Увидеть скрытую цену белых перьев." },
+              { "abilityId": "hold_memory", "name": "Удержать память", "summary": "Не дать сцене рассыпаться." },
+              { "abilityId": "name_traitor", "name": "Назвать предателя", "summary": "Связать образ с будущей правдой." }
+            ],
+            "requiredStoryNodes": [ { "status": "pending", "summary": "Увидеть предательство." } ],
+            "successCondition": { "summary": "Распознать связь ложи с Крыльями Ангелов.", "satisfied": false },
+            "closureTarget": { "guardianId": "azalia", "questId": "azalia_saref_q4", "questOrdinal": 4 }
+          },
+          "factionLinks": { "visibility": "hidden" },
+          "defeatOutcomes": [],
+          "endings": [],
+          "playerOathState": null,
+          "sarefPersonalBond": null
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/воспоминание_начать"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Воспоминание", text, StringComparison.Ordinal);
+        Assert.Contains("Ложа белых перьев", text, StringComparison.Ordinal);
+        Assert.Contains("Свидетель ложи", text, StringComparison.Ordinal);
+        Assert.Contains("Прочитать клятву", text, StringComparison.Ordinal);
+        Assert.Contains("Это не Врата Памяти", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]
