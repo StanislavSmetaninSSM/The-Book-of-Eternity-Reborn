@@ -5,7 +5,10 @@ using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.WebUi;
 
-public sealed record ExplorerWebCommandRequest(string Command);
+public sealed record ExplorerWebCommandRequest(
+    string Command,
+    string? OwnerId = null,
+    string? OwnerLabel = null);
 
 public sealed class ExplorerWebCommandService
 {
@@ -13,17 +16,20 @@ public sealed class ExplorerWebCommandService
     private readonly StateManager _stateManager;
     private readonly LocalizationManager _localization;
     private readonly ValidationService _validationService;
+    private readonly ExplorerWebPromptSessionService _promptSessions;
 
     public ExplorerWebCommandService(
         FileSystemManager fs,
         StateManager stateManager,
         LocalizationManager localization,
-        ValidationService validationService)
+        ValidationService validationService,
+        ExplorerWebPromptSessionService? promptSessions = null)
     {
         _fs = fs;
         _stateManager = stateManager;
         _localization = localization;
         _validationService = validationService;
+        _promptSessions = promptSessions ?? new ExplorerWebPromptSessionService(fs);
     }
 
     public async Task<ExplorerCommandResult> ExecuteAsync(ExplorerWebCommandRequest? request)
@@ -31,6 +37,7 @@ public sealed class ExplorerWebCommandService
         var command = request?.Command?.Trim() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(command))
             return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error, "Команда не выполнена", "Команда пустая.");
+        var effectiveRequest = request ?? new ExplorerWebCommandRequest(command);
 
         var exactEntry = ExplorerCommandMigrationRegistry.Entries
             .FirstOrDefault(item => string.Equals(item.Command, command, StringComparison.OrdinalIgnoreCase));
@@ -47,8 +54,18 @@ public sealed class ExplorerWebCommandService
         if (entry.Status != ExplorerCommandMigrationStatus.Migrated)
             return BuildBlockedMigrationResult(command, entry);
 
-        return await BuildMigratedResultAsync(command, commandToken);
+        var result = await BuildMigratedResultAsync(command, commandToken);
+        return await _promptSessions.AttachSessionIfNeededAsync(result, effectiveRequest);
     }
+
+    public Task<ExplorerCommandResult> SubmitPromptSessionAsync(ExplorerPromptSessionSubmitRequest request) =>
+        _promptSessions.SubmitAsync(request);
+
+    public Task<ExplorerCommandResult> CancelPromptSessionAsync(ExplorerPromptSessionCancelRequest request) =>
+        _promptSessions.CancelAsync(request);
+
+    public ExplorerCommandResult GetPromptSession(string sessionId) =>
+        _promptSessions.GetSession(sessionId);
 
     private async Task<ExplorerCommandResult> BuildMigratedResultAsync(string command, string commandToken)
     {

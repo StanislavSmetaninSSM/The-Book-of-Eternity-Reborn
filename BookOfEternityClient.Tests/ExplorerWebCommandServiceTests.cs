@@ -74,7 +74,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var actual = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
         Assert.True(
-            JsonNode.DeepEquals(ToJsonNode(expected), ToJsonNode(actual)),
+            JsonNode.DeepEquals(ToJsonNode(expected), ToJsonNode(WithoutInteractiveSession(actual))),
             $"Web command service diverged from the shared DTO builder for {command}.");
     }
 
@@ -160,6 +160,95 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Активный ход GM", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("input/turn_request.json", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("game_state/control/pending_turn_snapshot.json", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_PromptCommand_AttachesBrowserPromptSessionAndLocalLock()
+    {
+        await SeedUniversalMetaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/world_setup",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.NotNull(result.InteractiveSession);
+        Assert.False(string.IsNullOrWhiteSpace(result.InteractiveSession.SessionId));
+        Assert.Equal("/api/explorer/prompt-sessions/submit", result.InteractiveSession.SubmitEndpoint);
+        Assert.Equal("/api/explorer/prompt-sessions/cancel", result.InteractiveSession.CancelEndpoint);
+        Assert.True(result.InteractiveSession.RequiresLocalUiLock);
+        Assert.True(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_ValidAnswers_CompletesWithoutConsoleInputAndReleasesLock()
+    {
+        await SeedUniversalMetaFilesAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/world_setup",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["world_setup_mode"] = JsonValue.Create("create_or_edit"),
+                ["world_title"] = JsonValue.Create("Королевство пепельных колоколов"),
+                ["world_directives"] = JsonValue.Create("Тёмное фэнтези, падшие династии, запрет на лёгкий тон.")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        Assert.Empty(completed.Prompts);
+        Assert.Null(completed.InteractiveSession);
+        var text = CollectBlockText(completed.Blocks);
+        Assert.Contains("Ответы формы приняты", text, StringComparison.OrdinalIgnoreCase);
+        var submittedJson = Assert.IsType<UiRawJsonBlock>(completed.Blocks.Last());
+        Assert.Equal("Королевство пепельных колоколов", submittedJson.Json?["world_title"]?.GetValue<string>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_MissingRequiredAnswer_KeepsSessionOpenWithValidationError()
+    {
+        await SeedUniversalMetaFilesAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/world_setup",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var validation = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>(),
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, validation.State);
+        Assert.NotEmpty(validation.Prompts);
+        Assert.NotNull(validation.InteractiveSession);
+        Assert.Contains(validation.Notifications, static notification =>
+            notification.Severity == UiNotificationSeverity.Error &&
+            notification.Message.Contains("world_setup_mode", StringComparison.OrdinalIgnoreCase));
+        Assert.True(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task CancelPromptSessionAsync_ReleasesLocalLock()
+    {
+        await SeedUniversalMetaFilesAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/world_setup",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var cancelled = await _service.CancelPromptSessionAsync(new ExplorerPromptSessionCancelRequest(
+            started.InteractiveSession!.SessionId,
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, cancelled.State);
+        Assert.Contains("отменена", CollectBlockText(cancelled.Blocks), StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
     [Theory]
@@ -873,6 +962,17 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
     private static JsonNode ToJsonNode(ExplorerCommandResult result) =>
         JsonSerializer.SerializeToNode(result, JsonOptions)!;
+
+    private static ExplorerCommandResult WithoutInteractiveSession(ExplorerCommandResult result) => new()
+    {
+        Command = result.Command,
+        State = result.State,
+        Blocks = result.Blocks,
+        Actions = result.Actions,
+        Prompts = result.Prompts,
+        Notifications = result.Notifications,
+        InteractiveSession = null
+    };
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {

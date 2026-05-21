@@ -10,6 +10,7 @@ public sealed class ExplorerCommandResult
     public List<UiAction> Actions { get; init; } = [];
     public List<UiPrompt> Prompts { get; init; } = [];
     public List<UiNotification> Notifications { get; init; } = [];
+    public UiPromptSession? InteractiveSession { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
