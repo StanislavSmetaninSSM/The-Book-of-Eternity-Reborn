@@ -33,6 +33,18 @@ public partial class ValidationService
                 "NPCEquipmentChanges", "NPCInventoryResourcesChanges"
             }, issues);
 
+        await ValidateNpcFile("game_state/npcs/npc_effects.json",
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "NPCEffectChanges", "NPCWoundChanges"
+            }, issues);
+
+        await ValidateNpcFile("game_state/npcs/npc_personality.json",
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "NPCPersonalityTraitChanges"
+            }, issues);
+
         await ValidateNpcFile("game_state/npcs/npc_journals.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
