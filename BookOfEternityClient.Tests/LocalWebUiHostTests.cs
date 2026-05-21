@@ -167,6 +167,44 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    public async Task PromptSessionEndpoints_SubmitBrowserPromptAnswers()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var startResponse = await client.PostAsJsonAsync("/api/explorer/command", new
+        {
+            command = "/world_setup",
+            ownerId = "browser-host-test",
+            ownerLabel = "Browser host test"
+        });
+        var startRoot = JsonNode.Parse(await startResponse.Content.ReadAsStringAsync())!.AsObject();
+        startResponse.EnsureSuccessStatusCode();
+        var sessionId = startRoot["interactiveSession"]!["sessionId"]!.GetValue<string>();
+
+        using var submitResponse = await client.PostAsJsonAsync("/api/explorer/prompt-sessions/submit", new
+        {
+            sessionId,
+            ownerId = "browser-host-test",
+            answers = new
+            {
+                world_setup_mode = "create_or_edit",
+                world_title = "Пепельное королевство",
+                world_directives = "Тёмное фэнтези, трагедия, родовые клятвы."
+            }
+        });
+        var submitRoot = JsonNode.Parse(await submitResponse.Content.ReadAsStringAsync())!.AsObject();
+
+        submitResponse.EnsureSuccessStatusCode();
+        Assert.Equal("Completed", submitRoot["state"]!.GetValue<string>());
+        Assert.Contains(submitRoot["blocks"]!.AsArray(), node =>
+            string.Equals(node?["title"]?.GetValue<string>(), "Ответы формы приняты", StringComparison.Ordinal));
+        Assert.False(File.Exists(Path.Combine(_rootPath, "game_session", LocalUiSessionLockService.LockPath)));
+    }
+
+    [Fact]
     public async Task QteStateEndpoint_ReturnsPendingOffer()
     {
         WriteSessionFile("output/qte_offer.json", BuildSingleActionQteOfferJson());

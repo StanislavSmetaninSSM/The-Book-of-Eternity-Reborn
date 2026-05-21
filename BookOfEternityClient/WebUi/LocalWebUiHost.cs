@@ -61,7 +61,9 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<CanonicalStateNormalizer>();
         builder.Services.AddSingleton<QteSceneService>();
         builder.Services.AddSingleton<QteWebInteractionService>();
+        builder.Services.AddSingleton<LocalUiSessionLockService>();
         builder.Services.AddSingleton<LocalWebUiSessionStatusService>();
+        builder.Services.AddSingleton<ExplorerWebPromptSessionService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
 
         var app = builder.Build();
@@ -72,6 +74,12 @@ public static class LocalWebUiHost
         app.MapGet("/api/session", (LocalWebUiSessionStatusService status) => status.BuildStatus());
         app.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
             await commandService.ExecuteAsync(request));
+        app.MapGet("/api/explorer/prompt-sessions/{sessionId}", (string sessionId, ExplorerWebCommandService commandService) =>
+            commandService.GetPromptSession(sessionId));
+        app.MapPost("/api/explorer/prompt-sessions/submit", async (ExplorerPromptSessionSubmitRequest request, ExplorerWebCommandService commandService) =>
+            await commandService.SubmitPromptSessionAsync(request));
+        app.MapPost("/api/explorer/prompt-sessions/cancel", async (ExplorerPromptSessionCancelRequest request, ExplorerWebCommandService commandService) =>
+            await commandService.CancelPromptSessionAsync(request));
         app.MapGet("/api/qte/state", async (QteWebInteractionService qte) =>
             await qte.BuildStateAsync());
         app.MapPost("/api/qte/offer", async (QteWebOfferDecisionRequest request, QteWebInteractionService qte) =>
@@ -160,7 +168,7 @@ public static class LocalWebUiHost
             p { color: var(--muted); max-width: 45rem; }
             code { color: var(--accent); }
             form { display: flex; gap: .75rem; margin-top: 1rem; }
-            input {
+            input, select, textarea {
               flex: 1;
               border: 1px solid var(--line);
               border-radius: .85rem;
@@ -169,6 +177,8 @@ public static class LocalWebUiHost
               padding: .85rem 1rem;
               font: inherit;
             }
+            textarea { width: 100%; resize: vertical; }
+            select, .prompt input { width: 100%; margin-top: .65rem; }
             button {
               border: 0;
               border-radius: .85rem;
@@ -275,6 +285,7 @@ public static class LocalWebUiHost
                 <h2>Статус</h2>
                 <p>Проверка сессии: <code>/api/health</code></p>
                 <p>Командный API: <code>POST /api/explorer/command</code></p>
+                <p>Формы команд: <code>POST /api/explorer/prompt-sessions/submit</code></p>
                 <p>QTE API: <code>GET /api/qte/state</code></p>
                 <p>Сейчас доступны только перенесённые DTO-команды; остальные вернут структурный блокер.</p>
                 <button class="secondary" type="button" id="qte-button">Проверить QTE</button>
@@ -314,6 +325,44 @@ public static class LocalWebUiHost
                 renderCommandResult(payload);
               } catch (error) {
                 renderError('Не удалось выполнить команду', error?.message ?? String(error));
+              }
+            }
+
+            async function submitPromptSession(sessionId, answers) {
+              resultRoot.replaceChildren(el('div', 'loading', 'Отправляю ответы формы...'));
+              try {
+                const response = await fetch('/api/explorer/prompt-sessions/submit', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ sessionId, answers })
+                });
+                const payload = await response.json();
+                if (!response.ok) {
+                  renderError(`HTTP ${response.status}`, payload);
+                  return;
+                }
+                renderCommandResult(payload);
+              } catch (error) {
+                renderError('Не удалось отправить форму', error?.message ?? String(error));
+              }
+            }
+
+            async function cancelPromptSession(sessionId) {
+              resultRoot.replaceChildren(el('div', 'loading', 'Отменяю форму...'));
+              try {
+                const response = await fetch('/api/explorer/prompt-sessions/cancel', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ sessionId })
+                });
+                const payload = await response.json();
+                if (!response.ok) {
+                  renderError(`HTTP ${response.status}`, payload);
+                  return;
+                }
+                renderCommandResult(payload);
+              } catch (error) {
+                renderError('Не удалось отменить форму', error?.message ?? String(error));
               }
             }
 
@@ -379,7 +428,7 @@ public static class LocalWebUiHost
               renderNotifications(result?.notifications ?? []);
               for (const block of blocks) resultRoot.append(renderBlock(block));
               renderActions(result?.actions ?? []);
-              renderPrompts(result?.prompts ?? []);
+              renderPrompts(result?.prompts ?? [], result?.interactiveSession ?? null);
             }
 
             function renderQteState(state) {
@@ -578,18 +627,32 @@ public static class LocalWebUiHost
               resultRoot.append(node);
             }
 
-            function renderPrompts(prompts) {
+            function renderPrompts(prompts, session) {
               if (prompts.length === 0) return;
-              const node = el('div', 'prompts');
-              for (const prompt of prompts) node.append(renderPrompt(prompt));
+              const node = session ? el('form', 'prompts') : el('div', 'prompts');
+              for (const prompt of prompts) node.append(renderPrompt(prompt, Boolean(session)));
+              if (session) {
+                const submit = el('button', '', 'Отправить форму');
+                submit.type = 'submit';
+                const cancel = el('button', 'secondary', 'Отменить форму');
+                cancel.type = 'button';
+                cancel.addEventListener('click', () => cancelPromptSession(session.sessionId));
+                node.append(submit, cancel);
+                node.addEventListener('submit', event => {
+                  event.preventDefault();
+                  submitPromptSession(session.sessionId, collectPromptAnswers(node));
+                });
+              }
               resultRoot.append(node);
             }
 
-            function renderPrompt(prompt) {
+            function renderPrompt(prompt, interactive) {
               const node = el('div', 'block prompt');
               node.append(el('div', 'message-title', prompt.prompt ?? prompt.id ?? 'Требуется ввод'));
               node.append(el('div', 'prompt-kind', `Тип ввода: ${prompt.kind ?? 'unknown'}${prompt.required ? ', обязательно' : ''}`));
-              if (Array.isArray(prompt.options) && prompt.options.length > 0) {
+              if (interactive) {
+                node.append(renderPromptInput(prompt));
+              } else if (Array.isArray(prompt.options) && prompt.options.length > 0) {
                 const list = document.createElement('ul');
                 for (const option of prompt.options) {
                   const label = option.description ? `${option.label ?? option.value}: ${option.description}` : option.label ?? option.value;
@@ -598,6 +661,54 @@ public static class LocalWebUiHost
                 node.append(list);
               }
               return node;
+            }
+
+            function renderPromptInput(prompt) {
+              if (prompt.kind === 'selection') {
+                const select = document.createElement('select');
+                select.dataset.promptId = prompt.id ?? '';
+                for (const option of prompt.options ?? []) {
+                  const opt = document.createElement('option');
+                  opt.value = option.value ?? '';
+                  opt.textContent = option.description ? `${option.label ?? option.value} — ${option.description}` : option.label ?? option.value ?? '';
+                  opt.disabled = option.disabled === true;
+                  select.append(opt);
+                }
+                return select;
+              }
+              if (prompt.kind === 'confirmation') {
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.dataset.promptId = prompt.id ?? '';
+                input.checked = prompt.defaultValue === true;
+                label.append(input, document.createTextNode(' Да'));
+                return label;
+              }
+              if (prompt.kind === 'longTextInput') {
+                const textarea = document.createElement('textarea');
+                textarea.dataset.promptId = prompt.id ?? '';
+                textarea.placeholder = prompt.placeholder ?? '';
+                textarea.value = prompt.defaultValue ?? '';
+                textarea.rows = prompt.minLines ?? 4;
+                return textarea;
+              }
+              const input = document.createElement('input');
+              input.dataset.promptId = prompt.id ?? '';
+              input.placeholder = prompt.placeholder ?? '';
+              input.value = prompt.defaultValue ?? '';
+              return input;
+            }
+
+            function collectPromptAnswers(form) {
+              const answers = {};
+              for (const field of form.querySelectorAll('[data-prompt-id]')) {
+                const id = field.dataset.promptId;
+                if (!id) continue;
+                if (field.type === 'checkbox') answers[id] = field.checked;
+                else answers[id] = field.value ?? '';
+              }
+              return answers;
             }
 
             function renderError(title, details) {

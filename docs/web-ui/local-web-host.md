@@ -78,6 +78,9 @@ GET /
 GET /api/health
 GET /api/session
 POST /api/explorer/command
+GET /api/explorer/prompt-sessions/{sessionId}
+POST /api/explorer/prompt-sessions/submit
+POST /api/explorer/prompt-sessions/cancel
 GET /api/qte/state
 POST /api/qte/offer
 POST /api/qte/action
@@ -90,7 +93,7 @@ The renderer currently supports these DTO surfaces:
 - `text`, `panel`, `table`, `list`, `keyValueGrid`, `message`, and `rawJson` blocks.
 - `notifications` as message cards.
 - `actions` as command buttons when an action has a direct command.
-- `prompts` as read-only prompt cards showing prompt text, kind, requirement flag, and selection options.
+- `prompts` as browser form cards when an `interactiveSession` is present, otherwise as read-only prompt cards showing prompt text, kind, requirement flag, and selection options.
 - empty, loading, HTTP error, and command failure states.
 
 `/api/health` and `/api/session` return local session metadata: status, local-only flag, base path, `game_session` path, and whether the directory exists.
@@ -104,6 +107,36 @@ The renderer currently supports these DTO surfaces:
 ```
 
 It returns an `ExplorerCommandResult` DTO. Migrated commands are executed through browser-safe DTO builders; planned, unknown, or blocked commands return structured `Blocked`/`Failed` DTOs instead of invoking console-bound handlers.
+
+If a migrated command returns `RequiresInput`, the browser host creates a local prompt session and attaches:
+
+```json
+{
+  "interactiveSession": {
+    "sessionId": "prompt_...",
+    "submitEndpoint": "/api/explorer/prompt-sessions/submit",
+    "cancelEndpoint": "/api/explorer/prompt-sessions/cancel",
+    "requiresLocalUiLock": true,
+    "ownerId": "browser:..."
+  }
+}
+```
+
+Prompt sessions let the browser pause, resume by `GET /api/explorer/prompt-sessions/{sessionId}`, submit answers, or cancel. Sessions for potentially mutating local-turn commands acquire the same `game_state/control/local_ui_session_lock.json` ownership used by console mode. Invalid submissions return the original prompts plus validation notifications instead of invoking Spectre.Console.
+
+`POST /api/explorer/prompt-sessions/submit` accepts:
+
+```json
+{
+  "sessionId": "prompt_...",
+  "answers": {
+    "world_setup_mode": "create_or_edit",
+    "world_title": "Королевство пепельных колоколов"
+  }
+}
+```
+
+For the first interactive protocol layer, successful submissions complete the browser prompt session and return a DTO containing the accepted answers. Domain-specific file writes are still migrated command-by-command in the later browser parity tasks.
 
 `/api/qte/state` exposes the current local QTE state. It returns one of:
 
@@ -221,7 +254,7 @@ Current rules:
 
 - Read-only command DTOs may render while another UI owner holds the lock.
 - Mutating console commands acquire or refresh the lock before writing local state.
-- Browser local-turn DTOs currently display prompts and pending-contract state, but do not yet submit most multi-step writes directly.
+- Browser local-turn DTOs create interactive prompt sessions that can collect, validate, resume, submit, and cancel prompt answers. The shared prompt layer does not yet perform every domain-specific file write; those write paths are migrated command-by-command.
 - Browser QTE endpoints write through the QTE runtime and state distributor; do not run the same QTE flow simultaneously in console and browser.
 
 If the browser shows `Pending`, inspect the local-turn panel. It normally means one of these artifacts exists:
@@ -248,7 +281,7 @@ See also `docs/web-ui/local-ui-session-lock.md` for the lock-file shape and owne
 
 The browser is no longer just a read-only shell, but several flows remain intentionally console-only or browser-status-only until their write UX is fully migrated:
 
-- Interactive multi-step prompt submission for most local-turn commands is not yet committed from the browser UI. The browser shows prompts and command DTOs; console mode remains the complete path for those writes.
+- Interactive multi-step prompt submission is available as a browser prompt-session protocol. Many domain-specific local-turn writes still return accepted answers only; console mode remains the complete path until each write command is migrated.
 - `/shining_treasury` and `/source_of_light` are browser status surfaces. Use console mode for treasury mutations and Source of Light request creation until those write paths are explicitly migrated.
 - `/afterlife_inbox` does not mark notifications as read in the browser.
 - `/spiritual_arts` does not perform local spiritual-art upgrades in the browser.
