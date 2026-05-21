@@ -475,9 +475,20 @@ public partial class ExplorerMode
     private static string BuildSystemGuardianPresetChoiceLabel(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
     {
         var displayName = string.IsNullOrWhiteSpace(preset.DisplayName) ? preset.PresetId : preset.DisplayName;
-        var domain = string.IsNullOrWhiteSpace(preset.Domain) ? "domain не указан" : preset.Domain;
+        var themes = BuildSystemGuardianPlayerFacingThemes(preset);
         var abodeName = string.IsNullOrWhiteSpace(preset.AbodeName) ? "обитель не указана" : preset.AbodeName;
-        return $"{Markup.Escape(displayName)} [dim]({Markup.Escape(domain)}; presetId={Markup.Escape(preset.PresetId)}; abode={Markup.Escape(abodeName)})[/]";
+        return $"{Markup.Escape(displayName)} [dim](темы: {Markup.Escape(themes)}; id={Markup.Escape(preset.PresetId)}; обитель: {Markup.Escape(abodeName)})[/]";
+    }
+
+    private static string BuildSystemGuardianPlayerFacingThemes(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
+    {
+        if (preset.CoreValues.Count > 0)
+            return string.Join(", ", preset.CoreValues.Take(4));
+
+        if (!string.IsNullOrWhiteSpace(preset.Summary))
+            return preset.Summary;
+
+        return "темы не указаны";
     }
 
     private bool ShowSystemGuardianPresetDetail(SystemGuardianLibraryService.SystemGuardianPresetDescriptor preset)
@@ -486,11 +497,10 @@ public partial class ExplorerMode
         {
             $"[bold cyan]{Markup.Escape(preset.DisplayName)}[/]",
             "",
-            $"[white]Домен:[/] {Markup.Escape(preset.Domain)}",
-            $"[white]Архетип:[/] {Markup.Escape(preset.Archetype)}",
-            $"[white]Тон:[/] {Markup.Escape(preset.Tone)}",
+            $"[white]Темы:[/] {Markup.Escape(BuildSystemGuardianPlayerFacingThemes(preset))}",
             $"[white]Обитель:[/] {Markup.Escape(preset.AbodeName)}",
-            $"[white]Сводка:[/] {Markup.Escape(preset.Summary)}"
+            $"[white]Сводка:[/] {Markup.Escape(preset.Summary)}",
+            $"[white]Технический id:[/] {Markup.Escape(preset.PresetId)}"
         };
 
         if (preset.CoreValues.Count > 0)
@@ -891,6 +901,8 @@ public partial class ExplorerMode
             return;
         }
 
+        RenderSystemGuardianPresetOverview(presets);
+
         while (true)
         {
             var presetChoices = presets
@@ -924,6 +936,32 @@ public partial class ExplorerMode
             if (selectedIndex >= 0 && selectedIndex < presetChoices.Count)
                 ShowSystemGuardianPresetDetail(presetChoices[selectedIndex].Preset);
         }
+    }
+
+    private void RenderSystemGuardianPresetOverview(IReadOnlyList<SystemGuardianLibraryService.SystemGuardianPresetDescriptor> presets)
+    {
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .BorderColor(Color.Magenta1)
+            .AddColumn("[bold cyan]Хранитель[/]")
+            .AddColumn("[bold cyan]Темы[/]")
+            .AddColumn("[bold cyan]Обитель[/]")
+            .AddColumn("[bold cyan]Кратко[/]");
+
+        foreach (var preset in presets)
+        {
+            var displayName = string.IsNullOrWhiteSpace(preset.DisplayName) ? preset.PresetId : preset.DisplayName;
+            var abodeName = string.IsNullOrWhiteSpace(preset.AbodeName) ? "обитель не указана" : preset.AbodeName;
+            var summary = string.IsNullOrWhiteSpace(preset.Summary) ? "сводка не указана" : preset.Summary;
+
+            table.AddRow(
+                Markup.Escape(displayName),
+                Markup.Escape(BuildSystemGuardianPlayerFacingThemes(preset)),
+                Markup.Escape(abodeName),
+                Markup.Escape(summary));
+        }
+
+        WrapInPanel(table, "Обзор извечных Хранителей", Color.Magenta1);
     }
 
     private void WrapInPanel(Table table, string title, Color color)

@@ -369,6 +369,55 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
     [Fact]
 
+    public async Task TryProcessCommand_SystemGuardians_RendersPlayerFacingPresetOverview()
+    {
+        await SeedAfterlifeStateAsync();
+        await SeedSystemGuardianPresetAsync("azalia", "Азалия", "Social", "Обитель Неутолимого Пламени");
+        await _stateManager.RefreshGameStateAsync();
+        _console.QueueAnySelection("← Назад");
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/system_guardians"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("system_guardians_overview");
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Обзор извечных Хранителей", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Азалия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ценность 1", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ценность 2", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Обитель Неутолимого Пламени", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тестовый системный хранитель для regression tests.", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Built-in:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("User:", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+
+    public async Task TryProcessCommand_SystemGuardians_DetailShowsFullDossierWithoutTechnicalEnglishFields()
+    {
+        await SeedAfterlifeStateAsync();
+        await SeedSystemGuardianPresetAsync("azalia", "Азалия", "Social", "Обитель Неутолимого Пламени");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/system_guardians"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("system_guardians_detail");
+
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Досье:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тестовое досье для системного хранителя.", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Технический id:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Домен:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Архетип:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Тон:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Domain:", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Archetype:", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+
     public async Task TryProcessCommand_WorldRules_ClearFlow_UsesAdapterAndRemovesActiveDirectives()
     {
         await SeedMortalStateAsync();

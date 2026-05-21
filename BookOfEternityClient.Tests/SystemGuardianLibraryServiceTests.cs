@@ -303,6 +303,40 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuiltInExpandedDossier_IsPreservedInPromptPackageAndAttractionRequest()
+    {
+        var sourcePresetDir = GetRepoBuiltInPresetDirectory("elyara");
+
+        Assert.True(Directory.Exists(sourcePresetDir), "Built-in Elyara preset directory must exist.");
+
+        CopyDirectory(sourcePresetDir, Path.Combine(_service.GetBuiltInDirectoryPath(), "elyara"));
+
+        var preset = await _service.FindPresetAsync("elyara", includeDossier: true);
+
+        Assert.NotNull(preset);
+        foreach (var requiredSection in new[]
+                 {
+                     "### 4. Манера речи",
+                     "### 6. Романтический профиль",
+                     "### 9. Библия Обители",
+                     "### 13. Не играть как",
+                     "Особое духовное искусство:",
+                     "Полные четыре квеста находятся"
+                 })
+        {
+            Assert.Contains(requiredSection, preset!.PromptPackage, StringComparison.Ordinal);
+            Assert.Contains(requiredSection, preset.DossierMarkdown, StringComparison.Ordinal);
+        }
+
+        var request = _service.BuildAttractionRequest(preset!);
+
+        Assert.Contains("Guardian dossier:", request.RenderedPromptPackage, StringComparison.Ordinal);
+        Assert.Contains("### 6. Романтический профиль", request.RenderedPromptPackage, StringComparison.Ordinal);
+        Assert.Contains("### 13. Не играть как", request.RenderedPromptPackage, StringComparison.Ordinal);
+        Assert.Contains("Милость Незаживающей Раны", request.RenderedPromptPackage, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BuiltInPermanentGuardianDossiers_FollowExpandedStandard()
     {
         var builtInRoot = Path.Combine(
