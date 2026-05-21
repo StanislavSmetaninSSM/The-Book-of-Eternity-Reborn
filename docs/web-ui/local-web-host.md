@@ -1,11 +1,19 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #575
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #575, #576, #577
 Parent epic: #559
 
 ## Local-Only Model
 
 The browser UI is a local shell over the same C# game client and the same `game_session` data. It is not a cloud service, does not require an account, and binds to loopback addresses only.
+
+Console mode and browser mode are two frontends over one local save/session root. If both modes are launched with the same base path, they read and write the same files under:
+
+```text
+<base path>/game_session/
+```
+
+Use different base paths only when you intentionally want different local saves.
 
 Default URL:
 
@@ -16,6 +24,22 @@ http://127.0.0.1:8787
 The host rejects non-loopback bind addresses such as `0.0.0.0`.
 
 ## Launch
+
+### Console Mode
+
+Console mode remains the default. From the repository root:
+
+```powershell
+dotnet run --project BookOfEternityClient
+```
+
+To use an explicit local session root, pass the existing base-path argument:
+
+```powershell
+dotnet run --project BookOfEternityClient -- "E:\Games\The Book of Eternity Reborn\BookOfEternityClient"
+```
+
+### Browser Mode
 
 From the repository root:
 
@@ -35,11 +59,15 @@ Use a custom local URL:
 dotnet run --project BookOfEternityClient -- --web --web-url http://127.0.0.1:8788
 ```
 
-Console mode remains the default:
+Open the printed local URL in the browser, normally:
 
-```powershell
-dotnet run --project BookOfEternityClient
+```text
+http://127.0.0.1:8787
 ```
+
+The URL must stay local. `localhost`, `127.0.0.1`, and other loopback addresses are valid; public bind addresses such as `0.0.0.0` are rejected by the host.
+
+Use the same base path as console mode when you want the browser to continue the same save.
 
 ## Current Browser MVP
 
@@ -178,4 +206,61 @@ Every migrated local-turn protocol result includes a `Локальный ход 
 If any active GM-turn or rollback/snapshot artifact exists, local-turn command DTOs return `Pending` so the browser can observe the long-running or late-response state without invoking console-only prompts.
 
 Interactive multi-step prompt submission remains outside the current browser shell. QTE offer/scene/action protocol is available through the `/api/qte/*` endpoints and the “Проверить QTE” shell panel.
+
+## Session Lock And Pending Turns
+
+The shared save/session model means local writes must not happen concurrently from two UI owners. The lock file is:
+
+```text
+game_state/control/local_ui_session_lock.json
+```
+
+Current rules:
+
+- Read-only command DTOs may render while another UI owner holds the lock.
+- Mutating console commands acquire or refresh the lock before writing local state.
+- Browser local-turn DTOs currently display prompts and pending-contract state, but do not yet submit most multi-step writes directly.
+- Browser QTE endpoints write through the QTE runtime and state distributor; do not run the same QTE flow simultaneously in console and browser.
+
+If the browser shows `Pending`, inspect the local-turn panel. It normally means one of these artifacts exists:
+
+- `input/turn_request.json`
+- `ready/turn_complete.json`
+- `ready/turn_error.json`
+- `game_state/control/pending_turn_snapshot.json`
+- `game_state/control/pending_turn_snapshot/`
+- `game_state/control/explorer_local_turn_rollback/`
+
+Finish, accept, cancel, or repair the pending GM turn before starting another local write flow.
+
+Stale lock recovery:
+
+- First close the other console/browser instance if it is still running.
+- If `local_ui_session_lock.json` has an old `heartbeatAtUtc` beyond its `leaseSeconds`, a different owner may replace it on the next mutating command.
+- If a malformed lock is fresh, it blocks mutation. If it is stale by file timestamp and no UI process is active, it may be replaced or deleted during repair.
+- Do not delete a fresh lock just to force a command; that risks two frontends writing the same save at once.
+
+See also `docs/web-ui/local-ui-session-lock.md` for the lock-file shape and ownership rules.
+
+## Temporary Browser Limitations
+
+The browser is no longer just a read-only shell, but several flows remain intentionally console-only or browser-status-only until their write UX is fully migrated:
+
+- Interactive multi-step prompt submission for most local-turn commands is not yet committed from the browser UI. The browser shows prompts and command DTOs; console mode remains the complete path for those writes.
+- `/shining_treasury` and `/source_of_light` are browser status surfaces. Use console mode for treasury mutations and Source of Light request creation until those write paths are explicitly migrated.
+- `/afterlife_inbox` does not mark notifications as read in the browser.
+- `/spiritual_arts` does not perform local spiritual-art upgrades in the browser.
+- The hidden Saref/Wings read-only views are migrated, but mutating search/join/story actions still need their own browser write protocol.
+
+These limitations are intentional migration boundaries, not separate game rules. Console and browser still use the same local `game_session` data.
+
+## Troubleshooting
+
+- Browser cannot connect: confirm the process is still running and open the exact loopback URL printed at startup, usually `http://127.0.0.1:8787`.
+- Port already in use: launch with `--web-url http://127.0.0.1:<free port>`.
+- Host rejects the URL: use `localhost` or `127.0.0.1`; the local web host refuses non-loopback addresses.
+- Browser shows a different save: restart browser mode with the same base path you use for console mode.
+- Command stays `Pending`: resolve the active GM turn or remove stale pending-turn artifacts only after confirming no GM response is still expected.
+- Mutating command is blocked by a local UI session lock: close the other UI owner or wait for the lease to expire; inspect `game_state/control/local_ui_session_lock.json` before repair.
+- A command says it is status-only or not fully interactive in browser: run the same command in console mode for the complete workflow until that browser write path is migrated.
 
