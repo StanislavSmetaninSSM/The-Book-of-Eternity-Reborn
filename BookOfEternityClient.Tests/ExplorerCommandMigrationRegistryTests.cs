@@ -173,6 +173,37 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
         }
     }
 
+    [Fact]
+    public void AfterlifeCombatAndEntityReadOnlyCommands_AreMarkedAsMigrated()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var command in new[]
+                 {
+                     "/afterlife_profiles", "/профили_загробья", "/afterlife_inbox", "/уведомления_загробья",
+                     "/spiritual_conflict", "/духовный_конфликт", "/spiritual_combat_log", "/журнал_духовного_боя",
+                     "/spiritual_combat_help", "/духовный_бой", "/spiritual_arts", "/духовные_искусства"
+                 })
+        {
+            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+        }
+    }
+
+    [Fact]
+    public void SpiritualAction_RemainsBlockedWithLocalTurnFollowUp()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var command in new[] { "/spiritual_action", "/духовное_действие" })
+        {
+            Assert.Equal(ExplorerCommandMigrationStatus.Blocked, entries[command].Status);
+            Assert.Contains("#574", entries[command].FollowUpIssue, StringComparison.Ordinal);
+            Assert.Contains("local-turn", entries[command].Reason, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

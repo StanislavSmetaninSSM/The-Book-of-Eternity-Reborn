@@ -84,6 +84,13 @@ public sealed class ExplorerWebCommandService
         if (shiningResult != null)
             return shiningResult;
 
+        var afterlifeCombatResult = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
+            command,
+            _stateManager,
+            _fs);
+        if (afterlifeCombatResult != null)
+            return afterlifeCombatResult;
+
         return MessageResult(
             command,
             CommandExecutionState.Failed,
