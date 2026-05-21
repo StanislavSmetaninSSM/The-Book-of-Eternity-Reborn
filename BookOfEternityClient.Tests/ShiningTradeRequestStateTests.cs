@@ -1194,7 +1194,7 @@ public sealed class ShiningTradeRequestStateTests
             var requests = await ShiningTradeRequestState.ReadRequestsAsync(fs);
             Assert.Single(requests);
             Assert.DoesNotContain(requests, request => string.Equals(request.RequestId, "old_cycle_request", StringComparison.OrdinalIgnoreCase));
-            var currentCycleRequest = Assert.Single(requests.Where(request => string.Equals(request.TradeCycleId, "shining_return_2", StringComparison.OrdinalIgnoreCase)));
+            var currentCycleRequest = Assert.Single(requests, request => string.Equals(request.TradeCycleId, "shining_return_2", StringComparison.OrdinalIgnoreCase));
 
             Assert.True(result.StateChanged);
             Assert.Equal(1, result.CreatedRequestCount);

@@ -277,7 +277,7 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
-        var notification = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningTradeInventoryReady, StringComparison.OrdinalIgnoreCase)));
+        var notification = Assert.Single(notifications, item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningTradeInventoryReady, StringComparison.OrdinalIgnoreCase));
         Assert.Contains("Старый Дом", notification.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("слотов 6", notification.Summary, StringComparison.OrdinalIgnoreCase);
     }
@@ -331,8 +331,8 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
-        var notification = Assert.Single(notifications.Where(item =>
-            string.Equals(item.NotificationType, AfterlifeNotificationState.TypePlayerGuardianFoundationResolved, StringComparison.OrdinalIgnoreCase)));
+        var notification = Assert.Single(notifications, item =>
+            string.Equals(item.NotificationType, AfterlifeNotificationState.TypePlayerGuardianFoundationResolved, StringComparison.OrdinalIgnoreCase));
         Assert.Equal("foundation_req_1", notification.RequestId);
         Assert.Equal("guardian_player", notification.GuardianId);
         Assert.Contains("Трон Прилива", notification.Summary, StringComparison.OrdinalIgnoreCase);
@@ -391,7 +391,7 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
-        var notification = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase)));
+        var notification = Assert.Single(notifications, item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase));
         Assert.Contains("Открытие Врат", notification.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("версия 2", notification.Summary, StringComparison.OrdinalIgnoreCase);
     }
@@ -408,7 +408,7 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
-        var notification = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeGuardianTradePendingAttention, StringComparison.OrdinalIgnoreCase)));
+        var notification = Assert.Single(notifications, item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeGuardianTradePendingAttention, StringComparison.OrdinalIgnoreCase));
         Assert.Contains("поврежден", notification.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("pending_guardian_trade_request.json", notification.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("repair", notification.Summary, StringComparison.OrdinalIgnoreCase);
@@ -512,7 +512,7 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
-        var notification = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase)));
+        var notification = Assert.Single(notifications, item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase));
         Assert.Contains("Мост Света", notification.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Старый Дом", notification.Summary, StringComparison.OrdinalIgnoreCase);
     }
@@ -725,7 +725,7 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
         await AfterlifeNotificationState.SyncFromCurrentStateAsync(_fs);
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
-        var notification = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase)));
+        var notification = Assert.Single(notifications, item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningCoreActionResolved, StringComparison.OrdinalIgnoreCase));
         Assert.Equal("Историческая сводка о проекте «Мост Света» фракции «Старый Дом».", notification.Summary);
     }
 
@@ -841,16 +841,16 @@ public sealed class AfterlifeNotificationStateTests : IDisposable
 
         var notifications = await AfterlifeNotificationState.ReadAsync(_fs);
 
-        var founding = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningFactionFoundingResolved, StringComparison.OrdinalIgnoreCase)));
+        var founding = Assert.Single(notifications, item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningFactionFoundingResolved, StringComparison.OrdinalIgnoreCase));
         Assert.Contains("сторонников 3", founding.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Дом Рассвета", founding.Summary, StringComparison.OrdinalIgnoreCase);
 
-        var realignment = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningFactionRealignmentResolved, StringComparison.OrdinalIgnoreCase)));
+        var realignment = Assert.Single(notifications, item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningFactionRealignmentResolved, StringComparison.OrdinalIgnoreCase));
         Assert.Contains("согласованный переход", realignment.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("faction_old", realignment.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Дом Рассвета", realignment.Summary, StringComparison.OrdinalIgnoreCase);
 
-        var leadership = Assert.Single(notifications.Where(item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningFactionLeadershipResolved, StringComparison.OrdinalIgnoreCase)));
+        var leadership = Assert.Single(notifications, item => string.Equals(item.NotificationType, AfterlifeNotificationState.TypeShiningFactionLeadershipResolved, StringComparison.OrdinalIgnoreCase));
         Assert.Contains("мирная преемственность", leadership.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("резидент resident_liora", leadership.Summary, StringComparison.OrdinalIgnoreCase);
     }
