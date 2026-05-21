@@ -61,6 +61,8 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         var inkFeathers = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.InkFeathersAndOfferings.cs");
         var inventory = ReadSource("UI", "ExplorerMode", "ExplorerMode.Inventory.cs");
         var inbox = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs");
+        var commandCatalog = ReadSource("CommandProtocol", "ExplorerCommandCatalog.cs");
+        var explorerMode = ReadSource("UI", "ExplorerMode.cs");
 
         Assert.Contains("BuildPendingFileBlockerAsync", mainMenu, StringComparison.Ordinal);
         Assert.Contains("DescribeBlockingShiningPendingContractAsync", mainMenu, StringComparison.Ordinal);
@@ -85,7 +87,9 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         Assert.Contains("/статус /реликвии /хранители /обители /гача /перья /архив_души", lifecycle, StringComparison.Ordinal);
         Assert.Contains("CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction)", lifecycle, StringComparison.Ordinal);
         Assert.Contains("CleanupAfterCancelledChaosSeaMarkerTurn(action)", lifecycle, StringComparison.Ordinal);
-        Assert.Contains("[\"/chaos_sea\"] = ShowGuardians", ReadSource("UI", "ExplorerMode.cs"), StringComparison.Ordinal);
+        Assert.Contains("D(\"chaos_sea\"", commandCatalog, StringComparison.Ordinal);
+        Assert.Contains("[\"/chaos_sea\", \"/море_хаоса\"]", commandCatalog, StringComparison.Ordinal);
+        Assert.Contains("(\"chaos_sea\", ShowGuardians)", explorerMode, StringComparison.Ordinal);
         Assert.Contains("string.Equals(command, \"/abodes\"", explorerPrivate, StringComparison.Ordinal);
         Assert.Contains("string.Equals(command, \"/обители\"", explorerPrivate, StringComparison.Ordinal);
         Assert.Contains("string.Equals(command, \"/chaos_sea\"", explorerPrivate, StringComparison.Ordinal);

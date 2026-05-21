@@ -37,6 +37,49 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
     }
 
     [Fact]
+    public void CommandDescriptorCatalog_CoversEveryRegisteredExplorerCommand()
+    {
+        var registeredCommands = ReadRegisteredCommandNames();
+        var descriptorCommands = ExplorerCommandCatalog.AllAliases
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var missing = registeredCommands
+            .Where(command => !descriptorCommands.Contains(command))
+            .Order(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.True(
+            missing.Length == 0,
+            "Missing shared Explorer command descriptors for registered commands: " + string.Join(", ", missing));
+    }
+
+    [Fact]
+    public void ConsoleHandlerDictionaries_CoverEveryCommandDescriptorAlias()
+    {
+        var handlerCommands = ReadConsoleHandlerCommandNames();
+        var descriptorCommands = ExplorerCommandCatalog.AllAliases
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        Assert.Equal(
+            descriptorCommands.Order(StringComparer.OrdinalIgnoreCase),
+            handlerCommands.Order(StringComparer.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void MigrationRegistryEntries_AreGeneratedFromCommandDescriptors()
+    {
+        var descriptorCommands = ExplorerCommandCatalog.AllAliases
+            .Order(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var registryCommands = ExplorerCommandMigrationRegistry.Entries
+            .Select(static entry => entry.Command)
+            .Order(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.Equal(descriptorCommands, registryCommands);
+    }
+
+    [Fact]
     public void MigrationRegistryEntries_AreUniqueAndActionable()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries;
@@ -217,6 +260,31 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
         Assert.NotNull(field);
 
         var commands = Assert.IsAssignableFrom<IReadOnlyCollection<string>>(field.GetValue(explorer));
+        return commands;
+    }
+
+    private IReadOnlyCollection<string> ReadConsoleHandlerCommandNames()
+    {
+        var fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+
+        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        var explorer = new ExplorerMode(
+            stateManager,
+            fs,
+            new LocalizationManager { CurrentLanguage = "ru" },
+            console: new TestExplorerConsole());
+
+        var commands = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var fieldName in new[] { "_universalCommands", "_chaosSeaOnlyCommands", "_mortalOnlyCommands" })
+        {
+            var field = typeof(ExplorerMode).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(field);
+            var map = Assert.IsAssignableFrom<IReadOnlyDictionary<string, Func<Task>>>(field.GetValue(explorer));
+            foreach (var key in map.Keys)
+                commands.Add(key);
+        }
+
         return commands;
     }
 
