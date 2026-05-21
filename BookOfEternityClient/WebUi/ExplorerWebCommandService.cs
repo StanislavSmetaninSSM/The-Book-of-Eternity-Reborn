@@ -39,22 +39,15 @@ public sealed class ExplorerWebCommandService
             return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error, "Команда не выполнена", "Команда пустая.");
         var effectiveRequest = request ?? new ExplorerWebCommandRequest(command);
 
-        var exactEntry = ExplorerCommandMigrationRegistry.Entries
-            .FirstOrDefault(item => string.Equals(item.Command, command, StringComparison.OrdinalIgnoreCase));
-        var commandToken = exactEntry?.Command ?? ExtractCommandToken(command);
-
-        var entry = exactEntry ?? (ExplorerMathCommandResultBuilder.CanBuild(commandToken)
-            ? ExplorerCommandMigrationRegistry.Entries
-                .FirstOrDefault(item => string.Equals(item.Command, commandToken, StringComparison.OrdinalIgnoreCase))
-            : null);
-
-        if (entry is null)
+        var descriptor = ExplorerCommandCatalog.FindByAlias(command);
+        if (descriptor is null)
             return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error, "Команда не найдена", "Команда не зарегистрирована в ExplorerMode.");
 
-        if (entry.Status != ExplorerCommandMigrationStatus.Migrated)
-            return BuildBlockedMigrationResult(command, entry);
+        if (descriptor.BrowserStatus != ExplorerCommandMigrationStatus.Migrated)
+            return BuildBlockedMigrationResult(command, descriptor);
 
-        var result = await BuildMigratedResultAsync(command, commandToken);
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
+        var result = await BuildMigratedResultAsync(command, commandToken, descriptor);
         return await _promptSessions.AttachSessionIfNeededAsync(result, effectiveRequest);
     }
 
@@ -67,14 +60,16 @@ public sealed class ExplorerWebCommandService
     public ExplorerCommandResult GetPromptSession(string sessionId) =>
         _promptSessions.GetSession(sessionId);
 
-    private async Task<ExplorerCommandResult> BuildMigratedResultAsync(string command, string commandToken)
+    private async Task<ExplorerCommandResult> BuildMigratedResultAsync(
+        string command,
+        string commandToken,
+        ExplorerCommandDescriptor descriptor)
     {
         await _stateManager.RefreshGameStateAsync();
-        if (ExplorerMathCommandResultBuilder.CanBuild(commandToken))
+        if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Math)
             return ExplorerMathCommandResultBuilder.Build(command);
 
-        if (string.Equals(commandToken, "/help", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(commandToken, "/помощь", StringComparison.OrdinalIgnoreCase))
+        if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Help)
         {
             var state = _stateManager.CurrentState;
             return ExplorerHelpCommandResultBuilder.Build(new ExplorerHelpCommandContext
@@ -88,49 +83,38 @@ public sealed class ExplorerWebCommandService
             });
         }
 
-        var universalResult = await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(
-            commandToken,
-            _stateManager,
-            _fs,
-            _localization);
-        if (universalResult != null)
-            return universalResult;
-
-        var mortalResult = await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(
-            commandToken,
-            _stateManager,
-            _fs);
-        if (mortalResult != null)
-            return mortalResult;
-
-        var chaosSeaResult = await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(
-            commandToken,
-            _stateManager,
-            _fs);
-        if (chaosSeaResult != null)
-            return chaosSeaResult;
-
-        var shiningResult = await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
-            commandToken,
-            _stateManager,
-            _fs);
-        if (shiningResult != null)
-            return shiningResult;
-
-        var afterlifeCombatResult = await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
-            commandToken,
-            _stateManager,
-            _fs);
-        if (afterlifeCombatResult != null)
-            return afterlifeCombatResult;
-
-        var lifecycleLocalTurnResult = await ExplorerLifecycleLocalTurnCommandResultBuilder.TryBuildAsync(
-            commandToken,
-            _stateManager,
-            _fs,
-            _validationService);
-        if (lifecycleLocalTurnResult != null)
-            return lifecycleLocalTurnResult;
+        var result = descriptor.BrowserHandlerKind switch
+        {
+            ExplorerCommandBrowserHandlerKind.UniversalMeta => await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(
+                commandToken,
+                _stateManager,
+                _fs,
+                _localization),
+            ExplorerCommandBrowserHandlerKind.MortalWorld => await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(
+                commandToken,
+                _stateManager,
+                _fs),
+            ExplorerCommandBrowserHandlerKind.ChaosSea => await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(
+                commandToken,
+                _stateManager,
+                _fs),
+            ExplorerCommandBrowserHandlerKind.ShiningAbode => await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
+                commandToken,
+                _stateManager,
+                _fs),
+            ExplorerCommandBrowserHandlerKind.AfterlifeCombat => await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
+                commandToken,
+                _stateManager,
+                _fs),
+            ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn => await ExplorerLifecycleLocalTurnCommandResultBuilder.TryBuildAsync(
+                commandToken,
+                _stateManager,
+                _fs,
+                _validationService),
+            _ => null
+        };
+        if (result != null)
+            return result;
 
         return MessageResult(
             command,
@@ -140,20 +124,14 @@ public sealed class ExplorerWebCommandService
             "Команда помечена как перенесенная, но web command service пока не знает, как ее построить.");
     }
 
-    private static string ExtractCommandToken(string command)
+    private static ExplorerCommandResult BuildBlockedMigrationResult(string command, ExplorerCommandDescriptor descriptor)
     {
-        var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-        return parts.Length == 0 ? string.Empty : parts[0];
-    }
-
-    private static ExplorerCommandResult BuildBlockedMigrationResult(string command, ExplorerCommandMigrationEntry entry)
-    {
-        var reason = string.IsNullOrWhiteSpace(entry.Reason)
+        var reason = string.IsNullOrWhiteSpace(descriptor.Reason)
             ? "Эта команда еще не перенесена в браузерный API."
-            : entry.Reason;
-        var followUp = string.IsNullOrWhiteSpace(entry.FollowUpIssue)
+            : descriptor.Reason;
+        var followUp = string.IsNullOrWhiteSpace(descriptor.FollowUpIssue)
             ? string.Empty
-            : $" Следующая задача: {entry.FollowUpIssue}.";
+            : $" Следующая задача: {descriptor.FollowUpIssue}.";
 
         return MessageResult(
             command,
