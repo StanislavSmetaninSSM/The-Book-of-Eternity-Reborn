@@ -48,6 +48,42 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.True(root["localOnly"]!.GetValue<bool>());
         Assert.Equal(_rootPath, root["basePath"]!.GetValue<string>());
         Assert.Equal(Path.Combine(_rootPath, "game_session"), root["gameSessionPath"]!.GetValue<string>());
+        Assert.True(root["canStartBrowserWrite"]!.GetValue<bool>());
+        Assert.False(root["pendingTurn"]!["hasActiveGmTurn"]!.GetValue<bool>());
+        Assert.False(root["localUiLock"]!["exists"]!.GetValue<bool>());
+    }
+
+    [Fact]
+    public async Task SessionEndpoint_ReportsPendingTurnAndLocalUiLock()
+    {
+        WriteSessionFile("input/turn_request.json", "{}");
+        WriteSessionFile("game_state/control/local_ui_session_lock.json", """
+        {
+          "schemaVersion": 1,
+          "ownerId": "console-owner",
+          "ownerKind": "console",
+          "ownerLabel": "Console",
+          "acquiredAtUtc": "2026-05-21T00:00:00.0000000Z",
+          "heartbeatAtUtc": "2026-05-21T00:00:00.0000000Z",
+          "leaseSeconds": 120,
+          "lastOperation": "console write"
+        }
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var json = await client.GetStringAsync("/api/session");
+        var root = JsonNode.Parse(json)!.AsObject();
+
+        Assert.False(root["canStartBrowserWrite"]!.GetValue<bool>());
+        Assert.True(root["pendingTurn"]!["hasActiveGmTurn"]!.GetValue<bool>());
+        Assert.Contains(root["pendingTurn"]!["artifacts"]!.AsArray(), node =>
+            string.Equals(node?["path"]?.GetValue<string>(), "input/turn_request.json", StringComparison.OrdinalIgnoreCase) &&
+            node["exists"]!.GetValue<bool>());
+        Assert.True(root["localUiLock"]!["exists"]!.GetValue<bool>());
+        Assert.Equal("console-owner", root["localUiLock"]!["ownerId"]!.GetValue<string>());
     }
 
     [Fact]

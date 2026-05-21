@@ -89,6 +89,9 @@ public sealed class LocalUiSessionLockService
         }
     }
 
+    public Task<LocalUiSessionLockSnapshot?> InspectAsync(TimeSpan? fallbackLease = null) =>
+        TryReadSnapshotAsync(_timeProvider.GetUtcNow().UtcDateTime, fallbackLease ?? TimeSpan.FromSeconds(120));
+
     private async Task<LocalUiSessionLockSnapshot?> TryReadSnapshotAsync(DateTime nowUtc, TimeSpan fallbackLease)
     {
         var json = await _fs.ReadFileAsync(LockPath);

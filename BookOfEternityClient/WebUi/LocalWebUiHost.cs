@@ -62,6 +62,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<QteSceneService>();
         builder.Services.AddSingleton<QteWebInteractionService>();
         builder.Services.AddSingleton<LocalUiSessionLockService>();
+        builder.Services.AddSingleton<BrowserLocalWriteCoordinator>();
         builder.Services.AddSingleton<LocalWebUiSessionStatusService>();
         builder.Services.AddSingleton<ExplorerWebPromptSessionService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
@@ -70,8 +71,8 @@ public static class LocalWebUiHost
         app.Services.GetRequiredService<FileSystemManager>().EnsureDirectoryStructure();
 
         app.MapGet("/", () => Results.Content(BuildShellHtml(), "text/html; charset=utf-8"));
-        app.MapGet("/api/health", (LocalWebUiSessionStatusService status) => status.BuildStatus());
-        app.MapGet("/api/session", (LocalWebUiSessionStatusService status) => status.BuildStatus());
+        app.MapGet("/api/health", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
+        app.MapGet("/api/session", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
         app.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
             await commandService.ExecuteAsync(request));
         app.MapGet("/api/explorer/prompt-sessions/{sessionId}", (string sessionId, ExplorerWebCommandService commandService) =>
