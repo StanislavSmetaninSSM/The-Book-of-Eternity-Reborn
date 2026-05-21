@@ -1,0 +1,44 @@
+name: .NET CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj
+
+      - name: Build
+        run: dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=tests.trx" --results-directory TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-test-results
+          path: TestResults
+          if-no-files-found: ignore
