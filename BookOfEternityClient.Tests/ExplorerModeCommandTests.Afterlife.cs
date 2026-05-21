@@ -9493,8 +9493,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("pending_guardian_abode_residents_request.json", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("requestMode", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("guardian_abode_residents.json roster", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Realm rule matrix Моря Хаоса", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Mortal inventory/money/XP/skills", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Матрица правил мира Моря Хаоса", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Инвентарь/деньги/опыт/навыки смертного мира", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("progression_report.json", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
