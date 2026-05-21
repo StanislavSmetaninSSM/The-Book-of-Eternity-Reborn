@@ -35,19 +35,19 @@ public sealed class ExplorerWebCommandService
     public async Task<ExplorerCommandResult> ExecuteAsync(ExplorerWebCommandRequest? request)
     {
         var command = request?.Command?.Trim() ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(command))
-            return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error, "Команда не выполнена", "Команда пустая.");
+        var parsed = ExplorerCommandParser.Parse(command);
+        if (!parsed.Success)
+            return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error, parsed.ErrorTitle, parsed.ErrorMessage);
         var effectiveRequest = request ?? new ExplorerWebCommandRequest(command);
 
-        var descriptor = ExplorerCommandCatalog.FindByAlias(command);
-        if (descriptor is null)
-            return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error, "Команда не найдена", "Команда не зарегистрирована в ExplorerMode.");
-
+        var descriptor = parsed.Descriptor!;
         if (descriptor.BrowserStatus != ExplorerCommandMigrationStatus.Migrated)
             return BuildBlockedMigrationResult(command, descriptor);
 
-        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
-        var result = await BuildMigratedResultAsync(command, commandToken, descriptor);
+        if (parsed.Subcommand is { BrowserStatus: not ExplorerCommandMigrationStatus.Migrated } subcommand)
+            return BuildBlockedMigrationResult(command, subcommand);
+
+        var result = await BuildMigratedResultAsync(parsed, descriptor);
         return await _promptSessions.AttachSessionIfNeededAsync(result, effectiveRequest);
     }
 
@@ -61,11 +61,12 @@ public sealed class ExplorerWebCommandService
         _promptSessions.GetSession(sessionId);
 
     private async Task<ExplorerCommandResult> BuildMigratedResultAsync(
-        string command,
-        string commandToken,
+        ExplorerParsedCommand parsed,
         ExplorerCommandDescriptor descriptor)
     {
         await _stateManager.RefreshGameStateAsync();
+        var command = parsed.BuilderCommand;
+        var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
         if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Math)
             return ExplorerMathCommandResultBuilder.Build(command);
 
@@ -138,6 +139,23 @@ public sealed class ExplorerWebCommandService
             CommandExecutionState.Blocked,
             UiNotificationSeverity.Warning,
             "Команда пока недоступна в браузерном API",
+            reason + followUp);
+    }
+
+    private static ExplorerCommandResult BuildBlockedMigrationResult(string command, ExplorerCommandSubcommandDescriptor subcommand)
+    {
+        var reason = string.IsNullOrWhiteSpace(subcommand.Reason)
+            ? "Эта подкоманда еще не перенесена в браузерный API."
+            : subcommand.Reason;
+        var followUp = string.IsNullOrWhiteSpace(subcommand.FollowUpIssue)
+            ? string.Empty
+            : $" Следующая задача: {subcommand.FollowUpIssue}.";
+
+        return MessageResult(
+            command,
+            CommandExecutionState.Blocked,
+            UiNotificationSeverity.Warning,
+            "Подкоманда пока недоступна в браузерном API",
             reason + followUp);
     }
 

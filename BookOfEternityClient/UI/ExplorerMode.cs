@@ -158,7 +158,23 @@ public partial class ExplorerMode
     public async Task<string?> TryProcessCommand(string input)
     {
         var trimmedInput = input.Trim();
-        var commandParts = trimmedInput.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (!IsCommand(trimmedInput))
+            return null;
+
+        var parsedCommand = ExplorerCommandParser.Parse(trimmedInput);
+        if (!parsedCommand.Success)
+        {
+            if (string.Equals(parsedCommand.ErrorTitle, "Некорректные аргументы", StringComparison.OrdinalIgnoreCase))
+            {
+                MarkupLine($"[yellow]⚠️ {parsedCommand.ErrorTitle}: {parsedCommand.ErrorMessage}[/]");
+                WaitForKey();
+                return "";
+            }
+
+            return null;
+        }
+
+        var commandParts = parsedCommand.BuilderCommand.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
         var cmd = commandParts.Length > 0 ? commandParts[0].ToLowerInvariant() : string.Empty;
         _currentCommandRemainder = commandParts.Length > 1 ? commandParts[1].Trim() : string.Empty;
         var currentRealm = _stateManager.CurrentState.CurrentRealm;

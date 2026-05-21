@@ -5,7 +5,7 @@ public static class ExplorerCommandCatalog
     public static IReadOnlyList<ExplorerCommandDescriptor> Descriptors { get; } =
     [
         D("help", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.Help, ["/help", "/помощь"]),
-        D("math", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.Math, ["/math", "/математик"]),
+        D("math", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.Math, ["/math", "/математик"], acceptsArguments: true),
         D("soul", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/soul", "/душа"]),
         D("soul_relics", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/soul_relics", "/реликвии"]),
         D("afterlife_archive", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/afterlife_archive", "/архив_души"]),
@@ -25,8 +25,16 @@ public static class ExplorerCommandCatalog
         D("debug", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/debug", "/отладка"]),
         D("mods", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/mods", "/моды"]),
         D("system_guardians", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/system_guardians", "/системные_хранители", "/извечные_хранители"]),
-        D("saref_story", ExplorerCommandGroup.SarefStory, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/saref", "/сареф", "/saref_story", "/история_сарефа", "/wings_of_angels", "/крылья_над_бездной"]),
-        D("saref_memory_scene", ExplorerCommandGroup.SarefStory, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/воспоминание", "/воспоминание_статус", "/воспоминание_начать", "/воспоминание_способности"]),
+        D("saref_story", ExplorerCommandGroup.SarefStory, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/saref", "/сареф", "/saref_story", "/история_сарефа", "/wings_of_angels", "/крылья_над_бездной"], subcommands:
+        [
+            new("find_wings", ["find_wings", "find wings", "найти_крылья", "найти крылья"], "/сареф найти_крылья", BrowserStatus: ExplorerCommandMigrationStatus.ConsoleOnlyTemporarily, FollowUpIssue: "#592", Reason: "Поиск Крыльев Ангелов распознан, но браузерная write-форма будет перенесена отдельной задачей #592.")
+        ]),
+        D("saref_memory_scene", ExplorerCommandGroup.SarefStory, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/воспоминание", "/воспоминание_статус", "/воспоминание_начать", "/воспоминание_способности"], subcommands:
+        [
+            new("status", ["status", "статус"], "/воспоминание_статус"),
+            new("start", ["start", "начать"], "/воспоминание_начать"),
+            new("abilities", ["abilities", "способности"], "/воспоминание_способности")
+        ]),
 
         D("validate", ExplorerCommandGroup.Lifecycle, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/validate", "/валидация"]),
         D("world_setup", ExplorerCommandGroup.Lifecycle, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/world_setup", "/настройка_мира"]),
@@ -105,8 +113,10 @@ public static class ExplorerCommandCatalog
         IReadOnlyList<string> aliases,
         ExplorerCommandMigrationStatus browserStatus = ExplorerCommandMigrationStatus.Migrated,
         string followUpIssue = "",
-        string reason = "") =>
-        new(id, aliases, group, mutationMode, browserStatus, browserHandlerKind, followUpIssue, reason);
+        string reason = "",
+        bool acceptsArguments = false,
+        IReadOnlyList<ExplorerCommandSubcommandDescriptor>? subcommands = null) =>
+        new(id, aliases, group, mutationMode, browserStatus, browserHandlerKind, followUpIssue, reason, acceptsArguments, subcommands ?? []);
 }
 
 public sealed record ExplorerCommandDescriptor(
@@ -117,10 +127,21 @@ public sealed record ExplorerCommandDescriptor(
     ExplorerCommandMigrationStatus BrowserStatus,
     ExplorerCommandBrowserHandlerKind BrowserHandlerKind,
     string FollowUpIssue = "",
-    string Reason = "")
+    string Reason = "",
+    bool AcceptsArguments = false,
+    IReadOnlyList<ExplorerCommandSubcommandDescriptor>? Subcommands = null)
 {
     public string PrimaryAlias => Aliases.Count == 0 ? string.Empty : Aliases[0];
+    public IReadOnlyList<ExplorerCommandSubcommandDescriptor> SubcommandDescriptors => Subcommands ?? [];
 }
+
+public sealed record ExplorerCommandSubcommandDescriptor(
+    string Id,
+    IReadOnlyList<string> Aliases,
+    string CanonicalCommand,
+    ExplorerCommandMigrationStatus BrowserStatus = ExplorerCommandMigrationStatus.Migrated,
+    string FollowUpIssue = "",
+    string Reason = "");
 
 public enum ExplorerCommandMutationMode
 {
