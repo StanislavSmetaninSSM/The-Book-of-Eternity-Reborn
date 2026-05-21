@@ -316,6 +316,8 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             Assert.Contains("Примерные реплики:", dossier, StringComparison.Ordinal);
             Assert.Contains("Особое духовное искусство:", dossier, StringComparison.Ordinal);
             Assert.Contains("Полные четыре квеста находятся", dossier, StringComparison.Ordinal);
+            Assert.Contains("Неромантический маршрут", dossier, StringComparison.Ordinal);
+            Assert.Contains("Соперничество", dossier, StringComparison.Ordinal);
             Assert.Contains("Не играть", dossier, StringComparison.Ordinal);
             Assert.DoesNotContain("TBD", dossier, StringComparison.OrdinalIgnoreCase);
             Assert.True(dossier.Length > 6500, $"{Path.GetFileName(Path.GetDirectoryName(dossierPath))} dossier is too thin for the expanded standard.");
