@@ -157,6 +157,22 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
         }
     }
 
+    [Fact]
+    public void ShiningAbodeCommands_AreMarkedAsMigrated()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var command in new[]
+                 {
+                     "/shining_abode", "/сияющая_обитель", "/shining_politics", "/сияющая_политика",
+                     "/shining_treasury", "/казначейство", "/source_of_light", "/источник_света"
+                 })
+        {
+            Assert.Equal(ExplorerCommandMigrationStatus.Migrated, entries[command].Status);
+        }
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

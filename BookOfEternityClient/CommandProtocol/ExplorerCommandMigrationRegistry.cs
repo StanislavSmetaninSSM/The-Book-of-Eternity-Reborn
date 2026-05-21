@@ -161,21 +161,21 @@ public static class ExplorerCommandMigrationRegistry
         "/учредить_хранителя"
     ];
 
-    private static readonly string[] ShiningReadOnlyCommands =
+    private static readonly string[] MigratedShiningCommands =
     [
         "/shining_abode",
         "/сияющая_обитель",
         "/shining_politics",
-        "/сияющая_политика"
-    ];
-
-    private static readonly string[] ShiningMutatingCommands =
-    [
+        "/сияющая_политика",
         "/shining_treasury",
         "/казначейство",
         "/source_of_light",
         "/источник_света"
     ];
+
+    private static readonly string[] ShiningReadOnlyCommands = [];
+
+    private static readonly string[] ShiningMutatingCommands = [];
 
     private static readonly string[] AfterlifeCombatReadOnlyCommands =
     [
@@ -216,9 +216,10 @@ public static class ExplorerCommandMigrationRegistry
         ..Planned(ChaosSeaReadOnlyCommands, ExplorerCommandGroup.ChaosSea, "#571"),
         ..Blocked(ChaosSeaMutatingCommands, ExplorerCommandGroup.ChaosSea, "#574",
             "Chaos Sea pending-contract команды требуют browser local-turn/write UX поверх session lock; пока они заблокированы в браузере."),
+        ..Migrated(MigratedShiningCommands, ExplorerCommandGroup.ShiningAbode),
         ..Planned(ShiningReadOnlyCommands, ExplorerCommandGroup.ShiningAbode, "#572"),
-        ..Blocked(ShiningMutatingCommands, ExplorerCommandGroup.ShiningAbode, "#568",
-            "Shining Abode economy, capstone, gates, and pending-contract commands require local session lock."),
+        ..Blocked(ShiningMutatingCommands, ExplorerCommandGroup.ShiningAbode, "#574",
+            "Shining Abode write operations require browser local-turn/write UX поверх session lock."),
         ..Planned(AfterlifeCombatReadOnlyCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities, "#573"),
         ..Blocked(AfterlifeCombatMutatingCommands, ExplorerCommandGroup.AfterlifeCombatAndEntities, "#568",
             "Духовное действие меняет pending/local turn state and must wait for local session lock.")

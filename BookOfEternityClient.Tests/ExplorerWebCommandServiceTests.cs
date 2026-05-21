@@ -49,12 +49,12 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [Fact]
     public async Task ExecuteAsync_PlannedCommand_ReturnsBlockedDto()
     {
-        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/shining_abode"));
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
 
-        Assert.Equal("/shining_abode", result.Command);
+        Assert.Equal("/afterlife_profiles", result.Command);
         Assert.Equal(CommandExecutionState.Blocked, result.State);
         var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
-        Assert.Contains("#572", message.Message, StringComparison.Ordinal);
+        Assert.Contains("#573", message.Message, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -153,6 +153,26 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal(CommandExecutionState.Blocked, result.State);
         var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
         Assert.Contains("local-turn", message.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("/shining_abode")]
+    [InlineData("/shining_politics")]
+    [InlineData("/shining_treasury")]
+    [InlineData("/source_of_light")]
+    public async Task ExecuteAsync_MigratedShiningAbodeCommands_ReturnCompletedDtos(string command)
+    {
+        await SeedShiningAbodeFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.NotEmpty(result.Blocks);
+        Assert.DoesNotContain(
+            result.Blocks,
+            static block => block is UiMessageBlock message &&
+                            message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -336,6 +356,94 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {
           "guardianPowerEvents": [
             { "eventId": "power_1", "guardianId": "guardian_azalia", "reasonType": "offering", "finalDelta": 5 }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedShiningAbodeFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Test Soul",
+          "currentRealm": "Shining Abode",
+          "currentIncarnation": 5,
+          "inkFeathers": { "current": 24, "total": 90 },
+          "afterlifeCombatProfile": { "capstones": {} }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+        {
+          "availability": "active",
+          "lightSparks": 7,
+          "radiance": { "experience": 260, "tier": 3 },
+          "gates": { "hasOpenDraft": true },
+          "treasury": {
+            "depositedInkFeathers": 20,
+            "claimableInkFeatherInterest": 2,
+            "lastInterestSettlementCycleId": "cycle_5",
+            "exchangeCycleId": "cycle_5",
+            "exchangeThisCycleLightSparks": 1
+          },
+          "gachaSystem": {
+            "chargesPerReturn": 2,
+            "chargesUsedThisReturn": 1,
+            "currentReturnCycleId": "cycle_5",
+            "gachaHistory": []
+          },
+          "halls": [
+            { "hallId": "hall_dawn", "hallName": "Зал Рассвета" }
+          ],
+          "factions": [
+            {
+              "factionId": "faction_lanterns",
+              "hallId": "hall_dawn",
+              "factionStrength": 40,
+              "charter": { "factionName": "Фонари Рассвета" },
+              "leadership": { "headActorType": "resident", "headActorId": "resident_1", "leadershipState": "secure" },
+              "projects": [
+                { "projectId": "project_light", "displayName": "Световой мост", "status": "active", "tier": 1 }
+              ]
+            }
+          ],
+          "shiningPoliticalActors": [
+            { "actorId": "actor_1", "displayName": "Светозарный судья", "politicalStatus": "elder" }
+          ],
+          "coreActionReceipts": [
+            { "receiptId": "receipt_1", "actionType": "draft_incarnation_package" }
+          ],
+          "sourceOfLightCapstone": { "completed": false }
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardian_abode_residents.json", """
+        {
+          "entries": [
+            {
+              "residentId": "resident_1",
+              "displayName": "Лиара",
+              "ascensionState": "ascended",
+              "shiningFactionId": "faction_lanterns",
+              "factionLoyaltyLevel": 60,
+              "factionLoyaltyTier": "attached"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", """
+        {
+          "guardians": [
+            { "guardianId": "guardian_azalia", "canonicalName": "Азалия" }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_shining_abode_actions.json", """
+        {
+          "requests": [
+            { "requestId": "core_req_1", "actionType": "draft_incarnation_package" }
           ]
         }
         """);
