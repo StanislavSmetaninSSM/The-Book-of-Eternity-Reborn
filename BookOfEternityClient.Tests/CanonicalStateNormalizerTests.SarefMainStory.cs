@@ -61,6 +61,13 @@ public sealed partial class CanonicalStateNormalizerTests
     {
         var backupPath = "test_backups/pre_saref_memory_scene.json";
         await _fs.WriteFileAtomicAsync(backupPath, BuildSarefRouteBaseline());
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "pendingMemoryLegacy": null
+        }
+        """);
         await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, """
         {
           "sarefMainStoryUpdate": {
@@ -167,6 +174,9 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Contains(root["sarefAdvantages"]!.AsArray(), node =>
             node is JsonObject advantage &&
             advantage["advantageId"]?.GetValue<string>() == "adv_azalia_false_loyalty");
+        var soulRaw = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var soulRoot = JsonNode.Parse(soulRaw!)!.AsObject();
+        Assert.Null(soulRoot["pendingMemoryLegacy"]);
     }
 
     [Fact]

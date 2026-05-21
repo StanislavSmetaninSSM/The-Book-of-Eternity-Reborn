@@ -105,6 +105,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("смертный инвентарь не переносится", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("исторический факт нельзя напрямую переписать", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Это не Врата Памяти", text, StringComparison.Ordinal);
+        Assert.Contains("не Наследие Памяти", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -139,6 +140,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var text = ExtractRenderedText();
         Assert.Contains("Активного Воспоминания нет", text, StringComparison.Ordinal);
         Assert.Contains("Это не Врата Памяти", text, StringComparison.Ordinal);
+        Assert.Contains("не Наследие Памяти", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
     }
 

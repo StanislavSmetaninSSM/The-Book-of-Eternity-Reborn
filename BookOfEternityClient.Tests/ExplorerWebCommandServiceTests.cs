@@ -220,6 +220,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Свидетель ложи", text, StringComparison.Ordinal);
         Assert.Contains("Прочитать клятву", text, StringComparison.Ordinal);
         Assert.Contains("Это не Врата Памяти", text, StringComparison.Ordinal);
+        Assert.Contains("не Наследие Памяти", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
     }
 

@@ -431,7 +431,7 @@ public static class ExplorerUniversalMetaCommandResultBuilder
         {
             var message = read.FileExists
                 ? $"Файл найден, но не разобран как состояние скрытой линии: {read.Path}. {read.Error}"
-                : "Активного Воспоминания нет. Это не Врата Памяти: Воспоминание появляется только как особый слой 4-го квеста Хранителя в линии Сарефа.";
+                : "Активного Воспоминания нет. Это не Врата Памяти и не Наследие Памяти: Воспоминание появляется только как особый слой 4-го квеста Хранителя в линии Сарефа.";
             return Completed(command, Message(read.FileExists ? UiNotificationSeverity.Warning : UiNotificationSeverity.Info, "Воспоминание", message));
         }
 
@@ -441,7 +441,7 @@ public static class ExplorerUniversalMetaCommandResultBuilder
                 Message(
                     UiNotificationSeverity.Info,
                     "Воспоминание",
-                    "Активного Воспоминания нет. Это не Врата Памяти: Воспоминание появляется только как особый слой 4-го квеста Хранителя в линии Сарефа."));
+                    "Активного Воспоминания нет. Это не Врата Памяти и не Наследие Памяти: Воспоминание появляется только как особый слой 4-го квеста Хранителя в линии Сарефа."));
         }
 
         var title = GetString(scene, "title", GetString(scene, "sceneTitle", GetString(scene, "sceneId", "без названия")));
@@ -463,7 +463,7 @@ public static class ExplorerUniversalMetaCommandResultBuilder
             new UiTextBlock
             {
                 Tone = UiTone.Warning,
-                Text = "Это не Врата Памяти. Смертный инвентарь не переносится; исторический факт нельзя напрямую переписать."
+                Text = "Это не Врата Памяти и не Наследие Памяти. Смертный инвентарь не переносится; исторический факт нельзя напрямую переписать."
             }
         };
 
