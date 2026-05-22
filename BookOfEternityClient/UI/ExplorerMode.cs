@@ -87,6 +87,7 @@ public partial class ExplorerMode
             ("abode_power", ShowAbodePower),
             ("abode_offering", ShowAbodeOffering),
             ("guardian_projects", ShowGuardianProjects),
+            ("guardian_politics", ShowGuardianPoliticsAsync),
             ("abodes", ShowAbodesNavigation),
             ("shining_abode", ShowShiningAbodeOverview),
             ("shining_politics", ShowShiningPoliticsOverview),

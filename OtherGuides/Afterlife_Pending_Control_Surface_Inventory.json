@@ -50,6 +50,22 @@
       "notes": "Afterlife-only active threats for Chaos Sea and Shining Abode. Do not use Mortal worldMapUpdates.activeThreats; currentActivity is live state, impactProfile is pressure metadata, and sarefLink obeys hidden main-story reveal gates."
     },
     {
+      "path": "game_state/meta/chaos_sea_guardian_politics.json",
+      "surfaceType": "meta_state_with_guardian_politics_commands",
+      "owner": "chaos_sea_guardian_politics",
+      "realm": "Chaos Sea",
+      "authority": "GM-authored Guardian politics through guardianPoliticalRelationUpdates, guardianPoliticalProjectUpdates, guardianPoliticalInfluenceUpdates, guardianPoliticalChronicleUpdates, and completeGuardianPoliticalProjects",
+      "emptyWrapperSemantics": "Missing means no tracked Guardian political memory yet. Command-only roots are normalized into schemaVersion plus relations[], projects[], influenceZones[], chronicle[], playerRole, sarefLinks[], and openConflicts[].",
+      "malformedBehavior": "Fail closed for malformed politics command/canonical state. Hidden/gm_only and hidden_dependency records must not leak into normal player UI.",
+      "blockerBehavior": "Does not block by existence; invalid politics state blocks accepted-turn validation until repaired.",
+      "closureSurface": "guardianPoliticalRelationUpdates[], guardianPoliticalProjectUpdates[], guardianPoliticalInfluenceUpdates[], guardianPoliticalChronicleUpdates[], and completeGuardianPoliticalProjects[].",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
+        "Examples/E_CLI_Afterlife_Turns.txt#chaos_sea_guardian_politics_v1"
+      ],
+      "notes": "Chaos Sea-only living-world political memory for relations between Guardians, political projects, influence zones, chronicle entries, playerRole, Saref links, and open conflicts. It is distinct from Shining faction political memory and from Mortal faction files."
+    },
+    {
       "path": "game_state/meta/afterlife_chronicles.json",
       "surfaceType": "meta_state_with_external_memory_updates",
       "owner": "afterlife_chronicles",

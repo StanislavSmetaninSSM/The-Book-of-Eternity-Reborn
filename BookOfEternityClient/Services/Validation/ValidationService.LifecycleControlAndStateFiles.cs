@@ -312,6 +312,35 @@ public partial class ValidationService
                 AfterlifeActiveThreatState.LastInvalidCommandReasonProperty,
                 "_lastUpdated"
             }, issues);
+        await ValidateFlexibleStateFile(ChaosSeaGuardianPoliticsState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", ChaosSeaGuardianPoliticsState.RelationsProperty,
+                ChaosSeaGuardianPoliticsState.ProjectsProperty,
+                ChaosSeaGuardianPoliticsState.InfluenceZonesProperty,
+                ChaosSeaGuardianPoliticsState.ChronicleProperty,
+                "playerRole", "sarefLinks", "openConflicts",
+                ChaosSeaGuardianPoliticsState.RelationUpdatesProperty,
+                ChaosSeaGuardianPoliticsState.ProjectUpdatesProperty,
+                ChaosSeaGuardianPoliticsState.InfluenceUpdatesProperty,
+                ChaosSeaGuardianPoliticsState.ChronicleUpdatesProperty,
+                ChaosSeaGuardianPoliticsState.CompleteProjectsProperty,
+                ChaosSeaGuardianPoliticsState.LastInvalidCommandProperty,
+                ChaosSeaGuardianPoliticsState.LastInvalidCommandReasonProperty,
+                "_lastUpdated"
+            }, issues, ValidateChaosSeaGuardianPoliticsStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(ChaosSeaGuardianPoliticsState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", ChaosSeaGuardianPoliticsState.RelationsProperty,
+                ChaosSeaGuardianPoliticsState.ProjectsProperty,
+                ChaosSeaGuardianPoliticsState.InfluenceZonesProperty,
+                ChaosSeaGuardianPoliticsState.ChronicleProperty,
+                "playerRole", "sarefLinks", "openConflicts",
+                ChaosSeaGuardianPoliticsState.LastInvalidCommandProperty,
+                ChaosSeaGuardianPoliticsState.LastInvalidCommandReasonProperty,
+                "_lastUpdated"
+            }, issues);
         await ValidateFlexibleStateFile(AfterlifeChronicleState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {

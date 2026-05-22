@@ -8152,6 +8152,244 @@ Correct reasoning checklist:
 - If a threat creates durable public memory, also write `afterlifeChronicleUpdates[]`; if it creates an irreversible fact, also write `afterlifeGlobalFlagUpdates[]`; if it affects Сареф, obey the Saref reveal contract.
 
 ==================================================
+EXAMPLE 26E — Политика Хранителей Моря Хаоса (`chaos_sea_guardian_politics_v1`)
+==================================================
+
+Scenario:
+- The afterlife turn changes Guardian politics in ordinary Chaos Sea.
+- The canonical file is `game_state/meta/chaos_sea_guardian_politics.json`.
+- The accepted response uses `guardianPoliticalRelationUpdates[]`, `guardianPoliticalProjectUpdates[]`, `guardianPoliticalInfluenceUpdates[]`, `guardianPoliticalChronicleUpdates[]`, and `completeGuardianPoliticalProjects[]`; the client normalizes them into `relations[]`, `projects[]`, `influenceZones[]`, `chronicle[]`, `playerRole`, `sarefLinks[]`, and `openConflicts[]`.
+- Use this surface for Guardian alliances, rivalries, debts, fear, patronage, memory oaths, trade, hostility, `hidden_dependency`, political projects, influence zones, and the player's political role in the Chaos Sea.
+- Do not use Shining faction political memory or Mortal faction files.
+- Hidden/gm_only records and `isPlayerVisible=false` details may guide GM reasoning, but `/guardian_politics` and ordinary narrative must not reveal them. Player UI may only show that hidden records exist.
+- Every mechanical consequence must be explicit in `effects[]`, project outcome, influence zone, chronicle consequence, `playerRole`, `sarefLinks[]`, or `openConflicts[]`; do not invent discounts, training access, protection, or pressure without state.
+
+Valid response fragment:
+
+```json
+{
+  "response": "Нерис соглашается временно не давить на Лиору, если душа передаст её просьбу о долге памяти.",
+  "guardianPoliticalRelationUpdates": [
+    {
+      "relationId": "rel_neris_liora_memory_debt",
+      "sourceGuardianId": "neris",
+      "targetGuardianId": "liora",
+      "relationType": "debt",
+      "attitudeScore": -18,
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "reason": "Лиора однажды закрыла долг памяти Нерис, но Нерис считает цену неполной.",
+      "effects": [
+        "Нерис временно принимает посредничество игрока.",
+        "Лиора может предложить игроку задание на погашение долга."
+      ],
+      "lastChangedTurn": 74
+    },
+    {
+      "relationId": "rel_hidden_saref_thread_001",
+      "sourceGuardianId": "system_saref_shadow",
+      "targetGuardianId": "neris",
+      "relationType": "hidden_dependency",
+      "attitudeScore": 0,
+      "visibility": "gm_only",
+      "isPlayerVisible": false,
+      "reason": "Тень обещает Нерис путь к забытому имени, но игрок пока не знает, что искать.",
+      "effects": [
+        "ГМ может сеять будущие следы Крыльев над Бездной, не раскрывая Сарефа."
+      ],
+      "lastChangedTurn": 74
+    }
+  ],
+  "guardianPoliticalProjectUpdates": [
+    {
+      "projectId": "gpol_neris_pressure_liora_001",
+      "ownerGuardianId": "neris",
+      "targetGuardianId": "liora",
+      "projectType": "pressure_campaign",
+      "summary": "Нерис собирает клятвы умерших свидетелей, чтобы вынудить Лиору признать долг.",
+      "status": "active",
+      "currentProgress": 2,
+      "requiredProgress": 5,
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "lastUpdatedTurn": 74,
+      "consequences": [
+        "Если проект завершится, обучение у Лиоры станет дороже до примирения."
+      ]
+    },
+    {
+      "projectId": "gpol_old_azalia_patronage_test",
+      "ownerGuardianId": "azalia",
+      "targetGuardianId": "liora",
+      "projectType": "patronage_trial",
+      "summary": "Азалия проверяет, выдержит ли малый круг душ её холодный патронаж.",
+      "status": "active",
+      "currentProgress": 3,
+      "requiredProgress": 3,
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "lastUpdatedTurn": 74,
+      "consequences": [
+        "При завершении игрок получает безопасный проход через круг Азалии."
+      ]
+    }
+  ],
+  "guardianPoliticalInfluenceUpdates": [
+    {
+      "zoneId": "inf_neris_black_tide_shore",
+      "guardianId": "neris",
+      "scopeType": "chaos_sea_region",
+      "scopeId": "black_tide_shore",
+      "displayName": "Берег Черного Прилива",
+      "influenceValue": 62,
+      "controlLevel": 41,
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "updatedAtTurn": 74,
+      "effects": [
+        "Нерис получает преимущество в сценах преследования на этом берегу."
+      ]
+    }
+  ],
+  "guardianPoliticalChronicleUpdates": [
+    {
+      "entryId": "gpol_chronicle_074_neris_liora",
+      "guardianIds": [
+        "neris",
+        "liora"
+      ],
+      "eventType": "mediation_offer",
+      "summary": "Игрок стал посредником в споре Нерис и Лиоры о долге памяти.",
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "turnNumber": 74,
+      "consequences": [
+        "Открыт путь к политическому примирению.",
+        "Нерис перестает немедленно давить на Лиору до следующего цикла."
+      ]
+    }
+  ],
+  "completeGuardianPoliticalProjects": [
+    {
+      "projectId": "gpol_old_azalia_patronage_test",
+      "finalState": "completed",
+      "completedAtTurn": 74,
+      "completionSummary": "Азалия закрепила патронаж над малым кругом душ.",
+      "outcome": "patronage_established",
+      "consequences": [
+        "Игрок получает безопасный проход через круг Азалии, если не нарушит её клятву."
+      ],
+      "visibility": "known"
+    }
+  ]
+}
+```
+
+Canonical shape after normalization:
+
+```json
+{
+  "schemaVersion": 1,
+  "relations": [
+    {
+      "relationId": "rel_neris_liora_memory_debt",
+      "sourceGuardianId": "neris",
+      "targetGuardianId": "liora",
+      "relationType": "debt",
+      "attitudeScore": -18,
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "reason": "Лиора однажды закрыла долг памяти Нерис, но Нерис считает цену неполной.",
+      "effects": [
+        "Нерис временно принимает посредничество игрока.",
+        "Лиора может предложить игроку задание на погашение долга."
+      ],
+      "lastChangedTurn": 74
+    }
+  ],
+  "projects": [
+    {
+      "projectId": "gpol_neris_pressure_liora_001",
+      "ownerGuardianId": "neris",
+      "targetGuardianId": "liora",
+      "projectType": "pressure_campaign",
+      "summary": "Нерис собирает клятвы умерших свидетелей, чтобы вынудить Лиору признать долг.",
+      "status": "active",
+      "currentProgress": 2,
+      "requiredProgress": 5,
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "lastUpdatedTurn": 74,
+      "consequences": [
+        "Если проект завершится, обучение у Лиоры станет дороже до примирения."
+      ]
+    },
+    {
+      "projectId": "gpol_old_azalia_patronage_test",
+      "ownerGuardianId": "azalia",
+      "targetGuardianId": "liora",
+      "projectType": "patronage_trial",
+      "summary": "Азалия проверяет, выдержит ли малый круг душ её холодный патронаж.",
+      "status": "completed",
+      "currentProgress": 3,
+      "requiredProgress": 3,
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "lastUpdatedTurn": 74,
+      "completedAtTurn": 74,
+      "completionSummary": "Азалия закрепила патронаж над малым кругом душ.",
+      "outcome": "patronage_established",
+      "consequences": [
+        "Игрок получает безопасный проход через круг Азалии, если не нарушит её клятву."
+      ]
+    }
+  ],
+  "influenceZones": [
+    {
+      "zoneId": "inf_neris_black_tide_shore",
+      "guardianId": "neris",
+      "scopeType": "chaos_sea_region",
+      "scopeId": "black_tide_shore",
+      "displayName": "Берег Черного Прилива",
+      "influenceValue": 62,
+      "controlLevel": 41,
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "updatedAtTurn": 74
+    }
+  ],
+  "chronicle": [
+    {
+      "entryId": "gpol_chronicle_074_neris_liora",
+      "guardianIds": [
+        "neris",
+        "liora"
+      ],
+      "eventType": "mediation_offer",
+      "summary": "Игрок стал посредником в споре Нерис и Лиоры о долге памяти.",
+      "visibility": "known",
+      "isPlayerVisible": true,
+      "turnNumber": 74,
+      "consequences": [
+        "Открыт путь к политическому примирению.",
+        "Нерис перестает немедленно давить на Лиору до следующего цикла."
+      ]
+    }
+  ],
+  "playerRole": null,
+  "sarefLinks": [],
+  "openConflicts": []
+}
+```
+
+Correct reasoning checklist:
+- `relationId`, `projectId`, `zoneId`, and `entryId` are stable identity keys. Update existing records by id instead of duplicating them.
+- `attitudeScore` must stay between -100 and 100. `influenceValue` and `controlLevel` must stay between 0 and 100.
+- Hidden records (`visibility=hidden` / `gm_only`, `isPlayerVisible=false`, `hidden_dependency`) are private GM state. Do not reveal their names, hidden reasons, or Saref links in `response` or `/guardian_politics`.
+- Political consequences are explicit state, not prose license. If training access, protection, pressure, discounts, safe passage, or quest availability changes, record that consequence in this politics state or the matching stricter contract.
+- This is Chaos Sea Guardian politics. Shining faction politics still belongs to `shining_abode_state.json` faction memory, and Mortal faction politics still belongs to Mortal faction files.
+
+==================================================
 EXAMPLE 27 — Скрытая главная линия Сарефа (`main_story_saref_state`, `saref_reveal_stage_v1`)
 ==================================================
 

@@ -1093,6 +1093,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/guardians")]
     [InlineData("/abode_power")]
     [InlineData("/guardian_projects")]
+    [InlineData("/guardian_politics")]
     [InlineData("/abodes")]
     [InlineData("/gacha")]
     public async Task ExecuteAsync_MigratedChaosSeaReadOnlyCommands_ReturnCompletedDtos(string command)
@@ -1108,6 +1109,21 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             result.Blocks,
             static block => block is UiMessageBlock message &&
                             message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_GuardianPolitics_HidesSecretLinks()
+    {
+        await SeedChaosSeaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/guardian_politics"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Азалия ищет союзников", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Скрытых записей", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Скрытая зависимость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("system_saref_shadow", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]
@@ -1407,6 +1423,39 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           "journal": [
             { "entryId": "entry_1", "guardianId": "guardian_azalia", "summary": "Проект начат." }
           ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync(ChaosSeaGuardianPoliticsState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "relations": [
+            {
+              "relationId": "azalia_seret_alliance",
+              "sourceGuardianId": "guardian_azalia",
+              "targetGuardianId": "guardian_seret",
+              "relationType": "alliance",
+              "attitudeScore": 62,
+              "visibility": "known",
+              "reason": "Азалия ищет союзников против охотников памяти.",
+              "lastChangedTurn": 12,
+              "effects": [ "training_discount" ]
+            },
+            {
+              "relationId": "azalia_hidden_dependency",
+              "sourceGuardianId": "guardian_azalia",
+              "targetGuardianId": "system_saref_shadow",
+              "relationType": "hidden_dependency",
+              "attitudeScore": -80,
+              "visibility": "hidden",
+              "reason": "Скрытая зависимость не должна отображаться игроку.",
+              "lastChangedTurn": 12,
+              "effects": []
+            }
+          ],
+          "projects": [],
+          "influenceZones": [],
+          "chronicle": []
         }
         """);
 

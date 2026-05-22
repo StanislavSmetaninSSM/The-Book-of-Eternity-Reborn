@@ -414,6 +414,21 @@ public class GameResponse
     [JsonPropertyName("afterlifeThreatsToRemove")]
     public JsonElement[]? AfterlifeThreatsToRemove { get; set; }
 
+    [JsonPropertyName("guardianPoliticalRelationUpdates")]
+    public JsonElement[]? GuardianPoliticalRelationUpdates { get; set; }
+
+    [JsonPropertyName("guardianPoliticalProjectUpdates")]
+    public JsonElement[]? GuardianPoliticalProjectUpdates { get; set; }
+
+    [JsonPropertyName("guardianPoliticalInfluenceUpdates")]
+    public JsonElement[]? GuardianPoliticalInfluenceUpdates { get; set; }
+
+    [JsonPropertyName("guardianPoliticalChronicleUpdates")]
+    public JsonElement[]? GuardianPoliticalChronicleUpdates { get; set; }
+
+    [JsonPropertyName("completeGuardianPoliticalProjects")]
+    public JsonElement[]? CompleteGuardianPoliticalProjects { get; set; }
+
     [JsonPropertyName("shiningFactionChronicleUpdates")]
     public JsonElement[]? ShiningFactionChronicleUpdates { get; set; }
 

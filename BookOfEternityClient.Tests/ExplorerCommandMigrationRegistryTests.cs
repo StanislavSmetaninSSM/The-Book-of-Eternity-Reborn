@@ -248,7 +248,8 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
         foreach (var command in new[]
                  {
                      "/chaos_sea", "/море_хаоса", "/guardians", "/хранители", "/abode_power", "/сила_обители",
-                     "/guardian_projects", "/проекты_хранителей", "/abodes", "/обители", "/gacha", "/гача"
+                     "/guardian_projects", "/проекты_хранителей", "/guardian_politics", "/политика_хранителей",
+                     "/abodes", "/обители", "/gacha", "/гача"
                  })
         {
             Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);

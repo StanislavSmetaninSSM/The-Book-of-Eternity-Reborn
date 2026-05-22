@@ -33,6 +33,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             AfterlifeEntityProfileState.StatePath,
             AfterlifeChronicleState.StatePath,
             AfterlifeGlobalFlagState.StatePath,
+            ChaosSeaGuardianPoliticsState.StatePath,
             SarefMainStoryState.StatePath,
             GuardianAbodeOfferingState.PendingRequestPath,
             GuardianTradeRequestState.PendingRequestPath,
@@ -76,6 +77,40 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.False(string.IsNullOrWhiteSpace(surface.GetProperty("authority").GetString()));
             Assert.Equal(JsonValueKind.Array, surface.GetProperty("docAnchors").ValueKind);
         }
+    }
+
+    [Fact]
+    public void ChaosSeaGuardianPoliticsContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, taskGuide, operations, examples })
+        {
+            Assert.Contains(ChaosSeaGuardianPoliticsState.StatePath, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.RelationUpdatesProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.ProjectUpdatesProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.InfluenceUpdatesProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.ChronicleUpdatesProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.CompleteProjectsProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.RelationsProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.ProjectsProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.InfluenceZonesProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(ChaosSeaGuardianPoliticsState.ChronicleProperty, doc, StringComparison.Ordinal);
+            Assert.Contains("hidden_dependency", doc, StringComparison.Ordinal);
+            Assert.Contains("isPlayerVisible", doc, StringComparison.Ordinal);
+            Assert.Contains("/guardian_politics", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("chaos_sea_guardian_politics_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("chaos_sea_guardian_politics_v1", manifest, StringComparison.Ordinal);
+        Assert.True(FileMapping.FieldToFile.TryGetValue(ChaosSeaGuardianPoliticsState.RelationUpdatesProperty, out var mappedPath));
+        Assert.Equal(ChaosSeaGuardianPoliticsState.StatePath, mappedPath);
     }
 
     [Fact]

@@ -87,6 +87,13 @@
       "description": "Persistent afterlife threats with threats[], currentActivity, impactProfile, visibleToPlayer privacy, optional sarefLink, completion-through-command ledger proof, and no Mortal worldMapUpdates.activeThreats substitution."
     },
     {
+      "contractId": "chaos_sea_guardian_politics_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/chaos_sea_guardian_politics.json",
+      "responseSurface": "guardianPoliticalRelationUpdates / guardianPoliticalProjectUpdates / guardianPoliticalInfluenceUpdates / guardianPoliticalChronicleUpdates / completeGuardianPoliticalProjects",
+      "description": "Chaos Sea Guardian politics with relations[], projects[], influenceZones[], chronicle[], hidden_dependency privacy, isPlayerVisible guardrails, explicit consequences, playerRole, sarefLinks, and no Shining/Mortal faction substitution."
+    },
+    {
       "contractId": "saref_reveal_stage_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/main_story_saref_state.json",

@@ -281,7 +281,7 @@ public partial class ExplorerMode
                 "[bold]Подробные аудит-панели:[/]",
                 "  • /status — единый статус ресурсов посмертия, блокеров, контрактов и сигналов Сияющей Обители.",
                 "  • /afterlife_inbox — все ответы ГМ по торговле, архиву, резидентам и политике.",
-                "  • /feathers, /afterlife_archive, /guardian_projects, /abode_offering — детальные ресурсы и изменения состояния."
+                "  • /feathers, /afterlife_archive, /guardian_projects, /guardian_politics, /abode_offering — детальные ресурсы и изменения состояния."
             };
             if (!isChaosSea)
             {
@@ -655,6 +655,23 @@ public partial class ExplorerMode
             WriteJsonAuditPanel("Полный JSON журнала силы Обители", journalRoot.Value, Color.Gold1);
         if (trackerRoot.HasValue)
             WriteJsonAuditPanel("Полный JSON трекера проектов", trackerRoot.Value, Color.Cyan1);
+        WaitForKey();
+    }
+
+    private async Task ShowGuardianPoliticsAsync()
+    {
+        if (!EnsureOrdinaryAfterlifeInteractionAvailable("Политика Хранителей"))
+            return;
+
+        var result = await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync("/guardian_politics", _stateManager, _fs);
+        if (result == null)
+        {
+            ShowEmptyPanel("Политика Хранителей", "Команда политики Хранителей недоступна.");
+            return;
+        }
+
+        Clear();
+        ExplorerCommandResultConsoleRenderer.Render(_console, result);
         WaitForKey();
     }
 
