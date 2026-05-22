@@ -1,6 +1,6 @@
 # Browser Parity Checklist
 
-Tracked tasks: #594, #619, #620, #621, #622
+Tracked tasks: #594, #619, #620, #621, #622, #623
 
 Use this checklist for manual smoke testing when the local browser UI changes. The browser must stay a local shell over the same `game_session` data and must not duplicate game rules in JavaScript.
 
@@ -25,6 +25,8 @@ Use this checklist for manual smoke testing when the local browser UI changes. T
 ## Chaos Sea
 
 - Море Хаоса navigation opens overview, Guardians, Abode power, Guardian projects, offering, and mantle-founding surfaces.
+- `/map` / `/карта` in Chaos Sea renders a Guardian Abode constellation, not a Mortal World coordinate map.
+- The Chaos Sea map highlights the current Abode and active Guardian, keeps discovered Abode layout stable between renders, and shows Guardian/domain/reputation/power/resident/project/action details when available.
 - Pending-contract blockers render as Russian messages rather than silent failures.
 - Mutating forms show progress while submitting and release locks after completion/cancel.
 

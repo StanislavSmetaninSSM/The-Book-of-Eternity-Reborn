@@ -11,6 +11,7 @@ namespace BookOfEternityClient.Services;
 public static class LocalMapViewService
 {
     private const string WorldLayerId = "world";
+    private const string ChaosSeaLayerId = "chaos_sea";
     private const int MeaningfulFactionInfluence = 25;
     private const int ContestedControlGap = 10;
     internal static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
@@ -18,6 +19,19 @@ public static class LocalMapViewService
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         WriteIndented = false
     };
+
+    public static async Task<MapViewDto> BuildCurrentRealmMapAsync(FileSystemManager fs)
+    {
+        var soulJson = await fs.ReadFileAsync("game_state/meta/soul_state.json");
+        using var soulDoc = TryParse(soulJson);
+        var currentRealm = soulDoc?.RootElement.ValueKind == JsonValueKind.Object
+            ? GetString(soulDoc.RootElement, "currentRealm")
+            : string.Empty;
+
+        return RealmSemantics.IsChaosSea(currentRealm)
+            ? await BuildChaosSeaMapAsync(fs)
+            : await BuildMortalWorldMapAsync(fs);
+    }
 
     public static async Task<MapViewDto> BuildMortalWorldMapAsync(FileSystemManager fs)
     {
@@ -93,6 +107,380 @@ public static class LocalMapViewService
                 .ToList(),
             Regions = BuildPoliticalRegions(nodes.Values)
         };
+    }
+
+    public static async Task<MapViewDto> BuildChaosSeaMapAsync(FileSystemManager fs)
+    {
+        var guardiansJson = await fs.ReadFileAsync("game_state/meta/guardians.json");
+        using var guardiansDoc = TryParse(guardiansJson);
+
+        var nodes = new Dictionary<string, NodeDraft>(StringComparer.OrdinalIgnoreCase);
+        var links = new Dictionary<string, MapLinkDto>(StringComparer.OrdinalIgnoreCase);
+        var currentAbodeId = string.Empty;
+
+        if (guardiansDoc != null && guardiansDoc.RootElement.ValueKind == JsonValueKind.Object)
+        {
+            var root = guardiansDoc.RootElement;
+            var activeGuardianId = root.TryGetProperty("activeGuardian", out var activeGuardian) &&
+                                   activeGuardian.ValueKind == JsonValueKind.Object
+                ? GetString(activeGuardian, "guardianId", "id")
+                : string.Empty;
+
+            var discoveredAbodeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var hintedAbodeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var lockedAbodeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            if (root.TryGetProperty("chaosSeaNavigation", out var navigation) &&
+                navigation.ValueKind == JsonValueKind.Object)
+            {
+                currentAbodeId = GetString(navigation, "currentAbodeId", "abodeId");
+                AddNavigationAbodeArray(nodes, discoveredAbodeIds, navigation, "discoveredAbodes", "открыта");
+                AddNavigationAbodeArray(nodes, discoveredAbodeIds, navigation, "knownAbodes", "открыта");
+                AddNavigationAbodeArray(nodes, hintedAbodeIds, navigation, "hintedAbodes", "намёк");
+                AddNavigationAbodeArray(nodes, hintedAbodeIds, navigation, "rumoredAbodes", "намёк");
+                AddNavigationAbodeArray(nodes, lockedAbodeIds, navigation, "lockedAbodes", "закрыта");
+                AddNavigationAbodeArray(nodes, lockedAbodeIds, navigation, "unknownAbodes", "неизвестна");
+                AddChaosNavigationLinks(links, navigation);
+            }
+
+            if (root.TryGetProperty("guardians", out var guardians) && guardians.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var guardian in guardians.EnumerateArray())
+                {
+                    if (guardian.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    AddGuardianAbodeNode(
+                        nodes,
+                        guardian,
+                        activeGuardianId,
+                        currentAbodeId,
+                        discoveredAbodeIds,
+                        hintedAbodeIds,
+                        lockedAbodeIds);
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(currentAbodeId) &&
+                !string.IsNullOrWhiteSpace(activeGuardianId) &&
+                nodes.Values.FirstOrDefault(node => string.Equals(node.GuardianId, activeGuardianId, StringComparison.OrdinalIgnoreCase)) is { } activeNode)
+            {
+                currentAbodeId = activeNode.Id;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(currentAbodeId) && nodes.TryGetValue(currentAbodeId, out var currentNode))
+        {
+            currentNode.IsCurrent = true;
+            AddDetail(currentNode, "Текущая Обитель", "да");
+        }
+
+        ApplyChaosSeaLayout(nodes.Values, currentAbodeId);
+        AddChaosSeaFallbackLinks(links, nodes.Values, currentAbodeId);
+
+        var nodeDtos = nodes.Values
+            .Select(static node => node.ToDto())
+            .OrderByDescending(static node => node.IsCurrent)
+            .ThenBy(static node => node.Label, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return new MapViewDto
+        {
+            Realm = "Chaos Sea",
+            Title = "Карта Моря Хаоса: созвездие Обителей",
+            CurrentNodeId = currentAbodeId,
+            Layers =
+            [
+                new MapLayerDto
+                {
+                    Id = ChaosSeaLayerId,
+                    Label = "Море Хаоса",
+                    IsDefault = true
+                }
+            ],
+            ZLevels = [new MapZLevelDto { Z = 0, Label = "созвездие обителей" }],
+            Nodes = nodeDtos,
+            Links = links.Values
+                .OrderBy(static link => link.SourceNodeId, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(static link => link.TargetNodeId, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+        };
+    }
+
+    private static void AddNavigationAbodeArray(
+        Dictionary<string, NodeDraft> nodes,
+        ISet<string> abodeIds,
+        JsonElement navigation,
+        string propertyName,
+        string discoveryState)
+    {
+        if (!navigation.TryGetProperty(propertyName, out var array) || array.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var entry in array.EnumerateArray())
+        {
+            var abodeId = entry.ValueKind == JsonValueKind.Object
+                ? GetString(entry, "abodeId", "id")
+                : entry.ValueKind == JsonValueKind.String
+                    ? entry.GetString() ?? string.Empty
+                    : string.Empty;
+            if (string.IsNullOrWhiteSpace(abodeId))
+                continue;
+
+            abodeIds.Add(abodeId);
+            var draft = GetOrCreateNode(nodes, abodeId);
+            draft.Layer = ChaosSeaLayerId;
+            draft.Type = Prefer(draft.Type, "guardian_abode");
+            draft.Label = Prefer(draft.Label, entry.ValueKind == JsonValueKind.Object ? GetString(entry, "name", "title", "abodeName") : string.Empty, abodeId);
+            draft.GuardianId = Prefer(draft.GuardianId, entry.ValueKind == JsonValueKind.Object ? GetString(entry, "guardianId") : string.Empty);
+            AddDetail(draft, "Открытие", discoveryState);
+            AddDetail(draft, "Хранитель", entry.ValueKind == JsonValueKind.Object ? GetString(entry, "guardianName", "guardianDisplayName") : string.Empty);
+        }
+    }
+
+    private static void AddGuardianAbodeNode(
+        Dictionary<string, NodeDraft> nodes,
+        JsonElement guardian,
+        string activeGuardianId,
+        string currentAbodeId,
+        IReadOnlySet<string> discoveredAbodeIds,
+        IReadOnlySet<string> hintedAbodeIds,
+        IReadOnlySet<string> lockedAbodeIds)
+    {
+        if (!guardian.TryGetProperty("abode", out var abode) || abode.ValueKind != JsonValueKind.Object)
+            return;
+
+        var abodeId = GetString(abode, "abodeId", "id");
+        if (string.IsNullOrWhiteSpace(abodeId))
+            return;
+
+        var guardianId = GetString(guardian, "guardianId", "id");
+        var isCurrent = string.Equals(abodeId, currentAbodeId, StringComparison.OrdinalIgnoreCase);
+        var isActiveGuardian = !string.IsNullOrWhiteSpace(guardianId) &&
+                               string.Equals(guardianId, activeGuardianId, StringComparison.OrdinalIgnoreCase);
+        var isDiscovered = discoveredAbodeIds.Contains(abodeId) ||
+                           isCurrent ||
+                           isActiveGuardian ||
+                           (TryGetBool(abode, out var abodeDiscovered, "isDiscovered", "discovered", "known") && abodeDiscovered);
+        var isHinted = hintedAbodeIds.Contains(abodeId);
+        var isLocked = lockedAbodeIds.Contains(abodeId);
+        if (!isDiscovered && !isHinted && !isLocked)
+            return;
+
+        var draft = GetOrCreateNode(nodes, abodeId);
+        draft.Layer = ChaosSeaLayerId;
+        draft.Type = isLocked ? "locked_guardian_abode" : isHinted ? "hinted_guardian_abode" : "guardian_abode";
+        draft.Label = Prefer(draft.Label, GetString(abode, "name", "title", "abodeName"), abodeId);
+        draft.IsCurrent |= isCurrent;
+        draft.GuardianId = Prefer(draft.GuardianId, guardianId);
+        draft.Domain = Prefer(draft.Domain, GetString(guardian, "domain", "guardianDomain"));
+
+        AddDetail(draft, "Открытие", isDiscovered ? "открыта" : isHinted ? "намёк" : "закрыта");
+        AddDetail(draft, "Хранитель", GetString(guardian, "canonicalName", "guardianName", "name", "displayName"));
+        AddDetail(draft, "Активный Хранитель", isActiveGuardian ? "да" : string.Empty);
+        AddDetail(draft, "Домен", draft.Domain);
+        AddDetail(draft, "Репутация", DescribeGuardianReputation(guardian));
+        AddDetail(draft, "Сила Обители", DescribeAbodePower(guardian, abode));
+        AddDetail(draft, "Резиденты", DescribeFirstArrayCount(abode, guardian, "residents", "abodeResidents", "residentCompanions"));
+        AddDetail(draft, "Проекты", DescribeFirstArrayCount(guardian, abode, "projects", "guardianProjects", "activeProjects"));
+        AddDetail(draft, "Действия", DescribeStringArray(abode, "availableActions", "actions", "availableAbodeActions"));
+    }
+
+    private static NodeDraft GetOrCreateNode(Dictionary<string, NodeDraft> nodes, string id)
+    {
+        if (!nodes.TryGetValue(id, out var draft))
+        {
+            draft = new NodeDraft { Id = id };
+            nodes[id] = draft;
+        }
+
+        return draft;
+    }
+
+    private static string DescribeGuardianReputation(JsonElement guardian)
+    {
+        if (guardian.TryGetProperty("relationshipData", out var relationship) && relationship.ValueKind == JsonValueKind.Object)
+        {
+            var reputation = GetInt(relationship, "currentReputation", "reputation", "value");
+            if (relationship.TryGetProperty("currentReputation", out _) ||
+                relationship.TryGetProperty("reputation", out _) ||
+                relationship.TryGetProperty("value", out _))
+            {
+                return reputation.ToString(CultureInfo.InvariantCulture);
+            }
+        }
+
+        if (guardian.TryGetProperty("currentReputation", out _) || guardian.TryGetProperty("reputation", out _))
+            return GetInt(guardian, "currentReputation", "reputation").ToString(CultureInfo.InvariantCulture);
+
+        return string.Empty;
+    }
+
+    private static string DescribeAbodePower(JsonElement guardian, JsonElement abode)
+    {
+        var power = guardian.TryGetProperty("abodePower", out var guardianPower) && guardianPower.ValueKind == JsonValueKind.Object
+            ? guardianPower
+            : abode.TryGetProperty("abodePower", out var abodePower) && abodePower.ValueKind == JsonValueKind.Object
+                ? abodePower
+                : default;
+
+        if (power.ValueKind != JsonValueKind.Object)
+            return string.Empty;
+
+        var current = GetInt(power, "currentPower", "power", "current");
+        var max = GetInt(power, "maxPower", "maximum", "max");
+        return max > 0
+            ? $"{current}/{max}"
+            : current > 0
+                ? current.ToString(CultureInfo.InvariantCulture)
+                : string.Empty;
+    }
+
+    private static string DescribeFirstArrayCount(JsonElement primary, JsonElement secondary, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            var count = TryCountArray(primary, propertyName);
+            if (count > 0)
+                return count.ToString(CultureInfo.InvariantCulture);
+
+            count = TryCountArray(secondary, propertyName);
+            if (count > 0)
+                return count.ToString(CultureInfo.InvariantCulture);
+        }
+
+        return string.Empty;
+    }
+
+    private static int TryCountArray(JsonElement element, string propertyName) =>
+        element.ValueKind == JsonValueKind.Object &&
+        element.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind == JsonValueKind.Array
+            ? value.GetArrayLength()
+            : 0;
+
+    private static string DescribeStringArray(JsonElement element, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            if (element.ValueKind != JsonValueKind.Object ||
+                !element.TryGetProperty(propertyName, out var array) ||
+                array.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            var values = array.EnumerateArray()
+                .Select(static item => item.ValueKind == JsonValueKind.String
+                    ? item.GetString()
+                    : item.ValueKind == JsonValueKind.Object
+                        ? GetString(item, "label", "name", "actionType", "id")
+                        : string.Empty)
+                .Where(static value => !string.IsNullOrWhiteSpace(value))
+                .Take(6)
+                .ToList();
+            if (values.Count > 0)
+                return string.Join("; ", values);
+        }
+
+        return string.Empty;
+    }
+
+    private static void AddChaosNavigationLinks(Dictionary<string, MapLinkDto> links, JsonElement navigation)
+    {
+        AddChaosLinkArray(links, navigation, "links");
+        AddChaosLinkArray(links, navigation, "routes");
+        AddChaosLinkArray(links, navigation, "knownRoutes");
+    }
+
+    private static void AddChaosLinkArray(Dictionary<string, MapLinkDto> links, JsonElement navigation, string propertyName)
+    {
+        if (!navigation.TryGetProperty(propertyName, out var array) || array.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var entry in array.EnumerateArray())
+        {
+            if (entry.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var source = GetString(entry, "sourceAbodeId", "fromAbodeId", "sourceId", "from");
+            var target = GetString(entry, "targetAbodeId", "toAbodeId", "targetId", "to");
+            if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(target))
+                continue;
+
+            AddChaosLink(links, source, target, GetString(entry, "label", "routeType", "state"), GetString(entry, "state", "routeState"));
+        }
+    }
+
+    private static void AddChaosSeaFallbackLinks(Dictionary<string, MapLinkDto> links, IEnumerable<NodeDraft> nodes, string currentAbodeId)
+    {
+        if (string.IsNullOrWhiteSpace(currentAbodeId))
+            return;
+
+        foreach (var node in nodes.OrderBy(static node => node.Label, StringComparer.OrdinalIgnoreCase))
+        {
+            if (string.Equals(node.Id, currentAbodeId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            AddChaosLink(links, currentAbodeId, node.Id, "навигационная нить", "known");
+        }
+    }
+
+    private static void AddChaosLink(Dictionary<string, MapLinkDto> links, string sourceId, string targetId, string label, string state)
+    {
+        var id = $"{sourceId}->{targetId}";
+        if (links.ContainsKey(id))
+            return;
+
+        links[id] = new MapLinkDto
+        {
+            Id = id,
+            SourceNodeId = sourceId,
+            TargetNodeId = targetId,
+            Label = label,
+            State = state,
+            Layer = ChaosSeaLayerId,
+            Z = 0
+        };
+    }
+
+    private static void ApplyChaosSeaLayout(IEnumerable<NodeDraft> nodes, string currentAbodeId)
+    {
+        foreach (var node in nodes)
+        {
+            node.Z = 0;
+            node.HasCoordinates = true;
+            if (!string.IsNullOrWhiteSpace(currentAbodeId) &&
+                string.Equals(node.Id, currentAbodeId, StringComparison.OrdinalIgnoreCase))
+            {
+                node.X = 0;
+                node.Y = 0;
+                AddDetail(node, "Координаты", "центр навигационного созвездия");
+                continue;
+            }
+
+            var identityHash = StableHash($"{node.Id}|{node.Domain}");
+            var angle = identityHash / (double)uint.MaxValue * Math.Tau;
+            var ring = 6.8 + (StableHash(node.Domain) % 4) * 1.35;
+            var jitter = (identityHash % 1000) / 1000.0 * 1.1;
+            var radius = ring + jitter;
+            node.X = Math.Round(Math.Cos(angle) * radius, 2);
+            node.Y = Math.Round(Math.Sin(angle) * radius, 2);
+            AddDetail(node, "Координаты", $"созвездие: {node.X:0.#}, {node.Y:0.#}");
+        }
+    }
+
+    private static uint StableHash(string value)
+    {
+        unchecked
+        {
+            const uint offset = 2166136261;
+            const uint prime = 16777619;
+            var hash = offset;
+            foreach (var ch in value ?? string.Empty)
+                hash = (hash ^ char.ToUpperInvariant(ch)) * prime;
+            return hash;
+        }
     }
 
     private static JsonDocument? TryParse(string? json)
@@ -597,6 +985,8 @@ public static class LocalMapViewService
         public string Layer { get; set; } = WorldLayerId;
         public bool IsCurrent { get; set; }
         public bool HasCoordinates { get; set; }
+        public string GuardianId { get; set; } = string.Empty;
+        public string Domain { get; set; } = string.Empty;
         public string OwnerFactionId { get; set; } = string.Empty;
         public string OwnerFactionName { get; set; } = string.Empty;
         public Dictionary<string, int> Influence { get; } = new(StringComparer.OrdinalIgnoreCase);

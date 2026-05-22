@@ -1059,6 +1059,21 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(mapBlock.Map.Links, static link => link.TargetNodeId == "loc_gate");
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Map_InChaosSea_ReturnsAbodeConstellationMap()
+    {
+        await SeedChaosSeaFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/map"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var mapBlock = Assert.Single(result.Blocks.OfType<UiMapBlock>());
+        Assert.Equal("Chaos Sea", mapBlock.Map.Realm);
+        Assert.Equal("abode_azalia", mapBlock.Map.CurrentNodeId);
+        Assert.Contains(mapBlock.Map.Nodes, static node => node.IsCurrent && node.Label == "Сад Ночных Роз");
+        Assert.Contains(mapBlock.Map.Nodes, static node => node.Details.Any(item => item.Key == "Активный Хранитель" && item.Value == "да"));
+    }
+
     [Theory]
     [InlineData("/chaos_sea")]
     [InlineData("/guardians")]

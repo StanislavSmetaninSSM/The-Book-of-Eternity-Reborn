@@ -83,6 +83,7 @@ public partial class ExplorerMode
         _chaosSeaOnlyCommands = BuildCommandMap(
             ("chaos_sea", ShowGuardians),
             ("guardians", ShowGuardians),
+            ("map", ShowMap),
             ("abode_power", ShowAbodePower),
             ("abode_offering", ShowAbodeOffering),
             ("guardian_projects", ShowGuardianProjects),

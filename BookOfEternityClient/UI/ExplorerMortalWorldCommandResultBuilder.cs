@@ -201,7 +201,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static async Task<ExplorerCommandResult> BuildMap(string command, FileSystemManager fs)
     {
-        var map = await LocalMapViewService.BuildMortalWorldMapAsync(fs);
+        var map = await LocalMapViewService.BuildCurrentRealmMapAsync(fs);
         var blocks = new List<UiBlock>
         {
             new UiMapBlock
@@ -223,8 +223,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
             }
         };
 
-        await AddRawJsonIfPresent(blocks, fs, "game_state/world/current_location.json", "JSON: current_location");
-        await AddRawJsonIfPresent(blocks, fs, "game_state/world/world_map.json", "JSON: world_map");
+        if (string.Equals(map.Realm, "Chaos Sea", StringComparison.OrdinalIgnoreCase))
+        {
+            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/soul_state.json", "JSON: soul_state");
+            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/guardians.json", "JSON: guardians");
+        }
+        else
+        {
+            await AddRawJsonIfPresent(blocks, fs, "game_state/world/current_location.json", "JSON: current_location");
+            await AddRawJsonIfPresent(blocks, fs, "game_state/world/world_map.json", "JSON: world_map");
+        }
+
         return Completed(command, blocks);
     }
 
