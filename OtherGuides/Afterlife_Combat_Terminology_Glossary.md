@@ -13,7 +13,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | resolve | завершение конфликта | Terminal closure of an active conflict; written through `mode=resolve` and moved into `recentConflicts[]`. |
 | repair_cancel | repair-отмена / ремонтная отмена | Non-reward cleanup of malformed or impossible conflict state. |
 | diceAudit | аудит кубиков | Required visible-dice proof for contested exchanges and contested terminal resolutions. |
-| rollMode | режим броска | Part of `diceAudit`: records Преимущество / Помеха per side through `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`. |
+| rollMode | режим броска | Part of `diceAudit`: records Преимущество / Помеха per side through `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`. Supports `normal`, `advantage`, `great_advantage`, `disadvantage`, and `dire_disadvantage`. |
 | selection | выбор кубика | Field on `diceUsed[]`: `selected` is the die used for totals and criticals, `discarded` is rolled but ignored because of Преимущество / Помеха. |
 | difficultyAudit | аудит сложности | Part of `diceAudit` and `rewardAudit` when `game_state/core/game_settings.json.difficulty` is readable; records selected difficulty, opposition modifier, and reward multiplier. |
 | rewardAudit | аудит награды | Required proof when a resolved victorious conflict grants Ink Feathers or Light Sparks. |
@@ -21,6 +21,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | counterPayoff | выигрыш контрприёма | Required measurable payoff for a `counter` with success/partial_success/countered: either `counterPayoff`, improved `conflictPosition`, or worsened `oppositionSideStrain`. |
 | matchupAudit | аудит сопоставления действий | Required on new/current contested exchanges with `diceAudit`; records the player's operation, opposition operation, resolution lane, risk profile, and rationale for the tactical matchup. |
 | controlState | состояние контроля / оков | Canonical control axis for afterlife spiritual combat. It is separate from strain and position: `level`, `controllerSide`, `controlId`, `sourceOperation`, `restrictedOperations`, and `summary` record who controls whom and what actions are restricted. Missing/null means no active control for legacy entries. `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`; it is not a free operation id. |
+| tempoAdvantage | темповое окно защиты | One-use Преимущество created by successful `guard` against direct `pressure` / forced pressure. It is stored under `activeConflict` and exchange `before/after` snapshots, then consumed by the next eligible non-terminal combat action through `rollMode.player.advantageSources[]`. |
 | controlState.level | уровень контроля | `none` / нет контроля, `hindered` / стеснён, `bound` / скован, `locked` / запечатан. |
 | operationType | тип операции | Mechanical type of an exchange/resolution, such as `pressure`, `guard`, or `force_incarnation`. |
 | outcome | исход | Mechanical outcome of an exchange, such as `success`, `blocked`, `countered`, or `no_effect`. |
@@ -82,7 +83,7 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 | Art / operation | Valid use | May change | Must not do | Example |
 |---|---|---|---|---|
 | `pressure` / Давление | Directly challenge the opposing lead contestant. | Mainly `oppositionSideStrain`; optionally terminal resolve after a later valid close. | Do not treat it as a free `conflictPosition` maneuver or binding. | "I press on the Guardian's broken oath" can move opposition strain `clear -> strained`. |
-| `guard` / Защита | Prevent or reduce incoming strain/consequence against the player side; even a setback guard against direct `pressure` mitigates so `playerSideStrain` worsens by at most one rank. | `playerSideStrain`, blocked consequence, defensive `incomingAction` audit. | Do not damage opposition strain directly; use `counter` for reversal. | "I shield the soul-fracture" can keep player strain from worsening, or turn a crushing pressure into only `clear -> strained` on setback. |
+| `guard` / Защита | Prevent or reduce incoming strain/consequence against the player side; even a setback guard against direct `pressure` mitigates so `playerSideStrain` worsens by at most one rank. A full success against direct pressure creates `tempoAdvantage`: one-use Преимущество for the next eligible spiritual action. | `playerSideStrain`, blocked consequence, defensive `incomingAction` audit, `tempoAdvantage` on full success. | Do not damage opposition strain directly; use `counter` for reversal. The tempo window does not apply to recovery, withdrawal, surrender, or negotiation. | "I shield the soul-fracture" can keep player strain from worsening and create a tempo window for the next pressure/maneuver/binding/counter. |
 | `counter` / Контрприём | React to a concrete incoming operation. | `incomingAction`, blocked/countered audit, and a measured payoff on success/partial_success/countered: `counterPayoff`, better `conflictPosition`, worse `oppositionSideStrain`, or reversed/weakened existing opposition `controlState`. | Cannot be used without `incomingAction`; cannot be a standalone `pressure`; cannot create fresh player control from none; successful/partial_success/countered counters cannot only heal `playerSideStrain`. | "As he binds me, I turn the thread back" must name the incoming bind/pressure and show the reversal. |
 | `maneuver` / Манёвр | Shift advantage without raw overpowering. | `conflictPosition`. | Successful maneuver must not directly change `playerSideStrain` or `oppositionSideStrain`, and cannot bypass active opposition `controlState` without first weakening/removing that control. | `contested -> player_advantaged` without strain damage. |
 | `binding` / `force_binding` / Наложение оков | Control after leverage. Requires `player_advantaged`, `player_dominant`, setup, or `decisive_player_success`; `force_binding` requires strong leverage and a broader payoff. | `controlState`: create or strengthen player control only when active opposition control is absent; `force_binding` must restrict at least two distinct operations. | Cannot be spammed from neutral `contested` on ordinary success; cannot answer active opposition control; cannot be recorded as strain or position only; failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas. | After gaining advantage, the soul seals the opponent's route: `controlState.level none -> hindered`; force binding might restrict both `maneuver` and `binding`. |
@@ -164,10 +165,25 @@ Every new/current contested exchange with `diceAudit` must also include `matchup
 
 Преимущество and Помеха are visible dice modes inside `diceAudit`, not hidden GM judgment. `rollMode.<side>.advantageSources[]` lists why a side has Преимущество; `rollMode.<side>.disadvantageSources[]` lists why a side has Помеха; `effectiveMode` records the final mode after cancellation.
 
-- Преимущество rolls at least two d20 for that side, marks all entries in `diceUsed[]` with `selection`, and uses the highest `selected` die.
-- Помеха rolls at least two d20 for that side, marks all entries in `diceUsed[]` with `selection`, and uses the lowest `selected` die.
-- Встречные Преимущество и Помеха гасятся: if both source arrays are non-empty, `effectiveMode=normal`, only one d20 is consumed for that side, and no discarded die is recorded.
+- `advantage` / Преимущество rolls exactly 2d20 for that side and uses the highest selected die.
+- `great_advantage` / Великое Преимущество rolls exactly 3d20 for that side and uses the highest selected die.
+- `disadvantage` / Помеха rolls exactly 2d20 for that side and uses the lowest selected die.
+- `dire_disadvantage` / Тяжкая Помеха rolls exactly 3d20 for that side and uses the lowest selected die.
+- Source arrays accept legacy non-empty strings as ordinary `advantage` / `disadvantage`, or objects with `summary`/`source`/`sourceId`, `level`, and optional `sourceType`. Valid positive levels are `advantage|great_advantage`; valid negative levels are `disadvantage|dire_disadvantage`.
+- Step cancellation uses the strongest positive source and strongest negative source: `great_advantage + disadvantage => advantage`, `great_advantage + dire_disadvantage => normal`, `advantage + dire_disadvantage => disadvantage`, and `advantage + disadvantage => normal`.
+- Multiple sources in the same direction do not stack. Two ordinary Преимущества stay ordinary Преимущество; they do not become Великое Преимущество.
 - Critical success/failure uses only the selected die. A discarded natural 20 or natural 1 has no critical effect.
+
+`tempoAdvantage` from successful Защита is consumed as an ordinary or great positive source:
+
+```json
+{
+  "sourceType": "guard_tempo_window",
+  "sourceId": "tempo_guard_001",
+  "level": "advantage",
+  "summary": "Темповое окно после успешной защиты."
+}
+```
 
 ## Сложность Игры / Difficulty Audit
 

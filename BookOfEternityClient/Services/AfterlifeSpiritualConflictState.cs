@@ -656,6 +656,7 @@ public static class AfterlifeSpiritualConflictState
         CopyIfPresent(source, target, "oppositionSideStrain");
         CopyIfPresent(source, target, "actionEconomy");
         CopyIfPresentOrNull(source, target, "controlState");
+        CopyIfPresentOrNull(source, target, "tempoAdvantage");
         CopyIfPresent(source, target, "resolutionState");
         CopyIfPresent(source, target, "status");
     }

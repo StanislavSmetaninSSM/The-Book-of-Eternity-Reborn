@@ -142,6 +142,86 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_GreatAdvantageDiceAudit_SelectingHighestDie_Allows()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_great_advantage_valid_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "great_advantage",
+              new JsonNode?[] { BuildRollModeSource("great_advantage", "решающее темповое окно после защиты") },
+              Array.Empty<JsonNode?>(),
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, false), (1, 18, true), (2, 14, false) }).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_conflict_dice_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GreatAdvantageDiceAudit_WithTwoDice_ReportsCountMismatch()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_great_advantage_short_roll_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "great_advantage",
+              new JsonNode?[] { BuildRollModeSource("great_advantage", "решающее темповое окно после защиты") },
+              Array.Empty<JsonNode?>(),
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, false), (1, 18, true) }).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_dice_roll_count_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GreatAdvantageWithOrdinaryDisadvantage_StepsDownToAdvantage()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_great_advantage_step_down_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "advantage",
+              new JsonNode?[] { BuildRollModeSource("great_advantage", "решающее темповое окно после защиты") },
+              new JsonNode?[] { JsonValue.Create("слабое сопротивление духовной среде") },
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, false), (1, 18, true) }).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_conflict_dice_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_DisadvantageDiceAudit_SelectingHigherDie_ReportsIssue()
     {
         await WriteSoulStateAsync();
@@ -161,6 +241,87 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "afterlife_conflict_dice_disadvantage_selected_die_mismatch", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DireDisadvantageDiceAudit_SelectingLowestDie_Allows()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_dire_disadvantage_valid_001",
+          "operationType": "pressure",
+          "outcome": "setback",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "strained", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "dire_disadvantage",
+              Array.Empty<JsonNode?>(),
+              new JsonNode?[] { BuildRollModeSource("dire_disadvantage", "сильные духовные оковы подавляют действие") },
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, true), (1, 18, false), (2, 14, false) }).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_conflict_dice_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AdvantageWithDireDisadvantage_StepsDownToDisadvantage()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_dire_disadvantage_step_down_001",
+          "operationType": "pressure",
+          "outcome": "setback",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "strained", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "disadvantage",
+              new JsonNode?[] { JsonValue.Create("поддержка союзника") },
+              new JsonNode?[] { BuildRollModeSource("dire_disadvantage", "сильные духовные оковы подавляют действие") },
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, true), (1, 18, false) }).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_conflict_dice_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_DuplicateOrdinaryAdvantageSources_DoNotBecomeGreatAdvantage()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_duplicate_advantage_sources_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "advantage",
+              new JsonNode?[] { JsonValue.Create("поддержка союзника"), JsonValue.Create("благоприятная духовная среда") },
+              Array.Empty<JsonNode?>(),
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, false), (1, 18, true) }).ToJsonString()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_conflict_dice_", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -2664,6 +2825,220 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             string.Equals(issue.Code, "afterlife_conflict_guard_improves_position", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(issue.Code, "afterlife_conflict_guard_worsens_player_strain", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(issue.Code, "afterlife_conflict_matchup_audit_missing", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_SuccessfulGuardAgainstPressureRequiresTempoAdvantage()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_guard_missing_tempo_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "before": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_guard_missing_tempo_advantage", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardTempoAdvantageMustBeConsumedByNextEligibleExchange()
+    {
+        await WriteSoulStateAsync();
+        var guardExchange = AddDefaultActionCostAudit(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_guard_grants_tempo_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "before": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "tempoAdvantage": {
+              "advantageId": "tempo_guard_001",
+              "ownerSide": "player",
+              "sourceOperation": "guard",
+              "sourceExchangeId": "exchange_guard_grants_tempo_001",
+              "level": "advantage",
+              "status": "available",
+              "summary": "Защита сорвала давление и дала темп для следующего приема."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """));
+        var pressureExchange = AddDefaultActionCostAudit(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_pressure_ignores_tempo_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "tempoAdvantage": {
+              "advantageId": "tempo_guard_001",
+              "ownerSide": "player",
+              "sourceOperation": "guard",
+              "sourceExchangeId": "exchange_guard_grants_tempo_001",
+              "level": "advantage",
+              "status": "available",
+              "summary": "Защита сорвала давление и дала темп для следующего приема."
+            }
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested",
+            "tempoAdvantage": {
+              "advantageId": "tempo_guard_001",
+              "ownerSide": "player",
+              "sourceOperation": "guard",
+              "sourceExchangeId": "exchange_guard_grants_tempo_001",
+              "level": "advantage",
+              "status": "available",
+              "summary": "Защита сорвала давление и дала темп для следующего приема."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """));
+        await WriteConflictStateWithRawExchangeLogAsync($$"""
+              {{guardExchange}},
+              {{pressureExchange}}
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_tempo_advantage_not_consumed", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_GuardTempoAdvantageCanBeConsumedByNextEligibleExchange()
+    {
+        await WriteSoulStateAsync();
+        var guardExchange = AddDefaultActionCostAudit(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_guard_grants_tempo_valid_001",
+          "operationType": "guard",
+          "outcome": "success",
+          "incomingAction": {
+            "operationType": "pressure",
+            "summary": "Лиора давит на трещину души."
+          },
+          "before": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested"
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "tempoAdvantage": {
+              "advantageId": "tempo_guard_valid_001",
+              "ownerSide": "player",
+              "sourceOperation": "guard",
+              "sourceExchangeId": "exchange_guard_grants_tempo_valid_001",
+              "level": "advantage",
+              "status": "available",
+              "summary": "Защита сорвала давление и дала темп для следующего приема."
+            }
+          },
+          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+        }
+        """));
+        var pressureExchange = AddDefaultActionCostAudit(AddDefaultMatchupAudit($$"""
+        {
+          "exchangeId": "exchange_pressure_consumes_tempo_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "tempoAdvantage": {
+              "advantageId": "tempo_guard_valid_001",
+              "ownerSide": "player",
+              "sourceOperation": "guard",
+              "sourceExchangeId": "exchange_guard_grants_tempo_valid_001",
+              "level": "advantage",
+              "status": "available",
+              "summary": "Защита сорвала давление и дала темп для следующего приема."
+            }
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested",
+            "tempoAdvantage": {
+              "advantageId": "tempo_guard_valid_001",
+              "ownerSide": "player",
+              "sourceOperation": "guard",
+              "sourceExchangeId": "exchange_guard_grants_tempo_valid_001",
+              "level": "advantage",
+              "status": "consumed",
+              "summary": "Темп защиты потрачен на давление."
+            }
+          },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "advantage",
+              new JsonNode?[]
+              {
+                  new JsonObject
+                  {
+                      ["sourceType"] = "guard_tempo_window",
+                      ["sourceId"] = "tempo_guard_valid_001",
+                      ["level"] = "advantage",
+                      ["summary"] = "Темповое окно после успешной защиты."
+                  }
+              },
+              Array.Empty<JsonNode?>(),
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, false), (1, 18, true) }).ToJsonString()}}
+        }
+        """));
+        await WriteConflictStateWithRawExchangeLogAsync($$"""
+              {{guardExchange}},
+              {{pressureExchange}}
+        """);
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_tempo_advantage_not_consumed", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(issue.Code, "afterlife_conflict_tempo_advantage_missing_roll_mode_source", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -12388,6 +12763,117 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             selectedValue: 14,
             discardedIndex: 0,
             discardedValue: 5);
+
+    private static JsonObject BuildRollModeSource(string level, string summary) => new()
+    {
+        ["level"] = level,
+        ["summary"] = summary
+    };
+
+    private static JsonObject BuildPlayerTieredRollDiceAudit(
+        string effectiveMode,
+        IReadOnlyCollection<JsonNode?> advantageSources,
+        IReadOnlyCollection<JsonNode?> disadvantageSources,
+        IReadOnlyList<(int SourceIndex, int Value, bool Selected)> playerRolls)
+    {
+        const int playerModifier = 4;
+        const int oppositionModifier = 5;
+        const int oppositionSourceIndex = 5;
+        const int oppositionValue = 7;
+
+        var selectedRoll = playerRolls.Single(roll => roll.Selected);
+        var playerTotal = selectedRoll.Value + playerModifier;
+        var oppositionTotal = oppositionValue + oppositionModifier;
+        var margin = playerTotal - oppositionTotal;
+
+        var diceUsed = new JsonArray();
+        foreach (var roll in playerRolls)
+        {
+            diceUsed.Add(new JsonObject
+            {
+                ["side"] = "player",
+                ["sourceIndex"] = roll.SourceIndex,
+                ["sides"] = 20,
+                ["value"] = roll.Value,
+                ["selection"] = roll.Selected ? "selected" : "discarded"
+            });
+        }
+
+        diceUsed.Add(new JsonObject
+        {
+            ["side"] = "opposition",
+            ["sourceIndex"] = oppositionSourceIndex,
+            ["sides"] = 20,
+            ["value"] = oppositionValue,
+            ["selection"] = "selected"
+        });
+
+        return new JsonObject
+        {
+            ["formulaVersion"] = "afterlife_spiritual_conflict_v1",
+            ["diceSource"] = "input/turn_request.json.preGeneratedDices1d20",
+            ["diceUsed"] = diceUsed,
+            ["rollMode"] = new JsonObject
+            {
+                ["player"] = new JsonObject
+                {
+                    ["effectiveMode"] = effectiveMode,
+                    ["advantageSources"] = BuildRollModeSourceArray(advantageSources),
+                    ["disadvantageSources"] = BuildRollModeSourceArray(disadvantageSources)
+                },
+                ["opposition"] = new JsonObject
+                {
+                    ["effectiveMode"] = "normal",
+                    ["advantageSources"] = new JsonArray(),
+                    ["disadvantageSources"] = new JsonArray()
+                }
+            },
+            ["playerTotal"] = playerTotal,
+            ["oppositionTotal"] = oppositionTotal,
+            ["margin"] = margin,
+            ["outcomeBand"] = ExpectedOutcomeBandForTest(margin),
+            ["modifierBreakdown"] = new JsonObject
+            {
+                ["player"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["source"] = "pressure art tier",
+                        ["value"] = 2
+                    },
+                    new JsonObject
+                    {
+                        ["source"] = "current Enlightenment rank",
+                        ["value"] = 2
+                    }
+                },
+                ["opposition"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["source"] = "guardian pressure art tier",
+                        ["value"] = 2
+                    },
+                    new JsonObject
+                    {
+                        ["source"] = "active Guardian Abode pressure",
+                        ["value"] = 3
+                    }
+                }
+            }
+        };
+    }
+
+    private static JsonArray BuildRollModeSourceArray(IReadOnlyCollection<JsonNode?> sources)
+    {
+        var array = new JsonArray();
+        foreach (var source in sources)
+        {
+            array.Add(source is null ? null : JsonNode.Parse(source.ToJsonString()));
+        }
+
+        return array;
+    }
 
     private static JsonObject BuildPlayerMultiRollDiceAudit(
         string effectiveMode,
