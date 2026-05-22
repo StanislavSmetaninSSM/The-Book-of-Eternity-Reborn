@@ -7411,6 +7411,92 @@ Correct reasoning checklist:
 - In Mortal World turns, preserve `game_state/meta/afterlife_entity_profiles.json`; progress updates belong to afterlife turns unless a future matrix row explicitly says otherwise.
 
 ==================================================
+EXAMPLE 26B — Внешняя память посмертия (`afterlife_chronicles_v1`)
+==================================================
+
+Scenario:
+- The afterlife turn creates durable consequences in a Chaos Sea region and in a Guardian scene.
+- The canonical file is `game_state/meta/afterlife_chronicles.json`.
+- The accepted response uses `afterlifeChronicleUpdates[]`; the client normalizes it into canonical `chronicles[]`.
+- GM-authored updates write `lastEventsDescription` for the current event. They must not write `eventDescriptions[]`: that field is read-only archive memory maintained by the client from prior `lastEventsDescription` values.
+- Use this surface instead of Mortal World memory channels. Do not use `worldEventsLog`, `currentLocationData`, `worldMapUpdates`, Mortal NPC files, Mortal quest files, or Mortal faction files to remember afterlife events.
+- Valid `scopeType` values are: `chaos_sea_region`, `shining_abode_district`, `guardian_abode`, `guardian_scene`, `resident_scene`, `faction_zone`, `memory_scene`, `source_of_light`, and `saref_story`.
+
+Valid response fragment:
+
+```json
+{
+  "response": "Черная приливная полоса в Море Хаоса стала заметной для духов, а сцена у Зеркального Хранителя оставила устойчивый след.",
+  "afterlifeChronicleUpdates": [
+    {
+      "chronicleId": "chronicle_chaos_black_tide",
+      "scopeType": "chaos_sea_region",
+      "scopeId": "chaos_black_tide_region",
+      "displayName": "Черный прилив",
+      "lastEventsDescription": "После столкновения души с голодным эхом черный прилив начал притягивать слабые клятвы и обломки забытых имен.",
+      "persistentConsequences": [
+        "Слабые духи обходят прилив стороной.",
+        "Хранители с интересом следят за тем, кто сумеет использовать этот поток."
+      ],
+      "openThreads": [
+        "Понять, кто направил голодное эхо к этой части Моря Хаоса."
+      ],
+      "lastUpdatedTurn": 44
+    },
+    {
+      "chronicleId": "chronicle_guardian_mirror_oath_scene",
+      "scopeType": "guardian_scene",
+      "scopeId": "guardian_mirror_oath_scene",
+      "displayName": "Клятва у Зеркального Хранителя",
+      "lastEventsDescription": "Душа отказалась отдавать физический предмет и вместо этого передала Хранителю образ памяти, оставив в зеркалах устойчивый след доверия.",
+      "persistentConsequences": [
+        "Зеркальный Хранитель теперь чаще проверяет доказательства через память, образ и резонанс души.",
+        "Будущие сцены у этого Хранителя могут ссылаться на отказ от физического переноса предметов."
+      ],
+      "openThreads": [
+        "Вернуться к Хранителю, если память начнет трескаться."
+      ],
+      "lastUpdatedTurn": 44
+    }
+  ]
+}
+```
+
+Canonical shape after normalization:
+
+```json
+{
+  "schemaVersion": 1,
+  "chronicles": [
+    {
+      "chronicleId": "chronicle_chaos_black_tide",
+      "scopeType": "chaos_sea_region",
+      "scopeId": "chaos_black_tide_region",
+      "displayName": "Черный прилив",
+      "eventDescriptions": [],
+      "lastEventsDescription": "После столкновения души с голодным эхом черный прилив начал притягивать слабые клятвы и обломки забытых имен.",
+      "persistentConsequences": [
+        "Слабые духи обходят прилив стороной.",
+        "Хранители с интересом следят за тем, кто сумеет использовать этот поток."
+      ],
+      "openThreads": [
+        "Понять, кто направил голодное эхо к этой части Моря Хаоса."
+      ],
+      "lastUpdatedTurn": 44
+    }
+  ]
+}
+```
+
+Correct reasoning checklist:
+- `chronicleId` is the stable identity key. Reuse it when the same region, district, abode, scene, Source of Light event, or Saref story thread changes again.
+- `scopeType + scopeId` says what memory surface is being updated. Keep `scopeId` stable and concrete.
+- `lastEventsDescription` is the current event summary visible to future GM reasoning.
+- `eventDescriptions[]` is archive history; never include it inside `afterlifeChronicleUpdates[]`.
+- `persistentConsequences[]` should describe durable state that can affect future scenes. `openThreads[]` should describe unresolved hooks.
+- Use `afterlifeChronicleUpdates[]` for afterlife memory even when the consequence feels similar to Mortal `worldEventsLog`.
+
+==================================================
 EXAMPLE 27 — Скрытая главная линия Сарефа (`main_story_saref_state`, `saref_reveal_stage_v1`)
 ==================================================
 

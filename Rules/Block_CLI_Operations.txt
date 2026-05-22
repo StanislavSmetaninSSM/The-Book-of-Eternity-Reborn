@@ -287,6 +287,7 @@
                     - game_state/control/pending_npc_trade_inventory_requests.json / [NPC_TRADE_REQUEST] ← MortalWorldProfile-only NPC trade inventory request; in Chaos Sea / Shining Abode treat as wrong-realm repair-only context and do not materialize NPC stock, UpdateNpcTradeInventoryReceipts, or game_state/npcs/*
                     - game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict ← active afterlife spiritual conflict; blocks Soul Gates, Source of Light, return_to_chaos_sea, and reenter_shining_abode until closed through afterlifeSpiritualConflictUpdate.mode=resolve or mode=repair_cancel
                     - game_state/meta/afterlife_entity_profiles.json ← afterlife entity profiles for significant afterlife actors; write only through afterlifeEntityProfileUpdates, afterlifeEntityCustomStateChanges, afterlifeEntityProgressionOverrides, and afterlifeSpecialArtLearningReceipts. If final soul death is attempted, the resolved conflict must include soulDissipationProof with targetStabilityCoefficient and, for the player, soul_state.terminalGameOver.
+                    - game_state/meta/afterlife_chronicles.json ← afterlife external memory for regions, districts, abodes, scenes, Source of Light, and Saref story fallout; write only through afterlifeChronicleUpdates. GM updates write lastEventsDescription and must not author eventDescriptions[], because the client archives previous lastEventsDescription values into that read-only history.
                     - game_state/control/pending_archive_consultation_request.json ← client-authored archive consultation request
                     - game_state/control/pending_archive_project_fuel_request.json ← client-authored archive project fuel request
                     - game_state/control/pending_shining_abode_actions.json ← client-authored Shining core actions; close through canonical shining_abode_state mutation + shining_abode_state.coreActionReceipts[]; every receipt must echo exact quotedCostFeathers/quotedCostLightSparks and forge receipts must echo request mutation payloads; supported actionType values are discover_native_faction, invest_in_faction, complete_project, support_project, unsupport_project, retire_project, open_gates, prepare_incarnation_package, pull_relic_gacha, forge_relic.reshape, forge_relic.retune_property, forge_relic.strengthen_band, forge_relic.stabilize_echo, and forge_relic.uplift_rarity (see OtherGuides/Afterlife_Contract_Matrix.md and Examples/E_CLI_Afterlife_Turns.txt example 14)
@@ -991,7 +992,7 @@
                     **2.1 What "living world" means in afterlife**
                     Afterlife living-world progression is the same design idea as Mortal World progression: important actors continue to pursue goals even when the player is not directly asking about them. The difference is the allowed substrate:
                     - Mortal World uses `worldEventsLog`, NPC movement/activity, threat/location updates, and Mortal World faction systems.
-                    - Afterlife uses Guardians, Guardian Abodes, Soul state, afterlife residents, Guardian projects, Shining Abode state, Shining factions, Shining trade, and curated actor memory.
+                    - Afterlife uses Guardians, Guardian Abodes, Soul state, afterlife residents, Guardian projects, Shining Abode state, Shining factions, Shining trade, afterlife external chronicles, and curated actor memory.
                     - Afterlife never uses Mortal World clocks, weather, locations, regular NPC mechanics, Mortal World factions, or Mortal World quests to close scheduler debt.
                     - A due afterlife cycle is not optional flavor. It is a mandatory off-screen agency pass for the active afterlife realm.
 
@@ -1160,6 +1161,7 @@
 
                     **2.11 Rules for all afterlife contours**
                     - Do not use Mortal World channels (`worldEventsLog`, `factionDataChanges`, `UpdateNPCs`, `UpdateQuests`, `currentLocationData`, `timeChange`, `setWorldTime`, `weatherChange`) to satisfy afterlife debt.
+                    - Use `afterlifeChronicleUpdates[]` / `game_state/meta/afterlife_chronicles.json` for durable afterlife memory instead of `worldEventsLog`, `currentLocationData`, or Mortal map updates. Updates write `lastEventsDescription`; `eventDescriptions[]` is read-only archive history.
                     - If a contour is due, produce concrete fictional consequences or explicitly justify why the due cycle only confirms stability, then still acknowledge the processed cycle in `progressionProcessingReport`.
                     - Actor scope must include every Guardian or resident changed through structured outputs.
                     - If Shining factions/institutions change, actor scope must include the affected institution and any changed Guardian/resident/head actor.
