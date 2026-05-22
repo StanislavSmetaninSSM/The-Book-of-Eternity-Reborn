@@ -262,6 +262,7 @@ public partial class ValidationService
                 AfterlifeEntityProfileState.ResponseProfilesProperty,
                 AfterlifeEntityProfileState.UpdateProperty,
                 AfterlifeEntityProfileState.CustomStateChangesProperty,
+                AfterlifeEntityProfileState.FateCardUnlocksProperty,
                 AfterlifeEntityProfileState.GoalUpdatesProperty,
                 AfterlifeEntityProfileState.QuestUpdatesProperty,
                 AfterlifeEntityProfileState.ActivityUpdatesProperty,

@@ -341,6 +341,83 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal("completed", completed["outcome"]?.GetValue<string>());
     }
 
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_AppliesAfterlifeFateCardUnlocks()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 48, "tier": 4 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "pressure": 2, "guard": 1 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "fateCards": [
+                    {
+                      "cardId": "mirror_oath_returned",
+                      "nameRu": "Возвращенная клятва",
+                      "status": "locked",
+                      "unlockConditions": {
+                        "summary": "Пройти сцену суда."
+                      },
+                      "storyMeaning": "Будущий потенциал Хранителя."
+                    }
+                  ],
+                  "soulDissipationTier": 1,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_mirror",
+                    "summary": "Качать защиту.",
+                    "priorityOrder": ["guard"]
+                  },
+                  "ledger": []
+                }
+              ],
+              "afterlifeFateCardUnlocks": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "cardId": "mirror_oath_returned",
+                  "appliedAtTurn": 32,
+                  "evidence": {
+                    "summary": "Игрок завершил личное испытание Хранителя."
+                  },
+                  "playerUnlocks": [
+                    { "unlockId": "mirror_training", "summary": "Открывает тренировку Зеркальной Защиты." }
+                  ],
+                  "guardianEffects": [
+                    { "effectId": "mirror_memory_restored", "summary": "Хранитель становится смелее." }
+                  ]
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        Assert.False(root.ContainsKey("afterlifeFateCardUnlocks"));
+
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        var card = Assert.Single(profile["fateCards"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("unlocked", card["status"]?.GetValue<string>());
+        Assert.Equal(32, card["appliedAtTurn"]?.GetValue<int>());
+        Assert.NotNull(card["evidence"]);
+        Assert.NotEmpty(card["playerUnlocks"]!.AsArray());
+        Assert.NotEmpty(card["guardianEffects"]!.AsArray());
+    }
+
     [Theory]
     [InlineData("resident", "resident_oath_001", "Резидент Клятв", "Эхо клятвы", "oath_echo", "oath_released")]
     [InlineData("shining_faction_head", "head_ember_001", "Глава Пепельной Хартии", "Брожение хартии", "charter_unrest", "charter_quieted")]

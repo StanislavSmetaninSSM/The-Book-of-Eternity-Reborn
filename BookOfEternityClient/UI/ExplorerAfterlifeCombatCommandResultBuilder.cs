@@ -74,6 +74,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Опасных развеивателей души", CountProfilesWithDissipation(profiles).ToString()),
                     ("Особых духовных искусств", CountNestedArray(profiles, "specialArts").ToString()),
                     ("Кастомных состояний", CountNestedArray(profiles, AfterlifeEntityProfileState.CustomStatesProperty).ToString()),
+                    ("Открытых карт судьбы", CountUnlockedFateCards(profiles).ToString()),
                     ("Активных личных квестов", CountActiveProfileQuests(profiles).ToString())))
         };
 
@@ -82,7 +83,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(new UiTableBlock
             {
                 Title = "Сущности",
-                Columns = ["Имя", "Тип", "Область", "Ресурсы", "Прогрессия", "Духовные искусства", "Особые искусства", "Цели/активность", "Опасность"],
+                Columns = ["Имя", "Тип", "Область", "Ресурсы", "Прогрессия", "Духовные искусства", "Особые искусства", "Карты судьбы", "Цели/активность", "Опасность"],
                 Rows = profiles.OfType<JsonObject>()
                     .Select(profile => new UiTableRow
                     {
@@ -95,6 +96,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                             DescribeProfileProgression(profile),
                             DescribeStandardArts(profile["standardArts"] as JsonObject),
                             DescribeSpecialArts(profile["specialArts"] as JsonArray),
+                            DescribeFateCards(profile["fateCards"] as JsonArray),
                             DescribeProfileAgency(profile),
                             DescribeDissipation(profile)
                         ]
@@ -485,6 +487,20 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             $"{GetString(art, "displayName", GetString(art, "artId", "?"))} {GetNumberOrString(art, "tier", "0")}"));
     }
 
+    private static string DescribeFateCards(JsonArray? fateCards)
+    {
+        if (fateCards == null || fateCards.Count == 0)
+            return "нет";
+
+        return string.Join("; ", fateCards.OfType<JsonObject>().Select(card =>
+        {
+            var name = GetString(card, "nameRu", GetString(card, "cardId", "?"));
+            var status = DescribeFateCardStatus(GetString(card, "status", "locked"));
+            var effects = AfterlifeEntityProfileState.FateCardMechanicalEffectProperties.Sum(propertyName => CountArray(card, propertyName));
+            return effects > 0 ? $"{name}: {status}, эффектов {effects}" : $"{name}: {status}";
+        }));
+    }
+
     private static string DescribeProfileAgency(JsonObject profile)
     {
         var goals = profile["goals"] as JsonObject;
@@ -519,6 +535,15 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             ? $"ОПАСНО: развеивание души {tier}; устойчивость {Math.Max(0, coefficient)}"
             : "не умеет развеивать душу";
     }
+
+    private static string DescribeFateCardStatus(string? status) =>
+        status?.Trim().ToLowerInvariant() switch
+        {
+            "hidden" => "скрыта",
+            "available" => "может быть открыта",
+            "unlocked" => "открыта",
+            _ => "закрыта"
+        };
 
     private static string DescribeNotificationStatus(string status) =>
         string.Equals(status, AfterlifeNotificationState.StatusUnread, StringComparison.OrdinalIgnoreCase)
@@ -786,6 +811,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
     private static int CountNestedArray(JsonArray? owners, string propertyName) =>
         owners?.OfType<JsonObject>().Sum(owner => CountArray(owner, propertyName)) ?? 0;
+
+    private static int CountUnlockedFateCards(JsonArray? profiles) =>
+        profiles?.OfType<JsonObject>()
+            .SelectMany(profile => (profile["fateCards"] as JsonArray)?.OfType<JsonObject>() ?? [])
+            .Count(card => string.Equals(GetString(card, "status", ""), "unlocked", StringComparison.OrdinalIgnoreCase)) ?? 0;
 
     private static int CountActiveProfileQuests(JsonArray? profiles) =>
         profiles?.OfType<JsonObject>()

@@ -44,6 +44,165 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ValidUnlockedFateCard_PassesProfileValidation()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 48, "tier": 4 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [
+                {
+                  "cardId": "mirror_oath_returned",
+                  "nameRu": "Возвращенная клятва",
+                  "status": "unlocked",
+                  "unlockConditions": {
+                    "summary": "Душа прошла сцену суда и отказалась от удобной лжи."
+                  },
+                  "storyMeaning": "Хранитель возвращает часть утраченной памяти.",
+                  "playerUnlocks": [
+                    { "unlockId": "mirror_training", "summary": "Открывает тренировку Зеркальной Защиты." }
+                  ],
+                  "guardianEffects": [
+                    { "effectId": "mirror_memory_restored", "summary": "Хранитель меняет стратегию и становится смелее." }
+                  ],
+                  "appliedAtTurn": 32,
+                  "evidence": {
+                    "summary": "Игрок завершил личное испытание Хранителя."
+                  }
+                }
+              ],
+              "soulDissipationTier": 1,
+              "progressionStrategy": { "strategyId": "strategy_guardian_mirror", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_fate_card_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LockedFateCardWithActiveUnlocks_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 48, "tier": 4 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [
+                {
+                  "cardId": "mirror_oath_returned",
+                  "nameRu": "Возвращенная клятва",
+                  "status": "locked",
+                  "unlockConditions": {
+                    "summary": "Сначала пройти сцену суда."
+                  },
+                  "storyMeaning": "Будущий потенциал Хранителя.",
+                  "trainingUnlocks": [
+                    { "unlockId": "mirror_training", "summary": "Еще не должен быть доступен." }
+                  ]
+                }
+              ],
+              "soulDissipationTier": 1,
+              "progressionStrategy": { "strategyId": "strategy_guardian_mirror", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_fate_card_locked_effects_active", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_FateCardUnlockWithoutEvidence_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 48, "tier": 4 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [
+                {
+                  "cardId": "mirror_oath_returned",
+                  "nameRu": "Возвращенная клятва",
+                  "status": "locked",
+                  "unlockConditions": {
+                    "summary": "Пройти сцену суда."
+                  },
+                  "storyMeaning": "Будущий потенциал Хранителя."
+                }
+              ],
+              "soulDissipationTier": 1,
+              "progressionStrategy": { "strategyId": "strategy_guardian_mirror", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeFateCardUnlocks": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "cardId": "mirror_oath_returned",
+              "appliedAtTurn": 32,
+              "playerUnlocks": [
+                { "unlockId": "mirror_training", "summary": "Открывает тренировку Зеркальной Защиты." }
+              ]
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_fate_card_unlock_missing_evidence", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_CurrentActivityWithoutQuestLink_ReportsContractIssue()
     {
         await WriteProfileStateAsync(BuildValidProfileWithAgencyJson()
