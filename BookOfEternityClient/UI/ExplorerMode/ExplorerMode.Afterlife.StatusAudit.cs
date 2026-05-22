@@ -64,6 +64,7 @@ public partial class ExplorerMode
         var shiningStateRead = await ReadJsonObjectForAfterlifeStatusResultAsync(ShiningAbodeState.StatePath);
         var spiritualConflictRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeSpiritualConflictState.StatePath);
         var entityProfilesRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeEntityProfileState.StatePath);
+        var globalFlagsRead = await ReadJsonObjectForAfterlifeStatusResultAsync(AfterlifeGlobalFlagState.StatePath);
         var soulRoot = soulStateRead.Root;
         var guardiansRoot = guardiansStateRead.Root;
         var residentsRoot = residentsStateRead.Root;
@@ -92,9 +93,10 @@ public partial class ExplorerMode
         AppendChaosSeaStatusLines(lines, guardiansRoot, residentsRoot, returnGuardRaw);
         AppendShiningStatusLines(lines, shiningContext);
         AppendAfterlifeSpiritualConflictStatusLines(lines, spiritualConflictRead.Root);
+        AppendAfterlifeGlobalFlagStatusLines(lines, globalFlagsRead.Root);
         AppendMalformedAfterlifeStateStatusLines(
             lines,
-            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead },
+            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead, globalFlagsRead },
             shiningContext?.ReadIssues);
         await AppendAfterlifeProgressionStatusLinesAsync(lines);
 
@@ -119,7 +121,7 @@ public partial class ExplorerMode
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardians.json", guardiansRoot, Color.Cyan1);
         WriteJsonAuditPanel("Полный JSON game_state/meta/guardian_abode_residents.json", residentsRoot, Color.Cyan1);
         WriteMalformedAfterlifeStateAuditPanels(
-            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead },
+            new[] { soulStateRead, guardiansStateRead, residentsStateRead, shiningStateRead, spiritualConflictRead, entityProfilesRead, globalFlagsRead },
             shiningContext?.ReadIssues);
         if (shiningContext != null)
         {
@@ -133,6 +135,7 @@ public partial class ExplorerMode
         }
         WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", spiritualConflictRead.Root, Color.Cyan1);
         WriteJsonAuditPanel($"Полный JSON {AfterlifeEntityProfileState.StatePath}", entityProfilesRead.Root, Color.Cyan1);
+        WriteJsonAuditPanel($"Полный JSON {AfterlifeGlobalFlagState.StatePath}", BuildPlayerFacingAfterlifeGlobalFlagsAudit(globalFlagsRead.Root), Color.Cyan1);
         await WriteAfterlifeProgressionAuditPanelsAsync();
         WaitForKey();
     }
@@ -153,6 +156,52 @@ public partial class ExplorerMode
         lines.Add($"  • Напряжение сторон (side strain): игрок=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/], противник=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
         lines.Add($"  • Состояние завершения (resolutionState): [white]{Markup.Escape(FormatResolutionStateLabel(AfterlifeSpiritualConflictState.GetNodeString(active["resolutionState"])))}[/]");
         lines.Add($"  • Обмены действиями (exchangeLog): [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
+    }
+
+    private static void AppendAfterlifeGlobalFlagStatusLines(List<string> lines, JsonObject? flagsRoot)
+    {
+        lines.Add("");
+        lines.Add("[bold]Глобальные флаги посмертия[/] [dim](afterlife global flags)[/]:");
+        if (flagsRoot?[AfterlifeGlobalFlagState.FlagsProperty] is not JsonArray flags)
+        {
+            lines.Add("  • Файл глобальных флагов не найден или пуст.");
+            return;
+        }
+
+        var visibleFlags = flags.OfType<JsonObject>()
+            .Where(flag => string.Equals(AfterlifeGlobalFlagState.GetNodeString(flag["visibility"]), "visible", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var hiddenCount = flags.Count - visibleFlags.Count;
+        lines.Add($"  • Видимых глобальных фактов: [white]{visibleFlags.Count}[/]; скрытых/GM-only: [white]{hiddenCount}[/].");
+        foreach (var flag in visibleFlags.Take(5))
+        {
+            var flagId = AfterlifeGlobalFlagState.GetNodeString(flag["flagId"]) ?? "unknown";
+            var category = AfterlifeGlobalFlagState.GetNodeString(flag["category"]) ?? "unknown";
+            var state = AfterlifeGlobalFlagState.GetNodeString(flag["state"]) ?? "unknown";
+            var reason = AfterlifeGlobalFlagState.GetNodeString(flag["reason"]) ?? "без описания";
+            lines.Add($"  • [white]{Markup.Escape(flagId)}[/] ({Markup.Escape(category)}, {Markup.Escape(state)}): {Markup.Escape(reason)}");
+        }
+    }
+
+    private static JsonObject? BuildPlayerFacingAfterlifeGlobalFlagsAudit(JsonObject? flagsRoot)
+    {
+        if (flagsRoot == null)
+            return null;
+
+        var clone = flagsRoot.DeepClone().AsObject();
+        if (clone[AfterlifeGlobalFlagState.FlagsProperty] is not JsonArray flags)
+            return clone;
+
+        var visibleFlags = new JsonArray();
+        foreach (var flag in flags.OfType<JsonObject>())
+        {
+            if (string.Equals(AfterlifeGlobalFlagState.GetNodeString(flag["visibility"]), "visible", StringComparison.OrdinalIgnoreCase))
+                visibleFlags.Add(flag.DeepClone());
+        }
+
+        clone[AfterlifeGlobalFlagState.FlagsProperty] = visibleFlags;
+        clone["hiddenFlagCount"] = flags.Count - visibleFlags.Count;
+        return clone;
     }
 
     private static void AppendMalformedAfterlifeStateStatusLines(

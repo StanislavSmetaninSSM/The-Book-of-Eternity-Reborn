@@ -8469,6 +8469,93 @@ Player-facing notification -> derive from canonical state/receipts; do not autho
 ```
 
 ==================================================
+EXAMPLE 28 — Глобальные флаги посмертия (`afterlife_global_flags_v1`)
+==================================================
+
+Scenario:
+- A hidden Saref clue becomes a durable afterlife fact.
+- The canonical file is `game_state/meta/afterlife_global_flags.json`.
+- The accepted response uses `afterlifeGlobalFlagUpdates[]`; the client normalizes it into canonical `flags[]`.
+- This is afterlife-only. Do not use Mortal `worldStateFlags` or `removeWorldStateFlags`.
+- Hidden/gm_only flags must not leak into normal player UI or narrative.
+- Do not delete a flag by resending a shorter `flags[]`; mark it `state=obsolete` with `obsoleteReason`.
+
+Valid response fragment:
+
+```json
+{
+  "response": "В зеркальной воде остается знак: белое перо с черной прожилкой. Пока это только тревожный след.",
+  "gm_thoughts_markdown": "Actor Brain / глобальные флаги: игрок нашел стойкую зацепку по Крыльям Ангелов, но revealStage Сарефа еще не открыт. Флаг остается hidden и не должен появиться в обычном UI.",
+  "afterlifeGlobalFlagUpdates": [
+    {
+      "flagId": "wings_route_hidden",
+      "category": "saref",
+      "state": "active",
+      "visibility": "hidden",
+      "createdAtTurn": 45,
+      "updatedAtTurn": 45,
+      "reason": "Игрок нашел маршрутный след Крыльев Ангелов, но еще не знает, что именно искать.",
+      "evidence": "memory_scene_white_lodge:route_fragment_black_gate",
+      "linkedActors": [ "guardian:azalia", "faction:wings_of_angels" ],
+      "linkedChronicles": [ "saref_main_thread", "memory_scene_azalia_q4" ],
+      "gmThoughtsSummary": "ГМ фиксирует скрытый afterlife global flag без раскрытия игроку."
+    }
+  ]
+}
+```
+
+Canonical normalized state shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "flags": [
+    {
+      "flagId": "wings_route_hidden",
+      "category": "saref",
+      "state": "active",
+      "visibility": "hidden",
+      "createdAtTurn": 45,
+      "updatedAtTurn": 45,
+      "reason": "Игрок нашел маршрутный след Крыльев Ангелов, но еще не знает, что именно искать.",
+      "evidence": "memory_scene_white_lodge:route_fragment_black_gate",
+      "linkedActors": [ "guardian:azalia", "faction:wings_of_angels" ],
+      "linkedChronicles": [ "saref_main_thread", "memory_scene_azalia_q4" ]
+    }
+  ]
+}
+```
+
+Obsolete update instead of deletion:
+
+```json
+{
+  "response": "Теперь это уже не намек: имя Сарефа произнесено вслух.",
+  "gm_thoughts_markdown": "Глобальный флаг wings_route_hidden устарел, потому что canonical main_story_saref_state теперь раскрыл имя. Удалять флаг нельзя; помечаю obsolete.",
+  "afterlifeGlobalFlagUpdates": [
+    {
+      "flagId": "wings_route_hidden",
+      "category": "saref",
+      "state": "obsolete",
+      "visibility": "hidden",
+      "updatedAtTurn": 52,
+      "reason": "Скрытый маршрутный намек заменен раскрытым состоянием основной линии.",
+      "evidence": "main_story_saref_state.revealStage:name_revealed",
+      "obsoleteReason": "Canonical Saref reveal state теперь является более точным источником правды.",
+      "gmThoughtsSummary": "ГМ закрывает старый hidden флаг через obsoleteReason, не удаляя историю."
+    }
+  ]
+}
+```
+
+Correct reasoning checklist:
+- `afterlifeGlobalFlagUpdates[]` is a targeted command surface; do not rewrite `flags[]` by hand unless repairing canonical state.
+- `gmThoughtsSummary` is mandatory on updates, and `gm_thoughts_markdown` should explain why the global fact changed.
+- Supported `category` values: `saref`, `source_of_light`, `guardian_memory`, `chaos_politics`, `shining_politics`, `soul_dissipation`, `realm_lifecycle`, `relationship_gate`.
+- `visibility=visible` may be shown to the player; `hidden` and `gm_only` are private continuity facts.
+- A global flag cannot override stricter state: `main_story_saref_state.json`, Source of Light reward tuple, Shining faction lifecycle, and spiritual conflict proofs remain authoritative.
+
+==================================================
 MATH ASSISTANT EXAMPLES
 ==================================================
 

@@ -59,6 +59,13 @@
       "responseSurface": "diceAudit.difficultyAudit / rewardAudit.difficultyAudit"
     },
     {
+      "contractId": "afterlife_global_flags_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_global_flags.json",
+      "responseSurface": "afterlifeGlobalFlagUpdates",
+      "description": "Afterlife-only global flags with flags[], category, state, visibility, hidden/gm_only privacy, obsoleteReason instead of deletion, gmThoughtsSummary, and explicit separation from Mortal worldStateFlags."
+    },
+    {
       "contractId": "saref_reveal_stage_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/main_story_saref_state.json",
@@ -1540,6 +1547,11 @@
       "exampleNumber": 27,
       "runtimeScenarioIds": [],
       "exemptionReason": "The Saref main-story example documents the canonical hidden-state contract, no-spoiler route invariants, /сареф найти_крылья pending request, and sarefMainStoryUpdate closure modes; dedicated SarefMainStoryState validation and documentation coverage tests cover runtime behavior."
+    },
+    {
+      "exampleNumber": 28,
+      "runtimeScenarioIds": [],
+      "exemptionReason": "The afterlife global flags example documents targeted update, hidden visibility, obsolete flag, and worldStateFlags separation; dedicated AfterlifeGlobalFlag validation and normalizer tests cover runtime behavior."
     }
   ]
 }

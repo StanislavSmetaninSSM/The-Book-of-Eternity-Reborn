@@ -137,6 +137,7 @@ public static class FileMapping
         ["afterlifeEntityProgressionOverrides"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeSpecialArtLearningReceipts"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeChronicleUpdates"] = "game_state/meta/afterlife_chronicles.json",
+        ["afterlifeGlobalFlagUpdates"] = "game_state/meta/afterlife_global_flags.json",
         ["afterlifeStoryOutline"] = "game_state/meta/afterlife_story_outline.json",
         ["sarefMainStoryState"] = "game_state/meta/main_story_saref_state.json",
         ["sarefMainStoryUpdate"] = "game_state/meta/main_story_saref_state.json",
