@@ -68,6 +68,7 @@ public sealed class ExplorerWebCommandService
         await _stateManager.RefreshGameStateAsync();
         var command = parsed.BuilderCommand;
         var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
+        var builderCommand = parsed.Subcommand == null ? commandToken : parsed.CanonicalCommand;
         if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Math)
             return ExplorerMathCommandResultBuilder.Build(command);
 
@@ -88,7 +89,7 @@ public sealed class ExplorerWebCommandService
         var result = descriptor.BrowserHandlerKind switch
         {
             ExplorerCommandBrowserHandlerKind.UniversalMeta => await ExplorerUniversalMetaCommandResultBuilder.TryBuildAsync(
-                commandToken,
+                builderCommand,
                 _stateManager,
                 _fs,
                 _localization),

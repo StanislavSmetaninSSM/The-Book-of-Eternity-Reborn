@@ -27,7 +27,11 @@ public static class ExplorerCommandCatalog
         D("system_guardians", ExplorerCommandGroup.UniversalMeta, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/system_guardians", "/системные_хранители", "/извечные_хранители"]),
         D("saref_story", ExplorerCommandGroup.SarefStory, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/saref", "/сареф", "/saref_story", "/история_сарефа", "/wings_of_angels", "/крылья_над_бездной"], subcommands:
         [
-            new("find_wings", ["find_wings", "find wings", "найти_крылья", "найти крылья"], "/сареф найти_крылья", BrowserStatus: ExplorerCommandMigrationStatus.ConsoleOnlyTemporarily, FollowUpIssue: "#592", Reason: "Поиск Крыльев Ангелов распознан, но браузерная write-форма будет перенесена отдельной задачей #592.")
+            new("find_wings", ["find_wings", "find wings", "найти_крылья", "найти крылья"], "/сареф найти_крылья", BrowserStatus: ExplorerCommandMigrationStatus.MutatingParity),
+            new("use_advantage", ["use_advantage", "use advantage", "преимущество", "использовать_преимущество", "использовать преимущество"], "/сареф преимущество", BrowserStatus: ExplorerCommandMigrationStatus.MutatingParity),
+            new("confrontation", ["confrontation", "confront", "final", "финал", "конфронтация", "сразиться"], "/сареф конфронтация", BrowserStatus: ExplorerCommandMigrationStatus.MutatingParity),
+            new("break_oath", ["break_oath", "break oath", "разорвать_клятву", "разорвать клятву", "разрыв_клятвы", "разрыв клятвы"], "/сареф разорвать_клятву", BrowserStatus: ExplorerCommandMigrationStatus.MutatingParity),
+            new("agenda", ["agenda", "assignment", "поручение", "повестка", "задание"], "/сареф поручение", BrowserStatus: ExplorerCommandMigrationStatus.MutatingParity)
         ]),
         D("saref_memory_scene", ExplorerCommandGroup.SarefStory, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.UniversalMeta, ["/воспоминание", "/воспоминание_статус", "/воспоминание_начать", "/воспоминание_способности"], subcommands:
         [
