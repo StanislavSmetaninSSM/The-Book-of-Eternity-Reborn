@@ -397,6 +397,7 @@ public partial class ValidationService
                normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeActiveThreatState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(ChaosSeaGuardianPoliticsState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeChronicleState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeStoryOutlineState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase) ||
@@ -477,6 +478,10 @@ public partial class ValidationService
             else if (normalized.Equals(AfterlifeActiveThreatState.StatePath, StringComparison.OrdinalIgnoreCase))
             {
                 groups.Add("afterlife active threats");
+            }
+            else if (normalized.Equals(ChaosSeaGuardianPoliticsState.StatePath, StringComparison.OrdinalIgnoreCase))
+            {
+                groups.Add("Chaos Sea Guardian politics");
             }
             else if (normalized.Equals(AfterlifeChronicleState.StatePath, StringComparison.OrdinalIgnoreCase))
             {

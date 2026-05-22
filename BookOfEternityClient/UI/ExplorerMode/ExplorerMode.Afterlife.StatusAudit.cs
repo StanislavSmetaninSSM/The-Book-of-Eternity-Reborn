@@ -105,7 +105,7 @@ public partial class ExplorerMode
         lines.Add("");
         lines.Add("[bold]Куда смотреть дальше:[/]");
         lines.Add("  • /chaos_sea — Хранители, Обители, ожидающие/контрольные контракты и действия Моря Хаоса.");
-        lines.Add("  • /feathers, /afterlife_archive, /afterlife_inbox, /guardian_projects — детальные аудит-панели ресурсов, архива, ответов ГМ и проектов.");
+        lines.Add("  • /feathers, /afterlife_archive, /afterlife_inbox, /guardian_projects, /guardian_politics — детальные аудит-панели ресурсов, архива, ответов ГМ, проектов и политики Хранителей.");
         lines.Add("  • /shining_abode, /shining_politics — Сияющая Обитель, Врата, торговля/ковка, фракции, резиденты, проекты и политические квитанции.");
 
         Clear();

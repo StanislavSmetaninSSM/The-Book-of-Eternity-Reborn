@@ -181,6 +181,7 @@ public partial class ExplorerMode
             table.AddRow("[yellow]/abode_power[/]", "[yellow]/сила_обители[/]", "[yellow]Журнал силы Обителей и её причин[/]");
             table.AddRow("[yellow]/abode_offering[/]", "[yellow]/подношение_обители[/]", "[yellow]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[yellow]/guardian_projects[/]", "[yellow]/проекты_хранителей[/]", "[yellow]Подробный журнал проектов хранителей[/]");
+            table.AddRow("[yellow]/guardian_politics[/]", "[yellow]/политика_хранителей[/]", "[yellow]Политика, союзы, долги и влияние Хранителей Моря Хаоса[/]");
             table.AddRow("[yellow]/soul[/]", "[yellow]/душа[/]", "[yellow]Состояние души и мета-прогрессия[/]");
             table.AddRow("[yellow]/soul_relics[/]", "[yellow]/реликвии[/]", "[yellow]Реликвии души[/]");
             table.AddRow("[yellow]/afterlife_archive[/]", "[yellow]/архив_души[/]", "[yellow]Архив знаний и тайн, переживших смерть[/]");
@@ -221,6 +222,7 @@ public partial class ExplorerMode
             table.AddRow("[blue]/abode_power[/]", "[blue]/сила_обители[/]", "[blue]Журнал силы Обителей и её причин[/]");
             table.AddRow("[blue]/abode_offering[/]", "[blue]/подношение_обители[/]", "[blue]Поднести Перья, Реликвию Души или запись Архива выбранной Обители[/]");
             table.AddRow("[blue]/guardian_projects[/]", "[blue]/проекты_хранителей[/]", "[blue]Подробный журнал проектов хранителей[/]");
+            table.AddRow("[blue]/guardian_politics[/]", "[blue]/политика_хранителей[/]", "[blue]Политика, союзы, долги и влияние Хранителей Моря Хаоса[/]");
             table.AddRow("[blue]/soul[/]", "[blue]/душа[/]", "[blue]Состояние души (перья, просветление, история жизней)[/]");
             table.AddRow("[blue]/soul_relics[/]", "[blue]/реликвии[/]", "[blue]Реликвии души (экипировка, хранилище)[/]");
             table.AddRow("[blue]/afterlife_archive[/]", "[blue]/архив_души[/]", "[blue]Архив знаний и тайн, переживших смерть[/]");
@@ -250,7 +252,7 @@ public partial class ExplorerMode
             table.AddRow("", "", "");
             table.AddRow("[dim]💡 Говорите с Хранителем свободным текстом:[/]", "", "");
             table.AddRow("[dim]   торговать, брать квесты, менять реликвии, сменить хранителя[/]", "", "");
-            table.AddRow("[dim]💡 Для аудита перед ходом: /status, /afterlife_inbox, /feathers, /afterlife_archive, /guardian_projects, /abode_offering.[/]", "", "");
+            table.AddRow("[dim]💡 Для аудита перед ходом: /status, /afterlife_inbox, /feathers, /afterlife_archive, /guardian_projects, /guardian_politics, /abode_offering.[/]", "", "");
             table.AddRow("[dim]💡 Если сохранённая Сияющая Обитель важна: /shining_abode показывает Врата, пакет, квитанции ядра и предпросмотры торговли/кузни; /shining_politics показывает политические квитанции и ожидающие контракты; /status показывает компактные блокеры Обители.[/]", "", "");
         }
         else

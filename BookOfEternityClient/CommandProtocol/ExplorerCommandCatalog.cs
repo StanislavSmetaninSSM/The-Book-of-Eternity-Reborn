@@ -71,6 +71,7 @@ public static class ExplorerCommandCatalog
         D("guardians", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/guardians", "/хранители"]),
         D("abode_power", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/abode_power", "/сила_обители"]),
         D("guardian_projects", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/guardian_projects", "/проекты_хранителей"]),
+        D("guardian_politics", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/guardian_politics", "/политика_хранителей"]),
         D("abodes", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/abodes", "/обители"]),
         D("gacha", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.ChaosSea, ["/gacha", "/гача"]),
         D("abode_offering", ExplorerCommandGroup.ChaosSea, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/abode_offering", "/подношение_обители"], browserStatus: ExplorerCommandMigrationStatus.MutatingParity),

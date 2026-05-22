@@ -18,6 +18,7 @@ public static class ExplorerChaosSeaCommandResultBuilder
         Guardians,
         AbodePower,
         GuardianProjects,
+        GuardianPolitics,
         Abodes,
         Gacha
     }
@@ -33,6 +34,8 @@ public static class ExplorerChaosSeaCommandResultBuilder
             ["/сила_обители"] = CommandKind.AbodePower,
             ["/guardian_projects"] = CommandKind.GuardianProjects,
             ["/проекты_хранителей"] = CommandKind.GuardianProjects,
+            ["/guardian_politics"] = CommandKind.GuardianPolitics,
+            ["/политика_хранителей"] = CommandKind.GuardianPolitics,
             ["/abodes"] = CommandKind.Abodes,
             ["/обители"] = CommandKind.Abodes,
             ["/gacha"] = CommandKind.Gacha,
@@ -62,6 +65,7 @@ public static class ExplorerChaosSeaCommandResultBuilder
                 new(GuardianProjectState.TrackerPath, "journal", "Записей журнала"),
                 new(GuardiansPath, "guardians", "Хранителей")
             ]),
+            CommandKind.GuardianPolitics => await BuildGuardianPolitics(normalizedCommand, fs),
             CommandKind.Abodes => await BuildAbodes(normalizedCommand, fs),
             CommandKind.Gacha => await BuildGacha(normalizedCommand, fs),
             _ => null
@@ -163,6 +167,119 @@ public static class ExplorerChaosSeaCommandResultBuilder
 
         AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
         AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", guardians);
+        return Completed(command, blocks);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildGuardianPolitics(string command, FileSystemManager fs)
+    {
+        var politics = await ReadJson(fs, ChaosSeaGuardianPoliticsState.StatePath);
+        if (politics.Node == null)
+            return MissingOrMalformed(command, "Политика Хранителей", politics);
+
+        var root = politics.Node;
+        var relations = VisibleObjects(root[ChaosSeaGuardianPoliticsState.RelationsProperty] as JsonArray).ToList();
+        var projects = VisibleObjects(root[ChaosSeaGuardianPoliticsState.ProjectsProperty] as JsonArray).ToList();
+        var zones = VisibleObjects(root[ChaosSeaGuardianPoliticsState.InfluenceZonesProperty] as JsonArray).ToList();
+        var chronicle = VisibleObjects(root[ChaosSeaGuardianPoliticsState.ChronicleProperty] as JsonArray).ToList();
+        var hiddenCount =
+            HiddenCount(root[ChaosSeaGuardianPoliticsState.RelationsProperty] as JsonArray) +
+            HiddenCount(root[ChaosSeaGuardianPoliticsState.ProjectsProperty] as JsonArray) +
+            HiddenCount(root[ChaosSeaGuardianPoliticsState.InfluenceZonesProperty] as JsonArray) +
+            HiddenCount(root[ChaosSeaGuardianPoliticsState.ChronicleProperty] as JsonArray);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Политика Хранителей",
+                Grid(
+                    ("Видимых связей", relations.Count.ToString()),
+                    ("Видимых проектов", projects.Count.ToString()),
+                    ("Видимых зон влияния", zones.Count.ToString()),
+                    ("Видимых записей хроники", chronicle.Count.ToString()),
+                    ("Скрытых записей", hiddenCount.ToString())))
+        };
+
+        if (relations.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Связи Хранителей",
+                Columns = ["Источник", "Цель", "Тип", "Отношение", "Причина"],
+                Rows = relations.Select(static relation => new UiTableRow
+                {
+                    Cells =
+                    [
+                        GetString(relation, "sourceGuardianId"),
+                        GetString(relation, "targetGuardianId"),
+                        TranslateRelationType(GetString(relation, "relationType")),
+                        GetNumberOrString(relation, "attitudeScore", "0"),
+                        GetString(relation, "reason")
+                    ]
+                }).ToList()
+            });
+        }
+
+        if (projects.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Политические проекты",
+                Columns = ["Проект", "Владелец", "Цель", "Статус", "Прогресс", "Сводка"],
+                Rows = projects.Select(static project => new UiTableRow
+                {
+                    Cells =
+                    [
+                        GetString(project, "projectId"),
+                        GetString(project, "ownerGuardianId"),
+                        GetString(project, "targetGuardianId"),
+                        TranslateProjectStatus(GetString(project, "status")),
+                        $"{GetNumberOrString(project, "currentProgress", "0")}/{GetNumberOrString(project, "requiredProgress", "0")}",
+                        GetString(project, "summary")
+                    ]
+                }).ToList()
+            });
+        }
+
+        if (zones.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Зоны влияния",
+                Columns = ["Зона", "Хранитель", "Область", "Влияние", "Контроль"],
+                Rows = zones.Select(static zone => new UiTableRow
+                {
+                    Cells =
+                    [
+                        GetString(zone, "displayName", "zoneId"),
+                        GetString(zone, "guardianId"),
+                        $"{GetString(zone, "scopeType")}:{GetString(zone, "scopeId")}",
+                        GetNumberOrString(zone, "influenceValue", "0"),
+                        GetNumberOrString(zone, "controlLevel", "0")
+                    ]
+                }).ToList()
+            });
+        }
+
+        if (chronicle.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Хроника политики",
+                Columns = ["Ход", "Событие", "Сводка"],
+                Rows = chronicle.Select(static entry => new UiTableRow
+                {
+                    Cells =
+                    [
+                        GetNumberOrString(entry, "turnNumber", "0"),
+                        GetString(entry, "eventType"),
+                        GetString(entry, "summary")
+                    ]
+                }).ToList()
+            });
+        }
+
+        if (blocks.Count == 1)
+            blocks.Add(Message(UiNotificationSeverity.Info, "Нет видимых политических событий", "Скрытые связи не показываются игроку до раскрытия через сцену, хронику или прямое свидетельство."));
+
         return Completed(command, blocks);
     }
 
@@ -385,6 +502,54 @@ public static class ExplorerChaosSeaCommandResultBuilder
             .Where(static array => array != null)
             .Sum(static array => array!.Count);
     }
+
+    private static IEnumerable<JsonObject> VisibleObjects(JsonArray? array)
+    {
+        if (array == null)
+            yield break;
+
+        foreach (var item in array.OfType<JsonObject>())
+        {
+            if (!IsHidden(item))
+                yield return item;
+        }
+    }
+
+    private static int HiddenCount(JsonArray? array) =>
+        array?.OfType<JsonObject>().Count(IsHidden) ?? 0;
+
+    private static bool IsHidden(JsonObject item)
+    {
+        var visibility = GetString(item, "visibility");
+        return string.Equals(visibility, "hidden", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(visibility, "gm_only", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string TranslateRelationType(string relationType) =>
+        relationType.ToLowerInvariant() switch
+        {
+            "alliance" => "союз",
+            "rivalry" => "соперничество",
+            "debt" => "долг",
+            "fear" => "страх",
+            "patronage" => "покровительство",
+            "memory_oath" => "клятва памяти",
+            "trade" => "обмен",
+            "hostility" => "вражда",
+            "hidden_dependency" => "скрытая зависимость",
+            _ => EmptyFallback(relationType)
+        };
+
+    private static string TranslateProjectStatus(string status) =>
+        status.ToLowerInvariant() switch
+        {
+            "active" => "активен",
+            "blocked" => "заблокирован",
+            "completed" => "завершён",
+            "failed" => "провален",
+            "abandoned" => "оставлен",
+            _ => EmptyFallback(status)
+        };
 
     private static string GetString(JsonNode? node, params string[] propertyNames)
     {

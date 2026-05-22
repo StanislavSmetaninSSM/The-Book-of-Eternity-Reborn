@@ -90,6 +90,7 @@ internal static class ExplorerHelpCommandResultBuilder
         Add(table, "/abode_power", "/сила_обители", "Журнал силы Обителей и её причин");
         Add(table, "/abode_offering", "/подношение_обители", "Поднести Перья, Реликвию Души или запись Архива выбранной Обители");
         Add(table, "/guardian_projects", "/проекты_хранителей", "Подробный журнал проектов хранителей");
+        Add(table, "/guardian_politics", "/политика_хранителей", "Отношения, союзы, долги, вражда, зоны влияния и политические проекты Хранителей; скрытые связи не раскрываются");
         Add(table, "/soul", "/душа", "Состояние души (перья, просветление, история жизней)");
         Add(table, "/soul_relics", "/реликвии", "Реликвии души (экипировка, хранилище)");
         Add(table, "/afterlife_archive", "/архив_души", "Архив знаний и тайн, переживших смерть");
@@ -119,7 +120,7 @@ internal static class ExplorerHelpCommandResultBuilder
         Blank(table);
         Note(table, "Говорите с Хранителем свободным текстом:");
         Note(table, "торговать, брать квесты, менять реликвии, сменить хранителя");
-        Note(table, "Для аудита перед ходом: /status, /afterlife_inbox, /feathers, /afterlife_archive, /guardian_projects, /abode_offering.");
+        Note(table, "Для аудита перед ходом: /status, /afterlife_inbox, /feathers, /afterlife_archive, /guardian_projects, /guardian_politics, /abode_offering.");
         Note(table, "Если сохранённая Сияющая Обитель важна: /shining_abode показывает Врата, пакет, квитанции ядра и предпросмотры торговли/кузни; /shining_politics показывает политические квитанции и ожидающие контракты; /status показывает компактные блокеры Обители.");
     }
 

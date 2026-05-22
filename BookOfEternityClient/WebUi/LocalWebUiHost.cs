@@ -429,6 +429,7 @@ public static class LocalWebUiHost
                     <button type="button" data-command="/guardians">Хранители</button>
                     <button type="button" data-command="/abode_power">Сила Обители</button>
                     <button type="button" data-command="/guardian_projects">Проекты Хранителей</button>
+                    <button type="button" data-command="/guardian_politics">Политика Хранителей</button>
                     <button type="button" data-command="/abode_offering">Подношение Обители</button>
                     <button type="button" data-command="/found_guardian_mantle">Основание мантии</button>
                   </div>
