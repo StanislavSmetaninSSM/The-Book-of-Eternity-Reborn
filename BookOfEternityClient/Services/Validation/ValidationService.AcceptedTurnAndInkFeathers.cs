@@ -6857,7 +6857,8 @@ public partial class ValidationService
         if (scope.RelevantActors.Count > 0 &&
             !ContainsAny(normalizedThoughts.ToLowerInvariant(),
                 "## размышления npc", "## 🎭 обязательно: размышления npc", "## npc thoughts",
-                "## npc brain", "## reasoning", "## размышления акторов", "## guardian thoughts"))
+                "## npc brain", "## actor brain", "## actor brain 2.0", "## reasoning",
+                "## размышления акторов", "## мозг акторов", "## guardian thoughts"))
         {
             issues.Add(new ValidationIssue(
                 "output/debug_logs.json", IssueSeverity.Error,

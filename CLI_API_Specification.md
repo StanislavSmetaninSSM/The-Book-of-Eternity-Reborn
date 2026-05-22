@@ -878,7 +878,8 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 
 ### Actor Scope Consistency
 - `gm_thoughts_markdown` scope declaration is not cosmetic.
-- `Relevant actors` must cover the actors changed through structured actor mutation surfaces such as `UpdateNPCs`, actor-specific NPC update arrays, and `UpdateGuardians`.
+- `Actor Brain 2.0` is the preferred shared reasoning protocol for all materially changed actors. It does not replace or simplify Mortal `NPC Brain 2.0`; Mortal NPC reasoning keeps its full knowledge/personality/culture/relationship/attraction-filter depth. For afterlife actors use `OtherGuides/Actor_Brain_2_0.md`: `Guardian pack`, `Resident pack`, and `Shining political` pack.
+- `Relevant actors` must cover the actors changed through structured actor mutation surfaces such as `UpdateNPCs`, actor-specific NPC update arrays, `UpdateGuardians`, resident update/journal/history/receipt surfaces, `shining_abode_state.json.shiningPoliticalActors[]`, and important `shining_abode_state.json.factions[]` political/head-actor changes.
 - `Scene-local` with `Relevant actors: нет` is valid only when no structured actor updates are emitted for that turn.
 - `Guardian-centric` validation must not infer a Guardian from array order; only explicit `activeGuardian` state or the declared scope itself may be used.
 - If a structured actor update contains only an unresolved ID and no reliable name alias can be recovered from current state, the client should not hard-reject solely on that unresolved identity.

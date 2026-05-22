@@ -726,6 +726,7 @@ public partial class ValidationService
         var result = new StructuredActorExtractionResult();
         await CollectStructuredNpcUpdatesAsync(result.Updates);
         await CollectStructuredResidentUpdatesAsync(result.Updates);
+        await CollectStructuredShiningActorUpdatesAsync(result.Updates);
         CollectStructuredGuardianUpdates(result, guardianPolicyContext);
         return result;
     }
@@ -814,6 +815,33 @@ public partial class ValidationService
 
             GuardianAbodeResidentState.NormalizeShape(preTurnRoot);
             CollectResidentCanonicalDiffStructuredActorTouches(preTurnRoot, currentRoot, aliasLookup, updates);
+        }
+        catch
+        {
+            // Ignore consistency extraction failures; generic validation will surface malformed JSON separately.
+        }
+    }
+
+    private async Task CollectStructuredShiningActorUpdatesAsync(List<StructuredActorUpdate> updates)
+    {
+        var currentJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(currentJson))
+            return;
+
+        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath);
+        if (string.IsNullOrWhiteSpace(preTurnJson))
+            return;
+
+        try
+        {
+            if (JsonNode.Parse(currentJson) is not JsonObject currentRoot ||
+                JsonNode.Parse(preTurnJson) is not JsonObject preTurnRoot)
+            {
+                return;
+            }
+
+            CollectShiningPoliticalActorDiffStructuredActorTouches(preTurnRoot, currentRoot, updates);
+            CollectShiningFactionDiffStructuredActorTouches(preTurnRoot, currentRoot, updates);
         }
         catch
         {
@@ -1432,6 +1460,219 @@ public partial class ValidationService
         return result;
     }
 
+    private static void CollectShiningPoliticalActorDiffStructuredActorTouches(
+        JsonObject preTurnRoot,
+        JsonObject currentRoot,
+        List<StructuredActorUpdate> updates)
+    {
+        var previousActors = BuildShiningPoliticalActorMap(preTurnRoot);
+        var currentActors = BuildShiningPoliticalActorMap(currentRoot);
+
+        foreach (var pair in currentActors)
+        {
+            if (previousActors.TryGetValue(pair.Key, out var previousActor) &&
+                JsonNode.DeepEquals(previousActor, pair.Value))
+            {
+                continue;
+            }
+
+            if (TryCreateShiningPoliticalActorStructuredUpdate(pair.Value, out var update))
+                updates.Add(update);
+        }
+
+        foreach (var pair in previousActors)
+        {
+            if (currentActors.ContainsKey(pair.Key))
+                continue;
+
+            if (TryCreateShiningPoliticalActorStructuredUpdate(pair.Value, out var update))
+                updates.Add(update);
+        }
+    }
+
+    private static void CollectShiningFactionDiffStructuredActorTouches(
+        JsonObject preTurnRoot,
+        JsonObject currentRoot,
+        List<StructuredActorUpdate> updates)
+    {
+        var previousFactions = BuildShiningFactionMap(preTurnRoot);
+        var currentFactions = BuildShiningFactionMap(currentRoot);
+        var actorNameLookup = BuildShiningPoliticalActorNameLookup(preTurnRoot, currentRoot);
+
+        foreach (var pair in currentFactions)
+        {
+            if (previousFactions.TryGetValue(pair.Key, out var previousFaction) &&
+                JsonNode.DeepEquals(previousFaction, pair.Value))
+            {
+                continue;
+            }
+
+            if (TryCreateShiningFactionStructuredUpdate(pair.Value, actorNameLookup, out var update))
+                updates.Add(update);
+        }
+
+        foreach (var pair in previousFactions)
+        {
+            if (currentFactions.ContainsKey(pair.Key))
+                continue;
+
+            if (TryCreateShiningFactionStructuredUpdate(pair.Value, actorNameLookup, out var update))
+                updates.Add(update);
+        }
+    }
+
+    private static Dictionary<string, JsonObject> BuildShiningPoliticalActorMap(JsonObject root)
+    {
+        var result = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        if (root["shiningPoliticalActors"] is not JsonArray actors)
+            return result;
+
+        foreach (var actor in actors.OfType<JsonObject>())
+        {
+            var key = GetFirstNonEmptyNodeString(actor, "actorId", "id", "displayName", "name", "actorName");
+            if (string.IsNullOrWhiteSpace(key))
+                continue;
+
+            result[key] = JsonNode.Parse(actor.ToJsonString())!.AsObject();
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, JsonObject> BuildShiningFactionMap(JsonObject root)
+    {
+        var result = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+        if (root["factions"] is not JsonArray factions)
+            return result;
+
+        foreach (var faction in factions.OfType<JsonObject>())
+        {
+            var key = GetFirstNonEmptyNodeString(faction, "factionId", "id", "displayName", "factionName", "name") ??
+                      GetNestedNodeString(faction, "charter", "factionName");
+            if (string.IsNullOrWhiteSpace(key))
+                continue;
+
+            result[key] = JsonNode.Parse(faction.ToJsonString())!.AsObject();
+        }
+
+        return result;
+    }
+
+    private static bool TryCreateShiningPoliticalActorStructuredUpdate(
+        JsonObject actor,
+        out StructuredActorUpdate update)
+    {
+        update = new StructuredActorUpdate();
+
+        var actorId = GetFirstNonEmptyNodeString(actor, "actorId", "id");
+        var displayName = GetFirstNonEmptyNodeString(actor, "displayName", "name", "actorName", "title");
+        var fallback = GetFirstNonEmptyNodeString(actor, "politicalStatus", "currentFactionId");
+        if (string.IsNullOrWhiteSpace(displayName) && string.IsNullOrWhiteSpace(actorId) && string.IsNullOrWhiteSpace(fallback))
+            return false;
+
+        update = new StructuredActorUpdate
+        {
+            ActorType = "ShiningActor",
+            FilePath = ShiningAbodeState.StatePath,
+            Section = "shiningPoliticalActors",
+            DisplayName = !string.IsNullOrWhiteSpace(displayName) ? displayName! : actorId ?? fallback!,
+            HasResolvedName = !string.IsNullOrWhiteSpace(displayName)
+        };
+
+        AddStructuredAlias(update.Aliases, displayName);
+        AddStructuredAlias(update.Aliases, actorId);
+        AddStructuredAlias(update.Aliases, fallback);
+        AddStructuredAlias(update.Aliases, GetNodeString(actor["currentFactionId"]));
+        if (!string.IsNullOrWhiteSpace(actorId))
+            AddStructuredAlias(update.Aliases, $"radiant_actor:{actorId}");
+
+        return update.Aliases.Count > 0;
+    }
+
+    private static bool TryCreateShiningFactionStructuredUpdate(
+        JsonObject faction,
+        IReadOnlyDictionary<string, string> actorNameLookup,
+        out StructuredActorUpdate update)
+    {
+        update = new StructuredActorUpdate();
+
+        var factionId = GetFirstNonEmptyNodeString(faction, "factionId", "id");
+        var displayName = GetFirstNonEmptyNodeString(faction, "displayName", "factionName", "name") ??
+                          GetNestedNodeString(faction, "charter", "factionName");
+        if (string.IsNullOrWhiteSpace(displayName) && string.IsNullOrWhiteSpace(factionId))
+            return false;
+
+        update = new StructuredActorUpdate
+        {
+            ActorType = "ShiningFaction",
+            FilePath = ShiningAbodeState.StatePath,
+            Section = "factions",
+            DisplayName = !string.IsNullOrWhiteSpace(displayName) ? displayName! : factionId!,
+            HasResolvedName = !string.IsNullOrWhiteSpace(displayName)
+        };
+
+        AddStructuredAlias(update.Aliases, displayName);
+        AddStructuredAlias(update.Aliases, factionId);
+        if (faction["leadership"] is JsonObject leadership)
+        {
+            var headActorId = GetFirstNonEmptyNodeString(leadership, "headActorId", "actorId");
+            AddStructuredAlias(update.Aliases, headActorId);
+            AddStructuredAlias(update.Aliases, GetFirstNonEmptyNodeString(leadership, "headDisplayName", "headActorName", "displayName", "name"));
+            if (!string.IsNullOrWhiteSpace(headActorId) &&
+                actorNameLookup.TryGetValue(headActorId!, out var headActorName))
+            {
+                AddStructuredAlias(update.Aliases, headActorName);
+            }
+        }
+
+        return update.Aliases.Count > 0;
+    }
+
+    private static Dictionary<string, string> BuildShiningPoliticalActorNameLookup(params JsonObject[] roots)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var root in roots)
+        {
+            if (root["shiningPoliticalActors"] is not JsonArray actors)
+                continue;
+
+            foreach (var actor in actors.OfType<JsonObject>())
+            {
+                var actorId = GetFirstNonEmptyNodeString(actor, "actorId", "id");
+                var displayName = GetFirstNonEmptyNodeString(actor, "displayName", "name", "actorName", "title");
+                if (!string.IsNullOrWhiteSpace(actorId) && !string.IsNullOrWhiteSpace(displayName))
+                    result[actorId!] = displayName!;
+            }
+        }
+
+        return result;
+    }
+
+    private static string? GetFirstNonEmptyNodeString(JsonObject root, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            var value = GetNodeString(root[propertyName]);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return null;
+    }
+
+    private static string? GetNestedNodeString(JsonObject root, string objectPropertyName, string valuePropertyName)
+    {
+        return root[objectPropertyName] is JsonObject nested
+            ? GetNodeString(nested[valuePropertyName])
+            : null;
+    }
+
+    private static void AddStructuredAlias(ISet<string> aliases, string? alias)
+    {
+        if (!string.IsNullOrWhiteSpace(alias))
+            aliases.Add(alias);
+    }
+
     private bool TryCreateGuardianStructuredActorUpdate(
         JsonElement item,
         Dictionary<string, List<string>> aliasLookup,
@@ -1669,6 +1910,8 @@ public partial class ValidationService
                 {
                     "Guardian" => "structured_guardian_update_out_of_scope",
                     "Resident" => "structured_resident_update_out_of_scope",
+                    "ShiningActor" => "structured_shining_actor_update_out_of_scope",
+                    "ShiningFaction" => "structured_shining_faction_update_out_of_scope",
                     _ => "structured_npc_update_out_of_scope"
                 },
                 actor: update.DisplayName,
