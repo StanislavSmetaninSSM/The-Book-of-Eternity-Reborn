@@ -31,6 +31,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             AfterlifeSpiritualConflictState.StatePath,
             AfterlifeEntityProfileState.StatePath,
+            AfterlifeChronicleState.StatePath,
             SarefMainStoryState.StatePath,
             GuardianAbodeOfferingState.PendingRequestPath,
             GuardianTradeRequestState.PendingRequestPath,
@@ -74,6 +75,29 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.False(string.IsNullOrWhiteSpace(surface.GetProperty("authority").GetString()));
             Assert.Equal(JsonValueKind.Array, surface.GetProperty("docAnchors").ValueKind);
         }
+    }
+
+    [Fact]
+    public void AfterlifeChronicleExternalMemoryContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, examples })
+        {
+            Assert.Contains(AfterlifeChronicleState.StatePath, doc, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeChronicleState.UpdateProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeChronicleState.ChroniclesProperty, doc, StringComparison.Ordinal);
+            Assert.Contains("lastEventsDescription", doc, StringComparison.Ordinal);
+            Assert.Contains("eventDescriptions", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("read-only", apiSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("read-only", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("chaos_sea_region", examples, StringComparison.Ordinal);
+        Assert.Contains("guardian_scene", examples, StringComparison.Ordinal);
     }
 
     [Fact]

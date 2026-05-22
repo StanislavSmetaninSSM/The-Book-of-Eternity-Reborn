@@ -161,6 +161,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeSoulStateAsync(backups);
         await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
         await NormalizeAfterlifeEntityProfilesAsync(backups);
+        await NormalizeAfterlifeChroniclesAsync(backups);
         await NormalizeSarefMainStoryStateAsync(backups);
         await NormalizeFactionCoreAsync(backups);
         await NormalizeNpcTradeCoreAsync(backups);
