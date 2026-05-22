@@ -60,7 +60,7 @@ public sealed class AfterlifeStoryOutlineValidationTests : IDisposable
     public async Task ValidateGameStateAsync_MissingLastUpdatedTurn_ReportsContractIssue()
     {
         await WriteOutlineStateAsync(BuildValidOutlineJson()
-            .Replace(",\n  \"lastUpdatedTurn\": 9", string.Empty, StringComparison.Ordinal));
+            .Replace("\"lastUpdatedTurn\": 9", "\"unusedTestMarker\": 9", StringComparison.Ordinal));
 
         var issues = await _validator.ValidateGameStateAsync();
 
