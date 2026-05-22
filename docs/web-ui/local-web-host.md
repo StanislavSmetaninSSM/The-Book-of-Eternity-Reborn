@@ -220,12 +220,12 @@ Chaos Sea read-only parity currently includes:
 - `/abodes`, `/обители`
 - `/gacha`, `/гача`
 
-Chaos Sea interactive form pending surfaces currently include:
+Chaos Sea mutating parity currently includes:
 
 - `/abode_offering`, `/подношение_обители`
 - `/found_guardian_mantle`, `/учредить_хранителя`
 
-These show the pending contract state, active GM-turn blockers, target choices, and browser DTO prompts. Destructive local writes such as consuming a Soul Relic or Archive entry still require the afterlife write protocol tracked by #591 before the browser can submit them directly.
+These show pending contract state, active GM-turn blockers, target choices, and browser DTO prompts. On submit, the browser uses the shared local write coordinator to create the relevant pending request and to apply local resource consumption where the console flow also does it, including Ink Feather spends, Soul Relic consumption, and Archive-entry consumption.
 
 Shining Abode browser surfaces currently include:
 
@@ -234,7 +234,7 @@ Shining Abode browser surfaces currently include:
 - `/shining_treasury`, `/казначейство`
 - `/source_of_light`, `/источник_света`
 
-The browser versions of `/shining_treasury` and `/source_of_light` are status-only surfaces for now. They do not mutate feathers, sparks, pending files, or capstone request state until the broader interactive/write protocol is implemented.
+`/shining_treasury` and `/source_of_light` have browser mutating parity. Treasury submit operations can deposit, withdraw, claim interest, and exchange through the shared Shining treasury service. Source of Light submit creates the client-owned `game_state/control/pending_source_of_light_capstone.json` request after the same unlock and pending-contract blockers used by console mode.
 
 Afterlife combat and entity browser surfaces currently include:
 
@@ -245,13 +245,13 @@ Afterlife combat and entity browser surfaces currently include:
 - `/spiritual_combat_help`, `/духовный_бой`
 - `/spiritual_arts`, `/духовные_искусства`
 
-The browser afterlife combat/entity status surfaces are read-only. `/afterlife_inbox` does not mark notifications as read and `/spiritual_arts` does not perform local upgrades.
+`/afterlife_inbox` and `/spiritual_arts` have browser mutating parity. Inbox submit can mark one notification or all notifications read. Spiritual Arts submit can upgrade standard arts, learned special arts from `afterlife_entity_profiles.json`, or `spirit_focus` with Чернильные Перья or, in Shining Abode, Искры Света while respecting active-conflict and pending-contract blockers.
 
 Lifecycle/local-turn browser surfaces currently include:
 
 - `/validate`, `/валидация`: runs the same `ValidationService` as the console command and renders grouped issues.
 - `/world_setup`, `/настройка_мира`: shows `incarnation_world_setup.json`, `next_life_scenario_core.json`, current realm, and browser prompts for editing or clearing. On submit, `create_or_edit` writes `game_state/control/incarnation_world_setup.json` and refreshes `game_state/control/next_life_scenario_core.json`; `clear` deletes both.
-- `/spiritual_action`, `/духовное_действие`: shows active afterlife conflict state, response surface, and prompts for the player's spiritual action route tag.
+- `/spiritual_action`, `/духовное_действие`: shows active afterlife conflict state, response surface, and prompts for the player's spiritual action route tag. Submit returns a structured GM-action payload (`AFTERLIFE_SPIRITUAL_ACTION`) for the surrounding turn flow; it does not directly mutate canonical state by itself, matching the console command's route-tag behavior.
 
 Every migrated local-turn protocol result includes a `Локальный ход / GM-turn protocol` panel. It reports whether these artifacts exist:
 
@@ -264,7 +264,7 @@ Every migrated local-turn protocol result includes a `Локальный ход 
 
 If any active GM-turn or rollback/snapshot artifact exists, local-turn command DTOs return `Pending` so the browser can observe the long-running or late-response state without invoking console-only prompts.
 
-Interactive prompt submission is active in the current browser shell. The migrated Mortal World write commands above commit local files directly from forms; the remaining afterlife/Chaos Sea/Shining write forms still stop at DTO/status-only coverage until their follow-up tasks. QTE offer/scene/action protocol is available through the `/api/qte/*` endpoints and the “Проверить QTE” shell panel.
+Interactive prompt submission is active in the current browser shell. Migrated Mortal World, Chaos Sea, Shining Abode, and afterlife combat/entity write commands above commit local files directly from forms where the console command writes local state. QTE offer/scene/action protocol is available through the `/api/qte/*` endpoints and the “Проверить QTE” shell panel.
 
 ## Session Lock And Pending Turns
 
@@ -306,10 +306,8 @@ See also `docs/web-ui/local-ui-session-lock.md` for the lock-file shape and owne
 
 The browser is no longer just a read-only shell, but several flows remain intentionally console-only or browser-status-only until their write UX is fully migrated:
 
-- Interactive multi-step prompt submission is available as a browser prompt-session protocol. Many domain-specific local-turn writes still return accepted answers only; console mode remains the complete path until each write command is migrated.
-- `/shining_treasury` and `/source_of_light` are browser status surfaces. Use console mode for treasury mutations and Source of Light request creation until those write paths are explicitly migrated.
-- `/afterlife_inbox` does not mark notifications as read in the browser.
-- `/spiritual_arts` does not perform local spiritual-art upgrades in the browser.
+- Interactive multi-step prompt submission is available as a browser prompt-session protocol. Some domain-specific local-turn writes still return accepted answers only; console mode remains the complete path until each write command is migrated.
+- `/spiritual_action` returns the same route-tag payload shape as the console command, but the browser shell does not yet provide a full typed turn composer around that payload. Use the returned JSON/text as the GM-action payload for the active turn flow until the broader browser game shell is completed.
 - The hidden Saref/Wings read-only views are migrated. The parser recognizes `/сареф найти_крылья`, `/сареф find_wings`, and equivalent spaced forms, but the mutating Wings search/join/story actions still need their own browser write protocol (#592) and return a structured blocker instead of silently falling back to the story overview.
 
 These limitations are intentional migration boundaries, not separate game rules. Console and browser still use the same local `game_session` data.

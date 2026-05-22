@@ -29,21 +29,29 @@ public sealed class ExplorerWebPromptSessionService
     private readonly LocalUiSessionLockService _lockService;
     private readonly TimeProvider _timeProvider;
     private readonly BrowserMortalWorldWriteService _mortalWorldWriteService;
+    private readonly BrowserAfterlifeWriteService _afterlifeWriteService;
 
     public ExplorerWebPromptSessionService(
         FileSystemManager fs,
+        StateManager? stateManager = null,
         LocalUiSessionLockService? lockService = null,
         TimeProvider? timeProvider = null,
-        BrowserMortalWorldWriteService? mortalWorldWriteService = null)
+        BrowserMortalWorldWriteService? mortalWorldWriteService = null,
+        BrowserAfterlifeWriteService? afterlifeWriteService = null)
     {
         _fs = fs;
         _lockService = lockService ?? new LocalUiSessionLockService(fs, timeProvider);
         _timeProvider = timeProvider ?? TimeProvider.System;
+        var coordinator = new BrowserLocalWriteCoordinator(fs, _lockService, _timeProvider);
         _mortalWorldWriteService = mortalWorldWriteService ?? new BrowserMortalWorldWriteService(
             fs,
-            new BrowserLocalWriteCoordinator(fs, _lockService, _timeProvider),
+            coordinator,
             new ScenarioCoreService(fs, NullLogger<ScenarioCoreService>.Instance),
             _timeProvider);
+        _afterlifeWriteService = afterlifeWriteService ?? new BrowserAfterlifeWriteService(
+            fs,
+            stateManager ?? new StateManager(fs, new Configuration.GameSettings(), NullLogger<StateManager>.Instance),
+            coordinator);
     }
 
     public async Task<ExplorerCommandResult> AttachSessionIfNeededAsync(
@@ -160,6 +168,13 @@ public sealed class ExplorerWebPromptSessionService
         }
 
         var writeResult = await _mortalWorldWriteService.TryApplyAsync(
+            snapshot.Result.Command,
+            answers,
+            snapshot.Owner);
+        if (writeResult.Handled)
+            return await BuildDomainWriteSubmitResultAsync(request.SessionId, snapshot, writeResult);
+
+        writeResult = await _afterlifeWriteService.TryApplyAsync(
             snapshot.Result.Command,
             answers,
             snapshot.Owner);
@@ -354,7 +369,10 @@ public sealed class ExplorerWebPromptSessionService
             "/craft" or "/ремесло" or
             "/abode_offering" or "/подношение_обители" or
             "/found_guardian_mantle" or "/учредить_хранителя" or
-            "/spiritual_action" or "/духовное_действие";
+            "/shining_treasury" or "/казначейство" or
+            "/source_of_light" or "/источник_света" or
+            "/afterlife_inbox" or "/уведомления_загробья" or
+            "/spiritual_arts" or "/духовные_искусства";
     }
 
     private static bool OwnerMatches(PromptSessionSnapshot snapshot, string? ownerId) =>

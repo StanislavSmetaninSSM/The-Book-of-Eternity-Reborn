@@ -143,7 +143,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 Grid(
                     ("Всего", notifications.Count.ToString()),
                     ("Непрочитано", unread.ToString()),
-                    ("Режим браузера", "только просмотр; отметка прочитанным остаётся консольным действием до #574")))
+                    ("Режим браузера", "отметка прочитанным доступна через форму")))
         };
 
         if (notifications.Count > 0)
@@ -171,7 +171,30 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         }
 
         AddRawOrWarning(blocks, $"Полный JSON {AfterlifeNotificationState.NotificationsPath}", read);
-        return Completed(command, blocks);
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "notification_action",
+                    Prompt = "Действие с уведомлениями",
+                    Required = true,
+                    Options =
+                    [
+                        Option("mark_all_read", "Отметить всё", "Пометить все уведомления загробья прочитанными."),
+                        Option("mark_read", "Отметить одно", "Пометить одно уведомление по notificationId.")
+                    ]
+                },
+                new UiTextInputPrompt
+                {
+                    Id = "notification_id",
+                    Prompt = "ID уведомления",
+                    Placeholder = "Только для режима «Отметить одно»"
+                }
+            ]);
     }
 
     private static async Task<ExplorerCommandResult> BuildConflict(string command, FileSystemManager fs)
@@ -287,7 +310,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Сияние", GetNumberOrString(combatProfile, "radianceTier", "0")),
                     ("Средоточие Души", GetNumberOrString(combatProfile, "spiritFocusTier", "0")),
                     ("Особых искусств игрока", (learnedSpecialArts?.Count ?? 0).ToString()),
-                    ("Режим браузера", "только просмотр; локальная прокачка ждёт #574")))
+                    ("Режим браузера", "локальная прокачка доступна через форму")))
         };
 
         blocks.Add(new UiTableBlock
@@ -336,7 +359,30 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         AddRawOrWarning(blocks, "Полный JSON afterlifeCombatProfile", new JsonReadResult(soul.FileExists, combatProfile, soul.Error));
         AddRawOrWarning(blocks, $"Полный JSON {AfterlifeEntityProfileState.StatePath}", profiles);
-        return Completed(command, blocks);
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiTextInputPrompt
+                {
+                    Id = "upgrade_target",
+                    Prompt = "Что прокачать",
+                    Placeholder = "pressure / guard / counter / maneuver / binding / spirit_focus"
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "upgrade_currency",
+                    Prompt = "Валюта прокачки",
+                    Required = true,
+                    Options =
+                    [
+                        Option("ink_feathers", "Чернильные Перья", "Потратить Чернильные Перья души."),
+                        Option("light_sparks", "Искры Света", "Потратить Искры Света в Сияющей Обители.")
+                    ]
+                }
+            ]);
     }
 
     private static UiTableBlock BuildExchangeTable(JsonArray exchangeLog) =>
@@ -798,11 +844,19 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         Completed(command, blocks.AsEnumerable());
 
     private static ExplorerCommandResult Completed(string command, IEnumerable<UiBlock> blocks) =>
+        Result(command, CommandExecutionState.Completed, blocks);
+
+    private static ExplorerCommandResult Result(
+        string command,
+        CommandExecutionState state,
+        IEnumerable<UiBlock> blocks,
+        IEnumerable<UiPrompt>? prompts = null) =>
         new()
         {
             Command = command,
-            State = CommandExecutionState.Completed,
-            Blocks = blocks.ToList()
+            State = state,
+            Blocks = blocks.ToList(),
+            Prompts = prompts?.ToList() ?? []
         };
 
     private static UiPanelBlock Panel(string title, params UiBlock[] blocks) =>
@@ -837,6 +891,9 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             Title = title,
             Json = node.DeepClone()
         };
+
+    private static UiSelectionOption Option(string value, string label, string description) =>
+        new() { Value = value, Label = label, Description = description };
 
     private sealed record JsonReadResult(bool FileExists, JsonNode? Node, string? Error);
 }

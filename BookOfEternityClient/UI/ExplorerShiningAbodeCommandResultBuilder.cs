@@ -132,7 +132,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         {
             Panel("Казначейство Сияющей Обители",
                 Grid(
-                    ("Режим браузера", "только просмотр; операции записи ждут #574"),
+                    ("Режим браузера", "локальные операции доступны через форму"),
                     ("Чернильные Перья души", DescribeInkFeathers(soul.Node)),
                     ("Искры Света", GetNumberOrString(shining.Node, "lightSparks", "0")),
                     ("Вклад Перьями", GetNumberOrString(treasury, "depositedInkFeathers", "0")),
@@ -142,13 +142,38 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     ("Искр обменяно в цикле", GetNumberOrString(treasury, "exchangeThisCycleLightSparks", "0")))),
             Message(
                 UiNotificationSeverity.Info,
-                "Запись заблокирована в браузере",
-                "Внести/вывести Перья, получить проценты или обменять Перья на Искры можно будет после browser local-turn/write UX в #574.")
+                "Браузерная запись",
+                "Форма использует общий протокол локальной блокировки/отката UI и блокируется при активном ходе ГМа.")
         };
 
         AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
         AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
-        return Completed(command, blocks);
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "treasury_operation",
+                    Prompt = "Операция казначейства",
+                    Required = true,
+                    Options =
+                    [
+                        Option("deposit", "Внести Перья", "Перевести Чернильные Перья души во вклад казны."),
+                        Option("withdraw", "Вывести Перья", "Вернуть Чернильные Перья из вклада душе."),
+                        Option("claim_interest", "Получить проценты", "Начислить и получить проценты текущего сияющего цикла."),
+                        Option("exchange", "Обменять на Искры", "Потратить Перья на Искры Света в рамках лимита цикла.")
+                    ]
+                },
+                new UiTextInputPrompt
+                {
+                    Id = "treasury_amount",
+                    Prompt = "Сумма",
+                    Placeholder = "Для процентов можно оставить 0"
+                }
+            ]);
     }
 
     private static async Task<ExplorerCommandResult> BuildSourceOfLight(string command, FileSystemManager fs)
@@ -162,21 +187,37 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         {
             Panel("Источник Света",
                 Grid(
-                    ("Режим браузера", "только просмотр; создание pending ждёт #574"),
+                    ("Режим браузера", "создание ожидающего запроса доступно через форму"),
                     ("Статус", status),
                     ("Сияние", DescribeRadiance(shining.Node)),
                     ("Награда-пассив", SourceOfLightCapstoneState.PassiveId),
                     ("Награда-реликвия", SourceOfLightCapstoneState.RelicId))),
             Message(
                 UiNotificationSeverity.Info,
-                "Создание запроса заблокировано в браузере",
-                "Открытие Источника Света создаёт pending contract и остаётся console-only до browser local-turn/write UX в #574.")
+                "Браузерная запись",
+                "Форма создаёт pending_source_of_light_capstone.json только если требования полного Сияния выполнены.")
         };
 
         AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
         AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
         AddRawOrWarning(blocks, $"Полный JSON {SourceOfLightCapstoneState.PendingRequestPath}", pending);
-        return Completed(command, blocks);
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "source_of_light_action",
+                    Prompt = "Действие Источника Света",
+                    Required = true,
+                    Options =
+                    [
+                        Option("open", "Открыть Источник", "Создать клиентский ожидающий запрос для вершинной сцены.")
+                    ]
+                }
+            ]);
     }
 
     private static async Task<JsonReadResult> ReadJson(FileSystemManager fs, string path)
@@ -208,11 +249,19 @@ public static class ExplorerShiningAbodeCommandResultBuilder
     }
 
     private static ExplorerCommandResult Completed(string command, IEnumerable<UiBlock> blocks) =>
+        Result(command, CommandExecutionState.Completed, blocks);
+
+    private static ExplorerCommandResult Result(
+        string command,
+        CommandExecutionState state,
+        IEnumerable<UiBlock> blocks,
+        IEnumerable<UiPrompt>? prompts = null) =>
         new()
         {
             Command = command,
-            State = CommandExecutionState.Completed,
-            Blocks = blocks.ToList()
+            State = state,
+            Blocks = blocks.ToList(),
+            Prompts = prompts?.ToList() ?? []
         };
 
     private static UiPanelBlock Panel(string title, params UiBlock[] blocks) =>
@@ -237,6 +286,9 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             Title = title,
             Message = message
         };
+
+    private static UiSelectionOption Option(string value, string label, string description) =>
+        new() { Value = value, Label = label, Description = description };
 
     private static UiRawJsonBlock Raw(string title, JsonNode node) =>
         new()

@@ -29,7 +29,7 @@ public sealed class ExplorerWebCommandService
         _stateManager = stateManager;
         _localization = localization;
         _validationService = validationService;
-        _promptSessions = promptSessions ?? new ExplorerWebPromptSessionService(fs);
+        _promptSessions = promptSessions ?? new ExplorerWebPromptSessionService(fs, stateManager);
     }
 
     public async Task<ExplorerCommandResult> ExecuteAsync(ExplorerWebCommandRequest? request)

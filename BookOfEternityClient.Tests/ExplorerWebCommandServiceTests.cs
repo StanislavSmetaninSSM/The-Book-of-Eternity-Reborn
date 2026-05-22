@@ -435,6 +435,224 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SubmitPromptSessionAsync_ShiningTreasuryDeposit_UpdatesTreasuryAndSoulFeathers()
+    {
+        await SeedShiningAbodeFilesAsync();
+        _fs.DeleteFile("game_state/control/pending_shining_abode_actions.json");
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/shining_treasury",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["treasury_operation"] = JsonValue.Create("deposit"),
+                ["treasury_amount"] = JsonValue.Create(4)
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var shining = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal(24, shining["treasury"]!["depositedInkFeathers"]!.GetValue<int>());
+        Assert.Equal(20, soul["inkFeathers"]!["current"]!.GetValue<int>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_ShiningTreasuryDeposit_IgnoresNonCostCorePendingAction()
+    {
+        await SeedShiningAbodeFilesAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/shining_treasury",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["treasury_operation"] = JsonValue.Create("deposit"),
+                ["treasury_amount"] = JsonValue.Create(4)
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var shining = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
+        Assert.Equal(24, shining["treasury"]!["depositedInkFeathers"]!.GetValue<int>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_SourceOfLight_WritesPendingCapstoneRequest()
+    {
+        await SeedShiningAbodeFilesAsync();
+        _fs.DeleteFile("game_state/control/pending_shining_abode_actions.json");
+        var shining = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
+        shining["radiance"] = new JsonObject { ["experience"] = 580, ["tier"] = 4 };
+        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", shining.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/source_of_light",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["source_of_light_action"] = JsonValue.Create("open")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var request = JsonNode.Parse((await _fs.ReadFileAsync(SourceOfLightCapstoneState.PendingRequestPath))!)!.AsObject();
+        Assert.StartsWith("source_of_light_capstone:", request["requestId"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(580, request["radianceExperienceAtRequest"]!.GetValue<int>());
+        Assert.Equal(4, request["radianceTierAtRequest"]!.GetValue<int>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_AfterlifeInboxMarkAllRead_UpdatesNotifications()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/afterlife_inbox",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["notification_action"] = JsonValue.Create("mark_all_read")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var notifications = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeNotificationState.NotificationsPath))!)!.AsObject();
+        Assert.Equal(AfterlifeNotificationState.StatusRead, notifications["notifications"]![0]!["status"]!.GetValue<string>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_SpiritualArtsUpgrade_UpdatesSoulProfile()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeConflict"] = null,
+                ["recentConflicts"] = new JsonArray()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soul["inkFeathers"] = new JsonObject { ["current"] = 200, ["total"] = 200 };
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/spiritual_arts",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["upgrade_target"] = JsonValue.Create("pressure"),
+                ["upgrade_currency"] = JsonValue.Create("ink_feathers")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var updated = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal(1, updated["afterlifeCombatProfile"]!["artTiers"]!["pressure"]!.GetValue<int>());
+        Assert.Equal(75, updated["inkFeathers"]!["current"]!.GetValue<int>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_SpiritualArtsSpecialUpgrade_UpdatesEntityProfile()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeSpiritualConflictState.StatePath,
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["activeConflict"] = null,
+                ["recentConflicts"] = new JsonArray()
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        soul["inkFeathers"] = new JsonObject { ["current"] = 200, ["total"] = 200 };
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var profiles = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var specialArt = profiles["profiles"]!.AsArray()[0]!["specialArts"]!.AsArray()[0]!.AsObject();
+        specialArt["upgradeCost"] = new JsonObject { ["inkFeathers"] = 90, ["lightSparks"] = 0 };
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, profiles.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/spiritual_arts",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["upgrade_target"] = JsonValue.Create("rose_mirror_counter"),
+                ["upgrade_currency"] = JsonValue.Create("ink_feathers")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var updatedSoul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var updatedProfiles = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var updatedSpecialArt = updatedProfiles["profiles"]!.AsArray()[0]!["specialArts"]!.AsArray()[0]!.AsObject();
+        Assert.Equal(2, updatedSpecialArt["tier"]!.GetValue<int>());
+        Assert.Equal(110, updatedSoul["inkFeathers"]!["current"]!.GetValue<int>());
+        Assert.Contains(updatedProfiles["profiles"]!.AsArray()[0]!["ledger"]!.AsArray().OfType<JsonObject>(), entry =>
+            string.Equals(entry["reason"]?.GetValue<string>(), "special_art_local_upgrade", StringComparison.Ordinal));
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_SpiritualAction_ReturnsGmActionPayload()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await SeedChaosSeaFilesAsync();
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/spiritual_action",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["operation_type"] = JsonValue.Create("pressure"),
+                ["spiritual_action_text"] = JsonValue.Create("Я давлю на трещину в клятве противника и заставляю его отступить.")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var payload = Assert.IsType<UiRawJsonBlock>(completed.Blocks.Last()).Json!.AsObject();
+        Assert.Equal("AFTERLIFE_SPIRITUAL_ACTION", payload["playerActionTag"]!.GetValue<string>());
+        Assert.Contains("afterlifeSpiritualConflictUpdate", payload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
     public async Task SubmitPromptSessionAsync_MissingRequiredAnswer_KeepsSessionOpenWithValidationError()
     {
         await SeedUniversalMetaFilesAsync();
@@ -683,18 +901,18 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Theory]
-    [InlineData("/shining_abode")]
-    [InlineData("/shining_politics")]
-    [InlineData("/shining_treasury")]
-    [InlineData("/source_of_light")]
-    public async Task ExecuteAsync_MigratedShiningAbodeCommands_ReturnCompletedDtos(string command)
+    [InlineData("/shining_abode", CommandExecutionState.Completed)]
+    [InlineData("/shining_politics", CommandExecutionState.Completed)]
+    [InlineData("/shining_treasury", CommandExecutionState.RequiresInput)]
+    [InlineData("/source_of_light", CommandExecutionState.RequiresInput)]
+    public async Task ExecuteAsync_MigratedShiningAbodeCommands_ReturnDtos(string command, CommandExecutionState expectedState)
     {
         await SeedShiningAbodeFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
         Assert.Equal(command, result.Command);
-        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Equal(expectedState, result.State);
         Assert.NotEmpty(result.Blocks);
         Assert.DoesNotContain(
             result.Blocks,
@@ -703,20 +921,23 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Theory]
-    [InlineData("/afterlife_profiles", "Профили сущностей посмертия")]
-    [InlineData("/afterlife_inbox", "Уведомления загробья")]
-    [InlineData("/spiritual_conflict", "Духовный конфликт")]
-    [InlineData("/spiritual_combat_log", "Журнал духовного боя")]
-    [InlineData("/spiritual_combat_help", "Духовный бой")]
-    [InlineData("/spiritual_arts", "Духовные искусства")]
-    public async Task ExecuteAsync_MigratedAfterlifeCombatAndEntityCommands_ReturnCompletedDtos(string command, string expectedRussianLabel)
+    [InlineData("/afterlife_profiles", "Профили сущностей посмертия", CommandExecutionState.Completed)]
+    [InlineData("/afterlife_inbox", "Уведомления загробья", CommandExecutionState.RequiresInput)]
+    [InlineData("/spiritual_conflict", "Духовный конфликт", CommandExecutionState.Completed)]
+    [InlineData("/spiritual_combat_log", "Журнал духовного боя", CommandExecutionState.Completed)]
+    [InlineData("/spiritual_combat_help", "Духовный бой", CommandExecutionState.Completed)]
+    [InlineData("/spiritual_arts", "Духовные искусства", CommandExecutionState.RequiresInput)]
+    public async Task ExecuteAsync_MigratedAfterlifeCombatAndEntityCommands_ReturnDtos(
+        string command,
+        string expectedRussianLabel,
+        CommandExecutionState expectedState)
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
 
         Assert.Equal(command, result.Command);
-        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Equal(expectedState, result.State);
         Assert.NotEmpty(result.Blocks);
         Assert.Contains(expectedRussianLabel, CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(
