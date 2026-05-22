@@ -428,19 +428,120 @@ public static class LocalMapViewerRenderer
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <title>{{title}}</title>
           <style>
-            body { margin: 0; background: #111612; color: #f2ead2; font: 16px Georgia, "Times New Roman", serif; }
-            main { min-height: 100vh; padding: 1rem; background: radial-gradient(circle at 20% 12%, rgba(220,177,85,.18), transparent 22rem), #111612; }
-            .map-viewer { border: 1px solid rgba(220,177,85,.35); border-radius: 1rem; padding: 1rem; background: rgba(25,32,28,.92); }
+            :root {
+              --atlas-ink: #2b2116;
+              --atlas-muted: #6f5935;
+              --atlas-gold: #cda85a;
+              --atlas-blood: #7b241b;
+              --atlas-moss: #285238;
+              --atlas-parchment: #d8bd82;
+              --atlas-parchment-deep: #a9824d;
+              --atlas-shadow: rgba(22, 13, 5, .42);
+            }
+            * { box-sizing: border-box; }
+            body { margin: 0; background: #101410; color: #f4ead0; font: 16px Georgia, "Times New Roman", serif; }
+            main {
+              min-height: 100vh;
+              padding: clamp(1rem, 3vw, 2.5rem);
+              background:
+                radial-gradient(circle at 20% 12%, rgba(207, 166, 83, .24), transparent 24rem),
+                radial-gradient(circle at 80% 4%, rgba(91, 32, 24, .18), transparent 22rem),
+                linear-gradient(135deg, #111710, #1b1710 62%, #0d1110);
+            }
+            .map-viewer {
+              border: 1px solid rgba(205, 168, 90, .45);
+              border-radius: 1.35rem;
+              padding: clamp(1rem, 2.4vw, 1.8rem);
+              background: linear-gradient(145deg, rgba(32, 39, 30, .96), rgba(19, 21, 17, .94));
+              box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, .36), inset 0 0 0 1px rgba(255, 233, 172, .07);
+            }
+            h1 { margin: 0 0 .35rem; letter-spacing: .04em; color: #f7d991; }
+            .map-subtitle { margin: 0 0 1rem; color: #c6b78e; }
             .map-toolbar { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; margin-bottom: .75rem; }
-            select, button { border: 1px solid rgba(220,177,85,.35); border-radius: .65rem; background: #1c241f; color: #f2ead2; padding: .45rem .65rem; }
-            svg { width: 100%; height: min(70vh, 46rem); border-radius: .85rem; background: #d7c190; box-shadow: inset 0 0 4rem rgba(65,42,17,.25); }
-            .map-card { margin-top: .75rem; color: #d8cfb7; }
+            .map-toolbar label { display: inline-flex; gap: .4rem; align-items: center; color: #d6c9a6; }
+            select, button {
+              border: 1px solid rgba(205, 168, 90, .42);
+              border-radius: 999px;
+              background: #1b241d;
+              color: #f4ead0;
+              padding: .48rem .72rem;
+              box-shadow: inset 0 0 1rem rgba(0, 0, 0, .16);
+            }
+            button:hover, select:focus { border-color: rgba(247, 217, 145, .82); }
+            .map-atlas-frame { position: relative; }
+            svg {
+              width: 100%;
+              height: min(70vh, 48rem);
+              border: 2px solid rgba(86, 55, 22, .7);
+              border-radius: 1rem;
+              background:
+                radial-gradient(circle at 18% 22%, rgba(255, 246, 190, .25), transparent 15rem),
+                radial-gradient(circle at 86% 72%, rgba(88, 47, 26, .18), transparent 18rem),
+                repeating-linear-gradient(35deg, rgba(96, 65, 30, .045) 0 2px, transparent 2px 8px),
+                linear-gradient(135deg, var(--atlas-parchment), var(--atlas-parchment-deep));
+              box-shadow: inset 0 0 4rem rgba(65, 42, 17, .28), 0 .8rem 2rem var(--atlas-shadow);
+              touch-action: none;
+            }
+            .atlas-texture { opacity: .36; mix-blend-mode: multiply; pointer-events: none; }
+            .map-link { stroke: rgba(81, 57, 31, .82); stroke-linecap: round; stroke-dasharray: .25 .36; }
+            .map-link--dangerous { stroke: var(--atlas-blood); stroke-dasharray: .08 .28; }
+            .map-node { cursor: pointer; outline: none; }
+            .map-node circle { filter: drop-shadow(0 .18px .18px rgba(29, 19, 8, .6)); transition: r .15s ease, stroke-width .15s ease; }
+            .map-node:hover circle, .map-node:focus circle, .map-node--selected circle { r: .82; stroke-width: .2; }
+            .map-node text {
+              fill: var(--atlas-ink);
+              font: 1.05px Georgia, "Times New Roman", serif;
+              paint-order: stroke;
+              stroke: rgba(247, 229, 177, .82);
+              stroke-width: .18px;
+              pointer-events: none;
+            }
+            .map-empty {
+              position: absolute;
+              inset: 42% 1rem auto;
+              margin: 0 auto;
+              width: fit-content;
+              max-width: min(90%, 34rem);
+              border: 1px solid rgba(86, 55, 22, .35);
+              border-radius: .9rem;
+              background: rgba(247, 229, 177, .74);
+              color: var(--atlas-ink);
+              padding: .75rem 1rem;
+              box-shadow: 0 .7rem 1.4rem rgba(58, 35, 13, .18);
+            }
+            .map-empty[hidden] { display: none; }
+            .map-legend {
+              display: flex;
+              flex-wrap: wrap;
+              gap: .55rem .9rem;
+              align-items: center;
+              margin: .8rem 0;
+              color: #d9c89c;
+            }
+            .map-legend strong { color: #f7d991; }
+            .map-legend span { display: inline-flex; gap: .35rem; align-items: center; }
+            .legend-swatch { width: .75rem; height: .75rem; border: 1px solid rgba(247, 217, 145, .75); border-radius: 50%; background: var(--atlas-blood); }
+            .legend-swatch.current { background: var(--atlas-moss); }
+            .legend-swatch.faction { background: #80501f; }
+            .map-card {
+              border: 1px solid rgba(205, 168, 90, .32);
+              border-radius: 1rem;
+              background: rgba(0, 0, 0, .18);
+              color: #d8cfb7;
+              margin-top: .85rem;
+              padding: .9rem;
+            }
+            .map-card h2 { margin: 0 0 .65rem; color: #f7d991; }
+            .map-card dl { display: grid; grid-template-columns: minmax(7rem, 12rem) 1fr; gap: .35rem .75rem; margin: 0; }
+            .map-card dt { color: #bdaa7d; }
+            .map-card dd { margin: 0; }
           </style>
         </head>
         <body>
           <main>
-            <section class="map-viewer" data-map-json="{{encodedJson}}">
+            <section class="map-viewer" data-layer-state="visible" data-map-json="{{encodedJson}}">
               <h1>{{title}}</h1>
+              <p class="map-subtitle">Локальный атлас: уровни, слои, влияние фракций и точки интереса.</p>
               <p hidden>{{nodeLabels}}</p>
               <div class="map-toolbar">
                 <label>Уровень <select class="map-z-filter"></select></label>
@@ -449,7 +550,16 @@ public static class LocalMapViewerRenderer
                 <button type="button" data-zoom="out">Отдалить</button>
                 <button type="button" data-reset>Сброс</button>
               </div>
-              <svg viewBox="-20 -20 40 40" role="img" aria-label="Карта"></svg>
+              <div class="map-legend" aria-label="Легенда карты">
+                <strong>Легенда карты</strong>
+                <span><i class="legend-swatch current"></i>Текущая точка</span>
+                <span><i class="legend-swatch"></i>Обычная точка</span>
+                <span><i class="legend-swatch faction"></i>Влияние фракций</span>
+              </div>
+              <div class="map-atlas-frame">
+                <svg viewBox="-20 -20 40 40" role="img" aria-label="Карта"></svg>
+                <p class="map-empty" hidden>Нет точек на выбранном уровне или слое.</p>
+              </div>
               <aside class="map-card">Выберите точку на карте.</aside>
             </section>
           </main>
@@ -458,8 +568,10 @@ public static class LocalMapViewerRenderer
             const map = JSON.parse(root.dataset.mapJson);
             const svg = root.querySelector('svg');
             const card = root.querySelector('.map-card');
+            const empty = root.querySelector('.map-empty');
             const zFilter = root.querySelector('.map-z-filter');
             const layerFilter = root.querySelector('.map-layer-filter');
+            let selectedNodeId = map.currentNodeId ?? '';
             for (const level of map.zLevels ?? []) zFilter.append(new Option(level.label, String(level.z)));
             for (const layer of map.layers ?? []) layerFilter.append(new Option(layer.label, layer.id));
             if (!layerFilter.value && map.layers?.[0]) layerFilter.value = map.layers[0].id;
@@ -469,24 +581,36 @@ public static class LocalMapViewerRenderer
               const nodes = (map.nodes ?? []).filter(n => n.z === z && (n.layer ?? 'world') === layer);
               const ids = new Set(nodes.map(n => n.id));
               svg.replaceChildren();
+              root.dataset.layerState = nodes.length ? 'visible' : 'hidden';
+              empty.hidden = nodes.length !== 0;
+              const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+              defs.innerHTML = '<filter id="atlas-texture"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="12"/><feColorMatrix type="saturate" values="0"/></filter>';
+              const texture = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+              texture.setAttribute('class', 'atlas-texture');
+              texture.setAttribute('x', '-2000'); texture.setAttribute('y', '-2000');
+              texture.setAttribute('width', '4000'); texture.setAttribute('height', '4000');
+              texture.setAttribute('filter', 'url(#atlas-texture)');
+              svg.append(defs, texture);
               for (const link of map.links ?? []) {
                 if (!ids.has(link.sourceNodeId) || !ids.has(link.targetNodeId)) continue;
                 const a = nodes.find(n => n.id === link.sourceNodeId), b = nodes.find(n => n.id === link.targetNodeId);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.setAttribute('x1', a.x); line.setAttribute('y1', -a.y); line.setAttribute('x2', b.x); line.setAttribute('y2', -b.y);
-                line.setAttribute('stroke', '#6d5630'); line.setAttribute('stroke-width', '.16');
+                line.setAttribute('class', `map-link ${link.state === 'dangerous' ? 'map-link--dangerous' : ''}`);
+                line.setAttribute('stroke-width', '.16');
                 svg.append(line);
               }
               for (const node of nodes) {
                 const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.classList.add('map-node');
+                if (node.id === selectedNodeId) g.classList.add('map-node--selected');
                 g.setAttribute('tabindex', '0');
                 const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 c.setAttribute('cx', node.x); c.setAttribute('cy', -node.y); c.setAttribute('r', node.isCurrent ? '.7' : '.48');
-                c.setAttribute('fill', node.isCurrent ? '#244d2d' : '#6a2d22');
+                c.setAttribute('fill', node.isCurrent ? '#285238' : node.ownerFactionId ? '#80501f' : '#6a2d22');
                 c.setAttribute('stroke', '#f1d58b'); c.setAttribute('stroke-width', '.12');
                 const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 t.setAttribute('x', Number(node.x) + .75); t.setAttribute('y', -Number(node.y) - .45); t.textContent = node.label;
-                t.setAttribute('font-size', '1.1'); t.setAttribute('fill', '#2c2112');
                 g.append(c, t);
                 g.addEventListener('click', () => show(node));
                 svg.append(g);
@@ -501,6 +625,10 @@ public static class LocalMapViewerRenderer
               svg.setAttribute('viewBox', `${minX} ${minY} ${Math.max(8, maxX - minX)} ${Math.max(8, maxY - minY)}`);
             }
             function show(node) {
+              selectedNodeId = node.id ?? '';
+              for (const item of svg.querySelectorAll('.map-node')) item.classList.remove('map-node--selected');
+              const selected = [...svg.querySelectorAll('.map-node')].find(item => item.textContent === node.label);
+              if (selected) selected.classList.add('map-node--selected');
               const details = (node.details ?? []).map(i => `<dt>${escapeHtml(i.key)}</dt><dd>${escapeHtml(i.value)}</dd>`).join('');
               card.innerHTML = `<h2>${escapeHtml(node.label)}</h2><dl>${details}</dl>`;
             }

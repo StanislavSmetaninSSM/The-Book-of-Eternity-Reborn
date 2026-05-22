@@ -293,8 +293,27 @@ public static class LocalWebUiHost
               font-size: .92rem;
             }
             .map-block {
+              --atlas-ink: #2b2116;
+              --atlas-muted: #6f5935;
+              --atlas-gold: #cda85a;
+              --atlas-blood: #7b241b;
+              --atlas-moss: #285238;
+              --atlas-parchment: #d8bd82;
+              --atlas-parchment-deep: #a9824d;
               display: grid;
               gap: .8rem;
+              border-color: rgba(205, 168, 90, .42);
+              background:
+                radial-gradient(circle at 18% 8%, rgba(205, 168, 90, .16), transparent 18rem),
+                linear-gradient(145deg, rgba(32, 39, 30, .96), rgba(19, 21, 17, .94));
+              box-shadow: 0 1.2rem 3rem rgba(0, 0, 0, .22), inset 0 0 0 1px rgba(255, 233, 172, .06);
+            }
+            .map-block h2 {
+              letter-spacing: .03em;
+            }
+            .map-subtitle {
+              color: var(--muted);
+              margin: -.35rem 0 .15rem;
             }
             .map-toolbar {
               display: flex;
@@ -311,20 +330,71 @@ public static class LocalWebUiHost
             .map-canvas {
               width: 100%;
               min-height: 28rem;
-              border: 1px solid rgba(222, 183, 99, .28);
+              border: 2px solid rgba(86, 55, 22, .68);
               border-radius: .95rem;
               background:
-                radial-gradient(circle at 28% 24%, rgba(74, 57, 29, .16), transparent 14rem),
-                linear-gradient(135deg, #d9c58f, #b99b66);
-              box-shadow: inset 0 0 3rem rgba(42, 24, 8, .26);
+                radial-gradient(circle at 18% 22%, rgba(255, 246, 190, .25), transparent 15rem),
+                radial-gradient(circle at 86% 72%, rgba(88, 47, 26, .18), transparent 18rem),
+                repeating-linear-gradient(35deg, rgba(96, 65, 30, .045) 0 2px, transparent 2px 8px),
+                linear-gradient(135deg, var(--atlas-parchment), var(--atlas-parchment-deep));
+              box-shadow: inset 0 0 3.5rem rgba(42, 24, 8, .28), 0 .8rem 2rem rgba(22, 13, 5, .28);
               touch-action: none;
             }
+            .map-atlas-frame { position: relative; }
+            .atlas-texture { opacity: .36; mix-blend-mode: multiply; pointer-events: none; }
+            .map-link { stroke: rgba(81, 57, 31, .82); stroke-linecap: round; stroke-dasharray: .25 .36; }
+            .map-link--dangerous { stroke: var(--atlas-blood); stroke-dasharray: .08 .28; }
+            .map-node { cursor: pointer; outline: none; }
+            .map-node circle {
+              filter: drop-shadow(0 .18px .18px rgba(29, 19, 8, .6));
+              transition: r .15s ease, stroke-width .15s ease;
+            }
+            .map-node:hover circle, .map-node:focus circle, .map-node--selected circle {
+              r: .82;
+              stroke-width: .2;
+            }
             .map-node text {
-              fill: #2c2112;
+              fill: var(--atlas-ink);
               font: 1.05px Georgia, "Times New Roman", serif;
               paint-order: stroke;
               stroke: rgba(245, 229, 180, .72);
               stroke-width: .18px;
+              pointer-events: none;
+            }
+            .map-empty {
+              position: absolute;
+              inset: 42% 1rem auto;
+              margin: 0 auto;
+              width: fit-content;
+              max-width: min(90%, 34rem);
+              border: 1px solid rgba(86, 55, 22, .35);
+              border-radius: .9rem;
+              background: rgba(247, 229, 177, .78);
+              color: var(--atlas-ink);
+              padding: .75rem 1rem;
+              box-shadow: 0 .7rem 1.4rem rgba(58, 35, 13, .18);
+            }
+            .map-empty[hidden] { display: none; }
+            .map-legend {
+              display: flex;
+              flex-wrap: wrap;
+              gap: .55rem .9rem;
+              align-items: center;
+              color: var(--muted);
+            }
+            .map-legend strong { color: var(--accent); }
+            .map-legend span { display: inline-flex; gap: .35rem; align-items: center; }
+            .legend-swatch {
+              width: .75rem;
+              height: .75rem;
+              border: 1px solid rgba(247, 217, 145, .75);
+              border-radius: 50%;
+              background: var(--atlas-blood);
+            }
+            .legend-swatch.current { background: var(--atlas-moss); }
+            .legend-swatch.faction { background: #80501f; }
+            .map-block[data-layer-state="hidden"] .map-card {
+              opacity: .78;
             }
             .map-card {
               border: 1px solid rgba(222, 183, 99, .2);
@@ -1017,6 +1087,7 @@ public static class LocalWebUiHost
               const node = el('section', 'block map-block');
               node.dataset.mapJson = JSON.stringify(map);
               node.append(el('h2', '', block.title || map.title || 'Карта'));
+              node.append(el('p', 'map-subtitle', 'Локальный атлас: уровни, слои, влияние фракций и точки интереса.'));
 
               const toolbar = el('div', 'map-toolbar');
               const zSelect = document.createElement('select');
@@ -1038,18 +1109,32 @@ public static class LocalWebUiHost
               toolbar.append(zoomIn, zoomOut, reset);
               node.append(toolbar);
 
+              const legend = el('div', 'map-legend');
+              legend.setAttribute('aria-label', 'Легенда карты');
+              legend.append(
+                el('strong', '', 'Легенда карты'),
+                legendItem('current', 'Текущая точка'),
+                legendItem('', 'Обычная точка'),
+                legendItem('faction', 'Влияние фракций'));
+              node.append(legend);
+
+              const frame = el('div', 'map-atlas-frame');
               const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
               svg.classList.add('map-canvas');
               svg.setAttribute('role', 'img');
               svg.setAttribute('aria-label', map.title || 'Карта');
               svg.setAttribute('viewBox', '-20 -20 40 40');
-              node.append(svg);
+              const empty = el('p', 'map-empty', 'Нет точек на выбранном уровне или слое.');
+              empty.hidden = true;
+              frame.append(svg, empty);
+              node.append(frame);
 
               const card = el('aside', 'map-card', 'Выберите точку на карте.');
               node.append(card);
 
               let currentViewBox = [-20, -20, 40, 40];
               let dragStart = null;
+              let selectedNodeId = map.currentNodeId ?? '';
 
               function draw() {
                 const selectedZ = Number(zSelect.value || 0);
@@ -1057,6 +1142,19 @@ public static class LocalWebUiHost
                 const nodes = (map.nodes ?? []).filter(item => Number(item.z ?? 0) === selectedZ && ((item.layer ?? 'world') === selectedLayer));
                 const nodeById = new globalThis.Map(nodes.map(item => [item.id, item]));
                 svg.replaceChildren();
+                node.dataset.layerState = nodes.length ? 'visible' : 'hidden';
+                empty.hidden = nodes.length !== 0;
+
+                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+                defs.innerHTML = '<filter id="atlas-texture-web"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="12"/><feColorMatrix type="saturate" values="0"/></filter>';
+                const texture = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                texture.setAttribute('class', 'atlas-texture');
+                texture.setAttribute('x', '-2000');
+                texture.setAttribute('y', '-2000');
+                texture.setAttribute('width', '4000');
+                texture.setAttribute('height', '4000');
+                texture.setAttribute('filter', 'url(#atlas-texture-web)');
+                svg.append(defs, texture);
 
                 for (const link of map.links ?? []) {
                   const source = nodeById.get(link.sourceNodeId);
@@ -1067,7 +1165,7 @@ public static class LocalWebUiHost
                   line.setAttribute('y1', -(source.y ?? 0));
                   line.setAttribute('x2', target.x ?? 0);
                   line.setAttribute('y2', -(target.y ?? 0));
-                  line.setAttribute('stroke', link.state === 'dangerous' ? '#8b2d20' : '#6d5630');
+                  line.setAttribute('class', `map-link ${link.state === 'dangerous' ? 'map-link--dangerous' : ''}`);
                   line.setAttribute('stroke-width', '.16');
                   svg.append(line);
                 }
@@ -1075,12 +1173,13 @@ public static class LocalWebUiHost
                 for (const mapNode of nodes) {
                   const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
                   group.classList.add('map-node');
+                  if (mapNode.id === selectedNodeId) group.classList.add('map-node--selected');
                   group.setAttribute('tabindex', '0');
                   const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                   circle.setAttribute('cx', mapNode.x ?? 0);
                   circle.setAttribute('cy', -(mapNode.y ?? 0));
                   circle.setAttribute('r', mapNode.isCurrent ? '.72' : '.5');
-                  circle.setAttribute('fill', mapNode.isCurrent ? '#244d2d' : mapNode.ownerFactionId ? '#7b4c20' : '#6a2d22');
+                  circle.setAttribute('fill', mapNode.isCurrent ? '#285238' : mapNode.ownerFactionId ? '#80501f' : '#6a2d22');
                   circle.setAttribute('stroke', '#f1d58b');
                   circle.setAttribute('stroke-width', '.12');
                   const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -1123,6 +1222,10 @@ public static class LocalWebUiHost
               }
 
               function showMapNode(mapNode) {
+                selectedNodeId = mapNode.id ?? '';
+                for (const item of svg.querySelectorAll('.map-node')) item.classList.remove('map-node--selected');
+                const selected = [...svg.querySelectorAll('.map-node')].find(item => item.textContent === (mapNode.label ?? mapNode.id ?? '?'));
+                if (selected) selected.classList.add('map-node--selected');
                 card.replaceChildren();
                 card.append(el('h3', '', mapNode.label ?? mapNode.id ?? 'Локация'));
                 const dl = document.createElement('dl');
@@ -1165,6 +1268,14 @@ public static class LocalWebUiHost
               draw();
               const current = (map.nodes ?? []).find(item => item.id === map.currentNodeId);
               if (current) showMapNode(current);
+              return node;
+            }
+
+            function legendItem(className, text) {
+              const node = el('span', '', '');
+              const swatch = el('i', `legend-swatch ${className}`.trim(), '');
+              swatch.setAttribute('aria-hidden', 'true');
+              node.append(swatch, document.createTextNode(text));
               return node;
             }
 
