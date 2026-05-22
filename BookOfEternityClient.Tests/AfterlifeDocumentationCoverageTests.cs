@@ -102,6 +102,35 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeActiveThreatContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var text in new[] { matrix, apiSpec, daemonSpec, taskGuide, operations, examples })
+        {
+            Assert.Contains(AfterlifeActiveThreatState.StatePath, text, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeActiveThreatState.AddsProperty, text, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeActiveThreatState.UpdatesProperty, text, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeActiveThreatState.CompleteActivitiesProperty, text, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeActiveThreatState.RemovalsProperty, text, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeActiveThreatState.ThreatsProperty, text, StringComparison.Ordinal);
+            Assert.Contains("currentActivity", text, StringComparison.Ordinal);
+            Assert.Contains("impactProfile", text, StringComparison.Ordinal);
+            Assert.Contains("visibleToPlayer", text, StringComparison.Ordinal);
+            Assert.Contains("sarefLink", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("afterlife_active_threats_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_active_threats_v1", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeGlobalFlagsContractIsDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

@@ -82,6 +82,7 @@ public static class ExplorerCommandCatalog
         D("source_of_light", ExplorerCommandGroup.ShiningAbode, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.ShiningAbode, ["/source_of_light", "/источник_света"], browserStatus: ExplorerCommandMigrationStatus.MutatingParity),
 
         D("afterlife_profiles", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/afterlife_profiles", "/профили_загробья"]),
+        D("afterlife_threats", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/afterlife_threats", "/угрозы_загробья"]),
         D("afterlife_inbox", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/afterlife_inbox", "/уведомления_загробья"], browserStatus: ExplorerCommandMigrationStatus.MutatingParity),
         D("spiritual_conflict", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/spiritual_conflict", "/духовный_конфликт"]),
         D("spiritual_combat_log", ExplorerCommandGroup.AfterlifeCombatAndEntities, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.AfterlifeCombat, ["/spiritual_combat_log", "/журнал_духовного_боя"]),

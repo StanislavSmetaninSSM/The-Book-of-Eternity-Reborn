@@ -402,6 +402,18 @@ public class GameResponse
     [JsonPropertyName("afterlifeActorActiveMaskChanges")]
     public JsonElement[]? AfterlifeActorActiveMaskChanges { get; set; }
 
+    [JsonPropertyName("afterlifeThreatsToAdd")]
+    public JsonElement[]? AfterlifeThreatsToAdd { get; set; }
+
+    [JsonPropertyName("afterlifeThreatsToUpdate")]
+    public JsonElement[]? AfterlifeThreatsToUpdate { get; set; }
+
+    [JsonPropertyName("completeAfterlifeThreatActivities")]
+    public JsonElement[]? CompleteAfterlifeThreatActivities { get; set; }
+
+    [JsonPropertyName("afterlifeThreatsToRemove")]
+    public JsonElement[]? AfterlifeThreatsToRemove { get; set; }
+
     [JsonPropertyName("UpdateGuardians")]
     public JsonElement[]? UpdateGuardians { get; set; }
 

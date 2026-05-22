@@ -93,6 +93,7 @@ public partial class ExplorerMode
             ("shining_treasury", ShowShiningTreasuryAsync),
             ("source_of_light", ShowSourceOfLightAsync),
             ("afterlife_profiles", ShowAfterlifeEntityProfilesAsync),
+            ("afterlife_threats", ShowAfterlifeThreatsAsync),
             ("saref_memory_scene", ShowSarefMemorySceneAsync),
             ("afterlife_inbox", ShowAfterlifeInbox),
             ("spiritual_conflict", ShowSpiritualConflictAsync),

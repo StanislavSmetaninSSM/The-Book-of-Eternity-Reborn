@@ -48,6 +48,7 @@ public partial class ValidationService
         await ValidateNoLifeEvaluationRewardsOnTriggerTurnAsync(issues);
         await ValidateGuardianResonancePowerEventsAsync(issues);
         await ValidateShiningTreasuryClientOwnedStateAsync(issues);
+        await ValidateAfterlifeActiveThreatPreTurnContinuityAsync(issues);
         await ValidateAfterlifeGlobalFlagPreTurnContinuityAsync(issues);
         await ValidateClientOwnedControlFilesAsync(issues);
         await ValidateRealmSegregationAsync(issues);
