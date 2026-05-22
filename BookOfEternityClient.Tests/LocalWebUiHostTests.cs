@@ -128,6 +128,33 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    public async Task RootEndpoint_IncludesFullGameShellNavigation()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("id=\"command-palette-filter\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-command=\"/quests\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-command=\"/chaos_sea\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-command=\"/shining_abode\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-command=\"/spiritual_conflict\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-command=\"/afterlife_archive\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-command=\"/validate\"", html, StringComparison.Ordinal);
+        Assert.Contains("Мир смертных", html, StringComparison.Ordinal);
+        Assert.Contains("Море Хаоса", html, StringComparison.Ordinal);
+        Assert.Contains("Сияющая Обитель", html, StringComparison.Ordinal);
+        Assert.Contains("Духовный бой", html, StringComparison.Ordinal);
+        Assert.Contains("История и архив", html, StringComparison.Ordinal);
+        Assert.Contains("Диагностика", html, StringComparison.Ordinal);
+        Assert.Contains("filterCommandPalette", html, StringComparison.Ordinal);
+        Assert.Contains("renderProgressState", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task MediaEndpoint_ReturnsApprovedImageFile()
     {
         WriteSessionImage("images/npcs/hero.png");

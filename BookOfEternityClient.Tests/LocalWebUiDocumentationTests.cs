@@ -43,4 +43,21 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("#591", text, StringComparison.Ordinal);
         Assert.DoesNotContain("#575", text, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void BrowserParityChecklist_CoversFullShellFlows()
+    {
+        var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "browser-parity-checklist.md"));
+
+        Assert.Contains("Мир смертных", text, StringComparison.Ordinal);
+        Assert.Contains("Море Хаоса", text, StringComparison.Ordinal);
+        Assert.Contains("Сияющая Обитель", text, StringComparison.Ordinal);
+        Assert.Contains("Духовный бой", text, StringComparison.Ordinal);
+        Assert.Contains("История и архив", text, StringComparison.Ordinal);
+        Assert.Contains("Диагностика", text, StringComparison.Ordinal);
+        Assert.Contains("командная палитра", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("мобиль", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("raw JSON", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("QTE", text, StringComparison.Ordinal);
+    }
 }

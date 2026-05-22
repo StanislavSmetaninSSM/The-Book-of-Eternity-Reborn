@@ -91,6 +91,17 @@ POST /api/qte/action
 
 `/` serves the first browser command shell. It renders `ExplorerCommandResult` DTOs from the command API and does not duplicate game logic in JavaScript.
 
+The shell now includes persistent Russian navigation and a filterable command palette for the major play areas:
+
+- Мир смертных
+- Море Хаоса
+- Сияющая Обитель
+- Духовный бой
+- История и архив
+- Диагностика
+
+The manual slash-command input remains available for power users. Navigation buttons simply execute the same command API as typed commands, so the browser shell does not fork gameplay logic.
+
 The renderer currently supports these DTO surfaces:
 
 - `text`, `panel`, `table`, `list`, `keyValueGrid`, `message`, `rawJson`, and `image` blocks.
@@ -321,6 +332,8 @@ Stale lock recovery:
 - Do not delete a fresh lock just to force a command; that risks two frontends writing the same save at once.
 
 See also `docs/web-ui/local-ui-session-lock.md` for the lock-file shape and ownership rules.
+
+See also `docs/web-ui/browser-parity-checklist.md` for the manual shell parity checklist used when changing browser navigation, forms, progress states, QTE, media, and raw JSON rendering.
 
 ## Temporary Browser Limitations
 
