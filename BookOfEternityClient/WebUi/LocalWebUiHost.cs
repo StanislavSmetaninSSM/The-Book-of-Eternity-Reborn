@@ -231,6 +231,38 @@ public static class LocalWebUiHost
               gap: 1rem;
               margin-top: 1rem;
             }
+            .game-shell {
+              display: grid;
+              grid-template-columns: minmax(16rem, 22rem) 1fr;
+              gap: 1rem;
+              margin-top: 1rem;
+              align-items: start;
+            }
+            .command-palette {
+              position: sticky;
+              top: 1rem;
+            }
+            .nav-group {
+              border-top: 1px solid rgba(222, 183, 99, .18);
+              margin-top: 1rem;
+              padding-top: 1rem;
+            }
+            .nav-group h3 {
+              color: var(--accent);
+              font-size: 1rem;
+              margin: 0 0 .6rem;
+            }
+            .nav-actions {
+              display: grid;
+              gap: .45rem;
+            }
+            .nav-actions button {
+              border: 1px solid rgba(222, 183, 99, .2);
+              background: rgba(0, 0, 0, .18);
+              color: var(--text);
+              line-height: 1.25;
+              text-align: left;
+            }
             .empty, .loading {
               border: 1px dashed var(--line);
               border-radius: 1rem;
@@ -263,6 +295,10 @@ public static class LocalWebUiHost
             .message.warning { border-color: rgba(229, 193, 109, .65); }
             .message.error { border-color: rgba(224, 111, 95, .7); }
             .message.success { border-color: rgba(158, 203, 134, .65); }
+            .progress-state {
+              border-color: rgba(225, 184, 94, .6);
+              background: linear-gradient(135deg, rgba(225, 184, 94, .14), rgba(0, 0, 0, .16));
+            }
             .message-title { color: var(--accent); font-weight: 700; margin-bottom: .35rem; }
             table { width: 100%; border-collapse: collapse; }
             th, td {
@@ -327,6 +363,8 @@ public static class LocalWebUiHost
             }
             @media (max-width: 760px) {
               .hero { grid-template-columns: 1fr; }
+              .game-shell { grid-template-columns: 1fr; }
+              .command-palette { position: static; }
               form { flex-direction: column; }
               .kv { grid-template-columns: 1fr; }
             }
@@ -363,8 +401,83 @@ public static class LocalWebUiHost
               <h2>Панель состояния</h2>
               <div class="empty">Загружаю состояние локальной сессии...</div>
             </section>
-            <section id="result" aria-live="polite">
-              <div class="empty">Пока нет результата. Нажмите «Выполнить», чтобы отрисовать первую команду.</div>
+            <section class="game-shell">
+              <aside class="card command-palette">
+                <h2>Командная палитра</h2>
+                <p>Выберите раздел или введите команду вручную. Английские токены показаны только как технические команды.</p>
+                <input id="command-palette-filter" type="search" placeholder="Фильтр: квесты, бой, Сияющая Обитель..." aria-label="Фильтр командной палитры">
+                <div class="nav-group">
+                  <h3>Мир смертных</h3>
+                  <div class="nav-actions">
+                    <button type="button" data-command="/status">Статус героя</button>
+                    <button type="button" data-command="/quests">Квесты</button>
+                    <button type="button" data-command="/inv">Инвентарь</button>
+                    <button type="button" data-command="/map">Карта</button>
+                    <button type="button" data-command="/npc">Персонажи</button>
+                    <button type="button" data-command="/factions">Фракции</button>
+                    <button type="button" data-command="/combat">Бой</button>
+                    <button type="button" data-command="/gallery">Галерея</button>
+                  </div>
+                </div>
+                <div class="nav-group">
+                  <h3>Море Хаоса</h3>
+                  <div class="nav-actions">
+                    <button type="button" data-command="/chaos_sea">Обзор Моря Хаоса</button>
+                    <button type="button" data-command="/guardians">Хранители</button>
+                    <button type="button" data-command="/abode_power">Сила Обители</button>
+                    <button type="button" data-command="/guardian_projects">Проекты Хранителей</button>
+                    <button type="button" data-command="/abode_offering">Подношение Обители</button>
+                    <button type="button" data-command="/found_guardian_mantle">Основание мантии</button>
+                  </div>
+                </div>
+                <div class="nav-group">
+                  <h3>Сияющая Обитель</h3>
+                  <div class="nav-actions">
+                    <button type="button" data-command="/shining_abode">Обзор Обители</button>
+                    <button type="button" data-command="/shining_politics">Политика</button>
+                    <button type="button" data-command="/shining_treasury">Казначейство</button>
+                    <button type="button" data-command="/source_of_light">Источник Света</button>
+                    <button type="button" data-command="/сареф">Скрытая нить</button>
+                    <button type="button" data-command="/сареф найти_крылья">Поиск Крыльев</button>
+                  </div>
+                </div>
+                <div class="nav-group">
+                  <h3>Духовный бой</h3>
+                  <div class="nav-actions">
+                    <button type="button" data-command="/spiritual_conflict">Текущий конфликт</button>
+                    <button type="button" data-command="/spiritual_combat_log">Журнал боя</button>
+                    <button type="button" data-command="/spiritual_combat_help">Справка боя</button>
+                    <button type="button" data-command="/spiritual_arts">Духовные искусства</button>
+                    <button type="button" data-command="/spiritual_action">Духовное действие</button>
+                  </div>
+                </div>
+                <div class="nav-group">
+                  <h3>История и архив</h3>
+                  <div class="nav-actions">
+                    <button type="button" data-command="/story">Рассказ</button>
+                    <button type="button" data-command="/chronicle">Хроника</button>
+                    <button type="button" data-command="/codex">Кодекс</button>
+                    <button type="button" data-command="/soul">Душа</button>
+                    <button type="button" data-command="/afterlife_archive">Архив души</button>
+                    <button type="button" data-command="/archive_candidates">Кандидаты в Архив</button>
+                    <button type="button" data-command="/воспоминание">Воспоминание</button>
+                  </div>
+                </div>
+                <div class="nav-group">
+                  <h3>Диагностика</h3>
+                  <div class="nav-actions">
+                    <button type="button" data-command="/validate">Валидация</button>
+                    <button type="button" data-command="/debug">Отладка</button>
+                    <button type="button" data-command="/math">Математик</button>
+                    <button type="button" data-command="/gm">Заметки ГМа</button>
+                    <button type="button" data-command="/mods">Моды</button>
+                    <button type="button" data-command="/system_guardians">Извечные Хранители</button>
+                  </div>
+                </div>
+              </aside>
+              <section id="result" aria-live="polite">
+                <div class="empty">Пока нет результата. Нажмите «Выполнить», чтобы отрисовать первую команду.</div>
+              </section>
             </section>
           </main>
           <script>
@@ -372,6 +485,8 @@ public static class LocalWebUiHost
             const input = document.getElementById('command-input');
             const resultRoot = document.getElementById('result');
             const lifecyclePanel = document.getElementById('lifecycle-panel');
+            const paletteFilter = document.getElementById('command-palette-filter');
+            const commandButtons = [...document.querySelectorAll('[data-command]')];
             document.getElementById('help-button').addEventListener('click', () => {
               input.value = '/help';
               executeCommand('/help');
@@ -383,10 +498,18 @@ public static class LocalWebUiHost
               event.preventDefault();
               executeCommand(input.value);
             });
+            for (const button of commandButtons) {
+              button.addEventListener('click', () => {
+                const command = button.dataset.command ?? '';
+                input.value = command;
+                executeCommand(command);
+              });
+            }
+            paletteFilter.addEventListener('input', filterCommandPalette);
             loadLifecycleDashboard();
 
             async function executeCommand(command) {
-              resultRoot.replaceChildren(el('div', 'loading', 'Команда выполняется...'));
+              resultRoot.replaceChildren(renderProgressState('Команда выполняется', 'Отправляю запрос локальному C# клиенту...'));
               try {
                 const response = await fetch('/api/explorer/command', {
                   method: 'POST',
@@ -521,7 +644,7 @@ public static class LocalWebUiHost
             }
 
             async function submitPromptSession(sessionId, answers) {
-              resultRoot.replaceChildren(el('div', 'loading', 'Отправляю ответы формы...'));
+              resultRoot.replaceChildren(renderProgressState('Форма отправляется', 'Проверяю ответы и выполняю локальный write-flow...'));
               try {
                 const response = await fetch('/api/explorer/prompt-sessions/submit', {
                   method: 'POST',
@@ -540,7 +663,7 @@ public static class LocalWebUiHost
             }
 
             async function cancelPromptSession(sessionId) {
-              resultRoot.replaceChildren(el('div', 'loading', 'Отменяю форму...'));
+              resultRoot.replaceChildren(renderProgressState('Форма отменяется', 'Освобождаю локальную UI-блокировку...'));
               try {
                 const response = await fetch('/api/explorer/prompt-sessions/cancel', {
                   method: 'POST',
@@ -559,7 +682,7 @@ public static class LocalWebUiHost
             }
 
             async function loadQteState() {
-              resultRoot.replaceChildren(el('div', 'loading', 'Проверяю QTE-сцену...'));
+              resultRoot.replaceChildren(renderProgressState('QTE', 'Проверяю QTE-сцену...'));
               try {
                 const response = await fetch('/api/qte/state');
                 const payload = await response.json();
@@ -574,7 +697,7 @@ public static class LocalWebUiHost
             }
 
             async function postQteOffer(decision) {
-              resultRoot.replaceChildren(el('div', 'loading', 'Обрабатываю выбор QTE...'));
+              resultRoot.replaceChildren(renderProgressState('QTE', 'Обрабатываю выбор QTE...'));
               try {
                 const response = await fetch('/api/qte/offer', {
                   method: 'POST',
@@ -593,7 +716,7 @@ public static class LocalWebUiHost
             }
 
             async function postQteAction(actionId, grade) {
-              resultRoot.replaceChildren(el('div', 'loading', 'Разрешаю QTE-действие...'));
+              resultRoot.replaceChildren(renderProgressState('QTE', 'Разрешаю QTE-действие...'));
               try {
                 const response = await fetch('/api/qte/action', {
                   method: 'POST',
@@ -613,6 +736,9 @@ public static class LocalWebUiHost
 
             function renderCommandResult(result) {
               resultRoot.replaceChildren();
+              if (result?.state) {
+                resultRoot.append(renderProgressState(describeExecutionState(result.state), describeExecutionHint(result)));
+              }
               const blocks = result?.blocks ?? [];
               if (blocks.length === 0 && !(result?.actions?.length) && !(result?.prompts?.length)) {
                 resultRoot.append(el('div', 'empty', 'Пока нет результата для отображения.'));
@@ -621,6 +747,37 @@ public static class LocalWebUiHost
               for (const block of blocks) resultRoot.append(renderBlock(block));
               renderActions(result?.actions ?? []);
               renderPrompts(result?.prompts ?? [], result?.interactiveSession ?? null);
+            }
+
+            function filterCommandPalette() {
+              const query = (paletteFilter.value ?? '').trim().toLowerCase();
+              for (const button of commandButtons) {
+                const haystack = `${button.textContent ?? ''} ${button.dataset.command ?? ''}`.toLowerCase();
+                button.hidden = query.length > 0 && !haystack.includes(query);
+              }
+            }
+
+            function renderProgressState(title, message) {
+              return renderMessage({ severity: 'Info', title, message, extraClass: 'progress-state' });
+            }
+
+            function describeExecutionState(state) {
+              switch (state) {
+                case 'Completed': return 'Готово';
+                case 'RequiresInput': return 'Требуется ввод';
+                case 'Pending': return 'Ожидание';
+                case 'Blocked': return 'Заблокировано';
+                case 'Failed': return 'Ошибка';
+                default: return state ?? 'Состояние';
+              }
+            }
+
+            function describeExecutionHint(result) {
+              if (result?.state === 'RequiresInput') return 'Заполните форму ниже. Локальная блокировка удерживается только для команд, которые пишут файлы.';
+              if (result?.state === 'Pending') return 'Есть активный ход ГМа, rollback/snapshot или другой локальный блокер. Проверьте панель состояния.';
+              if (result?.state === 'Blocked') return 'Команда распознана, но сейчас не может быть выполнена.';
+              if (result?.state === 'Failed') return 'Команда завершилась ошибкой; детали показаны ниже.';
+              return 'Результат получен от локального клиента.';
             }
 
             function renderQteState(state) {
@@ -777,7 +934,8 @@ public static class LocalWebUiHost
             }
 
             function renderMessage(block) {
-              const node = el('section', `block message ${(block.severity ?? '').toLowerCase()}`);
+              const extraClass = block.extraClass ? ` ${block.extraClass}` : '';
+              const node = el('section', `block message ${(block.severity ?? '').toLowerCase()}${extraClass}`);
               if (block.title) node.append(el('div', 'message-title', block.title));
               node.append(el('div', '', block.message ?? ''));
               return node;
