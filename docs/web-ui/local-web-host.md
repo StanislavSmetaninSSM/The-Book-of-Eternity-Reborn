@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621
 Parent epic: #559
 
 ## Local-Only Model
@@ -218,7 +218,7 @@ Mortal World read-only parity currently includes:
 - `/storage_access`, `/доступ_к_хранилищам`
 - `/interactions`, `/взаимодействия`
 
-`/map` and `/карта` now return a shared `map` DTO block in addition to the raw JSON repair payloads. The browser renderer draws it locally as SVG with pan/zoom, z-level filtering, layer filtering, node selection, and detail cards. The DTO is realm-agnostic (`realm`, `nodes`, `links`, `regions`, `layers`, `zLevels`, owner/influence fields) so Mortal World, Chaos Sea, and Shining Abode projections can reuse the same renderer. The first projection is Mortal World: it reads `game_state/world/current_location.json` and `game_state/world/world_map.json`, keeps console fallback behavior unchanged, and writes no game state.
+`/map` and `/карта` now return a shared `map` DTO block in addition to the raw JSON repair payloads. The browser renderer draws it locally as SVG with pan/zoom, z-level filtering, layer filtering, node selection, and detail cards. The DTO is realm-agnostic (`realm`, `nodes`, `links`, `regions`, `layers`, `zLevels`, owner/influence fields) so Mortal World, Chaos Sea, and Shining Abode projections can reuse the same renderer. The Mortal World projection reads `game_state/world/current_location.json` and `game_state/world/world_map.json`, including `currentLocationData`, `locations[]`, `knownLocations[]`, `newLocations[]`, `locationUpdates[]`, adjacency, links, and paths. It keeps console fallback behavior unchanged and writes no game state.
 
 The map visual direction is a dark-fantasy parchment atlas, not a technical graph. The reusable renderer uses Russian-first controls and labels:
 
@@ -226,6 +226,7 @@ The map visual direction is a dark-fantasy parchment atlas, not a technical grap
 - `Легенда карты` with current point, ordinary point, and faction influence swatches.
 - parchment texture, ink-like route lines, selected/hover node states, and an empty-state card saying there are no points on the selected level/layer.
 - selected node cards with details and faction ownership/influence where the projection can provide them.
+- Mortal location cards include available type, region, biome, known/discovered state, description, last events, exits, storage/threat counts, and coordinates. Missing coordinates degrade into stable schematic coordinates and are marked as schematic in the card instead of breaking the viewer.
 
 Mortal World mutating parity currently includes:
 
