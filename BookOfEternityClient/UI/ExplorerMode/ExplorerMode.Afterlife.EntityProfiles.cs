@@ -96,6 +96,7 @@ public partial class ExplorerMode
         AppendAfterlifeEntitySpecialArts(lines, profile["specialArts"] as JsonArray);
         AppendAfterlifeEntityCustomStates(lines, profile[AfterlifeEntityProfileState.CustomStatesProperty] as JsonArray);
         AppendAfterlifeEntityFateCards(lines, profile["fateCards"] as JsonArray);
+        AppendAfterlifeEntityRelationships(lines, profile[AfterlifeEntityProfileState.RelationshipsProperty] as JsonArray);
         AppendAfterlifeEntityAgency(lines, profile);
 
         var dissipationTier = AfterlifeEntityProfileState.GetNodeInt(profile["soulDissipationTier"]);
@@ -232,6 +233,50 @@ public partial class ExplorerMode
         }
     }
 
+    private static void AppendAfterlifeEntityRelationships(List<string> lines, JsonArray? relationships)
+    {
+        if (relationships == null || relationships.Count == 0)
+            return;
+
+        lines.Add("  • Отношения:");
+        foreach (var relationship in relationships.OfType<JsonObject>())
+        {
+            var axis = AfterlifeEntityProfileState.GetNodeString(relationship["axis"]) ?? "?";
+            var targetActorId = AfterlifeEntityProfileState.GetNodeString(relationship["targetActorId"]) ??
+                                AfterlifeEntityProfileState.GetNodeString(relationship["targetActorRef"]) ??
+                                "цель не указана";
+            var value = AfterlifeEntityProfileState.GetNodeInt(relationship["value"]);
+            var tier = AfterlifeEntityProfileState.GetNodeString(relationship["relationshipTier"]) ?? "ступень не указана";
+            lines.Add($"    - {Markup.Escape(DescribeAfterlifeRelationshipAxis(axis))} к {Markup.Escape(targetActorId)}: {value}, {Markup.Escape(tier)}");
+
+            if (relationship["relationshipLock"] is JsonObject relationshipLock)
+            {
+                var lockState = AfterlifeEntityProfileState.GetNodeString(relationshipLock["lockState"]) ?? "locked";
+                var reason = AfterlifeEntityProfileState.GetNodeString(relationshipLock["reason"]) ?? "причина не указана";
+                var breakthroughQuestId = AfterlifeEntityProfileState.GetNodeString(relationshipLock["breakthroughQuestId"]);
+                var redemptionQuestId = AfterlifeEntityProfileState.GetNodeString(relationshipLock["redemptionQuestId"]);
+                lines.Add($"      [yellow]заблокировано: {Markup.Escape(DescribeAfterlifeRelationshipLock(lockState))}[/]");
+                lines.Add($"      [dim]{Markup.Escape(reason)}[/]");
+                if (!string.IsNullOrWhiteSpace(breakthroughQuestId))
+                    lines.Add($"      [dim]Нужен прорыв: {Markup.Escape(breakthroughQuestId)}[/]");
+                if (!string.IsNullOrWhiteSpace(redemptionQuestId))
+                    lines.Add($"      [dim]Нужно искупление: {Markup.Escape(redemptionQuestId)}[/]");
+            }
+
+            if (relationship[AfterlifeEntityProfileState.RelationshipGateQuestsProperty] is JsonArray quests)
+            {
+                foreach (var quest in quests.OfType<JsonObject>())
+                {
+                    var status = AfterlifeEntityProfileState.GetNodeString(quest["status"]) ?? "?";
+                    var title = AfterlifeEntityProfileState.GetNodeString(quest["title"]) ??
+                                AfterlifeEntityProfileState.GetNodeString(quest["questId"]) ??
+                                "Без названия";
+                    lines.Add($"      · {Markup.Escape(title)}: {Markup.Escape(DescribeAfterlifeRelationshipQuestStatus(status))}");
+                }
+            }
+        }
+    }
+
     private static void AppendAfterlifeEntityAgency(List<string> lines, JsonObject profile)
     {
         var goals = profile["goals"] as JsonObject;
@@ -305,6 +350,37 @@ public partial class ExplorerMode
             "available" => "может быть открыта",
             "unlocked" => "открыта",
             _ => "закрыта"
+        };
+
+    private static string DescribeAfterlifeRelationshipAxis(string? axis) =>
+        axis?.Trim().ToLowerInvariant() switch
+        {
+            "trust" => "Доверие",
+            "romance" => "Романтическая связь",
+            "rivalry" => "Соперничество",
+            "oath" => "Клятва",
+            "fear" => "Страх",
+            "reverence" => "Почтение",
+            "debt" => "Долг",
+            _ => axis ?? "?"
+        };
+
+    private static string DescribeAfterlifeRelationshipLock(string? lockState) =>
+        lockState?.Trim().ToLowerInvariant() switch
+        {
+            "positive_locked" => "положительный порог требует личного прорыва",
+            "negative_locked" => "отрицательный порог требует искупления",
+            "point_of_no_return" => "точка невозврата",
+            _ => lockState ?? "гейт"
+        };
+
+    private static string DescribeAfterlifeRelationshipQuestStatus(string? status) =>
+        status?.Trim().ToLowerInvariant() switch
+        {
+            "completed" => "завершён",
+            "failed" => "провален",
+            "cancelled" => "отменён",
+            _ => "активен"
         };
 
     private static int CountFateCardEffects(JsonObject card) =>

@@ -418,6 +418,159 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.NotEmpty(card["guardianEffects"]!.AsArray());
     }
 
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_AppliesAfterlifeRelationshipGateCommands()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "relationships": [
+                    {
+                      "relationshipId": "guardian_mirror_player_trust",
+                      "axis": "trust",
+                      "targetActorType": "player_soul",
+                      "targetActorId": "player_soul",
+                      "value": 49,
+                      "relationshipTier": "guarded_warmth"
+                    }
+                  ]
+                }
+              ],
+              "afterlifeRelationshipLockUpdates": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "relationshipId": "guardian_mirror_player_trust",
+                  "axis": "trust",
+                  "targetActorType": "player_soul",
+                  "targetActorId": "player_soul",
+                  "relationshipTier": "trust_breakthrough_required",
+                  "relationshipLock": {
+                    "lockState": "positive_locked",
+                    "direction": "positive",
+                    "threshold": 50,
+                    "breakthroughQuestId": "quest_mirror_oath_trial",
+                    "reason": "Хранитель не доверится глубже без личного испытания.",
+                    "evidence": "Игрок приблизился к порогу доверия.",
+                    "updatedAtTurn": 41
+                  },
+                  "gmThoughtsSummary": "Испытание должно раскрыть старую клятву Хранителя."
+                }
+              ],
+              "afterlifeBreakthroughQuestUpdates": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "relationshipId": "guardian_mirror_player_trust",
+                  "questId": "quest_mirror_oath_trial",
+                  "questType": "breakthrough",
+                  "status": "active",
+                  "title": "Суд зеркальной клятвы",
+                  "sceneSummary": "Хранитель готовит не бытовую услугу, а личное испытание доверия.",
+                  "successCondition": "Душа выбирает правду, даже если это рушит удобную память.",
+                  "gmThoughtsSummary": "Квест проверяет ценности, а не сбор предметов.",
+                  "updatedAtTurn": 41
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.RelationshipLockUpdatesProperty));
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.BreakthroughQuestUpdatesProperty));
+
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        var relationship = Assert.Single(profile["relationships"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("trust_breakthrough_required", relationship["relationshipTier"]?.GetValue<string>());
+
+        var relationshipLock = Assert.IsType<JsonObject>(relationship["relationshipLock"]);
+        Assert.Equal("positive_locked", relationshipLock["lockState"]?.GetValue<string>());
+        Assert.Equal("quest_mirror_oath_trial", relationshipLock["breakthroughQuestId"]?.GetValue<string>());
+
+        var quest = Assert.Single(relationship["relationshipGateQuests"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("quest_mirror_oath_trial", quest["questId"]?.GetValue<string>());
+        Assert.Equal("breakthrough", quest["questType"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_ClearsRelationshipGateOnlyWithClearKeyword()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "resident",
+                  "actorId": "resident_liora",
+                  "displayName": "Лиора",
+                  "realm": "Shining Abode",
+                  "relationships": [
+                    {
+                      "relationshipId": "resident_liora_player_romance",
+                      "axis": "romance",
+                      "targetActorType": "player_soul",
+                      "targetActorId": "player_soul",
+                      "value": 50,
+                      "relationshipTier": "romance_breakthrough_required",
+                      "relationshipLock": {
+                        "lockState": "positive_locked",
+                        "direction": "positive",
+                        "threshold": 50,
+                        "breakthroughQuestId": "quest_liora_dawn_memory",
+                        "reason": "Лиора не примет близость без сцены памяти.",
+                        "evidence": "Отношение достигло порога.",
+                        "updatedAtTurn": 50
+                      }
+                    }
+                  ]
+                }
+              ],
+              "afterlifeBreakthroughQuestUpdates": [
+                {
+                  "actorType": "resident",
+                  "actorId": "resident_liora",
+                  "relationshipId": "resident_liora_player_romance",
+                  "questId": "quest_liora_dawn_memory",
+                  "questType": "breakthrough",
+                  "status": "completed",
+                  "title": "Память рассветной клятвы",
+                  "sceneSummary": "Игрок прожил сцену, где Лиора потеряла своё имя.",
+                  "successCondition": "Память признана и принята.",
+                  "evidence": "Игрок завершил сцену Воспоминания.",
+                  "breakthroughQuestId": "_clear_",
+                  "gmThoughtsSummary": "Гейт закрывается только после драматической сцены.",
+                  "updatedAtTurn": 51
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        var relationship = Assert.Single(profile["relationships"]!.AsArray().OfType<JsonObject>());
+        Assert.False(relationship.ContainsKey("relationshipLock"));
+
+        var quest = Assert.Single(relationship["relationshipGateQuests"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("completed", quest["status"]?.GetValue<string>());
+        Assert.Equal("_clear_", quest["breakthroughQuestId"]?.GetValue<string>());
+    }
+
     [Theory]
     [InlineData("resident", "resident_oath_001", "Резидент Клятв", "Эхо клятвы", "oath_echo", "oath_released")]
     [InlineData("shining_faction_head", "head_ember_001", "Глава Пепельной Хартии", "Брожение хартии", "charter_unrest", "charter_quieted")]

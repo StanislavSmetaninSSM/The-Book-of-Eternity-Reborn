@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 
 namespace BookOfEternityClient.Services;
@@ -41,6 +42,12 @@ public partial class ValidationService
         "unlocked"
     };
 
+    private static readonly HashSet<string> AfterlifeRelationshipLockDirections = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "positive",
+        "negative"
+    };
+
     private void ValidateAfterlifeEntityProfileStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (root.ValueKind != JsonValueKind.Object)
@@ -69,18 +76,22 @@ public partial class ValidationService
         var hasQuestUpdates = root.TryGetProperty(AfterlifeEntityProfileState.QuestUpdatesProperty, out var questUpdates);
         var hasActivityUpdates = root.TryGetProperty(AfterlifeEntityProfileState.ActivityUpdatesProperty, out var activityUpdates);
         var hasActivityCompletions = root.TryGetProperty(AfterlifeEntityProfileState.CompleteActivitiesProperty, out var activityCompletions);
+        var hasRelationshipChanges = root.TryGetProperty(AfterlifeEntityProfileState.RelationshipChangesProperty, out var relationshipChanges);
+        var hasRelationshipLockUpdates = root.TryGetProperty(AfterlifeEntityProfileState.RelationshipLockUpdatesProperty, out var relationshipLockUpdates);
+        var hasBreakthroughQuestUpdates = root.TryGetProperty(AfterlifeEntityProfileState.BreakthroughQuestUpdatesProperty, out var breakthroughQuestUpdates);
         var hasInvalidProgressionOverride = root.TryGetProperty(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty, out _);
         var hasInvalidProfileCommand = root.TryGetProperty(AfterlifeEntityProfileState.LastInvalidCommandProperty, out _);
         if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges && !hasProgressionOverrides && !hasSpecialArtLearningReceipts &&
-            !hasFateCardUnlocks && !hasGoalUpdates && !hasQuestUpdates && !hasActivityUpdates && !hasActivityCompletions)
+            !hasFateCardUnlocks && !hasGoalUpdates && !hasQuestUpdates && !hasActivityUpdates && !hasActivityCompletions &&
+            !hasRelationshipChanges && !hasRelationshipLockUpdates && !hasBreakthroughQuestUpdates)
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}",
                 IssueSeverity.Error,
-                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], afterlifeFateCardUnlocks[], actor agency command surfaces, afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
+                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], afterlifeFateCardUnlocks[], actor agency command surfaces, relationship gate command surfaces, afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
                 code: "afterlife_entity_profile_missing_profiles",
                 section: "AfterlifeEntityProfiles",
-                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeFateCardUnlocks[] / afterlifeActorGoalUpdates[] / afterlifeActorQuestUpdates[] / afterlifeActorActivityUpdates[] / completeAfterlifeActorActivities[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
+                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeFateCardUnlocks[] / afterlifeActorGoalUpdates[] / afterlifeActorQuestUpdates[] / afterlifeActorActivityUpdates[] / completeAfterlifeActorActivities[] / afterlifeRelationshipChanges[] / afterlifeRelationshipLockUpdates[] / afterlifeBreakthroughQuestUpdates[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
         }
 
         if (hasInvalidProgressionOverride)
@@ -158,6 +169,24 @@ public partial class ValidationService
             activityCompletions,
             hasActivityCompletions,
             $"{contextPrefix}.{AfterlifeEntityProfileState.CompleteActivitiesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeRelationshipChangesIfPresent(
+            relationshipChanges,
+            hasRelationshipChanges,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.RelationshipChangesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeRelationshipLockUpdatesIfPresent(
+            relationshipLockUpdates,
+            hasRelationshipLockUpdates,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.RelationshipLockUpdatesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeBreakthroughQuestUpdatesIfPresent(
+            breakthroughQuestUpdates,
+            hasBreakthroughQuestUpdates,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.BreakthroughQuestUpdatesProperty}",
             profileAuthority,
             issues);
         ValidateAfterlifeEntityProgressionOverridesIfPresent(
@@ -303,6 +332,7 @@ public partial class ValidationService
         ValidateAfterlifeProfileProgressionLedger(profile, context, issues);
         ValidateAfterlifeProfileLedger(profile, context, issues);
         ValidateAfterlifeProfileAgency(profile, context, issues);
+        ValidateAfterlifeProfileRelationships(profile, context, issues);
         ValidateStringArrayIfPresent(profile, context, "warnings", "afterlife_entity_profile_warnings_not_array", issues);
     }
 
@@ -1121,6 +1151,418 @@ public partial class ValidationService
                     issues);
             }
         }
+    }
+
+    private void ValidateAfterlifeRelationshipChangesIfPresent(
+        JsonElement changes,
+        bool hasChanges,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasChanges)
+            return;
+
+        if (changes.ValueKind != JsonValueKind.Array)
+        {
+            AddRelationshipIssue(context, "afterlife_entity_profile_relationship_changes_not_array", "afterlifeRelationshipChanges должен быть array.", "array", changes.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var change in changes.EnumerateArray())
+        {
+            var changeContext = $"{context}[{index++}]";
+            if (ValidateAfterlifeActorAgencyCommandTarget(change, changeContext, profileAuthority, "relationship_change", issues) == null)
+                continue;
+
+            ValidateRelationshipIdentityFields(change, changeContext, issues);
+            var hasValue = change.TryGetProperty("value", out var value);
+            var hasDelta = change.TryGetProperty("valueDelta", out var valueDelta);
+            if (!hasValue && !hasDelta)
+            {
+                AddRelationshipIssue(changeContext, "afterlife_entity_profile_relationship_change_missing_value", "afterlifeRelationshipChanges должен содержать value или valueDelta.", "value or valueDelta", "missing", issues);
+            }
+            else
+            {
+                if (hasValue)
+                    ValidateRelationshipValue(value, $"{changeContext}.value", issues);
+                if (hasDelta && !TryGetProfileInt(valueDelta, out _))
+                    AddRelationshipIssue($"{changeContext}.valueDelta", "afterlife_entity_profile_relationship_change_invalid_delta", "valueDelta должен быть integer.", "integer", valueDelta.ToString(), issues);
+            }
+
+            RequireProfileString(change, changeContext, "reason", "afterlife_entity_profile_relationship_change_missing_reason", issues);
+            RequireProfileString(change, changeContext, "evidence", "afterlife_entity_profile_relationship_change_missing_evidence", issues);
+            RequireProfileString(change, changeContext, "gmThoughtsSummary", "afterlife_entity_profile_relationship_change_missing_gm_thoughts", issues);
+            ValidateProfileNonNegativeInt(change, changeContext, "updatedAtTurn", "afterlife_entity_profile_relationship_invalid_turn", issues);
+        }
+    }
+
+    private void ValidateAfterlifeRelationshipLockUpdatesIfPresent(
+        JsonElement updates,
+        bool hasUpdates,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasUpdates)
+            return;
+
+        if (updates.ValueKind != JsonValueKind.Array)
+        {
+            AddRelationshipIssue(context, "afterlife_entity_profile_relationship_lock_updates_not_array", "afterlifeRelationshipLockUpdates должен быть array.", "array", updates.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var update in updates.EnumerateArray())
+        {
+            var updateContext = $"{context}[{index++}]";
+            if (ValidateAfterlifeActorAgencyCommandTarget(update, updateContext, profileAuthority, "relationship_lock", issues) == null)
+                continue;
+
+            ValidateRelationshipIdentityFields(update, updateContext, issues);
+            RequireProfileString(update, updateContext, "gmThoughtsSummary", "afterlife_entity_profile_relationship_lock_missing_gm_thoughts", issues);
+            if (!update.TryGetProperty("relationshipLock", out var relationshipLock) || relationshipLock.ValueKind != JsonValueKind.Object)
+            {
+                AddRelationshipIssue($"{updateContext}.relationshipLock", "afterlife_entity_profile_relationship_lock_missing", "afterlifeRelationshipLockUpdates должен содержать relationshipLock object.", "relationshipLock object", update.TryGetProperty("relationshipLock", out var actual) ? actual.ToString() : "missing", issues);
+                continue;
+            }
+
+            ValidateRelationshipLock(relationshipLock, $"{updateContext}.relationshipLock", issues);
+        }
+    }
+
+    private void ValidateAfterlifeBreakthroughQuestUpdatesIfPresent(
+        JsonElement updates,
+        bool hasUpdates,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasUpdates)
+            return;
+
+        if (updates.ValueKind != JsonValueKind.Array)
+        {
+            AddRelationshipIssue(context, "afterlife_entity_profile_relationship_quest_updates_not_array", "afterlifeBreakthroughQuestUpdates должен быть array.", "array", updates.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var update in updates.EnumerateArray())
+        {
+            var updateContext = $"{context}[{index++}]";
+            if (ValidateAfterlifeActorAgencyCommandTarget(update, updateContext, profileAuthority, "relationship_quest", issues) == null)
+                continue;
+
+            RequireProfileString(update, updateContext, "relationshipId", "afterlife_entity_profile_relationship_missing_relationship_id", issues);
+            ValidateRelationshipGateQuest(update, updateContext, issues);
+        }
+    }
+
+    private void ValidateAfterlifeProfileRelationships(JsonElement profile, string context, List<ValidationIssue> issues)
+    {
+        if (!profile.TryGetProperty(AfterlifeEntityProfileState.RelationshipsProperty, out var relationships))
+            return;
+
+        if (relationships.ValueKind != JsonValueKind.Array)
+        {
+            AddRelationshipIssue($"{context}.relationships", "afterlife_entity_profile_relationships_not_array", "relationships профиля сущности посмертия должен быть array.", "array", relationships.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var relationship in relationships.EnumerateArray())
+        {
+            var relationshipContext = $"{context}.relationships[{index++}]";
+            if (relationship.ValueKind != JsonValueKind.Object)
+            {
+                AddRelationshipIssue(relationshipContext, "afterlife_entity_profile_relationship_not_object", "relationships[] entry должен быть object.", "object", relationship.ValueKind.ToString(), issues);
+                continue;
+            }
+
+            var relationshipId = ValidateRelationshipIdentityFields(relationship, relationshipContext, issues);
+            if (!string.IsNullOrWhiteSpace(relationshipId) && !ids.Add(relationshipId))
+                AddRelationshipIssue($"{relationshipContext}.relationshipId", "afterlife_entity_profile_relationship_duplicate_id", "relationships[] не должен содержать дубликаты relationshipId.", "unique relationshipId", relationshipId, issues);
+
+            if (relationship.TryGetProperty("value", out var value))
+                ValidateRelationshipValue(value, $"{relationshipContext}.value", issues);
+            else
+                AddRelationshipIssue($"{relationshipContext}.value", "afterlife_entity_profile_relationship_missing_value", "relationship должен содержать value.", "integer -100..100", "missing", issues);
+
+            RequireProfileString(relationship, relationshipContext, "relationshipTier", "afterlife_entity_profile_relationship_missing_tier", issues);
+
+            if (relationship.TryGetProperty("relationshipLock", out var relationshipLock) && relationshipLock.ValueKind != JsonValueKind.Null)
+                ValidateRelationshipLock(relationshipLock, $"{relationshipContext}.relationshipLock", issues);
+
+            if (relationship.TryGetProperty(AfterlifeEntityProfileState.RelationshipGateQuestsProperty, out var gateQuests))
+                ValidateRelationshipGateQuestArray(gateQuests, $"{relationshipContext}.{AfterlifeEntityProfileState.RelationshipGateQuestsProperty}", issues);
+
+            ValidateRelationshipThresholdGate(relationship, relationshipContext, issues);
+        }
+    }
+
+    private string? ValidateRelationshipIdentityFields(JsonElement relationship, string context, List<ValidationIssue> issues)
+    {
+        var relationshipId = RequireProfileString(relationship, context, "relationshipId", "afterlife_entity_profile_relationship_missing_relationship_id", issues);
+        var axis = RequireProfileString(relationship, context, "axis", "afterlife_entity_profile_relationship_missing_axis", issues);
+        if (!string.IsNullOrWhiteSpace(axis) && !AfterlifeEntityProfileState.RelationshipAxes.Contains(axis))
+        {
+            AddRelationshipIssue(
+                $"{context}.axis",
+                "afterlife_entity_profile_relationship_invalid_axis",
+                "axis отношения посмертия должен быть поддерживаемым типом связи.",
+                string.Join("/", AfterlifeEntityProfileState.RelationshipAxes.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                axis,
+                issues);
+        }
+
+        var targetType = RequireProfileString(relationship, context, "targetActorType", "afterlife_entity_profile_relationship_missing_target_type", issues);
+        if (!string.IsNullOrWhiteSpace(targetType) && !AfterlifeEntityProfileState.ActorTypes.Contains(targetType))
+        {
+            AddRelationshipIssue(
+                $"{context}.targetActorType",
+                "afterlife_entity_profile_relationship_invalid_target_type",
+                "targetActorType отношения должен ссылаться на сущность посмертия.",
+                string.Join("/", AfterlifeEntityProfileState.ActorTypes.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                targetType,
+                issues);
+        }
+
+        if (string.IsNullOrWhiteSpace(GetProfileString(relationship, "targetActorId")) &&
+            string.IsNullOrWhiteSpace(GetProfileString(relationship, "targetActorRef")))
+        {
+            AddRelationshipIssue($"{context}.targetActorId", "afterlife_entity_profile_relationship_missing_target_id", "relationship должен иметь targetActorId или targetActorRef.", "non-empty targetActorId or targetActorRef", "missing", issues);
+        }
+
+        return relationshipId;
+    }
+
+    private void ValidateRelationshipLock(JsonElement relationshipLock, string context, List<ValidationIssue> issues)
+    {
+        if (relationshipLock.ValueKind != JsonValueKind.Object)
+        {
+            AddRelationshipIssue(context, "afterlife_entity_profile_relationship_lock_not_object", "relationshipLock должен быть object.", "object", relationshipLock.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var lockState = RequireProfileString(relationshipLock, context, "lockState", "afterlife_entity_profile_relationship_lock_missing_state", issues);
+        if (!string.IsNullOrWhiteSpace(lockState) && !AfterlifeEntityProfileState.RelationshipLockStates.Contains(lockState))
+        {
+            AddRelationshipIssue($"{context}.lockState", "afterlife_entity_profile_relationship_lock_invalid_state", "lockState должен быть поддерживаемым состоянием гейта отношений.", string.Join("/", AfterlifeEntityProfileState.RelationshipLockStates), lockState, issues);
+        }
+
+        var direction = RequireProfileString(relationshipLock, context, "direction", "afterlife_entity_profile_relationship_lock_missing_direction", issues);
+        if (!string.IsNullOrWhiteSpace(direction) && !AfterlifeRelationshipLockDirections.Contains(direction))
+            AddRelationshipIssue($"{context}.direction", "afterlife_entity_profile_relationship_lock_invalid_direction", "direction должен быть positive или negative.", "positive/negative", direction, issues);
+
+        ValidateProfileNonNegativeInt(relationshipLock, context, "updatedAtTurn", "afterlife_entity_profile_relationship_invalid_turn", issues);
+        if (!relationshipLock.TryGetProperty("threshold", out var threshold) || !TryGetProfileInt(threshold, out var thresholdValue) || thresholdValue is < -100 or > 100)
+            AddRelationshipIssue($"{context}.threshold", "afterlife_entity_profile_relationship_lock_invalid_threshold", "threshold должен быть integer -100..100.", "integer -100..100", relationshipLock.TryGetProperty("threshold", out var actual) ? actual.ToString() : "missing", issues);
+
+        RequireProfileString(relationshipLock, context, "reason", "afterlife_entity_profile_relationship_lock_missing_reason", issues);
+        RequireProfileString(relationshipLock, context, "evidence", "afterlife_entity_profile_relationship_lock_missing_evidence", issues);
+
+        if (string.Equals(lockState, "positive_locked", StringComparison.OrdinalIgnoreCase) &&
+            string.IsNullOrWhiteSpace(GetProfileString(relationshipLock, "breakthroughQuestId")))
+        {
+            AddRelationshipIssue($"{context}.breakthroughQuestId", "afterlife_entity_profile_relationship_positive_lock_missing_breakthrough", "positive_locked relationshipLock требует breakthroughQuestId.", "non-empty breakthroughQuestId", "missing", issues);
+        }
+
+        if (string.Equals(lockState, "negative_locked", StringComparison.OrdinalIgnoreCase) &&
+            string.IsNullOrWhiteSpace(GetProfileString(relationshipLock, "redemptionQuestId")))
+        {
+            AddRelationshipIssue($"{context}.redemptionQuestId", "afterlife_entity_profile_relationship_negative_lock_missing_redemption", "negative_locked relationshipLock требует redemptionQuestId.", "non-empty redemptionQuestId", "missing", issues);
+        }
+
+        if (string.Equals(lockState, "point_of_no_return", StringComparison.OrdinalIgnoreCase))
+        {
+            var pointOfNoReturn = relationshipLock.TryGetProperty("pointOfNoReturn", out var pointOfNoReturnNode) &&
+                                  pointOfNoReturnNode.ValueKind == JsonValueKind.True;
+            var hasProof = !string.IsNullOrWhiteSpace(GetProfileString(relationshipLock, "proofSummary")) ||
+                           (relationshipLock.TryGetProperty("proof", out var proof) &&
+                            proof.ValueKind == JsonValueKind.Object &&
+                            proof.EnumerateObject().Any());
+            if (!pointOfNoReturn || !hasProof)
+            {
+                AddRelationshipIssue($"{context}.proofSummary", "afterlife_entity_profile_relationship_point_of_no_return_missing_proof", "point_of_no_return требует pointOfNoReturn=true и proof/proofSummary.", "pointOfNoReturn=true + proofSummary/proof", relationshipLock.ToString(), issues);
+            }
+        }
+    }
+
+    private void ValidateRelationshipThresholdGate(JsonElement relationship, string context, List<ValidationIssue> issues)
+    {
+        if (!relationship.TryGetProperty("value", out var valueNode) ||
+            !TryGetProfileInt(valueNode, out var value))
+        {
+            return;
+        }
+
+        relationship.TryGetProperty("relationshipLock", out var relationshipLock);
+        if (value >= 50 && !HasPositiveRelationshipGate(relationship, relationshipLock))
+        {
+            AddRelationshipIssue(
+                $"{context}.value",
+                "afterlife_entity_profile_relationship_positive_threshold_missing_gate",
+                "Отношение достигло важного положительного порога, но не содержит active breakthrough lock или завершённый breakthrough proof.",
+                "positive relationship gate lock/proof",
+                value.ToString(CultureInfo.InvariantCulture),
+                issues);
+        }
+
+        if (value <= -50 && !HasNegativeRelationshipGate(relationship, relationshipLock))
+        {
+            AddRelationshipIssue(
+                $"{context}.value",
+                "afterlife_entity_profile_relationship_negative_threshold_missing_gate",
+                "Отношение достигло важного отрицательного порога, но не содержит redemption lock, point_of_no_return proof или завершённый redemption proof.",
+                "negative relationship gate lock/proof",
+                value.ToString(CultureInfo.InvariantCulture),
+                issues);
+        }
+    }
+
+    private static bool HasPositiveRelationshipGate(JsonElement relationship, JsonElement relationshipLock)
+    {
+        return HasRelationshipLockStateWithQuest(relationshipLock, "positive_locked", "breakthroughQuestId") ||
+               HasCompletedRelationshipGateProof(relationship, "breakthrough", "breakthroughQuestId");
+    }
+
+    private static bool HasNegativeRelationshipGate(JsonElement relationship, JsonElement relationshipLock)
+    {
+        return HasRelationshipLockStateWithQuest(relationshipLock, "negative_locked", "redemptionQuestId") ||
+               HasValidPointOfNoReturnLock(relationshipLock) ||
+               HasCompletedRelationshipGateProof(relationship, "redemption", "redemptionQuestId");
+    }
+
+    private static bool HasRelationshipLockStateWithQuest(JsonElement relationshipLock, string lockState, string questField)
+    {
+        return relationshipLock.ValueKind == JsonValueKind.Object &&
+               string.Equals(GetProfileString(relationshipLock, "lockState"), lockState, StringComparison.OrdinalIgnoreCase) &&
+               !string.IsNullOrWhiteSpace(GetProfileString(relationshipLock, questField));
+    }
+
+    private static bool HasValidPointOfNoReturnLock(JsonElement relationshipLock)
+    {
+        if (relationshipLock.ValueKind != JsonValueKind.Object ||
+            !string.Equals(GetProfileString(relationshipLock, "lockState"), "point_of_no_return", StringComparison.OrdinalIgnoreCase) ||
+            !relationshipLock.TryGetProperty("pointOfNoReturn", out var pointOfNoReturn) ||
+            pointOfNoReturn.ValueKind != JsonValueKind.True)
+        {
+            return false;
+        }
+
+        return !string.IsNullOrWhiteSpace(GetProfileString(relationshipLock, "proofSummary")) ||
+               (relationshipLock.TryGetProperty("proof", out var proof) &&
+                proof.ValueKind == JsonValueKind.Object &&
+                proof.EnumerateObject().Any());
+    }
+
+    private static bool HasCompletedRelationshipGateProof(JsonElement relationship, string questType, string clearField)
+    {
+        if (!relationship.TryGetProperty(AfterlifeEntityProfileState.RelationshipGateQuestsProperty, out var quests) ||
+            quests.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        foreach (var quest in quests.EnumerateArray())
+        {
+            if (quest.ValueKind == JsonValueKind.Object &&
+                string.Equals(GetProfileString(quest, "questType"), questType, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetProfileString(quest, "status"), "completed", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetProfileString(quest, clearField), "_clear_", StringComparison.OrdinalIgnoreCase) &&
+                !string.IsNullOrWhiteSpace(GetProfileString(quest, "evidence")))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void ValidateRelationshipGateQuestArray(JsonElement quests, string context, List<ValidationIssue> issues)
+    {
+        if (quests.ValueKind != JsonValueKind.Array)
+        {
+            AddRelationshipIssue(context, "afterlife_entity_profile_relationship_gate_quests_not_array", "relationshipGateQuests должен быть array.", "array", quests.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var quest in quests.EnumerateArray())
+        {
+            var questContext = $"{context}[{index++}]";
+            var questId = ValidateRelationshipGateQuest(quest, questContext, issues);
+            if (!string.IsNullOrWhiteSpace(questId) && !ids.Add(questId))
+                AddRelationshipIssue($"{questContext}.questId", "afterlife_entity_profile_relationship_duplicate_gate_quest", "relationshipGateQuests не должен содержать дубликаты questId.", "unique questId", questId, issues);
+        }
+    }
+
+    private string? ValidateRelationshipGateQuest(JsonElement quest, string context, List<ValidationIssue> issues)
+    {
+        if (quest.ValueKind != JsonValueKind.Object)
+        {
+            AddRelationshipIssue(context, "afterlife_entity_profile_relationship_gate_quest_not_object", "relationship gate quest должен быть object.", "object", quest.ValueKind.ToString(), issues);
+            return null;
+        }
+
+        var questId = RequireProfileString(quest, context, "questId", "afterlife_entity_profile_relationship_gate_quest_missing_id", issues);
+        var questType = RequireProfileString(quest, context, "questType", "afterlife_entity_profile_relationship_gate_quest_missing_type", issues);
+        if (!string.IsNullOrWhiteSpace(questType) && !AfterlifeEntityProfileState.RelationshipGateQuestTypes.Contains(questType))
+            AddRelationshipIssue($"{context}.questType", "afterlife_entity_profile_relationship_gate_quest_invalid_type", "questType должен быть breakthrough или redemption.", "breakthrough/redemption", questType, issues);
+
+        var status = RequireProfileString(quest, context, "status", "afterlife_entity_profile_relationship_gate_quest_missing_status", issues);
+        if (!string.IsNullOrWhiteSpace(status) && !AfterlifeEntityProfileState.RelationshipGateQuestStatuses.Contains(status))
+            AddRelationshipIssue($"{context}.status", "afterlife_entity_profile_relationship_gate_quest_invalid_status", "status relationship gate quest должен быть поддерживаемым lifecycle token.", string.Join("/", AfterlifeEntityProfileState.RelationshipGateQuestStatuses), status, issues);
+
+        RequireProfileString(quest, context, "title", "afterlife_entity_profile_relationship_gate_quest_missing_title", issues);
+        RequireProfileString(quest, context, "sceneSummary", "afterlife_entity_profile_relationship_gate_quest_missing_scene", issues);
+        RequireProfileString(quest, context, "successCondition", "afterlife_entity_profile_relationship_gate_quest_missing_success_condition", issues);
+        RequireProfileString(quest, context, "gmThoughtsSummary", "afterlife_entity_profile_relationship_gate_quest_missing_gm_thoughts", issues);
+        ValidateProfileNonNegativeInt(quest, context, "updatedAtTurn", "afterlife_entity_profile_relationship_invalid_turn", issues);
+
+        if (string.Equals(status, "completed", StringComparison.OrdinalIgnoreCase))
+        {
+            RequireProfileString(quest, context, "evidence", "afterlife_entity_profile_relationship_gate_quest_missing_evidence", issues);
+            var clearFieldName = string.Equals(questType, "redemption", StringComparison.OrdinalIgnoreCase)
+                ? "redemptionQuestId"
+                : "breakthroughQuestId";
+            var clearValue = GetProfileString(quest, clearFieldName);
+            if (!string.Equals(clearValue, "_clear_", StringComparison.OrdinalIgnoreCase))
+            {
+                AddRelationshipIssue($"{context}.{clearFieldName}", "afterlife_entity_profile_relationship_clear_requires_clear_keyword", "Завершение breakthrough/redemption gate может очистить linked quest id только значением _clear_.", "_clear_", clearValue ?? "missing", issues);
+            }
+        }
+
+        return questId;
+    }
+
+    private void ValidateRelationshipValue(JsonElement value, string context, List<ValidationIssue> issues)
+    {
+        if (!TryGetProfileInt(value, out var relationValue) || relationValue is < -100 or > 100)
+            AddRelationshipIssue(context, "afterlife_entity_profile_relationship_invalid_value", "value отношения должен быть integer -100..100.", "integer -100..100", value.ToString(), issues);
+    }
+
+    private static void AddRelationshipIssue(
+        string context,
+        string code,
+        string message,
+        string expected,
+        string? actual,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            context,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeEntityProfiles",
+            expected: expected,
+            actual: actual));
     }
 
     private void ValidateAfterlifeProfileAgency(JsonElement profile, string context, List<ValidationIssue> issues)

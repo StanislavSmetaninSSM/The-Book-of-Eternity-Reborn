@@ -21,6 +21,13 @@
       "description": "Afterlife actor goals, personalQuests, currentActivity, completedActivities, gmThoughtsSummary, and completion-through-command contract."
     },
     {
+      "contractId": "afterlife_relationship_gates_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates",
+      "description": "Afterlife-only relationship gates for Guardians, residents, faction heads, and custom spiritual actors: relationships[], trust/romance/rivalry/oath/fear/reverence/debt axes, relationshipLock, breakthroughQuestId, redemptionQuestId, pointOfNoReturn, _clear_, and no Mortal NPCRelationshipChanges."
+    },
+    {
       "contractId": "afterlife_fate_cards_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
