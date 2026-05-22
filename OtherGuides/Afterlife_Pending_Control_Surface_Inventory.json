@@ -34,6 +34,22 @@
       "notes": "Tracks entity currencies, progression, standard/special arts, custom states, and soul dissipation danger."
     },
     {
+      "path": "game_state/meta/afterlife_active_threats.json",
+      "surfaceType": "meta_state_with_threat_commands",
+      "owner": "afterlife_active_threats",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "GM-authored persistent afterlife threats through afterlifeThreatsToAdd, afterlifeThreatsToUpdate, completeAfterlifeThreatActivities, and afterlifeThreatsToRemove",
+      "emptyWrapperSemantics": "Missing means no persistent afterlife threats yet. Empty or commandless present roots are invalid unless normalized to schemaVersion plus threats[].",
+      "malformedBehavior": "Fail closed for malformed threat/update/completion/removal contracts; hidden visibleToPlayer=false threat details must not leak into normal player UI.",
+      "blockerBehavior": "Does not block by existence; invalid threat state blocks accepted-turn validation until repaired.",
+      "closureSurface": "completeAfterlifeThreatActivities[] closes currentActivity into ledger[]; afterlifeThreatsToRemove[] removes fully resolved/retired threats.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Pending Contract Matrix",
+        "Examples/E_CLI_Afterlife_Turns.txt#afterlifeThreatsToAdd"
+      ],
+      "notes": "Afterlife-only active threats for Chaos Sea and Shining Abode. Do not use Mortal worldMapUpdates.activeThreats; currentActivity is live state, impactProfile is pressure metadata, and sarefLink obeys hidden main-story reveal gates."
+    },
+    {
       "path": "game_state/meta/afterlife_chronicles.json",
       "surfaceType": "meta_state_with_external_memory_updates",
       "owner": "afterlife_chronicles",

@@ -80,6 +80,13 @@
       "description": "Afterlife-only global flags with flags[], category, state, visibility, hidden/gm_only privacy, obsoleteReason instead of deletion, gmThoughtsSummary, and explicit separation from Mortal worldStateFlags."
     },
     {
+      "contractId": "afterlife_active_threats_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_active_threats.json",
+      "responseSurface": "afterlifeThreatsToAdd / afterlifeThreatsToUpdate / completeAfterlifeThreatActivities / afterlifeThreatsToRemove",
+      "description": "Persistent afterlife threats with threats[], currentActivity, impactProfile, visibleToPlayer privacy, optional sarefLink, completion-through-command ledger proof, and no Mortal worldMapUpdates.activeThreats substitution."
+    },
+    {
       "contractId": "saref_reveal_stage_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/main_story_saref_state.json",

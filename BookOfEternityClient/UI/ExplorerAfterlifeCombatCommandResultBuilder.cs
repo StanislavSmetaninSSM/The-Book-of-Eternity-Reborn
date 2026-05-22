@@ -13,6 +13,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     private enum CommandKind
     {
         Profiles,
+        Threats,
         Inbox,
         Conflict,
         CombatLog,
@@ -25,6 +26,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             ["/afterlife_profiles"] = CommandKind.Profiles,
             ["/профили_загробья"] = CommandKind.Profiles,
+            ["/afterlife_threats"] = CommandKind.Threats,
+            ["/угрозы_загробья"] = CommandKind.Threats,
             ["/afterlife_inbox"] = CommandKind.Inbox,
             ["/уведомления_загробья"] = CommandKind.Inbox,
             ["/spiritual_conflict"] = CommandKind.Conflict,
@@ -53,6 +56,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return kind switch
         {
             CommandKind.Profiles => await BuildProfiles(normalizedCommand, fs),
+            CommandKind.Threats => await BuildThreats(normalizedCommand, fs),
             CommandKind.Inbox => await BuildInbox(normalizedCommand, fs),
             CommandKind.Conflict => await BuildConflict(normalizedCommand, fs),
             CommandKind.CombatLog => await BuildCombatLog(normalizedCommand, fs),
@@ -132,6 +136,62 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         }
 
         AddRawOrWarning(blocks, $"Полный JSON {AfterlifeEntityProfileState.StatePath}", read);
+        return Completed(command, blocks);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildThreats(string command, FileSystemManager fs)
+    {
+        var read = await ReadJson(fs, AfterlifeActiveThreatState.StatePath);
+        var threats = read.Node?[AfterlifeActiveThreatState.ThreatsProperty] as JsonArray;
+        var visibleThreats = threats?.OfType<JsonObject>().Where(IsThreatVisible).ToList() ?? [];
+        var hiddenCount = Math.Max(0, (threats?.Count ?? 0) - visibleThreats.Count);
+        var activeVisible = visibleThreats.Count(threat => threat["currentActivity"] is JsonObject);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Угрозы посмертия",
+                Grid(
+                    ("Всего известных системе", (threats?.Count ?? 0).ToString()),
+                    ("Видимых игроку", visibleThreats.Count.ToString()),
+                    ("Скрытых угроз не показано", hiddenCount.ToString()),
+                    ("Активных видимых действий", activeVisible.ToString()),
+                    ("Источник", AfterlifeActiveThreatState.StatePath)))
+        };
+
+        if (read.FileExists && read.Node == null)
+        {
+            blocks.Add(Message("Файл угроз повреждён", $"Не удалось прочитать {AfterlifeActiveThreatState.StatePath}: {read.Error ?? "ошибка JSON"}"));
+            return Completed(command, blocks);
+        }
+
+        if (visibleThreats.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Видимые угрозы",
+                Columns = ["Угроза", "Область", "Масштаб", "Архетип", "Активность", "Давление", "Связи"],
+                Rows = visibleThreats
+                    .Select(threat => new UiTableRow
+                    {
+                        Cells =
+                        [
+                            GetString(threat, "displayName", GetString(threat, "threatId", "Без названия")),
+                            DescribeRealm(GetString(threat, "realm", "?")),
+                            GetNumberOrString(threat, "intensity", "0"),
+                            DescribeThreatArchetype(threat["threatArchetype"] as JsonObject),
+                            DescribeThreatActivity(threat["currentActivity"] as JsonObject),
+                            DescribeThreatImpact(threat["impactProfile"] as JsonObject),
+                            DescribeThreatLinks(threat)
+                        ]
+                    })
+                    .ToList()
+            });
+        }
+        else
+        {
+            blocks.Add(Message("Видимых угроз нет", "Скрытые угрозы, если они есть, не раскрываются обычному интерфейсу до сюжетного раскрытия."));
+        }
+
         return Completed(command, blocks);
     }
 
@@ -535,6 +595,133 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             ? $"ОПАСНО: развеивание души {tier}; устойчивость {Math.Max(0, coefficient)}"
             : "не умеет развеивать душу";
     }
+
+    private static bool IsThreatVisible(JsonObject threat) =>
+        threat["visibleToPlayer"] is JsonValue value && value.TryGetValue<bool>(out var visible) && visible;
+
+    private static string DescribeThreatArchetype(JsonObject? archetype)
+    {
+        if (archetype == null)
+            return "не указан";
+
+        var motivation = DescribeThreatMotivation(GetString(archetype, "motivation", "?"));
+        var method = DescribeThreatMethod(GetString(archetype, "method", "?"));
+        var summary = GetString(archetype, "summary", "");
+        return string.IsNullOrWhiteSpace(summary)
+            ? $"{motivation}; метод: {method}"
+            : $"{motivation}; метод: {method}; {summary}";
+    }
+
+    private static string DescribeThreatActivity(JsonObject? activity)
+    {
+        if (activity == null)
+            return "нет текущего действия";
+
+        var summary = GetString(activity, "summary", GetString(activity, "activityId", "активность"));
+        var state = GetString(activity, "activeState", "active");
+        var turn = GetNumberOrString(activity, "startedAtTurn", "?");
+        return $"{summary}; состояние {state}; с хода {turn}";
+    }
+
+    private static string DescribeThreatImpact(JsonObject? impact)
+    {
+        if (impact == null)
+            return "не указано";
+
+        var target = GetString(impact, "primaryTargetName", GetString(impact, "primaryTargetId", "?"));
+        var targetType = DescribeThreatTargetType(GetString(impact, "primaryTargetType", "?"));
+        var impactType = DescribeThreatImpactType(GetString(impact, "primaryImpact", "?"));
+        var value = GetNumberOrString(impact, "baseImpactValue", "0");
+        return $"{targetType}: {target}; давление: {impactType}; сила {value}";
+    }
+
+    private static string DescribeThreatLinks(JsonObject threat)
+    {
+        var links = new List<string>();
+        var factionId = GetString(threat, "linkedFactionId", "");
+        if (!string.IsNullOrWhiteSpace(factionId))
+            links.Add($"фракция {factionId}");
+        var guardianId = GetString(threat, "linkedGuardianId", "");
+        if (!string.IsNullOrWhiteSpace(guardianId))
+            links.Add($"Хранитель {guardianId}");
+        if (threat["sarefLink"] is JsonObject sarefLink && IsSarefThreatLinkVisible(sarefLink))
+            links.Add($"скрытая линия: {GetString(sarefLink, "linkType", "связь")}");
+        return links.Count == 0 ? "нет" : string.Join("; ", links);
+    }
+
+    private static bool IsSarefThreatLinkVisible(JsonObject sarefLink)
+    {
+        var visibility = GetString(sarefLink, "visibility", "");
+        return string.Equals(visibility, "visible", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(visibility, "revealed", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(visibility, "player_known", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string DescribeThreatMotivation(string motivation) =>
+        motivation.Trim().ToLowerInvariant() switch
+        {
+            "predation" => "охота",
+            "subversion" => "подрыв",
+            "domination" => "господство",
+            "consumption" => "пожирание",
+            "conquest" => "захват",
+            "corruption" => "искажение",
+            "accumulation" => "накопление",
+            "execution" => "исполнение приговора",
+            "preservation" => "сохранение",
+            "revenge" => "месть",
+            "survival" => "выживание",
+            "custom" => "особый мотив",
+            _ => motivation
+        };
+
+    private static string DescribeThreatMethod(string method) =>
+        method.Trim().ToLowerInvariant() switch
+        {
+            "stalking" => "выслеживание",
+            "infiltration" => "проникновение",
+            "overt" => "открытое действие",
+            "covert" => "скрытое действие",
+            "deceptive" => "обман",
+            "opportunistic" => "использование возможности",
+            "systemic" => "системное давление",
+            "storm" => "буря",
+            "curse" => "проклятие",
+            "military_pressure" => "военное давление",
+            "political_plot" => "политический заговор",
+            "custom" => "особый метод",
+            _ => method
+        };
+
+    private static string DescribeThreatTargetType(string targetType) =>
+        targetType.Trim().ToLowerInvariant() switch
+        {
+            "faction" => "фракция",
+            "location" => "локация",
+            "resource" => "ресурс",
+            "guardian" => "Хранитель",
+            "resident" => "резидент",
+            "actor" => "сущность",
+            "realm" => "область",
+            "scope" => "зона",
+            _ => targetType
+        };
+
+    private static string DescribeThreatImpactType(string impactType) =>
+        impactType.Trim().ToLowerInvariant() switch
+        {
+            "military" => "военное",
+            "economic" => "экономическое",
+            "social" => "социальное",
+            "covert" => "скрытое",
+            "stability" => "стабильность",
+            "environment" => "среда",
+            "combat" => "бой",
+            "politics" => "политика",
+            "relationship" => "отношения",
+            "progression" => "прогрессия",
+            _ => impactType
+        };
 
     private static string DescribeFateCardStatus(string? status) =>
         status?.Trim().ToLowerInvariant() switch

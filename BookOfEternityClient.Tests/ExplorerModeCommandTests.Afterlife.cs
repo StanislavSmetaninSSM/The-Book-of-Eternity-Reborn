@@ -694,6 +694,90 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_AfterlifeThreats_RendersVisibleThreatsWithoutHiddenLeak()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync(AfterlifeActiveThreatState.StatePath, new
+        {
+            schemaVersion = 1,
+            threats = new object[]
+            {
+                new
+                {
+                    threatId = "chaos_soul_hunter_pack",
+                    realm = "Chaos Sea",
+                    scopeId = "black_tide_shore",
+                    displayName = "Стая охотников за душами",
+                    threatArchetype = new { motivation = "Consumption", method = "Overt" },
+                    intensity = 4,
+                    currentActivity = new
+                    {
+                        activityId = "hunt_001",
+                        activityName = "Идут по следу души",
+                        description = "Охотники ищут след игрока у Черного Прилива.",
+                        activeState = "Active"
+                    },
+                    impactProfile = new
+                    {
+                        primaryTargetType = "Location",
+                        primaryTargetId = "black_tide_shore",
+                        primaryTargetName = "Берег Черного Прилива",
+                        primaryImpact = "Covert",
+                        baseImpactValue = 4
+                    },
+                    visibleToPlayer = true,
+                    linkedFactionId = (string?)null,
+                    linkedGuardianId = (string?)null,
+                    sarefLink = (object?)null,
+                    ledger = Array.Empty<object>()
+                },
+                new
+                {
+                    threatId = "wings_hidden_cell",
+                    realm = "Shining Abode",
+                    scopeId = "choir_district",
+                    displayName = "Тайная ячейка Крыльев Ангелов",
+                    threatArchetype = new { motivation = "Domination", method = "Covert" },
+                    intensity = 5,
+                    currentActivity = new
+                    {
+                        activityId = "cell_recruitment",
+                        activityName = "Вербует резидентов хора",
+                        description = "Ячейка ищет тех, кто сомневается в Обители.",
+                        activeState = "Active"
+                    },
+                    impactProfile = new
+                    {
+                        primaryTargetType = "Faction",
+                        primaryTargetId = "faction_radiant_choir",
+                        primaryTargetName = "Лучезарный Хор",
+                        primaryImpact = "Social",
+                        baseImpactValue = 5
+                    },
+                    visibleToPlayer = false,
+                    linkedFactionId = "wings_of_angels",
+                    linkedGuardianId = (string?)null,
+                    sarefLink = new { role = "hidden_cell", evidenceLevel = "suspected" },
+                    ledger = Array.Empty<object>()
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/afterlife_threats");
+
+        Assert.Equal(string.Empty, result);
+        var text = ExtractRenderedText();
+        Assert.Contains("Угрозы посмертия", text, StringComparison.Ordinal);
+        Assert.Contains("Стая охотников за душами", text, StringComparison.Ordinal);
+        Assert.Contains("Идут по следу души", text, StringComparison.Ordinal);
+        Assert.Contains("Берег Черного Прилива", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Тайная ячейка Крыльев Ангелов", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("wings_of_angels", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("hidden_cell", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeProfiles_RendersResidentAndFactionLeaderProfileFields()
     {
         await SeedAfterlifeStateAsync();

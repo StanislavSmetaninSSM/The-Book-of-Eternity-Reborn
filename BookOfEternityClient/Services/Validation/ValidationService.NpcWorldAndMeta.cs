@@ -396,6 +396,7 @@ public partial class ValidationService
                normalized.Equals(GuardianPowerEventState.JournalPath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(AfterlifeActiveThreatState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeChronicleState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeStoryOutlineState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase) ||
@@ -472,6 +473,10 @@ public partial class ValidationService
             else if (normalized.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase))
             {
                 groups.Add("afterlife entity profiles");
+            }
+            else if (normalized.Equals(AfterlifeActiveThreatState.StatePath, StringComparison.OrdinalIgnoreCase))
+            {
+                groups.Add("afterlife active threats");
             }
             else if (normalized.Equals(AfterlifeChronicleState.StatePath, StringComparison.OrdinalIgnoreCase))
             {
