@@ -284,8 +284,9 @@ CLI Agent automatically loads current game state from:
   
   // QUEST SYSTEM
   "UpdateQuests": "array of quest_command_objects",
-  "UpdateSoulQuests": "array of soul_quest_command_objects", 
+  "UpdateSoulQuests": "array of soul_quest_command_objects",
   "plotOutline": "object with mainArc, characterSubplots, loomingThreatsOrOpportunities, lastUpdatedTurn",
+  "afterlifeStoryOutline": "object with mainArc, realmArc, actorSubplots, factionOrInstitutionArcs, loomingThreatsOrOpportunities, pendingRevelations, nextLikelySceneBeats, playerAgencyNotes, lastUpdatedTurn",
   
   // NPC SYSTEM
   "UpdateNPCs": "array of complete npc_objects",
@@ -558,6 +559,7 @@ World-location contract notes:
 - `game_state/quests/soul_quests.json` ← `UpdateSoulQuests`
 - `game_state/quests/quest_history.json` ← `questLog` (legacy shorthand), canonical stored shape uses `questHistory`, `questRewards`, `questChains`
 - `game_state/quests/plot_outline.json` ← `plotOutline`
+- `game_state/meta/afterlife_story_outline.json` ← `afterlifeStoryOutline` (private afterlife Writer's Room; flexible GM plan, not player-visible text, not a forced prophecy)
 
 Quest state contract notes:
 - `regular_quests.json` and `soul_quests.json` are canonically stored as full `quests[]` arrays.
@@ -854,7 +856,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - `Chaos Sea` and `Shining Abode` are both afterlife realms for validator/runtime purposes.
 - Both afterlife realms use guardian/soul/meta systems and forbid mortal-world combat/NPC/faction/location mechanics.
 - Both afterlife realms still have a living-world scheduler through `progressionControl`. This is afterlife-specific progression, not Mortal World `worldEventsLog` / `factionDataChanges` progression.
-- Afterlife accepted turns must not write response surfaces mapped to `game_state/core/player_status.json`, `game_state/player/*`, `game_state/inventory/*`, `game_state/world/*`, `game_state/npcs/*`, `game_state/combat/*`, `game_state/factions/*`, `lore/current_world/*`, Mortal quest files (`regular_quests.json`, `quest_history.json`, `plot_outline.json`), or Mortal misc files (`characteristics.json`, `vehicles.json`, `storage_access.json`, `player_interactions.json`). Use afterlife Guardian/Soul/resident/Shining surfaces plus `progression_report.json` instead.
+- Afterlife accepted turns must not write response surfaces mapped to `game_state/core/player_status.json`, `game_state/player/*`, `game_state/inventory/*`, `game_state/world/*`, `game_state/npcs/*`, `game_state/combat/*`, `game_state/factions/*`, `lore/current_world/*`, Mortal quest files (`regular_quests.json`, `quest_history.json`, `plot_outline.json`), or Mortal misc files (`characteristics.json`, `vehicles.json`, `storage_access.json`, `player_interactions.json`). Use afterlife Guardian/Soul/resident/Shining surfaces plus `progression_report.json`; for private afterlife planning use `afterlifeStoryOutline` / `game_state/meta/afterlife_story_outline.json`, not Mortal `plotOutline`.
 - `Shining Abode` is the ascended endgame free-roleplay zone above the Chaos Sea and still uses afterlife guardian/soul/meta systems instead of Mortal World systems.
 - `Shining Abode pending-bootstrap handoff mode` is not an ordinary active Shining turn; write only the `TriggerIncarnation` lifecycle control, preserve the prepared package, and suppress ordinary Guardian/Shining scheduler progression for that handoff. Do not mix handoff with unrelated pending contract closure; the client must block Soul Gates until those contracts are gone.
 - Shining Gates select/deselect/reroll are local client mutations, not GM turns. They do not create `pending_shining_abode_actions.json`, do not require `coreActionReceipts[]`, and do not authorize `TriggerIncarnation`; they only mutate local `gates` draft fields such as `selectedBlessingCardIds`, `shownBlessingCardIds`, `availableBlessingCards`, `rerollsRemaining`, and `nextCandidateCursor` when the draft is open, non-stale, and no Shining core pending request is unresolved.
@@ -903,6 +905,7 @@ The client validator hard-rejects accepted turns that mutate realm-forbidden sta
 - Guardian project, resident agency, Shining Abode, Shining faction, and Shining trade progression when mandated by `progressionControl`
 - `progressionProcessingReport` for afterlife scheduler debt and bounded catch-up acknowledgement
 - `afterlifeSpiritualConflictUpdate` for roleplay-started afterlife spiritual conflicts; this is not Mortal combat and must not use `game_state/combat/*`
+- `afterlifeStoryOutline` for private afterlife Writer's Room planning in `game_state/meta/afterlife_story_outline.json`; it is flexible, not player-visible, and не является приказом to force future outcomes
 - Soul Relic Gacha processing
 - Direct Chaos Sea gacha via `/gacha` remains a Chaos-Sea-specific exception and does not use current Guardian modifiers; its result rarity must equal `turn_request.json.gachaBaseResult.baseRarity` exactly, with no upgrade or downgrade path
 - Abode navigation data

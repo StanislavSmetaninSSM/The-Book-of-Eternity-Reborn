@@ -128,6 +128,32 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeWriterRoomContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        Assert.Equal(AfterlifeStoryOutlineState.StatePath, FileMapping.FieldToFile[AfterlifeStoryOutlineState.ResponseField]);
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, taskGuide, examples })
+        {
+            Assert.Contains(AfterlifeStoryOutlineState.StatePath, doc, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeStoryOutlineState.ResponseField, doc, StringComparison.Ordinal);
+            Assert.Contains("Writer's Room", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("mainArc", doc, StringComparison.Ordinal);
+            Assert.Contains("pendingRevelations", doc, StringComparison.Ordinal);
+            Assert.Contains("playerAgencyNotes", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("гибк", matrix, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не является приказом", daemonSpec, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не форсировать", examples, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ShiningCoreActionCoverageIncludesEverySupportedActionType()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

@@ -397,6 +397,7 @@ public partial class ValidationService
                normalized.Equals(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(AfterlifeChronicleState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalized.Equals(AfterlifeStoryOutlineState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.Equals(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalized.StartsWith("lore/chaos_sea/", StringComparison.OrdinalIgnoreCase);
     }
@@ -475,6 +476,10 @@ public partial class ValidationService
             else if (normalized.Equals(AfterlifeChronicleState.StatePath, StringComparison.OrdinalIgnoreCase))
             {
                 groups.Add("afterlife chronicles");
+            }
+            else if (normalized.Equals(AfterlifeStoryOutlineState.StatePath, StringComparison.OrdinalIgnoreCase))
+            {
+                groups.Add("afterlife writer's room");
             }
             else if (normalized.StartsWith("lore/chaos_sea/", StringComparison.OrdinalIgnoreCase))
             {

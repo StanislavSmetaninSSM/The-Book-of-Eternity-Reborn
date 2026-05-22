@@ -297,6 +297,23 @@ public partial class ValidationService
                 AfterlifeChronicleState.LastInvalidUpdateReasonProperty,
                 "_lastUpdated"
             }, issues);
+        await ValidateFlexibleStateFile(AfterlifeStoryOutlineState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", AfterlifeStoryOutlineState.ResponseField,
+                "mainArc", "realmArc", "actorSubplots", "factionOrInstitutionArcs",
+                "loomingThreatsOrOpportunities", "pendingRevelations",
+                "nextLikelySceneBeats", "playerAgencyNotes", "lastUpdatedTurn",
+                "_lastUpdated"
+            }, issues, ValidateAfterlifeStoryOutlineStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(AfterlifeStoryOutlineState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", "mainArc", "realmArc", "actorSubplots", "factionOrInstitutionArcs",
+                "loomingThreatsOrOpportunities", "pendingRevelations",
+                "nextLikelySceneBeats", "playerAgencyNotes", "lastUpdatedTurn",
+                "_lastUpdated"
+            }, issues);
         await ValidateFlexibleStateFile(SarefMainStoryState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
