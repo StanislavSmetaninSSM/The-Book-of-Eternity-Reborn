@@ -8927,7 +8927,7 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
             AfterlifeSpiritualConflictUpdate = updateDoc.RootElement.Clone()
         });
 
-        var projected = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath) ?? "{}")!.AsObject();
+        var projected = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath) ?? "{}")!)!.AsObject();
         var playerPool = Assert.IsType<JsonObject>(projected["activeConflict"]?["actionEconomy"]?["player"]);
         Assert.Equal(8, playerPool["current"]?.GetValue<int>());
         Assert.Equal(8, playerPool["max"]?.GetValue<int>());

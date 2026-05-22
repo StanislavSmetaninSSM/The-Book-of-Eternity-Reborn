@@ -2407,11 +2407,10 @@ internal static class ShiningBlessingEffectState
                 var npcId = GetNpcId(npc);
                 var safeNpcId = string.IsNullOrWhiteSpace(npcId)
                     ? $"manifested_companion_{result.Count}"
-                    : npcId;
+                    : npcId!;
                 var npcName = GetNodeString(npc["NPCName"]) ??
                               GetNodeString(npc["name"]) ??
-                              safeNpcId ??
-                              "NPC";
+                              safeNpcId;
                 result.Add(new ManifestedCompanionSignal(
                     $"{sourceRelicId}|{sourceResidentId}|{safeNpcId}",
                     safeNpcId,

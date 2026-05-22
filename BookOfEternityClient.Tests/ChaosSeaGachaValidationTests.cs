@@ -330,7 +330,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.DoesNotContain(issues, issue =>
-            issue.Code.StartsWith("abode_resident_relic_grant_", StringComparison.OrdinalIgnoreCase));
+            issue.Code!.StartsWith("abode_resident_relic_grant_", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -427,7 +427,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.DoesNotContain(issues, issue =>
-            issue.Code.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
+            issue.Code!.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -450,7 +450,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.DoesNotContain(issues, issue =>
-            issue.Code.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
+            issue.Code!.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -476,7 +476,7 @@ public sealed class ChaosSeaGachaValidationTests : IDisposable
         var issues = await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync();
 
         Assert.DoesNotContain(issues, issue =>
-            issue.Code.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
+            issue.Code!.StartsWith("abode_resident_quest_request_", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

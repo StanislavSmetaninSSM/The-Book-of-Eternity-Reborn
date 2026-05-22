@@ -2356,13 +2356,20 @@ public partial class ValidationService
         }
 
         return activeProjects.EnumerateArray()
-            .Select(entry => GuardianProjectState.BuildKey(
-                GetFirstNonEmptyString(entry, "guardianId"),
-                entry.TryGetProperty("project", out var project) ? GetFirstNonEmptyString(project, "projectId") : null))
-            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .Select(entry =>
+            {
+                var guardianId = GetFirstNonEmptyString(entry, "guardianId");
+                var projectId = entry.TryGetProperty("project", out var project)
+                    ? GetFirstNonEmptyString(project, "projectId")
+                    : null;
+                return string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(projectId)
+                    ? null
+                    : GuardianProjectState.BuildKey(guardianId, projectId);
+            })
+            .OfType<string>()
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(key => key, StringComparer.OrdinalIgnoreCase)
-            .ToArray()!;
+            .ToArray();
     }
 
     private static GuardianPolicyContextDebugSnapshot BuildGuardianPolicyContextDebugSnapshot(GuardianPolicyContext context)

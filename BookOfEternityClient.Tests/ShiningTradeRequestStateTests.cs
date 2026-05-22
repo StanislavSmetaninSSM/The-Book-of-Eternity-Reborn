@@ -202,7 +202,7 @@ public sealed class ShiningTradeRequestStateTests
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
 
@@ -241,7 +241,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["preparedIncarnationPackage"] = CreateValidPreparedPackage();
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
             await ShiningTradeRequestState.WriteRequestAsync(fs, new ShiningTradeRequestState.PendingShiningTradeInventoryRequest
@@ -395,7 +395,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
             faction["tradeInventory"]!["items"]!.AsArray()[0]!.AsObject()["soldOut"] = true;
 
@@ -446,7 +446,7 @@ public sealed class ShiningTradeRequestStateTests
                 CreatedAtTurn = 10
             });
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var receipt = shiningRoot["factions"]!.AsArray()[0]!["tradeInventoryReceipts"]!.AsArray()[0]!.AsObject();
             receipt["requestId"] = "shining_trade_other";
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
@@ -566,7 +566,7 @@ public sealed class ShiningTradeRequestStateTests
             };
             await ShiningTradeRequestState.WriteRequestAsync(fs, pendingRequest);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var receipts = shiningRoot["factions"]!.AsArray()[0]!["tradeInventoryReceipts"]!.AsArray();
             receipts.Add(receipts[0]!.DeepClone());
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
@@ -753,7 +753,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             soulRoot["inkFeathers"] = 80;
             await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
 
@@ -782,7 +782,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             soulRoot["soulRelics"]!["stored"]!.AsArray().Add(new JsonObject
             {
                 ["relicId"] = "relic_trade_1",
@@ -792,9 +792,9 @@ public sealed class ShiningTradeRequestStateTests
             await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
 
             var result = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
-            var postSoulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var postSoulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var stored = postSoulRoot["soulRelics"]!["stored"]!.AsArray();
-            var postShiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var postShiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var slot = postShiningRoot["factions"]!.AsArray()[0]!["tradeInventory"]!["items"]!.AsArray()[0]!.AsObject();
 
             Assert.False(result.Success);
@@ -829,7 +829,7 @@ public sealed class ShiningTradeRequestStateTests
                 FileShare.Read);
 
             var result = await ShiningTradeService.BuyAsync(fs, "faction_old", "slot_1", currentTurn: 11);
-            var postBuyShiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var postBuyShiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var postBuyFaction = postBuyShiningRoot["factions"]!.AsArray()[0]!.AsObject();
             var postBuySlot = postBuyFaction["tradeInventory"]!["items"]!.AsArray()[0]!.AsObject();
 
@@ -840,11 +840,11 @@ public sealed class ShiningTradeRequestStateTests
             Assert.NotNull(preBuyShiningJson);
             Assert.NotNull(preBuySoulJson);
             Assert.False(postBuySlot["soldOut"]!.GetValue<bool>());
-            var restoredShiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var restoredShiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var restoredReceipt = restoredShiningRoot["factions"]!.AsArray()[0]!["tradeInventoryReceipts"]!.AsArray()[0]!.AsObject();
             Assert.Equal(0, restoredReceipt["soldOutCount"]!.GetValue<int>());
 
-            var restoredSoulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var restoredSoulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             Assert.Equal("Shining Abode", restoredSoulRoot["currentRealm"]!.GetValue<string>());
             Assert.Equal(80, restoredSoulRoot["inkFeathers"]!["current"]!.GetValue<int>());
         }
@@ -879,7 +879,7 @@ public sealed class ShiningTradeRequestStateTests
             };
             await ShiningTradeRequestState.WriteRequestAsync(fs, pendingRequest);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var receipt = shiningRoot["factions"]!.AsArray()[0]!["tradeInventoryReceipts"]!.AsArray()[0]!.AsObject();
             receipt["requestId"] = "shining_trade_other";
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
@@ -906,7 +906,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["availability"] = "broken_mode";
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
 
@@ -941,7 +941,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
             faction["leadership"]!["leadershipState"] = "broken_state";
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
@@ -1034,7 +1034,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
             var items = faction["tradeInventory"]!["items"]!.AsArray();
             items[1]!.AsObject()["slotId"] = "slot_1";
@@ -1071,7 +1071,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
             var items = faction["tradeInventory"]!["items"]!.AsArray();
             items[0]!.AsObject()["priceInFeathers"] = 0;
@@ -1108,7 +1108,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
             var tradeInventory = faction["tradeInventory"]!.AsObject();
             var items = tradeInventory["items"]!.AsArray();
@@ -1148,7 +1148,7 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62, withReadyInventory: true);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
             var items = faction["tradeInventory"]!["items"]!.AsArray();
             items[1]!.AsObject()["slotId"] = "slot_1";
@@ -1217,7 +1217,7 @@ public sealed class ShiningTradeRequestStateTests
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = ShiningAbodeState.EnsureFactionsArray(shiningRoot).OfType<JsonObject>().Single();
             faction["baseStrength"] = 20;
             faction["factionStrength"] = 20;
@@ -1264,10 +1264,10 @@ public sealed class ShiningTradeRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningTradeStateAsync(fs, factionStrength: 62);
 
-            var projectedSoulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var projectedSoulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             projectedSoulRoot["currentRealm"] = "Shining Abode";
             projectedSoulRoot["currentIncarnation"] = 3;
-            var projectedShiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var projectedShiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             ShiningAbodeState.SyncShiningReturnCycle(projectedShiningRoot, 3, out _);
 
             var result = await ShiningTradeService.PreviewAutoRefreshRequestsForCurrentCycleAsync(

@@ -812,7 +812,7 @@ public partial class ValidationService
         if (TryResolveGuardianProjectTrackerValidationRootSync(out trackerRoot, out trackerContext, out var trackerFailureDescription))
             return true;
 
-        trackerContext = default;
+        trackerContext = null!;
         issues.Add(new ValidationIssue(
             path,
             IssueSeverity.Error,
@@ -937,9 +937,14 @@ public partial class ValidationService
         var result = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
         foreach (var entry in array.EnumerateArray())
         {
-            var key = GuardianProjectState.BuildKey(
-                GetFirstNonEmptyString(entry, "guardianId"),
-                entry.TryGetProperty("project", out var project) ? GetFirstNonEmptyString(project, "projectId") : null);
+            var guardianId = GetFirstNonEmptyString(entry, "guardianId");
+            var projectId = entry.TryGetProperty("project", out var project)
+                ? GetFirstNonEmptyString(project, "projectId")
+                : null;
+            if (string.IsNullOrWhiteSpace(guardianId) || string.IsNullOrWhiteSpace(projectId))
+                continue;
+
+            var key = GuardianProjectState.BuildKey(guardianId, projectId);
             if (string.IsNullOrWhiteSpace(key))
                 continue;
             if (result.ContainsKey(key))

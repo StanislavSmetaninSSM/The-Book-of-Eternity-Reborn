@@ -153,7 +153,7 @@ public sealed class PlayerGuardianFoundationValidationTests : IDisposable
     public async Task ValidateGameStateAsync_FoundationCreateSurfaceDivergesFromMaterializedGuardian_Fails()
     {
         await WriteSuccessfulFoundationResolutionAsync();
-        var guardiansRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/guardians.json"))!.AsObject();
+        var guardiansRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
         var createData = guardiansRoot["UpdateGuardians"]!.AsArray()[0]!.AsObject()["data"]!.AsObject();
         createData["mood"]!.AsObject()["reason"] = "tampered_create_surface";
         await WriteJsonAsync("game_state/meta/guardians.json", guardiansRoot);

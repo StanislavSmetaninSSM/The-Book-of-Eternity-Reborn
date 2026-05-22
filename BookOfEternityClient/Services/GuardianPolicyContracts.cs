@@ -1169,8 +1169,11 @@ internal static class GuardianPolicyContracts
         bool hasCanonicalTriggerLifeEnd,
         out string failureDescription)
     {
-        if (TryDescribeUnsupportedSoulStateTopLevelKeys(root, SoulStateLifecycleTopLevelKeys, out failureDescription))
+        if (TryDescribeUnsupportedSoulStateTopLevelKeys(root, SoulStateLifecycleTopLevelKeys, out var unsupportedTopLevelDescription))
+        {
+            failureDescription = unsupportedTopLevelDescription ?? string.Empty;
             return true;
+        }
 
         if (TryDescribeInvalidCanonicalSoulStateRoots(root, out failureDescription))
             return true;

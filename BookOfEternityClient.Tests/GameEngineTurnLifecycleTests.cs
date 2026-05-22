@@ -986,7 +986,7 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
             summary = "Жизнь завершена."
         });
 
-        var manifest = JsonNode.Parse(await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json")!)!.AsObject();
+        var manifest = JsonNode.Parse((await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json"))!)!.AsObject();
         manifest["snapshotFileHashes"] = new JsonObject();
         manifest["manifestPayloadHash"] = ComputeManifestPayloadHash(JsonSerializer.Deserialize<PendingTurnSnapshotManifestPayload>(
             manifest.ToJsonString(),
@@ -1059,8 +1059,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
 
         Assert.True(completed);
 
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
 
         Assert.Equal("Chaos Sea", soulRoot["currentRealm"]?.GetValue<string>());
         var enlightenment = Assert.IsType<JsonObject>(soulRoot["enlightenment"]);
@@ -1197,8 +1197,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingRealignmentsRequestPath));
         Assert.True(_fs.FileExists(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath));
 
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
 
         Assert.Equal("Shining Abode", soulRoot["currentRealm"]?.GetValue<string>());
         Assert.Equal(ShiningAbodeState.AvailabilityActive, shiningRoot["availability"]?.GetValue<string>());
@@ -1405,8 +1405,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var completed = await InvokePrivateAsync<bool>(engine, "TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync");
 
         Assert.False(completed);
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
         Assert.Equal("Shining Abode", soulRoot["currentRealm"]?.GetValue<string>());
         Assert.NotNull(shiningRoot["pendingNativeFactionDiscovery"]);
         Assert.Equal(ShiningAbodeState.AvailabilityActive, shiningRoot["availability"]?.GetValue<string>());
@@ -1452,8 +1452,8 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
         var completed = await InvokePrivateAsync<bool>(engine, "TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync");
 
         Assert.False(completed);
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json")!)!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json"))!)!.AsObject();
         Assert.Equal("Shining Abode", soulRoot["currentRealm"]?.GetValue<string>());
         Assert.Equal("malformed_contract", shiningRoot["pendingNativeFactionDiscovery"]?.GetValue<string>());
         Assert.Equal(ShiningAbodeState.AvailabilityActive, shiningRoot["availability"]?.GetValue<string>());

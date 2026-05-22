@@ -279,7 +279,7 @@ public sealed class ShiningCoreActionRequestStateTests
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
             await WriteMinimalActiveShiningStateAsync(fs);
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
 
@@ -367,7 +367,7 @@ public sealed class ShiningCoreActionRequestStateTests
                     CreatedAtTurn = 8
                 });
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             ((JsonArray)shiningRoot["coreActionReceipts"]!).Add(new JsonObject
             {
                 ["requestId"] = "core_req_collision",
@@ -418,7 +418,7 @@ public sealed class ShiningCoreActionRequestStateTests
                     CreatedAtTurn = 8
                 });
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             ((JsonArray)shiningRoot["coreActionReceipts"]!).Add(new JsonObject
             {
                 ["requestId"] = "core_req_complete_project",
@@ -466,7 +466,7 @@ public sealed class ShiningCoreActionRequestStateTests
                     CreatedAtTurn = 8
                 });
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["gachaSystem"] = new JsonObject
             {
                 ["gachaHistory"] = new JsonArray
@@ -527,7 +527,7 @@ public sealed class ShiningCoreActionRequestStateTests
                     CreatedAtTurn = 8
                 });
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             ((JsonArray)shiningRoot["coreActionReceipts"]!).Add(new JsonObject
             {
                 ["requestId"] = "core_req_gacha_refused",
@@ -575,7 +575,7 @@ public sealed class ShiningCoreActionRequestStateTests
                     CreatedAtTurn = 8
                 });
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             ((JsonArray)shiningRoot["coreActionReceipts"]!).Add(new JsonObject
             {
                 ["requestId"] = "core_req_stub",
@@ -621,7 +621,7 @@ public sealed class ShiningCoreActionRequestStateTests
                     CreatedAtTurn = 8
                 });
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             ((JsonArray)shiningRoot["coreActionReceipts"]!).Add(new JsonObject
             {
                 ["requestId"] = "core_req_prepare_ordered",
@@ -665,7 +665,7 @@ public sealed class ShiningCoreActionRequestStateTests
                     CreatedAtTurn = 8
                 });
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["preparedIncarnationPackage"] = new JsonObject
             {
                 ["selectedCardIds"] = new JsonArray("card_social"),
@@ -722,7 +722,7 @@ public sealed class ShiningCoreActionRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalActiveShiningStateAsync(fs);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["availability"] = "broken_mode";
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
 
@@ -751,7 +751,7 @@ public sealed class ShiningCoreActionRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalActiveShiningStateAsync(fs);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["pendingNativeFactionDiscovery"] = "malformed_contract";
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
 
@@ -839,7 +839,7 @@ public sealed class ShiningCoreActionRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalActiveShiningStateAsync(fs);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["factions"]![0]!["projects"]![0]!["isSupported"] = false;
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
 
