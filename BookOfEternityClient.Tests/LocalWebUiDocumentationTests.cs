@@ -25,6 +25,9 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("console mode remains the complete path", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/shining_treasury", text, StringComparison.Ordinal);
         Assert.Contains("/spiritual_arts", text, StringComparison.Ordinal);
+        Assert.Contains("/api/lifecycle/dashboard", text, StringComparison.Ordinal);
+        Assert.Contains("/api/lifecycle/validate", text, StringComparison.Ordinal);
+        Assert.Contains("Панель состояния", text, StringComparison.Ordinal);
         Assert.Contains("Troubleshooting", text, StringComparison.Ordinal);
     }
 

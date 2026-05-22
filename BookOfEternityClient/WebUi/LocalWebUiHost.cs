@@ -64,6 +64,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<LocalUiSessionLockService>();
         builder.Services.AddSingleton<BrowserLocalWriteCoordinator>();
         builder.Services.AddSingleton<LocalWebUiSessionStatusService>();
+        builder.Services.AddSingleton<BrowserLifecycleDashboardService>();
         builder.Services.AddSingleton<ExplorerWebPromptSessionService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
 
@@ -73,6 +74,10 @@ public static class LocalWebUiHost
         app.MapGet("/", () => Results.Content(BuildShellHtml(), "text/html; charset=utf-8"));
         app.MapGet("/api/health", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
         app.MapGet("/api/session", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
+        app.MapGet("/api/lifecycle/dashboard", async (BrowserLifecycleDashboardService lifecycle) =>
+            await lifecycle.BuildDashboardAsync());
+        app.MapPost("/api/lifecycle/validate", async (BrowserLifecycleDashboardService lifecycle) =>
+            await lifecycle.BuildValidationAsync());
         app.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
             await commandService.ExecuteAsync(request));
         app.MapGet("/api/explorer/prompt-sessions/{sessionId}", (string sessionId, ExplorerWebCommandService commandService) =>
@@ -242,6 +247,28 @@ public static class LocalWebUiHost
               padding: 1rem;
             }
             .actions, .prompts { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+            .lifecycle {
+              margin-top: 1rem;
+            }
+            .lifecycle-grid {
+              display: grid;
+              gap: .75rem;
+              grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+              margin-top: .75rem;
+            }
+            .status-pill {
+              display: inline-block;
+              border: 1px solid var(--line);
+              border-radius: 999px;
+              color: var(--accent);
+              padding: .25rem .6rem;
+            }
+            .lifecycle-actions {
+              display: flex;
+              flex-wrap: wrap;
+              gap: .5rem;
+              margin-top: .9rem;
+            }
             .qte-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
             .qte-action-card {
               border: 1px solid rgba(222, 183, 99, .18);
@@ -288,9 +315,17 @@ public static class LocalWebUiHost
                 <p>Командный API: <code>POST /api/explorer/command</code></p>
                 <p>Формы команд: <code>POST /api/explorer/prompt-sessions/submit</code></p>
                 <p>QTE API: <code>GET /api/qte/state</code></p>
+                <p>Панель состояния: <code>/api/lifecycle/dashboard</code></p>
+                <p>Валидация: <code>POST /api/lifecycle/validate</code></p>
                 <p>Сейчас доступны только перенесённые DTO-команды; остальные вернут структурный блокер.</p>
+                <button class="secondary" type="button" id="lifecycle-dashboard-button">Обновить панель состояния</button>
+                <button class="secondary" type="button" id="lifecycle-validate-button">Проверить валидацию</button>
                 <button class="secondary" type="button" id="qte-button">Проверить QTE</button>
               </aside>
+            </section>
+            <section id="lifecycle-panel" class="card lifecycle" aria-live="polite">
+              <h2>Панель состояния</h2>
+              <div class="empty">Загружаю состояние локальной сессии...</div>
             </section>
             <section id="result" aria-live="polite">
               <div class="empty">Пока нет результата. Нажмите «Выполнить», чтобы отрисовать первую команду.</div>
@@ -300,15 +335,19 @@ public static class LocalWebUiHost
             const form = document.getElementById('command-form');
             const input = document.getElementById('command-input');
             const resultRoot = document.getElementById('result');
+            const lifecyclePanel = document.getElementById('lifecycle-panel');
             document.getElementById('help-button').addEventListener('click', () => {
               input.value = '/help';
               executeCommand('/help');
             });
             document.getElementById('qte-button').addEventListener('click', () => loadQteState());
+            document.getElementById('lifecycle-dashboard-button').addEventListener('click', () => loadLifecycleDashboard());
+            document.getElementById('lifecycle-validate-button').addEventListener('click', () => runLifecycleValidation());
             form.addEventListener('submit', event => {
               event.preventDefault();
               executeCommand(input.value);
             });
+            loadLifecycleDashboard();
 
             async function executeCommand(command) {
               resultRoot.replaceChildren(el('div', 'loading', 'Команда выполняется...'));
@@ -327,6 +366,122 @@ public static class LocalWebUiHost
               } catch (error) {
                 renderError('Не удалось выполнить команду', error?.message ?? String(error));
               }
+            }
+
+            async function loadLifecycleDashboard() {
+              lifecyclePanel.replaceChildren(el('h2', '', 'Панель состояния'), el('div', 'loading', 'Читаю локальную сессию...'));
+              try {
+                const response = await fetch('/api/lifecycle/dashboard');
+                const payload = await response.json();
+                if (!response.ok) {
+                  renderLifecycleError(`HTTP ${response.status}`, payload);
+                  return;
+                }
+                renderLifecycleDashboard(payload);
+              } catch (error) {
+                renderLifecycleError('Не удалось прочитать панель состояния', error?.message ?? String(error));
+              }
+            }
+
+            async function runLifecycleValidation() {
+              lifecyclePanel.replaceChildren(el('h2', '', 'Панель состояния'), el('div', 'loading', 'Запускаю валидацию...'));
+              try {
+                const response = await fetch('/api/lifecycle/validate', { method: 'POST' });
+                const payload = await response.json();
+                if (!response.ok) {
+                  renderLifecycleError(`HTTP ${response.status}`, payload);
+                  return;
+                }
+                lifecyclePanel.replaceChildren(el('h2', '', 'Проверка валидации'));
+                lifecyclePanel.append(renderValidationSummary(payload));
+              } catch (error) {
+                renderLifecycleError('Не удалось запустить валидацию', error?.message ?? String(error));
+              }
+            }
+
+            function renderLifecycleDashboard(dashboard) {
+              lifecyclePanel.replaceChildren(el('h2', '', 'Панель состояния'));
+              const grid = el('div', 'lifecycle-grid');
+              grid.append(renderLifecycleMetric('Душа', dashboard?.soul?.name ?? 'Неизвестная душа'));
+              grid.append(renderLifecycleMetric('Царство', dashboard?.soul?.realmLabel ?? dashboard?.soul?.currentRealm ?? 'Неизвестно'));
+              grid.append(renderLifecycleMetric('Воплощение', String(dashboard?.soul?.currentIncarnation ?? 0)));
+              grid.append(renderLifecycleMetric('Локальная запись', dashboard?.canStartBrowserWrite ? 'доступна' : 'заблокирована'));
+              grid.append(renderLifecycleMetric('Ход ГМа', dashboard?.pendingTurn?.hasActiveGmTurn ? 'активен' : 'нет'));
+              grid.append(renderLifecycleMetric('Валидация', dashboard?.validation?.statusLabel ?? 'нет данных'));
+              lifecyclePanel.append(grid);
+
+              if (dashboard?.pendingTurn?.message) {
+                lifecyclePanel.append(renderMessage({ severity: dashboard.pendingTurn.hasActiveGmTurn ? 'Warning' : 'Success', title: 'Протокол хода ГМа', message: dashboard.pendingTurn.message }));
+              }
+              for (const item of dashboard?.guidance ?? []) {
+                lifecyclePanel.append(renderMessage({ severity: item.severity ?? 'Info', title: item.title, message: item.message }));
+              }
+              lifecyclePanel.append(renderValidationSummary(dashboard?.validation));
+              renderLifecycleEntrypoints(dashboard?.entrypoints ?? []);
+            }
+
+            function renderLifecycleMetric(label, value) {
+              const node = el('div', 'block');
+              node.append(el('div', 'kv-key', label));
+              node.append(el('div', 'status-pill', value));
+              return node;
+            }
+
+            function renderValidationSummary(validation) {
+              const node = el('section', 'block');
+              node.append(el('h3', '', validation?.statusLabel ?? 'Валидация недоступна'));
+              node.append(el('p', '', `Всего: ${validation?.issueCount ?? 0}, ошибок: ${validation?.errorCount ?? 0}, предупреждений: ${validation?.warningCount ?? 0}`));
+              if ((validation?.groups ?? []).length > 0) {
+                const table = document.createElement('table');
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                for (const column of ['Severity', 'Category', 'Section', 'Count']) headerRow.append(el('th', '', column));
+                thead.append(headerRow);
+                table.append(thead);
+                const tbody = document.createElement('tbody');
+                for (const group of validation.groups ?? []) {
+                  const tr = document.createElement('tr');
+                  tr.append(el('td', '', group.severity ?? ''));
+                  tr.append(el('td', '', group.category ?? ''));
+                  tr.append(el('td', '', group.section ?? ''));
+                  tr.append(el('td', '', String(group.count ?? 0)));
+                  tbody.append(tr);
+                }
+                table.append(tbody);
+                node.append(table);
+              }
+              const issues = validation?.issues ?? [];
+              if (issues.length > 0) {
+                const list = document.createElement('ul');
+                for (const issue of issues.slice(0, 12)) {
+                  const code = issue.code ? ` [${issue.code}]` : '';
+                  list.append(el('li', '', `${issue.filePath}${code}: ${issue.message}`));
+                }
+                node.append(list);
+              }
+              return node;
+            }
+
+            function renderLifecycleEntrypoints(entrypoints) {
+              if (entrypoints.length === 0) return;
+              const actions = el('div', 'lifecycle-actions');
+              for (const entry of entrypoints) {
+                const button = el('button', entry.enabled ? 'secondary' : 'secondary', entry.label ?? entry.command ?? 'Действие');
+                button.type = 'button';
+                button.disabled = entry.enabled === false;
+                if (entry.command) {
+                  button.addEventListener('click', () => {
+                    input.value = entry.command;
+                    executeCommand(entry.command);
+                  });
+                }
+                actions.append(button);
+              }
+              lifecyclePanel.append(actions);
+            }
+
+            function renderLifecycleError(title, details) {
+              lifecyclePanel.replaceChildren(el('h2', '', 'Панель состояния'), renderMessage({ severity: 'Error', title, message: typeof details === 'string' ? details : JSON.stringify(details) }));
             }
 
             async function submitPromptSession(sessionId, answers) {

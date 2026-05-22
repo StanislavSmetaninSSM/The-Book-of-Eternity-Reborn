@@ -77,6 +77,8 @@ The local host exposes:
 GET /
 GET /api/health
 GET /api/session
+GET /api/lifecycle/dashboard
+POST /api/lifecycle/validate
 POST /api/explorer/command
 GET /api/explorer/prompt-sessions/{sessionId}
 POST /api/explorer/prompt-sessions/submit
@@ -101,6 +103,10 @@ The renderer currently supports these DTO surfaces:
 - `canStartBrowserWrite`: false when a GM turn, rollback/snapshot artifact, or active non-stale UI lock blocks local writes.
 - `pendingTurn`: the actionable list of GM-turn and rollback artifacts the player/repair flow must resolve first.
 - `localUiLock`: current owner, kind, heartbeat, lease, stale/readable flags, and last operation for stale lock recovery.
+
+`/api/lifecycle/dashboard` feeds the browser **Панель состояния**. It combines the same local session status with a lightweight soul summary, pending-turn artifacts, local UI lock state, validation summary, and Russian repair/continue guidance. The browser uses this endpoint to show whether the save is in ordinary play, waiting for a GM turn, ready for accepted-turn processing, blocked by a turn error, or blocked by validation errors. The endpoint is informational: it does not mutate the save.
+
+`POST /api/lifecycle/validate` runs the same `ValidationService` used by console mode and returns grouped validation issues for browser rendering. The response includes total issue/error/warning counts, groups by severity/category/section, and a bounded issue list with file path, code, message, expected/actual values, and repair hints where available. This is the browser lifecycle entrypoint for repair triage; it does not replace the console repair flow yet.
 
 `/api/explorer/command` accepts a JSON body:
 
