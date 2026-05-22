@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622
 Parent epic: #559
 
 ## Local-Only Model
@@ -227,6 +227,7 @@ The map visual direction is a dark-fantasy parchment atlas, not a technical grap
 - parchment texture, ink-like route lines, selected/hover node states, and an empty-state card saying there are no points on the selected level/layer.
 - selected node cards with details and faction ownership/influence where the projection can provide them.
 - Mortal location cards include available type, region, biome, known/discovered state, description, last events, exits, storage/threat counts, and coordinates. Missing coordinates degrade into stable schematic coordinates and are marked as schematic in the card instead of breaking the viewer.
+- The political overlay toggle (`Политическое влияние`) renders existing faction-control data only. Dominant factions come from `location.factionControl[]` and `factions[].controlledTerritories[]`; disputed locations are shown as `Спорная зона` when multiple meaningful influences are close. The viewer uses soft halos/cluster regions rather than pretending to know exact borders.
 
 Mortal World mutating parity currently includes:
 
