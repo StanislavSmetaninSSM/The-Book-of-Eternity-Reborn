@@ -131,6 +131,36 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ShiningFactionPoliticalMemoryContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var text in new[] { matrix, apiSpec, daemonSpec, taskGuide, operations, examples })
+        {
+            Assert.Contains(ShiningAbodeState.StatePath, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionChronicleUpdatesProperty, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionInfluenceUpdatesProperty, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionStrategicMemoryUpdatesProperty, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionResourceLedgerUpdatesProperty, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionChronicleProperty, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionInfluenceProperty, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionStrategicMemoryProperty, text, StringComparison.Ordinal);
+            Assert.Contains(ShiningAbodeState.FactionResourceLedgerProperty, text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("shining_faction_political_memory_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("shining_faction_political_memory_v1", manifest, StringComparison.Ordinal);
+        Assert.True(FileMapping.FieldToFile.TryGetValue(ShiningAbodeState.FactionChronicleUpdatesProperty, out var mappedPath));
+        Assert.Equal(ShiningAbodeState.StatePath, mappedPath);
+    }
+
+    [Fact]
     public void AfterlifeGlobalFlagsContractIsDocumentedForGm()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

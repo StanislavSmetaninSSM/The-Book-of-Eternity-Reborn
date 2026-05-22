@@ -761,6 +761,73 @@ public sealed class ShiningStateValidationTests
     }
 
     [Fact]
+    public void ValidateShiningAbodeStateFile_InvalidFactionPoliticalMemory_RaisesExplicitErrors()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        var faction = CreateFaction("faction_memory", CreateSecureLeadership("guardian_a"));
+        faction[ShiningAbodeState.FactionChronicleProperty] = new JsonArray(
+            new JsonObject
+            {
+                ["entryId"] = "chronicle_duplicate",
+                ["turnNumber"] = 91,
+                ["eventType"] = "trial",
+                ["summary"] = "Первый след.",
+                ["visibility"] = "known"
+            },
+            new JsonObject
+            {
+                ["entryId"] = "chronicle_duplicate",
+                ["turnNumber"] = 92,
+                ["eventType"] = "trial",
+                ["summary"] = "Дублирующий след.",
+                ["visibility"] = "known"
+            });
+        faction[ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(new JsonObject
+        {
+            ["zoneId"] = "zone_invalid",
+            ["scopeType"] = "hall",
+            ["scopeId"] = "hall_memory",
+            ["controlLevel"] = 140,
+            ["influenceValue"] = -1,
+            ["publicStatus"] = "dominant",
+            ["updatedAtTurn"] = 91
+        });
+        faction[ShiningAbodeState.FactionResourceLedgerProperty] = new JsonArray(new JsonObject
+        {
+            ["entryId"] = "ledger_missing_turn",
+            ["resourceType"] = "light_sparks",
+            ["delta"] = 5,
+            ["balanceAfter"] = 25,
+            ["reason"] = "Нет turnNumber."
+        });
+        root["factions"] = new JsonArray(faction);
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_chronicle_duplicate_entry_id", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_influence_control_level_out_of_bounds", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "shining_faction_influence_value_out_of_bounds", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue => string.Equals(issue.Code, "missing_required_positive_integer_field", StringComparison.OrdinalIgnoreCase) &&
+                                         issue.FilePath.EndsWith(".resourceLedger[0].turnNumber", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void ValidateShiningAbodeStateFile_ValidFactionPoliticalMemory_Passes()
+    {
+        var root = CreateMinimalShiningStateForBlessingCardValidation();
+        var faction = CreateFaction("faction_memory", CreateSecureLeadership("guardian_a"));
+        AddValidFactionPoliticalMemory(faction);
+        root["factions"] = new JsonArray(faction);
+
+        var issues = InvokeShiningStateValidation(root);
+
+        Assert.DoesNotContain(issues, issue => issue.Code != null && issue.Code.StartsWith("shining_faction_chronicle_", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => issue.Code != null && issue.Code.StartsWith("shining_faction_influence_", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => issue.Code != null && issue.Code.StartsWith("shining_faction_resource_", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue => string.Equals(issue.Code, "shining_faction_strategic_memory_invalid_shape", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void ValidateShiningAbodeStateFile_EmptyGachaCycleWithUsedCharges_RaisesExplicitError()
     {
         var root = CreateMinimalShiningStateForBlessingCardValidation();
@@ -1515,6 +1582,49 @@ public sealed class ShiningStateValidationTests
         ["isSupported"] = isSupported,
         ["strengthReward"] = 8
     };
+
+    private static void AddValidFactionPoliticalMemory(JsonObject faction)
+    {
+        faction[ShiningAbodeState.FactionChronicleProperty] = new JsonArray(new JsonObject
+        {
+            ["entryId"] = "chronicle_91",
+            ["turnNumber"] = 91,
+            ["eventType"] = "trial",
+            ["summary"] = "Фракция проиграла суд Обители.",
+            ["visibility"] = "known",
+            ["consequences"] = new JsonArray("influence_reduced")
+        });
+        faction[ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(new JsonObject
+        {
+            ["zoneId"] = "zone_memory",
+            ["scopeType"] = "hall",
+            ["scopeId"] = "hall_memory",
+            ["displayName"] = "Зал Памяти",
+            ["controlLevel"] = 40,
+            ["influenceValue"] = 40,
+            ["publicStatus"] = "contested",
+            ["updatedAtTurn"] = 91,
+            ["sourceEntryId"] = "chronicle_91"
+        });
+        faction[ShiningAbodeState.FactionStrategicMemoryProperty] = new JsonObject
+        {
+            ["summary"] = "Фракция избегает открытых судов.",
+            ["lastUpdatedTurn"] = 91,
+            ["recentCampaigns"] = new JsonArray("campaign_trial"),
+            ["losses"] = new JsonArray("lost_trial"),
+            ["alliances"] = new JsonArray("faction_lanterns"),
+            ["enemies"] = new JsonArray("faction_wings")
+        };
+        faction[ShiningAbodeState.FactionResourceLedgerProperty] = new JsonArray(new JsonObject
+        {
+            ["entryId"] = "ledger_91",
+            ["turnNumber"] = 91,
+            ["resourceType"] = "light_sparks",
+            ["delta"] = -4,
+            ["balanceAfter"] = 18,
+            ["reason"] = "Цена проигранного суда."
+        });
+    }
 
     private static JsonObject CreateMinimalGuardiansRoot() => new()
     {

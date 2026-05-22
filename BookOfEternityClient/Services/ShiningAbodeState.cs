@@ -27,6 +27,16 @@ internal static partial class ShiningAbodeState
     public const string FactionLifecycleStateDissolved = "dissolved";
 
     public const string FactionConflictCampaignsProperty = "factionConflictCampaigns";
+    public const string FactionChronicleProperty = "chronicle";
+    public const string FactionInfluenceProperty = "territorialInfluence";
+    public const string FactionStrategicMemoryProperty = "strategicMemory";
+    public const string FactionResourceLedgerProperty = "resourceLedger";
+    public const string FactionChronicleUpdatesProperty = "shiningFactionChronicleUpdates";
+    public const string FactionInfluenceUpdatesProperty = "shiningFactionInfluenceUpdates";
+    public const string FactionStrategicMemoryUpdatesProperty = "shiningFactionStrategicMemoryUpdates";
+    public const string FactionResourceLedgerUpdatesProperty = "shiningFactionResourceLedgerUpdates";
+    public const string LastInvalidFactionPoliticalCommandProperty = "lastInvalidShiningFactionPoliticalCommand";
+    public const string LastInvalidFactionPoliticalCommandReasonProperty = "lastInvalidShiningFactionPoliticalCommandReason";
 
     public const string FactionCampaignGoalWeaken = "weaken";
     public const string FactionCampaignGoalExpose = "expose";
@@ -967,6 +977,7 @@ internal static partial class ShiningAbodeState
         HydrateTradeInventoryReceiptSnapshots(faction);
         EnsureArray(faction, "leadershipReceipts");
         EnsureArray(faction, "leadershipHistory");
+        NormalizeFactionPoliticalMemory(faction);
 
         faction["factionStrength"] = ComputeFactionStrength(faction, residentRoot, radianceTier);
 
@@ -993,6 +1004,55 @@ internal static partial class ShiningAbodeState
             lifecycle["defeatedAtUtc"] = GetNodeString(lifecycle["defeatedAtUtc"]) ?? string.Empty;
             lifecycle["defeatReason"] = GetNodeString(lifecycle["defeatReason"]) ?? string.Empty;
             lifecycle["remnantsSummary"] = GetNodeString(lifecycle["remnantsSummary"]) ?? string.Empty;
+        }
+    }
+
+    private static void NormalizeFactionPoliticalMemory(JsonObject faction)
+    {
+        foreach (var entry in EnsureArray(faction, FactionChronicleProperty).OfType<JsonObject>())
+        {
+            entry["entryId"] = GetNodeString(entry["entryId"]) ?? string.Empty;
+            entry["turnNumber"] = Math.Max(0, GetNodeInt(entry["turnNumber"], 0));
+            entry["eventType"] = GetNodeString(entry["eventType"]) ?? string.Empty;
+            entry["summary"] = GetNodeString(entry["summary"]) ?? string.Empty;
+            entry["visibility"] = GetNodeString(entry["visibility"]) ?? "known";
+            NormalizeStringArrayInPlace(EnsureArray(entry, "consequences"));
+        }
+
+        foreach (var zone in EnsureArray(faction, FactionInfluenceProperty).OfType<JsonObject>())
+        {
+            zone["zoneId"] = GetNodeString(zone["zoneId"]) ?? string.Empty;
+            zone["scopeType"] = GetNodeString(zone["scopeType"]) ?? string.Empty;
+            zone["scopeId"] = GetNodeString(zone["scopeId"]) ?? string.Empty;
+            zone["displayName"] = GetNodeString(zone["displayName"]) ?? GetNodeString(zone["scopeId"]) ?? string.Empty;
+            zone["controlLevel"] = Math.Clamp(GetNodeInt(zone["controlLevel"], 0), 0, 100);
+            zone["influenceValue"] = Math.Clamp(GetNodeInt(zone["influenceValue"], GetNodeInt(zone["controlLevel"], 0)), 0, 100);
+            zone["publicStatus"] = GetNodeString(zone["publicStatus"]) ?? "known";
+            zone["updatedAtTurn"] = Math.Max(0, GetNodeInt(zone["updatedAtTurn"], 0));
+            zone["sourceEntryId"] = GetNodeString(zone["sourceEntryId"]) ?? string.Empty;
+        }
+
+        if (faction[FactionStrategicMemoryProperty] is not JsonObject memory)
+        {
+            memory = new JsonObject();
+            faction[FactionStrategicMemoryProperty] = memory;
+        }
+
+        memory["summary"] = GetNodeString(memory["summary"]) ?? string.Empty;
+        memory["lastUpdatedTurn"] = Math.Max(0, GetNodeInt(memory["lastUpdatedTurn"], 0));
+        NormalizeStringArrayInPlace(EnsureArray(memory, "recentCampaigns"));
+        NormalizeStringArrayInPlace(EnsureArray(memory, "losses"));
+        NormalizeStringArrayInPlace(EnsureArray(memory, "alliances"));
+        NormalizeStringArrayInPlace(EnsureArray(memory, "enemies"));
+
+        foreach (var entry in EnsureArray(faction, FactionResourceLedgerProperty).OfType<JsonObject>())
+        {
+            entry["entryId"] = GetNodeString(entry["entryId"]) ?? string.Empty;
+            entry["turnNumber"] = Math.Max(0, GetNodeInt(entry["turnNumber"], 0));
+            entry["resourceType"] = GetNodeString(entry["resourceType"]) ?? string.Empty;
+            entry["delta"] = GetNodeInt(entry["delta"], 0);
+            entry["balanceAfter"] = Math.Max(0, GetNodeInt(entry["balanceAfter"], 0));
+            entry["reason"] = GetNodeString(entry["reason"]) ?? string.Empty;
         }
     }
 

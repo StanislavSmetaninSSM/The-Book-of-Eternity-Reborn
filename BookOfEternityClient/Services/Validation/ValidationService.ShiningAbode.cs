@@ -146,6 +146,7 @@ public partial class ValidationService
                 ValidateShiningTreasuryObject(treasury, $"{contextPrefix}.{ShiningAbodeState.TreasuryProperty}", issues);
         }
         ValidateSourceOfLightCapstoneMarker(root, contextPrefix, issues);
+        ValidateInvalidShiningFactionPoliticalCommandMarker(root, contextPrefix, issues);
 
         ValidateArrayItems(root, $"{contextPrefix}.coreActionReceipts", issues, "coreActionReceipts", ValidateShiningCoreActionReceiptObject);
         ValidateArrayItems(root, $"{contextPrefix}.factionFoundingReceipts", issues, "factionFoundingReceipts", ValidateShiningFoundingReceiptObject);
@@ -1126,6 +1127,21 @@ public partial class ValidationService
             ValidateArrayItems(faction, $"{contextPrefix}.tradeInventoryReceipts", issues, "tradeInventoryReceipts", ValidateShiningTradeInventoryReceiptObject);
         ValidateArrayItems(faction, $"{contextPrefix}.leadershipReceipts", issues, "leadershipReceipts", ValidateShiningLeadershipReceiptObject);
         ValidateArrayItems(faction, $"{contextPrefix}.leadershipHistory", issues, "leadershipHistory", ValidateShiningLeadershipHistoryObject);
+        ValidateArrayItems(faction, $"{contextPrefix}.{ShiningAbodeState.FactionChronicleProperty}", issues, ShiningAbodeState.FactionChronicleProperty, ValidateShiningFactionChronicleEntryObject);
+        ValidateArrayItems(faction, $"{contextPrefix}.{ShiningAbodeState.FactionInfluenceProperty}", issues, ShiningAbodeState.FactionInfluenceProperty, ValidateShiningFactionInfluenceZoneObject);
+        ValidateArrayItems(faction, $"{contextPrefix}.{ShiningAbodeState.FactionResourceLedgerProperty}", issues, ShiningAbodeState.FactionResourceLedgerProperty, ValidateShiningFactionResourceLedgerEntryObject);
+        if (faction.TryGetProperty(ShiningAbodeState.FactionStrategicMemoryProperty, out var strategicMemory) &&
+            RequireObject(strategicMemory, $"{contextPrefix}.{ShiningAbodeState.FactionStrategicMemoryProperty}", issues))
+        {
+            ValidateShiningFactionStrategicMemoryObject(strategicMemory, $"{contextPrefix}.{ShiningAbodeState.FactionStrategicMemoryProperty}", issues);
+        }
+
+        if (faction.TryGetProperty(ShiningAbodeState.FactionChronicleProperty, out var chronicle))
+            ValidateDuplicateStringIdsInArray(chronicle, $"{contextPrefix}.{ShiningAbodeState.FactionChronicleProperty}", issues, "entryId", "shining_faction_chronicle_duplicate_entry_id");
+        if (faction.TryGetProperty(ShiningAbodeState.FactionInfluenceProperty, out var influence))
+            ValidateDuplicateStringIdsInArray(influence, $"{contextPrefix}.{ShiningAbodeState.FactionInfluenceProperty}", issues, "zoneId", "shining_faction_influence_duplicate_zone_id");
+        if (faction.TryGetProperty(ShiningAbodeState.FactionResourceLedgerProperty, out var resourceLedger))
+            ValidateDuplicateStringIdsInArray(resourceLedger, $"{contextPrefix}.{ShiningAbodeState.FactionResourceLedgerProperty}", issues, "entryId", "shining_faction_resource_duplicate_entry_id");
     }
 
     private string ValidateShiningFactionLifecycleObject(JsonElement faction, string contextPrefix, List<ValidationIssue> issues)
@@ -1248,6 +1264,109 @@ public partial class ValidationService
                 }
             }
         }
+    }
+
+    private void ValidateInvalidShiningFactionPoliticalCommandMarker(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(ShiningAbodeState.LastInvalidFactionPoliticalCommandProperty, out _))
+            return;
+
+        var reason = root.TryGetProperty(ShiningAbodeState.LastInvalidFactionPoliticalCommandReasonProperty, out var reasonNode)
+            ? reasonNode.ToString()
+            : "invalid command";
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.{ShiningAbodeState.LastInvalidFactionPoliticalCommandProperty}",
+            IssueSeverity.Error,
+            "Команда Shining faction political memory не была применена: форма или цель команды повреждена.",
+            code: "shining_faction_political_command_invalid_authority",
+            section: "ShiningAbode",
+            expected: "existing or same-turn materialized Shining faction target",
+            actual: reason,
+            repairHint: "Проверь factionId и форму shiningFactionChronicleUpdates / shiningFactionInfluenceUpdates / shiningFactionStrategicMemoryUpdates / shiningFactionResourceLedgerUpdates."));
+    }
+
+    private void ValidateShiningFactionChronicleEntryObject(JsonElement entry, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(entry, contextPrefix, issues))
+            return;
+
+        RequireString(entry, contextPrefix, issues, "entryId");
+        RequirePositiveNumberField(entry, contextPrefix, issues, "turnNumber");
+        RequireString(entry, contextPrefix, issues, "eventType");
+        RequireString(entry, contextPrefix, issues, "summary");
+        RequireString(entry, contextPrefix, issues, "visibility");
+        if (entry.TryGetProperty("consequences", out var consequences))
+            RequireArrayOfStrings(consequences, $"{contextPrefix}.consequences", issues);
+        ValidateOptionalString(entry, contextPrefix, issues, "relatedCampaignId");
+        ValidateOptionalString(entry, contextPrefix, issues, "relatedThreatId");
+        ValidateOptionalString(entry, contextPrefix, issues, "occurredAtUtc");
+    }
+
+    private void ValidateShiningFactionInfluenceZoneObject(JsonElement zone, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(zone, contextPrefix, issues))
+            return;
+
+        RequireString(zone, contextPrefix, issues, "zoneId");
+        RequireString(zone, contextPrefix, issues, "scopeType");
+        RequireString(zone, contextPrefix, issues, "scopeId");
+        ValidateOptionalString(zone, contextPrefix, issues, "displayName");
+        ValidateIntegerField(zone, contextPrefix, issues, "controlLevel");
+        ValidateIntegerField(zone, contextPrefix, issues, "influenceValue");
+        RequireString(zone, contextPrefix, issues, "publicStatus");
+        RequirePositiveNumberField(zone, contextPrefix, issues, "updatedAtTurn");
+        ValidateOptionalString(zone, contextPrefix, issues, "sourceEntryId");
+        ValidateOptionalString(zone, contextPrefix, issues, "summary");
+
+        ValidateIntegerRange(zone, contextPrefix, issues, "controlLevel", 0, 100, "shining_faction_influence_control_level_out_of_bounds");
+        ValidateIntegerRange(zone, contextPrefix, issues, "influenceValue", 0, 100, "shining_faction_influence_value_out_of_bounds");
+    }
+
+    private void ValidateShiningFactionStrategicMemoryObject(JsonElement memory, string contextPrefix, List<ValidationIssue> issues)
+    {
+        RequireString(memory, contextPrefix, issues, "summary");
+        RequirePositiveNumberField(memory, contextPrefix, issues, "lastUpdatedTurn");
+        RequireArrayOfStrings(memory, contextPrefix, issues, "recentCampaigns");
+        RequireArrayOfStrings(memory, contextPrefix, issues, "losses");
+        RequireArrayOfStrings(memory, contextPrefix, issues, "alliances");
+        RequireArrayOfStrings(memory, contextPrefix, issues, "enemies");
+    }
+
+    private void ValidateShiningFactionResourceLedgerEntryObject(JsonElement entry, string contextPrefix, List<ValidationIssue> issues)
+    {
+        if (!RequireObject(entry, contextPrefix, issues))
+            return;
+
+        RequireString(entry, contextPrefix, issues, "entryId");
+        RequirePositiveNumberField(entry, contextPrefix, issues, "turnNumber");
+        RequireString(entry, contextPrefix, issues, "resourceType");
+        ValidateIntegerField(entry, contextPrefix, issues, "delta");
+        ValidateIntegerField(entry, contextPrefix, issues, "balanceAfter");
+        RequireString(entry, contextPrefix, issues, "reason");
+        ValidateOptionalString(entry, contextPrefix, issues, "occurredAtUtc");
+    }
+
+    private static void ValidateIntegerRange(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        string propertyName,
+        int min,
+        int max,
+        string code)
+    {
+        if (!TryReadInt(root, propertyName, out var value) || value >= min && value <= max)
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{contextPrefix}.{propertyName}",
+            IssueSeverity.Error,
+            $"{propertyName} должен быть в диапазоне {min}..{max}",
+            code: code,
+            section: "ShiningAbode",
+            expected: $"{min}..{max}",
+            actual: value.ToString(),
+            repairHint: "Записывай политическое влияние фракции как integer процент в диапазоне 0..100."));
     }
 
     private void ValidateShiningFactionCharterObject(JsonElement charter, string contextPrefix, List<ValidationIssue> issues)

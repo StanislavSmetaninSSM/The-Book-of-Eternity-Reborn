@@ -421,7 +421,13 @@ public partial class ValidationService
                 "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 SourceOfLightCapstoneState.ShiningStateProperty, "coreActionReceipts",
-                "factionFoundingReceipts", "factionRealignmentReceipts"
+                "factionFoundingReceipts", "factionRealignmentReceipts",
+                ShiningAbodeState.FactionChronicleUpdatesProperty,
+                ShiningAbodeState.FactionInfluenceUpdatesProperty,
+                ShiningAbodeState.FactionStrategicMemoryUpdatesProperty,
+                ShiningAbodeState.FactionResourceLedgerUpdatesProperty,
+                ShiningAbodeState.LastInvalidFactionPoliticalCommandProperty,
+                ShiningAbodeState.LastInvalidFactionPoliticalCommandReasonProperty
             }, issues, ValidateShiningAbodeStateFile);
         await ValidateStrictTopLevelObjectFileAsync(ShiningAbodeState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -429,7 +435,13 @@ public partial class ValidationService
                 "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 SourceOfLightCapstoneState.ShiningStateProperty, "coreActionReceipts",
-                "factionFoundingReceipts", "factionRealignmentReceipts"
+                "factionFoundingReceipts", "factionRealignmentReceipts",
+                ShiningAbodeState.FactionChronicleUpdatesProperty,
+                ShiningAbodeState.FactionInfluenceUpdatesProperty,
+                ShiningAbodeState.FactionStrategicMemoryUpdatesProperty,
+                ShiningAbodeState.FactionResourceLedgerUpdatesProperty,
+                ShiningAbodeState.LastInvalidFactionPoliticalCommandProperty,
+                ShiningAbodeState.LastInvalidFactionPoliticalCommandReasonProperty
             }, issues);
         await ValidateFlexibleStateFile(ShiningCoreActionRequestState.PendingActionsRequestPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)

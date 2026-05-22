@@ -1104,7 +1104,8 @@
                     - resident loyalty and restlessness
                     - project archetypes and completed projects
                     - pending founding, realignment, and leadership transition requests
-                    Valid outcomes include canonical Shining faction state changes, receipts, leadership history, resident alignment changes, and resident memory/history entries. Invalid outcomes include `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, or Mortal World faction chronicles.
+                    - political memory and map influence through `game_state/meta/shining_abode_state.json` command surfaces: `shiningFactionChronicleUpdates[]`, `shiningFactionInfluenceUpdates[]`, `shiningFactionStrategicMemoryUpdates[]`, and `shiningFactionResourceLedgerUpdates[]`, which normalize into faction `chronicle[]`, `territorialInfluence[]`, `strategicMemory`, and `resourceLedger[]`
+                    Valid outcomes include canonical Shining faction state changes, receipts, leadership history, resident alignment changes, resident memory/history entries, chronicle entries, territorial influence zones, strategic memory updates, and resource ledger entries. Invalid outcomes include `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, `factionChronicleUpdates`, `worldMapUpdates`, or Mortal World faction chronicles.
 
                     **2.8 Shining trade contour**
                     When `mustEvaluateShiningTradeProgression=true`, evaluate Shining trade as an explicit authored afterlife economy:

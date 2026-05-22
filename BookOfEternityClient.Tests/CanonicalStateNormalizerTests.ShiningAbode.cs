@@ -414,6 +414,88 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Contains(root.GetProperty("coreActionReceipts").EnumerateArray(), receipt => receipt.GetProperty("requestId").GetString() == "core_new");
     }
 
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_AppliesShiningFactionPoliticalUpdateSurfaces()
+    {
+        var baseline = ShiningAbodeState.CreateDefaultState();
+        baseline["halls"] = new JsonArray(CreateShiningHall("hall_mirror", "Зал Зеркал"));
+        baseline["factions"] = new JsonArray(CreateShiningFaction("faction_mirrors", "hall_mirror", "project_mirror"));
+
+        var commandRoot = new JsonObject
+        {
+            [ShiningAbodeState.FactionChronicleUpdatesProperty] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_mirrors",
+                ["entryId"] = "chronicle_turn_88",
+                ["turnNumber"] = 88,
+                ["eventType"] = "political_setback",
+                ["summary"] = "Фракция потеряла право голоса в Зале Зеркал.",
+                ["visibility"] = "known",
+                ["consequences"] = new JsonArray("influence_reduced")
+            }),
+            [ShiningAbodeState.FactionInfluenceUpdatesProperty] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_mirrors",
+                ["zoneId"] = "zone_hall_mirror",
+                ["scopeType"] = "hall",
+                ["scopeId"] = "hall_mirror",
+                ["displayName"] = "Зал Зеркал",
+                ["controlLevel"] = 72,
+                ["influenceValue"] = 72,
+                ["publicStatus"] = "dominant",
+                ["updatedAtTurn"] = 88,
+                ["sourceEntryId"] = "chronicle_turn_88"
+            }),
+            [ShiningAbodeState.FactionStrategicMemoryUpdatesProperty] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_mirrors",
+                ["summary"] = "Фракция больше не может действовать открыто.",
+                ["lastUpdatedTurn"] = 88,
+                ["recentCampaigns"] = new JsonArray("campaign_mirror_trial"),
+                ["losses"] = new JsonArray("lost_hall_vote"),
+                ["alliances"] = new JsonArray("faction_lanterns"),
+                ["enemies"] = new JsonArray("faction_wings")
+            }),
+            [ShiningAbodeState.FactionResourceLedgerUpdatesProperty] = new JsonArray(new JsonObject
+            {
+                ["factionId"] = "faction_mirrors",
+                ["entryId"] = "ledger_turn_88",
+                ["turnNumber"] = 88,
+                ["resourceType"] = "light_sparks",
+                ["delta"] = -12,
+                ["balanceAfter"] = 31,
+                ["reason"] = "Цена политического поражения."
+            })
+        };
+
+        const string backupPath = "test_backups/shining_abode_state_baseline_politics.json";
+        await _fs.WriteFileAtomicAsync(backupPath, baseline.ToJsonString());
+        await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, commandRoot.ToJsonString());
+
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await normalizer.NormalizeAccumulatedStateAsync(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            [ShiningAbodeState.StatePath] = backupPath
+        });
+
+        using var doc = JsonDocument.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath))!);
+        var root = doc.RootElement;
+        Assert.False(root.TryGetProperty(ShiningAbodeState.FactionChronicleUpdatesProperty, out _));
+        Assert.False(root.TryGetProperty(ShiningAbodeState.FactionInfluenceUpdatesProperty, out _));
+
+        var faction = Assert.Single(root.GetProperty("factions").EnumerateArray(), item => item.GetProperty("factionId").GetString() == "faction_mirrors");
+        Assert.Contains(faction.GetProperty(ShiningAbodeState.FactionChronicleProperty).EnumerateArray(), entry =>
+            entry.GetProperty("entryId").GetString() == "chronicle_turn_88" &&
+            entry.GetProperty("summary").GetString()!.Contains("Зале Зеркал", StringComparison.Ordinal));
+        Assert.Contains(faction.GetProperty(ShiningAbodeState.FactionInfluenceProperty).EnumerateArray(), zone =>
+            zone.GetProperty("zoneId").GetString() == "zone_hall_mirror" &&
+            zone.GetProperty("controlLevel").GetInt32() == 72);
+        Assert.Equal("Фракция больше не может действовать открыто.", faction.GetProperty(ShiningAbodeState.FactionStrategicMemoryProperty).GetProperty("summary").GetString());
+        Assert.Contains(faction.GetProperty(ShiningAbodeState.FactionResourceLedgerProperty).EnumerateArray(), entry =>
+            entry.GetProperty("entryId").GetString() == "ledger_turn_88" &&
+            entry.GetProperty("delta").GetInt32() == -12);
+    }
+
     private static JsonObject CreateShiningHall(string hallId, string hallName) => new()
     {
         ["hallId"] = hallId,
