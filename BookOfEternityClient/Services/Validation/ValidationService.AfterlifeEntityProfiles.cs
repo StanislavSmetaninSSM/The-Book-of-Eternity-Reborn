@@ -16,6 +16,23 @@ public partial class ValidationService
         "radiance"
     };
 
+    private static readonly HashSet<string> AfterlifeActorQuestStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "active",
+        "blocked",
+        "completed",
+        "failed",
+        "cancelled"
+    };
+
+    private static readonly HashSet<string> AfterlifeActorActivityOutcomes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "completed",
+        "failed",
+        "cancelled",
+        "blocked"
+    };
+
     private void ValidateAfterlifeEntityProfileStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (root.ValueKind != JsonValueKind.Object)
@@ -39,17 +56,22 @@ public partial class ValidationService
         var hasCustomStateChanges = root.TryGetProperty(AfterlifeEntityProfileState.CustomStateChangesProperty, out var customStateChanges);
         var hasProgressionOverrides = root.TryGetProperty(AfterlifeEntityProfileState.ProgressionOverridesProperty, out var progressionOverrides);
         var hasSpecialArtLearningReceipts = root.TryGetProperty(AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty, out var specialArtLearningReceipts);
+        var hasGoalUpdates = root.TryGetProperty(AfterlifeEntityProfileState.GoalUpdatesProperty, out var goalUpdates);
+        var hasQuestUpdates = root.TryGetProperty(AfterlifeEntityProfileState.QuestUpdatesProperty, out var questUpdates);
+        var hasActivityUpdates = root.TryGetProperty(AfterlifeEntityProfileState.ActivityUpdatesProperty, out var activityUpdates);
+        var hasActivityCompletions = root.TryGetProperty(AfterlifeEntityProfileState.CompleteActivitiesProperty, out var activityCompletions);
         var hasInvalidProgressionOverride = root.TryGetProperty(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty, out _);
         var hasInvalidProfileCommand = root.TryGetProperty(AfterlifeEntityProfileState.LastInvalidCommandProperty, out _);
-        if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges && !hasProgressionOverrides && !hasSpecialArtLearningReceipts)
+        if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges && !hasProgressionOverrides && !hasSpecialArtLearningReceipts &&
+            !hasGoalUpdates && !hasQuestUpdates && !hasActivityUpdates && !hasActivityCompletions)
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}",
                 IssueSeverity.Error,
-                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
+                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], actor agency command surfaces, afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
                 code: "afterlife_entity_profile_missing_profiles",
                 section: "AfterlifeEntityProfiles",
-                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
+                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeActorGoalUpdates[] / afterlifeActorQuestUpdates[] / afterlifeActorActivityUpdates[] / completeAfterlifeActorActivities[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
         }
 
         if (hasInvalidProgressionOverride)
@@ -97,6 +119,30 @@ public partial class ValidationService
             customStateChanges,
             hasCustomStateChanges,
             $"{contextPrefix}.{AfterlifeEntityProfileState.CustomStateChangesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeActorGoalUpdatesIfPresent(
+            goalUpdates,
+            hasGoalUpdates,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.GoalUpdatesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeActorQuestUpdatesIfPresent(
+            questUpdates,
+            hasQuestUpdates,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.QuestUpdatesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeActorActivityUpdatesIfPresent(
+            activityUpdates,
+            hasActivityUpdates,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.ActivityUpdatesProperty}",
+            profileAuthority,
+            issues);
+        ValidateCompleteAfterlifeActorActivitiesIfPresent(
+            activityCompletions,
+            hasActivityCompletions,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.CompleteActivitiesProperty}",
             profileAuthority,
             issues);
         ValidateAfterlifeEntityProgressionOverridesIfPresent(
@@ -240,6 +286,7 @@ public partial class ValidationService
         ValidateAfterlifeProfileProgressionStrategy(profile, context, issues);
         ValidateAfterlifeProfileProgressionLedger(profile, context, issues);
         ValidateAfterlifeProfileLedger(profile, context, issues);
+        ValidateAfterlifeProfileAgency(profile, context, issues);
         ValidateStringArrayIfPresent(profile, context, "warnings", "afterlife_entity_profile_warnings_not_array", issues);
     }
 
@@ -623,6 +670,398 @@ public partial class ValidationService
                 actual: thresholds.ValueKind.ToString()));
         }
     }
+
+    private void ValidateAfterlifeActorGoalUpdatesIfPresent(
+        JsonElement updates,
+        bool hasUpdates,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasUpdates)
+            return;
+
+        if (updates.ValueKind != JsonValueKind.Array)
+        {
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_goal_updates_not_array", "afterlifeActorGoalUpdates должен быть array.", "array", updates.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var update in updates.EnumerateArray())
+        {
+            var updateContext = $"{context}[{index++}]";
+            if (ValidateAfterlifeActorAgencyCommandTarget(update, updateContext, profileAuthority, "goal", issues) == null)
+                continue;
+
+            RequireProfileString(update, updateContext, "goalId", "afterlife_entity_profile_agency_goal_missing_goal_id", issues);
+            RequireProfileString(update, updateContext, "shortTermGoal", "afterlife_entity_profile_agency_goal_missing_short_term_goal", issues);
+            RequireProfileString(update, updateContext, "longTermGoal", "afterlife_entity_profile_agency_goal_missing_long_term_goal", issues);
+            RequireProfileString(update, updateContext, "plan", "afterlife_entity_profile_agency_goal_missing_plan", issues);
+            RequireProfileString(update, updateContext, "gmThoughtsSummary", "afterlife_entity_profile_agency_goal_missing_gm_thoughts", issues);
+            ValidateProfileNonNegativeInt(update, updateContext, "updatedAtTurn", "afterlife_entity_profile_agency_goal_invalid_turn", issues);
+        }
+    }
+
+    private void ValidateAfterlifeActorQuestUpdatesIfPresent(
+        JsonElement updates,
+        bool hasUpdates,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasUpdates)
+            return;
+
+        if (updates.ValueKind != JsonValueKind.Array)
+        {
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_quest_updates_not_array", "afterlifeActorQuestUpdates должен быть array.", "array", updates.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var update in updates.EnumerateArray())
+        {
+            var updateContext = $"{context}[{index++}]";
+            if (ValidateAfterlifeActorAgencyCommandTarget(update, updateContext, profileAuthority, "quest", issues) == null)
+                continue;
+
+            RequireProfileString(update, updateContext, "questId", "afterlife_entity_profile_agency_quest_missing_quest_id", issues);
+            RequireProfileString(update, updateContext, "goalId", "afterlife_entity_profile_agency_quest_missing_goal_id", issues);
+            RequireProfileString(update, updateContext, "title", "afterlife_entity_profile_agency_quest_missing_title", issues);
+            var status = RequireProfileString(update, updateContext, "status", "afterlife_entity_profile_agency_quest_missing_status", issues);
+            RequireProfileString(update, updateContext, "planSummary", "afterlife_entity_profile_agency_quest_missing_plan_summary", issues);
+            RequireProfileString(update, updateContext, "successCondition", "afterlife_entity_profile_agency_quest_missing_success_condition", issues);
+            ValidateProfileNonNegativeInt(update, updateContext, "createdAtTurn", "afterlife_entity_profile_agency_quest_invalid_turn", issues);
+            ValidateActorQuestStatus(status, $"{updateContext}.status", issues);
+        }
+    }
+
+    private void ValidateAfterlifeActorActivityUpdatesIfPresent(
+        JsonElement updates,
+        bool hasUpdates,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasUpdates)
+            return;
+
+        if (updates.ValueKind != JsonValueKind.Array)
+        {
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_activity_updates_not_array", "afterlifeActorActivityUpdates должен быть array.", "array", updates.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var update in updates.EnumerateArray())
+        {
+            var updateContext = $"{context}[{index++}]";
+            if (ValidateAfterlifeActorAgencyCommandTarget(update, updateContext, profileAuthority, "activity", issues) == null)
+                continue;
+
+            RequireProfileString(update, updateContext, "activityId", "afterlife_entity_profile_agency_activity_missing_activity_id", issues);
+            RequireProfileString(update, updateContext, "goalId", "afterlife_entity_profile_agency_activity_missing_goal_id", issues);
+            RequireProfileString(update, updateContext, "linkedQuestId", "afterlife_entity_profile_agency_activity_missing_linked_quest_id", issues);
+            RequireProfileString(update, updateContext, "activityType", "afterlife_entity_profile_agency_activity_missing_type", issues);
+            RequireProfileString(update, updateContext, "summary", "afterlife_entity_profile_agency_activity_missing_summary", issues);
+            var status = RequireProfileString(update, updateContext, "status", "afterlife_entity_profile_agency_activity_missing_status", issues);
+            RequireProfileString(update, updateContext, "gmThoughtsSummary", "afterlife_entity_profile_agency_activity_missing_gm_thoughts", issues);
+            ValidateProfileNonNegativeInt(update, updateContext, "startedAtTurn", "afterlife_entity_profile_agency_activity_invalid_turn", issues);
+            ValidateActorActivityStatus(status, $"{updateContext}.status", issues);
+        }
+    }
+
+    private void ValidateCompleteAfterlifeActorActivitiesIfPresent(
+        JsonElement completions,
+        bool hasCompletions,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasCompletions)
+            return;
+
+        if (completions.ValueKind != JsonValueKind.Array)
+        {
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_activity_completions_not_array", "completeAfterlifeActorActivities должен быть array.", "array", completions.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var completion in completions.EnumerateArray())
+        {
+            var completionContext = $"{context}[{index++}]";
+            var targetProfile = ValidateAfterlifeActorAgencyCommandTarget(completion, completionContext, profileAuthority, "activity_completion", issues);
+            if (targetProfile == null)
+                continue;
+
+            var activityId = RequireProfileString(completion, completionContext, "activityId", "afterlife_entity_profile_agency_activity_completion_missing_activity_id", issues);
+            var outcome = RequireProfileString(completion, completionContext, "outcome", "afterlife_entity_profile_agency_activity_completion_missing_outcome", issues);
+            RequireProfileString(completion, completionContext, "summary", "afterlife_entity_profile_agency_activity_completion_missing_summary", issues);
+            ValidateProfileNonNegativeInt(completion, completionContext, "completedAtTurn", "afterlife_entity_profile_agency_activity_completion_invalid_turn", issues);
+            ValidateActorActivityOutcome(outcome, $"{completionContext}.outcome", issues);
+            if (completion.TryGetProperty("resultingQuestStatus", out var resultingQuestStatus) &&
+                resultingQuestStatus.ValueKind != JsonValueKind.Null)
+            {
+                ValidateActorQuestStatus(GetProfileString(completion, "resultingQuestStatus"), $"{completionContext}.resultingQuestStatus", issues);
+            }
+
+            if (!string.IsNullOrWhiteSpace(activityId) &&
+                (!targetProfile.Value.TryGetProperty("currentActivity", out var currentActivity) ||
+                 currentActivity.ValueKind != JsonValueKind.Object ||
+                 !string.Equals(GetProfileString(currentActivity, "activityId"), activityId, StringComparison.OrdinalIgnoreCase)))
+            {
+                AddAgencyIssue(
+                    $"{completionContext}.activityId",
+                    "afterlife_entity_profile_agency_activity_completion_without_current_activity",
+                    "completeAfterlifeActorActivities должен закрывать текущую currentActivity целевой сущности.",
+                    "activityId equals target currentActivity.activityId",
+                    activityId,
+                    issues);
+            }
+        }
+    }
+
+    private void ValidateAfterlifeProfileAgency(JsonElement profile, string context, List<ValidationIssue> issues)
+    {
+        string? goalId = null;
+        if (profile.TryGetProperty("goals", out var goals))
+        {
+            if (goals.ValueKind != JsonValueKind.Object)
+            {
+                AddAgencyIssue($"{context}.goals", "afterlife_entity_profile_agency_goals_not_object", "goals профиля духовной сущности должен быть object.", "object", goals.ValueKind.ToString(), issues);
+            }
+            else
+            {
+                goalId = RequireProfileString(goals, $"{context}.goals", "goalId", "afterlife_entity_profile_agency_goal_missing_goal_id", issues);
+                RequireProfileString(goals, $"{context}.goals", "shortTermGoal", "afterlife_entity_profile_agency_goal_missing_short_term_goal", issues);
+                RequireProfileString(goals, $"{context}.goals", "longTermGoal", "afterlife_entity_profile_agency_goal_missing_long_term_goal", issues);
+                RequireProfileString(goals, $"{context}.goals", "plan", "afterlife_entity_profile_agency_goal_missing_plan", issues);
+                RequireProfileString(goals, $"{context}.goals", "gmThoughtsSummary", "afterlife_entity_profile_agency_goal_missing_gm_thoughts", issues);
+                ValidateProfileNonNegativeInt(goals, $"{context}.goals", "updatedAtTurn", "afterlife_entity_profile_agency_goal_invalid_turn", issues);
+            }
+        }
+
+        var activeQuestLinks = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (profile.TryGetProperty("personalQuests", out var quests))
+        {
+            if (quests.ValueKind != JsonValueKind.Array)
+                AddAgencyIssue($"{context}.personalQuests", "afterlife_entity_profile_agency_quests_not_array", "personalQuests профиля духовной сущности должен быть array.", "array", quests.ValueKind.ToString(), issues);
+            else
+                ValidateAfterlifeActorPersonalQuests(quests, $"{context}.personalQuests", goalId, activeQuestLinks, issues);
+        }
+
+        if (profile.TryGetProperty("currentActivity", out var activity) && activity.ValueKind != JsonValueKind.Null)
+            ValidateAfterlifeActorCurrentActivity(activity, $"{context}.currentActivity", goalId, activeQuestLinks, issues);
+
+        if (profile.TryGetProperty("completedActivities", out var completedActivities))
+            ValidateAfterlifeActorCompletedActivities(completedActivities, $"{context}.completedActivities", issues);
+    }
+
+    private void ValidateAfterlifeActorPersonalQuests(
+        JsonElement quests,
+        string context,
+        string? currentGoalId,
+        HashSet<string> activeQuestLinks,
+        List<ValidationIssue> issues)
+    {
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var quest in quests.EnumerateArray())
+        {
+            var questContext = $"{context}[{index++}]";
+            if (quest.ValueKind != JsonValueKind.Object)
+            {
+                AddAgencyIssue(questContext, "afterlife_entity_profile_agency_quest_not_object", "personalQuests entry должен быть object.", "object", quest.ValueKind.ToString(), issues);
+                continue;
+            }
+
+            var questId = RequireProfileString(quest, questContext, "questId", "afterlife_entity_profile_agency_quest_missing_quest_id", issues);
+            var goalId = RequireProfileString(quest, questContext, "goalId", "afterlife_entity_profile_agency_quest_missing_goal_id", issues);
+            RequireProfileString(quest, questContext, "title", "afterlife_entity_profile_agency_quest_missing_title", issues);
+            var status = RequireProfileString(quest, questContext, "status", "afterlife_entity_profile_agency_quest_missing_status", issues);
+            RequireProfileString(quest, questContext, "planSummary", "afterlife_entity_profile_agency_quest_missing_plan_summary", issues);
+            RequireProfileString(quest, questContext, "successCondition", "afterlife_entity_profile_agency_quest_missing_success_condition", issues);
+            ValidateProfileNonNegativeInt(quest, questContext, "createdAtTurn", "afterlife_entity_profile_agency_quest_invalid_turn", issues);
+
+            if (!string.IsNullOrWhiteSpace(questId) && !ids.Add(questId))
+                AddAgencyIssue($"{questContext}.questId", "afterlife_entity_profile_agency_duplicate_quest", "personalQuests не должен содержать дубликаты questId.", "unique questId", questId, issues);
+
+            ValidateActorQuestStatus(status, $"{questContext}.status", issues);
+            if (!string.IsNullOrWhiteSpace(goalId) &&
+                !string.IsNullOrWhiteSpace(currentGoalId) &&
+                !string.Equals(goalId, currentGoalId, StringComparison.OrdinalIgnoreCase))
+            {
+                AddAgencyIssue($"{questContext}.goalId", "afterlife_entity_profile_agency_quest_goal_mismatch", "personalQuests.goalId должен ссылаться на текущий goals.goalId сущности.", currentGoalId, goalId, issues);
+            }
+
+            if (!string.IsNullOrWhiteSpace(questId) &&
+                !string.IsNullOrWhiteSpace(goalId) &&
+                string.Equals(status, "active", StringComparison.OrdinalIgnoreCase))
+            {
+                activeQuestLinks.Add(BuildAfterlifeActorQuestLink(goalId, questId));
+            }
+        }
+    }
+
+    private void ValidateAfterlifeActorCurrentActivity(
+        JsonElement activity,
+        string context,
+        string? currentGoalId,
+        HashSet<string> activeQuestLinks,
+        List<ValidationIssue> issues)
+    {
+        if (activity.ValueKind != JsonValueKind.Object)
+        {
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_activity_not_object", "currentActivity профиля духовной сущности должен быть object или отсутствовать.", "object", activity.ValueKind.ToString(), issues);
+            return;
+        }
+
+        RequireProfileString(activity, context, "activityId", "afterlife_entity_profile_agency_activity_missing_activity_id", issues);
+        var goalId = RequireProfileString(activity, context, "goalId", "afterlife_entity_profile_agency_activity_missing_goal_id", issues);
+        var linkedQuestId = RequireProfileString(activity, context, "linkedQuestId", "afterlife_entity_profile_agency_activity_missing_linked_quest_id", issues);
+        RequireProfileString(activity, context, "activityType", "afterlife_entity_profile_agency_activity_missing_type", issues);
+        RequireProfileString(activity, context, "summary", "afterlife_entity_profile_agency_activity_missing_summary", issues);
+        var status = RequireProfileString(activity, context, "status", "afterlife_entity_profile_agency_activity_missing_status", issues);
+        RequireProfileString(activity, context, "gmThoughtsSummary", "afterlife_entity_profile_agency_activity_missing_gm_thoughts", issues);
+        ValidateProfileNonNegativeInt(activity, context, "startedAtTurn", "afterlife_entity_profile_agency_activity_invalid_turn", issues);
+        ValidateActorActivityStatus(status, $"{context}.status", issues);
+
+        if (string.IsNullOrWhiteSpace(goalId) || string.IsNullOrWhiteSpace(linkedQuestId))
+            return;
+
+        var matchesCurrentGoal = !string.IsNullOrWhiteSpace(currentGoalId) &&
+                                 string.Equals(goalId, currentGoalId, StringComparison.OrdinalIgnoreCase);
+        var matchesActiveQuest = activeQuestLinks.Contains(BuildAfterlifeActorQuestLink(goalId, linkedQuestId));
+        if (!matchesCurrentGoal || !matchesActiveQuest)
+        {
+            AddAgencyIssue(
+                $"{context}.linkedQuestId",
+                "afterlife_entity_profile_agency_activity_missing_quest_link",
+                "currentActivity должна ссылаться на текущую цель сущности и активный personalQuests[] этой же цели.",
+                "goalId == goals.goalId and linkedQuestId points to active personalQuests[].questId",
+                $"{goalId}:{linkedQuestId}",
+                issues);
+        }
+    }
+
+    private void ValidateAfterlifeActorCompletedActivities(JsonElement completedActivities, string context, List<ValidationIssue> issues)
+    {
+        if (completedActivities.ValueKind != JsonValueKind.Array)
+        {
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_completed_activities_not_array", "completedActivities профиля духовной сущности должен быть array.", "array", completedActivities.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var activity in completedActivities.EnumerateArray())
+        {
+            var activityContext = $"{context}[{index++}]";
+            if (activity.ValueKind != JsonValueKind.Object)
+            {
+                AddAgencyIssue(activityContext, "afterlife_entity_profile_agency_completed_activity_not_object", "completedActivities entry должен быть object.", "object", activity.ValueKind.ToString(), issues);
+                continue;
+            }
+
+            var activityId = RequireProfileString(activity, activityContext, "activityId", "afterlife_entity_profile_agency_activity_completion_missing_activity_id", issues);
+            RequireProfileString(activity, activityContext, "goalId", "afterlife_entity_profile_agency_activity_missing_goal_id", issues);
+            RequireProfileString(activity, activityContext, "linkedQuestId", "afterlife_entity_profile_agency_activity_missing_linked_quest_id", issues);
+            var outcome = RequireProfileString(activity, activityContext, "outcome", "afterlife_entity_profile_agency_activity_completion_missing_outcome", issues);
+            RequireProfileString(activity, activityContext, "completionSummary", "afterlife_entity_profile_agency_activity_completion_missing_summary", issues);
+            ValidateProfileNonNegativeInt(activity, activityContext, "completedAtTurn", "afterlife_entity_profile_agency_activity_completion_invalid_turn", issues);
+
+            if (!string.IsNullOrWhiteSpace(activityId) && !ids.Add(activityId))
+                AddAgencyIssue($"{activityContext}.activityId", "afterlife_entity_profile_agency_duplicate_completed_activity", "completedActivities не должен содержать дубликаты activityId.", "unique activityId", activityId, issues);
+
+            ValidateActorActivityOutcome(outcome, $"{activityContext}.outcome", issues);
+        }
+    }
+
+    private JsonElement? ValidateAfterlifeActorAgencyCommandTarget(
+        JsonElement command,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        string commandKind,
+        List<ValidationIssue> issues)
+    {
+        if (command.ValueKind != JsonValueKind.Object)
+        {
+            AddAgencyIssue(context, $"afterlife_entity_profile_agency_{commandKind}_not_object", "Команда целей/квестов/активности духовной сущности должна быть object.", "object", command.ValueKind.ToString(), issues);
+            return null;
+        }
+
+        var actorType = RequireProfileString(command, context, "actorType", $"afterlife_entity_profile_agency_{commandKind}_missing_actor_type", issues);
+        if (!string.IsNullOrWhiteSpace(actorType) && !AfterlifeEntityProfileState.ActorTypes.Contains(actorType))
+        {
+            AddAgencyIssue(
+                $"{context}.actorType",
+                $"afterlife_entity_profile_agency_{commandKind}_invalid_actor_type",
+                "actorType команды целей/квестов/активности должен ссылаться на сущность посмертия.",
+                string.Join("/", AfterlifeEntityProfileState.ActorTypes.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                actorType,
+                issues);
+        }
+
+        if (string.IsNullOrWhiteSpace(GetProfileString(command, "actorId")) &&
+            string.IsNullOrWhiteSpace(GetProfileString(command, "actorRef")))
+        {
+            AddAgencyIssue($"{context}.actorId", $"afterlife_entity_profile_agency_{commandKind}_missing_actor_id", "Команда целей/квестов/активности должна иметь actorId или actorRef target profile.", "non-empty actorId or actorRef", "missing", issues);
+        }
+
+        var targetKey = BuildAfterlifeEntityProfileIdentityKey(command);
+        if (string.IsNullOrWhiteSpace(targetKey) || !profileAuthority.TryGetValue(targetKey, out var profile))
+        {
+            AddAgencyIssue(
+                context,
+                $"afterlife_entity_profile_agency_{commandKind}_unknown_target",
+                "Команда целей/квестов/активности должна ссылаться на существующий профиль духовной сущности.",
+                "actorType + actorId/actorRef present in profiles[] or afterlifeEntityProfileUpdates[]",
+                targetKey ?? "missing target",
+                issues);
+            return null;
+        }
+
+        return profile;
+    }
+
+    private static void ValidateActorQuestStatus(string? status, string context, List<ValidationIssue> issues)
+    {
+        if (!string.IsNullOrWhiteSpace(status) && !AfterlifeActorQuestStatuses.Contains(status))
+        {
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_quest_invalid_status", "status личного квеста духовной сущности должен быть поддерживаемым lifecycle token.", string.Join("/", AfterlifeActorQuestStatuses.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)), status, issues);
+        }
+    }
+
+    private static void ValidateActorActivityStatus(string? status, string context, List<ValidationIssue> issues)
+    {
+        if (!string.IsNullOrWhiteSpace(status) && !string.Equals(status, "active", StringComparison.OrdinalIgnoreCase))
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_activity_invalid_status", "currentActivity должна быть active; завершение идёт через completeAfterlifeActorActivities.", "active", status, issues);
+    }
+
+    private static void ValidateActorActivityOutcome(string? outcome, string context, List<ValidationIssue> issues)
+    {
+        if (!string.IsNullOrWhiteSpace(outcome) && !AfterlifeActorActivityOutcomes.Contains(outcome))
+        {
+            AddAgencyIssue(context, "afterlife_entity_profile_agency_activity_completion_invalid_outcome", "outcome завершённой активности духовной сущности должен быть поддерживаемым lifecycle token.", string.Join("/", AfterlifeActorActivityOutcomes.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)), outcome, issues);
+        }
+    }
+
+    private static void AddAgencyIssue(string context, string code, string message, string expected, string actual, List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            context,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeEntityProfiles",
+            expected: expected,
+            actual: actual));
+    }
+
+    private static string BuildAfterlifeActorQuestLink(string goalId, string questId) =>
+        $"{goalId.Trim()}::{questId.Trim()}";
 
     private void ValidateAfterlifeProfileSpecialArts(
         JsonElement profile,

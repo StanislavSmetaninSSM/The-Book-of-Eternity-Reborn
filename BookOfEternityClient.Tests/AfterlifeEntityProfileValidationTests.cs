@@ -33,6 +33,131 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ValidAfterlifeActorAgency_PassesProfileValidation()
+    {
+        await WriteProfileStateAsync(BuildValidProfileWithAgencyJson());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_agency_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentActivityWithoutQuestLink_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync(BuildValidProfileWithAgencyJson()
+            .Replace("\"linkedQuestId\": \"quest_mirror_oath_trial\"", "\"linkedQuestId\": \"quest_missing\"", StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_agency_activity_missing_quest_link", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentActivityWithoutCurrentGoal_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 48, "tier": 4 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 1,
+              "progressionStrategy": { "strategyId": "strategy_guardian_mirror", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "personalQuests": [
+                {
+                  "questId": "quest_mirror_oath_trial",
+                  "goalId": "goal_mirror_oath",
+                  "title": "Суд зеркальной клятвы",
+                  "status": "active",
+                  "planSummary": "Подготовить испытание.",
+                  "successCondition": "Душа осознанно откажется от лжи.",
+                  "createdAtTurn": 31
+                }
+              ],
+              "currentActivity": {
+                "activityId": "activity_prepare_mirror_trial",
+                "goalId": "goal_mirror_oath",
+                "linkedQuestId": "quest_mirror_oath_trial",
+                "activityType": "offscreen_preparation",
+                "summary": "Собирает осколки свидетельств.",
+                "status": "active",
+                "gmThoughtsSummary": "Он готовит сцену, но не раскрывает причину.",
+                "startedAtTurn": 31
+              },
+              "ledger": []
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_agency_activity_missing_quest_link", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_AfterlifeActorActivityUpdateWithoutGmThoughts_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 48, "tier": 4 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 1,
+              "progressionStrategy": { "strategyId": "strategy_guardian_mirror", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeActorActivityUpdates": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "activityId": "activity_without_thoughts",
+              "goalId": "goal_mirror_oath",
+              "linkedQuestId": "quest_mirror_oath_trial",
+              "activityType": "offscreen_preparation",
+              "summary": "Готовит сцену без объяснения причины.",
+              "status": "active",
+              "startedAtTurn": 31
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_agency_activity_missing_gm_thoughts", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ChaosSeaProfileWithLightSparks_ReportsContractIssue()
     {
         await WriteProfileStateAsync(BuildValidProfileJson()
@@ -809,6 +934,66 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                   "summary": "Профиль создан при встрече с хранителем."
                 }
               ]
+            }
+          ]
+        }
+        """;
+
+    private static string BuildValidProfileWithAgencyJson() =>
+        """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "locationName": "Зеркальная Обитель",
+              "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 48, "tier": 4 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "soulDissipationTier": 1,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_mirror",
+                "summary": "Сначала укрепляет защиту, затем давление.",
+                "priorityOrder": ["guard", "pressure"]
+              },
+              "goals": {
+                "goalId": "goal_mirror_oath",
+                "shortTermGoal": "Проверить, понимает ли Душа цену клятв.",
+                "longTermGoal": "Не дать Сарефу снова использовать забытые обеты.",
+                "plan": "Подтолкнуть Душу к сцене зеркального суда.",
+                "gmThoughtsSummary": "Хранитель действует из страха повторить старую ошибку.",
+                "updatedAtTurn": 31
+              },
+              "personalQuests": [
+                {
+                  "questId": "quest_mirror_oath_trial",
+                  "goalId": "goal_mirror_oath",
+                  "title": "Суд зеркальной клятвы",
+                  "status": "active",
+                  "planSummary": "Подготовить испытание и не раскрывать истинную причину заранее.",
+                  "successCondition": "Душа осознанно откажется от удобной лжи.",
+                  "createdAtTurn": 31
+                }
+              ],
+              "currentActivity": {
+                "activityId": "activity_prepare_mirror_trial",
+                "goalId": "goal_mirror_oath",
+                "linkedQuestId": "quest_mirror_oath_trial",
+                "activityType": "offscreen_preparation",
+                "summary": "Собирает осколки свидетельств для сцены суда.",
+                "status": "active",
+                "gmThoughtsSummary": "Он готовит сцену, но не принуждает игрока идти туда.",
+                "startedAtTurn": 31
+              },
+              "ledger": []
             }
           ]
         }

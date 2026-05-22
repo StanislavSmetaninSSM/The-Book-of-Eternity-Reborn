@@ -537,6 +537,10 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains("game_state/meta/afterlife_entity_profiles.json", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProfileUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeActorGoalUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeActorQuestUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeActorActivityUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("completeAfterlifeActorActivities", text, StringComparison.Ordinal);
             Assert.Contains("Профили сущностей посмертия", text, StringComparison.Ordinal);
             Assert.Contains("actorType", text, StringComparison.Ordinal);
             Assert.Contains("actorId", text, StringComparison.Ordinal);
@@ -551,6 +555,11 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("customStates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
             Assert.Contains("statesToRemove", text, StringComparison.Ordinal);
+            Assert.Contains("goals", text, StringComparison.Ordinal);
+            Assert.Contains("personalQuests", text, StringComparison.Ordinal);
+            Assert.Contains("currentActivity", text, StringComparison.Ordinal);
+            Assert.Contains("completedActivities", text, StringComparison.Ordinal);
+            Assert.Contains("gmThoughtsSummary", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
             Assert.Contains("currencyDeltas", text, StringComparison.Ordinal);
             Assert.Contains("progressionExperienceDeltas", text, StringComparison.Ordinal);
@@ -578,6 +587,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("/afterlife_profiles", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/профили_загробья", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("afterlife_entity_profiles_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_actor_agency_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_special_art_learning_v1", examples, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit.player.artTier", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
@@ -601,6 +611,10 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("game_state/meta/afterlife_entity_profiles.json", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProfileUpdates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeActorGoalUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeActorQuestUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeActorActivityUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("completeAfterlifeActorActivities", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
             Assert.Contains("specialArtAudits[]", text, StringComparison.Ordinal);
@@ -617,6 +631,10 @@ public sealed class AfterlifeDocumentationCoverageTests
 
         Assert.Contains("afterlifeEntityProfileUpdates", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeEntityCustomStateChanges", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeActorGoalUpdates", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeActorQuestUpdates", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeActorActivityUpdates", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("completeAfterlifeActorActivities", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeEntityProgressionOverrides", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeSpecialArtLearningReceipts", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("soulDissipationProof", lifecyclePrompt, StringComparison.Ordinal);
@@ -634,6 +652,10 @@ public sealed class AfterlifeDocumentationCoverageTests
             "game_state/meta/afterlife_entity_profiles.json",
             "afterlifeEntityProfileUpdates",
             "afterlifeEntityCustomStateChanges",
+            "afterlifeActorGoalUpdates",
+            "afterlifeActorQuestUpdates",
+            "afterlifeActorActivityUpdates",
+            "completeAfterlifeActorActivities",
             "afterlifeEntityProgressionOverrides",
             "afterlifeSpecialArtLearningReceipts",
             "soulDissipationProof",
@@ -659,6 +681,10 @@ public sealed class AfterlifeDocumentationCoverageTests
             "afterlifeSpiritualConflictUpdate",
             "afterlifeEntityProfileUpdates",
             "afterlifeEntityCustomStateChanges",
+            "afterlifeActorGoalUpdates",
+            "afterlifeActorQuestUpdates",
+            "afterlifeActorActivityUpdates",
+            "completeAfterlifeActorActivities",
             "afterlifeEntityProgressionOverrides",
             "afterlifeSpecialArtLearningReceipts",
             "progressionProcessingReport",

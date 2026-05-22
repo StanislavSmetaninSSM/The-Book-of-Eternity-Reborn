@@ -14,6 +14,13 @@
       "responseSurface": "afterlifeEntityCustomStateChanges"
     },
     {
+      "contractId": "afterlife_actor_agency_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "afterlifeActorGoalUpdates / afterlifeActorQuestUpdates / afterlifeActorActivityUpdates / completeAfterlifeActorActivities",
+      "description": "Afterlife actor goals, personalQuests, currentActivity, completedActivities, gmThoughtsSummary, and completion-through-command contract."
+    },
+    {
       "contractId": "afterlife_entity_auto_progression_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",

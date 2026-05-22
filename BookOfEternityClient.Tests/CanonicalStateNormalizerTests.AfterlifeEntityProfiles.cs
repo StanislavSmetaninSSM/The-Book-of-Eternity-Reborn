@@ -165,6 +165,182 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal(3, state["currentValue"]?.GetValue<int>());
     }
 
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_AppliesAfterlifeActorAgencyCommands()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 48, "tier": 4 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "pressure": 2, "guard": 1 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 1,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_mirror",
+                    "summary": "Сначала укрепляет защиту, затем давление.",
+                    "priorityOrder": ["guard", "pressure"]
+                  },
+                  "ledger": []
+                }
+              ],
+              "afterlifeActorGoalUpdates": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "goalId": "goal_mirror_oath",
+                  "shortTermGoal": "Проверить, понимает ли Душа цену клятв.",
+                  "longTermGoal": "Не дать Сарефу снова использовать забытые обеты.",
+                  "plan": "Подтолкнуть Душу к сцене зеркального суда.",
+                  "gmThoughtsSummary": "Хранитель действует из страха повторить старую ошибку.",
+                  "updatedAtTurn": 31
+                }
+              ],
+              "afterlifeActorQuestUpdates": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "questId": "quest_mirror_oath_trial",
+                  "goalId": "goal_mirror_oath",
+                  "title": "Суд зеркальной клятвы",
+                  "status": "active",
+                  "planSummary": "Подготовить испытание и не раскрывать истинную причину заранее.",
+                  "successCondition": "Душа осознанно откажется от удобной лжи.",
+                  "createdAtTurn": 31
+                }
+              ],
+              "afterlifeActorActivityUpdates": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "activityId": "activity_prepare_mirror_trial",
+                  "goalId": "goal_mirror_oath",
+                  "linkedQuestId": "quest_mirror_oath_trial",
+                  "activityType": "offscreen_preparation",
+                  "summary": "Собирает осколки свидетельств для сцены суда.",
+                  "status": "active",
+                  "gmThoughtsSummary": "Он готовит сцену, но не принуждает игрока идти туда.",
+                  "startedAtTurn": 31
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.GoalUpdatesProperty));
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.QuestUpdatesProperty));
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.ActivityUpdatesProperty));
+
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("goal_mirror_oath", profile["goals"]?["goalId"]?.GetValue<string>());
+        Assert.Equal("Суд зеркальной клятвы", Assert.Single(profile["personalQuests"]!.AsArray().OfType<JsonObject>())["title"]?.GetValue<string>());
+        Assert.Equal("activity_prepare_mirror_trial", profile["currentActivity"]?["activityId"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_CompletesAfterlifeActorActivityByCommand()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+                  "progression": {
+                    "enlightenment": { "experience": 48, "tier": 4 },
+                    "radiance": { "experience": 0, "tier": 0 }
+                  },
+                  "standardArts": { "pressure": 2, "guard": 1 },
+                  "specialArts": [],
+                  "customStates": [],
+                  "soulDissipationTier": 1,
+                  "progressionStrategy": {
+                    "strategyId": "strategy_guardian_mirror",
+                    "summary": "Сначала укрепляет защиту, затем давление.",
+                    "priorityOrder": ["guard", "pressure"]
+                  },
+                  "goals": {
+                    "goalId": "goal_mirror_oath",
+                    "shortTermGoal": "Проверить Душу.",
+                    "longTermGoal": "Закрыть старую клятву.",
+                    "plan": "Завершить подготовку суда.",
+                    "gmThoughtsSummary": "Хранитель не хочет повторить ошибку.",
+                    "updatedAtTurn": 31
+                  },
+                  "personalQuests": [
+                    {
+                      "questId": "quest_mirror_oath_trial",
+                      "goalId": "goal_mirror_oath",
+                      "title": "Суд зеркальной клятвы",
+                      "status": "active",
+                      "planSummary": "Подготовить испытание.",
+                      "successCondition": "Душа выберет правду.",
+                      "createdAtTurn": 31
+                    }
+                  ],
+                  "currentActivity": {
+                    "activityId": "activity_prepare_mirror_trial",
+                    "goalId": "goal_mirror_oath",
+                    "linkedQuestId": "quest_mirror_oath_trial",
+                    "activityType": "offscreen_preparation",
+                    "summary": "Собирает осколки свидетельств.",
+                    "status": "active",
+                    "gmThoughtsSummary": "Подготовка следует его цели.",
+                    "startedAtTurn": 31
+                  },
+                  "ledger": []
+                }
+              ],
+              "completeAfterlifeActorActivities": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "activityId": "activity_prepare_mirror_trial",
+                  "outcome": "completed",
+                  "resultingQuestStatus": "completed",
+                  "summary": "Осколки собраны, сцена готова.",
+                  "completedAtTurn": 32
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.CompleteActivitiesProperty));
+
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.False(profile.ContainsKey("currentActivity"));
+        var quest = Assert.Single(profile["personalQuests"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("completed", quest["status"]?.GetValue<string>());
+        var completed = Assert.Single(profile["completedActivities"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("activity_prepare_mirror_trial", completed["activityId"]?.GetValue<string>());
+        Assert.Equal("completed", completed["outcome"]?.GetValue<string>());
+    }
+
     [Theory]
     [InlineData("resident", "resident_oath_001", "Резидент Клятв", "Эхо клятвы", "oath_echo", "oath_released")]
     [InlineData("shining_faction_head", "head_ember_001", "Глава Пепельной Хартии", "Брожение хартии", "charter_unrest", "charter_quieted")]
