@@ -12,6 +12,13 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+try {
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [Console]::OutputEncoding = $utf8NoBom
+    $OutputEncoding = $utf8NoBom
+} catch {
+    # Older hosts may not expose the console encoding when output is redirected.
+}
 $script:SearchSourceFilter = $Source
 $script:HasActorFilter = $EntityType -ne "any" -or -not [string]::IsNullOrWhiteSpace($EntityId) -or -not [string]::IsNullOrWhiteSpace($EntityName)
 
