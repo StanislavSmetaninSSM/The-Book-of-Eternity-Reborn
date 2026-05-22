@@ -122,7 +122,43 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("/api/qte/state", html, StringComparison.Ordinal);
         Assert.Contains("renderQteState", html, StringComparison.Ordinal);
         Assert.Contains("postQteAction", html, StringComparison.Ordinal);
+        Assert.Contains("renderImageBlock", html, StringComparison.Ordinal);
+        Assert.Contains("/api/media/", html, StringComparison.Ordinal);
         Assert.Contains("Пока нет результата", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task MediaEndpoint_ReturnsApprovedImageFile()
+    {
+        WriteSessionImage("images/npcs/hero.png");
+        var mediaId = LocalMediaService.CreateMediaIdForRelativePath("images/npcs/hero.png");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var response = await client.GetAsync("/api/media/" + Uri.EscapeDataString(mediaId));
+
+        Assert.True(response.IsSuccessStatusCode);
+        Assert.Equal("image/png", response.Content.Headers.ContentType?.MediaType);
+        Assert.True((await response.Content.ReadAsByteArrayAsync()).Length > 0);
+    }
+
+    [Fact]
+    public async Task MediaEndpoint_RejectsTraversalOutsideApprovedRoots()
+    {
+        WriteSessionFile("game_state/meta/soul_state.png", "not an image root");
+        var mediaId = LocalMediaService.CreateMediaIdForRelativePath("game_state/meta/soul_state.png");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var response = await client.GetAsync("/api/media/" + Uri.EscapeDataString(mediaId));
+        var json = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Contains("разреш", json["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -406,6 +442,13 @@ public sealed class LocalWebUiHostTests : IDisposable
         var fullPath = Path.Combine(_rootPath, "game_session", relativePath.Replace('/', Path.DirectorySeparatorChar));
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
         File.WriteAllText(fullPath, content);
+    }
+
+    private void WriteSessionImage(string relativePath)
+    {
+        var fullPath = Path.Combine(_rootPath, "game_session", relativePath.Replace('/', Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+        File.WriteAllBytes(fullPath, [137, 80, 78, 71, 13, 10, 26, 10]);
     }
 
     private static string BuildSingleActionQteOfferJson() =>

@@ -34,6 +34,7 @@ public static class ExplorerCommandResultConsoleRenderer
         UiKeyValueGridBlock grid => RenderKeyValueGrid(grid),
         UiMessageBlock message => RenderMessage(message),
         UiRawJsonBlock rawJson => RenderRawJson(rawJson),
+        UiImageBlock image => RenderImage(image),
         _ => new Markup(Markup.Escape(block.ToString() ?? string.Empty))
     };
 
@@ -148,6 +149,16 @@ public static class ExplorerCommandResultConsoleRenderer
             Expand = true
         };
     }
+
+    private static IRenderable RenderImage(UiImageBlock block) =>
+        new Panel(new Markup(Markup.Escape($"{block.Title}\n{block.RelativePath}\n{block.ContentType}, {block.Length} байт")))
+        {
+            Header = new PanelHeader(" Изображение ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Grey),
+            Padding = new Padding(1, 0),
+            Expand = true
+        };
 
     private static IRenderable RenderActions(IReadOnlyList<UiAction> actions)
     {

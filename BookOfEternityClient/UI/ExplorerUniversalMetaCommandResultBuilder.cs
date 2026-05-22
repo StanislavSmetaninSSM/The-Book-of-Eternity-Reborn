@@ -260,6 +260,8 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
     {
         var imagesDir = fs.ResolvePath("images");
         var rows = new List<UiTableRow>();
+        var media = new LocalMediaService(fs);
+        var imageReferences = media.EnumerateGallery().ToList();
         if (Directory.Exists(imagesDir))
         {
             foreach (var directory in Directory.GetDirectories(imagesDir).OrderBy(static path => path, StringComparer.OrdinalIgnoreCase))
@@ -281,13 +283,36 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             rows.Add(new UiTableRow { Cells = ["images", "0", "game_session/images"] });
         }
 
-        return Completed(command,
+        var blocks = new List<UiBlock>
+        {
             new UiTableBlock
             {
                 Title = "Галерея",
                 Columns = ["Раздел", "Файлов", "Путь"],
                 Rows = rows
-            });
+            }
+        };
+
+        if (imageReferences.Count == 0)
+        {
+            blocks.Add(Message(UiNotificationSeverity.Info, "Изображения", "Сохранённых изображений пока нет."));
+        }
+        else
+        {
+            blocks.AddRange(imageReferences.Select(static image => new UiImageBlock
+            {
+                Title = image.FileName,
+                Url = image.Url,
+                MediaId = image.MediaId,
+                RelativePath = image.RelativePath,
+                AltText = image.FileName,
+                ContentType = image.ContentType,
+                Length = image.Length,
+                ModifiedAtUtc = image.ModifiedAtUtc
+            }));
+        }
+
+        return Completed(command, blocks);
     }
 
     private static async Task<ExplorerCommandResult> BuildGmThoughts(string command, FileSystemManager fs, LocalizationManager loc)

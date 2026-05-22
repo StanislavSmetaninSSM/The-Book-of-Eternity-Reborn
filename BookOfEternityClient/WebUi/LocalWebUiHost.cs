@@ -56,6 +56,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<ValidationService>();
         builder.Services.AddSingleton<CharacteristicsService>();
         builder.Services.AddSingleton<ImageService>();
+        builder.Services.AddSingleton<LocalMediaService>();
         builder.Services.AddSingleton<AudioService>();
         builder.Services.AddSingleton<StateDistributor>();
         builder.Services.AddSingleton<CanonicalStateNormalizer>();
@@ -88,6 +89,22 @@ public static class LocalWebUiHost
             await commandService.SubmitPromptSessionAsync(request));
         app.MapPost("/api/explorer/prompt-sessions/cancel", async (ExplorerPromptSessionCancelRequest request, ExplorerWebCommandService commandService) =>
             await commandService.CancelPromptSessionAsync(request));
+        app.MapGet("/api/media/{mediaId}", (string mediaId, LocalMediaService media) =>
+        {
+            if (!media.TryResolveMediaId(mediaId, out var file, out var error) || file == null)
+            {
+                var statusCode = error.Contains("не найден", StringComparison.OrdinalIgnoreCase)
+                    ? StatusCodes.Status404NotFound
+                    : StatusCodes.Status400BadRequest;
+                return Results.Json(new { error }, statusCode: statusCode);
+            }
+
+            return Results.File(
+                file.FullPath,
+                file.ContentType,
+                fileDownloadName: null,
+                enableRangeProcessing: true);
+        });
         app.MapGet("/api/qte/state", async (QteWebInteractionService qte) =>
             await qte.BuildStateAsync());
         app.MapPost("/api/qte/offer", async (QteWebOfferDecisionRequest request, QteWebInteractionService qte) =>
@@ -227,6 +244,22 @@ public static class LocalWebUiHost
               padding: 1rem;
             }
             .block h2, .block h3 { color: var(--accent); margin: 0 0 .75rem; }
+            .image-block {
+              display: grid;
+              gap: .75rem;
+            }
+            .image-block img {
+              width: min(100%, 46rem);
+              max-height: 34rem;
+              object-fit: contain;
+              border: 1px solid rgba(222, 183, 99, .24);
+              border-radius: .85rem;
+              background: rgba(0, 0, 0, .28);
+            }
+            .image-meta {
+              color: var(--muted);
+              font-size: .92rem;
+            }
             .message.warning { border-color: rgba(229, 193, 109, .65); }
             .message.error { border-color: rgba(224, 111, 95, .7); }
             .message.success { border-color: rgba(158, 203, 134, .65); }
@@ -316,6 +349,7 @@ public static class LocalWebUiHost
                 <p>Проверка сессии: <code>/api/health</code></p>
                 <p>Командный API: <code>POST /api/explorer/command</code></p>
                 <p>Формы команд: <code>POST /api/explorer/prompt-sessions/submit</code></p>
+                <p>Изображения: <code>/api/media/{id}</code></p>
                 <p>QTE API: <code>GET /api/qte/state</code></p>
                 <p>Панель состояния: <code>/api/lifecycle/dashboard</code></p>
                 <p>Валидация: <code>POST /api/lifecycle/validate</code></p>
@@ -693,6 +727,7 @@ public static class LocalWebUiHost
                 case 'keyValueGrid': return renderKeyValueGrid(block);
                 case 'message': return renderMessage(block);
                 case 'rawJson': return renderRawJson(block);
+                case 'image': return renderImageBlock(block);
                 default: return renderMessage({ severity: 'Warning', title: 'Неизвестный блок', message: JSON.stringify(block) });
               }
             }
@@ -752,6 +787,21 @@ public static class LocalWebUiHost
               const node = el('section', 'block raw-json');
               if (block.title) node.append(el('h2', '', block.title));
               node.append(el('pre', '', JSON.stringify(block.json ?? null, null, 2)));
+              return node;
+            }
+
+            function renderImageBlock(block) {
+              const node = el('section', 'block image-block');
+              if (block.title) node.append(el('h2', '', block.title));
+              const image = document.createElement('img');
+              image.src = block.url ?? '';
+              image.alt = block.altText ?? block.title ?? 'Изображение';
+              image.loading = 'lazy';
+              image.addEventListener('error', () => {
+                image.replaceWith(el('div', 'empty', 'Изображение не найдено или недоступно.'));
+              });
+              node.append(image);
+              node.append(el('div', 'image-meta', `${block.relativePath ?? ''} · ${block.contentType ?? 'image'} · ${block.length ?? 0} байт`));
               return node;
             }
 
