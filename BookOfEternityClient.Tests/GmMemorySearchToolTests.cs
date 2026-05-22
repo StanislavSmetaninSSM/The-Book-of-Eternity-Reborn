@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -327,6 +328,8 @@ public sealed class GmMemorySearchToolTests : IDisposable
             FileName = "powershell",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8,
             UseShellExecute = false,
             CreateNoWindow = true
         };
