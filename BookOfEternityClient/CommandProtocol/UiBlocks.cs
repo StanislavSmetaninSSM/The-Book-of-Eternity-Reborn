@@ -12,6 +12,7 @@ namespace BookOfEternityClient.CommandProtocol;
 [JsonDerivedType(typeof(UiMessageBlock), "message")]
 [JsonDerivedType(typeof(UiRawJsonBlock), "rawJson")]
 [JsonDerivedType(typeof(UiImageBlock), "image")]
+[JsonDerivedType(typeof(UiMapBlock), "map")]
 public abstract class UiBlock
 {
 }
@@ -80,6 +81,82 @@ public sealed class UiImageBlock : UiBlock
     public string ContentType { get; init; } = string.Empty;
     public long Length { get; init; }
     public DateTimeOffset ModifiedAtUtc { get; init; }
+}
+
+public sealed class UiMapBlock : UiBlock
+{
+    public string Title { get; init; } = string.Empty;
+    public MapViewDto Map { get; init; } = new();
+}
+
+public sealed class MapViewDto
+{
+    public int SchemaVersion { get; init; } = 1;
+    public string Realm { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
+    public string CurrentNodeId { get; init; } = string.Empty;
+    public List<MapLayerDto> Layers { get; init; } = [];
+    public List<MapZLevelDto> ZLevels { get; init; } = [];
+    public List<MapNodeDto> Nodes { get; init; } = [];
+    public List<MapLinkDto> Links { get; init; } = [];
+    public List<MapRegionDto> Regions { get; init; } = [];
+}
+
+public sealed class MapLayerDto
+{
+    public string Id { get; init; } = string.Empty;
+    public string Label { get; init; } = string.Empty;
+    public bool IsDefault { get; init; }
+}
+
+public sealed class MapZLevelDto
+{
+    public int Z { get; init; }
+    public string Label { get; init; } = string.Empty;
+}
+
+public sealed class MapNodeDto
+{
+    public string Id { get; init; } = string.Empty;
+    public string Label { get; init; } = string.Empty;
+    public string Type { get; init; } = string.Empty;
+    public double X { get; init; }
+    public double Y { get; init; }
+    public int Z { get; init; }
+    public string Layer { get; init; } = "world";
+    public bool IsCurrent { get; init; }
+    public string OwnerFactionId { get; init; } = string.Empty;
+    public string OwnerFactionName { get; init; } = string.Empty;
+    public Dictionary<string, int> Influence { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+    public List<MapDetailItemDto> Details { get; init; } = [];
+}
+
+public sealed class MapLinkDto
+{
+    public string Id { get; init; } = string.Empty;
+    public string SourceNodeId { get; init; } = string.Empty;
+    public string TargetNodeId { get; init; } = string.Empty;
+    public string Label { get; init; } = string.Empty;
+    public string State { get; init; } = string.Empty;
+    public string Layer { get; init; } = "world";
+    public int? Z { get; init; }
+}
+
+public sealed class MapRegionDto
+{
+    public string Id { get; init; } = string.Empty;
+    public string Label { get; init; } = string.Empty;
+    public string OwnerFactionId { get; init; } = string.Empty;
+    public string OwnerFactionName { get; init; } = string.Empty;
+    public string Layer { get; init; } = "world";
+    public int? Z { get; init; }
+    public List<string> NodeIds { get; init; } = [];
+}
+
+public sealed class MapDetailItemDto
+{
+    public string Key { get; init; } = string.Empty;
+    public string Value { get; init; } = string.Empty;
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

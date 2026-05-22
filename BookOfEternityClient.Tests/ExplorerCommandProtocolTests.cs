@@ -66,6 +66,32 @@ public sealed class ExplorerCommandProtocolTests
                 {
                     Title = "Raw state",
                     Json = JsonNode.Parse("""{"activeConflict":null,"turn":42}""")!
+                },
+                new UiMapBlock
+                {
+                    Title = "Карта",
+                    Map = new MapViewDto
+                    {
+                        Realm = "Mortal World",
+                        Title = "Тестовая карта",
+                        CurrentNodeId = "loc_square",
+                        ZLevels = [new MapZLevelDto { Z = 0, Label = "земля" }],
+                        Layers = [new MapLayerDto { Id = "world", Label = "Мир", IsDefault = true }],
+                        Nodes =
+                        [
+                            new MapNodeDto
+                            {
+                                Id = "loc_square",
+                                Label = "Площадь",
+                                Type = "city",
+                                X = 1,
+                                Y = 2,
+                                Z = 0,
+                                Layer = "world",
+                                IsCurrent = true
+                            }
+                        ]
+                    }
                 }
             ],
             Actions =
@@ -124,6 +150,7 @@ public sealed class ExplorerCommandProtocolTests
         var json = JsonSerializer.Serialize(result, JsonOpts);
 
         Assert.Contains("\"kind\": \"text\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"kind\": \"map\"", json, StringComparison.Ordinal);
         Assert.Contains("\"kind\": \"selection\"", json, StringComparison.Ordinal);
         Assert.Contains("\"state\": \"RequiresInput\"", json, StringComparison.Ordinal);
 
@@ -138,6 +165,7 @@ public sealed class ExplorerCommandProtocolTests
         Assert.IsType<UiKeyValueGridBlock>(restored.Blocks[4]);
         Assert.IsType<UiMessageBlock>(restored.Blocks[5]);
         Assert.IsType<UiRawJsonBlock>(restored.Blocks[6]);
+        Assert.IsType<UiMapBlock>(restored.Blocks[7]);
         Assert.IsType<UiConfirmationPrompt>(restored.Prompts[0]);
         Assert.IsType<UiSelectionPrompt>(restored.Prompts[1]);
         Assert.IsType<UiTextInputPrompt>(restored.Prompts[2]);
@@ -149,6 +177,11 @@ public sealed class ExplorerCommandProtocolTests
 
         var rawJson = Assert.IsType<UiRawJsonBlock>(restored.Blocks[6]);
         Assert.Equal(42, rawJson.Json?["turn"]?.GetValue<int>());
+
+        var map = Assert.IsType<UiMapBlock>(restored.Blocks[7]);
+        Assert.Equal("Mortal World", map.Map.Realm);
+        Assert.Equal("loc_square", map.Map.CurrentNodeId);
+        Assert.Contains(map.Map.Nodes, static node => node.IsCurrent && node.Label == "Площадь");
     }
 
     [Fact]

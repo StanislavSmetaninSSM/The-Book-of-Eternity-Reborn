@@ -218,6 +218,8 @@ Mortal World read-only parity currently includes:
 - `/storage_access`, `/доступ_к_хранилищам`
 - `/interactions`, `/взаимодействия`
 
+`/map` and `/карта` now return a shared `map` DTO block in addition to the raw JSON repair payloads. The browser renderer draws it locally as SVG with pan/zoom, z-level filtering, layer filtering, node selection, and detail cards. The DTO is realm-agnostic (`realm`, `nodes`, `links`, `regions`, `layers`, `zLevels`, owner/influence fields) so Mortal World, Chaos Sea, and Shining Abode projections can reuse the same renderer. The first projection is Mortal World: it reads `game_state/world/current_location.json` and `game_state/world/world_map.json`, keeps console fallback behavior unchanged, and writes no game state.
+
 Mortal World mutating parity currently includes:
 
 - `/distribute`

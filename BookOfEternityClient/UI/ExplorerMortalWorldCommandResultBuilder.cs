@@ -114,11 +114,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/quests/quest_history.json", "entries", "Исторических записей"),
                 new("game_state/quests/plot_outline.json", "entries", "Сюжетных записей")
             ]),
-            CommandKind.Map => await BuildBundle(normalizedCommand, fs, "Карта", [
-                new("game_state/world/current_location.json", "locationName", "Текущая локация"),
-                new("game_state/world/world_map.json", "newLocations", "Открытых локаций"),
-                new("game_state/world/world_map.json", "locationUpdates", "Обновлений локаций")
-            ]),
+            CommandKind.Map => await BuildMap(normalizedCommand, fs),
             CommandKind.CurrentLocation => await BuildBundle(normalizedCommand, fs, "Где я", [
                 new("game_state/world/current_location.json", "locationName", "Локация"),
                 new("game_state/world/current_location.json", "region", "Регион"),
@@ -200,6 +196,35 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         await AddRawJsonIfPresent(blocks, fs, "game_state/misc/characteristics.json", "JSON: characteristics");
         await AddRawJsonIfPresent(blocks, fs, "game_state/player/computed_characteristics.json", "JSON: computed_characteristics");
+        return Completed(command, blocks);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildMap(string command, FileSystemManager fs)
+    {
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(fs);
+        var blocks = new List<UiBlock>
+        {
+            new UiMapBlock
+            {
+                Title = "Карта",
+                Map = map
+            },
+            new UiTableBlock
+            {
+                Title = "Сводка карты",
+                Columns = ["Показатель", "Значение"],
+                Rows =
+                [
+                    new UiTableRow { Cells = ["Царство", map.Realm] },
+                    new UiTableRow { Cells = ["Локаций", map.Nodes.Count.ToString()] },
+                    new UiTableRow { Cells = ["Связей", map.Links.Count.ToString()] },
+                    new UiTableRow { Cells = ["Уровней z", map.ZLevels.Count.ToString()] }
+                ]
+            }
+        };
+
+        await AddRawJsonIfPresent(blocks, fs, "game_state/world/current_location.json", "JSON: current_location");
+        await AddRawJsonIfPresent(blocks, fs, "game_state/world/world_map.json", "JSON: world_map");
         return Completed(command, blocks);
     }
 
