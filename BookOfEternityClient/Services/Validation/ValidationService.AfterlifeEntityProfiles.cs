@@ -48,6 +48,14 @@ public partial class ValidationService
         "negative"
     };
 
+    private static readonly HashSet<string> AfterlifeMaskDeceptionRiskLevels = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "low",
+        "medium",
+        "high",
+        "critical"
+    };
+
     private void ValidateAfterlifeEntityProfileStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (root.ValueKind != JsonValueKind.Object)
@@ -79,19 +87,24 @@ public partial class ValidationService
         var hasRelationshipChanges = root.TryGetProperty(AfterlifeEntityProfileState.RelationshipChangesProperty, out var relationshipChanges);
         var hasRelationshipLockUpdates = root.TryGetProperty(AfterlifeEntityProfileState.RelationshipLockUpdatesProperty, out var relationshipLockUpdates);
         var hasBreakthroughQuestUpdates = root.TryGetProperty(AfterlifeEntityProfileState.BreakthroughQuestUpdatesProperty, out var breakthroughQuestUpdates);
+        var hasMaskAdds = root.TryGetProperty(AfterlifeEntityProfileState.MaskAddsProperty, out var maskAdds);
+        var hasMaskUpdates = root.TryGetProperty(AfterlifeEntityProfileState.MaskUpdatesProperty, out var maskUpdates);
+        var hasMaskRemovals = root.TryGetProperty(AfterlifeEntityProfileState.MaskRemovalsProperty, out var maskRemovals);
+        var hasActiveMaskChanges = root.TryGetProperty(AfterlifeEntityProfileState.ActiveMaskChangesProperty, out var activeMaskChanges);
         var hasInvalidProgressionOverride = root.TryGetProperty(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty, out _);
         var hasInvalidProfileCommand = root.TryGetProperty(AfterlifeEntityProfileState.LastInvalidCommandProperty, out _);
         if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges && !hasProgressionOverrides && !hasSpecialArtLearningReceipts &&
             !hasFateCardUnlocks && !hasGoalUpdates && !hasQuestUpdates && !hasActivityUpdates && !hasActivityCompletions &&
-            !hasRelationshipChanges && !hasRelationshipLockUpdates && !hasBreakthroughQuestUpdates)
+            !hasRelationshipChanges && !hasRelationshipLockUpdates && !hasBreakthroughQuestUpdates &&
+            !hasMaskAdds && !hasMaskUpdates && !hasMaskRemovals && !hasActiveMaskChanges)
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}",
                 IssueSeverity.Error,
-                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], afterlifeFateCardUnlocks[], actor agency command surfaces, relationship gate command surfaces, afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
+                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], afterlifeFateCardUnlocks[], actor agency command surfaces, relationship gate command surfaces, mask command surfaces, afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
                 code: "afterlife_entity_profile_missing_profiles",
                 section: "AfterlifeEntityProfiles",
-                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeFateCardUnlocks[] / afterlifeActorGoalUpdates[] / afterlifeActorQuestUpdates[] / afterlifeActorActivityUpdates[] / completeAfterlifeActorActivities[] / afterlifeRelationshipChanges[] / afterlifeRelationshipLockUpdates[] / afterlifeBreakthroughQuestUpdates[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
+                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeFateCardUnlocks[] / afterlifeActorGoalUpdates[] / afterlifeActorQuestUpdates[] / afterlifeActorActivityUpdates[] / completeAfterlifeActorActivities[] / afterlifeRelationshipChanges[] / afterlifeRelationshipLockUpdates[] / afterlifeBreakthroughQuestUpdates[] / afterlifeActorMaskAdds[] / afterlifeActorMaskUpdates[] / afterlifeActorMaskRemovals[] / afterlifeActorActiveMaskChanges[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
         }
 
         if (hasInvalidProgressionOverride)
@@ -187,6 +200,30 @@ public partial class ValidationService
             breakthroughQuestUpdates,
             hasBreakthroughQuestUpdates,
             $"{contextPrefix}.{AfterlifeEntityProfileState.BreakthroughQuestUpdatesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeActorMaskAddsIfPresent(
+            maskAdds,
+            hasMaskAdds,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.MaskAddsProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeActorMaskUpdatesIfPresent(
+            maskUpdates,
+            hasMaskUpdates,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.MaskUpdatesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeActorMaskRemovalsIfPresent(
+            maskRemovals,
+            hasMaskRemovals,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.MaskRemovalsProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeActorActiveMaskChangesIfPresent(
+            activeMaskChanges,
+            hasActiveMaskChanges,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.ActiveMaskChangesProperty}",
             profileAuthority,
             issues);
         ValidateAfterlifeEntityProgressionOverridesIfPresent(
@@ -333,6 +370,7 @@ public partial class ValidationService
         ValidateAfterlifeProfileLedger(profile, context, issues);
         ValidateAfterlifeProfileAgency(profile, context, issues);
         ValidateAfterlifeProfileRelationships(profile, context, issues);
+        ValidateAfterlifeProfileMasks(profile, context, issues);
         ValidateStringArrayIfPresent(profile, context, "warnings", "afterlife_entity_profile_warnings_not_array", issues);
     }
 
@@ -1548,6 +1586,402 @@ public partial class ValidationService
     }
 
     private static void AddRelationshipIssue(
+        string context,
+        string code,
+        string message,
+        string expected,
+        string? actual,
+        List<ValidationIssue> issues)
+    {
+        issues.Add(new ValidationIssue(
+            context,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "AfterlifeEntityProfiles",
+            expected: expected,
+            actual: actual));
+    }
+
+    private void ValidateAfterlifeActorMaskAddsIfPresent(
+        JsonElement adds,
+        bool hasAdds,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasAdds)
+            return;
+
+        if (adds.ValueKind != JsonValueKind.Array)
+        {
+            AddMaskIssue(context, "afterlife_entity_profile_mask_adds_not_array", "afterlifeActorMaskAdds должен быть array.", "array", adds.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var add in adds.EnumerateArray())
+        {
+            var addContext = $"{context}[{index++}]";
+            if (ValidateAfterlifeActorAgencyCommandTarget(add, addContext, profileAuthority, "mask_add", issues) == null)
+                continue;
+
+            if (!add.TryGetProperty("mask", out var mask) || mask.ValueKind != JsonValueKind.Object)
+            {
+                AddMaskIssue($"{addContext}.mask", "afterlife_entity_profile_mask_add_missing_payload", "afterlifeActorMaskAdds должен содержать mask object.", "mask object", add.TryGetProperty("mask", out var actual) ? actual.ToString() : "missing", issues);
+                continue;
+            }
+
+            ValidateAfterlifeMaskObject(mask, $"{addContext}.mask", issues, requireFullShape: true);
+        }
+    }
+
+    private void ValidateAfterlifeActorMaskUpdatesIfPresent(
+        JsonElement updates,
+        bool hasUpdates,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasUpdates)
+            return;
+
+        if (updates.ValueKind != JsonValueKind.Array)
+        {
+            AddMaskIssue(context, "afterlife_entity_profile_mask_updates_not_array", "afterlifeActorMaskUpdates должен быть array.", "array", updates.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var update in updates.EnumerateArray())
+        {
+            var updateContext = $"{context}[{index++}]";
+            var profile = ValidateAfterlifeActorAgencyCommandTarget(update, updateContext, profileAuthority, "mask_update", issues);
+            if (profile == null)
+                continue;
+
+            if (!update.TryGetProperty("maskUpdate", out var maskUpdate) || maskUpdate.ValueKind != JsonValueKind.Object)
+            {
+                AddMaskIssue($"{updateContext}.maskUpdate", "afterlife_entity_profile_mask_update_missing_payload", "afterlifeActorMaskUpdates должен содержать maskUpdate object.", "maskUpdate object", update.TryGetProperty("maskUpdate", out var actual) ? actual.ToString() : "missing", issues);
+                continue;
+            }
+
+            var maskId = RequireProfileString(maskUpdate, $"{updateContext}.maskUpdate", "maskId", "afterlife_entity_profile_mask_missing_id", issues);
+            ValidateAfterlifeMaskObject(maskUpdate, $"{updateContext}.maskUpdate", issues, requireFullShape: false);
+            if (!string.IsNullOrWhiteSpace(maskId) && !ProfileHasMask(profile.Value, maskId))
+            {
+                AddMaskIssue($"{updateContext}.maskUpdate.maskId", "afterlife_entity_profile_mask_update_unknown_id", "afterlifeActorMaskUpdates.maskUpdate.maskId должен ссылаться на существующую masks[] целевого профиля.", "existing masks[].maskId", maskId, issues);
+            }
+        }
+    }
+
+    private void ValidateAfterlifeActorMaskRemovalsIfPresent(
+        JsonElement removals,
+        bool hasRemovals,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasRemovals)
+            return;
+
+        if (removals.ValueKind != JsonValueKind.Array)
+        {
+            AddMaskIssue(context, "afterlife_entity_profile_mask_removals_not_array", "afterlifeActorMaskRemovals должен быть array.", "array", removals.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var removal in removals.EnumerateArray())
+        {
+            var removalContext = $"{context}[{index++}]";
+            var profile = ValidateAfterlifeActorAgencyCommandTarget(removal, removalContext, profileAuthority, "mask_removal", issues);
+            if (profile == null)
+                continue;
+
+            var maskId = RequireProfileString(removal, removalContext, "maskId", "afterlife_entity_profile_mask_missing_id", issues);
+            if (!string.IsNullOrWhiteSpace(maskId) && !ProfileHasMask(profile.Value, maskId))
+            {
+                AddMaskIssue($"{removalContext}.maskId", "afterlife_entity_profile_mask_removal_unknown_id", "afterlifeActorMaskRemovals.maskId должен ссылаться на существующую masks[] целевого профиля.", "existing masks[].maskId", maskId, issues);
+            }
+
+            var activeMaskId = GetProfileString(profile.Value, AfterlifeEntityProfileState.ActiveMaskIdProperty);
+            if (!string.IsNullOrWhiteSpace(maskId) &&
+                string.Equals(activeMaskId, maskId, StringComparison.OrdinalIgnoreCase) &&
+                !CommandSetsTrueSelf(removal))
+            {
+                AddMaskIssue(
+                    $"{removalContext}.{AfterlifeEntityProfileState.ActiveMaskIdProperty}",
+                    "afterlife_entity_profile_mask_remove_active_without_true_self",
+                    "Активную маску нельзя удалить молча: команда удаления должна явно вернуть сущность к _true_self_.",
+                    AfterlifeEntityProfileState.TrueSelfMaskId,
+                    removal.ToString(),
+                    issues);
+            }
+        }
+    }
+
+    private void ValidateAfterlifeActorActiveMaskChangesIfPresent(
+        JsonElement changes,
+        bool hasChanges,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasChanges)
+            return;
+
+        if (changes.ValueKind != JsonValueKind.Array)
+        {
+            AddMaskIssue(context, "afterlife_entity_profile_active_mask_changes_not_array", "afterlifeActorActiveMaskChanges должен быть array.", "array", changes.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var index = 0;
+        foreach (var change in changes.EnumerateArray())
+        {
+            var changeContext = $"{context}[{index++}]";
+            var profile = ValidateAfterlifeActorAgencyCommandTarget(change, changeContext, profileAuthority, "active_mask_change", issues);
+            if (profile == null)
+                continue;
+
+            var activeMaskId = ReadActiveMaskChangeId(change);
+            if (string.IsNullOrWhiteSpace(activeMaskId))
+            {
+                AddMaskIssue(
+                    $"{changeContext}.{AfterlifeEntityProfileState.ActiveMaskIdProperty}",
+                    "afterlife_entity_profile_mask_active_requires_true_self",
+                    "afterlifeActorActiveMaskChanges должен задавать activeMaskId; для снятия маски используется _true_self_, а не null.",
+                    $"{AfterlifeEntityProfileState.TrueSelfMaskId} or existing masks[].maskId",
+                    change.TryGetProperty(AfterlifeEntityProfileState.ActiveMaskIdProperty, out var actual) ? actual.ToString() : "missing",
+                    issues);
+                continue;
+            }
+
+            if (!string.Equals(activeMaskId, AfterlifeEntityProfileState.TrueSelfMaskId, StringComparison.OrdinalIgnoreCase) &&
+                !ProfileHasMask(profile.Value, activeMaskId))
+            {
+                AddMaskIssue(
+                    $"{changeContext}.{AfterlifeEntityProfileState.ActiveMaskIdProperty}",
+                    "afterlife_entity_profile_mask_active_unknown_id",
+                    "activeMaskId должен быть _true_self_ или ссылаться на существующую masks[].maskId целевого профиля.",
+                    $"{AfterlifeEntityProfileState.TrueSelfMaskId} or existing masks[].maskId",
+                    activeMaskId,
+                    issues);
+            }
+
+            RequireProfileString(change, changeContext, "reason", "afterlife_entity_profile_mask_active_missing_reason", issues);
+            RequireProfileString(change, changeContext, "evidence", "afterlife_entity_profile_mask_active_missing_evidence", issues);
+            RequireProfileString(change, changeContext, "gmThoughtsSummary", "afterlife_entity_profile_mask_active_missing_gm_thoughts", issues);
+            ValidateProfileNonNegativeInt(change, changeContext, "updatedAtTurn", "afterlife_entity_profile_mask_invalid_turn", issues);
+        }
+    }
+
+    private void ValidateAfterlifeProfileMasks(JsonElement profile, string context, List<ValidationIssue> issues)
+    {
+        var maskIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (profile.TryGetProperty(AfterlifeEntityProfileState.MasksProperty, out var masks))
+        {
+            if (masks.ValueKind != JsonValueKind.Array)
+            {
+                AddMaskIssue($"{context}.{AfterlifeEntityProfileState.MasksProperty}", "afterlife_entity_profile_masks_not_array", "masks профиля сущности посмертия должен быть array.", "array", masks.ValueKind.ToString(), issues);
+            }
+            else
+            {
+                var index = 0;
+                foreach (var mask in masks.EnumerateArray())
+                {
+                    var maskContext = $"{context}.{AfterlifeEntityProfileState.MasksProperty}[{index++}]";
+                    var maskId = ValidateAfterlifeMaskObject(mask, maskContext, issues, requireFullShape: true);
+                    if (!string.IsNullOrWhiteSpace(maskId) && !maskIds.Add(maskId))
+                    {
+                        AddMaskIssue($"{maskContext}.maskId", "afterlife_entity_profile_mask_duplicate_id", "masks[] не должен содержать дубликаты maskId.", "unique maskId", maskId, issues);
+                    }
+                }
+            }
+        }
+
+        if (!profile.TryGetProperty(AfterlifeEntityProfileState.ActiveMaskIdProperty, out var activeMaskIdNode))
+            return;
+
+        var activeMaskId = activeMaskIdNode.ValueKind == JsonValueKind.String
+            ? activeMaskIdNode.GetString()?.Trim()
+            : null;
+        if (string.IsNullOrWhiteSpace(activeMaskId))
+        {
+            AddMaskIssue(
+                $"{context}.{AfterlifeEntityProfileState.ActiveMaskIdProperty}",
+                "afterlife_entity_profile_mask_active_requires_true_self",
+                "activeMaskId не может быть null/empty: для истинной личности используется _true_self_.",
+                $"{AfterlifeEntityProfileState.TrueSelfMaskId} or existing masks[].maskId",
+                activeMaskIdNode.ToString(),
+                issues);
+            return;
+        }
+
+        if (!string.Equals(activeMaskId, AfterlifeEntityProfileState.TrueSelfMaskId, StringComparison.OrdinalIgnoreCase) &&
+            !maskIds.Contains(activeMaskId))
+        {
+            AddMaskIssue(
+                $"{context}.{AfterlifeEntityProfileState.ActiveMaskIdProperty}",
+                "afterlife_entity_profile_mask_active_unknown_id",
+                "activeMaskId должен быть _true_self_ или ссылаться на существующую masks[].maskId профиля.",
+                $"{AfterlifeEntityProfileState.TrueSelfMaskId} or existing masks[].maskId",
+                activeMaskId,
+                issues);
+        }
+    }
+
+    private string? ValidateAfterlifeMaskObject(
+        JsonElement mask,
+        string context,
+        List<ValidationIssue> issues,
+        bool requireFullShape)
+    {
+        if (mask.ValueKind != JsonValueKind.Object)
+        {
+            AddMaskIssue(context, "afterlife_entity_profile_mask_not_object", "Маска духовной сущности должна быть object.", "object", mask.ValueKind.ToString(), issues);
+            return null;
+        }
+
+        var maskId = RequireProfileString(mask, context, "maskId", "afterlife_entity_profile_mask_missing_id", issues);
+        ValidateMaskStringField(mask, context, "displayName", "afterlife_entity_profile_mask_missing_display_name", requireFullShape, issues);
+        ValidateMaskStringField(mask, context, "publicArchetype", "afterlife_entity_profile_mask_missing_public_archetype", requireFullShape, issues);
+        ValidateMaskStringField(mask, context, "visiblePersonality", "afterlife_entity_profile_mask_missing_visible_personality", requireFullShape, issues);
+        ValidateMaskStringField(mask, context, "concealedTruth", "afterlife_entity_profile_mask_missing_concealed_truth", requireFullShape, issues);
+
+        var deceptionRisk = ValidateMaskStringField(mask, context, "deceptionRisk", "afterlife_entity_profile_mask_missing_deception_risk", requireFullShape, issues);
+        if (!string.IsNullOrWhiteSpace(deceptionRisk) && !AfterlifeMaskDeceptionRiskLevels.Contains(deceptionRisk))
+        {
+            AddMaskIssue(
+                $"{context}.deceptionRisk",
+                "afterlife_entity_profile_mask_invalid_deception_risk",
+                "deceptionRisk маски должен быть поддерживаемым уровнем риска обмана.",
+                string.Join("/", AfterlifeMaskDeceptionRiskLevels.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                deceptionRisk,
+                issues);
+        }
+
+        ValidateMaskStringArray(mask, context, "directives", "afterlife_entity_profile_mask_missing_directives", requireFullShape, issues);
+        ValidateMaskStringArray(mask, context, "revealConditions", "afterlife_entity_profile_mask_missing_reveal_conditions", requireFullShape, issues);
+        ValidateOptionalMaskString(mask, context, "linkedThreatId", issues);
+        ValidateOptionalMaskString(mask, context, "linkedSarefAgentId", issues);
+        ValidateOptionalMaskBoolean(mask, context, "isRevealed", issues);
+        ValidateProfileNonNegativeIntIfPresent(mask, context, "updatedAtTurn", "afterlife_entity_profile_mask_invalid_turn", issues);
+        return maskId;
+    }
+
+    private static string? ValidateMaskStringField(
+        JsonElement root,
+        string context,
+        string propertyName,
+        string missingCode,
+        bool required,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(propertyName, out var property))
+        {
+            if (required)
+                AddMaskIssue($"{context}.{propertyName}", missingCode, $"{propertyName} маски должен быть non-empty string.", "non-empty string", "missing", issues);
+            return null;
+        }
+
+        if (property.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(property.GetString()))
+            return property.GetString()!.Trim();
+
+        AddMaskIssue($"{context}.{propertyName}", missingCode, $"{propertyName} маски должен быть non-empty string.", "non-empty string", property.ToString(), issues);
+        return null;
+    }
+
+    private static void ValidateMaskStringArray(
+        JsonElement root,
+        string context,
+        string propertyName,
+        string missingCode,
+        bool required,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(propertyName, out var array))
+        {
+            if (required)
+                AddMaskIssue($"{context}.{propertyName}", missingCode, $"{propertyName} маски должен быть non-empty string array.", "non-empty string array", "missing", issues);
+            return;
+        }
+
+        if (array.ValueKind != JsonValueKind.Array)
+        {
+            AddMaskIssue($"{context}.{propertyName}", missingCode, $"{propertyName} маски должен быть array.", "array", array.ValueKind.ToString(), issues);
+            return;
+        }
+
+        var hasEntry = false;
+        var index = 0;
+        foreach (var entry in array.EnumerateArray())
+        {
+            if (entry.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(entry.GetString()))
+            {
+                hasEntry = true;
+            }
+            else
+            {
+                AddMaskIssue($"{context}.{propertyName}[{index}]", "afterlife_entity_profile_mask_invalid_string_array_entry", $"{propertyName} маски должен содержать только non-empty string entries.", "non-empty string", entry.ToString(), issues);
+            }
+
+            index++;
+        }
+
+        if (!hasEntry)
+            AddMaskIssue($"{context}.{propertyName}", missingCode, $"{propertyName} маски должен содержать хотя бы одну строку.", "non-empty string array", array.ToString(), issues);
+    }
+
+    private static void ValidateOptionalMaskString(JsonElement root, string context, string propertyName, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(propertyName, out var property))
+            return;
+
+        if (property.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(property.GetString()))
+            return;
+
+        AddMaskIssue($"{context}.{propertyName}", "afterlife_entity_profile_mask_invalid_optional_string", $"{propertyName} маски должен быть non-empty string, если указан.", "non-empty string", property.ToString(), issues);
+    }
+
+    private static void ValidateOptionalMaskBoolean(JsonElement root, string context, string propertyName, List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(propertyName, out var property))
+            return;
+
+        if (property.ValueKind is JsonValueKind.True or JsonValueKind.False)
+            return;
+
+        AddMaskIssue($"{context}.{propertyName}", "afterlife_entity_profile_mask_invalid_boolean", $"{propertyName} маски должен быть boolean, если указан.", "boolean", property.ToString(), issues);
+    }
+
+    private static bool ProfileHasMask(JsonElement profile, string maskId)
+    {
+        if (profile.ValueKind != JsonValueKind.Object ||
+            !profile.TryGetProperty(AfterlifeEntityProfileState.MasksProperty, out var masks) ||
+            masks.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        return masks.EnumerateArray().Any(mask =>
+            mask.ValueKind == JsonValueKind.Object &&
+            string.Equals(GetProfileString(mask, "maskId"), maskId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool CommandSetsTrueSelf(JsonElement command)
+    {
+        var activeMaskId = GetProfileString(command, AfterlifeEntityProfileState.ActiveMaskIdProperty) ??
+                           GetProfileString(command, "newActiveMaskId");
+        return string.Equals(activeMaskId, AfterlifeEntityProfileState.TrueSelfMaskId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string? ReadActiveMaskChangeId(JsonElement change) =>
+        GetProfileString(change, AfterlifeEntityProfileState.ActiveMaskIdProperty) ??
+        GetProfileString(change, "newActiveMaskId");
+
+    private static void AddMaskIssue(
         string context,
         string code,
         string message,

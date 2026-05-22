@@ -607,6 +607,23 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             }
                         }
                     },
+                    activeMaskId = "mask_wings_emissary",
+                    masks = new[]
+                    {
+                        new
+                        {
+                            maskId = "mask_wings_emissary",
+                            displayName = "Посланник Белых Перьев",
+                            publicArchetype = "учтивый посредник",
+                            visiblePersonality = "обещает помощь и скрывает истинные мотивы",
+                            concealedTruth = "Маска скрывает агента Крыльев Ангелов.",
+                            directives = new[] { "Не произносить имя Сарефа первым." },
+                            revealConditions = new[] { "Игрок связывает белые перья с Крыльями Ангелов." },
+                            deceptionRisk = "high",
+                            linkedSarefAgentId = "saref_agent_white_feather",
+                            isRevealed = false
+                        }
+                    },
                     soulDissipationTier = 1,
                     progressionStrategy = new
                     {
@@ -665,6 +682,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Доверие", text, StringComparison.Ordinal);
         Assert.Contains("заблокировано", text, StringComparison.Ordinal);
         Assert.Contains("quest_mirror_oath_trial", text, StringComparison.Ordinal);
+        Assert.Contains("Активная маска", text, StringComparison.Ordinal);
+        Assert.Contains("Посланник Белых Перьев", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Маска скрывает агента Крыльев Ангелов", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("saref_agent_white_feather", text, StringComparison.Ordinal);
         Assert.Contains("Развеивание души: тир 1", text, StringComparison.Ordinal);
         Assert.Contains("Последняя автопрокачка", text, StringComparison.Ordinal);
         Assert.Contains("chaos:5", text, StringComparison.Ordinal);

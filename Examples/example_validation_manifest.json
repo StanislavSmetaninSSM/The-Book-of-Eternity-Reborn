@@ -28,6 +28,13 @@
       "description": "Afterlife-only relationship gates for Guardians, residents, faction heads, and custom spiritual actors: relationships[], trust/romance/rivalry/oath/fear/reverence/debt axes, relationshipLock, breakthroughQuestId, redemptionQuestId, pointOfNoReturn, _clear_, and no Mortal NPCRelationshipChanges."
     },
     {
+      "contractId": "afterlife_actor_masks_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "masks[] / activeMaskId / afterlifeActorMaskAdds / afterlifeActorMaskUpdates / afterlifeActorMaskRemovals / afterlifeActorActiveMaskChanges",
+      "description": "Afterlife actor masks for false identities and public roles: activeMaskId uses _true_self_ instead of null, hidden concealedTruth/directives/linkedThreatId/linkedSarefAgentId stay out of ordinary player UI until isRevealed=true, and Mortal NPCMaskAdds/NPCActiveMaskChange are not used."
+    },
+    {
       "contractId": "afterlife_fate_cards_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
