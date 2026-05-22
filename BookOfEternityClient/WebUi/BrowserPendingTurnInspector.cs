@@ -28,8 +28,8 @@ public static class BrowserPendingTurnInspector
             HasActiveGmTurn: hasActive,
             Artifacts: artifacts,
             Message: hasActive
-                ? "Обнаружен активный GM-turn или rollback/snapshot artifact. Browser-write должен дождаться завершения, отмены или repair."
-                : "Активный GM-turn не обнаружен.");
+                ? "Обнаружен активный ход ГМа или rollback/snapshot artifact. Запись из браузера должна дождаться завершения, отмены или repair."
+                : "Активный ход ГМа не обнаружен.");
     }
 
     private static BrowserPendingTurnArtifactStatus FileArtifact(FileSystemManager fs, string path, string label) =>

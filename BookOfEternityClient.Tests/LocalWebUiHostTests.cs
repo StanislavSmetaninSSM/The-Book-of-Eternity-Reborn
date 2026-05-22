@@ -126,6 +126,77 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    public async Task RootEndpoint_IncludesLifecycleDashboardAssets()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("id=\"lifecycle-panel\"", html, StringComparison.Ordinal);
+        Assert.Contains("Панель состояния", html, StringComparison.Ordinal);
+        Assert.Contains("Проверить валидацию", html, StringComparison.Ordinal);
+        Assert.Contains("/api/lifecycle/dashboard", html, StringComparison.Ordinal);
+        Assert.Contains("/api/lifecycle/validate", html, StringComparison.Ordinal);
+        Assert.Contains("renderLifecycleDashboard", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task LifecycleDashboardEndpoint_ReturnsSessionRealmPendingAndValidationSummary()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Web Soul",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 9
+        }
+        """);
+        WriteSessionFile("input/turn_request.json", "{}");
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var json = await client.GetStringAsync("/api/lifecycle/dashboard");
+        var root = JsonNode.Parse(json)!.AsObject();
+
+        Assert.Equal(1, root["schemaVersion"]!.GetValue<int>());
+        Assert.Equal(_rootPath, root["session"]!["basePath"]!.GetValue<string>());
+        Assert.Equal(Path.Combine(_rootPath, "game_session"), root["session"]!["gameSessionPath"]!.GetValue<string>());
+        Assert.Equal("Web Soul", root["soul"]!["name"]!.GetValue<string>());
+        Assert.Equal("Chaos Sea", root["soul"]!["currentRealm"]!.GetValue<string>());
+        Assert.Equal(9, root["soul"]!["currentIncarnation"]!.GetValue<int>());
+        Assert.True(root["pendingTurn"]!["hasActiveGmTurn"]!.GetValue<bool>());
+        Assert.True(root["validation"]!["issueCount"]!.GetValue<int>() >= 0);
+        Assert.Contains(root["guidance"]!.AsArray(), node =>
+            node?["title"]?.GetValue<string>().Contains("Ход ГМа", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task LifecycleValidateEndpoint_ReturnsGroupedValidationIssues()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/lifecycle/validate", new { });
+        var root = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+
+        response.EnsureSuccessStatusCode();
+        Assert.True(root["issueCount"]!.GetValue<int>() > 0);
+        Assert.True(root["errorCount"]!.GetValue<int>() > 0);
+        Assert.NotEmpty(root["groups"]!.AsArray());
+        Assert.NotEmpty(root["issues"]!.AsArray());
+        Assert.Contains(root["issues"]!.AsArray(), node =>
+            !string.IsNullOrWhiteSpace(node?["filePath"]?.GetValue<string>()) &&
+            !string.IsNullOrWhiteSpace(node["message"]?.GetValue<string>()));
+    }
+
+    [Fact]
     public async Task ExplorerCommandEndpoint_ReturnsMigratedHelpDto()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
