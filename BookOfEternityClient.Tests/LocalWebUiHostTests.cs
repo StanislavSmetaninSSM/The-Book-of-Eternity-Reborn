@@ -126,6 +126,13 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("renderMapBlock", html, StringComparison.Ordinal);
         Assert.Contains("map-z-filter", html, StringComparison.Ordinal);
         Assert.Contains("map-layer-filter", html, StringComparison.Ordinal);
+        Assert.Contains("--atlas-parchment", html, StringComparison.Ordinal);
+        Assert.Contains("atlas-texture", html, StringComparison.Ordinal);
+        Assert.Contains("map-legend", html, StringComparison.Ordinal);
+        Assert.Contains("map-node--selected", html, StringComparison.Ordinal);
+        Assert.Contains("Нет точек на выбранном уровне", html, StringComparison.Ordinal);
+        Assert.Contains("Легенда карты", html, StringComparison.Ordinal);
+        Assert.Contains("Влияние фракций", html, StringComparison.Ordinal);
         Assert.Contains("/api/media/", html, StringComparison.Ordinal);
         Assert.Contains("Пока нет результата", html, StringComparison.Ordinal);
     }

@@ -56,6 +56,26 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.Contains("Старая площадь", html, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task LocalMapViewerRenderer_UsesDarkFantasyAtlasVisualSystem()
+    {
+        await SeedMortalMapAsync();
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        var html = LocalMapViewerRenderer.BuildStandaloneHtml(map);
+
+        Assert.Contains("--atlas-parchment", html, StringComparison.Ordinal);
+        Assert.Contains("atlas-texture", html, StringComparison.Ordinal);
+        Assert.Contains("map-legend", html, StringComparison.Ordinal);
+        Assert.Contains("Легенда карты", html, StringComparison.Ordinal);
+        Assert.Contains("Текущая точка", html, StringComparison.Ordinal);
+        Assert.Contains("Влияние фракций", html, StringComparison.Ordinal);
+        Assert.Contains("Нет точек на выбранном уровне", html, StringComparison.Ordinal);
+        Assert.Contains("map-node--selected", html, StringComparison.Ordinal);
+        Assert.Contains("data-layer-state", html, StringComparison.Ordinal);
+        Assert.Contains("Выберите точку на карте", html, StringComparison.Ordinal);
+    }
+
     private async Task SeedMortalMapAsync()
     {
         await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
