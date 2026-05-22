@@ -101,6 +101,33 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void ActorBrainProtocolPreservesNpcBrainAndDocumentsAfterlifePacks()
+    {
+        var guide = ReadRepoFile("OtherGuides", "Actor_Brain_2_0.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        Assert.Contains("Actor Brain 2.0", guide, StringComparison.Ordinal);
+        Assert.Contains("NPC Brain 2.0", guide, StringComparison.Ordinal);
+        Assert.Contains("фильтр привлекательности", guide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("не упрощ", guide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Guardian pack", guide, StringComparison.Ordinal);
+        Assert.Contains("Resident pack", guide, StringComparison.Ordinal);
+        Assert.Contains("Shining political", guide, StringComparison.Ordinal);
+        Assert.Contains("Варианты стратегий", guide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("State changes", guide, StringComparison.Ordinal);
+
+        foreach (var doc in new[] { taskGuide, daemonSpec, apiSpec })
+        {
+            Assert.Contains("Actor Brain 2.0", doc, StringComparison.Ordinal);
+            Assert.Contains("Guardian pack", doc, StringComparison.Ordinal);
+            Assert.Contains("Resident pack", doc, StringComparison.Ordinal);
+            Assert.Contains("Shining political", doc, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void ShiningCoreActionCoverageIncludesEverySupportedActionType()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

@@ -247,12 +247,15 @@
              - если ты меняешь NPC/Guardian через structured update arrays, соответствующий актор ОБЯЗАН быть в `Релевантные акторы`
              - если structured update содержит только ID и имя нельзя надёжно восстановить из state, это не должно само по себе ломать ход как hard scope mismatch
              
-             ## Reasoning / Размышления NPC / Guardian Thoughts
+             ## Actor Brain 2.0 / Reasoning / Размышления NPC / Guardian Thoughts
             ### [NPC Name 1]:
             - Текущая локация / Current location: [где NPC находится сейчас и остаётся ли там]
             - Ситуация: [их восприятие текущих событий]
             - Мысли: [внутренняя мотивация и планы]
+            - Варианты стратегий: [реальные варианты поведения]
+            - Почему альтернативы отвергнуты: [почему выбран именно этот ход]
             - Действия: [что они решают сделать]
+            - State changes: [какие state surfaces меняются]
             
              ### [NPC Name 2]:
             [аналогично для каждого важного NPC]
@@ -273,6 +276,7 @@
             Минимальный validator contract при этом остаётся уже:
             - `## Охват NPC-анализа` с полями режима/релевантных акторов/обоснований
             - valid reasoning section с блоками `### [Actor Name]` для всех declared relevant actors
+            - `Actor Brain 2.0` is the preferred shared reasoning protocol. Keep full mortal `NPC Brain 2.0` depth for Mortal NPCs; for afterlife actors use the packs from `OtherGuides/Actor_Brain_2_0.md`: `Guardian pack`, `Resident pack`, and `Shining political` pack.
             - для каждого relevant NPC в его блоке обязателен явный подпункт `Текущая локация / Current location`
             
             **This assessment informs but does not replace standard game processing.**
@@ -359,7 +363,7 @@
             - Shining leadership contracts: `pending_shining_faction_leadership_transitions.json` must close through faction `leadershipReceipts[]` and leadership history
             - Shining trade contracts: `pending_shining_trade_inventory_requests.json` must close through faction `tradeInventory` plus `tradeInventoryReceipts[]` only in ordinary active Shining Abode (`currentRealm = Shining Abode`, `availability = active`, no prepared package); otherwise preserve as wrong-realm/mode repair context
             - Source of Light capstone (`/source_of_light`, `/источник_света`): `pending_source_of_light_capstone.json` is a direct object, not `requests[]`, and not a Shining core action. Resolve it only in ordinary active Shining Abode with full Radiance (`radiance.tier = 4`, `radiance.experience >= 580`), no prepared package, no active/malformed afterlife pending contract, no `game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict`, and no previous Source of Light reward. Close by writing the Source of Light scene, `shining_abode_state.sourceOfLightCapstone.completed = true`, `soul_state.afterlifeCombatProfile.capstones.lightIncarnate`, and exactly one Soul Relic `source_of_light_incarnated_light`; no `coreActionReceipts[]` exist for it.
-            - Step 6, actor scope: list every Guardian, resident, Shining faction, hall, gate, head actor, or institution whose state, memory, project, leadership, trade, or public position may change
+            - Step 6, actor scope: list every Guardian, resident, Shining faction, hall, gate, head actor, or institution whose state, memory, project, leadership, trade, or public position may change; use `Actor Brain 2.0` blocks with `Guardian pack`, `Resident pack`, or `Shining political` pack when those actors make decisions or receive state changes
             - If a plausible afterlife actor is not processed, explicitly mark it outside scope and explain why it remains stable this turn
             - Step 7, living-world cycles: resolve due contours in bounded form using only afterlife surfaces
             - Chaos Sea cycles may alter hub omens, soul-current pressure, Guardian political consequences, abode power context, or Soul/Guardian state

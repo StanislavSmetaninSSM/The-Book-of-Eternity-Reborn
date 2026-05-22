@@ -262,19 +262,24 @@ If the soul has `soul_state.afterlifeCombatProfile.capstones.lightIncarnate`, tr
 - Акторы вне охвата: [...]
 - Почему они вне охвата: ...
 
-## Reasoning / Размышления NPC / Guardian Thoughts
+## Actor Brain 2.0 / Reasoning / Размышления NPC / Guardian Thoughts
 ### [Имя актора]:
 - Ситуация: [их восприятие событий]
 - Внутренние мысли: [мотивация, планы]
+- Варианты стратегий: [что актор мог выбрать]
+- Почему альтернативы отвергнуты: [почему выбранный ход победил]
 - Решение: [что они делают проактивно]
+- State changes: [какие canonical surfaces меняются]
 ```
 
-Для guardian-centric хода допустим отдельный heading вроде `## Guardian Thoughts`; важно не название и не literal набор подпунктов, а наличие reasoning blocks для всех задекларированных релевантных акторов.
+`Actor Brain 2.0` is the preferred universal actor reasoning heading. It does not weaken Mortal `NPC Brain 2.0`: mortal NPCs still use the full deep NPC protocol, including knowledge limits, culture/personality, relationship pressure, strategy alternatives, and attraction/social filters. For afterlife actors use `OtherGuides/Actor_Brain_2_0.md`: `Guardian pack`, `Resident pack`, and `Shining political` pack. Для guardian-centric хода допустим отдельный heading вроде `## Guardian Thoughts`; важно не название и не literal набор подпунктов, а наличие reasoning blocks для всех задекларированных релевантных акторов.
 
 Если scope declaration отсутствует или reasoning blocks для задекларированных акторов пустые, клиент должен отклонить ход как contract violation.
 `Relevant actors` также ОБЯЗАНЫ покрывать все структурированные actor updates этого хода:
 - `UpdateNPCs` и другие actor-specific NPC update arrays
 - `UpdateGuardians`
+- `guardian_abode_residents.json` resident updates/journals/history/receipts
+- `shining_abode_state.json.shiningPoliticalActors[]` and important Shining faction/head-actor changes (`Shining political` pack)
 - late actor-mutating updates are checked against the same scope contract
 
 `Scene-local` с `Релевантные акторы: нет` допустим только если в ходе действительно нет структурированных actor updates.
