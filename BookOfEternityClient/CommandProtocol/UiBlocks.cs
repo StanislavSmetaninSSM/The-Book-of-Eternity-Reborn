@@ -11,6 +11,7 @@ namespace BookOfEternityClient.CommandProtocol;
 [JsonDerivedType(typeof(UiKeyValueGridBlock), "keyValueGrid")]
 [JsonDerivedType(typeof(UiMessageBlock), "message")]
 [JsonDerivedType(typeof(UiRawJsonBlock), "rawJson")]
+[JsonDerivedType(typeof(UiImageBlock), "image")]
 public abstract class UiBlock
 {
 }
@@ -67,6 +68,18 @@ public sealed class UiRawJsonBlock : UiBlock
 {
     public string Title { get; init; } = string.Empty;
     public JsonNode? Json { get; init; }
+}
+
+public sealed class UiImageBlock : UiBlock
+{
+    public string Title { get; init; } = string.Empty;
+    public string Url { get; init; } = string.Empty;
+    public string MediaId { get; init; } = string.Empty;
+    public string RelativePath { get; init; } = string.Empty;
+    public string AltText { get; init; } = string.Empty;
+    public string ContentType { get; init; } = string.Empty;
+    public long Length { get; init; }
+    public DateTimeOffset ModifiedAtUtc { get; init; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

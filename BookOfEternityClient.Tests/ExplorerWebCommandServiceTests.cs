@@ -104,6 +104,25 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("17", text, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_GalleryWithImages_ReturnsImageBlocks()
+    {
+        WriteSessionImage("images/npcs/ashen_knight.png");
+        WriteSessionImage("images/scenes/scene_001.webp");
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/gallery"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var images = result.Blocks.OfType<UiImageBlock>().ToList();
+        Assert.Equal(2, images.Count);
+        Assert.All(images, image =>
+        {
+            Assert.StartsWith("/api/media/", image.Url, StringComparison.Ordinal);
+            Assert.StartsWith("images/", image.RelativePath, StringComparison.Ordinal);
+        });
+        Assert.Contains(images, image => image.Title.Contains("ashen_knight", StringComparison.OrdinalIgnoreCase));
+    }
+
     [Theory]
     [InlineData("/validate", "Валидация")]
     [InlineData("/world_setup", "Подготовка следующего мира")]
@@ -1182,6 +1201,13 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         {"turn":1,"timestamp":"2026-05-20T00:00:00Z","realm":"Chaos Sea","player":"test","narrative":"story"}
 
         """);
+    }
+
+    private void WriteSessionImage(string relativePath)
+    {
+        var fullPath = _fs.ResolvePath(relativePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+        File.WriteAllBytes(fullPath, [137, 80, 78, 71, 13, 10, 26, 10]);
     }
 
     private async Task SeedMortalFilesAsync()
