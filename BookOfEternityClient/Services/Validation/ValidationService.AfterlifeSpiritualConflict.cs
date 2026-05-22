@@ -5,35 +5,6 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
-    private static readonly HashSet<string> AfterlifeControlSourceOperations = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "binding",
-        "force_binding",
-        "force_incarnation",
-        "break_binding",
-        "incarnation_resistance",
-        "counter",
-        "guard",
-        "repair"
-    };
-
-    private static readonly IReadOnlyDictionary<string, ActionCostDefinition> AfterlifeActionCosts =
-        new Dictionary<string, ActionCostDefinition>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["pressure"] = new(3, 1),
-            ["guard"] = new(2, 1),
-            ["counter"] = new(4, 2),
-            ["maneuver"] = new(3, 1),
-            ["binding"] = new(4, 2),
-            ["force_binding"] = new(5, 2),
-            ["break_binding"] = new(3, 1),
-            ["incarnation_resistance"] = new(3, 1),
-            ["champion_coordination"] = new(2, 1),
-            ["recover_spiritual_power"] = new(0, 0)
-        };
-
-    private sealed record ActionCostDefinition(int BaseCost, int MinCost);
-
     private async Task ValidateAfterlifeSpiritualConflictStateAsync(List<ValidationIssue> issues)
     {
         var json = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath);
@@ -2982,7 +2953,7 @@ public partial class ValidationService
         }
 
         var resolvedPlayerOperation = operationType!;
-        if (!AfterlifeActionCosts.TryGetValue(resolvedPlayerOperation, out var costDefinition))
+        if (!AfterlifeActionCostRules.TryGetDefinition(resolvedPlayerOperation, out var costDefinition))
             return;
 
         if (exchange["actionCostAudit"] is not JsonObject actionCostAudit ||
@@ -3055,13 +3026,13 @@ public partial class ValidationService
                 artTier.ToString());
         }
 
-        var standardEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, authorityArtTier));
+        var standardEffectiveCost = AfterlifeActionCostRules.ResolveStandardEffectiveCost(costDefinition, authorityArtTier);
         var expectedEffectiveCost = standardEffectiveCost;
         if (playerSpecialArtAudit != null &&
             TryGetJsonNodeInt(playerSpecialArtAudit["costMultiplierPercent"], out var specialMultiplier) &&
             specialMultiplier > 100)
         {
-            expectedEffectiveCost = ComputeSpecialArtEffectiveCost(costDefinition.MinCost, standardEffectiveCost, specialMultiplier);
+            expectedEffectiveCost = AfterlifeActionCostRules.ComputeSpecialArtEffectiveCost(costDefinition.MinCost, standardEffectiveCost, specialMultiplier);
             var auditSpecialArtId = AfterlifeSpiritualConflictState.GetNodeString(playerAudit["specialArtId"]);
             var specialArtId = AfterlifeSpiritualConflictState.GetNodeString(playerSpecialArtAudit["artId"]);
             var hasAuditMultiplier = TryGetJsonNodeInt(playerAudit["specialCostMultiplierPercent"], out var auditMultiplier);
@@ -3167,7 +3138,7 @@ public partial class ValidationService
         }
 
         var resolvedOppositionOperation = oppositionOperation!;
-        if (!AfterlifeActionCosts.TryGetValue(resolvedOppositionOperation, out var costDefinition))
+        if (!AfterlifeActionCostRules.TryGetDefinition(resolvedOppositionOperation, out var costDefinition))
             return;
 
         if (exchange["actionCostAudit"] is not JsonObject actionCostAudit ||
@@ -3244,13 +3215,13 @@ public partial class ValidationService
                 artTier.ToString());
         }
 
-        var standardEffectiveCost = Math.Max(costDefinition.MinCost, costDefinition.BaseCost - Math.Max(0, authorityArtTier));
+        var standardEffectiveCost = AfterlifeActionCostRules.ResolveStandardEffectiveCost(costDefinition, authorityArtTier);
         var expectedEffectiveCost = standardEffectiveCost;
         if (oppositionSpecialArtAudit != null &&
             TryGetJsonNodeInt(oppositionSpecialArtAudit["costMultiplierPercent"], out var specialMultiplier) &&
             specialMultiplier > 100)
         {
-            expectedEffectiveCost = ComputeSpecialArtEffectiveCost(costDefinition.MinCost, standardEffectiveCost, specialMultiplier);
+            expectedEffectiveCost = AfterlifeActionCostRules.ComputeSpecialArtEffectiveCost(costDefinition.MinCost, standardEffectiveCost, specialMultiplier);
             var auditSpecialArtId = AfterlifeSpiritualConflictState.GetNodeString(oppositionAudit["specialArtId"]);
             var specialArtId = AfterlifeSpiritualConflictState.GetNodeString(oppositionSpecialArtAudit["artId"]);
             var hasAuditMultiplier = TryGetJsonNodeInt(oppositionAudit["specialCostMultiplierPercent"], out var auditMultiplier);
@@ -3435,7 +3406,7 @@ public partial class ValidationService
         !string.IsNullOrWhiteSpace(operationType) &&
         !ConflictTokenEquals(operationType, "none", "passive") &&
         !IsTerminalNoCostOperation(operationType) &&
-        AfterlifeActionCosts.ContainsKey(operationType);
+        AfterlifeActionCostRules.HasCost(operationType);
 
     private static int ResolveOppositionActionCostArtTier(
         JsonObject exchange,
@@ -3517,13 +3488,6 @@ public partial class ValidationService
             .FirstOrDefault(audit =>
                 SpecialArtAuditOwnerIsPlayer(audit) &&
                 ConflictTokenEqualsSingle(AfterlifeSpiritualConflictState.GetNodeString(audit["baseOperation"]), operationType));
-    }
-
-    private static int ComputeSpecialArtEffectiveCost(int minCost, int standardEffectiveCost, int specialMultiplier)
-    {
-        var multiplied = ((long)Math.Max(0, standardEffectiveCost) * Math.Max(0, specialMultiplier) + 99) / 100;
-        var capped = Math.Min(int.MaxValue, Math.Max(minCost, multiplied));
-        return (int)capped;
     }
 
     private static void ValidateSpecialArtCostBindingUniqueness(
@@ -4194,9 +4158,9 @@ public partial class ValidationService
         bool requiredForCurrentExchange)
     {
         if (!requiredForCurrentExchange ||
-            (!HasActiveControlState(priorControlState) &&
-             !HasActiveControlState(before) &&
-             !HasActiveControlState(after)))
+            (!AfterlifeControlStateRules.HasActive(priorControlState) &&
+             !AfterlifeControlStateRules.HasActive(before) &&
+             !AfterlifeControlStateRules.HasActive(after)))
         {
             return;
         }
@@ -4211,15 +4175,15 @@ public partial class ValidationService
                 "before.controlState present as object/null/{ level: none }",
                 "missing");
         }
-        else if (!ControlAuditSnapshotMatchesPrior(priorControlState, before["controlState"]))
+        else if (!AfterlifeControlStateRules.AuditSnapshotMatchesPrior(priorControlState, before["controlState"]))
         {
             AddSpiritualArtRuleIssue(
                 issues,
                 $"{context}.before.controlState",
                 "before.controlState текущего exchange должен совпадать с controlState, активным перед этим exchange.",
                 "afterlife_conflict_control_snapshot_mismatch",
-                DescribeControlNode(priorControlState),
-                DescribeControlNode(before["controlState"]));
+                AfterlifeControlStateRules.DescribeNode(priorControlState),
+                AfterlifeControlStateRules.DescribeNode(before["controlState"]));
         }
 
         if (!after.ContainsKey("controlState"))
@@ -4294,7 +4258,7 @@ public partial class ValidationService
         var finalControlState = conflict.ContainsKey("controlState")
             ? conflict["controlState"]
             : null;
-        if (!ControlStateChangedSemantically(auditedControlState, finalControlState))
+        if (!AfterlifeControlStateRules.ChangedSemantically(auditedControlState, finalControlState))
             return;
 
         AddSpiritualArtRuleIssue(
@@ -4389,7 +4353,7 @@ public partial class ValidationService
         if (ConflictTokenEquals(operationType, "binding", "force_binding") &&
             IsSuccessfulArtOutcome(outcome))
         {
-            if (HasActiveOppositionControl(before))
+            if (AfterlifeControlStateRules.HasActiveOpposition(before))
             {
                 AddSpiritualArtRuleIssue(
                     issues,
@@ -4397,9 +4361,9 @@ public partial class ValidationService
                     "Наложение оков (binding/force_binding) не может создавать контроль игрока поверх активного контроля противника.",
                     "afterlife_conflict_binding_under_opposition_control",
                     "first answer opposition control with break_binding, valid counter, or incarnation_resistance for force_incarnation control",
-                    DescribeControlTransition(before, after));
+                    AfterlifeControlStateRules.DescribeTransition(before, after));
             }
-            else if (!TryGetPlayerControlProgression(before, after, out var beforePlayerControlRank, out var afterPlayerControlRank))
+            else if (!AfterlifeControlStateRules.TryGetPlayerProgression(before, after, out var beforePlayerControlRank, out var afterPlayerControlRank))
             {
                 if (isCurrentExchange)
                 {
@@ -4409,7 +4373,7 @@ public partial class ValidationService
                         "Успешное наложение оков (binding/force_binding) должно измеримо создать или усилить контроль игрока.",
                         "afterlife_conflict_binding_missing_control_delta",
                         "after.controlState level stronger than before and controllerSide=player",
-                        DescribeControlTransition(before, after));
+                        AfterlifeControlStateRules.DescribeTransition(before, after));
                 }
             }
             else if (afterPlayerControlRank != beforePlayerControlRank + 1)
@@ -4425,7 +4389,7 @@ public partial class ValidationService
 
             if (ConflictTokenEquals(operationType, "force_binding") &&
                 after["controlState"] is JsonObject afterControl &&
-                GetControlRestrictionSet(afterControl).Count < 2)
+                AfterlifeControlStateRules.GetRestrictionSet(afterControl).Count < 2)
             {
                 AddSpiritualArtRuleIssue(
                     issues,
@@ -4437,7 +4401,7 @@ public partial class ValidationService
             }
         }
         else if (ConflictTokenEquals(operationType, "binding", "force_binding") &&
-                 (HasPlayerControlDelta(before, after) || HasAntiControlDelta(before, after)))
+                 (AfterlifeControlStateRules.HasPlayerDelta(before, after) || AfterlifeControlStateRules.HasAntiControlDelta(before, after)))
         {
             AddSpiritualArtRuleIssue(
                 issues,
@@ -4445,7 +4409,7 @@ public partial class ValidationService
                 "Неуспешное наложение оков (binding/force_binding) не может менять controlState игрока или противника.",
                 "afterlife_conflict_binding_control_delta_on_failed_outcome",
                 "controlState unchanged on blocked/countered/setback binding outcomes",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
 
         if (ConflictTokenEquals(operationType, "break_binding") &&
@@ -4462,7 +4426,7 @@ public partial class ValidationService
 
         if (ConflictTokenEquals(operationType, "break_binding") &&
             IsSuccessfulArtOutcome(outcome) &&
-            !HasAntiControlDelta(before, after))
+            !AfterlifeControlStateRules.HasAntiControlDelta(before, after))
         {
             AddSpiritualArtRuleIssue(
                 issues,
@@ -4470,11 +4434,11 @@ public partial class ValidationService
                 "Успешный разрыв оков (break_binding) должен измеримо ослабить, снять или развернуть контроль против игрока.",
                 "afterlife_conflict_break_binding_missing_control_delta",
                 "opposition control weakened/removed/reversed, or coercive handoff cleared",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
         else if (ConflictTokenEquals(operationType, "break_binding") &&
                  !IsSuccessfulArtOutcome(outcome) &&
-                 HasAntiControlDelta(before, after))
+                 AfterlifeControlStateRules.HasAntiControlDelta(before, after))
         {
             AddSpiritualArtRuleIssue(
                 issues,
@@ -4482,7 +4446,7 @@ public partial class ValidationService
                 "Неуспешный разрыв оков (break_binding) не может ослаблять, снимать или разворачивать контроль против игрока.",
                 "afterlife_conflict_break_binding_control_delta_on_failed_outcome",
                 "opposition control unchanged on blocked/countered/setback break_binding outcomes",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
 
         if (ConflictTokenEquals(operationType, "incarnation_resistance") &&
@@ -4498,9 +4462,9 @@ public partial class ValidationService
         }
 
         if (ConflictTokenEquals(operationType, "incarnation_resistance") &&
-            HasActiveControlState(before) &&
-            ControlStateChangedSemantically(before["controlState"], after["controlState"]) &&
-            !HasForcedIncarnationControlState(before))
+            AfterlifeControlStateRules.HasActive(before) &&
+            AfterlifeControlStateRules.ChangedSemantically(before["controlState"], after["controlState"]) &&
+            !AfterlifeControlStateRules.HasForcedIncarnationControl(before))
         {
             AddSpiritualArtRuleIssue(
                 issues,
@@ -4508,11 +4472,11 @@ public partial class ValidationService
                 "Сопротивление воплощению (incarnation_resistance) может менять или снимать только controlState, созданный force_incarnation.",
                 "afterlife_conflict_incarnation_resistance_clears_non_force_control",
                 "before.controlState.sourceOperation=force_incarnation for control changes/removal",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
 
         if (ConflictTokenEquals(operationType, "incarnation_resistance") &&
-            TryGetPlayerControlProgression(before, after, out _, out _))
+            AfterlifeControlStateRules.TryGetPlayerProgression(before, after, out _, out _))
         {
             AddSpiritualArtRuleIssue(
                 issues,
@@ -4520,12 +4484,12 @@ public partial class ValidationService
                 "Сопротивление воплощению (incarnation_resistance) не может создавать или усиливать контроль игрока; свежий контроль создается только binding/force_binding или валидным counter против существующего контроля.",
                 "afterlife_conflict_incarnation_resistance_creates_fresh_control",
                 "no fresh player control from incarnation_resistance",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
 
         if (ConflictTokenEquals(operationType, "incarnation_resistance") &&
             !IsSuccessfulArtOutcome(outcome) &&
-            ControlStateChangedSemantically(before["controlState"], after["controlState"]))
+            AfterlifeControlStateRules.ChangedSemantically(before["controlState"], after["controlState"]))
         {
             AddSpiritualArtRuleIssue(
                 issues,
@@ -4533,7 +4497,7 @@ public partial class ValidationService
                 "Неуспешное сопротивление воплощению (incarnation_resistance) не может ослаблять, снимать или переписывать controlState.",
                 "afterlife_conflict_incarnation_resistance_control_delta_on_failed_outcome",
                 "controlState unchanged on blocked/countered/setback incarnation_resistance outcomes",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
 
         ValidateControlSourceOperationMatchesExchange(exchange, before, after, operationType, outcome, context, issues);
@@ -4816,7 +4780,7 @@ public partial class ValidationService
                 $"{beforePosition}->{afterPosition}");
         }
 
-        if (ControlStateChangedSemantically(before["controlState"], after["controlState"]) &&
+        if (AfterlifeControlStateRules.ChangedSemantically(before["controlState"], after["controlState"]) &&
             !GuardSetbackRecordsIncomingControl(exchange, before, after, outcome))
         {
             AddSpiritualArtRuleIssue(
@@ -4825,7 +4789,7 @@ public partial class ValidationService
                 "Защита (guard) может предотвратить новый входящий контроль, но не создает, не снимает и не меняет действующий controlState.",
                 "afterlife_conflict_guard_changes_control",
                 "controlState semantically unchanged for guard",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
     }
 
@@ -4838,14 +4802,14 @@ public partial class ValidationService
         if (!ConflictTokenEquals(outcome, "setback") ||
             exchange["incomingAction"] is not JsonObject incomingAction ||
             !IncomingActionIsControlOperation(incomingAction) ||
-            !TryGetControlSnapshot(after, out var afterControl) ||
+            !AfterlifeControlStateRules.TryGetSnapshot(after, out var afterControl) ||
             afterControl.Rank <= 0 ||
             !string.Equals(afterControl.ControllerSide, "opposition", StringComparison.OrdinalIgnoreCase))
         {
             return false;
         }
 
-        if (TryGetControlSnapshot(before, out var beforeControl))
+        if (AfterlifeControlStateRules.TryGetSnapshot(before, out var beforeControl))
         {
             if (beforeControl.Rank > 0)
             {
@@ -4872,8 +4836,8 @@ public partial class ValidationService
         string context,
         List<ValidationIssue> issues)
     {
-        if (!ControlStateChangedSemantically(before["controlState"], after["controlState"]) ||
-            !TryGetControlSnapshot(after, out var afterControl) ||
+        if (!AfterlifeControlStateRules.ChangedSemantically(before["controlState"], after["controlState"]) ||
+            !AfterlifeControlStateRules.TryGetSnapshot(after, out var afterControl) ||
             afterControl.Rank <= 0)
         {
             return;
@@ -4904,8 +4868,8 @@ public partial class ValidationService
         string operationType)
     {
         if (!ConflictTokenEquals(operationType, "incarnation_resistance") ||
-            !TryGetControlSnapshot(before, out var beforeControl) ||
-            !TryGetControlSnapshot(after, out var afterControl) ||
+            !AfterlifeControlStateRules.TryGetSnapshot(before, out var beforeControl) ||
+            !AfterlifeControlStateRules.TryGetSnapshot(after, out var afterControl) ||
             beforeControl.Rank <= 0 ||
             afterControl.Rank <= 0 ||
             afterControl.Rank >= beforeControl.Rank ||
@@ -4957,7 +4921,7 @@ public partial class ValidationService
                 "no counter downside");
         }
 
-        if (CounterAdvancesPlayerControl(before, after))
+        if (AfterlifeControlStateRules.CounterAdvancesPlayerControl(before, after))
         {
             AddSpiritualArtRuleIssue(
                 issues,
@@ -4965,7 +4929,7 @@ public partial class ValidationService
                 "Контрприём (counter) не может создавать или усиливать контроль игрока; новый/усиленный controlState создаётся через binding/force_binding.",
                 "afterlife_conflict_counter_creates_fresh_control",
                 "counter may weaken/reverse existing opposition control, not create or strengthen player control",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
     }
 
@@ -5002,7 +4966,7 @@ public partial class ValidationService
                 $"{beforeOppositionStrain}->{afterOppositionStrain}");
         }
 
-        if (ControlStateChangedSemantically(before["controlState"], after["controlState"]))
+        if (AfterlifeControlStateRules.ChangedSemantically(before["controlState"], after["controlState"]))
         {
             AddSpiritualArtRuleIssue(
                 issues,
@@ -5010,7 +4974,7 @@ public partial class ValidationService
                 "Манёвр (maneuver) меняет позицию и не может создавать, снимать или ослаблять controlState.",
                 "afterlife_conflict_maneuver_changes_control",
                 "controlState unchanged for maneuver",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
 
         if (IsSuccessfulArtOutcome(outcome) &&
@@ -5028,7 +4992,7 @@ public partial class ValidationService
         }
 
         if (IsSuccessfulArtOutcome(outcome) &&
-            HasActiveOppositionControl(before) &&
+            AfterlifeControlStateRules.HasActiveOpposition(before) &&
             TryGetPositionRank(before["conflictPosition"], out var beforePositionUnderControl) &&
             TryGetPositionRank(after["conflictPosition"], out var afterPositionUnderControl) &&
             afterPositionUnderControl > beforePositionUnderControl)
@@ -5039,7 +5003,7 @@ public partial class ValidationService
                 "Манёвр (maneuver) не может свободно улучшать позицию, пока игрок находится под активным контролем противника.",
                 "afterlife_conflict_maneuver_blocked_by_control",
                 "remove/weaken control first via break_binding, valid counter, incarnation_resistance, negotiate, or surrender",
-                DescribeControlTransition(before, after));
+                AfterlifeControlStateRules.DescribeTransition(before, after));
         }
     }
 
@@ -5092,7 +5056,7 @@ public partial class ValidationService
             ConflictNodeStringEquals(root, "force_binding", "operationType", "finalOperationType") ||
             ConflictNodeStringEquals(root, "force_incarnation", "operationType", "finalOperationType") ||
             ConflictNodeStringEquals(root, "guardian_forced", "source", "reason", "consequence") ||
-            HasActiveControlState(root) ||
+            AfterlifeControlStateRules.HasActive(root) ||
             root.ContainsKey("bindingState") ||
             root.ContainsKey("bindingId") ||
             root.ContainsKey("activeBinding") ||
@@ -5105,22 +5069,10 @@ public partial class ValidationService
         roots.Any(root =>
             ConflictNodeStringEquals(root, "force_incarnation", "operationType", "finalOperationType") ||
             ConflictNodeStringEquals(root, "guardian_forced", "source", "reason", "consequence") ||
-            HasForcedIncarnationControlState(root) ||
+            AfterlifeControlStateRules.HasForcedIncarnationControl(root) ||
             root.ContainsKey("forceIncarnation") ||
             root.ContainsKey("forcedIncarnation") ||
             root["incomingAction"] is JsonObject incoming && HasForcedIncarnationContext(incoming));
-
-    private static bool HasForcedIncarnationControlState(JsonObject root)
-    {
-        if (!TryGetControlSnapshot(root, out var control) ||
-            control.Rank <= 0 ||
-            root["controlState"] is not JsonObject controlState)
-        {
-            return false;
-        }
-
-        return ConflictNodeStringEquals(controlState, "force_incarnation", "sourceOperation", "operationType", "finalOperationType");
-    }
 
     private static bool HasChampionDuelContext(params JsonObject[] roots) =>
         roots.Any(root =>
@@ -5156,7 +5108,7 @@ public partial class ValidationService
             return true;
         }
 
-        if (HasControlCounterPayoff(before, after))
+        if (AfterlifeControlStateRules.HasControlCounterPayoff(before, after))
             return true;
 
         return false;
@@ -5216,12 +5168,12 @@ public partial class ValidationService
         if (!IsSuccessfulArtOutcome(outcome) ||
             ConflictTokenEquals(operationType, "break_binding", "incarnation_resistance", "counter", "withdraw", "surrender", "negotiate") ||
             before["controlState"] is not JsonObject beforeControl ||
-            !HasActiveOppositionControl(before))
+            !AfterlifeControlStateRules.HasActiveOpposition(before))
         {
             return;
         }
 
-        var restrictedOperations = GetControlRestrictionSet(beforeControl);
+        var restrictedOperations = AfterlifeControlStateRules.GetRestrictionSet(beforeControl);
         if (!restrictedOperations.Contains(operationType))
             return;
 
@@ -5378,7 +5330,7 @@ public partial class ValidationService
         {
             if (string.Equals(field, "controlState", StringComparison.OrdinalIgnoreCase))
             {
-                if (ControlStateChangedSemantically(before[field], after[field]))
+                if (AfterlifeControlStateRules.ChangedSemantically(before[field], after[field]))
                     return true;
 
                 continue;
@@ -5413,68 +5365,10 @@ public partial class ValidationService
     private static JsonObject CloneSnapshotForSemanticDeltaComparison(JsonObject snapshot)
     {
         var clone = snapshot.DeepClone().AsObject();
-        if (IsNoActiveControlSnapshot(clone["controlState"]))
+        if (AfterlifeControlStateRules.IsNoActiveSnapshot(clone["controlState"]))
             clone.Remove("controlState");
 
         return clone;
-    }
-
-    private static bool ControlStateChangedSemantically(JsonNode? before, JsonNode? after)
-    {
-        if (IsNoActiveControlSnapshot(before) && IsNoActiveControlSnapshot(after))
-            return false;
-
-        return !JsonNode.DeepEquals(before, after);
-    }
-
-    private static bool ControlAuditSnapshotMatchesPrior(JsonNode? priorControlState, JsonNode? beforeControlState)
-    {
-        if (IsNoActiveControlSnapshot(priorControlState) && IsNoActiveControlSnapshot(beforeControlState))
-            return true;
-
-        if (priorControlState is not JsonObject priorControl ||
-            beforeControlState is not JsonObject beforeControl)
-        {
-            return false;
-        }
-
-        return JsonNode.DeepEquals(
-            NormalizeControlAuditSnapshotForComparison(priorControl),
-            NormalizeControlAuditSnapshotForComparison(beforeControl));
-    }
-
-    private static JsonNode? NormalizeControlAuditSnapshotForComparison(JsonNode? controlState)
-    {
-        return IsNoActiveControlSnapshot(controlState)
-            ? null
-            : controlState?.DeepClone();
-    }
-
-    private static string DescribeControlNode(JsonNode? node)
-    {
-        if (IsNoActiveControlSnapshot(node))
-            return "missing/none";
-
-        if (node is not JsonObject control)
-            return node?.GetType().Name ?? "missing";
-
-        var side = AfterlifeSpiritualConflictState.GetNodeString(control["controllerSide"]);
-        var level = AfterlifeSpiritualConflictState.GetNodeString(control["level"]);
-        var controlId = AfterlifeSpiritualConflictState.GetNodeString(control["controlId"]);
-        var sourceOperation = AfterlifeSpiritualConflictState.GetNodeString(control["sourceOperation"]);
-        return $"{side}:{level}:{controlId}:{sourceOperation}";
-    }
-
-    private static bool IsNoActiveControlSnapshot(JsonNode? node)
-    {
-        if (node == null)
-            return true;
-
-        if (node is not JsonObject control)
-            return false;
-
-        var level = AfterlifeSpiritualConflictState.GetNodeString(control["level"]);
-        return string.Equals(level, "none", StringComparison.OrdinalIgnoreCase);
     }
 
     private static void ValidateControlStateShape(JsonNode? node, string context, List<ValidationIssue> issues, bool required)
@@ -5532,7 +5426,7 @@ public partial class ValidationService
             return;
         }
 
-        if (!TryGetControlLevelRank(level, out var rank) || rank == 0)
+        if (!AfterlifeControlStateRules.TryGetLevelRank(level, out var rank) || rank == 0)
             return;
 
         var controllerSide = AfterlifeSpiritualConflictState.GetNodeString(control["controllerSide"]);
@@ -5562,7 +5456,7 @@ public partial class ValidationService
 
         var sourceOperation = AfterlifeSpiritualConflictState.GetNodeString(control["sourceOperation"]);
         if (string.IsNullOrWhiteSpace(sourceOperation) ||
-            !AfterlifeControlSourceOperations.Contains(sourceOperation))
+            !AfterlifeControlStateRules.SourceOperations.Contains(sourceOperation))
         {
             AddControlStateIssue(
                 issues,
@@ -5571,7 +5465,7 @@ public partial class ValidationService
                 string.IsNullOrWhiteSpace(sourceOperation)
                     ? "afterlife_conflict_control_state_missing_source_operation"
                     : "afterlife_conflict_control_state_invalid_source_operation",
-                string.Join("/", AfterlifeControlSourceOperations.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                string.Join("/", AfterlifeControlStateRules.SourceOperations.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
                 string.IsNullOrWhiteSpace(sourceOperation) ? "missing" : sourceOperation);
         }
 
@@ -5636,201 +5530,6 @@ public partial class ValidationService
             expected: expected,
             actual: actual));
     }
-
-    private static bool TryGetPlayerControlProgression(
-        JsonObject before,
-        JsonObject after,
-        out int beforePlayerRank,
-        out int afterPlayerRank)
-    {
-        beforePlayerRank = TryGetControlSnapshot(before, out var beforeControl) &&
-                           string.Equals(beforeControl.ControllerSide, "player", StringComparison.OrdinalIgnoreCase)
-            ? beforeControl.Rank
-            : 0;
-
-        if (TryGetControlSnapshot(after, out var afterControl) &&
-            string.Equals(afterControl.ControllerSide, "player", StringComparison.OrdinalIgnoreCase))
-        {
-            afterPlayerRank = afterControl.Rank;
-            return afterPlayerRank > beforePlayerRank;
-        }
-
-        afterPlayerRank = 0;
-        return false;
-    }
-
-    private static bool HasPlayerControlDelta(JsonObject before, JsonObject after)
-    {
-        var beforeHasPlayerControl = TryGetControlSnapshot(before, out var beforeControl) &&
-                                     beforeControl.Rank > 0 &&
-                                     string.Equals(beforeControl.ControllerSide, "player", StringComparison.OrdinalIgnoreCase);
-        var afterHasPlayerControl = TryGetControlSnapshot(after, out var afterControl) &&
-                                    afterControl.Rank > 0 &&
-                                    string.Equals(afterControl.ControllerSide, "player", StringComparison.OrdinalIgnoreCase);
-        return (beforeHasPlayerControl || afterHasPlayerControl) &&
-               ControlStateChangedSemantically(before["controlState"], after["controlState"]);
-    }
-
-    private static bool HasControlCounterPayoff(JsonObject before, JsonObject after) =>
-        HasAntiControlDelta(before, after);
-
-    private static bool CounterAdvancesPlayerControl(JsonObject before, JsonObject after)
-    {
-        if (!TryGetControlSnapshot(after, out var afterControl) ||
-            afterControl.Rank <= 0 ||
-            !string.Equals(afterControl.ControllerSide, "player", StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        if (!TryGetControlSnapshot(before, out var beforeControl) ||
-            beforeControl.Rank <= 0)
-        {
-            return true;
-        }
-
-        if (string.Equals(beforeControl.ControllerSide, "opposition", StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        return string.Equals(beforeControl.ControllerSide, "player", StringComparison.OrdinalIgnoreCase) &&
-               afterControl.Rank > beforeControl.Rank;
-    }
-
-    private static bool HasAntiControlDelta(JsonObject before, JsonObject after)
-    {
-        if (TryGetControlSnapshot(before, out var beforeControl) &&
-            beforeControl.Rank > 0 &&
-            string.Equals(beforeControl.ControllerSide, "opposition", StringComparison.OrdinalIgnoreCase))
-        {
-            var beforeControlNode = (JsonObject?)before["controlState"];
-            if (!TryGetControlSnapshot(after, out var afterControl) || afterControl.Rank == 0)
-                return true;
-
-            if (string.Equals(afterControl.ControllerSide, "opposition", StringComparison.OrdinalIgnoreCase) &&
-                afterControl.Rank < beforeControl.Rank)
-            {
-                return true;
-            }
-
-            if (string.Equals(afterControl.ControllerSide, "opposition", StringComparison.OrdinalIgnoreCase) &&
-                afterControl.Rank == beforeControl.Rank &&
-                beforeControlNode is not null &&
-                after["controlState"] is JsonObject afterControlNode &&
-                ControlRestrictionsStrictlyReduced(beforeControlNode, afterControlNode))
-            {
-                return true;
-            }
-
-            if (string.Equals(afterControl.ControllerSide, "player", StringComparison.OrdinalIgnoreCase) &&
-                afterControl.Rank > 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        foreach (var field in new[] { "bindingState", "bindingId", "activeBinding", "forcedHandoff", "forceIncarnation", "forcedIncarnation" })
-        {
-            if (before.ContainsKey(field) && !JsonNode.DeepEquals(before[field], after[field]))
-                return true;
-        }
-
-        return false;
-    }
-
-    private static bool ControlRestrictionsStrictlyReduced(JsonObject beforeControl, JsonObject afterControl)
-    {
-        var beforeRestrictions = GetControlRestrictionSet(beforeControl);
-        var afterRestrictions = GetControlRestrictionSet(afterControl);
-        if (beforeRestrictions.Count == 0 ||
-            afterRestrictions.Count == 0 ||
-            afterRestrictions.Count >= beforeRestrictions.Count)
-        {
-            return false;
-        }
-
-        return afterRestrictions.All(beforeRestrictions.Contains);
-    }
-
-    private static HashSet<string> GetControlRestrictionSet(JsonObject control)
-    {
-        var restrictions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        if (control["restrictedOperations"] is not JsonArray restrictedOperations)
-            return restrictions;
-
-        foreach (var item in restrictedOperations)
-        {
-            var operation = AfterlifeSpiritualConflictState.GetNodeString(item);
-            if (!string.IsNullOrWhiteSpace(operation))
-                restrictions.Add(operation.Trim());
-        }
-
-        return restrictions;
-    }
-
-    private static bool HasActiveOppositionControl(JsonObject root) =>
-        TryGetControlSnapshot(root, out var control) &&
-        control.Rank > 0 &&
-        string.Equals(control.ControllerSide, "opposition", StringComparison.OrdinalIgnoreCase);
-
-    private static bool HasActiveControlState(JsonObject root) =>
-        TryGetControlSnapshot(root, out var control) && control.Rank > 0;
-
-    private static bool HasActiveControlState(JsonNode? node)
-    {
-        if (node is not JsonObject control)
-            return false;
-
-        var level = AfterlifeSpiritualConflictState.GetNodeString(control["level"]);
-        return TryGetControlLevelRank(level, out var rank) && rank > 0;
-    }
-
-    private static bool TryGetControlSnapshot(JsonObject root, out ControlSnapshot snapshot)
-    {
-        snapshot = default;
-        if (root["controlState"] is not JsonObject control)
-            return false;
-
-        var level = AfterlifeSpiritualConflictState.GetNodeString(control["level"]);
-        if (!TryGetControlLevelRank(level, out var rank))
-            return false;
-
-        var side = AfterlifeSpiritualConflictState.GetNodeString(control["controllerSide"]);
-        snapshot = new ControlSnapshot(rank, side);
-        return true;
-    }
-
-    private static bool TryGetControlLevelRank(string? level, out int rank)
-    {
-        rank = 0;
-        if (string.IsNullOrWhiteSpace(level))
-            return false;
-
-        rank = level.Trim().ToLowerInvariant() switch
-        {
-            "none" => 0,
-            "hindered" => 1,
-            "bound" => 2,
-            "locked" => 3,
-            _ => 0
-        };
-        return AfterlifeSpiritualConflictState.ControlLevels.Contains(level);
-    }
-
-    private static string DescribeControlTransition(JsonObject before, JsonObject after) =>
-        $"{DescribeControlState(before)} -> {DescribeControlState(after)}";
-
-    private static string DescribeControlState(JsonObject root)
-    {
-        if (!TryGetControlSnapshot(root, out var control))
-            return "missing/none";
-
-        var side = string.IsNullOrWhiteSpace(control.ControllerSide) ? "none" : control.ControllerSide;
-        return $"{side}:{control.Rank}";
-    }
-
-    private readonly record struct ControlSnapshot(int Rank, string? ControllerSide);
 
     private static bool TryGetPositionRank(JsonNode? node, out int rank)
     {
