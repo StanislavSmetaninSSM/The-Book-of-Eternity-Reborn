@@ -19,6 +19,8 @@ public partial class CanonicalStateNormalizer
         else
             return;
 
+        ShiningAbodeState.ApplyFactionPoliticalUpdateSurfaces(result);
+
         JsonObject? residentRoot = null;
         if (await ReadNodeAsync(GuardianAbodeResidentState.StatePath) is JsonObject currentResidentObject)
         {
@@ -100,6 +102,9 @@ public partial class CanonicalStateNormalizer
             "tradeInventoryReceipts" => "requestId",
             "leadershipReceipts" => "requestId",
             "leadershipHistory" => "requestId",
+            ShiningAbodeState.FactionChronicleProperty => "entryId",
+            ShiningAbodeState.FactionInfluenceProperty => "zoneId",
+            ShiningAbodeState.FactionResourceLedgerProperty => "entryId",
             _ => string.Empty
         };
 

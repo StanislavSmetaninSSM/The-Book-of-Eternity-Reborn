@@ -299,6 +299,42 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildShiningAbodeMapAsync_UsesFactionTerritorialInfluenceZones()
+    {
+        await SeedShiningAbodeMapAsync();
+
+        var json = await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json");
+        using var doc = System.Text.Json.JsonDocument.Parse(json!);
+        var root = System.Text.Json.Nodes.JsonNode.Parse(doc.RootElement.GetRawText())!.AsObject();
+        var faction = root["factions"]!.AsArray().OfType<System.Text.Json.Nodes.JsonObject>()
+            .Single(item => item["factionId"]?.GetValue<string>() == "faction_lanterns");
+        faction[ShiningAbodeState.FactionInfluenceProperty] = new System.Text.Json.Nodes.JsonArray(new System.Text.Json.Nodes.JsonObject
+        {
+            ["zoneId"] = "zone_archive",
+            ["scopeType"] = "hall",
+            ["scopeId"] = "hall_archive",
+            ["displayName"] = "Архивная дуга",
+            ["controlLevel"] = 81,
+            ["influenceValue"] = 81,
+            ["publicStatus"] = "dominant",
+            ["updatedAtTurn"] = 99
+        });
+        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", root.ToJsonString());
+
+        var map = await LocalMapViewService.BuildShiningAbodeMapAsync(_fs);
+
+        var archiveHall = Assert.Single(map.Nodes, node => node.Id == "hall_archive");
+        Assert.Equal("faction_lanterns", archiveHall.OwnerFactionId);
+        Assert.Equal(81, archiveHall.Influence["faction_lanterns"]);
+        Assert.Contains(archiveHall.Details, static item =>
+            item.Key == "Контроль фракций" &&
+            item.Value.Contains("Архивная дуга", StringComparison.Ordinal));
+        Assert.Contains(map.Regions, static region =>
+            region.OwnerFactionId == "faction_lanterns" &&
+            region.NodeIds.Contains("hall_archive", StringComparer.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task BuildShiningAbodeMapAsync_CreatesFallbackHallForUnplacedFactions()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """

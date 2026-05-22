@@ -334,6 +334,7 @@ public static class LocalMapViewService
 
             ApplyShiningFactionInfluenceToHall(hall, factionId, factionName, strength);
             AddShiningLink(links, hallId, factionId, "политическое влияние", "known");
+            AddShiningFactionTerritorialInfluence(nodes, links, faction, factionId, factionName);
 
             AddDetail(factionNode, "Фракция", factionName);
             AddDetail(factionNode, "Зал", hall.Label);
@@ -346,6 +347,44 @@ public static class LocalMapViewService
 
         foreach (var hall in nodes.Values.Where(static node => string.Equals(node.Type, "shining_hall", StringComparison.OrdinalIgnoreCase)))
             AddPoliticalDetails(hall);
+    }
+
+    private static void AddShiningFactionTerritorialInfluence(
+        Dictionary<string, NodeDraft> nodes,
+        Dictionary<string, MapLinkDto> links,
+        JsonElement faction,
+        string factionId,
+        string factionName)
+    {
+        if (!faction.TryGetProperty(ShiningAbodeState.FactionInfluenceProperty, out var zones) ||
+            zones.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        foreach (var zone in zones.EnumerateArray())
+        {
+            if (zone.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var scopeId = GetString(zone, "scopeId", "hallId", "locationId", "zoneId");
+            if (string.IsNullOrWhiteSpace(scopeId))
+                continue;
+
+            var scopeType = GetString(zone, "scopeType", "type");
+            var label = GetString(zone, "displayName", "zoneName", "name", "scopeId");
+            var controlLevel = GetInt(zone, "controlLevel", "influenceValue");
+            var target = IsShiningHallScope(scopeType)
+                ? EnsureShiningHallNode(nodes, scopeId, string.IsNullOrWhiteSpace(label) ? scopeId : label)
+                : GetOrCreateNode(nodes, scopeId);
+            target.Layer = ShiningAbodeLayerId;
+            if (string.IsNullOrWhiteSpace(target.Type))
+                target.Type = string.IsNullOrWhiteSpace(scopeType) ? "shining_influence_zone" : scopeType;
+            target.Label = Prefer(target.Label, label, scopeId);
+
+            ApplyShiningFactionZoneInfluence(target, factionId, factionName, label, controlLevel);
+            AddShiningLink(links, factionId, scopeId, "зона влияния", GetString(zone, "publicStatus", "state", "known"));
+        }
     }
 
     private static NodeDraft EnsureShiningHallNode(Dictionary<string, NodeDraft> nodes, string hallId, string label)
@@ -380,6 +419,46 @@ public static class LocalMapViewService
             hall.OwnerFactionName = previousBest.FactionName;
         }
     }
+
+    private static void ApplyShiningFactionZoneInfluence(
+        NodeDraft node,
+        string factionId,
+        string factionName,
+        string zoneLabel,
+        int controlLevel)
+    {
+        if (!string.IsNullOrWhiteSpace(factionId))
+        {
+            node.Influence[factionId] = node.Influence.TryGetValue(factionId, out var previous)
+                ? Math.Max(previous, controlLevel)
+                : controlLevel;
+        }
+
+        node.FactionControls.Add(new FactionControlDraft
+        {
+            FactionId = factionId,
+            FactionName = factionName,
+            ControlType = string.IsNullOrWhiteSpace(zoneLabel) ? "Зона влияния" : zoneLabel,
+            ControlLevel = controlLevel
+        });
+
+        var best = node.FactionControls
+            .Where(static control => !string.IsNullOrWhiteSpace(control.FactionId) || !string.IsNullOrWhiteSpace(control.FactionName))
+            .OrderByDescending(static control => control.ControlLevel)
+            .FirstOrDefault();
+        if (best != null)
+        {
+            node.OwnerFactionId = best.FactionId;
+            node.OwnerFactionName = best.FactionName;
+        }
+    }
+
+    private static bool IsShiningHallScope(string scopeType) =>
+        string.IsNullOrWhiteSpace(scopeType) ||
+        string.Equals(scopeType, "hall", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(scopeType, "shining_hall", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(scopeType, "district", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(scopeType, "location", StringComparison.OrdinalIgnoreCase);
 
     private static string GetShiningFactionName(JsonElement faction)
     {

@@ -414,6 +414,18 @@ public class GameResponse
     [JsonPropertyName("afterlifeThreatsToRemove")]
     public JsonElement[]? AfterlifeThreatsToRemove { get; set; }
 
+    [JsonPropertyName("shiningFactionChronicleUpdates")]
+    public JsonElement[]? ShiningFactionChronicleUpdates { get; set; }
+
+    [JsonPropertyName("shiningFactionInfluenceUpdates")]
+    public JsonElement[]? ShiningFactionInfluenceUpdates { get; set; }
+
+    [JsonPropertyName("shiningFactionStrategicMemoryUpdates")]
+    public JsonElement[]? ShiningFactionStrategicMemoryUpdates { get; set; }
+
+    [JsonPropertyName("shiningFactionResourceLedgerUpdates")]
+    public JsonElement[]? ShiningFactionResourceLedgerUpdates { get; set; }
+
     [JsonPropertyName("UpdateGuardians")]
     public JsonElement[]? UpdateGuardians { get; set; }
 

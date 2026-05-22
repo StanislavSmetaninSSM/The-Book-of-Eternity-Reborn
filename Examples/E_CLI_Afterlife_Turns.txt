@@ -2219,6 +2219,131 @@ Radiant actor registry patch when a radiant actor becomes head:
 }
 ```
 
+9D. Shining faction political memory and map influence (`shining_faction_political_memory_v1`):
+
+Use these surfaces during ordinary active Shining Abode faction turns when the GM needs persistent faction memory, territorial influence for the map, strategic planning notes, or resource accounting. They target `game_state/meta/shining_abode_state.json` and normalize into existing or same-turn-created `factions[]`. Do not use Mortal `factionChronicleUpdates`, `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, or `worldMapUpdates`.
+
+Accepted response fragment:
+
+```json
+{
+  "shiningFactionChronicleUpdates": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "entryId": "dawn_chorus_evt_304_border_oath",
+      "turnNumber": 304,
+      "eventType": "territory_shift",
+      "summary": "Рассветный Хор закрепил право голоса в Архивной дуге после публичной клятвы.",
+      "visibility": "public",
+      "consequences": [
+        "Архивная дуга признаёт влияние Рассветного Хора.",
+        "Соседние фракции получили повод ответить политически."
+      ]
+    }
+  ],
+  "shiningFactionInfluenceUpdates": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "zoneId": "zone_archive_arc_dawn_chorus_304",
+      "scopeType": "hall",
+      "scopeId": "hall_archive",
+      "displayName": "Архивная дуга",
+      "controlLevel": 72,
+      "influenceValue": 84,
+      "publicStatus": "contested_control",
+      "updatedAtTurn": 304,
+      "sourceEntryId": "dawn_chorus_evt_304_border_oath"
+    }
+  ],
+  "shiningFactionStrategicMemoryUpdates": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "summary": "Фракция делает ставку на архивную легитимность и союз с резидентами-писцами.",
+      "lastUpdatedTurn": 304,
+      "recentCampaigns": [
+        "Закрепить Архивную дугу без прямой войны."
+      ],
+      "losses": [],
+      "alliances": [
+        "Писцы Архивной дуги"
+      ],
+      "enemies": [
+        "Серебряный Хор"
+      ]
+    }
+  ],
+  "shiningFactionResourceLedgerUpdates": [
+    {
+      "factionId": "faction_dawn_chorus",
+      "entryId": "dawn_chorus_ledger_304_sparks",
+      "turnNumber": 304,
+      "resourceType": "light_sparks",
+      "delta": -3,
+      "balanceAfter": 17,
+      "reason": "Световые Искры потрачены на закрепление права голоса в Архивной дуге."
+    }
+  ]
+}
+```
+
+Canonical normalized faction fragment:
+
+```json
+{
+  "factionId": "faction_dawn_chorus",
+  "chronicle": [
+    {
+      "entryId": "dawn_chorus_evt_304_border_oath",
+      "turnNumber": 304,
+      "eventType": "territory_shift",
+      "summary": "Рассветный Хор закрепил право голоса в Архивной дуге после публичной клятвы.",
+      "visibility": "public",
+      "consequences": [
+        "Архивная дуга признаёт влияние Рассветного Хора.",
+        "Соседние фракции получили повод ответить политически."
+      ]
+    }
+  ],
+  "territorialInfluence": [
+    {
+      "zoneId": "zone_archive_arc_dawn_chorus_304",
+      "scopeType": "hall",
+      "scopeId": "hall_archive",
+      "displayName": "Архивная дуга",
+      "controlLevel": 72,
+      "influenceValue": 84,
+      "publicStatus": "contested_control",
+      "updatedAtTurn": 304,
+      "sourceEntryId": "dawn_chorus_evt_304_border_oath"
+    }
+  ],
+  "strategicMemory": {
+    "summary": "Фракция делает ставку на архивную легитимность и союз с резидентами-писцами.",
+    "lastUpdatedTurn": 304,
+    "recentCampaigns": [
+      "Закрепить Архивную дугу без прямой войны."
+    ],
+    "losses": [],
+    "alliances": [
+      "Писцы Архивной дуги"
+    ],
+    "enemies": [
+      "Серебряный Хор"
+    ]
+  },
+  "resourceLedger": [
+    {
+      "entryId": "dawn_chorus_ledger_304_sparks",
+      "turnNumber": 304,
+      "resourceType": "light_sparks",
+      "delta": -3,
+      "balanceAfter": 17,
+      "reason": "Световые Искры потрачены на закрепление права голоса в Архивной дуге."
+    }
+  ]
+}
+```
+
 Forbidden Shining political shortcuts:
 - `factionDataChanges`.
 - ad-hoc `strength`, `tradeTier`, or `shiningAlignment` instead of canonical Shining fields.

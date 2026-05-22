@@ -1463,7 +1463,7 @@
     {
       "exampleNumber": 9,
       "runtimeScenarioIds": [],
-      "exemptionReason": "The Shining founding/realignment/leadership example is a set of state-patch fragments; strict Shining schemas, shining_closure composite diff rules, and all action names are covered by documentation coverage tests."
+      "exemptionReason": "The Shining founding/realignment/leadership example is a set of state-patch fragments; strict Shining schemas, shining_closure composite diff rules, and all action names are covered by documentation coverage tests. It also documents shining_faction_political_memory_v1: response surfaces shiningFactionChronicleUpdates, shiningFactionInfluenceUpdates, shiningFactionStrategicMemoryUpdates, and shiningFactionResourceLedgerUpdates normalize into faction chronicle, territorialInfluence, strategicMemory, and resourceLedger."
     },
     {
       "exampleNumber": 10,
