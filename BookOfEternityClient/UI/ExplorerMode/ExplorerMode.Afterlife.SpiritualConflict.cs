@@ -233,8 +233,10 @@ public partial class ExplorerMode
             "  • Формула: итог игрока (playerTotal) = d20 игрока + модификаторы; итог противника (oppositionTotal) = d20 противника + модификаторы; разница (margin) = playerTotal - oppositionTotal.",
             "  • Разница (margin) >= 8 — решительный успех игрока (decisive_player_success); 3..7 — успех игрока (player_success); -2..2 — смешанный или нулевой эффект (mixed_or_no_effect); -7..-3 — успех противника (opposition_success); <= -8 — решительный успех противника (decisive_opposition_success).",
             "  • Модификаторы идут от рангов Просветления/Сияния, уровней духовных искусств, силы ведущего бойца, поддержки, Воплощения Света и контекста сцены.",
-            "  • Преимущество и Помеха записываются в rollMode: Преимущество выбирает лучший d20, Помеха выбирает худший d20, выбранный куб помечается selection=selected, отброшенные — selection=discarded.",
-            "  • Встречные Преимущество и Помеха гасятся: если у стороны есть оба источника, используется обычный один d20; крит считается только по выбранному кубу.",
+            "  • Преимущество и Помеха бывают двух уровней: Преимущество — 2d20 и лучший результат, Великое Преимущество — 3d20 и лучший результат; Помеха — 2d20 и худший результат, Тяжкая Помеха — 3d20 и худший результат.",
+            "  • Встречные источники гасятся ступенчато: Великое Преимущество против обычной Помехи становится обычным Преимуществом, Великое Преимущество против Тяжкой Помехи становится обычным броском. Два обычных источника одного направления не превращаются в великий/тяжкий уровень.",
+            "  • В журнале выбранный куб помечается как выбранный, отброшенные — как отброшенные; крит считается только по выбранному кубу.",
+            "  • Успешная защита против прямого давления дает одноразовое темповое окно: Преимущество на следующее подходящее духовное действие. Оно не применяется к восстановлению ОД, отступлению, сдаче или переговорам.",
             "",
             "[bold]Честные криты[/]",
             "  • Благоприятный крит для игрока: натуральная 20 игрока или натуральная 1 противника. Если разница (margin) дала результат хуже обычного успеха, итог поднимается только до успеха игрока (player_success).",
@@ -1892,7 +1894,9 @@ public partial class ExplorerMode
         var label = effectiveMode switch
         {
             "advantage" => "Преимущество",
+            "great_advantage" => "Великое Преимущество",
             "disadvantage" => "Помеха",
+            "dire_disadvantage" => "Тяжкая Помеха",
             "normal" when advantageSources.Count > 0 && disadvantageSources.Count > 0 => "Преимущество и Помеха погашены",
             _ => string.Empty
         };
@@ -1912,11 +1916,38 @@ public partial class ExplorerMode
         if (sideMode[propertyName] is not JsonArray sources)
             return new List<string>();
 
-        return sources
-            .Select(AfterlifeSpiritualConflictState.GetNodeString)
-            .Where(source => !string.IsNullOrWhiteSpace(source))
-            .Select(source => source!)
-            .ToList();
+        var result = new List<string>();
+        foreach (var source in sources)
+        {
+            if (source is JsonObject sourceObject)
+            {
+                var summary =
+                    AfterlifeSpiritualConflictState.GetNodeString(sourceObject["summary"]) ??
+                    AfterlifeSpiritualConflictState.GetNodeString(sourceObject["source"]) ??
+                    AfterlifeSpiritualConflictState.GetNodeString(sourceObject["sourceId"]) ??
+                    AfterlifeSpiritualConflictState.GetNodeString(sourceObject["id"]);
+                if (string.IsNullOrWhiteSpace(summary))
+                    continue;
+
+                var level = NormalizeKey(AfterlifeSpiritualConflictState.GetNodeString(sourceObject["level"]));
+                var suffix = level switch
+                {
+                    "great_advantage" => " — Великое Преимущество",
+                    "dire_disadvantage" => " — Тяжкая Помеха",
+                    "advantage" => " — Преимущество",
+                    "disadvantage" => " — Помеха",
+                    _ => string.Empty
+                };
+                result.Add(summary + suffix);
+                continue;
+            }
+
+            var sourceText = AfterlifeSpiritualConflictState.GetNodeString(source);
+            if (!string.IsNullOrWhiteSpace(sourceText))
+                result.Add(sourceText!);
+        }
+
+        return result;
     }
 
     private static string NormalizeDiceSide(string? side) =>

@@ -49,7 +49,8 @@
       "contractId": "afterlife_spiritual_conflict_advantage_disadvantage_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
-      "responseSurface": "diceAudit.rollMode / diceUsed[].selection"
+      "responseSurface": "diceAudit.rollMode / diceUsed[].selection / tempoAdvantage",
+      "description": "Afterlife spiritual conflict two-level Преимущество/Помеха: effectiveMode normal/advantage/great_advantage/disadvantage/dire_disadvantage, legacy or object roll-mode sources with levels, exact 1/2/3 d20 selection, step cancellation, no same-direction stacking, and guard-created tempoAdvantage consumed by sourceType=guard_tempo_window."
     },
     {
       "contractId": "afterlife_spiritual_conflict_difficulty_audit_v1",

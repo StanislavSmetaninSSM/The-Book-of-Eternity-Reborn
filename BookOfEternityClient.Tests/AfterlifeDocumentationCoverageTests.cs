@@ -2295,9 +2295,17 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("selection", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("Преимущество", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Помеха", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("great_advantage", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("dire_disadvantage", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("Великое Преимущество", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Тяжкая Помеха", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("advantageSources", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("disadvantageSources", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
-        Assert.Contains("Встречные Преимущество и Помеха гасятся", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Step cancellation", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("same-direction sources do not stack", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("tempoAdvantage", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary + uiHelp, StringComparison.Ordinal);
+        Assert.Contains("guard_tempo_window", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
+        Assert.Contains("sourceType", matrix + examples + apiSpec + daemonSpec + taskGuide + glossary, StringComparison.Ordinal);
         Assert.Contains("/spiritual_combat_help", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/духовный_бой", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/spiritual_combat_log", glossary + examples + matrix, StringComparison.OrdinalIgnoreCase);

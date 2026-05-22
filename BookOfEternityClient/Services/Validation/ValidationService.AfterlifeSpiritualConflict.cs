@@ -1268,6 +1268,7 @@ public partial class ValidationService
         ValidateEnumNode(conflict, context, issues, "oppositionSideStrain", AfterlifeSpiritualConflictState.StrainStates, "afterlife_conflict_invalid_opposition_side_strain");
         ValidateEnumNode(conflict, context, issues, "conflictPosition", AfterlifeSpiritualConflictState.ConflictPositions, "afterlife_conflict_invalid_position");
         ValidateControlStateShape(conflict["controlState"], $"{context}.controlState", issues, required: false);
+        ValidateTempoAdvantageShape(conflict["tempoAdvantage"], $"{context}.tempoAdvantage", issues);
         var resolutionState = ValidateEnumNode(conflict, context, issues, "resolutionState", AfterlifeSpiritualConflictState.ResolutionStates, "afterlife_conflict_invalid_resolution_state");
         if (string.Equals(resolutionState, "resolved", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(resolutionState, "repair_cancelled", StringComparison.OrdinalIgnoreCase))
@@ -2798,6 +2799,8 @@ public partial class ValidationService
         {
             ValidateControlStateShape(before["controlState"], $"{context}.before.controlState", issues, required: false);
             ValidateControlStateShape(after["controlState"], $"{context}.after.controlState", issues, required: false);
+            ValidateTempoAdvantageShape(before["tempoAdvantage"], $"{context}.before.tempoAdvantage", issues);
+            ValidateTempoAdvantageShape(after["tempoAdvantage"], $"{context}.after.tempoAdvantage", issues);
             ValidateCurrentExchangeControlSnapshotCompleteness(
                 priorControlState,
                 before,
@@ -4293,6 +4296,8 @@ public partial class ValidationService
         if (ConflictTokenEquals(operationType, "guard"))
             ValidateGuardRule(exchange, before, after, outcome, context, issues);
 
+        ValidateGuardTempoAdvantageRule(exchange, before, after, operationType, outcome, context, issues);
+
         if (ConflictTokenEquals(operationType, "counter") &&
             exchange["incomingAction"] is not JsonObject)
         {
@@ -4791,6 +4796,153 @@ public partial class ValidationService
                 "controlState semantically unchanged for guard",
                 AfterlifeControlStateRules.DescribeTransition(before, after));
         }
+    }
+
+    private static void ValidateGuardTempoAdvantageRule(
+        JsonObject exchange,
+        JsonObject before,
+        JsonObject after,
+        string operationType,
+        string? outcome,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (ConflictTokenEquals(operationType, "guard") &&
+            ConflictTokenEquals(outcome, "success") &&
+            IncomingActionHasOperation(exchange, "pressure", "force_incarnation"))
+        {
+            ValidateSuccessfulGuardGrantsTempoAdvantage(exchange, after, context, issues);
+        }
+
+        if (!IsGuardTempoEligibleOperation(operationType) ||
+            !TryGetAvailablePlayerTempoAdvantage(before, out var beforeTempo))
+        {
+            return;
+        }
+
+        var afterTempoStatus = GetTempoAdvantageStatus(after["tempoAdvantage"]);
+        var consumedOrExpired =
+            ConflictTokenEquals(afterTempoStatus, "consumed", "expired") ||
+            after["tempoAdvantage"] is null;
+        if (!consumedOrExpired)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.tempoAdvantage.status",
+                "Доступное темповое окно защиты должно быть потреблено следующим подходящим духовным действием или явно погашено.",
+                "afterlife_conflict_tempo_advantage_not_consumed",
+                "after.tempoAdvantage.status=consumed|expired or null after eligible operation",
+                after["tempoAdvantage"]?.ToJsonString() ?? "missing");
+            return;
+        }
+
+        if (ConflictTokenEquals(afterTempoStatus, "consumed") &&
+            !DiceAuditConsumesGuardTempoAdvantage(exchange, beforeTempo))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.diceAudit.rollMode.player.advantageSources",
+                "Потребление темпового окна защиты должно быть отражено в rollMode.player.advantageSources[].",
+                "afterlife_conflict_tempo_advantage_missing_roll_mode_source",
+                "advantage source object with sourceType=guard_tempo_window and matching sourceId/advantageId",
+                "missing matching guard tempo source");
+        }
+    }
+
+    private static void ValidateSuccessfulGuardGrantsTempoAdvantage(
+        JsonObject exchange,
+        JsonObject after,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (after["tempoAdvantage"] is not JsonObject tempoAdvantage ||
+            !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["status"]), "available") ||
+            !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["ownerSide"]), "player") ||
+            !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["sourceOperation"]), "guard") ||
+            !ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["level"]), "advantage", "great_advantage"))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.tempoAdvantage",
+                "Успешная защита (guard) против прямого давления должна создать одноразовое темповое окно: Преимущество на следующее подходящее духовное действие.",
+                "afterlife_conflict_guard_missing_tempo_advantage",
+                "after.tempoAdvantage object with ownerSide=player, sourceOperation=guard, status=available, level=advantage|great_advantage",
+                after["tempoAdvantage"]?.ToJsonString() ?? "missing");
+            return;
+        }
+
+        var exchangeId = AfterlifeSpiritualConflictState.GetNodeString(exchange["exchangeId"]);
+        var sourceExchangeId = AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["sourceExchangeId"]);
+        if (!string.IsNullOrWhiteSpace(exchangeId) &&
+            !string.Equals(sourceExchangeId, exchangeId, StringComparison.OrdinalIgnoreCase))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.after.tempoAdvantage.sourceExchangeId",
+                "Темповое окно защиты должно ссылаться на exchangeId защиты, которая его создала.",
+                "afterlife_conflict_guard_tempo_source_exchange_mismatch",
+                exchangeId,
+                string.IsNullOrWhiteSpace(sourceExchangeId) ? "missing" : sourceExchangeId);
+        }
+    }
+
+    private static bool IsGuardTempoEligibleOperation(string? operationType) =>
+        ConflictTokenEquals(
+            operationType,
+            "pressure",
+            "maneuver",
+            "binding",
+            "force_binding",
+            "break_binding",
+            "counter",
+            "incarnation_resistance",
+            "champion_coordination");
+
+    private static bool TryGetAvailablePlayerTempoAdvantage(JsonObject snapshot, out JsonObject tempoAdvantage)
+    {
+        if (snapshot["tempoAdvantage"] is JsonObject candidate &&
+            ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(candidate["status"]), "available") &&
+            ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(candidate["ownerSide"]), "player"))
+        {
+            tempoAdvantage = candidate;
+            return true;
+        }
+
+        tempoAdvantage = new JsonObject();
+        return false;
+    }
+
+    private static string? GetTempoAdvantageStatus(JsonNode? node) =>
+        node is JsonObject tempoAdvantage
+            ? AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["status"])
+            : null;
+
+    private static bool DiceAuditConsumesGuardTempoAdvantage(JsonObject exchange, JsonObject beforeTempo)
+    {
+        if (exchange["diceAudit"] is not JsonObject diceAudit ||
+            diceAudit["rollMode"] is not JsonObject rollMode ||
+            rollMode["player"] is not JsonObject playerRollMode ||
+            playerRollMode["advantageSources"] is not JsonArray advantageSources)
+        {
+            return false;
+        }
+
+        var beforeId = AfterlifeSpiritualConflictState.GetNodeString(beforeTempo["advantageId"]) ??
+                       AfterlifeSpiritualConflictState.GetNodeString(beforeTempo["sourceId"]);
+        return advantageSources
+            .OfType<JsonObject>()
+            .Any(source =>
+            {
+                var sourceType = AfterlifeSpiritualConflictState.GetNodeString(source["sourceType"]);
+                var sourceId = AfterlifeSpiritualConflictState.GetNodeString(source["sourceId"]) ??
+                               AfterlifeSpiritualConflictState.GetNodeString(source["advantageId"]) ??
+                               AfterlifeSpiritualConflictState.GetNodeString(source["id"]);
+                if (!ConflictTokenEquals(sourceType, "guard_tempo_window"))
+                    return false;
+
+                return string.IsNullOrWhiteSpace(beforeId) ||
+                       string.Equals(sourceId, beforeId, StringComparison.OrdinalIgnoreCase);
+            });
     }
 
     private static bool GuardSetbackRecordsIncomingControl(
@@ -5508,6 +5660,97 @@ public partial class ValidationService
                 $"{context}.summary",
                 "Активный контроль должен иметь краткое summary для игрока и ГМ-а.",
                 "afterlife_conflict_control_state_missing_summary",
+                "non-empty summary",
+                "missing");
+        }
+    }
+
+    private static void ValidateTempoAdvantageShape(JsonNode? node, string context, List<ValidationIssue> issues)
+    {
+        if (node == null)
+            return;
+
+        if (node is not JsonObject tempoAdvantage)
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                context,
+                "tempoAdvantage должен быть object или null.",
+                "afterlife_conflict_invalid_tempo_advantage",
+                "object/null",
+                node.GetType().Name);
+            return;
+        }
+
+        var status = AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["status"]);
+        if (!ConflictTokenEquals(status, "available", "consumed", "expired"))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.status",
+                "tempoAdvantage.status должен фиксировать состояние одноразового темпа защиты.",
+                "afterlife_conflict_invalid_tempo_advantage_status",
+                "available/consumed/expired",
+                string.IsNullOrWhiteSpace(status) ? "missing" : status);
+        }
+
+        var level = AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["level"]);
+        if (!ConflictTokenEquals(level, "advantage", "great_advantage"))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.level",
+                "tempoAdvantage.level должен быть обычным или великим Преимуществом.",
+                "afterlife_conflict_invalid_tempo_advantage_level",
+                "advantage/great_advantage",
+                string.IsNullOrWhiteSpace(level) ? "missing" : level);
+        }
+
+        var ownerSide = AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["ownerSide"]);
+        if (!ConflictTokenEquals(ownerSide, "player", "opposition"))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.ownerSide",
+                "tempoAdvantage.ownerSide должен указывать сторону, которая получила темп.",
+                "afterlife_conflict_invalid_tempo_advantage_owner",
+                "player/opposition",
+                string.IsNullOrWhiteSpace(ownerSide) ? "missing" : ownerSide);
+        }
+
+        var sourceOperation = AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["sourceOperation"]);
+        if (!ConflictTokenEquals(sourceOperation, "guard"))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.sourceOperation",
+                "Сейчас tempoAdvantage создается только успешной защитой (guard).",
+                "afterlife_conflict_invalid_tempo_advantage_source_operation",
+                "guard",
+                string.IsNullOrWhiteSpace(sourceOperation) ? "missing" : sourceOperation);
+        }
+
+        var advantageId = AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["advantageId"]) ??
+                          AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["sourceId"]);
+        if (string.IsNullOrWhiteSpace(advantageId))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.advantageId",
+                "tempoAdvantage должен иметь advantageId/sourceId, чтобы следующий обмен мог потребить именно это окно.",
+                "afterlife_conflict_tempo_advantage_missing_id",
+                "non-empty advantageId or sourceId",
+                "missing");
+        }
+
+        var summary = AfterlifeSpiritualConflictState.GetNodeString(tempoAdvantage["summary"]);
+        if (string.IsNullOrWhiteSpace(summary))
+        {
+            AddSpiritualArtRuleIssue(
+                issues,
+                $"{context}.summary",
+                "tempoAdvantage должен иметь краткое summary для игрока и ГМ-а.",
+                "afterlife_conflict_tempo_advantage_missing_summary",
                 "non-empty summary",
                 "missing");
         }
@@ -6261,28 +6504,29 @@ public partial class ValidationService
             return selectedRoll.Value;
         }
 
-        if (rolls.Count < 2)
+        var expectedRollCount = ExpectedRollCountForMode(expectedMode);
+        if (rolls.Count != expectedRollCount)
         {
             AddDiceAuditIssue(
                 issues,
                 $"{context}.diceUsed",
-                "Преимущество/Помеха требуют минимум два d20 для стороны: выбранный и отброшенный.",
-                "afterlife_conflict_dice_multi_roll_missing_extra_die",
-                $"at least two {side} dice",
+                "Количество d20 стороны должно точно соответствовать итоговому режиму Преимущества/Помехи.",
+                "afterlife_conflict_dice_roll_count_mismatch",
+                $"{expectedRollCount} {side} dice for {expectedMode}",
                 rolls.Count.ToString());
             valid = false;
-            return selectedRoll.Value;
         }
 
-        var expectedValue = string.Equals(expectedMode, "advantage", StringComparison.OrdinalIgnoreCase)
+        var selectsHighest = RollModeSelectsHighest(expectedMode);
+        var expectedValue = selectsHighest
             ? rolls.Max(roll => roll.Value)
             : rolls.Min(roll => roll.Value);
         if (selectedRoll.Value != expectedValue)
         {
-            var code = string.Equals(expectedMode, "advantage", StringComparison.OrdinalIgnoreCase)
+            var code = selectsHighest
                 ? "afterlife_conflict_dice_advantage_selected_die_mismatch"
                 : "afterlife_conflict_dice_disadvantage_selected_die_mismatch";
-            var label = string.Equals(expectedMode, "advantage", StringComparison.OrdinalIgnoreCase)
+            var label = selectsHighest
                 ? "лучший"
                 : "худший";
             AddDiceAuditIssue(
@@ -6311,33 +6555,30 @@ public partial class ValidationService
             return new DiceRollModeAudit("normal", "normal", false);
         }
 
-        var advantageSources = ReadRollModeSources(sideMode, "advantageSources", $"{context}.rollMode.{side}.advantageSources", issues, ref valid);
-        var disadvantageSources = ReadRollModeSources(sideMode, "disadvantageSources", $"{context}.rollMode.{side}.disadvantageSources", issues, ref valid);
-        var expectedMode =
-            advantageSources > 0 && disadvantageSources > 0 ? "normal" :
-            advantageSources > 0 ? "advantage" :
-            disadvantageSources > 0 ? "disadvantage" :
-            "normal";
+        var advantageLevel = ReadRollModeSources(sideMode, "advantageSources", $"{context}.rollMode.{side}.advantageSources", positive: true, issues, ref valid);
+        var disadvantageLevel = ReadRollModeSources(sideMode, "disadvantageSources", $"{context}.rollMode.{side}.disadvantageSources", positive: false, issues, ref valid);
+        var expectedMode = RollModeFromStep(advantageLevel - disadvantageLevel);
         var effectiveMode = AfterlifeSpiritualConflictState.GetNodeString(sideMode["effectiveMode"]) ?? "normal";
-        if (!ConflictTokenEquals(effectiveMode, "normal", "advantage", "disadvantage"))
+        if (!IsSupportedRollMode(effectiveMode))
         {
             AddDiceAuditIssue(
                 issues,
                 $"{context}.rollMode.{side}.effectiveMode",
-                "rollMode.effectiveMode должен быть normal, advantage или disadvantage.",
+                "rollMode.effectiveMode должен быть normal, advantage, great_advantage, disadvantage или dire_disadvantage.",
                 "afterlife_conflict_dice_invalid_effective_roll_mode",
-                "normal/advantage/disadvantage",
+                "normal/advantage/great_advantage/disadvantage/dire_disadvantage",
                 string.IsNullOrWhiteSpace(effectiveMode) ? "missing" : effectiveMode);
             valid = false;
         }
 
-        return new DiceRollModeAudit(effectiveMode, expectedMode, advantageSources > 0 && disadvantageSources > 0);
+        return new DiceRollModeAudit(effectiveMode, expectedMode, advantageLevel > 0 && disadvantageLevel > 0);
     }
 
     private static int ReadRollModeSources(
         JsonObject sideMode,
         string propertyName,
         string context,
+        bool positive,
         List<ValidationIssue>? issues,
         ref bool valid)
     {
@@ -6348,38 +6589,140 @@ public partial class ValidationService
                 context,
                 "rollMode должен явно перечислять источники Преимущества и Помехи.",
                 "afterlife_conflict_dice_missing_roll_mode_sources",
-                "array of non-empty source strings",
+                "array of non-empty source strings or source objects",
                 sideMode[propertyName]?.GetType().Name ?? "missing");
             valid = false;
             return 0;
         }
 
-        var count = 0;
+        var strongestLevel = 0;
         for (var index = 0; index < sources.Count; index++)
         {
-            var source = AfterlifeSpiritualConflictState.GetNodeString(sources[index]);
-            if (string.IsNullOrWhiteSpace(source))
+            var source = sources[index];
+            if (source is JsonObject sourceObject)
+            {
+                var summary =
+                    AfterlifeSpiritualConflictState.GetNodeString(sourceObject["summary"]) ??
+                    AfterlifeSpiritualConflictState.GetNodeString(sourceObject["source"]) ??
+                    AfterlifeSpiritualConflictState.GetNodeString(sourceObject["sourceId"]) ??
+                    AfterlifeSpiritualConflictState.GetNodeString(sourceObject["id"]);
+                if (string.IsNullOrWhiteSpace(summary))
+                {
+                    AddDiceAuditIssue(
+                        issues,
+                        $"{context}[{index}]",
+                        "Объект источника Преимущества/Помехи должен содержать непустое summary, source, sourceId или id.",
+                        "afterlife_conflict_dice_empty_roll_mode_source",
+                        "non-empty summary/source/sourceId/id",
+                        source.ToJsonString());
+                    valid = false;
+                    continue;
+                }
+
+                var levelToken = AfterlifeSpiritualConflictState.GetNodeString(sourceObject["level"]);
+                if (!TryReadRollModeSourceLevel(levelToken, positive, out var sourceLevel))
+                {
+                    AddDiceAuditIssue(
+                        issues,
+                        $"{context}[{index}].level",
+                        positive
+                            ? "Источник Преимущества должен иметь level=advantage или level=great_advantage."
+                            : "Источник Помехи должен иметь level=disadvantage или level=dire_disadvantage.",
+                        "afterlife_conflict_dice_invalid_roll_mode_source_level",
+                        positive ? "advantage/great_advantage" : "disadvantage/dire_disadvantage",
+                        string.IsNullOrWhiteSpace(levelToken) ? "missing" : levelToken!);
+                    valid = false;
+                    continue;
+                }
+
+                strongestLevel = Math.Max(strongestLevel, sourceLevel);
+                continue;
+            }
+
+            var sourceText = AfterlifeSpiritualConflictState.GetNodeString(source);
+            if (string.IsNullOrWhiteSpace(sourceText))
             {
                 AddDiceAuditIssue(
                     issues,
                     $"{context}[{index}]",
-                    "Источник Преимущества/Помехи должен быть непустой строкой.",
+                    "Источник Преимущества/Помехи должен быть непустой строкой или объектом источника.",
                     "afterlife_conflict_dice_empty_roll_mode_source",
-                    "non-empty source string",
+                    "non-empty source string or source object",
                     sources[index]?.ToJsonString() ?? "null");
                 valid = false;
                 continue;
             }
 
-            count++;
+            strongestLevel = Math.Max(strongestLevel, 1);
         }
 
-        return count;
+        return strongestLevel;
     }
 
+    private static bool TryReadRollModeSourceLevel(string? levelToken, bool positive, out int level)
+    {
+        if (string.IsNullOrWhiteSpace(levelToken))
+        {
+            level = 1;
+            return true;
+        }
+
+        if (positive)
+        {
+            if (ConflictTokenEquals(levelToken, "advantage"))
+            {
+                level = 1;
+                return true;
+            }
+
+            if (ConflictTokenEquals(levelToken, "great_advantage"))
+            {
+                level = 2;
+                return true;
+            }
+        }
+        else
+        {
+            if (ConflictTokenEquals(levelToken, "disadvantage"))
+            {
+                level = 1;
+                return true;
+            }
+
+            if (ConflictTokenEquals(levelToken, "dire_disadvantage"))
+            {
+                level = 2;
+                return true;
+            }
+        }
+
+        level = 0;
+        return false;
+    }
+
+    private static string RollModeFromStep(int step) =>
+        step >= 2 ? "great_advantage" :
+        step == 1 ? "advantage" :
+        step <= -2 ? "dire_disadvantage" :
+        step == -1 ? "disadvantage" :
+        "normal";
+
+    private static bool IsSupportedRollMode(string? mode) =>
+        ConflictTokenEquals(mode, "normal", "advantage", "great_advantage", "disadvantage", "dire_disadvantage");
+
+    private static int ExpectedRollCountForMode(string mode) =>
+        ConflictTokenEquals(mode, "great_advantage", "dire_disadvantage") ? 3 :
+        ConflictTokenEquals(mode, "advantage", "disadvantage") ? 2 :
+        1;
+
+    private static bool RollModeSelectsHighest(string mode) =>
+        ConflictTokenEquals(mode, "advantage", "great_advantage");
+
     private static string TranslateRollMode(string mode) =>
-        string.Equals(mode, "advantage", StringComparison.OrdinalIgnoreCase) ? "Преимуществе" :
-        string.Equals(mode, "disadvantage", StringComparison.OrdinalIgnoreCase) ? "Помехе" :
+        ConflictTokenEquals(mode, "great_advantage") ? "Великом Преимуществе" :
+        ConflictTokenEquals(mode, "advantage") ? "Преимуществе" :
+        ConflictTokenEquals(mode, "dire_disadvantage") ? "Тяжкой Помехе" :
+        ConflictTokenEquals(mode, "disadvantage") ? "Помехе" :
         "обычном броске";
 
     private readonly record struct DiceRollEntry(int DiceUsedIndex, int SourceIndex, int Value, string? Selection);
