@@ -133,6 +133,11 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("Нет точек на выбранном уровне", html, StringComparison.Ordinal);
         Assert.Contains("Легенда карты", html, StringComparison.Ordinal);
         Assert.Contains("Влияние фракций", html, StringComparison.Ordinal);
+        Assert.Contains("map-political-toggle", html, StringComparison.Ordinal);
+        Assert.Contains("map-political-halo", html, StringComparison.Ordinal);
+        Assert.Contains("map-region", html, StringComparison.Ordinal);
+        Assert.Contains("Политическое влияние", html, StringComparison.Ordinal);
+        Assert.Contains("Спорная зона", html, StringComparison.Ordinal);
         Assert.Contains("/api/media/", html, StringComparison.Ordinal);
         Assert.Contains("Пока нет результата", html, StringComparison.Ordinal);
     }

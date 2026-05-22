@@ -132,6 +132,98 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildMortalWorldMapAsync_ProjectsPoliticalControlRegionsAndContestedLocations()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_gate",
+          "name": "Ворота Серой Короны",
+          "coordinates": { "x": 0, "y": 0, "z": 0 },
+          "factionControl": [
+            { "factionId": "f_crown", "factionName": "Серая Корона", "controlType": "Military", "controlLevel": 76 }
+          ],
+          "adjacencyMap": [
+            {
+              "targetLocationId": "loc_barracks",
+              "targetLocationName": "Казармы Серой Короны",
+              "targetCoordinates": { "x": 4, "y": 0, "z": 0 }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
+        {
+          "locations": [
+            {
+              "locationId": "loc_barracks",
+              "locationName": "Казармы Серой Короны",
+              "coordinates": { "x": 4, "y": 0, "z": 0 },
+              "factionControl": [
+                { "factionId": "f_crown", "factionName": "Серая Корона", "controlType": "Military", "controlLevel": 82 }
+              ]
+            },
+            {
+              "locationId": "loc_market",
+              "locationName": "Спорный рынок",
+              "coordinates": { "x": 2, "y": 3, "z": 0 },
+              "factionControl": [
+                { "factionId": "f_crown", "factionName": "Серая Корона", "controlType": "Economic", "controlLevel": 48 },
+                { "factionId": "f_syndicate", "factionName": "Синдикат Тени", "controlType": "Covert", "controlLevel": 45 }
+              ]
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", """
+        {
+          "factions": [
+            {
+              "id": "f_crown",
+              "name": "Серая Корона",
+              "controlledTerritories": [
+                { "locationId": "loc_gate", "locationName": "Ворота Серой Короны" },
+                { "locationId": "loc_barracks", "locationName": "Казармы Серой Короны" }
+              ]
+            }
+          ]
+        }
+        """);
+
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        var gate = Assert.Single(map.Nodes, node => node.Id == "loc_gate");
+        Assert.Equal("f_crown", gate.OwnerFactionId);
+        Assert.Equal("Серая Корона", gate.OwnerFactionName);
+        Assert.Equal(76, gate.Influence["f_crown"]);
+        Assert.Contains(gate.Details, static item => item.Key == "Контроль фракций" && item.Value.Contains("Military 76", StringComparison.Ordinal));
+        Assert.Contains(map.Regions, static region =>
+            region.OwnerFactionId == "f_crown" &&
+            region.NodeIds.Contains("loc_gate", StringComparer.OrdinalIgnoreCase) &&
+            region.NodeIds.Contains("loc_barracks", StringComparer.OrdinalIgnoreCase));
+
+        var market = Assert.Single(map.Nodes, node => node.Id == "loc_market");
+        Assert.Contains(market.Details, static item => item.Key == "Статус контроля" && item.Value.Contains("спорная", StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(48, market.Influence["f_crown"]);
+        Assert.Equal(45, market.Influence["f_syndicate"]);
+    }
+
+    [Fact]
+    public async Task BuildMortalWorldMapAsync_KeepsNoFactionLocationsNeutral()
+    {
+        await SeedMortalMapAsync();
+
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        Assert.Empty(map.Regions);
+        Assert.All(map.Nodes, node =>
+        {
+            Assert.True(string.IsNullOrWhiteSpace(node.OwnerFactionId));
+            Assert.Empty(node.Influence);
+            Assert.DoesNotContain(node.Details, static item => item.Key == "Контроль фракций");
+        });
+    }
+
+    [Fact]
     public async Task LocalMapViewerLauncher_WritesHtmlAndReturnsFallbackWhenOpenFails()
     {
         await SeedMortalMapAsync();
@@ -169,6 +261,11 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.Contains("Нет точек на выбранном уровне", html, StringComparison.Ordinal);
         Assert.Contains("map-node--selected", html, StringComparison.Ordinal);
         Assert.Contains("data-layer-state", html, StringComparison.Ordinal);
+        Assert.Contains("map-political-toggle", html, StringComparison.Ordinal);
+        Assert.Contains("map-political-halo", html, StringComparison.Ordinal);
+        Assert.Contains("map-region", html, StringComparison.Ordinal);
+        Assert.Contains("Политическое влияние", html, StringComparison.Ordinal);
+        Assert.Contains("Спорная зона", html, StringComparison.Ordinal);
         Assert.Contains("Выберите точку на карте", html, StringComparison.Ordinal);
     }
 

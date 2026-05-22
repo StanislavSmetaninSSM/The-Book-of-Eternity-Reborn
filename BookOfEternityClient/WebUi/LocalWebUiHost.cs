@@ -393,6 +393,37 @@ public static class LocalWebUiHost
             }
             .legend-swatch.current { background: var(--atlas-moss); }
             .legend-swatch.faction { background: #80501f; }
+            .legend-swatch.contested { background: linear-gradient(135deg, #80501f 0 48%, var(--atlas-blood) 52%); }
+            .map-region {
+              fill: rgba(128, 80, 31, .16);
+              stroke: rgba(105, 60, 22, .42);
+              stroke-width: .18;
+              stroke-dasharray: .6 .32;
+              pointer-events: none;
+            }
+            .map-region-label {
+              fill: rgba(43, 33, 22, .68);
+              font: .8px Georgia, "Times New Roman", serif;
+              paint-order: stroke;
+              stroke: rgba(247, 229, 177, .6);
+              stroke-width: .16px;
+              pointer-events: none;
+            }
+            .map-political-halo {
+              fill: rgba(128, 80, 31, .24);
+              stroke: rgba(128, 80, 31, .38);
+              stroke-width: .09;
+              pointer-events: none;
+            }
+            .map-political-halo--contested {
+              fill: rgba(123, 36, 27, .22);
+              stroke: rgba(123, 36, 27, .58);
+              stroke-dasharray: .16 .12;
+            }
+            .map-node--contested circle {
+              stroke: var(--atlas-blood);
+              stroke-dasharray: .16 .1;
+            }
             .map-block[data-layer-state="hidden"] .map-card {
               opacity: .78;
             }
@@ -1102,6 +1133,11 @@ public static class LocalWebUiHost
                 layerSelect.append(new Option(layer.label ?? layer.id, layer.id ?? 'world'));
               }
               toolbar.append(labelWithControl('Уровень', zSelect), labelWithControl('Слой', layerSelect));
+              const politicalToggle = document.createElement('input');
+              politicalToggle.type = 'checkbox';
+              politicalToggle.className = 'map-political-toggle';
+              politicalToggle.checked = true;
+              toolbar.append(labelWithControl('Политическое влияние', politicalToggle));
               const zoomIn = el('button', 'secondary', 'Приблизить');
               const zoomOut = el('button', 'secondary', 'Отдалить');
               const reset = el('button', 'secondary', 'Сброс');
@@ -1115,7 +1151,8 @@ public static class LocalWebUiHost
                 el('strong', '', 'Легенда карты'),
                 legendItem('current', 'Текущая точка'),
                 legendItem('', 'Обычная точка'),
-                legendItem('faction', 'Влияние фракций'));
+                legendItem('faction', 'Влияние фракций'),
+                legendItem('contested', 'Спорная зона'));
               node.append(legend);
 
               const frame = el('div', 'map-atlas-frame');
@@ -1155,6 +1192,7 @@ public static class LocalWebUiHost
                 texture.setAttribute('height', '4000');
                 texture.setAttribute('filter', 'url(#atlas-texture-web)');
                 svg.append(defs, texture);
+                if (politicalToggle.checked) drawPoliticalOverlay(nodes);
 
                 for (const link of map.links ?? []) {
                   const source = nodeById.get(link.sourceNodeId);
@@ -1174,6 +1212,7 @@ public static class LocalWebUiHost
                   const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
                   group.classList.add('map-node');
                   if (mapNode.id === selectedNodeId) group.classList.add('map-node--selected');
+                  if (isContested(mapNode)) group.classList.add('map-node--contested');
                   group.setAttribute('tabindex', '0');
                   const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                   circle.setAttribute('cx', mapNode.x ?? 0);
@@ -1195,6 +1234,45 @@ public static class LocalWebUiHost
                 }
 
                 fitMap(nodes);
+              }
+
+              function drawPoliticalOverlay(nodes) {
+                const byId = new globalThis.Map(nodes.map(item => [item.id, item]));
+                for (const region of map.regions ?? []) {
+                  const regionNodes = (region.nodeIds ?? []).map(id => byId.get(id)).filter(Boolean);
+                  if (!regionNodes.length) continue;
+                  const xs = regionNodes.map(item => Number(item.x ?? 0));
+                  const ys = regionNodes.map(item => -Number(item.y ?? 0));
+                  const cx = xs.reduce((a, b) => a + b, 0) / xs.length;
+                  const cy = ys.reduce((a, b) => a + b, 0) / ys.length;
+                  const radius = Math.max(2.2, ...regionNodes.map(item => Math.hypot(Number(item.x ?? 0) - cx, -Number(item.y ?? 0) - cy) + 1.6));
+                  const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                  halo.setAttribute('class', 'map-region');
+                  halo.setAttribute('cx', cx);
+                  halo.setAttribute('cy', cy);
+                  halo.setAttribute('r', radius);
+                  svg.append(halo);
+                  const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                  label.setAttribute('class', 'map-region-label');
+                  label.setAttribute('x', cx - radius * .45);
+                  label.setAttribute('y', cy - radius * .72);
+                  label.textContent = region.ownerFactionName || region.label || region.ownerFactionId || '';
+                  svg.append(label);
+                }
+                for (const mapNode of nodes) {
+                  if (!mapNode.ownerFactionId && !mapNode.ownerFactionName && !Object.keys(mapNode.influence ?? {}).length) continue;
+                  const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                  halo.setAttribute('class', `map-political-halo ${isContested(mapNode) ? 'map-political-halo--contested' : ''}`);
+                  halo.setAttribute('cx', mapNode.x ?? 0);
+                  halo.setAttribute('cy', -(mapNode.y ?? 0));
+                  halo.setAttribute('r', isContested(mapNode) ? '1.22' : '1.02');
+                  svg.append(halo);
+                }
+              }
+
+              function isContested(mapNode) {
+                const values = Object.values(mapNode.influence ?? {}).map(Number).filter(value => value >= 25).sort((a, b) => b - a);
+                return values.length >= 2 && values[0] - values[1] <= 10;
               }
 
               function fitMap(nodes) {
@@ -1243,6 +1321,7 @@ public static class LocalWebUiHost
 
               zSelect.addEventListener('change', draw);
               layerSelect.addEventListener('change', draw);
+              politicalToggle.addEventListener('change', draw);
               zoomIn.addEventListener('click', () => zoom(.8));
               zoomOut.addEventListener('click', () => zoom(1.25));
               reset.addEventListener('click', draw);

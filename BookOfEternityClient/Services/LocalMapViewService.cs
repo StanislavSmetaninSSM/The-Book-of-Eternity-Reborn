@@ -11,6 +11,8 @@ namespace BookOfEternityClient.Services;
 public static class LocalMapViewService
 {
     private const string WorldLayerId = "world";
+    private const int MeaningfulFactionInfluence = 25;
+    private const int ContestedControlGap = 10;
     internal static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
@@ -21,8 +23,10 @@ public static class LocalMapViewService
     {
         var currentJson = await fs.ReadFileAsync("game_state/world/current_location.json");
         var worldMapJson = await fs.ReadFileAsync("game_state/world/world_map.json");
+        var factionJson = await fs.ReadFileAsync("game_state/factions/faction_core.json");
         using var currentDoc = TryParse(currentJson);
         using var worldMapDoc = TryParse(worldMapJson);
+        using var factionDoc = TryParse(factionJson);
 
         var nodes = new Dictionary<string, NodeDraft>(StringComparer.OrdinalIgnoreCase);
         var links = new Dictionary<string, MapLinkDto>(StringComparer.OrdinalIgnoreCase);
@@ -47,6 +51,9 @@ public static class LocalMapViewService
             AddLinkArray(links, mapRoot, "paths");
             AddLinkArray(links, mapRoot, "newLinks");
         }
+
+        if (factionDoc != null && factionDoc.RootElement.ValueKind == JsonValueKind.Object)
+            ApplyFactionTerritoryClaims(nodes, factionDoc.RootElement);
 
         ApplyFallbackLayout(nodes.Values);
         var nodeDtos = nodes.Values
@@ -83,7 +90,8 @@ public static class LocalMapViewService
             Links = links.Values
                 .OrderBy(static link => link.SourceNodeId, StringComparer.OrdinalIgnoreCase)
                 .ThenBy(static link => link.TargetNodeId, StringComparer.OrdinalIgnoreCase)
-                .ToList()
+                .ToList(),
+            Regions = BuildPoliticalRegions(nodes.Values)
         };
     }
 
@@ -226,10 +234,21 @@ public static class LocalMapViewService
 
             var factionId = GetString(faction, "factionId", "id");
             var factionName = GetString(faction, "factionName", "name");
+            var controlType = GetString(faction, "controlType", "type");
             var control = GetInt(faction, "controlLevel", "influence", "value");
             var key = string.IsNullOrWhiteSpace(factionId) ? factionName : factionId;
             if (!string.IsNullOrWhiteSpace(key))
                 draft.Influence[key] = control;
+            if (!string.IsNullOrWhiteSpace(key))
+            {
+                draft.FactionControls.Add(new FactionControlDraft
+                {
+                    FactionId = factionId,
+                    FactionName = factionName,
+                    ControlType = controlType,
+                    ControlLevel = control
+                });
+            }
 
             if (control > bestControl)
             {
@@ -238,6 +257,119 @@ public static class LocalMapViewService
                 draft.OwnerFactionName = factionName;
             }
         }
+
+        AddPoliticalDetails(draft);
+    }
+
+    private static void ApplyFactionTerritoryClaims(Dictionary<string, NodeDraft> nodes, JsonElement factionRoot)
+    {
+        if (!factionRoot.TryGetProperty("factions", out var factions) || factions.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var faction in factions.EnumerateArray())
+        {
+            if (faction.ValueKind != JsonValueKind.Object ||
+                !faction.TryGetProperty("controlledTerritories", out var territories) ||
+                territories.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            var factionId = GetString(faction, "factionId", "id");
+            var factionName = GetString(faction, "factionName", "name");
+            if (string.IsNullOrWhiteSpace(factionId) && string.IsNullOrWhiteSpace(factionName))
+                continue;
+
+            foreach (var territory in territories.EnumerateArray())
+            {
+                if (territory.ValueKind != JsonValueKind.Object)
+                    continue;
+
+                var locationId = GetString(territory, "locationId", "id");
+                if (string.IsNullOrWhiteSpace(locationId) || !nodes.TryGetValue(locationId, out var node))
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(node.OwnerFactionId) && string.IsNullOrWhiteSpace(node.OwnerFactionName))
+                {
+                    node.OwnerFactionId = factionId;
+                    node.OwnerFactionName = factionName;
+                }
+
+                var key = string.IsNullOrWhiteSpace(factionId) ? factionName : factionId;
+                if (!string.IsNullOrWhiteSpace(key) && !node.Influence.ContainsKey(key))
+                    node.Influence[key] = 100;
+
+                if (node.FactionControls.All(existing =>
+                    !string.Equals(existing.FactionId, factionId, StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(existing.FactionName, factionName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    node.FactionControls.Add(new FactionControlDraft
+                    {
+                        FactionId = factionId,
+                        FactionName = factionName,
+                        ControlType = "Territory",
+                        ControlLevel = 100
+                    });
+                }
+
+                AddPoliticalDetails(node);
+            }
+        }
+    }
+
+    private static List<MapRegionDto> BuildPoliticalRegions(IEnumerable<NodeDraft> nodes) =>
+        nodes
+            .Where(static node => !string.IsNullOrWhiteSpace(node.OwnerFactionId) || !string.IsNullOrWhiteSpace(node.OwnerFactionName))
+            .GroupBy(
+                static node => string.IsNullOrWhiteSpace(node.OwnerFactionId) ? node.OwnerFactionName : node.OwnerFactionId,
+                StringComparer.OrdinalIgnoreCase)
+            .Select(static group =>
+            {
+                var first = group.First();
+                var ownerId = string.IsNullOrWhiteSpace(first.OwnerFactionId) ? group.Key : first.OwnerFactionId;
+                var ownerName = string.IsNullOrWhiteSpace(first.OwnerFactionName) ? ownerId : first.OwnerFactionName;
+                return new MapRegionDto
+                {
+                    Id = $"political_{StableId(ownerId, ownerName)}",
+                    Label = ownerName,
+                    OwnerFactionId = ownerId,
+                    OwnerFactionName = ownerName,
+                    Layer = WorldLayerId,
+                    NodeIds = group.Select(static node => node.Id).Order(StringComparer.OrdinalIgnoreCase).ToList()
+                };
+            })
+            .OrderBy(static region => region.Label, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+    private static void AddPoliticalDetails(NodeDraft draft)
+    {
+        if (draft.FactionControls.Count == 0)
+            return;
+
+        AddDetail(
+            draft,
+            "Контроль фракций",
+            string.Join("; ", draft.FactionControls
+                .OrderByDescending(static control => control.ControlLevel)
+                .Select(static control =>
+                {
+                    var name = string.IsNullOrWhiteSpace(control.FactionName) ? control.FactionId : control.FactionName;
+                    var type = string.IsNullOrWhiteSpace(control.ControlType) ? "control" : control.ControlType;
+                    return $"{name}: {type} {control.ControlLevel}";
+                })));
+
+        if (IsContested(draft.FactionControls))
+            AddDetail(draft, "Статус контроля", "спорная зона");
+    }
+
+    private static bool IsContested(IReadOnlyCollection<FactionControlDraft> controls)
+    {
+        var meaningful = controls
+            .Where(static control => control.ControlLevel >= MeaningfulFactionInfluence)
+            .OrderByDescending(static control => control.ControlLevel)
+            .Take(2)
+            .ToList();
+        return meaningful.Count >= 2 && meaningful[0].ControlLevel - meaningful[1].ControlLevel <= ContestedControlGap;
     }
 
     private static void AddLink(Dictionary<string, MapLinkDto> links, string sourceId, string targetId, string label, string state)
@@ -468,6 +600,7 @@ public static class LocalMapViewService
         public string OwnerFactionId { get; set; } = string.Empty;
         public string OwnerFactionName { get; set; } = string.Empty;
         public Dictionary<string, int> Influence { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public List<FactionControlDraft> FactionControls { get; } = [];
         public List<MapDetailItemDto> Details { get; } = [];
 
         public MapNodeDto ToDto() => new()
@@ -485,6 +618,14 @@ public static class LocalMapViewService
             Influence = new Dictionary<string, int>(Influence, StringComparer.OrdinalIgnoreCase),
             Details = Details.ToList()
         };
+    }
+
+    private sealed class FactionControlDraft
+    {
+        public string FactionId { get; init; } = string.Empty;
+        public string FactionName { get; init; } = string.Empty;
+        public string ControlType { get; init; } = string.Empty;
+        public int ControlLevel { get; init; }
     }
 }
 
@@ -600,6 +741,37 @@ public static class LocalMapViewerRenderer
             .legend-swatch { width: .75rem; height: .75rem; border: 1px solid rgba(247, 217, 145, .75); border-radius: 50%; background: var(--atlas-blood); }
             .legend-swatch.current { background: var(--atlas-moss); }
             .legend-swatch.faction { background: #80501f; }
+            .legend-swatch.contested { background: linear-gradient(135deg, #80501f 0 48%, var(--atlas-blood) 52%); }
+            .map-region {
+              fill: rgba(128, 80, 31, .16);
+              stroke: rgba(105, 60, 22, .42);
+              stroke-width: .18;
+              stroke-dasharray: .6 .32;
+              pointer-events: none;
+            }
+            .map-region-label {
+              fill: rgba(43, 33, 22, .68);
+              font: .8px Georgia, "Times New Roman", serif;
+              paint-order: stroke;
+              stroke: rgba(247, 229, 177, .6);
+              stroke-width: .16px;
+              pointer-events: none;
+            }
+            .map-political-halo {
+              fill: rgba(128, 80, 31, .24);
+              stroke: rgba(128, 80, 31, .38);
+              stroke-width: .09;
+              pointer-events: none;
+            }
+            .map-political-halo--contested {
+              fill: rgba(123, 36, 27, .22);
+              stroke: rgba(123, 36, 27, .58);
+              stroke-dasharray: .16 .12;
+            }
+            .map-node--contested circle {
+              stroke: var(--atlas-blood);
+              stroke-dasharray: .16 .1;
+            }
             .map-card {
               border: 1px solid rgba(205, 168, 90, .32);
               border-radius: 1rem;
@@ -623,6 +795,7 @@ public static class LocalMapViewerRenderer
               <div class="map-toolbar">
                 <label>Уровень <select class="map-z-filter"></select></label>
                 <label>Слой <select class="map-layer-filter"></select></label>
+                <label><input type="checkbox" class="map-political-toggle" checked> Политическое влияние</label>
                 <button type="button" data-zoom="in">Приблизить</button>
                 <button type="button" data-zoom="out">Отдалить</button>
                 <button type="button" data-reset>Сброс</button>
@@ -632,6 +805,7 @@ public static class LocalMapViewerRenderer
                 <span><i class="legend-swatch current"></i>Текущая точка</span>
                 <span><i class="legend-swatch"></i>Обычная точка</span>
                 <span><i class="legend-swatch faction"></i>Влияние фракций</span>
+                <span><i class="legend-swatch contested"></i>Спорная зона</span>
               </div>
               <div class="map-atlas-frame">
                 <svg viewBox="-20 -20 40 40" role="img" aria-label="Карта"></svg>
@@ -648,6 +822,7 @@ public static class LocalMapViewerRenderer
             const empty = root.querySelector('.map-empty');
             const zFilter = root.querySelector('.map-z-filter');
             const layerFilter = root.querySelector('.map-layer-filter');
+            const politicalToggle = root.querySelector('.map-political-toggle');
             let selectedNodeId = map.currentNodeId ?? '';
             for (const level of map.zLevels ?? []) zFilter.append(new Option(level.label, String(level.z)));
             for (const layer of map.layers ?? []) layerFilter.append(new Option(layer.label, layer.id));
@@ -668,6 +843,7 @@ public static class LocalMapViewerRenderer
               texture.setAttribute('width', '4000'); texture.setAttribute('height', '4000');
               texture.setAttribute('filter', 'url(#atlas-texture)');
               svg.append(defs, texture);
+              if (politicalToggle.checked) drawPoliticalOverlay(nodes);
               for (const link of map.links ?? []) {
                 if (!ids.has(link.sourceNodeId) || !ids.has(link.targetNodeId)) continue;
                 const a = nodes.find(n => n.id === link.sourceNodeId), b = nodes.find(n => n.id === link.targetNodeId);
@@ -681,6 +857,7 @@ public static class LocalMapViewerRenderer
                 const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
                 g.classList.add('map-node');
                 if (node.id === selectedNodeId) g.classList.add('map-node--selected');
+                if (isContested(node)) g.classList.add('map-node--contested');
                 g.setAttribute('tabindex', '0');
                 const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 c.setAttribute('cx', node.x); c.setAttribute('cy', -node.y); c.setAttribute('r', node.isCurrent ? '.7' : '.48');
@@ -693,6 +870,40 @@ public static class LocalMapViewerRenderer
                 svg.append(g);
               }
               fit(nodes);
+            }
+            function drawPoliticalOverlay(nodes) {
+              const byId = new Map(nodes.map(n => [n.id, n]));
+              for (const region of map.regions ?? []) {
+                const regionNodes = (region.nodeIds ?? []).map(id => byId.get(id)).filter(Boolean);
+                if (!regionNodes.length) continue;
+                const xs = regionNodes.map(n => Number(n.x ?? 0));
+                const ys = regionNodes.map(n => -Number(n.y ?? 0));
+                const cx = xs.reduce((a, b) => a + b, 0) / xs.length;
+                const cy = ys.reduce((a, b) => a + b, 0) / ys.length;
+                const radius = Math.max(2.2, ...regionNodes.map(n => Math.hypot(Number(n.x ?? 0) - cx, -Number(n.y ?? 0) - cy) + 1.6));
+                const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                halo.setAttribute('class', 'map-region');
+                halo.setAttribute('cx', cx); halo.setAttribute('cy', cy); halo.setAttribute('r', radius);
+                svg.append(halo);
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('class', 'map-region-label');
+                label.setAttribute('x', cx - radius * .45); label.setAttribute('y', cy - radius * .72);
+                label.textContent = region.ownerFactionName || region.label || region.ownerFactionId || '';
+                svg.append(label);
+              }
+              for (const node of nodes) {
+                if (!node.ownerFactionId && !node.ownerFactionName && !Object.keys(node.influence ?? {}).length) continue;
+                const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                halo.setAttribute('class', `map-political-halo ${isContested(node) ? 'map-political-halo--contested' : ''}`);
+                halo.setAttribute('cx', node.x ?? 0);
+                halo.setAttribute('cy', -(node.y ?? 0));
+                halo.setAttribute('r', isContested(node) ? '1.22' : '1.02');
+                svg.append(halo);
+              }
+            }
+            function isContested(node) {
+              return Object.values(node.influence ?? {}).filter(value => Number(value) >= 25).sort((a, b) => Number(b) - Number(a)).slice(0, 2).length >= 2 &&
+                Math.abs(Number(Object.values(node.influence ?? {}).sort((a, b) => Number(b) - Number(a))[0]) - Number(Object.values(node.influence ?? {}).sort((a, b) => Number(b) - Number(a))[1])) <= 10;
             }
             function fit(nodes) {
               if (!nodes.length) return;
@@ -712,6 +923,7 @@ public static class LocalMapViewerRenderer
             function escapeHtml(v) { return String(v ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
             zFilter.addEventListener('change', draw);
             layerFilter.addEventListener('change', draw);
+            politicalToggle.addEventListener('change', draw);
             root.querySelector('[data-reset]').addEventListener('click', draw);
             root.querySelector('[data-zoom="in"]').addEventListener('click', () => zoom(.8));
             root.querySelector('[data-zoom="out"]').addEventListener('click', () => zoom(1.25));
