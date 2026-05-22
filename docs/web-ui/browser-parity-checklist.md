@@ -1,6 +1,6 @@
 # Browser Parity Checklist
 
-Tracked tasks: #594, #619, #620
+Tracked tasks: #594, #619, #620, #621
 
 Use this checklist for manual smoke testing when the local browser UI changes. The browser must stay a local shell over the same `game_session` data and must not duplicate game rules in JavaScript.
 
@@ -17,6 +17,7 @@ Use this checklist for manual smoke testing when the local browser UI changes. T
 - Мир смертных navigation opens status, quests, inventory, map, NPCs, factions, combat, and gallery surfaces.
 - Карта renders as a local SVG viewer, supports pan/zoom, z-level filter, layer filter, node selection, and detail cards without fetching anything from the network.
 - Карта uses the shared dark-fantasy parchment atlas visual system: Russian controls, visible legend, clear selected/hover states, readable labels, and a Russian empty-state message for hidden/empty levels.
+- Карта reads wrapped and unwrapped Mortal World location state, separates z-levels, marks the current location, and uses schematic fallback coordinates when the GM has not authored exact coordinates yet.
 - Tables, warnings, actions, and raw JSON render consistently.
 - Mutating forms that are already migrated still use the shared local UI lock and show blocked/pending states when a GM turn is active.
 

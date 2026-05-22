@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -29,7 +30,7 @@ public static class LocalMapViewService
 
         if (currentDoc != null && currentDoc.RootElement.ValueKind == JsonValueKind.Object)
         {
-            var current = currentDoc.RootElement;
+            var current = UnwrapCurrentLocationRoot(currentDoc.RootElement);
             currentNodeId = ResolveLocationId(current, "current_location");
             AddLocationNode(nodes, current, currentNodeId, isCurrent: true);
             AddAdjacencyLinks(nodes, links, currentNodeId, current);
@@ -38,8 +39,12 @@ public static class LocalMapViewService
         if (worldMapDoc != null && worldMapDoc.RootElement.ValueKind == JsonValueKind.Object)
         {
             var mapRoot = UnwrapWorldMapRoot(worldMapDoc.RootElement);
+            AddLocationArray(nodes, mapRoot, "locations");
+            AddLocationArray(nodes, mapRoot, "knownLocations");
             AddLocationArray(nodes, mapRoot, "newLocations");
             AddLocationArray(nodes, mapRoot, "locationUpdates");
+            AddLinkArray(links, mapRoot, "links");
+            AddLinkArray(links, mapRoot, "paths");
             AddLinkArray(links, mapRoot, "newLinks");
         }
 
@@ -99,6 +104,11 @@ public static class LocalMapViewService
 
     private static JsonElement UnwrapWorldMapRoot(JsonElement root) =>
         root.TryGetProperty("worldMapUpdates", out var wrapped) && wrapped.ValueKind == JsonValueKind.Object
+            ? wrapped
+            : root;
+
+    private static JsonElement UnwrapCurrentLocationRoot(JsonElement root) =>
+        root.TryGetProperty("currentLocationData", out var wrapped) && wrapped.ValueKind == JsonValueKind.Object
             ? wrapped
             : root;
 
@@ -188,7 +198,15 @@ public static class LocalMapViewService
 
         AddDetail(draft, "Тип", draft.Type);
         AddDetail(draft, "Регион", GetString(location, "region", "area"));
+        AddDetail(draft, "Биом", GetString(location, "biome"));
+        AddDetail(draft, "Известность", GetString(location, "knownState", "discoveryState", "knownStatus", "state"));
+        if (TryGetBool(location, out var discovered, "discovered", "isDiscovered", "known"))
+            AddDetail(draft, "Открыта", discovered ? "да" : "нет");
         AddDetail(draft, "Описание", GetString(location, "description", "shortDescription"));
+        AddDetail(draft, "Последние события", GetString(location, "lastEventsDescription", "recentEvents", "currentStateSummary"));
+        AddDetail(draft, "Выходы", DescribeAdjacency(location));
+        AddDetail(draft, "Хранилища", DescribeArrayCount(location, "locationStorages"));
+        AddDetail(draft, "Угрозы", DescribeArrayCount(location, "activeThreats"));
         if (draft.HasCoordinates)
             AddDetail(draft, "Координаты", $"{draft.X:0.#}, {draft.Y:0.#}, z={draft.Z}");
 
@@ -281,6 +299,7 @@ public static class LocalMapViewService
             missing[index].X = Math.Round(Math.Cos(angle) * 8, 2);
             missing[index].Y = Math.Round(Math.Sin(angle) * 8, 2);
             missing[index].Z = 0;
+            AddDetail(missing[index], "Координаты", $"схематические: {missing[index].X:0.#}, {missing[index].Y:0.#}, z=0");
         }
     }
 
@@ -335,6 +354,64 @@ public static class LocalMapViewService
         }
 
         return string.Empty;
+    }
+
+    private static bool TryGetBool(JsonElement element, out bool result, params string[] names)
+    {
+        foreach (var name in names)
+        {
+            if (!element.TryGetProperty(name, out var value))
+                continue;
+
+            if (value.ValueKind is JsonValueKind.True or JsonValueKind.False)
+            {
+                result = value.GetBoolean();
+                return true;
+            }
+
+            if (value.ValueKind == JsonValueKind.String &&
+                bool.TryParse(value.GetString(), out var parsed))
+            {
+                result = parsed;
+                return true;
+            }
+        }
+
+        result = false;
+        return false;
+    }
+
+    private static string DescribeAdjacency(JsonElement location)
+    {
+        if (!location.TryGetProperty("adjacencyMap", out var adjacency) || adjacency.ValueKind != JsonValueKind.Array)
+            return string.Empty;
+
+        var exits = new List<string>();
+        foreach (var entry in adjacency.EnumerateArray())
+        {
+            if (entry.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var direction = GetString(entry, "direction", "exitLabel", "label");
+            var target = GetString(entry, "targetLocationName", "name", "targetLocationId", "locationId", "id");
+            var state = GetString(entry, "linkState", "state");
+            var text = string.Join(" - ", new[] { direction, target }.Where(static value => !string.IsNullOrWhiteSpace(value)));
+            if (!string.IsNullOrWhiteSpace(state))
+                text = string.IsNullOrWhiteSpace(text) ? state : $"{text} ({state})";
+            if (!string.IsNullOrWhiteSpace(text))
+                exits.Add(text);
+        }
+
+        return exits.Count == 0 ? string.Empty : string.Join("; ", exits);
+    }
+
+    private static string DescribeArrayCount(JsonElement location, string propertyName)
+    {
+        if (!location.TryGetProperty(propertyName, out var value) || value.ValueKind != JsonValueKind.Array)
+            return string.Empty;
+
+        var count = value.GetArrayLength();
+        return count == 0 ? string.Empty : count.ToString(CultureInfo.InvariantCulture);
     }
 
     private static int GetInt(JsonElement element, params string[] names)
