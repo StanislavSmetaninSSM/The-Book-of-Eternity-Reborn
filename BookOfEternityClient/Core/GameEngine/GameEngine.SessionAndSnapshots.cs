@@ -20,6 +20,7 @@ public partial class GameEngine
         GuardianAbodeOfferingState.PendingRequestPath,
         GuardianTradeRequestState.PendingRequestPath,
         NpcTradeRequestState.PendingRequestPath,
+        CraftRequestState.PendingRequestPath,
         ShiningCoreActionRequestState.PendingActionsRequestPath,
         ShiningTradeRequestState.PendingRequestsPath,
         GuardianAbodeResidentRequestState.PendingResidentsRequestPath,

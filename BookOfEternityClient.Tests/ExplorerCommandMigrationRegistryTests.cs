@@ -137,8 +137,8 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
             .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
 
         Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries["/validate"].Status);
-        Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries["/world_setup"].Status);
-        Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries["/distribute"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/world_setup"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/distribute"].Status);
         Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries["/abode_offering"].Status);
         Assert.Equal(ExplorerCommandMigrationStatus.InteractiveFormPending, entries["/spiritual_action"].Status);
         Assert.Equal(ExplorerCommandMigrationStatus.StatusOnly, entries["/shining_treasury"].Status);
@@ -230,7 +230,14 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
                  {
                      "/world_setup", "/настройка_мира",
                      "/distribute", "/распределить", "/companion_directive", "/директива_компаньону",
-                     "/faction_directive", "/директива_фракции", "/craft", "/ремесло",
+                     "/faction_directive", "/директива_фракции", "/craft", "/ремесло"
+                 })
+        {
+            Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries[command].Status);
+        }
+
+        foreach (var command in new[]
+                 {
                      "/abode_offering", "/подношение_обители", "/found_guardian_mantle", "/учредить_хранителя",
                      "/spiritual_action", "/духовное_действие"
                  })

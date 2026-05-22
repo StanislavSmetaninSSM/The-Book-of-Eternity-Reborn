@@ -25,6 +25,7 @@ public static class AfterlifeContractRegistry
         new(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "guardian_social_interactions", "Chaos Sea", "client-owned pending request", true),
         new(ActorSocialInteractionRequestState.PendingNpcRequestPath, "mortal_npc_social_interactions", "Mortal World; afterlife blocker/preservation semantics", "client-owned Mortal pending request", true),
         new(NpcTradeRequestState.PendingRequestPath, "mortal_npc_trade_inventory", "Mortal World; afterlife blocker/preservation semantics", "client-owned Mortal pending request", true),
+        new(CraftRequestState.PendingRequestPath, "mortal_craft_request", "Mortal World; afterlife blocker/preservation semantics", "client-owned Mortal pending request", true),
         new(AfterlifeArchiveActionState.ConsultationRequestPath, "afterlife_archive_consultation", "Chaos Sea", "client-owned request", true),
         new(AfterlifeArchiveActionState.ProjectFuelRequestPath, "afterlife_archive_project_fuel", "Chaos Sea", "client-owned request", true),
         new(SystemGuardianLibraryService.AttractionRequestPath, "system_guardian_library", "Chaos Sea", "client-owned system Guardian attraction request", true),

@@ -661,6 +661,7 @@ public partial class ValidationService
                      GuardianTradeRequestState.PendingRequestPath,
                      PlayerGuardianFoundationState.PendingRequestPath,
                      NpcTradeRequestState.PendingRequestPath,
+                     CraftRequestState.PendingRequestPath,
                      AfterlifeArchiveActionState.ConsultationRequestPath,
                      AfterlifeArchiveActionState.ProjectFuelRequestPath,
                      GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
@@ -702,6 +703,7 @@ public partial class ValidationService
                             : clientOwnedPath.Equals(PlayerGuardianFoundationState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                                 ? "PlayerGuardianFoundation"
                             : clientOwnedPath.Equals(NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                              clientOwnedPath.Equals(CraftRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                               clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase)
                                 ? "NpcContracts"
                             : clientOwnedPath.Equals(GuardianAbodeResidentRequestState.PendingResidentsRequestPath, StringComparison.OrdinalIgnoreCase) ||
@@ -741,6 +743,8 @@ public partial class ValidationService
                         ? "client_owned_player_guardian_foundation_request_modified"
                     : clientOwnedPath.Equals(NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_npc_trade_request_modified"
+                    : clientOwnedPath.Equals(CraftRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
+                        ? "client_owned_craft_request_modified"
                     : clientOwnedPath.Equals(AfterlifeArchiveActionState.ConsultationRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "client_owned_archive_consultation_request_modified"
                     : clientOwnedPath.Equals(AfterlifeArchiveActionState.ProjectFuelRequestPath, StringComparison.OrdinalIgnoreCase)
@@ -787,6 +791,7 @@ public partial class ValidationService
                     : clientOwnedPath.Equals(PlayerGuardianFoundationState.PendingRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "PlayerGuardianFoundation"
                     : clientOwnedPath.Equals(NpcTradeRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
+                      clientOwnedPath.Equals(CraftRequestState.PendingRequestPath, StringComparison.OrdinalIgnoreCase) ||
                       clientOwnedPath.Equals(ActorSocialInteractionRequestState.PendingNpcRequestPath, StringComparison.OrdinalIgnoreCase)
                         ? "NpcContracts"
                     : clientOwnedPath.Equals(AfterlifeArchiveActionState.ConsultationRequestPath, StringComparison.OrdinalIgnoreCase) ||
