@@ -352,7 +352,7 @@ public sealed class ShiningAbodeTradeAndForgeStateTests
             var changed = await ShiningBlessingEffectState.ConsumeRelicRerollAsync(fs, currentTurnNumber: 7);
 
             Assert.True(changed);
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var entitlements = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!.AsObject();
             Assert.Equal(0, entitlements["rerolls"]!.GetValue<int>());
             Assert.Equal(1, entitlements["rerollsSpent"]!.GetValue<int>());

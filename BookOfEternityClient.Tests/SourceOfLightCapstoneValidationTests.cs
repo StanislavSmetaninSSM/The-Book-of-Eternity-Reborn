@@ -416,7 +416,7 @@ public sealed class SourceOfLightCapstoneValidationTests : IDisposable
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "source_of_light_pending_blocked_by_other_contract", StringComparison.OrdinalIgnoreCase) &&
-            issue.Actual.Contains(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase));
+            issue.Actual!.Contains(AfterlifeSpiritualConflictState.StatePath, StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]

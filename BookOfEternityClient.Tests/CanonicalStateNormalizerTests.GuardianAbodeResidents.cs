@@ -43,7 +43,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(GuardianAbodeResidentState.StatePath))!)!.AsObject();
         Assert.False(root.ContainsKey(GuardianAbodeResidentState.UpdateTransferReceiptsProperty));
 
         var receipts = Assert.IsType<JsonArray>(root[GuardianAbodeResidentState.TransferReceiptsProperty]);

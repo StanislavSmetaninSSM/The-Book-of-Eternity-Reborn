@@ -153,7 +153,7 @@ public sealed class PlayerGuardianFoundationStateTests
                 CreatedAtUtc = "2026-04-18T00:00:00Z"
             });
 
-            var guardiansRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/guardians.json"))!.AsObject();
+            var guardiansRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
             var guardians = guardiansRoot["guardians"]!.AsArray();
             guardians.Add(new JsonObject
             {
@@ -176,7 +176,7 @@ public sealed class PlayerGuardianFoundationStateTests
             });
             await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString());
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json"))!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             soulRoot[PlayerGuardianFoundationState.SoulStateGuardianIdProperty] = "guardian_player";
             soulRoot[PlayerGuardianFoundationState.SoulStateFoundationStatusProperty] = PlayerGuardianFoundationState.SoulStateFoundationStatusFounded;
             await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
@@ -236,7 +236,7 @@ public sealed class PlayerGuardianFoundationStateTests
             fs.EnsureDirectoryStructure();
             await WriteEligibleFoundationStateAsync(fs);
 
-            var guardiansRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/guardians.json"))!.AsObject();
+            var guardiansRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
             var oldGuardian = guardiansRoot["guardians"]!.AsArray()[0]!.AsObject();
             PlayerGuardianFoundationState.ApplyCanonicalFormerPatronSemantics(oldGuardian);
 
@@ -281,7 +281,7 @@ public sealed class PlayerGuardianFoundationStateTests
                 PlayerGuardianFoundationState.BuildCanonicalHistoryEntry(request, "guardian_player", "Трон Прилива", 15, "2026-04-18T00:05:00Z"))!);
             await fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardiansRoot.ToJsonString());
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json"))!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             soulRoot[PlayerGuardianFoundationState.SoulStateGuardianIdProperty] = "guardian_player";
             soulRoot[PlayerGuardianFoundationState.SoulStateFoundationStatusProperty] = PlayerGuardianFoundationState.SoulStateFoundationStatusFounded;
             await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());

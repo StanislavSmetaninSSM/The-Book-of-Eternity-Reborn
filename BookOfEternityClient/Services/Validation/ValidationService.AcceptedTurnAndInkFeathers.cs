@@ -1546,7 +1546,7 @@ public partial class ValidationService
             request = null;
         }
 
-        if (request == null)
+        if (requestDoc == null || request == null)
         {
             issues.Add(new ValidationIssue(
                 GuardianAbodeOfferingState.PendingRequestPath,

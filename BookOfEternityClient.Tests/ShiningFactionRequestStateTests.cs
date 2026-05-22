@@ -549,7 +549,7 @@ public sealed class ShiningFactionRequestStateTests
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningPoliticalStateAsync(fs);
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             shiningRoot["availability"] = ShiningAbodeState.AvailabilitySealedUntilNextAscension;
             await fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString());
 
@@ -1217,7 +1217,7 @@ public sealed class ShiningFactionRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningPoliticalStateAsync(fs);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
             faction["leadership"] = new JsonObject
             {
@@ -1255,7 +1255,7 @@ public sealed class ShiningFactionRequestStateTests
             fs.EnsureDirectoryStructure();
             await WriteMinimalShiningPoliticalStateAsync(fs);
 
-            var shiningRoot = JsonNode.Parse(await fs.ReadFileAsync(ShiningAbodeState.StatePath)!)!.AsObject();
+            var shiningRoot = JsonNode.Parse((await fs.ReadFileAsync(ShiningAbodeState.StatePath))!)!.AsObject();
             var faction = shiningRoot["factions"]!.AsArray()[0]!.AsObject();
             faction["leadership"] = new JsonObject
             {

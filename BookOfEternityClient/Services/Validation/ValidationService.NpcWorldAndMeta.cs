@@ -3577,7 +3577,7 @@ public partial class ValidationService
             GetFirstNonEmptyString(npc, "role"),
             GetFirstNonEmptyString(npc, "occupation"),
             GetFirstNonEmptyString(npc, "class"),
-            GetFirstNonEmptyString(npc, "name"));
+            GetFirstNonEmptyString(npc, "name")) ?? string.Empty;
     }
 
     private void ValidateNpcTradeState(JsonElement npc, string npcContext, List<ValidationIssue> issues)

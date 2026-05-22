@@ -789,7 +789,7 @@ public partial class ValidationService
         var bonusClueTrackerAuthorityResolutionAttempted = false;
         var hasBonusClueTrackerAuthority = false;
         JsonElement bonusClueTrackerAuthorityRoot = default;
-        GuardianProjectTrackerPolicyContext bonusClueTrackerAuthorityContext = default;
+        GuardianProjectTrackerPolicyContext? bonusClueTrackerAuthorityContext = null;
         var bonusClueCurrentIncarnationResolutionAttempted = false;
         var hasBonusClueCurrentIncarnation = false;
         var bonusClueCurrentIncarnation = 0;
@@ -1414,7 +1414,7 @@ public partial class ValidationService
                 if (hasBonusClueTrackerAuthority)
                 {
                     trackerRoot = bonusClueTrackerAuthorityRoot;
-                    trackerContext = bonusClueTrackerAuthorityContext;
+                    trackerContext = bonusClueTrackerAuthorityContext!;
                 }
                 else if (bonusClueTrackerAuthorityResolutionAttempted)
                 {

@@ -174,15 +174,15 @@ public partial class ExplorerMode
                 if (matchingReceipt != null)
                 {
                     lines.Add("  Подтверждение исхода:");
-                    lines.Add($"    Идентификатор запроса: [dim]{Markup.Escape(GetNodeString(displayedReceipt["requestId"]) ?? "?")}[/]");
-                    lines.Add($"    Статус: [white]{Markup.Escape(DescribeShiningResolutionStatus(GetNodeString(displayedReceipt["status"])))}[/]");
-                    lines.Add($"    Подготовлено слотов: [dim]{GetNodeInt(displayedReceipt["itemCount"])}[/]");
-                    lines.Add(TryReadIntegerNode(displayedReceipt["soldOutCount"], out var displayedSoldOutCount)
+                    lines.Add($"    Идентификатор запроса: [dim]{Markup.Escape(GetNodeString(matchingReceipt["requestId"]) ?? "?")}[/]");
+                    lines.Add($"    Статус: [white]{Markup.Escape(DescribeShiningResolutionStatus(GetNodeString(matchingReceipt["status"])))}[/]");
+                    lines.Add($"    Подготовлено слотов: [dim]{GetNodeInt(matchingReceipt["itemCount"])}[/]");
+                    lines.Add(TryReadIntegerNode(matchingReceipt["soldOutCount"], out var displayedSoldOutCount)
                         ? $"    Распродано: [dim]{displayedSoldOutCount}[/]"
                         : "    Распродано: [dim]не зафиксировано в этой исторической записи[/]");
-                    lines.Add($"    Подтверждено на ходу: [dim]{GetNodeInt(displayedReceipt["resolvedAtTurn"])}[/]");
-                    if (!string.IsNullOrWhiteSpace(GetNodeString(displayedReceipt["resolvedAtUtc"])))
-                        lines.Add($"    Подтверждено в UTC: [dim]{Markup.Escape(GetNodeString(displayedReceipt["resolvedAtUtc"])!)}[/]");
+                    lines.Add($"    Подтверждено на ходу: [dim]{GetNodeInt(matchingReceipt["resolvedAtTurn"])}[/]");
+                    if (!string.IsNullOrWhiteSpace(GetNodeString(matchingReceipt["resolvedAtUtc"])))
+                        lines.Add($"    Подтверждено в UTC: [dim]{Markup.Escape(GetNodeString(matchingReceipt["resolvedAtUtc"])!)}[/]");
                 }
                 else if (sameCycleReceipt != null)
                 {
@@ -245,7 +245,7 @@ public partial class ExplorerMode
                 var relicId = GetNodeString(entry["relicId"]) ?? "?";
                 var turnNumber = GetNodeInt(entry["turnNumber"]);
                 var turnText = turnNumber > 0 ? $" [dim](ход {turnNumber})[/]" : string.Empty;
-                lines.Add($"  • {Markup.Escape(factionName)} [dim]({Markup.Escape(factionId)})[/] — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"])))}, {Markup.Escape(relicName)} [dim]({Markup.Escape(relicId)})[/]{turnText}");
+                lines.Add($"  • {Markup.Escape(factionName)} [dim]({Markup.Escape(factionId)})[/] — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"]) ?? string.Empty))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"]) ?? string.Empty))}, {Markup.Escape(relicName)} [dim]({Markup.Escape(relicId)})[/]{turnText}");
                 lines.Add($"    Идентификатор запроса: [dim]{Markup.Escape(GetNodeString(entry["requestId"]) ?? "?")}[/]");
                 lines.Add($"    Цикл возвращения: [dim]{Markup.Escape(GetNodeString(entry["returnCycleId"]) ?? "?")}[/]");
                 lines.Add($"    Стоимость в Перьях: [dim]{GetNodeInt(entry["costInFeathers"])}[/]");
@@ -381,7 +381,7 @@ public partial class ExplorerMode
                 var factionId = GetNodeString(entry["factionId"]) ?? "?";
                 var relicName = GetNodeString(entry["relicName"]) ?? GetNodeString(entry["relicId"]) ?? "реликвия";
                 var relicId = GetNodeString(entry["relicId"]) ?? "?";
-                lines.Add($"  • {Markup.Escape(factionName)} [dim]({Markup.Escape(factionId)})[/] — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"])))}, {Markup.Escape(relicName)} [dim]({Markup.Escape(relicId)})[/]");
+                lines.Add($"  • {Markup.Escape(factionName)} [dim]({Markup.Escape(factionId)})[/] — {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["baseRarity"]) ?? string.Empty))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(entry["finalRarity"]) ?? string.Empty))}, {Markup.Escape(relicName)} [dim]({Markup.Escape(relicId)})[/]");
                 lines.Add($"    Идентификатор запроса: [dim]{Markup.Escape(GetNodeString(entry["requestId"]) ?? "?")}[/]");
                 lines.Add($"    Цикл возвращения: [dim]{Markup.Escape(GetNodeString(entry["returnCycleId"]) ?? "?")}[/]");
                 lines.Add($"    Стоимость в Перьях: [dim]{GetNodeInt(entry["costInFeathers"])}[/]");

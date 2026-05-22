@@ -359,7 +359,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         Assert.NotNull(snapshot.CurrentAuthorityRootJson);
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
-        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"])).AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]))!.AsObject();
         var relationshipData = Assert.IsType<JsonObject>(guardian["relationshipData"]);
         var abode = Assert.IsType<JsonObject>(guardian["abode"]);
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
@@ -466,7 +466,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         Assert.NotNull(snapshot.CurrentAuthorityRootJson);
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
-        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"])).AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]))!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
 
         Assert.Equal(43, abodePower["currentPower"]!.GetValue<int>());
@@ -557,7 +557,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         Assert.NotNull(snapshot.CurrentAuthorityRootJson);
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
-        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"])).AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]))!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
 
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
@@ -642,7 +642,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         Assert.NotNull(snapshot.CurrentAuthorityRootJson);
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
-        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"])).AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]))!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
 
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
@@ -1336,7 +1336,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
         var completedProjects = Assert.IsType<JsonArray>(currentAuthorityRoot["completedProjects"]);
-        var completedEntry = Assert.Single(completedProjects).AsObject();
+        var completedEntry = Assert.Single(completedProjects)!.AsObject();
         var project = Assert.IsType<JsonObject>(completedEntry["project"]);
         var offensiveImpactAudit = Assert.IsType<JsonObject>(project["offensiveImpactAudit"]);
 
@@ -1395,7 +1395,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
         var guardians = Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]);
-        var guardian = Assert.Single(guardians).AsObject();
+        var guardian = Assert.Single(guardians)!.AsObject();
         var relationshipData = Assert.IsType<JsonObject>(guardian["relationshipData"]);
 
         Assert.Equal(18, relationshipData["currentReputation"]!.GetValue<int>());
@@ -1467,7 +1467,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
         var guardians = Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]);
-        var guardian = Assert.Single(guardians).AsObject();
+        var guardian = Assert.Single(guardians)!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
 
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
@@ -1539,7 +1539,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
         var guardians = Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]);
-        var guardian = Assert.Single(guardians).AsObject();
+        var guardian = Assert.Single(guardians)!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
 
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
@@ -1613,7 +1613,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
         var guardians = Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]);
-        var guardian = Assert.Single(guardians).AsObject();
+        var guardian = Assert.Single(guardians)!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
 
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
@@ -1764,7 +1764,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
         var completedProjects = Assert.IsType<JsonArray>(currentAuthorityRoot["completedProjects"]);
-        var completedEntry = Assert.Single(completedProjects).AsObject();
+        var completedEntry = Assert.Single(completedProjects)!.AsObject();
         var project = Assert.IsType<JsonObject>(completedEntry["project"]);
         var offensiveImpactAudit = Assert.IsType<JsonObject>(project["offensiveImpactAudit"]);
 
@@ -1893,7 +1893,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         Assert.NotNull(snapshot.CurrentAuthorityRootJson);
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
-        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"])).AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]))!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
     }
@@ -2062,7 +2062,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         Assert.NotNull(snapshot.CurrentAuthorityRootJson);
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
-        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"])).AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(currentAuthorityRoot["guardians"]))!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
     }
@@ -2167,7 +2167,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
             .Select(node => Assert.IsType<JsonObject>(node))
             .Single(guardian => string.Equals(guardian["guardianId"]?.GetValue<string>(), "guardian_alpha", StringComparison.OrdinalIgnoreCase));
         var guardianRelationships = Assert.IsType<JsonArray>(guardianAlpha["guardianRelationships"]);
-        var relationship = Assert.Single(guardianRelationships).AsObject();
+        var relationship = Assert.Single(guardianRelationships)!.AsObject();
         Assert.Equal("guardian_beta", relationship["targetGuardianId"]!.GetValue<string>());
         Assert.Equal(-80, relationship["attitudeScore"]!.GetValue<int>());
     }
@@ -2219,7 +2219,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var genericSharedStrictPreTurnAuthorityRoot = JsonNode.Parse(snapshot.GenericSharedStrictPreTurnAuthorityRootJson!)!.AsObject();
         var guardians = Assert.IsType<JsonArray>(genericSharedStrictPreTurnAuthorityRoot["guardians"]);
-        var createdGuardianEntry = Assert.Single(guardians).AsObject();
+        var createdGuardianEntry = Assert.Single(guardians)!.AsObject();
         Assert.Equal("guardian_new", createdGuardianEntry["guardianId"]!.GetValue<string>());
         Assert.Equal("Лира", createdGuardianEntry["canonicalName"]!.GetValue<string>());
     }
@@ -2262,7 +2262,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
         Assert.NotNull(snapshot.GenericSharedStrictPreTurnAuthorityRootJson);
 
         var genericSharedStrictPreTurnAuthorityRoot = JsonNode.Parse(snapshot.GenericSharedStrictPreTurnAuthorityRootJson!)!.AsObject();
-        var guardian = Assert.Single(Assert.IsType<JsonArray>(genericSharedStrictPreTurnAuthorityRoot["guardians"])).AsObject();
+        var guardian = Assert.Single(Assert.IsType<JsonArray>(genericSharedStrictPreTurnAuthorityRoot["guardians"]))!.AsObject();
         var abodePower = Assert.IsType<JsonObject>(guardian["abodePower"]);
         Assert.Equal(40, abodePower["currentPower"]!.GetValue<int>());
     }
@@ -2364,7 +2364,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
         var completedProjects = Assert.IsType<JsonArray>(currentAuthorityRoot["completedProjects"]);
-        var completedEntry = Assert.Single(completedProjects).AsObject();
+        var completedEntry = Assert.Single(completedProjects)!.AsObject();
         var project = Assert.IsType<JsonObject>(completedEntry["project"]);
         var effectState = Assert.IsType<JsonObject>(project["effectState"]);
 
@@ -2836,7 +2836,7 @@ public sealed class GuardianPolicyKernelTests : IDisposable
 
         var currentAuthorityRoot = JsonNode.Parse(snapshot.CurrentAuthorityRootJson!)!.AsObject();
         var completedProjects = Assert.IsType<JsonArray>(currentAuthorityRoot["completedProjects"]);
-        var completedEntry = Assert.Single(completedProjects).AsObject();
+        var completedEntry = Assert.Single(completedProjects)!.AsObject();
         var project = Assert.IsType<JsonObject>(completedEntry["project"]);
         var effectState = Assert.IsType<JsonObject>(project["effectState"]);
 

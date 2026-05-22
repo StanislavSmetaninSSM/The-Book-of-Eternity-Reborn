@@ -81,7 +81,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.True(root["pendingTurn"]!["hasActiveGmTurn"]!.GetValue<bool>());
         Assert.Contains(root["pendingTurn"]!["artifacts"]!.AsArray(), node =>
             string.Equals(node?["path"]?.GetValue<string>(), "input/turn_request.json", StringComparison.OrdinalIgnoreCase) &&
-            node["exists"]!.GetValue<bool>());
+            node?["exists"]?.GetValue<bool>() == true);
         Assert.True(root["localUiLock"]!["exists"]!.GetValue<bool>());
         Assert.Equal("console-owner", root["localUiLock"]!["ownerId"]!.GetValue<string>());
     }
@@ -219,7 +219,7 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         var response = await client.GetAsync("/api/media/" + Uri.EscapeDataString(mediaId));
-        var json = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+        var json = JsonNode.Parse((await response.Content.ReadAsStringAsync())!)!.AsObject();
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Contains("разреш", json["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
@@ -284,7 +284,7 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         using var response = await client.PostAsJsonAsync("/api/lifecycle/validate", new { });
-        var root = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+        var root = JsonNode.Parse((await response.Content.ReadAsStringAsync())!)!.AsObject();
 
         response.EnsureSuccessStatusCode();
         Assert.True(root["issueCount"]!.GetValue<int>() > 0);
@@ -333,7 +333,7 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         using var response = await client.PostAsJsonAsync("/api/explorer/command", new { command = "/status" });
-        var actual = JsonNode.Parse(await response.Content.ReadAsStringAsync())!;
+        var actual = JsonNode.Parse((await response.Content.ReadAsStringAsync())!)!;
 
         var fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
         fs.EnsureDirectoryStructure();
@@ -387,7 +387,7 @@ public sealed class LocalWebUiHostTests : IDisposable
             ownerId = "browser-host-test",
             ownerLabel = "Browser host test"
         });
-        var startRoot = JsonNode.Parse(await startResponse.Content.ReadAsStringAsync())!.AsObject();
+        var startRoot = JsonNode.Parse((await startResponse.Content.ReadAsStringAsync())!)!.AsObject();
         startResponse.EnsureSuccessStatusCode();
         var sessionId = startRoot["interactiveSession"]!["sessionId"]!.GetValue<string>();
 
@@ -402,7 +402,7 @@ public sealed class LocalWebUiHostTests : IDisposable
                 world_directives = "Тёмное фэнтези, трагедия, родовые клятвы."
             }
         });
-        var submitRoot = JsonNode.Parse(await submitResponse.Content.ReadAsStringAsync())!.AsObject();
+        var submitRoot = JsonNode.Parse((await submitResponse.Content.ReadAsStringAsync())!)!.AsObject();
 
         submitResponse.EnsureSuccessStatusCode();
         Assert.Equal("Completed", submitRoot["state"]!.GetValue<string>());
@@ -461,14 +461,14 @@ public sealed class LocalWebUiHostTests : IDisposable
         using var client = new HttpClient { BaseAddress = new Uri(url) };
 
         using var acceptResponse = await client.PostAsJsonAsync("/api/qte/offer", new { decision = "accept" });
-        var acceptRoot = JsonNode.Parse(await acceptResponse.Content.ReadAsStringAsync())!.AsObject();
+        var acceptRoot = JsonNode.Parse((await acceptResponse.Content.ReadAsStringAsync())!)!.AsObject();
 
         acceptResponse.EnsureSuccessStatusCode();
         Assert.Equal("Active", acceptRoot["state"]!.GetValue<string>());
         Assert.Equal("start", acceptRoot["activeScene"]!["currentChapter"]!["chapterId"]!.GetValue<string>());
 
         using var actionResponse = await client.PostAsJsonAsync("/api/qte/action", new { actionId = "cross_bridge" });
-        var actionRoot = JsonNode.Parse(await actionResponse.Content.ReadAsStringAsync())!.AsObject();
+        var actionRoot = JsonNode.Parse((await actionResponse.Content.ReadAsStringAsync())!)!.AsObject();
 
         actionResponse.EnsureSuccessStatusCode();
         Assert.Equal("Completed", actionRoot["state"]!.GetValue<string>());

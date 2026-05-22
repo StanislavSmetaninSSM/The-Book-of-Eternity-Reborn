@@ -332,7 +332,7 @@ public sealed partial class CanonicalStateNormalizerTests : IDisposable
         var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
         await NormalizeAccumulatedStateWithTrackerBaselineAsync(normalizer);
 
-        var guardiansRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/guardians.json")!)!.AsObject();
+        var guardiansRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/guardians.json"))!)!.AsObject();
         var guardian = guardiansRoot["guardians"]!.AsArray()[0]!.AsObject();
         var activeGuardian = guardiansRoot["activeGuardian"]!.AsObject();
         var gachaHistory = guardian["gachaSystem"]?["gachaHistory"]?.AsArray();

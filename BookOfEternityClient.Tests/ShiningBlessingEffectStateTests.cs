@@ -46,7 +46,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.Contains(result.SummaryLines, line => line.Contains("Blessing audit: effectId=card_social", StringComparison.Ordinal));
             Assert.DoesNotContain(result.SummaryLines, line => line.Contains("effectPayload", StringComparison.OrdinalIgnoreCase));
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var blessingState = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!.AsObject();
             var memorySelection = blessingState["memorySelection"]!.AsObject();
             var resourceGrant = blessingState["resourceGrant"]!.AsObject();
@@ -63,10 +63,10 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(relicEntitlements["freeShape"]!.GetValue<bool>());
             Assert.False(relicEntitlements["freeRetune"]!.GetValue<bool>());
 
-            var statusRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/core/player_status.json")!)!.AsObject();
+            var statusRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
             Assert.Equal(150, statusRoot["money"]!.GetValue<int>());
 
-            var inventoryRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/inventory/items.json")!)!.AsObject();
+            var inventoryRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
             var resources = inventoryRoot["resources"]!.AsObject();
             Assert.Equal(2, resources["common"]!.GetValue<int>());
             Assert.Equal(1, resources["uncommon"]!.GetValue<int>());
@@ -111,15 +111,15 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.Success);
             Assert.True(result.StateChanged);
 
-            var statusRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/core/player_status.json")!)!.AsObject();
+            var statusRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
             Assert.Equal(150, statusRoot["money"]!.GetValue<int>());
 
-            var inventoryRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/inventory/items.json")!)!.AsObject();
+            var inventoryRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
             var resources = inventoryRoot["resources"]!.AsObject();
             Assert.Equal(2, resources["common"]!.GetValue<int>());
             Assert.Equal(1, resources["uncommon"]!.GetValue<int>());
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var resourceGrant = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["resourceGrant"]!.AsObject();
             Assert.Equal("shining_bootstrap_resource:42:3:card_resource", resourceGrant["grantId"]!.GetValue<string>());
         }
@@ -156,7 +156,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.False(result.StateChanged);
             Assert.Contains("preparedIncarnationPackage", result.ErrorMessage, StringComparison.OrdinalIgnoreCase);
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             Assert.False(soulRoot.ContainsKey(ShiningBlessingEffectState.SoulStateProperty));
         }
         finally
@@ -252,7 +252,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.Success);
             Assert.Contains(result.SummaryLines, line => line.Contains("descent blessing primed", StringComparison.OrdinalIgnoreCase));
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var storedRelic = soulRoot["soulRelics"]!["stored"]!.AsArray()[0]!.AsObject();
             Assert.Equal(15, storedRelic["companionManifestationQualityBonus"]!.GetValue<int>());
 
@@ -344,11 +344,11 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.Contains(result.SummaryLines, line => line.Contains("lore blessing satisfied", StringComparison.OrdinalIgnoreCase));
             Assert.Contains(result.SummaryLines, line => line.Contains("route blessing expired", StringComparison.OrdinalIgnoreCase));
 
-            var updatedNpcRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/npcs/npc_core.json")!)!.AsObject();
+            var updatedNpcRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
             var npc = updatedNpcRoot[GuardianPolicyContracts.NpcCoreSceneSectionName]!.AsArray()[0]!.AsObject();
             Assert.Equal(25, npc["relationshipLevel"]!.GetValue<int>());
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var blessingState = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!.AsObject();
             var social = blessingState["pendingSocialEffects"]!.AsArray()[0]!.AsObject();
             var lore = blessingState["pendingLoreEffects"]!.AsArray()[0]!.AsObject();
@@ -423,7 +423,7 @@ public sealed class ShiningBlessingEffectStateTests
 
             Assert.True(changed);
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var memorySelection = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["memorySelection"]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, memorySelection["status"]!.GetValue<string>());
             Assert.Equal(3, memorySelection["selectedLifeIncarnation"]!.GetValue<int>());
@@ -517,7 +517,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.StateChanged);
             Assert.Contains(result.SummaryLines, line => line.Contains("descent blessing resolved", StringComparison.OrdinalIgnoreCase));
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var descent = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingDescentEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, descent["status"]!.GetValue<string>());
             Assert.Equal("npc_echo", descent["consumedNpcId"]!.GetValue<string>());
@@ -601,11 +601,11 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.StateChanged);
             Assert.Contains(result.SummaryLines, line => line.Contains("faction relation commit", StringComparison.OrdinalIgnoreCase));
 
-            var updatedFactionRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/factions/faction_core.json")!)!.AsObject();
+            var updatedFactionRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/factions/faction_core.json"))!)!.AsObject();
             var faction = updatedFactionRoot["factions"]!.AsArray()[0]!.AsObject();
             Assert.Equal(25, faction["reputation"]!.GetValue<int>());
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var social = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingSocialEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, social["status"]!.GetValue<string>());
             Assert.Equal("faction_glass", social["consumedTargetFactionId"]!.GetValue<string>());
@@ -694,15 +694,15 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.StateChanged);
             Assert.Contains(result.SummaryLines, line => line.Contains("relation commit", StringComparison.OrdinalIgnoreCase));
 
-            var updatedNpcRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/npcs/npc_core.json")!)!.AsObject();
+            var updatedNpcRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
             var npc = updatedNpcRoot[GuardianPolicyContracts.NpcCoreSceneSectionName]!.AsArray()[0]!.AsObject();
             Assert.Equal(35, npc["relationshipLevel"]!.GetValue<int>());
 
-            var relationshipRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/npcs/npc_relationships.json")!)!.AsObject();
+            var relationshipRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/npcs/npc_relationships.json"))!)!.AsObject();
             var relationshipEntry = relationshipRoot["NPCRelationshipChanges"]!.AsArray()[0]!.AsObject();
             Assert.Equal(35, relationshipEntry["newRelationshipLevel"]!.GetValue<int>());
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var social = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingSocialEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, social["status"]!.GetValue<string>());
             Assert.Equal("npc_ally", social["consumedTargetNpcId"]!.GetValue<string>());
@@ -811,7 +811,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.StateChanged);
             Assert.Contains(result.SummaryLines, line => line.Contains("faction relation commit", StringComparison.OrdinalIgnoreCase));
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var social = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingSocialEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, social["status"]!.GetValue<string>());
             Assert.Equal("faction_aaa", social["consumedTargetFactionId"]!.GetValue<string>());
@@ -897,7 +897,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.Success);
             Assert.False(result.StateChanged);
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var social = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingSocialEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.SocialStatusPendingFirstRelationCommit, social["status"]!.GetValue<string>());
             Assert.False(social.TryGetPropertyValue("consumedTargetNpcId", out _));
@@ -992,15 +992,15 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.StateChanged);
             Assert.Contains(result.SummaryLines, line => line.Contains("survival blessing applied", StringComparison.OrdinalIgnoreCase));
 
-            var updatedWorldEvents = JsonNode.Parse(await fs.ReadFileAsync("game_state/world/world_events.json")!)!.AsObject();
+            var updatedWorldEvents = JsonNode.Parse((await fs.ReadFileAsync("game_state/world/world_events.json"))!)!.AsObject();
             Assert.Equal("severe", updatedWorldEvents["events"]!.AsArray()[0]!["severity"]!.GetValue<string>());
 
-            var updatedStatus = JsonNode.Parse(await fs.ReadFileAsync("game_state/core/player_status.json")!)!.AsObject();
+            var updatedStatus = JsonNode.Parse((await fs.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
             Assert.Equal("68%", updatedStatus["healthPercentage"]!.GetValue<string>());
             Assert.Equal("58%", updatedStatus["energyPercentage"]!.GetValue<string>());
             Assert.Equal("48%", updatedStatus["poisePercentage"]!.GetValue<string>());
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var survival = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingSurvivalEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, survival["status"]!.GetValue<string>());
             Assert.Equal("evt_ruinous", survival["consumedEventId"]!.GetValue<string>());
@@ -1250,7 +1250,7 @@ public sealed class ShiningBlessingEffectStateTests
             }.ToJsonString());
 
             await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var lore = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingLoreEffects"]!.AsArray()[0]!.AsObject();
             lore["clueCount"] = 2;
             await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
@@ -1289,7 +1289,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.Success);
             Assert.False(result.StateChanged);
 
-            var updatedSoulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var updatedSoulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var updatedLore = updatedSoulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingLoreEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.LoreStatusPendingLoreInsertion, updatedLore["status"]!.GetValue<string>());
             Assert.False(updatedLore.TryGetPropertyValue("consumedAnchorIds", out _));
@@ -1365,7 +1365,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.Success);
             Assert.True(result.StateChanged);
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var lore = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingLoreEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, lore["status"]!.GetValue<string>());
             Assert.Equal("evt_lore_a", lore["consumedEventIds"]!.AsArray()[0]!.GetValue<string>());
@@ -1403,7 +1403,7 @@ public sealed class ShiningBlessingEffectStateTests
             }.ToJsonString());
 
             await ShiningBlessingEffectState.MaterializeForBootstrapAsync(fs, CreatePreparedPackage(), 4);
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var route = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingRouteEffects"]!.AsArray()[0]!.AsObject();
             route["routeOptions"] = 2;
             await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soulRoot.ToJsonString());
@@ -1442,7 +1442,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.Success);
             Assert.False(result.StateChanged);
 
-            var updatedSoulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var updatedSoulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var updatedRoute = updatedSoulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingRouteEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.RouteStatusPendingEarlyRouteSeed, updatedRoute["status"]!.GetValue<string>());
             Assert.False(updatedRoute.TryGetPropertyValue("consumedRouteSeedIds", out _));
@@ -1517,7 +1517,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.StateChanged);
             Assert.Contains(result.SummaryLines, line => line.Contains("route blessing satisfied", StringComparison.OrdinalIgnoreCase));
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var route = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingRouteEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.GenericStatusConsumed, route["status"]!.GetValue<string>());
             Assert.Equal("evt_route_alpha", route["consumedEventIds"]!.AsArray()[0]!.GetValue<string>());
@@ -1609,7 +1609,7 @@ public sealed class ShiningBlessingEffectStateTests
             Assert.True(result.Success);
             Assert.False(result.StateChanged);
 
-            var soulRoot = JsonNode.Parse(await fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+            var soulRoot = JsonNode.Parse((await fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
             var descent = soulRoot[ShiningBlessingEffectState.SoulStateProperty]!["pendingDescentEffects"]!.AsArray()[0]!.AsObject();
             Assert.Equal(ShiningBlessingEffectState.DescentStatusPendingResidentDescent, descent["status"]!.GetValue<string>());
             Assert.False(descent.TryGetPropertyValue("consumedNpcId", out _));

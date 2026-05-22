@@ -1817,8 +1817,8 @@ internal static class GuardianAbodeResidentState
         IReadOnlyDictionary<string, Dictionary<string, string>> previousQuestFingerprintsByResident,
         IReadOnlyDictionary<string, Dictionary<string, string>> currentQuestFingerprintsByResident)
     {
-        var residentId = GetNodeString(currentResident["residentId"]);
-        var guardianId = GetNodeString(currentResident["guardianId"]);
+        var residentId = GetNodeString(currentResident["residentId"]) ?? string.Empty;
+        var guardianId = GetNodeString(currentResident["guardianId"]) ?? string.Empty;
         var currentRewardState = GetNodeString(currentResident["bondRewardState"]);
         var previousRewardState = preTurnResident == null ? string.Empty : GetNodeString(preTurnResident["bondRewardState"]);
         var currentGrantedRelicId = GetNodeString(currentResident["grantedRelicId"]);

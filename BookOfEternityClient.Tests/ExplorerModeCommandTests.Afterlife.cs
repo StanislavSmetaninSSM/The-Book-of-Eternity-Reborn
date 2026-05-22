@@ -4235,7 +4235,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_gates_selection_preview_cancel");
-        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(_fs.ResolvePath(ShiningAbodeState.StatePath)))!.AsObject();
+        var shiningRoot = JsonNode.Parse((await File.ReadAllTextAsync(_fs.ResolvePath(ShiningAbodeState.StatePath)))!)!.AsObject();
         var selectedIds = shiningRoot["gates"]!["selectedBlessingCardIds"]!.AsArray()
             .Select(node => node!.GetValue<string>())
             .ToArray();
@@ -4253,7 +4253,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
         var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
-        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var shiningRoot = JsonNode.Parse((await File.ReadAllTextAsync(shiningStatePath))!)!.AsObject();
         var gates = shiningRoot["gates"]!.AsObject();
         var allCandidates = gates["allCandidateBlessingCards"]!.AsArray();
         var availableCards = gates["availableBlessingCards"]!.AsArray();
@@ -4319,7 +4319,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_gates_reroll_preview_available_cards");
-        var afterRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var afterRoot = JsonNode.Parse((await File.ReadAllTextAsync(shiningStatePath))!)!.AsObject();
         var afterAvailableIds = afterRoot["gates"]!["availableBlessingCards"]!.AsArray()
             .OfType<JsonObject>()
             .Select(card => card["cardId"]!.GetValue<string>())
@@ -4343,7 +4343,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
         var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
-        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var shiningRoot = JsonNode.Parse((await File.ReadAllTextAsync(shiningStatePath))!)!.AsObject();
         var gates = shiningRoot["gates"]!.AsObject();
         var allCandidates = gates["allCandidateBlessingCards"]!.AsArray();
         var availableCards = gates["availableBlessingCards"]!.AsArray();
@@ -4410,7 +4410,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_gates_malformed_legacy_discovery_preserved");
-        var afterRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var afterRoot = JsonNode.Parse((await File.ReadAllTextAsync(shiningStatePath))!)!.AsObject();
         Assert.Equal("malformed_contract", afterRoot["pendingNativeFactionDiscovery"]?.GetValue<string>());
         Assert.Equal(1, afterRoot["gates"]?["rerollsRemaining"]?.GetValue<int>());
         Assert.Contains(_console.MarkupLines, line => line.Contains("pendingNativeFactionDiscovery", StringComparison.OrdinalIgnoreCase));
@@ -4424,7 +4424,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         await WriteJsonAsync("input/turn_request.json", new { turnNumber = 17 });
         _fs.DeleteFile(ShiningTradeRequestState.PendingRequestsPath);
         var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
-        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var shiningRoot = JsonNode.Parse((await File.ReadAllTextAsync(shiningStatePath))!)!.AsObject();
         var dawnFaction = shiningRoot["factions"]!.AsArray()
             .OfType<JsonObject>()
             .First(faction => string.Equals(faction["factionId"]?.GetValue<string>(), "faction_dawn", StringComparison.OrdinalIgnoreCase));
@@ -4462,7 +4462,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         _fs.DeleteFile("input/turn_request.json");
         _fs.DeleteFile(ShiningTradeRequestState.PendingRequestsPath);
         var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
-        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var shiningRoot = JsonNode.Parse((await File.ReadAllTextAsync(shiningStatePath))!)!.AsObject();
         var dawnFaction = shiningRoot["factions"]!.AsArray()
             .OfType<JsonObject>()
             .First(faction => string.Equals(faction["factionId"]?.GetValue<string>(), "faction_dawn", StringComparison.OrdinalIgnoreCase));
@@ -4567,7 +4567,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
         var soulPath = _fs.ResolvePath("game_state/meta/soul_state.json");
-        var soulRoot = JsonNode.Parse(await File.ReadAllTextAsync(soulPath))!.AsObject();
+        var soulRoot = JsonNode.Parse((await File.ReadAllTextAsync(soulPath))!)!.AsObject();
         soulRoot[ShiningBlessingEffectState.SoulStateProperty] = new JsonObject
         {
             ["applicationState"] = "active",
@@ -4601,7 +4601,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_forge_reroll_cancel_preserves_entitlement");
         Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
-        var afterRoot = JsonNode.Parse(await File.ReadAllTextAsync(soulPath))!.AsObject();
+        var afterRoot = JsonNode.Parse((await File.ReadAllTextAsync(soulPath))!)!.AsObject();
         var entitlements = afterRoot[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!.AsObject();
         Assert.Equal(1, entitlements["rerolls"]!.GetValue<int>());
         Assert.Equal(ShiningBlessingEffectState.RelicStatusPendingEntitlement, entitlements["status"]!.GetValue<string>());
@@ -7750,10 +7750,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ShiningAbode_ActionsBlockNativeDiscoveryBelowRadianceTierOne()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         soulRoot["inkFeathers"] = new JsonObject { ["current"] = 50 };
         await WriteJsonAsync("game_state/meta/soul_state.json", soulRoot);
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!)!.AsObject();
         shiningRoot["radiance"] = new JsonObject
         {
             ["experience"] = 0,
@@ -7780,7 +7780,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ShiningAbode_ActionsBlockProjectSupportWhenGlobalCapFull()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!)!.AsObject();
         var firstFaction = (shiningRoot["factions"] as JsonArray)?.OfType<JsonObject>().First()
             ?? throw new InvalidOperationException("Expected seeded Shining faction.");
         var projects = firstFaction["projects"] as JsonArray
@@ -8253,7 +8253,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ShiningTreasury_BlocksLegacyNativeDiscoveryPending()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!)!.AsObject();
         shiningRoot["pendingNativeFactionDiscovery"] = new JsonObject
         {
             ["requestId"] = "legacy_discovery_pending_001",
@@ -8301,7 +8301,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ShiningTreasury_BlocksMalformedTreasuryWithoutNormalizingIt()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!)!.AsObject();
         shiningRoot[ShiningAbodeState.TreasuryProperty] = "malformed_treasury";
         await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, shiningRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         await _stateManager.RefreshGameStateAsync();
@@ -8449,7 +8449,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_ink_feathers");
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         var profile = Assert.IsType<JsonObject>(soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]);
         var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
         Assert.Equal(1, artTiers["pressure"]?.GetValue<int>());
@@ -8526,14 +8526,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_special_art_ink_feathers");
-        var entityRoot = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath) ?? "{}")!.AsObject();
+        var entityRoot = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath) ?? "{}")!)!.AsObject();
         var playerProfile = entityRoot["profiles"]!.AsArray().OfType<JsonObject>()
             .Single(profile => string.Equals(profile["actorType"]?.GetValue<string>(), "player_soul", StringComparison.OrdinalIgnoreCase));
         var specialArt = playerProfile["specialArts"]!.AsArray().OfType<JsonObject>()
             .Single(art => string.Equals(art["artId"]?.GetValue<string>(), "mirror_guard", StringComparison.OrdinalIgnoreCase));
         Assert.Equal(2, specialArt["tier"]?.GetValue<int>());
 
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
         Assert.Equal(90, inkFeathers["current"]?.GetValue<int>());
         var profile = soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty] as JsonObject;
@@ -8623,9 +8623,9 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_special_art_light_sparks");
-        var shiningRoot = JsonNode.Parse(await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!.AsObject();
+        var shiningRoot = JsonNode.Parse((await _fs.ReadFileAsync(ShiningAbodeState.StatePath) ?? "{}")!)!.AsObject();
         Assert.Equal(3, shiningRoot["lightSparks"]?.GetValue<int>());
-        var entityRoot = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath) ?? "{}")!.AsObject();
+        var entityRoot = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath) ?? "{}")!)!.AsObject();
         var playerProfile = entityRoot["profiles"]!.AsArray().OfType<JsonObject>()
             .Single(profile => string.Equals(profile["actorType"]?.GetValue<string>(), "player_soul", StringComparison.OrdinalIgnoreCase));
         var specialArt = playerProfile["specialArts"]!.AsArray().OfType<JsonObject>()
@@ -8732,7 +8732,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_spirit_focus_ink_feathers");
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         var profile = Assert.IsType<JsonObject>(soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]);
         Assert.Equal(1, profile["spiritFocusTier"]?.GetValue<int>());
         var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
@@ -8763,7 +8763,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("spiritual_arts_upgrade_higher_unlock_art");
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         var profile = Assert.IsType<JsonObject>(soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]);
         var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
         Assert.Equal(1, artTiers["break_binding"]?.GetValue<int>());
@@ -9195,7 +9195,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
         var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
-        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))!.AsObject();
+        var shiningRoot = JsonNode.Parse((await File.ReadAllTextAsync(shiningStatePath))!)!.AsObject();
         shiningRoot["pendingNativeFactionDiscovery"] = "malformed_contract";
         await File.WriteAllTextAsync(shiningStatePath, shiningRoot.ToJsonString());
         await _stateManager.RefreshGameStateAsync();
@@ -9948,7 +9948,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/реликвии"));
 
         Assert.Null(ex);
-        var soulRoot = JsonNode.Parse(await _fs.ReadFileAsync("game_state/meta/soul_state.json")!)!.AsObject();
+        var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         Assert.IsType<JsonArray>(soulRoot["soulRelics"]);
         Assert.Contains(_console.MarkupLines, line => line.Contains("currentRealm не определён", StringComparison.OrdinalIgnoreCase));
     }

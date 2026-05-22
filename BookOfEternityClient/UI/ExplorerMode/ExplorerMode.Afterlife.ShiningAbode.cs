@@ -643,7 +643,7 @@ public partial class ExplorerMode
             ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage =>
                 $"{actionLabel} — {status}. Для следующей жизни зафиксировано {((receipt["selectedCardIds"] as JsonArray)?.Count ?? 0)} карт(ы).",
             ShiningCoreActionRequestState.ActionTypePullRelicGacha =>
-                $"{actionLabel} — {status}. Баннер «{factionName}», редкость {DescribeForgeRarity(GetNodeString(receipt["baseRarity"]))} -> {DescribeForgeRarity(GetNodeString(receipt["finalRarity"]))}, реликвия «{GetNodeString(receipt["relicName"]) ?? GetNodeString(receipt["relicId"]) ?? "реликвия"}».",
+                $"{actionLabel} — {status}. Баннер «{factionName}», редкость {DescribeForgeRarity(GetNodeString(receipt["baseRarity"]) ?? string.Empty)} -> {DescribeForgeRarity(GetNodeString(receipt["finalRarity"]) ?? string.Empty)}, реликвия «{GetNodeString(receipt["relicName"]) ?? GetNodeString(receipt["relicId"]) ?? "реликвия"}».",
             ShiningCoreActionRequestState.ActionTypeForgeRelicReshape or
             ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty or
             ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand or
@@ -1223,7 +1223,7 @@ public partial class ExplorerMode
                         lines.Add($"  Баннер: [white]{Markup.Escape(stableBannerName)}[/] [dim]({Markup.Escape(gachaFactionId)})[/]");
                         if (!string.IsNullOrWhiteSpace(GetNodeString(receipt["returnCycleId"])))
                             lines.Add($"  Цикл возвращения: [dim]{Markup.Escape(GetNodeString(receipt["returnCycleId"])!)}[/]");
-                        lines.Add($"  Редкость: [dim]{Markup.Escape(DescribeForgeRarity(GetNodeString(receipt["baseRarity"])))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(receipt["finalRarity"])))}[/]");
+                        lines.Add($"  Редкость: [dim]{Markup.Escape(DescribeForgeRarity(GetNodeString(receipt["baseRarity"]) ?? string.Empty))} -> {Markup.Escape(DescribeForgeRarity(GetNodeString(receipt["finalRarity"]) ?? string.Empty))}[/]");
                         lines.Add($"  Реликвия: [white]{Markup.Escape(relicName)}[/] [dim]({Markup.Escape(gachaRelicId)})[/]");
                         break;
                     case ShiningCoreActionRequestState.ActionTypeForgeRelicReshape:

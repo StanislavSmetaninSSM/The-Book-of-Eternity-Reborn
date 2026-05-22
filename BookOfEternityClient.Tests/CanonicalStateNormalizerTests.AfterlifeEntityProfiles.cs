@@ -67,7 +67,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.UpdateProperty));
         Assert.Equal(1, root["schemaVersion"]?.GetValue<int>());
 
@@ -154,7 +154,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.False(root.ContainsKey("afterlifeEntityCustomStateChanges"));
 
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
@@ -240,7 +240,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.CustomStateChangesProperty));
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(actorType, profile["actorType"]?.GetValue<string>());
@@ -305,7 +305,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(1, profile["standardArts"]?["guard"]?.GetValue<int>());
         Assert.Equal(2, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
@@ -380,7 +380,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(0, profile["standardArts"]?["guard"]?.GetValue<int>());
         Assert.Equal(0, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
@@ -462,7 +462,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profiles = root["profiles"]!.AsArray().OfType<JsonObject>().ToDictionary(
             profile => profile["actorId"]!.GetValue<string>(),
             StringComparer.OrdinalIgnoreCase);
@@ -555,7 +555,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profiles = root["profiles"]!.AsArray().OfType<JsonObject>().ToDictionary(
             profile => profile["actorId"]!.GetValue<string>(),
             StringComparer.OrdinalIgnoreCase);
@@ -619,7 +619,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(0, profile["soulDissipationTier"]?.GetValue<int>());
         Assert.Equal(1, profile["standardArts"]?["guard"]?.GetValue<int>());
@@ -674,7 +674,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(0, profile["standardArts"]?["guard"]?.GetValue<int>());
         Assert.Equal(20, profile["progression"]?["enlightenment"]?["experience"]?.GetValue<int>());
@@ -788,7 +788,7 @@ public sealed partial class CanonicalStateNormalizerTests
             [AfterlifeEntityProfileState.StatePath] = backupPath
         });
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(2, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
         Assert.Equal(1, profile["standardArts"]?["guard"]?.GetValue<int>());
@@ -857,7 +857,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         var art = Assert.Single(profile["specialArts"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(2, art["tier"]?.GetValue<int>());
@@ -915,7 +915,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(1, profile["soulDissipationTier"]?.GetValue<int>());
         Assert.Equal(0, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
@@ -976,7 +976,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.False(root.ContainsKey("afterlifeEntityProgressionOverrides"));
 
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
@@ -1044,7 +1044,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         Assert.Equal(int.MaxValue, profile["currencies"]?["inkFeathers"]?.GetValue<int>());
         Assert.Equal(int.MaxValue, profile["progression"]?["enlightenment"]?["experience"]?.GetValue<int>());
@@ -1108,7 +1108,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.ProgressionOverridesProperty));
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
         var art = Assert.Single(profile["specialArts"]!.AsArray().OfType<JsonObject>());
@@ -1173,7 +1173,7 @@ public sealed partial class CanonicalStateNormalizerTests
             [AfterlifeEntityProfileState.StatePath] = backupPath
         });
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey("lastInvalidProgressionOverride"));
         Assert.Equal("unknown_special_art", root["lastInvalidProgressionOverrideReason"]?.GetValue<string>());
         var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
@@ -1220,7 +1220,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty));
         Assert.Equal("missing_target_profile", root[AfterlifeEntityProfileState.LastInvalidProgressionOverrideReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.ProgressionOverridesProperty));
@@ -1260,7 +1260,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty));
         Assert.Equal("progression_override_not_object", root[AfterlifeEntityProfileState.LastInvalidProgressionOverrideReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.ProgressionOverridesProperty));
@@ -1332,7 +1332,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty));
         Assert.Equal(expectedReason, root[AfterlifeEntityProfileState.LastInvalidProgressionOverrideReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.ProgressionOverridesProperty));
@@ -1400,7 +1400,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty));
         Assert.Equal("incomplete_progression_override", root[AfterlifeEntityProfileState.LastInvalidProgressionOverrideReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.ProgressionOverridesProperty));
@@ -1447,7 +1447,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey("lastInvalidProfileCommand"));
         Assert.Equal("unknown_custom_state_target", root["lastInvalidProfileCommandReason"]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.CustomStateChangesProperty));
@@ -1490,7 +1490,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidCommandProperty));
         Assert.Equal("custom_state_upsert_not_object", root[AfterlifeEntityProfileState.LastInvalidCommandReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.CustomStateChangesProperty));
@@ -1535,7 +1535,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidCommandProperty));
         Assert.Equal("custom_state_remove_invalid_id", root[AfterlifeEntityProfileState.LastInvalidCommandReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.CustomStateChangesProperty));
@@ -1583,7 +1583,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidCommandProperty));
         Assert.Equal("custom_state_removals_not_array", root[AfterlifeEntityProfileState.LastInvalidCommandReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.CustomStateChangesProperty));
@@ -1632,7 +1632,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidCommandProperty));
         Assert.Equal("empty_custom_state_change", root[AfterlifeEntityProfileState.LastInvalidCommandReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.CustomStateChangesProperty));
@@ -1656,7 +1656,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidCommandProperty));
         Assert.Equal("profile_update_not_object", root[AfterlifeEntityProfileState.LastInvalidCommandReasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.UpdateProperty));
@@ -1685,7 +1685,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey(markerProperty));
         Assert.Equal(expectedReason, root[reasonProperty]?.GetValue<string>());
         Assert.False(root.ContainsKey(commandProperty));
@@ -1816,7 +1816,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
             await normalizer.NormalizeAccumulatedStateAsync();
 
-            var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+            var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
             Assert.True(root.ContainsKey(AfterlifeEntityProfileState.LastInvalidCommandProperty));
             Assert.Equal(expectedReason, root[AfterlifeEntityProfileState.LastInvalidCommandReasonProperty]?.GetValue<string>());
             Assert.False(root.ContainsKey(AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty));
@@ -1885,7 +1885,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey("lastInvalidProfileCommand"));
         Assert.Equal("unknown_special_art_learning_art", root["lastInvalidProfileCommandReason"]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty));
@@ -1962,7 +1962,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty));
 
         var player = root["profiles"]!.AsArray()
@@ -2053,7 +2053,7 @@ public sealed partial class CanonicalStateNormalizerTests
 
         await normalizer.NormalizeAccumulatedStateAsync();
 
-        var root = JsonNode.Parse(await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!.AsObject();
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         Assert.True(root.ContainsKey("lastInvalidProfileCommand"));
         Assert.Equal("invalid_special_art_learning_initial_tier", root["lastInvalidProfileCommandReason"]?.GetValue<string>());
         Assert.False(root.ContainsKey(AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty));
