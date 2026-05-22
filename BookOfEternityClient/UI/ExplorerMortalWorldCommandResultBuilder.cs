@@ -228,6 +228,11 @@ public static class ExplorerMortalWorldCommandResultBuilder
             await AddRawJsonIfPresent(blocks, fs, "game_state/meta/soul_state.json", "JSON: soul_state");
             await AddRawJsonIfPresent(blocks, fs, "game_state/meta/guardians.json", "JSON: guardians");
         }
+        else if (string.Equals(map.Realm, "Shining Abode", StringComparison.OrdinalIgnoreCase))
+        {
+            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/soul_state.json", "JSON: soul_state");
+            await AddRawJsonIfPresent(blocks, fs, "game_state/meta/shining_abode_state.json", "JSON: shining_abode_state");
+        }
         else
         {
             await AddRawJsonIfPresent(blocks, fs, "game_state/world/current_location.json", "JSON: current_location");

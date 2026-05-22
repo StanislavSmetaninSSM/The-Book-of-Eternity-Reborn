@@ -1,6 +1,6 @@
 # Browser Parity Checklist
 
-Tracked tasks: #594, #619, #620, #621, #622, #623
+Tracked tasks: #594, #619, #620, #621, #622, #623, #624
 
 Use this checklist for manual smoke testing when the local browser UI changes. The browser must stay a local shell over the same `game_session` data and must not duplicate game rules in JavaScript.
 
@@ -33,6 +33,8 @@ Use this checklist for manual smoke testing when the local browser UI changes. T
 ## Shining Abode
 
 - Сияющая Обитель navigation opens overview, politics, treasury, Source of Light, hidden Saref story, and Wings search.
+- `/map` / `/карта` in Shining Abode renders a civic mandala of halls and factions rather than fake terrain coordinates.
+- The Shining map shows hall ownership/influence, faction strength, leadership, residents, projects, and a Russian fallback for factions without a hall.
 - Treasury and Source forms preserve their validation errors and pending-contract messages.
 - Saref/Wings actions keep no-spoiler behavior before discovery and show GM-action payloads after unlock.
 

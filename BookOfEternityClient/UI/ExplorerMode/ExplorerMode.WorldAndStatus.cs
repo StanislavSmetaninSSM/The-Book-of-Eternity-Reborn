@@ -13,9 +13,9 @@ namespace BookOfEternityClient.UI;
 public partial class ExplorerMode
 {private async Task ShowMap()
     {
-        if (RealmSemantics.IsChaosSea(_stateManager.CurrentState.CurrentRealm))
+        if (RealmSemantics.IsAfterlifeRealm(_stateManager.CurrentState.CurrentRealm))
         {
-            var map = await LocalMapViewService.BuildChaosSeaMapAsync(_fs);
+            var map = await LocalMapViewService.BuildCurrentRealmMapAsync(_fs);
             ExplorerCommandResultConsoleRenderer.Render(
                 _console,
                 new ExplorerCommandResult
@@ -26,7 +26,7 @@ public partial class ExplorerMode
                     [
                         new UiMapBlock
                         {
-                            Title = "Карта Моря Хаоса",
+                            Title = "Карта",
                             Map = map
                         }
                     ]

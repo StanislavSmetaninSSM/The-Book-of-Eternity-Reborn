@@ -1074,6 +1074,20 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains(mapBlock.Map.Nodes, static node => node.Details.Any(item => item.Key == "Активный Хранитель" && item.Value == "да"));
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Map_InShiningAbode_ReturnsCivicAtlasMap()
+    {
+        await SeedShiningAbodeFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/map"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var mapBlock = Assert.Single(result.Blocks.OfType<UiMapBlock>());
+        Assert.Equal("Shining Abode", mapBlock.Map.Realm);
+        Assert.Contains(mapBlock.Map.Nodes, static node => node.Id == "hall_dawn" && node.Label == "Зал Рассвета");
+        Assert.Contains(mapBlock.Map.Nodes, static node => node.Id == "faction_lanterns" && node.Details.Any(item => item.Key == "Лидерство"));
+    }
+
     [Theory]
     [InlineData("/chaos_sea")]
     [InlineData("/guardians")]

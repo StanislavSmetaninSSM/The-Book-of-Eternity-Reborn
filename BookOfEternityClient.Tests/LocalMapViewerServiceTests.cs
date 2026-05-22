@@ -267,6 +267,62 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildShiningAbodeMapAsync_ProjectsHallsFactionsAndPoliticalCards()
+    {
+        await SeedShiningAbodeMapAsync();
+
+        var map = await LocalMapViewService.BuildShiningAbodeMapAsync(_fs);
+
+        Assert.Equal("Shining Abode", map.Realm);
+        Assert.Equal("hall_dawn", map.CurrentNodeId);
+        Assert.Contains(map.Layers, static layer => layer.Id == "shining_abode" && layer.IsDefault);
+        Assert.Contains(map.ZLevels, static level => level.Z == 0 && level.Label.Contains("мандал", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(map.Nodes, static node => node.Id == "hall_dawn" && node.IsCurrent && node.Label == "Зал Рассвета");
+        Assert.Contains(map.Nodes, static node => node.Id == "faction_lanterns" && node.Label == "Фонари Рассвета");
+        Assert.Contains(map.Links, static link => link.SourceNodeId == "hall_dawn" && link.TargetNodeId == "faction_lanterns");
+        Assert.Contains(map.Regions, static region =>
+            region.OwnerFactionId == "faction_lanterns" &&
+            region.NodeIds.Contains("hall_dawn", StringComparer.OrdinalIgnoreCase) &&
+            region.NodeIds.Contains("faction_lanterns", StringComparer.OrdinalIgnoreCase));
+
+        var hall = Assert.Single(map.Nodes, node => node.Id == "hall_dawn");
+        Assert.Equal("faction_lanterns", hall.OwnerFactionId);
+        Assert.Equal(64, hall.Influence["faction_lanterns"]);
+        Assert.Contains(hall.Details, static item => item.Key == "Контроль фракций" && item.Value.Contains("Сила фракции 64", StringComparison.Ordinal));
+        Assert.Contains(hall.Details, static item => item.Key == "Описание" && item.Value.Contains("солнечные арки", StringComparison.OrdinalIgnoreCase));
+
+        var faction = Assert.Single(map.Nodes, node => node.Id == "faction_lanterns");
+        Assert.Contains(faction.Details, static item => item.Key == "Зал" && item.Value.Contains("Зал Рассвета", StringComparison.Ordinal));
+        Assert.Contains(faction.Details, static item => item.Key == "Лидерство" && item.Value.Contains("secure", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(faction.Details, static item => item.Key == "Резиденты" && item.Value.Contains("Светозарный судья", StringComparison.Ordinal));
+        Assert.Contains(faction.Details, static item => item.Key == "Проекты" && item.Value.Contains("Световой мост", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task BuildShiningAbodeMapAsync_CreatesFallbackHallForUnplacedFactions()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+        {
+          "availability": "active",
+          "factions": [
+            {
+              "factionId": "faction_exiles",
+              "name": "Изгнанные лампы",
+              "factionStrength": 33
+            }
+          ]
+        }
+        """);
+
+        var map = await LocalMapViewService.BuildShiningAbodeMapAsync(_fs);
+
+        Assert.Equal("Shining Abode", map.Realm);
+        Assert.Contains(map.Nodes, static node => node.Id == "hall_unassigned" && node.Label.Contains("Без закреплённого зала", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(map.Nodes, static node => node.Id == "faction_exiles" && node.OwnerFactionId == "faction_exiles");
+        Assert.Contains(map.Links, static link => link.SourceNodeId == "hall_unassigned" && link.TargetNodeId == "faction_exiles");
+    }
+
+    [Fact]
     public async Task LocalMapViewerLauncher_WritesHtmlAndReturnsFallbackWhenOpenFails()
     {
         await SeedMortalMapAsync();
@@ -351,6 +407,54 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     private async Task SeedChaosSeaMapAsync(bool reverseGuardians = false)
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", reverseGuardians ? ChaosSeaMapJsonReversed : ChaosSeaMapJson);
+    }
+
+    private async Task SeedShiningAbodeMapAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+        {
+          "availability": "active",
+          "currentHallId": "hall_dawn",
+          "halls": [
+            {
+              "hallId": "hall_dawn",
+              "hallName": "Зал Рассвета",
+              "description": "Здесь солнечные арки держат договоры фракций."
+            },
+            {
+              "hallId": "hall_archive",
+              "hallName": "Архив Звёздной Пыли"
+            }
+          ],
+          "factions": [
+            {
+              "factionId": "faction_lanterns",
+              "hallId": "hall_dawn",
+              "factionStrength": 64,
+              "charter": { "factionName": "Фонари Рассвета" },
+              "leadership": { "headActorType": "resident", "headActorId": "resident_judge", "leadershipState": "secure" },
+              "projects": [
+                { "projectId": "project_bridge", "displayName": "Световой мост", "status": "active" }
+              ]
+            },
+            {
+              "factionId": "faction_dust",
+              "hallId": "hall_archive",
+              "factionStrength": 41,
+              "name": "Пыльные Архивариусы"
+            }
+          ],
+          "residents": [
+            {
+              "residentId": "resident_judge",
+              "displayName": "Светозарный судья",
+              "shiningFactionId": "faction_lanterns",
+              "hallId": "hall_dawn",
+              "politicalStatus": "elder"
+            }
+          ]
+        }
+        """);
     }
 
     private const string ChaosSeaMapJson = """
