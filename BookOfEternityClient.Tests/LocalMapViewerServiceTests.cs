@@ -338,8 +338,8 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.True(File.Exists(_fs.ResolvePath(result.RelativePath)));
         Assert.Contains("browser disabled", result.Error, StringComparison.OrdinalIgnoreCase);
         var html = await File.ReadAllTextAsync(_fs.ResolvePath(result.RelativePath));
-        Assert.Contains("<svg", html, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("data-map-json", html, StringComparison.Ordinal);
+        Assert.Contains("BookOfEternityMapViewer.mountStandalone", html, StringComparison.Ordinal);
         Assert.Contains("Старая площадь", html, StringComparison.Ordinal);
     }
 
@@ -366,6 +366,20 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         Assert.Contains("Политическое влияние", html, StringComparison.Ordinal);
         Assert.Contains("Спорная зона", html, StringComparison.Ordinal);
         Assert.Contains("Выберите точку на карте", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task LocalMapViewerRenderer_EmbedsSharedMapViewerPackage()
+    {
+        await SeedMortalMapAsync();
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        var html = LocalMapViewerRenderer.BuildStandaloneHtml(map);
+
+        Assert.Contains(LocalMapViewerAssets.StyleSheet, html, StringComparison.Ordinal);
+        Assert.Contains(LocalMapViewerAssets.Script, html, StringComparison.Ordinal);
+        Assert.Contains("BookOfEternityMapViewer.mountStandalone", html, StringComparison.Ordinal);
+        Assert.Contains("data-map-json", html, StringComparison.Ordinal);
     }
 
     private async Task SeedMortalMapAsync()

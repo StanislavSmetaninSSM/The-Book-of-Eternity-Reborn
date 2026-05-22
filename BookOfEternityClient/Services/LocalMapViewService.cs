@@ -1360,7 +1360,6 @@ public static class LocalMapViewerRenderer
         var json = JsonSerializer.Serialize(map, LocalMapViewService.JsonOptions);
         var encodedJson = WebUtility.HtmlEncode(json);
         var title = WebUtility.HtmlEncode(string.IsNullOrWhiteSpace(map.Title) ? "Карта" : map.Title);
-        var nodeLabels = WebUtility.HtmlEncode(string.Join(", ", map.Nodes.Select(static node => node.Label)));
 
         return $$"""
         <!doctype html>
@@ -1371,17 +1370,16 @@ public static class LocalMapViewerRenderer
           <title>{{title}}</title>
           <style>
             :root {
-              --atlas-ink: #2b2116;
-              --atlas-muted: #6f5935;
-              --atlas-gold: #cda85a;
-              --atlas-blood: #7b241b;
-              --atlas-moss: #285238;
-              --atlas-parchment: #d8bd82;
-              --atlas-parchment-deep: #a9824d;
-              --atlas-shadow: rgba(22, 13, 5, .42);
+              color-scheme: dark;
+              --bg: #101410;
+              --panel: rgba(32, 39, 30, .96);
+              --line: rgba(205, 168, 90, .45);
+              --text: #f4ead0;
+              --muted: #c6b78e;
+              --accent: #f7d991;
             }
             * { box-sizing: border-box; }
-            body { margin: 0; background: #101410; color: #f4ead0; font: 16px Georgia, "Times New Roman", serif; }
+            body { margin: 0; background: #101410; color: var(--text); font: 16px Georgia, "Times New Roman", serif; }
             main {
               min-height: 100vh;
               padding: clamp(1rem, 3vw, 2.5rem);
@@ -1390,273 +1388,38 @@ public static class LocalMapViewerRenderer
                 radial-gradient(circle at 80% 4%, rgba(91, 32, 24, .18), transparent 22rem),
                 linear-gradient(135deg, #111710, #1b1710 62%, #0d1110);
             }
-            .map-viewer {
-              border: 1px solid rgba(205, 168, 90, .45);
+            .map-shell {
+              border: 1px solid var(--line);
               border-radius: 1.35rem;
               padding: clamp(1rem, 2.4vw, 1.8rem);
               background: linear-gradient(145deg, rgba(32, 39, 30, .96), rgba(19, 21, 17, .94));
               box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, .36), inset 0 0 0 1px rgba(255, 233, 172, .07);
             }
-            h1 { margin: 0 0 .35rem; letter-spacing: .04em; color: #f7d991; }
-            .map-subtitle { margin: 0 0 1rem; color: #c6b78e; }
-            .map-toolbar { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; margin-bottom: .75rem; }
-            .map-toolbar label { display: inline-flex; gap: .4rem; align-items: center; color: #d6c9a6; }
-            select, button {
+            button, select {
               border: 1px solid rgba(205, 168, 90, .42);
               border-radius: 999px;
               background: #1b241d;
-              color: #f4ead0;
+              color: var(--text);
               padding: .48rem .72rem;
               box-shadow: inset 0 0 1rem rgba(0, 0, 0, .16);
             }
             button:hover, select:focus { border-color: rgba(247, 217, 145, .82); }
-            .map-atlas-frame { position: relative; }
-            svg {
-              width: 100%;
-              height: min(70vh, 48rem);
-              border: 2px solid rgba(86, 55, 22, .7);
-              border-radius: 1rem;
-              background:
-                radial-gradient(circle at 18% 22%, rgba(255, 246, 190, .25), transparent 15rem),
-                radial-gradient(circle at 86% 72%, rgba(88, 47, 26, .18), transparent 18rem),
-                repeating-linear-gradient(35deg, rgba(96, 65, 30, .045) 0 2px, transparent 2px 8px),
-                linear-gradient(135deg, var(--atlas-parchment), var(--atlas-parchment-deep));
-              box-shadow: inset 0 0 4rem rgba(65, 42, 17, .28), 0 .8rem 2rem var(--atlas-shadow);
-              touch-action: none;
-            }
-            .atlas-texture { opacity: .36; mix-blend-mode: multiply; pointer-events: none; }
-            .map-link { stroke: rgba(81, 57, 31, .82); stroke-linecap: round; stroke-dasharray: .25 .36; }
-            .map-link--dangerous { stroke: var(--atlas-blood); stroke-dasharray: .08 .28; }
-            .map-node { cursor: pointer; outline: none; }
-            .map-node circle { filter: drop-shadow(0 .18px .18px rgba(29, 19, 8, .6)); transition: r .15s ease, stroke-width .15s ease; }
-            .map-node:hover circle, .map-node:focus circle, .map-node--selected circle { r: .82; stroke-width: .2; }
-            .map-node text {
-              fill: var(--atlas-ink);
-              font: 1.05px Georgia, "Times New Roman", serif;
-              paint-order: stroke;
-              stroke: rgba(247, 229, 177, .82);
-              stroke-width: .18px;
-              pointer-events: none;
-            }
-            .map-empty {
-              position: absolute;
-              inset: 42% 1rem auto;
-              margin: 0 auto;
-              width: fit-content;
-              max-width: min(90%, 34rem);
-              border: 1px solid rgba(86, 55, 22, .35);
-              border-radius: .9rem;
-              background: rgba(247, 229, 177, .74);
-              color: var(--atlas-ink);
-              padding: .75rem 1rem;
-              box-shadow: 0 .7rem 1.4rem rgba(58, 35, 13, .18);
-            }
-            .map-empty[hidden] { display: none; }
-            .map-legend {
-              display: flex;
-              flex-wrap: wrap;
-              gap: .55rem .9rem;
-              align-items: center;
-              margin: .8rem 0;
-              color: #d9c89c;
-            }
-            .map-legend strong { color: #f7d991; }
-            .map-legend span { display: inline-flex; gap: .35rem; align-items: center; }
-            .legend-swatch { width: .75rem; height: .75rem; border: 1px solid rgba(247, 217, 145, .75); border-radius: 50%; background: var(--atlas-blood); }
-            .legend-swatch.current { background: var(--atlas-moss); }
-            .legend-swatch.faction { background: #80501f; }
-            .legend-swatch.contested { background: linear-gradient(135deg, #80501f 0 48%, var(--atlas-blood) 52%); }
-            .map-region {
-              fill: rgba(128, 80, 31, .16);
-              stroke: rgba(105, 60, 22, .42);
-              stroke-width: .18;
-              stroke-dasharray: .6 .32;
-              pointer-events: none;
-            }
-            .map-region-label {
-              fill: rgba(43, 33, 22, .68);
-              font: .8px Georgia, "Times New Roman", serif;
-              paint-order: stroke;
-              stroke: rgba(247, 229, 177, .6);
-              stroke-width: .16px;
-              pointer-events: none;
-            }
-            .map-political-halo {
-              fill: rgba(128, 80, 31, .24);
-              stroke: rgba(128, 80, 31, .38);
-              stroke-width: .09;
-              pointer-events: none;
-            }
-            .map-political-halo--contested {
-              fill: rgba(123, 36, 27, .22);
-              stroke: rgba(123, 36, 27, .58);
-              stroke-dasharray: .16 .12;
-            }
-            .map-node--contested circle {
-              stroke: var(--atlas-blood);
-              stroke-dasharray: .16 .1;
-            }
-            .map-card {
-              border: 1px solid rgba(205, 168, 90, .32);
-              border-radius: 1rem;
-              background: rgba(0, 0, 0, .18);
-              color: #d8cfb7;
-              margin-top: .85rem;
-              padding: .9rem;
-            }
-            .map-card h2 { margin: 0 0 .65rem; color: #f7d991; }
-            .map-card dl { display: grid; grid-template-columns: minmax(7rem, 12rem) 1fr; gap: .35rem .75rem; margin: 0; }
-            .map-card dt { color: #bdaa7d; }
-            .map-card dd { margin: 0; }
+            .secondary { color: var(--text); }
+            .map-canvas { height: min(70vh, 48rem); }
+          </style>
+          <style>
+            {{LocalMapViewerAssets.StyleSheet}}
           </style>
         </head>
         <body>
           <main>
-            <section class="map-viewer" data-layer-state="visible" data-map-json="{{encodedJson}}">
-              <h1>{{title}}</h1>
-              <p class="map-subtitle">Локальный атлас: уровни, слои, влияние фракций и точки интереса.</p>
-              <p hidden>{{nodeLabels}}</p>
-              <div class="map-toolbar">
-                <label>Уровень <select class="map-z-filter"></select></label>
-                <label>Слой <select class="map-layer-filter"></select></label>
-                <label><input type="checkbox" class="map-political-toggle" checked> Политическое влияние</label>
-                <button type="button" data-zoom="in">Приблизить</button>
-                <button type="button" data-zoom="out">Отдалить</button>
-                <button type="button" data-reset>Сброс</button>
-              </div>
-              <div class="map-legend" aria-label="Легенда карты">
-                <strong>Легенда карты</strong>
-                <span><i class="legend-swatch current"></i>Текущая точка</span>
-                <span><i class="legend-swatch"></i>Обычная точка</span>
-                <span><i class="legend-swatch faction"></i>Влияние фракций</span>
-                <span><i class="legend-swatch contested"></i>Спорная зона</span>
-              </div>
-              <div class="map-atlas-frame">
-                <svg viewBox="-20 -20 40 40" role="img" aria-label="Карта"></svg>
-                <p class="map-empty" hidden>Нет точек на выбранном уровне или слое.</p>
-              </div>
-              <aside class="map-card">Выберите точку на карте.</aside>
-            </section>
+            <div id="map-viewer-root" class="map-shell" data-map-json="{{encodedJson}}"></div>
           </main>
           <script>
-            const root = document.querySelector('.map-viewer');
-            const map = JSON.parse(root.dataset.mapJson);
-            const svg = root.querySelector('svg');
-            const card = root.querySelector('.map-card');
-            const empty = root.querySelector('.map-empty');
-            const zFilter = root.querySelector('.map-z-filter');
-            const layerFilter = root.querySelector('.map-layer-filter');
-            const politicalToggle = root.querySelector('.map-political-toggle');
-            let selectedNodeId = map.currentNodeId ?? '';
-            for (const level of map.zLevels ?? []) zFilter.append(new Option(level.label, String(level.z)));
-            for (const layer of map.layers ?? []) layerFilter.append(new Option(layer.label, layer.id));
-            if (!layerFilter.value && map.layers?.[0]) layerFilter.value = map.layers[0].id;
-            function draw() {
-              const z = Number(zFilter.value || 0);
-              const layer = layerFilter.value || 'world';
-              const nodes = (map.nodes ?? []).filter(n => n.z === z && (n.layer ?? 'world') === layer);
-              const ids = new Set(nodes.map(n => n.id));
-              svg.replaceChildren();
-              root.dataset.layerState = nodes.length ? 'visible' : 'hidden';
-              empty.hidden = nodes.length !== 0;
-              const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-              defs.innerHTML = '<filter id="atlas-texture"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="12"/><feColorMatrix type="saturate" values="0"/></filter>';
-              const texture = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-              texture.setAttribute('class', 'atlas-texture');
-              texture.setAttribute('x', '-2000'); texture.setAttribute('y', '-2000');
-              texture.setAttribute('width', '4000'); texture.setAttribute('height', '4000');
-              texture.setAttribute('filter', 'url(#atlas-texture)');
-              svg.append(defs, texture);
-              if (politicalToggle.checked) drawPoliticalOverlay(nodes);
-              for (const link of map.links ?? []) {
-                if (!ids.has(link.sourceNodeId) || !ids.has(link.targetNodeId)) continue;
-                const a = nodes.find(n => n.id === link.sourceNodeId), b = nodes.find(n => n.id === link.targetNodeId);
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', a.x); line.setAttribute('y1', -a.y); line.setAttribute('x2', b.x); line.setAttribute('y2', -b.y);
-                line.setAttribute('class', `map-link ${link.state === 'dangerous' ? 'map-link--dangerous' : ''}`);
-                line.setAttribute('stroke-width', '.16');
-                svg.append(line);
-              }
-              for (const node of nodes) {
-                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                g.classList.add('map-node');
-                if (node.id === selectedNodeId) g.classList.add('map-node--selected');
-                if (isContested(node)) g.classList.add('map-node--contested');
-                g.setAttribute('tabindex', '0');
-                const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                c.setAttribute('cx', node.x); c.setAttribute('cy', -node.y); c.setAttribute('r', node.isCurrent ? '.7' : '.48');
-                c.setAttribute('fill', node.isCurrent ? '#285238' : node.ownerFactionId ? '#80501f' : '#6a2d22');
-                c.setAttribute('stroke', '#f1d58b'); c.setAttribute('stroke-width', '.12');
-                const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                t.setAttribute('x', Number(node.x) + .75); t.setAttribute('y', -Number(node.y) - .45); t.textContent = node.label;
-                g.append(c, t);
-                g.addEventListener('click', () => show(node));
-                svg.append(g);
-              }
-              fit(nodes);
-            }
-            function drawPoliticalOverlay(nodes) {
-              const byId = new Map(nodes.map(n => [n.id, n]));
-              for (const region of map.regions ?? []) {
-                const regionNodes = (region.nodeIds ?? []).map(id => byId.get(id)).filter(Boolean);
-                if (!regionNodes.length) continue;
-                const xs = regionNodes.map(n => Number(n.x ?? 0));
-                const ys = regionNodes.map(n => -Number(n.y ?? 0));
-                const cx = xs.reduce((a, b) => a + b, 0) / xs.length;
-                const cy = ys.reduce((a, b) => a + b, 0) / ys.length;
-                const radius = Math.max(2.2, ...regionNodes.map(n => Math.hypot(Number(n.x ?? 0) - cx, -Number(n.y ?? 0) - cy) + 1.6));
-                const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                halo.setAttribute('class', 'map-region');
-                halo.setAttribute('cx', cx); halo.setAttribute('cy', cy); halo.setAttribute('r', radius);
-                svg.append(halo);
-                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('class', 'map-region-label');
-                label.setAttribute('x', cx - radius * .45); label.setAttribute('y', cy - radius * .72);
-                label.textContent = region.ownerFactionName || region.label || region.ownerFactionId || '';
-                svg.append(label);
-              }
-              for (const node of nodes) {
-                if (!node.ownerFactionId && !node.ownerFactionName && !Object.keys(node.influence ?? {}).length) continue;
-                const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                halo.setAttribute('class', `map-political-halo ${isContested(node) ? 'map-political-halo--contested' : ''}`);
-                halo.setAttribute('cx', node.x ?? 0);
-                halo.setAttribute('cy', -(node.y ?? 0));
-                halo.setAttribute('r', isContested(node) ? '1.22' : '1.02');
-                svg.append(halo);
-              }
-            }
-            function isContested(node) {
-              return Object.values(node.influence ?? {}).filter(value => Number(value) >= 25).sort((a, b) => Number(b) - Number(a)).slice(0, 2).length >= 2 &&
-                Math.abs(Number(Object.values(node.influence ?? {}).sort((a, b) => Number(b) - Number(a))[0]) - Number(Object.values(node.influence ?? {}).sort((a, b) => Number(b) - Number(a))[1])) <= 10;
-            }
-            function fit(nodes) {
-              if (!nodes.length) return;
-              const xs = nodes.map(n => Number(n.x)), ys = nodes.map(n => -Number(n.y));
-              const minX = Math.min(...xs) - 3, maxX = Math.max(...xs) + 8;
-              const minY = Math.min(...ys) - 3, maxY = Math.max(...ys) + 3;
-              svg.setAttribute('viewBox', `${minX} ${minY} ${Math.max(8, maxX - minX)} ${Math.max(8, maxY - minY)}`);
-            }
-            function show(node) {
-              selectedNodeId = node.id ?? '';
-              for (const item of svg.querySelectorAll('.map-node')) item.classList.remove('map-node--selected');
-              const selected = [...svg.querySelectorAll('.map-node')].find(item => item.textContent === node.label);
-              if (selected) selected.classList.add('map-node--selected');
-              const details = (node.details ?? []).map(i => `<dt>${escapeHtml(i.key)}</dt><dd>${escapeHtml(i.value)}</dd>`).join('');
-              card.innerHTML = `<h2>${escapeHtml(node.label)}</h2><dl>${details}</dl>`;
-            }
-            function escapeHtml(v) { return String(v ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
-            zFilter.addEventListener('change', draw);
-            layerFilter.addEventListener('change', draw);
-            politicalToggle.addEventListener('change', draw);
-            root.querySelector('[data-reset]').addEventListener('click', draw);
-            root.querySelector('[data-zoom="in"]').addEventListener('click', () => zoom(.8));
-            root.querySelector('[data-zoom="out"]').addEventListener('click', () => zoom(1.25));
-            function zoom(factor) {
-              const [x,y,w,h] = svg.getAttribute('viewBox').split(' ').map(Number);
-              const nw = w * factor, nh = h * factor;
-              svg.setAttribute('viewBox', `${x + (w-nw)/2} ${y + (h-nh)/2} ${nw} ${nh}`);
-            }
-            draw();
+            {{LocalMapViewerAssets.Script}}
+          </script>
+          <script>
+            BookOfEternityMapViewer.mountStandalone(document.getElementById('map-viewer-root'));
           </script>
         </body>
         </html>

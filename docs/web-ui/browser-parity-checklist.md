@@ -1,8 +1,10 @@
 # Browser Parity Checklist
 
-Tracked tasks: #594, #619, #620, #621, #622, #623, #624
+Tracked tasks: #594, #619, #620, #621, #622, #623, #624, #625
 
 Use this checklist for manual smoke testing when the local browser UI changes. The browser must stay a local shell over the same `game_session` data and must not duplicate game rules in JavaScript.
+
+Map rendering parity is enforced through the shared map package: console `output/map_viewer.html` and WebUI map blocks both consume the same `MapViewDto` and `LocalMapViewerAssets` renderer. WebUI should load `/assets/map-viewer.css` and `/assets/map-viewer.js`; no realm-specific map renderer should be reimplemented inside the browser shell.
 
 ## Shell And Navigation
 

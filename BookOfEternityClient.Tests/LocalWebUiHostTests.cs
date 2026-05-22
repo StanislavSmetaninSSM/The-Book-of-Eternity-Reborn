@@ -124,22 +124,44 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("postQteAction", html, StringComparison.Ordinal);
         Assert.Contains("renderImageBlock", html, StringComparison.Ordinal);
         Assert.Contains("renderMapBlock", html, StringComparison.Ordinal);
-        Assert.Contains("map-z-filter", html, StringComparison.Ordinal);
-        Assert.Contains("map-layer-filter", html, StringComparison.Ordinal);
-        Assert.Contains("--atlas-parchment", html, StringComparison.Ordinal);
-        Assert.Contains("atlas-texture", html, StringComparison.Ordinal);
-        Assert.Contains("map-legend", html, StringComparison.Ordinal);
-        Assert.Contains("map-node--selected", html, StringComparison.Ordinal);
-        Assert.Contains("Нет точек на выбранном уровне", html, StringComparison.Ordinal);
-        Assert.Contains("Легенда карты", html, StringComparison.Ordinal);
-        Assert.Contains("Влияние фракций", html, StringComparison.Ordinal);
-        Assert.Contains("map-political-toggle", html, StringComparison.Ordinal);
-        Assert.Contains("map-political-halo", html, StringComparison.Ordinal);
-        Assert.Contains("map-region", html, StringComparison.Ordinal);
-        Assert.Contains("Политическое влияние", html, StringComparison.Ordinal);
-        Assert.Contains("Спорная зона", html, StringComparison.Ordinal);
+        Assert.Contains("href=\"/assets/map-viewer.css\"", html, StringComparison.Ordinal);
+        Assert.Contains("src=\"/assets/map-viewer.js\"", html, StringComparison.Ordinal);
         Assert.Contains("/api/media/", html, StringComparison.Ordinal);
         Assert.Contains("Пока нет результата", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task MapViewerAssetEndpoints_ReturnSharedRendererPackage()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var css = await client.GetStringAsync("/assets/map-viewer.css");
+        var js = await client.GetStringAsync("/assets/map-viewer.js");
+
+        Assert.Equal(LocalMapViewerAssets.StyleSheet, css);
+        Assert.Equal(LocalMapViewerAssets.Script, js);
+        Assert.Contains(".map-block", css, StringComparison.Ordinal);
+        Assert.Contains("BookOfEternityMapViewer", js, StringComparison.Ordinal);
+        Assert.Contains("renderMapBlock", js, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task RootEndpoint_UsesSharedMapViewerPackage()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("href=\"/assets/map-viewer.css\"", html, StringComparison.Ordinal);
+        Assert.Contains("src=\"/assets/map-viewer.js\"", html, StringComparison.Ordinal);
+        Assert.Contains("BookOfEternityMapViewer.renderMapBlock", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("function renderMapBlock(block)", html, StringComparison.Ordinal);
     }
 
     [Fact]
