@@ -653,6 +653,123 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SarefFindWingsWithoutRoute_HidesSpoilers()
+    {
+        await SeedShiningAbodeFilesAsync();
+        _fs.DeleteFile("game_state/control/pending_shining_abode_actions.json");
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, SarefMainStoryState.SerializeDefaultRoot());
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф найти_крылья"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Null(result.InteractiveSession);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Ты пока не знаешь, что искать", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("Сареф", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Крыл", text, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(SarefMainStoryState.PendingWingsInfiltrationPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_SarefFindWings_WritesPendingRequestAndGmPayload()
+    {
+        await SeedShiningAbodeFilesAsync();
+        _fs.DeleteFile("game_state/control/pending_shining_abode_actions.json");
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefWingsRouteState());
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/сареф найти_крылья",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        Assert.NotNull(started.InteractiveSession);
+        Assert.True(started.InteractiveSession.RequiresLocalUiLock);
+        Assert.Contains(started.Prompts, prompt => prompt.Id == "saref_wings_action");
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["saref_wings_action"] = JsonValue.Create("start")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var request = JsonNode.Parse((await _fs.ReadFileAsync(SarefMainStoryState.PendingWingsInfiltrationPath))!)!.AsObject();
+        Assert.Equal("safe", request["routeSafety"]!.GetValue<string>());
+        Assert.Equal("safe_infiltration", request["entryMode"]!.GetValue<string>());
+        Assert.Equal("sarefMainStoryUpdate", request["expectedResponseSurface"]!.GetValue<string>());
+        var payload = Assert.IsType<UiRawJsonBlock>(completed.Blocks.Last()).Json!.AsObject();
+        Assert.Equal("SAREF_WINGS_INFILTRATION", payload["playerActionTag"]!.GetValue<string>());
+        Assert.Contains("sarefMainStoryUpdate", payload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_SarefAdvantage_ReturnsGmPayload()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefActionReadyState());
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф преимущество"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, started.State);
+        Assert.Contains(started.Prompts, prompt => prompt.Id == "saref_advantage_id");
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["saref_advantage_id"] = JsonValue.Create("adv_lucian_oath_cut"),
+                ["saref_scene_type"] = JsonValue.Create("oath_break"),
+                ["saref_action_summary"] = JsonValue.Create("Разрезать одну ложную печать клятвы Сарефа.")
+            }));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var payload = Assert.IsType<UiRawJsonBlock>(completed.Blocks.Last()).Json!.AsObject();
+        Assert.Equal("SAREF_ADVANTAGE_USE", payload["playerActionTag"]!.GetValue<string>());
+        Assert.Equal("adv_lucian_oath_cut", payload["advantageId"]!.GetValue<string>());
+        Assert.Contains("sarefAdvantageUses", payload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_SarefConfrontationAndOathBreak_ReturnGmPayloads()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(SarefMainStoryState.StatePath, BuildSarefActionReadyState());
+
+        var confrontation = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф конфронтация"));
+        Assert.Equal(CommandExecutionState.RequiresInput, confrontation.State);
+        var confrontationResult = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            confrontation.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["saref_route_type"] = JsonValue.Create("combat"),
+                ["saref_resolution_intent"] = JsonValue.Create("defeat_saref"),
+                ["saref_action_summary"] = JsonValue.Create("Вызвать Сарефа на прямой духовный бой.")
+            }));
+
+        Assert.Equal(CommandExecutionState.Completed, confrontationResult.State);
+        var confrontationPayload = Assert.IsType<UiRawJsonBlock>(confrontationResult.Blocks.Last()).Json!.AsObject();
+        Assert.Equal("SAREF_FINAL_CONFRONTATION", confrontationPayload["playerActionTag"]!.GetValue<string>());
+        Assert.Contains("record_final_confrontation", confrontationPayload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
+
+        var oathBreak = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф разорвать_клятву"));
+        Assert.Equal(CommandExecutionState.RequiresInput, oathBreak.State);
+        var oathBreakResult = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            oathBreak.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["saref_oath_break_route"] = JsonValue.Create("lucian"),
+                ["saref_action_summary"] = JsonValue.Create("Использовать лунный разрез как путь разрыва клятвы.")
+            }));
+
+        Assert.Equal(CommandExecutionState.Completed, oathBreakResult.State);
+        var oathBreakPayload = Assert.IsType<UiRawJsonBlock>(oathBreakResult.Blocks.Last()).Json!.AsObject();
+        Assert.Equal("SAREF_OATH_BREAK", oathBreakPayload["playerActionTag"]!.GetValue<string>());
+        Assert.Contains("record_oath_break", oathBreakPayload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task SubmitPromptSessionAsync_MissingRequiredAnswer_KeepsSessionOpenWithValidationError()
     {
         await SeedUniversalMetaFilesAsync();
@@ -830,16 +947,16 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task ExecuteAsync_RecognizedSarefWriteSubcommand_ReturnsStructuredMigrationBlocker()
+    public async Task ExecuteAsync_RecognizedSarefWriteSubcommand_HidesSpoilersBeforeDiscovery()
     {
         await SeedUniversalMetaFilesAsync();
 
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/сареф найти_крылья"));
 
-        Assert.Equal(CommandExecutionState.Blocked, result.State);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
         var text = CollectBlockText(result.Blocks);
-        Assert.Contains("Поиск Крыльев Ангелов распознан", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("#592", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ты пока не знаешь, что искать", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("#592", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -961,6 +1078,76 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         if (Directory.Exists(_rootPath))
             Directory.Delete(_rootPath, recursive: true);
     }
+
+    private static string BuildSarefWingsRouteState() => """
+    {
+      "schemaVersion": 1,
+      "revealStage": "name_revealed",
+      "guardianQuestlines": [
+        {
+          "guardianId": "azalia",
+          "questStates": [
+            { "questOrdinal": 1, "status": "completed", "questId": "azalia_saref_q1" },
+            { "questOrdinal": 2, "status": "completed", "questId": "azalia_saref_q2" },
+            { "questOrdinal": 3, "status": "completed", "questId": "azalia_saref_q3" },
+            { "questOrdinal": 4, "status": "completed", "questId": "azalia_saref_q4" }
+          ]
+        }
+      ],
+      "latentTraces": [],
+      "sarefRevelations": [
+        { "revelationId": "rev_identity", "category": "identity", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 50 },
+        { "revelationId": "rev_method", "category": "method", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 51 },
+        { "revelationId": "rev_faction", "category": "faction", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 52 },
+        { "revelationId": "rev_path", "category": "path", "sourceGuardianId": "azalia", "sourceQuestId": "azalia_saref_q4", "sourceQuestOrdinal": 4, "revealedAtTurn": 53 }
+      ],
+      "sarefAdvantages": [],
+      "sarefAdvantageUses": [],
+      "factionLinks": { "visibility": "hidden" },
+      "defeatOutcomes": [],
+      "endings": [],
+      "playerOathState": null,
+      "sarefPersonalBond": null
+    }
+    """;
+
+    private static string BuildSarefActionReadyState() => """
+    {
+      "schemaVersion": 1,
+      "revealStage": "confrontation_available",
+      "guardianQuestlines": [],
+      "latentTraces": [],
+      "sarefRevelations": [
+        { "revelationId": "rev_identity", "category": "identity", "revealedAtTurn": 50 },
+        { "revelationId": "rev_method", "category": "method", "revealedAtTurn": 51 },
+        { "revelationId": "rev_faction", "category": "faction", "revealedAtTurn": 52 },
+        { "revelationId": "rev_path", "category": "path", "revealedAtTurn": 53 }
+      ],
+      "sarefAdvantages": [
+        {
+          "advantageId": "adv_lucian_oath_cut",
+          "displayName": "Лунный Разрез Клятвы",
+          "state": "available",
+          "applicableScenes": [ "oath_break", "saref_confrontation" ],
+          "summary": "Можно рассечь одну ложную печать клятвы."
+        }
+      ],
+      "sarefAdvantageUses": [],
+      "factionLinks": { "visibility": "revealed", "wingsFactionId": "wings_of_angels" },
+      "wingsInfiltration": { "status": "revealed", "requestId": "saref_wings_infiltration:80", "resolvedAtTurn": 81 },
+      "finalConfrontation": { "status": "active", "sceneType": "saref_confrontation" },
+      "postStoryAgenda": {
+        "state": "oathbound_to_saref",
+        "currentObjective": "Подчинить последнюю независимую фракцию.",
+        "assignments": [],
+        "dominationScene": null
+      },
+      "playerOathState": { "state": "oathbound", "oathId": "saref_oath_001" },
+      "defeatOutcomes": [],
+      "endings": [],
+      "sarefPersonalBond": null
+    }
+    """;
 
     private async Task SeedUniversalMetaFilesAsync()
     {

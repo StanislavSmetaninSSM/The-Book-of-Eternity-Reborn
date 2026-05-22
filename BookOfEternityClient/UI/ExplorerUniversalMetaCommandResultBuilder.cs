@@ -7,7 +7,7 @@ using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.UI;
 
-public static class ExplorerUniversalMetaCommandResultBuilder
+public static partial class ExplorerUniversalMetaCommandResultBuilder
 {
     private enum CommandKind
     {
@@ -31,6 +31,11 @@ public static class ExplorerUniversalMetaCommandResultBuilder
         Mods,
         SystemGuardians,
         SarefStory,
+        SarefFindWings,
+        SarefUseAdvantage,
+        SarefFinalConfrontation,
+        SarefOathBreak,
+        SarefAgenda,
         MemoryScene
     }
 
@@ -83,6 +88,16 @@ public static class ExplorerUniversalMetaCommandResultBuilder
             ["/история_сарефа"] = CommandKind.SarefStory,
             ["/wings_of_angels"] = CommandKind.SarefStory,
             ["/крылья_над_бездной"] = CommandKind.SarefStory,
+            ["/сареф найти_крылья"] = CommandKind.SarefFindWings,
+            ["/saref find_wings"] = CommandKind.SarefFindWings,
+            ["/сареф преимущество"] = CommandKind.SarefUseAdvantage,
+            ["/saref use_advantage"] = CommandKind.SarefUseAdvantage,
+            ["/сареф конфронтация"] = CommandKind.SarefFinalConfrontation,
+            ["/saref confrontation"] = CommandKind.SarefFinalConfrontation,
+            ["/сареф разорвать_клятву"] = CommandKind.SarefOathBreak,
+            ["/saref break_oath"] = CommandKind.SarefOathBreak,
+            ["/сареф поручение"] = CommandKind.SarefAgenda,
+            ["/saref agenda"] = CommandKind.SarefAgenda,
             ["/воспоминание"] = CommandKind.MemoryScene,
             ["/воспоминание_статус"] = CommandKind.MemoryScene,
             ["/воспоминание_начать"] = CommandKind.MemoryScene,
@@ -125,6 +140,11 @@ public static class ExplorerUniversalMetaCommandResultBuilder
             CommandKind.Mods => BuildDirectoryList(normalizedCommand, fs, "Моды", "mods"),
             CommandKind.SystemGuardians => BuildSystemGuardians(normalizedCommand, fs),
             CommandKind.SarefStory => await BuildSarefStory(normalizedCommand, fs),
+            CommandKind.SarefFindWings => await BuildSarefFindWings(normalizedCommand, stateManager, fs),
+            CommandKind.SarefUseAdvantage => await BuildSarefUseAdvantage(normalizedCommand, fs),
+            CommandKind.SarefFinalConfrontation => await BuildSarefFinalConfrontation(normalizedCommand, fs),
+            CommandKind.SarefOathBreak => await BuildSarefOathBreak(normalizedCommand, fs),
+            CommandKind.SarefAgenda => await BuildSarefAgenda(normalizedCommand, fs),
             CommandKind.MemoryScene => await BuildSarefMemoryScene(normalizedCommand, fs),
             _ => null
         };

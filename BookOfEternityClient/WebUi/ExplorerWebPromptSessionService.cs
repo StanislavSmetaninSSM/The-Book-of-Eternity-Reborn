@@ -30,6 +30,7 @@ public sealed class ExplorerWebPromptSessionService
     private readonly TimeProvider _timeProvider;
     private readonly BrowserMortalWorldWriteService _mortalWorldWriteService;
     private readonly BrowserAfterlifeWriteService _afterlifeWriteService;
+    private readonly BrowserSarefStoryWriteService _sarefStoryWriteService;
 
     public ExplorerWebPromptSessionService(
         FileSystemManager fs,
@@ -37,12 +38,14 @@ public sealed class ExplorerWebPromptSessionService
         LocalUiSessionLockService? lockService = null,
         TimeProvider? timeProvider = null,
         BrowserMortalWorldWriteService? mortalWorldWriteService = null,
-        BrowserAfterlifeWriteService? afterlifeWriteService = null)
+        BrowserAfterlifeWriteService? afterlifeWriteService = null,
+        BrowserSarefStoryWriteService? sarefStoryWriteService = null)
     {
         _fs = fs;
         _lockService = lockService ?? new LocalUiSessionLockService(fs, timeProvider);
         _timeProvider = timeProvider ?? TimeProvider.System;
         var coordinator = new BrowserLocalWriteCoordinator(fs, _lockService, _timeProvider);
+        var effectiveStateManager = stateManager ?? new StateManager(fs, new Configuration.GameSettings(), NullLogger<StateManager>.Instance);
         _mortalWorldWriteService = mortalWorldWriteService ?? new BrowserMortalWorldWriteService(
             fs,
             coordinator,
@@ -50,7 +53,11 @@ public sealed class ExplorerWebPromptSessionService
             _timeProvider);
         _afterlifeWriteService = afterlifeWriteService ?? new BrowserAfterlifeWriteService(
             fs,
-            stateManager ?? new StateManager(fs, new Configuration.GameSettings(), NullLogger<StateManager>.Instance),
+            effectiveStateManager,
+            coordinator);
+        _sarefStoryWriteService = sarefStoryWriteService ?? new BrowserSarefStoryWriteService(
+            fs,
+            effectiveStateManager,
             coordinator);
     }
 
@@ -175,6 +182,13 @@ public sealed class ExplorerWebPromptSessionService
             return await BuildDomainWriteSubmitResultAsync(request.SessionId, snapshot, writeResult);
 
         writeResult = await _afterlifeWriteService.TryApplyAsync(
+            snapshot.Result.Command,
+            answers,
+            snapshot.Owner);
+        if (writeResult.Handled)
+            return await BuildDomainWriteSubmitResultAsync(request.SessionId, snapshot, writeResult);
+
+        writeResult = await _sarefStoryWriteService.TryApplyAsync(
             snapshot.Result.Command,
             answers,
             snapshot.Owner);
@@ -359,6 +373,10 @@ public sealed class ExplorerWebPromptSessionService
 
     private static bool RequiresLocalUiLock(string command)
     {
+        var normalized = string.Join(' ', command.Trim().Replace('-', '_').Split(' ', StringSplitOptions.RemoveEmptyEntries)).ToLowerInvariant();
+        if (normalized is "/сареф найти_крылья" or "/saref find_wings")
+            return true;
+
         var token = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? string.Empty;
         return token is
             "/validate" or "/валидация" or

@@ -174,7 +174,7 @@ Universal/meta read-only parity currently includes:
 - `/soul`, `/душа`, `/soul_relics`, `/реликвии`, `/afterlife_archive`, `/архив_души`, `/archive_candidates`, `/архив_кандидаты`, `/soul_quests`, `/квесты_души`
 - `/codex`, `/кодекс`, `/achievements`, `/достижения`, `/chronicle`, `/хроника`, `/story`, `/рассказ`, `/история`, `/behavior`, `/поведение`, `/lives`, `/жизни`, `/feathers`, `/перья`, `/world_rules`, `/правила_мира`
 - `/gallery`, `/галерея`, `/math`, `/математик`, `/gm`, `/гм`, `/debug`, `/отладка`, `/mods`, `/моды`, `/system_guardians`, `/системные_хранители`, `/извечные_хранители`
-- `/saref`, `/сареф`, `/saref_story`, `/история_сарефа`, `/wings_of_angels`, `/крылья_над_бездной` as the read-only hidden main-story view. The mutating Wings search subcommand remains outside this read-only migration.
+- `/saref`, `/сареф`, `/saref_story`, `/история_сарефа`, `/wings_of_angels`, `/крылья_над_бездной` as the hidden main-story view. Before the story is discovered, the browser keeps the same no-spoiler answer: `ты пока не знаешь, что искать`.
 - `/воспоминание`, `/воспоминание_статус`, `/воспоминание_начать`, `/воспоминание_способности`, plus spaced subcommand forms such as `/воспоминание начать`, as the read-only Saref memory-scene view.
 
 `/math` and `/математик` are read-only calculator surfaces. They accept a formula plus optional `name=value` variables and return existing DTO block types (`panel`, `keyValueGrid`, `table`, `message`, `rawJson`) with the normalized expression, variables, result, rounding, warnings, and structured error details.
@@ -235,6 +235,16 @@ Shining Abode browser surfaces currently include:
 - `/source_of_light`, `/источник_света`
 
 `/shining_treasury` and `/source_of_light` have browser mutating parity. Treasury submit operations can deposit, withdraw, claim interest, and exchange through the shared Shining treasury service. Source of Light submit creates the client-owned `game_state/control/pending_source_of_light_capstone.json` request after the same unlock and pending-contract blockers used by console mode.
+
+Saref/Wings story browser surfaces currently include:
+
+- `/сареф найти_крылья`, `/saref find_wings`: mutating parity for creating `game_state/control/pending_saref_wings_infiltration.json` after the same Shining Abode, route-unlock, pending-turn, and local UI lock checks as console mode.
+- `/сареф преимущество`, `/saref use_advantage`: browser form that returns a GM-facing `SAREF_ADVANTAGE_USE` payload for spending a discovered Saref advantage in the surrounding turn.
+- `/сареф конфронтация`, `/saref confrontation`: browser form that returns a GM-facing `SAREF_FINAL_CONFRONTATION` payload for resolving the final Saref scene through `sarefMainStoryUpdate`.
+- `/сареф разорвать_клятву`, `/saref break_oath`: browser form that returns a GM-facing `SAREF_OATH_BREAK` payload for the oath-break arc.
+- `/сареф поручение`, `/saref agenda`: browser form that returns a GM-facing `SAREF_OATHBOUND_AGENDA` payload for post-deal Wings assignments.
+
+Only `/сареф найти_крылья` writes a local pending contract directly. The other Saref action forms mirror console route-tag behavior: they produce structured GM-action payloads and rely on the accepted-turn response to mutate canonical story state.
 
 Afterlife combat and entity browser surfaces currently include:
 
@@ -308,7 +318,7 @@ The browser is no longer just a read-only shell, but several flows remain intent
 
 - Interactive multi-step prompt submission is available as a browser prompt-session protocol. Some domain-specific local-turn writes still return accepted answers only; console mode remains the complete path until each write command is migrated.
 - `/spiritual_action` returns the same route-tag payload shape as the console command, but the browser shell does not yet provide a full typed turn composer around that payload. Use the returned JSON/text as the GM-action payload for the active turn flow until the broader browser game shell is completed.
-- The hidden Saref/Wings read-only views are migrated. The parser recognizes `/сареф найти_крылья`, `/сареф find_wings`, and equivalent spaced forms, but the mutating Wings search/join/story actions still need their own browser write protocol (#592) and return a structured blocker instead of silently falling back to the story overview.
+- Saref/Wings action forms are migrated as local pending creation or GM-action payloads, but the browser shell does not yet provide a full typed turn composer around those payloads.
 
 These limitations are intentional migration boundaries, not separate game rules. Console and browser still use the same local `game_session` data.
 
