@@ -50,6 +50,22 @@
       "notes": "Afterlife-only external memory for Chaos Sea regions, Shining districts, Guardian Abodes/scenes, resident scenes, faction zones, memory scenes, Source of Light, and Saref story scenes."
     },
     {
+      "path": "game_state/meta/afterlife_global_flags.json",
+      "surfaceType": "meta_state_with_global_flag_updates",
+      "owner": "afterlife_global_flags",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "GM-authored afterlife global facts through afterlifeGlobalFlagUpdates; separate from Mortal worldStateFlags",
+      "emptyWrapperSemantics": "Absent legacy file is initialized for afterlife turn snapshots. Empty or commandless present roots are invalid unless normalized to schemaVersion + flags[].",
+      "malformedBehavior": "Fail closed for malformed flag/update contracts; hidden/gm_only flags must not leak to normal player UI.",
+      "blockerBehavior": "Does not block by existence; invalid global flag state blocks accepted-turn validation until repaired.",
+      "closureSurface": "afterlifeGlobalFlagUpdates[] into canonical flags[] with flagId, category, state, visibility, reason/evidence, linkedActors, linkedChronicles, and obsoleteReason for obsolete flags.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
+        "Examples/E_CLI_Afterlife_Turns.txt#afterlifeGlobalFlagUpdates"
+      ],
+      "notes": "Afterlife-only global fact memory for Saref, Source of Light, Guardian memory, Chaos/Shining politics, soul dissipation, realm lifecycle, and relationship gates. Flags summarize; they do not override specific canonical contracts."
+    },
+    {
       "path": "game_state/meta/afterlife_story_outline.json",
       "surfaceType": "meta_state_with_response_wrapper",
       "owner": "afterlife_story_outline",

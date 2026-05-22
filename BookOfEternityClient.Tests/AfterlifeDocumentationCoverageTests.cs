@@ -32,6 +32,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             AfterlifeSpiritualConflictState.StatePath,
             AfterlifeEntityProfileState.StatePath,
             AfterlifeChronicleState.StatePath,
+            AfterlifeGlobalFlagState.StatePath,
             SarefMainStoryState.StatePath,
             GuardianAbodeOfferingState.PendingRequestPath,
             GuardianTradeRequestState.PendingRequestPath,
@@ -98,6 +99,35 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("read-only", matrix, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("chaos_sea_region", examples, StringComparison.Ordinal);
         Assert.Contains("guardian_scene", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AfterlifeGlobalFlagsContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var doc in new[] { matrix, apiSpec, daemonSpec, taskGuide, examples })
+        {
+            Assert.Contains(AfterlifeGlobalFlagState.StatePath, doc, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeGlobalFlagState.UpdateProperty, doc, StringComparison.Ordinal);
+            Assert.Contains(AfterlifeGlobalFlagState.FlagsProperty, doc, StringComparison.Ordinal);
+            Assert.Contains("worldStateFlags", doc, StringComparison.Ordinal);
+            Assert.Contains("obsoleteReason", doc, StringComparison.Ordinal);
+            Assert.Contains("visibility", doc, StringComparison.Ordinal);
+            Assert.Contains("hidden", doc, StringComparison.Ordinal);
+            Assert.Contains("gmThoughtsSummary", doc, StringComparison.Ordinal);
+            Assert.Contains("saref", doc, StringComparison.Ordinal);
+            Assert.Contains("source_of_light", doc, StringComparison.Ordinal);
+            Assert.Contains("guardian_memory", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("afterlife_global_flags_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_global_flags_v1", manifest, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2707,7 +2737,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             .OrderBy(number => number)
             .ToArray();
 
-        Assert.Equal(Enumerable.Range(1, 27).ToArray(), exampleNumbers);
+        Assert.Equal(Enumerable.Range(1, 28).ToArray(), exampleNumbers);
 
         var coverageByExample = manifest.AfterlifeExampleCoverage
             .GroupBy(entry => entry.ExampleNumber)
@@ -2810,7 +2840,7 @@ public sealed class AfterlifeDocumentationCoverageTests
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
 
         Assert.Contains("Examples/E_CLI_Afterlife_Turns.txt", taskGuide, StringComparison.Ordinal);
-        Assert.Contains("examples 10-27", taskGuide, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("examples 10-28", taskGuide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("example 27", taskGuide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains(SarefMainStoryState.StatePath, taskGuide, StringComparison.Ordinal);
         Assert.Contains(SarefMainStoryState.PendingWingsInfiltrationPath, taskGuide, StringComparison.Ordinal);

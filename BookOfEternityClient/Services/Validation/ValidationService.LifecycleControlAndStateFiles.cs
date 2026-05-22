@@ -302,6 +302,23 @@ public partial class ValidationService
                 AfterlifeChronicleState.LastInvalidUpdateReasonProperty,
                 "_lastUpdated"
             }, issues);
+        await ValidateFlexibleStateFile(AfterlifeGlobalFlagState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", AfterlifeGlobalFlagState.FlagsProperty,
+                AfterlifeGlobalFlagState.UpdateProperty,
+                AfterlifeGlobalFlagState.LastInvalidUpdateProperty,
+                AfterlifeGlobalFlagState.LastInvalidUpdateReasonProperty,
+                "_lastUpdated"
+            }, issues, ValidateAfterlifeGlobalFlagStateFile);
+        await ValidateStrictTopLevelObjectFileAsync(AfterlifeGlobalFlagState.StatePath,
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "schemaVersion", AfterlifeGlobalFlagState.FlagsProperty,
+                AfterlifeGlobalFlagState.LastInvalidUpdateProperty,
+                AfterlifeGlobalFlagState.LastInvalidUpdateReasonProperty,
+                "_lastUpdated"
+            }, issues);
         await ValidateFlexibleStateFile(AfterlifeStoryOutlineState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {

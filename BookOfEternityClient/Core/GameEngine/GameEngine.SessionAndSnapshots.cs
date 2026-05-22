@@ -217,6 +217,32 @@ public partial class GameEngine
         }
     }
 
+    private async Task EnsureAfterlifeGlobalFlagStateInitializedForSnapshotAsync()
+    {
+        if (_fs.FileExists(AfterlifeGlobalFlagState.StatePath))
+            return;
+
+        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        if (string.IsNullOrWhiteSpace(soulJson))
+            return;
+
+        try
+        {
+            var soulRoot = JsonNode.Parse(soulJson) as JsonObject;
+            var currentRealm = soulRoot?["currentRealm"]?.GetValue<string>();
+            if (!AfterlifeSpiritualConflictState.IsAfterlifeRealm(currentRealm))
+                return;
+
+            await _fs.WriteFileAtomicAsync(
+                AfterlifeGlobalFlagState.StatePath,
+                AfterlifeGlobalFlagState.CreateDefaultRoot().ToJsonString(JsonOpts));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Не удалось инициализировать afterlife global flag state перед snapshot.");
+        }
+    }
+
 
     private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(TurnRequest request,
         RollbackSnapshot? rollbackSnapshot = null,
@@ -227,9 +253,11 @@ public partial class GameEngine
         var conflictStateExistedBeforeInitialization = _fs.FileExists(AfterlifeSpiritualConflictState.StatePath);
         var entityProfileStateExistedBeforeInitialization = _fs.FileExists(AfterlifeEntityProfileState.StatePath);
         var chronicleStateExistedBeforeInitialization = _fs.FileExists(AfterlifeChronicleState.StatePath);
+        var globalFlagStateExistedBeforeInitialization = _fs.FileExists(AfterlifeGlobalFlagState.StatePath);
         await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync();
         await EnsureAfterlifeEntityProfileStateInitializedForSnapshotAsync();
         await EnsureAfterlifeChronicleStateInitializedForSnapshotAsync();
+        await EnsureAfterlifeGlobalFlagStateInitializedForSnapshotAsync();
         await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
             request,
             rollbackSnapshot,
@@ -242,6 +270,10 @@ public partial class GameEngine
             request,
             rollbackSnapshot,
             chronicleStateExistedBeforeInitialization);
+        await RegisterAfterlifeGlobalFlagRollbackBackupIfInitializedAsync(
+            request,
+            rollbackSnapshot,
+            globalFlagStateExistedBeforeInitialization);
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -271,6 +303,8 @@ public partial class GameEngine
             rollbackBaselineFiles.Add(AfterlifeEntityProfileState.StatePath);
         if (_fs.FileExists(AfterlifeChronicleState.StatePath))
             rollbackBaselineFiles.Add(AfterlifeChronicleState.StatePath);
+        if (_fs.FileExists(AfterlifeGlobalFlagState.StatePath))
+            rollbackBaselineFiles.Add(AfterlifeGlobalFlagState.StatePath);
         if (_fs.FileExists(SarefMainStoryState.StatePath))
             rollbackBaselineFiles.Add(SarefMainStoryState.StatePath);
 
@@ -415,6 +449,29 @@ public partial class GameEngine
         rollbackSnapshot.BaselineFiles.Add(AfterlifeChronicleState.StatePath);
         rollbackSnapshot.BackupFiles[AfterlifeChronicleState.StatePath] = backupPath;
         rollbackSnapshot.BackupHashes[AfterlifeChronicleState.StatePath] = ComputeSha256(content);
+    }
+
+    private async Task RegisterAfterlifeGlobalFlagRollbackBackupIfInitializedAsync(
+        TurnRequest request,
+        RollbackSnapshot? rollbackSnapshot,
+        bool existedBeforeInitialization)
+    {
+        if (rollbackSnapshot == null ||
+            existedBeforeInitialization ||
+            !_fs.FileExists(AfterlifeGlobalFlagState.StatePath))
+        {
+            return;
+        }
+
+        var content = await _fs.ReadFileAsync(AfterlifeGlobalFlagState.StatePath);
+        if (content == null)
+            return;
+
+        var backupPath = AfterlifeGlobalFlagState.StatePath + $".rollback.{request.RequestId}.initialized";
+        await _fs.WriteFileAtomicAsync(backupPath, content);
+        rollbackSnapshot.BaselineFiles.Add(AfterlifeGlobalFlagState.StatePath);
+        rollbackSnapshot.BackupFiles[AfterlifeGlobalFlagState.StatePath] = backupPath;
+        rollbackSnapshot.BackupHashes[AfterlifeGlobalFlagState.StatePath] = ComputeSha256(content);
     }
 
     private async Task<Dictionary<string, string>> CaptureClientOwnedValidationHashesAsync()
