@@ -218,7 +218,7 @@ Mortal World read-only parity currently includes:
 - `/storage_access`, `/доступ_к_хранилищам`
 - `/interactions`, `/взаимодействия`
 
-`/map` and `/карта` now return a shared `map` DTO block in addition to the raw JSON repair payloads. The browser renderer draws it locally as SVG with pan/zoom, z-level filtering, layer filtering, node selection, and detail cards. The DTO is realm-agnostic (`realm`, `nodes`, `links`, `regions`, `layers`, `zLevels`, owner/influence fields) so Mortal World, Chaos Sea, and Shining Abode projections can reuse the same renderer. The Mortal World projection reads `game_state/world/current_location.json` and `game_state/world/world_map.json`, including `currentLocationData`, `locations[]`, `knownLocations[]`, `newLocations[]`, `locationUpdates[]`, adjacency, links, and paths. It keeps console fallback behavior unchanged and writes no game state.
+`/map` and `/карта` now return a shared `map` DTO block in addition to the raw JSON repair payloads. The browser renderer draws it locally as SVG with pan/zoom, z-level filtering, layer filtering, node selection, and detail cards. The DTO is realm-agnostic (`realm`, `nodes`, `links`, `regions`, `layers`, `zLevels`, owner/influence fields) so Mortal World, Chaos Sea, and Shining Abode projections can reuse the same renderer. The map service chooses the projection from `game_state/meta/soul_state.json.currentRealm`: Mortal World reads `game_state/world/current_location.json` and `game_state/world/world_map.json`, while Chaos Sea reads `game_state/meta/guardians.json` and builds a non-geographic Guardian Abode constellation from `activeGuardian`, `chaosSeaNavigation.currentAbodeId`, `discoveredAbodes`/`knownAbodes`, and Guardian `abode` data. It keeps console fallback behavior unchanged and writes no game state.
 
 The map visual direction is a dark-fantasy parchment atlas, not a technical graph. The reusable renderer uses Russian-first controls and labels:
 
@@ -228,6 +228,7 @@ The map visual direction is a dark-fantasy parchment atlas, not a technical grap
 - selected node cards with details and faction ownership/influence where the projection can provide them.
 - Mortal location cards include available type, region, biome, known/discovered state, description, last events, exits, storage/threat counts, and coordinates. Missing coordinates degrade into stable schematic coordinates and are marked as schematic in the card instead of breaking the viewer.
 - The political overlay toggle (`Политическое влияние`) renders existing faction-control data only. Dominant factions come from `location.factionControl[]` and `factions[].controlledTerritories[]`; disputed locations are shown as `Спорная зона` when multiple meaningful influences are close. The viewer uses soft halos/cluster regions rather than pretending to know exact borders.
+- Chaos Sea cards show Guardian, domain, reputation, Abode power, residents, projects, available actions, and discovery state when those fields exist. The current Abode is centered and marked as current, the active Guardian is called out in the card, and other discovered Abodes use deterministic constellation coordinates derived from stable ids/domain instead of fake world coordinates.
 
 Mortal World mutating parity currently includes:
 

@@ -169,6 +169,8 @@ public partial class ExplorerMode
         string.Equals(command, "/море_хаоса", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/gacha", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/гача", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/map", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/карта", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/abodes", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/обители", StringComparison.OrdinalIgnoreCase);
 

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.CommandProtocol;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using BookOfEternityClient.Core;
@@ -12,6 +13,33 @@ namespace BookOfEternityClient.UI;
 public partial class ExplorerMode
 {private async Task ShowMap()
     {
+        if (RealmSemantics.IsChaosSea(_stateManager.CurrentState.CurrentRealm))
+        {
+            var map = await LocalMapViewService.BuildChaosSeaMapAsync(_fs);
+            ExplorerCommandResultConsoleRenderer.Render(
+                _console,
+                new ExplorerCommandResult
+                {
+                    Command = "/map",
+                    State = CommandExecutionState.Completed,
+                    Blocks =
+                    [
+                        new UiMapBlock
+                        {
+                            Title = "Карта Моря Хаоса",
+                            Map = map
+                        }
+                    ]
+                });
+
+            var launch = await LocalMapViewerLauncher.WriteAndOpenAsync(_fs, map);
+            MarkupLine(launch.Opened
+                ? $"[green]Открыта локальная карта:[/] [cyan]{Markup.Escape(launch.RelativePath)}[/]"
+                : $"[yellow]HTML карты сохранён:[/] [cyan]{Markup.Escape(launch.RelativePath)}[/] [dim]({Markup.Escape(launch.Error)})[/]");
+            WaitForKey();
+            return;
+        }
+
         var locDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
         var mapDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/world_map.json");
 

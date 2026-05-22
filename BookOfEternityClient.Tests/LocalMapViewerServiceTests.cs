@@ -224,6 +224,49 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildChaosSeaMapAsync_ProjectsDiscoveredCurrentAndActiveGuardianAbodes()
+    {
+        await SeedChaosSeaMapAsync();
+
+        var map = await LocalMapViewService.BuildChaosSeaMapAsync(_fs);
+
+        Assert.Equal("Chaos Sea", map.Realm);
+        Assert.Equal("abode_azalia", map.CurrentNodeId);
+        Assert.Contains(map.Layers, static layer => layer.Id == "chaos_sea" && layer.IsDefault);
+        Assert.Contains(map.ZLevels, static level => level.Z == 0 && level.Label.Contains("созвезд", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(map.Nodes, static node => node.Id == "abode_azalia" && node.IsCurrent && node.Label == "Сад Ночных Роз");
+        Assert.Contains(map.Nodes, static node => node.Id == "abode_lucian" && node.Label == "Зал Серебряного Клинка");
+        Assert.DoesNotContain(map.Nodes, static node => node.Id == "abode_locked");
+        Assert.Contains(map.Links, static link => link.SourceNodeId == "abode_azalia" && link.TargetNodeId == "abode_lucian");
+
+        var current = Assert.Single(map.Nodes, node => node.Id == "abode_azalia");
+        Assert.Contains(current.Details, static item => item.Key == "Хранитель" && item.Value.Contains("Азалия", StringComparison.Ordinal));
+        Assert.Contains(current.Details, static item => item.Key == "Активный Хранитель" && item.Value == "да");
+        Assert.Contains(current.Details, static item => item.Key == "Домен" && item.Value.Contains("Память", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(current.Details, static item => item.Key == "Репутация" && item.Value.Contains("14", StringComparison.Ordinal));
+        Assert.Contains(current.Details, static item => item.Key == "Сила Обители" && item.Value.Contains("44", StringComparison.Ordinal));
+        Assert.Contains(current.Details, static item => item.Key == "Резиденты" && item.Value.Contains("2", StringComparison.Ordinal));
+        Assert.Contains(current.Details, static item => item.Key == "Проекты" && item.Value.Contains("1", StringComparison.Ordinal));
+        Assert.Contains(current.Details, static item => item.Key == "Действия" && item.Value.Contains("подношение", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task BuildChaosSeaMapAsync_UsesStableLayoutByAbodeIdentity()
+    {
+        await SeedChaosSeaMapAsync();
+        var first = await LocalMapViewService.BuildChaosSeaMapAsync(_fs);
+        var firstLucian = Assert.Single(first.Nodes, node => node.Id == "abode_lucian");
+
+        await SeedChaosSeaMapAsync(reverseGuardians: true);
+        var second = await LocalMapViewService.BuildChaosSeaMapAsync(_fs);
+        var secondLucian = Assert.Single(second.Nodes, node => node.Id == "abode_lucian");
+
+        Assert.Equal(firstLucian.X, secondLucian.X);
+        Assert.Equal(firstLucian.Y, secondLucian.Y);
+        Assert.Equal(firstLucian.Z, secondLucian.Z);
+    }
+
+    [Fact]
     public async Task LocalMapViewerLauncher_WritesHtmlAndReturnsFallbackWhenOpenFails()
     {
         await SeedMortalMapAsync();
@@ -304,6 +347,131 @@ public sealed class LocalMapViewerServiceTests : IDisposable
         }
         """);
     }
+
+    private async Task SeedChaosSeaMapAsync(bool reverseGuardians = false)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", reverseGuardians ? ChaosSeaMapJsonReversed : ChaosSeaMapJson);
+    }
+
+    private const string ChaosSeaMapJson = """
+    {
+      "activeGuardian": {
+        "guardianId": "guardian_azalia",
+        "guardianName": "Азалия"
+      },
+      "chaosSeaNavigation": {
+        "currentAbodeId": "abode_azalia",
+        "discoveredAbodes": [
+          { "abodeId": "abode_azalia", "name": "Сад Ночных Роз", "guardianId": "guardian_azalia" },
+          { "abodeId": "abode_lucian", "name": "Зал Серебряного Клинка", "guardianId": "guardian_lucian" }
+        ]
+      },
+      "guardians": [
+        {
+          "guardianId": "guardian_azalia",
+          "canonicalName": "Азалия",
+          "domain": "Память и запретные клятвы",
+          "relationshipData": { "currentReputation": 14 },
+          "abode": {
+            "abodeId": "abode_azalia",
+            "name": "Сад Ночных Роз",
+            "isDiscovered": true,
+            "residents": [
+              { "residentId": "resident_1" },
+              { "residentId": "resident_2" }
+            ],
+            "availableActions": ["подношение", "торг"]
+          },
+          "abodePower": { "currentPower": 44, "maxPower": 100 },
+          "projects": [
+            { "projectId": "project_roses", "status": "active" }
+          ]
+        },
+        {
+          "guardianId": "guardian_lucian",
+          "canonicalName": "Люциан",
+          "domain": "Клятвы и клинок",
+          "relationshipData": { "currentReputation": -3 },
+          "abode": {
+            "abodeId": "abode_lucian",
+            "name": "Зал Серебряного Клинка",
+            "isDiscovered": true
+          },
+          "abodePower": { "currentPower": 31, "maxPower": 90 }
+        },
+        {
+          "guardianId": "guardian_locked",
+          "canonicalName": "Безымянный",
+          "domain": "Запертая звезда",
+          "abode": {
+            "abodeId": "abode_locked",
+            "name": "Запертая Обитель",
+            "isDiscovered": false
+          }
+        }
+      ]
+    }
+    """;
+
+    private const string ChaosSeaMapJsonReversed = """
+    {
+      "activeGuardian": {
+        "guardianId": "guardian_azalia",
+        "guardianName": "Азалия"
+      },
+      "chaosSeaNavigation": {
+        "currentAbodeId": "abode_azalia",
+        "discoveredAbodes": [
+          { "abodeId": "abode_azalia", "name": "Сад Ночных Роз", "guardianId": "guardian_azalia" },
+          { "abodeId": "abode_lucian", "name": "Зал Серебряного Клинка", "guardianId": "guardian_lucian" }
+        ]
+      },
+      "guardians": [
+        {
+          "guardianId": "guardian_locked",
+          "canonicalName": "Безымянный",
+          "domain": "Запертая звезда",
+          "abode": {
+            "abodeId": "abode_locked",
+            "name": "Запертая Обитель",
+            "isDiscovered": false
+          }
+        },
+        {
+          "guardianId": "guardian_lucian",
+          "canonicalName": "Люциан",
+          "domain": "Клятвы и клинок",
+          "relationshipData": { "currentReputation": -3 },
+          "abode": {
+            "abodeId": "abode_lucian",
+            "name": "Зал Серебряного Клинка",
+            "isDiscovered": true
+          },
+          "abodePower": { "currentPower": 31, "maxPower": 90 }
+        },
+        {
+          "guardianId": "guardian_azalia",
+          "canonicalName": "Азалия",
+          "domain": "Память и запретные клятвы",
+          "relationshipData": { "currentReputation": 14 },
+          "abode": {
+            "abodeId": "abode_azalia",
+            "name": "Сад Ночных Роз",
+            "isDiscovered": true,
+            "residents": [
+              { "residentId": "resident_1" },
+              { "residentId": "resident_2" }
+            ],
+            "availableActions": ["подношение", "торг"]
+          },
+          "abodePower": { "currentPower": 44, "maxPower": 100 },
+          "projects": [
+            { "projectId": "project_roses", "status": "active" }
+          ]
+        }
+      ]
+    }
+    """;
 
     public void Dispose()
     {
