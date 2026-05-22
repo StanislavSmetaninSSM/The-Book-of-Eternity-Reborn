@@ -7497,6 +7497,64 @@ Correct reasoning checklist:
 - Use `afterlifeChronicleUpdates[]` for afterlife memory even when the consequence feels similar to Mortal `worldEventsLog`.
 
 ==================================================
+EXAMPLE 26C — Afterlife Writer's Room (`afterlife_story_outline_v1`)
+==================================================
+
+Scenario:
+- The GM wants a private flexible plan for Guardian, resident, Shining faction, memory-scene, spiritual combat, and hidden Saref/Wings pacing.
+- The canonical file is `game_state/meta/afterlife_story_outline.json`.
+- The accepted response uses `afterlifeStoryOutline`.
+- This is private GM planning. It is not player-visible text, not a prophecy, and not an order to force future outcomes.
+- If the player breaks the expected route, update `afterlifeStoryOutline` instead of ignoring the player's choice.
+- Do not use Mortal `plotOutline` / `game_state/quests/plot_outline.json` for Chaos Sea or Shining Abode arcs.
+- Hidden `pendingRevelations[]` can mention Saref / Wings only as private no-spoiler planning; player-facing text still must obey reveal-stage rules.
+
+Valid response fragment:
+
+```json
+{
+  "response": "Азалия замолкает, когда зеркальная вода показывает только обрывки чужой клятвы.",
+  "afterlifeStoryOutline": {
+    "mainArc": "Крылья над Бездной остаются скрытой линией; имя Сарефа пока нельзя раскрывать игроку.",
+    "realmArc": "Море Хаоса ведет Душу к первой сцене памяти Азалии.",
+    "actorSubplots": [
+      {
+        "actorRef": "guardian:azalia",
+        "summary": "Азалия проверяет, повторит ли Душа ее старый выбор: сила ради порядка или милость ради свободы.",
+        "nextPressure": "Если игрок снова спросит о белых перьях, Азалия даст ритуальную подсказку, но не имя Сарефа."
+      }
+    ],
+    "factionOrInstitutionArcs": [
+      {
+        "institutionRef": "shadow:wings_of_angels",
+        "summary": "Крылья Ангелов существуют только как тень слухов; не показывать их в обычной фракционной UI до reveal."
+      }
+    ],
+    "loomingThreatsOrOpportunities": [
+      "Черный прилив может открыть вход в сцену Воспоминание, если игрок принесет резонанс клятвы."
+    ],
+    "pendingRevelations": [
+      "Первый фрагмент раскрывает предательство в Ложе белых перьев, но не настоящее имя предателя."
+    ],
+    "nextLikelySceneBeats": [
+      "Если игрок останется с Азалией, подготовить playable Воспоминание с ограниченными способностями.",
+      "Если игрок уйдет к другому Хранителю, перенести этот beat и записать новую зацепку через afterlifeChronicleUpdates."
+    ],
+    "playerAgencyNotes": "Не форсировать память Азалии. Если игрок выбирает Сияющую Обитель или другого Хранителя, отложить сцену и обновить план.",
+    "lastUpdatedTurn": 45
+  }
+}
+```
+
+Correct reasoning checklist:
+- `mainArc` is the big flexible arc; `realmArc` is the current realm-local direction.
+- `actorSubplots[]` describes actor arcs, not mandatory outcomes.
+- `factionOrInstitutionArcs[]` can hold Shining factions, halls, Guardian Abodes, Saref shadows, or other institutions.
+- `pendingRevelations[]` is private. It may contain spoilers, but those spoilers must not leak into `response`, interface text, ordinary faction UI, or player-visible audits before the relevant reveal contract.
+- `nextLikelySceneBeats[]` are likely beats, not rails.
+- `playerAgencyNotes` must explicitly tell the future GM what not to force.
+
+==================================================
 EXAMPLE 27 — Скрытая главная линия Сарефа (`main_story_saref_state`, `saref_reveal_stage_v1`)
 ==================================================
 

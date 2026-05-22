@@ -81,6 +81,7 @@ public partial class CanonicalStateNormalizer
         .Concat(new[]
         {
             "game_state/world/world_events.json",
+            AfterlifeStoryOutlineState.StatePath,
             SarefMainStoryState.StatePath
         })
         .ToArray();
@@ -162,6 +163,7 @@ public partial class CanonicalStateNormalizer
         await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
         await NormalizeAfterlifeEntityProfilesAsync(backups);
         await NormalizeAfterlifeChroniclesAsync(backups);
+        await NormalizeAfterlifeStoryOutlineAsync(backups);
         await NormalizeSarefMainStoryStateAsync(backups);
         await NormalizeFactionCoreAsync(backups);
         await NormalizeNpcTradeCoreAsync(backups);

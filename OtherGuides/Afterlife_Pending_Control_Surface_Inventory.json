@@ -50,6 +50,22 @@
       "notes": "Afterlife-only external memory for Chaos Sea regions, Shining districts, Guardian Abodes/scenes, resident scenes, faction zones, memory scenes, Source of Light, and Saref story scenes."
     },
     {
+      "path": "game_state/meta/afterlife_story_outline.json",
+      "surfaceType": "meta_state_with_response_wrapper",
+      "owner": "afterlife_story_outline",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "GM-authored private afterlife Writer's Room plan through afterlifeStoryOutline; canonical state is validator-normalized",
+      "emptyWrapperSemantics": "Missing means no afterlife Writer's Room plan yet. Empty or commandless present roots are invalid unless normalized to schemaVersion plus required planning fields.",
+      "malformedBehavior": "Fail closed for malformed outline/update contracts; player-visible response text is forbidden in this private planning surface.",
+      "blockerBehavior": "Does not block by existence; invalid outline state blocks accepted-turn validation until repaired.",
+      "closureSurface": "afterlifeStoryOutline into canonical mainArc, realmArc, actorSubplots[], factionOrInstitutionArcs[], loomingThreatsOrOpportunities[], pendingRevelations[], nextLikelySceneBeats[], playerAgencyNotes, and lastUpdatedTurn.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules",
+        "Examples/E_CLI_Afterlife_Turns.txt#afterlifeStoryOutline"
+      ],
+      "notes": "Private flexible GM planning for Chaos Sea / Shining Abode arcs; not Mortal plotOutline, not player-visible text, and not an order to force future outcomes."
+    },
+    {
       "path": "game_state/meta/main_story_saref_state.json",
       "surfaceType": "meta_story_state",
       "owner": "saref_main_story",
