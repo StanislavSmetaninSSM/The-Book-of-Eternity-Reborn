@@ -59,10 +59,12 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<AudioService>();
         builder.Services.AddSingleton<StateDistributor>();
         builder.Services.AddSingleton<CanonicalStateNormalizer>();
+        builder.Services.AddSingleton<ScenarioCoreService>();
         builder.Services.AddSingleton<QteSceneService>();
         builder.Services.AddSingleton<QteWebInteractionService>();
         builder.Services.AddSingleton<LocalUiSessionLockService>();
         builder.Services.AddSingleton<BrowserLocalWriteCoordinator>();
+        builder.Services.AddSingleton<BrowserMortalWorldWriteService>();
         builder.Services.AddSingleton<LocalWebUiSessionStatusService>();
         builder.Services.AddSingleton<BrowserLifecycleDashboardService>();
         builder.Services.AddSingleton<ExplorerWebPromptSessionService>();

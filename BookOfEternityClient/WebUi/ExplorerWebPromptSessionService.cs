@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.WebUi;
 
@@ -27,15 +28,22 @@ public sealed class ExplorerWebPromptSessionService
     private readonly ConcurrentDictionary<string, PromptSessionSnapshot> _sessions = new(StringComparer.Ordinal);
     private readonly LocalUiSessionLockService _lockService;
     private readonly TimeProvider _timeProvider;
+    private readonly BrowserMortalWorldWriteService _mortalWorldWriteService;
 
     public ExplorerWebPromptSessionService(
         FileSystemManager fs,
         LocalUiSessionLockService? lockService = null,
-        TimeProvider? timeProvider = null)
+        TimeProvider? timeProvider = null,
+        BrowserMortalWorldWriteService? mortalWorldWriteService = null)
     {
         _fs = fs;
         _lockService = lockService ?? new LocalUiSessionLockService(fs, timeProvider);
         _timeProvider = timeProvider ?? TimeProvider.System;
+        _mortalWorldWriteService = mortalWorldWriteService ?? new BrowserMortalWorldWriteService(
+            fs,
+            new BrowserLocalWriteCoordinator(fs, _lockService, _timeProvider),
+            new ScenarioCoreService(fs, NullLogger<ScenarioCoreService>.Instance),
+            _timeProvider);
     }
 
     public async Task<ExplorerCommandResult> AttachSessionIfNeededAsync(
@@ -151,11 +159,18 @@ public sealed class ExplorerWebPromptSessionService
                 }).ToList());
         }
 
+        var writeResult = await _mortalWorldWriteService.TryApplyAsync(
+            snapshot.Result.Command,
+            answers,
+            snapshot.Owner);
+        if (writeResult.Handled)
+            return await BuildDomainWriteSubmitResultAsync(request.SessionId, snapshot, writeResult);
+
+        var submittedAnswers = AnswersToJson(answers);
         _sessions.TryRemove(request.SessionId, out _);
         if (snapshot.RequiresLocalUiLock)
             await _lockService.ReleaseAsync(snapshot.Owner);
 
-        var submittedAnswers = AnswersToJson(answers);
         var blocks = snapshot.Result.Blocks.ToList();
         blocks.Add(new UiMessageBlock
         {
@@ -182,6 +197,66 @@ public sealed class ExplorerWebPromptSessionService
                     Severity = UiNotificationSeverity.Success,
                     Title = "Форма завершена",
                     Message = $"Команда {snapshot.Result.Command} получила ответы браузера."
+                }
+            ]
+        };
+    }
+
+    private async Task<ExplorerCommandResult> BuildDomainWriteSubmitResultAsync(
+        string sessionId,
+        PromptSessionSnapshot snapshot,
+        BrowserPromptWriteResult writeResult)
+    {
+        if (writeResult.KeepSessionOpen)
+        {
+            return WithSession(
+                snapshot.Result,
+                snapshot.Session,
+                CommandExecutionState.RequiresInput,
+                snapshot.Result.Prompts,
+                [
+                    new UiNotification
+                    {
+                        Severity = writeResult.Severity,
+                        Title = writeResult.Title,
+                        Message = writeResult.Message
+                    }
+                ]);
+        }
+
+        _sessions.TryRemove(sessionId, out _);
+        if (!writeResult.Success && snapshot.RequiresLocalUiLock)
+            await _lockService.ReleaseAsync(snapshot.Owner);
+
+        var blocks = snapshot.Result.Blocks.ToList();
+        blocks.Add(new UiMessageBlock
+        {
+            Severity = writeResult.Severity,
+            Title = writeResult.Title,
+            Message = writeResult.Message
+        });
+        if (writeResult.Payload != null)
+        {
+            blocks.Add(new UiRawJsonBlock
+            {
+                Title = "JSON: результат браузерной записи",
+                Json = writeResult.Payload.DeepClone()
+            });
+        }
+
+        return new ExplorerCommandResult
+        {
+            Command = snapshot.Result.Command,
+            State = writeResult.State,
+            Blocks = blocks,
+            Actions = snapshot.Result.Actions,
+            Notifications =
+            [
+                new UiNotification
+                {
+                    Severity = writeResult.Severity,
+                    Title = writeResult.Title,
+                    Message = writeResult.Message
                 }
             ]
         };

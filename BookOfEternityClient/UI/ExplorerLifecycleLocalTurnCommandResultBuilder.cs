@@ -135,7 +135,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     new UiTextBlock
                     {
                         Text = stateManager.CurrentState.IsInAfterlifeRealm
-                            ? "Настройка следующей смертной жизни доступна в загробье. Браузер показывает client-owned контракт и форму будущего редактирования."
+                            ? "Настройка следующей смертной жизни доступна в загробье. Браузер показывает client-owned контракт и форму редактирования/очистки."
                             : "Подготовка следующего мира доступна только в Море Хаоса или Сияющей Обители; в смертной жизни используется /world_rules.",
                         Tone = stateManager.CurrentState.IsInAfterlifeRealm ? UiTone.Accent : UiTone.Warning
                     },
@@ -214,7 +214,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     new UiTextBlock
                     {
                         Text = unspent > 0
-                            ? $"Доступно очков характеристик: {unspent}. Браузерный DTO показывает безопасную форму распределения без console-key навигации."
+                            ? $"Доступно очков характеристик: {unspent}. Браузерная форма безопасно распределяет очки без console-key навигации."
                             : "Нераспределённых очков характеристик сейчас нет.",
                         Tone = unspent > 0 ? UiTone.Accent : UiTone.Muted
                     },
@@ -381,7 +381,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 [
                     new UiTextBlock
                     {
-                        Text = "Браузерная команда показывает рецепты и форму будущего craft-запроса. Фактическая отправка многошагового локального действия будет проходить через interactive protocol.",
+                        Text = "Браузерная команда показывает рецепты и отправляет pending-запрос ремесла через безопасный interactive/write protocol.",
                         Tone = UiTone.Accent
                     },
                     new UiTableBlock

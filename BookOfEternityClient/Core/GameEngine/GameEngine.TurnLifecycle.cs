@@ -2920,6 +2920,9 @@ Shining relic gacha consumes the quoted Ink Feather cost from the request and do
         var npcTradeReminder = await NpcTradeRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(npcTradeReminder))
             parts.Add(npcTradeReminder);
+        var craftReminder = await CraftRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(craftReminder))
+            parts.Add(craftReminder);
         var abodeResidentReminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);
         if (!string.IsNullOrWhiteSpace(abodeResidentReminder))
             parts.Add(abodeResidentReminder);

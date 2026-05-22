@@ -146,7 +146,7 @@ Prompt sessions let the browser pause, resume by `GET /api/explorer/prompt-sessi
 }
 ```
 
-For the first interactive protocol layer, successful submissions complete the browser prompt session and return a DTO containing the accepted answers. Domain-specific file writes are still migrated command-by-command in the later browser parity tasks.
+For read-only or not-yet-migrated interactive commands, successful submissions complete the browser prompt session and return a DTO containing the accepted answers. Mortal World write commands that reached mutating parity now execute their domain write during prompt submission through the browser local-write coordinator. Domain validation errors keep the prompt session and local UI lock open so the player can correct the form instead of losing the staged input.
 
 `/api/qte/state` exposes the current local QTE state. It returns one of:
 
@@ -197,14 +197,19 @@ Mortal World read-only parity currently includes:
 - `/storage_access`, `/доступ_к_хранилищам`
 - `/interactions`, `/взаимодействия`
 
-Mortal World interactive form pending surfaces currently include:
+Mortal World mutating parity currently includes:
 
 - `/distribute`
 - `/companion_directive`
 - `/faction_directive`
 - `/craft`
 
-These return `ExplorerCommandResult` DTOs with local GM-turn status, target lists, current raw JSON where useful, and input prompts. They do not yet commit the full domain-specific write flow from the browser; that Mortal World write parity is tracked by #590.
+These return `ExplorerCommandResult` DTOs with local GM-turn status, target lists, current raw JSON where useful, and input prompts. On submit they use the shared local UI lock and rollback capture before mutating:
+
+- `/distribute`: updates `game_state/misc/characteristics.json` and `game_state/player/stat_points.json`, rejecting unknown stats, non-positive allocations, over-budget spends, and stat values above 100.
+- `/companion_directive`: updates `playerCompanionDirective` in `game_state/npcs/npc_core.json` for a matching active companion.
+- `/faction_directive`: updates `playerStrategyDirective` in `game_state/factions/faction_core.json` for a player-owned or player-member faction.
+- `/craft`: writes `game_state/control/pending_craft_request.json` with `recipeId`, `craftIntent`, source, status, and request id for GM resolution; the next Mortal World turn reminder surfaces the pending craft so the GM does not have to infer it from disk manually.
 
 Chaos Sea read-only parity currently includes:
 
@@ -245,7 +250,7 @@ The browser afterlife combat/entity status surfaces are read-only. `/afterlife_i
 Lifecycle/local-turn browser surfaces currently include:
 
 - `/validate`, `/валидация`: runs the same `ValidationService` as the console command and renders grouped issues.
-- `/world_setup`, `/настройка_мира`: shows `incarnation_world_setup.json`, `next_life_scenario_core.json`, current realm, and browser prompts for future editing/clearing.
+- `/world_setup`, `/настройка_мира`: shows `incarnation_world_setup.json`, `next_life_scenario_core.json`, current realm, and browser prompts for editing or clearing. On submit, `create_or_edit` writes `game_state/control/incarnation_world_setup.json` and refreshes `game_state/control/next_life_scenario_core.json`; `clear` deletes both.
 - `/spiritual_action`, `/духовное_действие`: shows active afterlife conflict state, response surface, and prompts for the player's spiritual action route tag.
 
 Every migrated local-turn protocol result includes a `Локальный ход / GM-turn protocol` panel. It reports whether these artifacts exist:
@@ -259,7 +264,7 @@ Every migrated local-turn protocol result includes a `Локальный ход 
 
 If any active GM-turn or rollback/snapshot artifact exists, local-turn command DTOs return `Pending` so the browser can observe the long-running or late-response state without invoking console-only prompts.
 
-Interactive multi-step prompt submission remains outside the current browser shell. QTE offer/scene/action protocol is available through the `/api/qte/*` endpoints and the “Проверить QTE” shell panel.
+Interactive prompt submission is active in the current browser shell. The migrated Mortal World write commands above commit local files directly from forms; the remaining afterlife/Chaos Sea/Shining write forms still stop at DTO/status-only coverage until their follow-up tasks. QTE offer/scene/action protocol is available through the `/api/qte/*` endpoints and the “Проверить QTE” shell panel.
 
 ## Session Lock And Pending Turns
 

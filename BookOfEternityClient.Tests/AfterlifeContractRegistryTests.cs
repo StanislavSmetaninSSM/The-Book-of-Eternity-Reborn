@@ -49,6 +49,7 @@ public sealed class AfterlifeContractRegistryTests
             ActorSocialInteractionRequestState.PendingGuardianRequestPath,
             ActorSocialInteractionRequestState.PendingNpcRequestPath,
             SystemGuardianLibraryService.AttractionRequestPath,
+            CraftRequestState.PendingRequestPath,
             ShiningCoreActionRequestState.PendingActionsRequestPath,
             ShiningTradeRequestState.PendingRequestsPath,
             ShiningFactionRequestState.PendingFoundingsRequestPath,

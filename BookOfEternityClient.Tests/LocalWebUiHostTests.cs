@@ -307,7 +307,8 @@ public sealed class LocalWebUiHostTests : IDisposable
         submitResponse.EnsureSuccessStatusCode();
         Assert.Equal("Completed", submitRoot["state"]!.GetValue<string>());
         Assert.Contains(submitRoot["blocks"]!.AsArray(), node =>
-            string.Equals(node?["title"]?.GetValue<string>(), "Ответы формы приняты", StringComparison.Ordinal));
+            string.Equals(node?["title"]?.GetValue<string>(), "Подготовка мира записана", StringComparison.Ordinal));
+        Assert.True(File.Exists(Path.Combine(_rootPath, "game_session", WorldDirectiveService.PendingSetupPath)));
         Assert.False(File.Exists(Path.Combine(_rootPath, "game_session", LocalUiSessionLockService.LockPath)));
     }
 

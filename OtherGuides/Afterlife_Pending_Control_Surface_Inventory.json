@@ -224,6 +224,21 @@
       "notes": "Included because afterlife pending scans must not ignore Mortal leftovers."
     },
     {
+      "path": "game_state/control/pending_craft_request.json",
+      "surfaceType": "realm_wrong_pending_blocker",
+      "owner": "mortal_craft_request",
+      "realm": "Mortal World; afterlife sees only blocker/preservation semantics",
+      "authority": "client-owned Mortal pending request created by browser /craft",
+      "emptyWrapperSemantics": "Missing means no pending craft; malformed/non-empty files are preserved for Mortal World repair/closure.",
+      "malformedBehavior": "Malformed file blocks afterlife lifecycle repair rather than being closed with afterlife output.",
+      "blockerBehavior": "Blocks Soul Gates/afterlife exits when non-empty or malformed.",
+      "closureSurface": "Mortal World crafting closure only; GM resolves through UpdateInventory or canonical inventory/material state.",
+      "docAnchors": [
+        "docs/web-ui/local-web-host.md#Explorer Command DTOs And Prompt Sessions"
+      ],
+      "notes": "Included because runtime pending scans must not ignore Mortal browser crafting leftovers."
+    },
+    {
       "path": "game_state/control/pending_archive_consultation_request.json",
       "surfaceType": "pending_contract",
       "owner": "afterlife_archive_consultation",

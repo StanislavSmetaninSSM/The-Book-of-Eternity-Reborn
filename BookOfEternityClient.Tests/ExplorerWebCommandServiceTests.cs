@@ -204,9 +204,233 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Empty(completed.Prompts);
         Assert.Null(completed.InteractiveSession);
         var text = CollectBlockText(completed.Blocks);
-        Assert.Contains("Ответы формы приняты", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Подготовка мира записана", text, StringComparison.OrdinalIgnoreCase);
         var submittedJson = Assert.IsType<UiRawJsonBlock>(completed.Blocks.Last());
-        Assert.Equal("Королевство пепельных колоколов", submittedJson.Json?["world_title"]?.GetValue<string>());
+        Assert.Equal("Королевство пепельных колоколов", submittedJson.Json?["worldDirectives"]?["worldTitle"]?.GetValue<string>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_WorldSetupCreate_WritesPendingSetupAndScenarioCore()
+    {
+        await SeedUniversalMetaFilesAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/world_setup",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["world_setup_mode"] = JsonValue.Create("create_or_edit"),
+                ["world_title"] = JsonValue.Create("Королевство пепельных колоколов"),
+                ["world_directives"] = JsonValue.Create("Тёмное фэнтези, падшие династии, запрет на лёгкий тон.")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+
+        var setup = JsonNode.Parse((await _fs.ReadFileAsync(WorldDirectiveService.PendingSetupPath))!)!.AsObject();
+        Assert.Equal("manual", setup["mode"]!.GetValue<string>());
+        Assert.Equal("Королевство пепельных колоколов", setup["worldDirectives"]!["worldTitle"]!.GetValue<string>());
+        Assert.Contains("Тёмное фэнтези", setup["worldDirectives"]!["settingSummary"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.True(_fs.FileExists(ScenarioCoreService.ManifestPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_WorldSetupClear_DeletesPendingSetupAndScenarioCore()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync(WorldDirectiveService.PendingSetupPath, """
+        {
+          "mode": "manual",
+          "worldDirectives": { "worldTitle": "Старый мир" }
+        }
+        """);
+        await _fs.WriteFileAtomicAsync(ScenarioCoreService.ManifestPath, """
+        {
+          "sourcePath": "game_state/control/incarnation_world_setup.json",
+          "candidateAssertions": [],
+          "scenarioCoreAssertions": [],
+          "openCorrectionSlots": []
+        }
+        """);
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/world_setup",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["world_setup_mode"] = JsonValue.Create("clear")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        Assert.False(_fs.FileExists(WorldDirectiveService.PendingSetupPath));
+        Assert.False(_fs.FileExists(ScenarioCoreService.ManifestPath));
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_Distribute_AppliesAllocationsAndReleasesLock()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/player/stat_points.json", "{ \"unspentStatPoints\": 3 }");
+        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", """
+        {
+          "strength": 1,
+          "wisdom": 2
+        }
+        """);
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/distribute",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["stat_allocation_json"] = JsonValue.Create("{ \"strength\": 2, \"wisdom\": 1 }")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var stats = JsonNode.Parse((await _fs.ReadFileAsync("game_state/misc/characteristics.json"))!)!.AsObject();
+        var points = JsonNode.Parse((await _fs.ReadFileAsync("game_state/player/stat_points.json"))!)!.AsObject();
+        Assert.Equal(3, stats["strength"]!.GetValue<int>());
+        Assert.Equal(3, stats["wisdom"]!.GetValue<int>());
+        Assert.Equal(0, points["unspentStatPoints"]!.GetValue<int>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_DistributeOverBudget_KeepsSessionOpenAndDoesNotMutate()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/player/stat_points.json", "{ \"unspentStatPoints\": 1 }");
+        await _fs.WriteFileAtomicAsync("game_state/misc/characteristics.json", "{ \"strength\": 1 }");
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/distribute",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var validation = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["stat_allocation_json"] = JsonValue.Create("{ \"strength\": 2 }")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, validation.State);
+        Assert.NotNull(validation.InteractiveSession);
+        Assert.Contains(validation.Notifications, static item =>
+            item.Severity == UiNotificationSeverity.Error &&
+            item.Message.Contains("Недостаточно", StringComparison.OrdinalIgnoreCase));
+        var stats = JsonNode.Parse((await _fs.ReadFileAsync("game_state/misc/characteristics.json"))!)!.AsObject();
+        var points = JsonNode.Parse((await _fs.ReadFileAsync("game_state/player/stat_points.json"))!)!.AsObject();
+        Assert.Equal(1, stats["strength"]!.GetValue<int>());
+        Assert.Equal(1, points["unspentStatPoints"]!.GetValue<int>());
+        Assert.True(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_CompanionDirective_UpdatesNpcCore()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "npcs": [
+            { "npcId": "npc_1", "name": "Мирра", "progressionType": "Companion" }
+          ]
+        }
+        """);
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/companion_directive",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["companion_id"] = JsonValue.Create("npc_1"),
+                ["companion_directive"] = JsonValue.Create("Оберегай раненых и не вступай в бой первым.")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var npc = JsonNode.Parse((await _fs.ReadFileAsync("game_state/npcs/npc_core.json"))!)!.AsObject();
+        Assert.Equal("Оберегай раненых и не вступай в бой первым.", npc["npcs"]![0]!["playerCompanionDirective"]!.GetValue<string>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_FactionDirective_UpdatesFactionCore()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/factions/faction_core.json", """
+        {
+          "factions": [
+            { "factionId": "faction_1", "name": "Серые знамена", "isPlayerFaction": true }
+          ]
+        }
+        """);
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/faction_directive",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["faction_id"] = JsonValue.Create("faction_1"),
+                ["faction_directive"] = JsonValue.Create("Укрепить северные заставы и искать союз с ремесленниками.")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var factions = JsonNode.Parse((await _fs.ReadFileAsync("game_state/factions/faction_core.json"))!)!.AsObject();
+        Assert.Equal("Укрепить северные заставы и искать союз с ремесленниками.", factions["factions"]![0]!["playerStrategyDirective"]!.GetValue<string>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_Craft_WritesPendingCraftRequest()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/inventory/recipes.json", """
+        {
+          "recipes": [
+            { "recipeId": "healing_salve", "recipeName": "Лечебная мазь", "craftedItemName": "Припарка" }
+          ]
+        }
+        """);
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/craft",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["recipe_id"] = JsonValue.Create("healing_salve"),
+                ["craft_intent"] = JsonValue.Create("Сделать припарку из трав, не расходуя редкие реагенты.")
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var request = JsonNode.Parse((await _fs.ReadFileAsync("game_state/control/pending_craft_request.json"))!)!.AsObject();
+        Assert.Equal("healing_salve", request["recipeId"]!.GetValue<string>());
+        Assert.Equal("Сделать припарку из трав, не расходуя редкие реагенты.", request["craftIntent"]!.GetValue<string>());
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 

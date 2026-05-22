@@ -20,6 +20,7 @@ public sealed class ValidationSourceGuardTests
             GuardianTradeRequestState.PendingRequestPath,
             PlayerGuardianFoundationState.PendingRequestPath,
             NpcTradeRequestState.PendingRequestPath,
+            CraftRequestState.PendingRequestPath,
             AfterlifeArchiveActionState.ConsultationRequestPath,
             AfterlifeArchiveActionState.ProjectFuelRequestPath,
             GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
