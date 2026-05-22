@@ -17,6 +17,11 @@ internal static class AfterlifeEntityProfileState
     public const string QuestUpdatesProperty = "afterlifeActorQuestUpdates";
     public const string ActivityUpdatesProperty = "afterlifeActorActivityUpdates";
     public const string CompleteActivitiesProperty = "completeAfterlifeActorActivities";
+    public const string RelationshipChangesProperty = "afterlifeRelationshipChanges";
+    public const string RelationshipLockUpdatesProperty = "afterlifeRelationshipLockUpdates";
+    public const string BreakthroughQuestUpdatesProperty = "afterlifeBreakthroughQuestUpdates";
+    public const string RelationshipsProperty = "relationships";
+    public const string RelationshipGateQuestsProperty = "relationshipGateQuests";
     public const string ProgressionLedgerProperty = "progressionLedger";
     public const string LastInvalidProgressionOverrideProperty = "lastInvalidProgressionOverride";
     public const string LastInvalidProgressionOverrideReasonProperty = "lastInvalidProgressionOverrideReason";
@@ -114,6 +119,39 @@ internal static class AfterlifeEntityProfileState
         "blocked"
     };
 
+    public static readonly HashSet<string> RelationshipAxes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "trust",
+        "romance",
+        "rivalry",
+        "oath",
+        "fear",
+        "reverence",
+        "debt"
+    };
+
+    public static readonly HashSet<string> RelationshipLockStates = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "none",
+        "positive_locked",
+        "negative_locked",
+        "point_of_no_return"
+    };
+
+    public static readonly HashSet<string> RelationshipGateQuestTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "breakthrough",
+        "redemption"
+    };
+
+    public static readonly HashSet<string> RelationshipGateQuestStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "active",
+        "completed",
+        "failed",
+        "cancelled"
+    };
+
     internal static readonly string[] FateCardMechanicalEffectProperties =
     {
         "guardianEffects",
@@ -147,6 +185,9 @@ internal static class AfterlifeEntityProfileState
         ApplyActorQuestUpdates(result, currentRoot?[QuestUpdatesProperty]);
         ApplyActorActivityUpdates(result, currentRoot?[ActivityUpdatesProperty]);
         ApplyCompleteActorActivities(result, currentRoot?[CompleteActivitiesProperty]);
+        ApplyRelationshipChanges(result, currentRoot?[RelationshipChangesProperty]);
+        ApplyRelationshipLockUpdates(result, currentRoot?[RelationshipLockUpdatesProperty]);
+        ApplyBreakthroughQuestUpdates(result, currentRoot?[BreakthroughQuestUpdatesProperty]);
         ApplySpecialArtLearningReceipts(result, currentRoot?[SpecialArtLearningReceiptsProperty]);
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
         ApplyAutomaticProgression(result, progressionReportRoot);
@@ -159,6 +200,9 @@ internal static class AfterlifeEntityProfileState
         result.Remove(QuestUpdatesProperty);
         result.Remove(ActivityUpdatesProperty);
         result.Remove(CompleteActivitiesProperty);
+        result.Remove(RelationshipChangesProperty);
+        result.Remove(RelationshipLockUpdatesProperty);
+        result.Remove(BreakthroughQuestUpdatesProperty);
         result.Remove(ProgressionOverridesProperty);
         result.Remove(SpecialArtLearningReceiptsProperty);
         return result;
@@ -758,6 +802,238 @@ internal static class AfterlifeEntityProfileState
             ApplyResultingQuestStatus(profile, currentActivity, completion);
             profile.Remove("currentActivity");
         }
+    }
+
+    private static void ApplyRelationshipChanges(JsonObject result, JsonNode? changesNode)
+    {
+        if (changesNode == null)
+            return;
+
+        if (changesNode is not JsonArray changes)
+        {
+            MarkInvalidProfileCommand(result, changesNode, "relationship_changes_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var changeNode in changes)
+        {
+            if (changeNode is not JsonObject change)
+            {
+                MarkInvalidProfileCommand(result, changeNode, "relationship_change_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, change);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, change, "unknown_relationship_change_target");
+                continue;
+            }
+
+            var relationship = FindOrCreateRelationship(profile, change);
+            if (relationship == null)
+            {
+                MarkInvalidProfileCommand(result, change, "incomplete_relationship_change");
+                continue;
+            }
+
+            var currentValue = GetNodeInt(relationship["value"]);
+            if (TryGetNodeInt(change["value"], out var absoluteValue))
+                relationship["value"] = Math.Clamp(absoluteValue, -100, 100);
+            else if (TryGetNodeInt(change["valueDelta"], out var delta))
+                relationship["value"] = Math.Clamp(currentValue + delta, -100, 100);
+
+            CopyOptionalCommandFields(change, relationship, "relationshipTier", "reason", "evidence", "gmThoughtsSummary");
+            if (TryGetNodeInt(change["updatedAtTurn"], out var updatedAtTurn) && updatedAtTurn >= 0)
+                relationship["updatedAtTurn"] = updatedAtTurn;
+        }
+    }
+
+    private static void ApplyRelationshipLockUpdates(JsonObject result, JsonNode? updatesNode)
+    {
+        if (updatesNode == null)
+            return;
+
+        if (updatesNode is not JsonArray updates)
+        {
+            MarkInvalidProfileCommand(result, updatesNode, "relationship_lock_updates_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var updateNode in updates)
+        {
+            if (updateNode is not JsonObject update)
+            {
+                MarkInvalidProfileCommand(result, updateNode, "relationship_lock_update_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, update);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, update, "unknown_relationship_lock_target");
+                continue;
+            }
+
+            var relationship = FindOrCreateRelationship(profile, update);
+            if (relationship == null ||
+                update["relationshipLock"] is not JsonObject relationshipLock ||
+                string.IsNullOrWhiteSpace(GetNodeString(update["gmThoughtsSummary"])))
+            {
+                MarkInvalidProfileCommand(result, update, "incomplete_relationship_lock_update");
+                continue;
+            }
+
+            CopyOptionalCommandFields(update, relationship, "relationshipTier");
+            relationship["relationshipLock"] = CloneObject(relationshipLock);
+        }
+    }
+
+    private static void ApplyBreakthroughQuestUpdates(JsonObject result, JsonNode? updatesNode)
+    {
+        if (updatesNode == null)
+            return;
+
+        if (updatesNode is not JsonArray updates)
+        {
+            MarkInvalidProfileCommand(result, updatesNode, "breakthrough_quest_updates_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var updateNode in updates)
+        {
+            if (updateNode is not JsonObject update)
+            {
+                MarkInvalidProfileCommand(result, updateNode, "breakthrough_quest_update_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, update);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, update, "unknown_breakthrough_quest_target");
+                continue;
+            }
+
+            var relationship = FindRelationshipForQuestUpdate(profile, update);
+            var status = GetNodeString(update["status"]);
+            if (relationship == null ||
+                !CommandHasNonEmptyStrings(update, "questId", "questType", "status", "title", "sceneSummary", "successCondition", "gmThoughtsSummary") ||
+                !RelationshipGateQuestTypes.Contains(GetNodeString(update["questType"]) ?? string.Empty) ||
+                !RelationshipGateQuestStatuses.Contains(status ?? string.Empty) ||
+                !TryGetNodeInt(update["updatedAtTurn"], out var updatedAtTurn) ||
+                updatedAtTurn < 0)
+            {
+                MarkInvalidProfileCommand(result, update, "incomplete_breakthrough_quest_update");
+                continue;
+            }
+
+            var quest = CloneCommandWithoutTarget(update);
+            quest["updatedAtTurn"] = updatedAtTurn;
+            UpsertRelationshipGateQuest(EnsureArray(relationship, RelationshipGateQuestsProperty), quest);
+
+            if (string.Equals(status, "completed", StringComparison.OrdinalIgnoreCase) &&
+                BreakthroughQuestClearsRelationshipLock(relationship, update))
+            {
+                relationship.Remove("relationshipLock");
+            }
+        }
+    }
+
+    private static JsonObject? FindOrCreateRelationship(JsonObject profile, JsonObject command)
+    {
+        var relationshipId = GetNodeString(command["relationshipId"]);
+        var axis = GetNodeString(command["axis"]);
+        var targetActorType = GetNodeString(command["targetActorType"]);
+        var targetActorId = GetNodeString(command["targetActorId"]) ?? GetNodeString(command["targetActorRef"]);
+        if (string.IsNullOrWhiteSpace(relationshipId) ||
+            string.IsNullOrWhiteSpace(axis) ||
+            string.IsNullOrWhiteSpace(targetActorType) ||
+            string.IsNullOrWhiteSpace(targetActorId))
+        {
+            return null;
+        }
+
+        var relationships = EnsureArray(profile, RelationshipsProperty);
+        foreach (var relationship in relationships.OfType<JsonObject>())
+        {
+            if (string.Equals(GetNodeString(relationship["relationshipId"]), relationshipId, StringComparison.OrdinalIgnoreCase))
+                return relationship;
+        }
+
+        var created = new JsonObject
+        {
+            ["relationshipId"] = relationshipId,
+            ["axis"] = axis,
+            ["targetActorType"] = targetActorType,
+            ["targetActorId"] = targetActorId,
+            ["value"] = 0,
+            ["relationshipTier"] = GetNodeString(command["relationshipTier"]) ?? "neutral"
+        };
+        relationships.Add(created);
+        return created;
+    }
+
+    private static JsonObject? FindRelationshipForQuestUpdate(JsonObject profile, JsonObject command)
+    {
+        var relationshipId = GetNodeString(command["relationshipId"]);
+        if (string.IsNullOrWhiteSpace(relationshipId))
+            return null;
+
+        var relationships = profile[RelationshipsProperty] as JsonArray;
+        var existing = relationships?
+            .OfType<JsonObject>()
+            .FirstOrDefault(relationship => string.Equals(GetNodeString(relationship["relationshipId"]), relationshipId, StringComparison.OrdinalIgnoreCase));
+        if (existing != null)
+            return existing;
+
+        return FindOrCreateRelationship(profile, command);
+    }
+
+    private static void UpsertRelationshipGateQuest(JsonArray quests, JsonObject quest)
+    {
+        var questId = GetNodeString(quest["questId"]);
+        if (string.IsNullOrWhiteSpace(questId))
+        {
+            quests.Add(CloneObject(quest));
+            return;
+        }
+
+        for (var index = 0; index < quests.Count; index++)
+        {
+            if (quests[index] is JsonObject existing &&
+                string.Equals(GetNodeString(existing["questId"]), questId, StringComparison.OrdinalIgnoreCase))
+            {
+                quests[index] = CloneObject(quest);
+                return;
+            }
+        }
+
+        quests.Add(CloneObject(quest));
+    }
+
+    private static bool BreakthroughQuestClearsRelationshipLock(JsonObject relationship, JsonObject update)
+    {
+        if (relationship["relationshipLock"] is not JsonObject relationshipLock)
+            return false;
+
+        var questType = GetNodeString(update["questType"]);
+        if (string.Equals(questType, "breakthrough", StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(GetNodeString(update["breakthroughQuestId"]), "_clear_", StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetNodeString(relationshipLock["breakthroughQuestId"]), GetNodeString(update["questId"]), StringComparison.OrdinalIgnoreCase);
+        }
+
+        if (string.Equals(questType, "redemption", StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Equals(GetNodeString(update["redemptionQuestId"]), "_clear_", StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetNodeString(relationshipLock["redemptionQuestId"]), GetNodeString(update["questId"]), StringComparison.OrdinalIgnoreCase);
+        }
+
+        return false;
     }
 
     private static void ApplyResultingQuestStatus(JsonObject profile, JsonObject currentActivity, JsonObject completion)

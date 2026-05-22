@@ -612,6 +612,14 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("current-turn `progression_report.json`", text, StringComparison.Ordinal);
             Assert.Contains("soul_dissipation", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeRelationshipChanges", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeRelationshipLockUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeBreakthroughQuestUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("relationshipLock", text, StringComparison.Ordinal);
+            Assert.Contains("breakthroughQuestId", text, StringComparison.Ordinal);
+            Assert.Contains("redemptionQuestId", text, StringComparison.Ordinal);
+            Assert.Contains("pointOfNoReturn", text, StringComparison.Ordinal);
+            Assert.Contains("_clear_", text, StringComparison.Ordinal);
             Assert.Contains("trainingConditions", text, StringComparison.Ordinal);
             Assert.Contains("ownerActorType/ownerActorId` must match", text, StringComparison.Ordinal);
             Assert.Contains("costMultiplierPercent", text, StringComparison.Ordinal);
@@ -629,12 +637,14 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("afterlife_fate_cards_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_special_art_learning_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_relationship_gates_v1", examples, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit.player.artTier", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
         Assert.Contains("pre-turn authority", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("learned special arts", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("/spiritual_arts", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
         Assert.Contains("afterlife_entity_profiles_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("afterlife_special_art_learning_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("afterlife_relationship_gates_v1", manifest, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -658,6 +668,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("completeAfterlifeActorActivities", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProgressionOverrides", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeSpecialArtLearningReceipts", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeRelationshipChanges", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeRelationshipLockUpdates", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeBreakthroughQuestUpdates", text, StringComparison.Ordinal);
             Assert.Contains("specialArtAudits[]", text, StringComparison.Ordinal);
             Assert.Contains("soulDissipationProof", text, StringComparison.Ordinal);
             Assert.Contains("targetStabilityCoefficient", text, StringComparison.Ordinal);
@@ -680,6 +693,9 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("completeAfterlifeActorActivities", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeEntityProgressionOverrides", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeSpecialArtLearningReceipts", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeRelationshipChanges", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeRelationshipLockUpdates", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeBreakthroughQuestUpdates", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("soulDissipationProof", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("targetStabilityCoefficient", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("terminalGameOver", lifecyclePrompt, StringComparison.Ordinal);
@@ -703,6 +719,9 @@ public sealed class AfterlifeDocumentationCoverageTests
             "completeAfterlifeActorActivities",
             "afterlifeEntityProgressionOverrides",
             "afterlifeSpecialArtLearningReceipts",
+            "afterlifeRelationshipChanges",
+            "afterlifeRelationshipLockUpdates",
+            "afterlifeBreakthroughQuestUpdates",
             "soulDissipationProof",
             "targetStabilityCoefficient",
             "terminalGameOver"

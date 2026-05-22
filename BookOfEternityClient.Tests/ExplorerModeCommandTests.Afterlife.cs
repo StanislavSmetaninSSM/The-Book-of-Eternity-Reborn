@@ -571,6 +571,42 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             thresholds = Array.Empty<object>()
                         }
                     },
+                    relationships = new[]
+                    {
+                        new
+                        {
+                            relationshipId = "guardian_mirror_player_trust",
+                            axis = "trust",
+                            targetActorType = "player_soul",
+                            targetActorId = "player_soul",
+                            value = 49,
+                            relationshipTier = "trust_breakthrough_required",
+                            relationshipLock = new
+                            {
+                                lockState = "positive_locked",
+                                direction = "positive",
+                                threshold = 50,
+                                breakthroughQuestId = "quest_mirror_oath_trial",
+                                reason = "Хранитель не доверится глубже без личного испытания.",
+                                evidence = "Игрок приблизился к порогу доверия.",
+                                updatedAtTurn = 41
+                            },
+                            relationshipGateQuests = new[]
+                            {
+                                new
+                                {
+                                    questId = "quest_mirror_oath_trial",
+                                    questType = "breakthrough",
+                                    status = "active",
+                                    title = "Суд зеркальной клятвы",
+                                    sceneSummary = "Личное испытание доверия.",
+                                    successCondition = "Душа выбирает правду.",
+                                    gmThoughtsSummary = "Это не бытовой fetch quest.",
+                                    updatedAtTurn = 41
+                                }
+                            }
+                        }
+                    },
                     soulDissipationTier = 1,
                     progressionStrategy = new
                     {
@@ -625,6 +661,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Кастомные состояния", text, StringComparison.Ordinal);
         Assert.Contains("Голод эха", text, StringComparison.Ordinal);
         Assert.Contains("3/10", text, StringComparison.Ordinal);
+        Assert.Contains("Отношения", text, StringComparison.Ordinal);
+        Assert.Contains("Доверие", text, StringComparison.Ordinal);
+        Assert.Contains("заблокировано", text, StringComparison.Ordinal);
+        Assert.Contains("quest_mirror_oath_trial", text, StringComparison.Ordinal);
         Assert.Contains("Развеивание души: тир 1", text, StringComparison.Ordinal);
         Assert.Contains("Последняя автопрокачка", text, StringComparison.Ordinal);
         Assert.Contains("chaos:5", text, StringComparison.Ordinal);

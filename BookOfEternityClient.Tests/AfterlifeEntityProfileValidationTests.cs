@@ -33,6 +33,215 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ValidAfterlifeRelationshipGate_PassesProfileValidation()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson().Replace(
+            "\"soulDissipationTier\": 1,",
+            """
+              "relationships": [
+                {
+                  "relationshipId": "guardian_mirror_player_trust",
+                  "axis": "trust",
+                  "targetActorType": "player_soul",
+                  "targetActorId": "player_soul",
+                  "value": 49,
+                  "relationshipTier": "trust_breakthrough_required",
+                  "relationshipLock": {
+                    "lockState": "positive_locked",
+                    "direction": "positive",
+                    "threshold": 50,
+                    "breakthroughQuestId": "quest_mirror_oath_trial",
+                    "reason": "Хранитель не доверится глубже без личного испытания.",
+                    "evidence": "Игрок приблизился к порогу доверия.",
+                    "updatedAtTurn": 41
+                  },
+                  "relationshipGateQuests": [
+                    {
+                      "questId": "quest_mirror_oath_trial",
+                      "questType": "breakthrough",
+                      "status": "active",
+                      "title": "Суд зеркальной клятвы",
+                      "sceneSummary": "Личное испытание доверия.",
+                      "successCondition": "Душа выбирает правду.",
+                      "gmThoughtsSummary": "Это не бытовой fetch quest.",
+                      "updatedAtTurn": 41
+                    }
+                  ]
+                }
+              ],
+              "soulDissipationTier": 1,
+            """,
+            StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_relationship_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PositiveRelationshipLockWithoutBreakthroughQuest_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson().Replace(
+            "\"soulDissipationTier\": 1,",
+            """
+              "relationships": [
+                {
+                  "relationshipId": "guardian_mirror_player_trust",
+                  "axis": "trust",
+                  "targetActorType": "player_soul",
+                  "targetActorId": "player_soul",
+                  "value": 50,
+                  "relationshipTier": "trust_breakthrough_required",
+                  "relationshipLock": {
+                    "lockState": "positive_locked",
+                    "direction": "positive",
+                    "threshold": 50,
+                    "reason": "Хранитель требует испытание.",
+                    "evidence": "Порог достигнут.",
+                    "updatedAtTurn": 41
+                  }
+                }
+              ],
+              "soulDissipationTier": 1,
+            """,
+            StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_relationship_positive_lock_missing_breakthrough", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PositiveRelationshipThresholdWithoutGate_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson().Replace(
+            "\"soulDissipationTier\": 1,",
+            """
+              "relationships": [
+                {
+                  "relationshipId": "guardian_mirror_player_trust",
+                  "axis": "trust",
+                  "targetActorType": "player_soul",
+                  "targetActorId": "player_soul",
+                  "value": 50,
+                  "relationshipTier": "trusted"
+                }
+              ],
+              "soulDissipationTier": 1,
+            """,
+            StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_relationship_positive_threshold_missing_gate", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_PointOfNoReturnWithoutProof_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson().Replace(
+            "\"soulDissipationTier\": 1,",
+            """
+              "relationships": [
+                {
+                  "relationshipId": "guardian_mirror_player_debt",
+                  "axis": "debt",
+                  "targetActorType": "player_soul",
+                  "targetActorId": "player_soul",
+                  "value": -80,
+                  "relationshipTier": "broken",
+                  "relationshipLock": {
+                    "lockState": "point_of_no_return",
+                    "direction": "negative",
+                    "threshold": -75,
+                    "pointOfNoReturn": true,
+                    "reason": "Хранитель считает долг невозвратным.",
+                    "updatedAtTurn": 45
+                  }
+                }
+              ],
+              "soulDissipationTier": 1,
+            """,
+            StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_relationship_point_of_no_return_missing_proof", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_BreakthroughClearRequiresClearKeyword_ReportsContractIssue()
+    {
+        await WriteProfileStateAsync("""
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "resident",
+              "actorId": "resident_liora",
+              "displayName": "Лиора",
+              "realm": "Shining Abode",
+              "currencies": { "inkFeathers": 120, "lightSparks": 5 },
+              "progression": { "enlightenment": { "experience": 48, "tier": 4 }, "radiance": { "experience": 80, "tier": 2 } },
+              "standardArts": { "pressure": 1, "guard": 1 },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [],
+              "relationships": [
+                {
+                  "relationshipId": "resident_liora_player_romance",
+                  "axis": "romance",
+                  "targetActorType": "player_soul",
+                  "targetActorId": "player_soul",
+                  "value": 50,
+                  "relationshipTier": "romance_breakthrough_required",
+                  "relationshipLock": {
+                    "lockState": "positive_locked",
+                    "direction": "positive",
+                    "threshold": 50,
+                    "breakthroughQuestId": "quest_liora_dawn_memory",
+                    "reason": "Лиора требует сцену памяти.",
+                    "evidence": "Порог близости достигнут.",
+                    "updatedAtTurn": 50
+                  }
+                }
+              ],
+              "soulDissipationTier": 0,
+              "progressionStrategy": { "strategyId": "strategy_liora", "summary": "Качать защиту.", "priorityOrder": ["guard"] },
+              "ledger": []
+            }
+          ],
+          "afterlifeBreakthroughQuestUpdates": [
+            {
+              "actorType": "resident",
+              "actorId": "resident_liora",
+              "relationshipId": "resident_liora_player_romance",
+              "questId": "quest_liora_dawn_memory",
+              "questType": "breakthrough",
+              "status": "completed",
+              "title": "Память рассветной клятвы",
+              "sceneSummary": "Игрок завершил сцену.",
+              "successCondition": "Память принята.",
+              "evidence": "Сцена завершена.",
+              "breakthroughQuestId": "quest_liora_dawn_memory",
+              "gmThoughtsSummary": "GM пытается очистить гейт без _clear_.",
+              "updatedAtTurn": 51
+            }
+          ]
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_relationship_clear_requires_clear_keyword", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ValidAfterlifeActorAgency_PassesProfileValidation()
     {
         await WriteProfileStateAsync(BuildValidProfileWithAgencyJson());

@@ -7173,7 +7173,7 @@ Correct reasoning checklist:
 - Future afterlife conflict dice from `grantedAtTurn` onward must explicitly include turn evidence and `light_incarnate`; do not leave the bonus implicit in prose, and do not add it to pre-unlock, incomplete-closure, or historical dice audits.
 
 ==================================================
-EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`, `afterlife_fate_cards_v1`, `afterlife_special_art_learning_v1`)
+EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`, `afterlife_fate_cards_v1`, `afterlife_relationship_gates_v1`, `afterlife_special_art_learning_v1`)
 ==================================================
 
 Scenario:
@@ -7184,6 +7184,7 @@ Scenario:
 - Targeted custom state maintenance uses `afterlifeEntityCustomStateChanges[]`; `statesToAddOrUpdate[]` adds/replaces full `customStates` entries and `statesToRemove[]` deletes ended states. The target profile must already exist in `profiles[]` or same-turn `afterlifeEntityProfileUpdates[]`; unknown targets are repair-blocking. At least one of the two arrays must be non-empty.
 - Fate Cards use profile `fateCards[]` plus `afterlifeFateCardUnlocks[]`. Locked/hidden/available cards are story potential only and must not grant active effects. Unlocks require current evidence, `appliedAtTurn`, and at least one active mechanical effect array: `guardianEffects`, `playerUnlocks`, `politicalEffects`, `combatEffects`, or `trainingUnlocks`.
 - Actor agency uses `afterlifeActorGoalUpdates[]`, `afterlifeActorQuestUpdates[]`, `afterlifeActorActivityUpdates[]`, and `completeAfterlifeActorActivities[]`. Canonical profiles store `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]`; every goal/current activity needs `gmThoughtsSummary`; `currentActivity` must link to current `goals.goalId` and an active `personalQuests[].questId`. Complete activities through `completeAfterlifeActorActivities[]`; do not erase `currentActivity` directly.
+- Relationship gates use `relationships[]` plus `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]`. Supported axes are `trust`, `romance`, `rivalry`, `oath`, `fear`, `reverence`, and `debt`; `value >= 50` requires a positive `breakthroughQuestId` lock/proof, `value <= -50` requires `redemptionQuestId` or `pointOfNoReturn` proof. Completed breakthrough/redemption quests clear linked ids only with `_clear_`; these are afterlife-only and must not use Mortal `NPCRelationshipChanges`.
 - Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, and `trainingConditions` when teachable; `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
 - Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`; the teacher profile, player profile, source `specialArts[].artId`, and `canTeachPlayer=true` must resolve in profile authority. Learned special arts start at tier 0; do not use `initialTier` to grant progression.
 - Learned special arts / изученные особые духовные искусства are upgraded by the client through `/spiritual_arts`; GM conflict output may use them only from validated pre-turn authority.
@@ -7284,6 +7285,37 @@ Valid response fragment:
             "summary": "Душа должна пройти суд зеркальной клятвы и не выбрать удобную ложь."
           },
           "storyMeaning": "Хранитель возвращает часть памяти и получает право открыть новый способ обучения."
+        }
+      ],
+      "relationships": [
+        {
+          "relationshipId": "guardian_mirror_player_trust",
+          "axis": "trust",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "value": 49,
+          "relationshipTier": "trust_breakthrough_required",
+          "relationshipLock": {
+            "lockState": "positive_locked",
+            "direction": "positive",
+            "threshold": 50,
+            "breakthroughQuestId": "quest_mirror_oath_trial",
+            "reason": "Хранитель не доверится глубже без личного испытания.",
+            "evidence": "Душа приблизилась к порогу доверия.",
+            "updatedAtTurn": 23
+          },
+          "relationshipGateQuests": [
+            {
+              "questId": "quest_mirror_oath_trial",
+              "questType": "breakthrough",
+              "status": "active",
+              "title": "Суд зеркальной клятвы",
+              "sceneSummary": "Личное испытание доверия, где удобная ложь выглядит спасением.",
+              "successCondition": "Душа отвергает ложь без немедленной награды.",
+              "gmThoughtsSummary": "Это пороговый личный суд, а не бытовой fetch quest.",
+              "updatedAtTurn": 23
+            }
+          ]
         }
       ],
       "soulDissipationTier": 1,
@@ -7392,6 +7424,58 @@ Valid response fragment:
           "summary": "Зеркальная Обитель получает аргумент в будущих спорах с хранителями клятв."
         }
       ]
+    }
+  ],
+  "afterlifeRelationshipChanges": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "relationshipId": "guardian_mirror_player_trust",
+      "axis": "trust",
+      "targetActorType": "player_soul",
+      "targetActorId": "player_soul",
+      "valueDelta": 9,
+      "relationshipTier": "trust_breakthrough_required",
+      "reason": "Душа выдержала разговор без попытки скрыть страх.",
+      "evidence": "Сцена у зеркала завершилась правдивым признанием.",
+      "gmThoughtsSummary": "Доверие упёрлось в личный порог: дальше нужен суд клятвы.",
+      "updatedAtTurn": 23
+    }
+  ],
+  "afterlifeRelationshipLockUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "relationshipId": "guardian_mirror_player_trust",
+      "axis": "trust",
+      "targetActorType": "player_soul",
+      "targetActorId": "player_soul",
+      "relationshipTier": "trust_breakthrough_required",
+      "gmThoughtsSummary": "Хранитель не пустит отношения выше доверительного порога без сцены суда.",
+      "relationshipLock": {
+        "lockState": "positive_locked",
+        "direction": "positive",
+        "threshold": 50,
+        "breakthroughQuestId": "quest_mirror_oath_trial",
+        "reason": "Старая клятва делает слепое доверие невозможным.",
+        "evidence": "Душа почти достигла важного порога доверия.",
+        "updatedAtTurn": 23
+      }
+    }
+  ],
+  "afterlifeBreakthroughQuestUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "relationshipId": "guardian_mirror_player_trust",
+      "questId": "quest_mirror_oath_trial",
+      "questType": "breakthrough",
+      "status": "active",
+      "title": "Суд зеркальной клятвы",
+      "sceneSummary": "Пороговая сцена, где Душа должна выбрать правду вместо удобной лжи.",
+      "successCondition": "Душа отвергает ложь без немедленной награды.",
+      "gmThoughtsSummary": "Это личное испытание доверия, а не рутинная доставка предмета.",
+      "updatedAtTurn": 23
     }
   ],
   "afterlifeActorGoalUpdates": [
@@ -7503,6 +7587,8 @@ Correct reasoning checklist:
 - `fateCards[]` stores story potential and mechanical unlocks. Locked/hidden/available cards cannot grant `guardianEffects`, `playerUnlocks`, `politicalEffects`, `combatEffects`, or `trainingUnlocks`; unlock them only through `afterlifeFateCardUnlocks[]` with `appliedAtTurn`, evidence, and at least one effect object with `summary`.
 - `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]` are the afterlife actor agency layer. A current activity without `gmThoughtsSummary`, current goal link, and active personal quest link is invalid.
 - Use `completeAfterlifeActorActivities[]` to close an activity and append `completedActivities[]`; do not simply set `currentActivity` to null in a full profile rewrite.
+- `relationships[]` is the afterlife relationship gate layer. Do not move `value` past `50` or `-50` without `relationshipLock` or completed gate proof; completed breakthrough/redemption quests must carry evidence and clear only with `_clear_`.
+- Use `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]` instead of Mortal `NPCRelationshipChanges`.
 - `progressionStrategy.priorityOrder` may target a standard art id, a `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`.
 - Strategy constraints are executable: `resourceReserve` is a hard minimum remaining balance, `allowedSpends` is an allow-list of spend categories, and `forbiddenSpends` is a deny-list; valid categories are `standardArts`, `specialArts`, `enlightenment`, `radiance`, and `soulDissipationTier`.
 - `afterlifeEntityProgressionOverrides[].specialArtTierDeltas` may only reference an existing `specialArts[].artId` on the target profile.

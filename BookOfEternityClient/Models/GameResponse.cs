@@ -381,6 +381,15 @@ public class GameResponse
     [JsonPropertyName("afterlifeGlobalFlagUpdates")]
     public JsonElement[]? AfterlifeGlobalFlagUpdates { get; set; }
 
+    [JsonPropertyName("afterlifeRelationshipChanges")]
+    public JsonElement[]? AfterlifeRelationshipChanges { get; set; }
+
+    [JsonPropertyName("afterlifeRelationshipLockUpdates")]
+    public JsonElement[]? AfterlifeRelationshipLockUpdates { get; set; }
+
+    [JsonPropertyName("afterlifeBreakthroughQuestUpdates")]
+    public JsonElement[]? AfterlifeBreakthroughQuestUpdates { get; set; }
+
     [JsonPropertyName("UpdateGuardians")]
     public JsonElement[]? UpdateGuardians { get; set; }
 
