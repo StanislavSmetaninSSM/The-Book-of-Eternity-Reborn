@@ -571,6 +571,104 @@ public sealed partial class CanonicalStateNormalizerTests
         Assert.Equal("_clear_", quest["breakthroughQuestId"]?.GetValue<string>());
     }
 
+    [Fact]
+    public async Task NormalizeAccumulatedStateAsync_AppliesAfterlifeActorMaskCommands()
+    {
+        var normalizer = new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance);
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            """
+            {
+              "schemaVersion": 1,
+              "profiles": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "displayName": "Хранитель Зеркал",
+                  "realm": "Chaos Sea",
+                  "activeMaskId": "mask_old_sage",
+                  "masks": [
+                    {
+                      "maskId": "mask_old_sage",
+                      "displayName": "Старый мудрец",
+                      "publicArchetype": "усталый наставник",
+                      "visiblePersonality": "говорит мягко и избегает угроз",
+                      "concealedTruth": "Он проверяет слабости души.",
+                      "directives": ["Не раскрывать истинную цель проверки."],
+                      "revealConditions": ["Душа распознаёт противоречие в клятве."],
+                      "deceptionRisk": "low",
+                      "isRevealed": true
+                    }
+                  ]
+                }
+              ],
+              "afterlifeActorMaskAdds": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "mask": {
+                    "maskId": "mask_wings_emissary",
+                    "displayName": "Посланник Белых Перьев",
+                    "publicArchetype": "учтивый посредник",
+                    "visiblePersonality": "обещает защиту и говорит о мире",
+                    "concealedTruth": "Маска скрывает агента Крыльев Ангелов.",
+                    "directives": ["Уводить разговор от Сарефа.", "Собирать сведения о памяти игрока."],
+                    "revealConditions": ["Игрок раскрывает связь с Крыльями Ангелов."],
+                    "deceptionRisk": "high",
+                    "linkedSarefAgentId": "saref_agent_white_feather",
+                    "isRevealed": false
+                  }
+                }
+              ],
+              "afterlifeActorMaskUpdates": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "maskUpdate": {
+                    "maskId": "mask_wings_emissary",
+                    "visiblePersonality": "держится как мирный дипломат и предлагает помощь",
+                    "deceptionRisk": "critical"
+                  }
+                }
+              ],
+              "afterlifeActorActiveMaskChanges": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "activeMaskId": "mask_wings_emissary",
+                  "reason": "Хранитель начинает действовать через ложную дипломатическую роль.",
+                  "evidence": "Игрок увидел белое перо на плаще.",
+                  "gmThoughtsSummary": "Маска должна переопределить внешнее поведение до раскрытия.",
+                  "updatedAtTurn": 52
+                }
+              ],
+              "afterlifeActorMaskRemovals": [
+                {
+                  "actorType": "guardian",
+                  "actorId": "guardian_mirror",
+                  "maskId": "mask_old_sage"
+                }
+              ]
+            }
+            """);
+
+        await normalizer.NormalizeAccumulatedStateAsync();
+
+        var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.MaskAddsProperty));
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.MaskUpdatesProperty));
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.MaskRemovalsProperty));
+        Assert.False(root.ContainsKey(AfterlifeEntityProfileState.ActiveMaskChangesProperty));
+
+        var profile = Assert.Single(root["profiles"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("mask_wings_emissary", profile["activeMaskId"]?.GetValue<string>());
+        var mask = Assert.Single(profile["masks"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal("mask_wings_emissary", mask["maskId"]?.GetValue<string>());
+        Assert.Equal("Посланник Белых Перьев", mask["displayName"]?.GetValue<string>());
+        Assert.Equal("держится как мирный дипломат и предлагает помощь", mask["visiblePersonality"]?.GetValue<string>());
+        Assert.Equal("critical", mask["deceptionRisk"]?.GetValue<string>());
+    }
+
     [Theory]
     [InlineData("resident", "resident_oath_001", "Резидент Клятв", "Эхо клятвы", "oath_echo", "oath_released")]
     [InlineData("shining_faction_head", "head_ember_001", "Глава Пепельной Хартии", "Брожение хартии", "charter_unrest", "charter_quieted")]

@@ -97,6 +97,7 @@ public partial class ExplorerMode
         AppendAfterlifeEntityCustomStates(lines, profile[AfterlifeEntityProfileState.CustomStatesProperty] as JsonArray);
         AppendAfterlifeEntityFateCards(lines, profile["fateCards"] as JsonArray);
         AppendAfterlifeEntityRelationships(lines, profile[AfterlifeEntityProfileState.RelationshipsProperty] as JsonArray);
+        AppendAfterlifeEntityMasks(lines, profile);
         AppendAfterlifeEntityAgency(lines, profile);
 
         var dissipationTier = AfterlifeEntityProfileState.GetNodeInt(profile["soulDissipationTier"]);
@@ -277,6 +278,64 @@ public partial class ExplorerMode
         }
     }
 
+    private static void AppendAfterlifeEntityMasks(List<string> lines, JsonObject profile)
+    {
+        var activeMaskId = AfterlifeEntityProfileState.GetNodeString(profile[AfterlifeEntityProfileState.ActiveMaskIdProperty]);
+        if (string.IsNullOrWhiteSpace(activeMaskId) ||
+            string.Equals(activeMaskId, AfterlifeEntityProfileState.TrueSelfMaskId, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var masks = profile[AfterlifeEntityProfileState.MasksProperty] as JsonArray;
+        var activeMask = masks?
+            .OfType<JsonObject>()
+            .FirstOrDefault(mask => string.Equals(
+                AfterlifeEntityProfileState.GetNodeString(mask["maskId"]),
+                activeMaskId,
+                StringComparison.OrdinalIgnoreCase));
+        if (activeMask == null)
+            return;
+
+        var displayName = AfterlifeEntityProfileState.GetNodeString(activeMask["displayName"]) ?? activeMaskId;
+        var publicArchetype = AfterlifeEntityProfileState.GetNodeString(activeMask["publicArchetype"]);
+        var visiblePersonality = AfterlifeEntityProfileState.GetNodeString(activeMask["visiblePersonality"]);
+        var deceptionRisk = AfterlifeEntityProfileState.GetNodeString(activeMask["deceptionRisk"]);
+        var isRevealed = activeMask["isRevealed"] is JsonValue revealedValue &&
+                         revealedValue.TryGetValue<bool>(out var revealed) &&
+                         revealed;
+
+        lines.Add("  • Активная маска:");
+        lines.Add($"    - {Markup.Escape(displayName)}");
+        if (!string.IsNullOrWhiteSpace(publicArchetype))
+            lines.Add($"      [dim]Публичная роль: {Markup.Escape(publicArchetype)}[/]");
+        if (!string.IsNullOrWhiteSpace(visiblePersonality))
+            lines.Add($"      [dim]Видимое поведение: {Markup.Escape(visiblePersonality)}[/]");
+        if (!string.IsNullOrWhiteSpace(deceptionRisk))
+            lines.Add($"      [dim]Риск обмана: {Markup.Escape(DescribeAfterlifeMaskRisk(deceptionRisk))}[/]");
+
+        if (!isRevealed)
+        {
+            lines.Add("      [dim]Скрытая истина маски пока не раскрыта игроку.[/]");
+            return;
+        }
+
+        var concealedTruth = AfterlifeEntityProfileState.GetNodeString(activeMask["concealedTruth"]);
+        if (!string.IsNullOrWhiteSpace(concealedTruth))
+            lines.Add($"      [yellow]Раскрытая истина: {Markup.Escape(concealedTruth)}[/]");
+
+        var directives = ReadProfileStringArray(activeMask["directives"] as JsonArray).ToList();
+        if (directives.Count > 0)
+            lines.Add($"      [dim]Скрытые директивы: {Markup.Escape(string.Join("; ", directives))}[/]");
+
+        var linkedThreatId = AfterlifeEntityProfileState.GetNodeString(activeMask["linkedThreatId"]);
+        var linkedSarefAgentId = AfterlifeEntityProfileState.GetNodeString(activeMask["linkedSarefAgentId"]);
+        if (!string.IsNullOrWhiteSpace(linkedThreatId))
+            lines.Add($"      [dim]Связанная угроза: {Markup.Escape(linkedThreatId)}[/]");
+        if (!string.IsNullOrWhiteSpace(linkedSarefAgentId))
+            lines.Add($"      [dim]Связанный агент Сарефа: {Markup.Escape(linkedSarefAgentId)}[/]");
+    }
+
     private static void AppendAfterlifeEntityAgency(List<string> lines, JsonObject profile)
     {
         var goals = profile["goals"] as JsonObject;
@@ -381,6 +440,16 @@ public partial class ExplorerMode
             "failed" => "провален",
             "cancelled" => "отменён",
             _ => "активен"
+        };
+
+    private static string DescribeAfterlifeMaskRisk(string? risk) =>
+        risk?.Trim().ToLowerInvariant() switch
+        {
+            "low" => "низкий",
+            "medium" => "средний",
+            "high" => "высокий",
+            "critical" => "критический",
+            _ => risk ?? "не указан"
         };
 
     private static int CountFateCardEffects(JsonObject card) =>

@@ -390,6 +390,18 @@ public class GameResponse
     [JsonPropertyName("afterlifeBreakthroughQuestUpdates")]
     public JsonElement[]? AfterlifeBreakthroughQuestUpdates { get; set; }
 
+    [JsonPropertyName("afterlifeActorMaskAdds")]
+    public JsonElement[]? AfterlifeActorMaskAdds { get; set; }
+
+    [JsonPropertyName("afterlifeActorMaskUpdates")]
+    public JsonElement[]? AfterlifeActorMaskUpdates { get; set; }
+
+    [JsonPropertyName("afterlifeActorMaskRemovals")]
+    public JsonElement[]? AfterlifeActorMaskRemovals { get; set; }
+
+    [JsonPropertyName("afterlifeActorActiveMaskChanges")]
+    public JsonElement[]? AfterlifeActorActiveMaskChanges { get; set; }
+
     [JsonPropertyName("UpdateGuardians")]
     public JsonElement[]? UpdateGuardians { get; set; }
 

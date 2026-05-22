@@ -12,7 +12,7 @@ public static class AfterlifeContractRegistry
     private static readonly AfterlifeContractSurface[] Surfaces =
     {
         new(AfterlifeSpiritualConflictState.StatePath, "afterlife_spiritual_conflict", "Chaos Sea|Shining Abode", "GM-authored through afterlifeSpiritualConflictUpdate", false),
-        new(AfterlifeEntityProfileState.StatePath, "afterlife_entity_profiles", "Chaos Sea|Shining Abode", "GM-authored profile/update/actor-agency surfaces plus client-owned local player upgrade paths", false),
+        new(AfterlifeEntityProfileState.StatePath, "afterlife_entity_profiles", "Chaos Sea|Shining Abode", "GM-authored profile/update/actor-agency/relationship/mask surfaces plus client-owned local player upgrade paths", false),
         new(AfterlifeChronicleState.StatePath, "afterlife_chronicles", "Chaos Sea|Shining Abode", "GM-authored afterlife external memory through afterlifeChronicleUpdates", false),
         new(AfterlifeGlobalFlagState.StatePath, "afterlife_global_flags", "Chaos Sea|Shining Abode", "GM-authored afterlife global facts through afterlifeGlobalFlagUpdates; separate from Mortal worldStateFlags", false),
         new(AfterlifeStoryOutlineState.StatePath, "afterlife_story_outline", "Chaos Sea|Shining Abode", "GM-private flexible Writer's Room planning through afterlifeStoryOutline", false),

@@ -7173,7 +7173,7 @@ Correct reasoning checklist:
 - Future afterlife conflict dice from `grantedAtTurn` onward must explicitly include turn evidence and `light_incarnate`; do not leave the bonus implicit in prose, and do not add it to pre-unlock, incomplete-closure, or historical dice audits.
 
 ==================================================
-EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`, `afterlife_fate_cards_v1`, `afterlife_relationship_gates_v1`, `afterlife_special_art_learning_v1`)
+EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`, `afterlife_fate_cards_v1`, `afterlife_relationship_gates_v1`, `afterlife_actor_masks_v1`, `afterlife_special_art_learning_v1`)
 ==================================================
 
 Scenario:
@@ -7185,6 +7185,7 @@ Scenario:
 - Fate Cards use profile `fateCards[]` plus `afterlifeFateCardUnlocks[]`. Locked/hidden/available cards are story potential only and must not grant active effects. Unlocks require current evidence, `appliedAtTurn`, and at least one active mechanical effect array: `guardianEffects`, `playerUnlocks`, `politicalEffects`, `combatEffects`, or `trainingUnlocks`.
 - Actor agency uses `afterlifeActorGoalUpdates[]`, `afterlifeActorQuestUpdates[]`, `afterlifeActorActivityUpdates[]`, and `completeAfterlifeActorActivities[]`. Canonical profiles store `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]`; every goal/current activity needs `gmThoughtsSummary`; `currentActivity` must link to current `goals.goalId` and an active `personalQuests[].questId`. Complete activities through `completeAfterlifeActorActivities[]`; do not erase `currentActivity` directly.
 - Relationship gates use `relationships[]` plus `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]`. Supported axes are `trust`, `romance`, `rivalry`, `oath`, `fear`, `reverence`, and `debt`; `value >= 50` requires a positive `breakthroughQuestId` lock/proof, `value <= -50` requires `redemptionQuestId` or `pointOfNoReturn` proof. Completed breakthrough/redemption quests clear linked ids only with `_clear_`; these are afterlife-only and must not use Mortal `NPCRelationshipChanges`.
+- Actor masks use profile `masks[]` and `activeMaskId` plus `afterlifeActorMaskAdds[]`, `afterlifeActorMaskUpdates[]`, `afterlifeActorMaskRemovals[]`, and `afterlifeActorActiveMaskChanges[]`. `activeMaskId` is either an existing `masks[].maskId` or `_true_self_`; use `_true_self_`, not `null`, to remove the active mask. Each mask includes `maskId`, `displayName`, `publicArchetype`, `visiblePersonality`, hidden `concealedTruth`, `directives[]`, `revealConditions[]`, `deceptionRisk=low|medium|high|critical`, and optional `linkedThreatId` / `linkedSarefAgentId`. Ordinary player-facing UI may show only the visible mask until `isRevealed=true`; do not leak hidden truth fields before reveal, and do not use Mortal `NPCMaskAdds`.
 - Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, and `trainingConditions` when teachable; `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
 - Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`; the teacher profile, player profile, source `specialArts[].artId`, and `canTeachPlayer=true` must resolve in profile authority. Learned special arts start at tier 0; do not use `initialTier` to grant progression.
 - Learned special arts / изученные особые духовные искусства are upgraded by the client through `/spiritual_arts`; GM conflict output may use them only from validated pre-turn authority.
@@ -7316,6 +7317,29 @@ Valid response fragment:
               "updatedAtTurn": 23
             }
           ]
+        }
+      ],
+      "activeMaskId": "mask_wings_emissary",
+      "masks": [
+        {
+          "maskId": "mask_wings_emissary",
+          "displayName": "Посланник Белых Перьев",
+          "publicArchetype": "учтивый посредник",
+          "visiblePersonality": "говорит мягко, обещает покровительство и уводит разговор от имени Сарефа",
+          "concealedTruth": "Маска скрывает агента Крыльев Ангелов, который ищет следы старой ложи.",
+          "directives": [
+            "Не произносить имя Сарефа первым.",
+            "Собирать сведения о восстановленной памяти игрока."
+          ],
+          "revealConditions": [
+            "Игрок связывает белые перья с тайной фракцией.",
+            "Сцена разоблачения прямо называет Крылья Ангелов."
+          ],
+          "deceptionRisk": "high",
+          "linkedThreatId": "threat_white_feather_lodge",
+          "linkedSarefAgentId": "saref_agent_white_feather",
+          "isRevealed": false,
+          "updatedAtTurn": 23
         }
       ],
       "soulDissipationTier": 1,
@@ -7478,6 +7502,61 @@ Valid response fragment:
       "updatedAtTurn": 23
     }
   ],
+  "afterlifeActorMaskAdds": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "mask": {
+        "maskId": "mask_memory_beggar",
+        "displayName": "Нищий без памяти",
+        "publicArchetype": "сломанный странник",
+        "visiblePersonality": "просит помощи и делает вид, что не понимает политических намёков",
+        "concealedTruth": "Это бывший чиновник Сияющей Обители, которому Сареф стёр память.",
+        "directives": [
+          "Скрывать знание о старой должности.",
+          "Проверять, узнаёт ли игрок символы Крыльев Ангелов."
+        ],
+        "revealConditions": [
+          "Игрок возвращает фрагмент памяти из смертной жизни."
+        ],
+        "deceptionRisk": "medium",
+        "linkedSarefAgentId": "saref_agent_amnesiac_official",
+        "isRevealed": false,
+        "updatedAtTurn": 23
+      }
+    }
+  ],
+  "afterlifeActorMaskUpdates": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "maskUpdate": {
+        "maskId": "mask_wings_emissary",
+        "visiblePersonality": "после подозрений игрока становится осторожнее и избегает обещаний",
+        "deceptionRisk": "critical",
+        "updatedAtTurn": 24
+      }
+    }
+  ],
+  "afterlifeActorActiveMaskChanges": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "activeMaskId": "_true_self_",
+      "reason": "Игрок разоблачил публичную роль посланника.",
+      "evidence": "В сцене названа ложа белых перьев.",
+      "gmThoughtsSummary": "Сущность больше не должна отыгрываться через публичную маску.",
+      "updatedAtTurn": 24
+    }
+  ],
+  "afterlifeActorMaskRemovals": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "maskId": "mask_wings_emissary",
+      "activeMaskId": "_true_self_"
+    }
+  ],
   "afterlifeActorGoalUpdates": [
     {
       "actorType": "guardian",
@@ -7589,6 +7668,7 @@ Correct reasoning checklist:
 - Use `completeAfterlifeActorActivities[]` to close an activity and append `completedActivities[]`; do not simply set `currentActivity` to null in a full profile rewrite.
 - `relationships[]` is the afterlife relationship gate layer. Do not move `value` past `50` or `-50` without `relationshipLock` or completed gate proof; completed breakthrough/redemption quests must carry evidence and clear only with `_clear_`.
 - Use `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]` instead of Mortal `NPCRelationshipChanges`.
+- Use `afterlifeActorMaskAdds[]`, `afterlifeActorMaskUpdates[]`, `afterlifeActorMaskRemovals[]`, and `afterlifeActorActiveMaskChanges[]` for afterlife masks. Active mask removal must use `activeMaskId="_true_self_"`; never write `activeMaskId=null`, never silently delete an active mask, and never leak `concealedTruth`, `directives`, `linkedThreatId`, or `linkedSarefAgentId` to normal player-facing UI before `isRevealed=true`.
 - `progressionStrategy.priorityOrder` may target a standard art id, a `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`.
 - Strategy constraints are executable: `resourceReserve` is a hard minimum remaining balance, `allowedSpends` is an allow-list of spend categories, and `forbiddenSpends` is a deny-list; valid categories are `standardArts`, `specialArts`, `enlightenment`, `radiance`, and `soulDissipationTier`.
 - `afterlifeEntityProgressionOverrides[].specialArtTierDeltas` may only reference an existing `specialArts[].artId` on the target profile.

@@ -22,6 +22,13 @@ internal static class AfterlifeEntityProfileState
     public const string BreakthroughQuestUpdatesProperty = "afterlifeBreakthroughQuestUpdates";
     public const string RelationshipsProperty = "relationships";
     public const string RelationshipGateQuestsProperty = "relationshipGateQuests";
+    public const string MaskAddsProperty = "afterlifeActorMaskAdds";
+    public const string MaskUpdatesProperty = "afterlifeActorMaskUpdates";
+    public const string MaskRemovalsProperty = "afterlifeActorMaskRemovals";
+    public const string ActiveMaskChangesProperty = "afterlifeActorActiveMaskChanges";
+    public const string MasksProperty = "masks";
+    public const string ActiveMaskIdProperty = "activeMaskId";
+    public const string TrueSelfMaskId = "_true_self_";
     public const string ProgressionLedgerProperty = "progressionLedger";
     public const string LastInvalidProgressionOverrideProperty = "lastInvalidProgressionOverride";
     public const string LastInvalidProgressionOverrideReasonProperty = "lastInvalidProgressionOverrideReason";
@@ -188,6 +195,10 @@ internal static class AfterlifeEntityProfileState
         ApplyRelationshipChanges(result, currentRoot?[RelationshipChangesProperty]);
         ApplyRelationshipLockUpdates(result, currentRoot?[RelationshipLockUpdatesProperty]);
         ApplyBreakthroughQuestUpdates(result, currentRoot?[BreakthroughQuestUpdatesProperty]);
+        ApplyMaskAdds(result, currentRoot?[MaskAddsProperty]);
+        ApplyMaskUpdates(result, currentRoot?[MaskUpdatesProperty]);
+        ApplyActiveMaskChanges(result, currentRoot?[ActiveMaskChangesProperty]);
+        ApplyMaskRemovals(result, currentRoot?[MaskRemovalsProperty]);
         ApplySpecialArtLearningReceipts(result, currentRoot?[SpecialArtLearningReceiptsProperty]);
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
         ApplyAutomaticProgression(result, progressionReportRoot);
@@ -203,6 +214,10 @@ internal static class AfterlifeEntityProfileState
         result.Remove(RelationshipChangesProperty);
         result.Remove(RelationshipLockUpdatesProperty);
         result.Remove(BreakthroughQuestUpdatesProperty);
+        result.Remove(MaskAddsProperty);
+        result.Remove(MaskUpdatesProperty);
+        result.Remove(MaskRemovalsProperty);
+        result.Remove(ActiveMaskChangesProperty);
         result.Remove(ProgressionOverridesProperty);
         result.Remove(SpecialArtLearningReceiptsProperty);
         return result;
@@ -1035,6 +1050,226 @@ internal static class AfterlifeEntityProfileState
 
         return false;
     }
+
+    private static void ApplyMaskAdds(JsonObject result, JsonNode? addsNode)
+    {
+        if (addsNode == null)
+            return;
+
+        if (addsNode is not JsonArray adds)
+        {
+            MarkInvalidProfileCommand(result, addsNode, "mask_adds_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var addNode in adds)
+        {
+            if (addNode is not JsonObject add)
+            {
+                MarkInvalidProfileCommand(result, addNode, "mask_add_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, add);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, add, "unknown_mask_add_target");
+                continue;
+            }
+
+            if (add["mask"] is not JsonObject mask || !MaskIsProjectable(mask))
+            {
+                MarkInvalidProfileCommand(result, add, "mask_add_missing_payload");
+                continue;
+            }
+
+            UpsertMask(EnsureArray(profile, MasksProperty), mask);
+        }
+    }
+
+    private static void ApplyMaskUpdates(JsonObject result, JsonNode? updatesNode)
+    {
+        if (updatesNode == null)
+            return;
+
+        if (updatesNode is not JsonArray updates)
+        {
+            MarkInvalidProfileCommand(result, updatesNode, "mask_updates_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var updateNode in updates)
+        {
+            if (updateNode is not JsonObject update)
+            {
+                MarkInvalidProfileCommand(result, updateNode, "mask_update_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, update);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, update, "unknown_mask_update_target");
+                continue;
+            }
+
+            if (update["maskUpdate"] is not JsonObject maskUpdate ||
+                string.IsNullOrWhiteSpace(GetNodeString(maskUpdate["maskId"])) ||
+                profile[MasksProperty] is not JsonArray masks)
+            {
+                MarkInvalidProfileCommand(result, update, "mask_update_missing_payload");
+                continue;
+            }
+
+            var existing = masks
+                .OfType<JsonObject>()
+                .FirstOrDefault(mask => string.Equals(GetNodeString(mask["maskId"]), GetNodeString(maskUpdate["maskId"]), StringComparison.OrdinalIgnoreCase));
+            if (existing == null)
+            {
+                MarkInvalidProfileCommand(result, update, "unknown_mask_update_id");
+                continue;
+            }
+
+            foreach (var property in maskUpdate)
+            {
+                if (string.Equals(property.Key, "maskId", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                existing[property.Key] = property.Value?.DeepClone();
+            }
+        }
+    }
+
+    private static void ApplyActiveMaskChanges(JsonObject result, JsonNode? changesNode)
+    {
+        if (changesNode == null)
+            return;
+
+        if (changesNode is not JsonArray changes)
+        {
+            MarkInvalidProfileCommand(result, changesNode, "active_mask_changes_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var changeNode in changes)
+        {
+            if (changeNode is not JsonObject change)
+            {
+                MarkInvalidProfileCommand(result, changeNode, "active_mask_change_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, change);
+            var activeMaskId = GetNodeString(change[ActiveMaskIdProperty]) ?? GetNodeString(change["newActiveMaskId"]);
+            if (profile == null || string.IsNullOrWhiteSpace(activeMaskId))
+            {
+                MarkInvalidProfileCommand(result, change, "active_mask_change_incomplete");
+                continue;
+            }
+
+            if (!string.Equals(activeMaskId, TrueSelfMaskId, StringComparison.OrdinalIgnoreCase) &&
+                !MaskExists(profile, activeMaskId))
+            {
+                MarkInvalidProfileCommand(result, change, "active_mask_change_unknown_mask");
+                continue;
+            }
+
+            profile[ActiveMaskIdProperty] = activeMaskId;
+            if (TryGetNodeInt(change["updatedAtTurn"], out var updatedAtTurn) && updatedAtTurn >= 0)
+                profile["activeMaskUpdatedAtTurn"] = updatedAtTurn;
+            CopyOptionalCommandFields(change, profile, "reason", "evidence", "gmThoughtsSummary");
+        }
+    }
+
+    private static void ApplyMaskRemovals(JsonObject result, JsonNode? removalsNode)
+    {
+        if (removalsNode == null)
+            return;
+
+        if (removalsNode is not JsonArray removals)
+        {
+            MarkInvalidProfileCommand(result, removalsNode, "mask_removals_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var removalNode in removals)
+        {
+            if (removalNode is not JsonObject removal)
+            {
+                MarkInvalidProfileCommand(result, removalNode, "mask_removal_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, removal);
+            var maskId = GetNodeString(removal["maskId"]);
+            if (profile == null || string.IsNullOrWhiteSpace(maskId))
+            {
+                MarkInvalidProfileCommand(result, removal, "mask_removal_incomplete");
+                continue;
+            }
+
+            var activeMaskId = GetNodeString(profile[ActiveMaskIdProperty]);
+            if (string.Equals(activeMaskId, maskId, StringComparison.OrdinalIgnoreCase))
+            {
+                var explicitTrueSelf = string.Equals(GetNodeString(removal[ActiveMaskIdProperty]), TrueSelfMaskId, StringComparison.OrdinalIgnoreCase) ||
+                                       string.Equals(GetNodeString(removal["newActiveMaskId"]), TrueSelfMaskId, StringComparison.OrdinalIgnoreCase);
+                if (!explicitTrueSelf)
+                {
+                    MarkInvalidProfileCommand(result, removal, "active_mask_removal_requires_true_self");
+                    continue;
+                }
+
+                profile[ActiveMaskIdProperty] = TrueSelfMaskId;
+            }
+
+            if (profile[MasksProperty] is not JsonArray masks)
+                continue;
+
+            for (var index = masks.Count - 1; index >= 0; index--)
+            {
+                if (masks[index] is JsonObject mask &&
+                    string.Equals(GetNodeString(mask["maskId"]), maskId, StringComparison.OrdinalIgnoreCase))
+                {
+                    masks.RemoveAt(index);
+                }
+            }
+        }
+    }
+
+    private static bool MaskIsProjectable(JsonObject mask) =>
+        CommandHasNonEmptyStrings(mask, "maskId", "displayName", "publicArchetype", "visiblePersonality", "concealedTruth", "deceptionRisk") &&
+        mask["directives"] is JsonArray &&
+        mask["revealConditions"] is JsonArray;
+
+    private static void UpsertMask(JsonArray masks, JsonObject mask)
+    {
+        var maskId = GetNodeString(mask["maskId"]);
+        if (string.IsNullOrWhiteSpace(maskId))
+        {
+            masks.Add(CloneObject(mask));
+            return;
+        }
+
+        for (var index = 0; index < masks.Count; index++)
+        {
+            if (masks[index] is JsonObject existing &&
+                string.Equals(GetNodeString(existing["maskId"]), maskId, StringComparison.OrdinalIgnoreCase))
+            {
+                masks[index] = CloneObject(mask);
+                return;
+            }
+        }
+
+        masks.Add(CloneObject(mask));
+    }
+
+    private static bool MaskExists(JsonObject profile, string maskId) =>
+        profile[MasksProperty] is JsonArray masks &&
+        masks.OfType<JsonObject>().Any(mask => string.Equals(GetNodeString(mask["maskId"]), maskId, StringComparison.OrdinalIgnoreCase));
 
     private static void ApplyResultingQuestStatus(JsonObject profile, JsonObject currentActivity, JsonObject completion)
     {

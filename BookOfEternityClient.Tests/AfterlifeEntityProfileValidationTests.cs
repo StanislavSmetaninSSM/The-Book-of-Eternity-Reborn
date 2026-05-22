@@ -80,6 +80,207 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_ValidAfterlifeActorMask_PassesProfileValidation()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson().Replace(
+            "\"soulDissipationTier\": 1,",
+            """
+              "activeMaskId": "mask_wings_emissary",
+              "masks": [
+                {
+                  "maskId": "mask_wings_emissary",
+                  "displayName": "Посланник Белых Перьев",
+                  "publicArchetype": "учтивый посредник",
+                  "visiblePersonality": "обещает помощь и скрывает истинные мотивы",
+                  "concealedTruth": "Маска скрывает агента Крыльев Ангелов.",
+                  "directives": [
+                    "Не произносить имя Сарефа первым.",
+                    "Собирать сведения о памяти игрока."
+                  ],
+                  "revealConditions": [
+                    "Игрок связывает белые перья с Крыльями Ангелов."
+                  ],
+                  "deceptionRisk": "high",
+                  "linkedSarefAgentId": "saref_agent_white_feather",
+                  "isRevealed": false,
+                  "updatedAtTurn": 52
+                }
+              ],
+              "soulDissipationTier": 1,
+            """,
+            StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_mask_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_NullActiveMaskId_RequiresTrueSelfKeyword()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson().Replace(
+            "\"soulDissipationTier\": 1,",
+            """
+              "activeMaskId": null,
+              "masks": [
+                {
+                  "maskId": "mask_wings_emissary",
+                  "displayName": "Посланник Белых Перьев",
+                  "publicArchetype": "учтивый посредник",
+                  "visiblePersonality": "обещает помощь и скрывает истинные мотивы",
+                  "concealedTruth": "Маска скрывает агента Крыльев Ангелов.",
+                  "directives": ["Не произносить имя Сарефа первым."],
+                  "revealConditions": ["Игрок связывает белые перья с Крыльями Ангелов."],
+                  "deceptionRisk": "high",
+                  "isRevealed": false
+                }
+              ],
+              "soulDissipationTier": 1,
+            """,
+            StringComparison.Ordinal));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_mask_active_requires_true_self", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ValidAfterlifeActorMaskCommands_PassesMaskValidation()
+    {
+        var json = BuildValidProfileJson().Replace(
+            "\"soulDissipationTier\": 1,",
+            """
+              "activeMaskId": "mask_wings_emissary",
+              "masks": [
+                {
+                  "maskId": "mask_wings_emissary",
+                  "displayName": "Посланник Белых Перьев",
+                  "publicArchetype": "учтивый посредник",
+                  "visiblePersonality": "говорит мягко и уводит от имени Сарефа",
+                  "concealedTruth": "Маска скрывает агента Крыльев Ангелов.",
+                  "directives": ["Не раскрывать хозяина."],
+                  "revealConditions": ["Игрок сопоставил белые перья с тайной фракцией."],
+                  "deceptionRisk": "high",
+                  "isRevealed": false
+                },
+                {
+                  "maskId": "mask_memory_beggar",
+                  "displayName": "Нищий без памяти",
+                  "publicArchetype": "сломанный странник",
+                  "visiblePersonality": "просит помощи и боится Хранителей",
+                  "concealedTruth": "Это бывший чиновник Сияющей Обители.",
+                  "directives": ["Не спорить с сильными духами."],
+                  "revealConditions": ["Игрок возвращает первый фрагмент памяти."],
+                  "deceptionRisk": "medium",
+                  "isRevealed": false
+                }
+              ],
+              "soulDissipationTier": 1,
+            """,
+            StringComparison.Ordinal);
+        await WriteProfileStateAsync(AppendRootProperties(json,
+            """
+          "afterlifeActorMaskAdds": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "mask": {
+                "maskId": "mask_shining_senator",
+                "displayName": "Сенатор Сияния",
+                "publicArchetype": "благородный политик",
+                "visiblePersonality": "говорит о порядке и долге",
+                "concealedTruth": "Работает на скрытый круг Сарефа.",
+                "directives": ["Продвигать решения Крыльев Ангелов."],
+                "revealConditions": ["Игрок находит печать тайной ложи."],
+                "deceptionRisk": "critical",
+                "linkedSarefAgentId": "saref_agent_senator",
+                "isRevealed": false,
+                "updatedAtTurn": 61
+              }
+            }
+          ],
+          "afterlifeActorMaskUpdates": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "maskUpdate": {
+                "maskId": "mask_memory_beggar",
+                "visiblePersonality": "помнит обрывок голоса Сарефа",
+                "deceptionRisk": "high",
+                "updatedAtTurn": 62
+              }
+            }
+          ],
+          "afterlifeActorMaskRemovals": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "maskId": "mask_wings_emissary",
+              "activeMaskId": "_true_self_"
+            }
+          ],
+          "afterlifeActorActiveMaskChanges": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "activeMaskId": "_true_self_",
+              "reason": "Игрок раскрыл роль посланника.",
+              "evidence": "В сцене названа тайная ложа белых перьев.",
+              "gmThoughtsSummary": "Хранитель больше не должен играть публичную маску.",
+              "updatedAtTurn": 63
+            }
+          ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_mask_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RemovingActiveMaskWithoutTrueSelf_ReportsContractIssue()
+    {
+        var json = BuildValidProfileJson().Replace(
+            "\"soulDissipationTier\": 1,",
+            """
+              "activeMaskId": "mask_wings_emissary",
+              "masks": [
+                {
+                  "maskId": "mask_wings_emissary",
+                  "displayName": "Посланник Белых Перьев",
+                  "publicArchetype": "учтивый посредник",
+                  "visiblePersonality": "говорит мягко и уводит от имени Сарефа",
+                  "concealedTruth": "Маска скрывает агента Крыльев Ангелов.",
+                  "directives": ["Не раскрывать хозяина."],
+                  "revealConditions": ["Игрок сопоставил белые перья с тайной фракцией."],
+                  "deceptionRisk": "high",
+                  "isRevealed": false
+                }
+              ],
+              "soulDissipationTier": 1,
+            """,
+            StringComparison.Ordinal);
+        await WriteProfileStateAsync(AppendRootProperties(json,
+            """
+          "afterlifeActorMaskRemovals": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "maskId": "mask_wings_emissary"
+            }
+          ]
+        """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_mask_remove_active_without_true_self", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_PositiveRelationshipLockWithoutBreakthroughQuest_ReportsContractIssue()
     {
         await WriteProfileStateAsync(BuildValidProfileJson().Replace(
@@ -1253,6 +1454,15 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
 
     private Task WriteProfileStateAsync(string json) =>
         _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, json);
+
+    private static string AppendRootProperties(string json, string rootProperties)
+    {
+        var insertionIndex = json.LastIndexOf("\n}", StringComparison.Ordinal);
+        if (insertionIndex < 0)
+            throw new InvalidOperationException("Test JSON root closing brace was not found.");
+
+        return json.Insert(insertionIndex, ",\n" + rootProperties.TrimEnd());
+    }
 
     private static string BuildValidProfileJson() =>
         """
