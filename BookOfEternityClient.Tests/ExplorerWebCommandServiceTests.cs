@@ -1014,6 +1014,51 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                             message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public async Task ExecuteAsync_Map_ReturnsInteractiveMapBlock()
+    {
+        await SeedMortalFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_square",
+          "name": "Старая площадь",
+          "region": "Северный край",
+          "description": "Площадь под серым небом.",
+          "coordinates": { "x": 4, "y": 7, "z": 0 },
+          "adjacencyMap": [
+            {
+              "targetLocationId": "loc_gate",
+              "name": "Северные ворота",
+              "direction": "север",
+              "linkState": "safe",
+              "targetCoordinates": { "x": 4, "y": 8, "z": 0 }
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
+        {
+          "newLocations": [
+            {
+              "locationId": "loc_gate",
+              "locationName": "Северные ворота",
+              "locationType": "gate",
+              "coordinates": { "x": 4, "y": 8, "z": 0 }
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/map"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var mapBlock = Assert.Single(result.Blocks.OfType<UiMapBlock>());
+        Assert.Equal("Mortal World", mapBlock.Map.Realm);
+        Assert.Equal("loc_square", mapBlock.Map.CurrentNodeId);
+        Assert.Contains(mapBlock.Map.Nodes, static node => node.IsCurrent && node.Label == "Старая площадь");
+        Assert.Contains(mapBlock.Map.Links, static link => link.TargetNodeId == "loc_gate");
+    }
+
     [Theory]
     [InlineData("/chaos_sea")]
     [InlineData("/guardians")]

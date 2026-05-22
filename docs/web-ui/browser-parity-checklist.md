@@ -15,6 +15,7 @@ Use this checklist for manual smoke testing when the local browser UI changes. T
 ## Mortal World
 
 - Мир смертных navigation opens status, quests, inventory, map, NPCs, factions, combat, and gallery surfaces.
+- Карта renders as a local SVG viewer, supports pan/zoom, z-level filter, layer filter, node selection, and detail cards without fetching anything from the network.
 - Tables, warnings, actions, and raw JSON render consistently.
 - Mutating forms that are already migrated still use the shared local UI lock and show blocked/pending states when a GM turn is active.
 

@@ -35,6 +35,7 @@ public static class ExplorerCommandResultConsoleRenderer
         UiMessageBlock message => RenderMessage(message),
         UiRawJsonBlock rawJson => RenderRawJson(rawJson),
         UiImageBlock image => RenderImage(image),
+        UiMapBlock map => RenderMap(map),
         _ => new Markup(Markup.Escape(block.ToString() ?? string.Empty))
     };
 
@@ -159,6 +160,32 @@ public static class ExplorerCommandResultConsoleRenderer
             Padding = new Padding(1, 0),
             Expand = true
         };
+
+    private static IRenderable RenderMap(UiMapBlock block)
+    {
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .BorderColor(Color.Green)
+            .Expand()
+            .AddColumn("Поле")
+            .AddColumn("Значение");
+
+        table.AddRow("Царство", Markup.Escape(block.Map.Realm));
+        table.AddRow("Локаций", block.Map.Nodes.Count.ToString());
+        table.AddRow("Связей", block.Map.Links.Count.ToString());
+        table.AddRow("Уровни", Markup.Escape(string.Join(", ", block.Map.ZLevels.Select(static level => level.Label))));
+        if (!string.IsNullOrWhiteSpace(block.Map.CurrentNodeId))
+            table.AddRow("Текущая точка", Markup.Escape(block.Map.CurrentNodeId));
+
+        return new Panel(table)
+        {
+            Header = new PanelHeader($" {Markup.Escape(string.IsNullOrWhiteSpace(block.Title) ? "Карта" : block.Title)} ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(Color.Green),
+            Padding = new Padding(1, 0),
+            Expand = true
+        };
+    }
 
     private static IRenderable RenderActions(IReadOnlyList<UiAction> actions)
     {

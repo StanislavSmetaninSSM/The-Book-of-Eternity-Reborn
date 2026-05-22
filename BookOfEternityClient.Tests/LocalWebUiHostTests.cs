@@ -123,6 +123,9 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("renderQteState", html, StringComparison.Ordinal);
         Assert.Contains("postQteAction", html, StringComparison.Ordinal);
         Assert.Contains("renderImageBlock", html, StringComparison.Ordinal);
+        Assert.Contains("renderMapBlock", html, StringComparison.Ordinal);
+        Assert.Contains("map-z-filter", html, StringComparison.Ordinal);
+        Assert.Contains("map-layer-filter", html, StringComparison.Ordinal);
         Assert.Contains("/api/media/", html, StringComparison.Ordinal);
         Assert.Contains("Пока нет результата", html, StringComparison.Ordinal);
     }

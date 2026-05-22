@@ -292,6 +292,54 @@ public static class LocalWebUiHost
               color: var(--muted);
               font-size: .92rem;
             }
+            .map-block {
+              display: grid;
+              gap: .8rem;
+            }
+            .map-toolbar {
+              display: flex;
+              flex-wrap: wrap;
+              gap: .55rem;
+              align-items: center;
+            }
+            .map-toolbar label {
+              color: var(--muted);
+              display: flex;
+              gap: .35rem;
+              align-items: center;
+            }
+            .map-canvas {
+              width: 100%;
+              min-height: 28rem;
+              border: 1px solid rgba(222, 183, 99, .28);
+              border-radius: .95rem;
+              background:
+                radial-gradient(circle at 28% 24%, rgba(74, 57, 29, .16), transparent 14rem),
+                linear-gradient(135deg, #d9c58f, #b99b66);
+              box-shadow: inset 0 0 3rem rgba(42, 24, 8, .26);
+              touch-action: none;
+            }
+            .map-node text {
+              fill: #2c2112;
+              font: 1.05px Georgia, "Times New Roman", serif;
+              paint-order: stroke;
+              stroke: rgba(245, 229, 180, .72);
+              stroke-width: .18px;
+            }
+            .map-card {
+              border: 1px solid rgba(222, 183, 99, .2);
+              border-radius: .85rem;
+              background: rgba(0, 0, 0, .16);
+              padding: .8rem;
+            }
+            .map-card dl {
+              display: grid;
+              grid-template-columns: minmax(7rem, 12rem) 1fr;
+              gap: .35rem .75rem;
+              margin: 0;
+            }
+            .map-card dt { color: var(--muted); }
+            .map-card dd { margin: 0; }
             .message.warning { border-color: rgba(229, 193, 109, .65); }
             .message.error { border-color: rgba(224, 111, 95, .7); }
             .message.success { border-color: rgba(158, 203, 134, .65); }
@@ -885,6 +933,7 @@ public static class LocalWebUiHost
                 case 'message': return renderMessage(block);
                 case 'rawJson': return renderRawJson(block);
                 case 'image': return renderImageBlock(block);
+                case 'map': return renderMapBlock(block);
                 default: return renderMessage({ severity: 'Warning', title: 'Неизвестный блок', message: JSON.stringify(block) });
               }
             }
@@ -960,6 +1009,169 @@ public static class LocalWebUiHost
               });
               node.append(image);
               node.append(el('div', 'image-meta', `${block.relativePath ?? ''} · ${block.contentType ?? 'image'} · ${block.length ?? 0} байт`));
+              return node;
+            }
+
+            function renderMapBlock(block) {
+              const map = block.map ?? {};
+              const node = el('section', 'block map-block');
+              node.dataset.mapJson = JSON.stringify(map);
+              node.append(el('h2', '', block.title || map.title || 'Карта'));
+
+              const toolbar = el('div', 'map-toolbar');
+              const zSelect = document.createElement('select');
+              zSelect.className = 'map-z-filter';
+              for (const level of map.zLevels ?? [{ z: 0, label: 'земля' }]) {
+                const option = new Option(level.label ?? String(level.z), String(level.z ?? 0));
+                zSelect.append(option);
+              }
+              const layerSelect = document.createElement('select');
+              layerSelect.className = 'map-layer-filter';
+              for (const layer of map.layers ?? [{ id: 'world', label: 'Мир' }]) {
+                layerSelect.append(new Option(layer.label ?? layer.id, layer.id ?? 'world'));
+              }
+              toolbar.append(labelWithControl('Уровень', zSelect), labelWithControl('Слой', layerSelect));
+              const zoomIn = el('button', 'secondary', 'Приблизить');
+              const zoomOut = el('button', 'secondary', 'Отдалить');
+              const reset = el('button', 'secondary', 'Сброс');
+              for (const button of [zoomIn, zoomOut, reset]) button.type = 'button';
+              toolbar.append(zoomIn, zoomOut, reset);
+              node.append(toolbar);
+
+              const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+              svg.classList.add('map-canvas');
+              svg.setAttribute('role', 'img');
+              svg.setAttribute('aria-label', map.title || 'Карта');
+              svg.setAttribute('viewBox', '-20 -20 40 40');
+              node.append(svg);
+
+              const card = el('aside', 'map-card', 'Выберите точку на карте.');
+              node.append(card);
+
+              let currentViewBox = [-20, -20, 40, 40];
+              let dragStart = null;
+
+              function draw() {
+                const selectedZ = Number(zSelect.value || 0);
+                const selectedLayer = layerSelect.value || 'world';
+                const nodes = (map.nodes ?? []).filter(item => Number(item.z ?? 0) === selectedZ && ((item.layer ?? 'world') === selectedLayer));
+                const nodeById = new globalThis.Map(nodes.map(item => [item.id, item]));
+                svg.replaceChildren();
+
+                for (const link of map.links ?? []) {
+                  const source = nodeById.get(link.sourceNodeId);
+                  const target = nodeById.get(link.targetNodeId);
+                  if (!source || !target) continue;
+                  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                  line.setAttribute('x1', source.x ?? 0);
+                  line.setAttribute('y1', -(source.y ?? 0));
+                  line.setAttribute('x2', target.x ?? 0);
+                  line.setAttribute('y2', -(target.y ?? 0));
+                  line.setAttribute('stroke', link.state === 'dangerous' ? '#8b2d20' : '#6d5630');
+                  line.setAttribute('stroke-width', '.16');
+                  svg.append(line);
+                }
+
+                for (const mapNode of nodes) {
+                  const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                  group.classList.add('map-node');
+                  group.setAttribute('tabindex', '0');
+                  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                  circle.setAttribute('cx', mapNode.x ?? 0);
+                  circle.setAttribute('cy', -(mapNode.y ?? 0));
+                  circle.setAttribute('r', mapNode.isCurrent ? '.72' : '.5');
+                  circle.setAttribute('fill', mapNode.isCurrent ? '#244d2d' : mapNode.ownerFactionId ? '#7b4c20' : '#6a2d22');
+                  circle.setAttribute('stroke', '#f1d58b');
+                  circle.setAttribute('stroke-width', '.12');
+                  const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                  label.setAttribute('x', Number(mapNode.x ?? 0) + .72);
+                  label.setAttribute('y', -Number(mapNode.y ?? 0) - .42);
+                  label.textContent = mapNode.label ?? mapNode.id ?? '?';
+                  group.append(circle, label);
+                  group.addEventListener('click', () => showMapNode(mapNode));
+                  group.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') showMapNode(mapNode);
+                  });
+                  svg.append(group);
+                }
+
+                fitMap(nodes);
+              }
+
+              function fitMap(nodes) {
+                if (!nodes.length) {
+                  currentViewBox = [-20, -20, 40, 40];
+                  svg.setAttribute('viewBox', currentViewBox.join(' '));
+                  return;
+                }
+                const xs = nodes.map(item => Number(item.x ?? 0));
+                const ys = nodes.map(item => -Number(item.y ?? 0));
+                const minX = Math.min(...xs) - 3;
+                const maxX = Math.max(...xs) + 9;
+                const minY = Math.min(...ys) - 3;
+                const maxY = Math.max(...ys) + 3;
+                currentViewBox = [minX, minY, Math.max(10, maxX - minX), Math.max(10, maxY - minY)];
+                svg.setAttribute('viewBox', currentViewBox.join(' '));
+              }
+
+              function zoom(factor) {
+                const [x, y, width, height] = currentViewBox;
+                const nextWidth = width * factor;
+                const nextHeight = height * factor;
+                currentViewBox = [x + (width - nextWidth) / 2, y + (height - nextHeight) / 2, nextWidth, nextHeight];
+                svg.setAttribute('viewBox', currentViewBox.join(' '));
+              }
+
+              function showMapNode(mapNode) {
+                card.replaceChildren();
+                card.append(el('h3', '', mapNode.label ?? mapNode.id ?? 'Локация'));
+                const dl = document.createElement('dl');
+                const details = [...(mapNode.details ?? [])];
+                if (mapNode.ownerFactionName || mapNode.ownerFactionId) {
+                  details.push({ key: 'Фракция', value: mapNode.ownerFactionName || mapNode.ownerFactionId });
+                }
+                details.push({ key: 'Уровень', value: String(mapNode.z ?? 0) });
+                for (const item of details) {
+                  dl.append(el('dt', '', item.key ?? ''));
+                  dl.append(el('dd', '', item.value ?? ''));
+                }
+                card.append(dl);
+              }
+
+              zSelect.addEventListener('change', draw);
+              layerSelect.addEventListener('change', draw);
+              zoomIn.addEventListener('click', () => zoom(.8));
+              zoomOut.addEventListener('click', () => zoom(1.25));
+              reset.addEventListener('click', draw);
+              svg.addEventListener('wheel', event => {
+                event.preventDefault();
+                zoom(event.deltaY < 0 ? .9 : 1.1);
+              }, { passive: false });
+              svg.addEventListener('pointerdown', event => {
+                svg.setPointerCapture(event.pointerId);
+                dragStart = { x: event.clientX, y: event.clientY, viewBox: [...currentViewBox] };
+              });
+              svg.addEventListener('pointermove', event => {
+                if (!dragStart) return;
+                const [, , width, height] = dragStart.viewBox;
+                const dx = (event.clientX - dragStart.x) * width / Math.max(1, svg.clientWidth);
+                const dy = (event.clientY - dragStart.y) * height / Math.max(1, svg.clientHeight);
+                currentViewBox = [dragStart.viewBox[0] - dx, dragStart.viewBox[1] - dy, width, height];
+                svg.setAttribute('viewBox', currentViewBox.join(' '));
+              });
+              svg.addEventListener('pointerup', () => { dragStart = null; });
+              svg.addEventListener('pointercancel', () => { dragStart = null; });
+
+              draw();
+              const current = (map.nodes ?? []).find(item => item.id === map.currentNodeId);
+              if (current) showMapNode(current);
+              return node;
+            }
+
+            function labelWithControl(label, control) {
+              const node = document.createElement('label');
+              node.append(document.createTextNode(label));
+              node.append(control);
               return node;
             }
 

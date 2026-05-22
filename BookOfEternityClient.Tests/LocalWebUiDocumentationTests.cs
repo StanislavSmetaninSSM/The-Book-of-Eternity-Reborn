@@ -59,5 +59,8 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("мобиль", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("raw JSON", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("QTE", text, StringComparison.Ordinal);
+        Assert.Contains("SVG", text, StringComparison.Ordinal);
+        Assert.Contains("z-level", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("layer filter", text, StringComparison.OrdinalIgnoreCase);
     }
 }
