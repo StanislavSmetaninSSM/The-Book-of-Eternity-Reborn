@@ -50,14 +50,15 @@ public sealed class LocalMediaService
         if (!TryBuildMediaFile(fullPath, out var mediaFile, out _))
             return null;
 
+        var resolved = mediaFile!;
         return new LocalMediaReference(
-            CreateMediaIdForRelativePath(mediaFile.RelativePath),
-            "/api/media/" + Uri.EscapeDataString(CreateMediaIdForRelativePath(mediaFile.RelativePath)),
-            mediaFile.RelativePath,
-            Path.GetFileName(mediaFile.RelativePath),
-            mediaFile.ContentType,
-            mediaFile.Length,
-            mediaFile.ModifiedAtUtc);
+            CreateMediaIdForRelativePath(resolved.RelativePath),
+            "/api/media/" + Uri.EscapeDataString(CreateMediaIdForRelativePath(resolved.RelativePath)),
+            resolved.RelativePath,
+            Path.GetFileName(resolved.RelativePath),
+            resolved.ContentType,
+            resolved.Length,
+            resolved.ModifiedAtUtc);
     }
 
     public bool TryResolveMediaId(string mediaId, out LocalMediaFile? mediaFile, out string error)
