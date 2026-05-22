@@ -12,6 +12,7 @@ public static class LocalMapViewService
 {
     private const string WorldLayerId = "world";
     private const string ChaosSeaLayerId = "chaos_sea";
+    private const string ShiningAbodeLayerId = "shining_abode";
     private const int MeaningfulFactionInfluence = 25;
     private const int ContestedControlGap = 10;
     internal static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
@@ -28,9 +29,12 @@ public static class LocalMapViewService
             ? GetString(soulDoc.RootElement, "currentRealm")
             : string.Empty;
 
-        return RealmSemantics.IsChaosSea(currentRealm)
-            ? await BuildChaosSeaMapAsync(fs)
-            : await BuildMortalWorldMapAsync(fs);
+        if (RealmSemantics.IsChaosSea(currentRealm))
+            return await BuildChaosSeaMapAsync(fs);
+        if (RealmSemantics.IsShiningRealm(currentRealm))
+            return await BuildShiningAbodeMapAsync(fs);
+
+        return await BuildMortalWorldMapAsync(fs);
     }
 
     public static async Task<MapViewDto> BuildMortalWorldMapAsync(FileSystemManager fs)
@@ -205,6 +209,335 @@ public static class LocalMapViewService
                 .ThenBy(static link => link.TargetNodeId, StringComparer.OrdinalIgnoreCase)
                 .ToList()
         };
+    }
+
+    public static async Task<MapViewDto> BuildShiningAbodeMapAsync(FileSystemManager fs)
+    {
+        var shiningJson = await fs.ReadFileAsync("game_state/meta/shining_abode_state.json");
+        using var shiningDoc = TryParse(shiningJson);
+
+        var nodes = new Dictionary<string, NodeDraft>(StringComparer.OrdinalIgnoreCase);
+        var links = new Dictionary<string, MapLinkDto>(StringComparer.OrdinalIgnoreCase);
+        var currentHallId = string.Empty;
+
+        if (shiningDoc != null && shiningDoc.RootElement.ValueKind == JsonValueKind.Object)
+        {
+            var root = shiningDoc.RootElement;
+            currentHallId = GetString(root, "currentHallId", "activeHallId", "selectedHallId");
+            AddShiningHallArray(nodes, root);
+            AddShiningFactionArray(nodes, links, root);
+        }
+
+        if (!string.IsNullOrWhiteSpace(currentHallId) && nodes.TryGetValue(currentHallId, out var currentHall))
+        {
+            currentHall.IsCurrent = true;
+            AddDetail(currentHall, "Текущий зал", "да");
+        }
+
+        ApplyShiningAbodeLayout(nodes.Values, currentHallId);
+
+        var nodeDtos = nodes.Values
+            .Select(static node => node.ToDto())
+            .OrderByDescending(static node => node.IsCurrent)
+            .ThenBy(static node => node.Type, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(static node => node.Label, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return new MapViewDto
+        {
+            Realm = "Shining Abode",
+            Title = "Карта Сияющей Обители: залы и фракции",
+            CurrentNodeId = currentHallId,
+            Layers =
+            [
+                new MapLayerDto
+                {
+                    Id = ShiningAbodeLayerId,
+                    Label = "Сияющая Обитель",
+                    IsDefault = true
+                }
+            ],
+            ZLevels = [new MapZLevelDto { Z = 0, Label = "мандала залов" }],
+            Nodes = nodeDtos,
+            Links = links.Values
+                .OrderBy(static link => link.SourceNodeId, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(static link => link.TargetNodeId, StringComparer.OrdinalIgnoreCase)
+                .ToList(),
+            Regions = BuildPoliticalRegions(nodes.Values)
+        };
+    }
+
+    private static void AddShiningHallArray(Dictionary<string, NodeDraft> nodes, JsonElement root)
+    {
+        if (!root.TryGetProperty("halls", out var halls) || halls.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var hall in halls.EnumerateArray())
+        {
+            if (hall.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var hallId = GetString(hall, "hallId", "id");
+            if (string.IsNullOrWhiteSpace(hallId))
+                hallId = StableId(GetString(hall, "hallName", "name", "displayName"), $"hall_{nodes.Count + 1}");
+            var draft = EnsureShiningHallNode(nodes, hallId, GetString(hall, "hallName", "name", "displayName"));
+            AddDetail(draft, "Тип", GetString(hall, "hallType", "type"));
+            AddDetail(draft, "Описание", GetString(hall, "description", "summary"));
+            AddDetail(draft, "Статус", GetString(hall, "status", "state"));
+        }
+    }
+
+    private static void AddShiningFactionArray(
+        Dictionary<string, NodeDraft> nodes,
+        Dictionary<string, MapLinkDto> links,
+        JsonElement root)
+    {
+        if (!root.TryGetProperty("factions", out var factions) || factions.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var faction in factions.EnumerateArray())
+        {
+            if (faction.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var factionId = GetString(faction, "factionId", "id");
+            if (string.IsNullOrWhiteSpace(factionId))
+                factionId = StableId(GetShiningFactionName(faction), $"faction_{nodes.Count + 1}");
+
+            var factionName = GetShiningFactionName(faction);
+            var hallId = GetString(faction, "hallId", "homeHallId", "controlledHallId");
+            if (string.IsNullOrWhiteSpace(hallId))
+                hallId = "hall_unassigned";
+
+            var hall = EnsureShiningHallNode(
+                nodes,
+                hallId,
+                string.Equals(hallId, "hall_unassigned", StringComparison.OrdinalIgnoreCase)
+                    ? "Без закреплённого зала"
+                    : hallId);
+            var strength = GetInt(faction, "factionStrength", "strength", "influence", "controlLevel");
+            var factionNode = GetOrCreateNode(nodes, factionId);
+            factionNode.Layer = ShiningAbodeLayerId;
+            factionNode.Type = "shining_faction";
+            factionNode.ParentHallId = hallId;
+            factionNode.OwnerFactionId = factionId;
+            factionNode.OwnerFactionName = factionName;
+            factionNode.Influence[factionId] = strength;
+            factionNode.FactionControls.Add(new FactionControlDraft
+            {
+                FactionId = factionId,
+                FactionName = factionName,
+                ControlType = "Сила фракции",
+                ControlLevel = strength
+            });
+            factionNode.Label = Prefer(factionNode.Label, factionName, factionId);
+
+            ApplyShiningFactionInfluenceToHall(hall, factionId, factionName, strength);
+            AddShiningLink(links, hallId, factionId, "политическое влияние", "known");
+
+            AddDetail(factionNode, "Фракция", factionName);
+            AddDetail(factionNode, "Зал", hall.Label);
+            AddDetail(factionNode, "Сила", strength > 0 ? strength.ToString(CultureInfo.InvariantCulture) : string.Empty);
+            AddDetail(factionNode, "Лидерство", DescribeShiningLeadership(faction));
+            AddDetail(factionNode, "Резиденты", DescribeShiningFactionResidents(root, factionId));
+            AddDetail(factionNode, "Проекты", DescribeShiningFactionProjects(faction, root, factionId));
+            AddPoliticalDetails(factionNode);
+        }
+
+        foreach (var hall in nodes.Values.Where(static node => string.Equals(node.Type, "shining_hall", StringComparison.OrdinalIgnoreCase)))
+            AddPoliticalDetails(hall);
+    }
+
+    private static NodeDraft EnsureShiningHallNode(Dictionary<string, NodeDraft> nodes, string hallId, string label)
+    {
+        var draft = GetOrCreateNode(nodes, hallId);
+        draft.Layer = ShiningAbodeLayerId;
+        draft.Type = "shining_hall";
+        draft.Label = Prefer(draft.Label, label, hallId);
+        return draft;
+    }
+
+    private static void ApplyShiningFactionInfluenceToHall(NodeDraft hall, string factionId, string factionName, int strength)
+    {
+        if (!string.IsNullOrWhiteSpace(factionId))
+            hall.Influence[factionId] = strength;
+
+        hall.FactionControls.Add(new FactionControlDraft
+        {
+            FactionId = factionId,
+            FactionName = factionName,
+            ControlType = "Сила фракции",
+            ControlLevel = strength
+        });
+
+        var previousBest = hall.FactionControls
+            .Where(static control => !string.IsNullOrWhiteSpace(control.FactionId) || !string.IsNullOrWhiteSpace(control.FactionName))
+            .OrderByDescending(static control => control.ControlLevel)
+            .FirstOrDefault();
+        if (previousBest != null)
+        {
+            hall.OwnerFactionId = previousBest.FactionId;
+            hall.OwnerFactionName = previousBest.FactionName;
+        }
+    }
+
+    private static string GetShiningFactionName(JsonElement faction)
+    {
+        var name = GetString(faction, "factionName", "name", "displayName");
+        if (!string.IsNullOrWhiteSpace(name))
+            return name;
+
+        return faction.TryGetProperty("charter", out var charter) && charter.ValueKind == JsonValueKind.Object
+            ? GetString(charter, "factionName", "name", "displayName")
+            : string.Empty;
+    }
+
+    private static string DescribeShiningLeadership(JsonElement faction)
+    {
+        if (!faction.TryGetProperty("leadership", out var leadership) || leadership.ValueKind != JsonValueKind.Object)
+            return string.Empty;
+
+        var parts = new[]
+        {
+            GetString(leadership, "leadershipState", "state"),
+            GetString(leadership, "headActorType", "leaderType"),
+            GetString(leadership, "headActorId", "leaderId")
+        }.Where(static value => !string.IsNullOrWhiteSpace(value));
+        return string.Join(", ", parts);
+    }
+
+    private static string DescribeShiningFactionResidents(JsonElement root, string factionId)
+    {
+        var names = new List<string>();
+        AddShiningResidentNames(names, root, "residents", factionId);
+        AddShiningResidentNames(names, root, "shiningResidents", factionId);
+        AddShiningResidentNames(names, root, "shiningPoliticalActors", factionId);
+        return names.Count == 0 ? string.Empty : string.Join("; ", names.Take(6));
+    }
+
+    private static void AddShiningResidentNames(List<string> names, JsonElement root, string propertyName, string factionId)
+    {
+        if (!root.TryGetProperty(propertyName, out var residents) || residents.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var resident in residents.EnumerateArray())
+        {
+            if (resident.ValueKind != JsonValueKind.Object)
+                continue;
+
+            var residentFaction = GetString(resident, "shiningFactionId", "factionId", "affiliatedFactionId");
+            if (!string.Equals(residentFaction, factionId, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            var name = GetString(resident, "displayName", "residentName", "name", "actorName");
+            if (!string.IsNullOrWhiteSpace(name))
+                names.Add(name);
+        }
+    }
+
+    private static string DescribeShiningFactionProjects(JsonElement faction, JsonElement root, string factionId)
+    {
+        var names = new List<string>();
+        AddShiningProjectNames(names, faction, "projects", factionId, requireFactionMatch: false);
+        AddShiningProjectNames(names, faction, "activeProjects", factionId, requireFactionMatch: false);
+        AddShiningProjectNames(names, root, "projects", factionId, requireFactionMatch: true);
+        AddShiningProjectNames(names, root, "factionProjects", factionId, requireFactionMatch: true);
+        return names.Count == 0 ? string.Empty : string.Join("; ", names.Take(6));
+    }
+
+    private static void AddShiningProjectNames(
+        List<string> names,
+        JsonElement source,
+        string propertyName,
+        string factionId,
+        bool requireFactionMatch)
+    {
+        if (!source.TryGetProperty(propertyName, out var projects) || projects.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var project in projects.EnumerateArray())
+        {
+            if (project.ValueKind != JsonValueKind.Object)
+                continue;
+
+            if (requireFactionMatch)
+            {
+                var projectFactionId = GetString(project, "factionId", "shiningFactionId", "ownerFactionId");
+                if (!string.Equals(projectFactionId, factionId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+            }
+
+            var name = GetString(project, "displayName", "projectName", "title", "name", "projectId");
+            var status = GetString(project, "status", "state");
+            if (!string.IsNullOrWhiteSpace(status))
+                name = string.IsNullOrWhiteSpace(name) ? status : $"{name} ({status})";
+            if (!string.IsNullOrWhiteSpace(name))
+                names.Add(name);
+        }
+    }
+
+    private static void AddShiningLink(Dictionary<string, MapLinkDto> links, string sourceId, string targetId, string label, string state)
+    {
+        var id = $"{sourceId}->{targetId}";
+        if (links.ContainsKey(id))
+            return;
+
+        links[id] = new MapLinkDto
+        {
+            Id = id,
+            SourceNodeId = sourceId,
+            TargetNodeId = targetId,
+            Label = label,
+            State = state,
+            Layer = ShiningAbodeLayerId,
+            Z = 0
+        };
+    }
+
+    private static void ApplyShiningAbodeLayout(IEnumerable<NodeDraft> nodes, string currentHallId)
+    {
+        var nodeList = nodes.ToList();
+        var halls = nodeList
+            .Where(static node => string.Equals(node.Type, "shining_hall", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(node => string.Equals(node.Id, currentHallId, StringComparison.OrdinalIgnoreCase))
+            .ThenBy(static node => node.Label, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var angleStep = Math.Tau / Math.Max(1, halls.Count);
+        for (var index = 0; index < halls.Count; index++)
+        {
+            var hall = halls[index];
+            hall.Z = 0;
+            hall.HasCoordinates = true;
+            if (!string.IsNullOrWhiteSpace(currentHallId) &&
+                string.Equals(hall.Id, currentHallId, StringComparison.OrdinalIgnoreCase))
+            {
+                hall.X = 0;
+                hall.Y = 0;
+                AddDetail(hall, "Координаты", "центр мандалы залов");
+                continue;
+            }
+
+            var angle = index * angleStep + (StableHash(hall.Id) % 1000) / 1000.0 * 0.35;
+            var radius = 6.2 + (StableHash(hall.Label) % 4) * 0.55;
+            hall.X = Math.Round(Math.Cos(angle) * radius, 2);
+            hall.Y = Math.Round(Math.Sin(angle) * radius, 2);
+            AddDetail(hall, "Координаты", $"мандала: {hall.X:0.#}, {hall.Y:0.#}");
+        }
+
+        var hallsById = halls.ToDictionary(static hall => hall.Id, StringComparer.OrdinalIgnoreCase);
+        foreach (var faction in nodeList.Where(static node => string.Equals(node.Type, "shining_faction", StringComparison.OrdinalIgnoreCase)))
+        {
+            faction.Z = 0;
+            faction.HasCoordinates = true;
+            hallsById.TryGetValue(faction.ParentHallId, out var hall);
+            var baseX = hall?.X ?? 0;
+            var baseY = hall?.Y ?? 0;
+            var angle = StableHash(faction.Id) / (double)uint.MaxValue * Math.Tau;
+            faction.X = Math.Round(baseX + Math.Cos(angle) * 2.3, 2);
+            faction.Y = Math.Round(baseY + Math.Sin(angle) * 2.3, 2);
+            AddDetail(faction, "Координаты", $"политическая орбита: {faction.X:0.#}, {faction.Y:0.#}");
+        }
     }
 
     private static void AddNavigationAbodeArray(
@@ -987,6 +1320,7 @@ public static class LocalMapViewService
         public bool HasCoordinates { get; set; }
         public string GuardianId { get; set; } = string.Empty;
         public string Domain { get; set; } = string.Empty;
+        public string ParentHallId { get; set; } = string.Empty;
         public string OwnerFactionId { get; set; } = string.Empty;
         public string OwnerFactionName { get; set; } = string.Empty;
         public Dictionary<string, int> Influence { get; } = new(StringComparer.OrdinalIgnoreCase);
