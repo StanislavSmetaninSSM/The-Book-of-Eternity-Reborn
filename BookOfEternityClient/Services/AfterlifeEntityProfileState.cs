@@ -12,6 +12,10 @@ internal static class AfterlifeEntityProfileState
     public const string CustomStatesProperty = "customStates";
     public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
     public const string SpecialArtLearningReceiptsProperty = "afterlifeSpecialArtLearningReceipts";
+    public const string GoalUpdatesProperty = "afterlifeActorGoalUpdates";
+    public const string QuestUpdatesProperty = "afterlifeActorQuestUpdates";
+    public const string ActivityUpdatesProperty = "afterlifeActorActivityUpdates";
+    public const string CompleteActivitiesProperty = "completeAfterlifeActorActivities";
     public const string ProgressionLedgerProperty = "progressionLedger";
     public const string LastInvalidProgressionOverrideProperty = "lastInvalidProgressionOverride";
     public const string LastInvalidProgressionOverrideReasonProperty = "lastInvalidProgressionOverrideReason";
@@ -27,7 +31,10 @@ internal static class AfterlifeEntityProfileState
         "player_soul",
         "guardian",
         "resident",
+        "shining_resident",
         "shining_faction_head",
+        "saref_agent",
+        "system_actor",
         "radiant_actor",
         "custom_afterlife_actor"
     };
@@ -89,6 +96,23 @@ internal static class AfterlifeEntityProfileState
         "radiance"
     };
 
+    private static readonly HashSet<string> ActorQuestStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "active",
+        "blocked",
+        "completed",
+        "failed",
+        "cancelled"
+    };
+
+    private static readonly HashSet<string> ActorActivityCompletionOutcomes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "completed",
+        "failed",
+        "cancelled",
+        "blocked"
+    };
+
     public static JsonObject CreateDefaultRoot() =>
         new()
         {
@@ -108,6 +132,10 @@ internal static class AfterlifeEntityProfileState
         UpsertProfileCommands(result, currentRoot?[ResponseProfilesProperty], "profile_response_not_object", "profile_response_not_array");
         UpsertProfileCommands(result, currentRoot?[UpdateProperty], "profile_update_not_object", "profile_update_not_array");
         ApplyCustomStateChanges(result, currentRoot?[CustomStateChangesProperty]);
+        ApplyActorGoalUpdates(result, currentRoot?[GoalUpdatesProperty]);
+        ApplyActorQuestUpdates(result, currentRoot?[QuestUpdatesProperty]);
+        ApplyActorActivityUpdates(result, currentRoot?[ActivityUpdatesProperty]);
+        ApplyCompleteActorActivities(result, currentRoot?[CompleteActivitiesProperty]);
         ApplySpecialArtLearningReceipts(result, currentRoot?[SpecialArtLearningReceiptsProperty]);
         ApplyProgressionOverrides(result, currentRoot?[ProgressionOverridesProperty]);
         ApplyAutomaticProgression(result, progressionReportRoot);
@@ -115,6 +143,10 @@ internal static class AfterlifeEntityProfileState
         result.Remove(UpdateProperty);
         result.Remove(ResponseProfilesProperty);
         result.Remove(CustomStateChangesProperty);
+        result.Remove(GoalUpdatesProperty);
+        result.Remove(QuestUpdatesProperty);
+        result.Remove(ActivityUpdatesProperty);
+        result.Remove(CompleteActivitiesProperty);
         result.Remove(ProgressionOverridesProperty);
         result.Remove(SpecialArtLearningReceiptsProperty);
         return result;
@@ -449,6 +481,304 @@ internal static class AfterlifeEntityProfileState
         GetNodeString(state["name"]) ??
         GetNodeString(state["title"]) ??
         GetNodeString(state["stateName"]);
+
+    private static void ApplyActorGoalUpdates(JsonObject result, JsonNode? updatesNode)
+    {
+        if (updatesNode == null)
+            return;
+
+        if (updatesNode is not JsonArray updates)
+        {
+            MarkInvalidProfileCommand(result, updatesNode, "actor_goal_updates_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var updateNode in updates)
+        {
+            if (updateNode is not JsonObject update)
+            {
+                MarkInvalidProfileCommand(result, updateNode, "actor_goal_update_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, update);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, update, "unknown_actor_goal_target");
+                continue;
+            }
+
+            if (!CommandHasNonEmptyStrings(update, "goalId", "shortTermGoal", "longTermGoal", "plan", "gmThoughtsSummary") ||
+                !TryGetNodeInt(update["updatedAtTurn"], out var updatedAtTurn) ||
+                updatedAtTurn < 0)
+            {
+                MarkInvalidProfileCommand(result, update, "incomplete_actor_goal_update");
+                continue;
+            }
+
+            var goals = new JsonObject();
+            CopyCommandFields(update, goals, "goalId", "shortTermGoal", "longTermGoal", "plan", "gmThoughtsSummary");
+            CopyOptionalCommandFields(update, goals, "actorBrainRef", "strategyTag");
+            goals["updatedAtTurn"] = updatedAtTurn;
+            profile["goals"] = goals;
+        }
+    }
+
+    private static void ApplyActorQuestUpdates(JsonObject result, JsonNode? updatesNode)
+    {
+        if (updatesNode == null)
+            return;
+
+        if (updatesNode is not JsonArray updates)
+        {
+            MarkInvalidProfileCommand(result, updatesNode, "actor_quest_updates_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var updateNode in updates)
+        {
+            if (updateNode is not JsonObject update)
+            {
+                MarkInvalidProfileCommand(result, updateNode, "actor_quest_update_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, update);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, update, "unknown_actor_quest_target");
+                continue;
+            }
+
+            var status = GetNodeString(update["status"]);
+            if (!CommandHasNonEmptyStrings(update, "questId", "goalId", "title", "status", "planSummary", "successCondition") ||
+                !ActorQuestStatuses.Contains(status ?? string.Empty) ||
+                !TryGetNodeInt(update["createdAtTurn"], out var createdAtTurn) ||
+                createdAtTurn < 0)
+            {
+                MarkInvalidProfileCommand(result, update, "incomplete_actor_quest_update");
+                continue;
+            }
+
+            var quest = CloneCommandWithoutTarget(update);
+            quest["createdAtTurn"] = createdAtTurn;
+            UpsertActorQuest(EnsureArray(profile, "personalQuests"), quest);
+        }
+    }
+
+    private static void ApplyActorActivityUpdates(JsonObject result, JsonNode? updatesNode)
+    {
+        if (updatesNode == null)
+            return;
+
+        if (updatesNode is not JsonArray updates)
+        {
+            MarkInvalidProfileCommand(result, updatesNode, "actor_activity_updates_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var updateNode in updates)
+        {
+            if (updateNode is not JsonObject update)
+            {
+                MarkInvalidProfileCommand(result, updateNode, "actor_activity_update_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, update);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, update, "unknown_actor_activity_target");
+                continue;
+            }
+
+            if (!CommandHasNonEmptyStrings(update, "activityId", "goalId", "linkedQuestId", "activityType", "summary", "status", "gmThoughtsSummary") ||
+                !string.Equals(GetNodeString(update["status"]), "active", StringComparison.OrdinalIgnoreCase) ||
+                !TryGetNodeInt(update["startedAtTurn"], out var startedAtTurn) ||
+                startedAtTurn < 0)
+            {
+                MarkInvalidProfileCommand(result, update, "incomplete_actor_activity_update");
+                continue;
+            }
+
+            if (!ActorAgencyLinksAreProjectable(profile, update))
+            {
+                MarkInvalidProfileCommand(result, update, "actor_activity_missing_goal_or_quest");
+                continue;
+            }
+
+            var activity = CloneCommandWithoutTarget(update);
+            activity["startedAtTurn"] = startedAtTurn;
+            profile["currentActivity"] = activity;
+        }
+    }
+
+    private static void ApplyCompleteActorActivities(JsonObject result, JsonNode? completionsNode)
+    {
+        if (completionsNode == null)
+            return;
+
+        if (completionsNode is not JsonArray completions)
+        {
+            MarkInvalidProfileCommand(result, completionsNode, "complete_actor_activities_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var completionNode in completions)
+        {
+            if (completionNode is not JsonObject completion)
+            {
+                MarkInvalidProfileCommand(result, completionNode, "complete_actor_activity_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, completion);
+            var outcome = GetNodeString(completion["outcome"]);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, completion, "unknown_actor_activity_completion_target");
+                continue;
+            }
+
+            if (!CommandHasNonEmptyStrings(completion, "activityId", "outcome", "summary") ||
+                !ActorActivityCompletionOutcomes.Contains(outcome ?? string.Empty) ||
+                !TryGetNodeInt(completion["completedAtTurn"], out var completedAtTurn) ||
+                completedAtTurn < 0)
+            {
+                MarkInvalidProfileCommand(result, completion, "incomplete_actor_activity_completion");
+                continue;
+            }
+
+            if (profile["currentActivity"] is not JsonObject currentActivity ||
+                !string.Equals(GetNodeString(currentActivity["activityId"]), GetNodeString(completion["activityId"]), StringComparison.OrdinalIgnoreCase))
+            {
+                MarkInvalidProfileCommand(result, completion, "actor_activity_completion_without_current_activity");
+                continue;
+            }
+
+            var completed = CloneObject(currentActivity);
+            completed["status"] = outcome;
+            completed["outcome"] = outcome;
+            completed["completionSummary"] = GetNodeString(completion["summary"]);
+            completed["completedAtTurn"] = completedAtTurn;
+            CopyOptionalCommandFields(completion, completed, "gmThoughtsSummary", "resultingQuestStatus", "actorBrainRef");
+            EnsureArray(profile, "completedActivities").Add(completed);
+            ApplyResultingQuestStatus(profile, currentActivity, completion);
+            profile.Remove("currentActivity");
+        }
+    }
+
+    private static void ApplyResultingQuestStatus(JsonObject profile, JsonObject currentActivity, JsonObject completion)
+    {
+        var resultingQuestStatus = GetNodeString(completion["resultingQuestStatus"]);
+        if (string.IsNullOrWhiteSpace(resultingQuestStatus) ||
+            !ActorQuestStatuses.Contains(resultingQuestStatus))
+        {
+            return;
+        }
+
+        var questId = GetNodeString(currentActivity["linkedQuestId"]);
+        if (string.IsNullOrWhiteSpace(questId) ||
+            profile["personalQuests"] is not JsonArray quests)
+        {
+            return;
+        }
+
+        foreach (var quest in quests.OfType<JsonObject>())
+        {
+            if (string.Equals(GetNodeString(quest["questId"]), questId, StringComparison.OrdinalIgnoreCase))
+            {
+                quest["status"] = resultingQuestStatus;
+                if (completion.TryGetPropertyValue("summary", out var summary) && summary != null)
+                    quest["lastActivitySummary"] = summary.DeepClone();
+                return;
+            }
+        }
+    }
+
+    private static JsonObject? FindTargetProfile(JsonArray profiles, JsonObject command)
+    {
+        var targetKey = BuildIdentityKey(command);
+        if (string.IsNullOrWhiteSpace(targetKey))
+            return null;
+
+        return profiles
+            .OfType<JsonObject>()
+            .FirstOrDefault(profile => string.Equals(BuildIdentityKey(profile), targetKey, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool CommandHasNonEmptyStrings(JsonObject command, params string[] fieldNames) =>
+        fieldNames.All(field => !string.IsNullOrWhiteSpace(GetNodeString(command[field])));
+
+    private static JsonObject CloneCommandWithoutTarget(JsonObject command)
+    {
+        var clone = CloneObject(command);
+        clone.Remove("actorType");
+        clone.Remove("actorId");
+        clone.Remove("actorRef");
+        return clone;
+    }
+
+    private static void CopyCommandFields(JsonObject source, JsonObject target, params string[] fieldNames)
+    {
+        foreach (var fieldName in fieldNames)
+            target[fieldName] = GetNodeString(source[fieldName]);
+    }
+
+    private static void CopyOptionalCommandFields(JsonObject source, JsonObject target, params string[] fieldNames)
+    {
+        foreach (var fieldName in fieldNames)
+        {
+            if (source.TryGetPropertyValue(fieldName, out var value) && value != null)
+                target[fieldName] = value.DeepClone();
+        }
+    }
+
+    private static void UpsertActorQuest(JsonArray quests, JsonObject quest)
+    {
+        var questId = GetNodeString(quest["questId"]);
+        if (string.IsNullOrWhiteSpace(questId))
+        {
+            quests.Add(quest);
+            return;
+        }
+
+        for (var index = 0; index < quests.Count; index++)
+        {
+            if (quests[index] is JsonObject existing &&
+                string.Equals(GetNodeString(existing["questId"]), questId, StringComparison.OrdinalIgnoreCase))
+            {
+                quests[index] = quest;
+                return;
+            }
+        }
+
+        quests.Add(quest);
+    }
+
+    private static bool ActorAgencyLinksAreProjectable(JsonObject profile, JsonObject activity)
+    {
+        var goalId = GetNodeString(activity["goalId"]);
+        var linkedQuestId = GetNodeString(activity["linkedQuestId"]);
+        if (string.IsNullOrWhiteSpace(goalId) || string.IsNullOrWhiteSpace(linkedQuestId))
+            return false;
+
+        if (profile["goals"] is not JsonObject goals ||
+            !string.Equals(GetNodeString(goals["goalId"]), goalId, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return profile["personalQuests"] is JsonArray quests &&
+               quests.OfType<JsonObject>().Any(quest =>
+                   string.Equals(GetNodeString(quest["questId"]), linkedQuestId, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetNodeString(quest["goalId"]), goalId, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(GetNodeString(quest["status"]), "active", StringComparison.OrdinalIgnoreCase));
+    }
 
     private static void ApplyProgressionOverrides(JsonObject result, JsonNode? overridesNode)
     {

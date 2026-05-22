@@ -73,7 +73,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Профилей", (profiles?.Count ?? 0).ToString()),
                     ("Опасных развеивателей души", CountProfilesWithDissipation(profiles).ToString()),
                     ("Особых духовных искусств", CountNestedArray(profiles, "specialArts").ToString()),
-                    ("Кастомных состояний", CountNestedArray(profiles, AfterlifeEntityProfileState.CustomStatesProperty).ToString())))
+                    ("Кастомных состояний", CountNestedArray(profiles, AfterlifeEntityProfileState.CustomStatesProperty).ToString()),
+                    ("Активных личных квестов", CountActiveProfileQuests(profiles).ToString())))
         };
 
         if (profiles is { Count: > 0 })
@@ -81,7 +82,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(new UiTableBlock
             {
                 Title = "Сущности",
-                Columns = ["Имя", "Тип", "Область", "Ресурсы", "Прогрессия", "Духовные искусства", "Особые искусства", "Опасность"],
+                Columns = ["Имя", "Тип", "Область", "Ресурсы", "Прогрессия", "Духовные искусства", "Особые искусства", "Цели/активность", "Опасность"],
                 Rows = profiles.OfType<JsonObject>()
                     .Select(profile => new UiTableRow
                     {
@@ -94,6 +95,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                             DescribeProfileProgression(profile),
                             DescribeStandardArts(profile["standardArts"] as JsonObject),
                             DescribeSpecialArts(profile["specialArts"] as JsonArray),
+                            DescribeProfileAgency(profile),
                             DescribeDissipation(profile)
                         ]
                     })
@@ -483,6 +485,29 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             $"{GetString(art, "displayName", GetString(art, "artId", "?"))} {GetNumberOrString(art, "tier", "0")}"));
     }
 
+    private static string DescribeProfileAgency(JsonObject profile)
+    {
+        var goals = profile["goals"] as JsonObject;
+        var currentActivity = profile["currentActivity"] as JsonObject;
+        var activeQuests = (profile["personalQuests"] as JsonArray)?
+            .OfType<JsonObject>()
+            .Where(quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase))
+            .Select(quest => GetString(quest, "title", GetString(quest, "questId", "квест")))
+            .ToList() ?? [];
+
+        var parts = new List<string>();
+        var shortTerm = GetString(goals, "shortTermGoal", "");
+        if (!string.IsNullOrWhiteSpace(shortTerm))
+            parts.Add($"цель: {shortTerm}");
+        if (activeQuests.Count > 0)
+            parts.Add($"квесты: {string.Join("; ", activeQuests)}");
+        var activity = GetString(currentActivity, "summary", "");
+        if (!string.IsNullOrWhiteSpace(activity))
+            parts.Add($"сейчас: {activity}");
+
+        return parts.Count == 0 ? "не указаны" : string.Join(" | ", parts);
+    }
+
     private static string DescribeDissipation(JsonObject profile)
     {
         var tier = GetInt(profile?["soulDissipationTier"]);
@@ -656,7 +681,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "player_soul" => "Душа игрока",
             "guardian" => "Хранитель",
             "resident" => "Резидент",
+            "shining_resident" => "Резидент Сияющей Обители",
             "shining_faction_head" => "Глава фракции",
+            "saref_agent" => "Агент Сарефа",
+            "system_actor" => "Системная сила",
             "radiant_actor" => "Сияющий актор",
             "custom_afterlife_actor" => "Особая сущность",
             _ => actorType
@@ -758,6 +786,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
     private static int CountNestedArray(JsonArray? owners, string propertyName) =>
         owners?.OfType<JsonObject>().Sum(owner => CountArray(owner, propertyName)) ?? 0;
+
+    private static int CountActiveProfileQuests(JsonArray? profiles) =>
+        profiles?.OfType<JsonObject>()
+            .SelectMany(profile => (profile["personalQuests"] as JsonArray)?.OfType<JsonObject>() ?? [])
+            .Count(quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase)) ?? 0;
 
     private static int CountArray(JsonNode? node, string propertyName) =>
         node is JsonObject obj && obj[propertyName] is JsonArray array ? array.Count : 0;

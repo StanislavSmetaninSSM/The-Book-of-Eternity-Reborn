@@ -39,7 +39,7 @@ public partial class ExplorerMode
         {
             "[bold cyan]Профили сущностей посмертия[/]",
             "",
-            "Это полные игровые профили значимых сущностей загробья: ресурсы, прогрессия, духовные искусства, особые искусства, стратегия прокачки и опасность развеивания души.",
+            "Это полные игровые профили значимых сущностей загробья: ресурсы, прогрессия, духовные искусства, цели, личные квесты, текущая активность, стратегия прокачки и опасность развеивания души.",
             ""
         };
 
@@ -95,6 +95,7 @@ public partial class ExplorerMode
         AppendAfterlifeEntityStandardArts(lines, profile["standardArts"] as JsonObject);
         AppendAfterlifeEntitySpecialArts(lines, profile["specialArts"] as JsonArray);
         AppendAfterlifeEntityCustomStates(lines, profile[AfterlifeEntityProfileState.CustomStatesProperty] as JsonArray);
+        AppendAfterlifeEntityAgency(lines, profile);
 
         var dissipationTier = AfterlifeEntityProfileState.GetNodeInt(profile["soulDissipationTier"]);
         var stabilityCoefficient = AfterlifeEntityProfileState.ResolveSoulStabilityCoefficient(profile);
@@ -199,6 +200,72 @@ public partial class ExplorerMode
         }
     }
 
+    private static void AppendAfterlifeEntityAgency(List<string> lines, JsonObject profile)
+    {
+        var goals = profile["goals"] as JsonObject;
+        var currentActivity = profile["currentActivity"] as JsonObject;
+        var personalQuests = profile["personalQuests"] as JsonArray;
+        var completedActivities = profile["completedActivities"] as JsonArray;
+        if (goals == null && currentActivity == null && (personalQuests == null || personalQuests.Count == 0) && (completedActivities == null || completedActivities.Count == 0))
+            return;
+
+        lines.Add("  • Цели и текущие действия:");
+        if (goals != null)
+        {
+            var shortTerm = AfterlifeEntityProfileState.GetNodeString(goals["shortTermGoal"]);
+            var longTerm = AfterlifeEntityProfileState.GetNodeString(goals["longTermGoal"]);
+            var plan = AfterlifeEntityProfileState.GetNodeString(goals["plan"]);
+            var thoughts = AfterlifeEntityProfileState.GetNodeString(goals["gmThoughtsSummary"]);
+            if (!string.IsNullOrWhiteSpace(shortTerm))
+                lines.Add($"    - Ближайшая цель: {Markup.Escape(shortTerm)}");
+            if (!string.IsNullOrWhiteSpace(longTerm))
+                lines.Add($"    - Дальняя цель: {Markup.Escape(longTerm)}");
+            if (!string.IsNullOrWhiteSpace(plan))
+                lines.Add($"    - План: [dim]{Markup.Escape(plan)}[/]");
+            if (!string.IsNullOrWhiteSpace(thoughts))
+                lines.Add($"    - Мотивация: [dim]{Markup.Escape(thoughts)}[/]");
+        }
+
+        var activeQuests = personalQuests?
+            .OfType<JsonObject>()
+            .Where(quest => string.Equals(AfterlifeEntityProfileState.GetNodeString(quest["status"]), "active", StringComparison.OrdinalIgnoreCase))
+            .ToList() ?? new List<JsonObject>();
+        if (activeQuests.Count > 0)
+        {
+            lines.Add("    - Личные квесты сущности:");
+            foreach (var quest in activeQuests)
+            {
+                var title = AfterlifeEntityProfileState.GetNodeString(quest["title"]) ??
+                            AfterlifeEntityProfileState.GetNodeString(quest["questId"]) ??
+                            "Без названия";
+                var plan = AfterlifeEntityProfileState.GetNodeString(quest["planSummary"]);
+                lines.Add($"      · {Markup.Escape(title)}");
+                if (!string.IsNullOrWhiteSpace(plan))
+                    lines.Add($"        [dim]{Markup.Escape(plan)}[/]");
+            }
+        }
+
+        if (currentActivity != null)
+        {
+            var summary = AfterlifeEntityProfileState.GetNodeString(currentActivity["summary"]) ??
+                          AfterlifeEntityProfileState.GetNodeString(currentActivity["activityId"]) ??
+                          "не описано";
+            var thoughts = AfterlifeEntityProfileState.GetNodeString(currentActivity["gmThoughtsSummary"]);
+            lines.Add($"    - Сейчас делает: [white]{Markup.Escape(summary)}[/]");
+            if (!string.IsNullOrWhiteSpace(thoughts))
+                lines.Add($"      [dim]Почему: {Markup.Escape(thoughts)}[/]");
+        }
+
+        var latestCompleted = completedActivities?.OfType<JsonObject>().LastOrDefault();
+        if (latestCompleted != null)
+        {
+            var summary = AfterlifeEntityProfileState.GetNodeString(latestCompleted["completionSummary"]) ??
+                          AfterlifeEntityProfileState.GetNodeString(latestCompleted["summary"]);
+            if (!string.IsNullOrWhiteSpace(summary))
+                lines.Add($"    - Последняя завершённая активность: [dim]{Markup.Escape(summary)}[/]");
+        }
+    }
+
     private static IEnumerable<string> ReadProfileStringArray(JsonArray? array)
     {
         if (array == null)
@@ -226,7 +293,10 @@ public partial class ExplorerMode
             "player_soul" => "Душа игрока",
             "guardian" => "Хранитель",
             "resident" => "Резидент",
+            "shining_resident" => "Резидент Сияющей Обители",
             "shining_faction_head" => "Глава фракции",
+            "saref_agent" => "Агент Сарефа",
+            "system_actor" => "Системная сила",
             "radiant_actor" => "Сияющий актор",
             "custom_afterlife_actor" => "Особая сущность",
             _ => actorType ?? "?"
