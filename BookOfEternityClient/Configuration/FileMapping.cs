@@ -129,6 +129,7 @@ public static class FileMapping
         ["afterlifeEntityProfiles"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeEntityProfileUpdates"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeEntityCustomStateChanges"] = "game_state/meta/afterlife_entity_profiles.json",
+        ["afterlifeFateCardUnlocks"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeActorGoalUpdates"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeActorQuestUpdates"] = "game_state/meta/afterlife_entity_profiles.json",
         ["afterlifeActorActivityUpdates"] = "game_state/meta/afterlife_entity_profiles.json",

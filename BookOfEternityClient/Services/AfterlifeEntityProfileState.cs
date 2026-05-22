@@ -12,6 +12,7 @@ internal static class AfterlifeEntityProfileState
     public const string CustomStatesProperty = "customStates";
     public const string ProgressionOverridesProperty = "afterlifeEntityProgressionOverrides";
     public const string SpecialArtLearningReceiptsProperty = "afterlifeSpecialArtLearningReceipts";
+    public const string FateCardUnlocksProperty = "afterlifeFateCardUnlocks";
     public const string GoalUpdatesProperty = "afterlifeActorGoalUpdates";
     public const string QuestUpdatesProperty = "afterlifeActorQuestUpdates";
     public const string ActivityUpdatesProperty = "afterlifeActorActivityUpdates";
@@ -113,6 +114,15 @@ internal static class AfterlifeEntityProfileState
         "blocked"
     };
 
+    internal static readonly string[] FateCardMechanicalEffectProperties =
+    {
+        "guardianEffects",
+        "playerUnlocks",
+        "politicalEffects",
+        "combatEffects",
+        "trainingUnlocks"
+    };
+
     public static JsonObject CreateDefaultRoot() =>
         new()
         {
@@ -132,6 +142,7 @@ internal static class AfterlifeEntityProfileState
         UpsertProfileCommands(result, currentRoot?[ResponseProfilesProperty], "profile_response_not_object", "profile_response_not_array");
         UpsertProfileCommands(result, currentRoot?[UpdateProperty], "profile_update_not_object", "profile_update_not_array");
         ApplyCustomStateChanges(result, currentRoot?[CustomStateChangesProperty]);
+        ApplyFateCardUnlocks(result, currentRoot?[FateCardUnlocksProperty]);
         ApplyActorGoalUpdates(result, currentRoot?[GoalUpdatesProperty]);
         ApplyActorQuestUpdates(result, currentRoot?[QuestUpdatesProperty]);
         ApplyActorActivityUpdates(result, currentRoot?[ActivityUpdatesProperty]);
@@ -143,6 +154,7 @@ internal static class AfterlifeEntityProfileState
         result.Remove(UpdateProperty);
         result.Remove(ResponseProfilesProperty);
         result.Remove(CustomStateChangesProperty);
+        result.Remove(FateCardUnlocksProperty);
         result.Remove(GoalUpdatesProperty);
         result.Remove(QuestUpdatesProperty);
         result.Remove(ActivityUpdatesProperty);
@@ -481,6 +493,82 @@ internal static class AfterlifeEntityProfileState
         GetNodeString(state["name"]) ??
         GetNodeString(state["title"]) ??
         GetNodeString(state["stateName"]);
+
+    private static void ApplyFateCardUnlocks(JsonObject result, JsonNode? unlocksNode)
+    {
+        if (unlocksNode == null)
+            return;
+
+        if (unlocksNode is not JsonArray unlocks)
+        {
+            MarkInvalidProfileCommand(result, unlocksNode, "fate_card_unlocks_not_array");
+            return;
+        }
+
+        var profiles = EnsureProfilesArray(result);
+        foreach (var unlockNode in unlocks)
+        {
+            if (unlockNode is not JsonObject unlock)
+            {
+                MarkInvalidProfileCommand(result, unlockNode, "fate_card_unlock_not_object");
+                continue;
+            }
+
+            var profile = FindTargetProfile(profiles, unlock);
+            if (profile == null)
+            {
+                MarkInvalidProfileCommand(result, unlock, "unknown_fate_card_unlock_target");
+                continue;
+            }
+
+            var cardId = GetNodeString(unlock["cardId"]);
+            if (string.IsNullOrWhiteSpace(cardId) ||
+                !TryGetNodeInt(unlock["appliedAtTurn"], out var appliedAtTurn) ||
+                appliedAtTurn < 0 ||
+                !HasFateCardEvidence(unlock))
+            {
+                MarkInvalidProfileCommand(result, unlock, "incomplete_fate_card_unlock");
+                continue;
+            }
+
+            var card = FindFateCardById(profile, cardId);
+            if (card == null)
+            {
+                MarkInvalidProfileCommand(result, unlock, "unknown_fate_card_unlock_card");
+                continue;
+            }
+
+            card["status"] = "unlocked";
+            card["appliedAtTurn"] = appliedAtTurn;
+            if (unlock.TryGetPropertyValue("evidence", out var evidence) && evidence != null)
+                card["evidence"] = evidence.DeepClone();
+
+            CopyOptionalCommandFields(unlock, card, "storyMeaning", "unlockSummary", "sceneAdvantage", "guardianMemoryFragment");
+            foreach (var propertyName in FateCardMechanicalEffectProperties)
+            {
+                if (unlock.TryGetPropertyValue(propertyName, out var effects) && effects != null)
+                    card[propertyName] = effects.DeepClone();
+            }
+        }
+    }
+
+    private static JsonObject? FindFateCardById(JsonObject profile, string cardId)
+    {
+        if (profile["fateCards"] is not JsonArray fateCards)
+            return null;
+
+        return fateCards
+            .OfType<JsonObject>()
+            .FirstOrDefault(card => string.Equals(GetNodeString(card["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool HasFateCardEvidence(JsonObject command)
+    {
+        if (command["evidence"] is JsonObject evidence && evidence.Count > 0)
+            return true;
+
+        return !string.IsNullOrWhiteSpace(GetNodeString(command["evidenceSummary"]));
+    }
 
     private static void ApplyActorGoalUpdates(JsonObject result, JsonNode? updatesNode)
     {

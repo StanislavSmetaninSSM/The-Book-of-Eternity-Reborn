@@ -555,6 +555,13 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("customStates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
             Assert.Contains("statesToRemove", text, StringComparison.Ordinal);
+            Assert.Contains("fateCards", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeFateCardUnlocks", text, StringComparison.Ordinal);
+            Assert.Contains("guardianEffects", text, StringComparison.Ordinal);
+            Assert.Contains("playerUnlocks", text, StringComparison.Ordinal);
+            Assert.Contains("politicalEffects", text, StringComparison.Ordinal);
+            Assert.Contains("combatEffects", text, StringComparison.Ordinal);
+            Assert.Contains("trainingUnlocks", text, StringComparison.Ordinal);
             Assert.Contains("goals", text, StringComparison.Ordinal);
             Assert.Contains("personalQuests", text, StringComparison.Ordinal);
             Assert.Contains("currentActivity", text, StringComparison.Ordinal);
@@ -588,6 +595,8 @@ public sealed class AfterlifeDocumentationCoverageTests
         Assert.Contains("/профили_загробья", glossary, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("afterlife_entity_profiles_v1", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_actor_agency_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains("afterlife_fate_cards_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_fate_cards_v1", manifest, StringComparison.Ordinal);
         Assert.Contains("Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова", examples, StringComparison.Ordinal);
         Assert.Contains("afterlife_special_art_learning_v1", examples, StringComparison.Ordinal);
         Assert.Contains("actionCostAudit.player.artTier", matrix + examples + apiSpec + daemonSpec + taskGuide, StringComparison.Ordinal);
@@ -611,6 +620,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             Assert.Contains("game_state/meta/afterlife_entity_profiles.json", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityProfileUpdates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeEntityCustomStateChanges", text, StringComparison.Ordinal);
+            Assert.Contains("afterlifeFateCardUnlocks", text, StringComparison.Ordinal);
+            Assert.Contains("fateCards", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeActorGoalUpdates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeActorQuestUpdates", text, StringComparison.Ordinal);
             Assert.Contains("afterlifeActorActivityUpdates", text, StringComparison.Ordinal);
@@ -631,6 +642,8 @@ public sealed class AfterlifeDocumentationCoverageTests
 
         Assert.Contains("afterlifeEntityProfileUpdates", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeEntityCustomStateChanges", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("afterlifeFateCardUnlocks", lifecyclePrompt, StringComparison.Ordinal);
+        Assert.Contains("fateCards", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeActorGoalUpdates", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeActorQuestUpdates", lifecyclePrompt, StringComparison.Ordinal);
         Assert.Contains("afterlifeActorActivityUpdates", lifecyclePrompt, StringComparison.Ordinal);
@@ -652,6 +665,8 @@ public sealed class AfterlifeDocumentationCoverageTests
             "game_state/meta/afterlife_entity_profiles.json",
             "afterlifeEntityProfileUpdates",
             "afterlifeEntityCustomStateChanges",
+            "afterlifeFateCardUnlocks",
+            "fateCards",
             "afterlifeActorGoalUpdates",
             "afterlifeActorQuestUpdates",
             "afterlifeActorActivityUpdates",
@@ -681,6 +696,7 @@ public sealed class AfterlifeDocumentationCoverageTests
             "afterlifeSpiritualConflictUpdate",
             "afterlifeEntityProfileUpdates",
             "afterlifeEntityCustomStateChanges",
+            "afterlifeFateCardUnlocks",
             "afterlifeActorGoalUpdates",
             "afterlifeActorQuestUpdates",
             "afterlifeActorActivityUpdates",

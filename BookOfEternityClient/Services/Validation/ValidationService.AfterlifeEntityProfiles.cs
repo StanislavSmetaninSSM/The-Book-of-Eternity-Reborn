@@ -33,6 +33,14 @@ public partial class ValidationService
         "blocked"
     };
 
+    private static readonly HashSet<string> AfterlifeFateCardStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "locked",
+        "hidden",
+        "available",
+        "unlocked"
+    };
+
     private void ValidateAfterlifeEntityProfileStateFile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
         if (root.ValueKind != JsonValueKind.Object)
@@ -54,6 +62,7 @@ public partial class ValidationService
         var hasResponseProfiles = root.TryGetProperty(AfterlifeEntityProfileState.ResponseProfilesProperty, out var responseProfiles);
         var hasUpdates = root.TryGetProperty(AfterlifeEntityProfileState.UpdateProperty, out var updates);
         var hasCustomStateChanges = root.TryGetProperty(AfterlifeEntityProfileState.CustomStateChangesProperty, out var customStateChanges);
+        var hasFateCardUnlocks = root.TryGetProperty(AfterlifeEntityProfileState.FateCardUnlocksProperty, out var fateCardUnlocks);
         var hasProgressionOverrides = root.TryGetProperty(AfterlifeEntityProfileState.ProgressionOverridesProperty, out var progressionOverrides);
         var hasSpecialArtLearningReceipts = root.TryGetProperty(AfterlifeEntityProfileState.SpecialArtLearningReceiptsProperty, out var specialArtLearningReceipts);
         var hasGoalUpdates = root.TryGetProperty(AfterlifeEntityProfileState.GoalUpdatesProperty, out var goalUpdates);
@@ -63,15 +72,15 @@ public partial class ValidationService
         var hasInvalidProgressionOverride = root.TryGetProperty(AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty, out _);
         var hasInvalidProfileCommand = root.TryGetProperty(AfterlifeEntityProfileState.LastInvalidCommandProperty, out _);
         if (!hasProfiles && !hasResponseProfiles && !hasUpdates && !hasCustomStateChanges && !hasProgressionOverrides && !hasSpecialArtLearningReceipts &&
-            !hasGoalUpdates && !hasQuestUpdates && !hasActivityUpdates && !hasActivityCompletions)
+            !hasFateCardUnlocks && !hasGoalUpdates && !hasQuestUpdates && !hasActivityUpdates && !hasActivityCompletions)
         {
             issues.Add(new ValidationIssue(
                 $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}",
                 IssueSeverity.Error,
-                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], actor agency command surfaces, afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
+                "afterlife_entity_profiles.json должен содержать profiles[], afterlifeEntityProfileUpdates[], afterlifeEntityCustomStateChanges[], afterlifeFateCardUnlocks[], actor agency command surfaces, afterlifeEntityProgressionOverrides[] или afterlifeSpecialArtLearningReceipts[].",
                 code: "afterlife_entity_profile_missing_profiles",
                 section: "AfterlifeEntityProfiles",
-                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeActorGoalUpdates[] / afterlifeActorQuestUpdates[] / afterlifeActorActivityUpdates[] / completeAfterlifeActorActivities[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
+                expected: "profiles[] / afterlifeEntityProfileUpdates[] / afterlifeEntityCustomStateChanges[] / afterlifeFateCardUnlocks[] / afterlifeActorGoalUpdates[] / afterlifeActorQuestUpdates[] / afterlifeActorActivityUpdates[] / completeAfterlifeActorActivities[] / afterlifeEntityProgressionOverrides[] / afterlifeSpecialArtLearningReceipts[]"));
         }
 
         if (hasInvalidProgressionOverride)
@@ -119,6 +128,12 @@ public partial class ValidationService
             customStateChanges,
             hasCustomStateChanges,
             $"{contextPrefix}.{AfterlifeEntityProfileState.CustomStateChangesProperty}",
+            profileAuthority,
+            issues);
+        ValidateAfterlifeFateCardUnlocksIfPresent(
+            fateCardUnlocks,
+            hasFateCardUnlocks,
+            $"{contextPrefix}.{AfterlifeEntityProfileState.FateCardUnlocksProperty}",
             profileAuthority,
             issues);
         ValidateAfterlifeActorGoalUpdatesIfPresent(
@@ -282,6 +297,7 @@ public partial class ValidationService
         ValidateAfterlifeProfileStandardArts(profile, context, issues);
         ValidateAfterlifeProfileSpecialArts(profile, context, actorType, actorId, issues);
         ValidateAfterlifeProfileCustomStates(profile, context, issues);
+        ValidateAfterlifeProfileFateCards(profile, context, issues);
         ValidateAfterlifeProfileSoulDissipation(profile, context, issues);
         ValidateAfterlifeProfileProgressionStrategy(profile, context, issues);
         ValidateAfterlifeProfileProgressionLedger(profile, context, issues);
@@ -392,6 +408,199 @@ public partial class ValidationService
         }
     }
 
+    private void ValidateAfterlifeProfileFateCards(JsonElement profile, string context, List<ValidationIssue> issues)
+    {
+        if (!profile.TryGetProperty("fateCards", out var fateCards))
+            return;
+
+        if (fateCards.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.fateCards",
+                IssueSeverity.Error,
+                "fateCards профиля сущности посмертия должен быть array.",
+                code: "afterlife_entity_profile_fate_cards_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: fateCards.ValueKind.ToString()));
+            return;
+        }
+
+        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var index = 0;
+        foreach (var card in fateCards.EnumerateArray())
+        {
+            var cardContext = $"{context}.fateCards[{index++}]";
+            if (card.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    cardContext,
+                    IssueSeverity.Error,
+                    "fateCards[] entry должен быть object.",
+                    code: "afterlife_entity_profile_fate_card_not_object",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "object",
+                    actual: card.ValueKind.ToString()));
+                continue;
+            }
+
+            var cardId = RequireProfileString(card, cardContext, "cardId", "afterlife_entity_profile_fate_card_missing_card_id", issues);
+            RequireProfileString(card, cardContext, "nameRu", "afterlife_entity_profile_fate_card_missing_name_ru", issues);
+            var status = RequireProfileString(card, cardContext, "status", "afterlife_entity_profile_fate_card_missing_status", issues);
+            RequireProfileString(card, cardContext, "storyMeaning", "afterlife_entity_profile_fate_card_missing_story_meaning", issues);
+
+            if (!string.IsNullOrWhiteSpace(cardId) && !ids.Add(cardId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{cardContext}.cardId",
+                    IssueSeverity.Error,
+                    "fateCards[] не должен содержать дубликаты cardId.",
+                    code: "afterlife_entity_profile_fate_card_duplicate",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "unique cardId",
+                    actual: cardId));
+            }
+
+            if (!string.IsNullOrWhiteSpace(status) && !AfterlifeFateCardStatuses.Contains(status))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{cardContext}.status",
+                    IssueSeverity.Error,
+                    "status карты судьбы Хранителя должен быть supported state.",
+                    code: "afterlife_entity_profile_fate_card_invalid_status",
+                    section: "AfterlifeEntityProfiles",
+                    expected: string.Join("/", AfterlifeFateCardStatuses.OrderBy(item => item, StringComparer.OrdinalIgnoreCase)),
+                    actual: status));
+            }
+
+            if (!card.TryGetProperty("unlockConditions", out var unlockConditions) ||
+                unlockConditions.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{cardContext}.unlockConditions",
+                    IssueSeverity.Error,
+                    "fateCards[] должен описывать условия открытия карты судьбы.",
+                    code: "afterlife_entity_profile_fate_card_missing_unlock_conditions",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "unlockConditions object/string/array"));
+            }
+
+            var isUnlocked = string.Equals(status, "unlocked", StringComparison.OrdinalIgnoreCase);
+            var hasEffects = HasFateCardMechanicalEffects(card);
+            ValidateFateCardEffectArrays(card, cardContext, issues);
+
+            if (!isUnlocked && hasEffects)
+            {
+                issues.Add(new ValidationIssue(
+                    cardContext,
+                    IssueSeverity.Error,
+                    "Locked/hidden/available карта судьбы не может содержать активные механические эффекты; эффекты появляются только после afterlifeFateCardUnlocks[].",
+                    code: "afterlife_entity_profile_fate_card_locked_effects_active",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "no guardianEffects/playerUnlocks/politicalEffects/combatEffects/trainingUnlocks until status=unlocked",
+                    actual: status ?? "missing"));
+            }
+
+            if (isUnlocked)
+            {
+                ValidateProfileNonNegativeInt(card, cardContext, "appliedAtTurn", "afterlife_entity_profile_fate_card_invalid_applied_turn", issues);
+                if (!HasFateCardEvidence(card))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{cardContext}.evidence",
+                        IssueSeverity.Error,
+                        "Unlocked карта судьбы требует evidence или evidenceSummary.",
+                        code: "afterlife_entity_profile_fate_card_missing_evidence",
+                        section: "AfterlifeEntityProfiles",
+                        expected: "non-empty evidence object or evidenceSummary"));
+                }
+
+                if (!hasEffects)
+                {
+                    issues.Add(new ValidationIssue(
+                        cardContext,
+                        IssueSeverity.Error,
+                        "Unlocked карта судьбы должна иметь хотя бы один активный механический эффект.",
+                        code: "afterlife_entity_profile_fate_card_unlocked_missing_effects",
+                        section: "AfterlifeEntityProfiles",
+                        expected: "guardianEffects/playerUnlocks/politicalEffects/combatEffects/trainingUnlocks"));
+                }
+            }
+        }
+    }
+
+    private void ValidateAfterlifeFateCardUnlocksIfPresent(
+        JsonElement unlocks,
+        bool hasUnlocks,
+        string context,
+        IReadOnlyDictionary<string, JsonElement> profileAuthority,
+        List<ValidationIssue> issues)
+    {
+        if (!hasUnlocks)
+            return;
+
+        if (unlocks.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "afterlifeFateCardUnlocks должен быть array.",
+                code: "afterlife_entity_profile_fate_card_unlocks_not_array",
+                section: "AfterlifeEntityProfiles",
+                expected: "array",
+                actual: unlocks.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var unlock in unlocks.EnumerateArray())
+        {
+            var unlockContext = $"{context}[{index++}]";
+            var targetProfile = ValidateAfterlifeActorAgencyCommandTarget(unlock, unlockContext, profileAuthority, "fate_card_unlock", issues);
+            if (targetProfile == null)
+                continue;
+
+            var cardId = RequireProfileString(unlock, unlockContext, "cardId", "afterlife_entity_profile_fate_card_unlock_missing_card_id", issues);
+            ValidateProfileNonNegativeInt(unlock, unlockContext, "appliedAtTurn", "afterlife_entity_profile_fate_card_unlock_invalid_turn", issues);
+            ValidateFateCardEffectArrays(unlock, unlockContext, issues);
+
+            if (!HasFateCardEvidence(unlock))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{unlockContext}.evidence",
+                    IssueSeverity.Error,
+                    "afterlifeFateCardUnlocks entry должен иметь evidence или evidenceSummary.",
+                    code: "afterlife_entity_profile_fate_card_unlock_missing_evidence",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "non-empty evidence object or evidenceSummary"));
+            }
+
+            if (!HasFateCardMechanicalEffects(unlock))
+            {
+                issues.Add(new ValidationIssue(
+                    unlockContext,
+                    IssueSeverity.Error,
+                    "afterlifeFateCardUnlocks должен применить хотя бы один проверяемый механический эффект.",
+                    code: "afterlife_entity_profile_fate_card_unlock_missing_effects",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "guardianEffects/playerUnlocks/politicalEffects/combatEffects/trainingUnlocks"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(cardId) &&
+                !ProfileContainsFateCard(targetProfile.Value, cardId))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{unlockContext}.cardId",
+                    IssueSeverity.Error,
+                    "afterlifeFateCardUnlocks должен ссылаться на существующую fateCards[].cardId целевого профиля.",
+                    code: "afterlife_entity_profile_fate_card_unlock_unknown_card",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "cardId exists in target profile fateCards[]",
+                    actual: cardId));
+            }
+        }
+    }
+
     private void ValidateAfterlifeEntityCustomStateChangesIfPresent(
         JsonElement changes,
         bool hasChanges,
@@ -434,6 +643,97 @@ public partial class ValidationService
                     section: "AfterlifeEntityProfiles",
                     expected: "actorType + actorId/actorRef present in profiles[] or afterlifeEntityProfileUpdates[]",
                     actual: targetKey));
+            }
+        }
+    }
+
+    private static bool HasFateCardEvidence(JsonElement cardOrUnlock)
+    {
+        if (cardOrUnlock.ValueKind != JsonValueKind.Object)
+            return false;
+
+        if (cardOrUnlock.TryGetProperty("evidence", out var evidence) &&
+            evidence.ValueKind == JsonValueKind.Object &&
+            evidence.EnumerateObject().Any())
+        {
+            return true;
+        }
+
+        return !string.IsNullOrWhiteSpace(GetProfileString(cardOrUnlock, "evidenceSummary"));
+    }
+
+    private static bool HasFateCardMechanicalEffects(JsonElement cardOrUnlock)
+    {
+        if (cardOrUnlock.ValueKind != JsonValueKind.Object)
+            return false;
+
+        return AfterlifeEntityProfileState.FateCardMechanicalEffectProperties.Any(propertyName =>
+            cardOrUnlock.TryGetProperty(propertyName, out var effects) &&
+            effects.ValueKind == JsonValueKind.Array &&
+            effects.GetArrayLength() > 0);
+    }
+
+    private static bool ProfileContainsFateCard(JsonElement profile, string cardId)
+    {
+        if (profile.ValueKind != JsonValueKind.Object ||
+            !profile.TryGetProperty("fateCards", out var fateCards) ||
+            fateCards.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        return fateCards.EnumerateArray().Any(card =>
+            card.ValueKind == JsonValueKind.Object &&
+            string.Equals(GetProfileString(card, "cardId"), cardId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void ValidateFateCardEffectArrays(JsonElement cardOrUnlock, string context, List<ValidationIssue> issues)
+    {
+        foreach (var propertyName in AfterlifeEntityProfileState.FateCardMechanicalEffectProperties)
+        {
+            if (!cardOrUnlock.TryGetProperty(propertyName, out var effects))
+                continue;
+
+            if (effects.ValueKind != JsonValueKind.Array)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}.{propertyName}",
+                    IssueSeverity.Error,
+                    "Механические эффекты карты судьбы должны быть массивом.",
+                    code: "afterlife_entity_profile_fate_card_effects_not_array",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "array",
+                    actual: effects.ValueKind.ToString()));
+                continue;
+            }
+
+            var index = 0;
+            foreach (var effect in effects.EnumerateArray())
+            {
+                var effectContext = $"{context}.{propertyName}[{index++}]";
+                if (effect.ValueKind != JsonValueKind.Object)
+                {
+                    issues.Add(new ValidationIssue(
+                        effectContext,
+                        IssueSeverity.Error,
+                        "Каждый механический эффект карты судьбы должен быть object.",
+                        code: "afterlife_entity_profile_fate_card_effect_not_object",
+                        section: "AfterlifeEntityProfiles",
+                        expected: "object",
+                        actual: effect.ValueKind.ToString()));
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(GetProfileString(effect, "summary")))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{effectContext}.summary",
+                        IssueSeverity.Error,
+                        "Механический эффект карты судьбы должен иметь summary, чтобы GM и игрок понимали применимый результат.",
+                        code: "afterlife_entity_profile_fate_card_effect_missing_summary",
+                        section: "AfterlifeEntityProfiles",
+                        expected: "non-empty summary"));
+                }
             }
         }
     }

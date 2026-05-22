@@ -7173,7 +7173,7 @@ Correct reasoning checklist:
 - Future afterlife conflict dice from `grantedAtTurn` onward must explicitly include turn evidence and `light_incarnate`; do not leave the bonus implicit in prose, and do not add it to pre-unlock, incomplete-closure, or historical dice audits.
 
 ==================================================
-EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`, `afterlife_special_art_learning_v1`)
+EXAMPLE 26 — Профили сущностей посмертия (`afterlife_entity_profiles_v1`, `afterlife_fate_cards_v1`, `afterlife_special_art_learning_v1`)
 ==================================================
 
 Scenario:
@@ -7182,6 +7182,7 @@ Scenario:
 - The canonical file is `game_state/meta/afterlife_entity_profiles.json`.
 - The accepted response uses `afterlifeEntityProfileUpdates[]`; the client normalizes it into `profiles[]`.
 - Targeted custom state maintenance uses `afterlifeEntityCustomStateChanges[]`; `statesToAddOrUpdate[]` adds/replaces full `customStates` entries and `statesToRemove[]` deletes ended states. The target profile must already exist in `profiles[]` or same-turn `afterlifeEntityProfileUpdates[]`; unknown targets are repair-blocking. At least one of the two arrays must be non-empty.
+- Fate Cards use profile `fateCards[]` plus `afterlifeFateCardUnlocks[]`. Locked/hidden/available cards are story potential only and must not grant active effects. Unlocks require current evidence, `appliedAtTurn`, and at least one active mechanical effect array: `guardianEffects`, `playerUnlocks`, `politicalEffects`, `combatEffects`, or `trainingUnlocks`.
 - Actor agency uses `afterlifeActorGoalUpdates[]`, `afterlifeActorQuestUpdates[]`, `afterlifeActorActivityUpdates[]`, and `completeAfterlifeActorActivities[]`. Canonical profiles store `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]`; every goal/current activity needs `gmThoughtsSummary`; `currentActivity` must link to current `goals.goalId` and an active `personalQuests[].questId`. Complete activities through `completeAfterlifeActorActivities[]`; do not erase `currentActivity` directly.
 - Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, and `trainingConditions` when teachable; `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
 - Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`; the teacher profile, player profile, source `specialArts[].artId`, and `canTeachPlayer=true` must resolve in profile authority. Learned special arts start at tier 0; do not use `initialTier` to grant progression.
@@ -7273,6 +7274,18 @@ Valid response fragment:
           ]
         }
       ],
+      "fateCards": [
+        {
+          "cardId": "mirror_oath_returned",
+          "nameRu": "Возвращённая клятва",
+          "status": "locked",
+          "isSecret": false,
+          "unlockConditions": {
+            "summary": "Душа должна пройти суд зеркальной клятвы и не выбрать удобную ложь."
+          },
+          "storyMeaning": "Хранитель возвращает часть памяти и получает право открыть новый способ обучения."
+        }
+      ],
       "soulDissipationTier": 1,
       "progressionStrategy": {
         "strategyId": "strategy_guardian_mirror",
@@ -7349,6 +7362,35 @@ Valid response fragment:
       ],
       "statesToRemove": [
         "obsolete_echo_mark"
+      ]
+    }
+  ],
+  "afterlifeFateCardUnlocks": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "cardId": "mirror_oath_returned",
+      "appliedAtTurn": 23,
+      "evidence": {
+        "summary": "Душа прошла зеркальный суд и признала правду о старой клятве без физического доказательства."
+      },
+      "guardianEffects": [
+        {
+          "effectId": "mirror_memory_restored",
+          "summary": "Хранитель вспоминает часть своего прошлого и получает новое основание доверять Душе."
+        }
+      ],
+      "playerUnlocks": [
+        {
+          "unlockId": "mirror_oath_training",
+          "summary": "Игрок может просить обучение Зеркальной Защите после сцены доверия."
+        }
+      ],
+      "politicalEffects": [
+        {
+          "effectId": "mirror_oath_witness",
+          "summary": "Зеркальная Обитель получает аргумент в будущих спорах с хранителями клятв."
+        }
       ]
     }
   ],
@@ -7458,6 +7500,7 @@ Correct reasoning checklist:
 - If a learned art is recognized, write `afterlifeSpecialArtLearningReceipts[]`; do not silently add it to the player without a receipt, do not grant learned-art tiers through `initialTier`, and do not reference a missing or non-teachable source art.
 - If a conflict exchange uses a special art, include either `specialArtAudit` with `effectNote`, owner identity, `baseOperation`, and `costMultiplierPercent`, or `specialArtAudits[]` with one object per art when both player and opposition use named special arts in the same exchange; never write both fields on one exchange. Every audit must match the validated pre-turn profile of that owner. Player-owned learned special arts that power the player's exchange operation require `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; non-player/incoming special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must be owned by the resolved opposition actor, use the matching `specialArts[].tier` as `actionCostAudit.opposition.artTier`, and require the same special-art cost fields and multiplied `effectiveCost` under `actionCostAudit.opposition`. Do not attach a non-player special art to the player's own `exchange.operationType`, to an earlier `incomingAction.operationType`, or to any other stale candidate; if `incomingAction.finalOperationType` exists, that final operation is authoritative. Its `baseOperation` must match the resolved opposition operation used for `actionCostAudit.opposition`.
 - `customStates[]` is visible in `/afterlife_profiles`; remove ended states through `afterlifeEntityCustomStateChanges[].statesToRemove[]` instead of leaving stale states forever.
+- `fateCards[]` stores story potential and mechanical unlocks. Locked/hidden/available cards cannot grant `guardianEffects`, `playerUnlocks`, `politicalEffects`, `combatEffects`, or `trainingUnlocks`; unlock them only through `afterlifeFateCardUnlocks[]` with `appliedAtTurn`, evidence, and at least one effect object with `summary`.
 - `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]` are the afterlife actor agency layer. A current activity without `gmThoughtsSummary`, current goal link, and active personal quest link is invalid.
 - Use `completeAfterlifeActorActivities[]` to close an activity and append `completedActivities[]`; do not simply set `currentActivity` to null in a full profile rewrite.
 - `progressionStrategy.priorityOrder` may target a standard art id, a `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`.

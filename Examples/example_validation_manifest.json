@@ -21,6 +21,13 @@
       "description": "Afterlife actor goals, personalQuests, currentActivity, completedActivities, gmThoughtsSummary, and completion-through-command contract."
     },
     {
+      "contractId": "afterlife_fate_cards_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "fateCards[] / afterlifeFateCardUnlocks",
+      "description": "Afterlife Fate Cards for Guardians and other afterlife actors: locked cards cannot grant effects, unlocks require evidence, appliedAtTurn, and guardian/player/political/combat/training effect arrays."
+    },
+    {
       "contractId": "afterlife_entity_auto_progression_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",

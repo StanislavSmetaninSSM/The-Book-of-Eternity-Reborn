@@ -95,6 +95,7 @@ public partial class ExplorerMode
         AppendAfterlifeEntityStandardArts(lines, profile["standardArts"] as JsonObject);
         AppendAfterlifeEntitySpecialArts(lines, profile["specialArts"] as JsonArray);
         AppendAfterlifeEntityCustomStates(lines, profile[AfterlifeEntityProfileState.CustomStatesProperty] as JsonArray);
+        AppendAfterlifeEntityFateCards(lines, profile["fateCards"] as JsonArray);
         AppendAfterlifeEntityAgency(lines, profile);
 
         var dissipationTier = AfterlifeEntityProfileState.GetNodeInt(profile["soulDissipationTier"]);
@@ -200,6 +201,37 @@ public partial class ExplorerMode
         }
     }
 
+    private static void AppendAfterlifeEntityFateCards(List<string> lines, JsonArray? fateCards)
+    {
+        if (fateCards == null || fateCards.Count == 0)
+            return;
+
+        lines.Add("  • Карты судьбы:");
+        foreach (var card in fateCards.OfType<JsonObject>())
+        {
+            var name = AfterlifeEntityProfileState.GetNodeString(card["nameRu"]) ??
+                       AfterlifeEntityProfileState.GetNodeString(card["cardId"]) ??
+                       "Без названия";
+            var status = AfterlifeEntityProfileState.GetNodeString(card["status"]) ?? "locked";
+            var storyMeaning = AfterlifeEntityProfileState.GetNodeString(card["storyMeaning"]);
+            var secret = card["isSecret"] is JsonValue secretValue &&
+                         secretValue.TryGetValue<bool>(out var secretBool) &&
+                         secretBool;
+            lines.Add($"    - {Markup.Escape(name)}: {Markup.Escape(DescribeFateCardStatus(status))}");
+            if (!secret && !string.IsNullOrWhiteSpace(storyMeaning))
+                lines.Add($"      [dim]{Markup.Escape(storyMeaning)}[/]");
+            else if (secret)
+                lines.Add("      [dim]Скрытые условия пока не раскрыты игроку.[/]");
+
+            if (string.Equals(status, "unlocked", StringComparison.OrdinalIgnoreCase))
+            {
+                var effects = CountFateCardEffects(card);
+                var appliedAtTurn = AfterlifeEntityProfileState.GetNodeInt(card["appliedAtTurn"]);
+                lines.Add($"      [green]Открыта: активных эффектов {effects}, ход {appliedAtTurn}[/]");
+            }
+        }
+    }
+
     private static void AppendAfterlifeEntityAgency(List<string> lines, JsonObject profile)
     {
         var goals = profile["goals"] as JsonObject;
@@ -265,6 +297,19 @@ public partial class ExplorerMode
                 lines.Add($"    - Последняя завершённая активность: [dim]{Markup.Escape(summary)}[/]");
         }
     }
+
+    private static string DescribeFateCardStatus(string? status) =>
+        status?.Trim().ToLowerInvariant() switch
+        {
+            "hidden" => "скрыта",
+            "available" => "может быть открыта",
+            "unlocked" => "открыта",
+            _ => "закрыта"
+        };
+
+    private static int CountFateCardEffects(JsonObject card) =>
+        AfterlifeEntityProfileState.FateCardMechanicalEffectProperties.Sum(propertyName =>
+            card[propertyName] is JsonArray array ? array.Count : 0);
 
     private static IEnumerable<string> ReadProfileStringArray(JsonArray? array)
     {
