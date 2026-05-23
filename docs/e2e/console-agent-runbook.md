@@ -51,10 +51,11 @@ When scripted mode is available, keep scripts small and deterministic:
 - one step per menu key, text submission, confirmation, or exit command;
 - store the input script beside the run artifacts;
 - after each step, read the deterministic screen/state snapshots rather than scraping ANSI stdout;
+- write observations through `ConsoleE2EObservationArtifactWriter` using the format documented in [`docs/e2e/console-observation-artifacts.md`](console-observation-artifacts.md);
 - assert only player-facing text/options and the current input mode;
 - never assert hidden/internal-only state unless that state is explicitly player-visible.
 
-Expected artifact shape for future scripted runs:
+Expected artifact shape for scripted runs:
 
 ```text
 artifacts/console-e2e/run-<guid>/
