@@ -237,8 +237,12 @@ public static class LocalWebUiHost
               background: rgba(0, 0, 0, .18);
               padding: .85rem;
             }
-            .advanced-shell { margin-top: 1rem; }
-            .advanced-shell[hidden] { display: none; }
+            .advanced-shell, .player-action-panel { margin-top: 1rem; }
+            .advanced-shell[hidden], .player-action-panel[hidden] { display: none; }
+            details.player-error-details {
+              margin-top: .75rem;
+              color: var(--muted);
+            }
             h1 {
               margin: 0 0 .75rem;
               color: var(--accent);
@@ -441,7 +445,7 @@ public static class LocalWebUiHost
                   <button type="button" data-menu-action="about"><strong>О мире / клиенте</strong><span>Что запускает локальный браузерный клиент.</span></button>
                   <button type="button" data-menu-action="exit"><strong>Выход</strong><span>Как остановить локальную web-сессию.</span></button>
                 </div>
-                <button class="secondary" type="button" id="advanced-shell-toggle">Расширенный режим</button>
+                <button class="secondary" type="button" id="advanced-shell-toggle" aria-controls="advanced-shell" aria-expanded="false">Расширенный режим</button>
               </div>
               <aside class="card session-summary">
                 <h2>Текущая сессия</h2>
@@ -455,11 +459,12 @@ public static class LocalWebUiHost
                 <section id="exit-panel" class="menu-panel" hidden></section>
               </aside>
             </section>
+            <section id="player-action-panel" class="card player-action-panel" aria-live="polite" hidden></section>
             <section id="advanced-shell" class="advanced-shell" hidden>
             <section class="hero">
               <div class="card">
-                <h2>Расширенный командный режим</h2>
-                <p>Этот раздел оставлен для перенесённых DTO-команд, диагностики и ручной проверки. Обычный игровой путь начинается выше, в главном меню.</p>
+                <h2>Технический режим</h2>
+                <p>Расширенный командный режим предназначен для разработчика, диагностики и ручной проверки. Обычный игровой путь начинается выше, в главном меню; raw-команды и подробности API здесь не являются основным интерфейсом игрока.</p>
                 <form id="command-form">
                   <input id="command-input" name="command" value="/help" autocomplete="off" aria-label="Команда ExplorerMode">
                   <button type="submit">Выполнить</button>
@@ -569,6 +574,7 @@ public static class LocalWebUiHost
             const commandButtons = [...document.querySelectorAll('[data-command]')];
             const advancedShell = document.getElementById('advanced-shell');
             const advancedToggle = document.getElementById('advanced-shell-toggle');
+            const playerActionPanel = document.getElementById('player-action-panel');
             const mainMenuSession = document.getElementById('main-menu-session');
             const saveList = document.getElementById('save-list');
             const menuActionButtons = [...document.querySelectorAll('[data-menu-action]')];
@@ -611,7 +617,7 @@ public static class LocalWebUiHost
                 mainMenuState = payload;
                 renderMainMenu(payload);
               } catch (error) {
-                mainMenuSession.replaceChildren(renderMessage({ severity: 'Error', title: 'Главное меню недоступно', message: error?.message ?? String(error) }));
+                mainMenuSession.replaceChildren(renderPlayerError('Главное меню недоступно', 'Не удалось прочитать локальную сессию. Попробуйте обновить страницу или проверьте, запущен ли локальный клиент.', error?.message ?? String(error)));
               }
             }
 
@@ -695,7 +701,7 @@ public static class LocalWebUiHost
                 renderMainMenu(payload.menu);
                 showMenuPanel('load-panel');
               } catch (error) {
-                saveList.prepend(renderMessage({ severity: 'Error', title: 'Сохранение не загружено', message: error?.message ?? String(error) }));
+                saveList.prepend(renderPlayerError('Сохранение не загружено', 'Не удалось безопасно загрузить выбранное сохранение. Текущая сессия не должна измениться.', error?.message ?? String(error)));
               }
             }
 
@@ -708,13 +714,13 @@ public static class LocalWebUiHost
 
               switch (actionId) {
                 case 'continue':
-                  showAdvancedShell();
-                  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  showPlayerAction('Продолжить игру', 'Игровой экран остаётся в обычном интерфейсе: техническая панель не открывается автоматически. Если нужно вручную выполнить команду или проверить диагностику, используйте отдельную кнопку «Расширенный режим».');
                   break;
                 case 'new-game':
-                  showAdvancedShell();
-                  input.value = action?.command || '/world_setup';
-                  executeCommand(input.value);
+                  showPlayerAction('Новая игра', 'Подготовка новой жизни будет перенесена в игровой мастер. До завершения этого экрана технический мастер можно открыть только осознанно из расширенного режима.', {
+                    label: 'Открыть технический мастер новой игры',
+                    command: action?.command || '/world_setup'
+                  });
                   break;
                 case 'load':
                   showMenuPanel('load-panel');
@@ -737,8 +743,30 @@ public static class LocalWebUiHost
               }
             }
 
+            function showPlayerAction(title, message, advancedAction) {
+              const node = el('section', 'block message info');
+              node.append(el('div', 'message-title', title));
+              node.append(el('div', '', message));
+              playerActionPanel.replaceChildren(node);
+              if (advancedAction?.command) {
+                const actionRow = el('div', 'actions');
+                const button = el('button', 'secondary', advancedAction.label ?? 'Открыть расширенный режим');
+                button.type = 'button';
+                button.addEventListener('click', () => {
+                  showAdvancedShell();
+                  input.value = advancedAction.command;
+                  executeCommand(advancedAction.command);
+                });
+                actionRow.append(button);
+                playerActionPanel.append(actionRow);
+              }
+              playerActionPanel.hidden = false;
+              playerActionPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
             function showAdvancedShell() {
               advancedShell.hidden = false;
+              advancedToggle.setAttribute('aria-expanded', 'true');
               if (!lifecycleLoaded) {
                 lifecycleLoaded = true;
                 loadLifecycleDashboard();
@@ -1181,6 +1209,18 @@ public static class LocalWebUiHost
               const node = el('section', `block message ${(block.severity ?? '').toLowerCase()}${extraClass}`);
               if (block.title) node.append(el('div', 'message-title', block.title));
               node.append(el('div', '', block.message ?? ''));
+              return node;
+            }
+
+            function renderPlayerError(title, message, details) {
+              const node = renderMessage({ severity: 'Error', title, message });
+              if (details) {
+                const detailNode = document.createElement('details');
+                detailNode.className = 'player-error-details';
+                detailNode.append(el('summary', '', 'Подробности'));
+                detailNode.append(el('pre', '', String(details)));
+                node.append(detailNode);
+              }
               return node;
             }
 

@@ -268,6 +268,72 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    public async Task RootEndpoint_KeepsDebugToolsInsideExplicitAdvancedPanel()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+        var advancedIndex = html.IndexOf("<section id=\"advanced-shell\"", StringComparison.Ordinal);
+
+        Assert.True(advancedIndex > 0, "The advanced panel must be a separate section after the default player menu.");
+        var playerDefault = html[..advancedIndex];
+        var advancedPanel = html[advancedIndex..];
+
+        Assert.Contains("id=\"advanced-shell-toggle\"", playerDefault, StringComparison.Ordinal);
+        Assert.Contains("aria-controls=\"advanced-shell\"", playerDefault, StringComparison.Ordinal);
+        Assert.Contains("aria-expanded=\"false\"", playerDefault, StringComparison.Ordinal);
+        Assert.DoesNotContain("Командная палитра", playerDefault, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Диагностика", playerDefault, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/lifecycle", playerDefault, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/explorer", playerDefault, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("data-command=\"/debug\"", playerDefault, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("id=\"advanced-shell\" class=\"advanced-shell\" hidden", advancedPanel, StringComparison.Ordinal);
+        Assert.Contains("Технический режим", advancedPanel, StringComparison.Ordinal);
+        Assert.Contains("id=\"command-form\"", advancedPanel, StringComparison.Ordinal);
+        Assert.Contains("id=\"lifecycle-panel\"", advancedPanel, StringComparison.Ordinal);
+        Assert.Contains("data-command=\"/validate\"", advancedPanel, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task RootEndpoint_PlayerMenuActionsDoNotAutomaticallyOpenAdvancedDiagnostics()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+        var continueCase = ExtractSwitchCase(html, "continue", "new-game");
+        var newGameCase = ExtractSwitchCase(html, "new-game", "load");
+
+        Assert.DoesNotContain("showAdvancedShell", continueCase, StringComparison.Ordinal);
+        Assert.DoesNotContain("showAdvancedShell", newGameCase, StringComparison.Ordinal);
+        Assert.Contains("showPlayerAction", continueCase, StringComparison.Ordinal);
+        Assert.Contains("showPlayerAction", newGameCase, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task RootEndpoint_IncludesConcisePlayerErrorRendererWithExpandableDetails()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("function renderPlayerError", html, StringComparison.Ordinal);
+        Assert.Contains("document.createElement('details')", html, StringComparison.Ordinal);
+        Assert.Contains("Подробности", html, StringComparison.Ordinal);
+        Assert.Contains("renderPlayerError('Главное меню недоступно'", html, StringComparison.Ordinal);
+        Assert.Contains("renderPlayerError('Сохранение не загружено'", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task RootEndpoint_IncludesCommandRendererAssets()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
@@ -662,6 +728,15 @@ public sealed class LocalWebUiHostTests : IDisposable
         var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
         var saved = await saveLoad.SaveGameAsync(saveName, "Browser main menu save/load test");
         Assert.True(saved, "The test fixture must be able to create a manual save before exercising the browser load endpoint.");
+    }
+
+    private static string ExtractSwitchCase(string html, string caseName, string nextCaseName)
+    {
+        var start = html.IndexOf($"case '{caseName}':", StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Expected switch case for {caseName}.");
+        var end = html.IndexOf($"case '{nextCaseName}':", start + 1, StringComparison.Ordinal);
+        Assert.True(end > start, $"Expected switch case for {nextCaseName} after {caseName}.");
+        return html[start..end];
     }
 
     private static int GetFreeLoopbackPort()
