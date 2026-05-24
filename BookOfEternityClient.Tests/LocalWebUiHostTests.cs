@@ -87,7 +87,165 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
-    public async Task RootEndpoint_ReturnsBrowserShellHtml()
+    public async Task MainMenuEndpoint_ReturnsSessionActionsAndBrowserFriendlyDisabledStates()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Веб-душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4
+        }
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var json = await client.GetStringAsync("/api/main-menu");
+        var root = JsonNode.Parse(json)!.AsObject();
+        var actions = root["actions"]!.AsArray();
+
+        Assert.Equal(1, root["schemaVersion"]!.GetValue<int>());
+        Assert.True(root["session"]!["canContinue"]!.GetValue<bool>());
+        Assert.Equal("Веб-душа", root["session"]!["soulName"]!.GetValue<string>());
+        Assert.Equal("Море Хаоса", root["session"]!["realmLabel"]!.GetValue<string>());
+        Assert.Contains("Ход", root["session"]!["turnLabel"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(actions, action => action?["id"]?.GetValue<string>() == "continue" && action["enabled"]!.GetValue<bool>());
+        Assert.Contains(actions, action => action?["id"]?.GetValue<string>() == "new-game" && action["enabled"]!.GetValue<bool>());
+        Assert.Contains(actions, action => action?["id"]?.GetValue<string>() == "load" && action["enabled"]!.GetValue<bool>() == false &&
+            action["disabledReason"]!.GetValue<string>().Contains("сохран", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(actions, action => action?["id"]?.GetValue<string>() == "options" && action["enabled"]!.GetValue<bool>());
+        Assert.Contains(actions, action => action?["id"]?.GetValue<string>() == "about" && action["enabled"]!.GetValue<bool>());
+        Assert.Contains(actions, action => action?["id"]?.GetValue<string>() == "exit" && action["enabled"]!.GetValue<bool>() == false);
+    }
+
+    [Fact]
+    public async Task MainMenuEndpoint_BlocksContinueForTerminalSoulDissipation()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Развеянная душа",
+          "currentRealm": "Chaos Sea",
+          "terminalGameOver": {
+            "state": "soul_dispersed",
+            "message": "Вы мертвы. Ваша душа окончательно развеяна. Загрузите последнее сохранение и попробуйте снова"
+          }
+        }
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var json = await client.GetStringAsync("/api/main-menu");
+        var root = JsonNode.Parse(json)!.AsObject();
+
+        Assert.False(root["session"]!["canContinue"]!.GetValue<bool>());
+        Assert.Contains("продолжить нельзя", root["session"]!["continueReason"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(root["actions"]!.AsArray(), action => action?["id"]?.GetValue<string>() == "continue" &&
+            action["enabled"]!.GetValue<bool>() == false &&
+            action["disabledReason"]!.GetValue<string>().Contains("сохранение", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Сохранённая душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await CreateManualSaveAsync("browser-menu-save");
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Изменённая душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 9
+        }
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var menu = JsonNode.Parse(await client.GetStringAsync("/api/main-menu"))!.AsObject();
+        var saveId = menu["saves"]!.AsArray()[0]!["saveId"]!.GetValue<string>();
+        using var loadResponse = await client.PostAsJsonAsync("/api/saves/load", new { saveId });
+        var loaded = JsonNode.Parse((await loadResponse.Content.ReadAsStringAsync())!)!.AsObject();
+
+        loadResponse.EnsureSuccessStatusCode();
+        Assert.True(loaded["success"]!.GetValue<bool>());
+        Assert.Equal("Сохранённая душа", loaded["menu"]!["session"]!["soulName"]!.GetValue<string>());
+        Assert.Contains("Сохранённая душа", File.ReadAllText(Path.Combine(_rootPath, "game_session", "game_state", "meta", "soul_state.json")), StringComparison.Ordinal);
+
+        using var invalidResponse = await client.PostAsJsonAsync("/api/saves/load", new { saveId = "manual:../../outside.zip" });
+        var invalidBody = await invalidResponse.Content.ReadAsStringAsync();
+        Assert.False(string.IsNullOrWhiteSpace(invalidBody), $"Expected a structured error body for invalid save IDs, got {(int)invalidResponse.StatusCode} {invalidResponse.StatusCode} with an empty body.");
+        var invalid = JsonNode.Parse(invalidBody)!.AsObject();
+
+        Assert.Equal(HttpStatusCode.BadRequest, invalidResponse.StatusCode);
+        Assert.Contains("не найден", invalid["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Сохранённая душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        await CreateManualSaveAsync("browser-menu-save");
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Изменённая душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 9
+        }
+        """);
+        WriteSessionFile("input/turn_request.json", "{}");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var menu = JsonNode.Parse(await client.GetStringAsync("/api/main-menu"))!.AsObject();
+        var loadAction = menu["actions"]!.AsArray().First(action =>
+            string.Equals(action?["id"]?.GetValue<string>(), "load", StringComparison.Ordinal));
+        var saveId = menu["saves"]!.AsArray()[0]!["saveId"]!.GetValue<string>();
+        using var loadResponse = await client.PostAsJsonAsync("/api/saves/load", new { saveId });
+        var loadBody = JsonNode.Parse(await loadResponse.Content.ReadAsStringAsync())!.AsObject();
+
+        Assert.False(loadAction!["enabled"]!.GetValue<bool>());
+        Assert.Contains("заблок", loadAction["disabledReason"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(HttpStatusCode.BadRequest, loadResponse.StatusCode);
+        Assert.Contains("заблок", loadBody["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Изменённая душа", File.ReadAllText(Path.Combine(_rootPath, "game_session", "game_state", "meta", "soul_state.json")), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task MainMenuEndpoint_UsesRussianReasonForMalformedSoulState()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", "{ not-json");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var menu = JsonNode.Parse(await client.GetStringAsync("/api/main-menu"))!.AsObject();
+        var reason = menu["session"]!["continueReason"]!.GetValue<string>();
+
+        Assert.False(menu["session"]!["canContinue"]!.GetValue<bool>());
+        Assert.Contains("поврежд", reason, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("malformed", reason, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task RootEndpoint_ReturnsPlayerFacingBrowserMainMenu()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
         await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
@@ -98,7 +256,15 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         Assert.Contains("<!doctype html>", html, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("The Book of Eternity", html, StringComparison.Ordinal);
-        Assert.Contains("/api/health", html, StringComparison.Ordinal);
+        Assert.Contains("id=\"main-menu\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-menu-action=\"continue\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-menu-action=\"new-game\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-menu-action=\"load\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-menu-action=\"options\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-menu-action=\"about\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-menu-action=\"exit\"", html, StringComparison.Ordinal);
+        Assert.Contains("id=\"advanced-shell-toggle\"", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("Local Web UI", html, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -485,6 +651,17 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         var experienceJson = await File.ReadAllTextAsync(Path.Combine(_rootPath, "game_session", "game_state", "player", "experience.json"));
         Assert.Contains("\"totalExperience\": 15", experienceJson, StringComparison.Ordinal);
+    }
+
+    private async Task CreateManualSaveAsync(string saveName)
+    {
+        var fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        fs.EnsureDirectoryStructure();
+        var stateManager = new StateManager(fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        await stateManager.RefreshGameStateAsync();
+        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
+        var saved = await saveLoad.SaveGameAsync(saveName, "Browser main menu save/load test");
+        Assert.True(saved, "The test fixture must be able to create a manual save before exercising the browser load endpoint.");
     }
 
     private static int GetFreeLoopbackPort()

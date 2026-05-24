@@ -161,7 +161,7 @@ public sealed class BrowserLifecycleDashboardService
                 RealmLabel: "Царство не определено",
                 CurrentIncarnation: 0,
                 IsReadable: false,
-                ReadError: $"soul_state.json malformed: {ex.Message}");
+                ReadError: $"soul_state.json повреждён: {ex.Message}");
         }
     }
 
