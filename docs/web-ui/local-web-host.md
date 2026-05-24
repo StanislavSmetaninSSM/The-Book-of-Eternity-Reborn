@@ -89,9 +89,13 @@ POST /api/qte/offer
 POST /api/qte/action
 ```
 
-`/` serves the first browser command shell. It renders `ExplorerCommandResult` DTOs from the command API and does not duplicate game logic in JavaScript.
+`/` serves the browser game shell. The root page defaults to the player-facing main menu: current session summary, Continue/New Game/Load/Options/About/Exit actions, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, or debug controls as the primary player flow.
 
-The shell now includes persistent Russian navigation and a filterable command palette for the major play areas:
+The **Advanced / developer panel** is available through the explicit `Расширенный режим` button. It contains the raw command console, the migrated command renderer, lifecycle dashboard controls, validation controls, QTE probes, and `/api/*` endpoint details needed for development or repair. Continue/New Game do not open this panel automatically; when a player flow still needs a technical bridge, the UI shows a short game-facing explanation and a separate opt-in button. This keeps the normal browser landing page player-facing while preserving the shared command/API tools; the browser still renders `ExplorerCommandResult` DTOs from the command API and does not duplicate game logic in JavaScript.
+
+Normal player-menu errors are short Russian messages. Technical exception/HTTP details are placed behind a `Подробности` disclosure so they are available for repair without becoming primary player content.
+
+Inside the Advanced / developer panel, the shell includes Russian navigation and a filterable command palette for the major play areas:
 
 - Мир смертных
 - Море Хаоса

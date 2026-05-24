@@ -8,11 +8,15 @@ Map rendering parity is enforced through the shared map package: console `output
 
 ## Shell And Navigation
 
-- Командная палитра remains available for direct slash commands and filters visible buttons without hiding the manual command input.
-- Persistent navigation includes: Мир смертных, Море Хаоса, Сияющая Обитель, Духовный бой, История и архив, Диагностика.
-- Desktop layout keeps navigation and results visible side by side.
+- The root page keeps the player-facing default: title, current session summary, Continue/New Game/Load/Options/About/Exit actions, and short Russian guidance before any developer tools.
+- Continue/New Game actions must not reveal diagnostics automatically; if a player path still needs a technical bridge, show a short game-facing message plus an explicit opt-in advanced button.
+- Player-facing errors stay concise in Russian, with technical details behind a `Подробности` disclosure.
+- Advanced / developer panel is opened intentionally through `Расширенный режим`; it contains the raw command console, command palette, lifecycle dashboard, validation controls, QTE probes, raw JSON, and API endpoint hints.
+- Командная палитра remains available inside the Advanced / developer panel for direct slash commands and filters visible buttons without hiding the manual command input.
+- Persistent advanced navigation includes: Мир смертных, Море Хаоса, Сияющая Обитель, Духовный бой, История и архив, Диагностика.
+- Desktop layout keeps navigation and results visible side by side after advanced mode is opened.
 - Мобильный layout stacks navigation, status, forms, tables, image blocks, and raw JSON without horizontal overflow.
-- Player-facing labels use Russian first; English appears only as technical command IDs or raw JSON keys.
+- Player-facing labels use Russian first; English appears only as technical command IDs, raw JSON keys, or advanced-mode endpoint references.
 
 ## Mortal World
 
