@@ -100,7 +100,8 @@ public sealed class LocalWebUiMainMenuService
         BrowserLifecycleDashboardDto dashboard,
         string? terminalSoulDissipationMessage)
     {
-        var turnNumber = await DetectCurrentSessionTurnNumberAsync();
+        await _stateManager.RefreshGameStateAsync();
+        var turnNumber = _stateManager.CurrentState.TurnNumber;
         var hasReadableSoul = dashboard.Soul.IsReadable;
         var hasCurrentSession = dashboard.Session.GameSessionExists && hasReadableSoul;
         var terminalSoulDissipated = !string.IsNullOrWhiteSpace(terminalSoulDissipationMessage);
@@ -325,42 +326,6 @@ public sealed class LocalWebUiMainMenuService
         }
     }
 
-    private async Task<int> DetectCurrentSessionTurnNumberAsync()
-    {
-        var storiesPath = _fs.ResolvePath("stories");
-        if (!Directory.Exists(storiesPath))
-            return 0;
-
-        var maxTurn = 0;
-        foreach (var file in Directory.EnumerateFiles(storiesPath, "*.json", SearchOption.AllDirectories))
-        {
-            try
-            {
-                var json = await File.ReadAllTextAsync(file);
-                var root = JsonNode.Parse(json);
-                if (root is JsonArray array)
-                {
-                    foreach (var item in array.OfType<JsonObject>())
-                        maxTurn = Math.Max(maxTurn, GetInt(item, "turn") ?? 0);
-                }
-                else if (root is JsonObject obj)
-                {
-                    maxTurn = Math.Max(maxTurn, GetInt(obj, "turn", "turnNumber") ?? 0);
-                }
-            }
-            catch (JsonException)
-            {
-                // Main menu must stay available even if optional story history is malformed.
-            }
-            catch (IOException)
-            {
-                // Ignore transient file reads; the status panel can surface deeper validation details.
-            }
-        }
-
-        return maxTurn;
-    }
-
     private async Task<string?> TryReadTerminalSoulDissipationMessageAsync()
     {
         try
@@ -399,25 +364,6 @@ public sealed class LocalWebUiMainMenuService
                 try
                 {
                     return value.GetValue<string>();
-                }
-                catch (InvalidOperationException)
-                {
-                }
-            }
-        }
-
-        return null;
-    }
-
-    private static int? GetInt(JsonObject root, params string[] names)
-    {
-        foreach (var name in names)
-        {
-            if (root.TryGetPropertyValue(name, out var node) && node is JsonValue value)
-            {
-                try
-                {
-                    return value.GetValue<int>();
                 }
                 catch (InvalidOperationException)
                 {

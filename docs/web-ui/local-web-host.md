@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #691
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691
 Parent epic: #559
 
 ## Local-Only Model
@@ -90,7 +90,7 @@ POST /api/qte/offer
 POST /api/qte/action
 ```
 
-`/` serves the browser game shell. The root page defaults to the player-facing main menu: current session summary, Continue/New Game/Load/Options/About/Exit actions, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, or debug controls as the primary player flow.
+`/` serves the browser game shell. The root page defaults to the player-facing main menu plus a player-facing game screen: current session summary, Continue/New Game/Load/Options/About/Exit actions, the current realm/narrative/status surface, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, or debug controls as the primary player flow. The default surface includes a primary prose action composer for ordinary player intent; slash commands are intentionally rejected from automatic execution and can only be prefixed into the explicit Advanced / developer panel for a second deliberate action.
 
 The **Advanced / developer panel** is available through the explicit `Расширенный режим` button. It contains the raw command console, the migrated command renderer, lifecycle dashboard controls, validation controls, QTE probes, and `/api/*` endpoint details needed for development or repair. Continue/New Game do not open this panel automatically; when a player flow still needs a technical bridge, the UI shows a short game-facing explanation and a separate opt-in button. This keeps the normal browser landing page player-facing while preserving the shared command/API tools; the browser still renders `ExplorerCommandResult` DTOs from the command API and does not duplicate game logic in JavaScript.
 
@@ -121,7 +121,7 @@ The renderer currently supports these DTO surfaces:
 - `pendingTurn`: the actionable list of GM-turn and rollback artifacts the player/repair flow must resolve first.
 - `localUiLock`: current owner, kind, heartbeat, lease, stale/readable flags, and last operation for stale lock recovery.
 
-`/api/game-screen` returns the read-only game-screen state DTO used by browser smoke tests and future player rendering. It refreshes the shared `StateManager` and exposes soul summary, player condition, world/location/time/session fields, narrative text, and realm flags such as `isInChaosSea` or `isInAfterlifeRealm`. This endpoint is presentation-only: it does not write to `game_session`, does not start local turns, and does not replace the C# game/application logic with JavaScript rules.
+`/api/game-screen` returns the read-only game-screen state DTO used by browser smoke tests and the default player-facing game screen. It refreshes the shared `StateManager` and exposes soul summary, player condition, world/location/time/session fields, narrative text, dialogue options, combat log, realm theme, lifecycle/turn state, QTE state, the primary prose action composer metadata, and realm flags such as `isInChaosSea` or `isInAfterlifeRealm`. GM/debug notes stay in the explicit Advanced / developer command surface and are not exposed through the default game-screen DTO. The turn state separates waiting GM turns, ready GM responses, GM-turn errors, pending-turn repair artifacts, validation repair, QTE, ready, and blocked states. This read-only game-screen endpoint is presentation-only: it does not write to `game_session`, does not normalize or delete QTE runtime files, does not start local turns, and does not replace the C# game/application logic with JavaScript rules. The composer currently accepts prose in the UI as the primary player intent surface, but safe browser turn-writing remains a separate lifecycle task; no `turn_request.json` is created from the default screen in this slice.
 
 `/api/lifecycle/dashboard` feeds the browser **Панель состояния**. It combines the same local session status with a lightweight soul summary, pending-turn artifacts, local UI lock state, validation summary, and Russian repair/continue guidance. The browser uses this endpoint to show whether the save is in ordinary play, waiting for a GM turn, ready for accepted-turn processing, blocked by a turn error, or blocked by validation errors. The endpoint is informational: it does not mutate the save.
 

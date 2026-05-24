@@ -239,8 +239,66 @@ public static class LocalWebUiHost
               background: rgba(0, 0, 0, .18);
               padding: .85rem;
             }
-            .advanced-shell, .player-action-panel { margin-top: 1rem; }
-            .advanced-shell[hidden], .player-action-panel[hidden] { display: none; }
+            .advanced-shell, .player-action-panel, .game-screen, .player-action-composer { margin-top: 1rem; }
+            .advanced-shell[hidden], .player-action-panel[hidden], .game-screen[hidden] { display: none; }
+            .game-screen {
+              display: grid;
+              gap: 1rem;
+              overflow: hidden;
+            }
+            .game-hero {
+              border: 1px solid rgba(222, 183, 99, .24);
+              border-radius: 1rem;
+              background: linear-gradient(135deg, rgba(225, 184, 94, .16), rgba(0, 0, 0, .18));
+              display: grid;
+              gap: .75rem;
+              padding: 1rem;
+            }
+            .game-hero.theme-chaos-sea { border-color: rgba(120, 210, 201, .42); }
+            .game-hero.theme-shining-abode, .game-hero.theme-shining-handoff { border-color: rgba(245, 217, 118, .55); }
+            .game-hero.theme-mortal-world { border-color: rgba(225, 184, 94, .42); }
+            .game-kicker { color: var(--accent); letter-spacing: .12em; margin: 0; text-transform: uppercase; }
+            .game-title { align-items: center; display: flex; flex-wrap: wrap; gap: .65rem; }
+            .game-title h2 { color: var(--accent); margin: 0; }
+            .game-realm-icon { font-size: 1.8rem; }
+            .game-summary-grid, .status-bars {
+              display: grid;
+              gap: .75rem;
+              grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+            }
+            .game-summary-card {
+              border: 1px solid rgba(222, 183, 99, .16);
+              border-radius: .9rem;
+              background: rgba(0, 0, 0, .18);
+              padding: .85rem;
+            }
+            .game-summary-card strong { color: var(--accent); display: block; }
+            .narrative-text {
+              border-left: 3px solid var(--accent);
+              color: var(--text);
+              font-size: 1.08rem;
+              padding-left: 1rem;
+              white-space: pre-wrap;
+            }
+            .dialogue-options { display: grid; gap: .5rem; margin-top: .75rem; }
+            .dialogue-option {
+              border: 1px solid rgba(222, 183, 99, .18);
+              border-radius: .8rem;
+              background: rgba(0, 0, 0, .16);
+              color: var(--text);
+              padding: .75rem;
+            }
+            .turn-state {
+              border-color: rgba(120, 210, 201, .38);
+              background: linear-gradient(135deg, rgba(120, 210, 201, .12), rgba(0, 0, 0, .2));
+            }
+            .player-action-composer {
+              align-items: stretch;
+              display: grid;
+              gap: .75rem;
+            }
+            .player-action-composer textarea { min-height: 7rem; }
+            .composer-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
             details.player-error-details {
               margin-top: .75rem;
               color: var(--muted);
@@ -461,6 +519,21 @@ public static class LocalWebUiHost
                 <section id="exit-panel" class="menu-panel" hidden></section>
               </aside>
             </section>
+            <section id="game-screen" class="card game-screen" aria-live="polite">
+              <div class="loading">Загружаю игровой экран...</div>
+            </section>
+            <form id="player-action-composer" class="card player-action-composer" aria-label="Основное действие игрока">
+              <label for="player-action-input">
+                <strong>Ваше действие</strong>
+                <span>Пишите обычной прозой. Slash-команды остаются в расширенном режиме.</span>
+              </label>
+              <textarea id="player-action-input" name="player-action" rows="4" placeholder="Опишите, что делает персонаж..."></textarea>
+              <div class="composer-actions">
+                <button type="submit" id="player-action-submit">Подготовить действие</button>
+                <button class="secondary" type="button" id="refresh-game-screen">Обновить игровой экран</button>
+              </div>
+              <div id="player-action-guidance" class="qte-meta">Читаю состояние локальной сессии...</div>
+            </form>
             <section id="player-action-panel" class="card player-action-panel" aria-live="polite" hidden></section>
             <section id="advanced-shell" class="advanced-shell" hidden>
             <section class="hero">
@@ -577,6 +650,11 @@ public static class LocalWebUiHost
             const advancedShell = document.getElementById('advanced-shell');
             const advancedToggle = document.getElementById('advanced-shell-toggle');
             const playerActionPanel = document.getElementById('player-action-panel');
+            const gameScreenRoot = document.getElementById('game-screen');
+            const playerActionComposer = document.getElementById('player-action-composer');
+            const playerActionInput = document.querySelector('[name="player-action"]');
+            const playerActionSubmit = document.getElementById('player-action-submit');
+            const playerActionGuidance = document.getElementById('player-action-guidance');
             const mainMenuSession = document.getElementById('main-menu-session');
             const saveList = document.getElementById('save-list');
             const menuActionButtons = [...document.querySelectorAll('[data-menu-action]')];
@@ -589,6 +667,8 @@ public static class LocalWebUiHost
               executeCommand('/help');
             });
             document.getElementById('qte-button').addEventListener('click', () => loadQteState());
+            document.getElementById('refresh-game-screen').addEventListener('click', () => loadGameScreen({ scroll: true }));
+            playerActionComposer.addEventListener('submit', submitPlayerAction);
             document.getElementById('lifecycle-dashboard-button').addEventListener('click', () => loadLifecycleDashboard());
             document.getElementById('lifecycle-validate-button').addEventListener('click', () => runLifecycleValidation());
             advancedToggle.addEventListener('click', () => showAdvancedShell());
@@ -610,6 +690,7 @@ public static class LocalWebUiHost
             }
             paletteFilter.addEventListener('input', filterCommandPalette);
             loadMainMenu();
+            loadGameScreen();
 
             async function loadMainMenu() {
               try {
@@ -688,6 +769,117 @@ public static class LocalWebUiHost
               panel.replaceChildren(el('h3', '', 'Выход'), el('p', '', action?.disabledReason ?? 'Закройте вкладку или остановите локальный процесс.'));
             }
 
+            async function loadGameScreen(options = {}) {
+              gameScreenRoot.replaceChildren(el('div', 'loading', 'Читаю игровой экран...'));
+              try {
+                const response = await fetch('/api/game-screen');
+                const payload = await response.json();
+                if (!response.ok) throw new Error(payload?.error ?? `HTTP ${response.status}`);
+                renderGameScreen(payload);
+                renderActionComposerState(payload?.actionComposer, payload?.turnState);
+                if (options.scroll) gameScreenRoot.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              } catch (error) {
+                gameScreenRoot.replaceChildren(renderPlayerError('Игровой экран недоступен', 'Не удалось прочитать локальное состояние игры.', error?.message ?? String(error)));
+                renderActionComposerState({ canSubmit: false, guidance: 'Игровой экран не прочитан.', disabledReason: error?.message ?? String(error) });
+              }
+            }
+
+            function renderGameScreen(screen) {
+              gameScreenRoot.replaceChildren();
+              const hero = el('section', `game-hero theme-${screen?.theme?.key ?? 'mortal-world'}`);
+              hero.append(el('p', 'game-kicker', 'Игровой экран'));
+              const title = el('div', 'game-title');
+              title.append(el('span', 'game-realm-icon', screen?.theme?.icon ?? '🕯'));
+              title.append(el('h2', '', screen?.theme?.label ?? 'Книга Вечности'));
+              hero.append(title);
+              hero.append(renderGameSummary(screen));
+              if (screen?.turnState) hero.append(renderTurnState(screen.turnState));
+              gameScreenRoot.append(hero);
+
+              const narrative = el('section', 'block');
+              narrative.append(el('h2', '', 'Последняя сцена'));
+              narrative.append(el('div', 'narrative-text', screen?.narrative?.text || 'Нарратив ещё не записан.'));
+              if (screen?.narrative?.combatLog) {
+                narrative.append(renderMessage({ severity: 'Info', title: 'Журнал боя', message: screen.narrative.combatLog }));
+              }
+              renderDialogueOptions(narrative, screen?.narrative?.dialogueOptions ?? []);
+              if (screen?.narrative?.imagePrompt) {
+                narrative.append(renderMessage({ severity: 'Info', title: 'Образ сцены', message: screen.narrative.imagePrompt }));
+              }
+              gameScreenRoot.append(narrative);
+
+              if (screen?.qte?.state && screen.qte.state !== 'NoScene') {
+                const qteCard = el('section', 'block');
+                qteCard.append(el('h2', '', 'QTE'));
+                qteCard.append(el('p', '', screen.qte.notification ?? screen.qte.offer?.offerText ?? screen.qte.activeScene?.title ?? screen.qte.state));
+                gameScreenRoot.append(qteCard);
+              }
+            }
+
+            function renderGameSummary(screen) {
+              const grid = el('div', 'game-summary-grid');
+              grid.append(renderGameSummaryCard('Душа', `${screen?.soul?.name || 'Неизвестная душа'} • ${screen?.soul?.enlightenmentTier || 'ранг не указан'}`));
+              grid.append(renderGameSummaryCard('Герой', `${screen?.player?.name || 'Имя не задано'} • ${screen?.player?.currentCondition || 'состояние неизвестно'}`));
+              grid.append(renderGameSummaryCard('Место', `${screen?.world?.location || 'Локация не указана'} • Ход ${screen?.world?.turnNumber ?? 0}`));
+              grid.append(renderGameSummaryCard('Ресурсы', `Перья: ${screen?.soul?.inkFeathers ?? 0}; Сияние: ${screen?.afterlife?.shiningRadianceExperience ?? 0}`));
+              const statuses = screen?.player ? [screen.player.healthPercentage, screen.player.energyPercentage, screen.player.poisePercentage].filter(Boolean).join(' / ') : '';
+              if (statuses) grid.append(renderGameSummaryCard('Тело', statuses));
+              return grid;
+            }
+
+            function renderGameSummaryCard(label, value) {
+              const card = el('div', 'game-summary-card');
+              card.append(el('strong', '', label));
+              card.append(el('span', '', value));
+              return card;
+            }
+
+            function renderTurnState(turnState) {
+              const node = renderMessage({ severity: turnState?.canStartBrowserWrite ? 'Success' : 'Warning', title: turnState?.title ?? 'Состояние хода', message: turnState?.message ?? '' });
+              node.classList.add('turn-state');
+              node.append(el('div', 'qte-meta', `Валидация: ${turnState?.validationLabel ?? 'нет данных'}`));
+              return node;
+            }
+
+            function renderDialogueOptions(parent, options) {
+              if (options.length === 0) return;
+              const wrap = el('div', 'dialogue-options');
+              wrap.append(el('h3', '', 'Возможные реплики и действия'));
+              for (const option of options) {
+                const item = el('div', 'dialogue-option');
+                item.append(el('strong', '', option.text ?? 'Вариант'));
+                if (option.category) item.append(el('div', 'qte-meta', option.category));
+                wrap.append(item);
+              }
+              parent.append(wrap);
+            }
+
+            function renderActionComposerState(composer, turnState) {
+              playerActionInput.placeholder = composer?.placeholder ?? 'Опишите действие персонажа...';
+              playerActionSubmit.disabled = composer?.canSubmit === false;
+              playerActionGuidance.textContent = composer?.canSubmit === false
+                ? (composer?.disabledReason || composer?.guidance || turnState?.message || 'Сейчас нельзя подготовить действие.')
+                : (composer?.guidance || 'Опишите действие обычной прозой.');
+            }
+
+            function submitPlayerAction(event) {
+              event.preventDefault();
+              const actionText = (playerActionInput.value ?? '').trim();
+              if (!actionText) {
+                showPlayerAction('Действие пустое', 'Опишите, что персонаж делает, говорит или исследует.');
+                return;
+              }
+              if (actionText.startsWith('/')) {
+                showPlayerAction('Slash-команда требует расширенного режима', 'Команду можно вставить в техническую панель, но выполнить её нужно отдельным осознанным действием после открытия расширенного режима.', {
+                  label: 'Открыть расширенный режим и вставить команду',
+                  command: actionText,
+                  prefillOnly: true
+                });
+                return;
+              }
+              showPlayerAction('Действие подготовлено', 'Браузерный экран принял прозу как основной игровой ввод, но безопасная запись нового хода будет подключена отдельным turn lifecycle шагом. Сейчас turn_request.json не изменяется из default UI.');
+            }
+
             async function loadSave(saveId) {
               showMenuPanel('load-panel');
               saveList.prepend(renderProgressState('Загрузка сохранения', 'Переношу выбранный ZIP в game_session...'));
@@ -716,7 +908,8 @@ public static class LocalWebUiHost
 
               switch (actionId) {
                 case 'continue':
-                  showPlayerAction('Продолжить игру', 'Игровой экран остаётся в обычном интерфейсе: техническая панель не открывается автоматически. Если нужно вручную выполнить команду или проверить диагностику, используйте отдельную кнопку «Расширенный режим».');
+                  loadGameScreen({ scroll: true });
+                  showPlayerAction('Продолжить игру', 'Игровой экран обновлён в обычном интерфейсе: техническая панель не открывается автоматически. Если нужно вручную выполнить команду или проверить диагностику, используйте отдельную кнопку «Расширенный режим».');
                   break;
                 case 'new-game':
                   showPlayerAction('Новая игра', 'Подготовка новой жизни будет перенесена в игровой мастер. До завершения этого экрана технический мастер можно открыть только осознанно из расширенного режима.', {
@@ -755,15 +948,20 @@ public static class LocalWebUiHost
                 const button = el('button', 'secondary', advancedAction.label ?? 'Открыть расширенный режим');
                 button.type = 'button';
                 button.addEventListener('click', () => {
-                  showAdvancedShell();
-                  input.value = advancedAction.command;
-                  executeCommand(advancedAction.command);
+                  prefillAdvancedCommand(advancedAction.command);
+                  if (advancedAction.prefillOnly !== true) executeCommand(advancedAction.command);
                 });
                 actionRow.append(button);
                 playerActionPanel.append(actionRow);
               }
               playerActionPanel.hidden = false;
               playerActionPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function prefillAdvancedCommand(command) {
+              showAdvancedShell();
+              input.value = command ?? '';
+              input.focus();
             }
 
             function showAdvancedShell() {

@@ -20,12 +20,26 @@ public sealed class QteWebInteractionService
         _qteSceneService = qteSceneService;
     }
 
-    public async Task<QteWebStateDto> BuildStateAsync(
+    public Task<QteWebStateDto> BuildStateAsync(
         string? stateOverride = null,
         QteSceneService.QteActionResolution? resolution = null,
-        string? notification = null)
+        string? notification = null) =>
+        BuildStateCoreAsync(normalizeRuntime: true, stateOverride, resolution, notification);
+
+    public Task<QteWebStateDto> BuildReadOnlyStateAsync(
+        string? stateOverride = null,
+        QteSceneService.QteActionResolution? resolution = null,
+        string? notification = null) =>
+        BuildStateCoreAsync(normalizeRuntime: false, stateOverride, resolution, notification);
+
+    private async Task<QteWebStateDto> BuildStateCoreAsync(
+        bool normalizeRuntime,
+        string? stateOverride,
+        QteSceneService.QteActionResolution? resolution,
+        string? notification)
     {
-        await _qteSceneService.EnsureRuntimeStateHealthyAsync();
+        if (normalizeRuntime)
+            await _qteSceneService.EnsureRuntimeStateHealthyAsync();
 
         var offer = await _qteSceneService.TryReadOfferAsync();
         if (offer != null)
