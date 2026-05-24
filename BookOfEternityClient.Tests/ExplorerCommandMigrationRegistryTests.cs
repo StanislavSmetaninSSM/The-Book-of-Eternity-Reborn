@@ -179,6 +179,21 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "BrowserWebUiParity")]
+    public void CommandCatalog_RequiresExplicitBrowserStatusForEveryDescriptor()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "CommandProtocol",
+            "ExplorerCommandCatalog.cs"));
+
+        Assert.DoesNotContain("browserStatus = ExplorerCommandMigrationStatus.ReadOnlyParity", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("ExplorerCommandMigrationStatus browserStatus =", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("ExplorerCommandMigrationStatus BrowserStatus =", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void HelpCommands_HaveReadOnlyParity()
     {
         var entries = ExplorerCommandMigrationRegistry.Entries

@@ -1,6 +1,6 @@
 # Browser Parity Checklist
 
-Tracked tasks: #594, #619, #620, #621, #622, #623, #624, #625
+Tracked tasks: #594, #619, #620, #621, #622, #623, #624, #625, #691
 
 Use this checklist for manual smoke testing when the local browser UI changes. The browser must stay a local shell over the same `game_session` data and must not duplicate game rules in JavaScript.
 
@@ -17,6 +17,7 @@ Map rendering parity is enforced through the shared map package: console `output
 - Desktop layout keeps navigation and results visible side by side after advanced mode is opened.
 - Мобильный layout stacks navigation, status, forms, tables, image blocks, and raw JSON without horizontal overflow.
 - Player-facing labels use Russian first; English appears only as technical command IDs, raw JSON keys, or advanced-mode endpoint references.
+- Automated guards: `BrowserWebUiSmoke` covers root/menu/session/game-screen state/lifecycle/command/form flow, and `BrowserWebUiParity` forces explicit browser UX decisions for Explorer commands before new aliases can land silently.
 
 ## Mortal World
 
