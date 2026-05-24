@@ -14,3 +14,7 @@
 /BookOfEternityClient.Tests/obj
 /BookOfEternityGMBridge/bin/Debug/net8.0-windows
 /BookOfEternityGMBridge/obj
+/BookOfEternityClient.WebFrontend/node_modules/
+/BookOfEternityClient.WebFrontend/dist/
+/BookOfEternityClient.WebFrontend/.vite/
+/BookOfEternityClient.WebFrontend/*.tsbuildinfo

@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691, #701
 Parent epic: #559
 
 ## Local-Only Model
@@ -68,6 +68,23 @@ http://127.0.0.1:8787
 The URL must stay local. `localhost`, `127.0.0.1`, and other loopback addresses are valid; public bind addresses such as `0.0.0.0` are rejected by the host.
 
 Use the same base path as console mode when you want the browser to continue the same save.
+
+## Frontend Workspace
+
+Issue #701 adds `BookOfEternityClient.WebFrontend/`, a Vite + React + TypeScript workspace for the long-term Browser Client. It is a presentation layer over the existing C# runtime/API, not a second game engine.
+
+From the repository root:
+
+```powershell
+npm install --prefix BookOfEternityClient.WebFrontend
+npm run dev --prefix BookOfEternityClient.WebFrontend
+npm run typecheck --prefix BookOfEternityClient.WebFrontend
+npm run build --prefix BookOfEternityClient.WebFrontend
+```
+
+`npm run dev` binds the Vite development server to `127.0.0.1`. `npm run build` writes `BookOfEternityClient.WebFrontend/dist/`. Issue #702 is responsible for making `LocalWebUiHost` serve that build output as the default browser shell. Until #702 lands, `dotnet run --project BookOfEternityClient -- --web` still serves the existing inline MVP shell.
+
+The C# runtime remains authoritative for game rules, persistence, command handling, validation, local-write safety, and afterlife/mortal contracts. TypeScript owns presentation, request state, UI composition, and interaction plumbing only.
 
 ## Current Browser MVP
 

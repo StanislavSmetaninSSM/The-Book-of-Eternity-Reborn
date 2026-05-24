@@ -161,20 +161,20 @@ Expected: FAIL because `BookOfEternityClient.WebFrontend/package.json` and relat
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "build": "npm run typecheck && vite build",
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "typescript": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
   },
   "devDependencies": {
-    "@types/react": "latest",
-    "@types/react-dom": "latest"
+    "@types/react": "19.2.15",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "vite": "8.0.14",
+    "typescript": "6.0.3"
   }
 }
 ```
@@ -216,6 +216,7 @@ Create `README.md` documenting `npm install`, `npm run dev`, `npm run typecheck`
 /BookOfEternityClient.WebFrontend/node_modules/
 /BookOfEternityClient.WebFrontend/dist/
 /BookOfEternityClient.WebFrontend/.vite/
+/BookOfEternityClient.WebFrontend/*.tsbuildinfo
 ```
 
 - [ ] **Step 5: Generate lockfile and run GREEN checks**
