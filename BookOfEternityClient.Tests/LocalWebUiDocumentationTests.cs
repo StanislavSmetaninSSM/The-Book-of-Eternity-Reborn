@@ -77,4 +77,18 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("Advanced / developer panel", checklist, StringComparison.Ordinal);
         Assert.Contains("player-facing default", checklist, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public void LocalWebHostDocs_DocumentBrowserSmokeAndGameScreenState()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var checklist = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "browser-parity-checklist.md"));
+
+        Assert.Contains("GET /api/game-screen", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("Category=BrowserWebUiSmoke|Category=BrowserWebUiParity", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("game-screen state", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("BrowserWebUiSmoke", checklist, StringComparison.Ordinal);
+        Assert.Contains("BrowserWebUiParity", checklist, StringComparison.Ordinal);
+    }
 }
