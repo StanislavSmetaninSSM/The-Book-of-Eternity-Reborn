@@ -7,6 +7,12 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ConsoleE2ESmokeTests : IDisposable
 {
+#if DEBUG
+    private const string TestBuildConfiguration = "Debug";
+#else
+    private const string TestBuildConfiguration = "Release";
+#endif
+
     private readonly string _tempRoot;
 
     public ConsoleE2ESmokeTests()
@@ -214,6 +220,8 @@ public sealed class ConsoleE2ESmokeTests : IDisposable
         process.StartInfo.ArgumentList.Add("run");
         process.StartInfo.ArgumentList.Add("--project");
         process.StartInfo.ArgumentList.Add(projectPath);
+        process.StartInfo.ArgumentList.Add("--configuration");
+        process.StartInfo.ArgumentList.Add(TestBuildConfiguration);
         process.StartInfo.ArgumentList.Add("--no-build");
         process.StartInfo.ArgumentList.Add("--no-restore");
         process.StartInfo.ArgumentList.Add("--");

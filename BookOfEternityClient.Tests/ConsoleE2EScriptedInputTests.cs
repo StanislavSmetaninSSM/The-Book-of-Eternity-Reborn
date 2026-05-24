@@ -67,6 +67,25 @@ public sealed class ConsoleE2EScriptedInputTests : IDisposable
     }
 
     [Fact]
+    public void FromJson_MissingScript_WritesFailureArtifactAndThrowsDiagnostic()
+    {
+        var scriptPath = Path.Combine(_tempRoot, "missing-script.json");
+        var artifactRoot = Path.Combine(_tempRoot, "missing-script-artifacts");
+
+        var ex = Assert.Throws<ConsoleE2EScriptInputException>(() =>
+            ConsoleE2EScriptedInputSource.FromFile(scriptPath, artifactRoot));
+
+        Assert.Equal(0, ex.NextStepIndex);
+        Assert.Equal(Path.GetFullPath(scriptPath), ex.ScriptPath);
+        Assert.Contains("not found", ex.Message, StringComparison.OrdinalIgnoreCase);
+        var failurePath = Path.Combine(artifactRoot, "failure.txt");
+        Assert.True(File.Exists(failurePath));
+        var failureText = File.ReadAllText(failurePath);
+        Assert.Contains("script-load", failureText, StringComparison.Ordinal);
+        Assert.Contains(Path.GetFullPath(scriptPath), failureText, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void FromJson_InvalidJson_WritesFailureArtifactAndThrowsDiagnostic()
     {
         var scriptPath = WriteScript("{ invalid json");

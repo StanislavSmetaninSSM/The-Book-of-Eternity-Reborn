@@ -74,16 +74,23 @@ public sealed class ConsoleE2EScriptedInputSource : IConsoleInputSource
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(scriptPath);
 
-        if (!File.Exists(scriptPath))
-            throw new FileNotFoundException("Console E2E script was not found.", scriptPath);
-
+        var fullScriptPath = Path.GetFullPath(scriptPath);
         var root = string.IsNullOrWhiteSpace(artifactRoot)
-            ? Path.Combine(Path.GetDirectoryName(Path.GetFullPath(scriptPath)) ?? Environment.CurrentDirectory, "artifacts")
+            ? Path.Combine(Path.GetDirectoryName(fullScriptPath) ?? Environment.CurrentDirectory, "artifacts")
             : artifactRoot;
         var fullRoot = Path.GetFullPath(root);
         Directory.CreateDirectory(fullRoot);
 
-        var fullScriptPath = Path.GetFullPath(scriptPath);
+        if (!File.Exists(fullScriptPath))
+        {
+            var message = $"Console E2E script was not found: {fullScriptPath}";
+            WriteFailureArtifact(fullRoot, fullScriptPath, nextStepIndex: 0, "script-load", message);
+            throw new ConsoleE2EScriptInputException(
+                message,
+                fullScriptPath,
+                nextStepIndex: 0);
+        }
+
         ConsoleE2EScriptDocument? document;
         try
         {

@@ -207,6 +207,16 @@ Actions:
 3. If the client is in menu mode, use the documented key/choice format for #676 scripted input.
 4. Preserve artifacts with `preserveArtifacts: true` before changing code.
 
+### missing or invalid script file
+
+Symptoms: startup exits before the host starts, stderr says `Console E2E scripted input failed at step 0`, and `$RUN_ROOT/artifacts/failure.txt` exists.
+
+Actions:
+
+1. Confirm `--e2e-script` points at the copied sandbox script path, not the source repo or a deleted temp file.
+2. Inspect `$RUN_ROOT/artifacts/failure.txt` for `operation: script-load` and the normalized `scriptPath`.
+3. For malformed JSON, fix the script and rerun; for a missing file, recreate the sandbox/script rather than changing game code.
+
 ### timeout
 
 Symptoms: harness kills the client or a test exceeds its timeout.
@@ -224,7 +234,7 @@ Symptoms: assertions fail because of color codes, console width, cursor movement
 Actions:
 
 1. Prefer deterministic JSON/text snapshots over stdout scraping.
-2. Use `NO_COLOR=1` or a future `--plain-output` flag when launching the client.
+2. Use `NO_COLOR=1` or `--plain-output` when launching the client.
 3. Do not make tests depend on console width or Spectre.Console cursor-control sequences.
 
 ### cleanup
