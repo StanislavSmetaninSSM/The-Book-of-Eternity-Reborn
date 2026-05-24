@@ -6,7 +6,9 @@ Console E2E runs need deterministic player-facing observations that agents can r
 
 ## Paths
 
-Create one writer per E2E run:
+For the built-in scripted console path, launch the client with `--e2e-script <input-script.json>` and `--e2e-artifacts <artifact-root>`. The client creates a `ConsoleE2EObservationArtifactWriter` for that artifact root and writes main-menu/options-menu observations as scripted input advances through player-visible menus.
+
+Create one writer per E2E run when using the lower-level API directly:
 
 ```csharp
 var writer = new ConsoleE2EObservationArtifactWriter(

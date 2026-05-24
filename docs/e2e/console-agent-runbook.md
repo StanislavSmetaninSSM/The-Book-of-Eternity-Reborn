@@ -44,13 +44,95 @@ A valid sandbox should initialize from `<artifact-root>/run-<guid>/game_session`
 
 ## Scripted input and observations
 
-The intended control path is the built-in scripted input mode from #676, not an external ConPTY/winpty harness. Until that mode is fully implemented, tests should stay at the stable API/helper layer and document any manual dry run honestly.
+The implemented control path is the built-in scripted input mode from #676. It replaces only the console input source; the production menu/prompt logic still handles the key/text events.
 
-When scripted mode is available, keep scripts small and deterministic:
+### Script format
+
+Store the script as JSON. Each step has a `kind`:
+
+- `kind: "key"` with `key`: `Up`, `Down`, `Left`, `Right`, `W`, `S`, `Enter`, `Escape`, `Space`, digits, or a `ConsoleKey` name.
+- `kind: "text"` with `text`: complete text for a `ReadLine()`-style prompt.
+
+Example `input-script.json` for a safe main-menu exit smoke path:
+
+```json
+{
+  "steps": [
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Enter" }
+  ]
+}
+```
+
+### Copy-pasteable local smoke run
+
+From the repository root in Hermes/git-bash:
+
+```bash
+RUN_ROOT="${TMPDIR:-/tmp}/boe-console-e2e-$(date +%s)"
+mkdir -p "$RUN_ROOT/artifacts"
+cp -R FileSystemExample/game_session "$RUN_ROOT/game_session"
+cat > "$RUN_ROOT/input-script.json" <<'JSON'
+{
+  "steps": [
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Down" },
+    { "kind": "key", "key": "Enter" }
+  ]
+}
+JSON
+
+dotnet run --project BookOfEternityClient/BookOfEternityClient.csproj --no-restore -- \
+  "$RUN_ROOT" \
+  --e2e-script "$RUN_ROOT/input-script.json" \
+  --e2e-artifacts "$RUN_ROOT/artifacts" \
+  --plain-output \
+  > "$RUN_ROOT/stdout.txt" \
+  2> "$RUN_ROOT/stderr.txt"
+
+echo "Artifacts: $RUN_ROOT"
+find "$RUN_ROOT/artifacts" -maxdepth 3 -type f | sort
+```
+
+Expected result: exit code `0`, no `$RUN_ROOT/artifacts/failure.txt`, and deterministic observation snapshots under `$RUN_ROOT/artifacts/screens/`.
+
+To verify the real runner error path, use an intentionally exhausted script:
+
+```bash
+cat > "$RUN_ROOT/input-script.json" <<'JSON'
+{ "steps": [] }
+JSON
+
+if dotnet run --project BookOfEternityClient/BookOfEternityClient.csproj --no-restore -- \
+  "$RUN_ROOT" \
+  --e2e-script "$RUN_ROOT/input-script.json" \
+  --e2e-artifacts "$RUN_ROOT/artifacts" \
+  --plain-output \
+  > "$RUN_ROOT/stdout.txt" \
+  2> "$RUN_ROOT/stderr.txt"; then
+  echo "Expected scripted input failure, but the run succeeded" >&2
+  exit 1
+fi
+
+grep -F "Console E2E scripted input failed at step 0" "$RUN_ROOT/stderr.txt"
+test -f "$RUN_ROOT/artifacts/failure.txt"
+find "$RUN_ROOT/artifacts/screens" -name '*error*.json'
+```
+
+Expected result: exit code `2`, `$RUN_ROOT/artifacts/failure.txt`, stderr containing `Console E2E scripted input failed at step 0`, and at least one `screens/*error*.json` snapshot.
+
+When scripted mode is used, keep scripts small and deterministic:
 
 - one step per menu key, text submission, confirmation, or exit command;
 - store the input script beside the run artifacts;
-- after each step, read the deterministic screen/state snapshots rather than scraping ANSI stdout;
+- after each relevant player-visible step, read the deterministic `screens/*.json` and `screens/*.txt` snapshots rather than scraping ANSI stdout;
 - write observations through `ConsoleE2EObservationArtifactWriter` using the format documented in [`docs/e2e/console-observation-artifacts.md`](console-observation-artifacts.md);
 - assert only player-facing text/options and the current input mode;
 - never assert hidden/internal-only state unless that state is explicitly player-visible.
@@ -58,16 +140,22 @@ When scripted mode is available, keep scripts small and deterministic:
 Expected artifact shape for scripted runs:
 
 ```text
-artifacts/console-e2e/run-<guid>/
+$RUN_ROOT/
+  game_session/
   input-script.json
   stdout.txt
   stderr.txt
-  screens/
-    000-main-menu.txt
-    000-main-menu.json
-  state-diff/
-  failure.txt
+  artifacts/
+    screens/
+      000-main-menu.txt
+      000-main-menu.json
+      006-exit.txt
+      006-exit.json
+      000-error.json         # only on exception/failure paths
+    failure.txt              # only on script/input/client failures
 ```
+
+Failure evidence uses the same `$RUN_ROOT/artifacts/screens/*error*.json` glob documented above.
 
 ## Focused smoke command
 
@@ -119,6 +207,16 @@ Actions:
 3. If the client is in menu mode, use the documented key/choice format for #676 scripted input.
 4. Preserve artifacts with `preserveArtifacts: true` before changing code.
 
+### missing or invalid script file
+
+Symptoms: startup exits before the host starts, stderr says `Console E2E scripted input failed at step 0`, and `$RUN_ROOT/artifacts/failure.txt` exists.
+
+Actions:
+
+1. Confirm `--e2e-script` points at the copied sandbox script path, not the source repo or a deleted temp file.
+2. Inspect `$RUN_ROOT/artifacts/failure.txt` for `operation: script-load` and the normalized `scriptPath`.
+3. For malformed JSON, fix the script and rerun; for a missing file, recreate the sandbox/script rather than changing game code.
+
 ### timeout
 
 Symptoms: harness kills the client or a test exceeds its timeout.
@@ -136,7 +234,7 @@ Symptoms: assertions fail because of color codes, console width, cursor movement
 Actions:
 
 1. Prefer deterministic JSON/text snapshots over stdout scraping.
-2. Use `NO_COLOR=1` or a future `--plain-output` flag when launching the client.
+2. Use `NO_COLOR=1` or `--plain-output` when launching the client.
 3. Do not make tests depend on console width or Spectre.Console cursor-control sequences.
 
 ### cleanup

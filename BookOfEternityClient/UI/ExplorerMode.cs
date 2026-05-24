@@ -27,10 +27,11 @@ public partial class ExplorerMode
         SoulIdentityService? soulIdentityService = null,
         IClipboardService? clipboardService = null,
         IExplorerConsole? console = null,
+        IConsoleInputSource? inputSource = null,
         LocalUiSessionLockService? localUiSessionLockService = null,
         LocalUiSessionLockOwner? localUiSessionLockOwner = null)
     {
-        _console = console ?? new SpectreExplorerConsole(clipboardService);
+        _console = console ?? new SpectreExplorerConsole(clipboardService, inputSource);
         _stateManager = stateManager;
         _validator = validator;
         _charService = charService;

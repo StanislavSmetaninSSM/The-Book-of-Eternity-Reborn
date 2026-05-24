@@ -106,6 +106,8 @@ public sealed class ConsoleE2EObservationArtifactTests : IDisposable
         {
             "Issue: #677",
             "ConsoleE2EObservationArtifactWriter",
+            "--e2e-script <input-script.json>",
+            "--e2e-artifacts <artifact-root>",
             "schemaVersion",
             "inputMode",
             "playerFacingText",

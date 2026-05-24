@@ -4,10 +4,13 @@ namespace BookOfEternityClient.Core;
 
 internal sealed class StandardTextComposerConsole : ITextComposerConsole
 {
-    public static StandardTextComposerConsole Instance { get; } = new();
+    private readonly IConsoleInputSource _inputSource;
 
-    private StandardTextComposerConsole()
+    public static StandardTextComposerConsole Instance { get; } = new(SystemConsoleInputSource.Instance);
+
+    public StandardTextComposerConsole(IConsoleInputSource inputSource)
     {
+        _inputSource = inputSource;
     }
 
     public void Markup(string markup) => AnsiConsole.Markup(markup);
@@ -16,9 +19,9 @@ internal sealed class StandardTextComposerConsole : ITextComposerConsole
 
     public void WriteLine() => AnsiConsole.WriteLine();
 
-    public string? ReadLine() => Console.ReadLine();
+    public string? ReadLine() => _inputSource.ReadLine();
 
-    public bool KeyAvailable => Console.KeyAvailable;
+    public bool KeyAvailable => _inputSource.KeyAvailable;
 
-    public ConsoleKeyInfo ReadKey() => Console.ReadKey(true);
+    public ConsoleKeyInfo ReadKey() => _inputSource.ReadKey(intercept: true);
 }

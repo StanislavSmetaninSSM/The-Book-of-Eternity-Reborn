@@ -287,9 +287,9 @@ public partial class GameEngine
                 {
                     while (!cts.Token.IsCancellationRequested)
                     {
-                        if (Console.KeyAvailable)
+                        if (_inputSource.KeyAvailable)
                         {
-                            var key = Console.ReadKey(true);
+                            var key = _inputSource.ReadKey(intercept: true);
                             if (key.Key == ConsoleKey.Escape)
                             {
                                 cts.Cancel();
@@ -633,7 +633,7 @@ public partial class GameEngine
                 AnsiConsole.MarkupLine($"\n[red]❌ Ошибка в игровом цикле: {GameInterface.EscapeMarkup(ex.Message)}[/]");
                 AnsiConsole.MarkupLine("[dim]Ошибка сохранена в game_session/error_log.txt. Данные не потеряны.[/]");
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-                Console.ReadKey(true);
+                _inputSource.ReadKey(intercept: true);
             }
         }
     }
@@ -1432,7 +1432,7 @@ public partial class GameEngine
                 AnsiConsole.MarkupLine($"[dim]{GameInterface.EscapeMarkup(summary)}[/]");
 
             AnsiConsole.MarkupLine($"\n[grey]{_loc.T("press_any_key")}[/]");
-            Console.ReadKey(true);
+            _inputSource.ReadKey(intercept: true);
 
             // === PHASE 2: Capture pre-death state for reward comparison ===
             var preDeathInkFeathers = _stateManager.CurrentState.InkFeathers;
@@ -1487,7 +1487,7 @@ public partial class GameEngine
             requestDispatched = true;
 
             // Visual transition to Chaos Sea
-            GameInterface.RenderRealmTransition(true);
+            GameInterface.RenderRealmTransition(true, _inputSource);
 
             // === PHASE 4: Wait for GM response with life evaluation ===
             // Use raw wait — no turn increment, no recursive CheckLifeTransitions
@@ -1707,7 +1707,7 @@ public partial class GameEngine
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[dim]Вы вернулись в Море Хаоса. Ваш путь продолжается...[/]");
         AnsiConsole.MarkupLine($"\n[grey]{_loc.T("press_any_key")}[/]");
-        Console.ReadKey(true);
+        _inputSource.ReadKey(intercept: true);
     }
 
     /// <summary>
@@ -1814,7 +1814,7 @@ public partial class GameEngine
 
             AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-            Console.ReadKey(true);
+            _inputSource.ReadKey(intercept: true);
 
             // Build incarnation action from GM-provided data
             var parts = new List<string>
@@ -1982,7 +1982,7 @@ public partial class GameEngine
             ClearReadySignals();
 
             // Visual transition
-            GameInterface.RenderRealmTransition(false);
+            GameInterface.RenderRealmTransition(false, _inputSource);
 
             // Wait for GM response describing the new mortal world
             if (await WaitForGmResponse())
@@ -2394,7 +2394,7 @@ public partial class GameEngine
         // Single-line mode by default: Enter sends immediately
         var promptChar = isChaosSea ? "🌊" : "⚔️";
         var firstLine = TextComposer.Read(
-            StandardTextComposerConsole.Instance,
+            _textComposerConsole,
             _clipboardService,
             new TextComposerOptions
             {
@@ -2442,7 +2442,7 @@ public partial class GameEngine
     private Task<string> GetMultilineInput()
     {
         var value = TextComposer.Read(
-            StandardTextComposerConsole.Instance,
+            _textComposerConsole,
             _clipboardService,
             new TextComposerOptions
             {
@@ -3049,7 +3049,7 @@ Shining relic gacha consumes the quoted Ink Feather cost from the request and do
                 ? $"\n  [dim]Осталось распределить: [yellow]{remaining}[/] очков[/]"
                 : "\n  [green]✅ Все очки распределены![/]");
 
-            var key = Console.ReadKey(true);
+            var key = _inputSource.ReadKey(intercept: true);
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
@@ -3101,7 +3101,7 @@ Shining relic gacha consumes the quoted Ink Feather cost from the request and do
         }
 
         AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-        Console.ReadKey(true);
+        _inputSource.ReadKey(intercept: true);
     }
 }
 

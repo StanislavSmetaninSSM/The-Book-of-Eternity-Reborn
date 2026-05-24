@@ -30,6 +30,7 @@ public sealed class QteSceneService
     private readonly ValidationService _validator;
     private readonly CanonicalStateNormalizer _normalizer;
     private readonly StateManager _stateManager;
+    private readonly IConsoleInputSource _inputSource;
     private readonly ILogger<QteSceneService> _logger;
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
@@ -50,7 +51,8 @@ public sealed class QteSceneService
         ValidationService validator,
         CanonicalStateNormalizer normalizer,
         StateManager stateManager,
-        ILogger<QteSceneService> logger)
+        ILogger<QteSceneService> logger,
+        IConsoleInputSource? inputSource = null)
     {
         _fs = fs;
         _settings = settings;
@@ -61,6 +63,7 @@ public sealed class QteSceneService
         _validator = validator;
         _normalizer = normalizer;
         _stateManager = stateManager;
+        _inputSource = inputSource ?? SystemConsoleInputSource.Instance;
         _logger = logger;
     }
 
@@ -475,7 +478,7 @@ public sealed class QteSceneService
             Padding = new Padding(2, 1),
             Expand = true
         });
-        Console.ReadKey(true);
+        _inputSource.ReadKey(intercept: true);
     }
 
     private async Task ShowIntermediateResultAsync(QteOffer offer, QteChapter chapter, QteAction action, QteGrade grade)
@@ -1446,23 +1449,23 @@ public sealed class QteSceneService
         return string.Join("", parts);
     }
 
-    private static bool TryReadImmediateKey(out ConsoleKeyInfo key)
+    private bool TryReadImmediateKey(out ConsoleKeyInfo key)
     {
         key = default;
-        if (!Console.KeyAvailable)
+        if (!_inputSource.KeyAvailable)
             return false;
 
-        key = Console.ReadKey(true);
+        key = _inputSource.ReadKey(intercept: true);
         return true;
     }
 
-    private static async Task<ConsoleKeyInfo?> ReadKeyWithTimeoutAsync(int timeoutMs)
+    private async Task<ConsoleKeyInfo?> ReadKeyWithTimeoutAsync(int timeoutMs)
     {
         var started = DateTime.UtcNow;
         while ((DateTime.UtcNow - started).TotalMilliseconds < timeoutMs)
         {
-            if (Console.KeyAvailable)
-                return Console.ReadKey(true);
+            if (_inputSource.KeyAvailable)
+                return _inputSource.ReadKey(intercept: true);
             await Task.Delay(20);
         }
 
