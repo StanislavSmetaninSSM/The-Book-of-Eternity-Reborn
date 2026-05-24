@@ -58,6 +58,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<ImageService>();
         builder.Services.AddSingleton<LocalMediaService>();
         builder.Services.AddSingleton<AudioService>();
+        builder.Services.AddSingleton<SaveLoadService>();
         builder.Services.AddSingleton<StateDistributor>();
         builder.Services.AddSingleton<CanonicalStateNormalizer>();
         builder.Services.AddSingleton<ScenarioCoreService>();
@@ -68,6 +69,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<BrowserMortalWorldWriteService>();
         builder.Services.AddSingleton<LocalWebUiSessionStatusService>();
         builder.Services.AddSingleton<BrowserLifecycleDashboardService>();
+        builder.Services.AddSingleton<LocalWebUiMainMenuService>();
         builder.Services.AddSingleton<ExplorerWebPromptSessionService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
 
@@ -75,6 +77,14 @@ public static class LocalWebUiHost
         app.Services.GetRequiredService<FileSystemManager>().EnsureDirectoryStructure();
 
         app.MapGet("/", () => Results.Content(BuildShellHtml(), "text/html; charset=utf-8"));
+        app.MapGet("/api/main-menu", async (LocalWebUiMainMenuService menu) => await menu.BuildAsync());
+        app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu) =>
+        {
+            var result = await menu.LoadSaveAsync(request);
+            return result.Success
+                ? Results.Json(result, WebJsonOptions)
+                : Results.BadRequest(new { result.Error, result.LoadedSaveId, result.Menu });
+        });
         app.MapGet("/assets/map-viewer.css", () => Results.Content(LocalMapViewerAssets.StyleSheet, "text/css; charset=utf-8"));
         app.MapGet("/assets/map-viewer.js", () => Results.Content(LocalMapViewerAssets.Script, "application/javascript; charset=utf-8"));
         app.MapGet("/api/health", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
@@ -141,7 +151,7 @@ public static class LocalWebUiHost
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
-          <title>The Book of Eternity: Reborn - Local Web UI</title>
+          <title>The Book of Eternity: Reborn</title>
           <link rel="stylesheet" href="/assets/map-viewer.css">
           <style>
             :root {
@@ -186,6 +196,49 @@ public static class LocalWebUiHost
               box-shadow: 0 2rem 5rem rgba(0, 0, 0, .35);
               padding: 1.25rem;
             }
+            .main-menu {
+              display: grid;
+              grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr);
+              gap: 1rem;
+              align-items: stretch;
+            }
+            .menu-kicker {
+              color: var(--accent);
+              letter-spacing: .18em;
+              margin: 0 0 .65rem;
+              text-transform: uppercase;
+            }
+            .menu-actions {
+              display: grid;
+              gap: .75rem;
+              margin-top: 1.25rem;
+            }
+            .menu-actions button {
+              border: 1px solid rgba(222, 183, 99, .28);
+              background: linear-gradient(135deg, rgba(225, 184, 94, .18), rgba(0, 0, 0, .18));
+              color: var(--text);
+              display: grid;
+              gap: .25rem;
+              line-height: 1.3;
+              padding: 1rem;
+              text-align: left;
+            }
+            .menu-actions button strong { color: var(--accent); font-size: 1.08rem; }
+            .menu-actions button span { color: var(--muted); font-weight: 400; }
+            .menu-actions button:disabled { filter: grayscale(.35); }
+            .session-summary, .menu-panel, .save-list {
+              display: grid;
+              gap: .75rem;
+            }
+            .menu-panel { margin-top: 1rem; }
+            .save-slot {
+              border: 1px solid rgba(222, 183, 99, .18);
+              border-radius: .9rem;
+              background: rgba(0, 0, 0, .18);
+              padding: .85rem;
+            }
+            .advanced-shell { margin-top: 1rem; }
+            .advanced-shell[hidden] { display: none; }
             h1 {
               margin: 0 0 .75rem;
               color: var(--accent);
@@ -365,7 +418,7 @@ public static class LocalWebUiHost
               margin-top: .25rem;
             }
             @media (max-width: 760px) {
-              .hero { grid-template-columns: 1fr; }
+              .hero, .main-menu { grid-template-columns: 1fr; }
               .game-shell { grid-template-columns: 1fr; }
               .command-palette { position: static; }
               form { flex-direction: column; }
@@ -375,10 +428,38 @@ public static class LocalWebUiHost
         </head>
         <body>
           <main>
+            <section id="main-menu" class="main-menu" aria-live="polite">
+              <div class="card">
+                <p class="menu-kicker">Локальный игровой клиент</p>
+                <h1>The Book of Eternity</h1>
+                <p>Книга Вечности: Перерождение открывается как игра: сначала главное меню, затем текущая сессия, загрузка или подготовка новой жизни. Браузер остаётся только интерфейсом к локальному C# клиенту и <code>game_session</code>.</p>
+                <div id="main-menu-actions" class="menu-actions">
+                  <button type="button" data-menu-action="continue"><strong>Продолжить</strong><span>Читаю текущую сессию...</span></button>
+                  <button type="button" data-menu-action="new-game"><strong>Новая игра</strong><span>Подготовить новую жизнь через браузерную форму.</span></button>
+                  <button type="button" data-menu-action="load"><strong>Загрузить</strong><span>Открыть список сохранений.</span></button>
+                  <button type="button" data-menu-action="options"><strong>Настройки</strong><span>Музыка, звук и параметры клиента.</span></button>
+                  <button type="button" data-menu-action="about"><strong>О мире / клиенте</strong><span>Что запускает локальный браузерный клиент.</span></button>
+                  <button type="button" data-menu-action="exit"><strong>Выход</strong><span>Как остановить локальную web-сессию.</span></button>
+                </div>
+                <button class="secondary" type="button" id="advanced-shell-toggle">Расширенный режим</button>
+              </div>
+              <aside class="card session-summary">
+                <h2>Текущая сессия</h2>
+                <div id="main-menu-session" class="empty">Загружаю состояние души...</div>
+                <section id="load-panel" class="menu-panel" hidden>
+                  <h3>Сохранения</h3>
+                  <div id="save-list" class="save-list"></div>
+                </section>
+                <section id="options-panel" class="menu-panel" hidden></section>
+                <section id="about-panel" class="menu-panel" hidden></section>
+                <section id="exit-panel" class="menu-panel" hidden></section>
+              </aside>
+            </section>
+            <section id="advanced-shell" class="advanced-shell" hidden>
             <section class="hero">
               <div class="card">
-                <h1>The Book of Eternity</h1>
-                <p>Локальная браузерная оболочка подключается к тому же C# клиенту и тем же данным <code>game_session</code>. Игровая логика остаётся на стороне клиента; браузер только отправляет команды и рендерит DTO.</p>
+                <h2>Расширенный командный режим</h2>
+                <p>Этот раздел оставлен для перенесённых DTO-команд, диагностики и ручной проверки. Обычный игровой путь начинается выше, в главном меню.</p>
                 <form id="command-form">
                   <input id="command-input" name="command" value="/help" autocomplete="off" aria-label="Команда ExplorerMode">
                   <button type="submit">Выполнить</button>
@@ -387,14 +468,7 @@ public static class LocalWebUiHost
               </div>
               <aside class="card">
                 <h2>Статус</h2>
-                <p>Проверка сессии: <code>/api/health</code></p>
-                <p>Командный API: <code>POST /api/explorer/command</code></p>
-                <p>Формы команд: <code>POST /api/explorer/prompt-sessions/submit</code></p>
-                <p>Изображения: <code>/api/media/{id}</code></p>
-                <p>QTE API: <code>GET /api/qte/state</code></p>
-                <p>Панель состояния: <code>/api/lifecycle/dashboard</code></p>
-                <p>Валидация: <code>POST /api/lifecycle/validate</code></p>
-                <p>Сейчас доступны только перенесённые DTO-команды; остальные вернут структурный блокер.</p>
+                <p>Диагностика, QTE и lifecycle endpoints доступны только в расширенном режиме.</p>
                 <button class="secondary" type="button" id="lifecycle-dashboard-button">Обновить панель состояния</button>
                 <button class="secondary" type="button" id="lifecycle-validate-button">Проверить валидацию</button>
                 <button class="secondary" type="button" id="qte-button">Проверить QTE</button>
@@ -483,6 +557,7 @@ public static class LocalWebUiHost
                 <div class="empty">Пока нет результата. Нажмите «Выполнить», чтобы отрисовать первую команду.</div>
               </section>
             </section>
+            </section>
           </main>
           <script src="/assets/map-viewer.js"></script>
           <script>
@@ -492,26 +567,188 @@ public static class LocalWebUiHost
             const lifecyclePanel = document.getElementById('lifecycle-panel');
             const paletteFilter = document.getElementById('command-palette-filter');
             const commandButtons = [...document.querySelectorAll('[data-command]')];
+            const advancedShell = document.getElementById('advanced-shell');
+            const advancedToggle = document.getElementById('advanced-shell-toggle');
+            const mainMenuSession = document.getElementById('main-menu-session');
+            const saveList = document.getElementById('save-list');
+            const menuActionButtons = [...document.querySelectorAll('[data-menu-action]')];
+            const menuPanels = ['load-panel', 'options-panel', 'about-panel', 'exit-panel'].map(id => document.getElementById(id));
+            let mainMenuState = null;
+            let lifecycleLoaded = false;
             document.getElementById('help-button').addEventListener('click', () => {
               input.value = '/help';
+              showAdvancedShell();
               executeCommand('/help');
             });
             document.getElementById('qte-button').addEventListener('click', () => loadQteState());
             document.getElementById('lifecycle-dashboard-button').addEventListener('click', () => loadLifecycleDashboard());
             document.getElementById('lifecycle-validate-button').addEventListener('click', () => runLifecycleValidation());
+            advancedToggle.addEventListener('click', () => showAdvancedShell());
             form.addEventListener('submit', event => {
               event.preventDefault();
+              showAdvancedShell();
               executeCommand(input.value);
             });
             for (const button of commandButtons) {
               button.addEventListener('click', () => {
                 const command = button.dataset.command ?? '';
                 input.value = command;
+                showAdvancedShell();
                 executeCommand(command);
               });
             }
+            for (const button of menuActionButtons) {
+              button.addEventListener('click', () => handleMenuAction(button.dataset.menuAction ?? ''));
+            }
             paletteFilter.addEventListener('input', filterCommandPalette);
-            loadLifecycleDashboard();
+            loadMainMenu();
+
+            async function loadMainMenu() {
+              try {
+                const response = await fetch('/api/main-menu');
+                const payload = await response.json();
+                if (!response.ok) throw new Error(payload?.error ?? `HTTP ${response.status}`);
+                mainMenuState = payload;
+                renderMainMenu(payload);
+              } catch (error) {
+                mainMenuSession.replaceChildren(renderMessage({ severity: 'Error', title: 'Главное меню недоступно', message: error?.message ?? String(error) }));
+              }
+            }
+
+            function renderMainMenu(menu) {
+              renderMainMenuSession(menu?.session);
+              for (const action of menu?.actions ?? []) renderMenuAction(action);
+              renderSaveList(menu?.saves ?? []);
+              renderOptionsPanel(menu?.options);
+              renderAboutPanel(menu?.about);
+              renderExitPanel(menu?.actions?.find(action => action.id === 'exit'));
+            }
+
+            function renderMainMenuSession(session) {
+              const node = el('div', 'block');
+              const title = session?.canContinue
+                ? (session?.validationState === 'errors' ? 'Сессия требует проверки' : 'Сессия готова')
+                : 'Продолжение недоступно';
+              node.append(el('h3', '', title));
+              node.append(el('p', '', `${session?.soulName ?? 'Нет активной души'} • ${session?.realmLabel ?? 'Царство не определено'} • ${session?.turnLabel ?? 'Ход 0'}`));
+              node.append(el('p', '', session?.continueReason ?? 'Состояние сессии ещё не прочитано.'));
+              node.append(el('div', 'status-pill', session?.validationLabel ?? 'Валидация не запускалась'));
+              if (session?.pendingTurnMessage) node.append(renderMessage({ severity: 'Warning', title: 'Ход ГМа', message: session.pendingTurnMessage }));
+              mainMenuSession.replaceChildren(node);
+            }
+
+            function renderMenuAction(action) {
+              const button = document.querySelector(`[data-menu-action="${cssEscape(action.id)}"]`);
+              if (!button) return;
+              button.disabled = action.enabled === false;
+              button.title = action.enabled === false ? action.disabledReason ?? '' : action.description ?? '';
+              button.replaceChildren(el('strong', '', action.label ?? action.id), el('span', '', action.enabled === false ? action.disabledReason ?? action.description ?? '' : action.description ?? ''));
+            }
+
+            function renderSaveList(saves) {
+              saveList.replaceChildren();
+              if (saves.length === 0) {
+                saveList.append(el('div', 'empty', 'Сохранений пока нет.'));
+                return;
+              }
+              for (const save of saves) {
+                const card = el('div', 'save-slot');
+                card.append(el('strong', '', save.displayName ?? save.saveId));
+                card.append(el('p', '', `${save.scopeLabel ?? 'Сохранение'} • ${save.characterName ?? 'Душа не указана'} • ${save.turnLabel ?? 'Ход не указан'}`));
+                if (save.description) card.append(el('p', '', save.description));
+                const button = el('button', 'secondary', 'Загрузить это сохранение');
+                button.type = 'button';
+                button.addEventListener('click', () => loadSave(save.saveId));
+                card.append(button);
+                saveList.append(card);
+              }
+            }
+
+            function renderOptionsPanel(options) {
+              const panel = document.getElementById('options-panel');
+              panel.replaceChildren(el('h3', '', 'Настройки'), el('p', '', options?.guidance ?? 'Настройки недоступны.'));
+              panel.append(el('p', '', `Музыка: ${options?.musicEnabled ? 'включена' : 'выключена'}; звук: ${options?.soundEnabled ? 'включён' : 'выключен'}; размер шрифта консоли: ${options?.consoleFontSize ?? '-'}.`));
+            }
+
+            function renderAboutPanel(about) {
+              const panel = document.getElementById('about-panel');
+              panel.replaceChildren(el('h3', '', about?.title ?? 'Книга Вечности: Перерождение'), el('p', '', about?.body ?? 'Локальный игровой клиент.'));
+            }
+
+            function renderExitPanel(action) {
+              const panel = document.getElementById('exit-panel');
+              panel.replaceChildren(el('h3', '', 'Выход'), el('p', '', action?.disabledReason ?? 'Закройте вкладку или остановите локальный процесс.'));
+            }
+
+            async function loadSave(saveId) {
+              showMenuPanel('load-panel');
+              saveList.prepend(renderProgressState('Загрузка сохранения', 'Переношу выбранный ZIP в game_session...'));
+              try {
+                const response = await fetch('/api/saves/load', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ saveId })
+                });
+                const payload = await response.json();
+                if (!response.ok || payload?.success === false) throw new Error(payload?.error ?? `HTTP ${response.status}`);
+                mainMenuState = payload.menu;
+                renderMainMenu(payload.menu);
+                showMenuPanel('load-panel');
+              } catch (error) {
+                saveList.prepend(renderMessage({ severity: 'Error', title: 'Сохранение не загружено', message: error?.message ?? String(error) }));
+              }
+            }
+
+            function handleMenuAction(actionId) {
+              const action = mainMenuState?.actions?.find(item => item.id === actionId);
+              if (action?.enabled === false) {
+                showMenuPanel(action.targetPanel);
+                return;
+              }
+
+              switch (actionId) {
+                case 'continue':
+                  showAdvancedShell();
+                  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  break;
+                case 'new-game':
+                  showAdvancedShell();
+                  input.value = action?.command || '/world_setup';
+                  executeCommand(input.value);
+                  break;
+                case 'load':
+                  showMenuPanel('load-panel');
+                  break;
+                case 'options':
+                  showMenuPanel('options-panel');
+                  break;
+                case 'about':
+                  showMenuPanel('about-panel');
+                  break;
+                case 'exit':
+                  showMenuPanel('exit-panel');
+                  break;
+              }
+            }
+
+            function showMenuPanel(panelId) {
+              for (const panel of menuPanels) {
+                if (panel) panel.hidden = panel.id !== panelId;
+              }
+            }
+
+            function showAdvancedShell() {
+              advancedShell.hidden = false;
+              if (!lifecycleLoaded) {
+                lifecycleLoaded = true;
+                loadLifecycleDashboard();
+              }
+            }
+
+            function cssEscape(value) {
+              if (window.CSS?.escape) return CSS.escape(value);
+              return String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+            }
 
             async function executeCommand(command) {
               resultRoot.replaceChildren(renderProgressState('Команда выполняется', 'Отправляю запрос локальному C# клиенту...'));
@@ -958,7 +1195,7 @@ public static class LocalWebUiHost
               const node = el('section', 'block image-block');
               if (block.title) node.append(el('h2', '', block.title));
               const image = document.createElement('img');
-              image.src = block.url ?? '';
+              image.src = block.url ?? (block.mediaId ? `/api/media/${encodeURIComponent(block.mediaId)}` : '');
               image.alt = block.altText ?? block.title ?? 'Изображение';
               image.loading = 'lazy';
               image.addEventListener('error', () => {
