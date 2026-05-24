@@ -1,6 +1,6 @@
 # Browser Parity Checklist
 
-Tracked tasks: #594, #619, #620, #621, #622, #623, #624, #625, #691
+Tracked tasks: #594, #619, #620, #621, #622, #623, #624, #625, #682, #691
 
 Use this checklist for manual smoke testing when the local browser UI changes. The browser must stay a local shell over the same `game_session` data and must not duplicate game rules in JavaScript.
 
@@ -8,9 +8,9 @@ Map rendering parity is enforced through the shared map package: console `output
 
 ## Shell And Navigation
 
-- The root page keeps the player-facing default: title, current session summary, Continue/New Game/Load/Options/About/Exit actions, and short Russian guidance before any developer tools.
-- Continue/New Game actions must not reveal diagnostics automatically; if a player path still needs a technical bridge, show a short game-facing message plus an explicit opt-in advanced button.
-- Player-facing errors stay concise in Russian, with technical details behind a `Подробности` disclosure.
+- The root page keeps the player-facing default: title, current session summary, Continue/New Game/Load/Options/About/Exit actions, a player-facing game screen, and short Russian guidance before any developer tools.
+- Continue/New Game actions must not reveal diagnostics automatically; Continue refreshes/scrolls to the game screen, and any player path that still needs a technical bridge shows a short game-facing message plus an explicit opt-in advanced button.
+- Player-facing errors stay concise in Russian, with technical details behind a `Подробности` disclosure. The primary prose action composer stays in the default player area, must not expose the command palette as the main action model, and must not auto-execute slash commands without an explicit advanced-mode action.
 - Advanced / developer panel is opened intentionally through `Расширенный режим`; it contains the raw command console, command palette, lifecycle dashboard, validation controls, QTE probes, raw JSON, and API endpoint hints.
 - Командная палитра remains available inside the Advanced / developer panel for direct slash commands and filters visible buttons without hiding the manual command input.
 - Persistent advanced navigation includes: Мир смертных, Море Хаоса, Сияющая Обитель, Духовный бой, История и архив, Диагностика.

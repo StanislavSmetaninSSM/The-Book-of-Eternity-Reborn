@@ -245,6 +245,8 @@ public class StateManager
                 state.SessionId = sid.GetString() ?? "";
         });
 
+        state.TurnNumber = await DetectCurrentSessionTurnNumberAsync();
+
         state.LastUpdated = DateTime.UtcNow;
         CurrentState = state;
     }
@@ -267,6 +269,93 @@ public class StateManager
             _logger.LogWarning(ex, "Не удалось разобрать {Path}", relativePath);
             return null;
         }
+    }
+
+    private async Task<int> DetectCurrentSessionTurnNumberAsync()
+    {
+        var storiesPath = _fs.ResolvePath("stories");
+        if (!Directory.Exists(storiesPath))
+            return 0;
+
+        var maxTurn = 0;
+        foreach (var file in Directory.EnumerateFiles(storiesPath, "*.*", SearchOption.AllDirectories))
+        {
+            var extension = Path.GetExtension(file);
+            if (!string.Equals(extension, ".json", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(extension, ".jsonl", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            try
+            {
+                maxTurn = Math.Max(maxTurn, string.Equals(extension, ".jsonl", StringComparison.OrdinalIgnoreCase)
+                    ? await ReadMaxTurnFromJsonLinesStoryAsync(file)
+                    : await ReadMaxTurnFromJsonStoryAsync(file));
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogWarning(ex, "Не удалось разобрать story history файл {Path}", file);
+            }
+            catch (IOException ex)
+            {
+                _logger.LogWarning(ex, "Не удалось прочитать story history файл {Path}", file);
+            }
+        }
+
+        return maxTurn;
+    }
+
+    private static async Task<int> ReadMaxTurnFromJsonStoryAsync(string file)
+    {
+        var json = await File.ReadAllTextAsync(file);
+        var root = JsonNode.Parse(json);
+        var maxTurn = 0;
+        if (root is JsonArray array)
+        {
+            foreach (var item in array.OfType<JsonObject>())
+                maxTurn = Math.Max(maxTurn, GetJsonObjectInt(item, "turn", "turnNumber") ?? 0);
+        }
+        else if (root is JsonObject obj)
+        {
+            maxTurn = Math.Max(maxTurn, GetJsonObjectInt(obj, "turn", "turnNumber") ?? 0);
+        }
+
+        return maxTurn;
+    }
+
+    private static async Task<int> ReadMaxTurnFromJsonLinesStoryAsync(string file)
+    {
+        var maxTurn = 0;
+        foreach (var line in await File.ReadAllLinesAsync(file))
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            if (JsonNode.Parse(line) is JsonObject obj)
+                maxTurn = Math.Max(maxTurn, GetJsonObjectInt(obj, "turn", "turnNumber") ?? 0);
+        }
+
+        return maxTurn;
+    }
+
+    private static int? GetJsonObjectInt(JsonObject root, params string[] names)
+    {
+        foreach (var name in names)
+        {
+            if (root.TryGetPropertyValue(name, out var node) && node is JsonValue value)
+            {
+                try
+                {
+                    return value.GetValue<int>();
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            }
+        }
+
+        return null;
     }
 
     private async Task TryLoadJson(string path, Action<JsonDocument> handler)

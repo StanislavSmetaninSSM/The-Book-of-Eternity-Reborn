@@ -120,6 +120,32 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task MainMenuEndpoint_ReadsTurnNumberFromJsonLinesStoryHistory()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Меню-душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 2
+        }
+        """);
+        WriteSessionFile("stories/chaos_sea.jsonl", """
+        {"turn":4,"realm":"Chaos Sea","player":"Ранний ход","narrative":"Начало"}
+        {"turn":19,"realm":"Chaos Sea","player":"Последний ход","narrative":"Продолжение"}
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/main-menu"))!.AsObject();
+
+        Assert.Equal(19, root["session"]!["turnNumber"]!.GetValue<int>());
+        Assert.Equal("Ход 19", root["session"]!["turnLabel"]!.GetValue<string>());
+    }
+
+    [Fact]
     public async Task MainMenuEndpoint_BlocksContinueForTerminalSoulDissipation()
     {
         WriteSessionFile("game_state/meta/soul_state.json", """
@@ -265,6 +291,222 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("data-menu-action=\"exit\"", html, StringComparison.Ordinal);
         Assert.Contains("id=\"advanced-shell-toggle\"", html, StringComparison.Ordinal);
         Assert.DoesNotContain("Local Web UI", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_ReturnsNarrativeChoicesLifecycleQteAndActionComposer()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Экранная душа",
+          "currentRealm": "Shining Abode",
+          "currentIncarnation": 3,
+          "inkFeathers": { "current": 9 },
+          "enlightenment": { "currentTier": "Сияющий знак" }
+        }
+        """);
+        WriteSessionFile("game_state/meta/shining_abode_state.json", """
+        {
+          "availability": "active",
+          "radiance": { "experience": 120, "tier": 2 },
+          "lightSparks": 4,
+          "halls": [{ "hallId": "hall_dawn" }],
+          "factions": [{ "factionId": "faction_scribes" }]
+        }
+        """);
+        WriteSessionFile("game_state/world/current_location.json", """
+        { "name": "Зал рассветных чернил" }
+        """);
+        WriteSessionFile("output/narrative_response.json", """
+        { "response": "Сияние ложится на страницы." }
+        """);
+        WriteSessionFile("output/interface_updates.json", """
+        {
+          "dialogueOptions": [
+            { "text": "Спросить хранителя о Вратах", "category": "диалог" },
+            { "text": "Осмотреть зал", "category": "исследование" }
+          ]
+        }
+        """);
+        WriteSessionFile("output/debug_logs.json", """
+        { "gm_thoughts_markdown": "GM видит скрытый конфликт фракций." }
+        """);
+        WriteSessionFile("game_state/combat/combat_log.json", """
+        { "combat_log_markdown": "Последний духовный обмен завершён." }
+        """);
+        WriteSessionFile("input/turn_request.json", "{}");
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+
+        Assert.Equal(2, root["schemaVersion"]!.GetValue<int>());
+        Assert.Equal("shining-abode", root["theme"]!["key"]!.GetValue<string>());
+        Assert.Equal("✨", root["theme"]!["icon"]!.GetValue<string>());
+        Assert.Equal("Экранная душа", root["soul"]!["name"]!.GetValue<string>());
+        Assert.Equal("Зал рассветных чернил", root["world"]!["location"]!.GetValue<string>());
+        Assert.Contains("Сияние", root["narrative"]!["text"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Contains("духовный", root["narrative"]!["combatLog"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(2, root["narrative"]!["dialogueOptions"]!.AsArray().Count);
+        Assert.Equal(string.Empty, root["narrative"]!["gmThoughts"]!.GetValue<string>());
+        Assert.False(root["actionComposer"]!["canSubmit"]!.GetValue<bool>());
+        Assert.Contains("Ожидает", root["turnState"]!["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("NoScene", root["qte"]!["state"]!.GetValue<string>());
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_DoesNotMutateQteRuntimeWhenRendering()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        { "soulName": "Read Only", "currentRealm": "Mortal World" }
+        """);
+        WriteSessionFile("game_state/control/qte_runtime.json", "{ malformed qte runtime");
+        var runtimePath = Path.Combine(_rootPath, "game_session", "game_state", "control", "qte_runtime.json");
+        var before = File.ReadAllText(runtimePath);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+
+        Assert.Equal("NoScene", root["qte"]!["state"]!.GetValue<string>());
+        Assert.True(File.Exists(runtimePath));
+        Assert.Equal(before, File.ReadAllText(runtimePath));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_DoesNotExposeDebugGmThoughtsInDefaultDto()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        { "soulName": "Hidden GM", "currentRealm": "Mortal World" }
+        """);
+        WriteSessionFile("output/debug_logs.json", """
+        { "gm_thoughts_markdown": "GM secret should remain advanced-only." }
+        """);
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+
+        Assert.Equal(string.Empty, root["narrative"]!["gmThoughts"]!.GetValue<string>());
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_ReportsReadyAndErrorTurnStatesDistinctly()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        { "soulName": "Turn Soul", "currentRealm": "Chaos Sea" }
+        """);
+        WriteSessionFile("ready/turn_complete.json", "{} ");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var readyRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+        Assert.Equal("ready-gm-response", readyRoot["turnState"]!["state"]!.GetValue<string>());
+        Assert.Contains("готов", readyRoot["turnState"]!["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.False(readyRoot["actionComposer"]!["canSubmit"]!.GetValue<bool>());
+
+        File.Delete(Path.Combine(_rootPath, "game_session", "ready", "turn_complete.json"));
+        WriteSessionFile("ready/turn_error.json", """
+        { "error": "GM timeout" }
+        """);
+        var errorRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+        Assert.Equal("gm-turn-error", errorRoot["turnState"]!["state"]!.GetValue<string>());
+        Assert.Contains("ошиб", errorRoot["turnState"]!["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.False(errorRoot["actionComposer"]!["canSubmit"]!.GetValue<bool>());
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_DisablesComposerWhenValidationRequiresRepair()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", "not json");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+
+        Assert.Equal("validation-errors", root["turnState"]!["state"]!.GetValue<string>());
+        Assert.True(root["turnState"]!["validationLabel"]!.GetValue<string>().Contains("ошиб", StringComparison.OrdinalIgnoreCase));
+        Assert.False(root["actionComposer"]!["canSubmit"]!.GetValue<bool>());
+        Assert.Equal("repair-required", root["actionComposer"]!["mode"]!.GetValue<string>());
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_ReadsTurnNumberFromStoryHistory()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        { "soulName": "Story Soul", "currentRealm": "Mortal World" }
+        """);
+        WriteSessionFile("stories/chaos_sea.jsonl", """
+        {"turn":5,"realm":"Chaos Sea","player":"Первый ход","narrative":"Начало"}
+        {"turn":17,"realm":"Chaos Sea","player":"Семнадцатый ход","narrative":"Продолжение"}
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+
+        Assert.Equal(17, root["world"]!["turnNumber"]!.GetValue<int>());
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task RootEndpoint_DefaultPlayerAreaContainsGameScreenAndPrimaryActionComposer()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+        var advancedIndex = html.IndexOf("<section id=\"advanced-shell\"", StringComparison.Ordinal);
+        Assert.True(advancedIndex > 0, "Advanced shell must follow default player game content.");
+        var playerDefault = html[..advancedIndex];
+
+        Assert.Contains("id=\"game-screen\"", playerDefault, StringComparison.Ordinal);
+        Assert.Contains("id=\"player-action-composer\"", playerDefault, StringComparison.Ordinal);
+        Assert.Contains("name=\"player-action\"", playerDefault, StringComparison.Ordinal);
+        Assert.Contains("renderGameScreen", html, StringComparison.Ordinal);
+        Assert.Contains("loadGameScreen", html, StringComparison.Ordinal);
+        Assert.Contains("submitPlayerAction", html, StringComparison.Ordinal);
+        Assert.Contains("/api/game-screen", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("Командная палитра", playerDefault, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("id=\"command-form\"", playerDefault, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task RootEndpoint_DefaultComposerDoesNotAutoExecuteSlashCommands()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+
+        Assert.Contains("actionText.startsWith('/')", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("executeCommand(actionText)", html, StringComparison.Ordinal);
+        Assert.Contains("prefillAdvancedCommand", html, StringComparison.Ordinal);
     }
 
     [Fact]

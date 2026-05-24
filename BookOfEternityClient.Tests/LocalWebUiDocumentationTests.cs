@@ -88,7 +88,11 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("GET /api/game-screen", hostDoc, StringComparison.Ordinal);
         Assert.Contains("Category=BrowserWebUiSmoke|Category=BrowserWebUiParity", hostDoc, StringComparison.Ordinal);
         Assert.Contains("game-screen state", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("player-facing game screen", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("primary prose action composer", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("read-only game-screen", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("BrowserWebUiSmoke", checklist, StringComparison.Ordinal);
         Assert.Contains("BrowserWebUiParity", checklist, StringComparison.Ordinal);
+        Assert.Contains("primary prose action composer", checklist, StringComparison.OrdinalIgnoreCase);
     }
 }
