@@ -15,6 +15,12 @@ public sealed class ConsoleE2ERunbookTests
             "FileSystemExample/game_session",
             "ConsoleE2ESandbox.CreateFromFixture",
             "dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter ConsoleE2E",
+            "--e2e-script",
+            "--e2e-artifacts",
+            "--plain-output",
+            "kind",
+            "key",
+            "text",
             "preserveArtifacts: true",
             "tracked GitHub issue",
             "Mortal World mechanics",
@@ -40,7 +46,10 @@ public sealed class ConsoleE2ERunbookTests
             "NO_COLOR",
             "cleanup",
             "screen/state snapshots",
-            "failure artifacts"
+            "failure artifacts",
+            "Console E2E scripted input failed at step 0",
+            "$RUN_ROOT/artifacts/failure.txt",
+            "screens/*error*.json"
         })
         {
             Assert.Contains(requiredText, runbook, StringComparison.OrdinalIgnoreCase);

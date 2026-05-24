@@ -50,42 +50,27 @@ public partial class GameEngine
                 layout = GetMainMenuLayoutMode(currentWidth, currentHeight);
                 menuTop = RenderMainMenuStaticFrame(options, selectedIndex, layout);
                 RedrawMainMenuMenuArea(options, selectedIndex, layout, menuTop);
+                WriteMainMenuObservation(options, selectedIndex, ConsoleE2EInputMode.Menu, "main-menu");
                 lastWidth = currentWidth;
                 lastHeight = currentHeight;
             }
 
-            var key = Console.ReadKey(true);
-            var selectionChanged = false;
+            var key = _inputSource.ReadKey(intercept: true);
+            var inputResult = ConsoleMainMenuInputHandler.Apply(key, selectedIndex, options.Count);
+            selectedIndex = inputResult.SelectedIndex;
+            var selectionChanged = inputResult.SelectionChanged;
             MainMenuOption? chosen = null;
 
-            switch (key.Key)
+            if (inputResult.ActivateSelection)
             {
-                case ConsoleKey.UpArrow:
-                case ConsoleKey.W:
-                    selectedIndex = (selectedIndex - 1 + options.Count) % options.Count;
-                    selectionChanged = true;
-                    break;
-                case ConsoleKey.DownArrow:
-                case ConsoleKey.S:
-                    selectedIndex = (selectedIndex + 1) % options.Count;
-                    selectionChanged = true;
-                    break;
-                case ConsoleKey.Enter:
-                    _audioService.PlayCue(AudioCue.MenuSelect);
-                    chosen = options[selectedIndex];
-                    break;
-                default:
-                    if (TryMapMenuNumberSelection(key, options.Count, out var numericIndex))
-                    {
-                        selectedIndex = numericIndex;
-                        selectionChanged = true;
-                    }
-                    break;
+                _audioService.PlayCue(AudioCue.MenuSelect);
+                chosen = options[selectedIndex];
             }
 
             if (selectionChanged)
             {
                 RedrawMainMenuMenuArea(options, selectedIndex, layout, menuTop);
+                WriteMainMenuObservation(options, selectedIndex, ConsoleE2EInputMode.Menu, "main-menu");
                 continue;
             }
 
@@ -165,6 +150,7 @@ public partial class GameEngine
 
             if (chosen.Key == "exit")
             {
+                WriteMainMenuObservation(options, selectedIndex, ConsoleE2EInputMode.Exit, "exit");
                 await _audioService.StopAllAsync();
                 _isRunning = false;
                 return;
@@ -180,6 +166,41 @@ public partial class GameEngine
         {
             // Ignore cursor restore failures on shutdown.
         }
+    }
+
+    private void WriteMainMenuObservation(
+        IReadOnlyList<MainMenuOption> options,
+        int selectedIndex,
+        ConsoleE2EInputMode inputMode,
+        string slug)
+    {
+        if (_inputSource is not ConsoleE2EScriptedInputSource scriptedInput)
+            return;
+
+        var boundedIndex = options.Count == 0
+            ? -1
+            : Math.Clamp(selectedIndex, 0, options.Count - 1);
+        var selectedOption = boundedIndex >= 0 ? options[boundedIndex] : null;
+        var optionTitles = options.Select(option => option.Title).ToArray();
+        var lines = new List<string>
+        {
+            _loc.T("main_menu_tagline"),
+            _loc.T("main_menu_intro_body")
+        };
+
+        if (!string.IsNullOrWhiteSpace(_mainMenuSessionWarning))
+            lines.Add(_mainMenuSessionWarning);
+
+        if (selectedOption is not null)
+            lines.Add($"{selectedOption.Title}: {selectedOption.Description}");
+
+        scriptedInput.WriteObservation(
+            inputMode,
+            _loc.T("app_title"),
+            string.Join(Environment.NewLine, lines),
+            optionTitles,
+            selectedOption?.Title,
+            slug);
     }
 
     private int RenderMainMenuStaticFrame(IReadOnlyList<MainMenuOption> options, int selectedIndex, MainMenuLayoutMode layout)
@@ -440,7 +461,7 @@ public partial class GameEngine
         {
             AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(_loc.T("continue_game_unavailable"))}[/]");
             AnsiConsole.MarkupLine($"[grey]{Markup.Escape(_loc.T("press_any_key"))}[/]");
-            Console.ReadKey(true);
+            _inputSource.ReadKey(intercept: true);
             return;
         }
 
@@ -657,7 +678,7 @@ public partial class GameEngine
         bool preserveNewlines = false)
     {
         return TextComposer.Read(
-            StandardTextComposerConsole.Instance,
+            _textComposerConsole,
             _clipboardService,
             new TextComposerOptions
             {
@@ -917,7 +938,7 @@ public partial class GameEngine
                 Padding = new Padding(2, 1),
                 Expand = true
             });
-            _ = Console.ReadKey(true);
+            _ = _inputSource.ReadKey(intercept: true);
             return;
         }
 
@@ -958,7 +979,7 @@ public partial class GameEngine
                 Padding = new Padding(2, 1),
                 Expand = true
             });
-            _ = Console.ReadKey(true);
+            _ = _inputSource.ReadKey(intercept: true);
             return;
         }
 
@@ -1251,7 +1272,7 @@ public partial class GameEngine
             AnsiConsole.MarkupLine("[yellow]⚠ В библиотеке извечных хранителей пока нет ни одного пресета.[/]");
             AnsiConsole.MarkupLine($"[dim]Добавьте свои папки в: {Markup.Escape(userDir)}[/]");
             AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-            Console.ReadKey(true);
+            _inputSource.ReadKey(intercept: true);
             return null;
         }
 
@@ -1276,7 +1297,7 @@ public partial class GameEngine
 
             if (selected.StartsWith("📂", StringComparison.Ordinal))
             {
-                OpenFolderOrPrintPath(userDir);
+                OpenFolderOrPrintPath(userDir, _inputSource);
                 continue;
             }
 
@@ -1766,7 +1787,7 @@ public partial class GameEngine
         });
     }
 
-    private static void OpenFolderOrPrintPath(string directoryPath)
+    private static void OpenFolderOrPrintPath(string directoryPath, IConsoleInputSource inputSource)
     {
         Directory.CreateDirectory(directoryPath);
 
@@ -1782,7 +1803,7 @@ public partial class GameEngine
         {
             AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(directoryPath)}[/]");
             AnsiConsole.MarkupLine("[dim]Не удалось открыть папку автоматически. Путь выведен выше.[/]");
-            Console.ReadKey(true);
+            inputSource.ReadKey(intercept: true);
         }
     }
 
@@ -2436,7 +2457,7 @@ public partial class GameEngine
         if (!await TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync())
             return;
 
-        GameInterface.RenderRealmTransition(true);
+        GameInterface.RenderRealmTransition(true, _inputSource);
         AnsiConsole.MarkupLine("[blue]🌊 Сияющая Обитель запечатана. Вы возвращаетесь в Море Хаоса.[/]");
     }
 
@@ -2807,7 +2828,7 @@ public partial class GameEngine
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("no_saves")}[/]");
             AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-            Console.ReadKey(true);
+            _inputSource.ReadKey(intercept: true);
             return;
         }
 
@@ -2864,7 +2885,7 @@ public partial class GameEngine
         else
         {
             AnsiConsole.MarkupLine($"[red]{_loc.T("load_failed")}[/]");
-            Console.ReadKey(true);
+            _inputSource.ReadKey(intercept: true);
         }
     }
 

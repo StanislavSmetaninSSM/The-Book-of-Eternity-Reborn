@@ -1,4 +1,5 @@
 using Spectre.Console;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Models.GameState;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Configuration;
@@ -77,8 +78,9 @@ public class GameInterface
     /// <summary>
     /// Renders the realm transition banner when switching between Chaos Sea and Mortal Life.
     /// </summary>
-    public static void RenderRealmTransition(bool enteringChaosSea)
+    public static void RenderRealmTransition(bool enteringChaosSea, IConsoleInputSource? inputSource = null)
     {
+        var consoleInput = inputSource ?? SystemConsoleInputSource.Instance;
         AnsiConsole.Clear();
         AnsiConsole.WriteLine();
         AnsiConsole.WriteLine();
@@ -137,7 +139,7 @@ public class GameInterface
 
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[grey dim]  Нажмите любую клавишу...[/]");
-        Console.ReadKey(true);
+        consoleInput.ReadKey(intercept: true);
     }
 
     internal static bool ShouldRenderAfterlifeStatus(AggregatedGameState state)

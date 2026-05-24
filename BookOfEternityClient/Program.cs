@@ -43,6 +43,23 @@ static string ResolveDefaultBasePath()
 // Determine base path: prefer the project root containing BookOfEternityClient.csproj.
 var startupOptions = ClientStartupOptions.Parse(args, ResolveDefaultBasePath());
 var basePath = startupOptions.BasePath;
+if (startupOptions.PlainOutput)
+    Environment.SetEnvironmentVariable("NO_COLOR", "1");
+
+IConsoleInputSource inputSource;
+try
+{
+    inputSource = string.IsNullOrWhiteSpace(startupOptions.E2EScriptPath)
+        ? SystemConsoleInputSource.Instance
+        : ConsoleE2EScriptedInputSource.FromFile(startupOptions.E2EScriptPath, startupOptions.E2EArtifactsPath);
+}
+catch (ConsoleE2EScriptInputException ex)
+{
+    Console.Error.WriteLine($"Console E2E scripted input failed at step {ex.NextStepIndex}: {ex.Message}");
+    Console.Error.WriteLine($"Script: {ex.ScriptPath}");
+    Environment.ExitCode = 2;
+    return;
+}
 
 if (startupOptions.WebMode)
 {
@@ -175,6 +192,7 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<FileSystemManager>(),
                 sp.GetRequiredService<ILogger<SoulIdentityService>>()));
         services.AddSingleton<IClipboardService, SystemClipboardService>();
+        services.AddSingleton<IConsoleInputSource>(inputSource);
         services.AddSingleton(sp =>
             new CanonicalStateNormalizer(
                 sp.GetRequiredService<FileSystemManager>(),
@@ -206,7 +224,8 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<ValidationService>(),
                 sp.GetRequiredService<CanonicalStateNormalizer>(),
                 sp.GetRequiredService<StateManager>(),
-                sp.GetRequiredService<ILogger<QteSceneService>>()));
+                sp.GetRequiredService<ILogger<QteSceneService>>(),
+                inputSource: sp.GetRequiredService<IConsoleInputSource>()));
         services.AddSingleton(sp =>
             new ExplorerMode(
                 sp.GetRequiredService<StateManager>(),
@@ -228,7 +247,8 @@ var host = Host.CreateDefaultBuilder(args)
                 sp.GetRequiredService<AfterlifeArchiveProjectFuelService>(),
                 sp.GetRequiredService<GuardianCorrectionService>(),
                 sp.GetRequiredService<SoulIdentityService>(),
-                sp.GetRequiredService<IClipboardService>()));
+                sp.GetRequiredService<IClipboardService>(),
+                inputSource: sp.GetRequiredService<IConsoleInputSource>()));
 
         // Engine
         services.AddSingleton<GameEngine>();
@@ -237,4 +257,14 @@ var host = Host.CreateDefaultBuilder(args)
 
 // Run the game
 var engine = host.Services.GetRequiredService<GameEngine>();
-await engine.RunAsync();
+try
+{
+    await engine.RunAsync();
+    inputSource.AssertCompleted();
+}
+catch (ConsoleE2EScriptInputException ex)
+{
+    Console.Error.WriteLine($"Console E2E scripted input failed at step {ex.NextStepIndex}: {ex.Message}");
+    Console.Error.WriteLine($"Script: {ex.ScriptPath}");
+    Environment.ExitCode = 2;
+}

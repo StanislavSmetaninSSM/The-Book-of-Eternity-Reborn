@@ -7,10 +7,14 @@ namespace BookOfEternityClient.UI;
 public sealed class SpectreExplorerConsole : IExplorerConsole
 {
     private readonly Services.IClipboardService? _clipboardService;
+    private readonly IConsoleInputSource _inputSource;
 
-    public SpectreExplorerConsole(Services.IClipboardService? clipboardService = null)
+    public SpectreExplorerConsole(
+        Services.IClipboardService? clipboardService = null,
+        IConsoleInputSource? inputSource = null)
     {
         _clipboardService = clipboardService;
+        _inputSource = inputSource ?? SystemConsoleInputSource.Instance;
     }
 
     public void Clear() => AnsiConsole.Clear();
@@ -40,9 +44,9 @@ public sealed class SpectreExplorerConsole : IExplorerConsole
 
     public T Prompt<T>(IPrompt<T> prompt) => AnsiConsole.Prompt(prompt);
 
-    public string? ReadLine() => Console.ReadLine();
+    public string? ReadLine() => _inputSource.ReadLine();
 
-    public bool KeyAvailable => Console.KeyAvailable;
+    public bool KeyAvailable => _inputSource.KeyAvailable;
 
-    public ConsoleKeyInfo ReadKey() => Console.ReadKey(true);
+    public ConsoleKeyInfo ReadKey() => _inputSource.ReadKey(intercept: true);
 }

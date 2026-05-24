@@ -255,7 +255,7 @@ public partial class GameEngine
             Expand = true
         });
         AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-        Console.ReadKey(true);
+        _inputSource.ReadKey(intercept: true);
     }
 
     private async Task<bool> WaitForContractRepairAsync(string source, List<ValidationIssue> errors,
@@ -293,9 +293,9 @@ public partial class GameEngine
                             ? $"[yellow]⛏ Ожидание исправления GM... попытка проверки #{attempt} ({elapsed}с) (Escape = откатить)[/]"
                             : $"[yellow]⛏ Ожидание исправления GM... попытка проверки #{attempt} ({elapsed}с) (Escape = выйти)[/]");
 
-                        if (Console.KeyAvailable)
+                        if (_inputSource.KeyAvailable)
                         {
-                            var key = Console.ReadKey(true);
+                            var key = _inputSource.ReadKey(intercept: true);
                             if (key.Key == ConsoleKey.Escape)
                                 cts.Cancel();
                         }

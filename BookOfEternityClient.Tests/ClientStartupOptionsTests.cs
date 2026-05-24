@@ -60,6 +60,34 @@ public sealed class ClientStartupOptionsTests : IDisposable
         Assert.Equal("http://127.0.0.1:8788", options.WebUrl);
     }
 
+    [Fact]
+    public void Parse_E2EScriptOptions_UsesExplicitScriptArtifactsAndPlainOutput()
+    {
+        var sessionRoot = Path.Combine(_rootPath, "custom");
+        Directory.CreateDirectory(sessionRoot);
+        var scriptPath = Path.Combine(_rootPath, "script.json");
+        var artifactRoot = Path.Combine(_rootPath, "artifacts");
+
+        var options = ClientStartupOptions.Parse(
+            new[] { sessionRoot, "--e2e-script", scriptPath, "--e2e-artifacts", artifactRoot, "--plain-output" },
+            _rootPath);
+
+        Assert.False(options.WebMode);
+        Assert.Equal(sessionRoot, options.BasePath);
+        Assert.Equal(scriptPath, options.E2EScriptPath);
+        Assert.Equal(artifactRoot, options.E2EArtifactsPath);
+        Assert.True(options.PlainOutput);
+    }
+
+    [Fact]
+    public void Parse_E2EScriptMissingValue_ThrowsDiagnostic()
+    {
+        var ex = Assert.Throws<ArgumentException>(() =>
+            ClientStartupOptions.Parse(new[] { "--e2e-script" }, _rootPath));
+
+        Assert.Contains("Missing value for --e2e-script", ex.Message, StringComparison.Ordinal);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

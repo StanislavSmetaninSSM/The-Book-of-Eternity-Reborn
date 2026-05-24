@@ -46,6 +46,8 @@ public partial class GameEngine
     private readonly PendingTurnStateService _pendingTurnState;
     private readonly QteSceneService _qteSceneService;
     private readonly IClipboardService _clipboardService;
+    private readonly IConsoleInputSource _inputSource;
+    private readonly ITextComposerConsole _textComposerConsole;
     private readonly ILogger<GameEngine> _logger;
 
     private bool _isRunning;
@@ -91,7 +93,8 @@ public partial class GameEngine
         PendingTurnStateService pendingTurnState,
         QteSceneService qteSceneService,
         IClipboardService clipboardService,
-        ILogger<GameEngine> logger)
+        ILogger<GameEngine> logger,
+        IConsoleInputSource? inputSource = null)
     {
         _fs = fs;
         _stateManager = stateManager;
@@ -121,6 +124,8 @@ public partial class GameEngine
         _pendingTurnState = pendingTurnState;
         _qteSceneService = qteSceneService;
         _clipboardService = clipboardService;
+        _inputSource = inputSource ?? SystemConsoleInputSource.Instance;
+        _textComposerConsole = new StandardTextComposerConsole(_inputSource);
         _logger = logger;
     }
 
@@ -148,13 +153,22 @@ public partial class GameEngine
             {
                 await ShowMainMenu();
             }
+            catch (Exception ex) when (_inputSource is ConsoleE2EScriptedInputSource scriptedInput)
+            {
+                scriptedInput.WriteExceptionObservation(
+                    "Console E2E failure",
+                    "The scripted console E2E run failed before the next player-visible screen could be reached.",
+                    ex,
+                    "error");
+                throw;
+            }
             catch (Exception ex)
             {
                 LogError(ex);
                 AnsiConsole.MarkupLine($"[red]❌ Ошибка: {GameInterface.EscapeMarkup(ex.Message)}[/]");
                 AnsiConsole.MarkupLine("[dim]Ошибка сохранена в game_session/error_log.txt. Игра продолжает работу.[/]");
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-                Console.ReadKey(true);
+                _inputSource.ReadKey(intercept: true);
             }
         }
 

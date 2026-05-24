@@ -34,11 +34,12 @@ public partial class GameEngine
             {
                 menuTop = RenderOptionsStaticFrame();
                 RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight);
+                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu");
                 lastWidth = currentWidth;
                 lastHeight = currentHeight;
             }
 
-            var key = Console.ReadKey(true);
+            var key = _inputSource.ReadKey(intercept: true);
             var selectionChanged = false;
             OptionsMenuEntry? chosen = null;
 
@@ -66,6 +67,7 @@ public partial class GameEngine
             if (selectionChanged)
             {
                 RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight);
+                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu");
                 continue;
             }
 
@@ -122,7 +124,7 @@ public partial class GameEngine
                 if (!_consoleAppearance.TryApplyFontSize(_stateManager.Settings.ConsoleFontSize))
                 {
                     AnsiConsole.MarkupLine($"[dim]{Markup.Escape(_loc.T("font_size_apply_note"))}[/]");
-                    Console.ReadKey(true);
+                    _inputSource.ReadKey(intercept: true);
                 }
             }
             else if (chosen.Key == "gm_cli_launch_command")
@@ -245,7 +247,7 @@ public partial class GameEngine
                     }
                 }
 
-                Console.ReadKey(true);
+                _inputSource.ReadKey(intercept: true);
             }
             else if (chosen.Key == "language")
             {
@@ -379,6 +381,30 @@ public partial class GameEngine
         body.AddRow(new Text(" "));
         body.AddRow(new Markup("[dim]  ↑/↓ или W/S — выбор • Enter — подтвердить • Esc — назад[/]"));
         AnsiConsole.Write(ConsoleLayout.WithHorizontalMargin(body, 2));
+    }
+
+    private void WriteOptionsMenuObservation(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, string slug)
+    {
+        if (_inputSource is not ConsoleE2EScriptedInputSource scriptedInput)
+            return;
+
+        var boundedIndex = entries.Count == 0
+            ? -1
+            : Math.Clamp(selectedIndex, 0, entries.Count - 1);
+        var selectedEntry = boundedIndex >= 0 ? entries[boundedIndex] : null;
+        var optionTitles = entries.Select(entry => StripMarkup(entry.Label)).ToArray();
+        var selectedOption = selectedEntry is null ? null : StripMarkup(selectedEntry.Label);
+        var playerText = selectedOption is null
+            ? "Клиентские настройки."
+            : $"Выбран пункт настроек: {selectedOption}";
+
+        scriptedInput.WriteObservation(
+            ConsoleE2EInputMode.Menu,
+            "⚙️ Опции",
+            playerText,
+            optionTitles,
+            selectedOption,
+            slug);
     }
 
     private int PromptVolume(string title, int currentValue)
@@ -586,7 +612,7 @@ public partial class GameEngine
                     AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(modsDir)}[/]");
                 }
 
-                Console.ReadKey(true);
+                _inputSource.ReadKey(intercept: true);
                 continue;
             }
 
@@ -614,7 +640,7 @@ public partial class GameEngine
             await WriteGameSettingsForGm();
 
             AnsiConsole.MarkupLine($"[green]{Markup.Escape(_loc.T("system_mods_saved"))}[/]");
-            Console.ReadKey(true);
+            _inputSource.ReadKey(intercept: true);
         }
     }
 
@@ -634,7 +660,7 @@ public partial class GameEngine
 
         while (true)
         {
-            var key = Console.ReadKey(true);
+            var key = _inputSource.ReadKey(intercept: true);
             var selectionChanged = false;
             switch (key.Key)
             {
@@ -676,7 +702,7 @@ public partial class GameEngine
 
         while (true)
         {
-            var key = Console.ReadKey(true);
+            var key = _inputSource.ReadKey(intercept: true);
             var changed = false;
 
             switch (key.Key)
@@ -919,7 +945,7 @@ public partial class GameEngine
 
             var ok = await _saveLoad.SaveGameAsync(saveName, desc, turnNumber: _gameLoop.TurnNumber);
             AnsiConsole.MarkupLine(ok ? $"[green]{_loc.T("save_success")}[/]" : $"[red]{_loc.T("save_failed")}[/]");
-            Console.ReadKey(true);
+            _inputSource.ReadKey(intercept: true);
             return true;
         }
 
@@ -955,7 +981,7 @@ public partial class GameEngine
         AnsiConsole.Write(panel);
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-        Console.ReadKey(true);
+        _inputSource.ReadKey(intercept: true);
     }
 }
 
