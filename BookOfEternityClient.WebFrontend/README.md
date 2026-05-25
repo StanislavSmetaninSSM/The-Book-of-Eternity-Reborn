@@ -60,6 +60,19 @@ Future Browser Client tasks (#683-#689) should extend these route regions rather
 
 Verify shell changes with `npm run typecheck --prefix BookOfEternityClient.WebFrontend`, `npm run build --prefix BookOfEternityClient.WebFrontend`, and focused browser .NET tests such as `BrowserFrontendWorkspaceTests` / `LocalWebUiHostTests`.
 
+## Browser design system (#685)
+
+Issue #685 splits the Browser Client styling into a maintainable plain-CSS design system:
+
+- `src/styles.css` remains the Vite import entrypoint.
+- `src/styles/tokens.css` defines dark-fantasy color, realm, state, typography, spacing, shadow, and motion tokens.
+- `src/styles/base.css` owns document reset, typography, background texture, scrollbars, and focus treatment.
+- `src/styles/components.css` owns reusable cards, panels, buttons, forms, alert states, action cards, audio controls, and advanced diagnostics.
+- `src/styles/layout.css` owns shell, hero, route, workspace, route-grid, and responsive layout rules.
+- `src/styles/motion.css` owns restrained panel/QTE/waiting motion plus `prefers-reduced-motion` safeguards.
+
+The visual direction is dark-fantasy chronicle UI: ink/obsidian background, parchment/gold narrative hierarchy, realm-aware accents from the C# game-screen DTO, clear desktop/mobile breakpoints, and technical labels only inside explicit advanced mode. CSS/React stay presentation-only; gameplay, validation, saves, commands, and afterlife contracts remain in the C# runtime.
+
 ## Contextual action menu (#683)
 
 Issue #683 adds a player-facing contextual action menu to the `Мир` route. The menu is built from the C# `ExplorerCommandCatalog` and `/api/game-screen` action-menu DTO, then rendered by React as Russian game sections: `Персонаж / Душа`, `Мир`, `Квесты`, `Карта`, `Фракции`, `Хранители`, `Посмертие`, `Бой`, `Архив`, and `Настройки`.
