@@ -70,10 +70,11 @@ public sealed class LocalWebUiDocumentationTests
         var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
         var checklist = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "browser-parity-checklist.md"));
 
-        Assert.Contains("root page defaults to the player-facing main menu", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("root is the #704 React app shell", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Advanced / developer panel", hostDoc, StringComparison.Ordinal);
         Assert.Contains("raw command console", hostDoc, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("`/api/*` endpoint details", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("`/api/*` details", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("separate explicit `Расширенный режим` opt-in", hostDoc, StringComparison.Ordinal);
         Assert.Contains("Advanced / developer panel", checklist, StringComparison.Ordinal);
         Assert.Contains("player-facing default", checklist, StringComparison.OrdinalIgnoreCase);
     }
