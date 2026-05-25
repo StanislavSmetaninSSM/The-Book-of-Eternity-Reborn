@@ -15,6 +15,7 @@ public sealed class BrowserAudioService
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly AudioService _audioService;
+    private static readonly SemaphoreSlim SettingsWriteGate = new SemaphoreSlim(1, 1);
 
     public BrowserAudioService(FileSystemManager fs, StateManager stateManager, AudioService audioService)
     {
@@ -31,21 +32,29 @@ public sealed class BrowserAudioService
 
     public async Task<BrowserAudioSettingsDto> UpdateSettingsAsync(BrowserAudioSettingsUpdateRequest request)
     {
-        await _stateManager.LoadSettingsAsync();
-        var settings = _stateManager.Settings;
+        await SettingsWriteGate.WaitAsync();
+        try
+        {
+            await _stateManager.LoadSettingsAsync();
+            var settings = _stateManager.Settings;
 
-        if (request.MusicEnabled.HasValue)
-            settings.MusicEnabled = request.MusicEnabled.Value;
-        if (request.MusicVolume.HasValue)
-            settings.MusicVolume = Math.Clamp(request.MusicVolume.Value, 0, 100);
-        if (request.SoundEnabled.HasValue)
-            settings.SoundEnabled = request.SoundEnabled.Value;
-        if (request.SoundVolume.HasValue)
-            settings.SoundVolume = Math.Clamp(request.SoundVolume.Value, 0, 100);
+            if (request.MusicEnabled.HasValue)
+                settings.MusicEnabled = request.MusicEnabled.Value;
+            if (request.MusicVolume.HasValue)
+                settings.MusicVolume = Math.Clamp(request.MusicVolume.Value, 0, 100);
+            if (request.SoundEnabled.HasValue)
+                settings.SoundEnabled = request.SoundEnabled.Value;
+            if (request.SoundVolume.HasValue)
+                settings.SoundVolume = Math.Clamp(request.SoundVolume.Value, 0, 100);
 
-        await _stateManager.SaveSettingsAsync();
-        await _audioService.ApplySettingsAsync();
-        return BuildSettings();
+            await _stateManager.SaveSettingsAsync();
+            await _audioService.ApplySettingsAsync();
+            return BuildSettings();
+        }
+        finally
+        {
+            SettingsWriteGate.Release();
+        }
     }
 
     public IResult ServeAsset(string assetId)

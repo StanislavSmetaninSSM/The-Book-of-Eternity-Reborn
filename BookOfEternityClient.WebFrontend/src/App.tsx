@@ -700,12 +700,10 @@ function SettingsRoute({
   return (
     <ShellPanel title="Настройки" eyebrow="локальность клиента">
       <dl className="kv-list">
-        <div><dt>Музыка</dt><dd>{options.musicEnabled ? 'Включена' : 'Выключена'}</dd></div>
-        <div><dt>Звук</dt><dd>{options.soundEnabled ? 'Включён' : 'Выключен'}</dd></div>
         <div><dt>Размер шрифта</dt><dd>{options.consoleFontSize}</dd></div>
       </dl>
       <p>{options.guidance}</p>
-      <p className="muted">Аудио-панель закреплена в сводке состояния, чтобы музыка продолжала играть при переходах между разделами.</p>
+      <p className="muted">Аудио управляется постоянной панелью в сводке состояния, чтобы музыка продолжала играть при переходах между разделами.</p>
     </ShellPanel>
   );
 }
@@ -720,6 +718,7 @@ function AudioSettingsPanel({
   const [audioResult, setAudioResult] = useState(result);
   const [notice, setNotice] = useState('');
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const audioSettingsUpdateQueueRef = useRef<Promise<void>>(Promise.resolve());
 
   useEffect(() => {
     setAudioResult(result);
@@ -739,21 +738,31 @@ function AudioSettingsPanel({
   const hasMusic = Boolean(playlist?.tracks.length);
   const notificationCue = audio.cues.find((cue) => cue.id === 'turn-ready' && cue.asset) ?? audio.cues.find((cue) => cue.asset);
 
-  async function updateAudioSettings(request: BrowserAudioSettingsUpdateRequest) {
-    const updated = await browserApi.updateAudioSettings(request);
-    setAudioResult(updated);
-    if (isSuccess(updated)) {
-      const currentElement = audioElementRef.current;
-      if (currentElement) {
-        currentElement.volume = volumeToUnit(updated.data.musicVolume);
-        if (!updated.data.musicEnabled) {
-          currentElement.pause();
+  function updateAudioSettings(request: BrowserAudioSettingsUpdateRequest) {
+    audioSettingsUpdateQueueRef.current = audioSettingsUpdateQueueRef.current
+      .catch(() => undefined)
+      .then(async () => {
+        try {
+          const updated = await browserApi.updateAudioSettings(request);
+          setAudioResult(updated);
+          if (isSuccess(updated)) {
+            const currentElement = audioElementRef.current;
+            if (currentElement) {
+              currentElement.volume = volumeToUnit(updated.data.musicVolume);
+              if (!updated.data.musicEnabled) {
+                currentElement.pause();
+              }
+            }
+            setNotice('Настройки звука сохранены в общей конфигурации клиента.');
+          } else {
+            setNotice(updated.playerMessage);
+          }
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'сетевой сбой';
+          setNotice(`Не удалось сохранить настройки звука. Подробность: ${message}`);
         }
-      }
-      setNotice('Настройки звука сохранены в общей конфигурации клиента.');
-    } else {
-      setNotice(updated.playerMessage);
-    }
+      });
+    return audioSettingsUpdateQueueRef.current;
   }
 
   async function unlockBrowserMusic() {

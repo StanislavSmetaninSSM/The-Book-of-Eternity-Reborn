@@ -245,6 +245,16 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    public void BrowserAudioService_SerializesSharedSettingsUpdates()
+    {
+        var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "WebUi", "BrowserAudioService.cs"));
+
+        Assert.Contains("new SemaphoreSlim(1, 1)", source, StringComparison.Ordinal);
+        Assert.Contains("await SettingsWriteGate.WaitAsync()", source, StringComparison.Ordinal);
+        Assert.Contains("SettingsWriteGate.Release()", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task AudioAssetEndpoint_ServesOnlyCataloguedAssetsWithoutPathTraversal()
     {
         WriteRootFile("Music/Main Theme.mp3", "fake-mp3");

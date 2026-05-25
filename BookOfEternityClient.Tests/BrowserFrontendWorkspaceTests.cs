@@ -159,6 +159,11 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("autoplayGuidance", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.updateAudioSettings", app, StringComparison.Ordinal);
         Assert.Contains("new Audio()", app, StringComparison.Ordinal);
+        Assert.Contains("audioSettingsUpdateQueueRef", app, StringComparison.Ordinal);
+        Assert.Contains("audioSettingsUpdateQueueRef.current = audioSettingsUpdateQueueRef.current", app, StringComparison.Ordinal);
+        Assert.Contains("Аудио управляется постоянной панелью", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("<div><dt>Музыка</dt><dd>{options.musicEnabled", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("<div><dt>Звук</dt><dd>{options.soundEnabled", app, StringComparison.Ordinal);
         Assert.Contains("{readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} />}", app, StringComparison.Ordinal);
         Assert.DoesNotContain("<AudioSettingsPanel result={state.audio} activeRoute={activeRoute} />", app, StringComparison.Ordinal);
         Assert.DoesNotContain("useEffect(() => {\n    void audioElement", app, StringComparison.Ordinal);
