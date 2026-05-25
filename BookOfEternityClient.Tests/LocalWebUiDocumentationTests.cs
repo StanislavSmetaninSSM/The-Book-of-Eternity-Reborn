@@ -133,4 +133,3 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("BrowserApiClient", readme, StringComparison.Ordinal);
     }
 }
-
