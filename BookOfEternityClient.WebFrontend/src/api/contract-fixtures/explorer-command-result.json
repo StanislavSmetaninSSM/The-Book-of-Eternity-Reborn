@@ -1,0 +1,47 @@
+{
+  "command": "/help",
+  "state": "Completed",
+  "blocks": [
+    {
+      "kind": "message",
+      "severity": "Info",
+      "title": "Справка",
+      "message": "Контрактный пример результата команды."
+    }
+  ],
+  "actions": [
+    {
+      "id": "open-status",
+      "label": "Открыть статус",
+      "command": "/status",
+      "style": "Primary",
+      "requiresConfirmation": false,
+      "payload": null
+    }
+  ],
+  "prompts": [
+    {
+      "kind": "textInput",
+      "id": "player_intent",
+      "prompt": "Что делает персонаж?",
+      "required": true,
+      "defaultValue": "",
+      "placeholder": "Опишите действие..."
+    }
+  ],
+  "notifications": [
+    {
+      "severity": "Success",
+      "title": "Команда выполнена",
+      "message": "DTO готов к отображению."
+    }
+  ],
+  "interactiveSession": {
+    "sessionId": "prompt_contract",
+    "submitEndpoint": "/api/explorer/prompt-sessions/submit",
+    "cancelEndpoint": "/api/explorer/prompt-sessions/cancel",
+    "requiresLocalUiLock": true,
+    "ownerId": "browser:contract",
+    "expiresAtUtc": "2026-05-25T09:50:00Z"
+  }
+}

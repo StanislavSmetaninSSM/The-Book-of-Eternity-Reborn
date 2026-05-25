@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "session": {
+    "gameSessionExists": true,
+    "hasReadableSoul": true,
+    "canContinue": true,
+    "continueReason": "Текущую сессию можно продолжить в браузерном игровом экране.",
+    "soulName": "Арион",
+    "currentRealm": "Mortal World",
+    "realmLabel": "Смертный мир",
+    "currentIncarnation": 3,
+    "turnNumber": 12,
+    "turnLabel": "Ход 12",
+    "terminalSoulDissipated": false,
+    "validationState": "clean",
+    "validationLabel": "Состояние валидно",
+    "pendingTurnMessage": "Активный ход ГМа не обнаружен.",
+    "canStartBrowserWrite": true,
+    "localUiLocked": false,
+    "checkedAtUtc": "2026-05-25T09:30:00Z"
+  },
+  "actions": [
+    {
+      "id": "continue",
+      "label": "Продолжить",
+      "description": "Арион • Смертный мир • Ход 12",
+      "enabled": true,
+      "disabledReason": "",
+      "kind": "client-panel",
+      "command": "",
+      "targetPanel": "game-shell"
+    }
+  ],
+  "saves": [
+    {
+      "saveId": "manual:sample.json",
+      "scope": "manual",
+      "scopeLabel": "Ручное сохранение",
+      "displayName": "Перед вратами",
+      "description": "Контрактный пример сохранения.",
+      "characterName": "Арион",
+      "turnLabel": "Ход 12",
+      "timestampUtc": "2026-05-25T09:30:00Z",
+      "fileSizeBytes": 4096
+    }
+  ],
+  "options": {
+    "musicEnabled": true,
+    "soundEnabled": false,
+    "consoleFontSize": 18,
+    "guidance": "Полное редактирование настроек остаётся в консольном меню до отдельной Browser Client задачи."
+  },
+  "about": {
+    "title": "Книга Вечности: Перерождение",
+    "body": "Локальный браузерный клиент работает поверх того же C# runtime."
+  },
+  "advancedShell": {
+    "label": "Расширенный режим",
+    "description": "Командная палитра и debug-инструменты скрыты от обычного главного меню.",
+    "initiallyExpanded": false
+  }
+}
