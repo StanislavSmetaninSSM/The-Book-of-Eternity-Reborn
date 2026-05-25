@@ -95,4 +95,19 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("BrowserWebUiParity", checklist, StringComparison.Ordinal);
         Assert.Contains("primary prose action composer", checklist, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Fact]
+    public void LocalWebHostDocs_DocumentFrontendAssetServingContract()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
+
+        Assert.Contains("BookOfEternityClient.WebFrontend/dist/", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("public/local-web-ui-shell.html", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("wwwroot/browser", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("C# owns the loopback APIs/runtime", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("dist/` is generated and remains git-ignored", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("local-web-ui-shell.html", readme, StringComparison.Ordinal);
+        Assert.Contains("Generated `dist/`", readme, StringComparison.Ordinal);
+    }
 }

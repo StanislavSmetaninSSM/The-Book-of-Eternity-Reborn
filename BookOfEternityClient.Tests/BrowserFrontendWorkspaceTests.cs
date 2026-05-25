@@ -85,12 +85,28 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("npm run build", readme, StringComparison.Ordinal);
         Assert.Contains("C# runtime remains the authority", readme, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("issue #702", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("BookOfEternityClient.WebFrontend/dist/", readme, StringComparison.Ordinal);
+        Assert.Contains("public/local-web-ui-shell.html", readme, StringComparison.Ordinal);
 
         Assert.Contains("BookOfEternityClient.WebFrontend", hostDoc, StringComparison.Ordinal);
         Assert.Contains("npm run build", hostDoc, StringComparison.Ordinal);
         Assert.Contains("#702", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("standalone frontend assets", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("local-web-ui-shell.html", hostDoc, StringComparison.Ordinal);
 
         Assert.Contains("C# API остаётся источником истины", app, StringComparison.Ordinal);
         Assert.DoesNotContain("debug dashboard", app, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void FrontendHostContract_UsesExternalAssetsInsteadOfInlineShellBlob()
+    {
+        var hostSource = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient", "WebUi", "LocalWebUiHost.cs"));
+        var fallbackShell = Path.Combine(FrontendRoot, "public", "local-web-ui-shell.html");
+
+        Assert.True(File.Exists(fallbackShell), $"Missing {fallbackShell}");
+        Assert.DoesNotContain("BuildShellHtml", hostSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("data-menu-action=\"continue\"", hostSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("<!doctype html>", hostSource, StringComparison.OrdinalIgnoreCase);
     }
 }

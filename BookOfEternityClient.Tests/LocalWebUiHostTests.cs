@@ -23,6 +23,14 @@ public sealed class LocalWebUiHostTests : IDisposable
         Directory.CreateDirectory(_rootPath);
     }
 
+    private static string FallbackFrontendRoot => Path.Combine(
+        TestRepoPaths.RepoRoot,
+        "BookOfEternityClient.WebFrontend",
+        "public");
+
+    private LocalWebUiHostOptions CreateHostOptions(string url) =>
+        new(_rootPath, url, FallbackFrontendRoot);
+
     [Fact]
     public void Build_RejectsNonLoopbackUrls()
     {
@@ -37,7 +45,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task HealthEndpoint_ReturnsLocalSessionStatus()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -70,7 +78,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         }
         """);
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -97,7 +105,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         }
         """);
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -135,7 +143,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         {"turn":19,"realm":"Chaos Sea","player":"Последний ход","narrative":"Продолжение"}
         """);
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -159,7 +167,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         }
         """);
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -192,7 +200,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         }
         """);
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -235,7 +243,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         """);
         WriteSessionFile("input/turn_request.json", "{}");
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -258,7 +266,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     {
         WriteSessionFile("game_state/meta/soul_state.json", "{ not-json");
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -273,8 +281,14 @@ public sealed class LocalWebUiHostTests : IDisposable
     [Fact]
     public async Task RootEndpoint_ReturnsPlayerFacingBrowserMainMenu()
     {
+        var fallbackFrontendRoot = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient.WebFrontend",
+            "public");
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(
+            Array.Empty<string>(),
+            new LocalWebUiHostOptions(_rootPath, url, fallbackFrontendRoot));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -291,6 +305,57 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("data-menu-action=\"exit\"", html, StringComparison.Ordinal);
         Assert.Contains("id=\"advanced-shell-toggle\"", html, StringComparison.Ordinal);
         Assert.DoesNotContain("Local Web UI", html, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task RootEndpoint_ServesConfiguredFrontendIndexAndStaticAssets()
+    {
+        var frontendRoot = Path.Combine(_rootPath, "frontend-dist");
+        Directory.CreateDirectory(Path.Combine(frontendRoot, "assets"));
+        await File.WriteAllTextAsync(Path.Combine(frontendRoot, "index.html"), """
+        <!doctype html>
+        <html lang="ru"><head><title>External Browser Shell</title></head><body><div id="root"></div><script type="module" src="/assets/app.js"></script></body></html>
+        """);
+        await File.WriteAllTextAsync(Path.Combine(frontendRoot, "assets", "app.js"), "console.log('frontend asset');");
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(
+            Array.Empty<string>(),
+            new LocalWebUiHostOptions(_rootPath, url, frontendRoot));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var html = await client.GetStringAsync("/");
+        var js = await client.GetStringAsync("/assets/app.js");
+        var health = JsonNode.Parse(await client.GetStringAsync("/api/health"))!.AsObject();
+
+        Assert.Contains("External Browser Shell", html, StringComparison.Ordinal);
+        Assert.Contains("/assets/app.js", html, StringComparison.Ordinal);
+        Assert.Contains("frontend asset", js, StringComparison.Ordinal);
+        Assert.Equal("ok", health["status"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task FallbackEndpoint_ReturnsIndexForClientRoutesButNotApiOrAssetMisses()
+    {
+        var frontendRoot = Path.Combine(_rootPath, "frontend-dist");
+        Directory.CreateDirectory(frontendRoot);
+        await File.WriteAllTextAsync(Path.Combine(frontendRoot, "index.html"), "<!doctype html><title>SPA Shell</title>");
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(
+            Array.Empty<string>(),
+            new LocalWebUiHostOptions(_rootPath, url, frontendRoot));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var clientRoute = await client.GetStringAsync("/game/screen");
+        using var missingApi = await client.GetAsync("/api/not-real");
+        using var missingAsset = await client.GetAsync("/assets/not-real.js");
+
+        Assert.Contains("SPA Shell", clientRoute, StringComparison.Ordinal);
+        Assert.Equal(HttpStatusCode.NotFound, missingApi.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, missingAsset.StatusCode);
     }
 
     [Fact]
@@ -338,7 +403,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         WriteSessionFile("input/turn_request.json", "{}");
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -369,7 +434,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         var runtimePath = Path.Combine(_rootPath, "game_session", "game_state", "control", "qte_runtime.json");
         var before = File.ReadAllText(runtimePath);
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -392,7 +457,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         """);
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -410,7 +475,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         """);
         WriteSessionFile("ready/turn_complete.json", "{} ");
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -435,7 +500,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     {
         WriteSessionFile("game_state/meta/soul_state.json", "not json");
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -459,7 +524,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         {"turn":17,"realm":"Chaos Sea","player":"Семнадцатый ход","narrative":"Продолжение"}
         """);
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -473,7 +538,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_DefaultPlayerAreaContainsGameScreenAndPrimaryActionComposer()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -498,7 +563,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_DefaultComposerDoesNotAutoExecuteSlashCommands()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -513,7 +578,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_KeepsDebugToolsInsideExplicitAdvancedPanel()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -544,7 +609,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_PlayerMenuActionsDoNotAutomaticallyOpenAdvancedDiagnostics()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -562,7 +627,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_IncludesConcisePlayerErrorRendererWithExpandableDetails()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -579,7 +644,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_IncludesCommandRendererAssets()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -608,7 +673,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task MapViewerAssetEndpoints_ReturnSharedRendererPackage()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -626,7 +691,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_UsesSharedMapViewerPackage()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -642,7 +707,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_IncludesFullGameShellNavigation()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -671,7 +736,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         WriteSessionImage("images/npcs/hero.png");
         var mediaId = LocalMediaService.CreateMediaIdForRelativePath("images/npcs/hero.png");
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -688,7 +753,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         WriteSessionFile("game_state/meta/soul_state.png", "not an image root");
         var mediaId = LocalMediaService.CreateMediaIdForRelativePath("game_state/meta/soul_state.png");
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -703,7 +768,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task RootEndpoint_IncludesLifecycleDashboardAssets()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -730,7 +795,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         WriteSessionFile("input/turn_request.json", "{}");
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -753,7 +818,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task LifecycleValidateEndpoint_ReturnsGroupedValidationIssues()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -774,7 +839,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task ExplorerCommandEndpoint_ReturnsMigratedHelpDto()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -802,7 +867,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         """);
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -831,7 +896,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task ExplorerCommandEndpoint_ReturnsLocalTurnProtocolForMutatingCommands()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -851,7 +916,7 @@ public sealed class LocalWebUiHostTests : IDisposable
     public async Task PromptSessionEndpoints_SubmitBrowserPromptAnswers()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -892,7 +957,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         WriteSessionFile("output/qte_offer.json", BuildSingleActionQteOfferJson());
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -929,7 +994,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         """);
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };

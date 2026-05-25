@@ -30,6 +30,14 @@
     <None Include="system_guardians\built_in\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="..\BookOfEternityClient.WebFrontend\public\local-web-ui-shell.html"
+             Link="wwwroot\browser\local-web-ui-shell.html"
+             CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\BookOfEternityClient.WebFrontend\dist\**\*"
+             Exclude="..\BookOfEternityClient.WebFrontend\dist\local-web-ui-shell.html"
+             Link="wwwroot\browser\%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest"
+             Condition="Exists('..\BookOfEternityClient.WebFrontend\dist')" />
   </ItemGroup>
 
   <ItemGroup>
