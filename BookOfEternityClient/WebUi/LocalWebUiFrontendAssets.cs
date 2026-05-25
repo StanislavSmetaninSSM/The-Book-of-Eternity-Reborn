@@ -27,13 +27,9 @@ internal sealed class LocalWebUiFrontendAssets
 
         foreach (var root in CandidateBuildRoots())
         {
-            var shellPath = Path.Combine(root, FallbackShellFileName);
-            if (File.Exists(shellPath))
-                return new LocalWebUiFrontendAssets(root, shellPath, isFallbackShell: true);
-
-            var indexPath = Path.Combine(root, IndexFileName);
-            if (File.Exists(indexPath))
-                return new LocalWebUiFrontendAssets(root, indexPath, isFallbackShell: false);
+            var resolved = TryResolveBuildRoot(root);
+            if (resolved != null)
+                return resolved;
         }
 
         foreach (var shellPath in CandidateFallbackShells())
@@ -46,6 +42,19 @@ internal sealed class LocalWebUiFrontendAssets
             "Browser frontend assets were not found. Run `npm run build --prefix BookOfEternityClient.WebFrontend` " +
             "from the repository root, or keep the tracked fallback shell at " +
             "BookOfEternityClient.WebFrontend/public/local-web-ui-shell.html.");
+    }
+
+    internal static LocalWebUiFrontendAssets? TryResolveBuildRoot(string root)
+    {
+        var indexPath = Path.Combine(root, IndexFileName);
+        if (File.Exists(indexPath))
+            return new LocalWebUiFrontendAssets(root, indexPath, isFallbackShell: false);
+
+        var shellPath = Path.Combine(root, FallbackShellFileName);
+        if (File.Exists(shellPath))
+            return new LocalWebUiFrontendAssets(root, shellPath, isFallbackShell: true);
+
+        return null;
     }
 
     private static LocalWebUiFrontendAssets ResolveOverride(string overridePath)

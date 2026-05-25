@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691, #701, #702, #703
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691, #701, #702, #703, #704
 Parent epic: #559
 
 ## Local-Only Model
@@ -71,7 +71,7 @@ Use the same base path as console mode when you want the browser to continue the
 
 ## Frontend Workspace
 
-Issue #701 added `BookOfEternityClient.WebFrontend/`, a Vite + React + TypeScript workspace for the long-term Browser Client. Issue #702 connects that workspace to `LocalWebUiHost`: C# owns the loopback APIs/runtime, and the browser root is served from standalone frontend assets instead of a C# raw-string HTML blob.
+Issue #701 added `BookOfEternityClient.WebFrontend/`, a Vite + React + TypeScript workspace for the long-term Browser Client. Issue #702 connects that workspace to `LocalWebUiHost`: C# owns the loopback APIs/runtime, and the browser root is served from standalone frontend assets instead of a C# raw-string HTML blob. Issue #704 turns the Vite entry point into the first React app shell with player-facing routes and explicit advanced/debug opt-in.
 
 From the repository root:
 
@@ -88,7 +88,11 @@ npm run build --prefix BookOfEternityClient.WebFrontend
 BookOfEternityClient.WebFrontend/dist/
 ```
 
-`dist/` is generated and remains git-ignored. When it exists, `LocalWebUiHost` serves the build root: during the transition it prefers the copied `dist/local-web-ui-shell.html` player-facing shell, and later React-routing work can switch the root to `dist/index.html`. Built JS/CSS/media assets under `dist/assets/` are served by the same static-file middleware. During packaged/published builds, present `dist/**` files are copied to the C# output under `wwwroot/browser/` so the host can serve them without source-tree paths.
+`dist/` is generated and remains git-ignored. When it exists, `LocalWebUiHost` serves the build root: issue #704 makes the preferred root `dist/index.html`, the built React app shell. The copied `dist/local-web-ui-shell.html` is now only a compatibility fallback if a build root lacks `index.html`. Built JS/CSS/media assets under `dist/assets/` are served by the same static-file middleware. During packaged/published builds, present `dist/**` files are copied to the C# output under `wwwroot/browser/` so the host can serve them without source-tree paths.
+
+The React app shell provides player-facing routes for `Главная`, `Игра`, `Душа`, `Мир`, `Медиа`, and `Настройки`. These routes load typed data through `src/api/client.ts` (`/api/main-menu`, `/api/session`, `/api/game-screen`, and `/api/lifecycle/dashboard`) and render request state, realm theme, lifecycle/QTE status, and placeholder regions for #683-#689. The shell remains presentation-only: C# keeps all gameplay/application logic, persistence, validation, local-write coordination, afterlife/mortal contracts, and command execution authority.
+
+The normal root is Russian-first and player-facing. Command IDs, `/api/*` details, lifecycle validation internals, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player-visible failures should show short `playerMessage` text first and keep `technicalDetails` in an advanced/details surface.
 
 If no Vite build output exists, `LocalWebUiHost` falls back to the tracked extracted MVP shell:
 
@@ -144,13 +148,13 @@ POST /api/qte/offer
 POST /api/qte/action
 ```
 
-`/` serves the browser game shell. The root page defaults to the player-facing main menu plus a player-facing game screen: current session summary, Continue/New Game/Load/Options/About/Exit actions, the current realm/narrative/status surface, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, or debug controls as the primary player flow. The default surface includes a primary prose action composer for ordinary player intent; slash commands are intentionally rejected from automatic execution and can only be prefixed into the explicit Advanced / developer panel for a second deliberate action.
+`/` serves the browser game shell. With a Vite build present, the root is the #704 React app shell: player-facing routes for main menu, game, soul/status, world, media, and settings. The root defaults to current session/game summaries, the current realm/narrative/status surface, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, or debug controls as the primary player flow. The default surface includes a primary prose action composer for ordinary player intent; slash commands are intentionally rejected from automatic execution and require a separate explicit `Расширенный режим` opt-in before any technical command/API path is visible.
 
-The **Advanced / developer panel** is available through the explicit `Расширенный режим` button. It contains the raw command console, the migrated command renderer, lifecycle dashboard controls, validation controls, QTE probes, and `/api/*` endpoint details needed for development or repair. Continue/New Game do not open this panel automatically; when a player flow still needs a technical bridge, the UI shows a short game-facing explanation and a separate opt-in button. This keeps the normal browser landing page player-facing while preserving the shared command/API tools; the browser still renders `ExplorerCommandResult` DTOs from the command API and does not duplicate game logic in JavaScript.
+The #704 React **Advanced / developer panel** is available only through the explicit `Расширенный режим` button. It exposes typed API contract/status diagnostics and lazily loads the lifecycle dashboard after opt-in; Continue/New Game and slash-prefixed prose input do not open it automatically. The no-build fallback shell (`public/local-web-ui-shell.html`) still contains the older raw command console, migrated command renderer, lifecycle validation controls, QTE probes, and `/api/*` details for development/repair until those tools are rebuilt as React advanced-only components. Both shells keep the normal browser landing page player-facing and do not duplicate game logic in JavaScript.
 
-Normal player-menu errors are short Russian messages. Technical exception/HTTP details are placed behind a `Подробности` disclosure so they are available for repair without becoming primary player content.
+Normal player-menu errors are short Russian messages. In the React shell, technical exception/HTTP details are only shown after explicit advanced opt-in; the fallback shell may expose them through a `Подробности` disclosure for repair without making them primary player content.
 
-Inside the Advanced / developer panel, the shell includes Russian navigation and a filterable command palette for the major play areas:
+Inside the fallback shell's Advanced / developer panel, the shell includes Russian navigation and a filterable command palette for the major play areas:
 
 - Мир смертных
 - Море Хаоса

@@ -99,6 +99,60 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void ReactAppShell_DefinesPlayerRoutesSharedStateAndAdvancedOptIn()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = File.ReadAllText(Path.Combine(FrontendRoot, "src", "styles.css"));
+
+        Assert.Contains("playerRoutes", app, StringComparison.Ordinal);
+        Assert.Contains("activeRoute", app, StringComparison.Ordinal);
+        Assert.Contains("advancedEnabled", app, StringComparison.Ordinal);
+        Assert.Contains("loadBrowserState", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getMainMenu", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getGameScreen", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getSessionStatus", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getLifecycleDashboard", app, StringComparison.Ordinal);
+        Assert.Contains("advancedEnabled ? await browserApi.getLifecycleDashboard()", app, StringComparison.Ordinal);
+        Assert.Contains("Главная", app, StringComparison.Ordinal);
+        Assert.Contains("Игра", app, StringComparison.Ordinal);
+        Assert.Contains("Душа", app, StringComparison.Ordinal);
+        Assert.Contains("Мир", app, StringComparison.Ordinal);
+        Assert.Contains("Медиа", app, StringComparison.Ordinal);
+        Assert.Contains("Настройки", app, StringComparison.Ordinal);
+        Assert.Contains("Расширенный режим", app, StringComparison.Ordinal);
+        Assert.Contains("AdvancedDiagnosticsPanel", app, StringComparison.Ordinal);
+        Assert.Contains("ShellPanel", app, StringComparison.Ordinal);
+        Assert.Contains("StatusBar", app, StringComparison.Ordinal);
+        Assert.Contains("RealmTheme", app, StringComparison.Ordinal);
+        Assert.Contains("playerMessage", app, StringComparison.Ordinal);
+        Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("setAdvancedEnabled(true)", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("typed BrowserApiClient", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("endpoint.id", app, StringComparison.Ordinal);
+        Assert.Contains(".browser-shell", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-grid", styles, StringComparison.Ordinal);
+        Assert.Contains(".advanced-diagnostics", styles, StringComparison.Ordinal);
+        Assert.Contains("@media (max-width: 840px)", styles, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ReactAppShell_DocumentsIssue704RoutingAndPlayerAdvancedBoundary()
+    {
+        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
+        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
+
+        Assert.Contains("#704", readme, StringComparison.Ordinal);
+        Assert.Contains("React app shell", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("player-facing routes", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("advanced", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("dist/index.html", readme, StringComparison.Ordinal);
+        Assert.Contains("#704", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("React app shell", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("dist/index.html", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("Расширенный режим", hostDoc, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void FrontendHostContract_UsesExternalAssetsInsteadOfInlineShellBlob()
     {
         var hostSource = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient", "WebUi", "LocalWebUiHost.cs"));
