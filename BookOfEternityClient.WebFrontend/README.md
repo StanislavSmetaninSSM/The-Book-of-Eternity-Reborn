@@ -30,14 +30,31 @@ npm run preview
 
 ## Relationship to `dotnet run -- --web`
 
-Issue #702 connects this workspace to the C# local web host. `dotnet run --project BookOfEternityClient -- --web` keeps serving the existing loopback-only Minimal API endpoints from C#, then serves frontend assets in this order:
+Issue #702 connects this workspace to the C# local web host. Issue #704 turns the Vite entry point into the first real React app shell. `dotnet run --project BookOfEternityClient -- --web` keeps serving the existing loopback-only Minimal API endpoints from C#, then serves frontend assets in this order:
 
-1. `BookOfEternityClient.WebFrontend/dist/local-web-ui-shell.html` after `npm run build` copies the tracked player-facing fallback shell into the build output.
-2. `BookOfEternityClient.WebFrontend/dist/index.html` for the React/Vite shell when a later migration removes the fallback-shell preference.
+1. `BookOfEternityClient.WebFrontend/dist/index.html` for the built React app shell.
+2. `BookOfEternityClient.WebFrontend/dist/local-web-ui-shell.html` only if a build root somehow has the copied fallback shell but no React index.
 3. `BookOfEternityClient` output `wwwroot/browser/` for packaged/published builds that copied the Vite output or fallback shell.
 4. The source fallback shell `BookOfEternityClient.WebFrontend/public/local-web-ui-shell.html` when no build output is present.
 
-The fallback shell is the extracted player-facing MVP shell. It keeps `--web` usable while later issues migrate screens into React components. Generated `dist/`, `node_modules/`, `.vite/`, and `*.tsbuildinfo` stay ignored and should not be committed.
+The fallback shell is the extracted player-facing MVP shell. It keeps `--web` usable without a frontend build, but the preferred built root is now `dist/index.html`. Generated `dist/`, `node_modules/`, `.vite/`, and `*.tsbuildinfo` stay ignored and should not be committed.
+
+## React app shell (#704)
+
+The React app shell defines player-facing routes for `Главная`, `Игра`, `Душа`, `Мир`, `Медиа`, and `Настройки`. These are presentation routes only: they consume `src/api/client.ts`, render typed C# DTOs, and leave all game/application authority in the C# runtime.
+
+The shell keeps default UI Russian-first and player-facing. Command IDs, `/api/*` endpoint details, lifecycle validation internals, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player route failures should render `playerMessage`; `technicalDetails` belongs in the advanced diagnostics/details surface.
+
+Future Browser Client tasks (#683-#689) should extend these route regions rather than recreating ad-hoc DOM manipulation:
+
+- main menu/session flow under `Главная`;
+- narrative, turn state, QTE, and prose action composer under `Игра`;
+- character/soul/status cards under `Душа`;
+- map, journal, quests, factions, and contextual actions under `Мир`;
+- gallery, media, and QTE visuals under `Медиа`;
+- local profile, language, audio, and comfort settings under `Настройки`.
+
+Verify shell changes with `npm run typecheck --prefix BookOfEternityClient.WebFrontend`, `npm run build --prefix BookOfEternityClient.WebFrontend`, and focused browser .NET tests such as `BrowserFrontendWorkspaceTests` / `LocalWebUiHostTests`.
 
 Issue #703 adds the typed API contract layer under:
 
