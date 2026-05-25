@@ -269,14 +269,39 @@ function FilteredActionSections({ sections, emptyMessage }: { sections: BrowserP
 }
 
 function filterActionSections(menu: BrowserPlayerCommandMenuDto, matchers: string[]): BrowserPlayerCommandSectionDto[] {
-  return menu.sections.filter((section) => {
+  return menu.sections.flatMap((section) => {
     if (!section.playerDefault || section.actions.length === 0) {
-      return false;
+      return [];
     }
 
-    const haystack = `${section.id} ${section.label} ${section.description}`.toLocaleLowerCase('ru-RU');
-    return matchers.some((matcher) => haystack.includes(matcher.toLocaleLowerCase('ru-RU')));
+    const matchingActions = section.actions.filter((action) => matchesActionSectionOrAction(section, action, matchers));
+    if (matchingActions.length === 0) {
+      return [];
+    }
+
+    return [{ ...section, actions: matchingActions }];
   });
+}
+
+function matchesActionSectionOrAction(
+  section: BrowserPlayerCommandSectionDto,
+  action: BrowserPlayerCommandActionDto,
+  matchers: string[]
+): boolean {
+  const haystack = [
+    section.id,
+    section.label,
+    section.description,
+    action.id,
+    action.label,
+    action.description,
+    action.formLabel,
+    action.formPrompt,
+    action.advancedCommand
+  ].join(' ').toLocaleLowerCase('ru-RU');
+  const normalizedMatchers = matchers.map((matcher) => matcher.toLocaleLowerCase('ru-RU'));
+
+  return normalizedMatchers.some((matcher) => haystack.includes(matcher));
 }
 ```
 
@@ -459,6 +484,18 @@ dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-re
 ```
 
 Expected: PASS.
+
+- [ ] **Step 4: Add action-level inventory regression guard after review feedback**
+
+Add `BrowserNavigationIa_InventoryRouteMatchesCurrentActionMetadata` to `BookOfEternityClient.Tests/BrowserFrontendWorkspaceTests.cs`. It parses `src/api/contract-fixtures/game-screen.json`, proves current metadata exposes `inventory`, `storage_access`, and `craft` actions under broader `soul`/`world` sections, then asserts `App.tsx` filters matching actions rather than only matching section metadata.
+
+Run:
+
+```bash
+dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~BrowserNavigationIa_InventoryRouteMatchesCurrentActionMetadata" --logger "console;verbosity=minimal"
+```
+
+Expected: FAIL before the action-level filter, PASS after `filterActionSections` returns section copies with matching actions.
 
 ---
 

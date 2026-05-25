@@ -95,15 +95,38 @@
 .route-card--game { background: color-mix(in srgb, var(--realm-accent) 18%, rgba(18, 26, 28, 0.9)); }
 .route-card--soul { --route-tint: var(--realm-shining); }
 .route-card--world { --route-tint: #88c58f; }
+.route-card--journal { --route-tint: #cda6ff; }
+.route-card--inventory { --route-tint: #e0a66c; }
 .route-card--media { --route-tint: var(--state-qte); }
 .route-card--settings { --route-tint: #9fb7ff; }
 
 .route-card--home,
 .route-card--soul,
 .route-card--world,
+.route-card--journal,
+.route-card--inventory,
 .route-card--media,
 .route-card--settings {
   border-color: color-mix(in srgb, var(--route-tint) 24%, rgba(255, 255, 255, 0.08));
+}
+
+.route-grid--utility {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.route-grid--utility .route-card {
+  min-height: 6.2rem;
+  box-shadow: none;
+}
+
+.utility-route-heading {
+  align-self: center;
+  margin: 0;
+  color: var(--color-mist);
+  font-size: 0.88rem;
 }
 
 .shell-panel,

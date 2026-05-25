@@ -36,7 +36,7 @@ Use a conservative React-only IA refinement:
    - journal route shows quest/archive/story/faction/guardian sections when present;
    - inventory route shows inventory/craft/item/equipment/storage sections when present;
    - both include neutral locked states when no game session exists;
-   - both fall back to clear player-facing guidance when a session exists but matching sections are not available.
+   - both fall back to clear player-facing guidance when a session exists but matching section/action metadata is not available.
 5. Keep advanced diagnostics untouched and lazy-loaded only after `advancedEnabled` is true.
 6. Add source guard tests in `BrowserFrontendWorkspaceTests` for route order, utility separation, absence of technical labels from default route arrays, and the new locked states.
 7. Update `BookOfEternityClient.WebFrontend/README.md` and `docs/web-ui/local-web-host.md` with the #727 route taxonomy.
@@ -58,7 +58,7 @@ Chosen. This satisfies #727's default navigation requirements, keeps technical s
 ## Data flow
 
 - React loads `BrowserGameScreenDto` through existing `browserApi.getGameScreen()`.
-- `JournalRoute` and `InventoryRoute` filter `game.actionMenu.sections` by section id/label text and `playerDefault`.
+- `JournalRoute` and `InventoryRoute` filter `game.actionMenu.sections` by player-default section/action metadata so current actions such as `inventory`, `storage_access`, and `craft` surface even when they live under broader C# sections.
 - Matching sections are passed to existing `ActionSection`, which renders existing `ActionCard` behavior and uses C# command/prompt-session endpoints when the player explicitly opens a section/action.
 - No route creates or mutates game state merely by rendering.
 

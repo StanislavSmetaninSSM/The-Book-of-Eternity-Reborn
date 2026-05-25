@@ -191,6 +191,88 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("@media (max-width: 840px)", styles, StringComparison.Ordinal);
     }
 
+
+    [Fact]
+    public void BrowserNavigationIa_SeparatesPrimaryPlayerRoutesFromUtilityAndAdvancedRoutes()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = ReadFrontendStyles();
+        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
+        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
+
+        Assert.Contains("type RouteKind = 'primary' | 'utility';", app, StringComparison.Ordinal);
+        Assert.Contains("const primaryPlayerRoutes = playerRoutes.filter((route) => route.kind === 'primary');", app, StringComparison.Ordinal);
+        Assert.Contains("const utilityPlayerRoutes = playerRoutes.filter((route) => route.kind === 'utility');", app, StringComparison.Ordinal);
+        Assert.Contains("aria-label=\"Основные игровые разделы браузерного клиента\"", app, StringComparison.Ordinal);
+        Assert.Contains("aria-label=\"Дополнительные игровые разделы браузерного клиента\"", app, StringComparison.Ordinal);
+        Assert.Contains("className=\"route-grid route-grid--primary\"", app, StringComparison.Ordinal);
+        Assert.Contains("className=\"route-grid route-grid--utility\"", app, StringComparison.Ordinal);
+
+        var routeOrder = new[] { "id: 'home'", "id: 'game'", "id: 'soul'", "id: 'world'", "id: 'journal'", "id: 'inventory'", "id: 'media'", "id: 'settings'" };
+        var previousIndex = -1;
+        foreach (var marker in routeOrder)
+        {
+            var index = app.IndexOf(marker, StringComparison.Ordinal);
+            Assert.True(index > previousIndex, $"Route marker {marker} should appear after the previous player route marker.");
+            previousIndex = index;
+        }
+
+        Assert.Contains("label: 'Журнал'", app, StringComparison.Ordinal);
+        Assert.Contains("label: 'Инвентарь'", app, StringComparison.Ordinal);
+        Assert.Contains("function JournalRoute", app, StringComparison.Ordinal);
+        Assert.Contains("function InventoryRoute", app, StringComparison.Ordinal);
+        Assert.Contains("filterActionSections(game.actionMenu, journalSectionMatchers)", app, StringComparison.Ordinal);
+        Assert.Contains("filterActionSections(game.actionMenu, inventorySectionMatchers)", app, StringComparison.Ordinal);
+        Assert.Contains("Журнал ждёт главу", app, StringComparison.Ordinal);
+        Assert.Contains("Инвентарь ждёт главу", app, StringComparison.Ordinal);
+        Assert.Contains("Сводка / Игра / Душа / Мир / Журнал / Инвентарь", app, StringComparison.Ordinal);
+
+        var routeArrayStart = app.IndexOf("const playerRoutes", StringComparison.Ordinal);
+        var routeArrayEnd = app.IndexOf("const fallbackTheme", StringComparison.Ordinal);
+        Assert.True(routeArrayStart >= 0 && routeArrayEnd > routeArrayStart, "Route metadata should stay near the top of App.tsx.");
+        var routeMetadata = app[routeArrayStart..routeArrayEnd];
+        Assert.DoesNotContain("Debug", routeMetadata, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", routeMetadata, StringComparison.Ordinal);
+        Assert.DoesNotContain("Network", routeMetadata, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("command coverage", routeMetadata, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(".route-grid--primary", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-grid--utility", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card--journal", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card--inventory", styles, StringComparison.Ordinal);
+
+        Assert.Contains("#727", readme, StringComparison.Ordinal);
+        Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", readme, StringComparison.Ordinal);
+        Assert.Contains("#727", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", hostDoc, StringComparison.Ordinal);
+    }
+
+
+    [Fact]
+    public void BrowserNavigationIa_InventoryRouteMatchesCurrentActionMetadata()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var fixturePath = Path.Combine(FrontendRoot, "src", "api", "contract-fixtures", "game-screen.json");
+        using var document = JsonDocument.Parse(File.ReadAllText(fixturePath));
+        var sections = document.RootElement.GetProperty("actionMenu").GetProperty("sections").EnumerateArray();
+        var actionLocations = sections
+            .SelectMany(section => section.GetProperty("actions").EnumerateArray().Select(action => new
+            {
+                SectionId = section.GetProperty("id").GetString(),
+                ActionId = action.GetProperty("id").GetString(),
+            }))
+            .ToArray();
+
+        Assert.Contains(actionLocations, action => action.SectionId == "soul" && action.ActionId == "inventory");
+        Assert.Contains(actionLocations, action => action.SectionId == "world" && action.ActionId == "storage_access");
+        Assert.Contains(actionLocations, action => action.SectionId == "world" && action.ActionId == "craft");
+
+        Assert.Contains("function matchesActionSectionOrAction", app, StringComparison.Ordinal);
+        Assert.Contains("const matchingActions = section.actions.filter((action) => matchesActionSectionOrAction(section, action, matchers));", app, StringComparison.Ordinal);
+        Assert.Contains("actions: matchingActions", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("return matchers.some((matcher) => haystack.includes", app, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void BrowserDesignSystem_HasMaintainableCssStructureAndVisualTokens()
     {
