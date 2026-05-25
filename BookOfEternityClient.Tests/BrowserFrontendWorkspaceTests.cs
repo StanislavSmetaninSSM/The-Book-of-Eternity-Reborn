@@ -286,6 +286,8 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("[/repair\\/validation/gi, 'починка и проверка']", app, StringComparison.Ordinal);
         Assert.Contains("[/UI-блокировка/gi, 'блокировка интерфейса']", app, StringComparison.Ordinal);
         Assert.Contains("[/\\bvalidation\\b/gi, 'проверка']", app, StringComparison.Ordinal);
+        Assert.Contains("[/game_state\\/meta\\/soul_state\\.json/gi, 'файл души']", app, StringComparison.Ordinal);
+        Assert.Contains("[/локальный запись хода/gi, 'локальную запись хода']", app, StringComparison.Ordinal);
         Assert.Contains("prompt.allowCustom", app, StringComparison.Ordinal);
         Assert.Contains("Или впишите свой вариант", app, StringComparison.Ordinal);
         Assert.Contains("return prompt.defaultValue;", app, StringComparison.Ordinal);
