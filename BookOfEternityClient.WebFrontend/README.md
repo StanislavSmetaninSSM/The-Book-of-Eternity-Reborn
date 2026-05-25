@@ -66,6 +66,14 @@ Issue #683 adds a player-facing contextual action menu to the `Мир` route. Th
 
 Default UI does not show raw slash command IDs. Advanced/debug commands remain grouped under `Расширенный режим`. Mutating actions show guided forms, realm availability, disabled reasons, and mutation warnings; form opening/submission uses the existing C# browser command and prompt-session flow, so safe execution still belongs to the C# local-write/lifecycle services.
 
+## Browser audio and settings (#684)
+
+Issue #684 adds browser-tab music and cue controls to the `Настройки` route. React consumes `browserApi.getAudioSettings()` and `browserApi.updateAudioSettings()` from `src/api/client.ts`, but the local C# host remains authoritative for the shared `GameSettings` audio fields (`MusicEnabled`, `MusicVolume`, `SoundEnabled`, and `SoundVolume`). Browser slider/toggle changes persist to the same settings file the console client uses, and the host applies the updated values back to the existing C# audio service.
+
+The player must click `Включить музыку в браузере` before music playback starts. This is intentional browser-autoplay handling: the React shell may load metadata on startup, but it does not call `play()` for music until a user gesture chooses the main-menu or in-game playlist. Cue previews use their own explicit preview click. Missing local audio files render as ordinary unavailable metadata and player-facing notices rather than crashes.
+
+Audio assets are served only through opaque `/api/audio/assets/{assetId}` URLs returned by the C# catalog. The DTO exposes no local filesystem paths, and invalid/path-traversal asset IDs return safe failures.
+
 ## Typed Browser API Contract (#703)
 
 Issue #703 adds the typed API contract layer under:
