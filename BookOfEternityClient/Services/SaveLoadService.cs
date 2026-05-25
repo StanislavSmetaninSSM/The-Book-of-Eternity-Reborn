@@ -40,6 +40,8 @@ public class SaveLoadService
     private readonly ILogger<SaveLoadService> _logger;
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+    private const int SaveMetadataReadAttempts = 10;
+    private static readonly TimeSpan SaveMetadataReadRetryDelay = TimeSpan.FromMilliseconds(50);
 
     public SaveLoadService(FileSystemManager fs, StateManager stateManager, ILogger<SaveLoadService> logger)
     {
@@ -238,26 +240,16 @@ public class SaveLoadService
         {
             try
             {
-                using var archive = ZipFile.OpenRead(saveFile);
-                var metadataEntry = archive.GetEntry("save_metadata.json");
+                var metadata = await ReadSaveMetadataWithRetryAsync(saveFile);
+                if (metadata == null)
+                    continue;
 
-                if (metadataEntry != null)
+                saves.Add(new SaveInfo
                 {
-                    using var stream = metadataEntry.Open();
-                    using var reader = new StreamReader(stream);
-                    var json = await reader.ReadToEndAsync();
-                    var metadata = JsonSerializer.Deserialize<SaveMetadata>(json, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-
-                    saves.Add(new SaveInfo
-                    {
-                        FileName = saveFile,
-                        Metadata = metadata,
-                        FileSize = new FileInfo(saveFile).Length
-                    });
-                }
+                    FileName = saveFile,
+                    Metadata = metadata,
+                    FileSize = new FileInfo(saveFile).Length
+                });
             }
             catch (Exception ex)
             {
@@ -267,6 +259,40 @@ public class SaveLoadService
 
         return saves.OrderByDescending(s => s.Metadata?.Timestamp).ToList();
     }
+
+    private static async Task<SaveMetadata?> ReadSaveMetadataWithRetryAsync(string saveFile)
+    {
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                return await ReadSaveMetadataAsync(saveFile);
+            }
+            catch (Exception ex) when (IsTransientSaveMetadataReadException(ex) && attempt < SaveMetadataReadAttempts)
+            {
+                await Task.Delay(SaveMetadataReadRetryDelay);
+            }
+        }
+    }
+
+    private static async Task<SaveMetadata?> ReadSaveMetadataAsync(string saveFile)
+    {
+        using var archive = ZipFile.OpenRead(saveFile);
+        var metadataEntry = archive.GetEntry("save_metadata.json");
+        if (metadataEntry == null)
+            return null;
+
+        using var stream = metadataEntry.Open();
+        using var reader = new StreamReader(stream);
+        var json = await reader.ReadToEndAsync();
+        return JsonSerializer.Deserialize<SaveMetadata>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+    }
+
+    private static bool IsTransientSaveMetadataReadException(Exception ex) =>
+        ex is IOException or UnauthorizedAccessException;
 
     private Task AddDirectoryToArchive(ZipArchive archive, string sourceDir, string entryPrefix)
     {

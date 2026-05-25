@@ -60,6 +60,31 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Mortal World",
+          "currentIncarnation": 1
+        }
+        """);
+        Assert.True(await _service.SaveGameAsync("temporarily_locked_metadata", "save list transient lock regression"));
+
+        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+        await using var lockStream = new FileStream(savePath, FileMode.Open, FileAccess.Read, FileShare.None);
+        var readTask = _service.GetAvailableSavesAsync("saves/manual_saves");
+
+        await Task.Delay(75);
+        await lockStream.DisposeAsync();
+        var saves = await readTask;
+
+        var save = Assert.Single(saves);
+        Assert.Equal(savePath, save.FileName);
+        Assert.Equal("temporarily_locked_metadata", save.Metadata?.SaveName);
+    }
+
+    [Fact]
     public async Task SaveAndLoad_PreservesLivePendingContracts()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
