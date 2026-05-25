@@ -115,7 +115,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("standalone frontend assets", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("local-web-ui-shell.html", hostDoc, StringComparison.Ordinal);
 
-        Assert.Contains("Локальный клиент остаётся источником истины", app, StringComparison.Ordinal);
+        Assert.Contains("Откройте книгу", app, StringComparison.Ordinal);
         Assert.DoesNotContain("debug dashboard", app, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -171,7 +171,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Аудио управляется постоянной панелью", app, StringComparison.Ordinal);
         Assert.DoesNotContain("<div><dt>Музыка</dt><dd>{options.musicEnabled", app, StringComparison.Ordinal);
         Assert.DoesNotContain("<div><dt>Звук</dt><dd>{options.soundEnabled", app, StringComparison.Ordinal);
-        Assert.Contains("{readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} />}", app, StringComparison.Ordinal);
+        Assert.Contains("{readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} advancedEnabled={advancedEnabled} />}", app, StringComparison.Ordinal);
         Assert.DoesNotContain("<AudioSettingsPanel result={state.audio} activeRoute={activeRoute} />", app, StringComparison.Ordinal);
         Assert.DoesNotContain("useEffect(() => {\n    void audioElement", app, StringComparison.Ordinal);
         Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
@@ -310,6 +310,38 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("dark-fantasy", readme, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("#685", hostDoc, StringComparison.Ordinal);
         Assert.Contains("design-system", hostDoc, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void BrowserDefaultScreen_UsesPlayerFacingCopyAndNeutralEmptyStates()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = ReadFrontendStyles();
+
+        Assert.Contains("Книга Вечности: Перерождение", app, StringComparison.Ordinal);
+        Assert.Contains("Откройте книгу", app, StringComparison.Ordinal);
+        Assert.Contains("function EmptyState", app, StringComparison.Ordinal);
+        Assert.Contains("function EmptyOrFailure", app, StringComparison.Ordinal);
+        Assert.Contains("result.kind === 'no-active-session'", app, StringComparison.Ordinal);
+        Assert.Contains("return <ApiFailure title={errorTitle}", app, StringComparison.Ordinal);
+        Assert.Contains("className=\"empty-state\"", app, StringComparison.Ordinal);
+        Assert.Contains(".empty-state", styles, StringComparison.Ordinal);
+        Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("<h1 id=\"browser-client-title\">Локальный игровой клиент</h1>", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("источник истины", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("маршруты", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("состояние интерфейса", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("посмертные контракты", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("отдельный слой", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Главное меню недоступно", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Игровой экран недоступен", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Данные души недоступны", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Мир недоступен", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Медиа недоступны", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Настройки недоступны", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Сессия недоступна", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Аудио-настройки недоступны", app, StringComparison.Ordinal);
     }
 
     [Fact]
