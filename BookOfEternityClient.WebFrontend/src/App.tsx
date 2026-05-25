@@ -47,7 +47,7 @@ interface RealmTheme {
 const playerRoutes: RouteCard[] = [
   { id: 'home', label: 'Главная', description: 'Сессия, продолжение, загрузка и безопасные действия.', icon: '✦' },
   { id: 'game', label: 'Игра', description: 'Нарратив, ход ГМа, быстрые сцены и основной художественный ввод.', icon: '📖' },
-  { id: 'soul', label: 'Душа', description: 'Душа, герой, состояние и текущий realm.', icon: '🕯️' },
+  { id: 'soul', label: 'Душа', description: 'Душа, герой, состояние и текущий слой мира.', icon: '🕯️' },
   { id: 'world', label: 'Мир', description: 'Карта, журнал, квесты, фракции и действия.', icon: '🗺️' },
   { id: 'media', label: 'Медиа', description: 'Галерея, быстрые сцены и игровые материалы.', icon: '🎞️' },
   { id: 'settings', label: 'Настройки', description: 'Локальный профиль, звук, язык и комфорт клиента.', icon: '⚙️' }
@@ -116,9 +116,9 @@ export default function App() {
   }
 
   return (
-    <main className="browser-shell" style={{ '--realm-accent': realmTheme.accent } as CSSProperties}>
+    <main className="browser-shell" data-theme-key={realmTheme.key} style={{ '--realm-accent': realmTheme.accent } as CSSProperties}>
       <section className="shell-hero" aria-labelledby="browser-client-title">
-        <p className="eyebrow">Book of Eternity Reborn · Browser Client</p>
+        <p className="eyebrow">Книга Вечности: Перерождение · локальный клиент</p>
         <div className="hero-layout">
           <div>
             <h1 id="browser-client-title">Локальный игровой клиент</h1>
@@ -127,7 +127,7 @@ export default function App() {
               но не переносит правила, сохранения или посмертные контракты в отдельный слой.
             </p>
           </div>
-          <div className="hero-status" aria-label="Текущий realm">
+          <div className="hero-status" aria-label="Текущий слой мира">
             <span className="theme-icon" aria-hidden="true">{realmTheme.icon}</span>
             <strong>{realmTheme.label}</strong>
             <span>{gameScreen?.turnState.title ?? menu?.session.validationLabel ?? 'Загрузка состояния'}</span>
@@ -140,7 +140,7 @@ export default function App() {
           <button
             key={route.id}
             type="button"
-            className={activeRoute === route.id ? 'route-card is-active' : 'route-card'}
+            className={`route-card route-card--${route.id}${activeRoute === route.id ? ' is-active' : ''}`}
             onClick={() => setActiveRoute(route.id)}
             aria-pressed={activeRoute === route.id}
           >
@@ -280,18 +280,18 @@ function GameRoute({
 
   return (
     <ShellPanel title="Игра" eyebrow="нарратив и ход">
-      <article className="narrative-card">
+      <article className="narrative-card is-featured">
         <h2>{game.theme.icon} {game.theme.label}</h2>
         <p>{game.narrative.text || 'Последний нарратив пока не найден в локальной книге.'}</p>
       </article>
 
       <div className="split-grid">
-        <ShellPanel title="Состояние хода" eyebrow={game.turnState.state} nested>
+        <ShellPanel title="Состояние хода" eyebrow={game.turnState.state} nested variant="turn">
           <p className="status-pill">{game.turnState.title}</p>
           <p>{game.turnState.message}</p>
           <p className="muted">Быстрая сцена: {game.qte.notification ?? game.qte.state}</p>
         </ShellPanel>
-        <ShellPanel title="Варианты" eyebrow="player-facing" nested>
+        <ShellPanel title="Варианты" eyebrow="для игрока" nested variant="choices">
           {game.narrative.dialogueOptions.length > 0 ? (
             <ul className="choice-list">
               {game.narrative.dialogueOptions.map((option) => (
@@ -998,9 +998,25 @@ function LoadingCard() {
   );
 }
 
-function ShellPanel({ title, eyebrow, children, nested = false }: { title: string; eyebrow: string; children: ReactNode; nested?: boolean }) {
+function ShellPanel({
+  title,
+  eyebrow,
+  children,
+  nested = false,
+  variant
+}: {
+  title: string;
+  eyebrow: string;
+  children: ReactNode;
+  nested?: boolean;
+  variant?: string;
+}) {
+  const className = ['shell-panel', nested ? 'is-nested' : '', variant ? `panel-${variant}` : '']
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <section className={nested ? 'shell-panel is-nested' : 'shell-panel'}>
+    <section className={className} data-panel={variant ?? title}>
       <p className="panel-eyebrow">{eyebrow}</p>
       <h2>{title}</h2>
       {children}
