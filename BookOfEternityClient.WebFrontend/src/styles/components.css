@@ -267,9 +267,16 @@
 .command-result,
 .prompt-form,
 .prompt-control,
-.audio-control-panel {
+.audio-control-panel,
+.turn-lifecycle-actions {
   display: grid;
   gap: 0.7rem;
+}
+
+.phase-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .composer {

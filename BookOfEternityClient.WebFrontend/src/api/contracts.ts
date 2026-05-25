@@ -296,6 +296,28 @@ export interface BrowserGameScreenTurnStateDto {
   canStartBrowserWrite: boolean;
   validationState: string;
   validationLabel: string;
+  phase: string;
+  phaseLabel: string;
+  severity: string;
+  playerGuidance: string;
+  recommendedActions: BrowserGameScreenTurnActionDto[];
+  knownPhases: BrowserGameScreenTurnPhaseDto[];
+}
+
+export interface BrowserGameScreenTurnActionDto {
+  id: string;
+  label: string;
+  description: string;
+  surface: string;
+  enabled: boolean;
+  disabledReason: string;
+}
+
+export interface BrowserGameScreenTurnPhaseDto {
+  id: string;
+  label: string;
+  description: string;
+  surface: string;
 }
 
 export interface BrowserGameScreenActionComposerDto {

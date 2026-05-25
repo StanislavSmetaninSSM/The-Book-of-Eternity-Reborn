@@ -108,6 +108,30 @@ public sealed class BrowserApiContractTests
     }
 
     [Fact]
+    public void FrontendShell_RendersLifecyclePhaseMachineWithoutDefaultRawValidationDetails()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+
+        Assert.Contains("turnState.phase", app, StringComparison.Ordinal);
+        Assert.Contains("turnState.playerGuidance", app, StringComparison.Ordinal);
+        Assert.Contains("recommendedActions", app, StringComparison.Ordinal);
+        Assert.Contains("knownPhases", app, StringComparison.Ordinal);
+        Assert.Contains("Жизненный цикл хода", app, StringComparison.Ordinal);
+
+        var advancedIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
+        Assert.True(advancedIndex > 0, "Advanced diagnostics function must stay explicit.");
+        var defaultApp = app[..advancedIndex];
+        Assert.DoesNotContain("validation.issues.map", defaultApp, StringComparison.Ordinal);
+        Assert.DoesNotContain("issue.filePath", defaultApp, StringComparison.Ordinal);
+
+        var advancedApp = app[advancedIndex..];
+        Assert.Contains("lifecycle.validation.groups", advancedApp, StringComparison.Ordinal);
+        Assert.Contains("validation.issues.map", advancedApp, StringComparison.Ordinal);
+        Assert.Contains("issue.filePath", advancedApp, StringComparison.Ordinal);
+        Assert.Contains("issue.repairHint", advancedApp, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BrowserGameScreenContract_IncludesPlayerCommandActionMenu()
     {
         var screen = BuildGameScreen();
@@ -132,6 +156,12 @@ public sealed class BrowserApiContractTests
             section.Id == "advanced" &&
             section.Label == "Расширенный режим" &&
             !section.PlayerDefault);
+        Assert.Equal("idle", screen.TurnState.Phase);
+        Assert.Equal("Можно готовить ход", screen.TurnState.PhaseLabel);
+        Assert.Equal("success", screen.TurnState.Severity);
+        Assert.Contains(screen.TurnState.RecommendedActions, action => action.Id == "compose-action" && action.Surface == "player-default");
+        Assert.Contains(screen.TurnState.KnownPhases, phase => phase.Id == "accepted");
+        Assert.Contains(screen.TurnState.KnownPhases, phase => phase.Id == "cancelled");
 
         var soulAction = FindAction(screen.ActionMenu, "soul");
         Assert.Equal("soul", soulAction.SectionId);
@@ -442,7 +472,22 @@ public sealed class BrowserApiContractTests
                 Message: "Опишите следующее действие персонажа в прозе.",
                 CanStartBrowserWrite: true,
                 ValidationState: "clean",
-                ValidationLabel: "Состояние валидно"),
+                ValidationLabel: "Состояние валидно",
+                Phase: "idle",
+                PhaseLabel: "Можно готовить ход",
+                Severity: "success",
+                PlayerGuidance: "Игра не ждёт ГМа; можно подготовить следующий художественный ход.",
+                RecommendedActions:
+                [
+                    new BrowserGameScreenTurnActionDto(
+                        Id: "compose-action",
+                        Label: "Подготовить действие",
+                        Description: "Заполните основной художественный ввод и подтвердите действие, когда запись хода будет подключена.",
+                        Surface: "player-default",
+                        Enabled: true,
+                        DisabledReason: string.Empty)
+                ],
+                KnownPhases: BrowserGameScreenTurnStateDto.KnownPhaseCatalog),
             ActionComposer: new BrowserGameScreenActionComposerDto(
                 CanSubmit: true,
                 Mode: "prose",

@@ -625,6 +625,92 @@ public sealed class LocalWebUiHostTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_MapsPendingArtifactsToPlayerFacingLifecyclePhases()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", """
+        { "soulName": "Lifecycle Soul", "currentRealm": "Mortal World" }
+        """);
+        WriteSessionFile("input/turn_request.json", "{}");
+
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var waitingRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+        Assert.Equal("waiting-gm", waitingRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("Ожидаем ответ ГМа", waitingRoot["turnState"]!["phaseLabel"]!.GetValue<string>());
+        Assert.Equal("warning", waitingRoot["turnState"]!["severity"]!.GetValue<string>());
+        Assert.Contains("ГМ", waitingRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            waitingRoot["turnState"]!["recommendedActions"]!.AsArray(),
+            action => action!["id"]!.GetValue<string>() == "wait-for-gm" && action!["surface"]!.GetValue<string>() == "player-default");
+        Assert.Contains(
+            waitingRoot["turnState"]!["knownPhases"]!.AsArray(),
+            phase => phase!["id"]!.GetValue<string>() == "cancelled");
+
+        File.Delete(Path.Combine(_rootPath, "game_session", "input", "turn_request.json"));
+        WriteSessionFile("ready/turn_complete.json", "{}");
+        var readyRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+        Assert.Equal("ready", readyRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("success", readyRoot["turnState"]!["severity"]!.GetValue<string>());
+        Assert.Contains("принять", readyRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+
+        File.Delete(Path.Combine(_rootPath, "game_session", "ready", "turn_complete.json"));
+        WriteSessionFile("ready/turn_error.json", "{ \"error\": \"GM timeout\" }");
+        var errorRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+        Assert.Equal("error-restored", errorRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("error", errorRoot["turnState"]!["severity"]!.GetValue<string>());
+        Assert.Contains("repair", errorRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+
+        WriteSessionFile("game_state/control/pending_turn_snapshot.json", "{}");
+        var repairRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+        Assert.Equal("repair-required", repairRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("pending-turn-repair", repairRoot["turnState"]!["state"]!.GetValue<string>());
+        Assert.Contains("ремонт", repairRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_ExplainsValidationAndLocalLockLifecyclePhases()
+    {
+        WriteSessionFile("game_state/meta/soul_state.json", "not json");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var validationRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+        Assert.Equal("validation-failed", validationRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("error", validationRoot["turnState"]!["severity"]!.GetValue<string>());
+        Assert.DoesNotContain("game_state/meta/soul_state.json", validationRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+
+        Directory.CreateDirectory(Path.Combine(_rootPath, "game_session", "game_state", "meta"));
+        await File.WriteAllTextAsync(Path.Combine(_rootPath, "game_session", "game_state", "meta", "soul_state.json"), """
+        { "soulName": "Locked Soul", "currentRealm": "Mortal World" }
+        """);
+        Directory.CreateDirectory(Path.Combine(_rootPath, "game_session", "game_state", "control"));
+        await File.WriteAllTextAsync(Path.Combine(_rootPath, "game_session", LocalUiSessionLockService.LockPath), """
+        {
+          "schemaVersion": 1,
+          "ownerId": "browser:test",
+          "ownerKind": "browser",
+          "ownerLabel": "Browser test",
+          "acquiredAtUtc": "2099-01-01T00:00:00Z",
+          "heartbeatAtUtc": "2099-01-01T00:00:00Z",
+          "leaseSeconds": 120,
+          "lastOperation": "submitting turn"
+        }
+        """);
+
+        var lockedRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
+        Assert.Equal("turn-submitted", lockedRoot["turnState"]!["phase"]!.GetValue<string>());
+        Assert.Equal("warning", lockedRoot["turnState"]!["severity"]!.GetValue<string>());
+        Assert.False(lockedRoot["actionComposer"]!["canSubmit"]!.GetValue<bool>());
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
     public async Task GameScreenEndpoint_ReadsTurnNumberFromStoryHistory()
     {
         WriteSessionFile("game_state/meta/soul_state.json", """
