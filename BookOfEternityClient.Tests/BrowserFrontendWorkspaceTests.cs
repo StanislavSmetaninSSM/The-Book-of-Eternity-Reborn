@@ -395,6 +395,52 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserSidebar_RendersPlayerFacingStatusInsteadOfDebugDashboard()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = ReadFrontendStyles();
+
+        Assert.Contains("function PlayerStatusSidebar", app, StringComparison.Ordinal);
+        Assert.Contains("function StatusSummaryCard", app, StringComparison.Ordinal);
+        Assert.Contains("className=\"player-status-sidebar\"", app, StringComparison.Ordinal);
+        Assert.Contains("Сводка книги", app, StringComparison.Ordinal);
+        Assert.Contains("Слой книги", app, StringComparison.Ordinal);
+        Assert.Contains("Герой и душа", app, StringComparison.Ordinal);
+        Assert.Contains("Сохранение", app, StringComparison.Ordinal);
+        Assert.Contains("Ожидание ГМа", app, StringComparison.Ordinal);
+        Assert.Contains("Служебная панель", app, StringComparison.Ordinal);
+        Assert.Contains("Подробности ремонта, проверки и команд скрыты до явного включения.", app, StringComparison.Ordinal);
+        Assert.Contains("formatSidebarSessionSummary(", app, StringComparison.Ordinal);
+        Assert.Contains("formatSidebarAudioSummary(", app, StringComparison.Ordinal);
+        Assert.Contains("getSidebarFailure(", app, StringComparison.Ordinal);
+        Assert.Contains("formatSidebarStatusMetric(", app, StringComparison.Ordinal);
+        Assert.Contains("sidebarMenuFailure", app, StringComparison.Ordinal);
+        Assert.Contains("sidebarSessionFailure", app, StringComparison.Ordinal);
+        Assert.Contains("sidebarGameFailure", app, StringComparison.Ordinal);
+        Assert.Contains("attention={Boolean(sidebarGameFailure)}", app, StringComparison.Ordinal);
+        Assert.Contains("className=\"warning-text\">{sidebarGameFailure}", app, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("<ShellPanel title=\"Сессия\" eyebrow=\"локальная книга\">", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("<ShellPanel title=\"Ход и ремонт\" eyebrow=\"безопасность хода\">", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Проверка: {toPlayerFacingText(gameScreen.turnState.validationLabel", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("healthPercentage}%", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("energyPercentage}%", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("poisePercentage}%", app, StringComparison.Ordinal);
+
+        var sidebarIndex = app.IndexOf("className=\"player-status-sidebar\"", StringComparison.Ordinal);
+        var advancedEntryIndex = app.IndexOf("className=\"advanced-sidebar-entry\"", StringComparison.Ordinal);
+        var diagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
+        Assert.True(sidebarIndex > 0, "Player status sidebar must render before advanced entry.");
+        Assert.True(advancedEntryIndex > sidebarIndex, "Advanced entry should be lower priority than player status cards.");
+        Assert.True(diagnosticsIndex > advancedEntryIndex, "Advanced diagnostics implementation should stay outside the default sidebar source slice.");
+
+        Assert.Contains(".player-status-sidebar", styles, StringComparison.Ordinal);
+        Assert.Contains(".status-summary-card", styles, StringComparison.Ordinal);
+        Assert.Contains(".advanced-sidebar-entry", styles, StringComparison.Ordinal);
+        Assert.Contains(".status-summary-grid", styles, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ReactAppShell_DocumentsIssue704RoutingAndPlayerAdvancedBoundary()
     {
         var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
