@@ -1,9 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { browserApi, browserApiContractSummary } from './api/client';
 import type {
   BrowserApiFailure,
   BrowserApiResult,
+  BrowserAudioAssetDto,
+  BrowserAudioPlaylistDto,
+  BrowserAudioSettingsDto,
+  BrowserAudioSettingsUpdateRequest,
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
   BrowserMainMenuDto,
@@ -21,7 +25,7 @@ type RouteId = 'home' | 'game' | 'soul' | 'world' | 'media' | 'settings';
 
 type BrowserShellState =
   | { status: 'loading' }
-  | { status: 'ready'; menu: BrowserApiResult<BrowserMainMenuDto>; session: BrowserApiResult<LocalWebUiSessionStatus>; game: BrowserApiResult<BrowserGameScreenDto>; lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> | null }
+  | { status: 'ready'; menu: BrowserApiResult<BrowserMainMenuDto>; session: BrowserApiResult<LocalWebUiSessionStatus>; game: BrowserApiResult<BrowserGameScreenDto>; audio: BrowserApiResult<BrowserAudioSettingsDto>; lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> | null }
   | { status: 'error'; playerMessage: string; technicalDetails?: string };
 
 type PromptAnswers = Record<string, JsonValue | undefined>;
@@ -69,14 +73,15 @@ export default function App() {
     setShellState({ status: 'loading' });
 
     try {
-      const [menu, session, game] = await Promise.all([
+      const [menu, session, game, audio] = await Promise.all([
         browserApi.getMainMenu(),
         browserApi.getSessionStatus(),
-        browserApi.getGameScreen()
+        browserApi.getGameScreen(),
+        browserApi.getAudioSettings()
       ]);
       const lifecycle = advancedEnabled ? await browserApi.getLifecycleDashboard() : null;
 
-      setShellState({ status: 'ready', menu, session, game, lifecycle });
+      setShellState({ status: 'ready', menu, session, game, audio, lifecycle });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown browser shell error.';
       setShellState({
@@ -222,7 +227,7 @@ function renderActiveRoute(
     case 'media':
       return <MediaRoute state={state} />;
     case 'settings':
-      return <SettingsRoute state={state} />;
+      return <SettingsRoute state={state} activeRoute={activeRoute} />;
   }
 }
 
@@ -679,7 +684,13 @@ function MediaRoute({ state }: { state: Extract<BrowserShellState, { status: 're
   );
 }
 
-function SettingsRoute({ state }: { state: Extract<BrowserShellState, { status: 'ready' }> }) {
+function SettingsRoute({
+  state,
+  activeRoute
+}: {
+  state: Extract<BrowserShellState, { status: 'ready' }>;
+  activeRoute: RouteId;
+}) {
   if (!isSuccess(state.menu)) {
     return <ApiFailure title="Настройки недоступны" result={state.menu} advancedEnabled={false} />;
   }
@@ -694,8 +705,201 @@ function SettingsRoute({ state }: { state: Extract<BrowserShellState, { status: 
         <div><dt>Размер шрифта</dt><dd>{options.consoleFontSize}</dd></div>
       </dl>
       <p>{options.guidance}</p>
+      <AudioSettingsPanel result={state.audio} activeRoute={activeRoute} />
     </ShellPanel>
   );
+}
+
+function AudioSettingsPanel({
+  result,
+  activeRoute
+}: {
+  result: BrowserApiResult<BrowserAudioSettingsDto>;
+  activeRoute: RouteId;
+}) {
+  const [audioResult, setAudioResult] = useState(result);
+  const [notice, setNotice] = useState('');
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    setAudioResult(result);
+  }, [result]);
+
+  useEffect(() => () => {
+    audioElementRef.current?.pause();
+    audioElementRef.current = null;
+  }, []);
+
+  if (!isSuccess(audioResult)) {
+    return <ApiFailure title="Аудио-настройки недоступны" result={audioResult} advancedEnabled={false} />;
+  }
+
+  const audio = audioResult.data;
+  const playlist = selectPreferredPlaylist(audio, activeRoute);
+  const hasMusic = Boolean(playlist?.tracks.length);
+  const notificationCue = audio.cues.find((cue) => cue.id === 'turn-ready' && cue.asset) ?? audio.cues.find((cue) => cue.asset);
+
+  async function updateAudioSettings(request: BrowserAudioSettingsUpdateRequest) {
+    const updated = await browserApi.updateAudioSettings(request);
+    setAudioResult(updated);
+    if (isSuccess(updated)) {
+      const currentElement = audioElementRef.current;
+      if (currentElement) {
+        currentElement.volume = volumeToUnit(updated.data.musicVolume);
+        if (!updated.data.musicEnabled) {
+          currentElement.pause();
+        }
+      }
+      setNotice('Настройки звука сохранены в общей конфигурации клиента.');
+    } else {
+      setNotice(updated.playerMessage);
+    }
+  }
+
+  async function unlockBrowserMusic() {
+    if (!audio.musicEnabled) {
+      setNotice('Музыка выключена в общих настройках клиента. Включите её переключателем ниже.');
+      return;
+    }
+
+    const track = playlist?.tracks[0];
+    if (!track) {
+      setNotice(audio.missingAssetsMessage || 'Аудиофайлы для выбранного плейлиста не найдены. Клиент продолжит игру без музыки.');
+      return;
+    }
+
+    const element = audioElementRef.current ?? new Audio();
+    audioElementRef.current = element;
+    element.loop = true;
+    element.volume = volumeToUnit(audio.musicVolume);
+    if (element.src !== new URL(track.url, window.location.href).href) {
+      element.src = track.url;
+    }
+
+    try {
+      await element.play();
+      setNotice(`Музыка включена: ${playlist?.label ?? track.label}. Управление громкостью сохраняется в общих настройках.`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'браузер заблокировал воспроизведение';
+      setNotice(`Браузер не дал запустить музыку автоматически. Нажмите кнопку ещё раз или проверьте разрешения вкладки. Подробность: ${message}`);
+    }
+  }
+
+  async function previewCue(asset: BrowserAudioAssetDto | null | undefined) {
+    if (!asset) {
+      setNotice('Файл звуковой подсказки не найден, поэтому предпросмотр недоступен.');
+      return;
+    }
+
+    if (!audio.soundEnabled) {
+      setNotice('Звуковые подсказки выключены в общих настройках клиента.');
+      return;
+    }
+
+    const cueAudio = new Audio();
+    cueAudio.src = asset.url;
+    cueAudio.volume = volumeToUnit(audio.soundVolume);
+    try {
+      await cueAudio.play();
+      setNotice(`Звуковая подсказка воспроизведена: ${asset.label}.`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'браузер заблокировал воспроизведение';
+      setNotice(`Браузер не дал запустить звуковую подсказку. Подробность: ${message}`);
+    }
+  }
+
+  return (
+    <section className="audio-control-panel" aria-labelledby="browser-audio-title">
+      <div>
+        <p className="panel-eyebrow">музыка и звук</p>
+        <h2 id="browser-audio-title">Аудио браузерного клиента</h2>
+        <p>{audio.autoplayGuidance}</p>
+        {audio.missingAssetsMessage && <p className="warning-text">{audio.missingAssetsMessage}</p>}
+      </div>
+
+      <div className="split-grid">
+        <div className="summary-card">
+          <h3>Музыка</h3>
+          <p>{playlist ? `${playlist.label}: ${playlist.usage}` : 'Плейлисты пока недоступны.'}</p>
+          <button type="button" onClick={unlockBrowserMusic} disabled={!audio.musicEnabled || !hasMusic}>
+            Включить музыку в браузере
+          </button>
+          {!hasMusic && <p className="muted">Когда в локальной папке появятся треки, браузер сможет включить их после вашего нажатия.</p>}
+        </div>
+        <div className="summary-card">
+          <h3>Звуковые подсказки</h3>
+          <p>{notificationCue?.usage ?? 'QTE и уведомления будут звучать, если локальные файлы найдены.'}</p>
+          <button type="button" onClick={() => void previewCue(notificationCue?.asset)} disabled={!audio.soundEnabled || !notificationCue?.asset}>
+            Проверить подсказку
+          </button>
+        </div>
+      </div>
+
+      <div className="audio-settings-grid">
+        <label className="audio-toggle">
+          <input
+            type="checkbox"
+            checked={audio.musicEnabled}
+            onChange={(event) => void updateAudioSettings({ musicEnabled: event.currentTarget.checked })}
+          />
+          <span>Музыка включена</span>
+        </label>
+        <label className="audio-toggle">
+          <input
+            type="checkbox"
+            checked={audio.soundEnabled}
+            onChange={(event) => void updateAudioSettings({ soundEnabled: event.currentTarget.checked })}
+          />
+          <span>Звуковые подсказки включены</span>
+        </label>
+        <label className="audio-slider">
+          <span>Громкость музыки: {audio.musicVolume}%</span>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={audio.musicVolume}
+            onChange={(event) => void updateAudioSettings({ musicVolume: Number(event.currentTarget.value) })}
+          />
+        </label>
+        <label className="audio-slider">
+          <span>Громкость подсказок: {audio.soundVolume}%</span>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={audio.soundVolume}
+            onChange={(event) => void updateAudioSettings({ soundVolume: Number(event.currentTarget.value) })}
+          />
+        </label>
+      </div>
+
+      <div className="audio-catalog" aria-label="Доступные плейлисты и подсказки">
+        {audio.playlists.map((item) => (
+          <span key={item.id} className={item.available ? 'status-pill' : 'status-pill is-muted'}>
+            {item.label}: {item.available ? `${item.tracks.length} трек(ов)` : 'файлы не найдены'}
+          </span>
+        ))}
+        {audio.cues.map((cue) => (
+          <span key={cue.id} className={cue.available ? 'status-pill' : 'status-pill is-muted'}>
+            {cue.label}: {cue.available ? 'готово' : 'нет файла'}
+          </span>
+        ))}
+      </div>
+      {notice && <p className="composer-notice">{notice}</p>}
+    </section>
+  );
+}
+
+function selectPreferredPlaylist(audio: BrowserAudioSettingsDto, activeRoute: RouteId): BrowserAudioPlaylistDto | null {
+  const preferredId = activeRoute === 'home' ? 'main-menu' : 'in-game';
+  return audio.playlists.find((playlist) => playlist.id === preferredId && playlist.available)
+    ?? audio.playlists.find((playlist) => playlist.available)
+    ?? null;
+}
+
+function volumeToUnit(value: number): number {
+  return Math.min(1, Math.max(0, value / 100));
 }
 
 function AdvancedDiagnosticsPanel({

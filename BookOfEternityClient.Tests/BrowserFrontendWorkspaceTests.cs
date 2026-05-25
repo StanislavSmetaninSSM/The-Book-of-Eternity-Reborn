@@ -132,6 +132,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("browserApi.getMainMenu", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.getGameScreen", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.getSessionStatus", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getAudioSettings", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.getLifecycleDashboard", app, StringComparison.Ordinal);
         Assert.Contains("advancedEnabled ? await browserApi.getLifecycleDashboard()", app, StringComparison.Ordinal);
         Assert.Contains("Главная", app, StringComparison.Ordinal);
@@ -153,6 +154,12 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("browserApi.executeExplorerCommand({ command: action.advancedCommand", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.submitPromptSession", app, StringComparison.Ordinal);
         Assert.Contains("renderPromptControl", app, StringComparison.Ordinal);
+        Assert.Contains("AudioSettingsPanel", app, StringComparison.Ordinal);
+        Assert.Contains("Включить музыку в браузере", app, StringComparison.Ordinal);
+        Assert.Contains("autoplayGuidance", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.updateAudioSettings", app, StringComparison.Ordinal);
+        Assert.Contains("new Audio()", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("useEffect(() => {\n    void audioElement", app, StringComparison.Ordinal);
         Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
         Assert.DoesNotContain("setAdvancedEnabled(true)", app, StringComparison.Ordinal);
         Assert.DoesNotContain("typed BrowserApiClient", app, StringComparison.OrdinalIgnoreCase);
@@ -164,6 +171,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains(".browser-shell", styles, StringComparison.Ordinal);
         Assert.Contains(".route-grid", styles, StringComparison.Ordinal);
         Assert.Contains(".action-menu", styles, StringComparison.Ordinal);
+        Assert.Contains(".audio-control-panel", styles, StringComparison.Ordinal);
         Assert.Contains(".advanced-diagnostics", styles, StringComparison.Ordinal);
         Assert.Contains("@media (max-width: 840px)", styles, StringComparison.Ordinal);
     }
