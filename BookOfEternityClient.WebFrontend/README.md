@@ -77,7 +77,7 @@ Contract update workflow:
 
 `BrowserApiContractTests` serializes representative C# DTOs and compares them to the tracked `contract-fixtures`; `contract-fixture-checks.ts` imports the same fixtures so TypeScript verifies their shape. Default player UI should show the normalized `playerMessage` from failed requests, while `technicalDetails` belongs behind explicit advanced diagnostics.
 
-Later issues add app routing, game screens, settings, media/QTE UI, and smoke verification.
+Later issues deepen the route content (menus, game screens, settings, media/QTE UI) and add the broader smoke verification pipeline.
 
 ## Boundaries for future agents
 

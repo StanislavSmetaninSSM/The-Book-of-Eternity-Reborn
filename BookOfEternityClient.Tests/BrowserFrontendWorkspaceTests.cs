@@ -112,6 +112,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("browserApi.getGameScreen", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.getSessionStatus", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.getLifecycleDashboard", app, StringComparison.Ordinal);
+        Assert.Contains("advancedEnabled ? await browserApi.getLifecycleDashboard()", app, StringComparison.Ordinal);
         Assert.Contains("Главная", app, StringComparison.Ordinal);
         Assert.Contains("Игра", app, StringComparison.Ordinal);
         Assert.Contains("Душа", app, StringComparison.Ordinal);

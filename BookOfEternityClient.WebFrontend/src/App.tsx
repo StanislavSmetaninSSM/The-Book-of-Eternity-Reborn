@@ -14,7 +14,7 @@ type RouteId = 'home' | 'game' | 'soul' | 'world' | 'media' | 'settings';
 
 type BrowserShellState =
   | { status: 'loading' }
-  | { status: 'ready'; menu: BrowserApiResult<BrowserMainMenuDto>; session: BrowserApiResult<LocalWebUiSessionStatus>; game: BrowserApiResult<BrowserGameScreenDto>; lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> }
+  | { status: 'ready'; menu: BrowserApiResult<BrowserMainMenuDto>; session: BrowserApiResult<LocalWebUiSessionStatus>; game: BrowserApiResult<BrowserGameScreenDto>; lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> | null }
   | { status: 'error'; playerMessage: string; technicalDetails?: string };
 
 interface RouteCard {
@@ -60,12 +60,12 @@ export default function App() {
     setShellState({ status: 'loading' });
 
     try {
-      const [menu, session, game, lifecycle] = await Promise.all([
+      const [menu, session, game] = await Promise.all([
         browserApi.getMainMenu(),
         browserApi.getSessionStatus(),
-        browserApi.getGameScreen(),
-        browserApi.getLifecycleDashboard()
+        browserApi.getGameScreen()
       ]);
+      const lifecycle = advancedEnabled ? await browserApi.getLifecycleDashboard() : null;
 
       setShellState({ status: 'ready', menu, session, game, lifecycle });
     } catch (error: unknown) {
@@ -76,7 +76,7 @@ export default function App() {
         technicalDetails: message
       });
     }
-  }, []);
+  }, [advancedEnabled]);
 
   useEffect(() => {
     void loadBrowserState();
@@ -86,7 +86,7 @@ export default function App() {
   const gameScreen = readyState && isSuccess(readyState.game) ? readyState.game.data : null;
   const menu = readyState && isSuccess(readyState.menu) ? readyState.menu.data : null;
   const session = readyState && isSuccess(readyState.session) ? readyState.session.data : null;
-  const lifecycle = readyState && isSuccess(readyState.lifecycle) ? readyState.lifecycle.data : null;
+  const lifecycle = readyState && readyState.lifecycle && isSuccess(readyState.lifecycle) ? readyState.lifecycle.data : null;
   const realmTheme = useMemo(() => resolveRealmTheme(gameScreen), [gameScreen]);
 
   function submitComposer(event: FormEvent<HTMLFormElement>) {
