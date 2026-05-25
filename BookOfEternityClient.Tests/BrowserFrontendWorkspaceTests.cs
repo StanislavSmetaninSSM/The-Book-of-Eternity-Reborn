@@ -40,6 +40,27 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void FrontendWorkspace_HasVerifyScriptAndCiFrontendWorkflow()
+    {
+        var packageJsonPath = Path.Combine(FrontendRoot, "package.json");
+        using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
+        var scripts = document.RootElement.GetProperty("scripts");
+        Assert.Equal("npm run typecheck && npm run build", scripts.GetProperty("verify").GetString());
+
+        var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
+        Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
+        Assert.Contains("node-version: 22.x", workflow, StringComparison.Ordinal);
+        Assert.Contains("cache-dependency-path: BookOfEternityClient.WebFrontend/package-lock.json", workflow, StringComparison.Ordinal);
+        Assert.Contains("npm ci --prefix BookOfEternityClient.WebFrontend", workflow, StringComparison.Ordinal);
+        Assert.Contains("npm run verify --prefix BookOfEternityClient.WebFrontend", workflow, StringComparison.Ordinal);
+        Assert.Contains("browser-smoke-artifacts", workflow, StringComparison.Ordinal);
+        Assert.Contains("TestResults/browser-smoke", workflow, StringComparison.Ordinal);
+
+        var gitignore = File.ReadAllText(Path.Combine(RepoRoot, ".gitignore"));
+        Assert.Contains("/TestResults/", gitignore, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void FrontendWorkspace_HasStrictViteTypeScriptStructure()
     {
         Assert.True(File.Exists(Path.Combine(FrontendRoot, "index.html")));

@@ -18,3 +18,4 @@
 /BookOfEternityClient.WebFrontend/dist/
 /BookOfEternityClient.WebFrontend/.vite/
 /BookOfEternityClient.WebFrontend/*.tsbuildinfo
+/TestResults/
