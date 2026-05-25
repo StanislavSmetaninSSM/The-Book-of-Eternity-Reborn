@@ -230,6 +230,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("qte.notification ?? qte.error ?? qte.state", app, StringComparison.Ordinal);
         Assert.DoesNotContain("локальный host", app, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("C# host", apiClient, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("локальный ресурс", apiClient, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("QTE и уведомления", app, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("локальный игровой клиент", apiClient, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("toPlayerFacingText(", app, StringComparison.Ordinal);

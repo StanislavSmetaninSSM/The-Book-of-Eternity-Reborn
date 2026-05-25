@@ -223,7 +223,7 @@ function toPlayerMessage(kind: BrowserApiErrorKind, fallback: string): string {
     case 'blocked-local-write':
       return 'Локальная запись сейчас заблокирована другим процессом или защитным протоколом.';
     case 'not-found':
-      return 'Запрошенный локальный ресурс не найден.';
+      return 'Этот раздел локальной книги пока не открылся.';
     case 'no-active-session':
       return 'Активная игровая сессия не найдена. Откройте главное меню или загрузите сохранение.';
     case 'server-diagnostics':
