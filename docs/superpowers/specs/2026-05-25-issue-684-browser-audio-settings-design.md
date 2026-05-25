@@ -45,14 +45,14 @@ Create `BookOfEternityClient/WebUi/BrowserAudioService.cs` as the browser-facing
 - resolve audio files from the same local folders as `AudioService`: `<base>/BookOfEternityClient/Music`, `<base>/Music`, `<base>/BookOfEternityClient/Sounds`, and `<base>/Sounds`;
 - serve assets through `/api/audio/assets/{assetId}` only when `assetId` came from the current catalog, returning 404/400 instead of path traversal or local path leakage.
 
-React extends the typed browser API with `getAudioSettings()` and `updateAudioSettings()`. The shell loads audio settings together with menu/session/game state. The `Настройки` route becomes an audio panel with toggles, sliders, and a clear `Включить музыку в браузере` button. That button is the browser user gesture: it chooses the main-menu playlist on the home route and the in-game playlist elsewhere, creates/updates an `HTMLAudioElement`, applies shared volume, and catches `play()` failures with a Russian player-facing explanation. Missing assets render as “файлы не найдены” rather than crashes. A cue preview button plays an available notification/QTE cue only after the same explicit click path.
+React extends the typed browser API with `getAudioSettings()` and `updateAudioSettings()`. The shell loads audio settings together with menu/session/game state. A persistent audio panel is mounted in the browser shell sidebar so playback survives player route changes, while the `Настройки` route points players to the same controls. The panel has toggles, sliders, and a clear `Включить музыку в браузере` button. That button is the browser user gesture: it chooses the main-menu playlist on the home route and the in-game playlist elsewhere, creates/updates an `HTMLAudioElement`, applies shared volume, and catches `play()` failures with a Russian player-facing explanation. Missing assets render as “файлы не найдены” rather than crashes. A cue preview button plays an available notification/QTE cue only after its own explicit click path.
 
 ## Data flow
 
 1. `GET /api/audio/settings` loads shared settings and returns browser-safe playlist/cue metadata.
 2. React renders settings and the autoplay explanation. It does not start playback during page load.
-3. The player clicks `Включить музыку в браузере`.
-4. React selects a playlist from the DTO, picks the first available track, sets `audio.src` to `/api/audio/assets/{assetId}`, sets `audio.volume = musicVolume / 100`, enables looping, and calls `play()` inside the click handler.
+3. The player clicks `Включить музыку в браузере` from the persistent shell audio panel.
+4. React selects a playlist from the DTO according to the active player route, picks the first available track, sets `audio.src` to `/api/audio/assets/{assetId}`, sets `audio.volume = musicVolume / 100`, enables looping, and calls `play()` inside the click handler.
 5. If the browser blocks playback or the file is missing, React shows a concise Russian notice and keeps the UI usable.
 6. Slider/toggle changes call `POST /api/audio/settings`, which persists the same `GameSettings` fields used by the console client and returns the refreshed DTO.
 7. Asset requests validate the opaque ID against the current C# catalog; no direct local path is accepted from the browser.

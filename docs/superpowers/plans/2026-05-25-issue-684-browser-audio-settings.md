@@ -263,7 +263,7 @@ Expected: FAIL because the React shell does not yet render audio controls.
 
 - [ ] **Step 3: Implement React audio settings panel**
 
-Load audio settings in `loadBrowserState`, pass the result to `SettingsRoute`, render toggles/sliders, update settings through `browserApi.updateAudioSettings`, and play browser audio only from button handlers. Use Russian player-facing notices for missing assets and autoplay failures.
+Load audio settings in `loadBrowserState`, render a persistent shell-level audio panel, update settings through `browserApi.updateAudioSettings`, and play browser audio only from button handlers. Use Russian player-facing notices for missing assets and autoplay failures.
 
 - [ ] **Step 4: Run GREEN**
 

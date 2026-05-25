@@ -190,6 +190,8 @@ export default function App() {
             )}
           </ShellPanel>
 
+          {readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} />}
+
           <button
             type="button"
             className="advanced-toggle"
@@ -227,7 +229,7 @@ function renderActiveRoute(
     case 'media':
       return <MediaRoute state={state} />;
     case 'settings':
-      return <SettingsRoute state={state} activeRoute={activeRoute} />;
+      return <SettingsRoute state={state} />;
   }
 }
 
@@ -685,11 +687,9 @@ function MediaRoute({ state }: { state: Extract<BrowserShellState, { status: 're
 }
 
 function SettingsRoute({
-  state,
-  activeRoute
+  state
 }: {
   state: Extract<BrowserShellState, { status: 'ready' }>;
-  activeRoute: RouteId;
 }) {
   if (!isSuccess(state.menu)) {
     return <ApiFailure title="Настройки недоступны" result={state.menu} advancedEnabled={false} />;
@@ -705,7 +705,7 @@ function SettingsRoute({
         <div><dt>Размер шрифта</dt><dd>{options.consoleFontSize}</dd></div>
       </dl>
       <p>{options.guidance}</p>
-      <AudioSettingsPanel result={state.audio} activeRoute={activeRoute} />
+      <p className="muted">Аудио-панель закреплена в сводке состояния, чтобы музыка продолжала играть при переходах между разделами.</p>
     </ShellPanel>
   );
 }

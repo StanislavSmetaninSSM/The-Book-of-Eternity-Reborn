@@ -68,7 +68,7 @@ Default UI does not show raw slash command IDs. Advanced/debug commands remain g
 
 ## Browser audio and settings (#684)
 
-Issue #684 adds browser-tab music and cue controls to the `Настройки` route. React consumes `browserApi.getAudioSettings()` and `browserApi.updateAudioSettings()` from `src/api/client.ts`, but the local C# host remains authoritative for the shared `GameSettings` audio fields (`MusicEnabled`, `MusicVolume`, `SoundEnabled`, and `SoundVolume`). Browser slider/toggle changes persist to the same settings file the console client uses, and the host applies the updated values back to the existing C# audio service.
+Issue #684 adds browser-tab music and cue controls to a persistent browser audio panel that stays mounted while the player moves between routes, with the `Настройки` route pointing to the same controls. React consumes `browserApi.getAudioSettings()` and `browserApi.updateAudioSettings()` from `src/api/client.ts`, but the local C# host remains authoritative for the shared `GameSettings` audio fields (`MusicEnabled`, `MusicVolume`, `SoundEnabled`, and `SoundVolume`). Browser slider/toggle changes persist to the same settings file the console client uses, and the host applies the updated values back to the existing C# audio service.
 
 The player must click `Включить музыку в браузере` before music playback starts. This is intentional browser-autoplay handling: the React shell may load metadata on startup, but it does not call `play()` for music until a user gesture chooses the main-menu or in-game playlist. Cue previews use their own explicit preview click. Missing local audio files render as ordinary unavailable metadata and player-facing notices rather than crashes.
 
