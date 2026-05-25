@@ -343,9 +343,11 @@ function GameRoute({
       </article>
 
       <div className="split-grid">
-        <ShellPanel title="Состояние хода" eyebrow={formatTurnStateLabel(game.turnState.state)} nested variant="turn">
-          <p className="status-pill">{formatTurnStateTitle(game.turnState)}</p>
+        <ShellPanel title="Состояние хода" eyebrow={formatTurnStateLabel(game.turnState.phase || game.turnState.state)} nested variant="turn">
+          <p className={`status-pill turn-phase turn-phase--${game.turnState.severity}`}>{formatTurnStateTitle(game.turnState)}</p>
           <p>{formatTurnStateMessage(game.turnState)}</p>
+          <p className="muted">{toPlayerFacingText(game.turnState.playerGuidance, 'Следуйте безопасному состоянию хода.')}</p>
+          <TurnLifecycleActions turnState={game.turnState} />
           <p className="muted">Быстрая сцена: {formatQteStateLabel(game.qte)}</p>
         </ShellPanel>
         <ShellPanel title="Варианты" eyebrow="для игрока" nested variant="choices">
@@ -377,6 +379,18 @@ function GameRoute({
         <button type="submit" disabled={!composerText.trim()}>Подготовить действие</button>
         {composerNotice && <p className="composer-notice">{composerNotice}</p>}
       </form>
+
+      <section className="summary-card" aria-label="Жизненный цикл хода">
+        <h3>Жизненный цикл хода</h3>
+        <p className="muted">{toPlayerFacingText(game.turnState.phaseLabel, 'Текущее состояние хода')}</p>
+        <div className="phase-chip-grid">
+          {game.turnState.knownPhases.map((phase) => (
+            <span key={phase.id} className={phase.id === game.turnState.phase ? 'status-pill' : 'status-pill is-muted'}>
+              {toPlayerFacingText(phase.label, 'Этап')}
+            </span>
+          ))}
+        </div>
+      </section>
     </ShellPanel>
   );
 }
@@ -450,6 +464,37 @@ function ActionMenu({ menu }: { menu: BrowserPlayerCommandMenuDto }) {
       </div>
     </section>
   );
+}
+
+function TurnLifecycleActions({ turnState }: { turnState: BrowserGameScreenDto['turnState'] }) {
+  const playerActions = turnState.recommendedActions.filter((action) => action.surface === 'player-default');
+  const advancedActions = turnState.recommendedActions.filter((action) => action.surface === 'advanced-only');
+
+  return (
+    <div className="turn-lifecycle-actions" aria-label="Рекомендуемые действия состояния хода">
+      {playerActions.length > 0 && (
+        <ul className="choice-list">
+          {playerActions.map((action) => (
+            <li key={action.id}>
+              <strong>{toPlayerFacingText(action.label, 'Действие')}</strong>
+              <span>{formatTurnLifecycleActionDescription(action)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {advancedActions.length > 0 && (
+        <p className="muted">Технические действия для этого состояния доступны только через «Расширенный режим».</p>
+      )}
+    </div>
+  );
+}
+
+function formatTurnLifecycleActionDescription(action: BrowserGameScreenDto['turnState']['recommendedActions'][number]): string {
+  if (action.enabled) {
+    return toPlayerFacingText(action.description, 'Действие доступно для текущего состояния хода.');
+  }
+
+  return toPlayerFacingText(action.disabledReason, 'Действие сейчас недоступно.');
 }
 
 function ActionSection({ section }: { section: BrowserPlayerCommandSectionDto }) {
@@ -776,7 +821,7 @@ function formatDialogueCategory(category: string): string {
 }
 
 function formatTurnStateTitle(turnState: BrowserGameScreenDto['turnState']): string {
-  return toPlayerFacingText(turnState.title, formatTurnStateLabel(turnState.state));
+  return toPlayerFacingText(turnState.title, formatTurnStateLabel(turnState.phase || turnState.state));
 }
 
 function formatTurnStateMessage(turnState: BrowserGameScreenDto['turnState']): string {
@@ -823,20 +868,38 @@ function formatSessionStatus(status: string): string {
 
 function formatTurnStateLabel(state: string): string {
   switch (state.trim().toLowerCase()) {
+    case 'idle':
     case 'ready':
       return 'Готово к ходу';
+    case 'composing-action':
+    case 'composing_action':
+      return 'Игрок готовит действие';
+    case 'turn-submitted':
+    case 'turn_submitted':
+      return 'Ход отправляется';
     case 'waitinggm':
     case 'waiting_gm':
     case 'waiting-gm':
     case 'pending':
+    case 'pending-gm-turn':
       return 'Ожидаем ответ ГМа';
     case 'accepted':
       return 'Ответ ГМа принят';
     case 'validationfailed':
     case 'validation_failed':
+    case 'validation-failed':
+    case 'validation-errors':
+      return 'Проверка не прошла';
     case 'repairrequired':
     case 'repair_required':
+    case 'repair-required':
+    case 'pending-turn-repair':
       return 'Нужна починка';
+    case 'error-restored':
+    case 'gm-turn-error':
+      return 'Ошибка восстановлена';
+    case 'cancelled':
+      return 'Ход отменён';
     case 'blocked':
       return 'Ход заблокирован';
     case 'error':
@@ -1161,6 +1224,32 @@ function AdvancedDiagnosticsPanel({
         <ShellPanel title="Панель состояния" eyebrow="validation" nested>
           <p>Статус: {lifecycle.validation.statusLabel}</p>
           <p>Ошибки: {lifecycle.validation.errorCount}; предупреждения: {lifecycle.validation.warningCount}</p>
+          {lifecycle.validation.groups.length > 0 && (
+            <ul className="endpoint-list validation-group-list" aria-label="Группы проверки состояния">
+              {lifecycle.validation.groups.map((group) => (
+                <li key={`${group.severity}-${group.category}-${group.section}`}>
+                  <strong>{group.severity} · {group.category}</strong>
+                  <span>{group.section} · {group.count}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {lifecycle.validation.issues.length > 0 && (
+            <details>
+              <summary>Raw validation details</summary>
+              <ul className="endpoint-list validation-issue-list">
+                {lifecycle.validation.issues.map((issue, index) => (
+                  <li key={`${issue.filePath}-${issue.code}-${index}`}>
+                    <strong>{issue.filePath}</strong>
+                    <span>{issue.severity} · {issue.category} · {issue.section}</span>
+                    <span>{issue.message}</span>
+                    <span>Ожидалось: {issue.expected || '—'} · Сейчас: {issue.actual || '—'}</span>
+                    <span>Repair: {issue.repairHint || '—'}</span>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
         </ShellPanel>
       )}
     </section>
