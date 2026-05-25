@@ -108,7 +108,7 @@ export default function App() {
     const normalized = composerText.trim();
 
     if (normalized.startsWith('/')) {
-      setComposerNotice('Slash-команды не выполняются из основного поля. Откройте «Расширенный режим» отдельной кнопкой, если хотите перенести команду в техническую панель и подтвердить её там.');
+      setComposerNotice('Служебные команды не выполняются из основного поля. Откройте «Расширенный режим» отдельной кнопкой, если хотите перенести команду в техническую панель и подтвердить её там.');
       return;
     }
 
@@ -909,7 +909,7 @@ function AudioSettingsPanel({
         </div>
         <div className="summary-card">
           <h3>Звуковые подсказки</h3>
-          <p>{notificationCue?.usage ?? 'QTE и уведомления будут звучать, если локальные файлы найдены.'}</p>
+          <p>{notificationCue?.usage ?? 'Быстрые сцены и уведомления будут звучать, если локальные файлы найдены.'}</p>
           <button type="button" onClick={() => void previewCue(notificationCue?.asset)} disabled={!audio.soundEnabled || !notificationCue?.asset}>
             Проверить подсказку
           </button>

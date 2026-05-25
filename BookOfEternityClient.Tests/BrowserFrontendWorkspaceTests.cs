@@ -189,6 +189,7 @@ public sealed class BrowserFrontendWorkspaceTests
         var entryStyles = File.ReadAllText(Path.Combine(FrontendRoot, "src", "styles.css"));
         var styles = ReadFrontendStyles();
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var apiClient = File.ReadAllText(Path.Combine(FrontendRoot, "src", "api", "client.ts"));
         var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
         var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
 
@@ -228,6 +229,10 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("game.qte.notification ?? game.qte.state", app, StringComparison.Ordinal);
         Assert.DoesNotContain("qte.notification ?? qte.error ?? qte.state", app, StringComparison.Ordinal);
         Assert.DoesNotContain("локальный host", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("C# host", apiClient, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Slash-команды", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("QTE и уведомления", app, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("локальный игровой клиент", apiClient, StringComparison.OrdinalIgnoreCase);
 
         Assert.Contains("#685", readme, StringComparison.Ordinal);
         Assert.Contains("src/styles/tokens.css", readme, StringComparison.Ordinal);
