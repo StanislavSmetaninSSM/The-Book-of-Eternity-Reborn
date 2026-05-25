@@ -45,10 +45,16 @@ export const browserApiEndpointDocs = [
   { id: 'main-menu', method: 'GET', path: '/api/main-menu', playerSurface: 'player-default', response: 'BrowserMainMenuDto' },
   { id: 'session-status', method: 'GET', path: '/api/session', playerSurface: 'shared', response: 'LocalWebUiSessionStatus' },
   { id: 'game-screen', method: 'GET', path: '/api/game-screen', playerSurface: 'player-default', response: 'BrowserGameScreenDto' },
+  { id: 'save-load', method: 'POST', path: '/api/saves/load', playerSurface: 'player-default', response: 'BrowserLoadSaveResultDto' },
   { id: 'lifecycle-dashboard', method: 'GET', path: '/api/lifecycle/dashboard', playerSurface: 'advanced-only', response: 'BrowserLifecycleDashboardDto' },
   { id: 'lifecycle-validate', method: 'POST', path: '/api/lifecycle/validate', playerSurface: 'advanced-only', response: 'BrowserValidationSummaryDto' },
   { id: 'explorer-command', method: 'POST', path: '/api/explorer/command', playerSurface: 'advanced-only', response: 'ExplorerCommandResult' },
-  { id: 'qte-state', method: 'GET', path: '/api/qte/state', playerSurface: 'player-default', response: 'QteWebStateDto' }
+  { id: 'prompt-session-get', method: 'GET', path: '/api/explorer/prompt-sessions/{sessionId}', playerSurface: 'advanced-only', response: 'ExplorerCommandResult' },
+  { id: 'prompt-session-submit', method: 'POST', path: '/api/explorer/prompt-sessions/submit', playerSurface: 'advanced-only', response: 'ExplorerCommandResult' },
+  { id: 'prompt-session-cancel', method: 'POST', path: '/api/explorer/prompt-sessions/cancel', playerSurface: 'advanced-only', response: 'ExplorerCommandResult' },
+  { id: 'qte-state', method: 'GET', path: '/api/qte/state', playerSurface: 'player-default', response: 'QteWebStateDto' },
+  { id: 'qte-offer', method: 'POST', path: '/api/qte/offer', playerSurface: 'player-default', response: 'QteWebStateDto' },
+  { id: 'qte-action', method: 'POST', path: '/api/qte/action', playerSurface: 'player-default', response: 'QteWebStateDto' }
 ] as const satisfies BrowserApiEndpointDescriptor[];
 
 export const browserApiContractSummary = {

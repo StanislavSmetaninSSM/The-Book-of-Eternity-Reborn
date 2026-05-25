@@ -19,7 +19,8 @@ const mainMenuContract = mainMenuFixture satisfies BrowserMainMenuDto;
 const sessionStatusContract = sessionStatusFixture satisfies LocalWebUiSessionStatus;
 const gameScreenContract = gameScreenFixture satisfies BrowserGameScreenDto;
 const lifecycleDashboardContract = lifecycleDashboardFixture satisfies BrowserLifecycleDashboardDto;
-const explorerCommandResultContract = explorerCommandResultFixture satisfies ExplorerCommandResult;
+const explorerCommandResultContract =
+  (explorerCommandResultFixture as unknown as ExplorerCommandResult) satisfies ExplorerCommandResult;
 const qteStateContract = qteStateFixture satisfies QteWebStateDto;
 const apiErrorContract = apiErrorFixture satisfies BrowserApiErrorPayload;
 

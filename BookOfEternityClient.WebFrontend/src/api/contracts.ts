@@ -358,10 +358,10 @@ export interface ExplorerPromptSessionCancelRequest {
   ownerId?: string | null;
 }
 
-export type CommandExecutionState = string;
-export type UiNotificationSeverity = string;
-export type UiActionStyle = string;
-export type UiTone = string;
+export type CommandExecutionState = 'Completed' | 'RequiresInput' | 'Pending' | 'Blocked' | 'Failed';
+export type UiNotificationSeverity = 'Info' | 'Success' | 'Warning' | 'Error';
+export type UiActionStyle = 'Default' | 'Primary' | 'Secondary' | 'Danger';
+export type UiTone = 'Default' | 'Muted' | 'Subtle' | 'Accent' | 'Success' | 'Warning' | 'Error';
 
 export interface ExplorerCommandResult {
   command: string;
@@ -385,19 +385,19 @@ export type UiBlock =
   | UiMapBlock;
 
 export interface UiTextBlock {
-  kind: string;
+  kind: 'text';
   text: string;
   tone: UiTone;
 }
 
 export interface UiPanelBlock {
-  kind: string;
+  kind: 'panel';
   title: string;
   blocks: UiBlock[];
 }
 
 export interface UiTableBlock {
-  kind: string;
+  kind: 'table';
   title: string;
   columns: string[];
   rows: UiTableRow[];
@@ -408,13 +408,13 @@ export interface UiTableRow {
 }
 
 export interface UiListBlock {
-  kind: string;
+  kind: 'list';
   ordered: boolean;
   items: string[];
 }
 
 export interface UiKeyValueGridBlock {
-  kind: string;
+  kind: 'keyValueGrid';
   items: UiKeyValueItem[];
 }
 
@@ -424,20 +424,20 @@ export interface UiKeyValueItem {
 }
 
 export interface UiMessageBlock {
-  kind: string;
+  kind: 'message';
   severity: UiNotificationSeverity;
   title: string;
   message: string;
 }
 
 export interface UiRawJsonBlock {
-  kind: string;
+  kind: 'rawJson';
   title: string;
   json: JsonValue | null;
 }
 
 export interface UiImageBlock {
-  kind: string;
+  kind: 'image';
   title: string;
   url: string;
   mediaId: string;
@@ -449,7 +449,7 @@ export interface UiImageBlock {
 }
 
 export interface UiMapBlock {
-  kind: string;
+  kind: 'map';
   title: string;
   map: MapViewDto;
 }
@@ -535,12 +535,12 @@ export interface UiPromptBase {
 }
 
 export interface UiConfirmationPrompt extends UiPromptBase {
-  kind: string;
+  kind: 'confirmation';
   defaultValue: boolean;
 }
 
 export interface UiSelectionPrompt extends UiPromptBase {
-  kind: string;
+  kind: 'selection';
   options: UiSelectionOption[];
   allowCustom: boolean;
 }
@@ -553,13 +553,13 @@ export interface UiSelectionOption {
 }
 
 export interface UiTextInputPrompt extends UiPromptBase {
-  kind: string;
+  kind: 'textInput';
   defaultValue: string;
   placeholder: string;
 }
 
 export interface UiLongTextInputPrompt extends UiPromptBase {
-  kind: string;
+  kind: 'longTextInput';
   defaultValue: string;
   placeholder: string;
   minLines: number | null;
@@ -582,12 +582,12 @@ export interface UiPromptSession {
 }
 
 export interface QteWebOfferDecisionRequest {
-  decision: 'accept' | 'decline' | string | null;
+  decision: 'accept' | 'decline' | null;
 }
 
 export interface QteWebActionRequest {
   actionId: string | null;
-  grade: 'success' | 'partial' | 'fail' | string | null;
+  grade: 'success' | 'partial' | 'fail' | null;
 }
 
 export interface QteWebStateDto {
