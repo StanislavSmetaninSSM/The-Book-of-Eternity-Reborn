@@ -86,6 +86,7 @@ const playerCopyReplacements: Array<[RegExp, string]> = [
   [/\bGM\b/g, 'ГМ'],
   [/QTE action resolved\.?/gi, 'Быстрая сцена завершена.'],
   [/\bQTE\b/g, 'быстрая сцена'],
+  [/debug shell/gi, 'служебная оболочка'],
   [/Slash-команды/gi, 'служебные команды'],
   [/\bslash commands?\b/gi, 'служебные команды'],
   [/Нужен repair pending turn/gi, 'Нужна починка ожидающего хода'],
@@ -136,6 +137,15 @@ const playerCopyReplacements: Array<[RegExp, string]> = [
   [/\bNPC\b/g, 'персонажи мира']
 ];
 
+const launcherAboutCopyReplacements: Array<[RegExp, string]> = [
+  [/\bdebug\b/gi, 'служебная'],
+  [/\bdiagnostics?\b/gi, 'проверочные сведения'],
+  [/\btechnical details?\b/gi, 'служебные сведения'],
+  [/\btechnical\b/gi, 'служебный'],
+  [/\bdeveloper\b/gi, 'служебный'],
+  [/\braw JSON\b/gi, 'подробные данные']
+];
+
 const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about'];
 
 const launcherModeDetails: Record<LauncherMode, { label: string; description: string }> = {
@@ -174,6 +184,14 @@ function GameLauncher({
   const [activeMode, setActiveMode] = useState<LauncherMode>(primaryAction.mode);
   const [launcherNotice, setLauncherNotice] = useState('');
   const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
+  const isLauncherMountedRef = useRef(true);
+
+  useEffect(() => {
+    isLauncherMountedRef.current = true;
+    return () => {
+      isLauncherMountedRef.current = false;
+    };
+  }, []);
 
   function activateLauncherMode(mode: LauncherMode) {
     setLauncherNotice('');
@@ -196,23 +214,33 @@ function GameLauncher({
 
     try {
       const result = await browserApi.loadSave({ saveId: slot.saveId });
+      if (!isLauncherMountedRef.current) {
+        return;
+      }
+
       if (isSuccess(result) && result.data.success) {
         setLauncherNotice(`Сохранение «${toPlayerFacingText(slot.displayName, 'выбранная запись')}» загружено. Открываем главу…`);
-        await onStateRefresh();
         onActiveRouteChange('game');
+        await onStateRefresh();
         return;
       }
 
       if (isSuccess(result)) {
-        setLauncherNotice(toPlayerFacingText(result.data.error, 'Сохранение не удалось загрузить. Выберите другую запись или проверьте локальную книгу.'));
+        setLauncherNotice(toLauncherSaveFailureNotice(result.data.error));
         return;
       }
 
-      setLauncherNotice(toPlayerFacingText(result.playerMessage, 'Сохранение не удалось загрузить. Проверьте локальный клиент и попробуйте ещё раз.'));
+      setLauncherNotice(toLauncherSaveFailureNotice(result.playerMessage));
     } catch {
+      if (!isLauncherMountedRef.current) {
+        return;
+      }
+
       setLauncherNotice('Сохранение не удалось загрузить. Проверьте локальный клиент и попробуйте ещё раз.');
     } finally {
-      setLoadingSaveId(null);
+      if (isLauncherMountedRef.current) {
+        setLoadingSaveId(null);
+      }
     }
   }
 
@@ -296,7 +324,7 @@ function GameLauncher({
           <section className="launcher-mode-panel" aria-label="Сведения о книге">
             <h3>Сведения о книге</h3>
             <h4>{toPlayerFacingText(menu.about.title, 'Книга Вечности: Перерождение')}</h4>
-            <p>{toPlayerFacingText(menu.about.body, 'Браузерный клиент открывает локальную книгу и оставляет игровые решения в основном клиенте.')}</p>
+            <p>{playerLauncherAboutText(menu.about.body)}</p>
           </section>
         );
     }
@@ -1109,6 +1137,22 @@ function toCommandNotice(result: ExplorerCommandResult): string {
   }
 }
 
+function playerLauncherAboutText(text: string): string {
+  const fallback = 'Браузерный клиент открывает локальную книгу и оставляет игровые решения в основном клиенте.';
+  const playerText = toPlayerFacingText(text, fallback);
+  const sanitized = launcherAboutCopyReplacements.reduce(
+    (copy, [pattern, replacement]) => copy.replace(pattern, replacement),
+    playerText
+  );
+
+  return sanitized.trim() || fallback;
+}
+
+function toLauncherSaveFailureNotice(message: string): string {
+  return message.trim()
+    ? 'Сохранение не удалось загрузить. Выберите другую запись или попробуйте ещё раз; служебные подробности можно проверить в расширенном режиме.'
+    : 'Сохранение не удалось загрузить. Выберите другую запись или попробуйте ещё раз.';
+}
 
 function toPlayerFacingText(value: string | null | undefined, fallback: string): string {
   const source = value?.trim();

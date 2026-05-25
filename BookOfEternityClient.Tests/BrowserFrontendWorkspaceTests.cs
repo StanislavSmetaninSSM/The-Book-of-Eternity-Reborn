@@ -366,6 +366,19 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Сведения о книге", app, StringComparison.Ordinal);
         Assert.Contains("className=\"launcher-secondary-actions\"", app, StringComparison.Ordinal);
         Assert.Contains("className=\"advanced-toggle\"", app, StringComparison.Ordinal);
+        Assert.Contains("function playerLauncherAboutText", app, StringComparison.Ordinal);
+        Assert.Contains("[/debug shell/gi, 'служебная оболочка']", app, StringComparison.Ordinal);
+        Assert.Contains("function toLauncherSaveFailureNotice", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("setLauncherNotice(toPlayerFacingText(result.data.error", app, StringComparison.Ordinal);
+        Assert.Contains("isLauncherMountedRef", app, StringComparison.Ordinal);
+        Assert.Contains("isLauncherMountedRef.current = false", app, StringComparison.Ordinal);
+
+        var advancedDiagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
+        Assert.True(advancedDiagnosticsIndex > 0, "Advanced diagnostics must stay in a separate source section.");
+        var playerDefaultAppSlice = app[..advancedDiagnosticsIndex];
+        var hasRawDebugShellInPlayerDefaultSlice = playerDefaultAppSlice.Contains("debug shell", StringComparison.OrdinalIgnoreCase);
+        var hasExplicitDebugShellReplacement = app.Contains("[/debug shell/gi, 'служебная оболочка']", StringComparison.Ordinal);
+        Assert.True(!hasRawDebugShellInPlayerDefaultSlice || hasExplicitDebugShellReplacement, "Player-default launcher copy must not expose raw debug shell wording.");
 
         Assert.Contains(".game-launcher", styles, StringComparison.Ordinal);
         Assert.Contains(".launcher-primary-action", styles, StringComparison.Ordinal);
