@@ -164,10 +164,10 @@ export default function App() {
           <ShellPanel title="Сессия" eyebrow="локальная книга">
             {session ? (
               <dl className="kv-list">
-                <div><dt>Статус</dt><dd>{session.status}</dd></div>
+                <div><dt>Статус</dt><dd>{formatSessionStatus(session.status)}</dd></div>
                 <div><dt>Локально</dt><dd>{session.localOnly ? 'Да' : 'Нет'}</dd></div>
                 <div><dt>Запись хода</dt><dd>{session.canStartBrowserWrite ? 'Можно' : 'Заблокирована'}</dd></div>
-                <div><dt>Путь</dt><dd>{session.gameSessionExists ? 'game_session найден' : 'game_session не найден'}</dd></div>
+                <div><dt>Книга</dt><dd>{session.gameSessionExists ? 'сохранение найдено' : 'сохранение не найдено'}</dd></div>
               </dl>
             ) : readyState ? (
               <ApiFailure title="Сессия недоступна" result={readyState.session} advancedEnabled={advancedEnabled} />
@@ -286,10 +286,10 @@ function GameRoute({
       </article>
 
       <div className="split-grid">
-        <ShellPanel title="Состояние хода" eyebrow={game.turnState.state} nested variant="turn">
+        <ShellPanel title="Состояние хода" eyebrow={formatTurnStateLabel(game.turnState.state)} nested variant="turn">
           <p className="status-pill">{game.turnState.title}</p>
           <p>{game.turnState.message}</p>
-          <p className="muted">Быстрая сцена: {game.qte.notification ?? game.qte.state}</p>
+          <p className="muted">Быстрая сцена: {formatQteStateLabel(game.qte)}</p>
         </ShellPanel>
         <ShellPanel title="Варианты" eyebrow="для игрока" nested variant="choices">
           {game.narrative.dialogueOptions.length > 0 ? (
@@ -654,6 +654,78 @@ function toCommandNotice(result: ExplorerCommandResult): string {
   }
 }
 
+
+function formatSessionStatus(status: string): string {
+  switch (status.trim().toLowerCase()) {
+    case 'ok':
+    case 'ready':
+      return 'Клиент готов';
+    case 'missing':
+    case 'not_found':
+    case 'notfound':
+      return 'Сохранение не найдено';
+    case 'blocked':
+      return 'Запись временно заблокирована';
+    case 'error':
+      return 'Нужна проверка состояния';
+    default:
+      return status.trim() ? 'Состояние требует внимания' : 'Состояние уточняется';
+  }
+}
+
+function formatTurnStateLabel(state: string): string {
+  switch (state.trim().toLowerCase()) {
+    case 'ready':
+      return 'Готово к ходу';
+    case 'waitinggm':
+    case 'waiting_gm':
+    case 'waiting-gm':
+    case 'pending':
+      return 'Ожидаем ответ ГМа';
+    case 'accepted':
+      return 'Ответ ГМа принят';
+    case 'validationfailed':
+    case 'validation_failed':
+    case 'repairrequired':
+    case 'repair_required':
+      return 'Нужна починка';
+    case 'blocked':
+      return 'Ход заблокирован';
+    case 'error':
+      return 'Ошибка хода';
+    default:
+      return state.trim() ? 'Состояние хода' : 'Ход уточняется';
+  }
+}
+
+function formatQteStateLabel(qte: BrowserGameScreenDto['qte']): string {
+  if (qte.notification) {
+    return qte.notification;
+  }
+
+  if (qte.error) {
+    return 'Быстрая сцена требует внимания.';
+  }
+
+  switch (qte.state.trim().toLowerCase()) {
+    case 'noscene':
+    case 'none':
+    case 'idle':
+      return 'Быстрая сцена не активна.';
+    case 'offer':
+      return 'Доступна быстрая сцена.';
+    case 'active':
+      return 'Быстрая сцена активна.';
+    case 'resolution':
+    case 'resolved':
+      return 'Быстрая сцена завершилась.';
+    case 'completed':
+      return 'Итог быстрой сцены записан.';
+    default:
+      return 'Состояние быстрой сцены уточняется.';
+  }
+}
+
 function commandStateLabel(state: ExplorerCommandResult['state']): string {
   switch (state) {
     case 'RequiresInput':
@@ -679,7 +751,7 @@ function MediaRoute({ state }: { state: Extract<BrowserShellState, { status: 're
   return (
     <ShellPanel title="Медиа" eyebrow="галерея и быстрые сцены">
       <div className="split-grid">
-        <div className="summary-card"><h2>Быстрые сцены</h2><p>{qte.notification ?? qte.error ?? qte.state}</p></div>
+        <div className="summary-card"><h2>Быстрые сцены</h2><p>{formatQteStateLabel(qte)}</p></div>
         <div className="summary-card"><h2>Галерея</h2><p>Изображения и кинематик-сцены будут подключаться через безопасный локальный просмотрщик.</p></div>
       </div>
     </ShellPanel>
@@ -992,7 +1064,7 @@ function ErrorNotice({ title, failure, advancedEnabled }: { title: string; failu
 
 function LoadingCard() {
   return (
-    <ShellPanel title="Загрузка" eyebrow="локальный host">
+    <ShellPanel title="Загрузка" eyebrow="локальный клиент">
       <p>Собираем главное меню, сессию, игровой экран и состояние хода из локального клиента…</p>
     </ShellPanel>
   );

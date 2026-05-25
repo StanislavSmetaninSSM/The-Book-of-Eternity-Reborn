@@ -216,9 +216,18 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("data-theme-key={realmTheme.key}", app, StringComparison.Ordinal);
         Assert.Contains("route-card--${route.id}", app, StringComparison.Ordinal);
         Assert.Contains("variant=\"turn\"", app, StringComparison.Ordinal);
+        Assert.Contains("formatSessionStatus(", app, StringComparison.Ordinal);
+        Assert.Contains("formatTurnStateLabel(", app, StringComparison.Ordinal);
+        Assert.Contains("formatQteStateLabel(", app, StringComparison.Ordinal);
         Assert.DoesNotContain("Book of Eternity Reborn · Browser Client", app, StringComparison.Ordinal);
         Assert.DoesNotContain("player-facing", app, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Текущий realm", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("{session.status}", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_session найден", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("eyebrow={game.turnState.state}", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("game.qte.notification ?? game.qte.state", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("qte.notification ?? qte.error ?? qte.state", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("локальный host", app, StringComparison.OrdinalIgnoreCase);
 
         Assert.Contains("#685", readme, StringComparison.Ordinal);
         Assert.Contains("src/styles/tokens.css", readme, StringComparison.Ordinal);
