@@ -27,13 +27,13 @@ internal sealed class LocalWebUiFrontendAssets
 
         foreach (var root in CandidateBuildRoots())
         {
-            var shellPath = Path.Combine(root, FallbackShellFileName);
-            if (File.Exists(shellPath))
-                return new LocalWebUiFrontendAssets(root, shellPath, isFallbackShell: true);
-
             var indexPath = Path.Combine(root, IndexFileName);
             if (File.Exists(indexPath))
                 return new LocalWebUiFrontendAssets(root, indexPath, isFallbackShell: false);
+
+            var shellPath = Path.Combine(root, FallbackShellFileName);
+            if (File.Exists(shellPath))
+                return new LocalWebUiFrontendAssets(root, shellPath, isFallbackShell: true);
         }
 
         foreach (var shellPath in CandidateFallbackShells())
