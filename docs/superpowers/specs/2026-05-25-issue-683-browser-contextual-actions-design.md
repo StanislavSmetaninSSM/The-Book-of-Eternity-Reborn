@@ -36,9 +36,9 @@ Default buttons/forms would execute commands immediately.
 
 ## Chosen architecture
 
-Add a `BrowserPlayerCommandMenuDto` to `BrowserGameScreenDto`. `BrowserGameScreenService` will build it using the shared `ExplorerCommandCatalog`, current `AggregatedGameState`, and lifecycle/QTE state. The DTO is read-only and contains player-facing metadata only: grouped sections, labels, descriptions, realm availability, availability state, disabled reasons, mutation warnings, and guided-form copy. It may carry an internal `advancedCommand` field for future bridging/execution, but React must not display that field in player-default UI.
+Add a `BrowserPlayerCommandMenuDto` to `BrowserGameScreenDto`. `BrowserGameScreenService` will build it using the shared `ExplorerCommandCatalog`, current `AggregatedGameState`, and lifecycle/QTE state. The DTO is read-only and contains player-facing metadata: grouped sections, labels, descriptions, realm availability, availability state, disabled reasons, mutation warnings, and guided-form copy. It also carries an internal `advancedCommand` bridge so React can call the existing typed browser command/prompt endpoints without displaying slash IDs in player-default UI.
 
-React will render the DTO in the existing `Мир` route as a sectioned command menu. Read-only actions appear as game cards. Mutating actions render compact guided forms with player prompts and safety warnings instead of requiring manual slash syntax. Actual command execution remains behind the already explicit advanced command surface until a later local-write lifecycle issue wires safe player-default submission.
+React will render the DTO in the existing `Мир` route as a sectioned command menu. Read-only actions open their browser command result from the card. Mutating actions open the existing server-side prompt session, render its prompts as a player-facing form, and submit answers through `/api/explorer/prompt-sessions/submit`. C# still owns command execution, prompt validation, local-write gating, rollback capture, pending-turn checks, and game-state mutation; React only renders metadata, request state, prompts, and results.
 
 ## Data flow
 
@@ -46,7 +46,9 @@ React will render the DTO in the existing `Мир` route as a sectioned command 
 2. The service refreshes C# state and lifecycle/QTE data as it already does.
 3. A new `BrowserPlayerCommandMenuBuilder.Build(state, lifecycle, qte)` projects browser-executable descriptors into grouped sections.
 4. React receives the typed `game.actionMenu` DTO and renders sections/actions in `WorldRoute`.
-5. The default UI displays only Russian/player-facing labels and warnings. Advanced command IDs remain available only in `AdvancedDiagnosticsPanel` or future explicit advanced controls.
+5. When the player opens an action, React calls the typed browser command client with the internal command bridge and renders returned blocks/prompts.
+6. Prompt answers are submitted through the existing prompt-session endpoint, so C# keeps validation and local-write authority.
+7. The default UI displays only Russian/player-facing labels and warnings. Advanced command IDs remain available only in `AdvancedDiagnosticsPanel` or explicit advanced controls.
 
 ## Sections and contextual availability
 
@@ -81,6 +83,7 @@ Realm availability is derived from `ExplorerCommandGroup` and current C# state:
 - Missing metadata for a browser-executable descriptor is a test failure.
 - The DTO must not render raw slash command strings in player-default markup.
 - Mutating actions carry a non-empty mutation warning and form prompt.
+- Player-default copy avoids technical English/implementation terms such as `C#`, `DTO`, `React`, `pending-turn`, and `browser write`.
 - Advanced/debug actions are separated and can only be displayed when advanced mode is enabled.
 - This change does not alter afterlife runtime contracts or GM-authored control files; no Afterlife contract matrix update is required.
 
@@ -95,6 +98,6 @@ Realm availability is derived from `ExplorerCommandGroup` and current C# state:
 ## Self-review
 
 - No unresolved TBD/TODO placeholders.
-- Scope is limited to read-only action menu metadata/rendering plus non-executing guided forms; it does not implement full player-default command execution.
+- Scope includes action metadata, player-facing rendering, read-only command opening, and server-side prompt-session forms for mutating actions; C# remains the execution/local-write authority.
 - The design keeps gameplay/application authority in C# and React as presentation.
 - Acceptance criteria are covered by metadata guards, realm-aware DTO, default UI rendering, and advanced separation tests.

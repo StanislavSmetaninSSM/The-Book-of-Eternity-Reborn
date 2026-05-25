@@ -10,7 +10,11 @@ import type {
   BrowserPlayerCommandActionDto,
   BrowserPlayerCommandMenuDto,
   BrowserPlayerCommandSectionDto,
-  LocalWebUiSessionStatus
+  ExplorerCommandResult,
+  JsonValue,
+  LocalWebUiSessionStatus,
+  UiBlock,
+  UiPrompt
 } from './api/contracts';
 
 type RouteId = 'home' | 'game' | 'soul' | 'world' | 'media' | 'settings';
@@ -19,6 +23,8 @@ type BrowserShellState =
   | { status: 'loading' }
   | { status: 'ready'; menu: BrowserApiResult<BrowserMainMenuDto>; session: BrowserApiResult<LocalWebUiSessionStatus>; game: BrowserApiResult<BrowserGameScreenDto>; lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> | null }
   | { status: 'error'; playerMessage: string; technicalDetails?: string };
+
+type PromptAnswers = Record<string, JsonValue | undefined>;
 
 interface RouteCard {
   id: RouteId;
@@ -36,10 +42,10 @@ interface RealmTheme {
 
 const playerRoutes: RouteCard[] = [
   { id: 'home', label: 'Главная', description: 'Сессия, продолжение, загрузка и безопасные действия.', icon: '✦' },
-  { id: 'game', label: 'Игра', description: 'Нарратив, ход ГМа, QTE и основной художественный ввод.', icon: '📖' },
+  { id: 'game', label: 'Игра', description: 'Нарратив, ход ГМа, быстрые сцены и основной художественный ввод.', icon: '📖' },
   { id: 'soul', label: 'Душа', description: 'Душа, герой, состояние и текущий realm.', icon: '🕯️' },
   { id: 'world', label: 'Мир', description: 'Карта, журнал, квесты, фракции и действия.', icon: '🗺️' },
-  { id: 'media', label: 'Медиа', description: 'Галерея, сцены QTE и игровые материалы.', icon: '🎞️' },
+  { id: 'media', label: 'Медиа', description: 'Галерея, быстрые сцены и игровые материалы.', icon: '🎞️' },
   { id: 'settings', label: 'Настройки', description: 'Локальный профиль, звук, язык и комфорт клиента.', icon: '⚙️' }
 ];
 
@@ -101,7 +107,7 @@ export default function App() {
       return;
     }
 
-    setComposerNotice('Художественный ввод подготовлен. Запись хода будет подключена отдельной lifecycle-задачей, чтобы не обходить C# local-write coordinator.');
+    setComposerNotice('Художественный ввод подготовлен. Запись хода будет подключена отдельной задачей безопасной локальной записи.');
   }
 
   return (
@@ -112,8 +118,8 @@ export default function App() {
           <div>
             <h1 id="browser-client-title">Локальный игровой клиент</h1>
             <p className="lead">
-              C# API остаётся источником истины: React показывает игру, маршруты, запросы и состояние интерфейса,
-              но не переносит правила, сохранения или afterlife-контракты в TypeScript.
+              Локальный клиент остаётся источником истины: браузер показывает игру, маршруты и состояние интерфейса,
+              но не переносит правила, сохранения или посмертные контракты в отдельный слой.
             </p>
           </div>
           <div className="hero-status" aria-label="Текущий realm">
@@ -150,7 +156,7 @@ export default function App() {
         </div>
 
         <aside className="workspace-sidebar" aria-label="Сводка состояния">
-          <ShellPanel title="Сессия" eyebrow="локальный runtime">
+          <ShellPanel title="Сессия" eyebrow="локальная книга">
             {session ? (
               <dl className="kv-list">
                 <div><dt>Статус</dt><dd>{session.status}</dd></div>
@@ -161,11 +167,11 @@ export default function App() {
             ) : readyState ? (
               <ApiFailure title="Сессия недоступна" result={readyState.session} advancedEnabled={advancedEnabled} />
             ) : (
-              <p className="muted">Ждём C# host…</p>
+              <p className="muted">Ждём локальный клиент…</p>
             )}
           </ShellPanel>
 
-          <ShellPanel title="Ход и ремонт" eyebrow="GM lifecycle">
+          <ShellPanel title="Ход и ремонт" eyebrow="безопасность хода">
             {gameScreen ? (
               <>
                 <p className="status-pill">{gameScreen.turnState.title}</p>
@@ -269,14 +275,14 @@ function GameRoute({
     <ShellPanel title="Игра" eyebrow="нарратив и ход">
       <article className="narrative-card">
         <h2>{game.theme.icon} {game.theme.label}</h2>
-        <p>{game.narrative.text || 'C# runtime пока не вернул последний нарратив.'}</p>
+        <p>{game.narrative.text || 'Последний нарратив пока не найден в локальной книге.'}</p>
       </article>
 
       <div className="split-grid">
         <ShellPanel title="Состояние хода" eyebrow={game.turnState.state} nested>
           <p className="status-pill">{game.turnState.title}</p>
           <p>{game.turnState.message}</p>
-          <p className="muted">QTE: {game.qte.notification ?? game.qte.state}</p>
+          <p className="muted">Быстрая сцена: {game.qte.notification ?? game.qte.state}</p>
         </ShellPanel>
         <ShellPanel title="Варианты" eyebrow="player-facing" nested>
           {game.narrative.dialogueOptions.length > 0 ? (
@@ -352,8 +358,8 @@ function WorldRoute({ state }: { state: Extract<BrowserShellState, { status: 're
     <ShellPanel title="Мир" eyebrow="карта, журнал и действия">
       <div className="split-grid three">
         <div className="summary-card"><h2>Локация</h2><p>{game.world.location}</p><p>{game.world.worldTime}</p></div>
-        <div className="summary-card"><h2>Журнал</h2><p>Квесты, архив и история разворачиваются в игровых разделах без знания slash-команд.</p></div>
-        <div className="summary-card"><h2>Фракции</h2><p>Панели фракций/стражей используют C# DTO и не копируют правила в React.</p></div>
+        <div className="summary-card"><h2>Журнал</h2><p>Квесты, архив и история разворачиваются в игровых разделах без знания ручных команд.</p></div>
+        <div className="summary-card"><h2>Фракции</h2><p>Панели фракций и стражей используют общие игровые данные и не дублируют правила.</p></div>
       </div>
       <ActionMenu menu={game.actionMenu} />
     </ShellPanel>
@@ -370,7 +376,7 @@ function ActionMenu({ menu }: { menu: BrowserPlayerCommandMenuDto }) {
         <h2 id="contextual-actions-title">Игровые действия</h2>
         <p className="muted">
           Персонаж / Душа, Мир, Квесты, Карта, Фракции, Хранители, Посмертие, Бой, Архив и Настройки
-          приходят из C# каталога команд. Технические имена команд остаются в расширенном режиме.
+          собираются из игрового каталога действий. Технические имена команд остаются в расширенном режиме.
         </p>
       </div>
       <div className="action-section-grid">
@@ -399,17 +405,50 @@ function ActionSection({ section }: { section: BrowserPlayerCommandSectionDto })
 }
 
 function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
-  const [draft, setDraft] = useState('');
   const [notice, setNotice] = useState('');
+  const [commandResult, setCommandResult] = useState<BrowserApiResult<ExplorerCommandResult> | null>(null);
+  const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isGuidedForm = action.formMode !== 'none';
 
-  function submitGuidedForm(event: FormEvent<HTMLFormElement>) {
+  async function submitGuidedForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setNotice(
-      isGuidedForm
-        ? 'Форма подготовлена как игровое намерение. Безопасное выполнение останется за C# протоколом жизненного цикла и записи.'
-        : 'Раздел подготовлен к открытию через C# DTO без ручного ввода технической команды.'
-    );
+    setIsSubmitting(true);
+    setNotice(isGuidedForm ? 'Открываем игровую форму…' : 'Открываем игровой раздел…');
+
+    const result = await browserApi.executeExplorerCommand({ command: action.advancedCommand, ownerLabel: 'Игровое меню' });
+    setCommandResult(result);
+    if (isSuccess(result)) {
+      setPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
+      setNotice(toCommandNotice(result.data));
+    } else {
+      setNotice(result.playerMessage);
+    }
+    setIsSubmitting(false);
+  }
+
+  async function submitPromptAnswers(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!commandResult || !isSuccess(commandResult) || !commandResult.data.interactiveSession) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setNotice('Отправляем заполненную форму…');
+    const session = commandResult.data.interactiveSession;
+    const result = await browserApi.submitPromptSession({
+      sessionId: session.sessionId,
+      ownerId: session.ownerId,
+      answers: promptAnswers
+    });
+    setCommandResult(result);
+    if (isSuccess(result)) {
+      setPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
+      setNotice(toCommandNotice(result.data));
+    } else {
+      setNotice(result.playerMessage);
+    }
+    setIsSubmitting(false);
   }
 
   return (
@@ -423,25 +462,204 @@ function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
       {!action.enabled && <p className="warning-text">{action.disabledReason}</p>}
       <form className="guided-form" onSubmit={submitGuidedForm}>
         <label htmlFor={`action-form-${action.id}`}>{isGuidedForm ? action.formLabel : 'Открыть раздел'}</label>
-        {isGuidedForm ? (
-          <textarea
-            id={`action-form-${action.id}`}
-            value={draft}
-            onChange={(event) => setDraft(event.currentTarget.value)}
-            rows={3}
-            placeholder={action.formPrompt}
-            disabled={!action.enabled}
-          />
-        ) : (
-          <p id={`action-form-${action.id}`} className="muted">{action.formPrompt}</p>
-        )}
-        <button type="submit" disabled={!action.enabled || (isGuidedForm && !draft.trim())}>
-          {isGuidedForm ? 'Подготовить форму' : 'Открыть раздел'}
+        <p id={`action-form-${action.id}`} className="muted">{action.formPrompt}</p>
+        <button type="submit" disabled={!action.enabled || isSubmitting}>
+          {isSubmitting ? 'Выполняем…' : isGuidedForm ? 'Подготовить форму' : 'Открыть раздел'}
         </button>
-        {notice && <p className="composer-notice">{notice}</p>}
       </form>
+      {notice && <p className="composer-notice">{notice}</p>}
+      {commandResult && (
+        <ActionCommandResult
+          result={commandResult}
+          promptAnswers={promptAnswers}
+          onPromptAnswerChange={(promptId, value) => setPromptAnswers((current) => ({ ...current, [promptId]: value }))}
+          onPromptSubmit={submitPromptAnswers}
+          isSubmitting={isSubmitting}
+        />
+      )}
     </article>
   );
+}
+
+function ActionCommandResult({
+  result,
+  promptAnswers,
+  onPromptAnswerChange,
+  onPromptSubmit,
+  isSubmitting
+}: {
+  result: BrowserApiResult<ExplorerCommandResult>;
+  promptAnswers: PromptAnswers;
+  onPromptAnswerChange: (promptId: string, value: JsonValue | undefined) => void;
+  onPromptSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  isSubmitting: boolean;
+}) {
+  if (!isSuccess(result)) {
+    return <p className="warning-text">{result.playerMessage}</p>;
+  }
+
+  const command = result.data;
+  return (
+    <section className="command-result" aria-label="Результат игрового действия">
+      <p className="status-pill">{commandStateLabel(command.state)}</p>
+      {command.notifications.map((notification, index) => (
+        <p key={`${notification.title}-${index}`} className="composer-notice">
+          <strong>{notification.title}</strong> — {notification.message}
+        </p>
+      ))}
+      {command.blocks.map((block, index) => (
+        <div key={`${block.kind}-${index}`}>{renderCommandBlock(block)}</div>
+      ))}
+      {command.interactiveSession && command.prompts.length > 0 && (
+        <form className="prompt-form" onSubmit={onPromptSubmit}>
+          <h5>Заполните игровую форму</h5>
+          {command.prompts.map((prompt) => renderPromptControl(prompt, promptAnswers[prompt.id], onPromptAnswerChange))}
+          <button type="submit" disabled={isSubmitting}>Отправить форму</button>
+        </form>
+      )}
+    </section>
+  );
+}
+
+function renderCommandBlock(block: UiBlock): ReactNode {
+  switch (block.kind) {
+    case 'text':
+      return <p>{block.text}</p>;
+    case 'panel':
+      return (
+        <div className="summary-card">
+          <h5>{block.title}</h5>
+          {block.blocks.map((child, index) => <div key={`${child.kind}-${index}`}>{renderCommandBlock(child)}</div>)}
+        </div>
+      );
+    case 'table':
+      return <p>{block.title}: {block.rows.length} строк.</p>;
+    case 'list':
+      return <ul>{block.items.map((item) => <li key={item}>{item}</li>)}</ul>;
+    case 'keyValueGrid':
+      return <dl className="kv-list">{block.items.map((item) => <div key={item.key}><dt>{item.key}</dt><dd>{item.value}</dd></div>)}</dl>;
+    case 'message':
+      return <p className="composer-notice"><strong>{block.title}</strong> — {block.message}</p>;
+    case 'image':
+      return <p>{block.title}: изображение готово к просмотру.</p>;
+    case 'map':
+      return <p>{block.title}: карта содержит {block.map.nodes.length} точек.</p>;
+    case 'rawJson':
+      return <p className="muted">{block.title}: подробные данные доступны в расширенном режиме.</p>;
+  }
+}
+
+function renderPromptControl(
+  prompt: UiPrompt,
+  value: JsonValue | undefined,
+  onPromptAnswerChange: (promptId: string, value: JsonValue | undefined) => void
+): ReactNode {
+  const controlId = `prompt-${prompt.id}`;
+  switch (prompt.kind) {
+    case 'confirmation':
+      return (
+        <label key={prompt.id} htmlFor={controlId} className="prompt-control checkbox-control">
+          <input
+            id={controlId}
+            type="checkbox"
+            checked={typeof value === 'boolean' ? value : prompt.defaultValue}
+            onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.checked)}
+          />
+          <span>{prompt.prompt}</span>
+        </label>
+      );
+    case 'selection':
+      return (
+        <label key={prompt.id} htmlFor={controlId} className="prompt-control">
+          <span>{prompt.prompt}</span>
+          <select
+            id={controlId}
+            value={typeof value === 'string' ? value : ''}
+            required={prompt.required}
+            onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.value)}
+          >
+            <option value="">Выберите вариант…</option>
+            {prompt.options.map((option) => (
+              <option key={option.value} value={option.value} disabled={option.disabled}>{option.label}</option>
+            ))}
+          </select>
+        </label>
+      );
+    case 'longTextInput':
+      return (
+        <label key={prompt.id} htmlFor={controlId} className="prompt-control">
+          <span>{prompt.prompt}</span>
+          <textarea
+            id={controlId}
+            rows={prompt.minLines ?? 3}
+            value={typeof value === 'string' ? value : prompt.defaultValue}
+            placeholder={prompt.placeholder}
+            required={prompt.required}
+            onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.value)}
+          />
+        </label>
+      );
+    case 'textInput':
+      return (
+        <label key={prompt.id} htmlFor={controlId} className="prompt-control">
+          <span>{prompt.prompt}</span>
+          <input
+            id={controlId}
+            type="text"
+            value={typeof value === 'string' ? value : prompt.defaultValue}
+            placeholder={prompt.placeholder}
+            required={prompt.required}
+            onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.value)}
+          />
+        </label>
+      );
+  }
+}
+
+function buildDefaultPromptAnswers(prompts: UiPrompt[]): PromptAnswers {
+  return Object.fromEntries(prompts.map((prompt) => [prompt.id, defaultPromptValue(prompt)]));
+}
+
+function defaultPromptValue(prompt: UiPrompt): JsonValue | undefined {
+  switch (prompt.kind) {
+    case 'confirmation':
+      return prompt.defaultValue;
+    case 'selection':
+      return undefined;
+    case 'longTextInput':
+    case 'textInput':
+      return prompt.defaultValue;
+  }
+}
+
+function toCommandNotice(result: ExplorerCommandResult): string {
+  switch (result.state) {
+    case 'RequiresInput':
+      return 'Форма открыта. Заполните поля ниже и отправьте её из браузера.';
+    case 'Completed':
+      return 'Игровое действие выполнено.';
+    case 'Pending':
+      return 'Действие ожидает ответа или завершения текущего хода.';
+    case 'Blocked':
+      return 'Действие сейчас заблокировано состоянием игры.';
+    case 'Failed':
+      return 'Действие не удалось выполнить; подробности показаны ниже.';
+  }
+}
+
+function commandStateLabel(state: ExplorerCommandResult['state']): string {
+  switch (state) {
+    case 'RequiresInput':
+      return 'Требуется ввод';
+    case 'Completed':
+      return 'Выполнено';
+    case 'Pending':
+      return 'Ожидает';
+    case 'Blocked':
+      return 'Заблокировано';
+    case 'Failed':
+      return 'Ошибка';
+  }
 }
 
 function MediaRoute({ state }: { state: Extract<BrowserShellState, { status: 'ready' }> }) {
@@ -452,10 +670,10 @@ function MediaRoute({ state }: { state: Extract<BrowserShellState, { status: 're
   const qte = state.game.data.qte;
 
   return (
-    <ShellPanel title="Медиа" eyebrow="галерея и QTE">
+    <ShellPanel title="Медиа" eyebrow="галерея и быстрые сцены">
       <div className="split-grid">
-        <div className="summary-card"><h2>QTE</h2><p>{qte.notification ?? qte.error ?? qte.state}</p></div>
-        <div className="summary-card"><h2>Галерея</h2><p>Изображения и кинематик-сцены будут подключаться через безопасные C# media endpoints.</p></div>
+        <div className="summary-card"><h2>Быстрые сцены</h2><p>{qte.notification ?? qte.error ?? qte.state}</p></div>
+        <div className="summary-card"><h2>Галерея</h2><p>Изображения и кинематик-сцены будут подключаться через безопасный локальный просмотрщик.</p></div>
       </div>
     </ShellPanel>
   );

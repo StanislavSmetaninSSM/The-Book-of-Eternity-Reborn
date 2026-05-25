@@ -217,7 +217,13 @@ Assert.Contains("action-menu", styles, StringComparison.Ordinal);
 Assert.Contains("Персонаж / Душа", app, StringComparison.Ordinal);
 Assert.Contains("Подготовить форму", app, StringComparison.Ordinal);
 Assert.Contains("mutationWarning", app, StringComparison.Ordinal);
+Assert.Contains("browserApi.executeExplorerCommand({ command: action.advancedCommand", app, StringComparison.Ordinal);
+Assert.Contains("browserApi.submitPromptSession", app, StringComparison.Ordinal);
+Assert.Contains("renderPromptControl", app, StringComparison.Ordinal);
 Assert.DoesNotContain("action.advancedCommand}", app, StringComparison.Ordinal);
+Assert.DoesNotContain("C# каталога команд", app, StringComparison.Ordinal);
+Assert.DoesNotContain("C# протоколом", app, StringComparison.Ordinal);
+Assert.DoesNotContain("C# DTO", app, StringComparison.Ordinal);
 ```
 
 Extend the built frontend smoke source assertions with:
@@ -226,7 +232,13 @@ Extend the built frontend smoke source assertions with:
 Assert.Contains("ActionMenu", appSource, StringComparison.Ordinal);
 Assert.Contains("Персонаж / Душа", appSource, StringComparison.Ordinal);
 Assert.Contains("Подготовить форму", appSource, StringComparison.Ordinal);
+Assert.Contains("browserApi.executeExplorerCommand({ command: action.advancedCommand", appSource, StringComparison.Ordinal);
+Assert.Contains("browserApi.submitPromptSession", appSource, StringComparison.Ordinal);
+Assert.Contains("renderPromptControl", appSource, StringComparison.Ordinal);
 Assert.DoesNotContain("action.advancedCommand}", appSource, StringComparison.Ordinal);
+Assert.DoesNotContain("C# каталога команд", appSource, StringComparison.Ordinal);
+Assert.DoesNotContain("C# протоколом", appSource, StringComparison.Ordinal);
+Assert.DoesNotContain("C# DTO", appSource, StringComparison.Ordinal);
 ```
 
 Run:
@@ -253,7 +265,9 @@ Implement `ActionMenu`, `ActionSection`, and `ActionCard` components that:
 
 - Render only `section.playerDefault === true` in the default UI.
 - Show labels/descriptions/realm availability/mutation warnings.
-- For actions with `formMode !== 'none'`, render a guided `<form>` with a textarea/select-style placeholder and a `Подготовить форму` button.
+- For actions with `formMode !== 'none'`, render a guided `<form>` trigger with a `Подготовить форму` button, then render prompt controls returned by the server-side prompt session.
+- Read-only cards call `browserApi.executeExplorerCommand` internally and render returned blocks/notifications without showing the slash command.
+- Prompt-session forms submit through `browserApi.submitPromptSession` so C# keeps validation and local-write authority.
 - Do not render `advancedCommand` in player-default UI.
 
 - [ ] **Step 4: Add styles**

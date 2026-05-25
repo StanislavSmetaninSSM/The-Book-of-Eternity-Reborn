@@ -182,6 +182,45 @@ public sealed class BrowserApiContractTests
     }
 
     [Fact]
+    public void PlayerDefaultActionMenuCopy_AvoidsTechnicalEnglishJargon()
+    {
+        var menus = new[]
+        {
+            BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: false, isShiningAbode: false, isAfterlife: false),
+                BuildLifecycleDashboard(),
+                BuildQteState()),
+            BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: true, isShiningAbode: false, isAfterlife: true),
+                BuildLifecycleDashboard(),
+                BuildQteState()),
+            BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: false, isShiningAbode: true, isAfterlife: true),
+                BuildLifecycleDashboard(),
+                BuildQteState()),
+            BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: false, isShiningAbode: false, isAfterlife: false),
+                BuildLifecycleDashboard(),
+                BuildQteState("Active"))
+        };
+        var forbiddenTerms = new[]
+        {
+            "C#", "DTO", "React", "TypeScript", "endpoint", "runtime", "slash",
+            "guided", "pending-turn", "browser write", "local-write", "lifecycle", "QTE", "NPC"
+        };
+
+        foreach (var (value, source) in menus.SelectMany(CollectPlayerDefaultMenuText))
+        {
+            foreach (var forbiddenTerm in forbiddenTerms)
+            {
+                Assert.False(
+                    value.Contains(forbiddenTerm, StringComparison.OrdinalIgnoreCase),
+                    $"Player-default action menu text must not expose `{forbiddenTerm}` in {source}: {value}");
+            }
+        }
+    }
+
+    [Fact]
     public void PlayerCommandActionMenu_SeparatesAdvancedAndContextualRealmActions()
     {
         var mortalMenu = BrowserPlayerCommandMenuBuilder.Build(
@@ -220,7 +259,7 @@ public sealed class BrowserApiContractTests
         Assert.True(FindAction(chaosMenu, "afterlife_profiles").Enabled);
         Assert.Contains("активный духовный конфликт", FindAction(shiningMenu, "spiritual_action").DisabledReason, StringComparison.OrdinalIgnoreCase);
         Assert.False(FindAction(qteMenu, "craft").Enabled);
-        Assert.Contains("QTE", FindAction(qteMenu, "craft").DisabledReason, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("быстрая сцена", FindAction(qteMenu, "craft").DisabledReason, StringComparison.OrdinalIgnoreCase);
     }
 
     public static IEnumerable<object[]> ContractFixtures()
@@ -480,6 +519,27 @@ public sealed class BrowserApiContractTests
         menu.Sections
             .SelectMany(static section => section.Actions)
             .Single(action => string.Equals(action.Id, id, StringComparison.OrdinalIgnoreCase));
+
+    private static IEnumerable<(string Value, string Source)> CollectPlayerDefaultMenuText(BrowserPlayerCommandMenuDto menu)
+    {
+        foreach (var section in menu.Sections.Where(static section => section.PlayerDefault))
+        {
+            yield return (section.Label, $"section {section.Id} label");
+            yield return (section.Description, $"section {section.Id} description");
+
+            foreach (var action in section.Actions.Where(static action => action.PlayerDefault))
+            {
+                yield return (action.Label, $"action {action.Id} label");
+                yield return (action.Description, $"action {action.Id} description");
+                yield return (action.RealmAvailability, $"action {action.Id} realm availability");
+                yield return (action.MutationWarning, $"action {action.Id} mutation warning");
+                yield return (action.FormLabel, $"action {action.Id} form label");
+                yield return (action.FormPrompt, $"action {action.Id} form prompt");
+                if (!string.IsNullOrWhiteSpace(action.DisabledReason))
+                    yield return (action.DisabledReason, $"action {action.Id} disabled reason");
+            }
+        }
+    }
 
     private static AggregatedGameState BuildRepresentativeState(bool isChaosSea, bool isShiningAbode, bool isAfterlife) =>
         new()

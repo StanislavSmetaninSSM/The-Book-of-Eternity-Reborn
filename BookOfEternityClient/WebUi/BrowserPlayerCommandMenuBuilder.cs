@@ -62,7 +62,7 @@ public static class BrowserPlayerCommandMenuBuilder
             ["validate"] = M("advanced", "Валидация", "Запускает проверку состояния из расширенного режима.", "Откройте форму проверки состояния и дождитесь результата."),
             ["world_setup"] = M("settings", "Подготовка мира", "Готовит следующую смертную жизнь из посмертного режима.", "Опишите желаемый жанр, запреты и стартовые условия следующего мира."),
             ["inventory"] = M("soul", "Инвентарь", "Показывает предметы, ресурсы и связи инвентаря персонажа.", "Просмотрите инвентарь персонажа."),
-            ["npcs"] = M("world", "Персонажи", "Показывает известных NPC, отношения и активности.", "Просмотрите известных персонажей и их состояние."),
+            ["npcs"] = M("world", "Персонажи", "Показывает известных НПС, отношения и активности.", "Просмотрите известных персонажей и их состояние."),
             ["quests"] = M("quests", "Квесты", "Показывает активные и завершённые задания смертного мира.", "Откройте список квестов текущей жизни."),
             ["map"] = M("map", "Карта", "Показывает карту текущего царства и известные связи.", "Откройте карту текущей области."),
             ["where_am_i"] = M("world", "Где я", "Показывает текущую локацию, регион и описание места.", "Уточните, где сейчас находится персонаж."),
@@ -80,7 +80,7 @@ public static class BrowserPlayerCommandMenuBuilder
             ["books"] = M("archive", "Книги и тексты", "Показывает книги, тексты и журнальные записи.", "Просмотрите найденные тексты и книги."),
             ["storage_access"] = M("world", "Доступ к хранилищам", "Показывает известные хранилища и доступ к ним.", "Проверьте, какие хранилища сейчас доступны."),
             ["interactions"] = M("world", "Взаимодействия", "Показывает важные взаимодействия игроков и мира.", "Просмотрите текущие взаимодействия."),
-            ["distribute"] = M("soul", "Распределить характеристики", "Открывает guided-форму распределения свободных очков.", "Укажите, какие характеристики нужно повысить и почему."),
+            ["distribute"] = M("soul", "Распределить характеристики", "Открывает игровую форму распределения свободных очков.", "Укажите, какие характеристики нужно повысить и почему."),
             ["companion_directive"] = M("world", "Директива компаньону", "Готовит поручение компаньону через безопасную форму.", "Опишите поручение, адресата и желаемый результат."),
             ["faction_directive"] = M("factions", "Директива фракции", "Готовит поручение союзной фракции через безопасную форму.", "Опишите фракцию, цель поручения и ограничения."),
             ["craft"] = M("world", "Ремесло", "Готовит ремесленное действие или запрос создания предмета.", "Опишите предмет, материалы и желаемое качество работы."),
@@ -146,7 +146,7 @@ public static class BrowserPlayerCommandMenuBuilder
             if (string.Equals(descriptor.Id, "spiritual_action", StringComparison.OrdinalIgnoreCase))
             {
                 enabled = false;
-                disabledReason = "Нужен активный духовный конфликт: действие станет доступно, когда C# обнаружит конфликт в состоянии посмертия.";
+                disabledReason = "Нужен активный духовный конфликт: действие станет доступно, когда конфликт появится в состоянии посмертия.";
             }
 
             var isMutating = descriptor.MutationMode == ExplorerCommandMutationMode.LocalTurn;
@@ -161,7 +161,7 @@ public static class BrowserPlayerCommandMenuBuilder
                 PlayerDefault: playerDefault,
                 MutationMode: MutationModeLabel(descriptor.MutationMode),
                 MutationWarning: isMutating
-                    ? "Изменяет локальные файлы хода через C# lifecycle; перед записью проверяются блокировки, pending-turn и QTE."
+                    ? "Может изменить локальные файлы хода; перед записью проверяются блокировки, активный ход и быстрые сцены."
                     : "Только просмотр: состояние игры не изменяется.",
                 FormMode: isMutating ? "guided-form" : "none",
                 FormLabel: isMutating ? "Подготовить форму" : "Открыть раздел",
@@ -204,7 +204,7 @@ public static class BrowserPlayerCommandMenuBuilder
             ExplorerCommandGroup.AfterlifeCombatAndEntities => state.IsInAfterlifeRealm
                 ? new Availability(true, string.Empty, "Доступно в посмертии; духовное действие дополнительно требует активный духовный конфликт.")
                 : new Availability(false, "Это действие доступно только в посмертии.", "Доступно только в посмертии."),
-            ExplorerCommandGroup.Lifecycle => new Availability(true, string.Empty, "Доступно, когда локальный C# lifecycle разрешает безопасную операцию."),
+            ExplorerCommandGroup.Lifecycle => new Availability(true, string.Empty, "Доступно, когда протокол безопасности хода разрешает операцию."),
             ExplorerCommandGroup.SarefStory => new Availability(true, string.Empty, "Доступно из личной истории Сарефа, если соответствующая сюжетная линия открыта."),
             _ => new Availability(true, string.Empty, "Доступно в текущем игровом режиме.")
         };
@@ -214,8 +214,8 @@ public static class BrowserPlayerCommandMenuBuilder
     {
         if (qte.State is "Offer" or "Active")
         {
-            var detail = qte.Notification ?? qte.Offer?.OfferText ?? qte.ActiveScene?.Title ?? "активная QTE-сцена";
-            return new Availability(false, $"Активна QTE-сцена: завершите QTE перед локальной формой. {detail}", "Локальная форма доступна после завершения QTE.");
+            var detail = qte.Notification ?? qte.Offer?.OfferText ?? qte.ActiveScene?.Title ?? "активная быстрая сцена";
+            return new Availability(false, $"Активна быстрая сцена: завершите её перед локальной формой. {detail}", "Локальная форма доступна после завершения быстрой сцены.");
         }
 
         if (!lifecycle.CanStartBrowserWrite)
@@ -224,11 +224,11 @@ public static class BrowserPlayerCommandMenuBuilder
             if (string.IsNullOrWhiteSpace(reason))
                 reason = lifecycle.PendingTurn.Message;
             if (string.IsNullOrWhiteSpace(reason))
-                reason = "Локальная запись сейчас заблокирована C# lifecycle.";
-            return new Availability(false, reason, "Локальная форма доступна, когда C# lifecycle разрешает browser write.");
+                reason = "Локальная запись сейчас заблокирована протоколом безопасности хода.";
+            return new Availability(false, reason, "Локальная форма доступна, когда протокол безопасности хода разрешает запись из браузера.");
         }
 
-        return new Availability(true, string.Empty, "Локальная форма доступна: C# lifecycle разрешает browser write.");
+        return new Availability(true, string.Empty, "Локальная форма доступна: протокол безопасности хода разрешает запись из браузера.");
     }
 
     private static string MutationModeLabel(ExplorerCommandMutationMode mode) =>

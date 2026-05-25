@@ -115,7 +115,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("standalone frontend assets", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("local-web-ui-shell.html", hostDoc, StringComparison.Ordinal);
 
-        Assert.Contains("C# API остаётся источником истины", app, StringComparison.Ordinal);
+        Assert.Contains("Локальный клиент остаётся источником истины", app, StringComparison.Ordinal);
         Assert.DoesNotContain("debug dashboard", app, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -150,11 +150,17 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Персонаж / Душа", app, StringComparison.Ordinal);
         Assert.Contains("Подготовить форму", app, StringComparison.Ordinal);
         Assert.Contains("mutationWarning", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.executeExplorerCommand({ command: action.advancedCommand", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.submitPromptSession", app, StringComparison.Ordinal);
+        Assert.Contains("renderPromptControl", app, StringComparison.Ordinal);
         Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
         Assert.DoesNotContain("setAdvancedEnabled(true)", app, StringComparison.Ordinal);
         Assert.DoesNotContain("typed BrowserApiClient", app, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("endpoint.id", app, StringComparison.Ordinal);
         Assert.DoesNotContain("action.advancedCommand}", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("C# каталога команд", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("C# протоколом", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("C# DTO", app, StringComparison.Ordinal);
         Assert.Contains(".browser-shell", styles, StringComparison.Ordinal);
         Assert.Contains(".route-grid", styles, StringComparison.Ordinal);
         Assert.Contains(".action-menu", styles, StringComparison.Ordinal);

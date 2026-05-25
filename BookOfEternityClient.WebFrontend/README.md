@@ -64,7 +64,7 @@ Verify shell changes with `npm run typecheck --prefix BookOfEternityClient.WebFr
 
 Issue #683 adds a player-facing contextual action menu to the `Мир` route. The menu is built from the C# `ExplorerCommandCatalog` and `/api/game-screen` action-menu DTO, then rendered by React as Russian game sections: `Персонаж / Душа`, `Мир`, `Квесты`, `Карта`, `Фракции`, `Хранители`, `Посмертие`, `Бой`, `Архив`, and `Настройки`.
 
-Default UI does not show raw slash command IDs. Advanced/debug commands remain grouped under `Расширенный режим`. Mutating actions show guided forms, realm availability, disabled reasons, and mutation warnings; safe execution still belongs to the C# local-write/lifecycle services and future tracked player-default submission work.
+Default UI does not show raw slash command IDs. Advanced/debug commands remain grouped under `Расширенный режим`. Mutating actions show guided forms, realm availability, disabled reasons, and mutation warnings; form opening/submission uses the existing C# browser command and prompt-session flow, so safe execution still belongs to the C# local-write/lifecycle services.
 
 ## Typed Browser API Contract (#703)
 

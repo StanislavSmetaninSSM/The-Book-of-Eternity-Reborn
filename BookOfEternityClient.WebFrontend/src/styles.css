@@ -416,6 +416,54 @@ h2 {
   font-weight: 800;
 }
 
+.command-result,
+.prompt-form,
+.prompt-control {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.command-result {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.75rem;
+}
+
+.prompt-form {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.9rem;
+  padding: 0.8rem;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.prompt-control span {
+  color: #fff3d6;
+  font-weight: 700;
+}
+
+.prompt-control input,
+.prompt-control select,
+.prompt-control textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.8rem;
+  padding: 0.65rem;
+  background: rgba(4, 7, 8, 0.72);
+  color: inherit;
+}
+
+.checkbox-control {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.checkbox-control input {
+  width: auto;
+}
+
+.prompt-form button {
+  width: fit-content;
+}
+
 .advanced-diagnostics {
   display: grid;
   gap: 1rem;
