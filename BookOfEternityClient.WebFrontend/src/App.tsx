@@ -1,3 +1,5 @@
+import { browserApiContractSummary } from './api/client';
+
 const roadmapSections = [
   {
     title: 'Главное меню',
@@ -12,10 +14,15 @@ const roadmapSections = [
     text: 'Командная палитра и диагностика остаются доступными только как явный технический слой.'
   },
   {
-    title: 'Подключено к #702',
-    text: 'C# host отдаёт production build из `dist/`, а при его отсутствии использует извлечённую player-facing оболочку.'
+    title: 'Подключено к #703',
+    text: 'React-компоненты получают BrowserApiClient и DTO-типы из единого TypeScript contract layer.'
   }
 ];
+
+const contractEndpointCards = browserApiContractSummary.endpointDocs.map((endpoint) => ({
+  title: endpoint.id,
+  text: `${endpoint.method} · ${endpoint.response} · ${endpoint.playerSurface}`
+}));
 
 export default function App() {
   return (
@@ -39,13 +46,22 @@ export default function App() {
           <p>Игровая логика, сохранения, afterlife/mortal контракты, команды и валидация остаются в C# runtime.</p>
         </article>
         <article>
-          <h2>Подключено к #702</h2>
-          <p>`--web` теперь отдаёт standalone frontend assets через `LocalWebUiHost`, сохраняя C# API источником истины.</p>
+          <h2>Типизированный контракт</h2>
+          <p>Issue #703 добавляет единый BrowserApiClient, DTO-типы и fixture guards между C# и TypeScript.</p>
         </article>
       </section>
 
       <section className="roadmap" aria-label="Первые игровые разделы">
         {roadmapSections.map((section) => (
+          <article className="roadmap-card" key={section.title}>
+            <h2>{section.title}</h2>
+            <p>{section.text}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="roadmap" aria-label="Типизированные API-контракты">
+        {contractEndpointCards.map((section) => (
           <article className="roadmap-card" key={section.title}>
             <h2>{section.title}</h2>
             <p>{section.text}</p>

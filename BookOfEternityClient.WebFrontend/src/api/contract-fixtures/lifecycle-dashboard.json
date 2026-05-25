@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "session": {
+  "schemaVersion": 1,
+  "status": "ok",
+  "localOnly": true,
+  "basePath": "E:/Games/The Book of Eternity Reborn/BookOfEternityClient",
+  "gameSessionPath": "E:/Games/The Book of Eternity Reborn/BookOfEternityClient/game_session",
+  "gameSessionExists": true,
+  "checkedAtUtc": "2026-05-25T09:30:00Z",
+  "canStartBrowserWrite": true,
+  "pendingTurn": {
+    "hasActiveGmTurn": false,
+    "artifacts": [
+      {
+        "label": "Запрос хода GM",
+        "path": "input/turn_request.json",
+        "exists": false,
+        "kind": "file"
+      },
+      {
+        "label": "Готов успешный ответ",
+        "path": "ready/turn_complete.json",
+        "exists": false,
+        "kind": "file"
+      }
+    ],
+    "message": "Активный ход ГМа не обнаружен."
+  },
+  "localUiLock": {
+    "exists": false,
+    "isReadable": false,
+    "isStale": false,
+    "ownerId": "",
+    "ownerKind": "",
+    "ownerLabel": "",
+    "acquiredAtUtc": null,
+    "heartbeatAtUtc": null,
+    "leaseSeconds": 0,
+    "lastOperation": ""
+  }
+},
+  "soul": {
+    "name": "Арион",
+    "currentRealm": "Mortal World",
+    "realmLabel": "Смертный мир",
+    "currentIncarnation": 3,
+    "isReadable": true,
+    "readError": ""
+  },
+  "pendingTurn": {
+    "hasActiveGmTurn": false,
+    "artifacts": [
+      {
+        "label": "Запрос хода GM",
+        "path": "input/turn_request.json",
+        "exists": false,
+        "kind": "file"
+      },
+      {
+        "label": "Готов успешный ответ",
+        "path": "ready/turn_complete.json",
+        "exists": false,
+        "kind": "file"
+      }
+    ],
+    "message": "Активный ход ГМа не обнаружен."
+  },
+  "localUiLock": {
+    "exists": false,
+    "isReadable": false,
+    "isStale": false,
+    "ownerId": "",
+    "ownerKind": "",
+    "ownerLabel": "",
+    "acquiredAtUtc": null,
+    "heartbeatAtUtc": null,
+    "leaseSeconds": 0,
+    "lastOperation": ""
+  },
+  "canStartBrowserWrite": true,
+  "validation": {
+    "state": "clean",
+    "statusLabel": "Состояние валидно",
+    "issueCount": 0,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "displayedIssueCount": 0,
+    "groups": [],
+    "issues": []
+  },
+  "guidance": [
+    {
+      "severity": "success",
+      "title": "Локальные записи из браузера доступны",
+      "message": "Активный ход ГМа и свежая чужая UI-блокировка не обнаружены.",
+      "actionLabel": "Можно запускать перенесённые браузерные формы",
+      "command": ""
+    }
+  ],
+  "entrypoints": [
+    {
+      "label": "Проверить валидацию",
+      "command": "/validate",
+      "endpoint": "/api/lifecycle/validate",
+      "enabled": true,
+      "description": "Запускает тот же ValidationService, что и консоль."
+    }
+  ]
+}

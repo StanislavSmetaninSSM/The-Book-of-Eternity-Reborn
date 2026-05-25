@@ -110,4 +110,26 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("local-web-ui-shell.html", readme, StringComparison.Ordinal);
         Assert.Contains("Generated `dist/`", readme, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void LocalWebHostDocs_DocumentTypedBrowserApiContractWorkflow()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
+
+        Assert.Contains("#703", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("src/api/contracts.ts", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("src/api/client.ts", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("contract-fixtures", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("BrowserApiContractTests", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("npm run typecheck", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("playerMessage", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("technicalDetails", hostDoc, StringComparison.Ordinal);
+
+        Assert.Contains("src/api/contracts.ts", readme, StringComparison.Ordinal);
+        Assert.Contains("src/api/client.ts", readme, StringComparison.Ordinal);
+        Assert.Contains("contract-fixtures", readme, StringComparison.Ordinal);
+        Assert.Contains("BrowserApiContractTests", readme, StringComparison.Ordinal);
+        Assert.Contains("BrowserApiClient", readme, StringComparison.Ordinal);
+    }
 }

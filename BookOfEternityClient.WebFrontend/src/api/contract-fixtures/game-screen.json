@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 2,
+  "theme": {
+    "key": "mortal-world",
+    "label": "Смертный мир",
+    "icon": "🕯",
+    "accent": "#e1b85e"
+  },
+  "soul": {
+    "name": "Арион",
+    "realm": "Mortal World",
+    "incarnation": 3,
+    "inkFeathers": 5,
+    "enlightenmentTier": "Искра",
+    "activeGuardianName": "Сареф"
+  },
+  "player": {
+    "name": "Арион",
+    "class": "Следопыт",
+    "race": "Человек",
+    "currentCondition": "Собран",
+    "healthPercentage": "90%",
+    "energyPercentage": "75%",
+    "poisePercentage": "60%",
+    "activeConditions": ["Сосредоточенность"]
+  },
+  "world": {
+    "location": "Пепельная дорога",
+    "worldTime": "Сумерки",
+    "turnNumber": 12,
+    "sessionId": "session-contract"
+  },
+  "narrative": {
+    "text": "Перед героем открывается тихая дорога.",
+    "dialogueOptions": [
+      {
+        "id": "choice-1",
+        "text": "Осмотреть врата",
+        "category": "exploration"
+      }
+    ],
+    "combatLog": "Боевых событий нет.",
+    "imagePrompt": "mystic road at dusk"
+  },
+  "afterlife": {
+    "shiningRadianceExperience": 10,
+    "shiningRadianceTier": 1,
+    "shiningLightSparks": 2,
+    "shiningHallCount": 1,
+    "shiningFactionCount": 1,
+    "hasOpenShiningGatesDraft": false,
+    "isShiningGatesDraftStale": false
+  },
+  "turnState": {
+    "state": "ready",
+    "title": "Можно продолжать",
+    "message": "Опишите следующее действие персонажа в прозе.",
+    "canStartBrowserWrite": true,
+    "validationState": "clean",
+    "validationLabel": "Состояние валидно"
+  },
+  "actionComposer": {
+    "canSubmit": true,
+    "mode": "prose",
+    "placeholder": "Опишите действие персонажа...",
+    "guidance": "Slash-команды открываются только через расширенный режим.",
+    "disabledReason": ""
+  },
+  "qte": {
+    "state": "NoScene",
+    "offer": null,
+    "activeScene": null,
+    "resolution": null,
+    "completion": null,
+    "lastResolvedReminder": "Последняя QTE завершена.",
+    "lastDeclinedQteId": "",
+    "availableOperations": [],
+    "notification": null,
+    "error": null
+  },
+  "flags": {
+    "isInChaosSea": false,
+    "isInAnyShiningAbodeState": false,
+    "isInShiningAbode": false,
+    "isInShiningAbodePendingBootstrap": false,
+    "isInAfterlifeRealm": false,
+    "canReenterShiningAbode": true
+  }
+}

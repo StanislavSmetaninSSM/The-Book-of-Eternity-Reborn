@@ -77,7 +77,6 @@ public sealed class BrowserGameScreenService
         return new BrowserGameScreenNarrativeDto(
             Text: state.Narrative,
             DialogueOptions: ReadDialogueOptions(interfaceUpdates),
-            GmThoughts: string.Empty,
             CombatLog: ReadString(combatLog, "combat_log_markdown", "combatLogMarkdown", "combatLog"),
             ImagePrompt: ReadString(interfaceUpdates, "image_prompt", "imagePrompt"));
     }
@@ -235,7 +234,6 @@ public sealed record BrowserGameScreenWorldDto(
 public sealed record BrowserGameScreenNarrativeDto(
     string Text,
     IReadOnlyList<BrowserGameScreenDialogueOptionDto> DialogueOptions,
-    string GmThoughts,
     string CombatLog,
     string ImagePrompt);
 

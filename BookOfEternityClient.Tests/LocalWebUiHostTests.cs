@@ -417,7 +417,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Contains("Сияние", root["narrative"]!["text"]!.GetValue<string>(), StringComparison.Ordinal);
         Assert.Contains("духовный", root["narrative"]!["combatLog"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.Equal(2, root["narrative"]!["dialogueOptions"]!.AsArray().Count);
-        Assert.Equal(string.Empty, root["narrative"]!["gmThoughts"]!.GetValue<string>());
+        Assert.False(root["narrative"]!.AsObject().ContainsKey("gmThoughts"));
         Assert.False(root["actionComposer"]!["canSubmit"]!.GetValue<bool>());
         Assert.Contains("Ожидает", root["turnState"]!["title"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.Equal("NoScene", root["qte"]!["state"]!.GetValue<string>());
@@ -463,7 +463,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         var root = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
 
-        Assert.Equal(string.Empty, root["narrative"]!["gmThoughts"]!.GetValue<string>());
+        Assert.False(root["narrative"]!.AsObject().ContainsKey("gmThoughts"));
     }
 
     [Fact]

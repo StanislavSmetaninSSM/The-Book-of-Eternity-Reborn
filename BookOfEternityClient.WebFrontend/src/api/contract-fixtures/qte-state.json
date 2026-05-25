@@ -1,0 +1,12 @@
+{
+  "state": "NoScene",
+  "offer": null,
+  "activeScene": null,
+  "resolution": null,
+  "completion": null,
+  "lastResolvedReminder": "Последняя QTE завершена.",
+  "lastDeclinedQteId": "",
+  "availableOperations": [],
+  "notification": null,
+  "error": null
+}
