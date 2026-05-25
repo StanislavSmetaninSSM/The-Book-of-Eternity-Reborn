@@ -248,11 +248,12 @@ public sealed class LocalWebUiHostTests : IDisposable
     public void BrowserAudioService_SerializesSharedSettingsUpdates()
     {
         var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "WebUi", "BrowserAudioService.cs"));
+        var normalizedSource = source.Replace("\r\n", "\n", StringComparison.Ordinal);
 
-        Assert.Contains("new SemaphoreSlim(1, 1)", source, StringComparison.Ordinal);
-        Assert.Contains("public async Task<BrowserAudioSettingsDto> BuildSettingsAsync()\n    {\n        await SettingsWriteGate.WaitAsync()", source, StringComparison.Ordinal);
-        Assert.Contains("await SettingsWriteGate.WaitAsync()", source, StringComparison.Ordinal);
-        Assert.Contains("SettingsWriteGate.Release()", source, StringComparison.Ordinal);
+        Assert.Contains("new SemaphoreSlim(1, 1)", normalizedSource, StringComparison.Ordinal);
+        Assert.Contains("public async Task<BrowserAudioSettingsDto> BuildSettingsAsync()\n    {\n        await SettingsWriteGate.WaitAsync()", normalizedSource, StringComparison.Ordinal);
+        Assert.Contains("await SettingsWriteGate.WaitAsync()", normalizedSource, StringComparison.Ordinal);
+        Assert.Contains("SettingsWriteGate.Release()", normalizedSource, StringComparison.Ordinal);
     }
 
     [Fact]
