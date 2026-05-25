@@ -3,6 +3,7 @@
 .route-card,
 .advanced-diagnostics,
 .summary-card,
+.game-launcher,
 .empty-state,
 .error-notice,
 .narrative-card {
@@ -145,6 +146,9 @@
 }
 
 .game-action,
+.launcher-primary-action,
+.launcher-secondary-action,
+.launcher-mode-tab,
 .advanced-toggle,
 .composer button,
 .audio-control-panel button,
@@ -161,6 +165,110 @@
   gap: var(--space-1);
   padding: var(--space-4);
   text-align: left;
+}
+
+.game-launcher {
+  overflow: hidden;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.07), color-mix(in srgb, var(--realm-accent) 10%, rgba(8, 11, 12, 0.82)));
+}
+
+.launcher-window {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.launcher-copy {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.launcher-copy h2,
+.launcher-mode-panel h3,
+.launcher-save-card h4 {
+  margin: 0;
+}
+
+.launcher-primary-action {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+  padding: clamp(1rem, 3vw, 1.35rem);
+  border-color: color-mix(in srgb, var(--realm-accent) 68%, rgba(255, 255, 255, 0.16));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--realm-accent) 28%, rgba(15, 19, 20, 0.92)), rgba(255, 255, 255, 0.08));
+  box-shadow: var(--shadow-glow);
+  text-align: left;
+}
+
+.launcher-primary-action strong {
+  color: #fff8e8;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+}
+
+.launcher-primary-action span,
+.launcher-secondary-action span,
+.launcher-mode-tab span {
+  color: var(--color-mist);
+}
+
+.launcher-primary-action:disabled,
+.launcher-secondary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.launcher-mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.65rem;
+}
+
+.launcher-mode-tab {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem 0.85rem;
+  text-align: left;
+}
+
+.launcher-mode-tab.is-active {
+  border-color: var(--realm-accent);
+  background: color-mix(in srgb, var(--realm-accent) 20%, rgba(10, 13, 14, 0.9));
+}
+
+.launcher-mode-panel {
+  display: grid;
+  gap: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 24%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.launcher-secondary-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.75rem;
+}
+
+.launcher-secondary-action {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.85rem;
+  text-align: left;
+}
+
+.launcher-save-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.launcher-save-card {
+  display: grid;
+  gap: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 22%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: rgba(0, 0, 0, 0.16);
 }
 
 .advanced-toggle,

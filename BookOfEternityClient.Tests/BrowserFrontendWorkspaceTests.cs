@@ -345,6 +345,56 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserHomeRoute_RendersPlayerFacingLauncherWithPrimaryCta()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = ReadFrontendStyles();
+
+        Assert.Contains("function GameLauncher", app, StringComparison.Ordinal);
+        Assert.Contains("interface LauncherPrimaryAction", app, StringComparison.Ordinal);
+        Assert.Contains("selectPrimaryLauncherAction(", app, StringComparison.Ordinal);
+        Assert.Contains("launcher-primary-action", app, StringComparison.Ordinal);
+        Assert.Contains("launcher-mode-tabs", app, StringComparison.Ordinal);
+        Assert.Contains("launcher-save-list", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.loadSave({ saveId: slot.saveId })", app, StringComparison.Ordinal);
+        Assert.Contains("onActiveRouteChange('game')", app, StringComparison.Ordinal);
+        Assert.Contains("Открыть книгу", app, StringComparison.Ordinal);
+        Assert.Contains("Продолжить главу", app, StringComparison.Ordinal);
+        Assert.Contains("Начать новую главу", app, StringComparison.Ordinal);
+        Assert.Contains("Загрузить сохранение", app, StringComparison.Ordinal);
+        Assert.Contains("Настроить клиент", app, StringComparison.Ordinal);
+        Assert.Contains("Сведения о книге", app, StringComparison.Ordinal);
+        Assert.Contains("className=\"launcher-secondary-actions\"", app, StringComparison.Ordinal);
+        Assert.Contains("className=\"advanced-toggle\"", app, StringComparison.Ordinal);
+        Assert.Contains("function playerLauncherAboutText", app, StringComparison.Ordinal);
+        Assert.Contains("[/debug shell/gi, 'служебная оболочка']", app, StringComparison.Ordinal);
+        Assert.Contains("function toLauncherSaveFailureNotice", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("setLauncherNotice(toPlayerFacingText(result.data.error", app, StringComparison.Ordinal);
+        Assert.Contains("isLauncherMountedRef", app, StringComparison.Ordinal);
+        Assert.Contains("isLauncherMountedRef.current = false", app, StringComparison.Ordinal);
+
+        var advancedDiagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
+        Assert.True(advancedDiagnosticsIndex > 0, "Advanced diagnostics must stay in a separate source section.");
+        var playerDefaultAppSlice = app[..advancedDiagnosticsIndex];
+        var hasRawDebugShellInPlayerDefaultSlice = playerDefaultAppSlice.Contains("debug shell", StringComparison.OrdinalIgnoreCase);
+        var hasExplicitDebugShellReplacement = app.Contains("[/debug shell/gi, 'служебная оболочка']", StringComparison.Ordinal);
+        Assert.True(!hasRawDebugShellInPlayerDefaultSlice || hasExplicitDebugShellReplacement, "Player-default launcher copy must not expose raw debug shell wording.");
+
+        Assert.Contains(".game-launcher", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-primary-action", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-secondary-actions", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-mode-tabs", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-save-list", styles, StringComparison.Ordinal);
+
+        var primaryIndex = app.IndexOf("launcher-primary-action", StringComparison.Ordinal);
+        var secondaryIndex = app.IndexOf("launcher-secondary-actions", StringComparison.Ordinal);
+        var advancedIndex = app.IndexOf("className=\"advanced-toggle\"", StringComparison.Ordinal);
+        Assert.True(primaryIndex > 0, "Launcher primary CTA must be explicit.");
+        Assert.True(secondaryIndex > primaryIndex, "Secondary actions must follow the primary CTA.");
+        Assert.True(advancedIndex > secondaryIndex, "Advanced mode must stay lower priority than launcher actions in source order.");
+    }
+
+    [Fact]
     public void ReactAppShell_DocumentsIssue704RoutingAndPlayerAdvancedBoundary()
     {
         var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
