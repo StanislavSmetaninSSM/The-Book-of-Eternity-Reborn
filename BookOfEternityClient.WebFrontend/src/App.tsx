@@ -560,61 +560,228 @@ export default function App() {
           {readyState && renderActiveRoute(activeRoute, readyState, composerText, setComposerText, composerNotice, submitComposer, advancedEnabled, setActiveRoute, loadBrowserState)}
         </div>
 
-        <aside className="workspace-sidebar" aria-label="Сводка состояния">
-          <ShellPanel title="Сессия" eyebrow="локальная книга">
-            {session ? (
-              <dl className="kv-list">
-                <div><dt>Статус</dt><dd>{formatSessionStatus(session.status)}</dd></div>
-                <div><dt>Локально</dt><dd>{session.localOnly ? 'Да' : 'Нет'}</dd></div>
-                <div><dt>Запись хода</dt><dd>{session.canStartBrowserWrite ? 'Можно' : 'Заблокирована'}</dd></div>
-                <div><dt>Книга</dt><dd>{session.gameSessionExists ? 'сохранение найдено' : 'сохранение не найдено'}</dd></div>
-              </dl>
-            ) : readyState ? (
-              <EmptyOrFailure result={readyState.session} advancedEnabled={advancedEnabled} errorTitle="Сессия требует внимания" empty={{
-                title: 'Книга готовит сессию',
-                message: 'Сводка партии появится, когда локальная книга отдаст состояние сохранения.',
-                action: 'Можно оставаться на главной странице: действия продолжения, новой главы и загрузки появятся там же.'
-              }} />
-            ) : (
-              <p className="muted">Ждём локальную книгу…</p>
-            )}
-          </ShellPanel>
-
-          <ShellPanel title="Ход и ремонт" eyebrow="безопасность хода">
-            {gameScreen ? (
-              <>
-                <p className="status-pill">{formatTurnStateTitle(gameScreen.turnState)}</p>
-                <p>{formatTurnStateMessage(gameScreen.turnState)}</p>
-                <p className="muted">Проверка: {toPlayerFacingText(gameScreen.turnState.validationLabel, 'состояние проверяется')}</p>
-              </>
-            ) : readyState ? (
-              <EmptyOrFailure result={readyState.game} advancedEnabled={advancedEnabled} errorTitle="Игровой экран требует внимания" empty={{
-                title: 'Ход ждёт открытия главы',
-                message: 'Состояние хода и восстановление появятся после выбора или загрузки партии.',
-                action: 'Откройте книгу на главной странице; технические детали ремонта остаются в расширенном режиме.'
-              }} />
-            ) : (
-              <p className="muted">Загрузка…</p>
-            )}
-          </ShellPanel>
-
-          {readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} advancedEnabled={advancedEnabled} />}
-
-          <button
-            type="button"
-            className="advanced-toggle"
-            aria-controls="advanced-diagnostics"
-            aria-expanded={advancedEnabled}
-            onClick={() => setAdvancedEnabled((value) => !value)}
-          >
-            {advancedEnabled ? 'Скрыть расширенный режим' : 'Расширенный режим'}
-          </button>
+        <aside className="workspace-sidebar" aria-label="Сводка книги">
+          <PlayerStatusSidebar
+            readyState={readyState}
+            menu={menu}
+            session={session}
+            gameScreen={gameScreen}
+            realmTheme={realmTheme}
+            activeRoute={activeRoute}
+            advancedEnabled={advancedEnabled}
+            setAdvancedEnabled={setAdvancedEnabled}
+          />
         </aside>
       </section>
 
       {advancedEnabled && readyState && <AdvancedDiagnosticsPanel state={readyState} lifecycle={lifecycle} commandCoverage={commandCoverage} />}
     </main>
   );
+}
+
+function PlayerStatusSidebar({
+  readyState,
+  menu,
+  session,
+  gameScreen,
+  realmTheme,
+  activeRoute,
+  advancedEnabled,
+  setAdvancedEnabled
+}: {
+  readyState: Extract<BrowserShellState, { status: 'ready' }> | null;
+  menu: BrowserMainMenuDto | null;
+  session: LocalWebUiSessionStatus | null;
+  gameScreen: BrowserGameScreenDto | null;
+  realmTheme: RealmTheme;
+  activeRoute: RouteId;
+  advancedEnabled: boolean;
+  setAdvancedEnabled: (updater: (value: boolean) => boolean) => void;
+}) {
+  const sidebarEmptyGame = getSidebarEmptyGameMessage(readyState);
+  const hasGame = Boolean(gameScreen);
+  const sidebarMenuFailure = getSidebarFailure(readyState?.menu);
+  const sidebarSessionFailure = getSidebarFailure(readyState?.session);
+  const sidebarGameFailure = getSidebarFailure(readyState?.game);
+  const saveNeedsAttention = Boolean(sidebarMenuFailure || sidebarSessionFailure);
+  const turnNeedsAttention = Boolean(sidebarGameFailure || gameScreen?.turnState.severity === 'error' || gameScreen?.turnState.severity === 'repair');
+
+  return (
+    <div className="player-status-sidebar">
+      <div className="sidebar-heading">
+        <p className="panel-eyebrow">игровая сводка</p>
+        <h2>Сводка книги</h2>
+        <p className="muted">Мягкая сводка текущей главы без служебных журналов и внутренних проверок.</p>
+      </div>
+
+      <StatusSummaryCard title="Слой книги" eyebrow="мир и глава" attention={Boolean(sidebarMenuFailure || sidebarGameFailure)}>
+        <p className="status-pill">{realmTheme.label}</p>
+        <p>{gameScreen ? `${gameScreen.soul.name || 'Душа'} · ход ${gameScreen.world.turnNumber}` : sidebarEmptyGame}</p>
+        {sidebarMenuFailure ? (
+          <p className="warning-text">{sidebarMenuFailure}</p>
+        ) : (
+          <p className="muted">{menu ? toPlayerFacingText(menu.session.validationLabel, 'Книга ждёт открытия') : 'Книга ждёт открытия.'}</p>
+        )}
+      </StatusSummaryCard>
+
+      <StatusSummaryCard title="Герой и душа" eyebrow="персонаж" soft={!hasGame && !sidebarGameFailure} attention={Boolean(sidebarGameFailure)}>
+        {sidebarGameFailure ? (
+          <>
+            <p className="warning-text">{sidebarGameFailure}</p>
+            <p className="muted">Герой и душа появятся снова, когда локальная книга отдаст игровую сводку.</p>
+          </>
+        ) : gameScreen ? (
+          <>
+            <p><strong>{gameScreen.player.name || 'Герой'}</strong> · {gameScreen.player.currentCondition}</p>
+            <p className="muted">Душа: {gameScreen.soul.name || 'без имени'} · {formatRealmName(gameScreen.soul.realm)}</p>
+            <div className="status-summary-grid" aria-label="Состояние героя">
+              <span>Здоровье {formatSidebarStatusMetric(gameScreen.player.healthPercentage)}</span>
+              <span>Энергия {formatSidebarStatusMetric(gameScreen.player.energyPercentage)}</span>
+              <span>Стойкость {formatSidebarStatusMetric(gameScreen.player.poisePercentage)}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <p>Душа и герой появятся после открытия или загрузки главы.</p>
+            <p className="muted">Это обычное состояние пустой книги, не ошибка клиента.</p>
+          </>
+        )}
+      </StatusSummaryCard>
+
+      <StatusSummaryCard title="Сохранение" eyebrow="локальная партия" soft={!session?.gameSessionExists && !saveNeedsAttention} attention={saveNeedsAttention}>
+        {sidebarSessionFailure ? (
+          <p className="warning-text">{sidebarSessionFailure}</p>
+        ) : (
+          <p>{formatSidebarSessionSummary(session, menu)}</p>
+        )}
+        {sidebarMenuFailure ? (
+          <p className="warning-text">{sidebarMenuFailure}</p>
+        ) : (
+          <p className="muted">{formatSidebarSaveSummary(menu)}</p>
+        )}
+      </StatusSummaryCard>
+
+      <StatusSummaryCard title="Ожидание ГМа" eyebrow="ход" attention={turnNeedsAttention}>
+        {sidebarGameFailure ? (
+          <>
+            <p className="warning-text">{sidebarGameFailure}</p>
+            <p className="muted">Глава сохранена; подробности ремонта и проверки остаются в расширенном режиме.</p>
+          </>
+        ) : gameScreen ? (
+          <>
+            <p className={`status-pill turn-phase turn-phase--${gameScreen.turnState.severity}`}>{formatTurnStateTitle(gameScreen.turnState)}</p>
+            <p>{formatTurnStateMessage(gameScreen.turnState)}</p>
+            <p className="muted">Подробности ремонта, проверки и команд скрыты до явного включения.</p>
+          </>
+        ) : (
+          <>
+            <p>{sidebarEmptyGame}</p>
+            <p className="muted">Когда появится ожидающий ход или ответ ГМа, книга покажет это здесь игровым языком.</p>
+          </>
+        )}
+      </StatusSummaryCard>
+
+      {readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} advancedEnabled={advancedEnabled} />}
+
+      <section className="advanced-sidebar-entry" aria-label="Служебная панель">
+        <div>
+          <p className="panel-eyebrow">по запросу</p>
+          <h3>Служебная панель</h3>
+          <p className="muted">Служебные проверки и сведения для ремонта остаются вторичным режимом.</p>
+        </div>
+        <button
+          type="button"
+          className="advanced-toggle"
+          aria-controls="advanced-diagnostics"
+          aria-expanded={advancedEnabled}
+          onClick={() => setAdvancedEnabled((value) => !value)}
+        >
+          {advancedEnabled ? 'Скрыть расширенный режим' : 'Открыть расширенный режим'}
+        </button>
+      </section>
+    </div>
+  );
+}
+
+function StatusSummaryCard({
+  title,
+  eyebrow,
+  children,
+  soft = false,
+  attention = false
+}: {
+  title: string;
+  eyebrow: string;
+  children: ReactNode;
+  soft?: boolean;
+  attention?: boolean;
+}) {
+  const className = `status-summary-card${soft ? ' is-soft' : ''}${attention ? ' is-attention' : ''}`;
+  return (
+    <section className={className}>
+      <p className="panel-eyebrow">{eyebrow}</p>
+      <h3>{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function getSidebarFailure<TData>(result: BrowserApiResult<TData> | null | undefined): string | null {
+  if (!result || isSuccess(result) || result.kind === 'no-active-session') {
+    return null;
+  }
+
+  return toPlayerFacingText(result.playerMessage, 'Книга требует внимания.');
+}
+
+function getSidebarEmptyGameMessage(readyState: Extract<BrowserShellState, { status: 'ready' }> | null): string {
+  const gameFailure = getSidebarFailure(readyState?.game);
+  if (gameFailure) {
+    return gameFailure;
+  }
+
+  return 'Книга ждёт открытия главы.';
+}
+
+function formatSidebarSessionSummary(session: LocalWebUiSessionStatus | null, menu: BrowserMainMenuDto | null): string {
+  if (session?.gameSessionExists) {
+    return session.canStartBrowserWrite
+      ? 'Локальная партия найдена, запись следующего хода доступна.'
+      : 'Локальная партия найдена, но ход сейчас ждёт безопасного момента.';
+  }
+
+  if (menu?.session.gameSessionExists || menu?.session.canContinue) {
+    return 'Есть глава, которую можно продолжить с главной страницы.';
+  }
+
+  return 'Активной главы пока нет — начните новую или загрузите сохранение.';
+}
+
+function formatSidebarSaveSummary(menu: BrowserMainMenuDto | null): string {
+  if (!menu) {
+    return 'Список сохранений появится после ответа локальной книги.';
+  }
+
+  if (menu.saves.length > 0) {
+    return `Доступно сохранений: ${menu.saves.length}. Последние записи доступны на главной странице.`;
+  }
+
+  return 'Сохранений пока не найдено; можно начать новую главу.';
+}
+
+function formatSidebarStatusMetric(value: string): string {
+  const normalized = value.trim();
+  if (!normalized) {
+    return '—';
+  }
+
+  return normalized.endsWith('%') ? normalized : `${normalized}%`;
+}
+
+function formatSidebarAudioSummary(audio: BrowserAudioSettingsDto): string {
+  const availablePlaylists = audio.playlists.filter((playlist) => playlist.available).length;
+  const availableCues = audio.cues.filter((cue) => cue.available).length;
+  return `Музыка ${audio.musicEnabled ? 'включена' : 'выключена'}; плейлистов найдено: ${availablePlaylists}; подсказок: ${availableCues}.`;
 }
 
 function renderActiveRoute(
@@ -1503,6 +1670,7 @@ function AudioSettingsPanel({
         <p className="panel-eyebrow">музыка и звук</p>
         <h2 id="browser-audio-title">Аудио браузерного клиента</h2>
         <p>{toPlayerFacingText(audio.autoplayGuidance, 'Музыка запускается только после вашего нажатия.')}</p>
+        <p className="muted">{formatSidebarAudioSummary(audio)}</p>
         {audio.missingAssetsMessage && <p className="warning-text">{toPlayerFacingText(audio.missingAssetsMessage, 'Локальные аудиофайлы не найдены.')}</p>}
       </div>
 
