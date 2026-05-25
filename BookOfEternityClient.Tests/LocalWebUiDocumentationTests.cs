@@ -113,6 +113,27 @@ public sealed class LocalWebUiDocumentationTests
     }
 
     [Fact]
+    public void LocalWebHostDocs_DocumentFrontendVerificationPipeline()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
+
+        Assert.Contains("#705", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("npm ci --prefix BookOfEternityClient.WebFrontend", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("npm run verify --prefix BookOfEternityClient.WebFrontend", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("Category=BrowserWebUiBuiltFrontend", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("TestResults/browser-smoke", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("browser-smoke-artifacts", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("HTML/network diagnostics", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("screenshots", hostDoc, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("#705", readme, StringComparison.Ordinal);
+        Assert.Contains("npm run verify", readme, StringComparison.Ordinal);
+        Assert.Contains("Category=BrowserWebUiBuiltFrontend", readme, StringComparison.Ordinal);
+        Assert.Contains("TestResults/browser-smoke", readme, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void LocalWebHostDocs_DocumentTypedBrowserApiContractWorkflow()
     {
         var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));

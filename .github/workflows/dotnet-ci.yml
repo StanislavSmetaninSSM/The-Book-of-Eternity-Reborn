@@ -21,6 +21,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: BookOfEternityClient.WebFrontend/package-lock.json
+
+      - name: Restore browser frontend dependencies
+        run: npm ci --prefix BookOfEternityClient.WebFrontend
+
+      - name: Verify browser frontend
+        run: npm run verify --prefix BookOfEternityClient.WebFrontend
+
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
         with:
@@ -45,4 +58,12 @@ jobs:
         with:
           name: dotnet-test-results
           path: TestResults
+          if-no-files-found: ignore
+
+      - name: Upload browser smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-smoke-artifacts
+          path: TestResults/browser-smoke
           if-no-files-found: ignore

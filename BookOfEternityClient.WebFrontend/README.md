@@ -10,9 +10,11 @@ From the repository root:
 
 ```powershell
 npm install --prefix BookOfEternityClient.WebFrontend
+npm ci --prefix BookOfEternityClient.WebFrontend
 npm run dev --prefix BookOfEternityClient.WebFrontend
 npm run typecheck --prefix BookOfEternityClient.WebFrontend
 npm run build --prefix BookOfEternityClient.WebFrontend
+npm run verify --prefix BookOfEternityClient.WebFrontend
 npm run preview --prefix BookOfEternityClient.WebFrontend
 ```
 
@@ -20,13 +22,15 @@ Or from this directory:
 
 ```powershell
 npm install
+npm ci
 npm run dev
 npm run typecheck
 npm run build
+npm run verify
 npm run preview
 ```
 
-`npm run dev` and `npm run preview` bind to `127.0.0.1` for local development. `npm run build` writes production assets to `dist/`.
+`npm run dev` and `npm run preview` bind to `127.0.0.1` for local development. `npm run build` writes production assets to `dist/`. `npm run verify` is the CI/local frontend gate: it typechecks both TypeScript projects and then builds the production bundle.
 
 ## Relationship to `dotnet run -- --web`
 
@@ -78,6 +82,18 @@ Contract update workflow:
 `BrowserApiContractTests` serializes representative C# DTOs and compares them to the tracked `contract-fixtures`; `contract-fixture-checks.ts` imports the same fixtures so TypeScript verifies their shape. Default player UI should show the normalized `playerMessage` from failed requests, while `technicalDetails` belongs behind explicit advanced diagnostics.
 
 Later issues deepen the route content (menus, game screens, settings, media/QTE UI) and add the broader smoke verification pipeline.
+
+## Verification pipeline (#705)
+
+Use the same frontend-first sequence locally and in CI when changing browser frontend, local host, typed API contracts, or smoke coverage:
+
+```powershell
+npm ci --prefix BookOfEternityClient.WebFrontend
+npm run verify --prefix BookOfEternityClient.WebFrontend
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
+```
+
+`Category=BrowserWebUiBuiltFrontend` starts the C# `LocalWebUiHost` against the built Vite `dist/` output and verifies the root shell, SPA route fallback, player-state APIs, and non-masked `/api/*` plus `/assets/*` misses. The smoke writes HTML/network diagnostics to `TestResults/browser-smoke/` (`root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`). CI uploads those diagnostics as `browser-smoke-artifacts` when present. Screenshots require a future tracked browser automation dependency; this pipeline intentionally stays local/offline-friendly and dependency-light.
 
 ## Boundaries for future agents
 

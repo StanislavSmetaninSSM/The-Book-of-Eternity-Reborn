@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691, #701, #702, #703, #704
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691, #701, #702, #703, #704, #705
 Parent epic: #559
 
 ## Local-Only Model
@@ -77,9 +77,11 @@ From the repository root:
 
 ```powershell
 npm install --prefix BookOfEternityClient.WebFrontend
+npm ci --prefix BookOfEternityClient.WebFrontend
 npm run dev --prefix BookOfEternityClient.WebFrontend
 npm run typecheck --prefix BookOfEternityClient.WebFrontend
 npm run build --prefix BookOfEternityClient.WebFrontend
+npm run verify --prefix BookOfEternityClient.WebFrontend
 ```
 
 `npm run dev` binds the Vite development server to `127.0.0.1`. `npm run build` writes the preferred production asset root:
@@ -416,6 +418,26 @@ See also `docs/web-ui/local-ui-session-lock.md` for the lock-file shape and owne
 See also `docs/web-ui/browser-parity-checklist.md` for the manual shell parity checklist used when changing browser navigation, forms, progress states, QTE, media, and raw JSON rendering.
 
 ## Automated Browser Smoke And Parity Verification
+
+Issue #705 defines the frontend-aware local and CI verification pipeline. Run the frontend restore/typecheck/build before the built-frontend smoke tests so `BookOfEternityClient.WebFrontend/dist/index.html` exists and the C# host serves the same assets that will be packaged in CI:
+
+```powershell
+npm ci --prefix BookOfEternityClient.WebFrontend
+npm run verify --prefix BookOfEternityClient.WebFrontend
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
+```
+
+On MSYS/bash shells the same command uses slash paths:
+
+```bash
+npm ci --prefix BookOfEternityClient.WebFrontend
+npm run verify --prefix BookOfEternityClient.WebFrontend
+dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
+```
+
+`BrowserWebUiBuiltFrontend` launches `LocalWebUiHost` against the built Vite `dist/` directory, verifies the root shell, SPA route fallback, `/api/main-menu`, `/api/session`, `/api/game-screen`, and confirms missing `/api/*` and `/assets/*` requests stay real 404 responses instead of being swallowed by the HTML fallback. The smoke writes practical HTML/network diagnostics to `TestResults/browser-smoke/`: `root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, and `network.json`.
+
+GitHub Actions uploads those files as the `browser-smoke-artifacts` artifact when present. Screenshots are intentionally not part of this slice because the repository has not introduced Playwright/Selenium-style browser automation yet; add them in a future tracked browser automation task instead of bolting a new dependency onto #705.
 
 Run the focused browser contract suite before changing browser root/menu/session/game-screen state, lifecycle dashboards, command migration metadata, prompt sessions, QTE, media, or command rendering:
 
