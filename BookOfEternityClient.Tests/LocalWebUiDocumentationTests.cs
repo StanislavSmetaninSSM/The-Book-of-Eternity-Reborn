@@ -154,4 +154,28 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("BrowserApiContractTests", readme, StringComparison.Ordinal);
         Assert.Contains("BrowserApiClient", readme, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void LocalWebHostDocs_DocumentBrowserAudioSettingsWorkflow()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
+
+        Assert.Contains("#684", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("GET /api/audio/settings", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("POST /api/audio/settings", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("GET /api/audio/assets/{assetId}", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("shared `GameSettings` audio fields", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("autoplay", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Включить музыку в браузере", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("no local filesystem paths", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("missing audio files", hostDoc, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("#684", readme, StringComparison.Ordinal);
+        Assert.Contains("getAudioSettings", readme, StringComparison.Ordinal);
+        Assert.Contains("updateAudioSettings", readme, StringComparison.Ordinal);
+        Assert.Contains("Включить музыку в браузере", readme, StringComparison.Ordinal);
+        Assert.Contains("shared `GameSettings` audio fields", readme, StringComparison.Ordinal);
+        Assert.Contains("no local filesystem paths", readme, StringComparison.OrdinalIgnoreCase);
+    }
 }

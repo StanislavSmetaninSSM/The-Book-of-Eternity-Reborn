@@ -182,6 +182,101 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task AudioSettingsEndpoint_LoadsSharedSettingsAndReturnsSafeCatalog()
+    {
+        WriteSessionFile("config.json", """
+        {
+          "musicEnabled": false,
+          "musicVolume": 32,
+          "soundEnabled": true,
+          "soundVolume": 54
+        }
+        """);
+        WriteRootFile("Music/Main Theme.mp3", "fake-mp3");
+        WriteRootFile("Sounds/sound-notification.wav", "fake-wav");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/audio/settings"))!.AsObject();
+
+        Assert.Equal(1, root["schemaVersion"]!.GetValue<int>());
+        Assert.False(root["musicEnabled"]!.GetValue<bool>());
+        Assert.Equal(32, root["musicVolume"]!.GetValue<int>());
+        Assert.True(root["soundEnabled"]!.GetValue<bool>());
+        Assert.Equal(54, root["soundVolume"]!.GetValue<int>());
+        Assert.Contains("браузер", root["autoplayGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(_rootPath, root.ToJsonString(), StringComparison.OrdinalIgnoreCase);
+        var mainMenu = root["playlists"]!.AsArray().Single(node => node!["id"]!.GetValue<string>() == "main-menu")!.AsObject();
+        Assert.True(mainMenu["available"]!.GetValue<bool>());
+        Assert.StartsWith("/api/audio/assets/", mainMenu["tracks"]!.AsArray()[0]!["url"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Contains(root["cues"]!.AsArray(), cue => cue?["id"]?.GetValue<string>() == "turn-ready" && cue["available"]!.GetValue<bool>());
+    }
+
+    [Fact]
+    public async Task AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/audio/settings", new
+        {
+            musicEnabled = false,
+            musicVolume = 125,
+            soundEnabled = false,
+            soundVolume = -10
+        });
+        var root = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+        var config = JsonNode.Parse(File.ReadAllText(Path.Combine(_rootPath, "game_session", "config.json")))!.AsObject();
+
+        response.EnsureSuccessStatusCode();
+        Assert.False(root["musicEnabled"]!.GetValue<bool>());
+        Assert.Equal(100, root["musicVolume"]!.GetValue<int>());
+        Assert.False(root["soundEnabled"]!.GetValue<bool>());
+        Assert.Equal(0, root["soundVolume"]!.GetValue<int>());
+        Assert.False(config["musicEnabled"]!.GetValue<bool>());
+        Assert.Equal(100, config["musicVolume"]!.GetValue<int>());
+        Assert.False(config["soundEnabled"]!.GetValue<bool>());
+        Assert.Equal(0, config["soundVolume"]!.GetValue<int>());
+    }
+
+    [Fact]
+    public void BrowserAudioService_SerializesSharedSettingsUpdates()
+    {
+        var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "WebUi", "BrowserAudioService.cs"));
+        var normalizedSource = source.Replace("\r\n", "\n", StringComparison.Ordinal);
+
+        Assert.Contains("new SemaphoreSlim(1, 1)", normalizedSource, StringComparison.Ordinal);
+        Assert.Contains("public async Task<BrowserAudioSettingsDto> BuildSettingsAsync()\n    {\n        await SettingsWriteGate.WaitAsync()", normalizedSource, StringComparison.Ordinal);
+        Assert.Contains("await SettingsWriteGate.WaitAsync()", normalizedSource, StringComparison.Ordinal);
+        Assert.Contains("SettingsWriteGate.Release()", normalizedSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task AudioAssetEndpoint_ServesOnlyCataloguedAssetsWithoutPathTraversal()
+    {
+        WriteRootFile("Music/Main Theme.mp3", "fake-mp3");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var settings = JsonNode.Parse(await client.GetStringAsync("/api/audio/settings"))!.AsObject();
+        var assetId = settings["playlists"]!.AsArray()
+            .Single(node => node!["id"]!.GetValue<string>() == "main-menu")!["tracks"]!.AsArray()[0]!["id"]!.GetValue<string>();
+        using var ok = await client.GetAsync($"/api/audio/assets/{Uri.EscapeDataString(assetId)}");
+        using var traversal = await client.GetAsync("/api/audio/assets/..%2Fconfig.json");
+
+        Assert.Equal(HttpStatusCode.OK, ok.StatusCode);
+        Assert.Equal("audio/mpeg", ok.Content.Headers.ContentType?.MediaType);
+        Assert.Equal(HttpStatusCode.NotFound, traversal.StatusCode);
+    }
+
+    [Fact]
     public async Task SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds()
     {
         WriteSessionFile("game_state/meta/soul_state.json", """
@@ -1079,6 +1174,13 @@ public sealed class LocalWebUiHostTests : IDisposable
     private void WriteSessionFile(string relativePath, string content)
     {
         var fullPath = Path.Combine(_rootPath, "game_session", relativePath.Replace('/', Path.DirectorySeparatorChar));
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+        File.WriteAllText(fullPath, content);
+    }
+
+    private void WriteRootFile(string relativePath, string content)
+    {
+        var fullPath = Path.Combine(_rootPath, relativePath.Replace('/', Path.DirectorySeparatorChar));
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
         File.WriteAllText(fullPath, content);
     }

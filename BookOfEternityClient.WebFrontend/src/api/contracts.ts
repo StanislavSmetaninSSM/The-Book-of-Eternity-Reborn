@@ -136,6 +136,48 @@ export interface BrowserLoadSaveResultDto {
   menu: BrowserMainMenuDto;
 }
 
+export interface BrowserAudioSettingsDto {
+  schemaVersion: number;
+  musicEnabled: boolean;
+  musicVolume: number;
+  soundEnabled: boolean;
+  soundVolume: number;
+  autoplayGuidance: string;
+  missingAssetsMessage: string;
+  playlists: BrowserAudioPlaylistDto[];
+  cues: BrowserAudioCueDto[];
+}
+
+export interface BrowserAudioPlaylistDto {
+  id: string;
+  label: string;
+  usage: string;
+  available: boolean;
+  tracks: BrowserAudioAssetDto[];
+}
+
+export interface BrowserAudioCueDto {
+  id: string;
+  label: string;
+  usage: string;
+  available: boolean;
+  asset: BrowserAudioAssetDto | null;
+}
+
+export interface BrowserAudioAssetDto {
+  id: string;
+  label: string;
+  url: string;
+  contentType: string;
+}
+
+export interface BrowserAudioSettingsUpdateRequest {
+  musicEnabled?: boolean | null;
+  musicVolume?: number | null;
+  soundEnabled?: boolean | null;
+  soundVolume?: number | null;
+}
+
 export interface LocalWebUiSessionStatus {
   schemaVersion: number;
   status: string;

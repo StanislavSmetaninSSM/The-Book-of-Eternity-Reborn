@@ -38,6 +38,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("export interface BrowserLifecycleDashboardDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface ExplorerCommandResult", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface QteWebStateDto", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface BrowserAudioSettingsDto", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface BrowserAudioSettingsUpdateRequest", contracts, StringComparison.Ordinal);
         Assert.Contains("export type BrowserApiResult", contracts, StringComparison.Ordinal);
         Assert.Contains("pending-turn", contracts, StringComparison.Ordinal);
         Assert.Contains("advanced", contracts, StringComparison.OrdinalIgnoreCase);
@@ -54,6 +56,10 @@ public sealed class BrowserApiContractTests
         Assert.Contains("submitPromptSession", client, StringComparison.Ordinal);
         Assert.Contains("getQteState", client, StringComparison.Ordinal);
         Assert.Contains("resolveQteAction", client, StringComparison.Ordinal);
+        Assert.Contains("getAudioSettings", client, StringComparison.Ordinal);
+        Assert.Contains("updateAudioSettings", client, StringComparison.Ordinal);
+        Assert.Contains("audio-settings", client, StringComparison.Ordinal);
+        Assert.Contains("audio-settings-update", client, StringComparison.Ordinal);
         Assert.DoesNotContain("any", client, StringComparison.Ordinal);
     }
 
@@ -86,6 +92,7 @@ public sealed class BrowserApiContractTests
         Assert.Contains("satisfies BrowserLifecycleDashboardDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies ExplorerCommandResult", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies QteWebStateDto", fixtureChecks, StringComparison.Ordinal);
+        Assert.Contains("satisfies BrowserAudioSettingsDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserApiErrorPayload", fixtureChecks, StringComparison.Ordinal);
     }
 
@@ -270,8 +277,54 @@ public sealed class BrowserApiContractTests
         yield return ["lifecycle-dashboard.json", BuildLifecycleDashboard()];
         yield return ["explorer-command-result.json", BuildExplorerCommandResult()];
         yield return ["qte-state.json", BuildQteState()];
+        yield return ["audio-settings.json", BuildAudioSettings()];
         yield return ["api-error.json", BuildApiErrorPayload()];
     }
+
+    private static BrowserAudioSettingsDto BuildAudioSettings() =>
+        new(
+            SchemaVersion: 1,
+            MusicEnabled: true,
+            MusicVolume: 65,
+            SoundEnabled: true,
+            SoundVolume: 75,
+            AutoplayGuidance: "Браузер не может запустить звук автоматически: нажмите «Включить музыку в браузере».",
+            MissingAssetsMessage: string.Empty,
+            Playlists:
+            [
+                new BrowserAudioPlaylistDto(
+                    Id: "main-menu",
+                    Label: "Главное меню",
+                    Usage: "Тихая тема книги до входа в активную сцену.",
+                    Available: true,
+                    Tracks:
+                    [
+                        new BrowserAudioAssetDto(
+                            Id: "music:main-menu:Main Theme.mp3",
+                            Label: "Main Theme",
+                            Url: "/api/audio/assets/music%3Amain-menu%3AMain%20Theme.mp3",
+                            ContentType: "audio/mpeg")
+                    ]),
+                new BrowserAudioPlaylistDto(
+                    Id: "in-game",
+                    Label: "Игра",
+                    Usage: "Фоновая музыка для текущего игрового экрана и переходов realm.",
+                    Available: false,
+                    Tracks: [])
+            ],
+            Cues:
+            [
+                new BrowserAudioCueDto(
+                    Id: "turn-ready",
+                    Label: "Ответ ГМа готов",
+                    Usage: "Уведомление, что ход принят или готов к чтению.",
+                    Available: true,
+                    Asset: new BrowserAudioAssetDto(
+                        Id: "cue:turn-ready:sound-notification.wav",
+                        Label: "sound-notification",
+                        Url: "/api/audio/assets/cue%3Aturn-ready%3Asound-notification.wav",
+                        ContentType: "audio/wav"))
+            ]);
 
     private static BrowserMainMenuDto BuildMainMenu() =>
         new(

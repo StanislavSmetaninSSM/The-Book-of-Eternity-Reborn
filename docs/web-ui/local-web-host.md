@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691, #701, #702, #703, #704, #705
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #691, #701, #702, #703, #704, #705
 Parent epic: #559
 
 ## Local-Only Model
@@ -129,6 +129,21 @@ Safe contract update workflow:
 
 The TypeScript client normalizes endpoint failures into `BrowserApiResult<T>` with a player-facing `playerMessage` and optional `technicalDetails`. Default player UI should render `playerMessage`; `technicalDetails` belongs in the explicit Advanced / developer panel.
 
+## Browser Audio And Settings
+
+Issue #684 adds browser-tab music and cue controls without moving audio authority into React. The persistent browser audio panel stays mounted while the player moves between routes, and the `Настройки` route points to the same controls. The local C# host exposes `GET /api/audio/settings`, `POST /api/audio/settings`, and `GET /api/audio/assets/{assetId}`. These endpoints are backed by `BrowserAudioService`, which loads and saves the shared `GameSettings` audio fields (`MusicEnabled`, `MusicVolume`, `SoundEnabled`, and `SoundVolume`) through the existing `StateManager` and applies the settings back to `AudioService` so console and browser preferences stay aligned.
+
+The browser audio catalog is local and safe by construction. Music is discovered from the same local music roots that the C# client already uses, sound cues are discovered from local sound roots, and the browser receives opaque asset IDs plus `/api/audio/assets/{assetId}` URLs. The DTO intentionally exposes no local filesystem paths; malformed IDs, traversal attempts, uncatalogued IDs, unsupported files, and missing audio files return unavailable metadata or 404 responses instead of crashing the shell or leaking paths.
+
+The React shell does not autoplay. The `Настройки` route explains browser autoplay policy and asks the player to click `Включить музыку в браузере` before tab-local music is played; cue previews use their own explicit `Проверить подсказку` click. Those user gestures select the main-menu or in-game playlist, apply the persisted volume/mute values, and catch playback failures with a short Russian player-facing notice. Missing audio files are treated as a normal local-install state: the UI stays usable, the settings still persist, and the player sees that the client will continue without music or sound cues.
+
+For verification, include the focused audio host/contract/docs tests plus the frontend gate:
+
+```bash
+dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~AudioSettingsEndpoint|FullyQualifiedName~AudioAssetEndpoint|FullyQualifiedName~BrowserApiContractTests|FullyQualifiedName~LocalWebHostDocs_DocumentBrowserAudioSettingsWorkflow" --logger "console;verbosity=minimal"
+npm run verify --prefix BookOfEternityClient.WebFrontend
+```
+
 ## Current Browser MVP
 
 The local host exposes:
@@ -148,6 +163,9 @@ GET /api/media/{mediaId}
 GET /api/qte/state
 POST /api/qte/offer
 POST /api/qte/action
+GET /api/audio/settings
+POST /api/audio/settings
+GET /api/audio/assets/{assetId}
 ```
 
 `/` serves the browser game shell. With a Vite build present, the root is the #704 React app shell: player-facing routes for main menu, game, soul/status, world, media, and settings. The root defaults to current session/game summaries, the current realm/narrative/status surface, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, or debug controls as the primary player flow. The default surface includes a primary prose action composer for ordinary player intent; slash commands are intentionally rejected from automatic execution and require a separate explicit `Расширенный режим` opt-in before any technical command/API path is visible.

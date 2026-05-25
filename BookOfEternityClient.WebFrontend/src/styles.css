@@ -202,7 +202,8 @@ h2 {
 
 .game-action,
 .advanced-toggle,
-.composer button {
+.composer button,
+.audio-control-panel button {
   border: 1px solid color-mix(in srgb, var(--realm-accent) 44%, rgba(255, 255, 255, 0.1));
   border-radius: 0.9rem;
   background: color-mix(in srgb, var(--realm-accent) 18%, rgba(10, 13, 14, 0.86));
@@ -217,7 +218,8 @@ h2 {
 }
 
 .advanced-toggle,
-.composer button {
+.composer button,
+.audio-control-panel button {
   padding: 0.8rem 1rem;
   font-weight: 800;
 }
@@ -254,6 +256,52 @@ h2 {
   background: rgba(255, 255, 255, 0.08);
   color: #fff3d6;
   font-weight: 700;
+}
+
+.status-pill.is-muted {
+  opacity: 0.64;
+}
+
+.audio-control-panel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 26%, rgba(255, 255, 255, 0.08));
+  border-radius: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.audio-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.audio-toggle,
+.audio-slider {
+  display: grid;
+  gap: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.9rem;
+  padding: 0.85rem;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.audio-toggle {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+.audio-slider input {
+  width: 100%;
+  accent-color: var(--realm-accent);
+}
+
+.audio-catalog {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
 }
 
 .status-bar {
@@ -506,6 +554,7 @@ pre {
   .split-grid,
   .split-grid.three,
   .action-section-grid,
+  .audio-settings-grid,
   .action-grid {
     grid-template-columns: 1fr;
   }

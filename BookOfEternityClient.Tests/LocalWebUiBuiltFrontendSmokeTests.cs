@@ -131,6 +131,10 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("browserApi.executeExplorerCommand({ command: action.advancedCommand", appSource, StringComparison.Ordinal);
         Assert.Contains("browserApi.submitPromptSession", appSource, StringComparison.Ordinal);
         Assert.Contains("renderPromptControl", appSource, StringComparison.Ordinal);
+        Assert.Contains("AudioSettingsPanel", appSource, StringComparison.Ordinal);
+        Assert.Contains("Включить музыку в браузере", appSource, StringComparison.Ordinal);
+        Assert.Contains("browserApi.updateAudioSettings", appSource, StringComparison.Ordinal);
+        Assert.Contains("new Audio()", appSource, StringComparison.Ordinal);
         Assert.DoesNotContain("setAdvancedEnabled(true)", appSource, StringComparison.Ordinal);
         Assert.DoesNotContain("action.advancedCommand}", appSource, StringComparison.Ordinal);
         Assert.DoesNotContain("C# каталога команд", appSource, StringComparison.Ordinal);
