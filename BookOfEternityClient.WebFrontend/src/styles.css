@@ -278,19 +278,25 @@ h2 {
   background: linear-gradient(90deg, var(--realm-accent), #f6e6b8);
 }
 
-.choice-list {
+.choice-list,
+.endpoint-list {
   display: grid;
   gap: 0.6rem;
   padding: 0;
   list-style: none;
 }
 
-.choice-list li {
+.choice-list li,
+.endpoint-list li {
   display: grid;
   gap: 0.25rem;
   padding: 0.75rem;
   border-radius: 0.8rem;
   background: rgba(255, 255, 255, 0.06);
+}
+
+.endpoint-list span {
+  color: #bfcac2;
 }
 
 .choice-list span,

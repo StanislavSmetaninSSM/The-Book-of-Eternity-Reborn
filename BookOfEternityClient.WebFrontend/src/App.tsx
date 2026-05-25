@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
-import { browserApi } from './api/client';
+import { browserApi, browserApiContractSummary } from './api/client';
 import type {
   BrowserApiFailure,
   BrowserApiResult,
@@ -46,6 +46,8 @@ const fallbackTheme: RealmTheme = {
   icon: '🌘',
   accent: '#d8b36a'
 };
+
+const browserApiEndpoints = browserApiContractSummary.endpointDocs;
 
 export default function App() {
   const [shellState, setShellState] = useState<BrowserShellState>({ status: 'loading' });
@@ -406,10 +408,20 @@ function AdvancedDiagnosticsPanel({
         <p>Здесь остаются command/API diagnostics, lifecycle validation и сведения для ремонта. Обычный игрок не обязан видеть эти детали.</p>
       </div>
       <div className="split-grid three">
-        <ApiResultCard title="/api/main-menu" result={state.menu} />
-        <ApiResultCard title="/api/session" result={state.session} />
-        <ApiResultCard title="/api/game-screen" result={state.game} />
+        <ApiResultCard title={getEndpointLabel('BrowserMainMenuDto')} result={state.menu} />
+        <ApiResultCard title={getEndpointLabel('LocalWebUiSessionStatus')} result={state.session} />
+        <ApiResultCard title={getEndpointLabel('BrowserGameScreenDto')} result={state.game} />
       </div>
+      <ShellPanel title="Typed API contract" eyebrow={browserApiContractSummary.strategy} nested>
+        <ul className="endpoint-list">
+          {browserApiEndpoints.map((apiEndpoint) => (
+            <li key={apiEndpoint.path}>
+              <strong>{apiEndpoint.path}</strong>
+              <span>{apiEndpoint.method} · {apiEndpoint.response} · {apiEndpoint.playerSurface}</span>
+            </li>
+          ))}
+        </ul>
+      </ShellPanel>
       {lifecycle && (
         <ShellPanel title="Панель состояния" eyebrow="validation" nested>
           <p>Статус: {lifecycle.validation.statusLabel}</p>
@@ -428,6 +440,10 @@ function ApiResultCard<T>({ title, result }: { title: string; result: BrowserApi
       {!isSuccess(result) && result.technicalDetails && <details><summary>Подробности</summary><pre>{result.technicalDetails}</pre></details>}
     </div>
   );
+}
+
+function getEndpointLabel(responseType: string): string {
+  return browserApiEndpoints.find((apiEndpoint) => apiEndpoint.response === responseType)?.path ?? responseType;
 }
 
 function ApiFailure<T>({ title, result, advancedEnabled }: { title: string; result: BrowserApiResult<T>; advancedEnabled: boolean }) {
