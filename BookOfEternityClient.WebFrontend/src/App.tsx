@@ -23,6 +23,7 @@ import type {
 } from './api/contracts';
 
 type RouteId = 'home' | 'game' | 'soul' | 'world' | 'media' | 'settings';
+type LauncherMode = 'continue' | 'load' | 'new-game' | 'settings' | 'about';
 
 type BrowserShellState =
   | { status: 'loading' }
@@ -49,6 +50,14 @@ interface RealmTheme {
   label: string;
   icon: string;
   accent: string;
+}
+
+interface LauncherPrimaryAction {
+  mode: LauncherMode;
+  label: string;
+  description: string;
+  enabled: boolean;
+  disabledReason: string;
 }
 
 const playerRoutes: RouteCard[] = [
@@ -118,6 +127,7 @@ const playerCopyReplacements: Array<[RegExp, string]> = [
   [/\baction\b/gi, 'действие'],
   [/\bresolved\b/gi, 'завершена'],
   [/\brepair\b/gi, 'починка'],
+  [/C\x23\s*/g, ''],
   [/\blifecycle\b/gi, 'состояние хода'],
   [/\bruntime\b/gi, 'игровой слой'],
   [/\bendpoint(s)?\b/gi, 'разделы локального интерфейса'],
@@ -125,6 +135,300 @@ const playerCopyReplacements: Array<[RegExp, string]> = [
   [/\bDTO\b/g, 'данные интерфейса'],
   [/\bNPC\b/g, 'персонажи мира']
 ];
+
+const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about'];
+
+const launcherModeDetails: Record<LauncherMode, { label: string; description: string }> = {
+  continue: {
+    label: 'Продолжить главу',
+    description: 'Вернуться к текущей сохранённой главе.'
+  },
+  load: {
+    label: 'Загрузить сохранение',
+    description: 'Выбрать одну из доступных локальных записей.'
+  },
+  'new-game': {
+    label: 'Начать новую главу',
+    description: 'Подготовить новую историю через управляемую форму браузера.'
+  },
+  settings: {
+    label: 'Настроить клиент',
+    description: 'Открыть настройки локального клиента и звука.'
+  },
+  about: {
+    label: 'Сведения о книге',
+    description: 'Показать краткое описание книги и браузерного клиента.'
+  }
+};
+
+function GameLauncher({
+  menu,
+  onActiveRouteChange,
+  onStateRefresh
+}: {
+  menu: BrowserMainMenuDto;
+  onActiveRouteChange: (route: RouteId) => void;
+  onStateRefresh: () => Promise<void>;
+}) {
+  const primaryAction = useMemo(() => selectPrimaryLauncherAction(menu), [menu]);
+  const [activeMode, setActiveMode] = useState<LauncherMode>(primaryAction.mode);
+  const [launcherNotice, setLauncherNotice] = useState('');
+  const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
+
+  function activateLauncherMode(mode: LauncherMode) {
+    setLauncherNotice('');
+    if (mode === 'continue') {
+      onActiveRouteChange('game');
+      return;
+    }
+
+    if (mode === 'settings') {
+      onActiveRouteChange('settings');
+      return;
+    }
+
+    setActiveMode(mode);
+  }
+
+  async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
+    setLoadingSaveId(slot.saveId);
+    setLauncherNotice('Загружаем выбранное сохранение…');
+
+    try {
+      const result = await browserApi.loadSave({ saveId: slot.saveId });
+      if (isSuccess(result) && result.data.success) {
+        setLauncherNotice(`Сохранение «${toPlayerFacingText(slot.displayName, 'выбранная запись')}» загружено. Открываем главу…`);
+        await onStateRefresh();
+        onActiveRouteChange('game');
+        return;
+      }
+
+      if (isSuccess(result)) {
+        setLauncherNotice(toPlayerFacingText(result.data.error, 'Сохранение не удалось загрузить. Выберите другую запись или проверьте локальную книгу.'));
+        return;
+      }
+
+      setLauncherNotice(toPlayerFacingText(result.playerMessage, 'Сохранение не удалось загрузить. Проверьте локальный клиент и попробуйте ещё раз.'));
+    } catch {
+      setLauncherNotice('Сохранение не удалось загрузить. Проверьте локальный клиент и попробуйте ещё раз.');
+    } finally {
+      setLoadingSaveId(null);
+    }
+  }
+
+  function renderModeContent(): ReactNode {
+    const modeAction = findLauncherMenuAction(menu, activeMode);
+    const modeDescription = launcherActionDescription(menu, activeMode);
+
+    switch (activeMode) {
+      case 'continue':
+        return (
+          <section className="launcher-mode-panel" aria-label="Продолжение главы">
+            <h3>Продолжить главу</h3>
+            <p>{toPlayerFacingText(menu.session.continueReason, 'Книга сообщит, когда текущую главу можно продолжить.')}</p>
+            <dl className="kv-list">
+              <div><dt>Душа</dt><dd>{menu.session.soulName || 'Новая душа'}</dd></div>
+              <div><dt>Царство</dt><dd>{toPlayerFacingText(menu.session.realmLabel, 'царство уточняется')}</dd></div>
+              <div><dt>Ход</dt><dd>{toPlayerFacingText(menu.session.turnLabel, 'ход уточняется')}</dd></div>
+            </dl>
+            {!modeAction?.enabled && <p className="warning-text">{launcherActionDescription(menu, 'continue')}</p>}
+          </section>
+        );
+      case 'load': {
+        const loadAction = findLauncherMenuAction(menu, 'load');
+        const loadAvailable = Boolean(loadAction?.enabled);
+        return (
+          <section className="launcher-mode-panel" aria-label="Загрузка сохранения">
+            <h3>Загрузить сохранение</h3>
+            <p>{modeDescription}</p>
+            <div className="launcher-save-list">
+              {menu.saves.length > 0 ? menu.saves.map((slot) => (
+                <article key={slot.saveId} className="launcher-save-card">
+                  <div>
+                    <h4>{toPlayerFacingText(slot.displayName, 'Сохранение')}</h4>
+                    <p>{toPlayerFacingText(slot.description, 'Локальная запись готова к загрузке.')}</p>
+                  </div>
+                  <dl className="kv-list">
+                    <div><dt>Тип</dt><dd>{toPlayerFacingText(slot.scopeLabel, 'сохранение')}</dd></div>
+                    <div><dt>Герой</dt><dd>{slot.characterName || 'не указан'}</dd></div>
+                    <div><dt>Ход</dt><dd>{toPlayerFacingText(slot.turnLabel, 'ход уточняется')}</dd></div>
+                  </dl>
+                  <button
+                    type="button"
+                    className="launcher-secondary-action"
+                    disabled={!loadAvailable || loadingSaveId !== null}
+                    onClick={() => void loadSaveSlot(slot)}
+                  >
+                    {loadingSaveId === slot.saveId ? 'Загружаем…' : 'Загрузить сохранение'}
+                  </button>
+                </article>
+              )) : (
+                <p className="muted">Сохранений пока нет. Когда локальная книга найдёт ручные или автоматические записи, они появятся здесь.</p>
+              )}
+            </div>
+            {!loadAvailable && <p className="warning-text">{launcherActionDescription(menu, 'load')}</p>}
+          </section>
+        );
+      }
+      case 'new-game':
+        return (
+          <section className="launcher-mode-panel" aria-label="Новая глава">
+            <h3>Начать новую главу</h3>
+            <p>{modeDescription}</p>
+            <p className="muted">
+              Управляемая браузерная форма будет использовать существующий локальный поток подготовки новой игры; браузер не добавляет отдельные игровые правила.
+            </p>
+            {!modeAction?.enabled && <p className="warning-text">{launcherActionDescription(menu, 'new-game')}</p>}
+          </section>
+        );
+      case 'settings':
+        return (
+          <section className="launcher-mode-panel" aria-label="Настройки клиента">
+            <h3>Настроить клиент</h3>
+            <p>{toPlayerFacingText(menu.options.guidance, 'Настройки локального клиента доступны в отдельном разделе.')}</p>
+            <button type="button" className="launcher-secondary-action" onClick={() => onActiveRouteChange('settings')}>
+              Открыть настройки
+            </button>
+          </section>
+        );
+      case 'about':
+        return (
+          <section className="launcher-mode-panel" aria-label="Сведения о книге">
+            <h3>Сведения о книге</h3>
+            <h4>{toPlayerFacingText(menu.about.title, 'Книга Вечности: Перерождение')}</h4>
+            <p>{toPlayerFacingText(menu.about.body, 'Браузерный клиент открывает локальную книгу и оставляет игровые решения в основном клиенте.')}</p>
+          </section>
+        );
+    }
+  }
+
+  return (
+    <article className="game-launcher" aria-labelledby="browser-launcher-title">
+      <div className="launcher-window">
+        <div className="launcher-copy">
+          <p className="panel-eyebrow">главная книга</p>
+          <h2 id="browser-launcher-title">Открыть книгу</h2>
+          <p>{toPlayerFacingText(menu.session.continueReason, 'Выберите продолжение, загрузку или новую главу.')}</p>
+        </div>
+
+        <button
+          type="button"
+          className="launcher-primary-action"
+          disabled={!primaryAction.enabled}
+          onClick={() => {
+            activateLauncherMode(primaryAction.mode);
+          }}
+        >
+          <strong>{primaryAction.label}</strong>
+          <span>{primaryAction.enabled ? primaryAction.description : primaryAction.disabledReason}</span>
+        </button>
+
+        <div className="launcher-mode-tabs" role="tablist" aria-label="Режимы главной книги">
+          {launcherModes.map((mode) => {
+            const details = launcherModeDetails[mode];
+            const action = findLauncherMenuAction(menu, mode);
+            return (
+              <button
+                key={mode}
+                type="button"
+                role="tab"
+                aria-selected={activeMode === mode}
+                className={`launcher-mode-tab${activeMode === mode ? ' is-active' : ''}`}
+                onClick={() => setActiveMode(mode)}
+              >
+                <strong>{details.label}</strong>
+                <span>{action && !action.enabled ? 'пока недоступно' : 'открыть'}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {renderModeContent()}
+
+        <div className="launcher-secondary-actions">
+          {launcherModes.filter((mode) => mode !== primaryAction.mode).map((mode) => {
+            const details = launcherModeDetails[mode];
+            const action = findLauncherMenuAction(menu, mode);
+            const disabled = Boolean(action && !action.enabled && mode !== 'settings' && mode !== 'about');
+            return (
+              <button
+                key={mode}
+                type="button"
+                className="launcher-secondary-action"
+                disabled={disabled}
+                onClick={() => activateLauncherMode(mode)}
+              >
+                <strong>{details.label}</strong>
+                <span>{launcherActionDescription(menu, mode)}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {launcherNotice && <p className="composer-notice">{launcherNotice}</p>}
+      </div>
+    </article>
+  );
+}
+
+function selectPrimaryLauncherAction(menu: BrowserMainMenuDto): LauncherPrimaryAction {
+  const preferredModes: LauncherMode[] = ['continue', 'load', 'new-game'];
+
+  for (const mode of preferredModes) {
+    const action = findLauncherMenuAction(menu, mode);
+    if (action?.enabled) {
+      return {
+        mode,
+        label: launcherModeDetails[mode].label,
+        description: toPlayerFacingText(action.description, launcherModeDetails[mode].description),
+        enabled: true,
+        disabledReason: ''
+      };
+    }
+  }
+
+  const fallback = preferredModes
+    .map((mode) => ({ mode, action: findLauncherMenuAction(menu, mode) }))
+    .find((candidate) => candidate.action);
+  const disabledReason = fallback?.action
+    ? toPlayerFacingText(fallback.action.disabledReason || fallback.action.description, 'Главные действия книги сейчас недоступны.')
+    : 'Главные действия книги сейчас недоступны.';
+
+  return {
+    mode: fallback?.mode ?? 'continue',
+    label: 'Открыть книгу',
+    description: 'Выберите продолжение, загрузку или новую главу, когда книга будет готова.',
+    enabled: false,
+    disabledReason
+  };
+}
+
+function findLauncherMenuAction(menu: BrowserMainMenuDto, mode: LauncherMode): BrowserMainMenuDto['actions'][number] | undefined {
+  switch (mode) {
+    case 'continue':
+      return menu.actions.find((action) => action.id === 'continue');
+    case 'load':
+      return menu.actions.find((action) => action.id === 'load');
+    case 'new-game':
+      return menu.actions.find((action) => action.id === 'new-game');
+    case 'settings':
+      return menu.actions.find((action) => action.id === 'options' || action.id === 'settings' || action.targetPanel === 'options-panel');
+    case 'about':
+      return menu.actions.find((action) => action.id === 'about' || action.targetPanel === 'about-panel');
+  }
+}
+
+function launcherActionDescription(menu: BrowserMainMenuDto, mode: LauncherMode): string {
+  const action = findLauncherMenuAction(menu, mode);
+  const fallback = launcherModeDetails[mode].description;
+  if (!action) {
+    return fallback;
+  }
+
+  return action.enabled
+    ? toPlayerFacingText(action.description, fallback)
+    : toPlayerFacingText(action.disabledReason || action.description, fallback);
+}
 
 export default function App() {
   const [shellState, setShellState] = useState<BrowserShellState>({ status: 'loading' });
@@ -225,7 +529,7 @@ export default function App() {
           {shellState.status === 'error' && (
             <ErrorNotice title="Состояние клиента недоступно" failure={shellState} advancedEnabled={advancedEnabled} />
           )}
-          {readyState && renderActiveRoute(activeRoute, readyState, composerText, setComposerText, composerNotice, submitComposer, advancedEnabled)}
+          {readyState && renderActiveRoute(activeRoute, readyState, composerText, setComposerText, composerNotice, submitComposer, advancedEnabled, setActiveRoute, loadBrowserState)}
         </div>
 
         <aside className="workspace-sidebar" aria-label="Сводка состояния">
@@ -292,11 +596,13 @@ function renderActiveRoute(
   setComposerText: (value: string) => void,
   composerNotice: string,
   submitComposer: (event: FormEvent<HTMLFormElement>) => void,
-  advancedEnabled: boolean
+  advancedEnabled: boolean,
+  setActiveRoute: (route: RouteId) => void,
+  loadBrowserState: () => Promise<void>
 ) {
   switch (activeRoute) {
     case 'home':
-      return <HomeRoute state={state} advancedEnabled={advancedEnabled} />;
+      return <HomeRoute state={state} advancedEnabled={advancedEnabled} onActiveRouteChange={setActiveRoute} onStateRefresh={loadBrowserState} />;
     case 'game':
       return <GameRoute state={state} composerText={composerText} setComposerText={setComposerText} composerNotice={composerNotice} submitComposer={submitComposer} advancedEnabled={advancedEnabled} />;
     case 'soul':
@@ -310,7 +616,17 @@ function renderActiveRoute(
   }
 }
 
-function HomeRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
+function HomeRoute({
+  state,
+  advancedEnabled,
+  onActiveRouteChange,
+  onStateRefresh
+}: {
+  state: Extract<BrowserShellState, { status: 'ready' }>;
+  advancedEnabled: boolean;
+  onActiveRouteChange: (route: RouteId) => void;
+  onStateRefresh: () => Promise<void>;
+}) {
   if (!isSuccess(state.menu)) {
     return <EmptyOrFailure result={state.menu} advancedEnabled={advancedEnabled} errorTitle="Главное меню требует внимания" empty={{
       title: 'Книга ждёт открытия',
@@ -319,23 +635,9 @@ function HomeRoute({ state, advancedEnabled }: { state: Extract<BrowserShellStat
     }} />;
   }
 
-  const menu = state.menu.data;
-
   return (
     <ShellPanel title="Главная" eyebrow="игровое меню">
-      <div className="summary-card">
-        <h2>{menu.session.soulName || 'Новая душа'}</h2>
-        <p>{toPlayerFacingText(menu.session.realmLabel, 'царство уточняется')} · {toPlayerFacingText(menu.session.turnLabel, 'ход уточняется')}</p>
-        <p>{toPlayerFacingText(menu.session.continueReason, 'Продолжение будет доступно, когда локальная книга будет готова.')}</p>
-      </div>
-      <div className="action-grid">
-        {menu.actions.map((action) => (
-          <button key={action.id} type="button" disabled={!action.enabled} className="game-action">
-            <strong>{toPlayerFacingText(action.label, 'Игровое действие')}</strong>
-            <span>{action.enabled ? toPlayerFacingText(action.description, 'Действие доступно.') : toPlayerFacingText(action.disabledReason, 'Действие сейчас недоступно.')}</span>
-          </button>
-        ))}
-      </div>
+      <GameLauncher menu={state.menu.data} onActiveRouteChange={onActiveRouteChange} onStateRefresh={onStateRefresh} />
     </ShellPanel>
   );
 }
