@@ -146,12 +146,18 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("StatusBar", app, StringComparison.Ordinal);
         Assert.Contains("RealmTheme", app, StringComparison.Ordinal);
         Assert.Contains("playerMessage", app, StringComparison.Ordinal);
+        Assert.Contains("ActionMenu", app, StringComparison.Ordinal);
+        Assert.Contains("Персонаж / Душа", app, StringComparison.Ordinal);
+        Assert.Contains("Подготовить форму", app, StringComparison.Ordinal);
+        Assert.Contains("mutationWarning", app, StringComparison.Ordinal);
         Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
         Assert.DoesNotContain("setAdvancedEnabled(true)", app, StringComparison.Ordinal);
         Assert.DoesNotContain("typed BrowserApiClient", app, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("endpoint.id", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("action.advancedCommand}", app, StringComparison.Ordinal);
         Assert.Contains(".browser-shell", styles, StringComparison.Ordinal);
         Assert.Contains(".route-grid", styles, StringComparison.Ordinal);
+        Assert.Contains(".action-menu", styles, StringComparison.Ordinal);
         Assert.Contains(".advanced-diagnostics", styles, StringComparison.Ordinal);
         Assert.Contains("@media (max-width: 840px)", styles, StringComparison.Ordinal);
     }

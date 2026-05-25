@@ -186,6 +186,7 @@ export interface BrowserGameScreenDto {
   turnState: BrowserGameScreenTurnStateDto;
   actionComposer: BrowserGameScreenActionComposerDto;
   qte: QteWebStateDto;
+  actionMenu: BrowserPlayerCommandMenuDto;
   flags: BrowserGameScreenFlagsDto;
 }
 
@@ -261,6 +262,36 @@ export interface BrowserGameScreenActionComposerDto {
   placeholder: string;
   guidance: string;
   disabledReason: string;
+}
+
+export interface BrowserPlayerCommandMenuDto {
+  schemaVersion: number;
+  sections: BrowserPlayerCommandSectionDto[];
+}
+
+export interface BrowserPlayerCommandSectionDto {
+  id: string;
+  label: string;
+  description: string;
+  playerDefault: boolean;
+  actions: BrowserPlayerCommandActionDto[];
+}
+
+export interface BrowserPlayerCommandActionDto {
+  id: string;
+  sectionId: string;
+  label: string;
+  description: string;
+  realmAvailability: string;
+  enabled: boolean;
+  disabledReason: string;
+  playerDefault: boolean;
+  mutationMode: string;
+  mutationWarning: string;
+  formMode: string;
+  formLabel: string;
+  formPrompt: string;
+  advancedCommand: string;
 }
 
 export interface BrowserGameScreenFlagsDto {

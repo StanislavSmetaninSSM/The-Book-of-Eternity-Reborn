@@ -125,7 +125,11 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Главная", appSource, StringComparison.Ordinal);
         Assert.Contains("Игра", appSource, StringComparison.Ordinal);
         Assert.Contains("Расширенный режим", appSource, StringComparison.Ordinal);
+        Assert.Contains("ActionMenu", appSource, StringComparison.Ordinal);
+        Assert.Contains("Персонаж / Душа", appSource, StringComparison.Ordinal);
+        Assert.Contains("Подготовить форму", appSource, StringComparison.Ordinal);
         Assert.DoesNotContain("setAdvancedEnabled(true)", appSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("action.advancedCommand}", appSource, StringComparison.Ordinal);
     }
 
     private static async Task<SmokeResponse> CaptureAsync(HttpClient client, string path)

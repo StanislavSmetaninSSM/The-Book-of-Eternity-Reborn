@@ -7,6 +7,9 @@ import type {
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
   BrowserMainMenuDto,
+  BrowserPlayerCommandActionDto,
+  BrowserPlayerCommandMenuDto,
+  BrowserPlayerCommandSectionDto,
   LocalWebUiSessionStatus
 } from './api/contracts';
 
@@ -349,10 +352,95 @@ function WorldRoute({ state }: { state: Extract<BrowserShellState, { status: 're
     <ShellPanel title="Мир" eyebrow="карта, журнал и действия">
       <div className="split-grid three">
         <div className="summary-card"><h2>Локация</h2><p>{game.world.location}</p><p>{game.world.worldTime}</p></div>
-        <div className="summary-card"><h2>Журнал</h2><p>Квесты, архив и история будут разворачиваться в этом регионе без slash-команд.</p></div>
+        <div className="summary-card"><h2>Журнал</h2><p>Квесты, архив и история разворачиваются в игровых разделах без знания slash-команд.</p></div>
         <div className="summary-card"><h2>Фракции</h2><p>Панели фракций/стражей используют C# DTO и не копируют правила в React.</p></div>
       </div>
+      <ActionMenu menu={game.actionMenu} />
     </ShellPanel>
+  );
+}
+
+function ActionMenu({ menu }: { menu: BrowserPlayerCommandMenuDto }) {
+  const sections = menu.sections.filter((section) => section.playerDefault && section.actions.length > 0);
+
+  return (
+    <section className="action-menu" aria-labelledby="contextual-actions-title">
+      <div className="action-menu-header">
+        <p className="panel-eyebrow">игровые действия</p>
+        <h2 id="contextual-actions-title">Игровые действия</h2>
+        <p className="muted">
+          Персонаж / Душа, Мир, Квесты, Карта, Фракции, Хранители, Посмертие, Бой, Архив и Настройки
+          приходят из C# каталога команд. Технические имена команд остаются в расширенном режиме.
+        </p>
+      </div>
+      <div className="action-section-grid">
+        {sections.map((section) => (
+          <ActionSection key={section.id} section={section} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ActionSection({ section }: { section: BrowserPlayerCommandSectionDto }) {
+  return (
+    <section className="action-section" aria-labelledby={`action-section-${section.id}`}>
+      <div>
+        <h3 id={`action-section-${section.id}`}>{section.label}</h3>
+        <p className="muted">{section.description}</p>
+      </div>
+      <div className="action-card-list">
+        {section.actions.map((action) => (
+          <ActionCard key={action.id} action={action} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
+  const [draft, setDraft] = useState('');
+  const [notice, setNotice] = useState('');
+  const isGuidedForm = action.formMode !== 'none';
+
+  function submitGuidedForm(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setNotice(
+      isGuidedForm
+        ? 'Форма подготовлена как игровое намерение. Безопасное выполнение останется за C# протоколом жизненного цикла и записи.'
+        : 'Раздел подготовлен к открытию через C# DTO без ручного ввода технической команды.'
+    );
+  }
+
+  return (
+    <article className={action.enabled ? 'action-card' : 'action-card is-disabled'}>
+      <header>
+        <h4>{action.label}</h4>
+        <span className="availability-pill">{action.realmAvailability}</span>
+      </header>
+      <p>{action.description}</p>
+      <p className={action.mutationMode === 'local-turn' ? 'warning-text' : 'muted'}>{action.mutationWarning}</p>
+      {!action.enabled && <p className="warning-text">{action.disabledReason}</p>}
+      <form className="guided-form" onSubmit={submitGuidedForm}>
+        <label htmlFor={`action-form-${action.id}`}>{isGuidedForm ? action.formLabel : 'Открыть раздел'}</label>
+        {isGuidedForm ? (
+          <textarea
+            id={`action-form-${action.id}`}
+            value={draft}
+            onChange={(event) => setDraft(event.currentTarget.value)}
+            rows={3}
+            placeholder={action.formPrompt}
+            disabled={!action.enabled}
+          />
+        ) : (
+          <p id={`action-form-${action.id}`} className="muted">{action.formPrompt}</p>
+        )}
+        <button type="submit" disabled={!action.enabled || (isGuidedForm && !draft.trim())}>
+          {isGuidedForm ? 'Подготовить форму' : 'Открыть раздел'}
+        </button>
+        {notice && <p className="composer-notice">{notice}</p>}
+      </form>
+    </article>
   );
 }
 
