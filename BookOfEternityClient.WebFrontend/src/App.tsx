@@ -62,6 +62,58 @@ const fallbackTheme: RealmTheme = {
 
 const browserApiEndpoints = browserApiContractSummary.endpointDocs;
 
+const playerCopyReplacements: Array<[RegExp, string]> = [
+  [/\bMortal World\b/gi, 'Мир смертных'],
+  [/\bChaos Sea\b/gi, 'Море Хаоса'],
+  [/\bShining Abode\b/gi, 'Сияющая Обитель'],
+  [/\bGM[- ]?turn\b/g, 'ход ГМа'],
+  [/\bGM\b/g, 'ГМ'],
+  [/QTE action resolved\.?/gi, 'Быстрая сцена завершена.'],
+  [/\bQTE\b/g, 'быстрая сцена'],
+  [/Slash-команды/gi, 'служебные команды'],
+  [/\bslash commands?\b/gi, 'служебные команды'],
+  [/Нужен repair pending turn/gi, 'Нужна починка ожидающего хода'],
+  [/repair pending turn/gi, 'починка ожидающего хода'],
+  [/нужен repair/gi, 'нужна починка'],
+  [/\bpending[- ]turn\b/gi, 'ожидающий ход'],
+  [/\bturn[- ]writer\b/gi, 'запись хода'],
+  [/\bBrowser[- ]write\b/gi, 'запись из браузера'],
+  [/\bbrowser write\b/gi, 'запись из браузера'],
+  [/\blocal[- ]write\b/gi, 'локальная запись'],
+  [/\bprompt[- ]session\b/gi, 'игровая форма'],
+  [/\brollback\b/gi, 'откат'],
+  [/blocked by/gi, 'заблокировано из-за'],
+  [/\bblocked\b/gi, 'заблокировано'],
+  [/\bby\b/gi, 'из-за'],
+  [/\bSpectre\.Console\b/g, 'консольный интерфейс'],
+  [/state\/contract/gi, 'файлы состояния и контракта'],
+  [/snapshot artifact/gi, 'снимок состояния'],
+  [/game_session/gi, 'сохранение игры'],
+  [/write-flow/gi, 'запись хода'],
+  [/manual_saves/gi, 'ручные сохранения'],
+  [/autosaves/gi, 'автосохранения'],
+  [/--web/g, 'браузерный режим'],
+  [/\boffer\b/gi, 'предложение'],
+  [/\bsnapshot\b/gi, 'снимок'],
+  [/\bartifact\b/gi, 'файл состояния'],
+  [/Browser Client/gi, 'браузерный клиент'],
+  [/sound-notification/gi, 'звуковая подсказка'],
+  [/\brealm\b/gi, 'царство'],
+  [/repair\/validation/gi, 'починка и проверка'],
+  [/UI-блокировка/gi, 'блокировка интерфейса'],
+  [/\bvalidation\b/gi, 'проверка'],
+  [/\bUI\b/g, 'интерфейс'],
+  [/\baction\b/gi, 'действие'],
+  [/\bresolved\b/gi, 'завершена'],
+  [/\brepair\b/gi, 'починка'],
+  [/\blifecycle\b/gi, 'состояние хода'],
+  [/\bruntime\b/gi, 'игровой слой'],
+  [/\bendpoint(s)?\b/gi, 'разделы локального интерфейса'],
+  [/\bAPI\b/g, 'локальный интерфейс'],
+  [/\bDTO\b/g, 'данные интерфейса'],
+  [/\bNPC\b/g, 'персонажи мира']
+];
+
 export default function App() {
   const [shellState, setShellState] = useState<BrowserShellState>({ status: 'loading' });
   const [activeRoute, setActiveRoute] = useState<RouteId>('home');
@@ -130,7 +182,7 @@ export default function App() {
           <div className="hero-status" aria-label="Текущий слой мира">
             <span className="theme-icon" aria-hidden="true">{realmTheme.icon}</span>
             <strong>{realmTheme.label}</strong>
-            <span>{gameScreen?.turnState.title ?? menu?.session.validationLabel ?? 'Загрузка состояния'}</span>
+            <span>{gameScreen ? formatTurnStateTitle(gameScreen.turnState) : menu?.session.validationLabel ?? 'Загрузка состояния'}</span>
           </div>
         </div>
       </section>
@@ -179,9 +231,9 @@ export default function App() {
           <ShellPanel title="Ход и ремонт" eyebrow="безопасность хода">
             {gameScreen ? (
               <>
-                <p className="status-pill">{gameScreen.turnState.title}</p>
-                <p>{gameScreen.turnState.message}</p>
-                <p className="muted">Валидация: {gameScreen.turnState.validationLabel}</p>
+                <p className="status-pill">{formatTurnStateTitle(gameScreen.turnState)}</p>
+                <p>{formatTurnStateMessage(gameScreen.turnState)}</p>
+                <p className="muted">Валидация: {toPlayerFacingText(gameScreen.turnState.validationLabel, 'состояние проверяется')}</p>
               </>
             ) : readyState ? (
               <ApiFailure title="Игровой экран недоступен" result={readyState.game} advancedEnabled={advancedEnabled} />
@@ -244,14 +296,14 @@ function HomeRoute({ state }: { state: Extract<BrowserShellState, { status: 'rea
     <ShellPanel title="Главная" eyebrow="игровое меню">
       <div className="summary-card">
         <h2>{menu.session.soulName || 'Новая душа'}</h2>
-        <p>{menu.session.realmLabel} · {menu.session.turnLabel}</p>
-        <p>{menu.session.continueReason}</p>
+        <p>{toPlayerFacingText(menu.session.realmLabel, 'царство уточняется')} · {toPlayerFacingText(menu.session.turnLabel, 'ход уточняется')}</p>
+        <p>{toPlayerFacingText(menu.session.continueReason, 'Продолжение будет доступно, когда локальная книга будет готова.')}</p>
       </div>
       <div className="action-grid">
         {menu.actions.map((action) => (
           <button key={action.id} type="button" disabled={!action.enabled} className="game-action">
-            <strong>{action.label}</strong>
-            <span>{action.enabled ? action.description : action.disabledReason}</span>
+            <strong>{toPlayerFacingText(action.label, 'Игровое действие')}</strong>
+            <span>{action.enabled ? toPlayerFacingText(action.description, 'Действие доступно.') : toPlayerFacingText(action.disabledReason, 'Действие сейчас недоступно.')}</span>
           </button>
         ))}
       </div>
@@ -287,15 +339,15 @@ function GameRoute({
 
       <div className="split-grid">
         <ShellPanel title="Состояние хода" eyebrow={formatTurnStateLabel(game.turnState.state)} nested variant="turn">
-          <p className="status-pill">{game.turnState.title}</p>
-          <p>{game.turnState.message}</p>
+          <p className="status-pill">{formatTurnStateTitle(game.turnState)}</p>
+          <p>{formatTurnStateMessage(game.turnState)}</p>
           <p className="muted">Быстрая сцена: {formatQteStateLabel(game.qte)}</p>
         </ShellPanel>
         <ShellPanel title="Варианты" eyebrow="для игрока" nested variant="choices">
           {game.narrative.dialogueOptions.length > 0 ? (
             <ul className="choice-list">
               {game.narrative.dialogueOptions.map((option) => (
-                <li key={option.id}><strong>{option.text}</strong><span>{option.category}</span></li>
+                <li key={option.id}><strong>{option.text}</strong><span>{formatDialogueCategory(option.category)}</span></li>
               ))}
             </ul>
           ) : (
@@ -312,11 +364,11 @@ function GameRoute({
           rows={4}
           value={composerText}
           onChange={(event) => setComposerText(event.currentTarget.value)}
-          placeholder={game.actionComposer.placeholder || 'Опишите действие персонажа обычным текстом…'}
+          placeholder={getComposerPlaceholder(game.actionComposer)}
           disabled={!game.actionComposer.canSubmit}
         />
-        <p className="muted">{game.actionComposer.guidance}</p>
-        {!game.actionComposer.canSubmit && <p className="warning-text">{game.actionComposer.disabledReason}</p>}
+        <p className="muted">{getComposerGuidance(game.actionComposer)}</p>
+        {!game.actionComposer.canSubmit && <p className="warning-text">{getComposerDisabledReason(game.actionComposer)}</p>}
         <button type="submit" disabled={!composerText.trim()}>Подготовить действие</button>
         {composerNotice && <p className="composer-notice">{composerNotice}</p>}
       </form>
@@ -336,7 +388,7 @@ function SoulRoute({ state }: { state: Extract<BrowserShellState, { status: 'rea
       <div className="split-grid">
         <div className="summary-card">
           <h2>{soul.name || 'Безымянная душа'}</h2>
-          <p>{soul.realm} · инкарнация {soul.incarnation}</p>
+          <p>{formatRealmName(soul.realm)} · инкарнация {soul.incarnation}</p>
           <p>Чернильные перья: {soul.inkFeathers}</p>
           <p>Просветление: {soul.enlightenmentTier || 'нет данных'}</p>
           <p>Хранитель: {soul.activeGuardianName || 'не назначен'}</p>
@@ -399,8 +451,8 @@ function ActionSection({ section }: { section: BrowserPlayerCommandSectionDto })
   return (
     <section className="action-section" aria-labelledby={`action-section-${section.id}`}>
       <div>
-        <h3 id={`action-section-${section.id}`}>{section.label}</h3>
-        <p className="muted">{section.description}</p>
+        <h3 id={`action-section-${section.id}`}>{toPlayerFacingText(section.label, 'Игровой раздел')}</h3>
+        <p className="muted">{toPlayerFacingText(section.description, 'Действия этого раздела доступны ниже.')}</p>
       </div>
       <div className="action-card-list">
         {section.actions.map((action) => (
@@ -429,7 +481,7 @@ function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
       setPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
       setNotice(toCommandNotice(result.data));
     } else {
-      setNotice(result.playerMessage);
+      setNotice(toPlayerFacingText(result.playerMessage, 'Игровое действие сейчас недоступно.'));
     }
     setIsSubmitting(false);
   }
@@ -453,7 +505,7 @@ function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
       setPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
       setNotice(toCommandNotice(result.data));
     } else {
-      setNotice(result.playerMessage);
+      setNotice(toPlayerFacingText(result.playerMessage, 'Игровое действие сейчас недоступно.'));
     }
     setIsSubmitting(false);
   }
@@ -461,15 +513,15 @@ function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
   return (
     <article className={action.enabled ? 'action-card' : 'action-card is-disabled'}>
       <header>
-        <h4>{action.label}</h4>
-        <span className="availability-pill">{action.realmAvailability}</span>
+        <h4>{toPlayerFacingText(action.label, 'Игровое действие')}</h4>
+        <span className="availability-pill">{toPlayerFacingText(action.realmAvailability, 'Доступность уточняется.')}</span>
       </header>
-      <p>{action.description}</p>
-      <p className={action.mutationMode === 'local-turn' ? 'warning-text' : 'muted'}>{action.mutationWarning}</p>
-      {!action.enabled && <p className="warning-text">{action.disabledReason}</p>}
+      <p>{toPlayerFacingText(action.description, 'Описание действия появится здесь.')}</p>
+      <p className={action.mutationMode === 'local-turn' ? 'warning-text' : 'muted'}>{toPlayerFacingText(action.mutationWarning, 'Состояние игры не изменится без подтверждения.')}</p>
+      {!action.enabled && <p className="warning-text">{toPlayerFacingText(action.disabledReason, 'Действие сейчас недоступно.')}</p>}
       <form className="guided-form" onSubmit={submitGuidedForm}>
-        <label htmlFor={`action-form-${action.id}`}>{isGuidedForm ? action.formLabel : 'Открыть раздел'}</label>
-        <p id={`action-form-${action.id}`} className="muted">{action.formPrompt}</p>
+        <label htmlFor={`action-form-${action.id}`}>{isGuidedForm ? toPlayerFacingText(action.formLabel, 'Открыть форму') : 'Открыть раздел'}</label>
+        <p id={`action-form-${action.id}`} className="muted">{toPlayerFacingText(action.formPrompt, 'Откройте игровой раздел без изменения состояния.')}</p>
         <button type="submit" disabled={!action.enabled || isSubmitting}>
           {isSubmitting ? 'Выполняем…' : isGuidedForm ? 'Подготовить форму' : 'Открыть раздел'}
         </button>
@@ -502,7 +554,7 @@ function ActionCommandResult({
   isSubmitting: boolean;
 }) {
   if (!isSuccess(result)) {
-    return <p className="warning-text">{result.playerMessage}</p>;
+    return <p className="warning-text">{toPlayerFacingText(result.playerMessage, 'Игровое действие сейчас недоступно.')}</p>;
   }
 
   const command = result.data;
@@ -511,7 +563,7 @@ function ActionCommandResult({
       <p className="status-pill">{commandStateLabel(command.state)}</p>
       {command.notifications.map((notification, index) => (
         <p key={`${notification.title}-${index}`} className="composer-notice">
-          <strong>{notification.title}</strong> — {notification.message}
+          <strong>{toPlayerFacingText(notification.title, 'Уведомление')}</strong> — {toPlayerFacingText(notification.message, 'Игровое действие изменило состояние.')}
         </p>
       ))}
       {command.blocks.map((block, index) => (
@@ -531,28 +583,28 @@ function ActionCommandResult({
 function renderCommandBlock(block: UiBlock): ReactNode {
   switch (block.kind) {
     case 'text':
-      return <p>{block.text}</p>;
+      return <p>{toPlayerFacingText(block.text, 'Текст игрового действия недоступен.')}</p>;
     case 'panel':
       return (
         <div className="summary-card">
-          <h5>{block.title}</h5>
+          <h5>{toPlayerFacingText(block.title, 'Игровая панель')}</h5>
           {block.blocks.map((child, index) => <div key={`${child.kind}-${index}`}>{renderCommandBlock(child)}</div>)}
         </div>
       );
     case 'table':
-      return <p>{block.title}: {block.rows.length} строк.</p>;
+      return <p>{toPlayerFacingText(block.title, 'Таблица')}: {block.rows.length} строк.</p>;
     case 'list':
-      return <ul>{block.items.map((item) => <li key={item}>{item}</li>)}</ul>;
+      return <ul>{block.items.map((item) => <li key={item}>{toPlayerFacingText(item, 'пункт списка')}</li>)}</ul>;
     case 'keyValueGrid':
-      return <dl className="kv-list">{block.items.map((item) => <div key={item.key}><dt>{item.key}</dt><dd>{item.value}</dd></div>)}</dl>;
+      return <dl className="kv-list">{block.items.map((item) => <div key={item.key}><dt>{toPlayerFacingText(item.key, 'параметр')}</dt><dd>{toPlayerFacingText(item.value, 'значение')}</dd></div>)}</dl>;
     case 'message':
-      return <p className="composer-notice"><strong>{block.title}</strong> — {block.message}</p>;
+      return <p className="composer-notice"><strong>{toPlayerFacingText(block.title, 'Сообщение')}</strong> — {toPlayerFacingText(block.message, 'Игровое действие изменило состояние.')}</p>;
     case 'image':
-      return <p>{block.title}: изображение готово к просмотру.</p>;
+      return <p>{toPlayerFacingText(block.title, 'Изображение')}: изображение готово к просмотру.</p>;
     case 'map':
-      return <p>{block.title}: карта содержит {block.map.nodes.length} точек.</p>;
+      return <p>{toPlayerFacingText(block.title, 'Карта')}: карта содержит {block.map.nodes.length} точек.</p>;
     case 'rawJson':
-      return <p className="muted">{block.title}: подробные данные доступны в расширенном режиме.</p>;
+      return <p className="muted">{toPlayerFacingText(block.title, 'Подробные данные')}: подробные данные доступны в расширенном режиме.</p>;
   }
 }
 
@@ -572,35 +624,48 @@ function renderPromptControl(
             checked={typeof value === 'boolean' ? value : prompt.defaultValue}
             onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.checked)}
           />
-          <span>{prompt.prompt}</span>
+          <span>{toPlayerFacingText(prompt.prompt, 'Подтвердите действие')}</span>
         </label>
       );
-    case 'selection':
+    case 'selection': {
+      const selectedValue = typeof value === 'string' ? value : '';
+      const selectedKnownOption = prompt.options.some((option) => option.value === selectedValue);
+      const customValue = selectedValue && !selectedKnownOption ? selectedValue : '';
+
       return (
         <label key={prompt.id} htmlFor={controlId} className="prompt-control">
-          <span>{prompt.prompt}</span>
+          <span>{toPlayerFacingText(prompt.prompt, 'Подтвердите действие')}</span>
           <select
             id={controlId}
-            value={typeof value === 'string' ? value : ''}
-            required={prompt.required}
+            value={selectedKnownOption ? selectedValue : ''}
+            required={prompt.required && !customValue}
             onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.value)}
           >
             <option value="">Выберите вариант…</option>
             {prompt.options.map((option) => (
-              <option key={option.value} value={option.value} disabled={option.disabled}>{option.label}</option>
+              <option key={option.value} value={option.value} disabled={option.disabled}>{toPlayerFacingText(option.label, 'вариант')}</option>
             ))}
           </select>
+          {prompt.allowCustom && (
+            <input
+              type="text"
+              value={customValue}
+              placeholder="Или впишите свой вариант…"
+              onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.value)}
+            />
+          )}
         </label>
       );
+    }
     case 'longTextInput':
       return (
         <label key={prompt.id} htmlFor={controlId} className="prompt-control">
-          <span>{prompt.prompt}</span>
+          <span>{toPlayerFacingText(prompt.prompt, 'Подтвердите действие')}</span>
           <textarea
             id={controlId}
             rows={prompt.minLines ?? 3}
             value={typeof value === 'string' ? value : prompt.defaultValue}
-            placeholder={prompt.placeholder}
+            placeholder={toPlayerFacingText(prompt.placeholder, '')}
             required={prompt.required}
             onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.value)}
           />
@@ -609,12 +674,12 @@ function renderPromptControl(
     case 'textInput':
       return (
         <label key={prompt.id} htmlFor={controlId} className="prompt-control">
-          <span>{prompt.prompt}</span>
+          <span>{toPlayerFacingText(prompt.prompt, 'Подтвердите действие')}</span>
           <input
             id={controlId}
             type="text"
             value={typeof value === 'string' ? value : prompt.defaultValue}
-            placeholder={prompt.placeholder}
+            placeholder={toPlayerFacingText(prompt.placeholder, '')}
             required={prompt.required}
             onChange={(event) => onPromptAnswerChange(prompt.id, event.currentTarget.value)}
           />
@@ -654,6 +719,84 @@ function toCommandNotice(result: ExplorerCommandResult): string {
   }
 }
 
+
+function toPlayerFacingText(value: string | null | undefined, fallback: string): string {
+  const source = value?.trim();
+  if (!source) {
+    return fallback;
+  }
+
+  const normalized = playerCopyReplacements.reduce(
+    (text, [pattern, replacement]) => text.replace(pattern, replacement),
+    source
+  );
+
+  return normalized.trim() || fallback;
+}
+
+function formatRealmName(realm: string): string {
+  switch (realm.trim().toLowerCase()) {
+    case 'mortal world':
+    case 'mortal-world':
+      return 'Мир смертных';
+    case 'chaos sea':
+    case 'chaos-sea':
+      return 'Море Хаоса';
+    case 'shining abode':
+    case 'shining-abode':
+      return 'Сияющая Обитель';
+    default:
+      return toPlayerFacingText(realm, 'царство уточняется');
+  }
+}
+
+function formatDialogueCategory(category: string): string {
+  switch (category.trim().toLowerCase()) {
+    case 'exploration':
+      return 'исследование';
+    case 'dialogue':
+    case 'social':
+      return 'диалог';
+    case 'combat':
+      return 'бой';
+    case 'lore':
+      return 'знание';
+    case 'world':
+      return 'мир';
+    case 'afterlife':
+      return 'посмертие';
+    default:
+      return toPlayerFacingText(category, 'вариант выбора');
+  }
+}
+
+function formatTurnStateTitle(turnState: BrowserGameScreenDto['turnState']): string {
+  return toPlayerFacingText(turnState.title, formatTurnStateLabel(turnState.state));
+}
+
+function formatTurnStateMessage(turnState: BrowserGameScreenDto['turnState']): string {
+  return toPlayerFacingText(
+    turnState.message,
+    turnState.canStartBrowserWrite
+      ? 'Опишите следующий ход персонажа в художественной форме.'
+      : 'Запись хода сейчас недоступна; дождитесь безопасного состояния игры.'
+  );
+}
+
+function getComposerPlaceholder(actionComposer: BrowserGameScreenDto['actionComposer']): string {
+  return toPlayerFacingText(actionComposer.placeholder, 'Опишите действие персонажа обычным текстом…');
+}
+
+function getComposerGuidance(actionComposer: BrowserGameScreenDto['actionComposer']): string {
+  return toPlayerFacingText(
+    actionComposer.guidance,
+    'Пишите действие персонажа обычным текстом; служебные команды доступны только в расширенном режиме.'
+  );
+}
+
+function getComposerDisabledReason(actionComposer: BrowserGameScreenDto['actionComposer']): string {
+  return toPlayerFacingText(actionComposer.disabledReason, 'Ввод временно недоступен по состоянию хода.');
+}
 
 function formatSessionStatus(status: string): string {
   switch (status.trim().toLowerCase()) {
@@ -700,7 +843,7 @@ function formatTurnStateLabel(state: string): string {
 
 function formatQteStateLabel(qte: BrowserGameScreenDto['qte']): string {
   if (qte.notification) {
-    return qte.notification;
+    return toPlayerFacingText(qte.notification, 'Быстрая сцена изменила состояние.');
   }
 
   if (qte.error) {
@@ -774,7 +917,7 @@ function SettingsRoute({
       <dl className="kv-list">
         <div><dt>Размер шрифта</dt><dd>{options.consoleFontSize}</dd></div>
       </dl>
-      <p>{options.guidance}</p>
+      <p>{toPlayerFacingText(options.guidance, 'Настройки локального клиента доступны здесь.')}</p>
       <p className="muted">Аудио управляется постоянной панелью в сводке состояния, чтобы музыка продолжала играть при переходах между разделами.</p>
     </ShellPanel>
   );
@@ -827,11 +970,10 @@ function AudioSettingsPanel({
             }
             setNotice('Настройки звука сохранены в общей конфигурации клиента.');
           } else {
-            setNotice(updated.playerMessage);
+            setNotice(toPlayerFacingText(updated.playerMessage, 'Не удалось сохранить настройки звука.'));
           }
-        } catch (error: unknown) {
-          const message = error instanceof Error ? error.message : 'сетевой сбой';
-          setNotice(`Не удалось сохранить настройки звука. Подробность: ${message}`);
+        } catch {
+          setNotice('Не удалось сохранить настройки звука. Попробуйте ещё раз или проверьте локальный клиент.');
         }
       });
     return audioSettingsUpdateQueueRef.current;
@@ -845,7 +987,7 @@ function AudioSettingsPanel({
 
     const track = playlist?.tracks[0];
     if (!track) {
-      setNotice(audio.missingAssetsMessage || 'Аудиофайлы для выбранного плейлиста не найдены. Клиент продолжит игру без музыки.');
+      setNotice(toPlayerFacingText(audio.missingAssetsMessage, 'Аудиофайлы для выбранного плейлиста не найдены. Клиент продолжит игру без музыки.'));
       return;
     }
 
@@ -859,10 +1001,9 @@ function AudioSettingsPanel({
 
     try {
       await element.play();
-      setNotice(`Музыка включена: ${playlist?.label ?? track.label}. Управление громкостью сохраняется в общих настройках.`);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'браузер заблокировал воспроизведение';
-      setNotice(`Браузер не дал запустить музыку автоматически. Нажмите кнопку ещё раз или проверьте разрешения вкладки. Подробность: ${message}`);
+      setNotice(`Музыка включена: ${toPlayerFacingText(playlist?.label ?? track.label, 'выбранный плейлист')}. Управление громкостью сохраняется в общих настройках.`);
+    } catch {
+      setNotice('Браузер не дал запустить музыку автоматически. Нажмите кнопку ещё раз или проверьте разрешения вкладки.');
     }
   }
 
@@ -882,10 +1023,9 @@ function AudioSettingsPanel({
     cueAudio.volume = volumeToUnit(audio.soundVolume);
     try {
       await cueAudio.play();
-      setNotice(`Звуковая подсказка воспроизведена: ${asset.label}.`);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'браузер заблокировал воспроизведение';
-      setNotice(`Браузер не дал запустить звуковую подсказку. Подробность: ${message}`);
+      setNotice(`Звуковая подсказка воспроизведена: ${toPlayerFacingText(asset.label, 'подсказка')}.`);
+    } catch {
+      setNotice('Браузер не дал запустить звуковую подсказку. Нажмите кнопку ещё раз или проверьте разрешения вкладки.');
     }
   }
 
@@ -894,14 +1034,14 @@ function AudioSettingsPanel({
       <div>
         <p className="panel-eyebrow">музыка и звук</p>
         <h2 id="browser-audio-title">Аудио браузерного клиента</h2>
-        <p>{audio.autoplayGuidance}</p>
-        {audio.missingAssetsMessage && <p className="warning-text">{audio.missingAssetsMessage}</p>}
+        <p>{toPlayerFacingText(audio.autoplayGuidance, 'Музыка запускается только после вашего нажатия.')}</p>
+        {audio.missingAssetsMessage && <p className="warning-text">{toPlayerFacingText(audio.missingAssetsMessage, 'Локальные аудиофайлы не найдены.')}</p>}
       </div>
 
       <div className="split-grid">
         <div className="summary-card">
           <h3>Музыка</h3>
-          <p>{playlist ? `${playlist.label}: ${playlist.usage}` : 'Плейлисты пока недоступны.'}</p>
+          <p>{playlist ? `${toPlayerFacingText(playlist.label, 'Плейлист')}: ${toPlayerFacingText(playlist.usage, 'музыка для текущего раздела')}` : 'Плейлисты пока недоступны.'}</p>
           <button type="button" onClick={unlockBrowserMusic} disabled={!audio.musicEnabled || !hasMusic}>
             Включить музыку в браузере
           </button>
@@ -909,7 +1049,7 @@ function AudioSettingsPanel({
         </div>
         <div className="summary-card">
           <h3>Звуковые подсказки</h3>
-          <p>{notificationCue?.usage ?? 'Быстрые сцены и уведомления будут звучать, если локальные файлы найдены.'}</p>
+          <p>{notificationCue?.usage ? toPlayerFacingText(notificationCue.usage, 'Быстрые сцены и уведомления будут звучать, если локальные файлы найдены.') : 'Быстрые сцены и уведомления будут звучать, если локальные файлы найдены.'}</p>
           <button type="button" onClick={() => void previewCue(notificationCue?.asset)} disabled={!audio.soundEnabled || !notificationCue?.asset}>
             Проверить подсказку
           </button>
@@ -958,12 +1098,12 @@ function AudioSettingsPanel({
       <div className="audio-catalog" aria-label="Доступные плейлисты и подсказки">
         {audio.playlists.map((item) => (
           <span key={item.id} className={item.available ? 'status-pill' : 'status-pill is-muted'}>
-            {item.label}: {item.available ? `${item.tracks.length} трек(ов)` : 'файлы не найдены'}
+            {toPlayerFacingText(item.label, 'Плейлист')}: {item.available ? `${item.tracks.length} трек(ов)` : 'файлы не найдены'}
           </span>
         ))}
         {audio.cues.map((cue) => (
           <span key={cue.id} className={cue.available ? 'status-pill' : 'status-pill is-muted'}>
-            {cue.label}: {cue.available ? 'готово' : 'нет файла'}
+            {toPlayerFacingText(cue.label, 'Звуковая подсказка')}: {cue.available ? 'готово' : 'нет файла'}
           </span>
         ))}
       </div>
@@ -1048,7 +1188,7 @@ function ErrorNotice({ title, failure, advancedEnabled }: { title: string; failu
   return (
     <section className="error-notice" role="alert">
       <h2>{title}</h2>
-      <p>{failure.playerMessage}</p>
+      <p>{toPlayerFacingText(failure.playerMessage, 'Игровое состояние сейчас недоступно.')}</p>
       {failure.technicalDetails && advancedEnabled && (
         <details open>
           <summary>Подробности</summary>
