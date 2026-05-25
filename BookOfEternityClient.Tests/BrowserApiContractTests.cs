@@ -210,7 +210,6 @@ public sealed class BrowserApiContractTests
             Narrative: new BrowserGameScreenNarrativeDto(
                 Text: "Перед героем открывается тихая дорога.",
                 DialogueOptions: [new BrowserGameScreenDialogueOptionDto("choice-1", "Осмотреть врата", "exploration")],
-                GmThoughts: string.Empty,
                 CombatLog: "Боевых событий нет.",
                 ImagePrompt: "mystic road at dusk"),
             Afterlife: new BrowserGameScreenAfterlifeDto(

@@ -226,7 +226,6 @@ export interface BrowserGameScreenWorldDto {
 export interface BrowserGameScreenNarrativeDto {
   text: string;
   dialogueOptions: BrowserGameScreenDialogueOptionDto[];
-  gmThoughts: string;
   combatLog: string;
   imagePrompt: string;
 }
