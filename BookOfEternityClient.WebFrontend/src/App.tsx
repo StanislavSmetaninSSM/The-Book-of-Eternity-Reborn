@@ -106,6 +106,7 @@ const playerCopyReplacements: Array<[RegExp, string]> = [
   [/soul_state\.json/gi, 'файл души'],
   [/game_state/gi, 'папка состояния игры'],
   [/локальный запись хода/gi, 'локальную запись хода'],
+  [/тот же локальную/gi, 'ту же локальную'],
   [/\bUI\b/g, 'интерфейс'],
   [/\baction\b/gi, 'действие'],
   [/\bresolved\b/gi, 'завершена'],
@@ -237,7 +238,7 @@ export default function App() {
               <>
                 <p className="status-pill">{formatTurnStateTitle(gameScreen.turnState)}</p>
                 <p>{formatTurnStateMessage(gameScreen.turnState)}</p>
-                <p className="muted">Валидация: {toPlayerFacingText(gameScreen.turnState.validationLabel, 'состояние проверяется')}</p>
+                <p className="muted">Проверка: {toPlayerFacingText(gameScreen.turnState.validationLabel, 'состояние проверяется')}</p>
               </>
             ) : readyState ? (
               <ApiFailure title="Игровой экран недоступен" result={readyState.game} advancedEnabled={advancedEnabled} />
