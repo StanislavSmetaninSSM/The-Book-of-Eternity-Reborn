@@ -60,6 +60,14 @@ Future Browser Client tasks (#683-#689) should extend these route regions rather
 
 Verify shell changes with `npm run typecheck --prefix BookOfEternityClient.WebFrontend`, `npm run build --prefix BookOfEternityClient.WebFrontend`, and focused browser .NET tests such as `BrowserFrontendWorkspaceTests` / `LocalWebUiHostTests`.
 
+## Contextual action menu (#683)
+
+Issue #683 adds a player-facing contextual action menu to the `Мир` route. The menu is built from the C# `ExplorerCommandCatalog` and `/api/game-screen` action-menu DTO, then rendered by React as Russian game sections: `Персонаж / Душа`, `Мир`, `Квесты`, `Карта`, `Фракции`, `Хранители`, `Посмертие`, `Бой`, `Архив`, and `Настройки`.
+
+Default UI does not show raw slash command IDs. Advanced/debug commands remain grouped under `Расширенный режим`. Mutating actions show guided forms, realm availability, disabled reasons, and mutation warnings; form opening/submission uses the existing C# browser command and prompt-session flow, so safe execution still belongs to the C# local-write/lifecycle services.
+
+## Typed Browser API Contract (#703)
+
 Issue #703 adds the typed API contract layer under:
 
 ```text

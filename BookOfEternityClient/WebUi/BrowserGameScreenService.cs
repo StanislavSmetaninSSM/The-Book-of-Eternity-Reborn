@@ -60,6 +60,7 @@ public sealed class BrowserGameScreenService
             TurnState: BrowserGameScreenTurnStateDto.From(lifecycle, qte),
             ActionComposer: BrowserGameScreenActionComposerDto.From(lifecycle, qte),
             Qte: qte,
+            ActionMenu: BrowserPlayerCommandMenuBuilder.Build(state, lifecycle, qte),
             Flags: new BrowserGameScreenFlagsDto(
                 IsInChaosSea: state.IsInChaosSea,
                 IsInAnyShiningAbodeState: state.IsInAnyShiningAbodeState,
@@ -190,6 +191,7 @@ public sealed record BrowserGameScreenDto(
     BrowserGameScreenTurnStateDto TurnState,
     BrowserGameScreenActionComposerDto ActionComposer,
     QteWebStateDto Qte,
+    BrowserPlayerCommandMenuDto ActionMenu,
     BrowserGameScreenFlagsDto Flags);
 
 public sealed record BrowserGameScreenThemeDto(string Key, string Label, string Icon, string Accent)

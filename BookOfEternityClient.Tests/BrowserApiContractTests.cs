@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.Models.GameState;
 using BookOfEternityClient.WebUi;
 using Xunit;
 
@@ -97,6 +98,168 @@ public sealed class BrowserApiContractTests
         Assert.DoesNotContain("/api/main-menu", app, StringComparison.Ordinal);
         Assert.DoesNotContain("/api/game-screen", app, StringComparison.Ordinal);
         Assert.DoesNotContain("fetch(", app, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BrowserGameScreenContract_IncludesPlayerCommandActionMenu()
+    {
+        var screen = BuildGameScreen();
+        var json = JsonSerializer.Serialize(screen, WebJsonOptions);
+
+        Assert.NotNull(screen.ActionMenu);
+        Assert.Contains("\"actionMenu\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"sections\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"realmAvailability\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"mutationWarning\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"formPrompt\"", json, StringComparison.Ordinal);
+        Assert.True(
+            json.IndexOf("\"actionMenu\"", StringComparison.Ordinal) < json.IndexOf("\"flags\"", StringComparison.Ordinal),
+            "BrowserGameScreenDto must serialize actionMenu before flags so frontend fixtures evolve predictably.");
+
+        Assert.Equal(1, screen.ActionMenu.SchemaVersion);
+        Assert.Contains(screen.ActionMenu.Sections, section =>
+            section.Id == "soul" &&
+            section.Label == "Персонаж / Душа" &&
+            section.PlayerDefault);
+        Assert.Contains(screen.ActionMenu.Sections, section =>
+            section.Id == "advanced" &&
+            section.Label == "Расширенный режим" &&
+            !section.PlayerDefault);
+
+        var soulAction = FindAction(screen.ActionMenu, "soul");
+        Assert.Equal("soul", soulAction.SectionId);
+        Assert.Equal("Душа", soulAction.Label);
+        Assert.True(soulAction.Enabled);
+        Assert.Equal("Открыть раздел", soulAction.FormLabel);
+        Assert.Equal("/soul", soulAction.AdvancedCommand);
+    }
+
+    [Fact]
+    public void EveryBrowserExecutableCommand_HasPlayerFacingActionMetadata()
+    {
+        var menu = BrowserPlayerCommandMenuBuilder.Build(
+            BuildRepresentativeState(isChaosSea: false, isShiningAbode: false, isAfterlife: false),
+            BuildLifecycleDashboard(),
+            BuildQteState());
+
+        var requiredSectionIds = new[]
+        {
+            "soul", "world", "quests", "map", "factions", "guardians", "afterlife", "combat", "archive", "settings", "advanced"
+        };
+        foreach (var sectionId in requiredSectionIds)
+            Assert.Contains(menu.Sections, section => section.Id == sectionId);
+
+        var actions = menu.Sections.SelectMany(static section => section.Actions).ToArray();
+        var actionIds = actions.Select(static action => action.Id).ToArray();
+        var executableDescriptors = ExplorerCommandCatalog.Descriptors
+            .Where(static descriptor => ExplorerCommandMigrationRegistry.IsBrowserExecutable(descriptor.BrowserStatus))
+            .ToArray();
+
+        Assert.Equal(executableDescriptors.Length, actions.Length);
+        Assert.Equal(actionIds.Length, actionIds.Distinct(StringComparer.OrdinalIgnoreCase).Count());
+        foreach (var descriptor in executableDescriptors)
+        {
+            var action = Assert.Single(actions, action => string.Equals(action.Id, descriptor.Id, StringComparison.OrdinalIgnoreCase));
+            Assert.Equal(descriptor.MutationMode == ExplorerCommandMutationMode.LocalTurn ? "guided-form" : "none", action.FormMode);
+        }
+
+        Assert.All(actions, action =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(action.Label));
+            Assert.True(ContainsCyrillic(action.Label), $"Action {action.Id} label must be Russian-facing: {action.Label}");
+            Assert.False(string.IsNullOrWhiteSpace(action.Description));
+            Assert.False(string.IsNullOrWhiteSpace(action.RealmAvailability));
+            Assert.False(string.IsNullOrWhiteSpace(action.MutationWarning));
+            Assert.False(string.IsNullOrWhiteSpace(action.FormLabel));
+            Assert.False(string.IsNullOrWhiteSpace(action.FormPrompt));
+            Assert.False(string.IsNullOrWhiteSpace(action.AdvancedCommand));
+            Assert.StartsWith("/", action.AdvancedCommand, StringComparison.Ordinal);
+            Assert.DoesNotContain('/', action.Label);
+            Assert.DoesNotContain("endpoint", action.Label, StringComparison.OrdinalIgnoreCase);
+            if (!action.Enabled)
+                Assert.False(string.IsNullOrWhiteSpace(action.DisabledReason));
+        });
+    }
+
+    [Fact]
+    public void PlayerDefaultActionMenuCopy_AvoidsTechnicalEnglishJargon()
+    {
+        var menus = new[]
+        {
+            BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: false, isShiningAbode: false, isAfterlife: false),
+                BuildLifecycleDashboard(),
+                BuildQteState()),
+            BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: true, isShiningAbode: false, isAfterlife: true),
+                BuildLifecycleDashboard(),
+                BuildQteState()),
+            BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: false, isShiningAbode: true, isAfterlife: true),
+                BuildLifecycleDashboard(),
+                BuildQteState()),
+            BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: false, isShiningAbode: false, isAfterlife: false),
+                BuildLifecycleDashboard(),
+                BuildQteState("Active"))
+        };
+        var forbiddenTerms = new[]
+        {
+            "C#", "DTO", "React", "TypeScript", "endpoint", "runtime", "slash",
+            "guided", "pending-turn", "browser write", "local-write", "lifecycle", "QTE", "NPC"
+        };
+
+        foreach (var (value, source) in menus.SelectMany(CollectPlayerDefaultMenuText))
+        {
+            foreach (var forbiddenTerm in forbiddenTerms)
+            {
+                Assert.False(
+                    value.Contains(forbiddenTerm, StringComparison.OrdinalIgnoreCase),
+                    $"Player-default action menu text must not expose `{forbiddenTerm}` in {source}: {value}");
+            }
+        }
+    }
+
+    [Fact]
+    public void PlayerCommandActionMenu_SeparatesAdvancedAndContextualRealmActions()
+    {
+        var mortalMenu = BrowserPlayerCommandMenuBuilder.Build(
+            BuildRepresentativeState(isChaosSea: false, isShiningAbode: false, isAfterlife: false),
+            BuildLifecycleDashboard(),
+            BuildQteState());
+        var chaosMenu = BrowserPlayerCommandMenuBuilder.Build(
+            BuildRepresentativeState(isChaosSea: true, isShiningAbode: false, isAfterlife: true),
+            BuildLifecycleDashboard(),
+            BuildQteState());
+        var shiningMenu = BrowserPlayerCommandMenuBuilder.Build(
+            BuildRepresentativeState(isChaosSea: false, isShiningAbode: true, isAfterlife: true),
+            BuildLifecycleDashboard(),
+            BuildQteState());
+        var qteMenu = BrowserPlayerCommandMenuBuilder.Build(
+            BuildRepresentativeState(isChaosSea: false, isShiningAbode: false, isAfterlife: false),
+            BuildLifecycleDashboard(),
+            BuildQteState("Active"));
+
+        Assert.Contains(mortalMenu.Sections, section => section.Id == "world" && section.Label == "Мир" && section.PlayerDefault);
+        Assert.Contains(mortalMenu.Sections, section => section.Id == "advanced" && section.Label == "Расширенный режим" && !section.PlayerDefault);
+
+        foreach (var advancedId in new[] { "debug", "gm", "validate", "mods", "system_guardians", "math", "help" })
+        {
+            var action = FindAction(mortalMenu, advancedId);
+            Assert.Equal("advanced", action.SectionId);
+            Assert.False(action.PlayerDefault);
+        }
+
+        Assert.True(FindAction(mortalMenu, "inventory").Enabled);
+        Assert.False(FindAction(chaosMenu, "inventory").Enabled);
+        Assert.False(FindAction(mortalMenu, "chaos_sea").Enabled);
+        Assert.True(FindAction(chaosMenu, "chaos_sea").Enabled);
+        Assert.False(FindAction(mortalMenu, "source_of_light").Enabled);
+        Assert.True(FindAction(shiningMenu, "source_of_light").Enabled);
+        Assert.True(FindAction(chaosMenu, "afterlife_profiles").Enabled);
+        Assert.Contains("активный духовный конфликт", FindAction(shiningMenu, "spiritual_action").DisabledReason, StringComparison.OrdinalIgnoreCase);
+        Assert.False(FindAction(qteMenu, "craft").Enabled);
+        Assert.Contains("быстрая сцена", FindAction(qteMenu, "craft").DisabledReason, StringComparison.OrdinalIgnoreCase);
     }
 
     public static IEnumerable<object[]> ContractFixtures()
@@ -234,6 +397,10 @@ public sealed class BrowserApiContractTests
                 Guidance: "Slash-команды открываются только через расширенный режим.",
                 DisabledReason: string.Empty),
             Qte: BuildQteState(),
+            ActionMenu: BrowserPlayerCommandMenuBuilder.Build(
+                BuildRepresentativeState(isChaosSea: false, isShiningAbode: false, isAfterlife: false),
+                BuildLifecycleDashboard(),
+                BuildQteState()),
             Flags: new BrowserGameScreenFlagsDto(
                 IsInChaosSea: false,
                 IsInAnyShiningAbodeState: false,
@@ -333,10 +500,10 @@ public sealed class BrowserApiContractTests
             }
         };
 
-    private static QteWebStateDto BuildQteState() =>
+    private static QteWebStateDto BuildQteState(string state = "NoScene") =>
         new()
         {
-            State = "NoScene",
+            State = state,
             Offer = null,
             ActiveScene = null,
             Resolution = null,
@@ -347,6 +514,61 @@ public sealed class BrowserApiContractTests
             Notification = null,
             Error = null
         };
+
+    private static BrowserPlayerCommandActionDto FindAction(BrowserPlayerCommandMenuDto menu, string id) =>
+        menu.Sections
+            .SelectMany(static section => section.Actions)
+            .Single(action => string.Equals(action.Id, id, StringComparison.OrdinalIgnoreCase));
+
+    private static IEnumerable<(string Value, string Source)> CollectPlayerDefaultMenuText(BrowserPlayerCommandMenuDto menu)
+    {
+        foreach (var section in menu.Sections.Where(static section => section.PlayerDefault))
+        {
+            yield return (section.Label, $"section {section.Id} label");
+            yield return (section.Description, $"section {section.Id} description");
+
+            foreach (var action in section.Actions.Where(static action => action.PlayerDefault))
+            {
+                yield return (action.Label, $"action {action.Id} label");
+                yield return (action.Description, $"action {action.Id} description");
+                yield return (action.RealmAvailability, $"action {action.Id} realm availability");
+                yield return (action.MutationWarning, $"action {action.Id} mutation warning");
+                yield return (action.FormLabel, $"action {action.Id} form label");
+                yield return (action.FormPrompt, $"action {action.Id} form prompt");
+                if (!string.IsNullOrWhiteSpace(action.DisabledReason))
+                    yield return (action.DisabledReason, $"action {action.Id} disabled reason");
+            }
+        }
+    }
+
+    private static AggregatedGameState BuildRepresentativeState(bool isChaosSea, bool isShiningAbode, bool isAfterlife) =>
+        new()
+        {
+            SoulName = "Арион",
+            CharacterName = "Арион",
+            CharacterClass = "Следопыт",
+            CharacterRace = "Человек",
+            CurrentRealm = isShiningAbode
+                ? "Shining Abode"
+                : isChaosSea || isAfterlife
+                    ? "Chaos Sea"
+                    : "Mortal World",
+            CurrentLocation = isShiningAbode ? "Зал Света" : isChaosSea ? "Море Хаоса" : "Пепельная дорога",
+            WorldTime = "Сумерки",
+            SessionId = "contract",
+            ShiningAbodeAvailability = isChaosSea ? "active" : string.Empty,
+            PlayerStatus = new PlayerStatusState
+            {
+                CurrentCondition = "Собран",
+                HealthPercentage = "90%",
+                EnergyPercentage = "75%",
+                PoisePercentage = "60%",
+                ActiveConditions = ["Сосредоточенность"]
+            }
+        };
+
+    private static bool ContainsCyrillic(string value) =>
+        value.Any(character => character is >= '\u0400' and <= '\u04FF');
 
     private static object BuildApiErrorPayload() =>
         new
