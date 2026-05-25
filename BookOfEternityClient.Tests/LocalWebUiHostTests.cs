@@ -359,6 +359,30 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    public void FrontendAssets_PrefersReactIndexOverCopiedFallbackShellInBuildRoot()
+    {
+        var previousCurrentDirectory = Directory.GetCurrentDirectory();
+        var fakeRepo = Path.Combine(_rootPath, "fake-repo");
+        var distRoot = Path.Combine(fakeRepo, "BookOfEternityClient.WebFrontend", "dist");
+        Directory.CreateDirectory(distRoot);
+        File.WriteAllText(Path.Combine(distRoot, "index.html"), "<!doctype html><title>React Shell</title>");
+        File.WriteAllText(Path.Combine(distRoot, "local-web-ui-shell.html"), "<!doctype html><title>Fallback Shell</title>");
+
+        try
+        {
+            Directory.SetCurrentDirectory(fakeRepo);
+            var assets = LocalWebUiFrontendAssets.Resolve();
+
+            Assert.False(assets.IsFallbackShell);
+            Assert.Equal(Path.Combine(distRoot, "index.html"), assets.IndexPath);
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(previousCurrentDirectory);
+        }
+    }
+
+    [Fact]
     [Trait("Category", "BrowserWebUiSmoke")]
     public async Task GameScreenEndpoint_ReturnsNarrativeChoicesLifecycleQteAndActionComposer()
     {
