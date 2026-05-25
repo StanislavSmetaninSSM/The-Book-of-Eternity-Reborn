@@ -134,7 +134,8 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("browserApi.getSessionStatus", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.getAudioSettings", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.getLifecycleDashboard", app, StringComparison.Ordinal);
-        Assert.Contains("advancedEnabled ? await browserApi.getLifecycleDashboard()", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getCommandCoverage", app, StringComparison.Ordinal);
+        Assert.Contains("advancedEnabled ? await Promise.all([", app, StringComparison.Ordinal);
         Assert.Contains("Главная", app, StringComparison.Ordinal);
         Assert.Contains("Игра", app, StringComparison.Ordinal);
         Assert.Contains("Душа", app, StringComparison.Ordinal);
@@ -143,6 +144,12 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Настройки", app, StringComparison.Ordinal);
         Assert.Contains("Расширенный режим", app, StringComparison.Ordinal);
         Assert.Contains("AdvancedDiagnosticsPanel", app, StringComparison.Ordinal);
+        Assert.Contains("CommandCoverageMatrix", app, StringComparison.Ordinal);
+        Assert.Contains("commandCoverage={commandCoverage}", app, StringComparison.Ordinal);
+        Assert.Contains("subcommand.canonicalCommand", app, StringComparison.Ordinal);
+        Assert.Contains("subcommand.browserStatus", app, StringComparison.Ordinal);
+        Assert.Contains("subcommand.aliases.join", app, StringComparison.Ordinal);
+        Assert.Contains("subcommand.followUpIssue", app, StringComparison.Ordinal);
         Assert.Contains("ShellPanel", app, StringComparison.Ordinal);
         Assert.Contains("StatusBar", app, StringComparison.Ordinal);
         Assert.Contains("RealmTheme", app, StringComparison.Ordinal);
@@ -169,6 +176,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("useEffect(() => {\n    void audioElement", app, StringComparison.Ordinal);
         Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
         Assert.DoesNotContain("setAdvancedEnabled(true)", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("getCommandCoverage()", app[..app.IndexOf("advancedEnabled ? await Promise.all([", StringComparison.Ordinal)], StringComparison.Ordinal);
         Assert.DoesNotContain("typed BrowserApiClient", app, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("endpoint.id", app, StringComparison.Ordinal);
         Assert.DoesNotContain("action.advancedCommand}", app, StringComparison.Ordinal);

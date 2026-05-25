@@ -62,6 +62,24 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "BrowserWebUiParity")]
+    public async Task CommandCoverageEndpoint_ReturnsMachineReadableExplorerParityMatrix()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/explorer/command-coverage"))!.AsObject();
+
+        Assert.Equal(1, root["schemaVersion"]!.GetValue<int>());
+        Assert.True(root["summary"]!["descriptorCount"]!.GetValue<int>() >= 1);
+        var commands = root["commands"]!.AsArray();
+        Assert.Contains(commands, node => node?["id"]?.GetValue<string>() == "saref_story");
+        Assert.Contains(commands, node => node?["id"]?.GetValue<string>() == "validate" && node?["surface"]?.GetValue<string>() == "advanced-only");
+    }
+
+    [Fact]
     public async Task SessionEndpoint_ReportsPendingTurnAndLocalUiLock()
     {
         WriteSessionFile("input/turn_request.json", "{}");

@@ -8,6 +8,7 @@ import type {
   BrowserAudioPlaylistDto,
   BrowserAudioSettingsDto,
   BrowserAudioSettingsUpdateRequest,
+  BrowserCommandCoverageDto,
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
   BrowserMainMenuDto,
@@ -25,7 +26,7 @@ type RouteId = 'home' | 'game' | 'soul' | 'world' | 'media' | 'settings';
 
 type BrowserShellState =
   | { status: 'loading' }
-  | { status: 'ready'; menu: BrowserApiResult<BrowserMainMenuDto>; session: BrowserApiResult<LocalWebUiSessionStatus>; game: BrowserApiResult<BrowserGameScreenDto>; audio: BrowserApiResult<BrowserAudioSettingsDto>; lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> | null }
+  | { status: 'ready'; menu: BrowserApiResult<BrowserMainMenuDto>; session: BrowserApiResult<LocalWebUiSessionStatus>; game: BrowserApiResult<BrowserGameScreenDto>; audio: BrowserApiResult<BrowserAudioSettingsDto>; lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> | null; commandCoverage: BrowserApiResult<BrowserCommandCoverageDto> | null }
   | { status: 'error'; playerMessage: string; technicalDetails?: string };
 
 type PromptAnswers = Record<string, JsonValue | undefined>;
@@ -136,9 +137,12 @@ export default function App() {
         browserApi.getGameScreen(),
         browserApi.getAudioSettings()
       ]);
-      const lifecycle = advancedEnabled ? await browserApi.getLifecycleDashboard() : null;
+      const [lifecycle, commandCoverage] = advancedEnabled ? await Promise.all([
+        browserApi.getLifecycleDashboard(),
+        browserApi.getCommandCoverage()
+      ]) : [null, null];
 
-      setShellState({ status: 'ready', menu, session, game, audio, lifecycle });
+      setShellState({ status: 'ready', menu, session, game, audio, lifecycle, commandCoverage });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Unknown browser shell error.';
       setShellState({
@@ -158,6 +162,7 @@ export default function App() {
   const menu = readyState && isSuccess(readyState.menu) ? readyState.menu.data : null;
   const session = readyState && isSuccess(readyState.session) ? readyState.session.data : null;
   const lifecycle = readyState && readyState.lifecycle && isSuccess(readyState.lifecycle) ? readyState.lifecycle.data : null;
+  const commandCoverage = readyState ? readyState.commandCoverage : null;
   const realmTheme = useMemo(() => resolveRealmTheme(gameScreen), [gameScreen]);
 
   function submitComposer(event: FormEvent<HTMLFormElement>) {
@@ -261,7 +266,7 @@ export default function App() {
         </aside>
       </section>
 
-      {advancedEnabled && readyState && <AdvancedDiagnosticsPanel state={readyState} lifecycle={lifecycle} />}
+      {advancedEnabled && readyState && <AdvancedDiagnosticsPanel state={readyState} lifecycle={lifecycle} commandCoverage={commandCoverage} />}
     </main>
   );
 }
@@ -1193,10 +1198,12 @@ function volumeToUnit(value: number): number {
 
 function AdvancedDiagnosticsPanel({
   state,
-  lifecycle
+  lifecycle,
+  commandCoverage
 }: {
   state: Extract<BrowserShellState, { status: 'ready' }>;
   lifecycle: BrowserLifecycleDashboardDto | null;
+  commandCoverage: BrowserApiResult<BrowserCommandCoverageDto> | null;
 }) {
   return (
     <section className="advanced-diagnostics" id="advanced-diagnostics" aria-label="Расширенный режим">
@@ -1220,6 +1227,7 @@ function AdvancedDiagnosticsPanel({
           ))}
         </ul>
       </ShellPanel>
+      <CommandCoverageMatrix result={commandCoverage} />
       {lifecycle && (
         <ShellPanel title="Панель состояния" eyebrow="validation" nested>
           <p>Статус: {lifecycle.validation.statusLabel}</p>
@@ -1253,6 +1261,62 @@ function AdvancedDiagnosticsPanel({
         </ShellPanel>
       )}
     </section>
+  );
+}
+
+function CommandCoverageMatrix({ result }: { result: BrowserApiResult<BrowserCommandCoverageDto> | null }) {
+  if (!result) {
+    return (
+      <ShellPanel title="Покрытие команд" eyebrow="browser parity" nested>
+        <p className="muted">Матрица команд загружается только после включения расширенного режима.</p>
+      </ShellPanel>
+    );
+  }
+
+  if (!isSuccess(result)) {
+    return (
+      <ShellPanel title="Покрытие команд" eyebrow="browser parity" nested>
+        <p className="warning-text">{toPlayerFacingText(result.playerMessage, 'Матрица покрытия команд сейчас недоступна.')}</p>
+      </ShellPanel>
+    );
+  }
+
+  const coverage = result.data;
+  return (
+    <ShellPanel title="Покрытие команд Explorer" eyebrow={`schema ${coverage.schemaVersion}`} nested>
+      <p>
+        Дескрипторы: {coverage.summary.descriptorCount}; псевдонимы: {coverage.summary.aliasCount};
+        подкоманды: {coverage.summary.subcommandCount}; browser-ready: {coverage.summary.browserExecutableCount}.
+      </p>
+      <ul className="endpoint-list command-coverage-list" aria-label="Матрица покрытия команд Explorer">
+        {coverage.commands.map((command) => (
+          <li key={command.id}>
+            <strong>{command.primaryActionLabel} · {command.id}</strong>
+            <span>{command.surface} · {command.uxDecision} · {command.browserStatus} · {command.formMode}</span>
+            <span>{command.group} · {command.mutationMode} · {command.handlerKind}</span>
+            <span>Команда: {command.primaryCommand}; aliases: {command.aliases.join(', ')}</span>
+            {command.subcommands.length > 0 && (
+              <ul className="endpoint-list command-subcoverage-list" aria-label={`Подкоманды ${command.id}`}>
+                {command.subcommands.map((subcommand) => (
+                  <li key={subcommand.id}>
+                    <strong>{subcommand.primaryActionLabel} · {subcommand.id}</strong>
+                    <span>{subcommand.surface} · {subcommand.uxDecision} · {subcommand.browserStatus} · {subcommand.formMode}</span>
+                    <span>{subcommand.group} · {subcommand.mutationMode} · {subcommand.handlerKind}</span>
+                    <span>Команда: {subcommand.canonicalCommand}; aliases: {subcommand.aliases.join(', ')}</span>
+                    {(subcommand.followUpIssue || subcommand.reason) && (
+                      <span>{subcommand.followUpIssue || 'follow-up не указан'} · {subcommand.reason || 'причина не указана'}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {(command.followUpIssue || command.reason) && (
+              <span>{command.followUpIssue || 'follow-up не указан'} · {command.reason || 'причина не указана'}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </ShellPanel>
   );
 }
 

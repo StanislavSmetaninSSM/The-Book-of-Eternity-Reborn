@@ -40,6 +40,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("export interface QteWebStateDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserAudioSettingsDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserAudioSettingsUpdateRequest", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface BrowserCommandCoverageDto", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface BrowserCommandCoverageEntryDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export type BrowserApiResult", contracts, StringComparison.Ordinal);
         Assert.Contains("pending-turn", contracts, StringComparison.Ordinal);
         Assert.Contains("advanced", contracts, StringComparison.OrdinalIgnoreCase);
@@ -50,6 +52,7 @@ public sealed class BrowserApiContractTests
         Assert.Contains("getSessionStatus", client, StringComparison.Ordinal);
         Assert.Contains("getGameScreen", client, StringComparison.Ordinal);
         Assert.Contains("getLifecycleDashboard", client, StringComparison.Ordinal);
+        Assert.Contains("getCommandCoverage", client, StringComparison.Ordinal);
         Assert.Contains("validateLifecycle", client, StringComparison.Ordinal);
         Assert.Contains("loadSave", client, StringComparison.Ordinal);
         Assert.Contains("executeExplorerCommand", client, StringComparison.Ordinal);
@@ -60,6 +63,7 @@ public sealed class BrowserApiContractTests
         Assert.Contains("updateAudioSettings", client, StringComparison.Ordinal);
         Assert.Contains("audio-settings", client, StringComparison.Ordinal);
         Assert.Contains("audio-settings-update", client, StringComparison.Ordinal);
+        Assert.Contains("command-coverage", client, StringComparison.Ordinal);
         Assert.DoesNotContain("any", client, StringComparison.Ordinal);
     }
 
@@ -93,6 +97,7 @@ public sealed class BrowserApiContractTests
         Assert.Contains("satisfies ExplorerCommandResult", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies QteWebStateDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserAudioSettingsDto", fixtureChecks, StringComparison.Ordinal);
+        Assert.Contains("satisfies BrowserCommandCoverageDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserApiErrorPayload", fixtureChecks, StringComparison.Ordinal);
     }
 
@@ -299,6 +304,71 @@ public sealed class BrowserApiContractTests
         Assert.Contains("быстрая сцена", FindAction(qteMenu, "craft").DisabledReason, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    [Trait("Category", "BrowserWebUiParity")]
+    public void BrowserCommandCoverageContract_ListsEveryCommandAndUxDecision()
+    {
+        var coverage = BrowserCommandCoverageService.Build();
+
+        Assert.Equal(1, coverage.SchemaVersion);
+        Assert.Equal(ExplorerCommandCatalog.Descriptors.Count, coverage.Commands.Count);
+        Assert.Equal(ExplorerCommandCatalog.Descriptors.SelectMany(static descriptor => descriptor.Aliases).Count(), coverage.Summary.AliasCount);
+        Assert.Equal(ExplorerCommandCatalog.Descriptors.SelectMany(static descriptor => descriptor.SubcommandDescriptors).Count(), coverage.Summary.SubcommandCount);
+        Assert.Equal(
+            ExplorerCommandCatalog.Descriptors.Count(static descriptor => ExplorerCommandMigrationRegistry.IsBrowserExecutable(descriptor.BrowserStatus)),
+            coverage.Summary.BrowserExecutableCount);
+
+        Assert.All(coverage.Commands, command =>
+        {
+            Assert.False(string.IsNullOrWhiteSpace(command.Id));
+            Assert.NotEmpty(command.Aliases);
+            Assert.False(string.IsNullOrWhiteSpace(command.Group));
+            Assert.False(string.IsNullOrWhiteSpace(command.MutationMode));
+            Assert.False(string.IsNullOrWhiteSpace(command.BrowserStatus));
+            Assert.False(string.IsNullOrWhiteSpace(command.HandlerKind));
+            Assert.False(string.IsNullOrWhiteSpace(command.UxDecision));
+            Assert.False(string.IsNullOrWhiteSpace(command.Surface));
+            Assert.False(string.IsNullOrWhiteSpace(command.FormMode));
+            Assert.False(string.IsNullOrWhiteSpace(command.PrimaryActionLabel));
+            Assert.StartsWith("/", command.PrimaryCommand, StringComparison.Ordinal);
+            Assert.All(command.Subcommands, subcommand =>
+            {
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.Id));
+                Assert.NotEmpty(subcommand.Aliases);
+                Assert.StartsWith("/", subcommand.CanonicalCommand, StringComparison.Ordinal);
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.Group));
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.MutationMode));
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.BrowserStatus));
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.HandlerKind));
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.UxDecision));
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.Surface));
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.FormMode));
+                Assert.False(string.IsNullOrWhiteSpace(subcommand.PrimaryActionLabel));
+                Assert.StartsWith("/", subcommand.PrimaryCommand, StringComparison.Ordinal);
+                Assert.Equal(subcommand.CanonicalCommand, subcommand.PrimaryCommand);
+            });
+        });
+
+        var saref = Assert.Single(coverage.Commands, command => command.Id == "saref_story");
+        Assert.Equal("player-default", saref.Surface);
+        Assert.Equal("contextual-button", saref.UxDecision);
+        Assert.Contains(saref.Subcommands, subcommand =>
+            subcommand.Id == "find_wings" &&
+            subcommand.MutationMode == nameof(ExplorerCommandMutationMode.LocalTurn) &&
+            subcommand.BrowserStatus == nameof(ExplorerCommandMigrationStatus.MutatingParity) &&
+            subcommand.FormMode == "guided-form" &&
+            subcommand.PrimaryCommand == subcommand.CanonicalCommand &&
+            subcommand.UxDecision == "guided-form");
+
+        foreach (var advancedId in new[] { "debug", "gm", "validate", "mods", "system_guardians", "math", "help" })
+            Assert.Contains(coverage.Commands, command => command.Id == advancedId && command.Surface == "advanced-only" && command.UxDecision == "advanced-diagnostics");
+
+        Assert.DoesNotContain(coverage.Commands, command => command.Surface == "player-default" && command.Id is "debug" or "gm" or "validate" or "math" or "help");
+        Assert.All(
+            coverage.Commands.Where(static command => command.Surface == "player-default" && ExplorerCommandMigrationRegistry.IsBrowserExecutable(Enum.Parse<ExplorerCommandMigrationStatus>(command.BrowserStatus))),
+            command => Assert.NotEqual("advanced-diagnostics", command.UxDecision));
+    }
+
     public static IEnumerable<object[]> ContractFixtures()
     {
         yield return ["main-menu.json", BuildMainMenu()];
@@ -308,8 +378,12 @@ public sealed class BrowserApiContractTests
         yield return ["explorer-command-result.json", BuildExplorerCommandResult()];
         yield return ["qte-state.json", BuildQteState()];
         yield return ["audio-settings.json", BuildAudioSettings()];
+        yield return ["command-coverage.json", BuildCommandCoverage()];
         yield return ["api-error.json", BuildApiErrorPayload()];
     }
+
+    private static BrowserCommandCoverageDto BuildCommandCoverage() =>
+        BrowserCommandCoverageService.Build();
 
     private static BrowserAudioSettingsDto BuildAudioSettings() =>
         new(
