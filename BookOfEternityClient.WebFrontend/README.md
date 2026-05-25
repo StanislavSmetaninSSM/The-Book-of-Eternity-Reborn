@@ -126,7 +126,7 @@ npm run verify --prefix BookOfEternityClient.WebFrontend
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
 ```
 
-`Category=BrowserWebUiBuiltFrontend` starts the C# `LocalWebUiHost` against the built Vite `dist/` output and verifies the root shell, SPA route fallback, player-state APIs, and non-masked `/api/*` plus `/assets/*` misses. The smoke writes HTML/network diagnostics to `TestResults/browser-smoke/` (`root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`). CI uploads those diagnostics as `browser-smoke-artifacts` when present. Screenshots require a future tracked browser automation dependency; this pipeline intentionally stays local/offline-friendly and dependency-light.
+`Category=BrowserWebUiBuiltFrontend` starts the C# `LocalWebUiHost` against the built Vite `dist/` output and verifies the root shell, SPA route fallback, player-state APIs, and non-masked `/api/*` plus `/assets/*` misses. The smoke writes HTML/network/navigation diagnostics to `TestResults/browser-smoke/` (`root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, `navigation-ia.html`). CI uploads those diagnostics as `browser-smoke-artifacts` when present. `navigation-ia.html` is the dependency-light desktop/mobile visual smoke artifact for #727; full screenshots require a future tracked browser automation dependency, so this pipeline intentionally stays local/offline-friendly and dependency-light.
 
 ## Boundaries for future agents
 
