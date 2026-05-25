@@ -23,9 +23,17 @@
 
 .route-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: var(--space-3);
   margin: var(--space-4) 0;
+}
+
+.route-grid--primary {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.route-grid--utility {
+  grid-template-columns: minmax(16rem, 1fr) repeat(2, minmax(10rem, 14rem));
+  margin-top: calc(var(--space-4) * -0.35);
 }
 
 .workspace-grid {
@@ -70,8 +78,16 @@
 }
 
 @media (max-width: 1120px) {
-  .route-grid {
+  .route-grid--primary {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .route-grid--utility {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .utility-route-heading {
+    grid-column: 1 / -1;
   }
 
   .action-grid,
@@ -96,7 +112,8 @@
     grid-template-columns: 1fr;
   }
 
-  .route-grid {
+  .route-grid--primary,
+  .route-grid--utility {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -118,7 +135,8 @@
     border-radius: var(--radius-md);
   }
 
-  .route-grid {
+  .route-grid--primary,
+  .route-grid--utility {
     grid-template-columns: 1fr;
   }
 

@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #691, #701, #702, #703, #704, #705
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #691, #701, #702, #703, #704, #705, #727
 Parent epic: #559
 
 ## Local-Only Model
@@ -92,9 +92,9 @@ BookOfEternityClient.WebFrontend/dist/
 
 `dist/` is generated and remains git-ignored. When it exists, `LocalWebUiHost` serves the build root: issue #704 makes the preferred root `dist/index.html`, the built React app shell. The copied `dist/local-web-ui-shell.html` is now only a compatibility fallback if a build root lacks `index.html`. Built JS/CSS/media assets under `dist/assets/` are served by the same static-file middleware. During packaged/published builds, present `dist/**` files are copied to the C# output under `wwwroot/browser/` so the host can serve them without source-tree paths.
 
-The React app shell provides player-facing routes for `Главная`, `Игра`, `Душа`, `Мир`, `Медиа`, and `Настройки`. These routes load typed data through `src/api/client.ts` (`/api/main-menu`, `/api/session`, `/api/game-screen`, and `/api/lifecycle/dashboard`) and render request state, realm theme, lifecycle/QTE status, and placeholder regions for #683-#689. The shell remains presentation-only: C# keeps all gameplay/application logic, persistence, validation, local-write coordination, afterlife/mortal contracts, and command execution authority.
+The React app shell provides player-facing routes through the #727 taxonomy. The primary chain is `Главная → Игра → Душа → Мир → Журнал → Инвентарь`, matching the game-client order: summary/current scene, character/soul, world/location/map, journal/quests/notes, and inventory/craft. `Медиа` and `Настройки` remain secondary player utility sections. Default player routes load typed state through `src/api/client.ts` (`/api/main-menu`, `/api/session`, `/api/game-screen`, and `/api/audio/settings`); lifecycle dashboard and command coverage data load only after explicit `Расширенный режим` opt-in. The shell remains presentation-only: C# keeps all gameplay/application logic, persistence, validation, local-write coordination, afterlife/mortal contracts, and command execution authority.
 
-The normal root is Russian-first and player-facing. Command IDs, `/api/*` details, lifecycle validation internals, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player-visible failures should show short `playerMessage` text first and keep `technicalDetails` in an advanced/details surface.
+The normal root is Russian-first and player-facing. Command IDs, `/api/*` details, lifecycle validation internals, command coverage, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player-visible failures should show short `playerMessage` text first and keep `technicalDetails` in an advanced/details surface.
 
 Issue #685 adds the Browser Client design-system layer. The frontend keeps `src/styles.css` as the single Vite import entrypoint, but the maintainable styling lives under `BookOfEternityClient.WebFrontend/src/styles/`: `tokens.css`, `base.css`, `components.css`, `layout.css`, and `motion.css`. This is a dark-fantasy, Russian-first, player-facing visual system over the same C# local APIs; it must not move gameplay rules, validation, persistence, command execution, or afterlife/mortal contracts into TypeScript.
 
@@ -173,7 +173,7 @@ POST /api/audio/settings
 GET /api/audio/assets/{assetId}
 ```
 
-`/` serves the browser game shell. With a Vite build present, the root is the #704 React app shell: player-facing routes for main menu, game, soul/status, world, media, and settings. The root defaults to current session/game summaries, the current realm/narrative/status surface, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, or debug controls as the primary player flow. The default surface includes a primary prose action composer for ordinary player intent; slash commands are intentionally rejected from automatic execution and require a separate explicit `Расширенный режим` opt-in before any technical command/API path is visible.
+`/` serves the browser game shell. With a Vite build present, the root is the #704 React app shell and #727 navigation IA: primary player routes follow `Главная → Игра → Душа → Мир → Журнал → Инвентарь`, while media and settings are secondary utility sections. The root defaults to current session/game summaries, the current realm/narrative/status surface, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, command coverage, or debug controls as the primary player flow. The default surface includes a primary prose action composer for ordinary player intent; slash commands are intentionally rejected from automatic execution and require a separate explicit `Расширенный режим` opt-in before any technical command/API path is visible.
 
 The default surface includes the #683 contextual action menu in the `Мир` route. It is built from C# command metadata in `/api/game-screen`, groups actions into Russian game sections (`Персонаж / Душа`, `Мир`, `Квесты`, `Карта`, `Фракции`, `Хранители`, `Посмертие`, `Бой`, `Архив`, `Настройки`), and hides raw slash command IDs from normal player cards. Read-only actions open their browser result from the card. Mutating actions open the existing browser prompt-session forms, show realm availability, disabled reasons, and warning text, and submit answers through the same C# lifecycle/local-write coordinator used by migrated browser commands.
 
@@ -460,9 +460,9 @@ npm run verify --prefix BookOfEternityClient.WebFrontend
 dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
 ```
 
-`BrowserWebUiBuiltFrontend` launches `LocalWebUiHost` against the built Vite `dist/` directory, verifies the root shell, SPA route fallback, `/api/main-menu`, `/api/session`, `/api/game-screen`, and confirms missing `/api/*` and `/assets/*` requests stay real 404 responses instead of being swallowed by the HTML fallback. The smoke writes practical HTML/network diagnostics to `TestResults/browser-smoke/`: `root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, and `network.json`.
+`BrowserWebUiBuiltFrontend` launches `LocalWebUiHost` against the built Vite `dist/` directory, verifies the root shell, SPA route fallback, `/api/main-menu`, `/api/session`, `/api/game-screen`, and confirms missing `/api/*` and `/assets/*` requests stay real 404 responses instead of being swallowed by the HTML fallback. The smoke writes practical HTML/network/navigation diagnostics to `TestResults/browser-smoke/`: `root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, and `navigation-ia.html`.
 
-GitHub Actions uploads those files as the `browser-smoke-artifacts` artifact when present. Screenshots are intentionally not part of this slice because the repository has not introduced Playwright/Selenium-style browser automation yet; add them in a future tracked browser automation task instead of bolting a new dependency onto #705.
+GitHub Actions uploads those files as the `browser-smoke-artifacts` artifact when present. `navigation-ia.html` is the dependency-light visual smoke artifact for desktop/mobile player navigation. Full browser screenshots remain deferred until a future tracked Playwright/Selenium-style automation task instead of bolting a new dependency onto #705/#727.
 
 Run the focused browser contract suite before changing browser root/menu/session/game-screen state, lifecycle dashboards, command migration metadata, prompt sessions, QTE, media, or command rendering:
 

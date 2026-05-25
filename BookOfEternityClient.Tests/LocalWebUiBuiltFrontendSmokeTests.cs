@@ -92,6 +92,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                     }.Concat(assetResponses.Select(response => response.ToArtifact()))
                 },
                 new JsonSerializerOptions { WriteIndented = true }));
+        var navigationArtifactPath = Path.Combine(artifactRoot, "navigation-ia.html");
 
         Assert.Equal(HttpStatusCode.OK, root.StatusCode);
         Assert.Equal(HttpStatusCode.OK, gameRoute.StatusCode);
@@ -116,6 +117,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var session = JsonNode.Parse(sessionResponse.Body)!.AsObject();
         var screen = JsonNode.Parse(screenResponse.Body)!.AsObject();
         var appSource = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src", "App.tsx"));
+        await File.WriteAllTextAsync(navigationArtifactPath, BuildNavigationIaArtifact(appSource));
 
         Assert.True(session["localOnly"]!.GetValue<bool>());
         Assert.Equal("CI-душа", menu["session"]!["soulName"]!.GetValue<string>());
@@ -140,6 +142,18 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.DoesNotContain("C# каталога команд", appSource, StringComparison.Ordinal);
         Assert.DoesNotContain("C# протоколом", appSource, StringComparison.Ordinal);
         Assert.DoesNotContain("C# DTO", appSource, StringComparison.Ordinal);
+
+        Assert.True(File.Exists(navigationArtifactPath), $"Missing browser navigation visual smoke artifact at {navigationArtifactPath}");
+        var navigationArtifact = await File.ReadAllTextAsync(navigationArtifactPath);
+        Assert.Contains("data-artifact=\"browser-navigation-ia\"", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"desktop\"", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"mobile\"", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("Медиа → Настройки", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("Расширенный режим", navigationArtifact, StringComparison.Ordinal);
+        Assert.DoesNotContain("Debug", navigationArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Network", navigationArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("command coverage", navigationArtifact, StringComparison.OrdinalIgnoreCase);
     }
 
     private static async Task<SmokeResponse> CaptureAsync(HttpClient client, string path)
@@ -155,6 +169,124 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
+
+    private static string BuildNavigationIaArtifact(string appSource)
+    {
+        var routes = ExtractPlayerRoutes(appSource);
+        var primaryRoutes = routes.Where(route => route.Kind == "primary").ToArray();
+        var utilityRoutes = routes.Where(route => route.Kind == "utility").ToArray();
+        var primarySequence = string.Join(" → ", primaryRoutes.Select(route => route.Label));
+        var utilitySequence = string.Join(" → ", utilityRoutes.Select(route => route.Label));
+
+        Assert.Equal(new[] { "home", "game", "soul", "world", "journal", "inventory" }, primaryRoutes.Select(route => route.Id));
+        Assert.Equal(new[] { "media", "settings" }, utilityRoutes.Select(route => route.Id));
+
+        return $$"""
+        <!doctype html>
+        <html lang="ru" data-artifact="browser-navigation-ia">
+        <head>
+          <meta charset="utf-8">
+          <title>Browser Client Navigation IA Visual Smoke</title>
+          <style>
+            :root { color-scheme: dark; font-family: Inter, "Segoe UI", sans-serif; background: #130f1d; color: #f9ecd1; }
+            body { margin: 0; padding: 24px; background: radial-gradient(circle at top left, rgba(155, 107, 255, 0.28), transparent 34%), #130f1d; }
+            .artifact { display: grid; gap: 20px; max-width: 1180px; margin: 0 auto; }
+            .frame { border: 1px solid rgba(249, 236, 209, 0.2); border-radius: 26px; background: rgba(31, 24, 45, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34); overflow: hidden; }
+            .frame header { padding: 18px 22px; border-bottom: 1px solid rgba(249, 236, 209, 0.12); }
+            .desktop-shell { display: grid; grid-template-columns: 280px 1fr; min-height: 520px; }
+            .sidebar, .mobile-nav { padding: 18px; background: rgba(16, 12, 24, 0.74); }
+            .content { padding: 24px; display: grid; gap: 16px; align-content: start; }
+            .route-list { display: grid; gap: 10px; }
+            .route-card { border: 1px solid rgba(216, 179, 106, 0.22); border-radius: 18px; padding: 12px; background: rgba(255, 255, 255, 0.055); }
+            .route-card strong { display: flex; gap: 8px; align-items: center; color: #ffe2a6; }
+            .route-card p { margin: 6px 0 0; color: rgba(249, 236, 209, 0.76); font-size: 0.92rem; line-height: 1.45; }
+            .utility { margin-top: 18px; opacity: 0.82; }
+            .advanced-note { border-radius: 18px; border: 1px dashed rgba(249, 236, 209, 0.26); padding: 14px; color: rgba(249, 236, 209, 0.7); }
+            .mobile-shell { width: min(100%, 420px); margin: 0 auto; }
+            .mobile-nav .route-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .sequence { color: #d8b36a; font-weight: 700; }
+          </style>
+        </head>
+        <body>
+          <main class="artifact">
+            <section class="frame" data-viewport="desktop" aria-label="Desktop browser navigation smoke">
+              <header>
+                <h1>Desktop: player navigation taxonomy</h1>
+                <p class="sequence">{{WebUtility.HtmlEncode(primarySequence)}}</p>
+              </header>
+              <div class="desktop-shell">
+                <nav class="sidebar" aria-label="Основные игровые разделы браузерного клиента">
+                  <div class="route-list">
+        {{RenderRouteCards(primaryRoutes)}}
+                  </div>
+                  <div class="utility" aria-label="Дополнительные игровые разделы браузерного клиента">
+                    <p class="sequence">{{WebUtility.HtmlEncode(utilitySequence)}}</p>
+                    <div class="route-list">
+        {{RenderRouteCards(utilityRoutes)}}
+                    </div>
+                  </div>
+                </nav>
+                <section class="content" aria-label="Игровая область">
+                  <h2>Откройте книгу</h2>
+                  <p>Обычное пустое состояние выглядит как игровая пауза: выберите главу, продолжите сохранение или перейдите к персонажу, миру, журналу и инвентарю.</p>
+                  <p class="advanced-note">Расширенный режим скрыт до явного включения и визуально вторичен.</p>
+                </section>
+              </div>
+            </section>
+            <section class="frame mobile-shell" data-viewport="mobile" aria-label="Mobile browser navigation smoke">
+              <header>
+                <h1>Mobile: compact player navigation</h1>
+                <p class="sequence">{{WebUtility.HtmlEncode(primarySequence)}}</p>
+              </header>
+              <nav class="mobile-nav" aria-label="Мобильные игровые разделы браузерного клиента">
+                <div class="route-list">
+        {{RenderRouteCards(primaryRoutes)}}
+                </div>
+                <div class="advanced-note">Расширенный режим остаётся отдельным вторичным переключателем.</div>
+              </nav>
+            </section>
+          </main>
+        </body>
+        </html>
+        """;
+    }
+
+    private static BrowserNavigationRoute[] ExtractPlayerRoutes(string appSource)
+    {
+        var routesMatch = Regex.Match(
+            appSource,
+            @"const playerRoutes: RouteCard\[\] = \[(?<routes>.*?)\];",
+            RegexOptions.Singleline);
+        Assert.True(routesMatch.Success, "App.tsx should define playerRoutes metadata for the visual smoke artifact.");
+
+        var routeMatches = Regex.Matches(
+            routesMatch.Groups["routes"].Value,
+            @"\{\s*id:\s*'(?<id>[^']+)',\s*kind:\s*'(?<kind>[^']+)',\s*label:\s*'(?<label>[^']+)',\s*description:\s*'(?<description>[^']+)',\s*icon:\s*'(?<icon>[^']+)'\s*\}",
+            RegexOptions.Singleline);
+
+        var routes = routeMatches
+            .Select(match => new BrowserNavigationRoute(
+                match.Groups["id"].Value,
+                match.Groups["kind"].Value,
+                match.Groups["label"].Value,
+                match.Groups["description"].Value,
+                match.Groups["icon"].Value))
+            .ToArray();
+        Assert.Equal(8, routes.Length);
+        return routes;
+    }
+
+    private static string RenderRouteCards(IEnumerable<BrowserNavigationRoute> routes) => string.Join(
+        Environment.NewLine,
+        routes.Select(route =>
+            $"""
+                    <article class="route-card route-card--{WebUtility.HtmlEncode(route.Id)}">
+                      <strong><span>{WebUtility.HtmlEncode(route.Icon)}</span>{WebUtility.HtmlEncode(route.Label)}</strong>
+                      <p>{WebUtility.HtmlEncode(route.Description)}</p>
+                    </article>
+            """));
+
+    private sealed record BrowserNavigationRoute(string Id, string Kind, string Label, string Description, string Icon);
 
     private sealed record SmokeResponse(string Path, HttpStatusCode StatusCode, string? ContentType, string Body)
     {

@@ -125,13 +125,15 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("Category=BrowserWebUiBuiltFrontend", hostDoc, StringComparison.Ordinal);
         Assert.Contains("TestResults/browser-smoke", hostDoc, StringComparison.Ordinal);
         Assert.Contains("browser-smoke-artifacts", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("HTML/network diagnostics", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("HTML/network/navigation diagnostics", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("navigation-ia.html", hostDoc, StringComparison.Ordinal);
         Assert.Contains("screenshots", hostDoc, StringComparison.OrdinalIgnoreCase);
 
         Assert.Contains("#705", readme, StringComparison.Ordinal);
         Assert.Contains("npm run verify", readme, StringComparison.Ordinal);
         Assert.Contains("Category=BrowserWebUiBuiltFrontend", readme, StringComparison.Ordinal);
         Assert.Contains("TestResults/browser-smoke", readme, StringComparison.Ordinal);
+        Assert.Contains("navigation-ia.html", readme, StringComparison.Ordinal);
     }
 
     [Fact]

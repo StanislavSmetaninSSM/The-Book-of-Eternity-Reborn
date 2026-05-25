@@ -43,18 +43,22 @@ Issue #702 connects this workspace to the C# local web host. Issue #704 turns th
 
 The fallback shell is the extracted player-facing MVP shell. It keeps `--web` usable without a frontend build, but the preferred built root is now `dist/index.html`. Generated `dist/`, `node_modules/`, `.vite/`, and `*.tsbuildinfo` stay ignored and should not be committed.
 
-## React app shell (#704)
+## React app shell (#704, #727)
 
-The React app shell defines player-facing routes for `Главная`, `Игра`, `Душа`, `Мир`, `Медиа`, and `Настройки`. These are presentation routes only: they consume `src/api/client.ts`, render typed C# DTOs, and leave all game/application authority in the C# runtime.
+The React app shell defines player-facing routes as presentation routes only: they consume `src/api/client.ts`, render typed C# DTOs, and leave all game/application authority in the C# runtime.
 
-The shell keeps default UI Russian-first and player-facing. Command IDs, `/api/*` endpoint details, lifecycle validation internals, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player route failures should render `playerMessage`; `technicalDetails` belongs in the advanced diagnostics/details surface.
+Issue #727 refines the player navigation taxonomy. The primary chain is now `Главная → Игра → Душа → Мир → Журнал → Инвентарь`, matching the game-client order: summary/current scene, character/soul, world/location/map, journal/quests/notes, and inventory/craft. `Медиа` and `Настройки` remain player utility sections below the primary chain.
+
+The shell keeps default UI Russian-first and player-facing. Command IDs, `/api/*` endpoint details, lifecycle validation internals, command coverage, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player route failures should render `playerMessage`; `technicalDetails` belongs in the advanced diagnostics/details surface.
 
 Future Browser Client tasks (#683-#689) should extend these route regions rather than recreating ad-hoc DOM manipulation:
 
 - main menu/session flow under `Главная`;
 - narrative, turn state, QTE, and prose action composer under `Игра`;
 - character/soul/status cards under `Душа`;
-- map, journal, quests, factions, and contextual actions under `Мир`;
+- map, location, factions, and world actions under `Мир`;
+- quests, chronicle, archive, notes, and story-facing sections under `Журнал`;
+- items, equipment, craft, and storage-facing sections under `Инвентарь`;
 - gallery, media, and QTE visuals under `Медиа`;
 - local profile, language, audio, and comfort settings under `Настройки`.
 
@@ -122,7 +126,7 @@ npm run verify --prefix BookOfEternityClient.WebFrontend
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
 ```
 
-`Category=BrowserWebUiBuiltFrontend` starts the C# `LocalWebUiHost` against the built Vite `dist/` output and verifies the root shell, SPA route fallback, player-state APIs, and non-masked `/api/*` plus `/assets/*` misses. The smoke writes HTML/network diagnostics to `TestResults/browser-smoke/` (`root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`). CI uploads those diagnostics as `browser-smoke-artifacts` when present. Screenshots require a future tracked browser automation dependency; this pipeline intentionally stays local/offline-friendly and dependency-light.
+`Category=BrowserWebUiBuiltFrontend` starts the C# `LocalWebUiHost` against the built Vite `dist/` output and verifies the root shell, SPA route fallback, player-state APIs, and non-masked `/api/*` plus `/assets/*` misses. The smoke writes HTML/network/navigation diagnostics to `TestResults/browser-smoke/` (`root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, `navigation-ia.html`). CI uploads those diagnostics as `browser-smoke-artifacts` when present. `navigation-ia.html` is the dependency-light desktop/mobile visual smoke artifact for #727; full screenshots require a future tracked browser automation dependency, so this pipeline intentionally stays local/offline-friendly and dependency-light.
 
 ## Boundaries for future agents
 

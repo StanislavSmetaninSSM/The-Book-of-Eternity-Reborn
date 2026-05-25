@@ -22,7 +22,8 @@ import type {
   UiPrompt
 } from './api/contracts';
 
-type RouteId = 'home' | 'game' | 'soul' | 'world' | 'media' | 'settings';
+type RouteId = 'home' | 'game' | 'soul' | 'world' | 'journal' | 'inventory' | 'media' | 'settings';
+type RouteKind = 'primary' | 'utility';
 type LauncherMode = 'continue' | 'load' | 'new-game' | 'settings' | 'about';
 
 type BrowserShellState =
@@ -34,6 +35,7 @@ type PromptAnswers = Record<string, JsonValue | undefined>;
 
 interface RouteCard {
   id: RouteId;
+  kind: RouteKind;
   label: string;
   description: string;
   icon: string;
@@ -61,13 +63,18 @@ interface LauncherPrimaryAction {
 }
 
 const playerRoutes: RouteCard[] = [
-  { id: 'home', label: 'Главная', description: 'Сессия, продолжение, загрузка и безопасные действия.', icon: '✦' },
-  { id: 'game', label: 'Игра', description: 'Нарратив, ход ГМа, быстрые сцены и основной художественный ввод.', icon: '📖' },
-  { id: 'soul', label: 'Душа', description: 'Душа, герой, состояние и текущий слой мира.', icon: '🕯️' },
-  { id: 'world', label: 'Мир', description: 'Карта, журнал, квесты, фракции и действия.', icon: '🗺️' },
-  { id: 'media', label: 'Медиа', description: 'Галерея, быстрые сцены и игровые материалы.', icon: '🎞️' },
-  { id: 'settings', label: 'Настройки', description: 'Локальный профиль, звук, язык и комфорт клиента.', icon: '⚙️' }
+  { id: 'home', kind: 'primary', label: 'Главная', description: 'Сводка партии, продолжение, загрузка и безопасные действия.', icon: '✦' },
+  { id: 'game', kind: 'primary', label: 'Игра', description: 'Текущая сцена, нарратив, ход ГМа и основной художественный ввод.', icon: '📖' },
+  { id: 'soul', kind: 'primary', label: 'Душа', description: 'Персонаж, душа, состояние героя и текущий слой мира.', icon: '🕯️' },
+  { id: 'world', kind: 'primary', label: 'Мир', description: 'Локация, карта, фракции и игровые действия окружения.', icon: '🗺️' },
+  { id: 'journal', kind: 'primary', label: 'Журнал', description: 'Квесты, хроника, заметки, архив и история текущей главы.', icon: '✍️' },
+  { id: 'inventory', kind: 'primary', label: 'Инвентарь', description: 'Предметы, экипировка, ремесло и локальные хранилища.', icon: '🎒' },
+  { id: 'media', kind: 'utility', label: 'Медиа', description: 'Галерея, быстрые сцены и игровые материалы.', icon: '🎞️' },
+  { id: 'settings', kind: 'utility', label: 'Настройки', description: 'Локальный профиль, звук, язык и комфорт клиента.', icon: '⚙️' }
 ];
+
+const primaryPlayerRoutes = playerRoutes.filter((route) => route.kind === 'primary');
+const utilityPlayerRoutes = playerRoutes.filter((route) => route.kind === 'utility');
 
 const fallbackTheme: RealmTheme = {
   key: 'mortal-world',
@@ -535,20 +542,13 @@ export default function App() {
         </div>
       </section>
 
-      <nav className="route-grid" aria-label="Игровые разделы браузерного клиента">
-        {playerRoutes.map((route) => (
-          <button
-            key={route.id}
-            type="button"
-            className={`route-card route-card--${route.id}${activeRoute === route.id ? ' is-active' : ''}`}
-            onClick={() => setActiveRoute(route.id)}
-            aria-pressed={activeRoute === route.id}
-          >
-            <span aria-hidden="true">{route.icon}</span>
-            <strong>{route.label}</strong>
-            <small>{route.description}</small>
-          </button>
-        ))}
+      <nav className="route-grid route-grid--primary" aria-label="Основные игровые разделы браузерного клиента">
+        {primaryPlayerRoutes.map((route) => renderRouteButton(route, activeRoute, setActiveRoute))}
+      </nav>
+
+      <nav className="route-grid route-grid--utility" aria-label="Дополнительные игровые разделы браузерного клиента">
+        <p className="utility-route-heading">Сводка / Игра / Душа / Мир / Журнал / Инвентарь — основная цепочка игрока. Медиа и настройки доступны отдельно.</p>
+        {utilityPlayerRoutes.map((route) => renderRouteButton(route, activeRoute, setActiveRoute))}
       </nav>
 
       <section className="workspace-grid" aria-live="polite">
@@ -576,6 +576,23 @@ export default function App() {
 
       {advancedEnabled && readyState && <AdvancedDiagnosticsPanel state={readyState} lifecycle={lifecycle} commandCoverage={commandCoverage} />}
     </main>
+  );
+}
+
+
+function renderRouteButton(route: RouteCard, activeRoute: RouteId, setActiveRoute: (route: RouteId) => void): ReactNode {
+  return (
+    <button
+      key={route.id}
+      type="button"
+      className={`route-card route-card--${route.id}${activeRoute === route.id ? ' is-active' : ''}`}
+      onClick={() => setActiveRoute(route.id)}
+      aria-pressed={activeRoute === route.id}
+    >
+      <span aria-hidden="true">{route.icon}</span>
+      <strong>{route.label}</strong>
+      <small>{route.description}</small>
+    </button>
   );
 }
 
@@ -804,6 +821,10 @@ function renderActiveRoute(
       return <SoulRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'world':
       return <WorldRoute state={state} advancedEnabled={advancedEnabled} />;
+    case 'journal':
+      return <JournalRoute state={state} advancedEnabled={advancedEnabled} />;
+    case 'inventory':
+      return <InventoryRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'media':
       return <MediaRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'settings':
@@ -977,6 +998,120 @@ function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
       <ActionMenu menu={game.actionMenu} />
     </ShellPanel>
   );
+}
+
+
+const journalSectionMatchers = ['quest', 'квест', 'journal', 'журнал', 'archive', 'архив', 'chronicle', 'хроника', 'story', 'история', 'faction', 'фракц', 'guardian', 'хранител'];
+const inventorySectionMatchers = ['inventory', 'инвентар', 'item', 'предмет', 'craft', 'ремес', 'equip', 'экип', 'storage', 'хранилищ'];
+
+function JournalRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
+  if (!isSuccess(state.game)) {
+    return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Журнал требует внимания" empty={{
+      title: 'Журнал ждёт главу',
+      message: 'Квесты, хроника и заметки появятся после открытия или загрузки игровой сессии.',
+      action: 'Откройте книгу на главной странице, затем вернитесь в журнал.'
+    }} />;
+  }
+
+  const game = state.game.data;
+  const sections = filterActionSections(game.actionMenu, journalSectionMatchers);
+
+  return (
+    <ShellPanel title="Журнал" eyebrow="квесты, хроника и заметки">
+      <div className="split-grid">
+        <div className="summary-card">
+          <h2>Текущая глава</h2>
+          <p>{game.narrative.text || 'Последний нарратив пока не найден в локальной книге.'}</p>
+        </div>
+        <div className="summary-card">
+          <h2>Ориентир игрока</h2>
+          <p>{game.narrative.dialogueOptions.length > 0 ? `Доступно вариантов: ${game.narrative.dialogueOptions.length}.` : 'Варианты выбора появятся после ответа ГМа.'}</p>
+          <p className="muted">Журнал показывает игровые разделы из каталога действий без служебных команд.</p>
+        </div>
+      </div>
+      <FilteredActionSections sections={sections} emptyMessage="Квестовые, архивные и фракционные разделы появятся здесь, когда каталог действий отдаст их для текущей главы." />
+    </ShellPanel>
+  );
+}
+
+function InventoryRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
+  if (!isSuccess(state.game)) {
+    return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Инвентарь требует внимания" empty={{
+      title: 'Инвентарь ждёт главу',
+      message: 'Предметы, экипировка, ремесло и хранилища появятся после открытия или загрузки игровой сессии.',
+      action: 'Откройте книгу на главной странице, затем вернитесь к инвентарю.'
+    }} />;
+  }
+
+  const game = state.game.data;
+  const sections = filterActionSections(game.actionMenu, inventorySectionMatchers);
+
+  return (
+    <ShellPanel title="Инвентарь" eyebrow="предметы, ремесло и хранилища">
+      <div className="split-grid">
+        <div className="summary-card">
+          <h2>Герой</h2>
+          <p>{game.player.name || 'Герой'} · {game.player.currentCondition}</p>
+          <p className="muted">Здоровье {formatSidebarStatusMetric(game.player.healthPercentage)} · энергия {formatSidebarStatusMetric(game.player.energyPercentage)} · стойкость {formatSidebarStatusMetric(game.player.poisePercentage)}</p>
+        </div>
+        <div className="summary-card">
+          <h2>Ремесло и предметы</h2>
+          <p>Инвентарь использует существующие игровые действия и не добавляет отдельные правила предметов в React.</p>
+        </div>
+      </div>
+      <FilteredActionSections sections={sections} emptyMessage="Инвентарные, ремесленные и складские разделы появятся здесь, когда каталог действий отдаст их для текущей главы." />
+    </ShellPanel>
+  );
+}
+
+function FilteredActionSections({ sections, emptyMessage }: { sections: BrowserPlayerCommandSectionDto[]; emptyMessage: string }) {
+  if (sections.length === 0) {
+    return <p className="muted">{emptyMessage}</p>;
+  }
+
+  return (
+    <section className="action-menu" aria-label="Игровые разделы страницы">
+      <div className="action-section-grid">
+        {sections.map((section) => <ActionSection key={section.id} section={section} />)}
+      </div>
+    </section>
+  );
+}
+
+function filterActionSections(menu: BrowserPlayerCommandMenuDto, matchers: string[]): BrowserPlayerCommandSectionDto[] {
+  return menu.sections.flatMap((section) => {
+    if (!section.playerDefault || section.actions.length === 0) {
+      return [];
+    }
+
+    const matchingActions = section.actions.filter((action) => matchesActionSectionOrAction(section, action, matchers));
+    if (matchingActions.length === 0) {
+      return [];
+    }
+
+    return [{ ...section, actions: matchingActions }];
+  });
+}
+
+function matchesActionSectionOrAction(
+  section: BrowserPlayerCommandSectionDto,
+  action: BrowserPlayerCommandActionDto,
+  matchers: string[]
+): boolean {
+  const haystack = [
+    section.id,
+    section.label,
+    section.description,
+    action.id,
+    action.label,
+    action.description,
+    action.formLabel,
+    action.formPrompt,
+    action.advancedCommand
+  ].join(' ').toLocaleLowerCase('ru-RU');
+  const normalizedMatchers = matchers.map((matcher) => matcher.toLocaleLowerCase('ru-RU'));
+
+  return normalizedMatchers.some((matcher) => haystack.includes(matcher));
 }
 
 function ActionMenu({ menu }: { menu: BrowserPlayerCommandMenuDto }) {
