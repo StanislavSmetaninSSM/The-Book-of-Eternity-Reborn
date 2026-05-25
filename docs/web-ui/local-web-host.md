@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691, #701
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #691, #701, #702, #703
 Parent epic: #559
 
 ## Local-Only Model
@@ -97,6 +97,31 @@ BookOfEternityClient.WebFrontend/public/local-web-ui-shell.html
 ```
 
 That fallback keeps `dotnet run --project BookOfEternityClient -- --web` usable while later Browser Client tasks move screens into React. The C# runtime remains authoritative for game rules, persistence, command handling, validation, local-write safety, and afterlife/mortal contracts. TypeScript owns presentation, request state, UI composition, and interaction plumbing only.
+
+## Typed Browser API Contract
+
+Issue #703 adds a typed frontend contract layer under:
+
+```text
+BookOfEternityClient.WebFrontend/src/api/contracts.ts
+BookOfEternityClient.WebFrontend/src/api/client.ts
+BookOfEternityClient.WebFrontend/src/api/contract-fixture-checks.ts
+BookOfEternityClient.WebFrontend/src/api/contract-fixtures/
+```
+
+`src/api/contracts.ts` contains the hand-written TypeScript DTO/request/result types for the current local browser endpoints. `src/api/client.ts` exposes `BrowserApiClient` methods such as `getMainMenu`, `getSessionStatus`, `getGameScreen`, lifecycle validation, Explorer command calls, prompt-session calls, and QTE calls. React components should consume that typed client rather than scattering raw `fetch()` calls or endpoint-specific untyped JSON parsing.
+
+The contract strategy is checked hand-written types plus fixture guards rather than generated OpenAPI for now. `BrowserApiContractTests` serializes representative C# DTOs with the same web JSON settings as `LocalWebUiHost` and compares them to tracked frontend `contract-fixtures`. `contract-fixture-checks.ts` imports those same fixtures with TypeScript `satisfies` checks, so `npm run typecheck` validates the frontend-visible shape.
+
+Safe contract update workflow:
+
+1. Change the C# DTO/endpoint behavior first; C# remains the runtime authority.
+2. Update `src/api/contracts.ts` and, if request flow changes, `src/api/client.ts`.
+3. Update the matching `contract-fixtures/*.json` file.
+4. Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~BrowserApiContractTests|FullyQualifiedName~BrowserFrontendWorkspaceTests|FullyQualifiedName~LocalWebUiDocumentationTests" --logger "console;verbosity=minimal"`.
+5. Run `npm run typecheck --prefix BookOfEternityClient.WebFrontend` and `npm run build --prefix BookOfEternityClient.WebFrontend`.
+
+The TypeScript client normalizes endpoint failures into `BrowserApiResult<T>` with a player-facing `playerMessage` and optional `technicalDetails`. Default player UI should render `playerMessage`; `technicalDetails` belongs in the explicit Advanced / developer panel.
 
 ## Current Browser MVP
 
