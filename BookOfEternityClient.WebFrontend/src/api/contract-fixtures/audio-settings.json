@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "musicEnabled": true,
+  "musicVolume": 65,
+  "soundEnabled": true,
+  "soundVolume": 75,
+  "autoplayGuidance": "Браузер не может запустить звук автоматически: нажмите «Включить музыку в браузере».",
+  "missingAssetsMessage": "",
+  "playlists": [
+    {
+      "id": "main-menu",
+      "label": "Главное меню",
+      "usage": "Тихая тема книги до входа в активную сцену.",
+      "available": true,
+      "tracks": [
+        {
+          "id": "music:main-menu:Main Theme.mp3",
+          "label": "Main Theme",
+          "url": "/api/audio/assets/music%3Amain-menu%3AMain%20Theme.mp3",
+          "contentType": "audio/mpeg"
+        }
+      ]
+    },
+    {
+      "id": "in-game",
+      "label": "Игра",
+      "usage": "Фоновая музыка для текущего игрового экрана и переходов realm.",
+      "available": false,
+      "tracks": []
+    }
+  ],
+  "cues": [
+    {
+      "id": "turn-ready",
+      "label": "Ответ ГМа готов",
+      "usage": "Уведомление, что ход принят или готов к чтению.",
+      "available": true,
+      "asset": {
+        "id": "cue:turn-ready:sound-notification.wav",
+        "label": "sound-notification",
+        "url": "/api/audio/assets/cue%3Aturn-ready%3Asound-notification.wav",
+        "contentType": "audio/wav"
+      }
+    }
+  ]
+}
