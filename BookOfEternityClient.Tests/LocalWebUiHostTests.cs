@@ -250,6 +250,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "WebUi", "BrowserAudioService.cs"));
 
         Assert.Contains("new SemaphoreSlim(1, 1)", source, StringComparison.Ordinal);
+        Assert.Contains("public async Task<BrowserAudioSettingsDto> BuildSettingsAsync()\n    {\n        await SettingsWriteGate.WaitAsync()", source, StringComparison.Ordinal);
         Assert.Contains("await SettingsWriteGate.WaitAsync()", source, StringComparison.Ordinal);
         Assert.Contains("SettingsWriteGate.Release()", source, StringComparison.Ordinal);
     }

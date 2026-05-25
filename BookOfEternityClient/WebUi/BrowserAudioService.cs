@@ -26,8 +26,16 @@ public sealed class BrowserAudioService
 
     public async Task<BrowserAudioSettingsDto> BuildSettingsAsync()
     {
-        await _stateManager.LoadSettingsAsync();
-        return BuildSettings();
+        await SettingsWriteGate.WaitAsync();
+        try
+        {
+            await _stateManager.LoadSettingsAsync();
+            return BuildSettings();
+        }
+        finally
+        {
+            SettingsWriteGate.Release();
+        }
     }
 
     public async Task<BrowserAudioSettingsDto> UpdateSettingsAsync(BrowserAudioSettingsUpdateRequest request)
