@@ -123,7 +123,7 @@ public sealed class BrowserFrontendWorkspaceTests
     public void ReactAppShell_DefinesPlayerRoutesSharedStateAndAdvancedOptIn()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var styles = File.ReadAllText(Path.Combine(FrontendRoot, "src", "styles.css"));
+        var styles = ReadFrontendStyles();
 
         Assert.Contains("playerRoutes", app, StringComparison.Ordinal);
         Assert.Contains("activeRoute", app, StringComparison.Ordinal);
@@ -184,6 +184,50 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserDesignSystem_HasMaintainableCssStructureAndVisualTokens()
+    {
+        var entryStyles = File.ReadAllText(Path.Combine(FrontendRoot, "src", "styles.css"));
+        var styles = ReadFrontendStyles();
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
+        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
+
+        foreach (var fileName in new[] { "tokens.css", "base.css", "components.css", "layout.css", "motion.css" })
+        {
+            Assert.True(File.Exists(Path.Combine(FrontendRoot, "src", "styles", fileName)), $"Missing frontend design-system CSS file {fileName}");
+            Assert.Contains($"./styles/{fileName}", entryStyles, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("--color-ink", styles, StringComparison.Ordinal);
+        Assert.Contains("--color-parchment", styles, StringComparison.Ordinal);
+        Assert.Contains("--realm-chaos", styles, StringComparison.Ordinal);
+        Assert.Contains("--realm-shining", styles, StringComparison.Ordinal);
+        Assert.Contains("--state-repair", styles, StringComparison.Ordinal);
+        Assert.Contains("--state-qte", styles, StringComparison.Ordinal);
+        Assert.Contains("--motion-panel", styles, StringComparison.Ordinal);
+        Assert.Contains("prefers-reduced-motion", styles, StringComparison.Ordinal);
+        Assert.Contains(".design-system-grid", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card--game", styles, StringComparison.Ordinal);
+        Assert.Contains(".narrative-card.is-featured", styles, StringComparison.Ordinal);
+        Assert.Contains(".shell-panel[data-panel='turn']", styles, StringComparison.Ordinal);
+        Assert.Contains("@media (max-width: 640px)", styles, StringComparison.Ordinal);
+
+        Assert.Contains("Книга Вечности: Перерождение", app, StringComparison.Ordinal);
+        Assert.Contains("data-theme-key={realmTheme.key}", app, StringComparison.Ordinal);
+        Assert.Contains("route-card--${route.id}", app, StringComparison.Ordinal);
+        Assert.Contains("variant=\"turn\"", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Book of Eternity Reborn · Browser Client", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("player-facing", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Текущий realm", app, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("#685", readme, StringComparison.Ordinal);
+        Assert.Contains("src/styles/tokens.css", readme, StringComparison.Ordinal);
+        Assert.Contains("dark-fantasy", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("#685", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("design-system", hostDoc, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ReactAppShell_DocumentsIssue704RoutingAndPlayerAdvancedBoundary()
     {
         var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
@@ -210,5 +254,20 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("BuildShellHtml", hostSource, StringComparison.Ordinal);
         Assert.DoesNotContain("data-menu-action=\"continue\"", hostSource, StringComparison.Ordinal);
         Assert.DoesNotContain("<!doctype html>", hostSource, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string ReadFrontendStyles()
+    {
+        var paths = new[]
+        {
+            Path.Combine(FrontendRoot, "src", "styles.css"),
+            Path.Combine(FrontendRoot, "src", "styles", "tokens.css"),
+            Path.Combine(FrontendRoot, "src", "styles", "base.css"),
+            Path.Combine(FrontendRoot, "src", "styles", "components.css"),
+            Path.Combine(FrontendRoot, "src", "styles", "layout.css"),
+            Path.Combine(FrontendRoot, "src", "styles", "motion.css"),
+        };
+
+        return string.Join("\n", paths.Where(File.Exists).Select(File.ReadAllText));
     }
 }
