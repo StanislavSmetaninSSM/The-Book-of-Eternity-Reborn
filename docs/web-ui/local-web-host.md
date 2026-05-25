@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #691, #701, #702, #703, #704, #705
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #691, #701, #702, #703, #704, #705
 Parent epic: #559
 
 ## Local-Only Model
@@ -121,6 +121,8 @@ BookOfEternityClient.WebFrontend/src/api/contract-fixtures/
 
 The contract strategy is checked hand-written types plus fixture guards rather than generated OpenAPI for now. `BrowserApiContractTests` serializes representative C# DTOs with the same web JSON settings as `LocalWebUiHost` and compares them to tracked frontend `contract-fixtures`. `contract-fixture-checks.ts` imports those same fixtures with TypeScript `satisfies` checks, so `npm run typecheck` validates the frontend-visible shape.
 
+Issue #687 adds `BrowserCommandCoverageDto` as the read-only command parity audit contract. It is produced from `ExplorerCommandCatalog` and the shared browser action metadata, then consumed by `src/api/contracts.ts`, `src/api/client.ts`, and `contract-fixtures/command-coverage.json` so new commands must keep an explicit browser UX decision.
+
 Safe contract update workflow:
 
 1. Change the C# DTO/endpoint behavior first; C# remains the runtime authority.
@@ -157,6 +159,7 @@ GET /api/session
 GET /api/game-screen
 GET /api/lifecycle/dashboard
 POST /api/lifecycle/validate
+GET /api/explorer/command-coverage
 POST /api/explorer/command
 GET /api/explorer/prompt-sessions/{sessionId}
 POST /api/explorer/prompt-sessions/submit
@@ -174,7 +177,7 @@ GET /api/audio/assets/{assetId}
 
 The default surface includes the #683 contextual action menu in the `Мир` route. It is built from C# command metadata in `/api/game-screen`, groups actions into Russian game sections (`Персонаж / Душа`, `Мир`, `Квесты`, `Карта`, `Фракции`, `Хранители`, `Посмертие`, `Бой`, `Архив`, `Настройки`), and hides raw slash command IDs from normal player cards. Read-only actions open their browser result from the card. Mutating actions open the existing browser prompt-session forms, show realm availability, disabled reasons, and warning text, and submit answers through the same C# lifecycle/local-write coordinator used by migrated browser commands.
 
-The #704 React **Advanced / developer panel** is available only through the explicit `Расширенный режим` button. It exposes typed API contract/status diagnostics and lazily loads the lifecycle dashboard after opt-in; Continue/New Game and slash-prefixed prose input do not open it automatically. The no-build fallback shell (`public/local-web-ui-shell.html`) still contains the older raw command console, migrated command renderer, lifecycle validation controls, QTE probes, and `/api/*` details for development/repair until those tools are rebuilt as React advanced-only components. Both shells keep the normal browser landing page player-facing and do not duplicate game logic in JavaScript.
+The #704 React **Advanced / developer panel** is available only through the explicit `Расширенный режим` button. It exposes typed API contract/status diagnostics, lazily loads the lifecycle dashboard after opt-in, and issue #687 adds the read-only command coverage matrix from `GET /api/explorer/command-coverage`. Continue/New Game and slash-prefixed prose input do not open it automatically. The no-build fallback shell (`public/local-web-ui-shell.html`) still contains the older raw command console, migrated command renderer, lifecycle validation controls, QTE probes, and `/api/*` details for development/repair until those tools are rebuilt as React advanced-only components. Both shells keep the normal browser landing page player-facing and do not duplicate game logic in JavaScript.
 
 Normal player-menu errors are short Russian messages. In the React shell, technical exception/HTTP details are only shown after explicit advanced opt-in; the fallback shell may expose them through a `Подробности` disclosure for repair without making them primary player content.
 

@@ -27,6 +27,7 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("/spiritual_arts", text, StringComparison.Ordinal);
         Assert.Contains("/api/lifecycle/dashboard", text, StringComparison.Ordinal);
         Assert.Contains("/api/lifecycle/validate", text, StringComparison.Ordinal);
+        Assert.Contains("/api/explorer/command-coverage", text, StringComparison.Ordinal);
         Assert.Contains("Панель состояния", text, StringComparison.Ordinal);
         Assert.Contains("Troubleshooting", text, StringComparison.Ordinal);
     }
@@ -144,6 +145,7 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("src/api/client.ts", hostDoc, StringComparison.Ordinal);
         Assert.Contains("contract-fixtures", hostDoc, StringComparison.Ordinal);
         Assert.Contains("BrowserApiContractTests", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("BrowserCommandCoverageDto", hostDoc, StringComparison.Ordinal);
         Assert.Contains("npm run typecheck", hostDoc, StringComparison.Ordinal);
         Assert.Contains("playerMessage", hostDoc, StringComparison.Ordinal);
         Assert.Contains("technicalDetails", hostDoc, StringComparison.Ordinal);

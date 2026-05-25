@@ -111,6 +111,7 @@ public static class LocalWebUiHost
             await lifecycle.BuildDashboardAsync());
         app.MapPost("/api/lifecycle/validate", async (BrowserLifecycleDashboardService lifecycle) =>
             await lifecycle.BuildValidationAsync());
+        app.MapGet("/api/explorer/command-coverage", () => BrowserCommandCoverageService.Build());
         app.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
             await commandService.ExecuteAsync(request));
         app.MapGet("/api/explorer/prompt-sessions/{sessionId}", (string sessionId, ExplorerWebCommandService commandService) =>

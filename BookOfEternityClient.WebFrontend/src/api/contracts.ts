@@ -358,6 +358,57 @@ export interface BrowserPlayerCommandActionDto {
   advancedCommand: string;
 }
 
+export interface BrowserCommandCoverageDto {
+  schemaVersion: number;
+  summary: BrowserCommandCoverageSummaryDto;
+  commands: BrowserCommandCoverageEntryDto[];
+}
+
+export interface BrowserCommandCoverageSummaryDto {
+  descriptorCount: number;
+  aliasCount: number;
+  subcommandCount: number;
+  browserExecutableCount: number;
+  playerDefaultActionCount: number;
+  advancedOnlyActionCount: number;
+  mutatingCommandCount: number;
+  commandsNeedingFollowUpCount: number;
+}
+
+export interface BrowserCommandCoverageEntryDto {
+  id: string;
+  aliases: string[];
+  group: string;
+  mutationMode: string;
+  browserStatus: string;
+  handlerKind: string;
+  uxDecision: string;
+  surface: string;
+  formMode: string;
+  primaryActionLabel: string;
+  primaryCommand: string;
+  subcommands: BrowserCommandSubcommandCoverageDto[];
+  followUpIssue: string;
+  reason: string;
+}
+
+export interface BrowserCommandSubcommandCoverageDto {
+  id: string;
+  aliases: string[];
+  canonicalCommand: string;
+  group: string;
+  mutationMode: string;
+  browserStatus: string;
+  handlerKind: string;
+  uxDecision: string;
+  surface: string;
+  formMode: string;
+  primaryActionLabel: string;
+  primaryCommand: string;
+  followUpIssue: string;
+  reason: string;
+}
+
 export interface BrowserGameScreenFlagsDto {
   isInChaosSea: boolean;
   isInAnyShiningAbodeState: boolean;

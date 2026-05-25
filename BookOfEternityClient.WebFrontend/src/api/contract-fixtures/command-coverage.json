@@ -1,0 +1,1511 @@
+{
+  "schemaVersion": 1,
+  "summary": {
+    "descriptorCount": 69,
+    "aliasCount": 153,
+    "subcommandCount": 8,
+    "browserExecutableCount": 69,
+    "playerDefaultActionCount": 62,
+    "advancedOnlyActionCount": 7,
+    "mutatingCommandCount": 13,
+    "commandsNeedingFollowUpCount": 0
+  },
+  "commands": [
+    {
+      "id": "help",
+      "aliases": [
+        "/help",
+        "/\u043F\u043E\u043C\u043E\u0449\u044C"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "Help",
+      "uxDecision": "advanced-diagnostics",
+      "surface": "advanced-only",
+      "formMode": "none",
+      "primaryActionLabel": "\u0421\u043F\u0440\u0430\u0432\u043A\u0430",
+      "primaryCommand": "/help",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "math",
+      "aliases": [
+        "/math",
+        "/\u043C\u0430\u0442\u0435\u043C\u0430\u0442\u0438\u043A"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "Math",
+      "uxDecision": "advanced-diagnostics",
+      "surface": "advanced-only",
+      "formMode": "none",
+      "primaryActionLabel": "\u041C\u0430\u0442\u0435\u043C\u0430\u0442\u0438\u043A",
+      "primaryCommand": "/math",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "soul",
+      "aliases": [
+        "/soul",
+        "/\u0434\u0443\u0448\u0430"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0414\u0443\u0448\u0430",
+      "primaryCommand": "/soul",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "soul_relics",
+      "aliases": [
+        "/soul_relics",
+        "/\u0440\u0435\u043B\u0438\u043A\u0432\u0438\u0438"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0420\u0435\u043B\u0438\u043A\u0432\u0438\u0438 \u0434\u0443\u0448\u0438",
+      "primaryCommand": "/soul_relics",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "afterlife_archive",
+      "aliases": [
+        "/afterlife_archive",
+        "/\u0430\u0440\u0445\u0438\u0432_\u0434\u0443\u0448\u0438"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0410\u0440\u0445\u0438\u0432 \u0434\u0443\u0448\u0438",
+      "primaryCommand": "/afterlife_archive",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "archive_candidates",
+      "aliases": [
+        "/archive_candidates",
+        "/\u0430\u0440\u0445\u0438\u0432_\u043A\u0430\u043D\u0434\u0438\u0434\u0430\u0442\u044B"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041A\u0430\u043D\u0434\u0438\u0434\u0430\u0442\u044B \u0430\u0440\u0445\u0438\u0432\u0430",
+      "primaryCommand": "/archive_candidates",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "soul_quests",
+      "aliases": [
+        "/soul_quests",
+        "/\u043A\u0432\u0435\u0441\u0442\u044B_\u0434\u0443\u0448\u0438"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041A\u0432\u0435\u0441\u0442\u044B \u0434\u0443\u0448\u0438",
+      "primaryCommand": "/soul_quests",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "codex",
+      "aliases": [
+        "/codex",
+        "/\u043A\u043E\u0434\u0435\u043A\u0441"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041A\u043E\u0434\u0435\u043A\u0441",
+      "primaryCommand": "/codex",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "achievements",
+      "aliases": [
+        "/achievements",
+        "/\u0434\u043E\u0441\u0442\u0438\u0436\u0435\u043D\u0438\u044F"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0414\u043E\u0441\u0442\u0438\u0436\u0435\u043D\u0438\u044F",
+      "primaryCommand": "/achievements",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "chronicle",
+      "aliases": [
+        "/chronicle",
+        "/\u0445\u0440\u043E\u043D\u0438\u043A\u0430"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0425\u0440\u043E\u043D\u0438\u043A\u0430",
+      "primaryCommand": "/chronicle",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "story",
+      "aliases": [
+        "/story",
+        "/\u0440\u0430\u0441\u0441\u043A\u0430\u0437",
+        "/\u0438\u0441\u0442\u043E\u0440\u0438\u044F"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0420\u0430\u0441\u0441\u043A\u0430\u0437",
+      "primaryCommand": "/story",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "behavior",
+      "aliases": [
+        "/behavior",
+        "/\u043F\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u0435"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u043E\u0432\u0435\u0434\u0435\u043D\u0438\u0435 \u0438\u0433\u0440\u043E\u043A\u0430",
+      "primaryCommand": "/behavior",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "lives",
+      "aliases": [
+        "/lives",
+        "/\u0436\u0438\u0437\u043D\u0438"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0436\u0438\u0437\u043D\u0435\u0439",
+      "primaryCommand": "/lives",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "feathers",
+      "aliases": [
+        "/feathers",
+        "/\u043F\u0435\u0440\u044C\u044F"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0427\u0435\u0440\u043D\u0438\u043B\u044C\u043D\u044B\u0435 \u043F\u0435\u0440\u044C\u044F",
+      "primaryCommand": "/feathers",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "world_rules",
+      "aliases": [
+        "/world_rules",
+        "/\u043F\u0440\u0430\u0432\u0438\u043B\u0430_\u043C\u0438\u0440\u0430"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u0440\u0430\u0432\u0438\u043B\u0430 \u043C\u0438\u0440\u0430",
+      "primaryCommand": "/world_rules",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "gallery",
+      "aliases": [
+        "/gallery",
+        "/\u0433\u0430\u043B\u0435\u0440\u0435\u044F"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0413\u0430\u043B\u0435\u0440\u0435\u044F",
+      "primaryCommand": "/gallery",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "status",
+      "aliases": [
+        "/status",
+        "/\u0441\u0442\u0430\u0442\u0443\u0441"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0421\u0442\u0430\u0442\u0443\u0441",
+      "primaryCommand": "/status",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "gm",
+      "aliases": [
+        "/gm",
+        "/\u0433\u043C"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "advanced-diagnostics",
+      "surface": "advanced-only",
+      "formMode": "none",
+      "primaryActionLabel": "\u041C\u044B\u0441\u043B\u0438 \u0413\u041C\u0430",
+      "primaryCommand": "/gm",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "debug",
+      "aliases": [
+        "/debug",
+        "/\u043E\u0442\u043B\u0430\u0434\u043A\u0430"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "advanced-diagnostics",
+      "surface": "advanced-only",
+      "formMode": "none",
+      "primaryActionLabel": "\u041E\u0442\u043B\u0430\u0434\u043A\u0430",
+      "primaryCommand": "/debug",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "mods",
+      "aliases": [
+        "/mods",
+        "/\u043C\u043E\u0434\u044B"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "advanced-diagnostics",
+      "surface": "advanced-only",
+      "formMode": "none",
+      "primaryActionLabel": "\u041C\u043E\u0434\u044B",
+      "primaryCommand": "/mods",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "system_guardians",
+      "aliases": [
+        "/system_guardians",
+        "/\u0441\u0438\u0441\u0442\u0435\u043C\u043D\u044B\u0435_\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0438",
+        "/\u0438\u0437\u0432\u0435\u0447\u043D\u044B\u0435_\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0438"
+      ],
+      "group": "UniversalMeta",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "advanced-diagnostics",
+      "surface": "advanced-only",
+      "formMode": "none",
+      "primaryActionLabel": "\u0421\u0438\u0441\u0442\u0435\u043C\u043D\u044B\u0435 \u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0438",
+      "primaryCommand": "/system_guardians",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "saref_story",
+      "aliases": [
+        "/saref",
+        "/\u0441\u0430\u0440\u0435\u0444",
+        "/saref_story",
+        "/\u0438\u0441\u0442\u043E\u0440\u0438\u044F_\u0441\u0430\u0440\u0435\u0444\u0430",
+        "/wings_of_angels",
+        "/\u043A\u0440\u044B\u043B\u044C\u044F_\u043D\u0430\u0434_\u0431\u0435\u0437\u0434\u043D\u043E\u0439"
+      ],
+      "group": "SarefStory",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0421\u0430\u0440\u0435\u0444\u0430",
+      "primaryCommand": "/saref",
+      "subcommands": [
+        {
+          "id": "find_wings",
+          "aliases": [
+            "find_wings",
+            "find wings",
+            "\u043D\u0430\u0439\u0442\u0438_\u043A\u0440\u044B\u043B\u044C\u044F",
+            "\u043D\u0430\u0439\u0442\u0438 \u043A\u0440\u044B\u043B\u044C\u044F"
+          ],
+          "canonicalCommand": "/\u0441\u0430\u0440\u0435\u0444 \u043D\u0430\u0439\u0442\u0438_\u043A\u0440\u044B\u043B\u044C\u044F",
+          "group": "SarefStory",
+          "mutationMode": "LocalTurn",
+          "browserStatus": "MutatingParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "guided-form",
+          "surface": "player-default",
+          "formMode": "guided-form",
+          "primaryActionLabel": "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0421\u0430\u0440\u0435\u0444\u0430",
+          "primaryCommand": "/\u0441\u0430\u0440\u0435\u0444 \u043D\u0430\u0439\u0442\u0438_\u043A\u0440\u044B\u043B\u044C\u044F",
+          "followUpIssue": "",
+          "reason": ""
+        },
+        {
+          "id": "use_advantage",
+          "aliases": [
+            "use_advantage",
+            "use advantage",
+            "\u043F\u0440\u0435\u0438\u043C\u0443\u0449\u0435\u0441\u0442\u0432\u043E",
+            "\u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C_\u043F\u0440\u0435\u0438\u043C\u0443\u0449\u0435\u0441\u0442\u0432\u043E",
+            "\u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C \u043F\u0440\u0435\u0438\u043C\u0443\u0449\u0435\u0441\u0442\u0432\u043E"
+          ],
+          "canonicalCommand": "/\u0441\u0430\u0440\u0435\u0444 \u043F\u0440\u0435\u0438\u043C\u0443\u0449\u0435\u0441\u0442\u0432\u043E",
+          "group": "SarefStory",
+          "mutationMode": "LocalTurn",
+          "browserStatus": "MutatingParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "guided-form",
+          "surface": "player-default",
+          "formMode": "guided-form",
+          "primaryActionLabel": "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0421\u0430\u0440\u0435\u0444\u0430",
+          "primaryCommand": "/\u0441\u0430\u0440\u0435\u0444 \u043F\u0440\u0435\u0438\u043C\u0443\u0449\u0435\u0441\u0442\u0432\u043E",
+          "followUpIssue": "",
+          "reason": ""
+        },
+        {
+          "id": "confrontation",
+          "aliases": [
+            "confrontation",
+            "confront",
+            "final",
+            "\u0444\u0438\u043D\u0430\u043B",
+            "\u043A\u043E\u043D\u0444\u0440\u043E\u043D\u0442\u0430\u0446\u0438\u044F",
+            "\u0441\u0440\u0430\u0437\u0438\u0442\u044C\u0441\u044F"
+          ],
+          "canonicalCommand": "/\u0441\u0430\u0440\u0435\u0444 \u043A\u043E\u043D\u0444\u0440\u043E\u043D\u0442\u0430\u0446\u0438\u044F",
+          "group": "SarefStory",
+          "mutationMode": "LocalTurn",
+          "browserStatus": "MutatingParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "guided-form",
+          "surface": "player-default",
+          "formMode": "guided-form",
+          "primaryActionLabel": "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0421\u0430\u0440\u0435\u0444\u0430",
+          "primaryCommand": "/\u0441\u0430\u0440\u0435\u0444 \u043A\u043E\u043D\u0444\u0440\u043E\u043D\u0442\u0430\u0446\u0438\u044F",
+          "followUpIssue": "",
+          "reason": ""
+        },
+        {
+          "id": "break_oath",
+          "aliases": [
+            "break_oath",
+            "break oath",
+            "\u0440\u0430\u0437\u043E\u0440\u0432\u0430\u0442\u044C_\u043A\u043B\u044F\u0442\u0432\u0443",
+            "\u0440\u0430\u0437\u043E\u0440\u0432\u0430\u0442\u044C \u043A\u043B\u044F\u0442\u0432\u0443",
+            "\u0440\u0430\u0437\u0440\u044B\u0432_\u043A\u043B\u044F\u0442\u0432\u044B",
+            "\u0440\u0430\u0437\u0440\u044B\u0432 \u043A\u043B\u044F\u0442\u0432\u044B"
+          ],
+          "canonicalCommand": "/\u0441\u0430\u0440\u0435\u0444 \u0440\u0430\u0437\u043E\u0440\u0432\u0430\u0442\u044C_\u043A\u043B\u044F\u0442\u0432\u0443",
+          "group": "SarefStory",
+          "mutationMode": "LocalTurn",
+          "browserStatus": "MutatingParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "guided-form",
+          "surface": "player-default",
+          "formMode": "guided-form",
+          "primaryActionLabel": "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0421\u0430\u0440\u0435\u0444\u0430",
+          "primaryCommand": "/\u0441\u0430\u0440\u0435\u0444 \u0440\u0430\u0437\u043E\u0440\u0432\u0430\u0442\u044C_\u043A\u043B\u044F\u0442\u0432\u0443",
+          "followUpIssue": "",
+          "reason": ""
+        },
+        {
+          "id": "agenda",
+          "aliases": [
+            "agenda",
+            "assignment",
+            "\u043F\u043E\u0440\u0443\u0447\u0435\u043D\u0438\u0435",
+            "\u043F\u043E\u0432\u0435\u0441\u0442\u043A\u0430",
+            "\u0437\u0430\u0434\u0430\u043D\u0438\u0435"
+          ],
+          "canonicalCommand": "/\u0441\u0430\u0440\u0435\u0444 \u043F\u043E\u0440\u0443\u0447\u0435\u043D\u0438\u0435",
+          "group": "SarefStory",
+          "mutationMode": "LocalTurn",
+          "browserStatus": "MutatingParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "guided-form",
+          "surface": "player-default",
+          "formMode": "guided-form",
+          "primaryActionLabel": "\u0418\u0441\u0442\u043E\u0440\u0438\u044F \u0421\u0430\u0440\u0435\u0444\u0430",
+          "primaryCommand": "/\u0441\u0430\u0440\u0435\u0444 \u043F\u043E\u0440\u0443\u0447\u0435\u043D\u0438\u0435",
+          "followUpIssue": "",
+          "reason": ""
+        }
+      ],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "saref_memory_scene",
+      "aliases": [
+        "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435",
+        "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u0441\u0442\u0430\u0442\u0443\u0441",
+        "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u043D\u0430\u0447\u0430\u0442\u044C",
+        "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438"
+      ],
+      "group": "SarefStory",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "UniversalMeta",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0412\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435 \u0421\u0430\u0440\u0435\u0444\u0430",
+      "primaryCommand": "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435",
+      "subcommands": [
+        {
+          "id": "status",
+          "aliases": [
+            "status",
+            "\u0441\u0442\u0430\u0442\u0443\u0441"
+          ],
+          "canonicalCommand": "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u0441\u0442\u0430\u0442\u0443\u0441",
+          "group": "SarefStory",
+          "mutationMode": "ReadOnly",
+          "browserStatus": "ReadOnlyParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "contextual-button",
+          "surface": "player-default",
+          "formMode": "none",
+          "primaryActionLabel": "\u0412\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435 \u0421\u0430\u0440\u0435\u0444\u0430",
+          "primaryCommand": "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u0441\u0442\u0430\u0442\u0443\u0441",
+          "followUpIssue": "",
+          "reason": ""
+        },
+        {
+          "id": "start",
+          "aliases": [
+            "start",
+            "\u043D\u0430\u0447\u0430\u0442\u044C"
+          ],
+          "canonicalCommand": "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u043D\u0430\u0447\u0430\u0442\u044C",
+          "group": "SarefStory",
+          "mutationMode": "ReadOnly",
+          "browserStatus": "ReadOnlyParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "contextual-button",
+          "surface": "player-default",
+          "formMode": "none",
+          "primaryActionLabel": "\u0412\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435 \u0421\u0430\u0440\u0435\u0444\u0430",
+          "primaryCommand": "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u043D\u0430\u0447\u0430\u0442\u044C",
+          "followUpIssue": "",
+          "reason": ""
+        },
+        {
+          "id": "abilities",
+          "aliases": [
+            "abilities",
+            "\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438"
+          ],
+          "canonicalCommand": "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438",
+          "group": "SarefStory",
+          "mutationMode": "ReadOnly",
+          "browserStatus": "ReadOnlyParity",
+          "handlerKind": "UniversalMeta",
+          "uxDecision": "contextual-button",
+          "surface": "player-default",
+          "formMode": "none",
+          "primaryActionLabel": "\u0412\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435 \u0421\u0430\u0440\u0435\u0444\u0430",
+          "primaryCommand": "/\u0432\u043E\u0441\u043F\u043E\u043C\u0438\u043D\u0430\u043D\u0438\u0435_\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u0438",
+          "followUpIssue": "",
+          "reason": ""
+        }
+      ],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "validate",
+      "aliases": [
+        "/validate",
+        "/\u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u044F"
+      ],
+      "group": "Lifecycle",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "advanced-diagnostics",
+      "surface": "advanced-only",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0412\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u044F",
+      "primaryCommand": "/validate",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "world_setup",
+      "aliases": [
+        "/world_setup",
+        "/\u043D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0430_\u043C\u0438\u0440\u0430"
+      ],
+      "group": "Lifecycle",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u043A\u0430 \u043C\u0438\u0440\u0430",
+      "primaryCommand": "/world_setup",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "inventory",
+      "aliases": [
+        "/inv",
+        "/inventory",
+        "/\u0438\u043D\u0432",
+        "/\u0438\u043D\u0432\u0435\u043D\u0442\u0430\u0440\u044C"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0418\u043D\u0432\u0435\u043D\u0442\u0430\u0440\u044C",
+      "primaryCommand": "/inv",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "npcs",
+      "aliases": [
+        "/npc",
+        "/npcs",
+        "/characters",
+        "/\u043D\u043F\u0441",
+        "/\u043F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0438"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0438",
+      "primaryCommand": "/npc",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "quests",
+      "aliases": [
+        "/quests",
+        "/\u043A\u0432\u0435\u0441\u0442\u044B"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041A\u0432\u0435\u0441\u0442\u044B",
+      "primaryCommand": "/quests",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "map",
+      "aliases": [
+        "/map",
+        "/\u043A\u0430\u0440\u0442\u0430"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041A\u0430\u0440\u0442\u0430",
+      "primaryCommand": "/map",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "where_am_i",
+      "aliases": [
+        "/where_am_i",
+        "/\u0433\u0434\u0435_\u044F"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0413\u0434\u0435 \u044F",
+      "primaryCommand": "/where_am_i",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "factions",
+      "aliases": [
+        "/factions",
+        "/\u0444\u0440\u0430\u043A\u0446\u0438\u0438"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0424\u0440\u0430\u043A\u0446\u0438\u0438",
+      "primaryCommand": "/factions",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "skills",
+      "aliases": [
+        "/skills",
+        "/\u043D\u0430\u0432\u044B\u043A\u0438"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041D\u0430\u0432\u044B\u043A\u0438",
+      "primaryCommand": "/skills",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "stats",
+      "aliases": [
+        "/stats",
+        "/\u0441\u0442\u0430\u0442\u044B",
+        "/\u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0425\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438",
+      "primaryCommand": "/stats",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "world_news",
+      "aliases": [
+        "/world_news",
+        "/\u043D\u043E\u0432\u043E\u0441\u0442\u0438_\u043C\u0438\u0440\u0430"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041D\u043E\u0432\u043E\u0441\u0442\u0438 \u043C\u0438\u0440\u0430",
+      "primaryCommand": "/world_news",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "rival_threads",
+      "aliases": [
+        "/rival_threads",
+        "/\u0447\u0443\u0436\u0438\u0435_\u043D\u0438\u0442\u0438"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0427\u0443\u0436\u0438\u0435 \u043D\u0438\u0442\u0438",
+      "primaryCommand": "/rival_threads",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "guardian_corrections",
+      "aliases": [
+        "/guardian_corrections",
+        "/\u043A\u043E\u0440\u0440\u0435\u043A\u0442\u0438\u0432\u044B_\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u044F"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041A\u043E\u0440\u0440\u0435\u043A\u0442\u0438\u0432\u044B \u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u044F",
+      "primaryCommand": "/guardian_corrections",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "locations",
+      "aliases": [
+        "/locations",
+        "/\u043B\u043E\u043A\u0430\u0446\u0438\u0438"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041B\u043E\u043A\u0430\u0446\u0438\u0438",
+      "primaryCommand": "/locations",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "transport",
+      "aliases": [
+        "/transport",
+        "/\u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0422\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442",
+      "primaryCommand": "/transport",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "effects",
+      "aliases": [
+        "/effects",
+        "/\u044D\u0444\u0444\u0435\u043A\u0442\u044B"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u042D\u0444\u0444\u0435\u043A\u0442\u044B",
+      "primaryCommand": "/effects",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "combat",
+      "aliases": [
+        "/combat",
+        "/\u0431\u043E\u0439"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0411\u043E\u0435\u0432\u044B\u0435 \u0441\u0432\u0435\u0434\u0435\u043D\u0438\u044F",
+      "primaryCommand": "/combat",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "weather",
+      "aliases": [
+        "/weather",
+        "/\u043F\u043E\u0433\u043E\u0434\u0430"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0412\u0440\u0435\u043C\u044F \u0438 \u043F\u043E\u0433\u043E\u0434\u0430",
+      "primaryCommand": "/weather",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "books",
+      "aliases": [
+        "/books",
+        "/\u043A\u043D\u0438\u0433\u0438",
+        "/\u0447\u0438\u0442\u0430\u0442\u044C"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041A\u043D\u0438\u0433\u0438 \u0438 \u0442\u0435\u043A\u0441\u0442\u044B",
+      "primaryCommand": "/books",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "storage_access",
+      "aliases": [
+        "/storage_access",
+        "/\u0434\u043E\u0441\u0442\u0443\u043F_\u043A_\u0445\u0440\u0430\u043D\u0438\u043B\u0438\u0449\u0430\u043C"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0414\u043E\u0441\u0442\u0443\u043F \u043A \u0445\u0440\u0430\u043D\u0438\u043B\u0438\u0449\u0430\u043C",
+      "primaryCommand": "/storage_access",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "interactions",
+      "aliases": [
+        "/interactions",
+        "/\u0432\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "MortalWorld",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F",
+      "primaryCommand": "/interactions",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "distribute",
+      "aliases": [
+        "/distribute",
+        "/\u0440\u0430\u0441\u043F\u0440\u0435\u0434\u0435\u043B\u0438\u0442\u044C"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0420\u0430\u0441\u043F\u0440\u0435\u0434\u0435\u043B\u0438\u0442\u044C \u0445\u0430\u0440\u0430\u043A\u0442\u0435\u0440\u0438\u0441\u0442\u0438\u043A\u0438",
+      "primaryCommand": "/distribute",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "companion_directive",
+      "aliases": [
+        "/companion_directive",
+        "/\u0434\u0438\u0440\u0435\u043A\u0442\u0438\u0432\u0430_\u043A\u043E\u043C\u043F\u0430\u043D\u044C\u043E\u043D\u0443"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0414\u0438\u0440\u0435\u043A\u0442\u0438\u0432\u0430 \u043A\u043E\u043C\u043F\u0430\u043D\u044C\u043E\u043D\u0443",
+      "primaryCommand": "/companion_directive",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "faction_directive",
+      "aliases": [
+        "/faction_directive",
+        "/\u0434\u0438\u0440\u0435\u043A\u0442\u0438\u0432\u0430_\u0444\u0440\u0430\u043A\u0446\u0438\u0438"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0414\u0438\u0440\u0435\u043A\u0442\u0438\u0432\u0430 \u0444\u0440\u0430\u043A\u0446\u0438\u0438",
+      "primaryCommand": "/faction_directive",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "craft",
+      "aliases": [
+        "/craft",
+        "/\u0440\u0435\u043C\u0435\u0441\u043B\u043E"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0420\u0435\u043C\u0435\u0441\u043B\u043E",
+      "primaryCommand": "/craft",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "chaos_sea",
+      "aliases": [
+        "/chaos_sea",
+        "/\u043C\u043E\u0440\u0435_\u0445\u0430\u043E\u0441\u0430"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ChaosSea",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041C\u043E\u0440\u0435 \u0425\u0430\u043E\u0441\u0430",
+      "primaryCommand": "/chaos_sea",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "guardians",
+      "aliases": [
+        "/guardians",
+        "/\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0438"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ChaosSea",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0425\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0438",
+      "primaryCommand": "/guardians",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "abode_power",
+      "aliases": [
+        "/abode_power",
+        "/\u0441\u0438\u043B\u0430_\u043E\u0431\u0438\u0442\u0435\u043B\u0438"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ChaosSea",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0421\u0438\u043B\u0430 \u043E\u0431\u0438\u0442\u0435\u043B\u0438",
+      "primaryCommand": "/abode_power",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "guardian_projects",
+      "aliases": [
+        "/guardian_projects",
+        "/\u043F\u0440\u043E\u0435\u043A\u0442\u044B_\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0435\u0439"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ChaosSea",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u0440\u043E\u0435\u043A\u0442\u044B \u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0435\u0439",
+      "primaryCommand": "/guardian_projects",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "guardian_politics",
+      "aliases": [
+        "/guardian_politics",
+        "/\u043F\u043E\u043B\u0438\u0442\u0438\u043A\u0430_\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0435\u0439"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ChaosSea",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u043E\u043B\u0438\u0442\u0438\u043A\u0430 \u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0435\u0439",
+      "primaryCommand": "/guardian_politics",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "abodes",
+      "aliases": [
+        "/abodes",
+        "/\u043E\u0431\u0438\u0442\u0435\u043B\u0438"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ChaosSea",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041E\u0431\u0438\u0442\u0435\u043B\u0438",
+      "primaryCommand": "/abodes",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "gacha",
+      "aliases": [
+        "/gacha",
+        "/\u0433\u0430\u0447\u0430"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ChaosSea",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u0440\u0438\u0437\u044B\u0432 \u0441\u0443\u0434\u044C\u0431\u044B",
+      "primaryCommand": "/gacha",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "abode_offering",
+      "aliases": [
+        "/abode_offering",
+        "/\u043F\u043E\u0434\u043D\u043E\u0448\u0435\u043D\u0438\u0435_\u043E\u0431\u0438\u0442\u0435\u043B\u0438"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041F\u043E\u0434\u043D\u043E\u0448\u0435\u043D\u0438\u0435 \u043E\u0431\u0438\u0442\u0435\u043B\u0438",
+      "primaryCommand": "/abode_offering",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "found_guardian_mantle",
+      "aliases": [
+        "/found_guardian_mantle",
+        "/\u0443\u0447\u0440\u0435\u0434\u0438\u0442\u044C_\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u044F"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0423\u0447\u0440\u0435\u0434\u0438\u0442\u044C \u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u044F",
+      "primaryCommand": "/found_guardian_mantle",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "shining_abode",
+      "aliases": [
+        "/shining_abode",
+        "/\u0441\u0438\u044F\u044E\u0449\u0430\u044F_\u043E\u0431\u0438\u0442\u0435\u043B\u044C"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0421\u0438\u044F\u044E\u0449\u0430\u044F \u041E\u0431\u0438\u0442\u0435\u043B\u044C",
+      "primaryCommand": "/shining_abode",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "shining_politics",
+      "aliases": [
+        "/shining_politics",
+        "/\u0441\u0438\u044F\u044E\u0449\u0430\u044F_\u043F\u043E\u043B\u0438\u0442\u0438\u043A\u0430"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u043E\u043B\u0438\u0442\u0438\u043A\u0430 \u0421\u0438\u044F\u043D\u0438\u044F",
+      "primaryCommand": "/shining_politics",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "shining_treasury",
+      "aliases": [
+        "/shining_treasury",
+        "/\u043A\u0430\u0437\u043D\u0430\u0447\u0435\u0439\u0441\u0442\u0432\u043E"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041A\u0430\u0437\u043D\u0430\u0447\u0435\u0439\u0441\u0442\u0432\u043E",
+      "primaryCommand": "/shining_treasury",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "source_of_light",
+      "aliases": [
+        "/source_of_light",
+        "/\u0438\u0441\u0442\u043E\u0447\u043D\u0438\u043A_\u0441\u0432\u0435\u0442\u0430"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0418\u0441\u0442\u043E\u0447\u043D\u0438\u043A \u0421\u0432\u0435\u0442\u0430",
+      "primaryCommand": "/source_of_light",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "afterlife_profiles",
+      "aliases": [
+        "/afterlife_profiles",
+        "/\u043F\u0440\u043E\u0444\u0438\u043B\u0438_\u0437\u0430\u0433\u0440\u043E\u0431\u044C\u044F"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "AfterlifeCombat",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u0440\u043E\u0444\u0438\u043B\u0438 \u043F\u043E\u0441\u043C\u0435\u0440\u0442\u0438\u044F",
+      "primaryCommand": "/afterlife_profiles",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "afterlife_threats",
+      "aliases": [
+        "/afterlife_threats",
+        "/\u0443\u0433\u0440\u043E\u0437\u044B_\u0437\u0430\u0433\u0440\u043E\u0431\u044C\u044F"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "AfterlifeCombat",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0423\u0433\u0440\u043E\u0437\u044B \u043F\u043E\u0441\u043C\u0435\u0440\u0442\u0438\u044F",
+      "primaryCommand": "/afterlife_threats",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "afterlife_inbox",
+      "aliases": [
+        "/afterlife_inbox",
+        "/\u0443\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F_\u0437\u0430\u0433\u0440\u043E\u0431\u044C\u044F"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "AfterlifeCombat",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0423\u0432\u0435\u0434\u043E\u043C\u043B\u0435\u043D\u0438\u044F \u043F\u043E\u0441\u043C\u0435\u0440\u0442\u0438\u044F",
+      "primaryCommand": "/afterlife_inbox",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "spiritual_conflict",
+      "aliases": [
+        "/spiritual_conflict",
+        "/\u0434\u0443\u0445\u043E\u0432\u043D\u044B\u0439_\u043A\u043E\u043D\u0444\u043B\u0438\u043A\u0442"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "AfterlifeCombat",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0414\u0443\u0445\u043E\u0432\u043D\u044B\u0439 \u043A\u043E\u043D\u0444\u043B\u0438\u043A\u0442",
+      "primaryCommand": "/spiritual_conflict",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "spiritual_combat_log",
+      "aliases": [
+        "/spiritual_combat_log",
+        "/\u0436\u0443\u0440\u043D\u0430\u043B_\u0434\u0443\u0445\u043E\u0432\u043D\u043E\u0433\u043E_\u0431\u043E\u044F"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "AfterlifeCombat",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0416\u0443\u0440\u043D\u0430\u043B \u0434\u0443\u0445\u043E\u0432\u043D\u043E\u0433\u043E \u0431\u043E\u044F",
+      "primaryCommand": "/spiritual_combat_log",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "spiritual_combat_help",
+      "aliases": [
+        "/spiritual_combat_help",
+        "/\u0434\u0443\u0445\u043E\u0432\u043D\u044B\u0439_\u0431\u043E\u0439"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "AfterlifeCombat",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u041F\u043E\u043C\u043E\u0449\u044C \u0434\u0443\u0445\u043E\u0432\u043D\u043E\u0433\u043E \u0431\u043E\u044F",
+      "primaryCommand": "/spiritual_combat_help",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "spiritual_arts",
+      "aliases": [
+        "/spiritual_arts",
+        "/\u0434\u0443\u0445\u043E\u0432\u043D\u044B\u0435_\u0438\u0441\u043A\u0443\u0441\u0441\u0442\u0432\u0430"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "AfterlifeCombat",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0414\u0443\u0445\u043E\u0432\u043D\u044B\u0435 \u0438\u0441\u043A\u0443\u0441\u0441\u0442\u0432\u0430",
+      "primaryCommand": "/spiritual_arts",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "spiritual_action",
+      "aliases": [
+        "/spiritual_action",
+        "/\u0434\u0443\u0445\u043E\u0432\u043D\u043E\u0435_\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0414\u0443\u0445\u043E\u0432\u043D\u043E\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435",
+      "primaryCommand": "/spiritual_action",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    }
+  ]
+}

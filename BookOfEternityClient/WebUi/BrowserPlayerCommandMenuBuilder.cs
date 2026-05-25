@@ -181,6 +181,27 @@ public static class BrowserPlayerCommandMenuBuilder
         return new BrowserPlayerCommandMenuDto(SchemaVersion, sections);
     }
 
+    public static BrowserPlayerCommandCoverageMetadata GetCoverageMetadata(ExplorerCommandDescriptor descriptor)
+    {
+        ArgumentNullException.ThrowIfNull(descriptor);
+
+        if (!Metadata.TryGetValue(descriptor.Id, out var metadata))
+            throw new InvalidOperationException($"Browser player action metadata is missing for command '{descriptor.Id}'.");
+
+        var isAdvancedOnly = AdvancedOnlyIds.Contains(descriptor.Id);
+        var isMutating = descriptor.MutationMode == ExplorerCommandMutationMode.LocalTurn;
+        var sectionId = isAdvancedOnly ? "advanced" : metadata.SectionId;
+        var formMode = isMutating ? "guided-form" : "none";
+
+        return new BrowserPlayerCommandCoverageMetadata(
+            SectionId: sectionId,
+            Label: metadata.Label,
+            PlayerDefault: !isAdvancedOnly,
+            Surface: isAdvancedOnly ? "advanced-only" : "player-default",
+            FormMode: formMode,
+            UxDecision: ResolveUxDecision(descriptor.BrowserStatus, isAdvancedOnly, isMutating));
+    }
+
     private static Availability ResolveRealmAvailability(ExplorerCommandDescriptor descriptor, AggregatedGameState state)
     {
         if (string.Equals(descriptor.Id, "world_setup", StringComparison.OrdinalIgnoreCase))
@@ -239,8 +260,30 @@ public static class BrowserPlayerCommandMenuBuilder
             _ => "read-only"
         };
 
+    private static string ResolveUxDecision(
+        ExplorerCommandMigrationStatus status,
+        bool isAdvancedOnly,
+        bool isMutating) =>
+        status switch
+        {
+            ExplorerCommandMigrationStatus.ReadOnlyParity when isAdvancedOnly => "advanced-diagnostics",
+            ExplorerCommandMigrationStatus.ReadOnlyParity => "contextual-button",
+            ExplorerCommandMigrationStatus.MutatingParity when isAdvancedOnly => "advanced-diagnostics",
+            ExplorerCommandMigrationStatus.MutatingParity when isMutating => "guided-form",
+            ExplorerCommandMigrationStatus.MutatingParity => "contextual-button",
+            ExplorerCommandMigrationStatus.InteractiveFormPending when isAdvancedOnly => "advanced-diagnostics",
+            ExplorerCommandMigrationStatus.InteractiveFormPending => "guided-form-pending",
+            ExplorerCommandMigrationStatus.StatusOnly when isAdvancedOnly => "advanced-diagnostics",
+            ExplorerCommandMigrationStatus.StatusOnly => "status-card",
+            ExplorerCommandMigrationStatus.Planned => "planned",
+            ExplorerCommandMigrationStatus.Blocked => "blocked",
+            ExplorerCommandMigrationStatus.ConsoleOnlyTemporarily => "console-only",
+            _ => "planned"
+        };
+
     private static ActionMetadata M(string sectionId, string label, string description, string formPrompt) =>
         new(sectionId, label, description, formPrompt);
+
 
     private sealed record SectionDefinition(string Id, string Label, string Description, bool PlayerDefault);
     private sealed record ActionMetadata(string SectionId, string Label, string Description, string FormPrompt);
@@ -273,3 +316,11 @@ public sealed record BrowserPlayerCommandActionDto(
     string FormLabel,
     string FormPrompt,
     string AdvancedCommand);
+
+public sealed record BrowserPlayerCommandCoverageMetadata(
+    string SectionId,
+    string Label,
+    bool PlayerDefault,
+    string Surface,
+    string FormMode,
+    string UxDecision);

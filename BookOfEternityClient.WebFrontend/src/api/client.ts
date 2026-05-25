@@ -6,6 +6,7 @@ import type {
   BrowserApiResult,
   BrowserAudioSettingsDto,
   BrowserAudioSettingsUpdateRequest,
+  BrowserCommandCoverageDto,
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
   BrowserLoadSaveRequest,
@@ -34,6 +35,7 @@ export interface BrowserApiClient {
   getAudioSettings(): Promise<BrowserApiResult<BrowserAudioSettingsDto>>;
   updateAudioSettings(request: BrowserAudioSettingsUpdateRequest): Promise<BrowserApiResult<BrowserAudioSettingsDto>>;
   getLifecycleDashboard(): Promise<BrowserApiResult<BrowserLifecycleDashboardDto>>;
+  getCommandCoverage(): Promise<BrowserApiResult<BrowserCommandCoverageDto>>;
   validateLifecycle(): Promise<BrowserApiResult<BrowserValidationSummaryDto>>;
   loadSave(request: BrowserLoadSaveRequest): Promise<BrowserApiResult<BrowserLoadSaveResultDto>>;
   executeExplorerCommand(request: ExplorerWebCommandRequest): Promise<BrowserApiResult<ExplorerCommandResult>>;
@@ -55,6 +57,7 @@ export const browserApiEndpointDocs = [
   { id: 'save-load', method: 'POST', path: '/api/saves/load', playerSurface: 'player-default', response: 'BrowserLoadSaveResultDto' },
   { id: 'lifecycle-dashboard', method: 'GET', path: '/api/lifecycle/dashboard', playerSurface: 'advanced-only', response: 'BrowserLifecycleDashboardDto' },
   { id: 'lifecycle-validate', method: 'POST', path: '/api/lifecycle/validate', playerSurface: 'advanced-only', response: 'BrowserValidationSummaryDto' },
+  { id: 'command-coverage', method: 'GET', path: '/api/explorer/command-coverage', playerSurface: 'advanced-only', response: 'BrowserCommandCoverageDto' },
   { id: 'explorer-command', method: 'POST', path: '/api/explorer/command', playerSurface: 'advanced-only', response: 'ExplorerCommandResult' },
   { id: 'prompt-session-get', method: 'GET', path: '/api/explorer/prompt-sessions/{sessionId}', playerSurface: 'advanced-only', response: 'ExplorerCommandResult' },
   { id: 'prompt-session-submit', method: 'POST', path: '/api/explorer/prompt-sessions/submit', playerSurface: 'advanced-only', response: 'ExplorerCommandResult' },
@@ -82,6 +85,7 @@ export function createBrowserApiClient(options: BrowserApiClientOptions = {}): B
     getAudioSettings: () => requestJson<BrowserAudioSettingsDto>(fetcher, baseUrl, '/api/audio/settings'),
     updateAudioSettings: (request) => requestJson<BrowserAudioSettingsDto>(fetcher, baseUrl, '/api/audio/settings', jsonInit('POST', request)),
     getLifecycleDashboard: () => requestJson<BrowserLifecycleDashboardDto>(fetcher, baseUrl, '/api/lifecycle/dashboard'),
+    getCommandCoverage: () => requestJson<BrowserCommandCoverageDto>(fetcher, baseUrl, '/api/explorer/command-coverage'),
     validateLifecycle: () => requestJson<BrowserValidationSummaryDto>(fetcher, baseUrl, '/api/lifecycle/validate', jsonInit('POST')),
     loadSave: (request) => requestJson<BrowserLoadSaveResultDto>(fetcher, baseUrl, '/api/saves/load', jsonInit('POST', request)),
     executeExplorerCommand: (request) => requestJson<ExplorerCommandResult>(fetcher, baseUrl, '/api/explorer/command', jsonInit('POST', request)),
