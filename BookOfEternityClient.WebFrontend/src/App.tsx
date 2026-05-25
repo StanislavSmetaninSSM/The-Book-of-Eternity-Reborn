@@ -94,8 +94,7 @@ export default function App() {
     const normalized = composerText.trim();
 
     if (normalized.startsWith('/')) {
-      setComposerNotice('Slash-команды не выполняются из основного поля. Включите «Расширенный режим», чтобы перенести команду в техническую панель и подтвердить её отдельно.');
-      setAdvancedEnabled(true);
+      setComposerNotice('Slash-команды не выполняются из основного поля. Откройте «Расширенный режим» отдельной кнопкой, если хотите перенести команду в техническую панель и подтвердить её там.');
       return;
     }
 
@@ -459,11 +458,14 @@ function ErrorNotice({ title, failure, advancedEnabled }: { title: string; failu
     <section className="error-notice" role="alert">
       <h2>{title}</h2>
       <p>{failure.playerMessage}</p>
-      {failure.technicalDetails && (
-        <details open={advancedEnabled}>
+      {failure.technicalDetails && advancedEnabled && (
+        <details open>
           <summary>Подробности</summary>
           <pre>{failure.technicalDetails}</pre>
         </details>
+      )}
+      {failure.technicalDetails && !advancedEnabled && (
+        <p className="muted">Технические подробности доступны после явного включения расширенного режима.</p>
       )}
     </section>
   );
@@ -472,7 +474,7 @@ function ErrorNotice({ title, failure, advancedEnabled }: { title: string; failu
 function LoadingCard() {
   return (
     <ShellPanel title="Загрузка" eyebrow="локальный host">
-      <p>Запрашиваем главное меню, сессию, игровой экран и lifecycle dashboard через typed BrowserApiClient…</p>
+      <p>Собираем главное меню, сессию, игровой экран и состояние хода из локального клиента…</p>
     </ShellPanel>
   );
 }
