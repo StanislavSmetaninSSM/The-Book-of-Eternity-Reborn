@@ -10,6 +10,10 @@ const roadmapSections = [
   {
     title: 'Расширенный режим',
     text: 'Командная палитра и диагностика остаются доступными только как явный технический слой.'
+  },
+  {
+    title: 'Подключено к #702',
+    text: 'C# host отдаёт production build из `dist/`, а при его отсутствии использует извлечённую player-facing оболочку.'
   }
 ];
 
@@ -35,8 +39,8 @@ export default function App() {
           <p>Игровая логика, сохранения, afterlife/mortal контракты, команды и валидация остаются в C# runtime.</p>
         </article>
         <article>
-          <h2>Готово к #702</h2>
-          <p>Сборка пишет `dist/`; следующая архитектурная задача подключит эти asset-ы к `LocalWebUiHost`.</p>
+          <h2>Подключено к #702</h2>
+          <p>`--web` теперь отдаёт standalone frontend assets через `LocalWebUiHost`, сохраняя C# API источником истины.</p>
         </article>
       </section>
 

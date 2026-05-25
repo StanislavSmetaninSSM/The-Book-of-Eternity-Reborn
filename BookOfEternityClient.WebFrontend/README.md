@@ -30,9 +30,16 @@ npm run preview
 
 ## Relationship to `dotnet run -- --web`
 
-Issue #701 only creates the frontend workspace. Until issue #702 is implemented, `dotnet run --project BookOfEternityClient -- --web` still serves the existing inline MVP shell from `LocalWebUiHost`.
+Issue #702 connects this workspace to the C# local web host. `dotnet run --project BookOfEternityClient -- --web` keeps serving the existing loopback-only Minimal API endpoints from C#, then serves frontend assets in this order:
 
-Issue #702 is responsible for making the C# local host serve the built `dist/` assets and preserve existing Minimal API endpoints. Later issues add typed API contracts, app routing, game screens, settings, media/QTE UI, and smoke verification.
+1. `BookOfEternityClient.WebFrontend/dist/local-web-ui-shell.html` after `npm run build` copies the tracked player-facing fallback shell into the build output.
+2. `BookOfEternityClient.WebFrontend/dist/index.html` for the React/Vite shell when a later migration removes the fallback-shell preference.
+3. `BookOfEternityClient` output `wwwroot/browser/` for packaged/published builds that copied the Vite output or fallback shell.
+4. The source fallback shell `BookOfEternityClient.WebFrontend/public/local-web-ui-shell.html` when no build output is present.
+
+The fallback shell is the extracted player-facing MVP shell. It keeps `--web` usable while later issues migrate screens into React components. Generated `dist/`, `node_modules/`, `.vite/`, and `*.tsbuildinfo` stay ignored and should not be committed.
+
+Later issues add typed API contracts, app routing, game screens, settings, media/QTE UI, and smoke verification.
 
 ## Boundaries for future agents
 

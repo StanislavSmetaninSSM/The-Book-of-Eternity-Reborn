@@ -71,7 +71,7 @@ Use the same base path as console mode when you want the browser to continue the
 
 ## Frontend Workspace
 
-Issue #701 adds `BookOfEternityClient.WebFrontend/`, a Vite + React + TypeScript workspace for the long-term Browser Client. It is a presentation layer over the existing C# runtime/API, not a second game engine.
+Issue #701 added `BookOfEternityClient.WebFrontend/`, a Vite + React + TypeScript workspace for the long-term Browser Client. Issue #702 connects that workspace to `LocalWebUiHost`: C# owns the loopback APIs/runtime, and the browser root is served from standalone frontend assets instead of a C# raw-string HTML blob.
 
 From the repository root:
 
@@ -82,9 +82,21 @@ npm run typecheck --prefix BookOfEternityClient.WebFrontend
 npm run build --prefix BookOfEternityClient.WebFrontend
 ```
 
-`npm run dev` binds the Vite development server to `127.0.0.1`. `npm run build` writes `BookOfEternityClient.WebFrontend/dist/`. Issue #702 is responsible for making `LocalWebUiHost` serve that build output as the default browser shell. Until #702 lands, `dotnet run --project BookOfEternityClient -- --web` still serves the existing inline MVP shell.
+`npm run dev` binds the Vite development server to `127.0.0.1`. `npm run build` writes the preferred production asset root:
 
-The C# runtime remains authoritative for game rules, persistence, command handling, validation, local-write safety, and afterlife/mortal contracts. TypeScript owns presentation, request state, UI composition, and interaction plumbing only.
+```text
+BookOfEternityClient.WebFrontend/dist/
+```
+
+`dist/` is generated and remains git-ignored. When it exists, `LocalWebUiHost` serves the build root: during the transition it prefers the copied `dist/local-web-ui-shell.html` player-facing shell, and later React-routing work can switch the root to `dist/index.html`. Built JS/CSS/media assets under `dist/assets/` are served by the same static-file middleware. During packaged/published builds, present `dist/**` files are copied to the C# output under `wwwroot/browser/` so the host can serve them without source-tree paths.
+
+If no Vite build output exists, `LocalWebUiHost` falls back to the tracked extracted MVP shell:
+
+```text
+BookOfEternityClient.WebFrontend/public/local-web-ui-shell.html
+```
+
+That fallback keeps `dotnet run --project BookOfEternityClient -- --web` usable while later Browser Client tasks move screens into React. The C# runtime remains authoritative for game rules, persistence, command handling, validation, local-write safety, and afterlife/mortal contracts. TypeScript owns presentation, request state, UI composition, and interaction plumbing only.
 
 ## Current Browser MVP
 

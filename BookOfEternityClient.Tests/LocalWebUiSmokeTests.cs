@@ -17,6 +17,14 @@ public sealed class LocalWebUiSmokeTests : IDisposable
         Directory.CreateDirectory(_rootPath);
     }
 
+    private static string FallbackFrontendRoot => Path.Combine(
+        TestRepoPaths.RepoRoot,
+        "BookOfEternityClient.WebFrontend",
+        "public");
+
+    private LocalWebUiHostOptions CreateHostOptions(string url) =>
+        new(_rootPath, url, FallbackFrontendRoot);
+
     [Fact]
     [Trait("Category", "BrowserWebUiSmoke")]
     public async Task BrowserWebUiSmoke_CoversRootMenuSessionGameScreenLifecycleAndCommandFlow()
@@ -42,7 +50,7 @@ public sealed class LocalWebUiSmokeTests : IDisposable
         """);
 
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -79,7 +87,7 @@ public sealed class LocalWebUiSmokeTests : IDisposable
     public async Task BrowserWebUiSmoke_SubmitsBrowserFormFlowWithoutConsolePrompts()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
@@ -118,7 +126,7 @@ public sealed class LocalWebUiSmokeTests : IDisposable
     public async Task BrowserWebUiSmoke_PlayerDefaultIsRussianFirstAndKeepsTechnicalCopyOutOfPrimaryMenu()
     {
         var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
-        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), new LocalWebUiHostOptions(_rootPath, url));
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
         await app.StartAsync();
 
         using var client = new HttpClient { BaseAddress = new Uri(url) };
