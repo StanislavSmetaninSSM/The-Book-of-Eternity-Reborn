@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #691, #701, #702, #703, #704, #705
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #691, #701, #702, #703, #704, #705
 Parent epic: #559
 
 ## Local-Only Model
@@ -95,6 +95,8 @@ BookOfEternityClient.WebFrontend/dist/
 The React app shell provides player-facing routes for `Главная`, `Игра`, `Душа`, `Мир`, `Медиа`, and `Настройки`. These routes load typed data through `src/api/client.ts` (`/api/main-menu`, `/api/session`, `/api/game-screen`, and `/api/lifecycle/dashboard`) and render request state, realm theme, lifecycle/QTE status, and placeholder regions for #683-#689. The shell remains presentation-only: C# keeps all gameplay/application logic, persistence, validation, local-write coordination, afterlife/mortal contracts, and command execution authority.
 
 The normal root is Russian-first and player-facing. Command IDs, `/api/*` details, lifecycle validation internals, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player-visible failures should show short `playerMessage` text first and keep `technicalDetails` in an advanced/details surface.
+
+Issue #685 adds the Browser Client design-system layer. The frontend keeps `src/styles.css` as the single Vite import entrypoint, but the maintainable styling lives under `BookOfEternityClient.WebFrontend/src/styles/`: `tokens.css`, `base.css`, `components.css`, `layout.css`, and `motion.css`. This is a dark-fantasy, Russian-first, player-facing visual system over the same C# local APIs; it must not move gameplay rules, validation, persistence, command execution, or afterlife/mortal contracts into TypeScript.
 
 If no Vite build output exists, `LocalWebUiHost` falls back to the tracked extracted MVP shell:
 

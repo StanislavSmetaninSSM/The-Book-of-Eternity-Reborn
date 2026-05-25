@@ -1,0 +1,54 @@
+@keyframes panel-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes waiting-pulse {
+  0%, 100% {
+    box-shadow: var(--shadow-panel);
+  }
+  50% {
+    box-shadow: var(--shadow-panel), 0 0 2rem color-mix(in srgb, var(--state-repair) 30%, transparent);
+  }
+}
+
+@keyframes qte-tension {
+  0%, 100% {
+    border-color: color-mix(in srgb, var(--state-qte) 26%, rgba(255, 255, 255, 0.08));
+  }
+  50% {
+    border-color: color-mix(in srgb, var(--state-qte) 58%, rgba(255, 255, 255, 0.08));
+  }
+}
+
+.shell-hero,
+.route-card,
+.shell-panel,
+.advanced-diagnostics,
+.error-notice {
+  animation: panel-rise var(--motion-panel) both;
+}
+
+.shell-panel[data-panel='turn'] {
+  animation: panel-rise var(--motion-panel) both, waiting-pulse 3.2s ease-in-out infinite;
+}
+
+.route-card--media.is-active,
+.route-card--media:hover {
+  animation: qte-tension 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}

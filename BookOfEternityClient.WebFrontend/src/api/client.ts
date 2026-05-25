@@ -122,7 +122,7 @@ async function requestJson<TData>(
       status: null,
       kind: 'network-error',
       message,
-      playerMessage: 'Локальный браузерный клиент не смог связаться с C# host.',
+      playerMessage: 'Локальный игровой клиент сейчас недоступен. Проверьте, что браузерный режим запущен.',
       technicalDetails: message,
       payload: error
     };
@@ -223,15 +223,15 @@ function toPlayerMessage(kind: BrowserApiErrorKind, fallback: string): string {
     case 'blocked-local-write':
       return 'Локальная запись сейчас заблокирована другим процессом или защитным протоколом.';
     case 'not-found':
-      return 'Запрошенный локальный ресурс не найден.';
+      return 'Этот раздел локальной книги пока не открылся.';
     case 'no-active-session':
       return 'Активная игровая сессия не найдена. Откройте главное меню или загрузите сохранение.';
     case 'server-diagnostics':
-      return 'C# host вернул техническую ошибку. Подробности доступны в расширенном режиме.';
+      return 'Локальный игровой клиент вернул техническую ошибку. Подробности доступны в расширенном режиме.';
     case 'network-error':
-      return 'Локальный C# host недоступен.';
+      return 'Локальный игровой клиент недоступен.';
     case 'http-error':
-      return fallback;
+      return 'Локальный запрос не удался. Подробности доступны в расширенном режиме.';
   }
 }
 
