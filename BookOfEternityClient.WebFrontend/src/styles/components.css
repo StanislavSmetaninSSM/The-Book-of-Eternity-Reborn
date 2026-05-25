@@ -3,6 +3,7 @@
 .route-card,
 .advanced-diagnostics,
 .summary-card,
+.empty-state,
 .error-notice,
 .narrative-card {
   border: 1px solid color-mix(in srgb, var(--realm-accent) 34%, rgba(255, 255, 255, 0.08));
@@ -106,6 +107,7 @@
 
 .shell-panel,
 .advanced-diagnostics,
+.empty-state,
 .error-notice {
   padding: clamp(1rem, 3vw, 1.5rem);
 }
@@ -260,6 +262,13 @@
 .error-notice {
   border-color: rgba(255, 111, 111, 0.48);
   background: rgba(61, 18, 18, 0.68);
+}
+
+.empty-state {
+  display: grid;
+  gap: var(--space-2);
+  border-color: color-mix(in srgb, var(--realm-accent) 30%, rgba(255, 255, 255, 0.08));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(216, 179, 106, 0.06));
 }
 
 .composer,

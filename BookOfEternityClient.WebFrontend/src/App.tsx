@@ -38,6 +38,12 @@ interface RouteCard {
   icon: string;
 }
 
+interface EmptyStateCopy {
+  title: string;
+  message: string;
+  action: string;
+}
+
 interface RealmTheme {
   key: string;
   label: string;
@@ -180,19 +186,19 @@ export default function App() {
   return (
     <main className="browser-shell" data-theme-key={realmTheme.key} style={{ '--realm-accent': realmTheme.accent } as CSSProperties}>
       <section className="shell-hero" aria-labelledby="browser-client-title">
-        <p className="eyebrow">Книга Вечности: Перерождение · локальный клиент</p>
+        <p className="eyebrow">Книга Вечности: Перерождение · локальная книга</p>
         <div className="hero-layout">
           <div>
-            <h1 id="browser-client-title">Локальный игровой клиент</h1>
+            <h1 id="browser-client-title">Книга Вечности: Перерождение</h1>
             <p className="lead">
-              Локальный клиент остаётся источником истины: браузер показывает игру, маршруты и состояние интерфейса,
-              но не переносит правила, сохранения или посмертные контракты в отдельный слой.
+              Откройте книгу, продолжите сохранённую главу или подготовьте новую сцену. Браузер показывает локальную партию мягким игровым языком,
+              а служебные сведения остаются в расширенном режиме.
             </p>
           </div>
-          <div className="hero-status" aria-label="Текущий слой мира">
+          <div className="hero-status" aria-label="Текущее царство">
             <span className="theme-icon" aria-hidden="true">{realmTheme.icon}</span>
             <strong>{realmTheme.label}</strong>
-            <span>{gameScreen ? formatTurnStateTitle(gameScreen.turnState) : menu?.session.validationLabel ?? 'Загрузка состояния'}</span>
+            <span>{gameScreen ? formatTurnStateTitle(gameScreen.turnState) : menu?.session.validationLabel ?? 'Книга ждёт открытия'}</span>
           </div>
         </div>
       </section>
@@ -219,7 +225,7 @@ export default function App() {
           {shellState.status === 'error' && (
             <ErrorNotice title="Состояние клиента недоступно" failure={shellState} advancedEnabled={advancedEnabled} />
           )}
-          {readyState && renderActiveRoute(activeRoute, readyState, composerText, setComposerText, composerNotice, submitComposer)}
+          {readyState && renderActiveRoute(activeRoute, readyState, composerText, setComposerText, composerNotice, submitComposer, advancedEnabled)}
         </div>
 
         <aside className="workspace-sidebar" aria-label="Сводка состояния">
@@ -232,9 +238,13 @@ export default function App() {
                 <div><dt>Книга</dt><dd>{session.gameSessionExists ? 'сохранение найдено' : 'сохранение не найдено'}</dd></div>
               </dl>
             ) : readyState ? (
-              <ApiFailure title="Сессия недоступна" result={readyState.session} advancedEnabled={advancedEnabled} />
+              <EmptyOrFailure result={readyState.session} advancedEnabled={advancedEnabled} errorTitle="Сессия требует внимания" empty={{
+                title: 'Книга готовит сессию',
+                message: 'Сводка партии появится, когда локальная книга отдаст состояние сохранения.',
+                action: 'Можно оставаться на главной странице: действия продолжения, новой главы и загрузки появятся там же.'
+              }} />
             ) : (
-              <p className="muted">Ждём локальный клиент…</p>
+              <p className="muted">Ждём локальную книгу…</p>
             )}
           </ShellPanel>
 
@@ -246,13 +256,17 @@ export default function App() {
                 <p className="muted">Проверка: {toPlayerFacingText(gameScreen.turnState.validationLabel, 'состояние проверяется')}</p>
               </>
             ) : readyState ? (
-              <ApiFailure title="Игровой экран недоступен" result={readyState.game} advancedEnabled={advancedEnabled} />
+              <EmptyOrFailure result={readyState.game} advancedEnabled={advancedEnabled} errorTitle="Игровой экран требует внимания" empty={{
+                title: 'Ход ждёт открытия главы',
+                message: 'Состояние хода и восстановление появятся после выбора или загрузки партии.',
+                action: 'Откройте книгу на главной странице; технические детали ремонта остаются в расширенном режиме.'
+              }} />
             ) : (
               <p className="muted">Загрузка…</p>
             )}
           </ShellPanel>
 
-          {readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} />}
+          {readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} advancedEnabled={advancedEnabled} />}
 
           <button
             type="button"
@@ -277,27 +291,32 @@ function renderActiveRoute(
   composerText: string,
   setComposerText: (value: string) => void,
   composerNotice: string,
-  submitComposer: (event: FormEvent<HTMLFormElement>) => void
+  submitComposer: (event: FormEvent<HTMLFormElement>) => void,
+  advancedEnabled: boolean
 ) {
   switch (activeRoute) {
     case 'home':
-      return <HomeRoute state={state} />;
+      return <HomeRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'game':
-      return <GameRoute state={state} composerText={composerText} setComposerText={setComposerText} composerNotice={composerNotice} submitComposer={submitComposer} />;
+      return <GameRoute state={state} composerText={composerText} setComposerText={setComposerText} composerNotice={composerNotice} submitComposer={submitComposer} advancedEnabled={advancedEnabled} />;
     case 'soul':
-      return <SoulRoute state={state} />;
+      return <SoulRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'world':
-      return <WorldRoute state={state} />;
+      return <WorldRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'media':
-      return <MediaRoute state={state} />;
+      return <MediaRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'settings':
-      return <SettingsRoute state={state} />;
+      return <SettingsRoute state={state} advancedEnabled={advancedEnabled} />;
   }
 }
 
-function HomeRoute({ state }: { state: Extract<BrowserShellState, { status: 'ready' }> }) {
+function HomeRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
   if (!isSuccess(state.menu)) {
-    return <ApiFailure title="Главное меню недоступно" result={state.menu} advancedEnabled={false} />;
+    return <EmptyOrFailure result={state.menu} advancedEnabled={advancedEnabled} errorTitle="Главное меню требует внимания" empty={{
+      title: 'Книга ждёт открытия',
+      message: 'Главная страница появится, когда локальная книга подготовит меню продолжения.',
+      action: 'Откройте книгу: начните новую главу, продолжите сохранение или загрузите партию из доступных действий клиента.'
+    }} />;
   }
 
   const menu = state.menu.data;
@@ -326,16 +345,22 @@ function GameRoute({
   composerText,
   setComposerText,
   composerNotice,
-  submitComposer
+  submitComposer,
+  advancedEnabled
 }: {
   state: Extract<BrowserShellState, { status: 'ready' }>;
   composerText: string;
   setComposerText: (value: string) => void;
   composerNotice: string;
   submitComposer: (event: FormEvent<HTMLFormElement>) => void;
+  advancedEnabled: boolean;
 }) {
   if (!isSuccess(state.game)) {
-    return <ApiFailure title="Игровой экран недоступен" result={state.game} advancedEnabled={false} />;
+    return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Игровой экран требует внимания" empty={{
+      title: 'Глава ещё не открыта',
+      message: 'Нарратив и ход ГМа появятся после выбора или загрузки игровой сессии.',
+      action: 'Вернитесь на главную страницу и откройте книгу, чтобы продолжить историю.'
+    }} />;
   }
 
   const game = state.game.data;
@@ -400,9 +425,13 @@ function GameRoute({
   );
 }
 
-function SoulRoute({ state }: { state: Extract<BrowserShellState, { status: 'ready' }> }) {
+function SoulRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
   if (!isSuccess(state.game)) {
-    return <ApiFailure title="Данные души недоступны" result={state.game} advancedEnabled={false} />;
+    return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Данные души требуют внимания" empty={{
+      title: 'Душа ещё не проявилась',
+      message: 'Данные героя, души и слоя мира появятся после открытия главы.',
+      action: 'Начните или загрузите игру, затем вернитесь к разделу души.'
+    }} />;
   }
 
   const { soul, player } = state.game.data;
@@ -430,9 +459,13 @@ function SoulRoute({ state }: { state: Extract<BrowserShellState, { status: 'rea
   );
 }
 
-function WorldRoute({ state }: { state: Extract<BrowserShellState, { status: 'ready' }> }) {
+function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
   if (!isSuccess(state.game)) {
-    return <ApiFailure title="Мир недоступен" result={state.game} advancedEnabled={false} />;
+    return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Мир требует внимания" empty={{
+      title: 'Мир ждёт первой записи',
+      message: 'Карта, журнал и фракции заполнятся из текущей главы после открытия книги.',
+      action: 'Откройте или загрузите сессию, чтобы увидеть состояние мира.'
+    }} />;
   }
 
   const game = state.game.data;
@@ -957,9 +990,13 @@ function commandStateLabel(state: ExplorerCommandResult['state']): string {
   }
 }
 
-function MediaRoute({ state }: { state: Extract<BrowserShellState, { status: 'ready' }> }) {
+function MediaRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
   if (!isSuccess(state.game)) {
-    return <ApiFailure title="Медиа недоступны" result={state.game} advancedEnabled={false} />;
+    return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Медиа требуют внимания" empty={{
+      title: 'Медиа появятся вместе со сценой',
+      message: 'Галерея и быстрые сцены станут доступны, когда активная глава предоставит игровые материалы.',
+      action: 'Откройте книгу и продолжите историю; этот раздел заполнится по мере появления сцен.'
+    }} />;
   }
 
   const qte = state.game.data.qte;
@@ -975,12 +1012,18 @@ function MediaRoute({ state }: { state: Extract<BrowserShellState, { status: 're
 }
 
 function SettingsRoute({
-  state
+  state,
+  advancedEnabled
 }: {
   state: Extract<BrowserShellState, { status: 'ready' }>;
+  advancedEnabled: boolean;
 }) {
   if (!isSuccess(state.menu)) {
-    return <ApiFailure title="Настройки недоступны" result={state.menu} advancedEnabled={false} />;
+    return <EmptyOrFailure result={state.menu} advancedEnabled={advancedEnabled} errorTitle="Настройки требуют внимания" empty={{
+      title: 'Настройки готовятся',
+      message: 'Параметры локального клиента появятся, когда меню книги будет доступно.',
+      action: 'Если вы только открыли клиент, подождите загрузки или вернитесь на главную страницу.'
+    }} />;
   }
 
   const options = state.menu.data.options;
@@ -998,10 +1041,12 @@ function SettingsRoute({
 
 function AudioSettingsPanel({
   result,
-  activeRoute
+  activeRoute,
+  advancedEnabled
 }: {
   result: BrowserApiResult<BrowserAudioSettingsDto>;
   activeRoute: RouteId;
+  advancedEnabled: boolean;
 }) {
   const [audioResult, setAudioResult] = useState(result);
   const [notice, setNotice] = useState('');
@@ -1018,7 +1063,11 @@ function AudioSettingsPanel({
   }, []);
 
   if (!isSuccess(audioResult)) {
-    return <ApiFailure title="Аудио-настройки недоступны" result={audioResult} advancedEnabled={false} />;
+    return <EmptyOrFailure result={audioResult} advancedEnabled={advancedEnabled} errorTitle="Музыка требует внимания" empty={{
+      title: 'Музыка ждёт локальные настройки',
+      message: 'Панель звука появится, когда клиент отдаст общие настройки аудио.',
+      action: 'Игра продолжит работать без музыки; технические подробности остаются в расширенном режиме.'
+    }} />;
   }
 
   const audio = audioResult.data;
@@ -1332,6 +1381,39 @@ function ApiResultCard<T>({ title, result }: { title: string; result: BrowserApi
 
 function getEndpointLabel(responseType: string): string {
   return browserApiEndpoints.find((apiEndpoint) => apiEndpoint.response === responseType)?.path ?? responseType;
+}
+
+function EmptyState({ title, message, action }: EmptyStateCopy) {
+  return (
+    <section className="empty-state" aria-label={title}>
+      <p className="panel-eyebrow">ожидание главы</p>
+      <h2>{title}</h2>
+      <p>{message}</p>
+      <p className="muted">{action}</p>
+    </section>
+  );
+}
+
+function EmptyOrFailure<T>({
+  result,
+  empty,
+  errorTitle,
+  advancedEnabled
+}: {
+  result: BrowserApiResult<T>;
+  empty: EmptyStateCopy;
+  errorTitle: string;
+  advancedEnabled: boolean;
+}) {
+  if (isSuccess(result)) {
+    return null;
+  }
+
+  if (result.kind === 'no-active-session') {
+    return <EmptyState {...empty} />;
+  }
+
+  return <ApiFailure title={errorTitle} result={result} advancedEnabled={advancedEnabled} />;
 }
 
 function ApiFailure<T>({ title, result, advancedEnabled }: { title: string; result: BrowserApiResult<T>; advancedEnabled: boolean }) {
