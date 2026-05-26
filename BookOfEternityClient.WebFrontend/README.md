@@ -70,6 +70,21 @@ Issue #721 replaces default route emoji tiles with local inline SVG glyphs. `pla
 
 Route cards expose semantic presentation states derived from the existing browser shell results: `active`, `available`, `locked`, `loading`, and `attention`. `locked` is the ordinary no-session/no-active-chapter state and should stay muted, not red. `attention` is reserved for real endpoint failures or repair/error turn states. These states are visual/accessibility hints only; C# remains authoritative for session, save/load, turn, and gameplay rules.
 
+## First-screen visual QA (#723)
+
+Issue #723 adds a dependency-light HTML visual smoke artifact for the Browser Client default first screen. Run:
+
+```powershell
+npm run verify --prefix BookOfEternityClient.WebFrontend
+dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~LocalWebUiBuiltFrontendSmokeTests|FullyQualifiedName~BrowserFrontendWorkspaceTests|FullyQualifiedName~LocalWebUiDocumentationTests" --logger "console;verbosity=minimal"
+```
+
+The test writes `TestResults/browser-smoke/first-screen-visual-qa.html` next to `root.html`, `game-route.html`, `network.json`, `navigation-ia.html`, `detail-surfaces.html`, and `reborn-panels.html`. CI uploads the directory as `browser-smoke-artifacts`.
+
+The artifact is an HTML visual smoke artifact, not automated PNG screenshots. It intentionally remains dependency-light until a future tracked task selects a browser screenshot automation stack. It is local/offline and has no external API key required. Review it against the old React UI/UX reference only: central game launcher, primary CTA, polished cards, tabs/sections, and save/config actions. Do not copy old prompts, mortal-life-only mechanics, or runtime rules.
+
+Regression checklist: primary CTA present; no technical hero copy; no repeated unavailable alerts; no emoji route icons; advanced debug secondary and behind explicit opt-in. Source guards live in `BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist` in `BrowserFrontendWorkspaceTests`, and documentation guards live in `LocalWebHostDocs_DocumentBrowserVisualQaArtifactWorkflow` in `LocalWebUiDocumentationTests`.
+
 ## Detail surfaces (#728)
 
 Issue #728 adds a shared Browser Client `card → modal/full-panel` pattern for detail-rich player-facing data. Compact cards keep the route/sidebar overview readable; opening a card shows a consistent detail surface with header, back/fullscreen/close controls, readable sections, player-facing empty/error/loading copy, Escape handling, and focus restoration.

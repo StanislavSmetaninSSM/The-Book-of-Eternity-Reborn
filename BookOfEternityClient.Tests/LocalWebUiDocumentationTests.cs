@@ -137,6 +137,30 @@ public sealed class LocalWebUiDocumentationTests
     }
 
     [Fact]
+    public void LocalWebHostDocs_DocumentBrowserVisualQaArtifactWorkflow()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
+
+        Assert.Contains("#723", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("#723", readme, StringComparison.Ordinal);
+        Assert.Contains("first-screen-visual-qa.html", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("first-screen-visual-qa.html", readme, StringComparison.Ordinal);
+        Assert.Contains("BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist", readme, StringComparison.Ordinal);
+        Assert.Contains("old React UI/UX reference", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("primary CTA", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no technical hero copy", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no repeated unavailable alerts", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no emoji route icons", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("advanced debug secondary", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("HTML visual smoke artifact", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not automated PNG screenshots", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no external API key required", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no external API key required", readme, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void LocalWebHostDocs_DocumentTypedBrowserApiContractWorkflow()
     {
         var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));

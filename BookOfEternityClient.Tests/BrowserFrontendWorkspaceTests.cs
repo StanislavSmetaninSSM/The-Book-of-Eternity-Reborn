@@ -674,6 +674,38 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var smokeTest = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient.Tests", "LocalWebUiBuiltFrontendSmokeTests.cs"));
+        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
+        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
+
+        Assert.Contains("#723", readme, StringComparison.Ordinal);
+        Assert.Contains("#723", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("first-screen-visual-qa.html", smokeTest, StringComparison.Ordinal);
+        Assert.Contains("first-screen-visual-qa.html", readme, StringComparison.Ordinal);
+        Assert.Contains("first-screen-visual-qa.html", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("old React UI/UX reference only", smokeTest, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("old React UI/UX reference", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("old React UI/UX reference", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("primary CTA", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no technical hero copy", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no repeated unavailable alerts", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no emoji route icons", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("advanced debug secondary", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("BrowserFrontendWorkspaceTests", readme, StringComparison.Ordinal);
+        Assert.Contains("LocalWebUiDocumentationTests", readme, StringComparison.Ordinal);
+
+        var advancedDiagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
+        Assert.True(advancedDiagnosticsIndex > 0, "Advanced diagnostics panel should remain after default player UI source.");
+        var playerDefaultSlice = app[..advancedDiagnosticsIndex];
+        Assert.DoesNotContain("`/api/*`", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw /api/", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("command coverage", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ReactAppShell_DocumentsIssue704RoutingAndPlayerAdvancedBoundary()
     {
         var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
