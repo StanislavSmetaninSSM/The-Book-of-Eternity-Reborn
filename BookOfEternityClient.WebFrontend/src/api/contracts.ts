@@ -178,6 +178,63 @@ export interface BrowserAudioSettingsUpdateRequest {
   soundVolume?: number | null;
 }
 
+export interface BrowserClientSettingsDto {
+  schemaVersion: number;
+  language: BrowserSettingsChoiceGroupDto;
+  difficulty: BrowserSettingsChoiceGroupDto;
+  showGmThoughts: boolean;
+  audio: BrowserClientAudioSettingsDto;
+  accessibility: BrowserClientAccessibilitySettingsDto;
+  locality: BrowserClientLocalityDto;
+}
+
+export interface BrowserSettingsChoiceGroupDto {
+  value: string;
+  label: string;
+  choices: BrowserSettingsChoiceDto[];
+}
+
+export interface BrowserSettingsChoiceDto {
+  value: string;
+  label: string;
+  description: string;
+}
+
+export interface BrowserClientAudioSettingsDto {
+  musicEnabled: boolean;
+  musicVolume: number;
+  soundEnabled: boolean;
+  soundVolume: number;
+}
+
+export interface BrowserClientAccessibilitySettingsDto {
+  fontScalePercent: number;
+  reducedMotion: boolean;
+  contrastFriendly: boolean;
+}
+
+export interface BrowserClientLocalityDto {
+  localhostOnly: boolean;
+  sessionLabel: string;
+  gameSessionExists: boolean;
+  gmBridgeEnabled: boolean;
+  gmBridgeLabel: string;
+  safetySummary: string;
+}
+
+export interface BrowserClientSettingsUpdateRequest {
+  language?: string | null;
+  difficulty?: string | null;
+  showGmThoughts?: boolean | null;
+  musicEnabled?: boolean | null;
+  musicVolume?: number | null;
+  soundEnabled?: boolean | null;
+  soundVolume?: number | null;
+  browserFontScalePercent?: number | null;
+  browserReducedMotion?: boolean | null;
+  browserContrastFriendly?: boolean | null;
+}
+
 export interface LocalWebUiSessionStatus {
   schemaVersion: number;
   status: string;

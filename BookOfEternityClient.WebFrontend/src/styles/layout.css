@@ -1,8 +1,25 @@
 .browser-shell {
   --realm-accent: var(--realm-mortal);
+  --browser-font-scale: 1;
   width: min(96rem, calc(100vw - 2rem));
   margin: 0 auto;
   padding: var(--space-6) 0 4rem;
+  font-size: calc(1rem * var(--browser-font-scale));
+}
+
+.browser-shell.is-contrast-friendly {
+  --color-mist: #f2ead8;
+  --color-glass: rgba(12, 16, 18, 0.92);
+  --realm-accent: color-mix(in srgb, var(--color-gold-bright) 82%, white 18%);
+}
+
+.browser-shell.is-reduced-motion *,
+.browser-shell.is-reduced-motion *::before,
+.browser-shell.is-reduced-motion *::after {
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
 }
 
 .browser-shell[data-theme-key*='chaos'] {

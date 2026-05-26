@@ -201,6 +201,160 @@ public sealed class LocalWebUiHostTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task ClientSettingsEndpoint_LoadsPlayerSafeSharedSettingsAndLocality()
+    {
+        WriteSessionFile("config.json", """
+        {
+          "language": "en",
+          "difficulty": "hard",
+          "showGmThoughts": true,
+          "musicEnabled": false,
+          "musicVolume": 27,
+          "soundEnabled": true,
+          "soundVolume": 81,
+          "browserFontScalePercent": 115,
+          "browserReducedMotion": true,
+          "browserContrastFriendly": true,
+          "gmBridgeEnabled": false,
+          "openRouterApiKey": "secret-token-not-for-browser",
+          "gmCliLaunchCommand": "secret-shell-command"
+        }
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        var root = JsonNode.Parse(await client.GetStringAsync("/api/client/settings"))!.AsObject();
+
+        Assert.Equal(1, root["schemaVersion"]!.GetValue<int>());
+        Assert.Equal("en", root["language"]!["value"]!.GetValue<string>());
+        Assert.Equal("hard", root["difficulty"]!["value"]!.GetValue<string>());
+        Assert.True(root["showGmThoughts"]!.GetValue<bool>());
+        Assert.False(root["audio"]!["musicEnabled"]!.GetValue<bool>());
+        Assert.Equal(27, root["audio"]!["musicVolume"]!.GetValue<int>());
+        Assert.Equal(115, root["accessibility"]!["fontScalePercent"]!.GetValue<int>());
+        Assert.True(root["accessibility"]!["reducedMotion"]!.GetValue<bool>());
+        Assert.True(root["accessibility"]!["contrastFriendly"]!.GetValue<bool>());
+        Assert.True(root["locality"]!["localhostOnly"]!.GetValue<bool>());
+        Assert.Contains("game_session", root["locality"]!["sessionLabel"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.False(root["locality"]!["gmBridgeEnabled"]!.GetValue<bool>());
+        Assert.DoesNotContain(_rootPath, root.ToJsonString(), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("secret-token-not-for-browser", root.ToJsonString(), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("secret-shell-command", root.ToJsonString(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ClientSettingsEndpoint_UpdatesWhitelistedSettingsAndWritesGmProjection()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/client/settings", new
+        {
+            language = "en",
+            difficulty = "impossible",
+            showGmThoughts = true,
+            musicEnabled = false,
+            musicVolume = 150,
+            soundEnabled = false,
+            soundVolume = -20,
+            browserFontScalePercent = 175,
+            browserReducedMotion = true,
+            browserContrastFriendly = true
+        });
+        var root = JsonNode.Parse(await response.Content.ReadAsStringAsync())!.AsObject();
+        var config = JsonNode.Parse(File.ReadAllText(Path.Combine(_rootPath, "game_session", "config.json")))!.AsObject();
+        var gmProjection = JsonNode.Parse(File.ReadAllText(Path.Combine(_rootPath, "game_session", "game_state", "core", "game_settings.json")))!.AsObject();
+
+        response.EnsureSuccessStatusCode();
+        Assert.Equal("en", root["language"]!["value"]!.GetValue<string>());
+        Assert.Equal("impossible", root["difficulty"]!["value"]!.GetValue<string>());
+        Assert.True(root["showGmThoughts"]!.GetValue<bool>());
+        Assert.Equal(100, root["audio"]!["musicVolume"]!.GetValue<int>());
+        Assert.Equal(0, root["audio"]!["soundVolume"]!.GetValue<int>());
+        Assert.Equal(140, root["accessibility"]!["fontScalePercent"]!.GetValue<int>());
+        Assert.True(config["showGmThoughts"]!.GetValue<bool>());
+        Assert.Equal("impossible", config["difficulty"]!.GetValue<string>());
+        Assert.Equal(140, config["browserFontScalePercent"]!.GetValue<int>());
+        Assert.True(gmProjection["impossibleMode"]!.GetValue<bool>());
+        Assert.Equal("impossible", gmProjection["difficulty"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task ClientSettingsEndpoint_BlocksGameplaySettingsWhenPendingTurnExists()
+    {
+        WriteSessionFile("config.json", """
+        {
+          "difficulty": "normal",
+          "showGmThoughts": false
+        }
+        """);
+        WriteSessionFile("input/turn_request.json", "{\"requestId\":\"pending-settings-guard\"}");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/client/settings", new
+        {
+            difficulty = "hard",
+            showGmThoughts = true
+        });
+        var body = await response.Content.ReadAsStringAsync();
+        var config = JsonNode.Parse(File.ReadAllText(Path.Combine(_rootPath, "game_session", "config.json")))!.AsObject();
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Contains("заблокирован", body, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("normal", config["difficulty"]!.GetValue<string>());
+        Assert.False(config["showGmThoughts"]!.GetValue<bool>());
+    }
+
+    [Fact]
+    public async Task ClientSettingsEndpoint_DoesNotReuseActiveBrowserWriteOwnerLock()
+    {
+        WriteSessionFile("config.json", """
+        {
+          "difficulty": "normal"
+        }
+        """);
+        var activeOwnerId = $"browser:{Environment.MachineName}:{Environment.ProcessId}";
+        var now = DateTime.UtcNow;
+        WriteSessionFile(LocalUiSessionLockService.LockPath, $$"""
+        {
+          "schemaVersion": 1,
+          "ownerId": "{{activeOwnerId}}",
+          "ownerKind": "browser",
+          "ownerLabel": "Active browser prompt form",
+          "acquiredAtUtc": "{{now:O}}",
+          "heartbeatAtUtc": "{{now:O}}",
+          "leaseSeconds": 120,
+          "lastOperation": "Browser prompt session"
+        }
+        """);
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/client/settings", new
+        {
+            difficulty = "hard"
+        });
+        var body = await response.Content.ReadAsStringAsync();
+        var lockJson = File.ReadAllText(Path.Combine(_rootPath, "game_session", LocalUiSessionLockService.LockPath));
+        var config = JsonNode.Parse(File.ReadAllText(Path.Combine(_rootPath, "game_session", "config.json")))!.AsObject();
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Contains("Active browser prompt form", body, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(activeOwnerId, lockJson, StringComparison.Ordinal);
+        Assert.Equal("normal", config["difficulty"]!.GetValue<string>());
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
     public async Task AudioSettingsEndpoint_LoadsSharedSettingsAndReturnsSafeCatalog()
     {
         WriteSessionFile("config.json", """

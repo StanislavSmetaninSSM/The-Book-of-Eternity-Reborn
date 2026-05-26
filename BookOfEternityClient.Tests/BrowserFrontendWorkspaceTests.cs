@@ -168,7 +168,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("new Audio()", app, StringComparison.Ordinal);
         Assert.Contains("audioSettingsUpdateQueueRef", app, StringComparison.Ordinal);
         Assert.Contains("audioSettingsUpdateQueueRef.current = audioSettingsUpdateQueueRef.current", app, StringComparison.Ordinal);
-        Assert.Contains("Аудио управляется постоянной панелью", app, StringComparison.Ordinal);
+        Assert.Contains("Музыка и звуковые подсказки", app, StringComparison.Ordinal);
         Assert.DoesNotContain("<div><dt>Музыка</dt><dd>{options.musicEnabled", app, StringComparison.Ordinal);
         Assert.DoesNotContain("<div><dt>Звук</dt><dd>{options.soundEnabled", app, StringComparison.Ordinal);
         Assert.Contains("{readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} advancedEnabled={advancedEnabled} />}", app, StringComparison.Ordinal);
@@ -189,6 +189,48 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains(".audio-control-panel", styles, StringComparison.Ordinal);
         Assert.Contains(".advanced-diagnostics", styles, StringComparison.Ordinal);
         Assert.Contains("@media (max-width: 840px)", styles, StringComparison.Ordinal);
+    }
+    [Fact]
+    public void BrowserSettingsRoute_RendersSharedGameSettingsAndLocalityControls()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = ReadFrontendStyles();
+
+        Assert.Contains("BrowserClientSettingsDto", app, StringComparison.Ordinal);
+        Assert.Contains("BrowserClientSettingsUpdateRequest", app, StringComparison.Ordinal);
+        Assert.Contains("settings: BrowserApiResult<BrowserClientSettingsDto>", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getClientSettings()", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.updateClientSettings", app, StringComparison.Ordinal);
+        Assert.Contains("clientSettingsUpdateQueueRef", app, StringComparison.Ordinal);
+        Assert.Contains("clientSettingsUpdateQueueRef.current = clientSettingsUpdateQueueRef.current", app, StringComparison.Ordinal);
+        Assert.Contains("className={browserShellClassName}", app, StringComparison.Ordinal);
+        Assert.Contains("--browser-font-scale", app, StringComparison.Ordinal);
+        Assert.Contains("Настройки книги", app, StringComparison.Ordinal);
+        Assert.Contains("Язык клиента", app, StringComparison.Ordinal);
+        Assert.Contains("Сложность", app, StringComparison.Ordinal);
+        Assert.Contains("Показывать мысли ГМа", app, StringComparison.Ordinal);
+        Assert.Contains("Музыка и звуковые подсказки", app, StringComparison.Ordinal);
+        Assert.Contains("Доступность", app, StringComparison.Ordinal);
+        Assert.Contains("Локальность", app, StringComparison.Ordinal);
+        Assert.Contains("Только localhost/loopback", app, StringComparison.Ordinal);
+        Assert.Contains("sessionLabel", app, StringComparison.Ordinal);
+        Assert.Contains("gmBridgeLabel", app, StringComparison.Ordinal);
+        Assert.Contains("is-reduced-motion", app, StringComparison.Ordinal);
+        Assert.Contains("is-contrast-friendly", app, StringComparison.Ordinal);
+
+        var settingsRouteStart = app.IndexOf("function SettingsRoute", StringComparison.Ordinal);
+        var audioPanelStart = app.IndexOf("function AudioSettingsPanel", StringComparison.Ordinal);
+        Assert.True(settingsRouteStart >= 0 && audioPanelStart > settingsRouteStart, "SettingsRoute should stay before AudioSettingsPanel.");
+        var settingsRoute = app[settingsRouteStart..audioPanelStart];
+        foreach (var hiddenTechnicalName in new[] { "OpenRouterApiKey", "PollinationsApiKey", "GmCliLaunchCommand", "GmBridgePipeNameOverride" })
+            Assert.DoesNotContain(hiddenTechnicalName, settingsRoute, StringComparison.Ordinal);
+
+        Assert.Contains(".settings-route-grid", styles, StringComparison.Ordinal);
+        Assert.Contains(".settings-control-card", styles, StringComparison.Ordinal);
+        Assert.Contains(".browser-shell.is-reduced-motion", styles, StringComparison.Ordinal);
+        Assert.Contains(".browser-shell.is-contrast-friendly", styles, StringComparison.Ordinal);
+        Assert.Contains("#689", File.ReadAllText(Path.Combine(FrontendRoot, "README.md")), StringComparison.Ordinal);
+        Assert.Contains("#689", File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md")), StringComparison.Ordinal);
     }
 
 
@@ -426,7 +468,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("placeholder={prompt.placeholder}", app, StringComparison.Ordinal);
         Assert.Contains("toPlayerFacingText(menu.session.continueReason", app, StringComparison.Ordinal);
         Assert.Contains("toPlayerFacingText(action.description", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(options.guidance", app, StringComparison.Ordinal);
+        Assert.Contains("toPlayerFacingText(menu.options.guidance", app, StringComparison.Ordinal);
         Assert.Contains("toPlayerFacingText(playlist.usage", app, StringComparison.Ordinal);
         Assert.Contains("toPlayerFacingText(cue.label", app, StringComparison.Ordinal);
         Assert.DoesNotContain("{menu.session.continueReason}", app, StringComparison.Ordinal);

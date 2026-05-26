@@ -101,6 +101,19 @@ public class GameSettings
     /// </summary>
     public int ConsoleFontSize { get; set; } = 20;
     /// <summary>
+    /// Browser client font scale from 80 to 140 percent. Stored in shared settings so the browser
+    /// frontend does not need a separate local-only preferences store.
+    /// </summary>
+    public int BrowserFontScalePercent { get; set; } = 100;
+    /// <summary>
+    /// Requests reduced motion in the Browser Client presentation layer.
+    /// </summary>
+    public bool BrowserReducedMotion { get; set; } = false;
+    /// <summary>
+    /// Enables a Browser Client contrast-friendly presentation mode.
+    /// </summary>
+    public bool BrowserContrastFriendly { get; set; } = false;
+    /// <summary>
     /// File names of enabled global system mods stored in game_session/mods/.
     /// Each file is one mod and affects the whole game when enabled.
     /// </summary>
@@ -115,6 +128,9 @@ public class GameSettings
 
         MusicVolume = Math.Clamp(MusicVolume, 0, 100);
         SoundVolume = Math.Clamp(SoundVolume, 0, 100);
+        BrowserFontScalePercent = loaded.BrowserFontScalePercent > 0
+            ? Math.Clamp(loaded.BrowserFontScalePercent, 80, 140)
+            : 100;
         ConsoleFontSize = loaded.ConsoleFontSize > 0
             ? Math.Clamp(loaded.ConsoleFontSize, 14, 32)
             : currentFontSize;

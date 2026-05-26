@@ -15,7 +15,7 @@ public sealed class BrowserAudioService
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly AudioService _audioService;
-    private static readonly SemaphoreSlim SettingsWriteGate = new SemaphoreSlim(1, 1);
+    internal static readonly SemaphoreSlim SettingsWriteGate = new SemaphoreSlim(1, 1);
 
     public BrowserAudioService(FileSystemManager fs, StateManager stateManager, AudioService audioService)
     {
