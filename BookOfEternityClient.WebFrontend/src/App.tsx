@@ -902,7 +902,7 @@ export default function App() {
       </nav>
 
       <section className="workspace-grid" aria-live="polite">
-        <div className="workspace-main">
+        <div className="workspace-main" key={activeRoute}>
           {shellState.status === 'loading' && <LoadingCard />}
           {shellState.status === 'error' && (
             <ErrorNotice title="Состояние клиента недоступно" failure={shellState} advancedEnabled={advancedEnabled} />
@@ -1268,6 +1268,15 @@ function GameRoute({
 
   const game = state.game.data;
 
+  useEffect(() => {
+    if (composerMode !== 'actions') return;
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setComposerMode('prose');
+    }
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [composerMode, setComposerMode]);
+
   return (
     <ShellPanel title="Игра" eyebrow="нарратив и ход">
       <article className="narrative-card is-featured" style={{ fontSize: 'clamp(1rem, 1.25vw, 1.15rem)', padding: 'var(--space-5)' }}>
@@ -1312,7 +1321,7 @@ function GameRoute({
           </button>
         </div>
 
-        {composerMode === 'prose' ? (
+        {composerMode === 'prose' && (
           <form onSubmit={submitComposer}>
             <label htmlFor="player-action">Что ты хочешь сделать?</label>
             <textarea
@@ -1329,16 +1338,27 @@ function GameRoute({
             <button type="submit" disabled={!composerText.trim()}>Подготовить действие</button>
             {composerNotice && <p className="composer-notice">{composerNotice}</p>}
           </form>
-        ) : (
-          <ActionPalette
-            menu={game.actionMenu}
-            search={actionSearch}
-            onSearchChange={setActionSearch}
-            onActionSelect={executeAction}
-            advancedEnabled={advancedEnabled}
-          />
         )}
       </div>
+
+      {/* Command catalog modal overlay (#762) */}
+      {composerMode === 'actions' && (
+        <div className="command-catalog-overlay" onClick={(e) => { if (e.target === e.currentTarget) setComposerMode('prose'); }}>
+          <div className="command-catalog-modal">
+            <div className="command-catalog-header">
+              <h2>Каталог команд</h2>
+              <button type="button" className="command-catalog-close" onClick={() => setComposerMode('prose')}>×</button>
+            </div>
+            <ActionPalette
+              menu={game.actionMenu}
+              search={actionSearch}
+              onSearchChange={setActionSearch}
+              onActionSelect={(action) => { executeAction(action); setComposerMode('prose'); }}
+              advancedEnabled={advancedEnabled}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Polished game surface for action results (#757) */}
       {gameSurface.kind === 'action-result' && (

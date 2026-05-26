@@ -1,0 +1,62 @@
+{
+  "presetId": "varak",
+  "displayName": "Варак Железный Шторм",
+  "summary": "Воинственный хранитель боя, дисциплины и заслуженной победы. Уважает стойкость, презирает пустое бахвальство.",
+  "alwaysAvailable": true,
+  "category": "system_guardian",
+  "identity": {
+    "domain": "Combat",
+    "archetype": "Stoic Warmaster",
+    "tone": "Direct",
+    "coreValues": [
+      "стойкость",
+      "мастерство",
+      "честь"
+    ]
+  },
+  "nameVariants": {
+    "default": "Варак Железный Шторм",
+    "feminine": null,
+    "masculine": "Варак Железный Шторм",
+    "neutral": null
+  },
+  "manifestationDefaults": {
+    "formFlexibility": "fixed",
+    "defaultPresentationStyle": "masculine",
+    "defaultPronouns": "он/его",
+    "appearanceDescription": "Воинственная фигура, словно собранная из шрама, стали и гулкой грозы; его присутствие ощущается как давление надвигающейся битвы."
+  },
+  "abode": {
+    "name": "Цитадель Громового Клинка",
+    "theme": "сталь, буря, арены, барабаны войны"
+  },
+  "generationRules": {
+    "mustPreserve": [
+      "Имя Варак Железный Шторм",
+      "Домен боя и дисциплины",
+      "Обитель должна ощущаться как воинская крепость на грани грозы"
+    ],
+    "canVary": [
+      "личные детали брони и шрамов",
+      "форму его текущего испытания или кампании"
+    ],
+    "forbidden": [
+      "не делать его кровожадным садистом без кодекса",
+      "не заменять дисциплину на хаотичную ярость"
+    ]
+  },
+  "searchAttraction": {
+    "enabled": true,
+    "label": "Притяжение к Вараку",
+    "keywords": [
+      "битва",
+      "клинок",
+      "честь",
+      "испытание силы"
+    ]
+  },
+  "authoring": {
+    "author": "system",
+    "version": "1.0"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "presetId": "lissara",
+  "displayName": "Лиссара Туманный След",
+  "summary": "Хранительница выживания, пути и хищной осторожности. Учит жить там, где у мира нет жалости.",
+  "alwaysAvailable": true,
+  "category": "system_guardian",
+  "identity": {
+    "domain": "Survival",
+    "archetype": "Pathfinder Huntress",
+    "tone": "Quiet",
+    "coreValues": [
+      "осторожность",
+      "адаптация",
+      "живучесть"
+    ]
+  },
+  "nameVariants": {
+    "default": "Лиссара Туманный След",
+    "feminine": "Лиссара Туманный След",
+    "masculine": null,
+    "neutral": null
+  },
+  "manifestationDefaults": {
+    "formFlexibility": "adaptive",
+    "defaultPresentationStyle": "feminine",
+    "defaultPronouns": "она/её",
+    "appearanceDescription": "Подвижный силуэт, словно сотканный из тумана, следов на мокрой земле и осторожного лесного света; в нём чувствуется защита без мягкости."
+  },
+  "abode": {
+    "name": "Тропа Серого Тумана",
+    "theme": "болота, следы, холодный ветер, хищная тишина"
+  },
+  "generationRules": {
+    "mustPreserve": [
+      "Имя Лиссара Туманный След",
+      "Домен выживания и адаптации",
+      "Обитель должна нести мотивы пути, следа и опасной природы"
+    ],
+    "canVary": [
+      "конкретные природные опасности",
+      "местные обряды охоты и дороги"
+    ],
+    "forbidden": [
+      "не делать её мягкой лесной феей",
+      "не убирать хищную практичность"
+    ]
+  },
+  "searchAttraction": {
+    "enabled": true,
+    "label": "Притяжение к Лиссаре",
+    "keywords": [
+      "выживание",
+      "охота",
+      "дорога",
+      "природа"
+    ]
+  },
+  "authoring": {
+    "author": "system",
+    "version": "1.0"
+  }
+}
