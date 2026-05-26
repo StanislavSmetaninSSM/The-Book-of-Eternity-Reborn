@@ -85,7 +85,7 @@ const playerRoutes: RouteCard[] = [
   { id: 'journal', kind: 'primary', label: 'Журнал', description: 'Квесты, хроника, заметки, архив и история текущей главы.', icon: 'journal' },
   { id: 'inventory', kind: 'primary', label: 'Инвентарь', description: 'Предметы, экипировка, ремесло и локальные хранилища.', icon: 'satchel' },
   { id: 'media', kind: 'utility', label: 'Медиа', description: 'Галерея, быстрые сцены и игровые материалы.', icon: 'gallery' },
-  { id: 'settings', kind: 'utility', label: 'Настройки', description: 'Локальный профиль, звук, язык и комфорт клиента.', icon: 'settings' }
+  { id: 'settings', kind: 'utility', label: 'Настройки', description: 'Профиль книги, звук, язык и удобство игры.', icon: 'settings' }
 ];
 
 const primaryPlayerRoutes = playerRoutes.filter((route) => route.kind === 'primary');
@@ -108,34 +108,34 @@ const playerCopyReplacements: Array<[RegExp, string]> = [
   [/\bGM\b/g, 'ГМ'],
   [/QTE action resolved\.?/gi, 'Быстрая сцена завершена.'],
   [/\bQTE\b/g, 'быстрая сцена'],
-  [/debug shell/gi, 'служебная оболочка'],
-  [/Slash-команды/gi, 'служебные команды'],
-  [/\bslash commands?\b/gi, 'служебные команды'],
+  [/debug shell/gi, 'скрытый раздел'],
+  [/Slash-команды/gi, 'особые команды'],
+  [/\bslash commands?\b/gi, 'особые команды'],
   [/Нужен repair pending turn/gi, 'Нужна починка ожидающего хода'],
   [/repair pending turn/gi, 'починка ожидающего хода'],
   [/нужен repair/gi, 'нужна починка'],
   [/\bpending[- ]turn\b/gi, 'ожидающий ход'],
   [/\bturn[- ]writer\b/gi, 'запись хода'],
-  [/\bBrowser[- ]write\b/gi, 'запись из браузера'],
-  [/\bbrowser write\b/gi, 'запись из браузера'],
-  [/\blocal[- ]write\b/gi, 'локальная запись'],
+  [/\bBrowser[- ]write\b/gi, 'запись книги'],
+  [/\bbrowser write\b/gi, 'запись книги'],
+  [/\blocal[- ]write\b/gi, 'запись книги'],
   [/\bprompt[- ]session\b/gi, 'игровая форма'],
   [/\brollback\b/gi, 'откат'],
   [/blocked by/gi, 'заблокировано из-за'],
   [/\bblocked\b/gi, 'заблокировано'],
   [/\bby\b/gi, 'из-за'],
-  [/\bSpectre\.Console\b/g, 'консольный интерфейс'],
-  [/state\/contract/gi, 'файлы состояния и контракта'],
+  [/\bSpectre\.Console\b/g, 'текстовый интерфейс'],
+  [/state\/contract/gi, 'файлы состояния'],
   [/snapshot artifact/gi, 'снимок состояния'],
   [/game_session/gi, 'сохранение игры'],
   [/write-flow/gi, 'запись хода'],
   [/manual_saves/gi, 'ручные сохранения'],
   [/autosaves/gi, 'автосохранения'],
-  [/--web/g, 'браузерный режим'],
+  [/--web/g, 'режим книги'],
   [/\boffer\b/gi, 'предложение'],
   [/\bsnapshot\b/gi, 'снимок'],
   [/\bartifact\b/gi, 'файл состояния'],
-  [/Browser Client/gi, 'браузерный клиент'],
+  [/Browser Client/gi, 'игровой интерфейс'],
   [/sound-notification/gi, 'звуковая подсказка'],
   [/\brealm\b/gi, 'царство'],
   [/repair\/validation/gi, 'починка и проверка'],
@@ -143,9 +143,9 @@ const playerCopyReplacements: Array<[RegExp, string]> = [
   [/\bvalidation\b/gi, 'проверка'],
   [/game_state\/meta\/soul_state\.json/gi, 'файл души'],
   [/soul_state\.json/gi, 'файл души'],
-  [/game_state/gi, 'папка состояния игры'],
-  [/локальный запись хода/gi, 'локальную запись хода'],
-  [/тот же локальную/gi, 'ту же локальную'],
+  [/game_state/gi, 'папка состояния'],
+  [/локальный запись хода/gi, 'запись хода книги'],
+  [/тот же локальную/gi, 'ту же запись'],
   [/\bUI\b/g, 'интерфейс'],
   [/\baction\b/gi, 'действие'],
   [/\bresolved\b/gi, 'завершена'],
@@ -153,19 +153,19 @@ const playerCopyReplacements: Array<[RegExp, string]> = [
   [/C\x23\s*/g, ''],
   [/\blifecycle\b/gi, 'состояние хода'],
   [/\bruntime\b/gi, 'игровой слой'],
-  [/\bendpoint(s)?\b/gi, 'разделы локального интерфейса'],
-  [/\bAPI\b/g, 'локальный интерфейс'],
-  [/\bDTO\b/g, 'данные интерфейса'],
+  [/\bendpoint(s)?\b/gi, 'разделы интерфейса'],
+  [/\bAPI\b/g, 'игровой интерфейс'],
+  [/\bDTO\b/g, 'игровые данные'],
   [/\bNPC\b/g, 'персонажи мира']
 ];
 
 const launcherAboutCopyReplacements: Array<[RegExp, string]> = [
-  [/\bdebug\b/gi, 'служебная'],
+  [/\bdebug\b/gi, 'скрытая'],
   [/\bdiagnostics?\b/gi, 'проверочные сведения'],
-  [/\btechnical details?\b/gi, 'служебные сведения'],
-  [/\btechnical\b/gi, 'служебный'],
-  [/\bdeveloper\b/gi, 'служебный'],
-  [/\braw JSON\b/gi, 'подробные данные']
+  [/\btechnical details?\b/gi, 'скрытые сведения'],
+  [/\btechnical\b/gi, 'скрытый'],
+  [/\bdeveloper\b/gi, 'скрытый'],
+  [/\braw JSON\b/gi, 'дополнительные данные']
 ];
 
 const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about'];
@@ -181,15 +181,15 @@ const launcherModeDetails: Record<LauncherMode, { label: string; description: st
   },
   'new-game': {
     label: 'Начать новую главу',
-    description: 'Открыть подготовку новой главы, когда локальная книга разрешает этот шаг.'
+    description: 'Открыть подготовку новой главы, когда книга разрешает этот шаг.'
   },
   settings: {
-    label: 'Настроить клиент',
-    description: 'Открыть настройки локального клиента и звука.'
+    label: 'Настройки книги',
+    description: 'Настройки книги и звука.'
   },
   about: {
     label: 'Сведения о книге',
-    description: 'Показать краткое описание книги и браузерного клиента.'
+    description: 'Описание книги и интерфейса.'
   }
 };
 
@@ -354,7 +354,7 @@ function GameLauncher({
         return;
       }
 
-      setLauncherNotice('Сохранение не удалось загрузить. Проверьте локальный клиент и попробуйте ещё раз.');
+      setLauncherNotice('Сохранение не удалось загрузить. Попробуйте ещё раз.');
     } finally {
       if (isLauncherMountedRef.current) {
         setLoadingSaveId(null);
@@ -420,7 +420,7 @@ function GameLauncher({
         return <NewChapterStartPanel modeAction={modeAction} modeDescription={modeDescription} />;
       case 'settings':
         return (
-          <section className="launcher-mode-panel" aria-label="Настройки клиента">
+          <section className="launcher-mode-panel" aria-label="Настройки книги">
             <h3>Настроить клиент</h3>
             <p>{toPlayerFacingText(menu.options.guidance, 'Настройки локального клиента доступны в отдельном разделе.')}</p>
             <button type="button" className="launcher-secondary-action" onClick={() => onActiveRouteChange('settings')}>
@@ -524,9 +524,9 @@ function NewChapterStartPanel({
   const startCommand = modeAction?.command.trim() ?? '';
   const canOpenStartFlow = Boolean(modeAction?.enabled && startCommand);
   const unavailableReason = !modeAction
-    ? 'Подготовка новой главы пока недоступна из браузерного меню. Продолжите текущую главу, загрузите сохранение или проверьте состояние локальной книги.'
+    ? 'Подготовка новой главы пока недоступна. Продолжите текущую главу, загрузите сохранение или проверьте состояние книги.'
     : modeAction.enabled && !startCommand
-      ? 'Подготовка новой главы пока не подключила браузерную форму. Действие не обещает поля, пока локальное меню не отдаст безопасный поток.'
+      ? 'Подготовка новой главы пока не открыла поля ввода. Книга подготовит нужные данные, когда глава будет готова.'
       : launcherModeUnavailableReason(modeAction, modeDescription);
 
   useEffect(() => {
@@ -602,7 +602,7 @@ function NewChapterStartPanel({
       {!canOpenStartFlow && <p className="warning-text">{unavailableReason}</p>}
       <button type="button" className="launcher-secondary-action" disabled={!canOpenStartFlow || isSubmitting} onClick={() => void openNewChapterFlow()}>
         <strong>{submissionMode === 'opening' ? 'Открываем…' : submissionMode === 'submitting' ? 'Отправляем…' : 'Открыть форму новой главы'}</strong>
-        <span>{canOpenStartFlow ? 'Показать поля подготовки мира и отправку формы.' : 'Сейчас доступно только продолжение или загрузка.'}</span>
+        <span>{canOpenStartFlow ? 'Показать поля подготовки мира и отправить ответы.' : 'Сейчас доступно только продолжение или загрузка.'}</span>
       </button>
       {notice && <p className="composer-notice">{notice}</p>}
       {newChapterResult && (
@@ -624,7 +624,7 @@ function launcherModeUnavailableReason(modeAction: BrowserMainMenuDto['actions']
 
 function toNewChapterNotice(result: ExplorerCommandResult): string {
   if (result.state === 'RequiresInput') {
-    return 'Форма новой главы открыта. Заполните поля ниже и отправьте её из браузера.';
+    return 'Поля новой главы открыты. Заполните их ниже и отправьте.';
   }
 
   return toCommandNotice(result);
@@ -632,8 +632,8 @@ function toNewChapterNotice(result: ExplorerCommandResult): string {
 
 function sanitizeNewChapterCommandResult(result: BrowserApiResult<ExplorerCommandResult>): BrowserApiResult<ExplorerCommandResult> {
   return sanitizePlayerDefaultCommandResult(result, {
-    blockedTextFallback: 'Служебные подробности подготовки скрыты в обычном режиме.',
-    blockTitleFallback: 'Сведения подготовки новой главы',
+    blockedTextFallback: 'Подробности подготовки скрыты в обычном режиме.',
+    blockTitleFallback: 'Сведения о новой главе',
     notificationTitleFallback: 'Форма новой главы',
     notificationMessageFallback: 'Форма новой главы готова к заполнению.',
     promptTextFallback: 'Заполните поле формы новой главы',
@@ -728,7 +728,7 @@ export default function App() {
       const message = error instanceof Error ? error.message : 'Unknown browser shell error.';
       setShellState({
         status: 'error',
-        playerMessage: 'Браузерный клиент не смог собрать состояние игры.',
+        playerMessage: 'Книга не смогла собрать состояние игры.',
         technicalDetails: message
       });
     }
@@ -765,11 +765,11 @@ export default function App() {
     const normalized = composerText.trim();
 
     if (normalized.startsWith('/')) {
-      setComposerNotice('Служебные команды не выполняются из основного поля. Откройте «Расширенный режим» отдельной кнопкой, если хотите перенести команду в техническую панель и подтвердить её там.');
+      setComposerNotice('Особые команды не выполняются из основного поля. Откройте «Расширенный режим» отдельной кнопкой, если хотите перенести команду в дополнительную панель и подтвердить её там.');
       return;
     }
 
-    setComposerNotice('Художественный ввод подготовлен. Запись хода будет подключена отдельной задачей безопасной локальной записи.');
+    setComposerNotice('Художественный ввод подготовлен. Ход будет записан при следующем обновлении книги.');
   }
 
   return (
@@ -792,11 +792,11 @@ export default function App() {
         </div>
       </section>
 
-      <nav className="route-grid route-grid--primary" aria-label="Основные игровые разделы браузерного клиента">
+      <nav className="route-grid route-grid--primary" aria-label="Основные игровые разделы книги">
         {primaryPlayerRoutes.map((route) => renderRouteButton(route, activeRoute, routeStates, setActiveRoute))}
       </nav>
 
-      <nav className="route-grid route-grid--utility" aria-label="Дополнительные игровые разделы браузерного клиента">
+      <nav className="route-grid route-grid--utility" aria-label="Дополнительные игровые разделы книги">
         <p className="utility-route-heading">Сводка / Игра / Душа / Мир / Журнал / Инвентарь — основная цепочка игрока. Медиа и настройки доступны отдельно.</p>
         {utilityPlayerRoutes.map((route) => renderRouteButton(route, activeRoute, routeStates, setActiveRoute))}
       </nav>
@@ -948,7 +948,7 @@ function PlayerStatusSidebar({
         ) : gameScreen ? (
           <>
             <p className={`status-pill turn-phase turn-phase--${gameScreen.turnState.severity}`}>{formatTurnStateTitle(gameScreen.turnState)}</p>
-            <p className="muted">{toPlayerFacingText(gameScreen.turnState.playerGuidance, 'Следуйте безопасному состоянию хода.')}</p>
+            <p className="muted">{toPlayerFacingText(gameScreen.turnState.playerGuidance, 'Следуйте текущему состоянию хода.')}</p>
           </>
         ) : (
           <>
@@ -960,11 +960,11 @@ function PlayerStatusSidebar({
 
       {readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} advancedEnabled={advancedEnabled} />}
 
-      <section className="advanced-sidebar-entry" aria-label="Служебная панель">
+      <section className="advanced-sidebar-entry" aria-label="Дополнительная панель">
         <div>
           <p className="panel-eyebrow">по запросу</p>
-          <h3>Служебная панель</h3>
-          <p className="muted">Служебные проверки и сведения для ремонта остаются вторичным режимом.</p>
+          <h3>Дополнительная панель</h3>
+          <p className="muted">Дополнительные проверки и сведения остаются вторичным режимом.</p>
         </div>
         <button
           type="button"
@@ -1074,7 +1074,7 @@ function formatSidebarSessionSummary(session: LocalWebUiSessionStatus | null, me
   if (session?.gameSessionExists) {
     return session.canStartBrowserWrite
       ? 'Локальная партия найдена, запись следующего хода доступна.'
-      : 'Локальная партия найдена, но ход сейчас ждёт безопасного момента.';
+      : 'Партия найдена, но ход сейчас ждёт подходящего момента.';
   }
 
   if (menu?.session.gameSessionExists || menu?.session.canContinue) {
@@ -1157,7 +1157,7 @@ function HomeRoute({
     return <EmptyOrFailure result={state.menu} advancedEnabled={advancedEnabled} errorTitle="Главное меню требует внимания" empty={{
       title: 'Книга ждёт открытия',
       message: 'Главная страница появится, когда локальная книга подготовит меню продолжения.',
-      action: 'Откройте книгу: начните новую главу, продолжите сохранение или загрузите партию из доступных действий клиента.'
+      action: 'Откройте книгу: начните новую главу, продолжите сохранение или загрузите партию.'
     }} />;
   }
 
@@ -1204,7 +1204,7 @@ function GameRoute({
         <ShellPanel title="Состояние хода" eyebrow={formatTurnStateLabel(game.turnState.phase || game.turnState.state)} nested variant="turn">
           <p className={`status-pill turn-phase turn-phase--${game.turnState.severity}`}>{formatTurnStateTitle(game.turnState)}</p>
           <p>{formatTurnStateMessage(game.turnState)}</p>
-          <p className="muted">{toPlayerFacingText(game.turnState.playerGuidance, 'Следуйте безопасному состоянию хода.')}</p>
+          <p className="muted">{toPlayerFacingText(game.turnState.playerGuidance, 'Следуйте текущему состоянию хода.')}</p>
           <TurnLifecycleActions turnState={game.turnState} />
           <p className="muted">Быстрая сцена: {formatQteStateLabel(game.qte)}</p>
         </ShellPanel>
@@ -2056,7 +2056,7 @@ function defaultPromptValue(prompt: UiPrompt): JsonValue | undefined {
 function toCommandNotice(result: ExplorerCommandResult): string {
   switch (result.state) {
     case 'RequiresInput':
-      return 'Форма открыта. Заполните поля ниже и отправьте её из браузера.';
+      return 'Поля открыты. Заполните их ниже и отправьте.';
     case 'Completed':
       return 'Игровое действие выполнено.';
     case 'Pending':
@@ -2069,7 +2069,7 @@ function toCommandNotice(result: ExplorerCommandResult): string {
 }
 
 function playerLauncherAboutText(text: string): string {
-  const fallback = 'Браузерный клиент открывает локальную книгу и оставляет игровые решения в основном клиенте.';
+  const fallback = 'Книга открывает текущую главу и оставляет игровые решения в основных настройках.';
   const playerText = toPlayerFacingText(text, fallback);
   const sanitized = launcherAboutCopyReplacements.reduce(
     (copy, [pattern, replacement]) => copy.replace(pattern, replacement),
@@ -2144,7 +2144,7 @@ function formatTurnStateMessage(turnState: BrowserGameScreenDto['turnState']): s
     turnState.message,
     turnState.canStartBrowserWrite
       ? 'Опишите следующий ход персонажа в художественной форме.'
-      : 'Запись хода сейчас недоступна; дождитесь безопасного состояния игры.'
+      : 'Запись хода сейчас недоступна; дождитесь подходящего состояния игры.'
   );
 }
 
@@ -2167,7 +2167,7 @@ function formatSessionStatus(status: string): string {
   switch (status.trim().toLowerCase()) {
     case 'ok':
     case 'ready':
-      return 'Клиент готов';
+      return 'Книга готова';
     case 'missing':
     case 'not_found':
     case 'notfound':
@@ -2684,7 +2684,7 @@ function SettingsRoute({
     return <EmptyOrFailure result={settingsResult} advancedEnabled={advancedEnabled} errorTitle="Настройки требуют внимания" empty={{
       title: 'Настройки готовятся',
       message: 'Параметры локального клиента появятся, когда общая конфигурация книги будет доступна.',
-      action: 'Если вы только открыли клиент, подождите загрузки или вернитесь на главную страницу.'
+      action: 'Если вы только открыли книгу, подождите загрузки или вернитесь на главную страницу.'
     }} />;
   }
 
@@ -2699,19 +2699,19 @@ function SettingsRoute({
           const updated = await browserApi.updateClientSettings(request);
           setSettingsResult(updated);
           if (isSuccess(updated)) {
-            setNotice('Настройки книги сохранены в общей конфигурации клиента.');
+            setNotice('Настройки книги сохранены.');
             await onStateRefresh();
           } else {
             setNotice(toPlayerFacingText(updated.playerMessage, 'Не удалось сохранить настройки книги.'));
           }
         } catch {
-          setNotice('Не удалось сохранить настройки книги. Проверьте локальный клиент и попробуйте ещё раз.');
+          setNotice('Не удалось сохранить настройки книги. Попробуйте ещё раз.');
         }
       });
   }
 
   return (
-    <ShellPanel title="Настройки книги" eyebrow="локальность клиента">
+    <ShellPanel title="Настройки книги" eyebrow="профиль книги">
       <p className="muted">Настройки читаются и сохраняются в общей конфигурации игры, чтобы браузерный и консольный клиенты не расходились.</p>
 
       <div className="settings-route-grid">
@@ -2837,13 +2837,13 @@ function SettingsRoute({
 
         <section className="settings-control-card" aria-labelledby="settings-locality-title">
           <h3 id="settings-locality-title">Локальность</h3>
-          <p className="status-pill">{settings.locality.localhostOnly ? 'Только localhost/loopback' : 'Нужна проверка локальности'}</p>
+          <p className="status-pill">{settings.locality.localhostOnly ? 'Только локальное подключение' : 'Нужна проверка локальности'}</p>
           <dl className="kv-list">
-            <div><dt>Сессия</dt><dd>{toPlayerFacingText(settings.locality.sessionLabel, 'game_session — локальная папка книги')}</dd></div>
+            <div><dt>Сессия</dt><dd>{toPlayerFacingText(settings.locality.sessionLabel, 'сохранение книги')}</dd></div>
             <div><dt>Папка книги</dt><dd>{settings.locality.gameSessionExists ? 'найдена' : 'ещё не создана'}</dd></div>
             <div><dt>Мост ГМа</dt><dd>{toPlayerFacingText(settings.locality.gmBridgeLabel, settings.locality.gmBridgeEnabled ? 'локальный мост включён' : 'локальный мост выключен')}</dd></div>
           </dl>
-          <p className="muted">{toPlayerFacingText(settings.locality.safetySummary, 'Браузерный клиент работает только локально.')}</p>
+          <p className="muted">{toPlayerFacingText(settings.locality.safetySummary, 'Книга работает только на вашем устройстве.')}</p>
         </section>
       </div>
 
@@ -2879,8 +2879,8 @@ function AudioSettingsPanel({
   if (!isSuccess(audioResult)) {
     return <EmptyOrFailure result={audioResult} advancedEnabled={advancedEnabled} errorTitle="Музыка требует внимания" empty={{
       title: 'Музыка ждёт локальные настройки',
-      message: 'Панель звука появится, когда клиент отдаст общие настройки аудио.',
-      action: 'Игра продолжит работать без музыки; технические подробности остаются в расширенном режиме.'
+      message: 'Панель звука появится, когда книга подготовит настройки аудио.',
+      action: 'Игра продолжит работать без музыки; подробности доступны в расширенном режиме.'
     }} />;
   }
 
@@ -2923,7 +2923,7 @@ function AudioSettingsPanel({
 
     const track = playlist?.tracks[0];
     if (!track) {
-      setNotice(toPlayerFacingText(audio.missingAssetsMessage, 'Аудиофайлы для выбранного плейлиста не найдены. Клиент продолжит игру без музыки.'));
+      setNotice(toPlayerFacingText(audio.missingAssetsMessage, 'Аудиофайлы для выбранного плейлиста не найдены. Игра продолжится без музыки.'));
       return;
     }
 
@@ -3268,7 +3268,7 @@ function ErrorNotice({ title, failure, advancedEnabled }: { title: string; failu
 
 function LoadingCard() {
   return (
-    <ShellPanel title="Загрузка" eyebrow="локальный клиент">
+    <ShellPanel title="Загрузка" eyebrow="книга">
       <p>Собираем главное меню, сессию, игровой экран и состояние хода из локального клиента…</p>
     </ShellPanel>
   );

@@ -213,7 +213,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Музыка и звуковые подсказки", app, StringComparison.Ordinal);
         Assert.Contains("Доступность", app, StringComparison.Ordinal);
         Assert.Contains("Локальность", app, StringComparison.Ordinal);
-        Assert.Contains("Только localhost/loopback", app, StringComparison.Ordinal);
+        Assert.Contains("Только локальное подключение", app, StringComparison.Ordinal);
         Assert.Contains("sessionLabel", app, StringComparison.Ordinal);
         Assert.Contains("gmBridgeLabel", app, StringComparison.Ordinal);
         Assert.Contains("is-reduced-motion", app, StringComparison.Ordinal);
@@ -246,8 +246,8 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("type RouteKind = 'primary' | 'utility';", app, StringComparison.Ordinal);
         Assert.Contains("const primaryPlayerRoutes = playerRoutes.filter((route) => route.kind === 'primary');", app, StringComparison.Ordinal);
         Assert.Contains("const utilityPlayerRoutes = playerRoutes.filter((route) => route.kind === 'utility');", app, StringComparison.Ordinal);
-        Assert.Contains("aria-label=\"Основные игровые разделы браузерного клиента\"", app, StringComparison.Ordinal);
-        Assert.Contains("aria-label=\"Дополнительные игровые разделы браузерного клиента\"", app, StringComparison.Ordinal);
+        Assert.Contains("aria-label=\"Основные игровые разделы книги\"", app, StringComparison.Ordinal);
+        Assert.Contains("aria-label=\"Дополнительные игровые разделы книги\"", app, StringComparison.Ordinal);
         Assert.Contains("className=\"route-grid route-grid--primary\"", app, StringComparison.Ordinal);
         Assert.Contains("className=\"route-grid route-grid--utility\"", app, StringComparison.Ordinal);
 
@@ -453,7 +453,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("{option.category}", app, StringComparison.Ordinal);
         Assert.DoesNotContain("return qte.notification;", app, StringComparison.Ordinal);
         Assert.DoesNotContain("{soul.realm}", app, StringComparison.Ordinal);
-        Assert.Contains("[/Slash-команды/gi, 'служебные команды']", app, StringComparison.Ordinal);
+        Assert.Contains("[/Slash-команды/gi, 'особые команды']", app, StringComparison.Ordinal);
         Assert.Contains("[/repair pending turn/gi, 'починка ожидающего хода']", app, StringComparison.Ordinal);
         Assert.Contains("[/\\brepair\\b/gi, 'починка']", app, StringComparison.Ordinal);
         Assert.Contains("toPlayerFacingText(notification.title", app, StringComparison.Ordinal);
@@ -482,19 +482,19 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("[/write-flow/gi, 'запись хода']", app, StringComparison.Ordinal);
         Assert.Contains("[/manual_saves/gi, 'ручные сохранения']", app, StringComparison.Ordinal);
         Assert.Contains("[/autosaves/gi, 'автосохранения']", app, StringComparison.Ordinal);
-        Assert.Contains("[/--web/g, 'браузерный режим']", app, StringComparison.Ordinal);
+        Assert.Contains("[/--web/g, 'режим книги']", app, StringComparison.Ordinal);
         Assert.Contains("[/snapshot artifact/gi, 'снимок состояния']", app, StringComparison.Ordinal);
-        Assert.Contains("[/state\\/contract/gi, 'файлы состояния и контракта']", app, StringComparison.Ordinal);
+        Assert.Contains("[/state\\/contract/gi, 'файлы состояния']", app, StringComparison.Ordinal);
         Assert.Contains("[/\\boffer\\b/gi, 'предложение']", app, StringComparison.Ordinal);
-        Assert.Contains("[/Browser Client/gi, 'браузерный клиент']", app, StringComparison.Ordinal);
+        Assert.Contains("[/Browser Client/gi, 'игровой интерфейс']", app, StringComparison.Ordinal);
         Assert.Contains("[/sound-notification/gi, 'звуковая подсказка']", app, StringComparison.Ordinal);
         Assert.Contains("[/\\brealm\\b/gi, 'царство']", app, StringComparison.Ordinal);
         Assert.Contains("[/repair\\/validation/gi, 'починка и проверка']", app, StringComparison.Ordinal);
         Assert.Contains("[/UI-блокировка/gi, 'блокировка интерфейса']", app, StringComparison.Ordinal);
         Assert.Contains("[/\\bvalidation\\b/gi, 'проверка']", app, StringComparison.Ordinal);
         Assert.Contains("[/game_state\\/meta\\/soul_state\\.json/gi, 'файл души']", app, StringComparison.Ordinal);
-        Assert.Contains("[/локальный запись хода/gi, 'локальную запись хода']", app, StringComparison.Ordinal);
-        Assert.Contains("[/тот же локальную/gi, 'ту же локальную']", app, StringComparison.Ordinal);
+        Assert.Contains("[/локальный запись хода/gi, 'запись хода книги']", app, StringComparison.Ordinal);
+        Assert.Contains("[/тот же локальную/gi, 'ту же запись']", app, StringComparison.Ordinal);
         Assert.DoesNotContain("Валидация:", app, StringComparison.Ordinal);
         Assert.Contains("prompt.allowCustom", app, StringComparison.Ordinal);
         Assert.Contains("Или впишите свой вариант", app, StringComparison.Ordinal);
@@ -564,7 +564,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("className=\"launcher-secondary-actions\"", app, StringComparison.Ordinal);
         Assert.Contains("className=\"advanced-toggle\"", app, StringComparison.Ordinal);
         Assert.Contains("function playerLauncherAboutText", app, StringComparison.Ordinal);
-        Assert.Contains("[/debug shell/gi, 'служебная оболочка']", app, StringComparison.Ordinal);
+        Assert.Contains("[/debug shell/gi, 'скрытый раздел']", app, StringComparison.Ordinal);
         Assert.Contains("function toLauncherSaveFailureNotice", app, StringComparison.Ordinal);
         Assert.DoesNotContain("setLauncherNotice(toPlayerFacingText(result.data.error", app, StringComparison.Ordinal);
         Assert.Contains("isLauncherMountedRef", app, StringComparison.Ordinal);
@@ -579,14 +579,14 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("async function submitNewChapterPromptAnswers", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.submitPromptSession({", app, StringComparison.Ordinal);
         Assert.Contains("<ActionCommandResult", app, StringComparison.Ordinal);
-        Assert.Contains("Форма новой главы открыта. Заполните поля ниже и отправьте её из браузера.", app, StringComparison.Ordinal);
+        Assert.Contains("Поля новой главы открыты. Заполните их ниже и отправьте.", app, StringComparison.Ordinal);
         Assert.DoesNotContain("Подготовить новую историю через управляемую форму браузера.", app, StringComparison.Ordinal);
 
         var advancedDiagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
         Assert.True(advancedDiagnosticsIndex > 0, "Advanced diagnostics must stay in a separate source section.");
         var playerDefaultAppSlice = app[..advancedDiagnosticsIndex];
         var hasRawDebugShellInPlayerDefaultSlice = playerDefaultAppSlice.Contains("debug shell", StringComparison.OrdinalIgnoreCase);
-        var hasExplicitDebugShellReplacement = app.Contains("[/debug shell/gi, 'служебная оболочка']", StringComparison.Ordinal);
+        var hasExplicitDebugShellReplacement = app.Contains("[/debug shell/gi, 'скрытый раздел']", StringComparison.Ordinal);
         Assert.True(!hasRawDebugShellInPlayerDefaultSlice || hasExplicitDebugShellReplacement, "Player-default launcher copy must not expose raw debug shell wording.");
 
         Assert.Contains(".game-launcher", styles, StringComparison.Ordinal);
@@ -616,8 +616,8 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Слой книги", app, StringComparison.Ordinal);
         Assert.Contains("Герой и душа", app, StringComparison.Ordinal);
         Assert.Contains("Сохранение", app, StringComparison.Ordinal);
-        Assert.Contains("Служебная панель", app, StringComparison.Ordinal);
-        Assert.Contains("Служебные проверки и сведения для ремонта остаются вторичным режимом.", app, StringComparison.Ordinal);
+        Assert.Contains("Дополнительная панель", app, StringComparison.Ordinal);
+        Assert.Contains("Дополнительные проверки и сведения остаются вторичным режимом.", app, StringComparison.Ordinal);
         Assert.Contains("formatSidebarSessionSummary(", app, StringComparison.Ordinal);
         Assert.Contains("formatSidebarAudioSummary(", app, StringComparison.Ordinal);
         Assert.Contains("getSidebarFailure(", app, StringComparison.Ordinal);
