@@ -1404,7 +1404,7 @@ function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
         <div className="summary-card"><h2>Фракции</h2><p>Панели фракций и стражей используют общие игровые данные и не дублируют правила.</p></div>
       </div>
       <RebornSystemsPanel game={game} />
-      <ActionMenu menu={game.actionMenu} />
+      <ActionMenu menu={game.actionMenu} advancedEnabled={advancedEnabled} />
     </ShellPanel>
   );
 }
@@ -1441,7 +1441,7 @@ function JournalRoute({ state, advancedEnabled }: { state: Extract<BrowserShellS
           <p className="muted">Журнал показывает игровые разделы из каталога действий без служебных команд.</p>
         </div>
       </div>
-      <FilteredActionSections sections={sections} emptyMessage="Квестовые, архивные и фракционные разделы появятся здесь, когда каталог действий отдаст их для текущей главы." />
+      <FilteredActionSections sections={sections} emptyMessage="Квестовые, архивные и фракционные разделы появятся здесь, когда каталог действий отдаст их для текущей главы." advancedEnabled={advancedEnabled} />
     </ShellPanel>
   );
 }
@@ -1471,7 +1471,7 @@ function InventoryRoute({ state, advancedEnabled }: { state: Extract<BrowserShel
           <p>Инвентарь использует существующие игровые действия и не добавляет отдельные правила предметов в React.</p>
         </div>
       </div>
-      <FilteredActionSections sections={sections} emptyMessage="Инвентарные, ремесленные и складские разделы появятся здесь, когда каталог действий отдаст их для текущей главы." />
+      <FilteredActionSections sections={sections} emptyMessage="Инвентарные, ремесленные и складские разделы появятся здесь, когда каталог действий отдаст их для текущей главы." advancedEnabled={advancedEnabled} />
     </ShellPanel>
   );
 }
@@ -1691,7 +1691,7 @@ function ActionPreviewList({ actions, emptyMessage }: { actions: BrowserPlayerCo
   );
 }
 
-function FilteredActionSections({ sections, emptyMessage }: { sections: BrowserPlayerCommandSectionDto[]; emptyMessage: string }) {
+function FilteredActionSections({ sections, emptyMessage, advancedEnabled }: { sections: BrowserPlayerCommandSectionDto[]; emptyMessage: string; advancedEnabled: boolean }) {
   if (sections.length === 0) {
     return <p className="muted">{emptyMessage}</p>;
   }
@@ -1699,7 +1699,7 @@ function FilteredActionSections({ sections, emptyMessage }: { sections: BrowserP
   return (
     <section className="action-menu" aria-label="Игровые разделы страницы">
       <div className="action-section-grid">
-        {sections.map((section) => <ActionSection key={section.id} section={section} />)}
+        {sections.map((section) => <ActionSection key={section.id} section={section} advancedEnabled={advancedEnabled} />)}
       </div>
     </section>
   );
@@ -1741,7 +1741,7 @@ function matchesActionSectionOrAction(
   return normalizedMatchers.some((matcher) => haystack.includes(matcher));
 }
 
-function ActionMenu({ menu }: { menu: BrowserPlayerCommandMenuDto }) {
+function ActionMenu({ menu, advancedEnabled }: { menu: BrowserPlayerCommandMenuDto; advancedEnabled: boolean }) {
   const sections = menu.sections.filter((section) => section.playerDefault && section.actions.length > 0);
 
   return (
@@ -1756,7 +1756,7 @@ function ActionMenu({ menu }: { menu: BrowserPlayerCommandMenuDto }) {
       </div>
       <div className="action-section-grid">
         {sections.map((section) => (
-          <ActionSection key={section.id} section={section} />
+          <ActionSection key={section.id} section={section} advancedEnabled={advancedEnabled} />
         ))}
       </div>
     </section>
@@ -1794,7 +1794,7 @@ function formatTurnLifecycleActionDescription(action: BrowserGameScreenDto['turn
   return toPlayerFacingText(action.disabledReason, 'Действие сейчас недоступно.');
 }
 
-function ActionSection({ section }: { section: BrowserPlayerCommandSectionDto }) {
+function ActionSection({ section, advancedEnabled }: { section: BrowserPlayerCommandSectionDto; advancedEnabled: boolean }) {
   return (
     <section className="action-section" aria-labelledby={`action-section-${section.id}`}>
       <div>
@@ -1803,14 +1803,14 @@ function ActionSection({ section }: { section: BrowserPlayerCommandSectionDto })
       </div>
       <div className="action-card-list">
         {section.actions.map((action) => (
-          <ActionCard key={action.id} action={action} />
+          <ActionCard key={action.id} action={action} advancedEnabled={advancedEnabled} />
         ))}
       </div>
     </section>
   );
 }
 
-function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
+function ActionCard({ action, advancedEnabled }: { action: BrowserPlayerCommandActionDto; advancedEnabled: boolean }) {
   const [notice, setNotice] = useState('');
   const [commandResult, setCommandResult] = useState<BrowserApiResult<ExplorerCommandResult> | null>(null);
   const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>({});
@@ -1822,7 +1822,8 @@ function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
     setIsSubmitting(true);
     setNotice(isGuidedForm ? 'Открываем игровую форму…' : 'Открываем игровой раздел…');
 
-    const result = await browserApi.executeExplorerCommand({ command: action.advancedCommand, ownerLabel: 'Игровое меню' });
+    const rawResult = await browserApi.executeExplorerCommand({ command: action.advancedCommand, ownerLabel: 'Игровое меню' });
+    const result = advancedEnabled ? rawResult : sanitizePlayerDefaultCommandResult(rawResult);
     setCommandResult(result);
     if (isSuccess(result)) {
       setPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
@@ -1842,11 +1843,12 @@ function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
     setIsSubmitting(true);
     setNotice('Отправляем заполненную форму…');
     const session = commandResult.data.interactiveSession;
-    const result = await browserApi.submitPromptSession({
+    const rawResult = await browserApi.submitPromptSession({
       sessionId: session.sessionId,
       ownerId: session.ownerId,
       answers: promptAnswers
     });
+    const result = advancedEnabled ? rawResult : sanitizePlayerDefaultCommandResult(rawResult);
     setCommandResult(result);
     if (isSuccess(result)) {
       setPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));

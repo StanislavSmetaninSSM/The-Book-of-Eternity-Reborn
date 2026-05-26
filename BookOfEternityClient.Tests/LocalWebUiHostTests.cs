@@ -847,20 +847,20 @@ public sealed class LocalWebUiHostTests : IDisposable
         var readyRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
         Assert.Equal("ready", readyRoot["turnState"]!["phase"]!.GetValue<string>());
         Assert.Equal("success", readyRoot["turnState"]!["severity"]!.GetValue<string>());
-        Assert.Contains("принять", readyRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("примите", readyRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
 
         File.Delete(Path.Combine(_rootPath, "game_session", "ready", "turn_complete.json"));
         WriteSessionFile("ready/turn_error.json", "{ \"error\": \"GM timeout\" }");
         var errorRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
         Assert.Equal("error-restored", errorRoot["turnState"]!["phase"]!.GetValue<string>());
         Assert.Equal("error", errorRoot["turnState"]!["severity"]!.GetValue<string>());
-        Assert.Contains("repair", errorRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("починк", errorRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
 
         WriteSessionFile("game_state/control/pending_turn_snapshot.json", "{}");
         var repairRoot = JsonNode.Parse(await client.GetStringAsync("/api/game-screen"))!.AsObject();
         Assert.Equal("repair-required", repairRoot["turnState"]!["phase"]!.GetValue<string>());
         Assert.Equal("pending-turn-repair", repairRoot["turnState"]!["state"]!.GetValue<string>());
-        Assert.Contains("ремонт", repairRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("починк", repairRoot["turnState"]!["playerGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

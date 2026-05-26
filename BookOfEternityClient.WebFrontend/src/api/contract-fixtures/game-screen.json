@@ -170,20 +170,20 @@
       {
         "id": "validation-failed",
         "label": "Проверка не прошла",
-        "description": "Состояние требует ремонта перед продолжением.",
-        "surface": "player-default"
+        "description": "Состояние требует починки перед продолжением.",
+        "surface": "advanced-only"
       },
       {
         "id": "repair-required",
-        "label": "Нужен ремонт",
-        "description": "Snapshot/rollback artifacts требуют repair перед новыми действиями.",
-        "surface": "player-default"
+        "label": "Нужна починка",
+        "description": "Незавершённый ход оставил следы отката. Сначала завершите починку.",
+        "surface": "advanced-only"
       },
       {
         "id": "error-restored",
         "label": "Ошибка восстановлена",
-        "description": "GM turn завершился ошибкой; rollback/repair должен быть разобран.",
-        "surface": "player-default"
+        "description": "Ход ГМа завершился ошибкой; откат/починка должны быть разобраны.",
+        "surface": "advanced-only"
       },
       {
         "id": "cancelled",

@@ -617,7 +617,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Герой и душа", app, StringComparison.Ordinal);
         Assert.Contains("Сохранение", app, StringComparison.Ordinal);
         Assert.Contains("Служебная панель", app, StringComparison.Ordinal);
-        Assert.Contains("Подробности ремонта, проверки и команд скрыты до явного включения.", app, StringComparison.Ordinal);
+        Assert.Contains("Служебные проверки и сведения для ремонта остаются вторичным режимом.", app, StringComparison.Ordinal);
         Assert.Contains("formatSidebarSessionSummary(", app, StringComparison.Ordinal);
         Assert.Contains("formatSidebarAudioSummary(", app, StringComparison.Ordinal);
         Assert.Contains("getSidebarFailure(", app, StringComparison.Ordinal);
@@ -629,7 +629,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("className=\"warning-text\">{sidebarGameFailure}", app, StringComparison.Ordinal);
         Assert.Contains("function getTurnSidebarTitle(", app, StringComparison.Ordinal);
         Assert.Contains("Ход ещё не начат", app, StringComparison.Ordinal);
-        Assert.Contains("<StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure)}", app, StringComparison.Ordinal);
+        Assert.Contains("<StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure, gameScreen?.turnState?.phase ?? null)}", app, StringComparison.Ordinal);
         Assert.DoesNotContain("<StatusSummaryCard title=\"Ожидание ГМа\"", app, StringComparison.Ordinal);
         Assert.Contains("formatHeroStatusLabel(gameScreen, menu)", app, StringComparison.Ordinal);
         Assert.DoesNotContain("menu?.session.validationLabel ?? 'Книга ждёт открытия'", app, StringComparison.Ordinal);
@@ -742,7 +742,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("game.flags.isInChaosSea", app, StringComparison.Ordinal);
 
         var worldRouteStart = app.IndexOf("function WorldRoute", StringComparison.Ordinal);
-        var actionMenuIndex = app.IndexOf("<ActionMenu menu={game.actionMenu} />", worldRouteStart, StringComparison.Ordinal);
+        var actionMenuIndex = app.IndexOf("<ActionMenu menu={game.actionMenu} advancedEnabled={advancedEnabled} />", worldRouteStart, StringComparison.Ordinal);
         var rebornPanelIndex = app.IndexOf("<RebornSystemsPanel game={game} />", worldRouteStart, StringComparison.Ordinal);
         Assert.True(rebornPanelIndex > worldRouteStart, "Reborn panel should render inside the world route after the mortal-world overview.");
         Assert.True(rebornPanelIndex < actionMenuIndex, "Reborn panel should be a conceptual section before the generic action catalogue.");
