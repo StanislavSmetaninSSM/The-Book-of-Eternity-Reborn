@@ -62,6 +62,12 @@ interface EmptyStateCopy {
   action: string;
 }
 
+interface Toast {
+  id: string;
+  message: string;
+  kind: 'info' | 'success' | 'warning' | 'error';
+}
+
 interface RealmTheme {
   key: string;
   label: string;
@@ -719,6 +725,7 @@ export default function App() {
   const [composerMode, setComposerMode] = useState<ComposerMode>('prose');
   const [actionSearch, setActionSearch] = useState('');
   const [gameSurface, setGameSurface] = useState<GameSurfaceState>({ kind: 'none' });
+  const [toasts, setToasts] = useState<Toast[]>([]);
 
   const loadBrowserState = useCallback(async () => {
     setShellState({ status: 'loading' });
@@ -773,16 +780,61 @@ export default function App() {
     [activeRoute, shellState, readyState]
   );
 
-  function submitComposer(event: FormEvent<HTMLFormElement>) {
+  function addToast(message: string, kind: Toast['kind'] = 'info') {
+    const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    setToasts((current) => [...current, { id, message, kind }]);
+    setTimeout(() => removeToast(id), 4000);
+  }
+
+  function removeToast(id: string) {
+    setToasts((current) => current.filter((toast) => toast.id !== id));
+  }
+
+  async function submitComposer(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const normalized = composerText.trim();
+    if (!normalized) return;
 
     if (normalized.startsWith('/')) {
-      setComposerNotice('Особые команды не выполняются из основного поля. Откройте режим действий, чтобы выбрать команду из каталога.');
-      return;
+      setComposerNotice('Выполняем команду…');
+      const result = advancedEnabled
+        ? await browserApi.executeExplorerCommand({ command: normalized, ownerLabel: 'Композитор' })
+        : sanitizePlayerDefaultCommandResult(
+            await browserApi.executeExplorerCommand({ command: normalized, ownerLabel: 'Композитор' })
+          );
+      if (isSuccess(result)) {
+        setComposerText('');
+        setComposerNotice(toPlayerFacingText(toCommandNotice(result.data), 'Команда выполнена.'));
+        addToast(toPlayerFacingText(toCommandNotice(result.data), 'Команда выполнена.'), 'success');
+        openActionSurface(`composer-${Date.now()}`, result);
+        await loadBrowserState();
+      } else {
+        setComposerNotice(toPlayerFacingText(result.playerMessage, 'Команда не выполнена. Попробуйте ещё раз.'));
+        addToast('Команда не выполнена.', 'error');
+      }
+    } else {
+      // Prose text — attempt to send as player action
+      setComposerNotice('Отправляем действие…');
+      try {
+        const result = await browserApi.executeExplorerCommand({
+          command: `/prose ${normalized}`,
+          ownerLabel: 'Композитор'
+        });
+        if (isSuccess(result)) {
+          setComposerText('');
+          setComposerNotice('Действие отправлено. Ожидайте ответ.');
+          addToast('Действие отправлено.', 'success');
+          await loadBrowserState();
+        } else {
+          // Fallback: show notice that prose input needs backend support
+          setComposerNotice('Художественный ввод будет отправлен при следующем обновлении книги. Для немедленного действия выберите команду из каталога.');
+          addToast('Художественный ввод пока не поддерживается.', 'warning');
+        }
+      } catch {
+        setComposerNotice('Художественный ввод будет отправлен при следующем обновлении книги. Для немедленного действия выберите команду из каталога.');
+        addToast('Не удалось отправить действие.', 'error');
+      }
     }
-
-    setComposerNotice('Художественный ввод подготовлен. Ход будет записан при следующем обновлении книги.');
   }
 
   function openActionSurface(actionId: string, result: BrowserApiResult<ExplorerCommandResult>) {
@@ -803,6 +855,14 @@ export default function App() {
 
   return (
     <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
+      <div className="toast-stack" aria-live="polite">
+        {toasts.map((toast) => (
+          <div key={toast.id} className={`toast toast--${toast.kind}`}>
+            <span>{toast.message}</span>
+            <button type="button" className="toast__close" onClick={() => removeToast(toast.id)}>×</button>
+          </div>
+        ))}
+      </div>
       <section className="shell-hero" aria-labelledby="browser-client-title">
         <p className="eyebrow">Книга Вечности: Перерождение · локальная книга</p>
         <div className="hero-layout">
@@ -821,13 +881,24 @@ export default function App() {
         </div>
       </section>
 
-      <nav className="route-grid route-grid--primary" aria-label="Основные игровые разделы книги">
-        {primaryPlayerRoutes.map((route) => renderRouteButton(route, activeRoute, routeStates, setActiveRoute))}
-      </nav>
-
-      <nav className="route-grid route-grid--utility" aria-label="Дополнительные игровые разделы книги">
-        <p className="utility-route-heading">Сводка / Игра / Душа / Мир / Журнал / Инвентарь — основная цепочка игрока. Медиа и настройки доступны отдельно.</p>
-        {utilityPlayerRoutes.map((route) => renderRouteButton(route, activeRoute, routeStates, setActiveRoute))}
+      <nav className="compact-route-nav" aria-label="Игровые разделы">
+        {playerRoutes.map((route) => {
+          const routeState = routeStates[route.id];
+          return (
+            <button
+              key={route.id}
+              type="button"
+              className={`compact-route-nav__item${activeRoute === route.id ? ' is-active' : ''} compact-route-nav--${route.id}`}
+              title={`${route.label}. ${route.description}`}
+              onClick={() => setActiveRoute(route.id)}
+              aria-pressed={activeRoute === route.id}
+              data-route-state={routeState.state}
+            >
+              <RouteGlyph icon={route.icon} />
+              <span className="compact-route-nav__label">{route.label}</span>
+            </button>
+          );
+        })}
       </nav>
 
       <section className="workspace-grid" aria-live="polite">
@@ -892,7 +963,6 @@ function PlayerStatusSidebar({
   session,
   gameScreen,
   realmTheme,
-  activeRoute,
   advancedEnabled,
   setAdvancedEnabled
 }: {
@@ -905,106 +975,58 @@ function PlayerStatusSidebar({
   advancedEnabled: boolean;
   setAdvancedEnabled: (updater: (value: boolean) => boolean) => void;
 }) {
-  const sidebarEmptyGame = getSidebarEmptyGameMessage(readyState);
-  const hasGame = Boolean(gameScreen);
-  const sidebarMenuFailure = getSidebarFailure(readyState?.menu);
-  const sidebarSessionFailure = getSidebarFailure(readyState?.session);
   const sidebarGameFailure = getSidebarFailure(readyState?.game);
-  const saveNeedsAttention = Boolean(sidebarMenuFailure || sidebarSessionFailure);
   const turnNeedsAttention = Boolean(sidebarGameFailure || gameScreen?.turnState.severity === 'error' || gameScreen?.turnState.severity === 'repair');
 
   return (
-    <div className="player-status-sidebar">
+    <div className="compact-sidebar">
       <div className="sidebar-heading">
         <p className="panel-eyebrow">игровая сводка</p>
         <h2>Сводка книги</h2>
-        <p className="muted">Мягкая сводка текущей главы без служебных журналов и внутренних проверок.</p>
       </div>
 
-      <StatusSummaryCard title="Слой книги" eyebrow="мир и глава" attention={Boolean(sidebarMenuFailure || sidebarGameFailure)}>
-        <p className="status-pill">{realmTheme.label}</p>
-        <p>{gameScreen ? `${gameScreen.soul.name || 'Душа'} · ход ${gameScreen.world.turnNumber}` : sidebarEmptyGame}</p>
-        {sidebarMenuFailure ? (
-          <p className="warning-text">{sidebarMenuFailure}</p>
-        ) : (
-          <p className="muted">{formatSidebarLayerStatus(menu)}</p>
-        )}
-      </StatusSummaryCard>
-
-      <StatusSummaryCard title="Герой и душа" eyebrow="персонаж" soft={!hasGame && !sidebarGameFailure} attention={Boolean(sidebarGameFailure)}>
-        {sidebarGameFailure ? (
-          <>
-            <p className="warning-text">{sidebarGameFailure}</p>
-            <p className="muted">Герой и душа появятся снова, когда локальная книга отдаст игровую сводку.</p>
-          </>
-        ) : gameScreen ? (
-          <>
-            <p><strong>{gameScreen.player.name || 'Герой'}</strong> · {gameScreen.player.currentCondition}</p>
-            <p className="muted">Душа: {gameScreen.soul.name || 'без имени'} · {formatRealmName(gameScreen.soul.realm)}</p>
-            <div className="status-summary-grid" aria-label="Состояние героя">
-              <span>Здоровье {formatSidebarStatusMetric(gameScreen.player.healthPercentage)}</span>
-              <span>Энергия {formatSidebarStatusMetric(gameScreen.player.energyPercentage)}</span>
-              <span>Стойкость {formatSidebarStatusMetric(gameScreen.player.poisePercentage)}</span>
-            </div>
-          </>
-        ) : (
-          <>
-            <p>Душа и герой появятся после открытия или загрузки главы.</p>
-            <p className="muted">Это обычное состояние пустой книги, не ошибка клиента.</p>
-          </>
-        )}
-      </StatusSummaryCard>
-
-      <StatusSummaryCard title="Сохранение" eyebrow="локальная партия" soft={!session?.gameSessionExists && !saveNeedsAttention} attention={saveNeedsAttention}>
-        {sidebarSessionFailure ? (
-          <p className="warning-text">{sidebarSessionFailure}</p>
-        ) : (
-          <p>{formatSidebarSessionSummary(session, menu)}</p>
-        )}
-        {sidebarMenuFailure ? (
-          <p className="warning-text">{sidebarMenuFailure}</p>
-        ) : (
-          <p className="muted">{formatSidebarSaveSummary(menu)}</p>
-        )}
-      </StatusSummaryCard>
-
-      <StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure, gameScreen?.turnState?.phase ?? null)} eyebrow="ход" attention={turnNeedsAttention}>
-        {sidebarGameFailure ? (
-          <>
-            <p className="warning-text">{sidebarGameFailure}</p>
-            <p className="muted">Глава сохранена; подробности ремонта и проверки остаются в расширенном режиме.</p>
-          </>
-        ) : gameScreen ? (
-          <>
-            <p className={`status-pill turn-phase turn-phase--${gameScreen.turnState.severity}`}>{formatTurnStateTitle(gameScreen.turnState)}</p>
-            <p className="muted">{toPlayerFacingText(gameScreen.turnState.playerGuidance, 'Следуйте текущему состоянию хода.')}</p>
-          </>
-        ) : (
-          <>
-            <p>{sidebarEmptyGame}</p>
-            <p className="muted">Когда появится ожидающий ход или ответ ГМа, книга покажет это здесь игровым языком.</p>
-          </>
-        )}
-      </StatusSummaryCard>
-
-      {readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} advancedEnabled={advancedEnabled} />}
-
-      <section className="advanced-sidebar-entry" aria-label="Дополнительная панель">
-        <div>
-          <p className="panel-eyebrow">по запросу</p>
-          <h3>Дополнительная панель</h3>
-          <p className="muted">Дополнительные проверки и сведения остаются вторичным режимом.</p>
+      {/* Realm + soul name + current condition (1 compact line) */}
+      <div className="compact-sidebar__realm">
+        <span className="compact-sidebar__realm-icon" aria-hidden="true">{realmTheme.icon}</span>
+        <div className="compact-sidebar__realm-info">
+          <span className="compact-sidebar__realm-name">
+            {gameScreen ? `${gameScreen.soul.name || 'Душа'} · ${gameScreen.player.currentCondition || '—'}` : 'Книга ждёт открытия главы'}
+          </span>
+          <span className="compact-sidebar__realm-detail">
+            {gameScreen ? `${realmTheme.label} · ход ${gameScreen.world.turnNumber}` : realmTheme.label}
+          </span>
         </div>
-        <button
-          type="button"
-          className="advanced-toggle"
-          aria-controls="advanced-diagnostics"
-          aria-expanded={advancedEnabled}
-          onClick={() => setAdvancedEnabled((value) => !value)}
-        >
-          {advancedEnabled ? 'Скрыть расширенный режим' : 'Открыть расширенный режим'}
-        </button>
-      </section>
+      </div>
+
+      {/* Health/Energy/Stamina as compact bars */}
+      {gameScreen && (
+        <div className="compact-sidebar__vitals">
+          <StatusBar label="Здоровье" value={gameScreen.player.healthPercentage} />
+          <StatusBar label="Энергия" value={gameScreen.player.energyPercentage} />
+          <StatusBar label="Стойкость" value={gameScreen.player.poisePercentage} />
+        </div>
+      )}
+
+      {/* Turn state as a single icon with color */}
+      <div className="compact-sidebar__turn">
+        <span className={`status-pill turn-phase turn-phase--${gameScreen?.turnState.severity ?? 'idle'}`}>
+          {gameScreen ? formatTurnStateTitle(gameScreen.turnState) : 'Ход уточняется'}
+        </span>
+        {turnNeedsAttention && gameScreen && (
+          <span className="compact-sidebar__realm-detail">{toPlayerFacingText(gameScreen.turnState.playerGuidance, 'Следуйте текущему состоянию хода.')}</span>
+        )}
+      </div>
+
+      {/* Advanced toggle — compact, no extra section */}
+      <button
+        type="button"
+        className="advanced-toggle"
+        aria-controls="advanced-diagnostics"
+        aria-expanded={advancedEnabled}
+        onClick={() => setAdvancedEnabled((value) => !value)}
+      >
+        {advancedEnabled ? 'Скрыть расширенный режим' : 'Расширенный режим'}
+      </button>
     </div>
   );
 }
@@ -1248,7 +1270,7 @@ function GameRoute({
 
   return (
     <ShellPanel title="Игра" eyebrow="нарратив и ход">
-      <article className="narrative-card is-featured">
+      <article className="narrative-card is-featured" style={{ fontSize: 'clamp(1rem, 1.25vw, 1.15rem)', padding: 'var(--space-5)' }}>
         <h2>{game.theme.icon} {game.theme.label}</h2>
         <p>{game.narrative.text || 'Последний нарратив пока не найден в локальной книге.'}</p>
       </article>
@@ -1257,21 +1279,16 @@ function GameRoute({
         <ShellPanel title="Состояние хода" eyebrow={formatTurnStateLabel(game.turnState.phase || game.turnState.state)} nested variant="turn">
           <p className={`status-pill turn-phase turn-phase--${game.turnState.severity}`}>{formatTurnStateTitle(game.turnState)}</p>
           <p>{formatTurnStateMessage(game.turnState)}</p>
-          <p className="muted">{toPlayerFacingText(game.turnState.playerGuidance, 'Следуйте текущему состоянию хода.')}</p>
-          <TurnLifecycleActions turnState={game.turnState} />
-          <p className="muted">Быстрая сцена: {formatQteStateLabel(game.qte)}</p>
         </ShellPanel>
-        <ShellPanel title="Варианты" eyebrow="для игрока" nested variant="choices">
-          {game.narrative.dialogueOptions.length > 0 ? (
+        {game.narrative.dialogueOptions.length > 0 && (
+          <ShellPanel title="Варианты" eyebrow="для игрока" nested variant="choices">
             <ul className="choice-list">
               {game.narrative.dialogueOptions.map((option) => (
                 <li key={option.id}><strong>{option.text}</strong><span>{formatDialogueCategory(option.category)}</span></li>
               ))}
             </ul>
-          ) : (
-            <p className="muted">Варианты появятся здесь после ответа ГМа.</p>
-          )}
-        </ShellPanel>
+          </ShellPanel>
+        )}
       </div>
 
       {/* Central composer with mode toggle (#755) */}
@@ -1345,9 +1362,6 @@ function GameRoute({
             ))}
           </div>
         </section>
-      )}
-      {!advancedEnabled && (
-        <p className="muted">Текущий этап: {toPlayerFacingText(game.turnState.phaseLabel, 'Неизвестно')}</p>
       )}
     </ShellPanel>
   );
@@ -3595,6 +3609,16 @@ function ErrorNotice({ title, failure, advancedEnabled }: { title: string; failu
         <p className="muted">Технические подробности доступны после явного включения расширенного режима.</p>
       )}
     </section>
+  );
+}
+
+function SkeletonBlock({ lines = 3 }: { lines?: number }) {
+  return (
+    <div className="skeleton-block">
+      {Array.from({ length: lines }, (_, i) => (
+        <div key={i} className="skeleton-line" style={{ width: i === lines - 1 ? '60%' : '100%' }} />
+      ))}
+    </div>
   );
 }
 
