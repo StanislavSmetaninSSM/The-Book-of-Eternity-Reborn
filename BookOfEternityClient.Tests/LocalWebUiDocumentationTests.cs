@@ -156,6 +156,8 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("advanced debug secondary", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("HTML visual smoke artifact", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("not automated PNG screenshots", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no external API key required", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("no external API key required", readme, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

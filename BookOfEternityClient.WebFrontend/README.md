@@ -81,7 +81,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 
 The test writes `TestResults/browser-smoke/first-screen-visual-qa.html` next to `root.html`, `game-route.html`, `network.json`, `navigation-ia.html`, `detail-surfaces.html`, and `reborn-panels.html`. CI uploads the directory as `browser-smoke-artifacts`.
 
-The artifact is an HTML visual smoke artifact, not automated PNG screenshots. It intentionally remains dependency-light until a future tracked task selects a browser screenshot automation stack. Review it against the old React UI/UX reference only: central game launcher, primary CTA, polished cards, tabs/sections, and save/config actions. Do not copy old prompts, mortal-life-only mechanics, or runtime rules.
+The artifact is an HTML visual smoke artifact, not automated PNG screenshots. It intentionally remains dependency-light until a future tracked task selects a browser screenshot automation stack. It is local/offline and has no external API key required. Review it against the old React UI/UX reference only: central game launcher, primary CTA, polished cards, tabs/sections, and save/config actions. Do not copy old prompts, mortal-life-only mechanics, or runtime rules.
 
 Regression checklist: primary CTA present; no technical hero copy; no repeated unavailable alerts; no emoji route icons; advanced debug secondary and behind explicit opt-in. Source guards live in `BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist` in `BrowserFrontendWorkspaceTests`, and documentation guards live in `LocalWebHostDocs_DocumentBrowserVisualQaArtifactWorkflow` in `LocalWebUiDocumentationTests`.
 

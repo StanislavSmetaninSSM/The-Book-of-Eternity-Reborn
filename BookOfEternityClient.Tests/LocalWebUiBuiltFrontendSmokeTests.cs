@@ -214,6 +214,8 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.DoesNotContain("debug shell", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Network", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("command coverage", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("<span>book</span>", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("<span>flame</span>", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         foreach (var emojiIcon in new[] { "✦", "📖", "🕯️", "🗺️", "✍️", "🎒", "🎞️", "⚙️" })
         {
             Assert.DoesNotContain(emojiIcon, firstScreenVisualQaArtifact, StringComparison.Ordinal);
@@ -270,6 +272,8 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             .primary { border: 1px solid rgba(216, 179, 106, 0.5); border-radius: 22px; padding: 18px; background: linear-gradient(135deg, rgba(216, 179, 106, 0.24), rgba(155, 107, 255, 0.12)); }
             .secondary, .route-card, .check { border: 1px solid rgba(216, 179, 106, 0.24); border-radius: 18px; padding: 12px; background: rgba(255, 255, 255, 0.055); }
             .route-list, .checks, .secondary-row { display: grid; gap: 10px; }
+            .route-card strong { display: flex; align-items: center; gap: 8px; }
+            .route-card__mark { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(216, 179, 106, 0.65); box-shadow: inset 0 0 0 3px rgba(216, 179, 106, 0.18); }
             .secondary-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .muted { color: rgba(249, 236, 209, 0.72); }
             .locked { color: rgba(249, 236, 209, 0.62); border-style: dashed; }
@@ -284,11 +288,11 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 <nav class="sidebar" aria-label="Player routes">
                   <p class="brand">{{WebUtility.HtmlEncode(primarySequence)}}</p>
                   <div class="route-list">
-        {{RenderRouteCards(primaryRoutes)}}
+        {{RenderVisualQaRouteCards(primaryRoutes)}}
                   </div>
                   <p class="brand">{{WebUtility.HtmlEncode(utilitySequence)}}</p>
                   <div class="route-list">
-        {{RenderRouteCards(utilityRoutes)}}
+        {{RenderVisualQaRouteCards(utilityRoutes)}}
                   </div>
                   <div class="advanced">advanced debug secondary: Расширенный режим остаётся отдельным вторичным входом.</div>
                 </nav>
@@ -323,7 +327,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 <article class="primary">Primary CTA: Продолжить главу</article>
                 <p class="muted">{{WebUtility.HtmlEncode(primarySequence)}}</p>
                 <div class="route-list">
-        {{RenderRouteCards(primaryRoutes)}}
+        {{RenderVisualQaRouteCards(primaryRoutes)}}
                 </div>
                 <div class="advanced">advanced debug secondary</div>
               </div>
@@ -566,6 +570,16 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             $"""
                     <article class="route-card route-card--{WebUtility.HtmlEncode(route.Id)}">
                       <strong><span>{WebUtility.HtmlEncode(route.Icon)}</span>{WebUtility.HtmlEncode(route.Label)}</strong>
+                      <p>{WebUtility.HtmlEncode(route.Description)}</p>
+                    </article>
+            """));
+
+    private static string RenderVisualQaRouteCards(IEnumerable<BrowserNavigationRoute> routes) => string.Join(
+        Environment.NewLine,
+        routes.Select(route =>
+            $"""
+                    <article class="route-card route-card--{WebUtility.HtmlEncode(route.Id)}">
+                      <strong><span class="route-card__mark" aria-hidden="true"></span>{WebUtility.HtmlEncode(route.Label)}</strong>
                       <p>{WebUtility.HtmlEncode(route.Description)}</p>
                     </article>
             """));
