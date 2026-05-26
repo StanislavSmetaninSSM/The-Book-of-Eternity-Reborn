@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "language": {
+    "value": "ru",
+    "label": "Русский",
+    "choices": [
+      {
+        "value": "ru",
+        "label": "Русский",
+        "description": "Основной язык текущих игровых подсказок."
+      },
+      {
+        "value": "en",
+        "label": "English",
+        "description": "English client labels where supported."
+      }
+    ]
+  },
+  "difficulty": {
+    "value": "normal",
+    "label": "Обычная",
+    "choices": [
+      {
+        "value": "normal",
+        "label": "Обычная",
+        "description": "Базовый уровень сложности."
+      },
+      {
+        "value": "hard",
+        "label": "Сложно",
+        "description": "Более опасные проверки и конфликты."
+      },
+      {
+        "value": "impossible",
+        "label": "Невозможно",
+        "description": "Предельная сложность для рискованного прохождения."
+      }
+    ]
+  },
+  "showGmThoughts": false,
+  "audio": {
+    "musicEnabled": true,
+    "musicVolume": 65,
+    "soundEnabled": true,
+    "soundVolume": 75
+  },
+  "accessibility": {
+    "fontScalePercent": 100,
+    "reducedMotion": false,
+    "contrastFriendly": false
+  },
+  "locality": {
+    "localhostOnly": true,
+    "sessionLabel": "game_session — локальная папка книги",
+    "gameSessionExists": true,
+    "gmBridgeEnabled": true,
+    "gmBridgeLabel": "Локальный мост ГМа включён",
+    "safetySummary": "Браузерный клиент работает только через localhost/loopback и сохраняет настройки в общей конфигурации игры."
+  }
+}

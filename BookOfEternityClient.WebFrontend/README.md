@@ -130,6 +130,14 @@ The player must click `Включить музыку в браузере` before
 
 Audio assets are served only through opaque `/api/audio/assets/{assetId}` URLs returned by the C# catalog. The DTO exposes no local filesystem paths, and invalid/path-traversal asset IDs return safe failures.
 
+## Browser client settings profile (#689)
+
+Issue #689 makes the `Настройки` route a player-facing settings profile over the same shared `GameSettings` file used by the console client. React reads `browserApi.getClientSettings()` and posts partial updates through `browserApi.updateClientSettings()`; C# remains authoritative for language, difficulty, `ShowGmThoughts`, audio preferences, and browser presentation preferences. The route serializes rapid settings changes so sliders/toggles cannot race each other, and gameplay-affecting writes use the local write coordinator rather than bypassing active browser/GM-turn locks.
+
+The default route exposes only safe player controls: language, difficulty, explicit GM-thought visibility, music/sound enabled and volume, browser font scale, reduced motion, contrast-friendly mode, and a short local/GM-bridge status. API keys, launch commands, bridge pipe names, provider internals, raw local paths, and other dangerous technical settings stay out of the default DTO/UI and remain advanced/diagnostic concerns.
+
+Accessibility values are stored in shared settings as browser presentation fields (`BrowserFontScalePercent`, `BrowserReducedMotion`, `BrowserContrastFriendly`) and applied through CSS classes/custom properties. They do not add gameplay rules to TypeScript.
+
 ## Typed Browser API Contract (#703)
 
 Issue #703 adds the typed API contract layer under:

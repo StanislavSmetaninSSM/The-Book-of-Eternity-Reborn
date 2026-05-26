@@ -5,11 +5,13 @@ import lifecycleDashboardFixture from './contract-fixtures/lifecycle-dashboard.j
 import explorerCommandResultFixture from './contract-fixtures/explorer-command-result.json';
 import qteStateFixture from './contract-fixtures/qte-state.json';
 import audioSettingsFixture from './contract-fixtures/audio-settings.json';
+import clientSettingsFixture from './contract-fixtures/client-settings.json';
 import commandCoverageFixture from './contract-fixtures/command-coverage.json';
 import apiErrorFixture from './contract-fixtures/api-error.json';
 import type {
   BrowserApiErrorPayload,
   BrowserAudioSettingsDto,
+  BrowserClientSettingsDto,
   BrowserCommandCoverageDto,
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
@@ -27,6 +29,7 @@ const explorerCommandResultContract =
   (explorerCommandResultFixture as unknown as ExplorerCommandResult) satisfies ExplorerCommandResult;
 const qteStateContract = qteStateFixture satisfies QteWebStateDto;
 const audioSettingsContract = audioSettingsFixture satisfies BrowserAudioSettingsDto;
+const clientSettingsContract = clientSettingsFixture satisfies BrowserClientSettingsDto;
 const commandCoverageContract = commandCoverageFixture satisfies BrowserCommandCoverageDto;
 const apiErrorContract = apiErrorFixture satisfies BrowserApiErrorPayload;
 
@@ -38,6 +41,7 @@ export const browserApiContractFixtures = {
   explorerCommandResultContract,
   qteStateContract,
   audioSettingsContract,
+  clientSettingsContract,
   commandCoverageContract,
   apiErrorContract
 };

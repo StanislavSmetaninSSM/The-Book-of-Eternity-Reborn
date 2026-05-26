@@ -61,6 +61,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<LocalMediaService>();
         builder.Services.AddSingleton<AudioService>();
         builder.Services.AddSingleton<BrowserAudioService>();
+        builder.Services.AddSingleton<BrowserClientSettingsService>();
         builder.Services.AddSingleton<SaveLoadService>();
         builder.Services.AddSingleton<StateDistributor>();
         builder.Services.AddSingleton<CanonicalStateNormalizer>();
@@ -104,6 +105,14 @@ public static class LocalWebUiHost
         app.MapGet("/api/health", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
         app.MapGet("/api/session", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
         app.MapGet("/api/game-screen", async (BrowserGameScreenService gameScreen) => await gameScreen.BuildAsync());
+        app.MapGet("/api/client/settings", async (BrowserClientSettingsService settings) => await settings.BuildAsync());
+        app.MapPost("/api/client/settings", async (BrowserClientSettingsUpdateRequest request, BrowserClientSettingsService settings) =>
+        {
+            var result = await settings.UpdateAsync(request);
+            return result.Success
+                ? Results.Json(result.Settings, WebJsonOptions)
+                : Results.Conflict(new { error = result.Message });
+        });
         app.MapGet("/api/audio/settings", async (BrowserAudioService audio) => await audio.BuildSettingsAsync());
         app.MapPost("/api/audio/settings", async (BrowserAudioSettingsUpdateRequest request, BrowserAudioService audio) => await audio.UpdateSettingsAsync(request));
         app.MapGet("/api/audio/assets/{assetId}", (string assetId, BrowserAudioService audio) => audio.ServeAsset(assetId));

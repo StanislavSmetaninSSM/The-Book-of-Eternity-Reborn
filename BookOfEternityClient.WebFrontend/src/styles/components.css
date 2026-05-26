@@ -898,6 +898,42 @@
   margin-top: var(--space-4);
 }
 
+.settings-route-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.settings-control-card {
+  display: grid;
+  gap: var(--space-3);
+  min-height: 100%;
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 24%, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.055), color-mix(in srgb, var(--realm-accent) 8%, rgba(8, 11, 12, 0.84))),
+    rgba(0, 0, 0, 0.16);
+  box-shadow: var(--shadow-panel);
+}
+
+.settings-control-card h3,
+.settings-control-card p {
+  margin: 0;
+}
+
+.settings-control-card label:not(.audio-toggle, .audio-slider) {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--color-mist);
+  font-weight: 700;
+}
+
+.settings-control-card select {
+  width: 100%;
+}
+
 .audio-toggle,
 .audio-slider {
   display: grid;

@@ -40,6 +40,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("export interface QteWebStateDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserAudioSettingsDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserAudioSettingsUpdateRequest", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface BrowserClientSettingsDto", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface BrowserClientSettingsUpdateRequest", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserCommandCoverageDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserCommandCoverageEntryDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export type BrowserApiResult", contracts, StringComparison.Ordinal);
@@ -61,8 +63,12 @@ public sealed class BrowserApiContractTests
         Assert.Contains("resolveQteAction", client, StringComparison.Ordinal);
         Assert.Contains("getAudioSettings", client, StringComparison.Ordinal);
         Assert.Contains("updateAudioSettings", client, StringComparison.Ordinal);
+        Assert.Contains("getClientSettings", client, StringComparison.Ordinal);
+        Assert.Contains("updateClientSettings", client, StringComparison.Ordinal);
         Assert.Contains("audio-settings", client, StringComparison.Ordinal);
         Assert.Contains("audio-settings-update", client, StringComparison.Ordinal);
+        Assert.Contains("client-settings", client, StringComparison.Ordinal);
+        Assert.Contains("client-settings-update", client, StringComparison.Ordinal);
         Assert.Contains("command-coverage", client, StringComparison.Ordinal);
         Assert.DoesNotContain("any", client, StringComparison.Ordinal);
     }
@@ -97,6 +103,7 @@ public sealed class BrowserApiContractTests
         Assert.Contains("satisfies ExplorerCommandResult", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies QteWebStateDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserAudioSettingsDto", fixtureChecks, StringComparison.Ordinal);
+        Assert.Contains("satisfies BrowserClientSettingsDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserCommandCoverageDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserApiErrorPayload", fixtureChecks, StringComparison.Ordinal);
     }
@@ -408,12 +415,51 @@ public sealed class BrowserApiContractTests
         yield return ["explorer-command-result.json", BuildExplorerCommandResult()];
         yield return ["qte-state.json", BuildQteState()];
         yield return ["audio-settings.json", BuildAudioSettings()];
+        yield return ["client-settings.json", BuildClientSettings()];
         yield return ["command-coverage.json", BuildCommandCoverage()];
         yield return ["api-error.json", BuildApiErrorPayload()];
     }
 
     private static BrowserCommandCoverageDto BuildCommandCoverage() =>
         BrowserCommandCoverageService.Build();
+
+    private static BrowserClientSettingsDto BuildClientSettings() =>
+        new(
+            SchemaVersion: 1,
+            Language: new BrowserSettingsChoiceGroupDto(
+                Value: "ru",
+                Label: "Русский",
+                Choices:
+                [
+                    new BrowserSettingsChoiceDto("ru", "Русский", "Основной язык текущих игровых подсказок."),
+                    new BrowserSettingsChoiceDto("en", "English", "English client labels where supported.")
+                ]),
+            Difficulty: new BrowserSettingsChoiceGroupDto(
+                Value: "normal",
+                Label: "Обычная",
+                Choices:
+                [
+                    new BrowserSettingsChoiceDto("normal", "Обычная", "Базовый уровень сложности."),
+                    new BrowserSettingsChoiceDto("hard", "Сложно", "Более опасные проверки и конфликты."),
+                    new BrowserSettingsChoiceDto("impossible", "Невозможно", "Предельная сложность для рискованного прохождения.")
+                ]),
+            ShowGmThoughts: false,
+            Audio: new BrowserClientAudioSettingsDto(
+                MusicEnabled: true,
+                MusicVolume: 65,
+                SoundEnabled: true,
+                SoundVolume: 75),
+            Accessibility: new BrowserClientAccessibilitySettingsDto(
+                FontScalePercent: 100,
+                ReducedMotion: false,
+                ContrastFriendly: false),
+            Locality: new BrowserClientLocalityDto(
+                LocalhostOnly: true,
+                SessionLabel: "game_session — локальная папка книги",
+                GameSessionExists: true,
+                GmBridgeEnabled: true,
+                GmBridgeLabel: "Локальный мост ГМа включён",
+                SafetySummary: "Браузерный клиент работает только через localhost/loopback и сохраняет настройки в общей конфигурации игры."));
 
     private static BrowserAudioSettingsDto BuildAudioSettings() =>
         new(

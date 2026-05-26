@@ -6,6 +6,8 @@ import type {
   BrowserApiResult,
   BrowserAudioSettingsDto,
   BrowserAudioSettingsUpdateRequest,
+  BrowserClientSettingsDto,
+  BrowserClientSettingsUpdateRequest,
   BrowserCommandCoverageDto,
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
@@ -34,6 +36,8 @@ export interface BrowserApiClient {
   getGameScreen(): Promise<BrowserApiResult<BrowserGameScreenDto>>;
   getAudioSettings(): Promise<BrowserApiResult<BrowserAudioSettingsDto>>;
   updateAudioSettings(request: BrowserAudioSettingsUpdateRequest): Promise<BrowserApiResult<BrowserAudioSettingsDto>>;
+  getClientSettings(): Promise<BrowserApiResult<BrowserClientSettingsDto>>;
+  updateClientSettings(request: BrowserClientSettingsUpdateRequest): Promise<BrowserApiResult<BrowserClientSettingsDto>>;
   getLifecycleDashboard(): Promise<BrowserApiResult<BrowserLifecycleDashboardDto>>;
   getCommandCoverage(): Promise<BrowserApiResult<BrowserCommandCoverageDto>>;
   validateLifecycle(): Promise<BrowserApiResult<BrowserValidationSummaryDto>>;
@@ -53,6 +57,8 @@ export const browserApiEndpointDocs = [
   { id: 'game-screen', method: 'GET', path: '/api/game-screen', playerSurface: 'player-default', response: 'BrowserGameScreenDto' },
   { id: 'audio-settings', method: 'GET', path: '/api/audio/settings', playerSurface: 'player-default', response: 'BrowserAudioSettingsDto' },
   { id: 'audio-settings-update', method: 'POST', path: '/api/audio/settings', playerSurface: 'player-default', response: 'BrowserAudioSettingsDto' },
+  { id: 'client-settings', method: 'GET', path: '/api/client/settings', playerSurface: 'player-default', response: 'BrowserClientSettingsDto' },
+  { id: 'client-settings-update', method: 'POST', path: '/api/client/settings', playerSurface: 'player-default', response: 'BrowserClientSettingsDto' },
   { id: 'audio-asset', method: 'GET', path: '/api/audio/assets/{assetId}', playerSurface: 'player-default', response: 'Audio stream' },
   { id: 'save-load', method: 'POST', path: '/api/saves/load', playerSurface: 'player-default', response: 'BrowserLoadSaveResultDto' },
   { id: 'lifecycle-dashboard', method: 'GET', path: '/api/lifecycle/dashboard', playerSurface: 'advanced-only', response: 'BrowserLifecycleDashboardDto' },
@@ -84,6 +90,8 @@ export function createBrowserApiClient(options: BrowserApiClientOptions = {}): B
     getGameScreen: () => requestJson<BrowserGameScreenDto>(fetcher, baseUrl, '/api/game-screen'),
     getAudioSettings: () => requestJson<BrowserAudioSettingsDto>(fetcher, baseUrl, '/api/audio/settings'),
     updateAudioSettings: (request) => requestJson<BrowserAudioSettingsDto>(fetcher, baseUrl, '/api/audio/settings', jsonInit('POST', request)),
+    getClientSettings: () => requestJson<BrowserClientSettingsDto>(fetcher, baseUrl, '/api/client/settings'),
+    updateClientSettings: (request) => requestJson<BrowserClientSettingsDto>(fetcher, baseUrl, '/api/client/settings', jsonInit('POST', request)),
     getLifecycleDashboard: () => requestJson<BrowserLifecycleDashboardDto>(fetcher, baseUrl, '/api/lifecycle/dashboard'),
     getCommandCoverage: () => requestJson<BrowserCommandCoverageDto>(fetcher, baseUrl, '/api/explorer/command-coverage'),
     validateLifecycle: () => requestJson<BrowserValidationSummaryDto>(fetcher, baseUrl, '/api/lifecycle/validate', jsonInit('POST')),
