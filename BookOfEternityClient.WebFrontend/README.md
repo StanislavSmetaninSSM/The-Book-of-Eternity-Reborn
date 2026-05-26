@@ -72,6 +72,14 @@ The first representative surfaces are the `Душа`, `Герой`, and `Лок�
 
 The built-frontend smoke test writes `TestResults/browser-smoke/detail-surfaces.html` as a dependency-light visual smoke artifact for compact cards, an opened desktop modal, and mobile full-panel behavior. Full screenshot automation remains a separate future task.
 
+## Reborn panels (#729)
+
+The Browser Client renders player-facing Reborn panels for Afterlife, Shining Abode, and Chaos Sea from the existing game-screen state and player-default action metadata. This is a UI-only mapping: the C# runtime remains the authority for afterlife state, command availability, validation, and all gameplay rules.
+
+The panels intentionally avoid raw contract filenames, pending/control files, endpoint names, GM thoughts, and debug logs in the default player UI. Those details stay in advanced diagnostics or GM-facing documentation.
+
+Because #729 does not add or rename afterlife action types, pending/control files, validation rules, canonical state fields, normalizer behavior, or GM-authored prompts, GM-facing afterlife contract docs were not changed for this UI slice.
+
 ## Browser design system (#685)
 
 Issue #685 splits the Browser Client styling into a maintainable plain-CSS design system:

@@ -94,6 +94,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 new JsonSerializerOptions { WriteIndented = true }));
         var navigationArtifactPath = Path.Combine(artifactRoot, "navigation-ia.html");
         var detailSurfaceArtifactPath = Path.Combine(artifactRoot, "detail-surfaces.html");
+        var rebornPanelsArtifactPath = Path.Combine(artifactRoot, "reborn-panels.html");
 
         Assert.Equal(HttpStatusCode.OK, root.StatusCode);
         Assert.Equal(HttpStatusCode.OK, gameRoute.StatusCode);
@@ -120,6 +121,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var appSource = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src", "App.tsx"));
         await File.WriteAllTextAsync(navigationArtifactPath, BuildNavigationIaArtifact(appSource));
         await File.WriteAllTextAsync(detailSurfaceArtifactPath, BuildDetailSurfaceArtifact(appSource));
+        await File.WriteAllTextAsync(rebornPanelsArtifactPath, BuildRebornPanelsArtifact(appSource));
 
         Assert.True(session["localOnly"]!.GetValue<bool>());
         Assert.Equal("CI-душа", menu["session"]!["soulName"]!.GetValue<string>());
@@ -171,6 +173,23 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.DoesNotContain("Debug", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/api/", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("raw JSON", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
+
+        Assert.True(File.Exists(rebornPanelsArtifactPath), $"Missing browser Reborn panels visual smoke artifact at {rebornPanelsArtifactPath}");
+        var rebornPanelsArtifact = await File.ReadAllTextAsync(rebornPanelsArtifactPath);
+        Assert.Contains("data-artifact=\"browser-reborn-panels\"", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"desktop\"", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"mortal-locked\"", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"afterlife-active\"", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"mobile\"", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.Contains("Посмертие Reborn", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.Contains("Сияющая Обитель", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.Contains("Море Хаоса", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.Contains("Посмертные панели откроются", rebornPanelsArtifact, StringComparison.Ordinal);
+        Assert.DoesNotContain("pending_", rebornPanelsArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("control/", rebornPanelsArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/", rebornPanelsArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw JSON", rebornPanelsArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Debug", rebornPanelsArtifact, StringComparison.OrdinalIgnoreCase);
     }
 
     private static async Task<SmokeResponse> CaptureAsync(HttpClient client, string path)
@@ -186,6 +205,43 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
+
+    private static string BuildRebornPanelsArtifact(string appSource)
+    {
+        Assert.Contains("detailSurfaceId=\"reborn-afterlife-overview\"", appSource, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"reborn-shining-abode\"", appSource, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"reborn-chaos-sea\"", appSource, StringComparison.Ordinal);
+        Assert.Contains("Посмертие Reborn", appSource, StringComparison.Ordinal);
+        Assert.Contains("Сияющая Обитель", appSource, StringComparison.Ordinal);
+        Assert.Contains("Море Хаоса", appSource, StringComparison.Ordinal);
+
+        return """
+        <!doctype html>
+        <html lang="ru" data-artifact="browser-reborn-panels">
+        <head><meta charset="utf-8"><title>Browser Reborn Panels Visual Smoke</title></head>
+        <body>
+          <main>
+            <section data-viewport="desktop" data-state="mortal-locked">
+              <h1>Посмертие Reborn</h1>
+              <article><strong>🕯️ Afterlife</strong><p>Посмертные панели откроются, когда душа перейдёт в посмертие.</p></article>
+              <article><strong>✦ Сияющая Обитель</strong><p>Доступ к Обители появится после перехода в посмертный слой.</p></article>
+              <article><strong>🌊 Море Хаоса</strong><p>Навигация Моря Хаоса ждёт подходящего царства.</p></article>
+            </section>
+            <section data-viewport="desktop" data-state="afterlife-active">
+              <h1>Посмертие Reborn</h1>
+              <article><strong>Afterlife</strong><p>Душа в посмертии · перья и просветление видны игроку.</p></article>
+              <article><strong>Сияющая Обитель</strong><p>Сияние, искры света, залы и безопасные действия.</p></article>
+              <article><strong>Море Хаоса</strong><p>Статус моря, ориентиры и доступные игровые действия.</p></article>
+            </section>
+            <section data-viewport="mobile" data-state="afterlife-active">
+              <h1>Мобильный вид: Посмертие Reborn</h1>
+              <p>Afterlife → Сияющая Обитель → Море Хаоса</p>
+            </section>
+          </main>
+        </body>
+        </html>
+        """;
+    }
 
     private static string BuildDetailSurfaceArtifact(string appSource)
     {

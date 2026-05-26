@@ -580,6 +580,63 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserRebornPanels_DefinePlayerFacingAfterlifeShiningAndChaosSections()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = ReadFrontendStyles();
+        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
+        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
+
+        Assert.Contains("function RebornSystemsPanel", app, StringComparison.Ordinal);
+        Assert.Contains("const rebornSectionMatchers", app, StringComparison.Ordinal);
+        Assert.Contains("const shiningAbodeActionMatchers", app, StringComparison.Ordinal);
+        Assert.Contains("const chaosSeaActionMatchers", app, StringComparison.Ordinal);
+        Assert.Contains("<RebornSystemsPanel game={game} />", app, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"reborn-afterlife-overview\"", app, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"reborn-shining-abode\"", app, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"reborn-chaos-sea\"", app, StringComparison.Ordinal);
+        Assert.Contains("Посмертие Reborn", app, StringComparison.Ordinal);
+        Assert.Contains("Сияющая Обитель", app, StringComparison.Ordinal);
+        Assert.Contains("Море Хаоса", app, StringComparison.Ordinal);
+        Assert.Contains("Посмертные панели откроются", app, StringComparison.Ordinal);
+        Assert.Contains("UI-only mapping for #729", app, StringComparison.Ordinal);
+        Assert.Contains("filterActionSections(game.actionMenu, rebornSectionMatchers)", app, StringComparison.Ordinal);
+        Assert.Contains("filterActionsForPanel(rebornSections, shiningAbodeActionMatchers)", app, StringComparison.Ordinal);
+        Assert.Contains("filterActionsForPanel(rebornSections, chaosSeaActionMatchers)", app, StringComparison.Ordinal);
+        Assert.Contains("game.flags.isInAfterlifeRealm", app, StringComparison.Ordinal);
+        Assert.Contains("game.flags.isInShiningAbode", app, StringComparison.Ordinal);
+        Assert.Contains("game.flags.isInChaosSea", app, StringComparison.Ordinal);
+
+        var worldRouteStart = app.IndexOf("function WorldRoute", StringComparison.Ordinal);
+        var actionMenuIndex = app.IndexOf("<ActionMenu menu={game.actionMenu} />", worldRouteStart, StringComparison.Ordinal);
+        var rebornPanelIndex = app.IndexOf("<RebornSystemsPanel game={game} />", worldRouteStart, StringComparison.Ordinal);
+        Assert.True(rebornPanelIndex > worldRouteStart, "Reborn panel should render inside the world route after the mortal-world overview.");
+        Assert.True(rebornPanelIndex < actionMenuIndex, "Reborn panel should be a conceptual section before the generic action catalogue.");
+
+        var panelStart = app.IndexOf("function RebornSystemsPanel", StringComparison.Ordinal);
+        var panelEnd = app.IndexOf("function FilteredActionSections", StringComparison.Ordinal);
+        Assert.True(panelStart >= 0 && panelEnd > panelStart, "Reborn panel source slice should be bounded before generic action helpers.");
+        var panelSource = app[panelStart..panelEnd];
+        Assert.DoesNotContain("pending_", panelSource, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("control/", panelSource, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/", panelSource, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw JSON", panelSource, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", panelSource, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("advancedCommand}", panelSource, StringComparison.Ordinal);
+
+        Assert.Contains(".reborn-systems-panel", styles, StringComparison.Ordinal);
+        Assert.Contains(".reborn-systems-panel__header", styles, StringComparison.Ordinal);
+        Assert.Contains(".reborn-systems-panel__actions", styles, StringComparison.Ordinal);
+
+        Assert.Contains("#729", readme, StringComparison.Ordinal);
+        Assert.Contains("Reborn panels", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("UI-only mapping", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("#729", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("reborn-panels.html", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("GM-facing afterlife contract docs were not changed", hostDoc, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void ReactAppShell_DocumentsIssue704RoutingAndPlayerAdvancedBoundary()
     {
         var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));

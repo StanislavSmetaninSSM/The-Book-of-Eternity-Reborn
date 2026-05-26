@@ -10,6 +10,7 @@ import type {
   BrowserAudioSettingsDto,
   BrowserAudioSettingsUpdateRequest,
   BrowserCommandCoverageDto,
+  BrowserGameScreenAfterlifeDto,
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
   BrowserMainMenuDto,
@@ -1089,6 +1090,7 @@ function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
         <div className="summary-card"><h2>Журнал</h2><p>Квесты, архив и история разворачиваются в игровых разделах без знания ручных команд.</p></div>
         <div className="summary-card"><h2>Фракции</h2><p>Панели фракций и стражей используют общие игровые данные и не дублируют правила.</p></div>
       </div>
+      <RebornSystemsPanel game={game} />
       <ActionMenu menu={game.actionMenu} />
     </ShellPanel>
   );
@@ -1097,6 +1099,9 @@ function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
 
 const journalSectionMatchers = ['quest', 'квест', 'journal', 'журнал', 'archive', 'архив', 'chronicle', 'хроника', 'story', 'история', 'faction', 'фракц', 'guardian', 'хранител'];
 const inventorySectionMatchers = ['inventory', 'инвентар', 'item', 'предмет', 'craft', 'ремес', 'equip', 'экип', 'storage', 'хранилищ'];
+const rebornSectionMatchers = ['afterlife', 'посмер', 'soul', 'душ', 'shining', 'сияющ', 'abode', 'обител', 'chaos', 'хаос', 'guardian', 'хранител', 'gate', 'врат'];
+const shiningAbodeActionMatchers = ['shining', 'сияющ', 'abode', 'обител', 'radiance', 'сияни', 'spark', 'искра', 'hall', 'зал', 'gate', 'врат'];
+const chaosSeaActionMatchers = ['chaos', 'хаос', 'sea', 'море', 'guardian', 'хранител', 'abode', 'обител'];
 
 function JournalRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
   if (!isSuccess(state.game)) {
@@ -1155,6 +1160,221 @@ function InventoryRoute({ state, advancedEnabled }: { state: Extract<BrowserShel
       </div>
       <FilteredActionSections sections={sections} emptyMessage="Инвентарные, ремесленные и складские разделы появятся здесь, когда каталог действий отдаст их для текущей главы." />
     </ShellPanel>
+  );
+}
+
+function RebornSystemsPanel({ game }: { game: BrowserGameScreenDto }) {
+  // UI-only mapping for #729: React renders existing C# game-screen state and action metadata without changing afterlife contracts.
+  const rebornSections = filterActionSections(game.actionMenu, rebornSectionMatchers);
+  const afterlifeActions = filterActionsForPanel(rebornSections, rebornSectionMatchers);
+  const shiningActions = filterActionsForPanel(rebornSections, shiningAbodeActionMatchers);
+  const chaosActions = filterActionsForPanel(rebornSections, chaosSeaActionMatchers);
+  const isAfterlifeActive = game.flags.isInAfterlifeRealm;
+  const isShiningAvailable = game.flags.isInShiningAbode || game.flags.isInAnyShiningAbodeState || game.flags.canReenterShiningAbode;
+  const isChaosSeaActive = game.flags.isInChaosSea;
+
+  return (
+    <section className="reborn-systems-panel" aria-labelledby="reborn-systems-title">
+      <div className="reborn-systems-panel__header">
+        <p className="panel-eyebrow">посмертные системы</p>
+        <h2 id="reborn-systems-title">Посмертие Reborn</h2>
+        <p className="muted">
+          Afterlife, Сияющая Обитель и Море Хаоса отделены от смертного мира, но используют тот же
+          язык карточек и только безопасные игровые данные текущей книги.
+        </p>
+      </div>
+      <div className="detail-surface-grid">
+        <DetailSurfaceCard
+          detailSurfaceId="reborn-afterlife-overview"
+          eyebrow="душа после смерти"
+          title="Посмертие Reborn"
+          icon="🕯️"
+          summary={isAfterlifeActive ? `${formatRealmName(game.soul.realm)} · ${game.soul.name || 'душа без имени'}` : 'Смертный слой активен'}
+          status={formatRebornLockStatus(game)}
+          detailsTitle="Детали посмертия"
+          detailsIntro={<p>Эта панель показывает, открыт ли посмертный слой, и какие ресурсы души уже можно читать игроку.</p>}
+          sections={[
+            {
+              title: 'Состояние слоя',
+              eyebrow: 'доступность',
+              icon: '✦',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Текущее царство</dt><dd>{formatRealmName(game.soul.realm)}</dd></div>
+                  <div><dt>Посмертие</dt><dd>{isAfterlifeActive ? 'открыто' : 'ещё закрыто'}</dd></div>
+                  <div><dt>Инкарнация</dt><dd>{game.soul.incarnation}</dd></div>
+                </dl>
+              )
+            },
+            {
+              title: 'Ресурсы души',
+              eyebrow: 'прогресс',
+              icon: '✨',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Чернильные перья</dt><dd>{game.soul.inkFeathers}</dd></div>
+                  <div><dt>Просветление</dt><dd>{game.soul.enlightenmentTier || 'нет данных'}</dd></div>
+                  <div><dt>Хранитель</dt><dd>{game.soul.activeGuardianName || 'не назначен'}</dd></div>
+                </dl>
+              )
+            },
+            {
+              title: 'Доступные действия',
+              eyebrow: 'каталог игрока',
+              icon: '☉',
+              content: <ActionPreviewList actions={afterlifeActions} emptyMessage="Посмертные действия появятся здесь, когда текущая глава отдаст их как безопасные для игрока." />
+            }
+          ]}
+        />
+        <DetailSurfaceCard
+          detailSurfaceId="reborn-shining-abode"
+          eyebrow="свет и обитель"
+          title="Сияющая Обитель"
+          icon="✦"
+          summary={isShiningAvailable ? 'Светлая область доступна для этой души' : 'Обитель пока закрыта'}
+          status={formatShiningGateStatus(game.afterlife)}
+          detailsTitle="Детали Сияющей Обители"
+          detailsIntro={<p>Сводка Обители остаётся игрокоориентированной: сияние, искры, залы и действия без внутренних файлов.</p>}
+          sections={[
+            {
+              title: 'Сияние',
+              eyebrow: 'ресурсы обители',
+              icon: '✧',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Опыт сияния</dt><dd>{game.afterlife.shiningRadianceExperience}</dd></div>
+                  <div><dt>Ранг сияния</dt><dd>{game.afterlife.shiningRadianceTier}</dd></div>
+                  <div><dt>Искры света</dt><dd>{game.afterlife.shiningLightSparks}</dd></div>
+                </dl>
+              )
+            },
+            {
+              title: 'Обитель',
+              eyebrow: 'структура',
+              icon: '🏛️',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Залы</dt><dd>{game.afterlife.shiningHallCount}</dd></div>
+                  <div><dt>Фракции</dt><dd>{game.afterlife.shiningFactionCount}</dd></div>
+                  <div><dt>Врата</dt><dd>{formatShiningGateStatus(game.afterlife)}</dd></div>
+                </dl>
+              )
+            },
+            {
+              title: 'Действия Обители',
+              eyebrow: 'безопасные формы',
+              icon: '☼',
+              content: <ActionPreviewList actions={shiningActions} emptyMessage="Действия Сияющей Обители появятся после открытия соответствующего слоя или формы." />
+            }
+          ]}
+        />
+        <DetailSurfaceCard
+          detailSurfaceId="reborn-chaos-sea"
+          eyebrow="хаос и навигация"
+          title="Море Хаоса"
+          icon="🌊"
+          summary={isChaosSeaActive ? 'Душа находится в Море Хаоса' : 'Навигация Моря Хаоса пока закрыта'}
+          status={isChaosSeaActive ? 'Море Хаоса активно' : 'Ожидается подходящее царство'}
+          detailsTitle="Детали Моря Хаоса"
+          detailsIntro={<p>Панель Моря Хаоса показывает статус навигации и player-safe действия, когда каталог их отдаёт.</p>}
+          sections={[
+            {
+              title: 'Навигация',
+              eyebrow: 'статус',
+              icon: '⌁',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Царство</dt><dd>{formatRealmName(game.soul.realm)}</dd></div>
+                  <div><dt>Море Хаоса</dt><dd>{isChaosSeaActive ? 'открыто' : 'закрыто'}</dd></div>
+                  <div><dt>Хранитель</dt><dd>{game.soul.activeGuardianName || 'ожидает выбора'}</dd></div>
+                </dl>
+              )
+            },
+            {
+              title: 'Ориентиры',
+              eyebrow: 'для игрока',
+              icon: '🜁',
+              content: (
+                <p>{isAfterlifeActive ? 'Посмертный слой активен; действия моря появятся ниже, если они подходят текущему царству.' : 'Посмертные панели откроются, когда душа перейдёт в посмертие.'}</p>
+              )
+            },
+            {
+              title: 'Действия Моря',
+              eyebrow: 'каталог игрока',
+              icon: '☽',
+              content: <ActionPreviewList actions={chaosActions} emptyMessage="Действия Моря Хаоса появятся здесь, когда они станут доступны в текущей главе." />
+            }
+          ]}
+        />
+      </div>
+    </section>
+  );
+}
+
+function filterActionsForPanel(
+  sections: BrowserPlayerCommandSectionDto[],
+  matchers: string[]
+): BrowserPlayerCommandActionDto[] {
+  const normalizedMatchers = matchers.map((matcher) => matcher.toLocaleLowerCase('ru-RU'));
+  return sections
+    .flatMap((section) => section.actions)
+    .filter((action) => {
+      const haystack = [
+        action.id,
+        action.label,
+        action.description,
+        action.formLabel,
+        action.formPrompt
+      ].join(' ').toLocaleLowerCase('ru-RU');
+      return normalizedMatchers.some((matcher) => haystack.includes(matcher));
+    })
+    .slice(0, 4);
+}
+
+function formatRebornLockStatus(game: BrowserGameScreenDto): string {
+  if (game.flags.isInAfterlifeRealm) {
+    return `${formatRealmName(game.soul.realm)} · перья ${game.soul.inkFeathers}`;
+  }
+
+  return 'Посмертные панели откроются, когда душа перейдёт в посмертие.';
+}
+
+function formatShiningGateStatus(afterlife: BrowserGameScreenAfterlifeDto): string {
+  if (afterlife.isShiningGatesDraftStale) {
+    return 'Черновик врат требует обновления';
+  }
+
+  if (afterlife.hasOpenShiningGatesDraft) {
+    return 'Черновик врат открыт';
+  }
+
+  return 'Врата ждут подходящего момента';
+}
+
+function formatActionPreview(action: BrowserPlayerCommandActionDto): string {
+  if (action.enabled) {
+    return toPlayerFacingText(action.description, 'Действие доступно для текущей главы.');
+  }
+
+  return toPlayerFacingText(action.disabledReason, 'Действие сейчас недоступно.');
+}
+
+function ActionPreviewList({ actions, emptyMessage }: { actions: BrowserPlayerCommandActionDto[]; emptyMessage: string }) {
+  if (actions.length === 0) {
+    return <p className="muted">{emptyMessage}</p>;
+  }
+
+  return (
+    <div className="reborn-systems-panel__actions">
+      <ul>
+        {actions.map((action) => (
+          <li key={action.id}>
+            <strong>{toPlayerFacingText(action.label, 'Игровое действие')}</strong>
+            <span> — {formatActionPreview(action)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
