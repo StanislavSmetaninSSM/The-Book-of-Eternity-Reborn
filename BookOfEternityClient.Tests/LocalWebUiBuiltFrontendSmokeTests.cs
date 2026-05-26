@@ -96,6 +96,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var detailSurfaceArtifactPath = Path.Combine(artifactRoot, "detail-surfaces.html");
         var rebornPanelsArtifactPath = Path.Combine(artifactRoot, "reborn-panels.html");
         var firstScreenVisualQaArtifactPath = Path.Combine(artifactRoot, "first-screen-visual-qa.html");
+        var startNewChapterArtifactPath = Path.Combine(artifactRoot, "start-new-chapter-flow.html");
 
         Assert.Equal(HttpStatusCode.OK, root.StatusCode);
         Assert.Equal(HttpStatusCode.OK, gameRoute.StatusCode);
@@ -124,6 +125,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         await File.WriteAllTextAsync(navigationArtifactPath, BuildNavigationIaArtifact(appSource));
         await File.WriteAllTextAsync(detailSurfaceArtifactPath, BuildDetailSurfaceArtifact(appSource));
         await File.WriteAllTextAsync(rebornPanelsArtifactPath, BuildRebornPanelsArtifact(appSource));
+        await File.WriteAllTextAsync(startNewChapterArtifactPath, BuildStartNewChapterFlowArtifact(appSource));
 
         Assert.True(session["localOnly"]!.GetValue<bool>());
         Assert.Equal("CI-душа", menu["session"]!["soulName"]!.GetValue<string>());
@@ -220,6 +222,24 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         {
             Assert.DoesNotContain(emojiIcon, firstScreenVisualQaArtifact, StringComparison.Ordinal);
         }
+
+        Assert.True(File.Exists(startNewChapterArtifactPath), $"Missing browser start-new-chapter visual smoke artifact at {startNewChapterArtifactPath}");
+        var startNewChapterArtifact = await File.ReadAllTextAsync(startNewChapterArtifactPath);
+        Assert.Contains("data-artifact=\"browser-start-new-chapter-flow\"", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"desktop\"", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"mobile\"", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("Начать новую главу", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("Форма новой главы", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("Режим подготовки мира", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("Название мира", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("Директивы мира", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("Отправить форму", startNewChapterArtifact, StringComparison.Ordinal);
+        Assert.Contains("truthful unavailable state", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/world_setup", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw JSON", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("screenshot", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
     }
 
     private static async Task<SmokeResponse> CaptureAsync(HttpClient client, string path)
@@ -330,6 +350,70 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         {{RenderVisualQaRouteCards(primaryRoutes)}}
                 </div>
                 <div class="advanced">advanced debug secondary</div>
+              </div>
+            </section>
+          </main>
+        </body>
+        </html>
+        """;
+    }
+
+    private static string BuildStartNewChapterFlowArtifact(string appSource)
+    {
+        Assert.Contains("function NewChapterStartPanel", appSource, StringComparison.Ordinal);
+        Assert.Contains("Форма новой главы", appSource, StringComparison.Ordinal);
+        Assert.Contains("browserApi.executeExplorerCommand({ command: startCommand", appSource, StringComparison.Ordinal);
+        Assert.Contains("browserApi.submitPromptSession", appSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Подготовить новую историю через управляемую форму браузера.", appSource, StringComparison.Ordinal);
+
+        return """
+        <!doctype html>
+        <html lang="ru" data-artifact="browser-start-new-chapter-flow">
+        <head>
+          <meta charset="utf-8">
+          <title>Browser Start New Chapter Flow Visual Smoke</title>
+          <style>
+            :root { color-scheme: dark; font-family: Inter, "Segoe UI", sans-serif; background: #100b17; color: #f9ecd1; }
+            body { margin: 0; padding: 24px; background: radial-gradient(circle at top left, rgba(216, 179, 106, 0.2), transparent 32%), #100b17; }
+            .artifact { display: grid; gap: 20px; max-width: 1120px; margin: 0 auto; }
+            .frame { border: 1px solid rgba(249, 236, 209, 0.18); border-radius: 26px; background: rgba(31, 24, 45, 0.9); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34); padding: 24px; }
+            .desktop { display: grid; grid-template-columns: 1fr 1.15fr; gap: 18px; }
+            .mobile { width: min(100%, 390px); margin: 0 auto; }
+            .panel, .form, .unavailable { border: 1px solid rgba(216, 179, 106, 0.28); border-radius: 18px; padding: 16px; background: rgba(255, 255, 255, 0.055); }
+            .form { display: grid; gap: 12px; }
+            label { display: grid; gap: 6px; color: #ffe9b8; }
+            input, textarea, select { border: 1px solid rgba(216, 179, 106, 0.32); border-radius: 12px; padding: 10px; background: rgba(0,0,0,0.28); color: #f9ecd1; }
+            button { border: 1px solid rgba(216, 179, 106, 0.52); border-radius: 14px; padding: 12px 16px; background: rgba(216, 179, 106, 0.2); color: #fff6df; font-weight: 800; }
+            .muted { color: rgba(249, 236, 209, 0.7); }
+            .unavailable { border-style: dashed; color: rgba(249, 236, 209, 0.78); }
+            @media (max-width: 760px) { .desktop { grid-template-columns: 1fr; } }
+          </style>
+        </head>
+        <body>
+          <main class="artifact">
+            <section class="frame desktop" data-viewport="desktop" aria-label="Desktop start-new-chapter flow">
+              <article class="panel">
+                <p class="muted">Главная книга · игрок выбирает действие</p>
+                <h1>Начать новую главу</h1>
+                <p>Кнопка открывает форму новой главы только когда локальная книга отдаёт доступный безопасный поток.</p>
+                <button type="button">Открыть форму новой главы</button>
+                <div class="unavailable">truthful unavailable state: если локальная запись заблокирована или команда отсутствует, игрок видит причину и путь — продолжить главу, загрузить сохранение или проверить состояние книги.</div>
+              </article>
+              <article class="form" aria-label="Форма новой главы">
+                <h2>Форма новой главы</h2>
+                <label>Режим подготовки мира<select><option>Создать / редактировать</option><option>Применить профиль</option><option>Очистить</option></select></label>
+                <label>Название мира<input value="Королевство пепельных колоколов" readonly></label>
+                <label>Директивы мира<textarea rows="4" readonly>Опишите жанр, запреты, обязательные темы, стартовые обстоятельства и роль персонажа.</textarea></label>
+                <button type="button">Отправить форму</button>
+              </article>
+            </section>
+            <section class="frame mobile" data-viewport="mobile" aria-label="Mobile start-new-chapter flow">
+              <h1>Начать новую главу</h1>
+              <p class="muted">Форма новой главы остаётся внутри главной книги и не раскрывает технические команды.</p>
+              <div class="form">
+                <label>Режим подготовки мира<select><option>Создать / редактировать</option></select></label>
+                <label>Название мира<input value="Новый мир" readonly></label>
+                <button type="button">Отправить форму</button>
               </div>
             </section>
           </main>

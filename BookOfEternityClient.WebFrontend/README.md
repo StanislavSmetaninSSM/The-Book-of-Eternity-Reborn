@@ -30,7 +30,7 @@ npm run verify
 npm run preview
 ```
 
-`npm run dev` and `npm run preview` bind to `127.0.0.1` for local development. `npm run build` writes production assets to `dist/`. `npm run verify` is the CI/local frontend gate: it typechecks both TypeScript projects and then builds the production bundle.
+`npm run dev` and `npm run preview` bind to `127.0.0.1` for local development. `npm run build` writes production assets to `dist/`. `npm run verify` is the CI/local frontend gate: it typechecks both TypeScript projects, runs the player-facing command-result sanitizer fixture for launcher/prompt-session copy, and then builds the production bundle.
 
 ## Relationship to `dotnet run -- --web`
 
@@ -84,6 +84,8 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-re
 The test writes `TestResults/browser-smoke/first-screen-visual-qa.html` next to `root.html`, `game-route.html`, `network.json`, `navigation-ia.html`, `detail-surfaces.html`, and `reborn-panels.html`. CI uploads the directory as `browser-smoke-artifacts`.
 
 The artifact is an HTML visual smoke artifact, not automated PNG screenshots. It intentionally remains dependency-light until a future tracked task selects a browser screenshot automation stack. It is local/offline and has no external API key required. Review it against the old React UI/UX reference only: central game launcher, primary CTA, polished cards, tabs/sections, and save/config actions. Do not copy old prompts, mortal-life-only mechanics, or runtime rules.
+
+Issue #742 extends the launcher artifact set with `start-new-chapter-flow.html`. It proves that `Начать новую главу` opens the existing C# world-setup prompt-session form when available, or shows a truthful unavailable state when local-write safety/command availability blocks it. The launcher sanitizes player-default command results so technical setup blocks, slash commands, endpoint names, file paths, and raw JSON labels stay out of the ordinary UI while the safe form fields remain visible. The artifact is local/offline HTML evidence, not a screenshot.
 
 Regression checklist: primary CTA present; no technical hero copy; no repeated unavailable alerts; no emoji route icons; advanced debug secondary and behind explicit opt-in. Source guards live in `BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist` in `BrowserFrontendWorkspaceTests`, and documentation guards live in `LocalWebHostDocs_DocumentBrowserVisualQaArtifactWorkflow` in `LocalWebUiDocumentationTests`.
 

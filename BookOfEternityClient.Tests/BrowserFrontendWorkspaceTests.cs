@@ -45,7 +45,8 @@ public sealed class BrowserFrontendWorkspaceTests
         var packageJsonPath = Path.Combine(FrontendRoot, "package.json");
         using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
         var scripts = document.RootElement.GetProperty("scripts");
-        Assert.Equal("npm run typecheck && npm run build", scripts.GetProperty("verify").GetString());
+        Assert.Equal("npm run typecheck && npm run test:player-facing && npm run build", scripts.GetProperty("verify").GetString());
+        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js", scripts.GetProperty("test:player-facing").GetString());
 
         var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
         Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
@@ -568,6 +569,18 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("setLauncherNotice(toPlayerFacingText(result.data.error", app, StringComparison.Ordinal);
         Assert.Contains("isLauncherMountedRef", app, StringComparison.Ordinal);
         Assert.Contains("isLauncherMountedRef.current = false", app, StringComparison.Ordinal);
+        Assert.Contains("function NewChapterStartPanel", app, StringComparison.Ordinal);
+        Assert.Contains("const startCommand = modeAction?.command.trim() ?? '';", app, StringComparison.Ordinal);
+        Assert.Contains("async function openNewChapterFlow", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.executeExplorerCommand({ command: startCommand, ownerLabel: 'Главная книга' })", app, StringComparison.Ordinal);
+        Assert.Contains("sanitizePlayerDefaultCommandResult", app, StringComparison.Ordinal);
+        Assert.Contains("function sanitizeNewChapterCommandResult", app, StringComparison.Ordinal);
+        Assert.Contains("setNewChapterPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));", app, StringComparison.Ordinal);
+        Assert.Contains("async function submitNewChapterPromptAnswers", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.submitPromptSession({", app, StringComparison.Ordinal);
+        Assert.Contains("<ActionCommandResult", app, StringComparison.Ordinal);
+        Assert.Contains("Форма новой главы открыта. Заполните поля ниже и отправьте её из браузера.", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("Подготовить новую историю через управляемую форму браузера.", app, StringComparison.Ordinal);
 
         var advancedDiagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
         Assert.True(advancedDiagnosticsIndex > 0, "Advanced diagnostics must stay in a separate source section.");
