@@ -1,6 +1,8 @@
 using System.Text.Json.Nodes;
+using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models.GameState;
+using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.WebUi;
 
@@ -10,17 +12,20 @@ public sealed class BrowserGameScreenService
     private readonly FileSystemManager _fs;
     private readonly BrowserLifecycleDashboardService _lifecycle;
     private readonly QteWebInteractionService _qte;
+    private readonly LocalMediaService _media;
 
     public BrowserGameScreenService(
         StateManager stateManager,
         FileSystemManager fs,
         BrowserLifecycleDashboardService lifecycle,
-        QteWebInteractionService qte)
+        QteWebInteractionService qte,
+        LocalMediaService media)
     {
         _stateManager = stateManager;
         _fs = fs;
         _lifecycle = lifecycle;
         _qte = qte;
+        _media = media;
     }
 
     public async Task<BrowserGameScreenDto> BuildAsync()
@@ -30,6 +35,7 @@ public sealed class BrowserGameScreenService
         var lifecycle = await _lifecycle.BuildDashboardAsync();
         var qte = await _qte.BuildReadOnlyStateAsync();
         var narrative = await BuildNarrativeAsync(state);
+        var media = await BuildMediaAsync(narrative);
 
         return new BrowserGameScreenDto(
             SchemaVersion: 2,
@@ -56,6 +62,7 @@ public sealed class BrowserGameScreenService
                 TurnNumber: state.TurnNumber,
                 SessionId: state.SessionId),
             Narrative: narrative,
+            Media: media,
             Afterlife: BrowserGameScreenAfterlifeDto.FromState(state),
             TurnState: BrowserGameScreenTurnStateDto.From(lifecycle, qte),
             ActionComposer: BrowserGameScreenActionComposerDto.From(lifecycle, qte),
@@ -80,6 +87,26 @@ public sealed class BrowserGameScreenService
             DialogueOptions: ReadDialogueOptions(interfaceUpdates),
             CombatLog: ReadString(combatLog, "combat_log_markdown", "combatLogMarkdown", "combatLog"),
             ImagePrompt: ReadString(interfaceUpdates, "image_prompt", "imagePrompt"));
+    }
+
+    private async Task<BrowserGameScreenMediaDto> BuildMediaAsync(BrowserGameScreenNarrativeDto narrative)
+    {
+        var map = await LocalMapViewService.BuildCurrentRealmMapAsync(_fs);
+        var gallery = _media.EnumerateGallery(24)
+            .Select(static item => new BrowserGameScreenMediaItemDto(
+                MediaId: item.MediaId,
+                Url: item.Url,
+                FileName: item.FileName,
+                ContentType: item.ContentType,
+                Length: item.Length,
+                ModifiedAtUtc: item.ModifiedAtUtc))
+            .ToList();
+
+        return new BrowserGameScreenMediaDto(
+            SchemaVersion: 1,
+            SceneImagePrompt: narrative.ImagePrompt,
+            Gallery: gallery,
+            Map: map);
     }
 
     private async Task<JsonObject?> ReadJsonObjectAsync(string relativePath)
@@ -187,6 +214,7 @@ public sealed record BrowserGameScreenDto(
     BrowserGameScreenPlayerDto Player,
     BrowserGameScreenWorldDto World,
     BrowserGameScreenNarrativeDto Narrative,
+    BrowserGameScreenMediaDto Media,
     BrowserGameScreenAfterlifeDto Afterlife,
     BrowserGameScreenTurnStateDto TurnState,
     BrowserGameScreenActionComposerDto ActionComposer,
@@ -240,6 +268,20 @@ public sealed record BrowserGameScreenNarrativeDto(
     string ImagePrompt);
 
 public sealed record BrowserGameScreenDialogueOptionDto(string Id, string Text, string Category);
+
+public sealed record BrowserGameScreenMediaDto(
+    int SchemaVersion,
+    string SceneImagePrompt,
+    IReadOnlyList<BrowserGameScreenMediaItemDto> Gallery,
+    MapViewDto Map);
+
+public sealed record BrowserGameScreenMediaItemDto(
+    string MediaId,
+    string Url,
+    string FileName,
+    string ContentType,
+    long Length,
+    DateTimeOffset ModifiedAtUtc);
 
 public sealed record BrowserGameScreenAfterlifeDto(
     int ShiningRadianceExperience,

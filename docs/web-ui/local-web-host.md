@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #691, #701, #702, #703, #704, #705, #723, #727, #728, #729
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #688, #691, #701, #702, #703, #704, #705, #723, #727, #728, #729
 Parent epic: #559
 
 ## Local-Only Model
@@ -93,6 +93,8 @@ BookOfEternityClient.WebFrontend/dist/
 `dist/` is generated and remains git-ignored. When it exists, `LocalWebUiHost` serves the build root: issue #704 makes the preferred root `dist/index.html`, the built React app shell. The copied `dist/local-web-ui-shell.html` is now only a compatibility fallback if a build root lacks `index.html`. Built JS/CSS/media assets under `dist/assets/` are served by the same static-file middleware. During packaged/published builds, present `dist/**` files are copied to the C# output under `wwwroot/browser/` so the host can serve them without source-tree paths.
 
 The React app shell provides player-facing routes through the #727 taxonomy. The primary chain is `Главная → Игра → Душа → Мир → Журнал → Инвентарь`, matching the game-client order: summary/current scene, character/soul, world/location/map, journal/quests/notes, and inventory/craft. `Медиа` and `Настройки` remain secondary player utility sections. Default player routes load typed state through `src/api/client.ts` (`/api/main-menu`, `/api/session`, `/api/game-screen`, and `/api/audio/settings`); lifecycle dashboard and command coverage data load only after explicit `Расширенный режим` opt-in. The shell remains presentation-only: C# keeps all gameplay/application logic, persistence, validation, local-write coordination, afterlife/mortal contracts, and command execution authority.
+
+Issue #688 makes the React `Медиа` route consume `/api/game-screen.media` and render the gallery, atlas, and QTE state/actions as player-facing sections. Raw media/QTE endpoint diagnostics remain advanced-only.
 
 The normal root is Russian-first and player-facing. Command IDs, `/api/*` details, lifecycle validation internals, command coverage, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player-visible failures should show short `playerMessage` text first and keep `technicalDetails` in an advanced/details surface.
 

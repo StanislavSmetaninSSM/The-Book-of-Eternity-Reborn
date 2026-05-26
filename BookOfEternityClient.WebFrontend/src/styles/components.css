@@ -7,7 +7,9 @@
 .empty-state,
 .error-notice,
 .narrative-card,
-.reborn-systems-panel {
+.reborn-systems-panel,
+.qte-scene-panel,
+.media-atlas-panel {
   border: 1px solid color-mix(in srgb, var(--realm-accent) 34%, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-lg);
   background: var(--color-glass);
@@ -290,6 +292,171 @@
 
 .reborn-systems-panel__actions li + li {
   margin-top: var(--space-2);
+}
+
+.media-section-grid {
+  align-items: start;
+}
+
+.qte-scene-panel,
+.media-atlas-panel {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--state-qte) 14%, transparent), transparent 42%),
+    rgba(255, 255, 255, 0.045);
+}
+
+.qte-scene-panel .summary-card,
+.media-gallery-panel,
+.media-atlas-node {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.qte-scene-panel button,
+.media-gallery-card__open {
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 44%, rgba(255, 255, 255, 0.1));
+  border-radius: 0.9rem;
+  padding: 0.7rem 0.9rem;
+  background: color-mix(in srgb, var(--realm-accent) 18%, rgba(10, 13, 14, 0.86));
+  color: #fff6df;
+  font-weight: 800;
+}
+
+.qte-scene-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.qte-action-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.media-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.85rem;
+}
+
+.media-gallery-card {
+  display: grid;
+  gap: var(--space-3);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 24%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.media-gallery-card > a:first-child {
+  overflow: hidden;
+  border-radius: 0.85rem;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.media-gallery-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  transition: transform var(--motion-fast), filter var(--motion-fast);
+}
+
+.media-gallery-card a:hover img,
+.media-gallery-card a:focus-visible img {
+  filter: saturate(1.1);
+  transform: scale(1.03);
+}
+
+.media-gallery-card__open {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: var(--space-2);
+  text-decoration: none;
+}
+
+.media-atlas-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.media-atlas-controls label {
+  display: grid;
+  gap: 0.45rem;
+  color: #fff3d6;
+  font-weight: 800;
+}
+
+.media-atlas-controls select {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.85rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(4, 7, 8, 0.72);
+  color: inherit;
+}
+
+.media-atlas-controls .checkbox-control {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+}
+
+.media-atlas-node-grid {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.media-atlas-node {
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 24%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.media-atlas-node.is-current {
+  border-color: color-mix(in srgb, var(--state-qte) 48%, rgba(255, 255, 255, 0.12));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--state-qte) 22%, transparent);
+}
+
+.media-atlas-node header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.media-atlas-node h3,
+.media-atlas-influence h4,
+.media-gallery-card h3 {
+  margin: 0;
+}
+
+.media-atlas-influence {
+  display: grid;
+  gap: var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 20%, rgba(255, 255, 255, 0.08));
+  border-radius: 0.85rem;
+  padding: var(--space-3);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.media-atlas-influence ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.media-atlas-influence li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
 }
 
 @media (max-width: 980px) {

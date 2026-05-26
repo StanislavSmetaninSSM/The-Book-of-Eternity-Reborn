@@ -177,6 +177,36 @@ public sealed class BrowserApiContractTests
     }
 
     [Fact]
+    public void BrowserGameScreenContract_IncludesPlayerFacingMediaMapAndGalleryData()
+    {
+        var screen = BuildGameScreen();
+        var json = JsonSerializer.Serialize(screen, WebJsonOptions);
+
+        Assert.NotNull(screen.Media);
+        Assert.Equal("mystic road at dusk", screen.Media.SceneImagePrompt);
+        var item = Assert.Single(screen.Media.Gallery);
+        Assert.Equal("scene-road.png", item.FileName);
+        Assert.StartsWith("/api/media/", item.Url, StringComparison.Ordinal);
+        Assert.DoesNotContain("E:/", item.Url, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_session", item.Url, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("relativePath", json, StringComparison.OrdinalIgnoreCase);
+        Assert.NotNull(screen.Media.Map);
+        Assert.Equal("Карта смертного мира", screen.Media.Map.Title);
+        Assert.Contains(screen.Media.Map.Layers, layer => layer.Id == "world" && layer.IsDefault);
+        Assert.Contains(screen.Media.Map.ZLevels, level => level.Z == 0);
+        Assert.Contains(screen.Media.Map.Nodes, node => node.IsCurrent);
+        var narrativeIndex = json.IndexOf("\"narrative\"", StringComparison.Ordinal);
+        var mediaIndex = json.IndexOf("\"media\"", StringComparison.Ordinal);
+        var afterlifeIndex = json.IndexOf("\"afterlife\"", StringComparison.Ordinal);
+        Assert.True(narrativeIndex >= 0, "BrowserGameScreenDto must serialize narrative for the game screen.");
+        Assert.True(mediaIndex >= 0, "BrowserGameScreenDto must serialize media for the game screen.");
+        Assert.True(afterlifeIndex >= 0, "BrowserGameScreenDto must serialize afterlife for the game screen.");
+        Assert.True(
+            narrativeIndex < mediaIndex && mediaIndex < afterlifeIndex,
+            "BrowserGameScreenDto must serialize media between narrative and afterlife so frontend fixtures evolve predictably.");
+    }
+
+    [Fact]
     public void EveryBrowserExecutableCommand_HasPlayerFacingActionMetadata()
     {
         var menu = BrowserPlayerCommandMenuBuilder.Build(
@@ -532,6 +562,7 @@ public sealed class BrowserApiContractTests
                 DialogueOptions: [new BrowserGameScreenDialogueOptionDto("choice-1", "Осмотреть врата", "exploration")],
                 CombatLog: "Боевых событий нет.",
                 ImagePrompt: "mystic road at dusk"),
+            Media: BuildMedia(),
             Afterlife: new BrowserGameScreenAfterlifeDto(
                 ShiningRadianceExperience: 10,
                 ShiningRadianceTier: 1,
@@ -580,6 +611,49 @@ public sealed class BrowserApiContractTests
                 IsInShiningAbodePendingBootstrap: false,
                 IsInAfterlifeRealm: false,
                 CanReenterShiningAbode: true));
+
+    private static BrowserGameScreenMediaDto BuildMedia() =>
+        new(
+            SchemaVersion: 1,
+            SceneImagePrompt: "mystic road at dusk",
+            Gallery:
+            [
+                new BrowserGameScreenMediaItemDto(
+                    MediaId: "images-scenes-scene-road",
+                    Url: "/api/media/images-scenes-scene-road",
+                    FileName: "scene-road.png",
+                    ContentType: "image/png",
+                    Length: 2048,
+                    ModifiedAtUtc: SampleUtc)
+            ],
+            Map: new MapViewDto
+            {
+                Realm = "Mortal World",
+                Title = "Карта смертного мира",
+                CurrentNodeId = "ash-road",
+                Layers = [new MapLayerDto { Id = "world", Label = "Мир", IsDefault = true }],
+                ZLevels = [new MapZLevelDto { Z = 0, Label = "земля" }],
+                Nodes =
+                [
+                    new MapNodeDto
+                    {
+                        Id = "ash-road",
+                        Label = "Пепельная дорога",
+                        Type = "current",
+                        X = 0,
+                        Y = 0,
+                        Z = 0,
+                        Layer = "world",
+                        IsCurrent = true,
+                        OwnerFactionId = "",
+                        OwnerFactionName = "",
+                        Influence = new Dictionary<string, int>(),
+                        Details = [new MapDetailItemDto { Key = "Время", Value = "Сумерки" }]
+                    }
+                ],
+                Links = [],
+                Regions = []
+            });
 
     private static BrowserLifecycleDashboardDto BuildLifecycleDashboard() =>
         new(

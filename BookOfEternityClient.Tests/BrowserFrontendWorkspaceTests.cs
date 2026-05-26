@@ -249,6 +249,41 @@ public sealed class BrowserFrontendWorkspaceTests
 
 
     [Fact]
+    public void BrowserMediaRoute_RendersGalleryMapAndQteAsPlayerSections()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = ReadFrontendStyles();
+        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
+        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
+
+        Assert.Contains("function QteScenePanel", app, StringComparison.Ordinal);
+        Assert.Contains("function MediaGalleryPanel", app, StringComparison.Ordinal);
+        Assert.Contains("function MediaAtlasPanel", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.resolveQteOffer", app, StringComparison.Ordinal);
+        Assert.Contains("browserApi.resolveQteAction", app, StringComparison.Ordinal);
+        Assert.Contains("game.media.gallery", app, StringComparison.Ordinal);
+        Assert.Contains("game.media.map", app, StringComparison.Ordinal);
+        Assert.Contains("sceneImagePrompt", app, StringComparison.Ordinal);
+        Assert.Contains("Политическое влияние", app, StringComparison.Ordinal);
+        Assert.Contains("Выберите уровень", app, StringComparison.Ordinal);
+        Assert.Contains("Открыть изображение", app, StringComparison.Ordinal);
+
+        var mediaRouteStart = app.IndexOf("function MediaRoute", StringComparison.Ordinal);
+        var settingsRouteStart = app.IndexOf("function SettingsRoute", StringComparison.Ordinal);
+        Assert.True(mediaRouteStart >= 0 && settingsRouteStart > mediaRouteStart, "MediaRoute should remain before SettingsRoute.");
+        var mediaRouteSource = app[mediaRouteStart..settingsRouteStart];
+        Assert.DoesNotContain("/api/qte/state", mediaRouteSource, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/media/", mediaRouteSource, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("relativePath", mediaRouteSource, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains(".qte-scene-panel", styles, StringComparison.Ordinal);
+        Assert.Contains(".media-gallery-grid", styles, StringComparison.Ordinal);
+        Assert.Contains(".media-atlas-panel", styles, StringComparison.Ordinal);
+        Assert.Contains("#688", readme, StringComparison.Ordinal);
+        Assert.Contains("#688", hostDoc, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BrowserRouteCards_UseInlineSvgIconsAndSemanticStates()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
