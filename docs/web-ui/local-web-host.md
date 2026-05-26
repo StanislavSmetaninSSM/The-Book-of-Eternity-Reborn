@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #691, #701, #702, #703, #704, #705, #727, #728
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #691, #701, #702, #703, #704, #705, #727, #728, #729
 Parent epic: #559
 
 ## Local-Only Model
@@ -176,6 +176,8 @@ GET /api/audio/assets/{assetId}
 `/` serves the browser game shell. With a Vite build present, the root is the #704 React app shell and #727 navigation IA: primary player routes follow `Главная → Игра → Душа → Мир → Журнал → Инвентарь`, while media and settings are secondary utility sections. The root defaults to current session/game summaries, the current realm/narrative/status surface, and short Russian guidance. It does not present the raw command console, endpoint hints, lifecycle validation, command coverage, or debug controls as the primary player flow. The default surface includes a primary prose action composer for ordinary player intent; slash commands are intentionally rejected from automatic execution and require a separate explicit `Расширенный режим` opt-in before any technical command/API path is visible.
 
 Issue #728 adds the shared `card → modal/full-panel` detail-surface pattern for detail-rich player data. Compact cards keep `Душа`, `Герой`, and `Локация` readable in the route overview; opening one shows a consistent header with back/fullscreen/close controls, readable sections, player-facing empty/error/loading states, Escape handling, and focus restoration. The pattern consumes existing `/api/game-screen` DTO data only and does not expose raw JSON, command internals, or endpoint lists in default player details. The built-frontend smoke test writes `TestResults/browser-smoke/detail-surfaces.html` as the dependency-light visual smoke artifact for compact cards, opened desktop modal, and mobile full-panel behavior.
+
+Issue #729 adds player-facing Reborn panels for Afterlife, Shining Abode, and Chaos Sea as a UI-only mapping over the existing game-screen state and player-default action metadata. The built-frontend smoke test also writes `TestResults/browser-smoke/reborn-panels.html` as a dependency-light visual smoke artifact for mortal locked and afterlife active states. GM-facing afterlife contract docs were not changed because no runtime contract, pending/control file, validation rule, canonical state surface, or GM-authored behavior changed.
 
 The default surface includes the #683 contextual action menu in the `Мир` route. It is built from C# command metadata in `/api/game-screen`, groups actions into Russian game sections (`Персонаж / Душа`, `Мир`, `Квесты`, `Карта`, `Фракции`, `Хранители`, `Посмертие`, `Бой`, `Архив`, `Настройки`), and hides raw slash command IDs from normal player cards. Read-only actions open their browser result from the card. Mutating actions open the existing browser prompt-session forms, show realm availability, disabled reasons, and warning text, and submit answers through the same C# lifecycle/local-write coordinator used by migrated browser commands.
 
