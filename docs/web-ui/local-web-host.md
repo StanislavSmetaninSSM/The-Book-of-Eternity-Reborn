@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #691, #701, #702, #703, #704, #705, #727, #728, #729
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #691, #701, #702, #703, #704, #705, #723, #727, #728, #729
 Parent epic: #559
 
 ## Local-Only Model
@@ -464,9 +464,11 @@ npm run verify --prefix BookOfEternityClient.WebFrontend
 dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
 ```
 
-`BrowserWebUiBuiltFrontend` launches `LocalWebUiHost` against the built Vite `dist/` directory, verifies the root shell, SPA route fallback, `/api/main-menu`, `/api/session`, `/api/game-screen`, and confirms missing `/api/*` and `/assets/*` requests stay real 404 responses instead of being swallowed by the HTML fallback. The smoke writes practical HTML/network/navigation diagnostics to `TestResults/browser-smoke/`: `root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, and `navigation-ia.html`.
+`BrowserWebUiBuiltFrontend` launches `LocalWebUiHost` against the built Vite `dist/` directory, verifies the root shell, SPA route fallback, `/api/main-menu`, `/api/session`, `/api/game-screen`, and confirms missing `/api/*` and `/assets/*` requests stay real 404 responses instead of being swallowed by the HTML fallback. The smoke writes practical HTML/network/navigation diagnostics to `TestResults/browser-smoke/`: `root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, `first-screen-visual-qa.html`, `navigation-ia.html`, `detail-surfaces.html`, and `reborn-panels.html`.
 
-GitHub Actions uploads those files as the `browser-smoke-artifacts` artifact when present. `navigation-ia.html` is the dependency-light visual smoke artifact for desktop/mobile player navigation. Full browser screenshots remain deferred until a future tracked Playwright/Selenium-style automation task instead of bolting a new dependency onto #705/#727.
+GitHub Actions uploads those files as the `browser-smoke-artifacts` artifact when present. `navigation-ia.html` is the dependency-light visual smoke artifact for desktop/mobile player navigation. Issue #723 adds `first-screen-visual-qa.html`, a dependency-light HTML visual smoke artifact for the default Browser Client first screen. It has explicit desktop/mobile frames and should be reviewed against the old React UI/UX reference only: central launcher, primary CTA, polished cards, tabs/sections, and save/config actions. It is not automated PNG screenshots; it keeps CI offline-friendly until a future tracked task selects browser screenshot automation.
+
+Regression checklist: primary CTA; no technical hero copy; no repeated unavailable alerts; no emoji route icons; advanced debug secondary behind explicit opt-in. Guard tests: `BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist` and `LocalWebHostDocs_DocumentBrowserVisualQaArtifactWorkflow`.
 
 Run the focused browser contract suite before changing browser root/menu/session/game-screen state, lifecycle dashboards, command migration metadata, prompt sessions, QTE, media, or command rendering:
 

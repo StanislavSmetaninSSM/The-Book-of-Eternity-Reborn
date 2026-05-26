@@ -120,6 +120,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var session = JsonNode.Parse(sessionResponse.Body)!.AsObject();
         var screen = JsonNode.Parse(screenResponse.Body)!.AsObject();
         var appSource = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src", "App.tsx"));
+        await File.WriteAllTextAsync(firstScreenVisualQaArtifactPath, BuildFirstScreenVisualQaArtifact(appSource));
         await File.WriteAllTextAsync(navigationArtifactPath, BuildNavigationIaArtifact(appSource));
         await File.WriteAllTextAsync(detailSurfaceArtifactPath, BuildDetailSurfaceArtifact(appSource));
         await File.WriteAllTextAsync(rebornPanelsArtifactPath, BuildRebornPanelsArtifact(appSource));
@@ -232,6 +233,106 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
+
+    private static string BuildFirstScreenVisualQaArtifact(string appSource)
+    {
+        var routes = ExtractPlayerRoutes(appSource);
+        var primaryRoutes = routes.Where(route => route.Kind == "primary").ToArray();
+        var utilityRoutes = routes.Where(route => route.Kind == "utility").ToArray();
+        var primarySequence = string.Join(" → ", primaryRoutes.Select(route => route.Label));
+        var utilitySequence = string.Join(" → ", utilityRoutes.Select(route => route.Label));
+
+        Assert.Equal(new[] { "home", "game", "soul", "world", "journal", "inventory" }, primaryRoutes.Select(route => route.Id));
+        Assert.Equal(new[] { "media", "settings" }, utilityRoutes.Select(route => route.Id));
+        Assert.Contains("Книга Вечности: Перерождение", appSource, StringComparison.Ordinal);
+        Assert.Contains("Открыть книгу", appSource, StringComparison.Ordinal);
+        Assert.Contains("Продолжить главу", appSource, StringComparison.Ordinal);
+        Assert.Contains("Загрузить сохранение", appSource, StringComparison.Ordinal);
+        Assert.Contains("Настроить клиент", appSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("<h1 id=\"browser-client-title\">Локальный игровой клиент</h1>", appSource, StringComparison.Ordinal);
+
+        return $$"""
+        <!doctype html>
+        <html lang="ru" data-artifact="browser-first-screen-visual-qa">
+        <head>
+          <meta charset="utf-8">
+          <title>Browser Client First Screen Visual QA</title>
+          <style>
+            :root { color-scheme: dark; font-family: Inter, "Segoe UI", sans-serif; background: #100b17; color: #f9ecd1; }
+            body { margin: 0; padding: 24px; background: radial-gradient(circle at top left, rgba(216, 179, 106, 0.2), transparent 32%), #100b17; }
+            .artifact { display: grid; gap: 20px; max-width: 1180px; margin: 0 auto; }
+            .frame { border: 1px solid rgba(249, 236, 209, 0.18); border-radius: 28px; background: rgba(31, 24, 45, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34); overflow: hidden; }
+            .desktop-shell { display: grid; grid-template-columns: 280px 1fr 280px; min-height: 560px; }
+            .mobile-shell { width: min(100%, 390px); margin: 0 auto; }
+            .sidebar, .status, .mobile-nav { padding: 18px; background: rgba(16, 12, 24, 0.74); }
+            .content { padding: 28px; display: grid; gap: 18px; align-content: start; }
+            .brand { color: #ffe2a6; letter-spacing: 0.04em; }
+            .primary { border: 1px solid rgba(216, 179, 106, 0.5); border-radius: 22px; padding: 18px; background: linear-gradient(135deg, rgba(216, 179, 106, 0.24), rgba(155, 107, 255, 0.12)); }
+            .secondary, .route-card, .check { border: 1px solid rgba(216, 179, 106, 0.24); border-radius: 18px; padding: 12px; background: rgba(255, 255, 255, 0.055); }
+            .route-list, .checks, .secondary-row { display: grid; gap: 10px; }
+            .secondary-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .muted { color: rgba(249, 236, 209, 0.72); }
+            .locked { color: rgba(249, 236, 209, 0.62); border-style: dashed; }
+            .advanced { margin-top: 16px; color: rgba(249, 236, 209, 0.62); border: 1px dashed rgba(249, 236, 209, 0.24); border-radius: 16px; padding: 12px; }
+            @media (max-width: 860px) { .desktop-shell, .secondary-row { grid-template-columns: 1fr; } }
+          </style>
+        </head>
+        <body>
+          <main class="artifact">
+            <section class="frame" data-viewport="desktop" aria-label="Desktop first-screen visual QA">
+              <div class="desktop-shell">
+                <nav class="sidebar" aria-label="Player routes">
+                  <p class="brand">{{WebUtility.HtmlEncode(primarySequence)}}</p>
+                  <div class="route-list">
+        {{RenderRouteCards(primaryRoutes)}}
+                  </div>
+                  <p class="brand">{{WebUtility.HtmlEncode(utilitySequence)}}</p>
+                  <div class="route-list">
+        {{RenderRouteCards(utilityRoutes)}}
+                  </div>
+                  <div class="advanced">advanced debug secondary: Расширенный режим остаётся отдельным вторичным входом.</div>
+                </nav>
+                <section class="content" aria-label="Launcher visual target">
+                  <p class="brand">Книга Вечности: Перерождение</p>
+                  <h1>Открыть книгу</h1>
+                  <p class="muted">Default first screen reads as a game launcher, not a local runtime dashboard.</p>
+                  <article class="primary"><strong>Primary CTA: Продолжить главу</strong><p>Если продолжение недоступно, CTA переключается на Загрузить сохранение или Начать новую главу.</p></article>
+                  <div class="secondary-row">
+                    <article class="secondary">Загрузить сохранение</article>
+                    <article class="secondary">Начать новую главу</article>
+                    <article class="secondary">Настроить клиент</article>
+                  </div>
+                  <article class="secondary locked">Обычная no-session пауза выглядит приглушённо, без красных повторяющихся unavailable alerts.</article>
+                </section>
+                <aside class="status" aria-label="Player status rail">
+                  <h2>Сводка книги</h2>
+                  <p class="muted">Слой книги · Герой и душа · Сохранение · Ожидание ГМа.</p>
+                  <div class="checks">
+                    <div class="check">old React UI/UX reference only: central launcher, tabs/sections, polished cards, save/config actions.</div>
+                    <div class="check">no technical hero copy</div>
+                    <div class="check">no repeated unavailable alerts</div>
+                    <div class="check">no emoji route icons</div>
+                  </div>
+                </aside>
+              </div>
+            </section>
+            <section class="frame mobile-shell" data-viewport="mobile" aria-label="Mobile first-screen visual QA">
+              <div class="mobile-nav">
+                <p class="brand">Книга Вечности: Перерождение</p>
+                <h1>Открыть книгу</h1>
+                <article class="primary">Primary CTA: Продолжить главу</article>
+                <p class="muted">{{WebUtility.HtmlEncode(primarySequence)}}</p>
+                <div class="route-list">
+        {{RenderRouteCards(primaryRoutes)}}
+                </div>
+                <div class="advanced">advanced debug secondary</div>
+              </div>
+            </section>
+          </main>
+        </body>
+        </html>
+        """;
+    }
 
     private static string BuildRebornPanelsArtifact(string appSource)
     {

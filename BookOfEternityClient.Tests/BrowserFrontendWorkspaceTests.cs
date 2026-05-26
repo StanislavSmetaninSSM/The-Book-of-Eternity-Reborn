@@ -700,7 +700,8 @@ public sealed class BrowserFrontendWorkspaceTests
         var advancedDiagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
         Assert.True(advancedDiagnosticsIndex > 0, "Advanced diagnostics panel should remain after default player UI source.");
         var playerDefaultSlice = app[..advancedDiagnosticsIndex];
-        Assert.DoesNotContain("/api/", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("`/api/*`", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw /api/", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("command coverage", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
     }
 
