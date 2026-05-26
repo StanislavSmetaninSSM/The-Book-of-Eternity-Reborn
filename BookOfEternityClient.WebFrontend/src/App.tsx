@@ -787,7 +787,7 @@ export default function App() {
           <div className="hero-status" aria-label="Текущее царство">
             <span className="theme-icon" aria-hidden="true">{realmTheme.icon}</span>
             <strong>{realmTheme.label}</strong>
-            <span>{gameScreen ? formatTurnStateTitle(gameScreen.turnState) : menu?.session.validationLabel ?? 'Книга ждёт открытия'}</span>
+            <span>{formatHeroStatusLabel(gameScreen, menu)}</span>
           </div>
         </div>
       </section>
@@ -898,7 +898,7 @@ function PlayerStatusSidebar({
         {sidebarMenuFailure ? (
           <p className="warning-text">{sidebarMenuFailure}</p>
         ) : (
-          <p className="muted">{menu ? toPlayerFacingText(menu.session.validationLabel, 'Книга ждёт открытия') : 'Книга ждёт открытия.'}</p>
+          <p className="muted">{formatSidebarLayerStatus(menu)}</p>
         )}
       </StatusSummaryCard>
 
@@ -939,7 +939,7 @@ function PlayerStatusSidebar({
         )}
       </StatusSummaryCard>
 
-      <StatusSummaryCard title="Ожидание ГМа" eyebrow="ход" attention={turnNeedsAttention}>
+      <StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure)} eyebrow="ход" attention={turnNeedsAttention}>
         {sidebarGameFailure ? (
           <>
             <p className="warning-text">{sidebarGameFailure}</p>
@@ -1021,7 +1021,44 @@ function getSidebarEmptyGameMessage(readyState: Extract<BrowserShellState, { sta
   return 'Книга ждёт открытия главы.';
 }
 
+function formatHeroStatusLabel(gameScreen: BrowserGameScreenDto | null, menu: BrowserMainMenuDto | null): string {
+  if (gameScreen) {
+    return formatTurnStateTitle(gameScreen.turnState);
+  }
+
+  if (menu && !menu.session.canContinue) {
+    return 'Глава ещё не открыта';
+  }
+
+  return 'Книга ждёт открытия';
+}
+
+function formatSidebarLayerStatus(menu: BrowserMainMenuDto | null): string {
+  if (!menu) {
+    return 'Книга ждёт открытия.';
+  }
+
+  if (!menu.session.canContinue) {
+    return 'Откройте новую главу или загрузите сохранение, чтобы увидеть состояние мира.';
+  }
+
+  const validationLabel = menu.session.validationLabel;
+  return toPlayerFacingText(validationLabel, 'Книга ждёт открытия');
+}
+
+function getTurnSidebarTitle(hasGame: boolean, sidebarGameFailure: string | null): string {
+  if (!hasGame && !sidebarGameFailure) {
+    return 'Ход ещё не начат';
+  }
+
+  return 'Ожидание ГМа';
+}
+
 function formatSidebarSessionSummary(session: LocalWebUiSessionStatus | null, menu: BrowserMainMenuDto | null): string {
+  if (menu && !menu.session.canContinue && !menu.session.hasReadableSoul) {
+    return 'Активной главы пока нет — начните новую или загрузите сохранение.';
+  }
+
   if (session?.gameSessionExists) {
     return session.canStartBrowserWrite
       ? 'Локальная партия найдена, запись следующего хода доступна.'

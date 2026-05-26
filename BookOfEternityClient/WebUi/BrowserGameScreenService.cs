@@ -33,6 +33,12 @@ public sealed class BrowserGameScreenService
         await _stateManager.RefreshGameStateAsync();
         var state = _stateManager.CurrentState;
         var lifecycle = await _lifecycle.BuildDashboardAsync();
+        if (!HasPlayableSession(lifecycle))
+        {
+            throw new BrowserNoActiveSessionException(
+                "game_session пока не содержит активную главу. Начните новую главу или загрузите сохранение из главного меню.");
+        }
+
         var qte = await _qte.BuildReadOnlyStateAsync();
         var narrative = await BuildNarrativeAsync(state);
         var media = await BuildMediaAsync(narrative);
@@ -76,6 +82,20 @@ public sealed class BrowserGameScreenService
                 IsInAfterlifeRealm: state.IsInAfterlifeRealm,
                 CanReenterShiningAbode: state.CanReenterShiningAbode));
     }
+
+    private static bool HasPlayableSession(BrowserLifecycleDashboardDto lifecycle)
+    {
+        if (!lifecycle.Session.GameSessionExists)
+            return false;
+
+        if (lifecycle.Soul.IsReadable)
+            return true;
+
+        return !IsExpectedEmptySoulState(lifecycle.Soul.ReadError);
+    }
+
+    private static bool IsExpectedEmptySoulState(string readError) =>
+        readError.Contains("отсутствует или пуст", StringComparison.OrdinalIgnoreCase);
 
     private async Task<BrowserGameScreenNarrativeDto> BuildNarrativeAsync(AggregatedGameState state)
     {
@@ -204,6 +224,13 @@ public sealed class BrowserGameScreenService
         }
 
         return string.Empty;
+    }
+}
+
+public sealed class BrowserNoActiveSessionException : InvalidOperationException
+{
+    public BrowserNoActiveSessionException(string message) : base(message)
+    {
     }
 }
 
