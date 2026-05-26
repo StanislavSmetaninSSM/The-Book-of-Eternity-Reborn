@@ -2972,7 +2972,8 @@ function AudioSettingsPanel({
         <h2 id="browser-audio-title">Аудио браузерного клиента</h2>
         <p>{toPlayerFacingText(audio.autoplayGuidance, 'Музыка запускается только после вашего нажатия.')}</p>
         <p className="muted">{formatSidebarAudioSummary(audio)}</p>
-        {audio.missingAssetsMessage && <p className="warning-text">{toPlayerFacingText(audio.missingAssetsMessage, 'Локальные аудиофайлы не найдены.')}</p>}
+        {!hasAnyAudioAsset(audio) && !advancedEnabled && <p className="muted">Локальный аудиопакет не установлен. Игра продолжается без музыки.</p>}
+        {advancedEnabled && audio.missingAssetsMessage && <p className="warning-text">{toPlayerFacingText(audio.missingAssetsMessage, 'Локальные аудиофайлы не найдены.')}</p>}
       </div>
 
       <div className="split-grid">
@@ -3032,21 +3033,29 @@ function AudioSettingsPanel({
         </label>
       </div>
 
-      <div className="audio-catalog" aria-label="Доступные плейлисты и подсказки">
-        {audio.playlists.map((item) => (
-          <span key={item.id} className={item.available ? 'status-pill' : 'status-pill is-muted'}>
-            {toPlayerFacingText(item.label, 'Плейлист')}: {item.available ? `${item.tracks.length} трек(ов)` : 'файлы не найдены'}
-          </span>
-        ))}
-        {audio.cues.map((cue) => (
-          <span key={cue.id} className={cue.available ? 'status-pill' : 'status-pill is-muted'}>
-            {toPlayerFacingText(cue.label, 'Звуковая подсказка')}: {cue.available ? 'готово' : 'нет файла'}
-          </span>
-        ))}
-      </div>
+      {advancedEnabled ? (
+        <div className="audio-catalog" aria-label="Доступные плейлисты и подсказки">
+          {audio.playlists.map((item) => (
+            <span key={item.id} className={item.available ? 'status-pill' : 'status-pill is-muted'}>
+              {toPlayerFacingText(item.label, 'Плейлист')}: {item.available ? `${item.tracks.length} трек(ов)` : 'файлы не найдены'}
+            </span>
+          ))}
+          {audio.cues.map((cue) => (
+            <span key={cue.id} className={cue.available ? 'status-pill' : 'status-pill is-muted'}>
+              {toPlayerFacingText(cue.label, 'Звуковая подсказка')}: {cue.available ? 'готово' : 'нет файла'}
+            </span>
+          ))}
+        </div>
+      ) : !hasAnyAudioAsset(audio) ? (
+        <p className="muted">Локальный аудиопакет не найден. Игра работает без музыки и звуковых подсказок. Подробности доступны в расширенном режиме.</p>
+      ) : null}
       {notice && <p className="composer-notice">{notice}</p>}
     </section>
   );
+}
+
+function hasAnyAudioAsset(audio: BrowserAudioSettingsDto): boolean {
+  return audio.playlists.some((playlist) => playlist.available) || audio.cues.some((cue) => cue.available);
 }
 
 function selectPreferredPlaylist(audio: BrowserAudioSettingsDto, activeRoute: RouteId): BrowserAudioPlaylistDto | null {
