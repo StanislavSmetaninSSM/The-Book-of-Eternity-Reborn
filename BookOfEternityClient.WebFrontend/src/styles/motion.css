@@ -1,7 +1,7 @@
 @keyframes panel-rise {
   from {
     opacity: 0;
-    transform: translateY(0.6rem);
+    transform: translateY(0.5rem);
   }
   to {
     opacity: 1;
@@ -14,16 +14,34 @@
     box-shadow: var(--shadow-panel);
   }
   50% {
-    box-shadow: var(--shadow-panel), 0 0 2rem color-mix(in srgb, var(--state-repair) 30%, transparent);
+    box-shadow: var(--shadow-panel), 0 0 1.6rem color-mix(in srgb, var(--state-repair) 22%, transparent);
   }
 }
 
 @keyframes qte-tension {
   0%, 100% {
-    border-color: color-mix(in srgb, var(--state-qte) 26%, rgba(255, 255, 255, 0.08));
+    border-color: color-mix(in srgb, var(--state-qte) 20%, rgba(255, 255, 255, 0.06));
   }
   50% {
-    border-color: color-mix(in srgb, var(--state-qte) 58%, rgba(255, 255, 255, 0.08));
+    border-color: color-mix(in srgb, var(--state-qte) 44%, rgba(255, 255, 255, 0.06));
+  }
+}
+
+@keyframes candle-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.88;
+  }
+}
+
+@keyframes rune-glow {
+  0%, 100% {
+    text-shadow: 0 0 0.4rem color-mix(in srgb, var(--color-gold) 20%, transparent);
+  }
+  50% {
+    text-shadow: 0 0 1rem color-mix(in srgb, var(--color-gold) 36%, transparent);
   }
 }
 
@@ -36,12 +54,16 @@
 }
 
 .shell-panel[data-panel='turn'] {
-  animation: panel-rise var(--motion-panel) both, waiting-pulse 3.2s ease-in-out infinite;
+  animation: panel-rise var(--motion-panel) both, waiting-pulse 3.6s ease-in-out infinite;
 }
 
 .route-card--media.is-active,
 .route-card--media:hover {
-  animation: qte-tension 2.4s ease-in-out infinite;
+  animation: qte-tension 2.8s ease-in-out infinite;
+}
+
+h1 {
+  animation: rune-glow 6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

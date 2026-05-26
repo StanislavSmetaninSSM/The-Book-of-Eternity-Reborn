@@ -441,6 +441,10 @@ function GameLauncher({
 
   return (
     <article className="game-launcher" aria-labelledby="browser-launcher-title">
+      {/* Background art overlay (#759) */}
+      <div className="launcher-art-bg" aria-hidden="true">
+        <img src="/main-menu-bg.webp" alt="" loading="lazy" />
+      </div>
       <div className="launcher-window">
         <div className="launcher-copy">
           <p className="panel-eyebrow">главная книга</p>
@@ -700,12 +704,21 @@ function launcherActionDescription(menu: BrowserMainMenuDto, mode: LauncherMode)
     : toPlayerFacingText(action.disabledReason || action.description, fallback);
 }
 
+type ComposerMode = 'prose' | 'actions';
+
+type GameSurfaceState =
+  | { kind: 'none' }
+  | { kind: 'action-result'; actionId: string; result: BrowserApiResult<ExplorerCommandResult>; promptAnswers: PromptAnswers; isSubmitting: boolean };
+
 export default function App() {
   const [shellState, setShellState] = useState<BrowserShellState>({ status: 'loading' });
   const [activeRoute, setActiveRoute] = useState<RouteId>('home');
   const [advancedEnabled, setAdvancedEnabled] = useState(false);
   const [composerText, setComposerText] = useState('');
   const [composerNotice, setComposerNotice] = useState('');
+  const [composerMode, setComposerMode] = useState<ComposerMode>('prose');
+  const [actionSearch, setActionSearch] = useState('');
+  const [gameSurface, setGameSurface] = useState<GameSurfaceState>({ kind: 'none' });
 
   const loadBrowserState = useCallback(async () => {
     setShellState({ status: 'loading' });
@@ -765,11 +778,27 @@ export default function App() {
     const normalized = composerText.trim();
 
     if (normalized.startsWith('/')) {
-      setComposerNotice('Особые команды не выполняются из основного поля. Откройте «Расширенный режим» отдельной кнопкой, если хотите перенести команду в дополнительную панель и подтвердить её там.');
+      setComposerNotice('Особые команды не выполняются из основного поля. Откройте режим действий, чтобы выбрать команду из каталога.');
       return;
     }
 
     setComposerNotice('Художественный ввод подготовлен. Ход будет записан при следующем обновлении книги.');
+  }
+
+  function openActionSurface(actionId: string, result: BrowserApiResult<ExplorerCommandResult>) {
+    const promptAnswers = isSuccess(result) ? buildDefaultPromptAnswers(result.data.prompts) : {};
+    setGameSurface({ kind: 'action-result', actionId, result, promptAnswers, isSubmitting: false });
+  }
+
+  function closeActionSurface() {
+    setGameSurface({ kind: 'none' });
+  }
+
+  async function executeAction(action: BrowserPlayerCommandActionDto) {
+    if (!action.enabled) return;
+    const rawResult = await browserApi.executeExplorerCommand({ command: action.advancedCommand, ownerLabel: 'Палитра действий' });
+    const result = advancedEnabled ? rawResult : sanitizePlayerDefaultCommandResult(rawResult);
+    openActionSurface(action.id, result);
   }
 
   return (
@@ -807,7 +836,7 @@ export default function App() {
           {shellState.status === 'error' && (
             <ErrorNotice title="Состояние клиента недоступно" failure={shellState} advancedEnabled={advancedEnabled} />
           )}
-          {readyState && renderActiveRoute(activeRoute, readyState, composerText, setComposerText, composerNotice, submitComposer, advancedEnabled, setActiveRoute, loadBrowserState)}
+          {readyState && renderActiveRoute(activeRoute, readyState, composerText, setComposerText, composerNotice, submitComposer, advancedEnabled, setActiveRoute, loadBrowserState, composerMode, setComposerMode, actionSearch, setActionSearch, gameSurface, setGameSurface, closeActionSurface, executeAction)}
         </div>
 
         <aside className="workspace-sidebar" aria-label="Сводка книги">
@@ -1120,17 +1149,25 @@ function renderActiveRoute(
   submitComposer: (event: FormEvent<HTMLFormElement>) => void,
   advancedEnabled: boolean,
   setActiveRoute: (route: RouteId) => void,
-  loadBrowserState: () => Promise<void>
+  loadBrowserState: () => Promise<void>,
+  composerMode: ComposerMode,
+  setComposerMode: (mode: ComposerMode) => void,
+  actionSearch: string,
+  setActionSearch: (value: string) => void,
+  gameSurface: GameSurfaceState,
+  setGameSurface: (surface: GameSurfaceState) => void,
+  closeActionSurface: () => void,
+  executeAction: (action: BrowserPlayerCommandActionDto) => void
 ) {
   switch (activeRoute) {
     case 'home':
       return <HomeRoute state={state} advancedEnabled={advancedEnabled} onActiveRouteChange={setActiveRoute} onStateRefresh={loadBrowserState} />;
     case 'game':
-      return <GameRoute state={state} composerText={composerText} setComposerText={setComposerText} composerNotice={composerNotice} submitComposer={submitComposer} advancedEnabled={advancedEnabled} />;
+      return <GameRoute state={state} composerText={composerText} setComposerText={setComposerText} composerNotice={composerNotice} submitComposer={submitComposer} advancedEnabled={advancedEnabled} composerMode={composerMode} setComposerMode={setComposerMode} actionSearch={actionSearch} setActionSearch={setActionSearch} gameSurface={gameSurface} setGameSurface={setGameSurface} closeActionSurface={closeActionSurface} executeAction={executeAction} />;
     case 'soul':
       return <SoulRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'world':
-      return <WorldRoute state={state} advancedEnabled={advancedEnabled} />;
+      return <WorldRoute state={state} advancedEnabled={advancedEnabled} executeAction={executeAction} />;
     case 'journal':
       return <JournalRoute state={state} advancedEnabled={advancedEnabled} />;
     case 'inventory':
@@ -1174,7 +1211,15 @@ function GameRoute({
   setComposerText,
   composerNotice,
   submitComposer,
-  advancedEnabled
+  advancedEnabled,
+  composerMode,
+  setComposerMode,
+  actionSearch,
+  setActionSearch,
+  gameSurface,
+  setGameSurface,
+  closeActionSurface,
+  executeAction
 }: {
   state: Extract<BrowserShellState, { status: 'ready' }>;
   composerText: string;
@@ -1182,6 +1227,14 @@ function GameRoute({
   composerNotice: string;
   submitComposer: (event: FormEvent<HTMLFormElement>) => void;
   advancedEnabled: boolean;
+  composerMode: ComposerMode;
+  setComposerMode: (mode: ComposerMode) => void;
+  actionSearch: string;
+  setActionSearch: (value: string) => void;
+  gameSurface: GameSurfaceState;
+  setGameSurface: (surface: GameSurfaceState) => void;
+  closeActionSurface: () => void;
+  executeAction: (action: BrowserPlayerCommandActionDto) => void;
 }) {
   if (!isSuccess(state.game)) {
     return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Игровой экран требует внимания" empty={{
@@ -1221,22 +1274,64 @@ function GameRoute({
         </ShellPanel>
       </div>
 
-      <form className="composer" onSubmit={submitComposer}>
-        <label htmlFor="player-action">Основной художественный ввод</label>
-        <textarea
-          id="player-action"
-          name="player-action"
-          rows={4}
-          value={composerText}
-          onChange={(event) => setComposerText(event.currentTarget.value)}
-          placeholder={getComposerPlaceholder(game.actionComposer)}
-          disabled={!game.actionComposer.canSubmit}
+      {/* Central composer with mode toggle (#755) */}
+      <div className="composer">
+        <div className="composer-toggle-group">
+          <button
+            type="button"
+            className={`composer-mode-toggle${composerMode === 'prose' ? ' is-active' : ''}`}
+            onClick={() => setComposerMode('prose')}
+            aria-pressed={composerMode === 'prose'}
+          >
+            Написать действие
+          </button>
+          <button
+            type="button"
+            className={`composer-mode-toggle${composerMode === 'actions' ? ' is-active' : ''}`}
+            onClick={() => setComposerMode('actions')}
+            aria-pressed={composerMode === 'actions'}
+          >
+            Каталог действий
+          </button>
+        </div>
+
+        {composerMode === 'prose' ? (
+          <form onSubmit={submitComposer}>
+            <label htmlFor="player-action">Что ты хочешь сделать?</label>
+            <textarea
+              id="player-action"
+              name="player-action"
+              rows={3}
+              value={composerText}
+              onChange={(event) => setComposerText(event.currentTarget.value)}
+              placeholder={getComposerPlaceholder(game.actionComposer)}
+              disabled={!game.actionComposer.canSubmit}
+            />
+            <p className="muted">{getComposerGuidance(game.actionComposer)}</p>
+            {!game.actionComposer.canSubmit && <p className="warning-text">{getComposerDisabledReason(game.actionComposer)}</p>}
+            <button type="submit" disabled={!composerText.trim()}>Подготовить действие</button>
+            {composerNotice && <p className="composer-notice">{composerNotice}</p>}
+          </form>
+        ) : (
+          <ActionPalette
+            menu={game.actionMenu}
+            search={actionSearch}
+            onSearchChange={setActionSearch}
+            onActionSelect={executeAction}
+            advancedEnabled={advancedEnabled}
+          />
+        )}
+      </div>
+
+      {/* Polished game surface for action results (#757) */}
+      {gameSurface.kind === 'action-result' && (
+        <GameSurfacePanel
+          surface={gameSurface}
+          setSurface={setGameSurface}
+          onClose={closeActionSurface}
+          advancedEnabled={advancedEnabled}
         />
-        <p className="muted">{getComposerGuidance(game.actionComposer)}</p>
-        {!game.actionComposer.canSubmit && <p className="warning-text">{getComposerDisabledReason(game.actionComposer)}</p>}
-        <button type="submit" disabled={!composerText.trim()}>Подготовить действие</button>
-        {composerNotice && <p className="composer-notice">{composerNotice}</p>}
-      </form>
+      )}
 
       {advancedEnabled && (
         <section className="summary-card" aria-label="Жизненный цикл хода">
@@ -1350,7 +1445,9 @@ function SoulRoute({ state, advancedEnabled }: { state: Extract<BrowserShellStat
   );
 }
 
-function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
+function WorldRoute({ state, advancedEnabled, executeAction }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean; executeAction: (action: BrowserPlayerCommandActionDto) => void }) {
+  const [catalogOpen, setCatalogOpen] = useState(false);
+
   if (!isSuccess(state.game)) {
     return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Мир требует внимания" empty={{
       title: 'Мир ждёт первой записи',
@@ -1360,6 +1457,9 @@ function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
   }
 
   const game = state.game.data;
+  const allSections = game.actionMenu.sections.filter((section) => section.playerDefault && section.actions.length > 0);
+  const allActions = allSections.flatMap((section) => section.actions);
+  const contextActions = allActions.filter((action) => action.enabled).slice(0, 5);
 
   return (
     <ShellPanel title="Мир" eyebrow="карта, журнал и действия">
@@ -1403,8 +1503,44 @@ function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
         <div className="summary-card"><h2>Журнал</h2><p>Квесты, архив и история разворачиваются в игровых разделах без знания ручных команд.</p></div>
         <div className="summary-card"><h2>Фракции</h2><p>Панели фракций и стражей используют общие игровые данные и не дублируют правила.</p></div>
       </div>
+
+      {/* Context shortlist — immediate actions for current scene (#744) */}
+      {contextActions.length > 0 && (
+        <section className="world-context-shortlist" aria-label="Доступные действия">
+          <p className="panel-eyebrow">сейчас доступно</p>
+          <h3>Действия текущей сцены</h3>
+          <div className="shortlist-actions">
+            {contextActions.map((action) => (
+              <button
+                key={action.id}
+                type="button"
+                className="shortlist-action"
+                disabled={!action.enabled}
+                onClick={() => executeAction(action)}
+              >
+                <strong>{toPlayerFacingText(action.label, 'Игровое действие')}</strong>
+                <small>{toPlayerFacingText(action.description, 'Действие доступно для текущей главы.')}</small>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <RebornSystemsPanel game={game} />
-      <ActionMenu menu={game.actionMenu} advancedEnabled={advancedEnabled} />
+
+      {/* Collapsible full catalog (#744) */}
+      <button
+        type="button"
+        className={`action-catalog-toggle${catalogOpen ? ' is-open' : ''}`}
+        onClick={() => setCatalogOpen((prev) => !prev)}
+        aria-expanded={catalogOpen}
+      >
+        <span className="toggle-arrow">&#9654;</span>
+        <span>Полный каталог действий{allActions.length > 0 ? ` (${allActions.length})` : ''}</span>
+      </button>
+      <div className={`action-catalog-body${catalogOpen ? ' is-open' : ''}`}>
+        <ActionMenu menu={game.actionMenu} advancedEnabled={advancedEnabled} />
+      </div>
     </ShellPanel>
   );
 }
@@ -1741,6 +1877,202 @@ function matchesActionSectionOrAction(
   return normalizedMatchers.some((matcher) => haystack.includes(matcher));
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   ACTION PALETTE — Searchable player-facing command mode (#756)
+   ═══════════════════════════════════════════════════════════════════ */
+
+const actionCategoryMatchers: Array<{ key: string; label: string; matchers: string[] }> = [
+  { key: 'travel', label: 'Путешествие / Карта', matchers: ['travel', 'путеш', 'map', 'карт', 'location', 'локац', 'move', 'переход', 'region', 'област'] },
+  { key: 'character', label: 'Персонаж / Душа', matchers: ['character', 'персон', 'soul', 'душ', 'health', 'здоров', 'status', 'сост', 'condition', 'состояни'] },
+  { key: 'inventory', label: 'Инвентарь / Предметы', matchers: ['inventory', 'инвент', 'item', 'предм', 'craft', 'ремес', 'equip', 'экип', 'storage', 'хранил'] },
+  { key: 'journal', label: 'Журнал / Задания', matchers: ['quest', 'квест', 'journal', 'журн', 'archive', 'архив', 'chronicle', 'хроник', 'story', 'истор'] },
+  { key: 'faction', label: 'Фракции / Отношения', matchers: ['faction', 'фракц', 'guardian', 'хранител', 'reputation', 'репутац', 'relation', 'отношен'] },
+  { key: 'afterlife', label: 'Посмертие / Обитель', matchers: ['afterlife', 'посмерт', 'shining', 'сияющ', 'abode', 'обител', 'chaos', 'хаос', 'radiance', 'сиян'] },
+  { key: 'combat', label: 'Бой / Действия', matchers: ['combat', 'бой', 'fight', 'сраж', 'attack', 'атак', 'defend', 'защит', 'action', 'действ'] },
+  { key: 'save', label: 'Сохранение / Настройки', matchers: ['save', 'сохран', 'load', 'загруз', 'setting', 'настр', 'option', 'параметр'] }
+];
+
+function ActionPalette({
+  menu,
+  search,
+  onSearchChange,
+  onActionSelect,
+  advancedEnabled
+}: {
+  menu: BrowserPlayerCommandMenuDto;
+  search: string;
+  onSearchChange: (value: string) => void;
+  onActionSelect: (action: BrowserPlayerCommandActionDto) => void;
+  advancedEnabled: boolean;
+}) {
+  const allSections = menu.sections.filter((section) => section.playerDefault && section.actions.length > 0);
+  const allActions = allSections.flatMap((section) => section.actions);
+  const playerActions = allActions.filter((action) => action.playerDefault || advancedEnabled);
+
+  const normalizedSearch = search.trim().toLocaleLowerCase('ru-RU');
+  const filteredActions = normalizedSearch
+    ? playerActions.filter((action) => {
+        const haystack = [action.id, action.label, action.description, action.formLabel, action.formPrompt].join(' ').toLocaleLowerCase('ru-RU');
+        return haystack.includes(normalizedSearch);
+      })
+    : playerActions;
+
+  const categorized = actionCategoryMatchers.map((category) => {
+    const categoryActions = filteredActions.filter((action) => {
+      const haystack = [action.id, action.label, action.description, action.sectionId, action.formLabel].join(' ').toLocaleLowerCase('ru-RU');
+      return category.matchers.some((matcher) => haystack.includes(matcher));
+    });
+    return { ...category, actions: categoryActions };
+  }).filter((category) => category.actions.length > 0);
+
+  const uncategorized = filteredActions.filter((action) => {
+    const haystack = [action.id, action.label, action.description, action.sectionId, action.formLabel].join(' ').toLocaleLowerCase('ru-RU');
+    return !actionCategoryMatchers.some((category) =>
+      category.matchers.some((matcher) => haystack.includes(matcher))
+    );
+  });
+
+  return (
+    <section className="action-palette" aria-label="Каталог действий">
+      <div className="action-palette-header">
+        <p className="panel-eyebrow">каталог действий</p>
+        <h3>Выберите действие</h3>
+        <p className="muted">Найдите нужное действие по названию или выберите из категорий.</p>
+      </div>
+      <input
+        type="search"
+        className="action-palette-search"
+        placeholder="Поиск действий…"
+        value={search}
+        onChange={(event) => onSearchChange(event.currentTarget.value)}
+        aria-label="Поиск действий"
+      />
+      <p className="action-palette-count">Найдено: {filteredActions.length} из {playerActions.length}</p>
+
+      {categorized.length === 0 && uncategorized.length === 0 && (
+        <p className="action-palette-empty">Действий не найдено. Попробуйте другой запрос или подождите, пока книга подготовит каталог.</p>
+      )}
+
+      {categorized.map((category) => (
+        <div key={category.key} className="action-palette-category">
+          <p className="action-palette-category-title">{category.label}</p>
+          <ul className="action-palette-list">
+            {category.actions.map((action) => (
+              <li key={action.id}>
+                <button
+                  type="button"
+                  className={`action-palette-item${!action.enabled ? ' is-disabled' : ''}`}
+                  disabled={!action.enabled}
+                  onClick={() => onActionSelect(action)}
+                >
+                  <span><strong>{toPlayerFacingText(action.label, 'Игровое действие')}</strong></span>
+                  <small>{toPlayerFacingText(action.realmAvailability, '')}</small>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+
+      {uncategorized.length > 0 && (
+        <div className="action-palette-category">
+          <p className="action-palette-category-title">Другие действия</p>
+          <ul className="action-palette-list">
+            {uncategorized.map((action) => (
+              <li key={action.id}>
+                <button
+                  type="button"
+                  className={`action-palette-item${!action.enabled ? ' is-disabled' : ''}`}
+                  disabled={!action.enabled}
+                  onClick={() => onActionSelect(action)}
+                >
+                  <span><strong>{toPlayerFacingText(action.label, 'Игровое действие')}</strong></span>
+                  <small>{toPlayerFacingText(action.realmAvailability, '')}</small>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   GAME SURFACE — Polished action result panel (#757)
+   ═══════════════════════════════════════════════════════════════════ */
+
+function GameSurfacePanel({
+  surface,
+  setSurface,
+  onClose,
+  advancedEnabled
+}: {
+  surface: Extract<GameSurfaceState, { kind: 'action-result' }>;
+  setSurface: (surface: GameSurfaceState) => void;
+  onClose: () => void;
+  advancedEnabled: boolean;
+}) {
+  const { result, promptAnswers, isSubmitting } = surface;
+  const surfaceRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    surfaceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, []);
+
+  async function submitPromptAnswers(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!isSuccess(result) || !result.data.interactiveSession) return;
+
+    setSurface({ ...surface, isSubmitting: true });
+    const session = result.data.interactiveSession;
+    const rawResult = await browserApi.submitPromptSession({
+      sessionId: session.sessionId,
+      ownerId: session.ownerId,
+      answers: promptAnswers
+    });
+    const newResult = advancedEnabled ? rawResult : sanitizePlayerDefaultCommandResult(rawResult);
+    const newAnswers = isSuccess(newResult) ? buildDefaultPromptAnswers(newResult.data.prompts) : promptAnswers;
+    setSurface({ ...surface, kind: 'action-result', actionId: surface.actionId, result: newResult, promptAnswers: newAnswers, isSubmitting: false });
+  }
+
+  return (
+    <div className="game-surface" ref={surfaceRef} aria-label="Результат действия">
+      <div className="game-surface-header">
+        <p className="panel-eyebrow">результат действия</p>
+        <h3>{isSuccess(result) ? commandStateLabel(result.data.state) : 'Действие недоступно'}</h3>
+      </div>
+      <div className="game-surface-body">
+        {!isSuccess(result) ? (
+          <p className="warning-text">{toPlayerFacingText(result.playerMessage, 'Игровое действие сейчас недоступно.')}</p>
+        ) : (
+          <>
+            {result.data.notifications.map((notification, index) => (
+              <div key={`notif-${index}`} className="summary-card">
+                <strong>{toPlayerFacingText(notification.title, 'Уведомление')}</strong>
+                <p>{toPlayerFacingText(notification.message, 'Игровое действие изменило состояние.')}</p>
+              </div>
+            ))}
+            {result.data.blocks.map((block, index) => (
+              <div key={`block-${index}`}>{renderCommandBlock(block)}</div>
+            ))}
+            {result.data.interactiveSession && result.data.prompts.length > 0 && (
+              <form className="prompt-form" onSubmit={submitPromptAnswers}>
+                <h4>Заполните игровую форму</h4>
+                {result.data.prompts.map((prompt) => renderPromptControl(prompt, promptAnswers[prompt.id], (promptId, value) => {
+                  setSurface({ ...surface, promptAnswers: { ...promptAnswers, [promptId]: value } });
+                }))}
+                <button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Отправляем…' : 'Отправить форму'}</button>
+              </form>
+            )}
+          </>
+        )}
+      </div>
+      <button type="button" className="game-surface-close" onClick={onClose}>Закрыть</button>
+    </div>
+  );
+}
+
 function ActionMenu({ menu, advancedEnabled }: { menu: BrowserPlayerCommandMenuDto; advancedEnabled: boolean }) {
   const sections = menu.sections.filter((section) => section.playerDefault && section.actions.length > 0);
 
@@ -1860,7 +2192,7 @@ function ActionCard({ action, advancedEnabled }: { action: BrowserPlayerCommandA
   }
 
   return (
-    <article className={action.enabled ? 'action-card' : 'action-card is-disabled'}>
+    <article className={`${commandResult ? 'action-card is-focused' : action.enabled ? 'action-card' : 'action-card is-disabled'}`}>
       <header>
         <h4>{toPlayerFacingText(action.label, 'Игровое действие')}</h4>
         <span className="availability-pill">{toPlayerFacingText(action.realmAvailability, 'Доступность уточняется.')}</span>
