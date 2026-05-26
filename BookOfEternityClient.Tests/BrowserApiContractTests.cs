@@ -195,10 +195,15 @@ public sealed class BrowserApiContractTests
         Assert.Contains(screen.Media.Map.Layers, layer => layer.Id == "world" && layer.IsDefault);
         Assert.Contains(screen.Media.Map.ZLevels, level => level.Z == 0);
         Assert.Contains(screen.Media.Map.Nodes, node => node.IsCurrent);
-        Assert.Contains("\"media\"", json, StringComparison.Ordinal);
+        var narrativeIndex = json.IndexOf("\"narrative\"", StringComparison.Ordinal);
+        var mediaIndex = json.IndexOf("\"media\"", StringComparison.Ordinal);
+        var afterlifeIndex = json.IndexOf("\"afterlife\"", StringComparison.Ordinal);
+        Assert.True(narrativeIndex >= 0, "BrowserGameScreenDto must serialize narrative for the game screen.");
+        Assert.True(mediaIndex >= 0, "BrowserGameScreenDto must serialize media for the game screen.");
+        Assert.True(afterlifeIndex >= 0, "BrowserGameScreenDto must serialize afterlife for the game screen.");
         Assert.True(
-            json.IndexOf("\"media\"", StringComparison.Ordinal) < json.IndexOf("\"qte\"", StringComparison.Ordinal),
-            "BrowserGameScreenDto must serialize media before qte so frontend fixtures evolve predictably.");
+            narrativeIndex < mediaIndex && mediaIndex < afterlifeIndex,
+            "BrowserGameScreenDto must serialize media between narrative and afterlife so frontend fixtures evolve predictably.");
     }
 
     [Fact]
