@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { browserApi, browserApiContractSummary } from './api/client';
 import { DetailSurfaceCard } from './components/DetailSurface';
+import { sanitizePlayerDefaultCommandResult } from './playerFacingCommandResult';
 import type {
   BrowserApiFailure,
   BrowserApiResult,
@@ -180,7 +181,7 @@ const launcherModeDetails: Record<LauncherMode, { label: string; description: st
   },
   'new-game': {
     label: 'Начать новую главу',
-    description: 'Подготовить новую историю через управляемую форму браузера.'
+    description: 'Открыть подготовку новой главы, когда локальная книга разрешает этот шаг.'
   },
   settings: {
     label: 'Настроить клиент',
@@ -416,16 +417,7 @@ function GameLauncher({
         );
       }
       case 'new-game':
-        return (
-          <section className="launcher-mode-panel" aria-label="Новая глава">
-            <h3>Начать новую главу</h3>
-            <p>{modeDescription}</p>
-            <p className="muted">
-              Управляемая браузерная форма будет использовать существующий локальный поток подготовки новой игры; браузер не добавляет отдельные игровые правила.
-            </p>
-            {!modeAction?.enabled && <p className="warning-text">{launcherActionDescription(menu, 'new-game')}</p>}
-          </section>
-        );
+        return <NewChapterStartPanel modeAction={modeAction} modeDescription={modeDescription} />;
       case 'settings':
         return (
           <section className="launcher-mode-panel" aria-label="Настройки клиента">
@@ -514,6 +506,139 @@ function GameLauncher({
       </div>
     </article>
   );
+}
+
+function NewChapterStartPanel({
+  modeAction,
+  modeDescription
+}: {
+  modeAction: BrowserMainMenuDto['actions'][number] | undefined;
+  modeDescription: string;
+}) {
+  const [notice, setNotice] = useState('');
+  const [newChapterResult, setNewChapterResult] = useState<BrowserApiResult<ExplorerCommandResult> | null>(null);
+  const [newChapterPromptAnswers, setNewChapterPromptAnswers] = useState<PromptAnswers>({});
+  const [submissionMode, setSubmissionMode] = useState<'opening' | 'submitting' | null>(null);
+  const isSubmitting = submissionMode !== null;
+  const isNewChapterMountedRef = useRef(true);
+  const startCommand = modeAction?.command.trim() ?? '';
+  const canOpenStartFlow = Boolean(modeAction?.enabled && startCommand);
+  const unavailableReason = !modeAction
+    ? 'Подготовка новой главы пока недоступна из браузерного меню. Продолжите текущую главу, загрузите сохранение или проверьте состояние локальной книги.'
+    : modeAction.enabled && !startCommand
+      ? 'Подготовка новой главы пока не подключила браузерную форму. Действие не обещает поля, пока локальное меню не отдаст безопасный поток.'
+      : launcherModeUnavailableReason(modeAction, modeDescription);
+
+  useEffect(() => {
+    return () => {
+      isNewChapterMountedRef.current = false;
+    };
+  }, []);
+
+  async function openNewChapterFlow() {
+    if (!canOpenStartFlow) {
+      setNotice(unavailableReason);
+      return;
+    }
+
+    setSubmissionMode('opening');
+    setNotice('Открываем форму новой главы…');
+    const result = sanitizeNewChapterCommandResult(
+      await browserApi.executeExplorerCommand({ command: startCommand, ownerLabel: 'Главная книга' })
+    );
+
+    if (!isNewChapterMountedRef.current) {
+      return;
+    }
+
+    setNewChapterResult(result);
+    if (isSuccess(result)) {
+      setNewChapterPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
+      setNotice(toNewChapterNotice(result.data));
+    } else {
+      setNotice(toPlayerFacingText(result.playerMessage, 'Подготовка новой главы сейчас недоступна.'));
+    }
+    setSubmissionMode(null);
+  }
+
+  async function submitNewChapterPromptAnswers(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!newChapterResult || !isSuccess(newChapterResult) || !newChapterResult.data.interactiveSession) {
+      return;
+    }
+
+    setSubmissionMode('submitting');
+    setNotice('Отправляем форму новой главы…');
+    const session = newChapterResult.data.interactiveSession;
+    const result = sanitizeNewChapterCommandResult(
+      await browserApi.submitPromptSession({
+        sessionId: session.sessionId,
+        ownerId: session.ownerId,
+        answers: newChapterPromptAnswers
+      })
+    );
+
+    if (!isNewChapterMountedRef.current) {
+      return;
+    }
+
+    setNewChapterResult(result);
+    if (isSuccess(result)) {
+      setNewChapterPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
+      setNotice(toNewChapterNotice(result.data));
+    } else {
+      setNotice(toPlayerFacingText(result.playerMessage, 'Форма новой главы сейчас недоступна.'));
+    }
+    setSubmissionMode(null);
+  }
+
+  return (
+    <section className="launcher-mode-panel launcher-new-chapter-flow" aria-label="Новая глава">
+      <h3>Начать новую главу</h3>
+      <p>{modeDescription}</p>
+      <p className="muted">
+        Форма новой главы открывается из существующего локального потока книги; браузер только показывает поля и отправляет ответы.
+      </p>
+      {!canOpenStartFlow && <p className="warning-text">{unavailableReason}</p>}
+      <button type="button" className="launcher-secondary-action" disabled={!canOpenStartFlow || isSubmitting} onClick={() => void openNewChapterFlow()}>
+        <strong>{submissionMode === 'opening' ? 'Открываем…' : submissionMode === 'submitting' ? 'Отправляем…' : 'Открыть форму новой главы'}</strong>
+        <span>{canOpenStartFlow ? 'Показать поля подготовки мира и отправку формы.' : 'Сейчас доступно только продолжение или загрузка.'}</span>
+      </button>
+      {notice && <p className="composer-notice">{notice}</p>}
+      {newChapterResult && (
+        <ActionCommandResult
+          result={newChapterResult}
+          promptAnswers={newChapterPromptAnswers}
+          onPromptAnswerChange={(promptId, value) => setNewChapterPromptAnswers((current) => ({ ...current, [promptId]: value }))}
+          onPromptSubmit={submitNewChapterPromptAnswers}
+          isSubmitting={isSubmitting}
+        />
+      )}
+    </section>
+  );
+}
+
+function launcherModeUnavailableReason(modeAction: BrowserMainMenuDto['actions'][number], fallback: string): string {
+  return toPlayerFacingText(modeAction.disabledReason || modeAction.description, fallback);
+}
+
+function toNewChapterNotice(result: ExplorerCommandResult): string {
+  if (result.state === 'RequiresInput') {
+    return 'Форма новой главы открыта. Заполните поля ниже и отправьте её из браузера.';
+  }
+
+  return toCommandNotice(result);
+}
+
+function sanitizeNewChapterCommandResult(result: BrowserApiResult<ExplorerCommandResult>): BrowserApiResult<ExplorerCommandResult> {
+  return sanitizePlayerDefaultCommandResult(result, {
+    blockedTextFallback: 'Служебные подробности подготовки скрыты в обычном режиме.',
+    blockTitleFallback: 'Сведения подготовки новой главы',
+    notificationTitleFallback: 'Форма новой главы',
+    notificationMessageFallback: 'Форма новой главы готова к заполнению.',
+    promptTextFallback: 'Заполните поле формы новой главы',
+    failureMessageFallback: 'Форма новой главы сейчас недоступна.'
+  });
 }
 
 function selectPrimaryLauncherAction(menu: BrowserMainMenuDto): LauncherPrimaryAction {

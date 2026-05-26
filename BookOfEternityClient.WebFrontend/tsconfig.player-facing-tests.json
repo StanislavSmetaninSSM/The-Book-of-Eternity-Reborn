@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "rootDir": ".",
+    "outDir": "../TestResults/browser-frontend-player-facing-tests"
+  },
+  "include": [
+    "src/api/contracts.ts",
+    "src/playerFacingCommandResult.ts",
+    "test/playerFacingCommandResult.test.ts"
+  ]
+}
