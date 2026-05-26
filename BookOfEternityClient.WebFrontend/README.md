@@ -51,6 +51,8 @@ Issue #727 refines the player navigation taxonomy. The primary chain is now `Г�
 
 The shell keeps default UI Russian-first and player-facing. Command IDs, `/api/*` endpoint details, lifecycle validation internals, command coverage, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player route failures should render `playerMessage`; `technicalDetails` belongs in the advanced diagnostics/details surface.
 
+Issue #688 makes the `Медиа` route consume `/api/game-screen.media` and render gallery images, the realm atlas, and QTE controls as player-facing sections. Raw endpoint diagnostics for media/QTE remain advanced-only.
+
 Future Browser Client tasks (#683-#689) should extend these route regions rather than recreating ad-hoc DOM manipulation:
 
 - main menu/session flow under `Главная`;

@@ -37,6 +37,9 @@ type BrowserShellState =
 
 type PromptAnswers = Record<string, JsonValue | undefined>;
 
+type QteGrade = 'success' | 'partial' | 'fail';
+type QteAction = NonNullable<NonNullable<BrowserGameScreenDto['qte']['activeScene']>['currentChapter']>['actions'][number];
+
 interface RouteCard {
   id: RouteId;
   kind: RouteKind;
@@ -2079,16 +2082,391 @@ function MediaRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
     }} />;
   }
 
-  const qte = state.game.data.qte;
+  const game = state.game.data;
+  const galleryCount = game.media.gallery.length;
 
   return (
-    <ShellPanel title="Медиа" eyebrow="галерея и быстрые сцены">
-      <div className="split-grid">
-        <div className="summary-card"><h2>Быстрые сцены</h2><p>{formatQteStateLabel(qte)}</p></div>
-        <div className="summary-card"><h2>Галерея</h2><p>Изображения и кинематик-сцены будут подключаться через безопасный локальный просмотрщик.</p></div>
+    <ShellPanel title="Медиа" eyebrow="галерея, атлас и быстрые сцены">
+      <p className="muted">Материалы текущей главы: {galleryCount > 0 ? `${galleryCount} образов в галерее` : 'галерея ждёт первые образы'}.</p>
+      <div className="split-grid three media-section-grid" aria-label={`Медиа текущей главы, изображений ${game.media.gallery.length}`}>
+        <QteScenePanel qte={game.qte} />
+        <MediaGalleryPanel media={game.media} />
+        <MediaAtlasPanel map={game.media.map} realmLabel={game.theme.label} />
       </div>
     </ShellPanel>
   );
+}
+
+function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
+  const [qteState, setQteState] = useState(qte);
+  const [selectedGrades, setSelectedGrades] = useState<Record<string, QteGrade>>({});
+  const [result, setResult] = useState<BrowserApiResult<BrowserGameScreenDto['qte']> | null>(null);
+  const [notice, setNotice] = useState('');
+  const [submitting, setSubmitting] = useState<string | null>(null);
+
+  useEffect(() => {
+    setQteState(qte);
+  }, [qte]);
+
+  async function resolveOffer(decision: 'accept' | 'decline') {
+    setSubmitting(`offer-${decision}`);
+    setNotice(decision === 'accept' ? 'Принимаем быструю сцену…' : 'Отклоняем быструю сцену…');
+
+    try {
+      const response = await browserApi.resolveQteOffer({ decision });
+      setResult(response);
+      if (isSuccess(response)) {
+        setQteState(response.data);
+        setNotice(formatQteStateLabel(response.data));
+      } else {
+        setNotice(toPlayerFacingText(response.playerMessage, 'Не удалось изменить быструю сцену.'));
+      }
+    } catch {
+      setNotice('Не удалось связаться с локальной книгой. Попробуйте ещё раз.');
+    } finally {
+      setSubmitting(null);
+    }
+  }
+
+  async function resolveAction(action: QteAction, gradeOverride?: QteGrade) {
+    const grade = action.requiresSubmittedGrade ? gradeOverride ?? selectedGrades[action.actionId] ?? qteGradeOptionsForAction(action)[0] ?? 'success' : null;
+    setSubmitting(`action-${action.actionId}`);
+    setNotice('Записываем выбор быстрой сцены…');
+
+    try {
+      const response = await browserApi.resolveQteAction({ actionId: action.actionId, grade });
+      setResult(response);
+      if (isSuccess(response)) {
+        setQteState(response.data);
+        setNotice(formatQteStateLabel(response.data));
+      } else {
+        setNotice(toPlayerFacingText(response.playerMessage, 'Не удалось записать выбор быстрой сцены.'));
+      }
+    } catch {
+      setNotice('Не удалось связаться с локальной книгой. Попробуйте ещё раз.');
+    } finally {
+      setSubmitting(null);
+    }
+  }
+
+  function selectGrade(actionId: string, grade: QteGrade) {
+    setSelectedGrades((current) => ({ ...current, [actionId]: grade }));
+  }
+
+  const activeChapter = qteState.activeScene?.currentChapter;
+  const hasVisibleState = Boolean(qteState.offer || qteState.activeScene || qteState.resolution || qteState.completion || qteState.error);
+
+  return (
+    <section className="qte-scene-panel" aria-labelledby="qte-scene-panel-title">
+      <div>
+        <p className="panel-eyebrow">быстрая сцена</p>
+        <h2 id="qte-scene-panel-title">Сцена выбора</h2>
+        <p>{formatQteStateLabel(qteState)}</p>
+        {qteState.lastResolvedReminder && <p className="muted">{toPlayerFacingText(qteState.lastResolvedReminder, 'Последний итог быстрой сцены записан.')}</p>}
+      </div>
+
+      {qteState.error && <p className="warning-text">{toPlayerFacingText(qteState.error, 'Быстрая сцена требует внимания.')}</p>}
+
+      {qteState.offer && (
+        <article className="summary-card">
+          <h3>{toPlayerFacingText(qteState.offer.title, 'Быстрая сцена')}</h3>
+          <p>{toPlayerFacingText(qteState.offer.offerText ?? qteState.offer.introNarrative, 'Книга предлагает короткую сцену выбора.')}</p>
+          {qteState.offer.cinematicJustification && <p className="muted">{toPlayerFacingText(qteState.offer.cinematicJustification, 'Сцена подходит текущему моменту.')}</p>}
+          {qteState.offer.sceneImagePrompt && <p className="muted">Образ сцены: {toPlayerFacingText(qteState.offer.sceneImagePrompt, 'образ уточняется')}</p>}
+          {qteState.offer.declineHint && <p className="muted">{toPlayerFacingText(qteState.offer.declineHint, 'Можно отказаться и продолжить обычный ход.')}</p>}
+          <div className="phase-chip-grid">
+            <button type="button" onClick={() => void resolveOffer('accept')} disabled={Boolean(submitting)}>
+              Принять сцену
+            </button>
+            <button type="button" onClick={() => void resolveOffer('decline')} disabled={Boolean(submitting)}>
+              Отказаться
+            </button>
+          </div>
+        </article>
+      )}
+
+      {qteState.activeScene && (
+        <article className="summary-card">
+          <h3>{toPlayerFacingText(qteState.activeScene.title, 'Быстрая сцена активна')}</h3>
+          {activeChapter ? (
+            <>
+              <p>{toPlayerFacingText(activeChapter.narrative ?? activeChapter.title, 'Выберите действие для этой сцены.')}</p>
+              {activeChapter.chapterImagePrompt && <p className="muted">Образ главы: {toPlayerFacingText(activeChapter.chapterImagePrompt, 'образ уточняется')}</p>}
+              {activeChapter.actions.length > 0 ? (
+                <div className="qte-action-list">
+                  {activeChapter.actions.map((action) => {
+                    const gradeOptions = qteGradeOptionsForAction(action);
+                    const selectedGrade = selectedGrades[action.actionId] ?? gradeOptions[0] ?? 'success';
+                    return (
+                      <article key={action.actionId} className="action-card">
+                        <header>
+                          <h4>{toPlayerFacingText(action.label, 'Действие сцены')}</h4>
+                          <span className="availability-pill">{formatQteActionCheck(action)}</span>
+                        </header>
+                        {action.requiresSubmittedGrade && (
+                          <div className="prompt-control">
+                            <label htmlFor={`qte-grade-${action.actionId}`}>Исход проверки</label>
+                            <select
+                              id={`qte-grade-${action.actionId}`}
+                              value={selectedGrade}
+                              onChange={(event) => selectGrade(action.actionId, normalizeQteGrade(event.currentTarget.value))}
+                              disabled={Boolean(submitting)}
+                            >
+                              {gradeOptions.map((grade) => (
+                                <option key={grade} value={grade}>{formatQteGradeLabel(grade)}</option>
+                              ))}
+                            </select>
+                            <div className="phase-chip-grid" aria-label="Быстрый выбор исхода">
+                              {gradeOptions.map((grade) => (
+                                <button
+                                  key={grade}
+                                  type="button"
+                                  onClick={() => {
+                                    selectGrade(action.actionId, grade);
+                                    void resolveAction(action, grade);
+                                  }}
+                                  disabled={Boolean(submitting)}
+                                >
+                                  {formatQteGradeLabel(grade)}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        <button type="button" onClick={() => void resolveAction(action)} disabled={Boolean(submitting)}>
+                          {action.requiresSubmittedGrade ? 'Подтвердить исход' : 'Выбрать действие'}
+                        </button>
+                      </article>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="muted">Сцена ждёт следующий фрагмент выбора.</p>
+              )}
+            </>
+          ) : (
+            <p className="muted">Книга готовит следующий фрагмент быстрой сцены.</p>
+          )}
+        </article>
+      )}
+
+      {qteState.resolution && (
+        <article className="summary-card">
+          <h3>Итог выбора</h3>
+          <p>{toPlayerFacingText(qteState.resolution.resultText, 'Итог быстрой сцены записан.')}</p>
+          <p className="muted">Исход: {formatQteGradeLabel(normalizeQteGrade(qteState.resolution.grade))}</p>
+        </article>
+      )}
+
+      {qteState.completion && (
+        <article className="summary-card">
+          <h3>Сцена завершена</h3>
+          <p>{toPlayerFacingText(qteState.completion.summary, 'Быстрая сцена завершилась.')}</p>
+        </article>
+      )}
+
+      {!hasVisibleState && <p className="muted">Быстрая сцена появится здесь, когда книга предложит короткий выбор или кинематик-эпизод.</p>}
+      {notice && <p className="composer-notice">{notice}</p>}
+      {result && !isSuccess(result) && <p className="warning-text">{toPlayerFacingText(result.playerMessage, 'Быстрая сцена не смогла обновиться.')}</p>}
+    </section>
+  );
+}
+
+function MediaGalleryPanel({ media }: { media: BrowserGameScreenDto['media'] }) {
+  return (
+    <section className="summary-card media-gallery-panel" aria-labelledby="media-gallery-title">
+      <div>
+        <p className="panel-eyebrow">галерея</p>
+        <h2 id="media-gallery-title">Образы главы</h2>
+        <p>{media.sceneImagePrompt ? toPlayerFacingText(media.sceneImagePrompt, 'Образ текущей сцены уточняется.') : 'Книга пока не передала образ текущей сцены.'}</p>
+      </div>
+
+      {media.gallery.length > 0 ? (
+        <div className="media-gallery-grid">
+          {media.gallery.map((item) => (
+            <article key={item.mediaId} className="media-gallery-card">
+              <a href={item.url} target="_blank" rel="noreferrer">
+                <img src={item.url} alt={item.fileName} loading="lazy" />
+              </a>
+              <div>
+                <h3>{toPlayerFacingText(item.fileName, 'Изображение сцены')}</h3>
+                <dl className="kv-list">
+                  <div><dt>Тип</dt><dd>{toPlayerFacingText(item.contentType, 'изображение')}</dd></div>
+                  <div><dt>Размер</dt><dd>{formatMediaSize(item.length)}</dd></div>
+                  <div><dt>Обновлено</dt><dd>{formatMediaDate(item.modifiedAtUtc)}</dd></div>
+                </dl>
+                <a className="media-gallery-card__open" href={item.url} target="_blank" rel="noreferrer">Открыть изображение</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p className="muted">Сохранённые изображения появятся здесь после генерации или добавления сцен в локальную галерею.</p>
+      )}
+    </section>
+  );
+}
+
+function MediaAtlasPanel({ map, realmLabel }: { map: BrowserGameScreenDto['media']['map']; realmLabel: string }) {
+  const currentNode = map.nodes.find((node) => node.id === map.currentNodeId || node.isCurrent);
+  const defaultLayer = map.layers.find((layer) => layer.isDefault)?.id ?? map.layers[0]?.id ?? 'all';
+  const defaultZ = currentNode?.z ?? map.zLevels[0]?.z ?? 0;
+  const [selectedLayer, setSelectedLayer] = useState(defaultLayer);
+  const [selectedZ, setSelectedZ] = useState(defaultZ);
+  const [showPolitical, setShowPolitical] = useState(false);
+
+  useEffect(() => {
+    setSelectedLayer(defaultLayer);
+    setSelectedZ(defaultZ);
+  }, [defaultLayer, defaultZ]);
+
+  const layers = map.layers.length > 0 ? map.layers : [{ id: 'all', label: 'Все слои', isDefault: true }];
+  const zLevels = map.zLevels.length > 0 ? map.zLevels : [{ z: selectedZ, label: `уровень ${selectedZ}` }];
+  const visibleNodes = map.nodes.filter((node) => (selectedLayer === 'all' || node.layer === selectedLayer) && node.z === selectedZ);
+
+  return (
+    <section className="media-atlas-panel" aria-labelledby="media-atlas-title">
+      <div>
+        <p className="panel-eyebrow">атлас</p>
+        <h2 id="media-atlas-title">{toPlayerFacingText(map.title, 'Атлас текущего мира')}</h2>
+        <p>{toPlayerFacingText(realmLabel || map.realm, 'Текущее царство')} · {currentNode ? `сейчас: ${toPlayerFacingText(currentNode.label, 'текущая точка')}` : 'точка героя уточняется'}</p>
+      </div>
+
+      <div className="media-atlas-controls">
+        <label>
+          <span>Выберите уровень</span>
+          <select value={selectedZ} onChange={(event) => setSelectedZ(Number(event.currentTarget.value))}>
+            {zLevels.map((level) => (
+              <option key={level.z} value={level.z}>{toPlayerFacingText(level.label, `уровень ${level.z}`)}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          <span>Выберите слой</span>
+          <select value={selectedLayer} onChange={(event) => setSelectedLayer(event.currentTarget.value)}>
+            {layers.map((layer) => (
+              <option key={layer.id} value={layer.id}>{toPlayerFacingText(layer.label, 'слой карты')}</option>
+            ))}
+          </select>
+        </label>
+        <label className="checkbox-control">
+          <input type="checkbox" checked={showPolitical} onChange={(event) => setShowPolitical(event.currentTarget.checked)} />
+          <span>Политическое влияние</span>
+        </label>
+      </div>
+
+      {visibleNodes.length > 0 ? (
+        <div className="media-atlas-node-grid">
+          {visibleNodes.map((node) => {
+            const influenceEntries = Object.entries(node.influence).filter(([, value]) => value !== 0);
+            return (
+              <article key={node.id} className={`media-atlas-node${node.isCurrent ? ' is-current' : ''}`}>
+                <header>
+                  <h3>{toPlayerFacingText(node.label, 'Точка карты')}</h3>
+                  <span className="availability-pill">{node.isCurrent ? 'текущая точка' : toPlayerFacingText(node.type, 'точка')}</span>
+                </header>
+                <dl className="kv-list">
+                  <div><dt>Слой</dt><dd>{toPlayerFacingText(node.layer, 'слой')}</dd></div>
+                  <div><dt>Уровень</dt><dd>{node.z}</dd></div>
+                  <div><dt>Координаты</dt><dd>{node.x}, {node.y}</dd></div>
+                  <div><dt>Владелец</dt><dd>{node.ownerFactionName ? toPlayerFacingText(node.ownerFactionName, 'фракция') : 'не указан'}</dd></div>
+                </dl>
+                {node.details.length > 0 && (
+                  <dl className="kv-list">
+                    {node.details.map((detail) => (
+                      <div key={`${node.id}-${detail.key}`}><dt>{toPlayerFacingText(detail.key, 'Деталь')}</dt><dd>{toPlayerFacingText(detail.value, '—')}</dd></div>
+                    ))}
+                  </dl>
+                )}
+                {showPolitical && (
+                  <div className="media-atlas-influence" aria-label="Политическое влияние">
+                    <h4>Политическое влияние</h4>
+                    {influenceEntries.length > 0 ? (
+                      <ul>
+                        {influenceEntries.map(([faction, value]) => (
+                          <li key={faction}><span>{toPlayerFacingText(faction, 'фракция')}</span><strong>{value}</strong></li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="muted">Влияние для этой точки пока не отмечено.</p>
+                    )}
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="muted">На выбранном уровне и слое пока нет точек карты. Выберите другой слой или продолжите главу.</p>
+      )}
+    </section>
+  );
+}
+
+const qteGradeOrder: QteGrade[] = ['success', 'partial', 'fail'];
+
+function qteGradeOptionsForAction(action: QteAction): QteGrade[] {
+  const normalized = action.gradeOptions.map(normalizeQteGrade);
+  const unique = qteGradeOrder.filter((grade) => normalized.includes(grade));
+  return unique.length > 0 ? unique : qteGradeOrder;
+}
+
+function normalizeQteGrade(value: string | null | undefined): QteGrade {
+  switch ((value ?? '').trim().toLowerCase()) {
+    case 'partial':
+    case 'part':
+    case 'mixed':
+      return 'partial';
+    case 'fail':
+    case 'failure':
+    case 'failed':
+      return 'fail';
+    case 'success':
+    default:
+      return 'success';
+  }
+}
+
+function formatQteGradeLabel(grade: QteGrade): string {
+  switch (grade) {
+    case 'success':
+      return 'Успех';
+    case 'partial':
+      return 'Частичный успех';
+    case 'fail':
+      return 'Провал';
+  }
+}
+
+function formatQteActionCheck(action: QteAction): string {
+  const difficulty = action.baseDifficulty > 0 ? `сложность ${action.baseDifficulty}` : 'сложность уточняется';
+  const characteristic = toPlayerFacingText(action.primaryCharacteristic, 'проверка');
+  return `${characteristic} · ${difficulty}`;
+}
+
+function formatMediaSize(length: number): string {
+  if (!Number.isFinite(length) || length <= 0) {
+    return 'размер уточняется';
+  }
+
+  const units = ['Б', 'КБ', 'МБ', 'ГБ'];
+  let value = length;
+  let unitIndex = 0;
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+}
+
+function formatMediaDate(value: string): string {
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) {
+    return 'дата уточняется';
+  }
+
+  return date.toLocaleString('ru-RU', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
 function SettingsRoute({
