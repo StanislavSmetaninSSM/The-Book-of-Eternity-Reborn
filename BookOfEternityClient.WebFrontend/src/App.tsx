@@ -939,7 +939,7 @@ function PlayerStatusSidebar({
         )}
       </StatusSummaryCard>
 
-      <StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure)} eyebrow="ход" attention={turnNeedsAttention}>
+      <StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure, gameScreen?.turnState?.phase ?? null)} eyebrow="ход" attention={turnNeedsAttention}>
         {sidebarGameFailure ? (
           <>
             <p className="warning-text">{sidebarGameFailure}</p>
@@ -948,8 +948,7 @@ function PlayerStatusSidebar({
         ) : gameScreen ? (
           <>
             <p className={`status-pill turn-phase turn-phase--${gameScreen.turnState.severity}`}>{formatTurnStateTitle(gameScreen.turnState)}</p>
-            <p>{formatTurnStateMessage(gameScreen.turnState)}</p>
-            <p className="muted">Подробности ремонта, проверки и команд скрыты до явного включения.</p>
+            <p className="muted">{toPlayerFacingText(gameScreen.turnState.playerGuidance, 'Следуйте безопасному состоянию хода.')}</p>
           </>
         ) : (
           <>
@@ -1046,12 +1045,25 @@ function formatSidebarLayerStatus(menu: BrowserMainMenuDto | null): string {
   return toPlayerFacingText(validationLabel, 'Книга ждёт открытия');
 }
 
-function getTurnSidebarTitle(hasGame: boolean, sidebarGameFailure: string | null): string {
+function getTurnSidebarTitle(hasGame: boolean, sidebarGameFailure: string | null, turnPhase: string | null): string {
   if (!hasGame && !sidebarGameFailure) {
     return 'Ход ещё не начат';
   }
 
-  return 'Ожидание ГМа';
+  // Distinguish GM-waiting from repair/error/validation states (issue #743)
+  switch (turnPhase) {
+    case 'repair-required': return 'Нужна починка';
+    case 'error-restored': return 'Ошибка хода';
+    case 'validation-failed': return 'Проверка состояния';
+    case 'ready': return 'Ответ ГМа готов';
+    case 'waiting-gm': return 'Ожидание ГМа';
+    case 'idle': return 'Ваш ход';
+    case 'composing-action': return 'Подготовка действия';
+    case 'turn-submitted': return 'Ход отправляется';
+    case 'accepted': return 'Ответ принят';
+    case 'cancelled': return 'Ход отменён';
+    default: return 'Состояние хода';
+  }
 }
 
 function formatSidebarSessionSummary(session: LocalWebUiSessionStatus | null, menu: BrowserMainMenuDto | null): string {
@@ -1226,17 +1238,22 @@ function GameRoute({
         {composerNotice && <p className="composer-notice">{composerNotice}</p>}
       </form>
 
-      <section className="summary-card" aria-label="Жизненный цикл хода">
-        <h3>Жизненный цикл хода</h3>
-        <p className="muted">{toPlayerFacingText(game.turnState.phaseLabel, 'Текущее состояние хода')}</p>
-        <div className="phase-chip-grid">
-          {game.turnState.knownPhases.map((phase) => (
-            <span key={phase.id} className={phase.id === game.turnState.phase ? 'status-pill' : 'status-pill is-muted'}>
-              {toPlayerFacingText(phase.label, 'Этап')}
-            </span>
-          ))}
-        </div>
-      </section>
+      {advancedEnabled && (
+        <section className="summary-card" aria-label="Жизненный цикл хода">
+          <h3>Жизненный цикл хода</h3>
+          <p className="muted">{toPlayerFacingText(game.turnState.phaseLabel, 'Текущее состояние хода')}</p>
+          <div className="phase-chip-grid">
+            {game.turnState.knownPhases.map((phase) => (
+              <span key={phase.id} className={phase.id === game.turnState.phase ? 'status-pill' : 'status-pill is-muted'}>
+                {toPlayerFacingText(phase.label, 'Этап')}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+      {!advancedEnabled && (
+        <p className="muted">Текущий этап: {toPlayerFacingText(game.turnState.phaseLabel, 'Неизвестно')}</p>
+      )}
     </ShellPanel>
   );
 }
