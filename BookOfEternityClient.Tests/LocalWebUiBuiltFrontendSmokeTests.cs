@@ -208,6 +208,9 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("old React UI/UX reference only", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("advanced debug secondary", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("data-state=\"fresh-empty\"", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Активной главы пока нет", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.DoesNotContain("Ожидание ГМа", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.DoesNotContain("Локальный игровой клиент", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.DoesNotContain("источник истины", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Главное меню недоступно", firstScreenVisualQaArtifact, StringComparison.Ordinal);
@@ -303,7 +306,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         </head>
         <body>
           <main class="artifact">
-            <section class="frame" data-viewport="desktop" aria-label="Desktop first-screen visual QA">
+            <section class="frame" data-viewport="desktop" data-state="fresh-empty" aria-label="Desktop first-screen visual QA">
               <div class="desktop-shell">
                 <nav class="sidebar" aria-label="Player routes">
                   <p class="brand">{{WebUtility.HtmlEncode(primarySequence)}}</p>
@@ -330,7 +333,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 </section>
                 <aside class="status" aria-label="Player status rail">
                   <h2>Сводка книги</h2>
-                  <p class="muted">Слой книги · Герой и душа · Сохранение · Ожидание ГМа.</p>
+                  <p class="muted">Слой книги · Герой и душа · Сохранение · Активной главы пока нет.</p>
                   <div class="checks">
                     <div class="check">old React UI/UX reference only: central launcher, tabs/sections, polished cards, save/config actions.</div>
                     <div class="check">no technical hero copy</div>

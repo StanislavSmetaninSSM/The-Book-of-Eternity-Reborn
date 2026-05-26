@@ -62,6 +62,27 @@ public sealed class LocalWebUiHostTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task GameScreenEndpoint_ReturnsNoActiveSessionForFreshEmptyRoot()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.GetAsync("/api/game-screen");
+        var body = await response.Content.ReadAsStringAsync();
+        var root = JsonNode.Parse(body)!.AsObject();
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Contains("game_session", root["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("актив", root["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("soul_state.json", body, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("валидац", body, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("repair", body, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     [Trait("Category", "BrowserWebUiParity")]
     public async Task CommandCoverageEndpoint_ReturnsMachineReadableExplorerParityMatrix()
     {

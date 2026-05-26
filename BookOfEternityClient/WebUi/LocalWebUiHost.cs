@@ -104,7 +104,17 @@ public static class LocalWebUiHost
         app.MapGet("/assets/map-viewer.js", () => Results.Content(LocalMapViewerAssets.Script, "application/javascript; charset=utf-8"));
         app.MapGet("/api/health", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
         app.MapGet("/api/session", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
-        app.MapGet("/api/game-screen", async (BrowserGameScreenService gameScreen) => await gameScreen.BuildAsync());
+        app.MapGet("/api/game-screen", async (BrowserGameScreenService gameScreen) =>
+        {
+            try
+            {
+                return Results.Json(await gameScreen.BuildAsync(), WebJsonOptions);
+            }
+            catch (BrowserNoActiveSessionException ex)
+            {
+                return Results.Json(new { error = ex.Message }, WebJsonOptions, statusCode: StatusCodes.Status404NotFound);
+            }
+        });
         app.MapGet("/api/client/settings", async (BrowserClientSettingsService settings) => await settings.BuildAsync());
         app.MapPost("/api/client/settings", async (BrowserClientSettingsUpdateRequest request, BrowserClientSettingsService settings) =>
         {

@@ -616,7 +616,6 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Слой книги", app, StringComparison.Ordinal);
         Assert.Contains("Герой и душа", app, StringComparison.Ordinal);
         Assert.Contains("Сохранение", app, StringComparison.Ordinal);
-        Assert.Contains("Ожидание ГМа", app, StringComparison.Ordinal);
         Assert.Contains("Служебная панель", app, StringComparison.Ordinal);
         Assert.Contains("Подробности ремонта, проверки и команд скрыты до явного включения.", app, StringComparison.Ordinal);
         Assert.Contains("formatSidebarSessionSummary(", app, StringComparison.Ordinal);
@@ -628,6 +627,14 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("sidebarGameFailure", app, StringComparison.Ordinal);
         Assert.Contains("attention={Boolean(sidebarGameFailure)}", app, StringComparison.Ordinal);
         Assert.Contains("className=\"warning-text\">{sidebarGameFailure}", app, StringComparison.Ordinal);
+        Assert.Contains("function getTurnSidebarTitle(", app, StringComparison.Ordinal);
+        Assert.Contains("Ход ещё не начат", app, StringComparison.Ordinal);
+        Assert.Contains("<StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure)}", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("<StatusSummaryCard title=\"Ожидание ГМа\"", app, StringComparison.Ordinal);
+        Assert.Contains("formatHeroStatusLabel(gameScreen, menu)", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("menu?.session.validationLabel ?? 'Книга ждёт открытия'", app, StringComparison.Ordinal);
+        Assert.Contains("formatSidebarLayerStatus(menu)", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("toPlayerFacingText(menu.session.validationLabel, 'Книга ждёт открытия')", app, StringComparison.Ordinal);
 
         Assert.DoesNotContain("<ShellPanel title=\"Сессия\" eyebrow=\"локальная книга\">", app, StringComparison.Ordinal);
         Assert.DoesNotContain("<ShellPanel title=\"Ход и ремонт\" eyebrow=\"безопасность хода\">", app, StringComparison.Ordinal);
