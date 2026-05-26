@@ -44,6 +44,62 @@
     "combatLog": "\u0411\u043E\u0435\u0432\u044B\u0445 \u0441\u043E\u0431\u044B\u0442\u0438\u0439 \u043D\u0435\u0442.",
     "imagePrompt": "mystic road at dusk"
   },
+  "media": {
+    "schemaVersion": 1,
+    "sceneImagePrompt": "mystic road at dusk",
+    "gallery": [
+      {
+        "mediaId": "images-scenes-scene-road",
+        "url": "/api/media/images-scenes-scene-road",
+        "fileName": "scene-road.png",
+        "contentType": "image/png",
+        "length": 2048,
+        "modifiedAtUtc": "2026-05-25T09:30:00+00:00"
+      }
+    ],
+    "map": {
+      "schemaVersion": 1,
+      "realm": "Mortal World",
+      "title": "Карта смертного мира",
+      "currentNodeId": "ash-road",
+      "layers": [
+        {
+          "id": "world",
+          "label": "Мир",
+          "isDefault": true
+        }
+      ],
+      "zLevels": [
+        {
+          "z": 0,
+          "label": "земля"
+        }
+      ],
+      "nodes": [
+        {
+          "id": "ash-road",
+          "label": "Пепельная дорога",
+          "type": "current",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "layer": "world",
+          "isCurrent": true,
+          "ownerFactionId": "",
+          "ownerFactionName": "",
+          "influence": {},
+          "details": [
+            {
+              "key": "Время",
+              "value": "Сумерки"
+            }
+          ]
+        }
+      ],
+      "links": [],
+      "regions": []
+    }
+  },
   "afterlife": {
     "shiningRadianceExperience": 10,
     "shiningRadianceTier": 1,

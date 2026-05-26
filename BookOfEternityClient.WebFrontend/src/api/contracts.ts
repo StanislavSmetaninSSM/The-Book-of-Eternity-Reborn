@@ -224,6 +224,7 @@ export interface BrowserGameScreenDto {
   player: BrowserGameScreenPlayerDto;
   world: BrowserGameScreenWorldDto;
   narrative: BrowserGameScreenNarrativeDto;
+  media: BrowserGameScreenMediaDto;
   afterlife: BrowserGameScreenAfterlifeDto;
   turnState: BrowserGameScreenTurnStateDto;
   actionComposer: BrowserGameScreenActionComposerDto;
@@ -277,6 +278,22 @@ export interface BrowserGameScreenDialogueOptionDto {
   id: string;
   text: string;
   category: string;
+}
+
+export interface BrowserGameScreenMediaDto {
+  schemaVersion: number;
+  sceneImagePrompt: string;
+  gallery: BrowserGameScreenMediaItemDto[];
+  map: MapViewDto;
+}
+
+export interface BrowserGameScreenMediaItemDto {
+  mediaId: string;
+  url: string;
+  fileName: string;
+  contentType: string;
+  length: number;
+  modifiedAtUtc: IsoDateTimeString;
 }
 
 export interface BrowserGameScreenAfterlifeDto {
