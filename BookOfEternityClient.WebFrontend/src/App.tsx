@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { browserApi, browserApiContractSummary } from './api/client';
+import { DetailSurfaceCard } from './components/DetailSurface';
 import type {
   BrowserApiFailure,
   BrowserApiResult,
@@ -956,22 +957,80 @@ function SoulRoute({ state, advancedEnabled }: { state: Extract<BrowserShellStat
 
   return (
     <ShellPanel title="Душа" eyebrow="персонаж и состояние">
-      <div className="split-grid">
-        <div className="summary-card">
-          <h2>{soul.name || 'Безымянная душа'}</h2>
-          <p>{formatRealmName(soul.realm)} · инкарнация {soul.incarnation}</p>
-          <p>Чернильные перья: {soul.inkFeathers}</p>
-          <p>Просветление: {soul.enlightenmentTier || 'нет данных'}</p>
-          <p>Хранитель: {soul.activeGuardianName || 'не назначен'}</p>
-        </div>
-        <div className="summary-card">
-          <h2>{player.name || 'Герой'}</h2>
-          <p>{player.race} · {player.class}</p>
-          <p>{player.currentCondition}</p>
-          <StatusBar label="Здоровье" value={player.healthPercentage} />
-          <StatusBar label="Энергия" value={player.energyPercentage} />
-          <StatusBar label="Стойкость" value={player.poisePercentage} />
-        </div>
+      <div className="detail-surface-grid">
+        <DetailSurfaceCard
+          detailSurfaceId="soul-identity"
+          eyebrow="душа и царство"
+          title="Душа"
+          icon="🕯️"
+          summary={`${soul.name || 'Безымянная душа'} · ${formatRealmName(soul.realm)}`}
+          status={`Перья ${soul.inkFeathers}`}
+          detailsTitle="Детали души"
+          detailsIntro={<p>Эта панель показывает только текущую игровую сводку души из локальной книги.</p>}
+          sections={[
+            {
+              title: 'Проявление',
+              eyebrow: 'имя и слой',
+              icon: '✦',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Имя</dt><dd>{soul.name || 'без имени'}</dd></div>
+                  <div><dt>Царство</dt><dd>{formatRealmName(soul.realm)}</dd></div>
+                  <div><dt>Инкарнация</dt><dd>{soul.incarnation}</dd></div>
+                </dl>
+              )
+            },
+            {
+              title: 'Посмертный прогресс',
+              eyebrow: 'ресурсы души',
+              icon: '✨',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Чернильные перья</dt><dd>{soul.inkFeathers}</dd></div>
+                  <div><dt>Просветление</dt><dd>{soul.enlightenmentTier || 'нет данных'}</dd></div>
+                  <div><dt>Хранитель</dt><dd>{soul.activeGuardianName || 'не назначен'}</dd></div>
+                </dl>
+              )
+            }
+          ]}
+        />
+        <DetailSurfaceCard
+          detailSurfaceId="player-condition"
+          eyebrow="герой"
+          title="Герой"
+          icon="⚔️"
+          summary={`${player.name || 'Герой'} · ${player.currentCondition}`}
+          status={`${formatSidebarStatusMetric(player.healthPercentage)} здоровья`}
+          detailsTitle="Детали героя"
+          detailsIntro={<p>Карточка героя раскрывает состояние персонажа без служебных команд и внутренних файлов.</p>}
+          sections={[
+            {
+              title: 'Личность',
+              eyebrow: 'персонаж',
+              icon: '☉',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Имя</dt><dd>{player.name || 'Герой'}</dd></div>
+                  <div><dt>Раса</dt><dd>{player.race || 'не указана'}</dd></div>
+                  <div><dt>Класс</dt><dd>{player.class || 'не указан'}</dd></div>
+                </dl>
+              )
+            },
+            {
+              title: 'Состояние',
+              eyebrow: 'виталы',
+              icon: '♡',
+              content: (
+                <>
+                  <p>{player.currentCondition || 'Состояние уточняется.'}</p>
+                  <StatusBar label="Здоровье" value={player.healthPercentage} />
+                  <StatusBar label="Энергия" value={player.energyPercentage} />
+                  <StatusBar label="Стойкость" value={player.poisePercentage} />
+                </>
+              )
+            }
+          ]}
+        />
       </div>
     </ShellPanel>
   );
@@ -991,7 +1050,42 @@ function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
   return (
     <ShellPanel title="Мир" eyebrow="карта, журнал и действия">
       <div className="split-grid three">
-        <div className="summary-card"><h2>Локация</h2><p>{game.world.location}</p><p>{game.world.worldTime}</p></div>
+        <DetailSurfaceCard
+          detailSurfaceId="world-location"
+          eyebrow="мир и место"
+          title="Локация"
+          icon="🗺️"
+          summary={`${game.world.location || 'Локация уточняется'} · ${game.world.worldTime || 'время уточняется'}`}
+          status={`Ход ${game.world.turnNumber}`}
+          detailsTitle="Детали локации"
+          detailsIntro={<p>Локация раскрывает текущий слой мира без технических путей и служебных журналов.</p>}
+          sections={[
+            {
+              title: 'Текущая сцена',
+              eyebrow: 'место и время',
+              icon: '⌖',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Локация</dt><dd>{game.world.location || 'локация уточняется'}</dd></div>
+                  <div><dt>Время</dt><dd>{game.world.worldTime || 'время уточняется'}</dd></div>
+                  <div><dt>Царство</dt><dd>{game.theme.label}</dd></div>
+                </dl>
+              )
+            },
+            {
+              title: 'Ориентир главы',
+              eyebrow: 'ход и запись',
+              icon: '✍️',
+              content: (
+                <dl className="kv-list">
+                  <div><dt>Номер хода</dt><dd>{game.world.turnNumber}</dd></div>
+                  <div><dt>Состояние</dt><dd>{formatTurnStateTitle(game.turnState)}</dd></div>
+                  <div><dt>Ввод игрока</dt><dd>{game.actionComposer.canSubmit ? 'доступен' : getComposerDisabledReason(game.actionComposer)}</dd></div>
+                </dl>
+              )
+            }
+          ]}
+        />
         <div className="summary-card"><h2>Журнал</h2><p>Квесты, архив и история разворачиваются в игровых разделах без знания ручных команд.</p></div>
         <div className="summary-card"><h2>Фракции</h2><p>Панели фракций и стражей используют общие игровые данные и не дублируют правила.</p></div>
       </div>

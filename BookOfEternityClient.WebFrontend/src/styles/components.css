@@ -631,3 +631,179 @@
   display: grid;
   gap: var(--space-4);
 }
+
+.detail-surface-card {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 100%;
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 28%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), color-mix(in srgb, var(--realm-accent) 9%, rgba(8, 11, 12, 0.86)));
+  color: inherit;
+  text-align: left;
+  box-shadow: var(--shadow-panel);
+  transition:
+    transform var(--motion-fast),
+    border-color var(--motion-fast),
+    box-shadow var(--motion-fast),
+    background var(--motion-fast);
+}
+
+.detail-surface-card:hover,
+.detail-surface-card:focus-visible {
+  border-color: var(--realm-accent);
+  background: color-mix(in srgb, var(--realm-accent) 14%, rgba(18, 26, 28, 0.9));
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+.detail-surface-card-eyebrow {
+  color: var(--realm-accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.detail-surface-card-title {
+  display: flex;
+  gap: 0.55rem;
+  align-items: center;
+  color: #fff3d6;
+  font-size: 1.08rem;
+}
+
+.detail-surface-card-summary {
+  color: var(--color-mist);
+  line-height: 1.5;
+}
+
+.detail-surface-card-action {
+  width: fit-content;
+  margin-top: auto;
+  border-bottom: 1px solid color-mix(in srgb, var(--realm-accent) 64%, transparent);
+  color: #fff6df;
+  font-weight: 800;
+}
+
+.detail-surface-overlay {
+  position: fixed;
+  z-index: 60;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background: rgba(3, 5, 8, 0.72);
+  backdrop-filter: blur(16px);
+}
+
+.detail-surface-modal {
+  display: grid;
+  gap: var(--space-4);
+  width: min(52rem, 100%);
+  max-height: min(84vh, 52rem);
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 42%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-lg);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--realm-accent) 16%, transparent), transparent 38%),
+    var(--color-panel);
+  box-shadow: 0 28px 100px rgba(0, 0, 0, 0.58);
+}
+
+.detail-surface-modal.is-fullscreen {
+  width: min(78rem, 100%);
+  max-height: calc(100vh - 2rem);
+}
+
+.detail-surface-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: start;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: var(--space-3);
+}
+
+.detail-surface-header h2,
+.detail-surface-section h3 {
+  margin: 0;
+}
+
+.detail-surface-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.detail-surface-controls button {
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 40%, rgba(255, 255, 255, 0.1));
+  border-radius: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(255, 255, 255, 0.065);
+  color: #fff6df;
+  font-weight: 800;
+}
+
+.detail-surface-intro,
+.detail-surface-loading,
+.detail-surface-error,
+.detail-surface-empty {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.detail-surface-loading {
+  color: var(--color-mist);
+}
+
+.detail-surface-error {
+  border-color: color-mix(in srgb, var(--state-error) 42%, rgba(255, 255, 255, 0.08));
+  color: var(--state-warning);
+}
+
+.detail-surface-empty {
+  color: var(--color-mist);
+}
+
+.detail-surface-sections {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.detail-surface-section {
+  display: grid;
+  gap: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 22%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.detail-surface-section-heading {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.detail-surface-section-heading > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 32%, rgba(255, 255, 255, 0.08));
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.detail-surface-section-body {
+  display: grid;
+  gap: var(--space-2);
+}
