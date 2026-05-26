@@ -249,6 +249,43 @@ public sealed class BrowserFrontendWorkspaceTests
 
 
     [Fact]
+    public void BrowserRouteCards_UseInlineSvgIconsAndSemanticStates()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var styles = ReadFrontendStyles();
+
+        var routeArrayStart = app.IndexOf("const playerRoutes", StringComparison.Ordinal);
+        var routeArrayEnd = app.IndexOf("const fallbackTheme", StringComparison.Ordinal);
+        Assert.True(routeArrayStart >= 0 && routeArrayEnd > routeArrayStart, "Route metadata should stay near the top of App.tsx.");
+        var routeMetadata = app[routeArrayStart..routeArrayEnd];
+
+        foreach (var emojiIcon in new[] { "✦", "📖", "🕯️", "🗺️", "✍️", "🎒", "🎞️", "⚙️" })
+        {
+            Assert.DoesNotContain($"icon: '{emojiIcon}'", routeMetadata, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("type RouteIconId = 'book' | 'flame' | 'soul' | 'map' | 'journal' | 'satchel' | 'gallery' | 'settings';", app, StringComparison.Ordinal);
+        Assert.Contains("type RouteAvailabilityState = 'active' | 'available' | 'locked' | 'loading' | 'attention';", app, StringComparison.Ordinal);
+        Assert.Contains("function RouteGlyph({ icon }: { icon: RouteIconId })", app, StringComparison.Ordinal);
+        Assert.Contains("<RouteGlyph icon={route.icon} />", app, StringComparison.Ordinal);
+        Assert.Contains("resolveRouteStates(playerRoutes, activeRoute, shellState, readyState)", app, StringComparison.Ordinal);
+        Assert.Contains("function isNoActiveSessionFailure(result: BrowserApiResult<unknown>): result is BrowserApiFailure", app, StringComparison.Ordinal);
+        Assert.Contains("isNoActiveSessionFailure(readyState.game)", app, StringComparison.Ordinal);
+        Assert.Contains("result.kind === 'no-active-session'", app, StringComparison.Ordinal);
+        Assert.Contains("data-route-state={routeState.state}", app, StringComparison.Ordinal);
+        Assert.Contains("route-card-state--${routeState.state}", app, StringComparison.Ordinal);
+        Assert.Contains("aria-label={`${route.label}. ${route.description} Состояние: ${routeState.label}`}", app, StringComparison.Ordinal);
+
+        Assert.Contains(".route-card__icon", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card__state", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card-state--active", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card-state--available", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card-state--locked", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card-state--loading", styles, StringComparison.Ordinal);
+        Assert.Contains(".route-card-state--attention", styles, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BrowserNavigationIa_InventoryRouteMatchesCurrentActionMetadata()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));

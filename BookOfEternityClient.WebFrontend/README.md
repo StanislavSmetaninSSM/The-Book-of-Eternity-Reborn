@@ -64,6 +64,12 @@ Future Browser Client tasks (#683-#689) should extend these route regions rather
 
 Verify shell changes with `npm run typecheck --prefix BookOfEternityClient.WebFrontend`, `npm run build --prefix BookOfEternityClient.WebFrontend`, and focused browser .NET tests such as `BrowserFrontendWorkspaceTests` / `LocalWebUiHostTests`.
 
+## Route iconography and states (#721)
+
+Issue #721 replaces default route emoji tiles with local inline SVG glyphs. `playerRoutes` should store `RouteIconId` values, and `RouteGlyph` renders the decorative SVG inside each route card. Do not add external icon packages or return to emoji literals for default player routes.
+
+Route cards expose semantic presentation states derived from the existing browser shell results: `active`, `available`, `locked`, `loading`, and `attention`. `locked` is the ordinary no-session/no-active-chapter state and should stay muted, not red. `attention` is reserved for real endpoint failures or repair/error turn states. These states are visual/accessibility hints only; C# remains authoritative for session, save/load, turn, and gameplay rules.
+
 ## Detail surfaces (#728)
 
 Issue #728 adds a shared Browser Client `card → modal/full-panel` pattern for detail-rich player-facing data. Compact cards keep the route/sidebar overview readable; opening a card shows a consistent detail surface with header, back/fullscreen/close controls, readable sections, player-facing empty/error/loading copy, Escape handling, and focus restoration.
