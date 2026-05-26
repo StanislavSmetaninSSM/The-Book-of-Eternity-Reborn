@@ -95,6 +95,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var navigationArtifactPath = Path.Combine(artifactRoot, "navigation-ia.html");
         var detailSurfaceArtifactPath = Path.Combine(artifactRoot, "detail-surfaces.html");
         var rebornPanelsArtifactPath = Path.Combine(artifactRoot, "reborn-panels.html");
+        var firstScreenVisualQaArtifactPath = Path.Combine(artifactRoot, "first-screen-visual-qa.html");
 
         Assert.Equal(HttpStatusCode.OK, root.StatusCode);
         Assert.Equal(HttpStatusCode.OK, gameRoute.StatusCode);
@@ -190,6 +191,32 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.DoesNotContain("/api/", rebornPanelsArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("raw JSON", rebornPanelsArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Debug", rebornPanelsArtifact, StringComparison.OrdinalIgnoreCase);
+
+        Assert.True(File.Exists(firstScreenVisualQaArtifactPath), $"Missing browser first-screen visual QA artifact at {firstScreenVisualQaArtifactPath}");
+        var firstScreenVisualQaArtifact = await File.ReadAllTextAsync(firstScreenVisualQaArtifactPath);
+        Assert.Contains("data-artifact=\"browser-first-screen-visual-qa\"", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"desktop\"", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"mobile\"", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Книга Вечности: Перерождение", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Открыть книгу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Продолжить главу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Загрузить сохранение", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Настроить клиент", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("old React UI/UX reference only", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("advanced debug secondary", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Локальный игровой клиент", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.DoesNotContain("источник истины", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Главное меню недоступно", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.DoesNotContain("/api/", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug dashboard", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug shell", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Network", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("command coverage", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        foreach (var emojiIcon in new[] { "✦", "📖", "🕯️", "🗺️", "✍️", "🎒", "🎞️", "⚙️" })
+        {
+            Assert.DoesNotContain(emojiIcon, firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        }
     }
 
     private static async Task<SmokeResponse> CaptureAsync(HttpClient client, string path)
