@@ -64,6 +64,14 @@ Future Browser Client tasks (#683-#689) should extend these route regions rather
 
 Verify shell changes with `npm run typecheck --prefix BookOfEternityClient.WebFrontend`, `npm run build --prefix BookOfEternityClient.WebFrontend`, and focused browser .NET tests such as `BrowserFrontendWorkspaceTests` / `LocalWebUiHostTests`.
 
+## Detail surfaces (#728)
+
+Issue #728 adds a shared Browser Client `card → modal/full-panel` pattern for detail-rich player-facing data. Compact cards keep the route/sidebar overview readable; opening a card shows a consistent detail surface with header, back/fullscreen/close controls, readable sections, player-facing empty/error/loading copy, Escape handling, and focus restoration.
+
+The first representative surfaces are the `Душа`, `Герой`, and `Локация` cards. They render existing `/api/game-screen` DTO data only; they do not add gameplay rules, raw API details, raw JSON, or slash-command diagnostics. Those remain behind explicit `Расширенный режим` where appropriate.
+
+The built-frontend smoke test writes `TestResults/browser-smoke/detail-surfaces.html` as a dependency-light visual smoke artifact for compact cards, an opened desktop modal, and mobile full-panel behavior. Full screenshot automation remains a separate future task.
+
 ## Browser design system (#685)
 
 Issue #685 splits the Browser Client styling into a maintainable plain-CSS design system:

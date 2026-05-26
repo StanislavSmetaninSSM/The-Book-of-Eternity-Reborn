@@ -523,6 +523,63 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserDetailSurfaces_DefineReusableCardToModalPattern()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var detailSurfacePath = Path.Combine(FrontendRoot, "src", "components", "DetailSurface.tsx");
+        Assert.True(File.Exists(detailSurfacePath), $"Missing {detailSurfacePath}");
+        var detailSurface = File.ReadAllText(detailSurfacePath);
+        var styles = ReadFrontendStyles();
+        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
+        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
+
+        Assert.Contains("export interface DetailSurfaceSection", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("export function DetailSurfaceCard", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("role=\"dialog\"", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("aria-modal=\"true\"", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("aria-label=\"Вернуться к карточке\"", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("aria-label=\"Развернуть панель подробностей\"", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("aria-label=\"Закрыть подробности\"", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("event.key === 'Escape'", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("event.key === 'Tab'", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("getFocusableDetailControls", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("modalRef.current", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("role=\"group\"", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("triggerRef.current?.focus()", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("detail-surface-empty", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("detail-surface-error", detailSurface, StringComparison.Ordinal);
+        Assert.Contains("detail-surface-loading", detailSurface, StringComparison.Ordinal);
+        Assert.DoesNotContain("/api/", detailSurface, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw JSON", detailSurface, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", detailSurface, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("advancedCommand", detailSurface, StringComparison.Ordinal);
+
+        Assert.Contains("import { DetailSurfaceCard", app, StringComparison.Ordinal);
+        Assert.Contains("<DetailSurfaceCard", app, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"soul-identity\"", app, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"player-condition\"", app, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"world-location\"", app, StringComparison.Ordinal);
+        Assert.Contains("Детали души", app, StringComparison.Ordinal);
+        Assert.Contains("Детали героя", app, StringComparison.Ordinal);
+        Assert.Contains("Детали локации", app, StringComparison.Ordinal);
+
+        Assert.Contains(".detail-surface-grid", styles, StringComparison.Ordinal);
+        Assert.Contains(".detail-surface-card", styles, StringComparison.Ordinal);
+        Assert.Contains(".detail-surface-overlay", styles, StringComparison.Ordinal);
+        Assert.Contains(".detail-surface-modal", styles, StringComparison.Ordinal);
+        Assert.Contains(".detail-surface-modal.is-fullscreen", styles, StringComparison.Ordinal);
+        Assert.Contains(".detail-surface-sections", styles, StringComparison.Ordinal);
+        Assert.Contains("@media (max-width: 640px)", styles, StringComparison.Ordinal);
+        Assert.Contains(".detail-surface-modal", styles[styles.IndexOf("@media (max-width: 640px)", StringComparison.Ordinal)..], StringComparison.Ordinal);
+
+        Assert.Contains("#728", readme, StringComparison.Ordinal);
+        Assert.Contains("card → modal/full-panel", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("detail-surfaces.html", readme, StringComparison.Ordinal);
+        Assert.Contains("#728", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("detail-surfaces.html", hostDoc, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ReactAppShell_DocumentsIssue704RoutingAndPlayerAdvancedBoundary()
     {
         var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));

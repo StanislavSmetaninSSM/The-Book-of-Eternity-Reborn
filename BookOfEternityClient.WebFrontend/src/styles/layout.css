@@ -59,6 +59,12 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.detail-surface-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
 .action-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -106,6 +112,7 @@
   .workspace-grid,
   .split-grid,
   .split-grid.three,
+  .detail-surface-grid,
   .action-section-grid,
   .audio-settings-grid,
   .action-grid {
@@ -156,5 +163,24 @@
 
   .kv-list dd {
     text-align: left;
+  }
+
+  .detail-surface-overlay {
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .detail-surface-modal {
+    width: 100%;
+    max-height: 100vh;
+    min-height: 100vh;
+    border-radius: 0;
+  }
+
+  .detail-surface-header {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    background: var(--color-panel);
   }
 }

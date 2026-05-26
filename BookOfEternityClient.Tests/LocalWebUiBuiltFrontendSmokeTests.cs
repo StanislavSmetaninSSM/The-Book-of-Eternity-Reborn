@@ -93,6 +93,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 },
                 new JsonSerializerOptions { WriteIndented = true }));
         var navigationArtifactPath = Path.Combine(artifactRoot, "navigation-ia.html");
+        var detailSurfaceArtifactPath = Path.Combine(artifactRoot, "detail-surfaces.html");
 
         Assert.Equal(HttpStatusCode.OK, root.StatusCode);
         Assert.Equal(HttpStatusCode.OK, gameRoute.StatusCode);
@@ -118,6 +119,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var screen = JsonNode.Parse(screenResponse.Body)!.AsObject();
         var appSource = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src", "App.tsx"));
         await File.WriteAllTextAsync(navigationArtifactPath, BuildNavigationIaArtifact(appSource));
+        await File.WriteAllTextAsync(detailSurfaceArtifactPath, BuildDetailSurfaceArtifact(appSource));
 
         Assert.True(session["localOnly"]!.GetValue<bool>());
         Assert.Equal("CI-душа", menu["session"]!["soulName"]!.GetValue<string>());
@@ -154,6 +156,21 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.DoesNotContain("Debug", navigationArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Network", navigationArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("command coverage", navigationArtifact, StringComparison.OrdinalIgnoreCase);
+
+        Assert.True(File.Exists(detailSurfaceArtifactPath), $"Missing browser detail-surface visual smoke artifact at {detailSurfaceArtifactPath}");
+        var detailSurfaceArtifact = await File.ReadAllTextAsync(detailSurfaceArtifactPath);
+        Assert.Contains("data-artifact=\"browser-detail-surfaces\"", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"desktop\"", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"compact-cards\"", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"opened-modal\"", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"mobile\"", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("Душа", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("Детали души", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("Детали героя", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("Детали локации", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.DoesNotContain("Debug", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/api/", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("raw JSON", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
     }
 
     private static async Task<SmokeResponse> CaptureAsync(HttpClient client, string path)
@@ -169,6 +186,89 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
+
+    private static string BuildDetailSurfaceArtifact(string appSource)
+    {
+        Assert.Contains("detailSurfaceId=\"soul-identity\"", appSource, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"player-condition\"", appSource, StringComparison.Ordinal);
+        Assert.Contains("detailSurfaceId=\"world-location\"", appSource, StringComparison.Ordinal);
+        Assert.Contains("Детали души", appSource, StringComparison.Ordinal);
+        Assert.Contains("Детали героя", appSource, StringComparison.Ordinal);
+        Assert.Contains("Детали локации", appSource, StringComparison.Ordinal);
+
+        return """
+        <!doctype html>
+        <html lang="ru" data-artifact="browser-detail-surfaces">
+        <head>
+          <meta charset="utf-8">
+          <title>Browser Client Detail Surfaces Visual Smoke</title>
+          <style>
+            :root { color-scheme: dark; font-family: Inter, "Segoe UI", sans-serif; background: #100b17; color: #f9ecd1; }
+            body { margin: 0; padding: 24px; background: radial-gradient(circle at top left, rgba(216, 179, 106, 0.2), transparent 32%), #100b17; }
+            .artifact { display: grid; gap: 20px; max-width: 1180px; margin: 0 auto; }
+            .frame { border: 1px solid rgba(249, 236, 209, 0.18); border-radius: 26px; background: rgba(31, 24, 45, 0.88); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34); overflow: hidden; }
+            .frame header { padding: 18px 22px; border-bottom: 1px solid rgba(249, 236, 209, 0.12); }
+            .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 22px; }
+            .card, .modal, .section { border: 1px solid rgba(216, 179, 106, 0.28); border-radius: 18px; background: rgba(255, 255, 255, 0.055); padding: 16px; }
+            .card strong, .modal h2, .section h3 { color: #ffe2a6; }
+            .card p, .section p { color: rgba(249, 236, 209, 0.76); line-height: 1.5; }
+            .modal-wrap { padding: 22px; background: rgba(0, 0, 0, 0.28); }
+            .modal { display: grid; gap: 14px; max-width: 760px; margin: 0 auto; }
+            .modal-bar { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid rgba(249, 236, 209, 0.12); padding-bottom: 12px; }
+            .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+            .controls span { border: 1px solid rgba(249, 236, 209, 0.2); border-radius: 999px; padding: 6px 10px; color: #fff6df; }
+            .sections { display: grid; gap: 12px; }
+            .mobile { width: min(100%, 420px); margin: 0 auto; }
+            .mobile .modal { min-height: 520px; border-radius: 0; }
+            .sequence { color: #d8b36a; font-weight: 700; }
+            @media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+          </style>
+        </head>
+        <body>
+          <main class="artifact">
+            <section class="frame" data-viewport="desktop" data-state="compact-cards" aria-label="Compact card overview">
+              <header>
+                <h1>Card overview: detail-rich player data stays compact</h1>
+                <p class="sequence">Душа → Герой → Локация</p>
+              </header>
+              <div class="cards">
+                <article class="card"><strong>🕯️ Душа</strong><p>Безымянная душа · Мир смертных</p><p>Открыть детали</p></article>
+                <article class="card"><strong>⚔️ Герой</strong><p>Герой · состояние уточняется</p><p>Открыть детали</p></article>
+                <article class="card"><strong>🗺️ Локация</strong><p>Проверочный тракт · утро</p><p>Открыть детали</p></article>
+              </div>
+            </section>
+            <section class="frame" data-viewport="desktop" data-state="opened-modal" aria-label="Opened detail modal">
+              <header><h1>Opened desktop detail surface</h1></header>
+              <div class="modal-wrap">
+                <article class="modal">
+                  <div class="modal-bar">
+                    <div><p class="sequence">душа и царство</p><h2>Детали души</h2></div>
+                    <div class="controls"><span>Назад</span><span>Развернуть</span><span>Закрыть</span></div>
+                  </div>
+                  <p>Эта панель показывает только текущую игровую сводку души из локальной книги.</p>
+                  <div class="sections">
+                    <section class="section"><h3>Проявление</h3><p>Имя, царство и инкарнация читаются как игровые сведения.</p></section>
+                    <section class="section"><h3>Посмертный прогресс</h3><p>Чернильные перья, просветление и хранитель сгруппированы в понятный раздел.</p></section>
+                  </div>
+                </article>
+              </div>
+            </section>
+            <section class="frame mobile" data-viewport="mobile" data-state="opened-modal" aria-label="Mobile full panel detail surface">
+              <header><h1>Mobile full-panel surface</h1></header>
+              <article class="modal">
+                <div class="modal-bar">
+                  <div><p class="sequence">герой</p><h2>Детали героя</h2></div>
+                  <div class="controls"><span>Назад</span><span>Закрыть</span></div>
+                </div>
+                <section class="section"><h3>Состояние</h3><p>Здоровье, энергия и стойкость остаются читаемыми в узком окне.</p></section>
+                <section class="section"><h3>Детали локации</h3><p>Локация использует тот же full-panel язык на мобильном viewport.</p></section>
+              </article>
+            </section>
+          </main>
+        </body>
+        </html>
+        """;
+    }
 
     private static string BuildNavigationIaArtifact(string appSource)
     {
