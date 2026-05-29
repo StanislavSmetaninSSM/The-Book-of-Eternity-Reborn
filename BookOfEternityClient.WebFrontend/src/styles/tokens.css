@@ -1,43 +1,78 @@
 :root {
   color-scheme: dark;
+
+  /* ── Typography ── */
   --font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-display: Georgia, "Times New Roman", serif;
   --font-narrative: Georgia, "Times New Roman", serif;
-  --color-ink: #07090a;
-  --color-ink-2: #0d1416;
-  --color-obsidian: #111719;
-  --color-obsidian-2: #17201f;
-  --color-parchment: #f5eddd;
-  --color-parchment-muted: #cfc2aa;
-  --color-mist: #bfcac2;
-  --color-gold: #d8b36a;
-  --color-gold-bright: #f7dfa3;
-  --color-glass: rgba(13, 20, 22, 0.82);
-  --color-glass-soft: rgba(255, 255, 255, 0.055);
-  --color-glass-strong: rgba(7, 10, 11, 0.9);
-  --realm-mortal: #d8b36a;
-  --realm-chaos: #9c6dff;
-  --realm-shining: #8ee6d1;
-  --realm-handoff: #f0a85a;
-  --state-success: #91d6a4;
-  --state-warning: #f2d99e;
-  --state-danger: #ff8d7a;
-  --state-repair: #f0a85a;
-  --state-qte: #ff5f9e;
-  --radius-sm: 0.75rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.4rem;
-  --radius-xl: 2rem;
-  --space-1: 0.35rem;
-  --space-2: 0.55rem;
-  --space-3: 0.8rem;
+
+  /* ── Dark-fantasy ink foundations ── */
+  --color-ink: #060809;
+  --color-ink-2: #0b0f11;
+  --color-obsidian: #0e1314;
+  --color-obsidian-2: #141a19;
+  --color-ash: #1a1d1e;
+  --color-ash-light: #232828;
+
+  /* ── Parchment & text ── */
+  --color-parchment: #ede4d0;
+  --color-parchment-muted: #c4b8a0;
+  --color-mist: #a8b3ab;
+
+  /* ── Dark-fantasy accent palette ── */
+  --color-gold: #c9a24d;
+  --color-gold-bright: #ebd48e;
+  --color-gold-dim: #8a7033;
+  --color-bronze: #a07840;
+  --color-crimson: #8b1a1a;
+  --color-crimson-soft: #c44040;
+  --color-blood: #5c1010;
+  --color-candle: #f5dfa0;
+  --color-rune: #d4b86a;
+
+  /* ── Glass surfaces ── */
+  --color-glass: rgba(10, 14, 16, 0.86);
+  --color-glass-soft: rgba(255, 255, 255, 0.04);
+  --color-glass-strong: rgba(6, 8, 9, 0.92);
+  --color-panel: #0c0f10;
+
+  /* ── Realm accents ── */
+  --realm-mortal: #c9a24d;
+  --realm-chaos: #8b5fd4;
+  --realm-shining: #6dcfb8;
+  --realm-handoff: #d48a3a;
+
+  /* ── State colours ── */
+  --state-success: #7ab88a;
+  --state-warning: #d4b36a;
+  --state-danger: #c44040;
+  --state-repair: #d48a3a;
+  --state-qte: #c94080;
+
+  /* ── Radii ── */
+  --radius-sm: 0.6rem;
+  --radius-md: 0.9rem;
+  --radius-lg: 1.2rem;
+  --radius-xl: 1.8rem;
+
+  /* ── Spacing ── */
+  --space-1: 0.3rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
   --space-4: 1rem;
   --space-5: 1.4rem;
   --space-6: 2rem;
-  --shadow-panel: 0 1.4rem 4rem rgba(0, 0, 0, 0.28);
-  --shadow-panel-strong: 0 2rem 5rem rgba(0, 0, 0, 0.38);
-  --shadow-glow: 0 0 2rem color-mix(in srgb, var(--realm-accent, var(--color-gold)) 24%, transparent);
-  --motion-fast: 140ms ease-out;
-  --motion-panel: 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* ── Shadows ── */
+  --shadow-panel: 0 1.2rem 3.5rem rgba(0, 0, 0, 0.4);
+  --shadow-panel-strong: 0 1.8rem 5rem rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 1.8rem color-mix(in srgb, var(--realm-accent, var(--color-gold)) 18%, transparent);
+  --shadow-candle: 0 0 4rem color-mix(in srgb, var(--color-gold) 8%, transparent);
+
+  /* ── Motion ── */
+  --motion-fast: 120ms ease-out;
+  --motion-panel: 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* ── Active realm accent (overridden at runtime) ── */
   --realm-accent: var(--realm-mortal);
 }
