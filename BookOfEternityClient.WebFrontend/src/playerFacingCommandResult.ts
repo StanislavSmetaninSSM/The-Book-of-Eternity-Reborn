@@ -47,7 +47,14 @@ const playerDefaultForbiddenPatterns: RegExp[] = [
   /\bDTO\b/,
   /\bdebug\b/i,
   /\b[a-z][a-z0-9]*_[a-z0-9_]*\b/i,
-  /[A-Za-z]:[\\/]/
+  /[A-Za-z]:[\\/]/,
+  /Файл\s+\S+\.json\b/i,
+  /\.json\b/,
+  /Артефакты?\s+протокола/i,
+  /не найден или пуст/i,
+  /не найден или отсутствует/i,
+  /Локальный ход|ход ГМа protocol/i,
+  /JSON:\s*\S+/i
 ];
 
 export function sanitizePlayerDefaultCommandResult(
