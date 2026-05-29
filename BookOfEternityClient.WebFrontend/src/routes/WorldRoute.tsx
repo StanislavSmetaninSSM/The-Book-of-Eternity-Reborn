@@ -6,25 +6,26 @@ import { EmptyOrFailure } from '../components/ErrorNotice';
 import { RebornSystemsPanel } from '../components/RebornSystemsPanel';
 import { ShellPanel } from '../components/ShellPanel';
 import { isSuccess, useShell } from '../context/ShellContext';
+import { useSceneImage } from '../hooks/useSceneImage';
 import { formatTurnStateTitle, getComposerDisabledReason } from '../utils/formatters';
 
 export default function WorldRoute() {
   const [showAllActions, setShowAllActions] = useState(false);
   const { advancedEnabled, readyState } = useShell();
+  const game = readyState && isSuccess(readyState.game) ? readyState.game.data : null;
+  const locationImage = useSceneImage(game?.narrative.imagePrompt, game?.media.gallery ?? [], 'location', game?.world.location);
 
   if (!readyState) {
     return null;
   }
 
-  if (!isSuccess(readyState.game)) {
+  if (!isSuccess(readyState.game) || !game) {
     return <EmptyOrFailure result={readyState.game} advancedEnabled={advancedEnabled} errorTitle="Мир требует внимания" empty={{
       title: 'Мир ждёт первой записи',
       message: 'Карта, журнал и фракции заполнятся из текущей главы после открытия книги.',
       action: 'Откройте или загрузите сессию, чтобы увидеть состояние мира.'
     }} />;
   }
-
-  const game = readyState.game.data;
   const themeKey = game.theme.key.toLowerCase();
   const afterlifeRealmActive =
     themeKey.includes('chaos') ||
@@ -33,6 +34,11 @@ export default function WorldRoute() {
 
   return (
     <ShellPanel title="Мир" eyebrow="карта, журнал и действия">
+      {locationImage.url && (
+        <div className="world-location-hero" aria-hidden="true">
+          <img src={locationImage.url} alt="" loading="lazy" />
+        </div>
+      )}
       <div className="split-grid three">
         <DetailSurfaceCard
           detailSurfaceId="world-location"

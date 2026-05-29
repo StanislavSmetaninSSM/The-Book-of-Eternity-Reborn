@@ -58,6 +58,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<ValidationService>();
         builder.Services.AddSingleton<CharacteristicsService>();
         builder.Services.AddSingleton<ImageService>();
+        builder.Services.AddSingleton<BrowserMediaGenerationService>();
         builder.Services.AddSingleton<LocalMediaService>();
         builder.Services.AddSingleton<AudioService>();
         builder.Services.AddSingleton<BrowserAudioService>();
@@ -158,6 +159,8 @@ public static class LocalWebUiHost
                 fileDownloadName: null,
                 enableRangeProcessing: true);
         });
+        app.MapPost("/api/media/generate", async (BrowserMediaGenerateRequest request, BrowserMediaGenerationService gen) =>
+            Results.Json(await gen.GenerateAsync(request), WebJsonOptions));
         app.MapGet("/api/qte/state", async (QteWebInteractionService qte) =>
             await qte.BuildStateAsync());
         app.MapPost("/api/qte/offer", async (QteWebOfferDecisionRequest request, QteWebInteractionService qte) =>

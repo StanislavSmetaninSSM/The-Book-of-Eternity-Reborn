@@ -353,6 +353,19 @@ export interface BrowserGameScreenMediaItemDto {
   modifiedAtUtc: IsoDateTimeString;
 }
 
+export interface BrowserMediaGenerateRequest {
+  prompt: string;
+  entityType: string;
+  entityKey: string;
+}
+
+export interface BrowserMediaGenerateResult {
+  success: boolean;
+  mediaId: string | null;
+  url: string | null;
+  errorMessage: string | null;
+}
+
 export interface BrowserGameScreenAfterlifeDto {
   shiningRadianceExperience: number;
   shiningRadianceTier: number;

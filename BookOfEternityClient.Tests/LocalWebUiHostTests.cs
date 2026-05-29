@@ -8,6 +8,7 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using BookOfEternityClient.WebUi;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -1152,6 +1153,52 @@ public sealed class LocalWebUiHostTests : IDisposable
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         Assert.Contains("разреш", json["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MediaGenerateEndpoint_ReturnsDisabledMessageWhenImageProviderOff()
+    {
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/media/generate", new
+        {
+            prompt = "Портрет героя в сиянии свечей",
+            entityType = "npc",
+            entityKey = "hero"
+        });
+        var root = JsonNode.Parse((await response.Content.ReadAsStringAsync())!)!.AsObject();
+
+        response.EnsureSuccessStatusCode();
+        Assert.False(root["success"]!.GetValue<bool>());
+        Assert.Contains("отключена", root["errorMessage"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task MediaGenerateEndpoint_ReturnsExistingMediaReferenceWhenImageAlreadyExists()
+    {
+        WriteSessionImage("images/npcs/hero.png");
+        var url = "http://127.0.0.1:" + GetFreeLoopbackPort();
+        await using var app = LocalWebUiHost.Build(Array.Empty<string>(), CreateHostOptions(url));
+        app.Services.GetRequiredService<GameSettings>().ImageProvider = "pollinations";
+        await app.StartAsync();
+
+        using var client = new HttpClient { BaseAddress = new Uri(url) };
+        using var response = await client.PostAsJsonAsync("/api/media/generate", new
+        {
+            prompt = "Портрет героя в сиянии свечей",
+            entityType = "npc",
+            entityKey = "hero"
+        });
+        var root = JsonNode.Parse((await response.Content.ReadAsStringAsync())!)!.AsObject();
+
+        response.EnsureSuccessStatusCode();
+        Assert.True(root["success"]!.GetValue<bool>());
+        Assert.Equal(LocalMediaService.CreateMediaIdForRelativePath("images/npcs/hero.png"), root["mediaId"]!.GetValue<string>());
+        Assert.Equal("/api/media/" + Uri.EscapeDataString(LocalMediaService.CreateMediaIdForRelativePath("images/npcs/hero.png")), root["url"]!.GetValue<string>());
+        Assert.Null(root["errorMessage"]);
     }
 
     [Fact]

@@ -14,6 +14,8 @@ import type {
   BrowserLoadSaveRequest,
   BrowserLoadSaveResultDto,
   BrowserMainMenuDto,
+  BrowserMediaGenerateRequest,
+  BrowserMediaGenerateResult,
   BrowserPlayerActionRequest,
   BrowserPlayerActionResult,
   BrowserValidationSummaryDto,
@@ -52,6 +54,7 @@ export interface BrowserApiClient {
   resolveQteOffer(request: QteWebOfferDecisionRequest): Promise<BrowserApiResult<QteWebStateDto>>;
   resolveQteAction(request: QteWebActionRequest): Promise<BrowserApiResult<QteWebStateDto>>;
   submitPlayerAction(request: BrowserPlayerActionRequest): Promise<BrowserApiResult<BrowserPlayerActionResult>>;
+  generateMedia(request: BrowserMediaGenerateRequest): Promise<BrowserApiResult<BrowserMediaGenerateResult>>;
 }
 
 export const browserApiEndpointDocs = [
@@ -74,7 +77,8 @@ export const browserApiEndpointDocs = [
   { id: 'qte-state', method: 'GET', path: '/api/qte/state', playerSurface: 'player-default', response: 'QteWebStateDto' },
   { id: 'qte-offer', method: 'POST', path: '/api/qte/offer', playerSurface: 'player-default', response: 'QteWebStateDto' },
   { id: 'qte-action', method: 'POST', path: '/api/qte/action', playerSurface: 'player-default', response: 'QteWebStateDto' },
-  { id: 'player-action', method: 'POST', path: '/api/explorer/player-action', playerSurface: 'player-default', response: 'BrowserPlayerActionResult' }
+  { id: 'player-action', method: 'POST', path: '/api/explorer/player-action', playerSurface: 'player-default', response: 'BrowserPlayerActionResult' },
+  { id: 'media-generate', method: 'POST', path: '/api/media/generate', playerSurface: 'player-default', response: 'BrowserMediaGenerateResult' }
 ] as const satisfies BrowserApiEndpointDescriptor[];
 
 export const browserApiContractSummary = {
@@ -107,7 +111,8 @@ export function createBrowserApiClient(options: BrowserApiClientOptions = {}): B
     getQteState: () => requestJson<QteWebStateDto>(fetcher, baseUrl, '/api/qte/state'),
     resolveQteOffer: (request) => requestJson<QteWebStateDto>(fetcher, baseUrl, '/api/qte/offer', jsonInit('POST', request)),
     resolveQteAction: (request) => requestJson<QteWebStateDto>(fetcher, baseUrl, '/api/qte/action', jsonInit('POST', request)),
-    submitPlayerAction: (request) => requestJson<BrowserPlayerActionResult>(fetcher, baseUrl, '/api/explorer/player-action', jsonInit('POST', request))
+    submitPlayerAction: (request) => requestJson<BrowserPlayerActionResult>(fetcher, baseUrl, '/api/explorer/player-action', jsonInit('POST', request)),
+    generateMedia: (request) => requestJson<BrowserMediaGenerateResult>(fetcher, baseUrl, '/api/media/generate', jsonInit('POST', request))
   };
 }
 
