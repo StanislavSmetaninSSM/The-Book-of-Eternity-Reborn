@@ -352,9 +352,9 @@ public sealed record BrowserGameScreenTurnStateDto(
         new("waiting-gm", "Ожидаем ответ ГМа", "Ход отправлен, и нужно дождаться результата ГМа.", "player-default"),
         new("ready", "Ответ ГМа готов", "Ответ ГМа готов к принятию через обычный turn lifecycle.", "player-default"),
         new("accepted", "Ответ ГМа принят", "Результат ответа ГМа уже принят в локальное состояние.", "player-default"),
-        new("validation-failed", "Проверка не прошла", "Состояние требует ремонта перед продолжением.", "player-default"),
-        new("repair-required", "Нужен ремонт", "Snapshot/rollback artifacts требуют repair перед новыми действиями.", "player-default"),
-        new("error-restored", "Ошибка восстановлена", "GM turn завершился ошибкой; rollback/repair должен быть разобран.", "player-default"),
+        new("validation-failed", "Проверка не прошла", "Состояние требует починки перед продолжением.", "advanced-only"),
+        new("repair-required", "Нужна починка", "Незавершённый ход оставил следы отката. Сначала завершите починку.", "advanced-only"),
+        new("error-restored", "Ошибка восстановлена", "Ход ГМа завершился ошибкой; откат/починка должны быть разобраны.", "advanced-only"),
         new("cancelled", "Ход отменён", "Ожидающий ход был отменён или очищен безопасным lifecycle-действием.", "player-default")
     ];
 
@@ -368,19 +368,19 @@ public sealed record BrowserGameScreenTurnStateDto(
             {
                 return Create(
                     state: "pending-turn-repair",
-                    title: "Нужен repair pending turn",
+                    title: "Требуется починка незавершённого хода",
                     message: lifecycle.Guidance.FirstOrDefault()?.Message ?? lifecycle.PendingTurn.Message,
                     canStartBrowserWrite: false,
                     lifecycle: lifecycle,
                     phase: "repair-required",
                     severity: "error",
-                    playerGuidance: "Ожидающий ход оставил snapshot/rollback следы. Сначала завершите ремонт, затем возвращайтесь к игре.",
+                    playerGuidance: "Ожидающий ход оставил следы отката. Сначала завершите починку в расширенном режиме, затем возвращайтесь к игре.",
                     actions:
                     [
                         Action(
                             "open-repair-guidance",
-                            "Открыть подсказки ремонта",
-                            "Подробные repair-операции и rollback-детали доступны в расширенном режиме.",
+                            "Открыть подсказки починки",
+                            "Операции починки и детали отката доступны в расширенном режиме.",
                             "advanced-only")
                     ]);
             }
@@ -389,19 +389,19 @@ public sealed record BrowserGameScreenTurnStateDto(
             {
                 return Create(
                     state: "gm-turn-error",
-                    title: "Ход GM завершился ошибкой",
+                    title: "Ход ГМа завершился ошибкой",
                     message: lifecycle.Guidance.FirstOrDefault()?.Message ?? lifecycle.PendingTurn.Message,
                     canStartBrowserWrite: false,
                     lifecycle: lifecycle,
                     phase: "error-restored",
                     severity: "error",
-                    playerGuidance: "GM turn завершился ошибкой. Откройте repair/rollback в расширенном режиме, прежде чем продолжать игру.",
+                    playerGuidance: "Последний ход ГМа завершился ошибкой. Откройте починку в расширенном режиме, прежде чем продолжать игру.",
                     actions:
                     [
                         Action(
                             "open-advanced-repair",
-                            "Открыть repair в расширенном режиме",
-                            "Используйте техническую панель, чтобы разобрать ошибку GM turn и восстановление состояния.",
+                            "Открыть починку в расширенном режиме",
+                            "Используйте техническую панель, чтобы разобрать ошибку хода и восстановление состояния.",
                             "advanced-only")
                     ]);
             }
@@ -410,38 +410,38 @@ public sealed record BrowserGameScreenTurnStateDto(
             {
                 return Create(
                     state: "ready-gm-response",
-                    title: "Ответ GM готов к принятию",
+                    title: "Ответ ГМа готов к принятию",
                     message: lifecycle.Guidance.FirstOrDefault()?.Message ?? lifecycle.PendingTurn.Message,
                     canStartBrowserWrite: false,
                     lifecycle: lifecycle,
                     phase: "ready",
                     severity: "success",
-                    playerGuidance: "Ответ ГМа готов: нужно принять его через обычную обработку хода, прежде чем начинать новый ввод.",
+                    playerGuidance: "Ответ ГМа готов: примите его через обычную обработку хода, прежде чем начинать новый ввод.",
                     actions:
                     [
                         Action(
                             "accept-gm-response",
                             "Принять ответ ГМа",
-                            "Принятие ответа остаётся в безопасном lifecycle/advanced flow, пока player-default кнопка не реализована.",
+                            "Принятие ответа остаётся в безопасном жизненном цикле; кнопка для обычного режима будет добавлена позже.",
                             "advanced-only")
                     ]);
             }
 
             return Create(
                 state: "pending-gm-turn",
-                title: "Ожидает ответ GM",
+                title: "Ожидает ответ ГМа",
                 message: lifecycle.PendingTurn.Message,
                 canStartBrowserWrite: false,
                 lifecycle: lifecycle,
                 phase: "waiting-gm",
                 severity: "warning",
-                playerGuidance: "Ход уже отправлен ГМу. Дождитесь ответа, отмены или repair перед любыми локальными действиями.",
+                playerGuidance: "Ход отправлен ГМу. Дождитесь ответа перед любыми новыми действиями.",
                 actions:
                 [
                     Action(
                         "wait-for-gm",
                         "Ждать ответ ГМа",
-                        "Не меняйте локальное состояние, пока ожидающий ход не завершится безопасно.",
+                        "Не меняйте локальное состояние, пока ожидающий ход не завершится.",
                         "player-default")
                 ]);
         }
@@ -495,19 +495,19 @@ public sealed record BrowserGameScreenTurnStateDto(
         {
             return Create(
                 state: "validation-errors",
-                title: "Нужен ремонт состояния",
+                title: "Требуется проверка состояния",
                 message: lifecycle.Validation.StatusLabel,
                 canStartBrowserWrite: false,
                 lifecycle: lifecycle,
                 phase: "validation-failed",
                 severity: "error",
-                playerGuidance: "Проверка нашла ошибки состояния. Подробности и repair-действия доступны в расширенном режиме.",
+                playerGuidance: "Проверка нашла ошибки состояния. Подробности и операции починки доступны в расширенном режиме.",
                 actions:
                 [
                     Action(
                         "review-validation",
                         "Проверить состояние",
-                        "Откройте расширенный режим, чтобы увидеть группы ошибок и выполнить ремонт.",
+                        "Откройте расширенный режим, чтобы увидеть группы ошибок и выполнить починку.",
                         "advanced-only")
                 ]);
         }
@@ -568,7 +568,7 @@ public sealed record BrowserGameScreenTurnStateDto(
         KnownPhaseCatalog.FirstOrDefault(item => string.Equals(item.Id, phase, StringComparison.OrdinalIgnoreCase))?.Label
         ?? "Состояние хода";
 
-    private static bool ArtifactExists(BrowserPendingTurnStatus pending, string path) =>
+    internal static bool ArtifactExists(BrowserPendingTurnStatus pending, string path) =>
         pending.Artifacts.Any(artifact =>
             artifact.Exists &&
             string.Equals(artifact.Path, path, StringComparison.OrdinalIgnoreCase));
@@ -599,11 +599,44 @@ public sealed record BrowserGameScreenActionComposerDto(
     {
         if (lifecycle.PendingTurn.HasActiveGmTurn)
         {
+            // Distinguish repair/error states from genuine GM-waiting (issue #743)
+            if (BrowserGameScreenTurnStateDto.ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath) ||
+                BrowserGameScreenTurnStateDto.ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.PendingTurnSnapshotDirectory) ||
+                BrowserGameScreenTurnStateDto.ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.ExplorerRollbackDirectory))
+            {
+                return new BrowserGameScreenActionComposerDto(
+                    CanSubmit: false,
+                    Mode: "repair-required",
+                    Placeholder: "Требуется починка незавершённого хода...",
+                    Guidance: "Ожидающий ход оставил следы отката. Завершите починку в расширенном режиме перед продолжением.",
+                    DisabledReason: lifecycle.PendingTurn.Message);
+            }
+
+            if (BrowserGameScreenTurnStateDto.ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.TurnErrorPath))
+            {
+                return new BrowserGameScreenActionComposerDto(
+                    CanSubmit: false,
+                    Mode: "gm-turn-error",
+                    Placeholder: "Ход ГМа завершился ошибкой...",
+                    Guidance: "Последний ход ГМа завершился ошибкой. Откройте расширенный режим для починки.",
+                    DisabledReason: lifecycle.PendingTurn.Message);
+            }
+
+            if (BrowserGameScreenTurnStateDto.ArtifactExists(lifecycle.PendingTurn, BrowserPendingTurnInspector.TurnCompletePath))
+            {
+                return new BrowserGameScreenActionComposerDto(
+                    CanSubmit: false,
+                    Mode: "ready-gm-response",
+                    Placeholder: "Ответ ГМа готов к принятию...",
+                    Guidance: "Ответ ГМа готов. Примите его через расширенный режим перед новым вводом.",
+                    DisabledReason: lifecycle.PendingTurn.Message);
+            }
+
             return new BrowserGameScreenActionComposerDto(
                 CanSubmit: false,
                 Mode: "waiting-for-gm",
-                Placeholder: "GM уже обрабатывает ход...",
-                Guidance: "Дождитесь ответа GM или откройте расширенный режим для ремонта.",
+                Placeholder: "ГМ обрабатывает ход...",
+                Guidance: "Ход отправлен ГМу. Дождитесь ответа перед новыми действиями.",
                 DisabledReason: lifecycle.PendingTurn.Message);
         }
 
@@ -622,8 +655,8 @@ public sealed record BrowserGameScreenActionComposerDto(
             return new BrowserGameScreenActionComposerDto(
                 CanSubmit: false,
                 Mode: "repair-required",
-                Placeholder: "Сначала нужен repair состояния...",
-                Guidance: "Исправьте ошибки валидации перед новым художественным вводом.",
+                Placeholder: "Требуется починка состояния...",
+                Guidance: "Исправьте ошибки проверки перед новым художественным вводом.",
                 DisabledReason: lifecycle.Validation.StatusLabel);
         }
 
