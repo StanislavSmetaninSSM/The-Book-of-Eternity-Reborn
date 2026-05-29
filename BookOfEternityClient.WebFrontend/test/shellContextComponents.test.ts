@@ -64,6 +64,10 @@ const shellContextValue: ShellContextValue = {
   setAdvancedEnabled: (updater) => {
     updater(false);
   },
+  composerText: '',
+  setComposerText: () => undefined,
+  composerNotice: null,
+  submitComposer: () => undefined,
   loadBrowserState: async () => undefined
 };
 

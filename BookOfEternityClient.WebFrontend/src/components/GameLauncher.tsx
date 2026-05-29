@@ -1,0 +1,336 @@
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import { browserApi } from '../api/client';
+import type { BrowserApiResult, BrowserMainMenuDto, ExplorerCommandResult } from '../api/contracts';
+import { isSuccess, useShell } from '../context/ShellContext';
+import { sanitizePlayerDefaultCommandResult } from '../playerFacingCommandResult';
+import { toCommandNotice, toLauncherSaveFailureNotice } from '../utils/formatters';
+import { playerLauncherAboutText, toPlayerFacingText } from '../utils/playerCopy';
+import { ActionCommandResult } from './CommandResult';
+import { buildDefaultPromptAnswers, type PromptAnswers } from './PromptForm';
+
+type LauncherMode = 'continue' | 'load' | 'new-game' | 'settings' | 'about';
+interface LauncherPrimaryAction { mode: LauncherMode; label: string; description: string; enabled: boolean; disabledReason: string; }
+
+const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about'];
+const launcherModeDetails: Record<LauncherMode, { label: string; description: string }> = {
+  continue: { label: 'Продолжить главу', description: 'Вернуться к текущей сохранённой главе.' },
+  load: { label: 'Загрузить сохранение', description: 'Выбрать одну из доступных локальных записей.' },
+  'new-game': { label: 'Начать новую главу', description: 'Открыть подготовку новой главы, когда локальная книга разрешает этот шаг.' },
+  settings: { label: 'Настроить клиент', description: 'Открыть настройки локального клиента и звука.' },
+  about: { label: 'Сведения о книге', description: 'Показать краткое описание книги и браузерного клиента.' }
+};
+
+export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
+  const { loadBrowserState: onStateRefresh, setActiveRoute: onActiveRouteChange } = useShell();
+  const primaryAction = useMemo(() => selectPrimaryLauncherAction(menu), [menu]);
+  const [activeMode, setActiveMode] = useState<LauncherMode>(primaryAction.mode);
+  const [launcherNotice, setLauncherNotice] = useState('');
+  const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
+  const isLauncherMountedRef = useRef(true);
+
+  useEffect(() => {
+    isLauncherMountedRef.current = true;
+    return () => {
+      isLauncherMountedRef.current = false;
+    };
+  }, []);
+
+  function activateLauncherMode(mode: LauncherMode) {
+    setLauncherNotice('');
+    if (mode === 'continue') {
+      onActiveRouteChange('game');
+      return;
+    }
+    if (mode === 'settings') {
+      onActiveRouteChange('settings');
+      return;
+    }
+    setActiveMode(mode);
+  }
+
+  async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
+    setLoadingSaveId(slot.saveId);
+    setLauncherNotice('Загружаем выбранное сохранение…');
+    try {
+      const result = await browserApi.loadSave({ saveId: slot.saveId });
+      if (!isLauncherMountedRef.current) {
+        return;
+      }
+      if (isSuccess(result) && result.data.success) {
+        setLauncherNotice(`Сохранение «${toPlayerFacingText(slot.displayName, 'выбранная запись')}» загружено. Открываем главу…`);
+        onActiveRouteChange('game');
+        await onStateRefresh();
+        return;
+      }
+      if (isSuccess(result)) {
+        setLauncherNotice(toLauncherSaveFailureNotice(result.data.error));
+        return;
+      }
+      setLauncherNotice(toLauncherSaveFailureNotice(result.playerMessage));
+    } catch {
+      if (!isLauncherMountedRef.current) {
+        return;
+      }
+      setLauncherNotice('Сохранение не удалось загрузить. Проверьте локальный клиент и попробуйте ещё раз.');
+    } finally {
+      if (isLauncherMountedRef.current) {
+        setLoadingSaveId(null);
+      }
+    }
+  }
+
+  function renderModeContent(): ReactNode {
+    const modeAction = findLauncherMenuAction(menu, activeMode);
+    const modeDescription = launcherActionDescription(menu, activeMode);
+    switch (activeMode) {
+      case 'continue':
+        return (
+          <section className="launcher-mode-panel" aria-label="Продолжение главы">
+            <h3>Продолжить главу</h3>
+            <p>{toPlayerFacingText(menu.session.continueReason, 'Книга сообщит, когда текущую главу можно продолжить.')}</p>
+            <dl className="kv-list">
+              <div><dt>Душа</dt><dd>{menu.session.soulName || 'Новая душа'}</dd></div>
+              <div><dt>Царство</dt><dd>{toPlayerFacingText(menu.session.realmLabel, 'царство уточняется')}</dd></div>
+              <div><dt>Ход</dt><dd>{toPlayerFacingText(menu.session.turnLabel, 'ход уточняется')}</dd></div>
+            </dl>
+            {!modeAction?.enabled && <p className="warning-text">{launcherActionDescription(menu, 'continue')}</p>}
+          </section>
+        );
+      case 'load': {
+        const loadAction = findLauncherMenuAction(menu, 'load');
+        const loadAvailable = Boolean(loadAction?.enabled);
+        return (
+          <section className="launcher-mode-panel" aria-label="Загрузка сохранения">
+            <h3>Загрузить сохранение</h3>
+            <p>{modeDescription}</p>
+            <div className="launcher-save-list">
+              {menu.saves.length > 0 ? menu.saves.map((slot) => (
+                <article key={slot.saveId} className="launcher-save-card">
+                  <div>
+                    <h4>{toPlayerFacingText(slot.displayName, 'Сохранение')}</h4>
+                    <p>{toPlayerFacingText(slot.description, 'Локальная запись готова к загрузке.')}</p>
+                  </div>
+                  <dl className="kv-list">
+                    <div><dt>Тип</dt><dd>{toPlayerFacingText(slot.scopeLabel, 'сохранение')}</dd></div>
+                    <div><dt>Герой</dt><dd>{slot.characterName || 'не указан'}</dd></div>
+                    <div><dt>Ход</dt><dd>{toPlayerFacingText(slot.turnLabel, 'ход уточняется')}</dd></div>
+                  </dl>
+                  <button type="button" className="launcher-secondary-action" disabled={!loadAvailable || loadingSaveId !== null} onClick={() => void loadSaveSlot(slot)}>
+                    {loadingSaveId === slot.saveId ? 'Загружаем…' : 'Загрузить сохранение'}
+                  </button>
+                </article>
+              )) : <p className="muted">Сохранений пока нет. Когда локальная книга найдёт ручные или автоматические записи, они появятся здесь.</p>}
+            </div>
+            {!loadAvailable && <p className="warning-text">{launcherActionDescription(menu, 'load')}</p>}
+          </section>
+        );
+      }
+      case 'new-game':
+        return <NewChapterStartPanel modeAction={modeAction} modeDescription={modeDescription} />;
+      case 'settings':
+        return (
+          <section className="launcher-mode-panel" aria-label="Настройки клиента">
+            <h3>Настроить клиент</h3>
+            <p>{toPlayerFacingText(menu.options.guidance, 'Настройки локального клиента доступны в отдельном разделе.')}</p>
+            <button type="button" className="launcher-secondary-action" onClick={() => onActiveRouteChange('settings')}>Открыть настройки</button>
+          </section>
+        );
+      case 'about':
+        return (
+          <section className="launcher-mode-panel" aria-label="Сведения о книге">
+            <h3>Сведения о книге</h3>
+            <h4>{toPlayerFacingText(menu.about.title, 'Книга Вечности: Перерождение')}</h4>
+            <p>{playerLauncherAboutText(menu.about.body)}</p>
+          </section>
+        );
+    }
+  }
+
+  return (
+    <article className="game-launcher" aria-labelledby="browser-launcher-title">
+      <div className="launcher-window">
+        <div className="launcher-copy">
+          <p className="panel-eyebrow">главная книга</p>
+          <h2 id="browser-launcher-title">Открыть книгу</h2>
+          <p>{toPlayerFacingText(menu.session.continueReason, 'Выберите продолжение, загрузку или новую главу.')}</p>
+        </div>
+        <button type="button" className="launcher-primary-action" disabled={!primaryAction.enabled} onClick={() => activateLauncherMode(primaryAction.mode)}>
+          <strong>{primaryAction.label}</strong>
+          <span>{primaryAction.enabled ? primaryAction.description : primaryAction.disabledReason}</span>
+        </button>
+        <div className="launcher-mode-tabs" role="tablist" aria-label="Режимы главной книги">
+          {launcherModes.map((mode) => {
+            const details = launcherModeDetails[mode];
+            const action = findLauncherMenuAction(menu, mode);
+            return (
+              <button key={mode} type="button" role="tab" aria-selected={activeMode === mode} className={`launcher-mode-tab${activeMode === mode ? ' is-active' : ''}`} onClick={() => setActiveMode(mode)}>
+                <strong>{details.label}</strong>
+                <span>{action && !action.enabled ? 'пока недоступно' : 'открыть'}</span>
+              </button>
+            );
+          })}
+        </div>
+        {renderModeContent()}
+        <div className="launcher-secondary-actions">
+          {launcherModes.filter((mode) => mode !== primaryAction.mode).map((mode) => {
+            const details = launcherModeDetails[mode];
+            const action = findLauncherMenuAction(menu, mode);
+            const disabled = Boolean(action && !action.enabled && mode !== 'settings' && mode !== 'about');
+            return (
+              <button key={mode} type="button" className="launcher-secondary-action" disabled={disabled} onClick={() => activateLauncherMode(mode)}>
+                <strong>{details.label}</strong>
+                <span>{launcherActionDescription(menu, mode)}</span>
+              </button>
+            );
+          })}
+        </div>
+        {launcherNotice && <p className="composer-notice">{launcherNotice}</p>}
+      </div>
+    </article>
+  );
+}
+
+function NewChapterStartPanel({ modeAction, modeDescription }: { modeAction: BrowserMainMenuDto['actions'][number] | undefined; modeDescription: string; }) {
+  const [notice, setNotice] = useState('');
+  const [newChapterResult, setNewChapterResult] = useState<BrowserApiResult<ExplorerCommandResult> | null>(null);
+  const [newChapterPromptAnswers, setNewChapterPromptAnswers] = useState<PromptAnswers>({});
+  const [submissionMode, setSubmissionMode] = useState<'opening' | 'submitting' | null>(null);
+  const isSubmitting = submissionMode !== null;
+  const isNewChapterMountedRef = useRef(true);
+  const startCommand = modeAction?.command.trim() ?? '';
+  const canOpenStartFlow = Boolean(modeAction?.enabled && startCommand);
+  const unavailableReason = !modeAction
+    ? 'Подготовка новой главы пока недоступна из браузерного меню. Продолжите текущую главу, загрузите сохранение или проверьте состояние локальной книги.'
+    : modeAction.enabled && !startCommand
+      ? 'Подготовка новой главы пока не подключила браузерную форму. Действие не обещает поля, пока локальное меню не отдаст безопасный поток.'
+      : launcherModeUnavailableReason(modeAction, modeDescription);
+
+  useEffect(() => () => {
+    isNewChapterMountedRef.current = false;
+  }, []);
+
+  async function openNewChapterFlow() {
+    if (!canOpenStartFlow) {
+      setNotice(unavailableReason);
+      return;
+    }
+    setSubmissionMode('opening');
+    setNotice('Открываем форму новой главы…');
+    const result = sanitizeNewChapterCommandResult(await browserApi.executeExplorerCommand({ command: startCommand, ownerLabel: 'Главная книга' }));
+    if (!isNewChapterMountedRef.current) {
+      return;
+    }
+    setNewChapterResult(result);
+    if (isSuccess(result)) {
+      setNewChapterPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
+      setNotice(toNewChapterNotice(result.data));
+    } else {
+      setNotice(toPlayerFacingText(result.playerMessage, 'Подготовка новой главы сейчас недоступна.'));
+    }
+    setSubmissionMode(null);
+  }
+
+  async function submitNewChapterPromptAnswers(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!newChapterResult || !isSuccess(newChapterResult) || !newChapterResult.data.interactiveSession) {
+      return;
+    }
+    setSubmissionMode('submitting');
+    setNotice('Отправляем форму новой главы…');
+    const session = newChapterResult.data.interactiveSession;
+    const result = sanitizeNewChapterCommandResult(await browserApi.submitPromptSession({ sessionId: session.sessionId, ownerId: session.ownerId, answers: newChapterPromptAnswers }));
+    if (!isNewChapterMountedRef.current) {
+      return;
+    }
+    setNewChapterResult(result);
+    if (isSuccess(result)) {
+      setNewChapterPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
+      setNotice(toNewChapterNotice(result.data));
+    } else {
+      setNotice(toPlayerFacingText(result.playerMessage, 'Форма новой главы сейчас недоступна.'));
+    }
+    setSubmissionMode(null);
+  }
+
+  return (
+    <section className="launcher-mode-panel launcher-new-chapter-flow" aria-label="Новая глава">
+      <h3>Начать новую главу</h3>
+      <p>{modeDescription}</p>
+      <p className="muted">Форма новой главы открывается из существующего локального потока книги; браузер только показывает поля и отправляет ответы.</p>
+      {!canOpenStartFlow && <p className="warning-text">{unavailableReason}</p>}
+      <button type="button" className="launcher-secondary-action" disabled={!canOpenStartFlow || isSubmitting} onClick={() => void openNewChapterFlow()}>
+        <strong>{submissionMode === 'opening' ? 'Открываем…' : submissionMode === 'submitting' ? 'Отправляем…' : 'Открыть форму новой главы'}</strong>
+        <span>{canOpenStartFlow ? 'Показать поля подготовки мира и отправку формы.' : 'Сейчас доступно только продолжение или загрузка.'}</span>
+      </button>
+      {notice && <p className="composer-notice">{notice}</p>}
+      {newChapterResult && (
+        <ActionCommandResult
+          result={newChapterResult}
+          promptAnswers={newChapterPromptAnswers}
+          onPromptAnswerChange={(promptId, value) => setNewChapterPromptAnswers((current) => ({ ...current, [promptId]: value }))}
+          onPromptSubmit={submitNewChapterPromptAnswers}
+          isSubmitting={isSubmitting}
+        />
+      )}
+    </section>
+  );
+}
+
+function launcherModeUnavailableReason(modeAction: BrowserMainMenuDto['actions'][number], fallback: string): string {
+  return toPlayerFacingText(modeAction.disabledReason || modeAction.description, fallback);
+}
+
+function toNewChapterNotice(result: ExplorerCommandResult): string {
+  if (result.state === 'RequiresInput') {
+    return 'Форма новой главы открыта. Заполните поля ниже и отправьте её из браузера.';
+  }
+  return toCommandNotice(result);
+}
+
+function sanitizeNewChapterCommandResult(result: BrowserApiResult<ExplorerCommandResult>): BrowserApiResult<ExplorerCommandResult> {
+  return sanitizePlayerDefaultCommandResult(result, {
+    blockedTextFallback: 'Служебные подробности подготовки скрыты в обычном режиме.',
+    blockTitleFallback: 'Сведения подготовки новой главы',
+    notificationTitleFallback: 'Форма новой главы',
+    notificationMessageFallback: 'Форма новой главы готова к заполнению.',
+    promptTextFallback: 'Заполните поле формы новой главы',
+    failureMessageFallback: 'Форма новой главы сейчас недоступна.'
+  });
+}
+
+function selectPrimaryLauncherAction(menu: BrowserMainMenuDto): LauncherPrimaryAction {
+  const preferredModes: LauncherMode[] = ['continue', 'load', 'new-game'];
+  for (const mode of preferredModes) {
+    const action = findLauncherMenuAction(menu, mode);
+    if (action?.enabled) {
+      return { mode, label: launcherModeDetails[mode].label, description: toPlayerFacingText(action.description, launcherModeDetails[mode].description), enabled: true, disabledReason: '' };
+    }
+  }
+  const fallback = preferredModes.map((mode) => ({ mode, action: findLauncherMenuAction(menu, mode) })).find((candidate) => candidate.action);
+  const disabledReason = fallback?.action ? toPlayerFacingText(fallback.action.disabledReason || fallback.action.description, 'Главные действия книги сейчас недоступны.') : 'Главные действия книги сейчас недоступны.';
+  return { mode: fallback?.mode ?? 'continue', label: 'Открыть книгу', description: 'Выберите продолжение, загрузку или новую главу, когда книга будет готова.', enabled: false, disabledReason };
+}
+
+function findLauncherMenuAction(menu: BrowserMainMenuDto, mode: LauncherMode): BrowserMainMenuDto['actions'][number] | undefined {
+  switch (mode) {
+    case 'continue':
+      return menu.actions.find((action) => action.id === 'continue');
+    case 'load':
+      return menu.actions.find((action) => action.id === 'load');
+    case 'new-game':
+      return menu.actions.find((action) => action.id === 'new-game');
+    case 'settings':
+      return menu.actions.find((action) => action.id === 'options' || action.id === 'settings' || action.targetPanel === 'options-panel');
+    case 'about':
+      return menu.actions.find((action) => action.id === 'about' || action.targetPanel === 'about-panel');
+  }
+}
+
+function launcherActionDescription(menu: BrowserMainMenuDto, mode: LauncherMode): string {
+  const action = findLauncherMenuAction(menu, mode);
+  const fallback = launcherModeDetails[mode].description;
+  if (!action) {
+    return fallback;
+  }
+  return action.enabled ? toPlayerFacingText(action.description, fallback) : toPlayerFacingText(action.disabledReason || action.description, fallback);
+}
