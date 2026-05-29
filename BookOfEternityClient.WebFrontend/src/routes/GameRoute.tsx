@@ -9,16 +9,19 @@ import {
   formatTurnStateMessage,
   formatTurnStateTitle
 } from '../utils/formatters';
+import { useSceneImage } from '../hooks/useSceneImage';
 import { toPlayerFacingText } from '../utils/playerCopy';
 
 export default function GameRoute() {
   const { advancedEnabled, readyState } = useShell();
+  const game = readyState && isSuccess(readyState.game) ? readyState.game.data : null;
+  const sceneImage = useSceneImage(game?.narrative.imagePrompt, game?.media.gallery ?? []);
 
   if (!readyState) {
     return null;
   }
 
-  if (!isSuccess(readyState.game)) {
+  if (!isSuccess(readyState.game) || !game) {
     return <EmptyOrFailure result={readyState.game} advancedEnabled={advancedEnabled} errorTitle="Игровой экран требует внимания" empty={{
       title: 'Глава ещё не открыта',
       message: 'Нарратив и ход ГМа появятся после выбора или загрузки игровой сессии.',
@@ -26,11 +29,17 @@ export default function GameRoute() {
     }} />;
   }
 
-  const game = readyState.game.data;
-
   return (
     <ShellPanel title="Игра" eyebrow="нарратив и ход">
       <article className="narrative-card is-featured">
+        {sceneImage.url && (
+          <div className="narrative-scene-hero" aria-hidden="true">
+            <img src={sceneImage.url} alt="" loading="lazy" />
+          </div>
+        )}
+        {sceneImage.loading && (
+          <p className="scene-generating-indicator">🎨 Генерация образа сцены…</p>
+        )}
         <h2>{game.theme.icon} {game.theme.label}</h2>
         <p>{game.narrative.text || 'Последний нарратив пока не найден в локальной книге.'}</p>
       </article>
