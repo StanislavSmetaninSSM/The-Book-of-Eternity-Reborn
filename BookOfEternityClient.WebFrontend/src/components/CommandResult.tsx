@@ -87,7 +87,18 @@ export function renderCommandBlock(block: UiBlock): ReactNode {
         </p>
       );
     case 'image':
-      return <p>{toPlayerFacingText(block.title, 'Изображение')}: изображение готово к просмотру.</p>;
+      return (
+        <figure className="command-result-image">
+          {block.url ? (
+            <a href={block.url} target="_blank" rel="noreferrer">
+              <img src={block.url} alt={block.altText || toPlayerFacingText(block.title, 'Изображение сцены')} loading="lazy" />
+            </a>
+          ) : (
+            <p className="muted">{toPlayerFacingText(block.title, 'Изображение')}: файл недоступен для отображения.</p>
+          )}
+          {block.title && <figcaption>{toPlayerFacingText(block.title, 'Изображение')}</figcaption>}
+        </figure>
+      );
     case 'map':
       return <p>{toPlayerFacingText(block.title, 'Карта')}: карта содержит {block.map.nodes.length} точек.</p>;
     case 'rawJson':

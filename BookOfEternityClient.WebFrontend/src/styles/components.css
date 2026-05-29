@@ -367,6 +367,33 @@
   }
 }
 
+/* ── Command result image ── */
+
+.command-result-image {
+  margin: var(--space-3) 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.command-result-image img {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  transition: transform var(--motion-panel);
+}
+
+.command-result-image img:hover {
+  transform: scale(1.02);
+}
+
+.command-result-image figcaption {
+  padding: var(--space-2) 0;
+  font-size: 0.85rem;
+  color: var(--color-mist);
+  font-style: italic;
+}
+
 /* ── Buttons ── */
 
 .game-action,
