@@ -1,0 +1,201 @@
+/* ═══════════════════════════════════════════════════════════════════
+   SIDEBAR — Cinematic vertical navigation
+   ═══════════════════════════════════════════════════════════════════ */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4) 0;
+  background: rgba(6, 8, 9, 0.95);
+  border-right: 1px solid color-mix(in srgb, var(--realm-accent, var(--color-gold)) 12%, rgba(255, 255, 255, 0.04));
+  backdrop-filter: blur(12px);
+  z-index: 200;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Logo area */
+.sidebar__logo {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-5);
+  border-radius: 14px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--realm-accent) 15%, transparent), transparent);
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 25%, rgba(255, 255, 255, 0.06));
+  font-size: 1.4rem;
+  box-shadow: var(--glow-realm);
+}
+
+/* Nav item groups */
+.sidebar__primary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.sidebar__secondary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: auto;
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Individual nav item */
+.sidebar__item {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition:
+    background var(--motion-fast),
+    border-color var(--motion-fast),
+    color var(--motion-fast),
+    transform var(--motion-fast),
+    box-shadow var(--motion-fast);
+}
+
+.sidebar__item:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-subtle);
+  color: var(--text-primary);
+  transform: scale(1.05);
+}
+
+.sidebar__item.is-active {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--realm-accent) 18%, transparent),
+    color-mix(in srgb, var(--realm-accent) 6%, transparent));
+  border-color: color-mix(in srgb, var(--realm-accent) 40%, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary);
+  box-shadow: var(--glow-realm);
+}
+
+/* Active indicator bar */
+.sidebar__item.is-active::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 25%;
+  bottom: 25%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--realm-accent, var(--color-gold));
+  box-shadow: 0 0 8px var(--realm-accent, var(--color-gold));
+}
+
+.sidebar__glyph {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.sidebar__label {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.sidebar__item.is-active .sidebar__label {
+  color: var(--realm-accent, var(--color-gold));
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* ── Responsive: tablet collapse ── */
+@media (max-width: 900px) and (min-width: 641px) {
+  .sidebar {
+    width: var(--sidebar-width-collapsed);
+  }
+
+  .sidebar__item {
+    width: 44px;
+    height: 44px;
+  }
+
+  .sidebar__label {
+    display: none;
+  }
+}
+
+/* ── Responsive: mobile — bottom bar ── */
+@media (max-width: 640px) {
+  .sidebar {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    padding: var(--space-2) 0;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    border-right: none;
+    border-top: 1px solid color-mix(in srgb, var(--realm-accent) 12%, rgba(255, 255, 255, 0.04));
+  }
+
+  .sidebar__logo {
+    display: none;
+  }
+
+  .sidebar__primary {
+    flex-direction: row;
+    flex: 1;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .sidebar__secondary {
+    flex-direction: row;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.04);
+    padding-left: var(--space-2);
+    gap: 0;
+  }
+
+  .sidebar__item {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+  }
+
+  .sidebar__item.is-active::before {
+    left: 25%;
+    right: 25%;
+    top: -1px;
+    bottom: auto;
+    width: auto;
+    height: 3px;
+    border-radius: 0 0 3px 3px;
+  }
+
+  .sidebar__label {
+    font-size: 0.5rem;
+  }
+}
