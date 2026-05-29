@@ -298,7 +298,6 @@ function AppShell() {
     clientSettings?.accessibility.contrastFriendly ? 'is-contrast-friendly' : ''
   ].filter(Boolean).join(' ');
   const browserShellStyle = {
-    '--realm-accent': realmTheme.accent,
     '--browser-font-scale': `${(clientSettings?.accessibility.fontScalePercent ?? 100) / 100}`
   } as CSSProperties;
 

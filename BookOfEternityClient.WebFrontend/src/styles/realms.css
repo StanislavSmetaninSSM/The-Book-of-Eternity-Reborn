@@ -1,0 +1,90 @@
+/* ══════════════════════════════════════════════════════════════
+   Realm-specific visual moods
+   Applied via [data-theme-key] on .browser-shell
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Mortal World (default — gold ember warmth) ── */
+.browser-shell[data-theme-key='mortal-world'] {
+  --realm-accent: var(--realm-mortal);
+}
+
+/* ── Chaos Sea (purple abyss — violet mist, deeper shadows) ── */
+.browser-shell[data-theme-key*='chaos'] {
+  --realm-accent: var(--realm-chaos);
+}
+
+.browser-shell[data-theme-key*='chaos']::before {
+  background:
+    radial-gradient(1.5px 1.5px at 15% 25%, var(--realm-chaos), transparent),
+    radial-gradient(1px 1px at 45% 75%, #6b4fa4, transparent),
+    radial-gradient(2px 2px at 75% 15%, var(--realm-chaos), transparent),
+    radial-gradient(1px 1px at 85% 65%, #6b4fa4, transparent),
+    radial-gradient(1.5px 1.5px at 25% 85%, var(--realm-chaos), transparent),
+    radial-gradient(1px 1px at 55% 35%, #6b4fa4, transparent),
+    radial-gradient(1px 1px at 95% 45%, var(--realm-chaos), transparent);
+  opacity: 0.5;
+}
+
+.browser-shell[data-theme-key*='chaos'] .shell-panel,
+.browser-shell[data-theme-key*='chaos'] .summary-card,
+.browser-shell[data-theme-key*='chaos'] .composer-form {
+  border-color: color-mix(in srgb, var(--realm-chaos) 28%, rgba(255, 255, 255, 0.06));
+}
+
+.browser-shell[data-theme-key*='chaos'] h2 {
+  color: color-mix(in srgb, var(--realm-chaos) 60%, var(--color-parchment));
+}
+
+/* ── Shining Abode (ethereal teal — serene glow, peaceful light) ── */
+.browser-shell[data-theme-key*='shining'],
+.browser-shell[data-theme-key*='abode'] {
+  --realm-accent: var(--realm-shining);
+}
+
+.browser-shell[data-theme-key*='shining']::before,
+.browser-shell[data-theme-key*='abode']::before {
+  background:
+    radial-gradient(2px 2px at 20% 30%, rgba(109, 207, 184, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 50% 70%, rgba(109, 207, 184, 0.3), transparent),
+    radial-gradient(2px 2px at 80% 20%, rgba(109, 207, 184, 0.35), transparent),
+    radial-gradient(1px 1px at 35% 80%, rgba(109, 207, 184, 0.25), transparent),
+    radial-gradient(1.5px 1.5px at 65% 50%, rgba(109, 207, 184, 0.3), transparent);
+  animation: ember-drift 16s ease-in-out infinite alternate;
+  opacity: 0.4;
+}
+
+.browser-shell[data-theme-key*='shining'] .shell-panel,
+.browser-shell[data-theme-key*='abode'] .shell-panel,
+.browser-shell[data-theme-key*='shining'] .summary-card,
+.browser-shell[data-theme-key*='abode'] .summary-card,
+.browser-shell[data-theme-key*='shining'] .composer-form,
+.browser-shell[data-theme-key*='abode'] .composer-form {
+  border-color: color-mix(in srgb, var(--realm-shining) 24%, rgba(255, 255, 255, 0.06));
+}
+
+.browser-shell[data-theme-key*='shining'] h2,
+.browser-shell[data-theme-key*='abode'] h2 {
+  color: color-mix(in srgb, var(--realm-shining) 55%, var(--color-parchment));
+}
+
+/* ── Realm badge (NavBar indicator) ── */
+.realm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--realm-accent);
+  background: color-mix(in srgb, var(--realm-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 24%, transparent);
+  animation: candle-flicker 4s ease-in-out infinite;
+}
+
+/* Afterlife badges get a subtle glow */
+.browser-shell[data-theme-key*='chaos'] .realm-badge,
+.browser-shell[data-theme-key*='shining'] .realm-badge,
+.browser-shell[data-theme-key*='abode'] .realm-badge {
+  box-shadow: 0 0 0.6rem color-mix(in srgb, var(--realm-accent) 30%, transparent);
+}
