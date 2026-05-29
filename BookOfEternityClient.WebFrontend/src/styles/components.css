@@ -1938,3 +1938,38 @@
     justify-content: center;
   }
 }
+
+/* ── Connection banner ── */
+
+.connection-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.85rem;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+}
+
+.connection-banner.is-partial {
+  background: color-mix(in srgb, var(--color-gold-bright) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-gold-bright) 30%, transparent);
+  color: var(--text-primary);
+}
+
+.connection-banner.is-disconnected {
+  background: color-mix(in srgb, var(--color-crimson) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-crimson) 40%, transparent);
+  color: var(--text-primary);
+}
+
+.connection-banner button {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-subtle);
+  cursor: pointer;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}

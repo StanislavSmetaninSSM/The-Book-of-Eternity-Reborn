@@ -20,6 +20,7 @@
     "src/playerFacingCommandResult.ts",
     "test/playerFacingCommandResult.test.ts",
     "test/appRouteExtraction.test.ts",
-    "test/useShellStateSettled.test.ts"
+    "test/useShellStateSettled.test.ts",
+    "test/connectionBanner.test.ts"
   ]
 }
