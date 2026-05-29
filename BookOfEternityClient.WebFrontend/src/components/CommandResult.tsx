@@ -2,7 +2,7 @@ import type { FormEvent, ReactNode } from 'react';
 import type { BrowserApiResult, ExplorerCommandResult, JsonValue, UiBlock } from '../api/contracts';
 import { isSuccess } from '../context/ShellContext';
 import { commandStateLabel } from '../utils/formatters';
-import { toPlayerFacingText } from '../utils/playerCopy';
+import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { PromptForm, type PromptAnswers } from './PromptForm';
 
 interface ActionCommandResultProps {
@@ -21,7 +21,8 @@ export function ActionCommandResult({
   isSubmitting
 }: ActionCommandResultProps) {
   if (!isSuccess(result)) {
-    return <p className="warning-text">{toPlayerFacingText(result.playerMessage, 'Игровое действие сейчас недоступно.')}</p>;
+    const { safe } = sanitizePlayerMessage(result.playerMessage, 'Игровое действие сейчас недоступно.');
+    return <p className="warning-text">{safe}</p>;
   }
 
   const command = result.data;
@@ -51,8 +52,12 @@ export function ActionCommandResult({
 
 export function renderCommandBlock(block: UiBlock): ReactNode {
   switch (block.kind) {
-    case 'text':
-      return <p>{toPlayerFacingText(block.text, 'Текст игрового действия недоступен.')}</p>;
+    case 'text': {
+      const { safe, hasTechnical } = sanitizePlayerMessage(block.text, 'Текст игрового действия недоступен.');
+      return hasTechnical
+        ? <p className="muted">{safe}</p>
+        : <p>{safe}</p>;
+    }
     case 'panel':
       return (
         <div className="summary-card">

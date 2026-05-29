@@ -60,6 +60,7 @@ const shellContextValue: ShellContextValue = {
   realmTheme,
   activeRoute: 'home' as RouteId,
   setActiveRoute: () => undefined,
+  connectionStatus: 'connected',
   advancedEnabled: false,
   setAdvancedEnabled: (updater) => {
     updater(false);

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState, type CSSProperties, type ComponentType, type LazyExoticComponent } from 'react';
 import './styles.css';
 import { AdvancedDiagnosticsPanel as AdvancedDiagnostics } from './components/AdvancedDiagnostics';
+import { ConnectionBanner } from './components/ConnectionBanner';
 import { ErrorNotice } from './components/ErrorNotice';
 import { LoadingCard } from './components/LoadingCard';
 import { NavBar } from './components/NavBar';
@@ -304,6 +305,7 @@ function AppShell() {
   return (
     <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
       <NavBar />
+      <ConnectionBanner />
       <section className="workspace-grid" aria-live="polite">
         <div className="workspace-main">
           {shellState.status === 'loading' && <LoadingCard />}

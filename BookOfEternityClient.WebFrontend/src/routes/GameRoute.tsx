@@ -1,11 +1,11 @@
-import { TurnLifecycleActions } from '../components/ActionMenu';
 import { Composer } from '../components/Composer';
 import { EmptyOrFailure } from '../components/ErrorNotice';
 import { ShellPanel } from '../components/ShellPanel';
+import type { BrowserGameScreenDto } from '../api/contracts';
 import { isSuccess, useShell } from '../context/ShellContext';
 import {
   formatDialogueCategory,
-  formatQteStateLabel,
+  formatTurnLifecycleActionDescription,
   formatTurnStateMessage,
   formatTurnStateTitle
 } from '../utils/formatters';
@@ -53,14 +53,63 @@ export default function GameRoute() {
 
       <Composer actionComposer={game.actionComposer} />
 
-      <section className="turn-status-compact" aria-label="Состояние хода">
-        <span className={`status-pill turn-phase turn-phase--${game.turnState.severity}`}>{formatTurnStateTitle(game.turnState)}</span>
-        <span>{formatTurnStateMessage(game.turnState)}</span>
-        <span className="muted">{toPlayerFacingText(game.turnState.playerGuidance, 'Следуйте безопасному состоянию хода.')}</span>
-        <span className="muted">Быстрая сцена: {formatQteStateLabel(game.qte)}</span>
-      </section>
-
-      <TurnLifecycleActions turnState={game.turnState} />
+      <TurnStateCard turnState={game.turnState} advancedEnabled={advancedEnabled} />
     </ShellPanel>
+  );
+}
+
+function TurnStateCard({ turnState, advancedEnabled }: { turnState: BrowserGameScreenDto['turnState']; advancedEnabled: boolean }) {
+  const isWaitingForGm = turnState.phase === 'gm-turn' || turnState.phase === 'waiting-for-gm' || turnState.state === 'gm-turn';
+  const needsRepair = turnState.severity === 'error' || turnState.severity === 'repair' || turnState.validationState === 'invalid';
+  const isNormal = !isWaitingForGm && !needsRepair;
+
+  const playerActions = turnState.recommendedActions.filter(a => a.surface === 'player-default');
+
+  if (isNormal && playerActions.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className={`turn-state-card turn-state-card--${needsRepair ? 'repair' : isWaitingForGm ? 'waiting' : 'normal'}`} aria-label="Состояние хода">
+      <div className="turn-state-card__header">
+        <span className={`status-pill turn-phase turn-phase--${turnState.severity}`}>
+          {formatTurnStateTitle(turnState)}
+        </span>
+      </div>
+
+      <p>{formatTurnStateMessage(turnState)}</p>
+
+      {needsRepair && (
+        <p className="turn-state-card__guidance">
+          {toPlayerFacingText(turnState.playerGuidance, 'Игра требует восстановления состояния. Используйте рекомендуемые действия ниже.')}
+        </p>
+      )}
+
+      {isWaitingForGm && !needsRepair && (
+        <p className="turn-state-card__guidance">Ожидается ответ ГМа. Ввод игрока откроется после записи нового хода.</p>
+      )}
+
+      {playerActions.length > 0 && (
+        <ul className="choice-list">
+          {playerActions.map((action) => (
+            <li key={action.id}>
+              <strong>{toPlayerFacingText(action.label, 'Действие')}</strong>
+              <span className="muted">{formatTurnLifecycleActionDescription(action)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {advancedEnabled && turnState.knownPhases.length > 0 && (
+        <details className="turn-state-card__phases">
+          <summary>Фазы хода (расширенный режим)</summary>
+          <ul>
+            {turnState.knownPhases.map(phase => (
+              <li key={phase.id}><strong>{phase.label}</strong>: {phase.description}</li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </section>
   );
 }

@@ -228,3 +228,6 @@ import './shellContextComponents.test.js';
 import './navBarShortcuts.test.js';
 import './playerStatusSidebar.test.js';
 import './uiStructure.test.js';
+import './useShellStateSettled.test.js';
+import './gracefulDegradation.test.js';
+import './promptFormSanitization.test.js';

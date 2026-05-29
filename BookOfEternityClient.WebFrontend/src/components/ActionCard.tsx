@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react';
 import { browserApi } from '../api/client';
 import type { BrowserApiResult, BrowserPlayerCommandActionDto, ExplorerCommandResult } from '../api/contracts';
-import { isSuccess } from '../context/ShellContext';
+import { isSuccess, useShell } from '../context/ShellContext';
 import { toCommandNotice } from '../utils/formatters';
-import { toPlayerFacingText } from '../utils/playerCopy';
+import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { ActionCommandResult } from './CommandResult';
 import { buildDefaultPromptAnswers, type PromptAnswers } from './PromptForm';
 
@@ -25,6 +25,7 @@ async function submitPromptAnswers(commandResult: BrowserApiResult<ExplorerComma
 }
 
 export function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }) {
+  const { advancedEnabled } = useShell();
   const [notice, setNotice] = useState('');
   const [commandResult, setCommandResult] = useState<BrowserApiResult<ExplorerCommandResult> | null>(null);
   const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>({});
@@ -42,7 +43,7 @@ export function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }
       setPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
       setNotice(toCommandNotice(result.data));
     } else {
-      setNotice(toPlayerFacingText(result.playerMessage, 'Игровое действие сейчас недоступно.'));
+      setNotice(result.playerMessage || 'Игровое действие сейчас недоступно.');
     }
     setIsSubmitting(false);
   }
@@ -61,10 +62,14 @@ export function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }
       setPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));
       setNotice(toCommandNotice(result.data));
     } else {
-      setNotice(toPlayerFacingText(result.playerMessage, 'Игровое действие сейчас недоступно.'));
+      setNotice(result.playerMessage || 'Игровое действие сейчас недоступно.');
     }
     setIsSubmitting(false);
   }
+
+  const noticeFallback = commandResult && !isSuccess(commandResult)
+    ? 'Игровое действие сейчас недоступно.'
+    : 'Игровое действие обработано.';
 
   return (
     <article className={action.enabled ? 'action-card' : 'action-card is-disabled'}>
@@ -82,7 +87,15 @@ export function ActionCard({ action }: { action: BrowserPlayerCommandActionDto }
           {isSubmitting ? 'Выполняем…' : isGuidedForm ? 'Подготовить форму' : 'Открыть раздел'}
         </button>
       </form>
-      {notice && <p className="composer-notice">{notice}</p>}
+      {notice && (() => {
+        const { safe, hasTechnical } = sanitizePlayerMessage(notice, noticeFallback);
+        return (
+          <>
+            <p className="composer-notice">{safe}</p>
+            {hasTechnical && advancedEnabled && <p className="muted">{notice}</p>}
+          </>
+        );
+      })()}
       {commandResult && (
         <ActionCommandResult
           result={commandResult}

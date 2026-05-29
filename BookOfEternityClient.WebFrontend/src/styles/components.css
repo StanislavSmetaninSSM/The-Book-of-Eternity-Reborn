@@ -897,6 +897,50 @@
   font-size: 0.85rem;
 }
 
+/* ── Turn state card ── */
+
+.turn-state-card {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-top: var(--space-md);
+}
+
+.turn-state-card--waiting {
+  border-color: color-mix(in srgb, var(--color-gold-bright) 30%, transparent);
+  background: color-mix(in srgb, var(--color-gold-bright) 5%, transparent);
+}
+
+.turn-state-card--repair {
+  border-color: color-mix(in srgb, var(--color-crimson) 40%, transparent);
+  background: color-mix(in srgb, var(--color-crimson) 8%, transparent);
+}
+
+.turn-state-card--normal {
+  border-color: var(--border-subtle);
+}
+
+.turn-state-card__header {
+  margin-bottom: var(--space-xs);
+}
+
+.turn-state-card__guidance {
+  font-size: 0.9rem;
+  margin-top: var(--space-xs);
+  color: var(--text-secondary);
+}
+
+.turn-state-card__phases {
+  margin-top: var(--space-sm);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.turn-state-card__phases summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    WORLD ACTION CONTEXT SHORTLIST (#744)
    ═══════════════════════════════════════════════════════════════════ */
@@ -1937,4 +1981,39 @@
     align-items: center;
     justify-content: center;
   }
+}
+
+/* ── Connection banner ── */
+
+.connection-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.85rem;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-sm);
+}
+
+.connection-banner.is-partial {
+  background: color-mix(in srgb, var(--color-gold-bright) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-gold-bright) 30%, transparent);
+  color: var(--text-primary);
+}
+
+.connection-banner.is-disconnected {
+  background: color-mix(in srgb, var(--color-crimson) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-crimson) 40%, transparent);
+  color: var(--text-primary);
+}
+
+.connection-banner button {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-subtle);
+  cursor: pointer;
+  font-size: 0.8rem;
+  white-space: nowrap;
 }
