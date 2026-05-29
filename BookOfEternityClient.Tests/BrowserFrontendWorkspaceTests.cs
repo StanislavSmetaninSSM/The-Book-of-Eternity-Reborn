@@ -550,8 +550,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("function GameLauncher", app, StringComparison.Ordinal);
         Assert.Contains("interface LauncherPrimaryAction", app, StringComparison.Ordinal);
         Assert.Contains("selectPrimaryLauncherAction(", app, StringComparison.Ordinal);
-        Assert.Contains("launcher-primary-action", app, StringComparison.Ordinal);
-        Assert.Contains("launcher-mode-tabs", app, StringComparison.Ordinal);
+        Assert.Contains("launcher-menu", app, StringComparison.Ordinal);
         Assert.Contains("launcher-save-list", app, StringComparison.Ordinal);
         Assert.Contains("browserApi.loadSave({ saveId: slot.saveId })", app, StringComparison.Ordinal);
         Assert.Contains("onActiveRouteChange('game')", app, StringComparison.Ordinal);
@@ -561,7 +560,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("Загрузить сохранение", app, StringComparison.Ordinal);
         Assert.Contains("Настроить клиент", app, StringComparison.Ordinal);
         Assert.Contains("Сведения о книге", app, StringComparison.Ordinal);
-        Assert.Contains("className=\"launcher-secondary-actions\"", app, StringComparison.Ordinal);
+        Assert.Contains("className=\"launcher-menu\"", app, StringComparison.Ordinal);
         Assert.Contains("className=\"advanced-toggle\"", app, StringComparison.Ordinal);
         Assert.Contains("function playerLauncherAboutText", app, StringComparison.Ordinal);
         Assert.Contains("[/debug shell/gi, 'служебная оболочка']", app, StringComparison.Ordinal);
@@ -590,17 +589,14 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.True(!hasRawDebugShellInPlayerDefaultSlice || hasExplicitDebugShellReplacement, "Player-default launcher copy must not expose raw debug shell wording.");
 
         Assert.Contains(".game-launcher", styles, StringComparison.Ordinal);
-        Assert.Contains(".launcher-primary-action", styles, StringComparison.Ordinal);
-        Assert.Contains(".launcher-secondary-actions", styles, StringComparison.Ordinal);
-        Assert.Contains(".launcher-mode-tabs", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-menu", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-menu__item", styles, StringComparison.Ordinal);
         Assert.Contains(".launcher-save-list", styles, StringComparison.Ordinal);
 
-        var primaryIndex = app.IndexOf("launcher-primary-action", StringComparison.Ordinal);
-        var secondaryIndex = app.IndexOf("launcher-secondary-actions", StringComparison.Ordinal);
+        var menuIndex = app.IndexOf("launcher-menu", StringComparison.Ordinal);
         var advancedIndex = app.IndexOf("className=\"advanced-toggle\"", StringComparison.Ordinal);
-        Assert.True(primaryIndex > 0, "Launcher primary CTA must be explicit.");
-        Assert.True(secondaryIndex > primaryIndex, "Secondary actions must follow the primary CTA.");
-        Assert.True(advancedIndex > secondaryIndex, "Advanced mode must stay lower priority than launcher actions in source order.");
+        Assert.True(menuIndex > 0, "Launcher menu must be explicit in source.");
+        Assert.True(advancedIndex > menuIndex, "Advanced mode must stay lower priority than launcher actions in source order.");
     }
 
     [Fact]

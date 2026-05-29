@@ -137,8 +137,8 @@ className="empty-state"
 function GameLauncher
 interface LauncherPrimaryAction
 selectPrimaryLauncherAction(
-launcher-primary-action
-launcher-mode-tabs
+launcher-menu
+launcher-menu__item
 launcher-save-list
 browserApi.loadSave({ saveId: slot.saveId })
 onActiveRouteChange('game')
@@ -150,7 +150,7 @@ onActiveRouteChange('game')
 Настроить клиент
 Сведения о книге
 Подготовить форму
-className="launcher-secondary-actions"
+className="launcher-menu"
 className="advanced-toggle"
 function playerLauncherAboutText
 [/debug shell/gi, 'служебная оболочка']
