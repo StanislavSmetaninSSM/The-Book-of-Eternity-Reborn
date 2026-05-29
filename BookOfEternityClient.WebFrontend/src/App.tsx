@@ -1,7 +1,34 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { browserApi, browserApiContractSummary } from './api/client';
+import type {
+  BrowserApiFailure,
+  BrowserApiResult,
+  BrowserAudioAssetDto,
+  BrowserAudioPlaylistDto,
+  BrowserAudioSettingsDto,
+  BrowserAudioSettingsUpdateRequest,
+  BrowserClientSettingsDto,
+  BrowserClientSettingsUpdateRequest,
+  BrowserCommandCoverageDto,
+  BrowserGameScreenDto,
+  BrowserLifecycleDashboardDto,
+  BrowserMainMenuDto,
+  BrowserPlayerCommandActionDto,
+  BrowserPlayerCommandMenuDto,
+  BrowserPlayerCommandSectionDto,
+  ExplorerCommandResult,
+  JsonValue,
+  LocalWebUiSessionStatus,
+  UiBlock,
+  UiPrompt
+} from './api/contracts';
 import { DetailSurfaceCard } from './components/DetailSurface';
+import { EmptyOrFailure, ErrorNotice } from './components/ErrorNotice';
+import { LoadingCard } from './components/LoadingCard';
+import { ShellPanel } from './components/ShellPanel';
+import { StatusBar } from './components/StatusBar';
+import { ShellProvider, useShell, type BrowserShellState, type RealmTheme, type RouteId } from './context/ShellContext';
 import { sanitizePlayerDefaultCommandResult } from './playerFacingCommandResult';
 import {
   chaosSeaActionMatchers,
@@ -46,39 +73,11 @@ import {
   toLauncherSaveFailureNotice
 } from './utils/formatters';
 import { playerLauncherAboutText, toPlayerFacingText } from './utils/playerCopy';
-import type {
-  BrowserApiFailure,
-  BrowserApiResult,
-  BrowserAudioAssetDto,
-  BrowserAudioPlaylistDto,
-  BrowserAudioSettingsDto,
-  BrowserAudioSettingsUpdateRequest,
-  BrowserClientSettingsDto,
-  BrowserClientSettingsUpdateRequest,
-  BrowserCommandCoverageDto,
-  BrowserGameScreenDto,
-  BrowserLifecycleDashboardDto,
-  BrowserMainMenuDto,
-  BrowserPlayerCommandActionDto,
-  BrowserPlayerCommandMenuDto,
-  BrowserPlayerCommandSectionDto,
-  ExplorerCommandResult,
-  JsonValue,
-  LocalWebUiSessionStatus,
-  UiBlock,
-  UiPrompt
-} from './api/contracts';
 
-type RouteId = 'home' | 'game' | 'soul' | 'world' | 'journal' | 'inventory' | 'media' | 'settings';
 type RouteKind = 'primary' | 'utility';
 type RouteIconId = 'book' | 'flame' | 'soul' | 'map' | 'journal' | 'satchel' | 'gallery' | 'settings';
 type RouteAvailabilityState = 'active' | 'available' | 'locked' | 'loading' | 'attention';
 type LauncherMode = 'continue' | 'load' | 'new-game' | 'settings' | 'about';
-
-type BrowserShellState =
-  | { status: 'loading' }
-  | { status: 'ready'; menu: BrowserApiResult<BrowserMainMenuDto>; session: BrowserApiResult<LocalWebUiSessionStatus>; game: BrowserApiResult<BrowserGameScreenDto>; audio: BrowserApiResult<BrowserAudioSettingsDto>; settings: BrowserApiResult<BrowserClientSettingsDto>; lifecycle: BrowserApiResult<BrowserLifecycleDashboardDto> | null; commandCoverage: BrowserApiResult<BrowserCommandCoverageDto> | null }
-  | { status: 'error'; playerMessage: string; technicalDetails?: string };
 
 type PromptAnswers = Record<string, JsonValue | undefined>;
 
@@ -93,19 +92,6 @@ interface RouteCard {
 interface RouteStateDetails {
   state: RouteAvailabilityState;
   label: string;
-}
-
-interface EmptyStateCopy {
-  title: string;
-  message: string;
-  action: string;
-}
-
-interface RealmTheme {
-  key: string;
-  label: string;
-  icon: string;
-  accent: string;
 }
 
 interface LauncherPrimaryAction {
@@ -129,13 +115,6 @@ const playerRoutes: RouteCard[] = [
 
 const primaryPlayerRoutes = playerRoutes.filter((route) => route.kind === 'primary');
 const utilityPlayerRoutes = playerRoutes.filter((route) => route.kind === 'utility');
-
-const fallbackTheme: RealmTheme = {
-  key: 'mortal-world',
-  label: 'Мир смертных',
-  icon: '🌘',
-  accent: '#d8b36a'
-};
 
 const browserApiEndpoints = browserApiContractSummary.endpointDocs;
 
@@ -672,51 +651,33 @@ function launcherActionDescription(menu: BrowserMainMenuDto, mode: LauncherMode)
 }
 
 export default function App() {
-  const [shellState, setShellState] = useState<BrowserShellState>({ status: 'loading' });
-  const [activeRoute, setActiveRoute] = useState<RouteId>('home');
-  const [advancedEnabled, setAdvancedEnabled] = useState(false);
+  return (
+    <ShellProvider>
+      <AppShell />
+    </ShellProvider>
+  );
+}
+
+function AppShell() {
+  const {
+    activeRoute,
+    advancedEnabled,
+    clientSettings,
+    gameScreen,
+    loadBrowserState,
+    menu,
+    readyState,
+    realmTheme,
+    setActiveRoute,
+    setAdvancedEnabled,
+    session,
+    shellState
+  } = useShell();
   const [composerText, setComposerText] = useState('');
   const [composerNotice, setComposerNotice] = useState('');
 
-  const loadBrowserState = useCallback(async () => {
-    setShellState({ status: 'loading' });
-
-    try {
-      const [menu, session, game, audio, settings] = await Promise.all([
-        browserApi.getMainMenu(),
-        browserApi.getSessionStatus(),
-        browserApi.getGameScreen(),
-        browserApi.getAudioSettings(),
-        browserApi.getClientSettings()
-      ]);
-      const [lifecycle, commandCoverage] = advancedEnabled ? await Promise.all([
-        browserApi.getLifecycleDashboard(),
-        browserApi.getCommandCoverage()
-      ]) : [null, null];
-
-      setShellState({ status: 'ready', menu, session, game, audio, settings, lifecycle, commandCoverage });
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Unknown browser shell error.';
-      setShellState({
-        status: 'error',
-        playerMessage: 'Браузерный клиент не смог собрать состояние игры.',
-        technicalDetails: message
-      });
-    }
-  }, [advancedEnabled]);
-
-  useEffect(() => {
-    void loadBrowserState();
-  }, [loadBrowserState]);
-
-  const readyState = shellState.status === 'ready' ? shellState : null;
-  const gameScreen = readyState && isSuccess(readyState.game) ? readyState.game.data : null;
-  const menu = readyState && isSuccess(readyState.menu) ? readyState.menu.data : null;
-  const session = readyState && isSuccess(readyState.session) ? readyState.session.data : null;
-  const clientSettings = readyState && isSuccess(readyState.settings) ? readyState.settings.data : null;
   const lifecycle = readyState && readyState.lifecycle && isSuccess(readyState.lifecycle) ? readyState.lifecycle.data : null;
   const commandCoverage = readyState ? readyState.commandCoverage : null;
-  const realmTheme = useMemo(() => resolveRealmTheme(gameScreen), [gameScreen]);
   const browserShellClassName = [
     'browser-shell',
     clientSettings?.accessibility.reducedMotion ? 'is-reduced-motion' : '',
@@ -2713,125 +2674,6 @@ function ApiResultCard<T>({ title, result }: { title: string; result: BrowserApi
 
 function getEndpointLabel(responseType: string): string {
   return browserApiEndpoints.find((apiEndpoint) => apiEndpoint.response === responseType)?.path ?? responseType;
-}
-
-function EmptyState({ title, message, action }: EmptyStateCopy) {
-  return (
-    <section className="empty-state" aria-label={title}>
-      <p className="panel-eyebrow">ожидание главы</p>
-      <h2>{title}</h2>
-      <p>{message}</p>
-      <p className="muted">{action}</p>
-    </section>
-  );
-}
-
-function EmptyOrFailure<T>({
-  result,
-  empty,
-  errorTitle,
-  advancedEnabled
-}: {
-  result: BrowserApiResult<T>;
-  empty: EmptyStateCopy;
-  errorTitle: string;
-  advancedEnabled: boolean;
-}) {
-  if (isSuccess(result)) {
-    return null;
-  }
-
-  if (result.kind === 'no-active-session') {
-    return <EmptyState {...empty} />;
-  }
-
-  return <ApiFailure title={errorTitle} result={result} advancedEnabled={advancedEnabled} />;
-}
-
-function ApiFailure<T>({ title, result, advancedEnabled }: { title: string; result: BrowserApiResult<T>; advancedEnabled: boolean }) {
-  if (isSuccess(result)) {
-    return null;
-  }
-
-  return <ErrorNotice title={title} failure={result} advancedEnabled={advancedEnabled} />;
-}
-
-function ErrorNotice({ title, failure, advancedEnabled }: { title: string; failure: BrowserApiFailure | { playerMessage: string; technicalDetails?: string }; advancedEnabled: boolean }) {
-  return (
-    <section className="error-notice" role="alert">
-      <h2>{title}</h2>
-      <p>{toPlayerFacingText(failure.playerMessage, 'Игровое состояние сейчас недоступно.')}</p>
-      {failure.technicalDetails && advancedEnabled && (
-        <details open>
-          <summary>Подробности</summary>
-          <pre>{failure.technicalDetails}</pre>
-        </details>
-      )}
-      {failure.technicalDetails && !advancedEnabled && (
-        <p className="muted">Технические подробности доступны после явного включения расширенного режима.</p>
-      )}
-    </section>
-  );
-}
-
-function LoadingCard() {
-  return (
-    <ShellPanel title="Загрузка" eyebrow="локальный клиент">
-      <p>Собираем главное меню, сессию, игровой экран и состояние хода из локального клиента…</p>
-    </ShellPanel>
-  );
-}
-
-function ShellPanel({
-  title,
-  eyebrow,
-  children,
-  nested = false,
-  variant
-}: {
-  title: string;
-  eyebrow: string;
-  children: ReactNode;
-  nested?: boolean;
-  variant?: string;
-}) {
-  const className = ['shell-panel', nested ? 'is-nested' : '', variant ? `panel-${variant}` : '']
-    .filter(Boolean)
-    .join(' ');
-
-  return (
-    <section className={className} data-panel={variant ?? title}>
-      <p className="panel-eyebrow">{eyebrow}</p>
-      <h2>{title}</h2>
-      {children}
-    </section>
-  );
-}
-
-function StatusBar({ label, value }: { label: string; value: string }) {
-  const numericValue = Number.parseFloat(value);
-  const percent = Number.isFinite(numericValue) ? Math.max(0, Math.min(100, numericValue)) : 0;
-
-  return (
-    <div className="status-bar">
-      <span>{label}</span>
-      <div aria-hidden="true"><i style={{ width: `${percent}%` }} /></div>
-      <strong>{value || '0%'}</strong>
-    </div>
-  );
-}
-
-function resolveRealmTheme(gameScreen: BrowserGameScreenDto | null): RealmTheme {
-  if (!gameScreen) {
-    return fallbackTheme;
-  }
-
-  return {
-    key: gameScreen.theme.key,
-    label: gameScreen.theme.label,
-    icon: gameScreen.theme.icon,
-    accent: gameScreen.theme.accent || fallbackTheme.accent
-  };
 }
 
 function isSuccess<T>(result: BrowserApiResult<T>): result is Extract<BrowserApiResult<T>, { ok: true }> {

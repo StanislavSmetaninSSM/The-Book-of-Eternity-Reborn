@@ -6,6 +6,7 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
     "rootDir": ".",
     "outDir": "../TestResults/browser-frontend-player-facing-tests"
   },
