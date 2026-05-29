@@ -53,6 +53,43 @@ describe('realm theming integration', () => {
     expect(realms).not.toContain('.browser-shell.is-contrast-friendly');
   });
 
+  it('defines semantic component aliases and removes legacy fallback colors', () => {
+    const tokens = readSource('src', 'styles', 'tokens.css');
+    const components = readSource('src', 'styles', 'components.css');
+    const shellContext = readSource('src', 'context', 'ShellContext.tsx');
+
+    for (const token of [
+      '--border-subtle: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 16%, rgba(255, 255, 255, 0.06));',
+      '--surface-base: var(--color-ink-2);',
+      '--surface-subtle: var(--color-obsidian);',
+      '--surface-elevated: var(--color-obsidian-2);',
+      '--surface-hover: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 8%, var(--color-obsidian-2));',
+      '--surface-active: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 12%, var(--color-obsidian-2));',
+      '--text-primary: var(--color-parchment);',
+      '--text-muted: var(--color-mist);',
+      '--accent-gold: var(--color-gold);'
+    ]) {
+      expect(tokens).toContain(token);
+    }
+
+    for (const legacyFallback of [
+      'var(--border-subtle, #2a2a3e)',
+      'var(--surface-subtle, #151528)',
+      'var(--surface-elevated, #1a1a2e)',
+      'var(--surface-hover, #252540)',
+      'var(--text-muted, #8a8a9a)',
+      'var(--text-primary, #f0e8d8)',
+      'var(--surface-active, #2a2a50)',
+      'var(--accent-gold, #d8b36a)',
+      'var(--realm-accent, var(--accent-gold, #d8b36a))'
+    ]) {
+      expect(components).not.toContain(legacyFallback);
+    }
+
+    expect(shellContext).toMatch(/accent:\s*['\"]#c9a24d['\"]/);
+    expect(shellContext).not.toContain("accent: '#d8b36a'");
+  });
+
   it('renders the current realm label inside the realm badge', () => {
     const navBar = readSource('src', 'components', 'NavBar.tsx');
 
