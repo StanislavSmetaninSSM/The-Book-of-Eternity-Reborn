@@ -1,4 +1,4 @@
-import { lazy, Suspense, type CSSProperties, type ComponentType, type LazyExoticComponent } from 'react';
+import { lazy, Suspense, useState, type CSSProperties, type ComponentType, type LazyExoticComponent } from 'react';
 import './styles.css';
 import { AdvancedDiagnosticsPanel as AdvancedDiagnostics } from './components/AdvancedDiagnostics';
 import { ErrorNotice } from './components/ErrorNotice';
@@ -37,6 +37,7 @@ export default function App() {
 
 function AppShell() {
   const { advancedEnabled, clientSettings, readyState, realmTheme, shellState } = useShell();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const browserShellClassName = [
     'browser-shell',
     clientSettings?.accessibility.reducedMotion ? 'is-reduced-motion' : '',
@@ -56,10 +57,20 @@ function AppShell() {
           {shellState.status === 'error' && <ErrorNotice title="Состояние клиента недоступно" failure={shellState} advancedEnabled={advancedEnabled} />}
           {readyState && <ActiveRoute />}
         </div>
-        <aside className="workspace-sidebar" aria-label="Сводка книги">
+        <aside id="player-status-sidebar" className={`workspace-sidebar${sidebarOpen ? ' is-open' : ''}`} aria-label="Сводка книги">
           <PlayerStatusSidebar />
         </aside>
       </section>
+      <button
+        type="button"
+        className="sidebar-toggle"
+        aria-controls="player-status-sidebar"
+        aria-expanded={sidebarOpen}
+        aria-label={sidebarOpen ? 'Скрыть сводку' : 'Показать сводку'}
+        onClick={() => setSidebarOpen((value) => !value)}
+      >
+        {sidebarOpen ? '×' : '☰'}
+      </button>
       {advancedEnabled && readyState && <AdvancedDiagnostics />}
     </main>
   );

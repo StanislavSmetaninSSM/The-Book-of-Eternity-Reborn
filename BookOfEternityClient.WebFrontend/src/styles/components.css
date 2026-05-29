@@ -2073,3 +2073,27 @@
   background: var(--surface-active);
   color: var(--text-primary);
 }
+
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  right: var(--space-sm, 0.5rem);
+  bottom: var(--space-sm, 0.5rem);
+  z-index: 101;
+  background: var(--surface-active, #2a2a50);
+  border: 1px solid var(--border-subtle, #2a2a3e);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-primary, #f0e8d8);
+}
+
+@media (max-width: 900px) {
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

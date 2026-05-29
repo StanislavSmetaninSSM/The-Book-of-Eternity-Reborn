@@ -25,11 +25,7 @@ export function PlayerStatusSidebar() {
 
   return (
     <div className="player-status-sidebar">
-      <div className="sidebar-heading">
-        <p className="panel-eyebrow">игровая сводка</p>
-        <h2>Сводка книги</h2>
-        <p className="muted">Мягкая сводка текущей главы без служебных журналов и внутренних проверок.</p>
-      </div>
+      <p className="panel-eyebrow sidebar-title">Сводка</p>
 
       <StatusSummaryCard title="Слой книги" eyebrow="мир и глава" attention={Boolean(sidebarMenuFailure || sidebarGameFailure)}>
         <p className="status-pill">{realmTheme.label}</p>
@@ -39,10 +35,7 @@ export function PlayerStatusSidebar() {
 
       <StatusSummaryCard title="Герой и душа" eyebrow="персонаж" soft={!hasGame && !sidebarGameFailure} attention={Boolean(sidebarGameFailure)}>
         {sidebarGameFailure ? (
-          <>
-            <p className="warning-text">{sidebarGameFailure}</p>
-            <p className="muted">Герой и душа появятся снова, когда локальная книга отдаст игровую сводку.</p>
-          </>
+          <p className="warning-text">{sidebarGameFailure}</p>
         ) : gameScreen ? (
           <>
             <p><strong>{gameScreen.player.name || 'Герой'}</strong> · {gameScreen.player.currentCondition}</p>
@@ -54,10 +47,7 @@ export function PlayerStatusSidebar() {
             </div>
           </>
         ) : (
-          <>
-            <p>Душа и герой появятся после открытия или загрузки главы.</p>
-            <p className="muted">Это обычное состояние пустой книги, не ошибка клиента.</p>
-          </>
+          <p>Душа и герой появятся после открытия или загрузки главы.</p>
         )}
       </StatusSummaryCard>
 
@@ -68,21 +58,14 @@ export function PlayerStatusSidebar() {
 
       <StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure)} eyebrow="ход" attention={turnNeedsAttention}>
         {sidebarGameFailure ? (
-          <>
-            <p className="warning-text">{sidebarGameFailure}</p>
-            <p className="muted">Глава сохранена; подробности ремонта и проверки остаются в расширенном режиме.</p>
-          </>
+          <p className="warning-text">{sidebarGameFailure}</p>
         ) : gameScreen ? (
           <>
             <p className={`status-pill turn-phase turn-phase--${gameScreen.turnState.severity}`}>{formatTurnStateTitle(gameScreen.turnState)}</p>
             <p>{formatTurnStateMessage(gameScreen.turnState)}</p>
-            <p className="muted">Подробности ремонта, проверки и команд скрыты до явного включения.</p>
           </>
         ) : (
-          <>
-            <p>{sidebarEmptyGame}</p>
-            <p className="muted">Когда появится ожидающий ход или ответ ГМа, книга покажет это здесь игровым языком.</p>
-          </>
+          <p>{sidebarEmptyGame}</p>
         )}
       </StatusSummaryCard>
 
@@ -92,7 +75,6 @@ export function PlayerStatusSidebar() {
         <div>
           <p className="panel-eyebrow">по запросу</p>
           <h3>Служебная панель</h3>
-          <p className="muted">Служебные проверки и сведения для ремонта остаются вторичным режимом.</p>
         </div>
         <button
           type="button"
