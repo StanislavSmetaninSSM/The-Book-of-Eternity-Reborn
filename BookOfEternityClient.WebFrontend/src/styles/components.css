@@ -94,6 +94,15 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
+.summary-card {
+  transition: border-color var(--motion-fast), transform var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-panel);
+}
+
 .narrative-card {
   margin-bottom: var(--space-4);
   font-family: var(--font-narrative);
@@ -428,12 +437,13 @@
   background: var(--surface-subtle);
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color var(--motion-fast), background var(--motion-fast), transform var(--motion-fast);
 }
 
 .launcher-menu__item:hover:not(:disabled) {
   background: var(--surface-active);
   border-color: var(--realm-accent, var(--accent-gold));
+  transform: translateX(2px);
 }
 
 .launcher-menu__item.is-active {
@@ -604,6 +614,11 @@
   background:
     radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--color-gold) 6%, transparent), transparent 60%),
     rgba(0, 0, 0, 0.16);
+  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.composer:focus-within {
+  box-shadow: var(--shadow-glow);
 }
 
 .composer label,
@@ -1779,18 +1794,6 @@
    ANIMATIONS & WOW FACTOR (#763)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Route transition */
-.workspace-main {
-  animation: route-enter 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-@keyframes route-enter {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
-  }
-}
-
 /* Narrative reveal */
 .narrative-card.is-featured p {
   animation: narrative-reveal 800ms ease-out both;
@@ -1836,11 +1839,11 @@
 }
 
 .shell-panel {
-  transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+  transition: border-color var(--motion-panel), box-shadow var(--motion-panel);
 }
 
 .shell-panel:hover {
-  border-color: color-mix(in srgb, var(--realm-accent) 24%, rgba(255, 255, 255, 0.06));
+  border-color: color-mix(in srgb, var(--realm-accent) 32%, rgba(255, 255, 255, 0.08));
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1905,7 +1908,7 @@
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: color var(--motion-fast), background var(--motion-fast), border-color var(--motion-fast), transform var(--motion-fast);
   color: var(--text-muted);
   min-width: 52px;
 }
@@ -1914,6 +1917,10 @@
 .nav-bar__item:focus-visible {
   background: var(--surface-hover);
   border-color: var(--border-subtle);
+}
+
+.nav-bar__item:hover:not(.is-active) {
+  transform: translateY(-1px);
 }
 
 .nav-bar__item.is-active {

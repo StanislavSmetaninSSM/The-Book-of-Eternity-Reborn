@@ -79,6 +79,7 @@
   color: var(--realm-accent);
   background: color-mix(in srgb, var(--realm-accent) 10%, transparent);
   border: 1px solid color-mix(in srgb, var(--realm-accent) 24%, transparent);
+  transition: color var(--motion-fast), background var(--motion-fast), border-color var(--motion-fast), box-shadow var(--motion-fast);
   animation: candle-flicker 4s ease-in-out infinite;
 }
 

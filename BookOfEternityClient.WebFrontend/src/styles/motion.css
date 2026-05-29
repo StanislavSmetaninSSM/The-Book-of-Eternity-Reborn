@@ -45,6 +45,40 @@
   }
 }
 
+@keyframes route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.8rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sidebar-enter {
+  from {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes btn-press {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .shell-panel,
 .advanced-diagnostics,
 .error-notice {
@@ -57,6 +91,58 @@
 
 h1 {
   animation: rune-glow 6s ease-in-out infinite;
+}
+
+.workspace-main > :not(.shell-panel):not(.advanced-diagnostics):not(.error-notice) {
+  animation: route-enter var(--motion-panel) both;
+}
+
+.workspace-main > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.workspace-main > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.workspace-main > *:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.workspace-main > .shell-panel,
+.workspace-main > .advanced-diagnostics,
+.workspace-main > .error-notice {
+  animation-delay: 0ms;
+}
+
+.workspace-main > .shell-panel:nth-child(2),
+.workspace-main > .advanced-diagnostics:nth-child(2),
+.workspace-main > .error-notice:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.workspace-main > .shell-panel:nth-child(3),
+.workspace-main > .advanced-diagnostics:nth-child(3),
+.workspace-main > .error-notice:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.workspace-main > .shell-panel:nth-child(4),
+.workspace-main > .advanced-diagnostics:nth-child(4),
+.workspace-main > .error-notice:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.workspace-sidebar {
+  animation: sidebar-enter var(--motion-panel) both;
+  animation-delay: 80ms;
+}
+
+.nav-bar__item:active,
+.launcher-menu__item:active:not(:disabled),
+.composer button[type='submit']:active,
+.composer-form button[type='submit']:active {
+  animation: btn-press 150ms ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
