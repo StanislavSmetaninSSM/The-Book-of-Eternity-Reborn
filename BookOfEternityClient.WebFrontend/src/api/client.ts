@@ -14,6 +14,8 @@ import type {
   BrowserLoadSaveRequest,
   BrowserLoadSaveResultDto,
   BrowserMainMenuDto,
+  BrowserPlayerActionRequest,
+  BrowserPlayerActionResult,
   BrowserValidationSummaryDto,
   ExplorerCommandResult,
   ExplorerPromptSessionCancelRequest,
@@ -49,6 +51,7 @@ export interface BrowserApiClient {
   getQteState(): Promise<BrowserApiResult<QteWebStateDto>>;
   resolveQteOffer(request: QteWebOfferDecisionRequest): Promise<BrowserApiResult<QteWebStateDto>>;
   resolveQteAction(request: QteWebActionRequest): Promise<BrowserApiResult<QteWebStateDto>>;
+  submitPlayerAction(request: BrowserPlayerActionRequest): Promise<BrowserApiResult<BrowserPlayerActionResult>>;
 }
 
 export const browserApiEndpointDocs = [
@@ -70,7 +73,8 @@ export const browserApiEndpointDocs = [
   { id: 'prompt-session-cancel', method: 'POST', path: '/api/explorer/prompt-sessions/cancel', playerSurface: 'advanced-only', response: 'ExplorerCommandResult' },
   { id: 'qte-state', method: 'GET', path: '/api/qte/state', playerSurface: 'player-default', response: 'QteWebStateDto' },
   { id: 'qte-offer', method: 'POST', path: '/api/qte/offer', playerSurface: 'player-default', response: 'QteWebStateDto' },
-  { id: 'qte-action', method: 'POST', path: '/api/qte/action', playerSurface: 'player-default', response: 'QteWebStateDto' }
+  { id: 'qte-action', method: 'POST', path: '/api/qte/action', playerSurface: 'player-default', response: 'QteWebStateDto' },
+  { id: 'player-action', method: 'POST', path: '/api/explorer/player-action', playerSurface: 'player-default', response: 'BrowserPlayerActionResult' }
 ] as const satisfies BrowserApiEndpointDescriptor[];
 
 export const browserApiContractSummary = {
@@ -102,7 +106,8 @@ export function createBrowserApiClient(options: BrowserApiClientOptions = {}): B
     cancelPromptSession: (request) => requestJson<ExplorerCommandResult>(fetcher, baseUrl, '/api/explorer/prompt-sessions/cancel', jsonInit('POST', request)),
     getQteState: () => requestJson<QteWebStateDto>(fetcher, baseUrl, '/api/qte/state'),
     resolveQteOffer: (request) => requestJson<QteWebStateDto>(fetcher, baseUrl, '/api/qte/offer', jsonInit('POST', request)),
-    resolveQteAction: (request) => requestJson<QteWebStateDto>(fetcher, baseUrl, '/api/qte/action', jsonInit('POST', request))
+    resolveQteAction: (request) => requestJson<QteWebStateDto>(fetcher, baseUrl, '/api/qte/action', jsonInit('POST', request)),
+    submitPlayerAction: (request) => requestJson<BrowserPlayerActionResult>(fetcher, baseUrl, '/api/explorer/player-action', jsonInit('POST', request))
   };
 }
 
