@@ -3,6 +3,49 @@ import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { browserApi, browserApiContractSummary } from './api/client';
 import { DetailSurfaceCard } from './components/DetailSurface';
 import { sanitizePlayerDefaultCommandResult } from './playerFacingCommandResult';
+import {
+  chaosSeaActionMatchers,
+  filterActionSections,
+  filterActionsForPanel,
+  inventorySectionMatchers,
+  journalSectionMatchers,
+  rebornSectionMatchers,
+  shiningAbodeActionMatchers
+} from './utils/actionFilters';
+import {
+  commandStateLabel,
+  formatActionPreview,
+  formatDialogueCategory,
+  formatHeroStatusLabel,
+  formatMediaDate,
+  formatMediaSize,
+  formatQteActionCheck,
+  formatQteGradeLabel,
+  formatQteStateLabel,
+  formatRealmName,
+  formatRebornLockStatus,
+  formatSessionStatus,
+  formatShiningGateStatus,
+  formatSidebarAudioSummary,
+  formatSidebarLayerStatus,
+  formatSidebarSaveSummary,
+  formatSidebarSessionSummary,
+  formatSidebarStatusMetric,
+  formatTurnLifecycleActionDescription,
+  formatTurnStateLabel,
+  formatTurnStateMessage,
+  formatTurnStateTitle,
+  getComposerDisabledReason,
+  getComposerGuidance,
+  getComposerPlaceholder,
+  normalizeQteGrade,
+  qteGradeOptionsForAction,
+  type QteAction,
+  type QteGrade,
+  toCommandNotice,
+  toLauncherSaveFailureNotice
+} from './utils/formatters';
+import { playerLauncherAboutText, toPlayerFacingText } from './utils/playerCopy';
 import type {
   BrowserApiFailure,
   BrowserApiResult,
@@ -13,7 +56,6 @@ import type {
   BrowserClientSettingsDto,
   BrowserClientSettingsUpdateRequest,
   BrowserCommandCoverageDto,
-  BrowserGameScreenAfterlifeDto,
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
   BrowserMainMenuDto,
@@ -39,9 +81,6 @@ type BrowserShellState =
   | { status: 'error'; playerMessage: string; technicalDetails?: string };
 
 type PromptAnswers = Record<string, JsonValue | undefined>;
-
-type QteGrade = 'success' | 'partial' | 'fail';
-type QteAction = NonNullable<NonNullable<BrowserGameScreenDto['qte']['activeScene']>['currentChapter']>['actions'][number];
 
 interface RouteCard {
   id: RouteId;
@@ -99,74 +138,6 @@ const fallbackTheme: RealmTheme = {
 };
 
 const browserApiEndpoints = browserApiContractSummary.endpointDocs;
-
-const playerCopyReplacements: Array<[RegExp, string]> = [
-  [/\bMortal World\b/gi, 'Мир смертных'],
-  [/\bChaos Sea\b/gi, 'Море Хаоса'],
-  [/\bShining Abode\b/gi, 'Сияющая Обитель'],
-  [/\bGM[- ]?turn\b/g, 'ход ГМа'],
-  [/\bGM\b/g, 'ГМ'],
-  [/QTE action resolved\.?/gi, 'Быстрая сцена завершена.'],
-  [/\bQTE\b/g, 'быстрая сцена'],
-  [/debug shell/gi, 'служебная оболочка'],
-  [/Slash-команды/gi, 'служебные команды'],
-  [/\bslash commands?\b/gi, 'служебные команды'],
-  [/Нужен repair pending turn/gi, 'Нужна починка ожидающего хода'],
-  [/repair pending turn/gi, 'починка ожидающего хода'],
-  [/нужен repair/gi, 'нужна починка'],
-  [/\bpending[- ]turn\b/gi, 'ожидающий ход'],
-  [/\bturn[- ]writer\b/gi, 'запись хода'],
-  [/\bBrowser[- ]write\b/gi, 'запись из браузера'],
-  [/\bbrowser write\b/gi, 'запись из браузера'],
-  [/\blocal[- ]write\b/gi, 'локальная запись'],
-  [/\bprompt[- ]session\b/gi, 'игровая форма'],
-  [/\brollback\b/gi, 'откат'],
-  [/blocked by/gi, 'заблокировано из-за'],
-  [/\bblocked\b/gi, 'заблокировано'],
-  [/\bby\b/gi, 'из-за'],
-  [/\bSpectre\.Console\b/g, 'консольный интерфейс'],
-  [/state\/contract/gi, 'файлы состояния и контракта'],
-  [/snapshot artifact/gi, 'снимок состояния'],
-  [/game_session/gi, 'сохранение игры'],
-  [/write-flow/gi, 'запись хода'],
-  [/manual_saves/gi, 'ручные сохранения'],
-  [/autosaves/gi, 'автосохранения'],
-  [/--web/g, 'браузерный режим'],
-  [/\boffer\b/gi, 'предложение'],
-  [/\bsnapshot\b/gi, 'снимок'],
-  [/\bartifact\b/gi, 'файл состояния'],
-  [/Browser Client/gi, 'браузерный клиент'],
-  [/sound-notification/gi, 'звуковая подсказка'],
-  [/\brealm\b/gi, 'царство'],
-  [/repair\/validation/gi, 'починка и проверка'],
-  [/UI-блокировка/gi, 'блокировка интерфейса'],
-  [/\bvalidation\b/gi, 'проверка'],
-  [/game_state\/meta\/soul_state\.json/gi, 'файл души'],
-  [/soul_state\.json/gi, 'файл души'],
-  [/game_state/gi, 'папка состояния игры'],
-  [/локальный запись хода/gi, 'локальную запись хода'],
-  [/тот же локальную/gi, 'ту же локальную'],
-  [/\bUI\b/g, 'интерфейс'],
-  [/\baction\b/gi, 'действие'],
-  [/\bresolved\b/gi, 'завершена'],
-  [/\brepair\b/gi, 'починка'],
-  [/C\x23\s*/g, ''],
-  [/\blifecycle\b/gi, 'состояние хода'],
-  [/\bruntime\b/gi, 'игровой слой'],
-  [/\bendpoint(s)?\b/gi, 'разделы локального интерфейса'],
-  [/\bAPI\b/g, 'локальный интерфейс'],
-  [/\bDTO\b/g, 'данные интерфейса'],
-  [/\bNPC\b/g, 'персонажи мира']
-];
-
-const launcherAboutCopyReplacements: Array<[RegExp, string]> = [
-  [/\bdebug\b/gi, 'служебная'],
-  [/\bdiagnostics?\b/gi, 'проверочные сведения'],
-  [/\btechnical details?\b/gi, 'служебные сведения'],
-  [/\btechnical\b/gi, 'служебный'],
-  [/\bdeveloper\b/gi, 'служебный'],
-  [/\braw JSON\b/gi, 'подробные данные']
-];
 
 const launcherModes: LauncherMode[] = ['continue', 'load', 'new-game', 'settings', 'about'];
 
@@ -1034,82 +1005,12 @@ function getSidebarEmptyGameMessage(readyState: Extract<BrowserShellState, { sta
   return 'Книга ждёт открытия главы.';
 }
 
-function formatHeroStatusLabel(gameScreen: BrowserGameScreenDto | null, menu: BrowserMainMenuDto | null): string {
-  if (gameScreen) {
-    return formatTurnStateTitle(gameScreen.turnState);
-  }
-
-  if (menu && !menu.session.canContinue) {
-    return 'Глава ещё не открыта';
-  }
-
-  return 'Книга ждёт открытия';
-}
-
-function formatSidebarLayerStatus(menu: BrowserMainMenuDto | null): string {
-  if (!menu) {
-    return 'Книга ждёт открытия.';
-  }
-
-  if (!menu.session.canContinue) {
-    return 'Откройте новую главу или загрузите сохранение, чтобы увидеть состояние мира.';
-  }
-
-  const validationLabel = menu.session.validationLabel;
-  return toPlayerFacingText(validationLabel, 'Книга ждёт открытия');
-}
-
 function getTurnSidebarTitle(hasGame: boolean, sidebarGameFailure: string | null): string {
   if (!hasGame && !sidebarGameFailure) {
     return 'Ход ещё не начат';
   }
 
   return 'Ожидание ГМа';
-}
-
-function formatSidebarSessionSummary(session: LocalWebUiSessionStatus | null, menu: BrowserMainMenuDto | null): string {
-  if (menu && !menu.session.canContinue && !menu.session.hasReadableSoul) {
-    return 'Активной главы пока нет — начните новую или загрузите сохранение.';
-  }
-
-  if (session?.gameSessionExists) {
-    return session.canStartBrowserWrite
-      ? 'Локальная партия найдена, запись следующего хода доступна.'
-      : 'Локальная партия найдена, но ход сейчас ждёт безопасного момента.';
-  }
-
-  if (menu?.session.gameSessionExists || menu?.session.canContinue) {
-    return 'Есть глава, которую можно продолжить с главной страницы.';
-  }
-
-  return 'Активной главы пока нет — начните новую или загрузите сохранение.';
-}
-
-function formatSidebarSaveSummary(menu: BrowserMainMenuDto | null): string {
-  if (!menu) {
-    return 'Список сохранений появится после ответа локальной книги.';
-  }
-
-  if (menu.saves.length > 0) {
-    return `Доступно сохранений: ${menu.saves.length}. Последние записи доступны на главной странице.`;
-  }
-
-  return 'Сохранений пока не найдено; можно начать новую главу.';
-}
-
-function formatSidebarStatusMetric(value: string): string {
-  const normalized = value.trim();
-  if (!normalized) {
-    return '—';
-  }
-
-  return normalized.endsWith('%') ? normalized : `${normalized}%`;
-}
-
-function formatSidebarAudioSummary(audio: BrowserAudioSettingsDto): string {
-  const availablePlaylists = audio.playlists.filter((playlist) => playlist.available).length;
-  const availableCues = audio.cues.filter((cue) => cue.available).length;
-  return `Музыка ${audio.musicEnabled ? 'включена' : 'выключена'}; плейлистов найдено: ${availablePlaylists}; подсказок: ${availableCues}.`;
 }
 
 function renderActiveRoute(
@@ -1406,12 +1307,6 @@ function WorldRoute({ state, advancedEnabled }: { state: Extract<BrowserShellSta
 }
 
 
-const journalSectionMatchers = ['quest', 'квест', 'journal', 'журнал', 'archive', 'архив', 'chronicle', 'хроника', 'story', 'история', 'faction', 'фракц', 'guardian', 'хранител'];
-const inventorySectionMatchers = ['inventory', 'инвентар', 'item', 'предмет', 'craft', 'ремес', 'equip', 'экип', 'storage', 'хранилищ'];
-const rebornSectionMatchers = ['afterlife', 'посмер', 'soul', 'душ', 'shining', 'сияющ', 'abode', 'обител', 'chaos', 'хаос', 'guardian', 'хранител', 'gate', 'врат'];
-const shiningAbodeActionMatchers = ['shining', 'сияющ', 'abode', 'обител', 'radiance', 'сияни', 'spark', 'искра', 'hall', 'зал', 'gate', 'врат'];
-const chaosSeaActionMatchers = ['chaos', 'хаос', 'sea', 'море', 'guardian', 'хранител', 'abode', 'обител'];
-
 function JournalRoute({ state, advancedEnabled }: { state: Extract<BrowserShellState, { status: 'ready' }>; advancedEnabled: boolean }) {
   if (!isSuccess(state.game)) {
     return <EmptyOrFailure result={state.game} advancedEnabled={advancedEnabled} errorTitle="Журнал требует внимания" empty={{
@@ -1620,54 +1515,6 @@ function RebornSystemsPanel({ game }: { game: BrowserGameScreenDto }) {
   );
 }
 
-function filterActionsForPanel(
-  sections: BrowserPlayerCommandSectionDto[],
-  matchers: string[]
-): BrowserPlayerCommandActionDto[] {
-  const normalizedMatchers = matchers.map((matcher) => matcher.toLocaleLowerCase('ru-RU'));
-  return sections
-    .flatMap((section) => section.actions)
-    .filter((action) => {
-      const haystack = [
-        action.id,
-        action.label,
-        action.description,
-        action.formLabel,
-        action.formPrompt
-      ].join(' ').toLocaleLowerCase('ru-RU');
-      return normalizedMatchers.some((matcher) => haystack.includes(matcher));
-    })
-    .slice(0, 4);
-}
-
-function formatRebornLockStatus(game: BrowserGameScreenDto): string {
-  if (game.flags.isInAfterlifeRealm) {
-    return `${formatRealmName(game.soul.realm)} · перья ${game.soul.inkFeathers}`;
-  }
-
-  return 'Посмертные панели откроются, когда душа перейдёт в посмертие.';
-}
-
-function formatShiningGateStatus(afterlife: BrowserGameScreenAfterlifeDto): string {
-  if (afterlife.isShiningGatesDraftStale) {
-    return 'Черновик врат требует обновления';
-  }
-
-  if (afterlife.hasOpenShiningGatesDraft) {
-    return 'Черновик врат открыт';
-  }
-
-  return 'Врата ждут подходящего момента';
-}
-
-function formatActionPreview(action: BrowserPlayerCommandActionDto): string {
-  if (action.enabled) {
-    return toPlayerFacingText(action.description, 'Действие доступно для текущей главы.');
-  }
-
-  return toPlayerFacingText(action.disabledReason, 'Действие сейчас недоступно.');
-}
-
 function ActionPreviewList({ actions, emptyMessage }: { actions: BrowserPlayerCommandActionDto[]; emptyMessage: string }) {
   if (actions.length === 0) {
     return <p className="muted">{emptyMessage}</p>;
@@ -1699,42 +1546,6 @@ function FilteredActionSections({ sections, emptyMessage }: { sections: BrowserP
       </div>
     </section>
   );
-}
-
-function filterActionSections(menu: BrowserPlayerCommandMenuDto, matchers: string[]): BrowserPlayerCommandSectionDto[] {
-  return menu.sections.flatMap((section) => {
-    if (!section.playerDefault || section.actions.length === 0) {
-      return [];
-    }
-
-    const matchingActions = section.actions.filter((action) => matchesActionSectionOrAction(section, action, matchers));
-    if (matchingActions.length === 0) {
-      return [];
-    }
-
-    return [{ ...section, actions: matchingActions }];
-  });
-}
-
-function matchesActionSectionOrAction(
-  section: BrowserPlayerCommandSectionDto,
-  action: BrowserPlayerCommandActionDto,
-  matchers: string[]
-): boolean {
-  const haystack = [
-    section.id,
-    section.label,
-    section.description,
-    action.id,
-    action.label,
-    action.description,
-    action.formLabel,
-    action.formPrompt,
-    action.advancedCommand
-  ].join(' ').toLocaleLowerCase('ru-RU');
-  const normalizedMatchers = matchers.map((matcher) => matcher.toLocaleLowerCase('ru-RU'));
-
-  return normalizedMatchers.some((matcher) => haystack.includes(matcher));
 }
 
 function ActionMenu({ menu }: { menu: BrowserPlayerCommandMenuDto }) {
@@ -1780,14 +1591,6 @@ function TurnLifecycleActions({ turnState }: { turnState: BrowserGameScreenDto['
       )}
     </div>
   );
-}
-
-function formatTurnLifecycleActionDescription(action: BrowserGameScreenDto['turnState']['recommendedActions'][number]): string {
-  if (action.enabled) {
-    return toPlayerFacingText(action.description, 'Действие доступно для текущего состояния хода.');
-  }
-
-  return toPlayerFacingText(action.disabledReason, 'Действие сейчас недоступно.');
 }
 
 function ActionSection({ section }: { section: BrowserPlayerCommandSectionDto }) {
@@ -2044,220 +1847,6 @@ function defaultPromptValue(prompt: UiPrompt): JsonValue | undefined {
     case 'longTextInput':
     case 'textInput':
       return prompt.defaultValue;
-  }
-}
-
-function toCommandNotice(result: ExplorerCommandResult): string {
-  switch (result.state) {
-    case 'RequiresInput':
-      return 'Форма открыта. Заполните поля ниже и отправьте её из браузера.';
-    case 'Completed':
-      return 'Игровое действие выполнено.';
-    case 'Pending':
-      return 'Действие ожидает ответа или завершения текущего хода.';
-    case 'Blocked':
-      return 'Действие сейчас заблокировано состоянием игры.';
-    case 'Failed':
-      return 'Действие не удалось выполнить; подробности показаны ниже.';
-  }
-}
-
-function playerLauncherAboutText(text: string): string {
-  const fallback = 'Браузерный клиент открывает локальную книгу и оставляет игровые решения в основном клиенте.';
-  const playerText = toPlayerFacingText(text, fallback);
-  const sanitized = launcherAboutCopyReplacements.reduce(
-    (copy, [pattern, replacement]) => copy.replace(pattern, replacement),
-    playerText
-  );
-
-  return sanitized.trim() || fallback;
-}
-
-function toLauncherSaveFailureNotice(message: string): string {
-  return message.trim()
-    ? 'Сохранение не удалось загрузить. Выберите другую запись или попробуйте ещё раз; служебные подробности можно проверить в расширенном режиме.'
-    : 'Сохранение не удалось загрузить. Выберите другую запись или попробуйте ещё раз.';
-}
-
-function toPlayerFacingText(value: string | null | undefined, fallback: string): string {
-  const source = value?.trim();
-  if (!source) {
-    return fallback;
-  }
-
-  const normalized = playerCopyReplacements.reduce(
-    (text, [pattern, replacement]) => text.replace(pattern, replacement),
-    source
-  );
-
-  return normalized.trim() || fallback;
-}
-
-function formatRealmName(realm: string): string {
-  switch (realm.trim().toLowerCase()) {
-    case 'mortal world':
-    case 'mortal-world':
-      return 'Мир смертных';
-    case 'chaos sea':
-    case 'chaos-sea':
-      return 'Море Хаоса';
-    case 'shining abode':
-    case 'shining-abode':
-      return 'Сияющая Обитель';
-    default:
-      return toPlayerFacingText(realm, 'царство уточняется');
-  }
-}
-
-function formatDialogueCategory(category: string): string {
-  switch (category.trim().toLowerCase()) {
-    case 'exploration':
-      return 'исследование';
-    case 'dialogue':
-    case 'social':
-      return 'диалог';
-    case 'combat':
-      return 'бой';
-    case 'lore':
-      return 'знание';
-    case 'world':
-      return 'мир';
-    case 'afterlife':
-      return 'посмертие';
-    default:
-      return toPlayerFacingText(category, 'вариант выбора');
-  }
-}
-
-function formatTurnStateTitle(turnState: BrowserGameScreenDto['turnState']): string {
-  return toPlayerFacingText(turnState.title, formatTurnStateLabel(turnState.phase || turnState.state));
-}
-
-function formatTurnStateMessage(turnState: BrowserGameScreenDto['turnState']): string {
-  return toPlayerFacingText(
-    turnState.message,
-    turnState.canStartBrowserWrite
-      ? 'Опишите следующий ход персонажа в художественной форме.'
-      : 'Запись хода сейчас недоступна; дождитесь безопасного состояния игры.'
-  );
-}
-
-function getComposerPlaceholder(actionComposer: BrowserGameScreenDto['actionComposer']): string {
-  return toPlayerFacingText(actionComposer.placeholder, 'Опишите действие персонажа обычным текстом…');
-}
-
-function getComposerGuidance(actionComposer: BrowserGameScreenDto['actionComposer']): string {
-  return toPlayerFacingText(
-    actionComposer.guidance,
-    'Пишите действие персонажа обычным текстом; служебные команды доступны только в расширенном режиме.'
-  );
-}
-
-function getComposerDisabledReason(actionComposer: BrowserGameScreenDto['actionComposer']): string {
-  return toPlayerFacingText(actionComposer.disabledReason, 'Ввод временно недоступен по состоянию хода.');
-}
-
-function formatSessionStatus(status: string): string {
-  switch (status.trim().toLowerCase()) {
-    case 'ok':
-    case 'ready':
-      return 'Клиент готов';
-    case 'missing':
-    case 'not_found':
-    case 'notfound':
-      return 'Сохранение не найдено';
-    case 'blocked':
-      return 'Запись временно заблокирована';
-    case 'error':
-      return 'Нужна проверка состояния';
-    default:
-      return status.trim() ? 'Состояние требует внимания' : 'Состояние уточняется';
-  }
-}
-
-function formatTurnStateLabel(state: string): string {
-  switch (state.trim().toLowerCase()) {
-    case 'idle':
-    case 'ready':
-      return 'Готово к ходу';
-    case 'composing-action':
-    case 'composing_action':
-      return 'Игрок готовит действие';
-    case 'turn-submitted':
-    case 'turn_submitted':
-      return 'Ход отправляется';
-    case 'waitinggm':
-    case 'waiting_gm':
-    case 'waiting-gm':
-    case 'pending':
-    case 'pending-gm-turn':
-      return 'Ожидаем ответ ГМа';
-    case 'accepted':
-      return 'Ответ ГМа принят';
-    case 'validationfailed':
-    case 'validation_failed':
-    case 'validation-failed':
-    case 'validation-errors':
-      return 'Проверка не прошла';
-    case 'repairrequired':
-    case 'repair_required':
-    case 'repair-required':
-    case 'pending-turn-repair':
-      return 'Нужна починка';
-    case 'error-restored':
-    case 'gm-turn-error':
-      return 'Ошибка восстановлена';
-    case 'cancelled':
-      return 'Ход отменён';
-    case 'blocked':
-      return 'Ход заблокирован';
-    case 'error':
-      return 'Ошибка хода';
-    default:
-      return state.trim() ? 'Состояние хода' : 'Ход уточняется';
-  }
-}
-
-function formatQteStateLabel(qte: BrowserGameScreenDto['qte']): string {
-  if (qte.notification) {
-    return toPlayerFacingText(qte.notification, 'Быстрая сцена изменила состояние.');
-  }
-
-  if (qte.error) {
-    return 'Быстрая сцена требует внимания.';
-  }
-
-  switch (qte.state.trim().toLowerCase()) {
-    case 'noscene':
-    case 'none':
-    case 'idle':
-      return 'Быстрая сцена не активна.';
-    case 'offer':
-      return 'Доступна быстрая сцена.';
-    case 'active':
-      return 'Быстрая сцена активна.';
-    case 'resolution':
-    case 'resolved':
-      return 'Быстрая сцена завершилась.';
-    case 'completed':
-      return 'Итог быстрой сцены записан.';
-    default:
-      return 'Состояние быстрой сцены уточняется.';
-  }
-}
-
-function commandStateLabel(state: ExplorerCommandResult['state']): string {
-  switch (state) {
-    case 'RequiresInput':
-      return 'Требуется ввод';
-    case 'Completed':
-      return 'Выполнено';
-    case 'Pending':
-      return 'Ожидает';
-    case 'Blocked':
-      return 'Заблокировано';
-    case 'Failed':
-      return 'Ошибка';
   }
 }
 
@@ -2589,72 +2178,6 @@ function MediaAtlasPanel({ map, realmLabel }: { map: BrowserGameScreenDto['media
       )}
     </section>
   );
-}
-
-const qteGradeOrder: QteGrade[] = ['success', 'partial', 'fail'];
-
-function qteGradeOptionsForAction(action: QteAction): QteGrade[] {
-  const normalized = action.gradeOptions.map(normalizeQteGrade);
-  const unique = qteGradeOrder.filter((grade) => normalized.includes(grade));
-  return unique.length > 0 ? unique : qteGradeOrder;
-}
-
-function normalizeQteGrade(value: string | null | undefined): QteGrade {
-  switch ((value ?? '').trim().toLowerCase()) {
-    case 'partial':
-    case 'part':
-    case 'mixed':
-      return 'partial';
-    case 'fail':
-    case 'failure':
-    case 'failed':
-      return 'fail';
-    case 'success':
-    default:
-      return 'success';
-  }
-}
-
-function formatQteGradeLabel(grade: QteGrade): string {
-  switch (grade) {
-    case 'success':
-      return 'Успех';
-    case 'partial':
-      return 'Частичный успех';
-    case 'fail':
-      return 'Провал';
-  }
-}
-
-function formatQteActionCheck(action: QteAction): string {
-  const difficulty = action.baseDifficulty > 0 ? `сложность ${action.baseDifficulty}` : 'сложность уточняется';
-  const characteristic = toPlayerFacingText(action.primaryCharacteristic, 'проверка');
-  return `${characteristic} · ${difficulty}`;
-}
-
-function formatMediaSize(length: number): string {
-  if (!Number.isFinite(length) || length <= 0) {
-    return 'размер уточняется';
-  }
-
-  const units = ['Б', 'КБ', 'МБ', 'ГБ'];
-  let value = length;
-  let unitIndex = 0;
-  while (value >= 1024 && unitIndex < units.length - 1) {
-    value /= 1024;
-    unitIndex += 1;
-  }
-
-  return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
-}
-
-function formatMediaDate(value: string): string {
-  const date = new Date(value);
-  if (!Number.isFinite(date.getTime())) {
-    return 'дата уточняется';
-  }
-
-  return date.toLocaleString('ru-RU', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
 function SettingsRoute({
