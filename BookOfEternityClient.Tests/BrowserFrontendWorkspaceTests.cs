@@ -46,7 +46,7 @@ public sealed class BrowserFrontendWorkspaceTests
         using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
         var scripts = document.RootElement.GetProperty("scripts");
         Assert.Equal("npm run typecheck && npm run test:player-facing && npm run build", scripts.GetProperty("verify").GetString());
-        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js", scripts.GetProperty("test:player-facing").GetString());
+        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts", scripts.GetProperty("test:player-facing").GetString());
 
         var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
         Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
