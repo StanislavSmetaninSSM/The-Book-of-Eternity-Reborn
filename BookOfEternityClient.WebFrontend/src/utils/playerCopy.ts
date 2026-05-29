@@ -90,3 +90,49 @@ export function playerLauncherAboutText(text: string): string {
 
   return sanitized.trim() || fallback;
 }
+
+const technicalPatterns: RegExp[] = [
+  /\b[\w/\\]+\.json\b/gi,
+  /\b[\w/\\]+\.txt\b/gi,
+  /\b[\w/\\]+\.md\b/gi,
+  /\bgame_state[\\/][\w/\\]+/gi,
+  /\boutput[\\/][\w/\\]+/gi,
+  /\bprotocol\b/gi,
+  /\bартефакты?\s*протокола\b/gi,
+  /\bJSON:\s*\w+/gi,
+  /\bФайл\s+\S+\s+не найден/gi,
+  /\bnpc_core\b/gi,
+  /\bsoul_state\b/gi,
+  /\bcurrent_location\b/gi,
+  /\bnarrative_response\b/gi
+];
+
+export function containsTechnicalDetails(text: string | null | undefined): boolean {
+  if (!text) return false;
+  return technicalPatterns.some(pattern => {
+    pattern.lastIndex = 0;
+    return pattern.test(text);
+  });
+}
+
+export function sanitizePlayerMessage(text: string | null | undefined, fallback: string): { safe: string; hasTechnical: boolean } {
+  const source = text?.trim();
+  if (!source) {
+    return { safe: fallback, hasTechnical: false };
+  }
+
+  const hasTechnical = containsTechnicalDetails(source);
+  if (!hasTechnical) {
+    return { safe: toPlayerFacingText(source, fallback), hasTechnical: false };
+  }
+
+  let cleaned = source;
+  for (const pattern of technicalPatterns) {
+    pattern.lastIndex = 0;
+    cleaned = cleaned.replace(pattern, '');
+  }
+  cleaned = cleaned.replace(/\s{2,}/g, ' ').replace(/[—–]\s*$/g, '').trim();
+
+  const safe = cleaned ? toPlayerFacingText(cleaned, fallback) : fallback;
+  return { safe, hasTechnical: true };
+}
