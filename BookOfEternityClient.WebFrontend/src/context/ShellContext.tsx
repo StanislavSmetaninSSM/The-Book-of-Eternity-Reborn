@@ -28,6 +28,7 @@ export type BrowserShellState =
   | { status: 'loading' }
   | {
       status: 'ready';
+      connectionStatus: 'connected' | 'partial';
       menu: BrowserApiResult<BrowserMainMenuDto>;
       session: BrowserApiResult<LocalWebUiSessionStatus>;
       game: BrowserApiResult<BrowserGameScreenDto>;
@@ -55,6 +56,7 @@ export interface ShellContextValue {
   realmTheme: RealmTheme;
   activeRoute: RouteId;
   setActiveRoute: (route: RouteId) => void;
+  connectionStatus: 'connected' | 'partial' | 'disconnected';
   advancedEnabled: boolean;
   setAdvancedEnabled: (updater: (value: boolean) => boolean) => void;
   composerText: string;
@@ -115,6 +117,9 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const menu = readyState && isSuccess(readyState.menu) ? readyState.menu.data : null;
   const session = readyState && isSuccess(readyState.session) ? readyState.session.data : null;
   const clientSettings = readyState && isSuccess(readyState.settings) ? readyState.settings.data : null;
+  const connectionStatus: 'connected' | 'partial' | 'disconnected' =
+    shellState.status === 'ready' ? shellState.connectionStatus :
+    shellState.status === 'error' ? 'disconnected' : 'connected';
   const realmTheme = useMemo(() => resolveRealmTheme(gameScreen), [gameScreen]);
   const setAdvancedEnabled = useCallback((updater: (value: boolean) => boolean) => {
     setAdvancedEnabledState(updater);
@@ -157,6 +162,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     realmTheme,
     activeRoute,
     setActiveRoute,
+    connectionStatus,
     advancedEnabled,
     setAdvancedEnabled,
     composerText,
@@ -173,6 +179,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     clientSettings,
     realmTheme,
     activeRoute,
+    connectionStatus,
     advancedEnabled,
     setAdvancedEnabled,
     composerText,

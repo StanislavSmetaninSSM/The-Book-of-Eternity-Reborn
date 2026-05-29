@@ -13,10 +13,13 @@
   "include": [
     "src/api/contracts.ts",
     "src/context/ShellContext.tsx",
+    "src/hooks/useShellState.ts",
+    "src/hooks/shellStateResult.ts",
     "src/components/*.tsx",
     "src/routes/*.tsx",
     "src/playerFacingCommandResult.ts",
     "test/playerFacingCommandResult.test.ts",
-    "test/appRouteExtraction.test.ts"
+    "test/appRouteExtraction.test.ts",
+    "test/useShellStateSettled.test.ts"
   ]
 }
