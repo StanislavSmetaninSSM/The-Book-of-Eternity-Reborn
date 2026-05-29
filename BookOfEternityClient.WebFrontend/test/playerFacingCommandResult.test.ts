@@ -231,3 +231,5 @@ import './uiStructure.test.js';
 import './useShellStateSettled.test.js';
 import './gracefulDegradation.test.js';
 import './promptFormSanitization.test.js';
+import './gameLauncherMenuLayout.test.js';
+import './audioPanelCatalogVisibility.test.js';

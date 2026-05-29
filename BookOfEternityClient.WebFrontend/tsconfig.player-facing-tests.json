@@ -22,6 +22,8 @@
     "test/appRouteExtraction.test.ts",
     "test/useShellStateSettled.test.ts",
     "test/connectionBanner.test.ts",
-    "test/gracefulDegradation.test.ts"
+    "test/gracefulDegradation.test.ts",
+    "test/gameLauncherMenuLayout.test.ts",
+    "test/audioPanelCatalogVisibility.test.ts"
   ]
 }

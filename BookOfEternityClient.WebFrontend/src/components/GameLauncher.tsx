@@ -152,38 +152,32 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
         <div className="launcher-copy">
           <p className="panel-eyebrow">главная книга</p>
           <h2 id="browser-launcher-title">Открыть книгу</h2>
-          <p>{toPlayerFacingText(menu.session.continueReason, 'Выберите продолжение, загрузку или новую главу.')}</p>
+          <p className="muted">{toPlayerFacingText(menu.session.continueReason, 'Выберите продолжение, загрузку или новую главу.')}</p>
         </div>
-        <button type="button" className="launcher-primary-action" disabled={!primaryAction.enabled} onClick={() => activateLauncherMode(primaryAction.mode)}>
-          <strong>{primaryAction.label}</strong>
-          <span>{primaryAction.enabled ? primaryAction.description : primaryAction.disabledReason}</span>
-        </button>
-        <div className="launcher-mode-tabs" role="tablist" aria-label="Режимы главной книги">
+
+        <nav className="launcher-menu" aria-label="Действия главного меню">
           {launcherModes.map((mode) => {
             const details = launcherModeDetails[mode];
             const action = findLauncherMenuAction(menu, mode);
-            return (
-              <button key={mode} type="button" role="tab" aria-selected={activeMode === mode} className={`launcher-mode-tab${activeMode === mode ? ' is-active' : ''}`} onClick={() => setActiveMode(mode)}>
-                <strong>{details.label}</strong>
-                <span>{action && !action.enabled ? 'пока недоступно' : 'открыть'}</span>
-              </button>
-            );
-          })}
-        </div>
-        {renderModeContent()}
-        <div className="launcher-secondary-actions">
-          {launcherModes.filter((mode) => mode !== primaryAction.mode).map((mode) => {
-            const details = launcherModeDetails[mode];
-            const action = findLauncherMenuAction(menu, mode);
             const disabled = Boolean(action && !action.enabled && mode !== 'settings' && mode !== 'about');
+            const isActive = activeMode === mode;
             return (
-              <button key={mode} type="button" className="launcher-secondary-action" disabled={disabled} onClick={() => activateLauncherMode(mode)}>
+              <button
+                key={mode}
+                type="button"
+                className={`launcher-menu__item${isActive ? ' is-active' : ''}${mode === primaryAction.mode ? ' is-primary' : ''}`}
+                disabled={disabled}
+                onClick={() => activateLauncherMode(mode)}
+                aria-current={isActive ? 'true' : undefined}
+              >
                 <strong>{details.label}</strong>
-                <span>{launcherActionDescription(menu, mode)}</span>
+                <span className="muted">{disabled ? 'пока недоступно' : details.description}</span>
               </button>
             );
           })}
-        </div>
+        </nav>
+
+        {renderModeContent()}
         {launcherNotice && <p className="composer-notice">{launcherNotice}</p>}
       </div>
     </article>

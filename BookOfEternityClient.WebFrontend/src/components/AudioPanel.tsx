@@ -48,6 +48,7 @@ export function AudioPanel() {
   }
 
   const audio = audioResult.data;
+  const allAssetsAvailable = audio.playlists.every((p) => p.available) && audio.cues.every((c) => c.available);
   const playlist = selectPreferredPlaylist(audio, activeRoute);
   const hasMusic = Boolean(playlist?.tracks.length);
   const notificationCue = audio.cues.find((cue) => cue.id === 'turn-ready' && cue.asset) ?? audio.cues.find((cue) => cue.asset);
@@ -195,18 +196,24 @@ export function AudioPanel() {
         </label>
       </div>
 
-      <div className="audio-catalog" aria-label="Доступные плейлисты и подсказки">
-        {audio.playlists.map((item) => (
-          <span key={item.id} className={item.available ? 'status-pill' : 'status-pill is-muted'}>
-            {toPlayerFacingText(item.label, 'Плейлист')}: {item.available ? `${item.tracks.length} трек(ов)` : 'файлы не найдены'}
-          </span>
-        ))}
-        {audio.cues.map((cue) => (
-          <span key={cue.id} className={cue.available ? 'status-pill' : 'status-pill is-muted'}>
-            {toPlayerFacingText(cue.label, 'Звуковая подсказка')}: {cue.available ? 'готово' : 'нет файла'}
-          </span>
-        ))}
-      </div>
+      {advancedEnabled ? (
+        <div className="audio-catalog" aria-label="Доступные плейлисты и подсказки">
+          {audio.playlists.map((item) => (
+            <span key={item.id} className={item.available ? 'status-pill' : 'status-pill is-muted'}>
+              {toPlayerFacingText(item.label, 'Плейлист')}: {item.available ? `${item.tracks.length} трек(ов)` : 'файлы не найдены'}
+            </span>
+          ))}
+          {audio.cues.map((cue) => (
+            <span key={cue.id} className={cue.available ? 'status-pill' : 'status-pill is-muted'}>
+              {toPlayerFacingText(cue.label, 'Звуковая подсказка')}: {cue.available ? 'готово' : 'нет файла'}
+            </span>
+          ))}
+        </div>
+      ) : !allAssetsAvailable ? (
+        <p className="muted">
+          Доступно плейлистов: {audio.playlists.filter((item) => item.available).length}/{audio.playlists.length} · Подсказок: {audio.cues.filter((cue) => cue.available).length}/{audio.cues.length}
+        </p>
+      ) : null}
       {notice && <p className="composer-notice">{notice}</p>}
     </section>
   );
