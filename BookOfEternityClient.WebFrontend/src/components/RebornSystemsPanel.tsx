@@ -30,7 +30,7 @@ export function RebornSystemsPanel({ game }: { game: BrowserGameScreenDto }) {
         <p className="panel-eyebrow">посмертные системы</p>
         <h2 id="reborn-systems-title">Посмертие Reborn</h2>
         <p className="muted">
-          Afterlife, Сияющая Обитель и Море Хаоса отделены от смертного мира, но используют тот же
+          Посмертие, Сияющая Обитель и Море Хаоса отделены от смертного мира, но используют тот же
           язык карточек и только безопасные игровые данные текущей книги.
         </p>
       </div>
@@ -127,7 +127,7 @@ export function RebornSystemsPanel({ game }: { game: BrowserGameScreenDto }) {
           summary={isChaosSeaActive ? 'Душа находится в Море Хаоса' : 'Навигация Моря Хаоса пока закрыта'}
           status={isChaosSeaActive ? 'Море Хаоса активно' : 'Ожидается подходящее царство'}
           detailsTitle="Детали Моря Хаоса"
-          detailsIntro={<p>Панель Моря Хаоса показывает статус навигации и player-safe действия, когда каталог их отдаёт.</p>}
+          detailsIntro={<p>Панель Моря Хаоса показывает статус навигации и безопасные для игрока действия, когда каталог их отдаёт.</p>}
           sections={[
             {
               title: 'Навигация',

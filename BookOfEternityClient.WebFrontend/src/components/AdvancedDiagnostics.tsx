@@ -21,14 +21,14 @@ export function AdvancedDiagnosticsPanel() {
       <div>
         <p className="eyebrow">Технический режим</p>
         <h2>Расширенный режим</h2>
-        <p>Здесь остаются command/API diagnostics, lifecycle validation и сведения для ремонта. Обычный игрок не обязан видеть эти детали.</p>
+        <p>Диагностика команд, проверка состояния и сведения для ремонта. Обычный игрок не обязан видеть эти детали.</p>
       </div>
       <div className="split-grid three">
         <ApiResultCard title={getEndpointLabel('BrowserMainMenuDto')} result={readyState.menu} />
         <ApiResultCard title={getEndpointLabel('LocalWebUiSessionStatus')} result={readyState.session} />
         <ApiResultCard title={getEndpointLabel('BrowserGameScreenDto')} result={readyState.game} />
       </div>
-      <ShellPanel title="Typed API contract" eyebrow={browserApiContractSummary.strategy} nested>
+      <ShellPanel title="Контракт локального интерфейса" eyebrow="типизированная схема" nested>
         <ul className="endpoint-list">
           {browserApiEndpoints.map((apiEndpoint) => (
             <li key={apiEndpoint.path}>
@@ -40,7 +40,7 @@ export function AdvancedDiagnosticsPanel() {
       </ShellPanel>
       <CommandCoverageMatrix result={commandCoverage} />
       {lifecycle && (
-        <ShellPanel title="Панель состояния" eyebrow="validation" nested>
+        <ShellPanel title="Панель состояния" eyebrow="проверка" nested>
           <p>Статус: {lifecycle.validation.statusLabel}</p>
           <p>Ошибки: {lifecycle.validation.errorCount}; предупреждения: {lifecycle.validation.warningCount}</p>
           {lifecycle.validation.groups.length > 0 && (
@@ -55,7 +55,7 @@ export function AdvancedDiagnosticsPanel() {
           )}
           {lifecycle.validation.issues.length > 0 && (
             <details>
-              <summary>Raw validation details</summary>
+              <summary>Подробности проверки</summary>
               <ul className="endpoint-list validation-issue-list">
                 {lifecycle.validation.issues.map((issue, index) => (
                   <li key={`${issue.filePath}-${issue.code}-${index}`}>
@@ -63,7 +63,7 @@ export function AdvancedDiagnosticsPanel() {
                     <span>{issue.severity} · {issue.category} · {issue.section}</span>
                     <span>{issue.message}</span>
                     <span>Ожидалось: {issue.expected || '—'} · Сейчас: {issue.actual || '—'}</span>
-                    <span>Repair: {issue.repairHint || '—'}</span>
+                    <span>Исправление: {issue.repairHint || '—'}</span>
                   </li>
                 ))}
               </ul>
@@ -78,7 +78,7 @@ export function AdvancedDiagnosticsPanel() {
 function CommandCoverageMatrix({ result }: { result: BrowserApiResult<BrowserCommandCoverageDto> | null }) {
   if (!result) {
     return (
-      <ShellPanel title="Покрытие команд" eyebrow="browser parity" nested>
+      <ShellPanel title="Покрытие команд" eyebrow="паритет браузера" nested>
         <p className="muted">Матрица команд загружается только после включения расширенного режима.</p>
       </ShellPanel>
     );
@@ -86,7 +86,7 @@ function CommandCoverageMatrix({ result }: { result: BrowserApiResult<BrowserCom
 
   if (!isSuccess(result)) {
     return (
-      <ShellPanel title="Покрытие команд" eyebrow="browser parity" nested>
+      <ShellPanel title="Покрытие команд" eyebrow="паритет браузера" nested>
         <p className="warning-text">{toPlayerFacingText(result.playerMessage, 'Матрица покрытия команд сейчас недоступна.')}</p>
       </ShellPanel>
     );
@@ -94,10 +94,10 @@ function CommandCoverageMatrix({ result }: { result: BrowserApiResult<BrowserCom
 
   const coverage = result.data;
   return (
-    <ShellPanel title="Покрытие команд Explorer" eyebrow={`schema ${coverage.schemaVersion}`} nested>
+    <ShellPanel title="Покрытие команд Explorer" eyebrow={`схема ${coverage.schemaVersion}`} nested>
       <p>
         Дескрипторы: {coverage.summary.descriptorCount}; псевдонимы: {coverage.summary.aliasCount};
-        подкоманды: {coverage.summary.subcommandCount}; browser-ready: {coverage.summary.browserExecutableCount}.
+        подкоманды: {coverage.summary.subcommandCount}; готово для браузера: {coverage.summary.browserExecutableCount}.
       </p>
       <ul className="endpoint-list command-coverage-list" aria-label="Матрица покрытия команд Explorer">
         {coverage.commands.map((command) => (
@@ -105,7 +105,7 @@ function CommandCoverageMatrix({ result }: { result: BrowserApiResult<BrowserCom
             <strong>{command.primaryActionLabel} · {command.id}</strong>
             <span>{command.surface} · {command.uxDecision} · {command.browserStatus} · {command.formMode}</span>
             <span>{command.group} · {command.mutationMode} · {command.handlerKind}</span>
-            <span>Команда: {command.primaryCommand}; aliases: {command.aliases.join(', ')}</span>
+            <span>Команда: {command.primaryCommand}; псевдонимы: {command.aliases.join(', ')}</span>
             {command.subcommands.length > 0 && (
               <ul className="endpoint-list command-subcoverage-list" aria-label={`Подкоманды ${command.id}`}>
                 {command.subcommands.map((subcommand) => (
@@ -113,16 +113,16 @@ function CommandCoverageMatrix({ result }: { result: BrowserApiResult<BrowserCom
                     <strong>{subcommand.primaryActionLabel} · {subcommand.id}</strong>
                     <span>{subcommand.surface} · {subcommand.uxDecision} · {subcommand.browserStatus} · {subcommand.formMode}</span>
                     <span>{subcommand.group} · {subcommand.mutationMode} · {subcommand.handlerKind}</span>
-                    <span>Команда: {subcommand.canonicalCommand}; aliases: {subcommand.aliases.join(', ')}</span>
+                    <span>Команда: {subcommand.canonicalCommand}; псевдонимы: {subcommand.aliases.join(', ')}</span>
                     {(subcommand.followUpIssue || subcommand.reason) && (
-                      <span>{subcommand.followUpIssue || 'follow-up не указан'} · {subcommand.reason || 'причина не указана'}</span>
+                      <span>{subcommand.followUpIssue || 'следующий шаг не указан'} · {subcommand.reason || 'причина не указана'}</span>
                     )}
                   </li>
                 ))}
               </ul>
             )}
             {(command.followUpIssue || command.reason) && (
-              <span>{command.followUpIssue || 'follow-up не указан'} · {command.reason || 'причина не указана'}</span>
+              <span>{command.followUpIssue || 'следующий шаг не указан'} · {command.reason || 'причина не указана'}</span>
             )}
           </li>
         ))}

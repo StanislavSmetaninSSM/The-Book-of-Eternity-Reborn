@@ -1,6 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { toPlayerFacingText, sanitizePlayerMessage } from '../src/utils/playerCopy';
 
+const fsSpecifier = 'node:fs';
+const pathSpecifier = 'node:path';
+const { readFileSync } = await import(fsSpecifier);
+const { basename, join } = await import(pathSpecifier);
+const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+const frontendDir = basename(cwd) === 'BookOfEternityClient.WebFrontend'
+  ? cwd
+  : join(cwd, 'BookOfEternityClient.WebFrontend');
+
+function readSource(...relativePath: string[]): string {
+  return readFileSync(join(frontendDir, ...relativePath), 'utf-8');
+}
+
 describe('playerCopy robustness', () => {
   it('does not mangle normal narrative text', () => {
     const narrative = 'You pass by the ancient gate. The hero resolved to act by sunrise.';
@@ -81,5 +94,50 @@ describe('playerCopy robustness', () => {
     expect(result).toContain('сохранение игры');
     expect(result).toContain('запись хода');
     expect(result).toContain('ручные сохранения');
+  });
+
+  it('translates pending afterlife identifiers from backend payloads', () => {
+    const text = 'pending_shining_abode pending_chaos_sea incarnation turn_writer browser_write';
+    const result = toPlayerFacingText(text, 'fallback');
+    expect(result).toContain('ожидание Сияющей Обители');
+    expect(result).toContain('ожидание Моря Хаоса');
+    expect(result).toContain('инкарнация');
+    expect(result).toContain('запись хода');
+    expect(result).toContain('запись из браузера');
+  });
+
+  it('keeps advanced diagnostics hardcoded copy in Russian', () => {
+    const advancedDiagnostics = readSource('src', 'components', 'AdvancedDiagnostics.tsx');
+
+    expect(advancedDiagnostics).toContain('Диагностика команд, проверка состояния и сведения для ремонта.');
+    expect(advancedDiagnostics).toContain('eyebrow="проверка"');
+    expect(advancedDiagnostics).toContain('<summary>Подробности проверки</summary>');
+    expect(advancedDiagnostics).toContain('title="Контракт локального интерфейса"');
+    expect(advancedDiagnostics).toContain('eyebrow="типизированная схема"');
+    expect(advancedDiagnostics).toContain('Исправление:');
+    expect(advancedDiagnostics).toContain('eyebrow="паритет браузера"');
+    expect(advancedDiagnostics).toContain('схема ${coverage.schemaVersion}');
+    expect(advancedDiagnostics).toContain('готово для браузера');
+    expect(advancedDiagnostics).toContain('псевдонимы:');
+    expect(advancedDiagnostics).toContain('следующий шаг не указан');
+
+    expect(advancedDiagnostics).not.toContain('command/API diagnostics');
+    expect(advancedDiagnostics).not.toContain('eyebrow="validation"');
+    expect(advancedDiagnostics).not.toContain('Raw validation details');
+    expect(advancedDiagnostics).not.toContain('Typed API contract');
+    expect(advancedDiagnostics).not.toContain('browser parity');
+    expect(advancedDiagnostics).not.toContain('browser-ready');
+    expect(advancedDiagnostics).not.toContain('aliases:');
+    expect(advancedDiagnostics).not.toContain('follow-up не указан');
+    expect(advancedDiagnostics).not.toContain('Repair:');
+  });
+
+  it('keeps reborn systems panel copy in Russian', () => {
+    const rebornSystemsPanel = readSource('src', 'components', 'RebornSystemsPanel.tsx');
+
+    expect(rebornSystemsPanel).toContain('Посмертие, Сияющая Обитель и Море Хаоса отделены от смертного мира');
+    expect(rebornSystemsPanel).toContain('безопасные для игрока действия');
+    expect(rebornSystemsPanel).not.toContain('Afterlife,');
+    expect(rebornSystemsPanel).not.toContain('player-safe');
   });
 });
