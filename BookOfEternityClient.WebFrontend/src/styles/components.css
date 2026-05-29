@@ -2017,3 +2017,25 @@
   font-size: 0.8rem;
   white-space: nowrap;
 }
+
+/* ── Touch targets ── */
+
+@media (pointer: coarse) {
+  button,
+  [role="tab"],
+  .nav-bar__item,
+  .launcher-menu__item,
+  .sidebar-toggle {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .composer textarea {
+    min-height: 5rem;
+    font-size: 1rem;
+  }
+
+  .choice-list li {
+    padding: var(--space-sm) var(--space-md);
+  }
+}
