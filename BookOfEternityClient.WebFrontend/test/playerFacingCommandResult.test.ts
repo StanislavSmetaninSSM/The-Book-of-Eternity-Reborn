@@ -227,3 +227,4 @@ function collectVisibleBlockText(block: UiBlock): string[] {
 import './shellContextComponents.test.js';
 import './navBarShortcuts.test.js';
 import './playerStatusSidebar.test.js';
+import './uiStructure.test.js';
