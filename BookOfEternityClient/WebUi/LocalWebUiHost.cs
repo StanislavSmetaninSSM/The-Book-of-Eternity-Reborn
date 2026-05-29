@@ -77,6 +77,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<LocalWebUiMainMenuService>();
         builder.Services.AddSingleton<ExplorerWebPromptSessionService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
+        builder.Services.AddSingleton<BrowserPlayerActionService>();
 
         var app = builder.Build();
         var frontendAssets = LocalWebUiFrontendAssets.Resolve(options.FrontendAssetsPath);
@@ -139,6 +140,8 @@ public static class LocalWebUiHost
             await commandService.SubmitPromptSessionAsync(request));
         app.MapPost("/api/explorer/prompt-sessions/cancel", async (ExplorerPromptSessionCancelRequest request, ExplorerWebCommandService commandService) =>
             await commandService.CancelPromptSessionAsync(request));
+        app.MapPost("/api/explorer/player-action", async (BrowserPlayerActionRequest request, BrowserPlayerActionService playerAction) =>
+            await playerAction.SubmitAsync(request));
         app.MapGet("/api/media/{mediaId}", (string mediaId, LocalMediaService media) =>
         {
             if (!media.TryResolveMediaId(mediaId, out var file, out var error) || file == null)

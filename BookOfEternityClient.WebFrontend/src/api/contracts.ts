@@ -578,6 +578,18 @@ export interface ExplorerPromptSessionCancelRequest {
   ownerId?: string | null;
 }
 
+export interface BrowserPlayerActionRequest {
+  text: string;
+  ownerId?: string | null;
+  ownerLabel?: string | null;
+}
+
+export interface BrowserPlayerActionResult {
+  success: boolean;
+  playerMessage: string;
+  technicalDetail?: string | null;
+}
+
 export type CommandExecutionState = 'Completed' | 'RequiresInput' | 'Pending' | 'Blocked' | 'Failed';
 export type UiNotificationSeverity = 'Info' | 'Success' | 'Warning' | 'Error';
 export type UiActionStyle = 'Default' | 'Primary' | 'Secondary' | 'Danger';

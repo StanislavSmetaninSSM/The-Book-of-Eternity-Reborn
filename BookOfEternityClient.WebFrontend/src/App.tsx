@@ -769,7 +769,20 @@ export default function App() {
       return;
     }
 
-    setComposerNotice('Художественный ввод подготовлен. Запись хода будет подключена отдельной задачей безопасной локальной записи.');
+    setComposerNotice('Отправляем действие…');
+    browserApi.submitPlayerAction({ text: normalized }).then((result) => {
+      if (result.ok && result.data.success) {
+        setComposerNotice(result.data.playerMessage);
+        setComposerText('');
+        loadBrowserState();
+      } else if (result.ok && !result.data.success) {
+        setComposerNotice(result.data.playerMessage);
+      } else {
+        setComposerNotice('Не удалось отправить действие. Попробуйте ещё раз.');
+      }
+    }).catch(() => {
+      setComposerNotice('Ошибка соединения. Убедитесь, что клиент запущен.');
+    });
   }
 
   return (
