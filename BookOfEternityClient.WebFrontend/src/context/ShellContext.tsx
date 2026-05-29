@@ -70,7 +70,7 @@ const fallbackTheme: RealmTheme = {
   key: 'mortal-world',
   label: 'Мир смертных',
   icon: '🌘',
-  accent: '#d8b36a'
+  accent: '#c9a24d'
 };
 
 export const ShellContext = createContext<ShellContextValue | null>(null);

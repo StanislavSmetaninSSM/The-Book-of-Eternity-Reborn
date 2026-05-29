@@ -34,7 +34,7 @@ export function NavBar() {
   return (
     <nav className="nav-bar" aria-label="Разделы игры">
       <span className="nav-bar__realm" aria-label="Текущее царство">
-        {realmTheme.icon} {realmTheme.label}
+        <span className="realm-badge">{realmTheme.icon} {realmTheme.label}</span>
       </span>
       <div className="nav-bar__items">
         {routeNav.map(({ id, glyph, label, shortcut }) => (

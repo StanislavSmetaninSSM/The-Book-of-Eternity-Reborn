@@ -649,10 +649,10 @@
 /* Composer container */
 .composer-container {
   margin: var(--space-md, 1rem) 0;
-  border: 1px solid var(--border-subtle, #2a2a3e);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg, 8px);
   padding: var(--space-md, 1rem);
-  background: var(--surface-subtle, #151528);
+  background: var(--surface-subtle);
 }
 
 .composer-mode-toggle {
@@ -661,14 +661,14 @@
   flex-wrap: wrap;
   margin-bottom: var(--space-sm, 0.5rem);
   border: none;
-  border-bottom: 1px solid var(--border-subtle, #2a2a3e);
+  border-bottom: 1px solid var(--border-subtle);
   border-radius: 0;
   padding: 0 0 var(--space-sm, 0.5rem);
   background: transparent;
 }
 
 .composer-mode-toggle:hover {
-  border-color: var(--border-subtle, #2a2a3e);
+  border-color: var(--border-subtle);
   background: transparent;
   color: inherit;
   box-shadow: none;
@@ -682,18 +682,18 @@
   border-bottom: none;
   cursor: pointer;
   font-size: 0.85rem;
-  color: var(--text-muted, #8a8a9a);
+  color: var(--text-muted);
   transition: background 0.15s, color 0.15s;
 }
 
 .composer-mode-toggle button:hover {
-  color: var(--text-primary, #f0e8d8);
+  color: var(--text-primary);
 }
 
 .composer-mode-toggle button.is-active {
-  background: var(--surface-active, #2a2a50);
-  border-color: var(--border-subtle, #2a2a3e);
-  color: var(--realm-accent, var(--accent-gold, #d8b36a));
+  background: var(--surface-active);
+  border-color: var(--border-subtle);
+  color: var(--realm-accent, var(--accent-gold));
 }
 
 .composer-footer {
@@ -830,15 +830,15 @@
   width: 100%;
   padding: var(--space-sm, 0.5rem);
   border-radius: var(--radius-md, 6px);
-  border: 1px solid var(--border-subtle, #2a2a3e);
-  background: var(--surface-elevated, #1a1a2e);
-  color: var(--text-primary, #f0e8d8);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-elevated);
+  color: var(--text-primary);
   margin-bottom: var(--space-sm, 0.5rem);
   font-size: 0.9rem;
 }
 
 .action-palette__search::placeholder {
-  color: var(--text-muted, #8a8a9a);
+  color: var(--text-muted);
 }
 
 .action-palette__grid {
@@ -848,7 +848,7 @@
 
 .action-palette__section h4 {
   font-size: 0.85rem;
-  color: var(--realm-accent, var(--accent-gold, #d8b36a));
+  color: var(--realm-accent, var(--accent-gold));
   margin-bottom: var(--space-xs, 0.25rem);
 }
 
@@ -863,7 +863,7 @@
 .action-palette__list li {
   padding: var(--space-xs, 0.25rem) var(--space-sm, 0.5rem);
   border-radius: var(--radius-sm, 4px);
-  background: var(--surface-elevated, #1a1a2e);
+  background: var(--surface-elevated);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -889,7 +889,7 @@
   gap: var(--space-sm, 0.5rem);
   padding: var(--space-sm, 0.5rem) 0;
   margin-top: var(--space-sm, 0.5rem);
-  border-top: 1px solid var(--border-subtle, #2a2a3e);
+  border-top: 1px solid var(--border-subtle);
   font-size: 0.85rem;
 }
 
@@ -1871,8 +1871,8 @@
   align-items: center;
   gap: var(--space-sm, 0.5rem);
   padding: var(--space-xs, 0.25rem) var(--space-md, 1rem);
-  background: var(--surface-elevated, #1a1a2e);
-  border-bottom: 1px solid var(--border-subtle, #2a2a3e);
+  background: var(--surface-elevated);
+  border-bottom: 1px solid var(--border-subtle);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -1880,10 +1880,10 @@
 
 .nav-bar__realm {
   font-size: 0.85rem;
-  color: var(--realm-accent, var(--accent-gold, #d8b36a));
+  color: var(--realm-accent, var(--accent-gold));
   white-space: nowrap;
   padding-right: var(--space-sm, 0.5rem);
-  border-right: 1px solid var(--border-subtle, #2a2a3e);
+  border-right: 1px solid var(--border-subtle);
   margin-right: var(--space-xs, 0.25rem);
 }
 
@@ -1906,20 +1906,20 @@
   border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
-  color: var(--text-muted, #8a8a9a);
+  color: var(--text-muted);
   min-width: 52px;
 }
 
 .nav-bar__item:hover,
 .nav-bar__item:focus-visible {
-  background: var(--surface-hover, #252540);
-  border-color: var(--border-subtle, #2a2a3e);
+  background: var(--surface-hover);
+  border-color: var(--border-subtle);
 }
 
 .nav-bar__item.is-active {
-  background: var(--surface-active, #2a2a50);
-  border-color: var(--realm-accent, var(--accent-gold, #d8b36a));
-  color: var(--text-primary, #f0e8d8);
+  background: var(--surface-active);
+  border-color: var(--realm-accent, var(--accent-gold));
+  color: var(--text-primary);
 }
 
 .nav-bar__glyph {
@@ -1961,14 +1961,14 @@
   right: var(--space-sm, 0.5rem);
   bottom: var(--space-sm, 0.5rem);
   z-index: 101;
-  background: var(--surface-active, #2a2a50);
-  border: 1px solid var(--border-subtle, #2a2a3e);
+  background: var(--surface-active);
+  border: 1px solid var(--border-subtle);
   border-radius: 50%;
   width: 44px;
   height: 44px;
   font-size: 1.2rem;
   cursor: pointer;
-  color: var(--text-primary, #f0e8d8);
+  color: var(--text-primary);
 }
 
 @media (max-width: 900px) {

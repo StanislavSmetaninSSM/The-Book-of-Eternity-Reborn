@@ -75,4 +75,15 @@
 
   /* ── Active realm accent (overridden at runtime) ── */
   --realm-accent: var(--realm-mortal);
+
+  /* ── Semantic surface aliases (referenced by components) ── */
+  --border-subtle: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 16%, rgba(255, 255, 255, 0.06));
+  --surface-base: var(--color-ink-2);
+  --surface-subtle: var(--color-obsidian);
+  --surface-elevated: var(--color-obsidian-2);
+  --surface-hover: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 8%, var(--color-obsidian-2));
+  --surface-active: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 12%, var(--color-obsidian-2));
+  --text-primary: var(--color-parchment);
+  --text-muted: var(--color-mist);
+  --accent-gold: var(--color-gold);
 }

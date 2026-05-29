@@ -24,6 +24,7 @@
     "test/connectionBanner.test.ts",
     "test/gracefulDegradation.test.ts",
     "test/gameLauncherMenuLayout.test.ts",
-    "test/audioPanelCatalogVisibility.test.ts"
+    "test/audioPanelCatalogVisibility.test.ts",
+    "test/playerCopyRobustness.test.ts"
   ]
 }
