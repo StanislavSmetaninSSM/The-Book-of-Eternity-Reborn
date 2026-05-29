@@ -236,3 +236,4 @@ import './audioPanelCatalogVisibility.test.js';
 import './browserMediaTask2.test.js';
 import './browserMediaTask3.test.js';
 import './browserMediaTask4.test.js';
+import './browserMediaTask5.test.js';

@@ -394,6 +394,32 @@
   font-style: italic;
 }
 
+/* ── World location hero ── */
+
+.world-location-hero {
+  position: relative;
+  margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-4);
+  height: 180px;
+  overflow: hidden;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.world-location-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  opacity: 0.5;
+  filter: saturate(0.7) brightness(0.5);
+}
+
+.world-location-hero::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(to bottom, transparent 30%, var(--color-ink) 100%);
+}
+
 /* ── Buttons ── */
 
 .game-action,
