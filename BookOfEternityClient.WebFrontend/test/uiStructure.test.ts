@@ -10,6 +10,12 @@ function readSource(...relativePath: string[]): string {
   return readFileSync(join(frontendDir, 'src', ...relativePath), 'utf-8');
 }
 
+function assertIncludes(source: string, expected: string, description: string) {
+  if (!source.includes(expected)) {
+    throw new Error(`${description} Missing snippet: ${expected}`);
+  }
+}
+
 const app = readSource('App.tsx');
 const appWithoutBlockComments = app.replace(/\/\*[\s\S]*?\*\//g, '');
 if (appWithoutBlockComments.includes('route-grid--primary') || appWithoutBlockComments.includes('route-grid--utility')) {
@@ -32,6 +38,30 @@ if (!composer.includes('composer-container')) {
 const gameRoute = readSource('routes', 'GameRoute.tsx');
 if (!gameRoute.includes('Composer')) {
   throw new Error('GameRoute.tsx should render the Composer component.');
+}
+assertIncludes(gameRoute, "import type { BrowserGameScreenDto } from '../api/contracts';", 'GameRoute should import BrowserGameScreenDto for TurnStateCard typing.');
+assertIncludes(gameRoute, 'formatTurnLifecycleActionDescription', 'GameRoute should format recommended turn actions.');
+assertIncludes(gameRoute, '<TurnStateCard turnState={game.turnState} advancedEnabled={advancedEnabled} />', 'GameRoute should render the consolidated turn state card.');
+assertIncludes(gameRoute, "const isWaitingForGm = turnState.phase === 'gm-turn' || turnState.phase === 'waiting-for-gm' || turnState.state === 'gm-turn';", 'TurnStateCard should classify GM-waiting states explicitly.');
+assertIncludes(gameRoute, "const needsRepair = turnState.severity === 'error' || turnState.severity === 'repair' || turnState.validationState === 'invalid';", 'TurnStateCard should classify repair-needed states explicitly.');
+assertIncludes(gameRoute, "const playerActions = turnState.recommendedActions.filter(a => a.surface === 'player-default');", 'TurnStateCard should only show player-default recommended actions.');
+assertIncludes(gameRoute, '<details className="turn-state-card__phases">', 'TurnStateCard should hide known phases behind details in advanced mode.');
+if (gameRoute.includes('TurnLifecycleActions') || gameRoute.includes('formatQteStateLabel') || gameRoute.includes('turn-status-compact') || gameRoute.includes('Быстрая сцена:')) {
+  throw new Error('GameRoute should remove the compact turn lifecycle/QTE presentation in favor of TurnStateCard.');
+}
+
+const componentsCss = readSource('styles', 'components.css');
+for (const selector of [
+  '.turn-state-card {',
+  '.turn-state-card--waiting {',
+  '.turn-state-card--repair {',
+  '.turn-state-card--normal {',
+  '.turn-state-card__header {',
+  '.turn-state-card__guidance {',
+  '.turn-state-card__phases {',
+  '.turn-state-card__phases summary {'
+]) {
+  assertIncludes(componentsCss, selector, 'components.css should style the turn state card variants.');
 }
 
 const worldRoute = readSource('routes', 'WorldRoute.tsx');
