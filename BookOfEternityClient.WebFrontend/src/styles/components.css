@@ -1932,3 +1932,72 @@
     transform: none !important;
   }
 }
+
+/* NavBar — compact route navigation */
+.nav-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm, 0.5rem);
+  padding: var(--space-xs, 0.25rem) var(--space-md, 1rem);
+  background: var(--surface-elevated, #1a1a2e);
+  border-bottom: 1px solid var(--border-subtle, #2a2a3e);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-bar__realm {
+  font-size: 0.85rem;
+  color: var(--realm-accent, var(--accent-gold, #d8b36a));
+  white-space: nowrap;
+  padding-right: var(--space-sm, 0.5rem);
+  border-right: 1px solid var(--border-subtle, #2a2a3e);
+  margin-right: var(--space-xs, 0.25rem);
+}
+
+.nav-bar__items {
+  display: flex;
+  flex: 1 1 auto;
+  gap: var(--space-xs, 0.25rem);
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.nav-bar__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-xs, 0.25rem) var(--space-sm, 0.5rem);
+  border-radius: var(--radius-md, 6px);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  color: var(--text-muted, #8a8a9a);
+  min-width: 52px;
+}
+
+.nav-bar__item:hover,
+.nav-bar__item:focus-visible {
+  background: var(--surface-hover, #252540);
+  border-color: var(--border-subtle, #2a2a3e);
+}
+
+.nav-bar__item.is-active {
+  background: var(--surface-active, #2a2a50);
+  border-color: var(--realm-accent, var(--accent-gold, #d8b36a));
+  color: var(--text-primary, #f0e8d8);
+}
+
+.nav-bar__glyph {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.nav-bar__label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
