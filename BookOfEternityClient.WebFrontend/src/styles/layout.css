@@ -34,26 +34,10 @@
   --realm-accent: var(--realm-shining);
 }
 
-.hero-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(14rem, 20rem);
-  gap: var(--space-5);
-  align-items: end;
-}
-
 .route-grid {
   display: grid;
   gap: var(--space-3);
   margin: var(--space-4) 0;
-}
-
-.route-grid--primary {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-}
-
-.route-grid--utility {
-  grid-template-columns: minmax(14rem, 1fr) repeat(2, minmax(9rem, 13rem));
-  margin-top: calc(var(--space-4) * -0.35);
 }
 
 .workspace-grid {
@@ -126,18 +110,6 @@
 /* ── Responsive breakpoints ── */
 
 @media (max-width: 1120px) {
-  .route-grid--primary {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .route-grid--utility {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .utility-route-heading {
-    grid-column: 1 / -1;
-  }
-
   .action-grid,
   .split-grid.three {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -150,7 +122,6 @@
     padding-bottom: 3rem;
   }
 
-  .hero-layout,
   .workspace-grid,
   .split-grid,
   .split-grid.three,
@@ -159,15 +130,6 @@
   .audio-settings-grid,
   .action-grid {
     grid-template-columns: 1fr;
-  }
-
-  .route-grid--primary,
-  .route-grid--utility {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .route-card {
-    min-height: auto;
   }
 
   .status-bar {
@@ -182,25 +144,6 @@
 @media (max-width: 640px) {
   .browser-shell {
     width: min(100vw - 0.75rem, 42rem);
-  }
-
-  .shell-hero {
-    border-radius: var(--radius-md);
-  }
-
-  .route-grid--primary,
-  .route-grid--utility {
-    grid-template-columns: 1fr;
-  }
-
-  .route-card {
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    min-height: 0;
-  }
-
-  .route-card small {
-    grid-column: 1 / -1;
   }
 
   .kv-list div {

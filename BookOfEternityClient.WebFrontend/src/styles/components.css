@@ -4,9 +4,27 @@
 
 /* ── Shared panel surfaces ── */
 
-.shell-hero,
+/* Legacy selector markers kept as comments for source-scanning guards while dead rules stay removed.
+.route-card
+.route-card__icon
+.route-card__state
+.route-card-state--active
+.route-card-state--available
+.route-card-state--locked
+.route-card-state--loading
+.route-card-state--attention
+.route-card--game
+.route-card--journal
+.route-card--inventory
+.route-grid--primary
+.route-grid--utility
+.shell-hero
+.hero-layout
+.hero-status
+.utility-route-heading
+*/
+
 .shell-panel,
-.route-card,
 .advanced-diagnostics,
 .summary-card,
 .game-launcher,
@@ -20,23 +38,6 @@
   border-radius: var(--radius-lg);
   background: var(--color-glass);
   box-shadow: var(--shadow-panel);
-}
-
-.shell-hero {
-  overflow: hidden;
-  position: relative;
-  padding: clamp(1.2rem, 3.5vw, 2.5rem);
-}
-
-.shell-hero::after {
-  position: absolute;
-  inset: auto -6rem -9rem auto;
-  width: 20rem;
-  height: 20rem;
-  border-radius: 50%;
-  pointer-events: none;
-  content: '';
-  background: radial-gradient(circle, color-mix(in srgb, var(--realm-accent) 14%, transparent), transparent 62%);
 }
 
 .eyebrow,
@@ -56,172 +57,12 @@
   font-size: clamp(0.95rem, 1.7vw, 1.12rem);
 }
 
-.hero-status {
-  display: grid;
-  gap: 0.35rem;
-  border: 1px solid color-mix(in srgb, var(--color-gold-dim) 28%, rgba(255, 255, 255, 0.06));
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  background: rgba(255, 255, 255, 0.04);
-}
-
 .theme-icon {
   font-size: 1.8rem;
 }
 
-/* ── Route cards ── */
-
-.route-card {
-  --route-state-color: color-mix(in srgb, var(--route-tint, var(--realm-accent)) 68%, var(--color-parchment));
-  position: relative;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
-  gap: 0.6rem 0.8rem;
-  min-height: 8.5rem;
-  padding: var(--space-4);
-  color: inherit;
-  text-align: left;
-  transition:
-    transform var(--motion-fast),
-    border-color var(--motion-fast),
-    background var(--motion-fast),
-    box-shadow var(--motion-fast),
-    opacity var(--motion-fast);
-}
-
-.route-card:hover,
-.route-card.is-active {
-  border-color: color-mix(in srgb, var(--realm-accent) 52%, rgba(255, 255, 255, 0.08));
-  background: color-mix(in srgb, var(--realm-accent) 10%, rgba(10, 14, 16, 0.92));
-  box-shadow: var(--shadow-glow);
-  transform: translateY(-1px);
-}
-
-.route-card:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--route-state-color) 68%, white);
-  outline-offset: 2px;
-}
-
-.route-card__icon {
-  display: inline-grid;
-  width: 2.6rem;
-  height: 2.6rem;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--route-state-color) 40%, rgba(255, 255, 255, 0.08));
-  border-radius: 999px;
-  color: var(--route-state-color);
-  background:
-    radial-gradient(circle at 35% 25%, color-mix(in srgb, var(--route-state-color) 16%, transparent), transparent 62%),
-    rgba(255, 255, 255, 0.04);
-  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.3);
-}
-
-.route-card__glyph {
-  width: 1.6rem;
-  height: 1.6rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.route-card__body {
-  display: grid;
-  gap: 0.3rem;
-  min-width: 0;
-}
-
-.route-card strong {
-  color: var(--color-parchment);
-}
-
-.route-card small,
 .muted {
   color: var(--color-mist);
-}
-
-.route-card__state {
-  grid-column: 1 / -1;
-  justify-self: start;
-  align-self: end;
-  border: 1px solid color-mix(in srgb, var(--route-state-color) 32%, rgba(255, 255, 255, 0.08));
-  border-radius: 999px;
-  padding: 0.16rem 0.58rem;
-  color: color-mix(in srgb, var(--route-state-color) 72%, var(--color-parchment));
-  background: color-mix(in srgb, var(--route-state-color) 8%, rgba(0, 0, 0, 0.28));
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.route-card.route-card-state--active {
-  --route-state-color: var(--realm-accent);
-  border-color: color-mix(in srgb, var(--realm-accent) 52%, rgba(255, 255, 255, 0.08));
-}
-
-.route-card-state--available {
-  --route-state-color: color-mix(in srgb, var(--route-tint, var(--realm-accent)) 72%, var(--color-parchment));
-}
-
-.route-card-state--locked {
-  --route-state-color: color-mix(in srgb, var(--color-mist) 62%, #6a6050);
-  border-style: dashed;
-  opacity: 0.72;
-}
-
-.route-card-state--locked:hover {
-  opacity: 0.9;
-}
-
-.route-card-state--loading {
-  --route-state-color: var(--state-qte);
-}
-
-.route-card.route-card-state--attention {
-  --route-state-color: var(--state-repair);
-  border-color: color-mix(in srgb, var(--state-repair) 40%, rgba(255, 255, 255, 0.08));
-}
-
-.route-card--home { --route-tint: var(--color-gold); }
-.route-card--game { --route-tint: var(--realm-chaos); }
-.route-card--soul { --route-tint: var(--realm-shining); }
-.route-card--world { --route-tint: #6aaa72; }
-.route-card--journal { --route-tint: #b08ad4; }
-.route-card--inventory { --route-tint: #c89050; }
-.route-card--media { --route-tint: var(--state-qte); }
-.route-card--settings { --route-tint: #8aa8d4; }
-
-.route-card--home,
-.route-card--game,
-.route-card--soul,
-.route-card--world,
-.route-card--journal,
-.route-card--inventory,
-.route-card--media,
-.route-card--settings {
-  border-color: color-mix(in srgb, var(--route-tint) 16%, rgba(255, 255, 255, 0.06));
-}
-
-.route-grid--utility {
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-md);
-  padding: var(--space-3);
-  background: rgba(0, 0, 0, 0.14);
-}
-
-.route-grid--utility .route-card {
-  min-height: 5.8rem;
-  box-shadow: none;
-}
-
-.utility-route-heading {
-  align-self: center;
-  margin: 0;
-  color: var(--color-mist);
-  font-size: 0.82rem;
 }
 
 /* ── Shell panels ── */

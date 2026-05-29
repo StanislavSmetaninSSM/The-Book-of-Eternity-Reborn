@@ -11,7 +11,8 @@ function readSource(...relativePath: string[]): string {
 }
 
 const app = readSource('App.tsx');
-if (app.includes('route-grid--primary') || app.includes('route-grid--utility')) {
+const appWithoutBlockComments = app.replace(/\/\*[\s\S]*?\*\//g, '');
+if (appWithoutBlockComments.includes('route-grid--primary') || appWithoutBlockComments.includes('route-grid--utility')) {
   throw new Error('App.tsx should not render the old route-grid dashboard layout.');
 }
 if (!app.includes('NavBar')) {

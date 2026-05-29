@@ -45,8 +45,6 @@
   }
 }
 
-.shell-hero,
-.route-card,
 .shell-panel,
 .advanced-diagnostics,
 .error-notice {
@@ -55,11 +53,6 @@
 
 .shell-panel[data-panel='turn'] {
   animation: panel-rise var(--motion-panel) both, waiting-pulse 3.6s ease-in-out infinite;
-}
-
-.route-card--media.is-active,
-.route-card--media:hover {
-  animation: qte-tension 2.8s ease-in-out infinite;
 }
 
 h1 {
