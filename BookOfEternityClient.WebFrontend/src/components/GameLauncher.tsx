@@ -148,6 +148,9 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
 
   return (
     <article className="game-launcher" aria-labelledby="browser-launcher-title">
+      <div className="launcher-art-bg" aria-hidden="true">
+        <img src="/main-menu-bg.webp" alt="" />
+      </div>
       <div className="launcher-window">
         <div className="launcher-copy">
           <p className="panel-eyebrow">главная книга</p>
