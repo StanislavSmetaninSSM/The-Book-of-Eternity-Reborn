@@ -223,3 +223,8 @@ function collectVisibleBlockText(block: UiBlock): string[] {
       return [block.title, block.map.title, block.map.currentNodeId];
   }
 }
+
+import './shellContextComponents.test.js';
+import './navBarShortcuts.test.js';
+import './playerStatusSidebar.test.js';
+import './uiStructure.test.js';

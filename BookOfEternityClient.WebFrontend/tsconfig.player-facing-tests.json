@@ -6,12 +6,17 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
     "rootDir": ".",
     "outDir": "../TestResults/browser-frontend-player-facing-tests"
   },
   "include": [
     "src/api/contracts.ts",
+    "src/context/ShellContext.tsx",
+    "src/components/*.tsx",
+    "src/routes/*.tsx",
     "src/playerFacingCommandResult.ts",
-    "test/playerFacingCommandResult.test.ts"
+    "test/playerFacingCommandResult.test.ts",
+    "test/appRouteExtraction.test.ts"
   ]
 }
