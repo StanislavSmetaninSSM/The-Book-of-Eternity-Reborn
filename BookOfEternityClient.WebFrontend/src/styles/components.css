@@ -1112,49 +1112,6 @@
   color: var(--color-mist);
 }
 
-/* ── Collapsible full catalog ── */
-
-.action-catalog-toggle {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  width: 100%;
-  margin-top: var(--space-3);
-  border: 1px solid color-mix(in srgb, var(--color-gold-dim) 18%, rgba(255, 255, 255, 0.06));
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--color-parchment-muted);
-  font-weight: 700;
-  cursor: pointer;
-  transition: all var(--motion-fast);
-}
-
-.action-catalog-toggle:hover {
-  border-color: color-mix(in srgb, var(--color-gold) 32%, rgba(255, 255, 255, 0.08));
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--color-parchment);
-}
-
-.action-catalog-toggle .toggle-arrow {
-  display: inline-block;
-  transition: transform var(--motion-fast);
-}
-
-.action-catalog-toggle.is-open .toggle-arrow {
-  transform: rotate(90deg);
-}
-
-.action-catalog-body {
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height 300ms ease-out;
-}
-
-.action-catalog-body.is-open {
-  max-height: 200rem;
-}
-
 /* ── Action menu (existing, refined) ── */
 
 .action-menu {
@@ -2094,4 +2051,25 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;
+}
+
+.action-catalog-toggle {
+  margin-top: var(--space-md);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-sm);
+}
+
+.action-catalog-toggle > button {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) var(--space-md);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.action-catalog-toggle > button:hover {
+  background: var(--surface-active);
+  color: var(--text-primary);
 }

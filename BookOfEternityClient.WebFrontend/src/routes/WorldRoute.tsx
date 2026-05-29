@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { ActionMenu } from '../components/ActionMenu';
 import { DetailSurfaceCard } from '../components/DetailSurface';
 import { EmptyOrFailure } from '../components/ErrorNotice';
@@ -7,6 +9,7 @@ import { isSuccess, useShell } from '../context/ShellContext';
 import { formatTurnStateTitle, getComposerDisabledReason } from '../utils/formatters';
 
 export default function WorldRoute() {
+  const [showAllActions, setShowAllActions] = useState(false);
   const { advancedEnabled, readyState } = useShell();
 
   if (!readyState) {
@@ -22,6 +25,11 @@ export default function WorldRoute() {
   }
 
   const game = readyState.game.data;
+  const themeKey = game.theme.key.toLowerCase();
+  const afterlifeRealmActive =
+    themeKey.includes('chaos') ||
+    themeKey.includes('shining') ||
+    themeKey.includes('abode');
 
   return (
     <ShellPanel title="Мир" eyebrow="карта, журнал и действия">
@@ -65,8 +73,13 @@ export default function WorldRoute() {
         <div className="summary-card"><h2>Журнал</h2><p>Квесты, архив и история разворачиваются в игровых разделах без знания ручных команд.</p></div>
         <div className="summary-card"><h2>Фракции</h2><p>Панели фракций и стражей используют общие игровые данные и не дублируют правила.</p></div>
       </div>
-      <RebornSystemsPanel game={game} />
-      <ActionMenu menu={game.actionMenu} />
+      {afterlifeRealmActive ? <RebornSystemsPanel game={game} /> : null}
+      <div className="action-catalog-toggle">
+        <button type="button" onClick={() => setShowAllActions(v => !v)}>
+          {showAllActions ? 'Скрыть все действия' : 'Показать все действия'}
+        </button>
+        {showAllActions && <ActionMenu menu={game.actionMenu} />}
+      </div>
     </ShellPanel>
   );
 }
