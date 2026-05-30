@@ -29,12 +29,13 @@ assertIncludes(connectionBanner, 'Повторить подключение', 'C
 assertIncludes(connectionBanner, 'onClick={() => void loadBrowserState()}', 'ConnectionBanner retry button should trigger a full reload.');
 
 const app = readSource('App.tsx');
+assertIncludes(app, "import { Sidebar } from './components/Sidebar';", 'App should import Sidebar.');
 assertIncludes(app, "import { ConnectionBanner } from './components/ConnectionBanner';", 'App should import ConnectionBanner.');
-const navBarIndex = app.indexOf('<NavBar />');
+const sidebarIndex = app.indexOf('<Sidebar />');
 const bannerIndex = app.indexOf('<ConnectionBanner />');
 const workspaceIndex = app.indexOf('<section className="workspace-grid"');
-if (navBarIndex === -1 || bannerIndex === -1 || workspaceIndex === -1 || bannerIndex < navBarIndex || bannerIndex > workspaceIndex) {
-  throw new Error('App should render ConnectionBanner after NavBar and before the workspace grid.');
+if (sidebarIndex === -1 || bannerIndex === -1 || workspaceIndex === -1 || bannerIndex < sidebarIndex || bannerIndex > workspaceIndex) {
+  throw new Error('App should render ConnectionBanner after Sidebar and before the workspace grid.');
 }
 
 const css = readSource('styles', 'components.css');

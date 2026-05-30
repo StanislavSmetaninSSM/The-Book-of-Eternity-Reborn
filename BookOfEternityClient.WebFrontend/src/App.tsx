@@ -4,7 +4,7 @@ import { AdvancedDiagnosticsPanel as AdvancedDiagnostics } from './components/Ad
 import { ConnectionBanner } from './components/ConnectionBanner';
 import { ErrorNotice } from './components/ErrorNotice';
 import { LoadingCard } from './components/LoadingCard';
-import { NavBar } from './components/NavBar';
+import { Sidebar } from './components/Sidebar';
 import { PlayerStatusSidebar } from './components/PlayerStatusSidebar';
 import { ShellProvider, type RouteId, useShell } from './context/ShellContext';
 
@@ -303,7 +303,7 @@ function AppShell() {
 
   return (
     <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
-      <NavBar />
+      <Sidebar />
       <ConnectionBanner />
       <section className="workspace-grid" aria-live="polite">
         <div className="workspace-main">

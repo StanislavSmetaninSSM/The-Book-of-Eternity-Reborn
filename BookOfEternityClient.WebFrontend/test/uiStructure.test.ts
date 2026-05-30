@@ -21,13 +21,12 @@ const appWithoutBlockComments = app.replace(/\/\*[\s\S]*?\*\//g, '');
 if (appWithoutBlockComments.includes('route-grid--primary') || appWithoutBlockComments.includes('route-grid--utility')) {
   throw new Error('App.tsx should not render the old route-grid dashboard layout.');
 }
-if (!app.includes('NavBar')) {
-  throw new Error('App.tsx should render NavBar.');
-}
+assertIncludes(app, "import { Sidebar } from './components/Sidebar';", 'App.tsx should import Sidebar.');
+assertIncludes(app, '<Sidebar />', 'App.tsx should render Sidebar.');
 
-const navBar = readSource('components', 'NavBar.tsx');
-if (!navBar.includes('nav-bar')) {
-  throw new Error('NavBar.tsx should render the nav-bar component class.');
+const sidebar = readSource('components', 'Sidebar.tsx');
+if (!sidebar.includes('className="sidebar"')) {
+  throw new Error('Sidebar.tsx should render the sidebar component class.');
 }
 
 const composer = readSource('components', 'Composer.tsx');
