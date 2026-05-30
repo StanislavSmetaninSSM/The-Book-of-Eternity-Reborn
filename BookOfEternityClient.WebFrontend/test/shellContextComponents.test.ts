@@ -6,7 +6,7 @@ import type {
   LocalWebUiSessionStatus
 } from '../src/api/contracts.js';
 import type { EmptyStateCopy } from '../src/components/ErrorNotice.js';
-import type { BrowserShellState, RealmTheme, RouteId, ShellContextValue } from '../src/context/ShellContext.js';
+import type { BrowserShellState, RealmTheme, RouteId, ShellContextValue, TabId } from '../src/context/ShellContext.js';
 
 type ShellPanelProps = Parameters<typeof import('../src/components/ShellPanel.js').ShellPanel>[0];
 type StatusBarProps = Parameters<typeof import('../src/components/StatusBar.js').StatusBar>[0];
@@ -58,6 +58,8 @@ const shellContextValue: ShellContextValue = {
   session: null as LocalWebUiSessionStatus | null,
   clientSettings: null as BrowserClientSettingsDto | null,
   realmTheme,
+  activeTab: 'scene' as TabId,
+  setActiveTab: () => undefined,
   activeRoute: 'home' as RouteId,
   setActiveRoute: () => undefined,
   connectionStatus: 'connected',
@@ -69,6 +71,10 @@ const shellContextValue: ShellContextValue = {
   setComposerText: () => undefined,
   composerNotice: null,
   submitComposer: () => undefined,
+  commandResult: null,
+  isCommandView: false,
+  executeCommand: async () => undefined,
+  clearCommandResult: () => undefined,
   loadBrowserState: async () => undefined
 };
 

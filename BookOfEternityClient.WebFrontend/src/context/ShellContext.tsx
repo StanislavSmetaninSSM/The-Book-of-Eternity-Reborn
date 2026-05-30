@@ -17,11 +17,14 @@ import type {
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
   BrowserMainMenuDto,
+  ExplorerCommandResult,
   LocalWebUiSessionStatus
 } from '../api/contracts';
 import { useShellState } from '../hooks/useShellState';
-import { toCommandNotice } from '../utils/formatters';
 
+export type TabId = 'scene' | 'status' | 'help' | 'settings';
+
+/** @deprecated Temporary compatibility alias until remaining route consumers migrate. */
 export type RouteId = 'home' | 'game' | 'soul' | 'world' | 'journal' | 'inventory' | 'media' | 'settings';
 
 export type BrowserShellState =
@@ -54,7 +57,11 @@ export interface ShellContextValue {
   session: LocalWebUiSessionStatus | null;
   clientSettings: BrowserClientSettingsDto | null;
   realmTheme: RealmTheme;
+  activeTab: TabId;
+  setActiveTab: (tab: TabId) => void;
+  /** @deprecated Temporary compatibility alias until remaining route consumers migrate. */
   activeRoute: RouteId;
+  /** @deprecated Temporary compatibility alias until remaining route consumers migrate. */
   setActiveRoute: (route: RouteId) => void;
   connectionStatus: 'connected' | 'partial' | 'disconnected';
   advancedEnabled: boolean;
@@ -63,6 +70,10 @@ export interface ShellContextValue {
   setComposerText: (value: string) => void;
   composerNotice: string | null;
   submitComposer: (event: FormEvent<HTMLFormElement>) => void;
+  commandResult: ExplorerCommandResult | null;
+  isCommandView: boolean;
+  executeCommand: (command: string) => Promise<void>;
+  clearCommandResult: () => void;
   loadBrowserState: () => Promise<void>;
 }
 
@@ -73,6 +84,24 @@ const fallbackTheme: RealmTheme = {
   accent: '#c9a24d'
 };
 
+const routeToTabMap: Record<RouteId, TabId> = {
+  home: 'scene',
+  game: 'scene',
+  soul: 'status',
+  world: 'scene',
+  journal: 'help',
+  inventory: 'status',
+  media: 'scene',
+  settings: 'settings'
+};
+
+const tabToRouteMap: Record<TabId, RouteId> = {
+  scene: 'game',
+  status: 'soul',
+  help: 'journal',
+  settings: 'settings'
+};
+
 export const ShellContext = createContext<ShellContextValue | null>(null);
 
 export function isSuccess<T>(result: BrowserApiResult<T>): result is Extract<BrowserApiResult<T>, { ok: true }> {
@@ -80,10 +109,7 @@ export function isSuccess<T>(result: BrowserApiResult<T>): result is Extract<Bro
 }
 
 export function resolveRealmTheme(gameScreen: BrowserGameScreenDto | null): RealmTheme {
-  if (!gameScreen) {
-    return fallbackTheme;
-  }
-
+  if (!gameScreen) return fallbackTheme;
   return {
     key: gameScreen.theme.key,
     label: gameScreen.theme.label,
@@ -92,20 +118,27 @@ export function resolveRealmTheme(gameScreen: BrowserGameScreenDto | null): Real
   };
 }
 
+function routeToTab(route: RouteId): TabId {
+  return routeToTabMap[route];
+}
+
+function tabToRoute(tab: TabId): RouteId {
+  return tabToRouteMap[tab];
+}
+
 export function useShell() {
   const context = useContext(ShellContext);
-  if (!context) {
-    throw new Error('useShell must be used within a ShellProvider.');
-  }
-
+  if (!context) throw new Error('useShell must be used within a ShellProvider.');
   return context;
 }
 
 export function ShellProvider({ children }: { children: ReactNode }) {
-  const [activeRoute, setActiveRoute] = useState<RouteId>('home');
+  const [activeTab, setActiveTabState] = useState<TabId>('scene');
   const [advancedEnabled, setAdvancedEnabledState] = useState(false);
   const [composerText, setComposerTextState] = useState('');
   const [composerNotice, setComposerNotice] = useState<string | null>(null);
+  const [commandResult, setCommandResult] = useState<ExplorerCommandResult | null>(null);
+  const [isCommandView, setIsCommandView] = useState(false);
   const { shellState, loadBrowserState } = useShellState(advancedEnabled);
 
   useEffect(() => {
@@ -121,18 +154,55 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     shellState.status === 'ready' ? shellState.connectionStatus :
     shellState.status === 'error' ? 'disconnected' : 'connected';
   const realmTheme = useMemo(() => resolveRealmTheme(gameScreen), [gameScreen]);
+  const activeRoute = useMemo(() => tabToRoute(activeTab), [activeTab]);
+
+  const setActiveTab = useCallback((tab: TabId) => {
+    setActiveTabState(tab);
+  }, []);
+
+  const setActiveRoute = useCallback((route: RouteId) => {
+    setActiveTabState(routeToTab(route));
+  }, []);
+
   const setAdvancedEnabled = useCallback((updater: (value: boolean) => boolean) => {
     setAdvancedEnabledState(updater);
   }, []);
+
   const setComposerText = useCallback((value: string) => {
     setComposerTextState(value);
   }, []);
+
+  const clearCommandResult = useCallback(() => {
+    setCommandResult(null);
+    setIsCommandView(false);
+  }, []);
+
+  const executeCommand = useCallback(async (command: string) => {
+    setComposerNotice('Выполняю команду…');
+    try {
+      const result = await browserApi.executeExplorerCommand({ command });
+      if (result.ok) {
+        setCommandResult(result.data);
+        setIsCommandView(true);
+        setActiveTabState('scene');
+        setComposerNotice(null);
+      } else {
+        setComposerNotice(result.playerMessage);
+      }
+    } catch {
+      setComposerNotice('Ошибка соединения при выполнении команды.');
+    }
+    void loadBrowserState();
+  }, [loadBrowserState]);
+
   const submitComposer = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const normalized = composerText.trim();
+    if (!normalized) return;
 
     if (normalized.startsWith('/')) {
-      setComposerNotice('Служебные команды не выполняются из основного поля. Откройте «Расширенный режим» отдельной кнопкой, если хотите перенести команду в техническую панель и подтвердить её там.');
+      setComposerTextState('');
+      void executeCommand(normalized);
       return;
     }
 
@@ -141,6 +211,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
       if (result.ok && result.data.success) {
         setComposerNotice(result.data.playerMessage);
         setComposerTextState('');
+        clearCommandResult();
         void loadBrowserState();
       } else if (result.ok && !result.data.success) {
         setComposerNotice(result.data.playerMessage);
@@ -150,7 +221,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     }).catch(() => {
       setComposerNotice('Ошибка соединения. Убедитесь, что клиент запущен.');
     });
-  }, [composerText, loadBrowserState]);
+  }, [composerText, executeCommand, clearCommandResult, loadBrowserState]);
 
   const value = useMemo<ShellContextValue>(() => ({
     shellState,
@@ -160,6 +231,8 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     session,
     clientSettings,
     realmTheme,
+    activeTab,
+    setActiveTab,
     activeRoute,
     setActiveRoute,
     connectionStatus,
@@ -169,6 +242,10 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     setComposerText,
     composerNotice,
     submitComposer,
+    commandResult,
+    isCommandView,
+    executeCommand,
+    clearCommandResult,
     loadBrowserState
   }), [
     shellState,
@@ -178,7 +255,10 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     session,
     clientSettings,
     realmTheme,
+    activeTab,
+    setActiveTab,
     activeRoute,
+    setActiveRoute,
     connectionStatus,
     advancedEnabled,
     setAdvancedEnabled,
@@ -186,6 +266,10 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     setComposerText,
     composerNotice,
     submitComposer,
+    commandResult,
+    isCommandView,
+    executeCommand,
+    clearCommandResult,
     loadBrowserState
   ]);
 
