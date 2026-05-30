@@ -202,3 +202,22 @@
   display: flex; flex-direction: column; height: 100vh;
   background: var(--surface-base, #0a0e12); color: var(--text-primary, #c9d1d9);
 }
+
+/* === JSON Tree Viewer === */
+.json-tree { background: var(--surface-base, #0d1117); border: 1px solid var(--border, #30363d); border-radius: 8px; padding: 0.75rem; overflow-x: auto; font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 0.82rem; }
+.json-tree__title { font-size: 0.85rem; color: var(--text-primary); margin-bottom: 0.5rem; font-family: inherit; }
+.json-tree__body { line-height: 1.6; }
+.json-tree__node { margin-left: 0; }
+.json-tree__children { margin-left: 1.2rem; border-left: 1px solid var(--border-subtle, #21262d); padding-left: 0.5rem; }
+.json-tree__toggle { display: flex; align-items: baseline; gap: 0.3rem; background: none; border: none; color: inherit; cursor: pointer; padding: 0.1rem 0; font: inherit; text-align: left; width: 100%; }
+.json-tree__toggle:hover { background: var(--surface-raised, #161b22); border-radius: 3px; }
+.json-tree__arrow { display: inline-block; width: 0.8rem; font-size: 0.65rem; transition: transform 0.15s; color: var(--text-muted); }
+.json-tree__arrow.is-open { transform: rotate(90deg); }
+.json-tree__line { display: block; padding: 0.05rem 0 0.05rem 1.1rem; }
+.json-tree__key { color: var(--color-gold-bright, #d4a843); }
+.json-val--string { color: #a5d6a7; }
+.json-val--number { color: #90caf9; }
+.json-val--bool { color: #ce93d8; }
+.json-val--null { color: var(--text-muted); font-style: italic; }
+.json-val--empty { color: var(--text-muted); }
+.json-val--bracket { color: var(--text-muted); font-size: 0.78rem; }

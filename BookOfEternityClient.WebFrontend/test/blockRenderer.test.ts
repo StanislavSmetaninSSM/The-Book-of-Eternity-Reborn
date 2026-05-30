@@ -33,4 +33,15 @@ describe('BlockRenderer source', () => {
     expect(source).toContain("export function BlockList({ blocks }: { blocks: UiBlock[] }) {");
     expect(source).toContain("blocks.map((block, i) => <BlockRenderer key={`${block.kind}-${i}`} block={block} />)");
   });
+
+  it('uses JsonTreeViewer for rawJson blocks', () => {
+    const source = readBlockRendererSource();
+
+    expect(source).toContain("import { JsonTreeViewer } from './JsonTreeViewer';");
+    expect(source).toContain("import type { JsonValue, UiBlock, UiTone } from '../api/contracts';");
+    expect(source).toContain("<JsonTreeViewer");
+    expect(source).toContain("data={block.json as JsonValue}");
+    expect(source).toContain("title={toPlayerFacingText(block.title, 'Данные')}");
+    expect(source).not.toContain('<pre>{JSON.stringify(block.json, null, 2)}</pre>');
+  });
 });

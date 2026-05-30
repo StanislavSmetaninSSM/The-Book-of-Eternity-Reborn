@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import type { UiBlock, UiTone } from '../api/contracts';
+import type { JsonValue, UiBlock, UiTone } from '../api/contracts';
 import { toPlayerFacingText } from '../utils/playerCopy';
+import { JsonTreeViewer } from './JsonTreeViewer';
 
 function toneClassName(tone: UiTone): string {
   switch (tone) {
@@ -109,10 +110,12 @@ export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
 
     case 'rawJson':
       return (
-        <details className="block-raw">
-          <summary>{toPlayerFacingText(block.title, 'Данные')}</summary>
-          <pre>{JSON.stringify(block.json, null, 2)}</pre>
-        </details>
+        <JsonTreeViewer
+          data={block.json as JsonValue}
+          title={toPlayerFacingText(block.title, 'Данные')}
+          defaultExpanded
+          maxInitialDepth={2}
+        />
       );
   }
 }
