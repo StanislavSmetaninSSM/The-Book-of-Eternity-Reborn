@@ -1,6 +1,9 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using System.Security.Cryptography;
+using System.Runtime.Versioning;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -45,6 +48,115 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
     }
 
     [Fact]
+    public async Task CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature()
+    {
+        var manifest = await CreateManifestWithSnapshotAndRollbackAsync(turnNumber: 6);
+
+        var authorityJson = CreateDetachedAuthorityJson(manifest);
+        var envelope = JsonNode.Parse(authorityJson)?.AsObject();
+
+        Assert.NotNull(envelope);
+        Assert.Equal(2, envelope["formatVersion"]?.GetValue<int>());
+        Assert.Equal("SHA256-PAYLOAD-JSON", envelope["integrityAlgorithm"]?.GetValue<string>());
+        Assert.False(envelope.ContainsKey("payloadSignature"));
+        Assert.False(string.IsNullOrWhiteSpace(envelope["payloadJsonBase64"]?.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(envelope["payloadSha256"]?.GetValue<string>()));
+    }
+
+    [Fact]
+    public async Task TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature()
+    {
+        var manifest = await CreateManifestWithSnapshotAndRollbackAsync(turnNumber: 7);
+        var authorityJson = CreatePortableAuthorityJson(manifest);
+
+        var valid = TryValidateReaderAuthority(manifest, authorityJson, out var payload, out var failureCode);
+
+        Assert.True(valid);
+        Assert.NotNull(payload);
+        Assert.Equal("authorized", failureCode);
+        Assert.Equal(manifest.ManifestPayloadHash, payload.ManifestPayloadHash);
+    }
+
+    [Fact]
+    public async Task TryValidateManifestAgainstAuthority_LegacyWindowsSignatureEnvelope_RemainsReadableOnWindows()
+    {
+        if (!OperatingSystem.IsWindows())
+            return;
+
+        var manifest = await CreateManifestWithSnapshotAndRollbackAsync(turnNumber: 11);
+        var authorityJson = CreateLegacyWindowsAuthorityJson(manifest);
+
+        var valid = TryValidateReaderAuthority(manifest, authorityJson, out var payload, out var failureCode);
+
+        Assert.True(valid);
+        Assert.NotNull(payload);
+        Assert.Equal("authorized", failureCode);
+        Assert.Equal(manifest.ManifestPayloadHash, payload.ManifestPayloadHash);
+    }
+
+    [Fact]
+    public async Task TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed()
+    {
+        var manifest = await CreateManifestWithSnapshotAndRollbackAsync(turnNumber: 8);
+        var authority = JsonNode.Parse(CreatePortableAuthorityJson(manifest))!.AsObject();
+        var payloadJson = Encoding.UTF8.GetString(Convert.FromBase64String(authority["payloadJsonBase64"]!.GetValue<string>()));
+        var payload = JsonNode.Parse(payloadJson)!.AsObject();
+        payload["turnNumber"] = manifest.TurnNumber + 1;
+        authority["payloadJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(payload.ToJsonString(ManifestJsonOpts)));
+
+        var valid = TryValidateReaderAuthority(
+            manifest,
+            authority.ToJsonString(ManifestJsonOpts),
+            out _,
+            out var failureCode);
+
+        Assert.False(valid);
+        Assert.Equal("invalid_detached_authority", failureCode);
+    }
+
+    [Fact]
+    public async Task TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed()
+    {
+        var manifest = await CreateManifestWithSnapshotAndRollbackAsync(turnNumber: 9);
+        var authorityJson = CreatePortableAuthorityJson(manifest);
+        manifest.SnapshotFileHashes["game_state/meta/soul_state.json"] = ComputeSha256("""
+        {
+          "currentRealm": "Chaos Sea"
+        }
+        """);
+        manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
+
+        var valid = TryValidateReaderAuthority(manifest, authorityJson, out _, out var failureCode);
+
+        Assert.False(valid);
+        Assert.Equal("detached_authority_mismatch", failureCode);
+    }
+
+    [Fact]
+    public async Task TryValidateManifestAgainstAuthority_TamperedManifestPayload_FailsClosed()
+    {
+        var manifest = await CreateManifestWithSnapshotAndRollbackAsync(turnNumber: 12);
+        var authorityJson = CreatePortableAuthorityJson(manifest);
+        manifest.PlayerAction = "tampered-authority-test";
+
+        var valid = TryValidateReaderAuthority(manifest, authorityJson, out _, out var failureCode);
+
+        Assert.False(valid);
+        Assert.Equal("manifest_payload_hash_mismatch", failureCode);
+    }
+
+    [Fact]
+    public async Task TryValidateManifestForDestructiveAuthority_MissingAuthority_FailsClosed()
+    {
+        var manifest = await CreateManifestWithSnapshotAndRollbackAsync(turnNumber: 10);
+
+        var valid = TryValidateDestructiveAuthority(manifest, authorityJson: null, out _, out var failureCode);
+
+        Assert.False(valid);
+        Assert.Equal("missing_detached_authority", failureCode);
+    }
+
+    [Fact]
     public async Task TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed()
     {
         const string logicalPath = "game_state/meta/soul_state.json";
@@ -86,21 +198,7 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
         };
         manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
 
-        var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
-            manifest,
-            ManifestJsonOpts,
-            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
-            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
-            static snapshotManifest => snapshotManifest.SessionId,
-            static snapshotManifest => snapshotManifest.RequestId,
-            static snapshotManifest => snapshotManifest.TurnNumber,
-            static snapshotManifest => snapshotManifest.Files,
-            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
-            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
-            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
-            static snapshotManifest => snapshotManifest.SourceLabel,
-            static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile);
+        var authorityJson = CreateDetachedAuthorityJson(manifest);
 
         await _fs.WriteFileAtomicAsync(rollbackPath, """
         {
@@ -108,24 +206,7 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
         }
         """);
 
-        var valid = PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
-            manifest,
-            authorityJson,
-            ManifestJsonOpts,
-            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
-            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
-            static snapshotManifest => snapshotManifest.SessionId,
-            static snapshotManifest => snapshotManifest.RequestId,
-            static snapshotManifest => snapshotManifest.TurnNumber,
-            static snapshotManifest => snapshotManifest.Files,
-            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
-            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
-            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
-            static snapshotManifest => snapshotManifest.SourceLabel,
-            static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile,
-            out _,
-            out var failureCode);
+        var valid = TryValidateReaderAuthority(manifest, authorityJson, out _, out var failureCode);
 
         Assert.False(valid);
         Assert.Equal("detached_authority_mismatch", failureCode);
@@ -154,40 +235,9 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
         };
         manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
 
-        var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
-            manifest,
-            ManifestJsonOpts,
-            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
-            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
-            static snapshotManifest => snapshotManifest.SessionId,
-            static snapshotManifest => snapshotManifest.RequestId,
-            static snapshotManifest => snapshotManifest.TurnNumber,
-            static snapshotManifest => snapshotManifest.Files,
-            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
-            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
-            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
-            static snapshotManifest => snapshotManifest.SourceLabel,
-            static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile);
+        var authorityJson = CreateDetachedAuthorityJson(manifest);
 
-        var valid = PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
-            manifest,
-            authorityJson,
-            ManifestJsonOpts,
-            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
-            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
-            static snapshotManifest => snapshotManifest.SessionId,
-            static snapshotManifest => snapshotManifest.RequestId,
-            static snapshotManifest => snapshotManifest.TurnNumber,
-            static snapshotManifest => snapshotManifest.Files,
-            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
-            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
-            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
-            static snapshotManifest => snapshotManifest.SourceLabel,
-            static snapshotManifest => snapshotManifest.RollbackBackups,
-            ReadRelativeFile,
-            out _,
-            out var failureCode);
+        var valid = TryValidateReaderAuthority(manifest, authorityJson, out _, out var failureCode);
 
         Assert.False(valid);
         Assert.Equal("invalid_manifest_structure", failureCode);
@@ -253,6 +303,214 @@ public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
     {
         return PendingTurnSnapshotAuthority.ComputeSha256(content);
     }
+
+    private async Task<TestManifest> CreateManifestWithSnapshotAndRollbackAsync(int turnNumber)
+    {
+        const string logicalPath = "game_state/meta/soul_state.json";
+        const string snapshotPath = "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json";
+        var rollbackPath = $"game_state/meta/soul_state.json.rollback.test-{turnNumber}";
+        const string json = """
+        {
+          "currentRealm": "Mortal World"
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(snapshotPath, json);
+        await _fs.WriteFileAtomicAsync(rollbackPath, json);
+
+        var manifest = new TestManifest
+        {
+            SessionId = "session",
+            RequestId = "request",
+            TurnNumber = turnNumber,
+            RequestTimestamp = "2026-04-14T00:00:00Z",
+            PlayerAction = "authority-test",
+            Files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [logicalPath] = snapshotPath
+            },
+            SnapshotFileHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [logicalPath] = ComputeSha256(json)
+            },
+            RollbackBackups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                [logicalPath] = rollbackPath
+            },
+            RollbackBaselineFiles = new List<string> { logicalPath },
+            SourceLabel = "authority-tests"
+        };
+        manifest.ManifestPayloadHash = ComputeManifestPayloadHash(manifest);
+        return manifest;
+    }
+
+    private string CreateDetachedAuthorityJson(TestManifest manifest) =>
+        PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
+            manifest,
+            ManifestJsonOpts,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
+            static snapshotManifest => snapshotManifest.SessionId,
+            static snapshotManifest => snapshotManifest.RequestId,
+            static snapshotManifest => snapshotManifest.TurnNumber,
+            static snapshotManifest => snapshotManifest.Files,
+            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
+            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+            static snapshotManifest => snapshotManifest.SourceLabel,
+            static snapshotManifest => snapshotManifest.RollbackBackups,
+            ReadRelativeFile);
+
+    private bool TryValidateReaderAuthority(
+        TestManifest manifest,
+        string? authorityJson,
+        out PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload? payload,
+        out string failureCode) =>
+        PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
+            manifest,
+            authorityJson,
+            ManifestJsonOpts,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
+            static snapshotManifest => snapshotManifest.SessionId,
+            static snapshotManifest => snapshotManifest.RequestId,
+            static snapshotManifest => snapshotManifest.TurnNumber,
+            static snapshotManifest => snapshotManifest.Files,
+            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
+            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+            static snapshotManifest => snapshotManifest.SourceLabel,
+            static snapshotManifest => snapshotManifest.RollbackBackups,
+            ReadRelativeFile,
+            out payload,
+            out failureCode);
+
+    private bool TryValidateDestructiveAuthority(
+        TestManifest manifest,
+        string? authorityJson,
+        out PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload? payload,
+        out string failureCode) =>
+        PendingTurnSnapshotAuthority.TryValidateManifestForDestructiveAuthority(
+            manifest,
+            authorityJson,
+            ManifestJsonOpts,
+            static snapshotManifest => snapshotManifest.ManifestPayloadHash,
+            static (snapshotManifest, hash) => snapshotManifest.ManifestPayloadHash = hash,
+            static snapshotManifest => snapshotManifest.SessionId,
+            static snapshotManifest => snapshotManifest.RequestId,
+            static snapshotManifest => snapshotManifest.TurnNumber,
+            static snapshotManifest => snapshotManifest.Files,
+            static snapshotManifest => snapshotManifest.SnapshotFileHashes,
+            static snapshotManifest => snapshotManifest.ClientOwnedValidationHashes,
+            static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
+            static snapshotManifest => snapshotManifest.SourceLabel,
+            static snapshotManifest => snapshotManifest.RollbackBackups,
+            ReadRelativeFile,
+            out payload,
+            out failureCode);
+
+    private string CreatePortableAuthorityJson(TestManifest manifest)
+    {
+        var payload = CreateAuthorityPayload(manifest);
+        var payloadJson = JsonSerializer.Serialize(payload, ManifestJsonOpts);
+        var envelope = new JsonObject
+        {
+            ["formatVersion"] = 2,
+            ["integrityAlgorithm"] = "SHA256-PAYLOAD-JSON",
+            ["payloadJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(payloadJson)),
+            ["payloadSha256"] = ComputeSha256(payloadJson)
+        };
+
+        return envelope.ToJsonString(ManifestJsonOpts);
+    }
+
+    [SupportedOSPlatform("windows")]
+    private string CreateLegacyWindowsAuthorityJson(TestManifest manifest)
+    {
+        var payload = CreateAuthorityPayload(manifest);
+        var payloadBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload, ManifestJsonOpts));
+        using var signer = OpenOrCreateLegacyWindowsSigner();
+        var envelope = new JsonObject
+        {
+            ["payloadJsonBase64"] = Convert.ToBase64String(payloadBytes),
+            ["payloadSignature"] = Convert.ToBase64String(signer.SignData(payloadBytes, HashAlgorithmName.SHA256))
+        };
+
+        return envelope.ToJsonString(ManifestJsonOpts);
+    }
+
+    private PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload CreateAuthorityPayload(TestManifest manifest)
+    {
+        var rollbackBackups = CopyNormalizedFilesDictionary(manifest.RollbackBackups);
+        return new PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload
+        {
+            SessionId = manifest.SessionId.Trim(),
+            RequestId = manifest.RequestId.Trim(),
+            TurnNumber = manifest.TurnNumber,
+            ManifestPayloadHash = ComputeManifestPayloadHash(manifest),
+            Files = CopyNormalizedFilesDictionary(manifest.Files),
+            SnapshotFileHashes = CopyNormalizedHashDictionary(manifest.SnapshotFileHashes),
+            ClientOwnedValidationHashes = CopyNormalizedHashDictionary(manifest.ClientOwnedValidationHashes),
+            RollbackBackups = rollbackBackups,
+            RollbackBackupHashes = ComputeFileHashes(rollbackBackups),
+            RollbackBaselineFiles = manifest.RollbackBaselineFiles
+                .Where(path => !string.IsNullOrWhiteSpace(path))
+                .Select(NormalizePath)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                .ToList(),
+            SourceLabel = string.IsNullOrWhiteSpace(manifest.SourceLabel)
+                ? null
+                : manifest.SourceLabel.Trim()
+        };
+    }
+
+    [SupportedOSPlatform("windows")]
+    private static ECDsa OpenOrCreateLegacyWindowsSigner()
+    {
+        const string authorityKeyName = "BookOfEternityClient.PendingTurnSnapshotAuthority";
+        if (CngKey.Exists(authorityKeyName, CngProvider.MicrosoftSoftwareKeyStorageProvider))
+            return new ECDsaCng(CngKey.Open(authorityKeyName, CngProvider.MicrosoftSoftwareKeyStorageProvider));
+
+        var creationParameters = new CngKeyCreationParameters
+        {
+            Provider = CngProvider.MicrosoftSoftwareKeyStorageProvider,
+            KeyUsage = CngKeyUsages.Signing
+        };
+
+        return new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256, authorityKeyName, creationParameters));
+    }
+
+    private Dictionary<string, string> ComputeFileHashes(IDictionary<string, string> files)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var (logicalPath, relativePath) in files)
+        {
+            var content = ReadRelativeFile(relativePath);
+            Assert.NotNull(content);
+            result[logicalPath] = ComputeSha256(content);
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, string> CopyNormalizedFilesDictionary(IDictionary<string, string> source) =>
+        source
+            .Where(pair => !string.IsNullOrWhiteSpace(pair.Key) && !string.IsNullOrWhiteSpace(pair.Value))
+            .ToDictionary(
+                pair => NormalizePath(pair.Key),
+                pair => NormalizePath(pair.Value),
+                StringComparer.OrdinalIgnoreCase);
+
+    private static Dictionary<string, string> CopyNormalizedHashDictionary(IDictionary<string, string> source) =>
+        source
+            .Where(pair => !string.IsNullOrWhiteSpace(pair.Key) && !string.IsNullOrWhiteSpace(pair.Value))
+            .ToDictionary(
+                pair => NormalizePath(pair.Key),
+                pair => pair.Value.Trim(),
+                StringComparer.OrdinalIgnoreCase);
+
+    private static string NormalizePath(string value) => value.Replace('\\', '/').Trim();
 
     public void Dispose()
     {

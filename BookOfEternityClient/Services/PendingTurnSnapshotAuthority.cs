@@ -8,6 +8,8 @@ namespace BookOfEternityClient.Services;
 internal static class PendingTurnSnapshotAuthority
 {
     internal const string AuthorityPath = "game_state/control/pending_turn_snapshot.authority.json";
+    private const int PortableAuthorityFormatVersion = 2;
+    private const string PortableIntegrityAlgorithm = "SHA256-PAYLOAD-JSON";
 
     private static readonly JsonSerializerOptions AuthorityJsonOpts = new()
     {
@@ -18,8 +20,11 @@ internal static class PendingTurnSnapshotAuthority
 
     internal sealed class PendingTurnSnapshotAuthorityEnvelope
     {
+        public int? FormatVersion { get; set; }
+        public string? IntegrityAlgorithm { get; set; }
         public string PayloadJsonBase64 { get; set; } = string.Empty;
-        public string PayloadSignature { get; set; } = string.Empty;
+        public string? PayloadSha256 { get; set; }
+        public string? PayloadSignature { get; set; }
     }
 
     internal sealed class PendingTurnSnapshotAuthorityPayload
@@ -307,8 +312,10 @@ internal static class PendingTurnSnapshotAuthority
         var payloadBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload, AuthorityJsonOpts));
         var envelope = new PendingTurnSnapshotAuthorityEnvelope
         {
+            FormatVersion = PortableAuthorityFormatVersion,
+            IntegrityAlgorithm = PortableIntegrityAlgorithm,
             PayloadJsonBase64 = Convert.ToBase64String(payloadBytes),
-            PayloadSignature = ComputeAuthoritySignature(payloadBytes)
+            PayloadSha256 = ComputeSha256(payloadBytes)
         };
 
         return JsonSerializer.Serialize(envelope, AuthorityJsonOpts);
@@ -564,8 +571,7 @@ internal static class PendingTurnSnapshotAuthority
         }
 
         if (envelope == null ||
-            string.IsNullOrWhiteSpace(envelope.PayloadJsonBase64) ||
-            string.IsNullOrWhiteSpace(envelope.PayloadSignature))
+            string.IsNullOrWhiteSpace(envelope.PayloadJsonBase64))
         {
             return false;
         }
@@ -573,8 +579,19 @@ internal static class PendingTurnSnapshotAuthority
         try
         {
             var payloadBytes = Convert.FromBase64String(envelope.PayloadJsonBase64);
-            if (!VerifyAuthoritySignature(payloadBytes, envelope.PayloadSignature))
-                return false;
+            if (IsPortableAuthorityEnvelope(envelope))
+            {
+                if (!VerifyPortableAuthorityIntegrity(payloadBytes, envelope))
+                    return false;
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(envelope.PayloadSignature) ||
+                    !VerifyLegacyAuthoritySignature(payloadBytes, envelope.PayloadSignature))
+                {
+                    return false;
+                }
+            }
 
             payload = JsonSerializer.Deserialize<PendingTurnSnapshotAuthorityPayload>(
                 Encoding.UTF8.GetString(payloadBytes),
@@ -758,13 +775,40 @@ internal static class PendingTurnSnapshotAuthority
 
     private static string NormalizePath(string value) => value.Replace('\\', '/').Trim();
 
-    private static string ComputeAuthoritySignature(byte[] payloadBytes)
+    private static string ComputeSha256(byte[] content)
     {
-        using var signer = OpenOrCreateAuthoritySigner();
-        return Convert.ToBase64String(signer.SignData(payloadBytes, HashAlgorithmName.SHA256));
+        using var sha = SHA256.Create();
+        var bytes = sha.ComputeHash(content);
+        return Convert.ToHexString(bytes);
     }
 
-    private static bool VerifyAuthoritySignature(byte[] payloadBytes, string signature)
+    private static bool IsPortableAuthorityEnvelope(PendingTurnSnapshotAuthorityEnvelope envelope) =>
+        envelope.FormatVersion.HasValue ||
+        !string.IsNullOrWhiteSpace(envelope.IntegrityAlgorithm) ||
+        !string.IsNullOrWhiteSpace(envelope.PayloadSha256);
+
+    private static bool VerifyPortableAuthorityIntegrity(
+        byte[] payloadBytes,
+        PendingTurnSnapshotAuthorityEnvelope envelope)
+    {
+        if (envelope.FormatVersion != PortableAuthorityFormatVersion ||
+            !string.Equals(envelope.IntegrityAlgorithm, PortableIntegrityAlgorithm, StringComparison.Ordinal) ||
+            string.IsNullOrWhiteSpace(envelope.PayloadSha256))
+        {
+            return false;
+        }
+
+        // Portable envelopes are local lifecycle integrity/tamper evidence only. They bind this detached
+        // payload to the manifest/snapshot/rollback hashes so accidental or GM-side edits fail closed, but
+        // they are not a strong security boundary against a same-user process that can rewrite both payload
+        // and hash. Legacy Windows CNG envelopes are read below only for compatibility with existing saves.
+        return string.Equals(
+            ComputeSha256(payloadBytes),
+            envelope.PayloadSha256.Trim(),
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool VerifyLegacyAuthoritySignature(byte[] payloadBytes, string signature)
     {
         try
         {
@@ -776,28 +820,6 @@ internal static class PendingTurnSnapshotAuthority
         {
             return false;
         }
-    }
-
-    private static ECDsa OpenOrCreateAuthoritySigner()
-    {
-        if (!OperatingSystem.IsWindows())
-            throw new PlatformNotSupportedException("Pending snapshot detached authority signing currently requires Windows CNG.");
-
-        // This detached authority is stronger than self-authenticated local hashes because the signing key
-        // lives in OS-managed CNG storage, but it is not a true external trust root: another process running
-        // under the same user profile can still reopen the named key and mint a fresh authority envelope.
-        if (CngKey.Exists(AuthorityKeyName, CngProvider.MicrosoftSoftwareKeyStorageProvider))
-        {
-            return new ECDsaCng(CngKey.Open(AuthorityKeyName, CngProvider.MicrosoftSoftwareKeyStorageProvider));
-        }
-
-        var creationParameters = new CngKeyCreationParameters
-        {
-            Provider = CngProvider.MicrosoftSoftwareKeyStorageProvider,
-            KeyUsage = CngKeyUsages.Signing
-        };
-
-        return new ECDsaCng(CngKey.Create(CngAlgorithm.ECDsaP256, AuthorityKeyName, creationParameters));
     }
 
     private static ECDsa? OpenExistingAuthoritySigner()
