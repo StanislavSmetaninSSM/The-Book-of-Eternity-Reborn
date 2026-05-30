@@ -44,6 +44,28 @@ export default function GameRoute() {
         <p>{game.narrative.text || 'Последний нарратив пока не найден в локальной книге.'}</p>
       </article>
 
+      {game.narrative.combatLog && (
+        <article className="summary-card combat-log-card" aria-label="Журнал боя">
+          <h3>⚔️ Журнал боя</h3>
+          <div className="combat-log-content">
+            {game.narrative.combatLog.split('\n').map((line, i) => (
+              <p key={i}>{line}</p>
+            ))}
+          </div>
+        </article>
+      )}
+
+      {game.player.activeConditions && game.player.activeConditions.length > 0 && (
+        <section className="summary-card conditions-card" aria-label="Активные состояния">
+          <h3>🩹 Активные состояния</h3>
+          <ul className="conditions-list">
+            {game.player.activeConditions.map((condition, i) => (
+              <li key={i} className="condition-item">{condition}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section className="summary-card" aria-label="Варианты диалога">
         <h3>Варианты для игрока</h3>
         {game.narrative.dialogueOptions.length > 0 ? (

@@ -67,7 +67,9 @@ export default function SoulRoute() {
           title="Герой"
           icon="⚔️"
           summary={`${player.name || 'Герой'} · ${player.currentCondition}`}
-          status={`${formatSidebarStatusMetric(player.healthPercentage)} здоровья`}
+          status={player.activeConditions && player.activeConditions.length > 0
+            ? `${formatSidebarStatusMetric(player.healthPercentage)} здоровья · ${player.activeConditions.length} сост.`
+            : `${formatSidebarStatusMetric(player.healthPercentage)} здоровья`}
           detailsTitle="Детали героя"
           detailsIntro={<p>Карточка героя раскрывает состояние персонажа без служебных команд и внутренних файлов.</p>}
           sections={[
@@ -93,6 +95,16 @@ export default function SoulRoute() {
                   <StatusBar label="Здоровье" value={player.healthPercentage} />
                   <StatusBar label="Энергия" value={player.energyPercentage} />
                   <StatusBar label="Стойкость" value={player.poisePercentage} />
+                  {player.activeConditions && player.activeConditions.length > 0 && (
+                    <div className="active-conditions-section">
+                      <h5>Активные состояния</h5>
+                      <ul className="conditions-list">
+                        {player.activeConditions.map((cond, i) => (
+                          <li key={i} className="condition-item">{cond}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </>
               )
             }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { browserApi } from '../api/client';
-import type { BrowserGameScreenDto } from '../api/contracts';
+import type { BrowserGameScreenDto, ExplorerCommandResult, BrowserApiResult, JsonValue } from '../api/contracts';
 import { useShell } from '../context/ShellContext';
 import {
   getComposerDisabledReason,
@@ -9,6 +9,7 @@ import {
   getComposerPlaceholder
 } from '../utils/formatters';
 import { ActionPalette } from './ActionPalette';
+import { ActionCommandResult } from './CommandResult';
 
 export type ComposerMode = 'prose' | 'actions';
 
@@ -17,6 +18,31 @@ export function Composer({ actionComposer }: { actionComposer: BrowserGameScreen
   const [text, setText] = useState('');
   const [notice, setNotice] = useState('');
   const [mode, setMode] = useState<ComposerMode>('prose');
+  const [commandResult, setCommandResult] = useState<BrowserApiResult<ExplorerCommandResult> | null>(null);
+  const [promptAnswers, setPromptAnswers] = useState<Record<string, JsonValue | undefined>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function handlePromptAnswerChange(promptId: string, value: JsonValue | undefined) {
+    setPromptAnswers(prev => ({ ...prev, [promptId]: value }));
+  }
+
+  function handlePromptSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!commandResult || !commandResult.ok || !commandResult.data?.interactiveSession) return;
+    setIsSubmitting(true);
+    void browserApi.submitPromptSession({
+      sessionId: commandResult.data.interactiveSession.sessionId,
+      answers: promptAnswers
+    }).then((result) => {
+      setCommandResult(result);
+      setPromptAnswers({});
+      setIsSubmitting(false);
+      void loadBrowserState();
+    }).catch(() => {
+      setIsSubmitting(false);
+      setNotice('Ошибка при отправке ответа.');
+    });
+  }
 
   function submitProse(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,7 +53,16 @@ export function Composer({ actionComposer }: { actionComposer: BrowserGameScreen
     }
 
     if (normalized.startsWith('/')) {
-      setNotice('Служебные команды не выполняются из основного поля. Используйте режим «Действия» или расширенный режим.');
+      setNotice('Выполняю команду…');
+      setCommandResult(null);
+      void browserApi.executeExplorerCommand({ command: normalized }).then((result) => {
+        setCommandResult(result);
+        setNotice('');
+        setText('');
+        void loadBrowserState();
+      }).catch(() => {
+        setNotice('Ошибка соединения при выполнении команды.');
+      });
       return;
     }
 
@@ -78,14 +113,14 @@ export function Composer({ actionComposer }: { actionComposer: BrowserGameScreen
             rows={3}
             value={text}
             onChange={(event) => setText(event.currentTarget.value)}
-            placeholder={getComposerPlaceholder(actionComposer)}
+            placeholder={getComposerPlaceholder(actionComposer) + ' • Команды: /инвентарь, /статы, /нпс...'}
             disabled={!actionComposer.canSubmit}
           />
           {!actionComposer.canSubmit && (
             <p className="warning-text">{getComposerDisabledReason(actionComposer)}</p>
           )}
           <div className="composer-footer">
-            <p className="muted">{getComposerGuidance(actionComposer)}</p>
+            <p className="muted">{getComposerGuidance(actionComposer)} Для команд используйте /команда (например /инвентарь, /статы, /навыки).</p>
             <button type="submit" disabled={!text.trim() || !actionComposer.canSubmit}>
               Отправить
             </button>
@@ -95,6 +130,22 @@ export function Composer({ actionComposer }: { actionComposer: BrowserGameScreen
       )}
 
       {mode === 'actions' && <ActionPalette />}
+
+      {commandResult && (
+        <div className="command-result-container">
+          <div className="command-result-header">
+            <h4>📋 Результат команды</h4>
+            <button type="button" className="command-result-close" onClick={() => setCommandResult(null)}>✕</button>
+          </div>
+          <ActionCommandResult
+            result={commandResult}
+            promptAnswers={promptAnswers}
+            onPromptAnswerChange={handlePromptAnswerChange}
+            onPromptSubmit={handlePromptSubmit}
+            isSubmitting={isSubmitting}
+          />
+        </div>
+      )}
     </section>
   );
 }
