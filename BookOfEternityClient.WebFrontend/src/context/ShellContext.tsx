@@ -180,7 +180,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const executeCommand = useCallback(async (command: string) => {
     setComposerNotice('Выполняю команду…');
     try {
-      const result = await browserApi.executeExplorerCommand({ command });
+      const result = await browserApi.executeExplorerCommand({ command, advancedEnabled });
       if (result.ok) {
         setCommandResult(result.data);
         setIsCommandView(true);
@@ -193,7 +193,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
       setComposerNotice('Ошибка соединения при выполнении команды.');
     }
     void loadBrowserState();
-  }, [loadBrowserState]);
+  }, [advancedEnabled, loadBrowserState]);
 
   const submitComposer = useCallback((event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -47,7 +47,8 @@ public static class ExplorerChaosSeaCommandResultBuilder
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
         StateManager stateManager,
-        FileSystemManager fs)
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics = false)
     {
         var normalizedCommand = command.Trim();
         if (!CommandKinds.TryGetValue(normalizedCommand, out var kind))
@@ -65,7 +66,10 @@ public static class ExplorerChaosSeaCommandResultBuilder
                 new(GuardianProjectState.TrackerPath, "journal", "Записей журнала"),
                 new(GuardiansPath, "guardians", "Хранителей")
             ]),
-            CommandKind.GuardianPolitics => await BuildGuardianPolitics(normalizedCommand, fs),
+            CommandKind.GuardianPolitics => await BuildGuardianPolitics(
+                normalizedCommand,
+                fs,
+                includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts),
             CommandKind.Abodes => await BuildAbodes(normalizedCommand, fs),
             CommandKind.Gacha => await BuildGacha(normalizedCommand, fs),
             _ => null
@@ -170,7 +174,10 @@ public static class ExplorerChaosSeaCommandResultBuilder
         return Completed(command, blocks);
     }
 
-    private static async Task<ExplorerCommandResult> BuildGuardianPolitics(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildGuardianPolitics(
+        string command,
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics)
     {
         var politics = await ReadJson(fs, ChaosSeaGuardianPoliticsState.StatePath);
         if (politics.Node == null)
@@ -279,6 +286,9 @@ public static class ExplorerChaosSeaCommandResultBuilder
 
         if (blocks.Count == 1)
             blocks.Add(Message(UiNotificationSeverity.Info, "Нет видимых политических событий", "Скрытые связи не показываются игроку до раскрытия через сцену, хронику или прямое свидетельство."));
+
+        if (includeAdvancedDiagnostics)
+            blocks.Add(Raw($"Полный JSON {ChaosSeaGuardianPoliticsState.StatePath}", root));
 
         return Completed(command, blocks);
     }
