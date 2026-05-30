@@ -46,4 +46,9 @@
     </AssemblyAttribute>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="SnapshotHelper\**" />
+    <None Remove="SnapshotHelper\**" />
+  </ItemGroup>
+
 </Project>

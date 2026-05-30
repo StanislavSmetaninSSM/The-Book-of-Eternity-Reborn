@@ -671,6 +671,10 @@ public partial class ValidationService
         if (HasResolvedGenericSharedStrictPreTurnGuardianAuthority(guardianPolicyContext))
             return true;
 
+        if (TryGetGuardianBaselineFailureKind(guardianPolicyContext, out var failureKind) &&
+            IsIdleStateWithoutActiveTurn(failureKind))
+            return true;
+
         issues.Add(new ValidationIssue(
             path,
             IssueSeverity.Error,

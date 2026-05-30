@@ -1324,6 +1324,23 @@ public partial class ValidationService
         return failureKind != GuardianBaselineFailureKind.None;
     }
 
+    /// <summary>
+    /// Returns true when the guardian baseline failure is due to a missing snapshot manifest
+    /// AND no turn lifecycle artifacts exist — i.e. the game is in normal idle state between turns.
+    /// In idle state, the snapshot is absent by design (deleted after turn acceptance) and
+    /// should not be required for validation.
+    /// </summary>
+    private bool IsIdleStateWithoutActiveTurn(GuardianBaselineFailureKind failureKind)
+    {
+        if (failureKind != GuardianBaselineFailureKind.MissingManifest)
+            return false;
+
+        return !_fs.FileExists(PendingTurnSnapshotManifestPath) &&
+               !_fs.FileExists("input/turn_request.json") &&
+               !_fs.FileExists("ready/turn_complete.json") &&
+               !_fs.FileExists("ready/turn_error.json");
+    }
+
     private static string DescribeGuardianTrackedSnapshotFileStatus(GuardianTrackedSnapshotFileStatus status) => status switch
     {
         GuardianTrackedSnapshotFileStatus.MissingManifest => "validated pending turn snapshot manifest is missing",

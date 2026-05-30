@@ -1003,7 +1003,8 @@ public partial class ValidationService
         if (TryGetSharedGuardianPreTurnBaselineRootForValidation(guardianPolicyContext, out var preTurnAuthorityRoot))
             CollectGuardianIdsFromStateRoot(preTurnAuthorityRoot, validatedPreTurnGuardianIds, includeCommandSurfaces: false);
         if (guardianPolicyContext.HasCurrentGuardiansArray &&
-            TryGetGuardianBaselineFailureKind(guardianPolicyContext, out _))
+            TryGetGuardianBaselineFailureKind(guardianPolicyContext, out var baselineFailure) &&
+            !IsIdleStateWithoutActiveTurn(baselineFailure))
         {
             issues.Add(new ValidationIssue(
                 "game_state/meta/guardians.json",
