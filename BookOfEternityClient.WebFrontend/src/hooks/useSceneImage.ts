@@ -66,6 +66,7 @@ export function useSceneImage(
       if (result.ok && result.data.success && result.data.url) {
         setState({ url: result.data.url, loading: false, error: null });
       } else {
+        lastPromptRef.current = null;
         const msg = result.ok ? result.data.errorMessage : null;
         setState({ url: null, loading: false, error: msg || null });
       }
@@ -75,6 +76,7 @@ export function useSceneImage(
       }
 
       generatingRef.current = null;
+      lastPromptRef.current = null;
       setState({ url: null, loading: false, error: null });
     });
   }, [sceneImagePrompt, gallery, imageKind, entityIdentity]);
