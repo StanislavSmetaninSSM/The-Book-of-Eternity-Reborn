@@ -34,10 +34,30 @@
 .reborn-systems-panel,
 .qte-scene-panel,
 .media-atlas-panel {
-  border: 1px solid color-mix(in srgb, var(--realm-accent) 20%, rgba(255, 255, 255, 0.06));
+  position: relative;
+  border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  background: var(--color-glass);
+  background: var(--surface-card);
   box-shadow: var(--shadow-panel);
+  transition:
+    border-color var(--motion-panel),
+    box-shadow var(--motion-panel),
+    transform var(--motion-fast);
+}
+
+/* Top accent line on all cards */
+.shell-panel::before,
+.summary-card::before,
+.narrative-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--realm-accent, var(--color-gold)), transparent);
+  opacity: 0.4;
+  border-radius: 0 0 1px 1px;
 }
 
 .eyebrow,
@@ -87,32 +107,28 @@
   border-color: color-mix(in srgb, var(--state-success) 22%, rgba(255, 255, 255, 0.06));
 }
 
-.summary-card,
-.narrative-card {
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.04);
-}
-
 .summary-card {
-  transition: border-color var(--motion-fast), transform var(--motion-fast), box-shadow var(--motion-fast);
+  padding: var(--space-4);
 }
 
 .summary-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-panel);
+  transform: translateY(-3px);
+  border-color: var(--border-card-hover);
+  box-shadow: var(--glow-hover), var(--shadow-panel-strong);
 }
 
 .narrative-card {
   margin-bottom: var(--space-4);
+  padding: var(--space-5);
   font-family: var(--font-narrative);
-  font-size: clamp(0.95rem, 1.15vw, 1.08rem);
-  line-height: 1.72;
+  font-size: clamp(1rem, 1.2vw, 1.12rem);
+  line-height: 1.8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .narrative-card.is-featured {
-  border: 1px solid color-mix(in srgb, var(--realm-accent) 32%, rgba(255, 255, 255, 0.06));
-  box-shadow: var(--shadow-glow);
+  border-color: color-mix(in srgb, var(--realm-accent) 35%, rgba(255, 255, 255, 0.08));
+  box-shadow: var(--glow-realm), var(--shadow-panel);
 }
 
 /* ── Scene hero image ── */
