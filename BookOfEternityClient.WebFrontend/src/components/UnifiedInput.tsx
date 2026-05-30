@@ -6,6 +6,7 @@ export function UnifiedInput() {
   const { composerText, setComposerText, composerNotice, submitComposer, readyState, gameScreen } = useShell();
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const coverage = readyState?.commandCoverage;
   const commands = coverage && isSuccess(coverage) ? coverage.data.commands : [];
@@ -30,12 +31,14 @@ export function UnifiedInput() {
     // Enter without Shift submits form; Shift+Enter inserts newline
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      // Close autocomplete if open, but do NOT return — fall through to submit
       if (showAutocomplete) {
         setShowAutocomplete(false);
-        return;
       }
       if (composerText.trim() && canSubmit) {
-        submitComposer(e as unknown as React.FormEvent);
+        // Use requestSubmit to trigger native form submit event, ensuring React
+        // reconciles state before the handler reads composerText (fixes stale closure).
+        formRef.current?.requestSubmit();
       }
     }
   }
@@ -43,7 +46,7 @@ export function UnifiedInput() {
   return (
     <div className="unified-input">
       {composerNotice && <p className="unified-input__notice">{composerNotice}</p>}
-      <form className="unified-input__form" onSubmit={submitComposer}>
+      <form ref={formRef} className="unified-input__form" onSubmit={submitComposer}>
         <div className="unified-input__wrapper">
           <textarea
             ref={inputRef}
