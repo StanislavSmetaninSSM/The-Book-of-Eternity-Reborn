@@ -47,14 +47,17 @@ export default function GameRoute() {
       <section className="summary-card" aria-label="Варианты диалога">
         <h3>Варианты для игрока</h3>
         {game.narrative.dialogueOptions.length > 0 ? (
-          <ul className="choice-list">
+          <div className="dialogue-options">
             {game.narrative.dialogueOptions.map((option) => (
-              <li key={option.id}>
-                <strong>{option.text}</strong>
-                <span>{formatDialogueCategory(option.category)}</span>
-              </li>
+              <div
+                key={option.id}
+                className={`dialogue-option dialogue-option--${mapDialogueCategory(option.category)}`}
+              >
+                <span className="dialogue-option__text">{option.text}</span>
+                <span className="dialogue-option__category">{formatDialogueCategory(option.category)}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
           <p className="muted">Варианты появятся здесь после ответа ГМа.</p>
         )}
@@ -65,6 +68,14 @@ export default function GameRoute() {
       <TurnStateCard turnState={game.turnState} advancedEnabled={advancedEnabled} />
     </ShellPanel>
   );
+}
+
+function mapDialogueCategory(category: string): string {
+  const lower = category.toLowerCase();
+  if (lower.includes('исследов') || lower.includes('знани') || lower.includes('explor') || lower.includes('knowl')) return 'explore';
+  if (lower.includes('действ') || lower.includes('атак') || lower.includes('action') || lower.includes('attack')) return 'action';
+  if (lower.includes('социал') || lower.includes('диплом') || lower.includes('social') || lower.includes('diplo')) return 'social';
+  return 'neutral';
 }
 
 function TurnStateCard({ turnState, advancedEnabled }: { turnState: BrowserGameScreenDto['turnState']; advancedEnabled: boolean }) {
