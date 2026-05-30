@@ -1,1 +1,120 @@
-/* SceneHero styles — populated in Task 4 */
+/* ═══════════════════════════════════════════════════════════════════
+   SCENE HERO — Cinematic banner with parallax and light effects
+   ═══════════════════════════════════════════════════════════════════ */
+
+.scene-hero {
+  position: relative;
+  height: 240px;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-5) var(--space-6);
+  margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-4);
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1008 0%, #0d0a06 40%, var(--color-ink) 100%);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+/* Background image */
+.scene-hero__image {
+  position: absolute;
+  inset: 0;
+}
+
+.scene-hero__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  opacity: 0.45;
+  filter: saturate(0.7) brightness(0.5);
+}
+
+/* Cinematic light beam */
+.scene-hero__beam {
+  position: absolute;
+  top: 0;
+  left: 35%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--realm-accent, var(--color-gold)) 8%, transparent) 0%,
+    transparent 70%);
+  transform: skewX(-5deg);
+  pointer-events: none;
+}
+
+/* Bottom gradient fade */
+.scene-hero__gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(to top, var(--color-ink) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Content overlay */
+.scene-hero__content {
+  position: relative;
+  z-index: 1;
+}
+
+.scene-hero__eyebrow {
+  display: block;
+  color: var(--color-gold);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  margin-bottom: var(--space-2);
+}
+
+.scene-hero__title {
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--color-parchment);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.7);
+  max-width: none;
+  line-height: 1.2;
+}
+
+.scene-hero__subtitle {
+  margin: 0;
+  color: var(--color-mist);
+  font-size: 0.85rem;
+}
+
+.scene-hero__loading {
+  margin: var(--space-2) 0 0;
+  font-style: italic;
+  color: var(--color-gold-dim);
+  font-size: 0.8rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Top accent line */
+.scene-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 10%, var(--realm-accent, var(--color-gold)) 50%, transparent 90%);
+  opacity: 0.6;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .scene-hero {
+    height: 180px;
+    padding: var(--space-4);
+    margin: calc(-1 * var(--space-3)) calc(-1 * var(--space-3)) var(--space-3);
+  }
+
+  .scene-hero__title {
+    font-size: 1.3rem;
+  }
+}
