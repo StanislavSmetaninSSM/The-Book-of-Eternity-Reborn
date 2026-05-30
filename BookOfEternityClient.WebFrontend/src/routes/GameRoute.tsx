@@ -1,5 +1,6 @@
 import { Composer } from '../components/Composer';
 import { EmptyOrFailure } from '../components/ErrorNotice';
+import { SceneHero } from '../components/SceneHero';
 import { ShellPanel } from '../components/ShellPanel';
 import type { BrowserGameScreenDto } from '../api/contracts';
 import { isSuccess, useShell } from '../context/ShellContext';
@@ -31,16 +32,15 @@ export default function GameRoute() {
 
   return (
     <ShellPanel title="Игра" eyebrow="нарратив и ход">
+      <SceneHero
+        imageUrl={sceneImage.url}
+        eyebrow={`Ход ${game.world.turnNumber}`}
+        title={game.theme.label}
+        subtitle={`${game.world.location || 'Локация уточняется'} · ${game.world.worldTime || 'время уточняется'}`}
+        loading={sceneImage.loading}
+      />
       <article className="narrative-card is-featured">
-        {sceneImage.url && (
-          <div className="narrative-scene-hero" aria-hidden="true">
-            <img src={sceneImage.url} alt="" loading="lazy" />
-          </div>
-        )}
-        {sceneImage.loading && (
-          <p className="scene-generating-indicator">🎨 Генерация образа сцены…</p>
-        )}
-        <h2>{game.theme.icon} {game.theme.label}</h2>
+        <h2>{game.theme.icon} Последний нарратив</h2>
         <p>{game.narrative.text || 'Последний нарратив пока не найден в локальной книге.'}</p>
       </article>
 

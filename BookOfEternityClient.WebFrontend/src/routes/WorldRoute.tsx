@@ -4,6 +4,7 @@ import { ActionMenu } from '../components/ActionMenu';
 import { DetailSurfaceCard } from '../components/DetailSurface';
 import { EmptyOrFailure } from '../components/ErrorNotice';
 import { RebornSystemsPanel } from '../components/RebornSystemsPanel';
+import { SceneHero } from '../components/SceneHero';
 import { ShellPanel } from '../components/ShellPanel';
 import { isSuccess, useShell } from '../context/ShellContext';
 import { useSceneImage } from '../hooks/useSceneImage';
@@ -34,11 +35,13 @@ export default function WorldRoute() {
 
   return (
     <ShellPanel title="Мир" eyebrow="карта, журнал и действия">
-      {locationImage.url && (
-        <div className="world-location-hero" aria-hidden="true">
-          <img src={locationImage.url} alt="" loading="lazy" />
-        </div>
-      )}
+      <SceneHero
+        imageUrl={locationImage.url}
+        eyebrow="Мир"
+        title={game.world.location || 'Локация уточняется'}
+        subtitle={`${game.world.worldTime || 'время уточняется'} · Ход ${game.world.turnNumber}`}
+        loading={locationImage.loading}
+      />
       <div className="split-grid three">
         <DetailSurfaceCard
           detailSurfaceId="world-location"
