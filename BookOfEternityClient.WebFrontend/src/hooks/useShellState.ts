@@ -38,6 +38,7 @@ export function useShellState(advancedEnabled: boolean) {
 
     let lifecycle = null;
     let commandCoverage = null;
+
     if (advancedEnabled) {
       const advResults = await Promise.allSettled([
         browserApi.getLifecycleDashboard(),
@@ -45,6 +46,9 @@ export function useShellState(advancedEnabled: boolean) {
       ]);
       lifecycle = settledToResult(advResults[0]);
       commandCoverage = settledToResult(advResults[1]);
+    } else {
+      const coverageResult = await Promise.allSettled([browserApi.getCommandCoverage()]);
+      commandCoverage = settledToResult(coverageResult[0]);
     }
 
     setShellState({
