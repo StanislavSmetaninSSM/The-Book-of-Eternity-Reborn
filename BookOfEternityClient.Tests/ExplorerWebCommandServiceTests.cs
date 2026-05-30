@@ -1015,6 +1015,135 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Inventory_ReturnsRichInventoryBlocksAndFriendlyTitles()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "totalWeight": 17,
+          "maxWeight": 30,
+          "money": 125,
+          "resources": {
+            "wood": 4,
+            "gold": 0,
+            "cloth": "2"
+          },
+          "equipment": {
+            "head": { "name": "Железный шлем" },
+            "mainHand": { "itemName": "Кривой меч" },
+            "offHand": null
+          },
+          "items": [
+            { "name": "Факел", "type": "utility", "count": 2, "durability": "100%" },
+            { "itemName": "Сломанный лук", "type": "weapon", "quantity": 1, "durability": "0%" }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_resources.json", """
+        {
+          "entries": [
+            { "itemId": "torch_1", "resource": "oil" }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_bonds.json", """
+        {
+          "entries": [
+            { "itemId": "bow_1", "bond": "quest" }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_text_updates.json", """
+        {
+          "entries": [
+            { "itemId": "note_1", "title": "Записка" }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inv"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(result.Blocks, static block =>
+            block is UiTextBlock text &&
+            text.Text == "⚖ 17 / 30" &&
+            text.Tone == UiTone.Muted);
+        Assert.Contains(result.Blocks, static block =>
+            block is UiTextBlock text &&
+            text.Text == "💰 Деньги: 125" &&
+            text.Tone == UiTone.Default);
+
+        var resources = Assert.Single(result.Blocks.OfType<UiKeyValueGridBlock>());
+        Assert.Contains(resources.Items, static item => item.Key == "💎 wood" && item.Value == "4");
+        Assert.Contains(resources.Items, static item => item.Key == "💎 cloth" && item.Value == "2");
+
+        var equipmentPanel = Assert.Single(result.Blocks.OfType<UiPanelBlock>(), static panel => panel.Title == "⚔️ Экипировка");
+        var equipmentGrid = Assert.IsType<UiKeyValueGridBlock>(Assert.Single(equipmentPanel.Blocks));
+        Assert.Contains(equipmentGrid.Items, static item => item.Key == "🪖 Голова" && item.Value == "Железный шлем");
+        Assert.Contains(equipmentGrid.Items, static item => item.Key == "⚔️ Основная рука" && item.Value == "Кривой меч");
+        Assert.Contains(equipmentGrid.Items, static item => item.Key == "🛡️ Вторая рука" && item.Value == "— пусто —");
+
+        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
+        Assert.Equal(new[] { "Название", "Тип", "Кол-во", "Прочность", "Статус" }, table.Columns);
+        Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Факел", "utility", "2", "100%", "✓"]));
+        Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Сломанный лук", "weapon", "1", "0%", "⚠ СЛОМАН"]));
+
+        var rawBlocks = result.Blocks.OfType<UiRawJsonBlock>().ToList();
+        Assert.Contains(rawBlocks, static raw => raw.Title == "Полный JSON items.json");
+        Assert.Contains(rawBlocks, static raw => raw.Title == "Ресурсы предметов");
+        Assert.Contains(rawBlocks, static raw => raw.Title == "Связи предметов");
+        Assert.Contains(rawBlocks, static raw => raw.Title == "Тексты предметов");
+
+        Assert.DoesNotContain("game_state/inventory/", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Inventory_WithoutItemsFile_ShowsEmptyInventoryMessage()
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inv"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
+        Assert.Equal(UiNotificationSeverity.Info, message.Severity);
+        Assert.Equal("Инвентарь", message.Title);
+        Assert.Equal("Инвентарь пуст или данные ещё не созданы.", message.Message);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcBundle_HidesPathsAndSkipsMissingFiles()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
+        {
+          "npcs": [
+            { "npcId": "npc_1", "name": "Мирра" }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
+        Assert.Equal(new[] { "Раздел", "Состояние" }, table.Columns);
+        var row = Assert.Single(table.Rows);
+        Assert.Equal(["NPC", "1"], row.Cells);
+        Assert.DoesNotContain(table.Rows, static candidate => candidate.Cells.Any(static cell => cell.Contains("отсутствует", StringComparison.OrdinalIgnoreCase)));
+        Assert.DoesNotContain(table.Rows.SelectMany(static candidate => candidate.Cells), static cell => cell.Contains("game_state/", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Blocks.OfType<UiRawJsonBlock>(), static raw => raw.Title == "Полный JSON game_state/npcs/npc_core.json");
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_NpcBundle_WithoutFiles_ShowsNotCreatedMessage()
+    {
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var message = Assert.IsType<UiMessageBlock>(Assert.Single(result.Blocks));
+        Assert.Equal(UiNotificationSeverity.Info, message.Severity);
+        Assert.Equal("Персонажи", message.Title);
+        Assert.Equal("Данные ещё не созданы.", message.Message);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Map_ReturnsInteractiveMapBlock()
     {
         await SeedMortalFilesAsync();

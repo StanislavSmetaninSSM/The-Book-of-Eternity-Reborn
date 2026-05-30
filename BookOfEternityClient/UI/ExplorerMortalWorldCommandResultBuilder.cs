@@ -96,12 +96,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
         return kind switch
         {
-            CommandKind.Inventory => await BuildBundle(normalizedCommand, fs, "Инвентарь", [
-                new("game_state/inventory/items.json", "items", "Предметов"),
-                new("game_state/inventory/item_resources.json", "entries", "Ресурсных записей"),
-                new("game_state/inventory/item_bonds.json", "entries", "Связей"),
-                new("game_state/inventory/item_text_updates.json", "entries", "Текстов")
-            ]),
+            CommandKind.Inventory => await BuildInventory(normalizedCommand, fs),
             CommandKind.Npcs => await BuildBundle(normalizedCommand, fs, "Персонажи", [
                 new("game_state/npcs/npc_core.json", "npcs", "NPC"),
                 new("game_state/npcs/npc_relationships.json", "entries", "Отношений"),
@@ -253,26 +248,34 @@ public static class ExplorerMortalWorldCommandResultBuilder
         foreach (var spec in specs)
         {
             var read = reads[spec.Path];
+            var status = DescribeSpec(read, spec.PropertyName);
+            if (status == "отсутствует")
+                continue;
+
             rows.Add(new UiTableRow
             {
                 Cells =
                 [
                     spec.Label,
-                    spec.Path,
-                    DescribeSpec(read, spec.PropertyName)
+                    status
                 ]
             });
         }
 
-        var blocks = new List<UiBlock>
+        var blocks = new List<UiBlock>();
+        if (rows.Count > 0)
         {
-            new UiTableBlock
+            blocks.Add(new UiTableBlock
             {
                 Title = title,
-                Columns = ["Раздел", "Файл", "Состояние"],
+                Columns = ["Раздел", "Состояние"],
                 Rows = rows
-            }
-        };
+            });
+        }
+        else
+        {
+            blocks.Add(Message(UiNotificationSeverity.Info, title, "Данные ещё не созданы."));
+        }
 
         foreach (var (path, read) in reads)
         {
@@ -300,11 +303,159 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
+    private static async Task<ExplorerCommandResult> BuildInventory(string command, FileSystemManager fs)
+    {
+        var read = await ReadJson(fs, "game_state/inventory/items.json");
+        if (read.Node == null)
+        {
+            return Completed(command, [
+                Message(UiNotificationSeverity.Info, "Инвентарь", "Инвентарь пуст или данные ещё не созданы.")
+            ]);
+        }
+
+        var blocks = new List<UiBlock>();
+        var root = read.Node;
+
+        var totalWeight = GetNodeString(root, "totalWeight");
+        var maxWeight = GetNodeString(root, "maxWeight");
+        if (!string.IsNullOrEmpty(totalWeight))
+        {
+            var weightText = !string.IsNullOrEmpty(maxWeight)
+                ? $"⚖ {totalWeight} / {maxWeight}"
+                : $"⚖ {totalWeight}";
+            blocks.Add(new UiTextBlock { Text = weightText, Tone = UiTone.Muted });
+        }
+
+        var money = GetNodeString(root, "money");
+        if (!string.IsNullOrEmpty(money) && money != "0")
+            blocks.Add(new UiTextBlock { Text = $"💰 Деньги: {money}", Tone = UiTone.Default });
+
+        if (root["resources"] is JsonObject resources && resources.Count > 0)
+        {
+            var resourceItems = new List<UiKeyValueItem>();
+            foreach (var prop in resources)
+            {
+                if (prop.Key is "money" or "gold" or "coins")
+                    continue;
+
+                var value = prop.Value?.ToString() ?? string.Empty;
+                if (!string.IsNullOrEmpty(value) && value != "0")
+                    resourceItems.Add(new UiKeyValueItem { Key = $"💎 {prop.Key}", Value = value });
+            }
+
+            if (resourceItems.Count > 0)
+                blocks.Add(new UiKeyValueGridBlock { Items = resourceItems });
+        }
+
+        var equipment = (root["equipment"] ?? root["equippedItems"]) as JsonObject;
+        if (equipment != null)
+        {
+            var equipmentRows = new List<UiKeyValueItem>();
+            foreach (var prop in equipment)
+            {
+                if (prop.Value == null || prop.Value.GetValueKind() == JsonValueKind.Null)
+                {
+                    equipmentRows.Add(new UiKeyValueItem { Key = FormatSlotName(prop.Key), Value = "— пусто —" });
+                    continue;
+                }
+
+                var itemName = GetNodeString(prop.Value, "name")
+                    ?? GetNodeString(prop.Value, "itemName")
+                    ?? prop.Value.ToString();
+                equipmentRows.Add(new UiKeyValueItem { Key = FormatSlotName(prop.Key), Value = itemName });
+            }
+
+            if (equipmentRows.Count > 0)
+                blocks.Add(Panel("⚔️ Экипировка", new UiKeyValueGridBlock { Items = equipmentRows }));
+        }
+
+        if (root["items"] is JsonArray itemsArray && itemsArray.Count > 0)
+        {
+            var rows = new List<UiTableRow>();
+            foreach (var item in itemsArray)
+            {
+                if (item == null)
+                    continue;
+
+                var name = GetNodeString(item, "name") ?? GetNodeString(item, "itemName") ?? "???";
+                var type = GetNodeString(item, "type") ?? string.Empty;
+                var quantity = GetNodeString(item, "count") ?? GetNodeString(item, "quantity") ?? "1";
+                var durability = GetNodeString(item, "durability") ?? string.Empty;
+
+                var flags = new List<string>();
+                if (item["isBroken"]?.GetValueKind() == JsonValueKind.True)
+                    flags.Add("⚠ СЛОМАН");
+                if (item["isEmpty"]?.GetValueKind() == JsonValueKind.True)
+                    flags.Add("⚠ ПУСТО");
+                if (!string.IsNullOrEmpty(durability))
+                {
+                    var durabilityText = durability.Replace("%", string.Empty).Trim();
+                    if (int.TryParse(durabilityText, out var durabilityValue) && durabilityValue == 0)
+                        flags.Add("⚠ СЛОМАН");
+                }
+
+                rows.Add(new UiTableRow
+                {
+                    Cells =
+                    [
+                        name,
+                        type,
+                        quantity != "1" ? quantity : "1",
+                        durability,
+                        flags.Count > 0 ? string.Join(" ", flags) : "✓"
+                    ]
+                });
+            }
+
+            blocks.Add(new UiTableBlock
+            {
+                Title = $"📦 Предметы ({itemsArray.Count})",
+                Columns = ["Название", "Тип", "Кол-во", "Прочность", "Статус"],
+                Rows = rows
+            });
+        }
+        else
+        {
+            blocks.Add(new UiTextBlock { Text = "Инвентарь пуст.", Tone = UiTone.Muted });
+        }
+
+        blocks.Add(Raw("Полный JSON items.json", read.Node));
+        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_resources.json", "Ресурсы предметов");
+        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_bonds.json", "Связи предметов");
+        await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_text_updates.json", "Тексты предметов");
+
+        return Completed(command, blocks);
+    }
+
     private static async Task AddRawJsonIfPresent(List<UiBlock> blocks, FileSystemManager fs, string path, string title)
     {
         var read = await ReadJson(fs, path);
         if (read.Node != null)
             blocks.Add(Raw(title, read.Node));
+    }
+
+    private static string FormatSlotName(string slotKey) =>
+        slotKey switch
+        {
+            "head" or "armor_head" => "🪖 Голова",
+            "body" or "armor_chest" => "🛡️ Тело",
+            "hands" => "🧤 Руки",
+            "feet" or "armor_feet" => "👢 Ноги",
+            "armor_legs" => "🦵 Ноги",
+            "mainHand" or "weapon_main" => "⚔️ Основная рука",
+            "offHand" or "weapon_secondary" => "🛡️ Вторая рука",
+            "neck" => "📿 Шея",
+            "ring1" or "accessory_1" => "💍 Аксессуар 1",
+            "ring2" or "accessory_2" => "💍 Аксессуар 2",
+            _ => slotKey
+        };
+
+    private static string? GetNodeString(JsonNode? node, string property)
+    {
+        if (node == null)
+            return null;
+
+        return TryGetScalarString(node[property], out var value) ? value : null;
     }
 
     private static async Task<JsonReadResult> ReadJson(FileSystemManager fs, string path)
