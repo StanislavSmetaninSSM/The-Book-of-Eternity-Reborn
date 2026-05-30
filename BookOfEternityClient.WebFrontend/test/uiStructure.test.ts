@@ -21,19 +21,26 @@ const appWithoutBlockComments = app.replace(/\/\*[\s\S]*?\*\//g, '');
 if (appWithoutBlockComments.includes('route-grid--primary') || appWithoutBlockComments.includes('route-grid--utility')) {
   throw new Error('App.tsx should not render the old route-grid dashboard layout.');
 }
-if (!app.includes('NavBar')) {
-  throw new Error('App.tsx should render NavBar.');
-}
+assertIncludes(app, "import { Sidebar } from './components/Sidebar';", 'App.tsx should import Sidebar.');
+assertIncludes(app, '<Sidebar />', 'App.tsx should render Sidebar.');
 
-const navBar = readSource('components', 'NavBar.tsx');
-if (!navBar.includes('nav-bar')) {
-  throw new Error('NavBar.tsx should render the nav-bar component class.');
+const sidebar = readSource('components', 'Sidebar.tsx');
+if (!sidebar.includes('className="sidebar"')) {
+  throw new Error('Sidebar.tsx should render the sidebar component class.');
 }
 
 const composer = readSource('components', 'Composer.tsx');
 if (!composer.includes('composer-container')) {
   throw new Error('Composer.tsx should render the composer-container class.');
 }
+
+const homeRoute = readSource('routes', 'HomeRoute.tsx');
+assertIncludes(homeRoute, "import { SceneHero } from '../components/SceneHero';", 'HomeRoute should import SceneHero.');
+assertIncludes(homeRoute, '<SceneHero', 'HomeRoute should render SceneHero above the launcher.');
+assertIncludes(homeRoute, 'eyebrow="Книга Вечности"', 'HomeRoute should use the book eyebrow in SceneHero.');
+assertIncludes(homeRoute, 'title="Перерождение"', 'HomeRoute should use the rebirth title in SceneHero.');
+assertIncludes(homeRoute, 'subtitle="Бесконечное странствие души через жизни, смерти и перерождения"', 'HomeRoute should use the rebirth subtitle in SceneHero.');
+assertIncludes(homeRoute, '<GameLauncher menu={readyState.menu.data} />', 'HomeRoute should keep the launcher after SceneHero.');
 
 const gameRoute = readSource('routes', 'GameRoute.tsx');
 if (!gameRoute.includes('Composer')) {
@@ -42,6 +49,7 @@ if (!gameRoute.includes('Composer')) {
 assertIncludes(gameRoute, "import type { BrowserGameScreenDto } from '../api/contracts';", 'GameRoute should import BrowserGameScreenDto for TurnStateCard typing.');
 assertIncludes(gameRoute, 'formatTurnLifecycleActionDescription', 'GameRoute should format recommended turn actions.');
 assertIncludes(gameRoute, '<TurnStateCard turnState={game.turnState} advancedEnabled={advancedEnabled} />', 'GameRoute should render the consolidated turn state card.');
+assertIncludes(gameRoute, '<h2>{game.theme.icon} Последний нарратив</h2>', 'GameRoute should keep a narrative heading without duplicating the SceneHero title.');
 assertIncludes(gameRoute, "const isWaitingForGm = turnState.phase === 'gm-turn' || turnState.phase === 'waiting-for-gm' || turnState.state === 'gm-turn';", 'TurnStateCard should classify GM-waiting states explicitly.');
 assertIncludes(gameRoute, "const needsRepair = turnState.severity === 'error' || turnState.severity === 'repair' || turnState.validationState === 'invalid';", 'TurnStateCard should classify repair-needed states explicitly.');
 assertIncludes(gameRoute, "const playerActions = turnState.recommendedActions.filter(a => a.surface === 'player-default');", 'TurnStateCard should only show player-default recommended actions.');

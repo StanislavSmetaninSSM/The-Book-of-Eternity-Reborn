@@ -34,10 +34,30 @@
 .reborn-systems-panel,
 .qte-scene-panel,
 .media-atlas-panel {
-  border: 1px solid color-mix(in srgb, var(--realm-accent) 20%, rgba(255, 255, 255, 0.06));
+  position: relative;
+  border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  background: var(--color-glass);
+  background: var(--surface-card);
   box-shadow: var(--shadow-panel);
+  transition:
+    border-color var(--motion-panel),
+    box-shadow var(--motion-panel),
+    transform var(--motion-fast);
+}
+
+/* Top accent line on all cards */
+.shell-panel::before,
+.summary-card::before,
+.narrative-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--realm-accent, var(--color-gold)), transparent);
+  opacity: 0.4;
+  border-radius: 0 0 1px 1px;
 }
 
 .eyebrow,
@@ -87,32 +107,99 @@
   border-color: color-mix(in srgb, var(--state-success) 22%, rgba(255, 255, 255, 0.06));
 }
 
-.summary-card,
-.narrative-card {
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.04);
-}
-
 .summary-card {
-  transition: border-color var(--motion-fast), transform var(--motion-fast), box-shadow var(--motion-fast);
+  padding: var(--space-4);
 }
 
 .summary-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-panel);
+  transform: translateY(-3px);
+  border-color: var(--border-card-hover);
+  box-shadow: var(--glow-hover), var(--shadow-panel-strong);
 }
 
 .narrative-card {
   margin-bottom: var(--space-4);
+  padding: var(--space-5);
   font-family: var(--font-narrative);
-  font-size: clamp(0.95rem, 1.15vw, 1.08rem);
-  line-height: 1.72;
+  font-size: clamp(1rem, 1.2vw, 1.12rem);
+  line-height: 1.8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .narrative-card.is-featured {
-  border: 1px solid color-mix(in srgb, var(--realm-accent) 32%, rgba(255, 255, 255, 0.06));
-  box-shadow: var(--shadow-glow);
+  border-color: color-mix(in srgb, var(--realm-accent) 35%, rgba(255, 255, 255, 0.08));
+  box-shadow: var(--glow-realm), var(--shadow-panel);
+}
+
+/* ── Dialogue options — color-coded ── */
+
+.dialogue-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dialogue-option {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: border-color var(--motion-fast), background var(--motion-fast), transform var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+.dialogue-option:hover {
+  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dialogue-option--explore {
+  border-color: color-mix(in srgb, var(--color-gold) 25%, transparent);
+}
+
+.dialogue-option--explore:hover {
+  border-color: color-mix(in srgb, var(--color-gold) 50%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-gold) 12%, transparent);
+}
+
+.dialogue-option--action {
+  border-color: color-mix(in srgb, var(--color-crimson-soft) 25%, transparent);
+}
+
+.dialogue-option--action:hover {
+  border-color: color-mix(in srgb, var(--color-crimson-soft) 50%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-crimson-soft) 12%, transparent);
+}
+
+.dialogue-option--social {
+  border-color: color-mix(in srgb, var(--realm-shining) 20%, transparent);
+}
+
+.dialogue-option--social:hover {
+  border-color: color-mix(in srgb, var(--realm-shining) 45%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--realm-shining) 12%, transparent);
+}
+
+.dialogue-option--neutral {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dialogue-option--neutral:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dialogue-option__text {
+  display: block;
+  color: var(--color-parchment);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.dialogue-option__category {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--color-mist);
+  font-size: 0.75rem;
 }
 
 /* ── Scene hero image ── */
@@ -811,6 +898,55 @@
   align-items: center;
   gap: var(--space-sm, 0.5rem);
   margin-top: var(--space-sm, 0.5rem);
+}
+
+/* ── Cinematic composer ── */
+
+.composer {
+  background: rgba(10, 14, 16, 0.9);
+  border: 1px solid color-mix(in srgb, var(--realm-accent) 12%, rgba(255, 255, 255, 0.06));
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+}
+
+.composer textarea {
+  background: transparent;
+  border: none;
+  color: var(--color-parchment);
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.composer textarea:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.composer__submit,
+.composer button[type="submit"] {
+  padding: var(--space-2) var(--space-4);
+  background: linear-gradient(135deg, var(--color-gold), var(--color-gold-dim));
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow var(--motion-fast), transform var(--motion-fast);
+}
+
+.composer__submit:hover,
+.composer button[type="submit"]:hover {
+  box-shadow: 0 0 20px color-mix(in srgb, var(--color-gold) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+.composer__submit:disabled,
+.composer button[type="submit"]:disabled {
+  background: var(--color-ash-light);
+  color: var(--color-mist);
+  box-shadow: none;
+  transform: none;
 }
 
 /* ═══════════════════════════════════════════════════════════════════

@@ -1,5 +1,6 @@
 import { EmptyOrFailure } from '../components/ErrorNotice';
 import { GameLauncher } from '../components/GameLauncher';
+import { SceneHero } from '../components/SceneHero';
 import { ShellPanel } from '../components/ShellPanel';
 import { isSuccess, useShell } from '../context/ShellContext';
 
@@ -27,6 +28,11 @@ export default function HomeRoute() {
 
   return (
     <ShellPanel title="Главная книга" eyebrow="старт и продолжение партии">
+      <SceneHero
+        eyebrow="Книга Вечности"
+        title="Перерождение"
+        subtitle="Бесконечное странствие души через жизни, смерти и перерождения"
+      />
       <GameLauncher menu={readyState.menu.data} />
     </ShellPanel>
   );

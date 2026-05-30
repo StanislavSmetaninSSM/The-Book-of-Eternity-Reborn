@@ -20,19 +20,17 @@ function assert(condition: unknown, message: string) {
 }
 
 const gameRouteSource = readSource('routes', 'GameRoute.tsx');
+assert(gameRouteSource.includes("import { SceneHero } from '../components/SceneHero';"), 'GameRoute should import SceneHero.');
 assert(gameRouteSource.includes("import { useSceneImage } from '../hooks/useSceneImage';"), 'GameRoute should import useSceneImage.');
 assert(gameRouteSource.includes("const sceneImage = useSceneImage(game?.narrative.imagePrompt, game?.media.gallery ?? []);"), 'GameRoute should derive the scene hero image from useSceneImage even before data is ready.');
 const sceneHookIndex = gameRouteSource.indexOf('const sceneImage = useSceneImage(');
 const readyGuardIndex = gameRouteSource.indexOf('if (!readyState) {');
 assert(sceneHookIndex !== -1 && readyGuardIndex !== -1 && sceneHookIndex < readyGuardIndex, 'GameRoute should call useSceneImage before early returns to preserve hook order.');
-assert(gameRouteSource.includes('className="narrative-scene-hero"'), 'GameRoute should render a scene hero image container.');
-assert(gameRouteSource.includes('Генерация образа сцены'), 'GameRoute should render a scene generation indicator.');
-
-const componentStyles = readSource('styles', 'components.css');
-for (const selector of [
-  '.narrative-scene-hero {',
-  '.scene-generating-indicator {',
-  '@keyframes pulse {'
-]) {
-  assert(componentStyles.includes(selector), `components.css should include ${selector}`);
-}
+assert(gameRouteSource.includes('<SceneHero'), 'GameRoute should render SceneHero.');
+assert(gameRouteSource.includes('imageUrl={sceneImage.url}'), 'GameRoute should pass the derived scene image into SceneHero.');
+assert(gameRouteSource.includes('loading={sceneImage.loading}'), 'GameRoute should pass the loading state into SceneHero.');
+assert(gameRouteSource.includes("eyebrow={`Ход ${game.world.turnNumber}`}"), 'GameRoute should show the current turn in SceneHero.');
+assert(gameRouteSource.includes("title={game.theme.label}"), 'GameRoute should show the theme label in SceneHero.');
+assert(gameRouteSource.includes("subtitle={`${game.world.location || 'Локация уточняется'} · ${game.world.worldTime || 'время уточняется'}`}"), 'GameRoute should show location and world time in SceneHero with a fallback when time is unknown.');
+assert(!gameRouteSource.includes('className="narrative-scene-hero"'), 'GameRoute should remove the legacy inline narrative hero container.');
+assert(!gameRouteSource.includes('scene-generating-indicator'), 'GameRoute should remove the legacy scene generating indicator markup.');
