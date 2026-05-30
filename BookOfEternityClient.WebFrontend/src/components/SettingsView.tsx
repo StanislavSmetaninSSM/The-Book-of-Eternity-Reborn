@@ -112,6 +112,21 @@ export function SettingsView() {
           <span>{settings.accessibility.fontScalePercent}%</span>
         </div>
         <div className="settings-row">
+          <label>Масштаб интерфейса</label>
+          <input
+            type="range"
+            min="80"
+            max="140"
+            value={settings.accessibility.uiScalePercent}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setSettings({ ...settings, accessibility: { ...settings.accessibility, uiScalePercent: v } });
+              debouncedUpdate({ browserUiScalePercent: v });
+            }}
+          />
+          <span>{settings.accessibility.uiScalePercent}%</span>
+        </div>
+        <div className="settings-row">
           <label>Уменьшить анимации</label>
           <input
             type="checkbox"

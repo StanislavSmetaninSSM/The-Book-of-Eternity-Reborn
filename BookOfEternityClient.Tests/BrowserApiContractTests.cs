@@ -109,6 +109,28 @@ public sealed class BrowserApiContractTests
     }
 
     [Fact]
+    public void FrontendClientSettingsContracts_ExposeUiScaleAccessibilityFields()
+    {
+        var contracts = File.ReadAllText(Path.Combine(ApiRoot, "contracts.ts"));
+        var fixture = File.ReadAllText(Path.Combine(FixtureRoot, "client-settings.json"));
+
+        Assert.Contains("uiScalePercent: number;", contracts, StringComparison.Ordinal);
+        Assert.Contains("browserUiScalePercent?: number | null;", contracts, StringComparison.Ordinal);
+        Assert.Contains("\"uiScalePercent\": 100", fixture, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void FrontendClientSettingsUi_ConsumesBrowserUiScaleSignals()
+    {
+        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var settingsView = File.ReadAllText(Path.Combine(FrontendRoot, "src", "components", "SettingsView.tsx"));
+
+        Assert.Contains("--browser-ui-scale", app, StringComparison.Ordinal);
+        Assert.Contains("uiScalePercent", settingsView, StringComparison.Ordinal);
+        Assert.Contains("browserUiScalePercent", settingsView, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void FrontendShell_ConsumesTypedApiContractSummaryInsteadOfHardCodedEndpointList()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
@@ -451,6 +473,7 @@ public sealed class BrowserApiContractTests
                 SoundVolume: 75),
             Accessibility: new BrowserClientAccessibilitySettingsDto(
                 FontScalePercent: 100,
+                UiScalePercent: 100,
                 ReducedMotion: false,
                 ContrastFriendly: false),
             Locality: new BrowserClientLocalityDto(

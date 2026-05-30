@@ -209,6 +209,7 @@ export interface BrowserClientAudioSettingsDto {
 
 export interface BrowserClientAccessibilitySettingsDto {
   fontScalePercent: number;
+  uiScalePercent: number;
   reducedMotion: boolean;
   contrastFriendly: boolean;
 }
@@ -231,6 +232,7 @@ export interface BrowserClientSettingsUpdateRequest {
   soundEnabled?: boolean | null;
   soundVolume?: number | null;
   browserFontScalePercent?: number | null;
+  browserUiScalePercent?: number | null;
   browserReducedMotion?: boolean | null;
   browserContrastFriendly?: boolean | null;
 }

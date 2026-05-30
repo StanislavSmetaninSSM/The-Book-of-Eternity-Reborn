@@ -1,6 +1,7 @@
 .browser-shell {
   --realm-accent: var(--realm-mortal);
   --browser-font-scale: 1;
+  --browser-ui-scale: 1;
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
   grid-template-rows: 1fr;

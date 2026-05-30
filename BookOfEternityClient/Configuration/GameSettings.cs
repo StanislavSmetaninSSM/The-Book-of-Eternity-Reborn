@@ -106,6 +106,11 @@ public class GameSettings
     /// </summary>
     public int BrowserFontScalePercent { get; set; } = 100;
     /// <summary>
+    /// Browser client UI element scale from 80 to 140 percent. Controls padding, gaps, and button sizes
+    /// independently of font scale.
+    /// </summary>
+    public int BrowserUiScalePercent { get; set; } = 100;
+    /// <summary>
     /// Requests reduced motion in the Browser Client presentation layer.
     /// </summary>
     public bool BrowserReducedMotion { get; set; } = false;

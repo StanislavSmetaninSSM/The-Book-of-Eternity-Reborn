@@ -99,6 +99,8 @@ public sealed class BrowserClientSettingsService
             settings.SoundVolume = Math.Clamp(request.SoundVolume.Value, 0, 100);
         if (request.BrowserFontScalePercent.HasValue)
             settings.BrowserFontScalePercent = Math.Clamp(request.BrowserFontScalePercent.Value, 80, 140);
+        if (request.BrowserUiScalePercent.HasValue)
+            settings.BrowserUiScalePercent = Math.Clamp(request.BrowserUiScalePercent.Value, 80, 140);
         if (request.BrowserReducedMotion.HasValue)
             settings.BrowserReducedMotion = request.BrowserReducedMotion.Value;
         if (request.BrowserContrastFriendly.HasValue)
@@ -132,6 +134,7 @@ public sealed class BrowserClientSettingsService
                 SoundVolume: Math.Clamp(settings.SoundVolume, 0, 100)),
             Accessibility: new BrowserClientAccessibilitySettingsDto(
                 FontScalePercent: Math.Clamp(settings.BrowserFontScalePercent, 80, 140),
+                UiScalePercent: Math.Clamp(settings.BrowserUiScalePercent, 80, 140),
                 ReducedMotion: settings.BrowserReducedMotion,
                 ContrastFriendly: settings.BrowserContrastFriendly),
             Locality: new BrowserClientLocalityDto(
@@ -251,6 +254,7 @@ public sealed record BrowserClientAudioSettingsDto(
 
 public sealed record BrowserClientAccessibilitySettingsDto(
     int FontScalePercent,
+    int UiScalePercent,
     bool ReducedMotion,
     bool ContrastFriendly);
 
@@ -271,5 +275,6 @@ public sealed record BrowserClientSettingsUpdateRequest(
     bool? SoundEnabled,
     int? SoundVolume,
     int? BrowserFontScalePercent,
+    int? BrowserUiScalePercent,
     bool? BrowserReducedMotion,
     bool? BrowserContrastFriendly);

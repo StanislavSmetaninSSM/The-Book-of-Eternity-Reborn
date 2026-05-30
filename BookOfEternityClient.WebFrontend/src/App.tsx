@@ -27,7 +27,8 @@ function AppShell() {
     clientSettings?.accessibility.contrastFriendly ? 'is-contrast-friendly' : ''
   ].filter(Boolean).join(' ');
   const browserShellStyle = {
-    '--browser-font-scale': `${(clientSettings?.accessibility.fontScalePercent ?? 100) / 100}`
+    '--browser-font-scale': `${(clientSettings?.accessibility.fontScalePercent ?? 100) / 100}`,
+    '--browser-ui-scale': `${(clientSettings?.accessibility.uiScalePercent ?? 100) / 100}`
   } as CSSProperties;
 
   return (

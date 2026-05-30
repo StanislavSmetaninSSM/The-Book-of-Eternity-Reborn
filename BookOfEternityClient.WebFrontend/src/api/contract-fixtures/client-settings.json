@@ -46,6 +46,7 @@
   },
   "accessibility": {
     "fontScalePercent": 100,
+    "uiScalePercent": 100,
     "reducedMotion": false,
     "contrastFriendly": false
   },
