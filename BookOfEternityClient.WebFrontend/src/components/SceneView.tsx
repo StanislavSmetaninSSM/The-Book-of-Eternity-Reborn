@@ -1,3 +1,4 @@
+import type React from 'react';
 import { isSuccess, useShell } from '../context/ShellContext';
 import { SceneHero } from './SceneHero';
 import { CommandResultView } from './CommandResultView';
@@ -46,7 +47,9 @@ function SceneContent({ game, onCommand }: {
       {game.narrative.combatLog && (
         <section className="scene-combat-log">
           <h3>⚔️ Журнал боя</h3>
-          <div>{game.narrative.combatLog.split('\n').map((line, i) => <p key={i}>{line}</p>)}</div>
+          <div>{game.narrative.combatLog.split('\n').map((line, i) => (
+            <CombatLogLine key={i} line={line} />
+          ))}</div>
         </section>
       )}
 
@@ -91,5 +94,32 @@ function SceneContent({ game, onCommand }: {
         </section>
       )}
     </div>
+  );
+}
+
+/** Renders a single combat-log line with basic markdown (headings, bold, list items). */
+function CombatLogLine({ line }: { line: string }) {
+  if (!line.trim()) return null;
+
+  // Heading: ### text
+  const headingMatch = line.match(/^#{1,4}\s+(.+)$/);
+  if (headingMatch) {
+    return <h4 className="combat-log__heading">{headingMatch[1]}</h4>;
+  }
+
+  // List item: - text
+  if (line.startsWith('- ')) {
+    return <p className="combat-log__item">• {renderBold(line.slice(2))}</p>;
+  }
+
+  return <p className="combat-log__line">{renderBold(line)}</p>;
+}
+
+/** Converts **bold** markdown to <strong> elements. */
+function renderBold(text: string): React.ReactNode {
+  const parts = text.split(/\*\*(.+?)\*\*/g);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    i % 2 === 1 ? <strong key={i}>{part}</strong> : part
   );
 }

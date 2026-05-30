@@ -31,6 +31,10 @@
 .scene-narrative { color: var(--text-primary, #c9d1d9); font-size: 1rem; line-height: 1.75; }
 .scene-combat-log { background: var(--surface-raised, #161b22); border-radius: 8px; padding: 1rem; border-left: 3px solid var(--color-warning, #f0883e); }
 .scene-combat-log h3 { font-size: 0.85rem; color: var(--color-warning); margin-bottom: 0.5rem; }
+.combat-log__heading { font-size: 0.82rem; color: var(--text-primary, #c9d1d9); margin: 0.6rem 0 0.3rem; font-weight: 600; }
+.combat-log__line { font-size: 0.8rem; margin: 0.2rem 0; color: var(--text-secondary, #8b949e); }
+.combat-log__item { font-size: 0.8rem; margin: 0.15rem 0 0.15rem 0.75rem; color: var(--text-muted, #484f58); }
+.combat-log__line strong, .combat-log__item strong { color: var(--text-primary, #c9d1d9); font-weight: 600; }
 .scene-dialogues h3 { font-size: 0.85rem; color: var(--color-success, #238636); margin-bottom: 0.5rem; }
 .scene-dialogues__list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .scene-dialogue-chip, .scene-action-chip {
@@ -150,6 +154,7 @@
 .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-subtle, #21262d); font-size: 0.85rem; }
 .settings-row label { color: var(--text-primary); }
 .settings-row select, .settings-row input[type="range"] { accent-color: var(--color-accent); }
+.settings-row select { background: var(--surface-base, #0d1117); color: var(--text-primary, #c9d1d9); border: 1px solid var(--border, #30363d); border-radius: 4px; padding: 0.25rem 0.5rem; font-size: 0.82rem; }
 .settings-value { color: var(--text-muted); }
 
 /* ===== Unified Input ===== */

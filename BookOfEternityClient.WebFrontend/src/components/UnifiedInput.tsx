@@ -23,7 +23,21 @@ export function UnifiedInput() {
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Escape') setShowAutocomplete(false);
+    if (e.key === 'Escape') {
+      setShowAutocomplete(false);
+      return;
+    }
+    // Enter without Shift submits form; Shift+Enter inserts newline
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (showAutocomplete) {
+        setShowAutocomplete(false);
+        return;
+      }
+      if (composerText.trim() && canSubmit) {
+        submitComposer(e as unknown as React.FormEvent);
+      }
+    }
   }
 
   return (

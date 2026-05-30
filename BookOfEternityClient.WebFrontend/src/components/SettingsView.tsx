@@ -32,16 +32,30 @@ export function SettingsView() {
         <div className="settings-row">
           <label>Язык клиента</label>
           <select
-            value={settings.language}
-            onChange={(e) => { setSettings({ ...settings, language: e.target.value }); debouncedUpdate({ language: e.target.value }); }}
+            value={settings.language.value}
+            onChange={(e) => {
+              setSettings({ ...settings, language: { ...settings.language, value: e.target.value } });
+              debouncedUpdate({ language: e.target.value });
+            }}
           >
-            <option value="RU">Русский</option>
-            <option value="EN">English</option>
+            {settings.language.choices.map((c) => (
+              <option key={c.value} value={c.value}>{c.label}</option>
+            ))}
           </select>
         </div>
         <div className="settings-row">
           <label>Сложность</label>
-          <span className="settings-value">{settings.difficulty}</span>
+          <select
+            value={settings.difficulty.value}
+            onChange={(e) => {
+              setSettings({ ...settings, difficulty: { ...settings.difficulty, value: e.target.value } });
+              debouncedUpdate({ difficulty: e.target.value });
+            }}
+          >
+            {settings.difficulty.choices.map((c) => (
+              <option key={c.value} value={c.value}>{c.label}</option>
+            ))}
+          </select>
         </div>
         <div className="settings-row">
           <label>Показывать мысли ГМа</label>
@@ -118,6 +132,19 @@ export function SettingsView() {
           />
         </div>
         <p className="block-text--muted">Включает доступ к полному каталогу команд, JSON-блокам и диагностике.</p>
+      </section>
+
+      <section className="settings-card">
+        <h3>ℹ️ Информация</h3>
+        <div className="settings-row">
+          <label>Сессия</label>
+          <span className="settings-value">{settings.locality.sessionLabel}</span>
+        </div>
+        <div className="settings-row">
+          <label>ГМ-мост</label>
+          <span className="settings-value">{settings.locality.gmBridgeLabel}</span>
+        </div>
+        <p className="block-text--muted">{settings.locality.safetySummary}</p>
       </section>
     </div>
   );
