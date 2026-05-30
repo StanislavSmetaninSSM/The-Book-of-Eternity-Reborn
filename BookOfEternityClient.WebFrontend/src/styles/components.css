@@ -2272,3 +2272,121 @@
     padding: var(--space-sm) var(--space-md);
   }
 }
+
+/* ── Combat log card ── */
+.combat-log-card {
+  border-left: 3px solid var(--color-accent, #c2185b);
+}
+
+.combat-log-content p {
+  margin: 0.25rem 0;
+  line-height: 1.6;
+}
+
+.combat-log-content p:empty {
+  display: none;
+}
+
+/* ── Active conditions ── */
+.conditions-card {
+  border-left: 3px solid var(--color-warning, #f9a825);
+}
+
+.conditions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.condition-item {
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm, 4px);
+  background: rgba(249, 168, 37, 0.08);
+  border: 1px solid rgba(249, 168, 37, 0.15);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.active-conditions-section {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.active-conditions-section h5 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+  margin: 0 0 0.4rem;
+}
+
+/* ── Command result container (inline in composer) ── */
+.command-result-container {
+  margin-top: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md, 8px);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 0.75rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.command-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.command-result-header h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.command-result-close {
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.5;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.command-result-close:hover {
+  opacity: 1;
+}
+
+/* ── Command table ── */
+.command-table {
+  overflow-x: auto;
+}
+
+.command-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.command-table th,
+.command-table td {
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.command-table th {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.command-table td {
+  opacity: 0.9;
+}

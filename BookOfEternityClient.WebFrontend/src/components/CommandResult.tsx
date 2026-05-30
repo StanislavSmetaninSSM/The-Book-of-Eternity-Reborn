@@ -66,7 +66,19 @@ export function renderCommandBlock(block: UiBlock): ReactNode {
         </div>
       );
     case 'table':
-      return <p>{toPlayerFacingText(block.title, 'Таблица')}: {block.rows.length} строк.</p>;
+      return (
+        <div className="command-table">
+          <p className="muted">{toPlayerFacingText(block.title, 'Таблица')}</p>
+          <table>
+            <thead><tr>{block.columns.map((col) => <th key={col}>{col}</th>)}</tr></thead>
+            <tbody>
+              {block.rows.map((row, i) => (
+                <tr key={i}>{row.cells.map((cell, j) => <td key={j}>{cell}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
     case 'list':
       return <ul>{block.items.map((item) => <li key={item}>{toPlayerFacingText(item, 'пункт списка')}</li>)}</ul>;
     case 'keyValueGrid':
