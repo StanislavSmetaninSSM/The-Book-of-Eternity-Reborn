@@ -2953,6 +2953,94 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_ShiningPolitics_OverviewShowsFactionChroniclesInfluenceAndResources()
+    {
+        await SeedShiningInspectionStateAsync();
+        var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
+        var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
+            ?? throw new InvalidOperationException("Expected seeded shining abode state.");
+        var dawnFaction = shiningRoot["factions"]?.AsArray()[0]?.AsObject()
+            ?? throw new InvalidOperationException("Expected first Shining faction.");
+        dawnFaction[ShiningAbodeState.FactionChronicleProperty] = new JsonArray(
+            new JsonObject
+            {
+                ["entryId"] = "dawn_public_path_45",
+                ["turnNumber"] = 45,
+                ["eventType"] = "public_aid",
+                ["summary"] = "Хор Рассвета открыл безопасную тропу для потерянных резидентов.",
+                ["visibility"] = "visible",
+                ["consequences"] = new JsonArray("Игрок может просить Хор о публичной помощи."),
+                ["occurredAtUtc"] = "2026-05-25T12:00:00Z"
+            },
+            new JsonObject
+            {
+                ["entryId"] = "dawn_hidden_oath_46",
+                ["turnNumber"] = 46,
+                ["eventType"] = "hidden_oath",
+                ["summary"] = "hidden_chronicle_marker",
+                ["visibility"] = "hidden",
+                ["consequences"] = new JsonArray("hidden_chronicle_marker"),
+                ["occurredAtUtc"] = "2026-05-25T13:00:00Z"
+            });
+        dawnFaction[ShiningAbodeState.FactionInfluenceProperty] = new JsonArray(
+            new JsonObject
+            {
+                ["zoneId"] = "dawn_hall_public_haven",
+                ["scopeType"] = "hall",
+                ["scopeId"] = "hall_dawn",
+                ["displayName"] = "Серебряный Зал",
+                ["controlLevel"] = 64,
+                ["influenceValue"] = 58,
+                ["publicStatus"] = "известное убежище",
+                ["updatedAtTurn"] = 46,
+                ["sourceEntryId"] = "dawn_public_path_45",
+                ["summary"] = "Фракция публично удерживает безопасный прием резидентов."
+            });
+        dawnFaction[ShiningAbodeState.FactionStrategicMemoryProperty] = new JsonObject
+        {
+            ["summary"] = "hidden_strategy_marker",
+            ["lastUpdatedTurn"] = 46,
+            ["recentCampaigns"] = new JsonArray("hidden_strategy_marker"),
+            ["losses"] = new JsonArray("hidden_strategy_marker"),
+            ["alliances"] = new JsonArray("guardian_azalia"),
+            ["enemies"] = new JsonArray("hidden_strategy_marker")
+        };
+        dawnFaction[ShiningAbodeState.FactionResourceLedgerProperty] = new JsonArray(
+            new JsonObject
+            {
+                ["entryId"] = "dawn_light_sparks_45",
+                ["turnNumber"] = 45,
+                ["resourceType"] = "lightSparks",
+                ["delta"] = 3,
+                ["balanceAfter"] = 19,
+                ["reason"] = "Публичная помощь привела к пожертвованиям Искр Света.",
+                ["internalNote"] = "hidden_ledger_marker",
+                ["occurredAtUtc"] = "2026-05-25T12:05:00Z"
+            });
+        await File.WriteAllTextAsync(
+            shiningStatePath,
+            shiningRoot.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        _console.QueueSelection("Политика Сияющей Обители", "← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/shining_politics"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("shining_politics_faction_chronicles_resources");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Хроники, влияние и ресурсы фракций", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Хор Рассвета открыл безопасную тропу", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Серебряный Зал", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Искры Света", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("баланс 19", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_chronicle_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_strategy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_ledger_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("strategicMemory", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("resourceLedger", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void TryProcessCommand_ShiningPolitics_FoundingHallServicePromptUsesReadableLabels()
     {
         _console.QueueSelection("Дополнительная служба зала", "знание");

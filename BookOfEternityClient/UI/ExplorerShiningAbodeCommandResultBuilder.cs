@@ -37,7 +37,8 @@ public static class ExplorerShiningAbodeCommandResultBuilder
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
         StateManager stateManager,
-        FileSystemManager fs)
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics = false)
     {
         var normalizedCommand = command.Trim();
         if (!CommandKinds.TryGetValue(normalizedCommand, out var kind))
@@ -48,7 +49,10 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         return kind switch
         {
             CommandKind.Overview => await BuildOverview(normalizedCommand, fs, stateManager),
-            CommandKind.Politics => await BuildPolitics(normalizedCommand, fs),
+            CommandKind.Politics => await BuildPolitics(
+                normalizedCommand,
+                fs,
+                includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts),
             CommandKind.Treasury => await BuildTreasury(normalizedCommand, fs),
             CommandKind.SourceOfLight => await BuildSourceOfLight(normalizedCommand, fs),
             _ => null
@@ -91,7 +95,10 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         return Completed(command, blocks);
     }
 
-    private static async Task<ExplorerCommandResult> BuildPolitics(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildPolitics(
+        string command,
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics)
     {
         var shining = await ReadJson(fs, ShiningAbodeState.StatePath);
         var residents = await ReadJson(fs, GuardianAbodeResidentState.StatePath);
@@ -113,12 +120,27 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     ("Ожиданий смены власти", CountRequests(leadership).ToString())))
         };
 
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
-        AddRawOrWarning(blocks, $"Полный JSON {GuardianAbodeResidentState.StatePath}", residents);
-        AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", guardians);
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningFactionRequestState.PendingFoundingsRequestPath}", foundings);
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningFactionRequestState.PendingRealignmentsRequestPath}", realignments);
-        AddRawOrWarning(blocks, $"Полный JSON {ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath}", leadership);
+        AddFactionPoliticalMemoryBlocks(blocks, shining.Node);
+
+        if (includeAdvancedDiagnostics)
+        {
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
+            AddRawOrWarning(blocks, $"Полный JSON {GuardianAbodeResidentState.StatePath}", residents);
+            AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", guardians);
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningFactionRequestState.PendingFoundingsRequestPath}", foundings);
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningFactionRequestState.PendingRealignmentsRequestPath}", realignments);
+            AddRawOrWarning(blocks, $"Полный JSON {ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath}", leadership);
+        }
+        else
+        {
+            AddWarningIfMalformed(blocks, $"Полный JSON {ShiningAbodeState.StatePath}", shining);
+            AddWarningIfMalformed(blocks, $"Полный JSON {GuardianAbodeResidentState.StatePath}", residents);
+            AddWarningIfMalformed(blocks, $"Полный JSON {GuardiansPath}", guardians);
+            AddWarningIfMalformed(blocks, $"Полный JSON {ShiningFactionRequestState.PendingFoundingsRequestPath}", foundings);
+            AddWarningIfMalformed(blocks, $"Полный JSON {ShiningFactionRequestState.PendingRealignmentsRequestPath}", realignments);
+            AddWarningIfMalformed(blocks, $"Полный JSON {ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath}", leadership);
+        }
+
         return Completed(command, blocks);
     }
 
@@ -247,6 +269,212 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         if (read.FileExists)
             blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
     }
+
+    private static void AddWarningIfMalformed(List<UiBlock> blocks, string title, JsonReadResult read)
+    {
+        if (read.Node == null && read.FileExists)
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
+    }
+
+    private static void AddFactionPoliticalMemoryBlocks(List<UiBlock> blocks, JsonNode? shiningRoot)
+    {
+        if (shiningRoot is not JsonObject root)
+            return;
+
+        var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(root).ToList();
+        if (visibleFactions.Count == 0)
+            return;
+
+        var chronicleRows = new List<UiTableRow>();
+        var influenceRows = new List<UiTableRow>();
+        var resourceRows = new List<UiTableRow>();
+
+        foreach (var faction in visibleFactions)
+        {
+            var factionName = ResolveFactionDisplayName(faction);
+
+            foreach (var entry in EnumeratePlayerVisibleChronicleEntries(faction)
+                         .OrderByDescending(static entry => GetInt(entry, "turnNumber"))
+                         .ThenBy(static entry => GetString(entry, "entryId", string.Empty), StringComparer.OrdinalIgnoreCase))
+            {
+                chronicleRows.Add(new UiTableRow
+                {
+                    Cells =
+                    [
+                        factionName,
+                        GetNumberOrString(entry, "turnNumber", "0"),
+                        TranslateEventType(GetString(entry, "eventType", "событие")),
+                        GetString(entry, "summary", "без сводки"),
+                        DescribeConsequences(entry)
+                    ]
+                });
+            }
+
+            foreach (var zone in EnumeratePlayerVisibleInfluenceZones(faction)
+                         .OrderByDescending(static zone => GetInt(zone, "updatedAtTurn"))
+                         .ThenBy(static zone => GetString(zone, "zoneId", string.Empty), StringComparer.OrdinalIgnoreCase))
+            {
+                influenceRows.Add(new UiTableRow
+                {
+                    Cells =
+                    [
+                        factionName,
+                        GetString(zone, "displayName", GetString(zone, "zoneId", "зона")),
+                        $"{GetNumberOrString(zone, "influenceValue", "0")} влияния / {GetNumberOrString(zone, "controlLevel", "0")} контроля",
+                        GetString(zone, "publicStatus", "не указано"),
+                        GetString(zone, "summary", "без сводки")
+                    ]
+                });
+            }
+
+            foreach (var entry in EnumerateCurrentResourceBalances(faction))
+            {
+                resourceRows.Add(new UiTableRow
+                {
+                    Cells =
+                    [
+                        factionName,
+                        TranslateResourceType(GetString(entry, "resourceType", "resource")),
+                        GetNumberOrString(entry, "balanceAfter", "0"),
+                        DescribeSignedDelta(entry["delta"]),
+                        GetNumberOrString(entry, "turnNumber", "0")
+                    ]
+                });
+            }
+        }
+
+        if (chronicleRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Хроника фракций",
+                Columns = ["Фракция", "Ход", "Событие", "Сводка", "Последствия"],
+                Rows = chronicleRows
+            });
+        }
+
+        if (influenceRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Влияние фракций",
+                Columns = ["Фракция", "Зона", "Влияние", "Статус", "Сводка"],
+                Rows = influenceRows
+            });
+        }
+
+        if (resourceRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Ресурсы фракций",
+                Columns = ["Фракция", "Ресурс", "Баланс", "Изменение", "Ход"],
+                Rows = resourceRows
+            });
+        }
+    }
+
+    private static string ResolveFactionDisplayName(JsonObject faction)
+    {
+        var name = GetString(faction["charter"], "factionName", string.Empty);
+        return string.IsNullOrWhiteSpace(name)
+            ? GetString(faction, "factionId", "фракция")
+            : name;
+    }
+
+    private static IEnumerable<JsonObject> EnumeratePlayerVisibleChronicleEntries(JsonObject faction) =>
+        EnumerateObjects(faction[ShiningAbodeState.FactionChronicleProperty] as JsonArray)
+            .Where(IsPlayerVisibleMemoryObject);
+
+    private static IEnumerable<JsonObject> EnumeratePlayerVisibleInfluenceZones(JsonObject faction) =>
+        EnumerateObjects(faction[ShiningAbodeState.FactionInfluenceProperty] as JsonArray)
+            .Where(static zone => !IsHiddenText(GetString(zone, "publicStatus", string.Empty)) && IsPlayerVisibleMemoryObject(zone));
+
+    private static IEnumerable<JsonObject> EnumerateCurrentResourceBalances(JsonObject faction) =>
+        EnumerateObjects(faction[ShiningAbodeState.FactionResourceLedgerProperty] as JsonArray)
+            .Where(IsPlayerVisibleMemoryObject)
+            .GroupBy(static entry => GetString(entry, "resourceType", "resource"), StringComparer.OrdinalIgnoreCase)
+            .Select(static group => group
+                .OrderByDescending(static entry => GetInt(entry, "turnNumber"))
+                .ThenByDescending(static entry => GetString(entry, "entryId", string.Empty), StringComparer.OrdinalIgnoreCase)
+                .First());
+
+    private static IEnumerable<JsonObject> EnumerateObjects(JsonArray? array) =>
+        array?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>();
+
+    private static bool IsPlayerVisibleMemoryObject(JsonObject entry)
+    {
+        if (IsFalseFlag(entry["isPlayerVisible"]) || IsFalseFlag(entry["playerVisible"]))
+            return false;
+
+        var visibility = GetString(entry, "visibility", string.Empty);
+        return !IsHiddenText(visibility);
+    }
+
+    private static bool IsFalseFlag(JsonNode? node) =>
+        node is JsonValue value &&
+        value.TryGetValue<bool>(out var flag) &&
+        !flag;
+
+    private static bool IsHiddenText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var normalized = value.Trim();
+        return string.Equals(normalized, "hidden", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "gm_only", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "secret", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "private", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "internal", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "faction-internal", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string DescribeConsequences(JsonObject entry)
+    {
+        if (entry["consequences"] is not JsonArray consequences)
+            return "нет";
+
+        var visible = consequences
+            .OfType<JsonValue>()
+            .Select(static node => node.TryGetValue<string>(out var value) ? value?.Trim() ?? string.Empty : string.Empty)
+            .Where(static value => !string.IsNullOrWhiteSpace(value) && !IsHiddenText(value))
+            .ToArray();
+
+        return visible.Length == 0 ? "нет" : string.Join("; ", visible);
+    }
+
+    private static string DescribeSignedDelta(JsonNode? node)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue >= 0 ? $"+{intValue}" : intValue.ToString();
+            if (value.TryGetValue<long>(out var longValue))
+                return longValue >= 0 ? $"+{longValue}" : longValue.ToString();
+            if (value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text))
+                return text.Trim();
+        }
+
+        return "0";
+    }
+
+    private static string TranslateResourceType(string value) => value switch
+    {
+        "lightSparks" or "light_sparks" => "Искры Света",
+        "inkFeathers" or "ink_feathers" => "Чернильные Перья",
+        _ => value
+    };
+
+    private static string TranslateEventType(string value) => value switch
+    {
+        "public_aid" => "публичная помощь",
+        "founding" => "основание",
+        "realignment" => "переход",
+        "leadership" or "leadership_transition" => "смена власти",
+        "resource_shift" => "ресурсный сдвиг",
+        _ => value
+    };
 
     private static ExplorerCommandResult Completed(string command, IEnumerable<UiBlock> blocks) =>
         Result(command, CommandExecutionState.Completed, blocks);

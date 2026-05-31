@@ -1300,6 +1300,52 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_ShiningPolitics_DefaultProjectionShowsFactionChroniclesWithoutRawMemory()
+    {
+        await SeedShiningAbodeFilesAsync();
+        await WriteShiningFactionPoliticalMemoryRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/shining_politics"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Contains("Хроника фракций", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Фонари Рассвета", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открыли безопасный проход", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Влияние фракций", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Серебряный Зал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Ресурсы фракций", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Искры Света", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("19", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("strategicMemory", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("resourceLedger", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_chronicle_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_strategy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_ledger_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ShiningPolitics_DebugProjectionIncludesFullFactionMemory()
+    {
+        await SeedShiningAbodeFilesAsync();
+        await WriteShiningFactionPoliticalMemoryRawLeakFixtureAsync();
+
+        var advancedRequest = JsonSerializer.Deserialize<ExplorerWebCommandRequest>(
+            """{"command":"/shining_politics","advancedEnabled":true}""",
+            JsonOptions)!;
+        var advancedResult = await _service.ExecuteAsync(advancedRequest);
+
+        AssertContainsShiningPoliticsRawState(advancedResult);
+
+        _stateManager.Settings.ShowGmThoughts = true;
+        var gmThoughtsResult = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/shining_politics"));
+
+        AssertContainsShiningPoliticsRawState(gmThoughtsResult);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_AfterlifeProfiles_DefaultProjectionOmitsHiddenProfileRawState()
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
@@ -1857,6 +1903,105 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         """);
     }
 
+    private Task WriteShiningFactionPoliticalMemoryRawLeakFixtureAsync() =>
+        _fs.WriteFileAtomicAsync("game_state/meta/shining_abode_state.json", """
+        {
+          "availability": "active",
+          "lightSparks": 7,
+          "radiance": { "experience": 260, "tier": 3 },
+          "gates": { "hasOpenDraft": true },
+          "treasury": {
+            "depositedInkFeathers": 20,
+            "claimableInkFeatherInterest": 2,
+            "lastInterestSettlementCycleId": "cycle_5",
+            "exchangeCycleId": "cycle_5",
+            "exchangeThisCycleLightSparks": 1
+          },
+          "gachaSystem": {
+            "chargesPerReturn": 2,
+            "chargesUsedThisReturn": 1,
+            "currentReturnCycleId": "cycle_5",
+            "gachaHistory": []
+          },
+          "halls": [
+            { "hallId": "hall_dawn", "hallName": "Зал Рассвета" }
+          ],
+          "factions": [
+            {
+              "factionId": "faction_lanterns",
+              "hallId": "hall_dawn",
+              "factionStrength": 40,
+              "charter": { "factionName": "Фонари Рассвета" },
+              "leadership": { "headActorType": "resident", "headActorId": "resident_1", "leadershipState": "secure" },
+              "chronicle": [
+                {
+                  "entryId": "lanterns_safe_passage_45",
+                  "turnNumber": 45,
+                  "eventType": "public_aid",
+                  "summary": "Открыли безопасный проход для потерянных резидентов.",
+                  "visibility": "visible",
+                  "consequences": [ "Игрок может просить фракцию о публичной помощи." ],
+                  "occurredAtUtc": "2026-05-25T12:00:00Z"
+                },
+                {
+                  "entryId": "lanterns_hidden_oath_46",
+                  "turnNumber": 46,
+                  "eventType": "hidden_oath",
+                  "summary": "hidden_chronicle_marker",
+                  "visibility": "hidden",
+                  "consequences": [ "hidden_chronicle_marker" ],
+                  "occurredAtUtc": "2026-05-25T13:00:00Z"
+                }
+              ],
+              "territorialInfluence": [
+                {
+                  "zoneId": "lanterns_hall_public",
+                  "scopeType": "hall",
+                  "scopeId": "hall_dawn",
+                  "displayName": "Серебряный Зал",
+                  "controlLevel": 64,
+                  "influenceValue": 58,
+                  "publicStatus": "известное убежище",
+                  "updatedAtTurn": 46,
+                  "sourceEntryId": "lanterns_safe_passage_45",
+                  "summary": "Фракция публично удерживает безопасный прием резидентов."
+                }
+              ],
+              "strategicMemory": {
+                "summary": "hidden_strategy_marker",
+                "lastUpdatedTurn": 46,
+                "recentCampaigns": [ "hidden_strategy_marker" ],
+                "losses": [ "hidden_strategy_marker" ],
+                "alliances": [ "guardian_azalia" ],
+                "enemies": [ "hidden_strategy_marker" ]
+              },
+              "resourceLedger": [
+                {
+                  "entryId": "lanterns_light_sparks_45",
+                  "turnNumber": 45,
+                  "resourceType": "lightSparks",
+                  "delta": 3,
+                  "balanceAfter": 19,
+                  "reason": "Публичная помощь привела к пожертвованиям Искр Света.",
+                  "internalNote": "hidden_ledger_marker",
+                  "occurredAtUtc": "2026-05-25T12:05:00Z"
+                }
+              ],
+              "projects": [
+                { "projectId": "project_light", "displayName": "Световой мост", "status": "active", "tier": 1 }
+              ]
+            }
+          ],
+          "shiningPoliticalActors": [
+            { "actorId": "actor_1", "displayName": "Светозарный судья", "politicalStatus": "elder" }
+          ],
+          "coreActionReceipts": [
+            { "receiptId": "receipt_1", "actionType": "draft_incarnation_package" }
+          ],
+          "sourceOfLightCapstone": { "completed": false }
+        }
+        """);
+
     private async Task SeedAfterlifeCombatAndEntityFilesAsync()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -2135,6 +2280,22 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("hidden_concealed_truth_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("hidden_mask_directive_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("hidden_saref_agent_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void AssertContainsShiningPoliticsRawState(ExplorerCommandResult result)
+    {
+        var rawBlocks = result.Blocks.OfType<UiRawJsonBlock>().ToList();
+        var raw = Assert.Single(rawBlocks, static block =>
+            block.Title.Contains(ShiningAbodeState.StatePath, StringComparison.OrdinalIgnoreCase));
+        var rawText = raw.Json?.ToJsonString(JsonOptions) ?? string.Empty;
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("strategicMemory", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("resourceLedger", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_chronicle_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_strategy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_ledger_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void CollectBlockText(UiBlock block, List<string> parts)

@@ -107,7 +107,8 @@ public sealed class ExplorerWebCommandService
             ExplorerCommandBrowserHandlerKind.ShiningAbode => await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
                 commandToken,
                 _stateManager,
-                _fs),
+                _fs,
+                request.AdvancedEnabled == true),
             ExplorerCommandBrowserHandlerKind.AfterlifeCombat => await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
                 commandToken,
                 _stateManager,
