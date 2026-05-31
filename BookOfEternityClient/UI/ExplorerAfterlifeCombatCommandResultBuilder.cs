@@ -113,6 +113,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     .ToList()
             });
 
+            var relationshipsTable = BuildProfileRelationshipsTable(profiles, includeRawDiagnostics);
+            if (relationshipsTable != null)
+                blocks.Add(relationshipsTable);
+
             var masksTable = BuildProfileMasksTable(profiles, includeRawDiagnostics);
             if (masksTable != null)
                 blocks.Add(masksTable);
@@ -603,6 +607,252 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return parts.Count == 0 ? "не указаны" : string.Join(" | ", parts);
     }
 
+    private static UiTableBlock? BuildProfileRelationshipsTable(JsonArray profiles, bool includeHiddenDiagnostics)
+    {
+        var rows = profiles
+            .OfType<JsonObject>()
+            .SelectMany(profile => BuildProfileRelationshipRows(profile, includeHiddenDiagnostics))
+            .ToList();
+        if (rows.Count == 0)
+            return null;
+
+        return includeHiddenDiagnostics
+            ? new UiTableBlock
+            {
+                Title = "Отношения",
+                Columns = ["Сущность", "relationshipId", "Ось", "Цель", "Значение", "Тир", "Замок", "Порог", "Квесты", "Диагностика"],
+                Rows = rows
+            }
+            : new UiTableBlock
+            {
+                Title = "Отношения",
+                Columns = ["Сущность", "Связь", "Цель", "Текущий уровень", "Ближайший порог", "Условие открытия"],
+                Rows = rows
+            };
+    }
+
+    private static IEnumerable<UiTableRow> BuildProfileRelationshipRows(JsonObject profile, bool includeHiddenDiagnostics)
+    {
+        if (profile[AfterlifeEntityProfileState.RelationshipsProperty] is not JsonArray relationships || relationships.Count == 0)
+            yield break;
+
+        var profileName = DescribeProfileNameForRelationshipTable(profile, includeHiddenDiagnostics);
+        foreach (var relationship in relationships.OfType<JsonObject>())
+        {
+            if (includeHiddenDiagnostics)
+            {
+                yield return new UiTableRow
+                {
+                    Cells =
+                    [
+                        profileName,
+                        GetString(relationship, "relationshipId", "не указан"),
+                        DescribeAfterlifeRelationshipAxis(GetString(relationship, "axis", "?")),
+                        DescribeRelationshipTargetForDiagnostics(relationship),
+                        GetNumberOrString(relationship, "value", "0"),
+                        GetString(relationship, "relationshipTier", "не указан"),
+                        DescribeRelationshipLockDiagnostics(relationship["relationshipLock"] as JsonObject),
+                        DescribeNearestRelationshipThreshold(relationship),
+                        DescribeRelationshipQuestDiagnostics(relationship[AfterlifeEntityProfileState.RelationshipGateQuestsProperty] as JsonArray),
+                        DescribeRelationshipDiagnostics(relationship)
+                    ]
+                };
+                continue;
+            }
+
+            yield return new UiTableRow
+            {
+                Cells =
+                [
+                    profileName,
+                    DescribeAfterlifeRelationshipAxis(GetString(relationship, "axis", "?")),
+                    DescribeRelationshipTargetForPlayer(relationship),
+                    DescribeRelationshipProgressForPlayer(relationship),
+                    DescribeNearestRelationshipThreshold(relationship),
+                    DescribeRelationshipUnlockConditionForPlayer(relationship)
+                ]
+            };
+        }
+    }
+
+    private static string DescribeProfileNameForRelationshipTable(JsonObject profile, bool includeHiddenDiagnostics)
+    {
+        var displayName = GetString(profile, "displayName", "");
+        if (!includeHiddenDiagnostics)
+            return string.IsNullOrWhiteSpace(displayName)
+                ? DescribeActorType(GetString(profile, "actorType", "сущность"))
+                : displayName;
+
+        var actorType = GetString(profile, "actorType", "?");
+        var actorId = GetString(profile, "actorId", GetString(profile, "actorRef", "?"));
+        var name = string.IsNullOrWhiteSpace(displayName) ? "Без имени" : displayName;
+        return $"{name} ({actorType}:{actorId})";
+    }
+
+    private static string DescribeRelationshipTargetForPlayer(JsonObject relationship)
+    {
+        var displayName = GetString(relationship, "targetDisplayName", "");
+        if (string.IsNullOrWhiteSpace(displayName))
+            displayName = GetString(relationship, "targetActorName", GetString(relationship, "targetName", ""));
+        if (!string.IsNullOrWhiteSpace(displayName))
+            return displayName;
+
+        return DescribeActorType(GetString(relationship, "targetActorType", "сущность"));
+    }
+
+    private static string DescribeRelationshipTargetForDiagnostics(JsonObject relationship)
+    {
+        var actorType = GetString(relationship, "targetActorType", "?");
+        var actorId = GetString(relationship, "targetActorId", GetString(relationship, "targetActorRef", "?"));
+        var displayName = GetString(relationship, "targetDisplayName", GetString(relationship, "targetActorName", GetString(relationship, "targetName", "")));
+        return string.IsNullOrWhiteSpace(displayName)
+            ? $"{actorType}:{actorId}"
+            : $"{displayName} ({actorType}:{actorId})";
+    }
+
+    private static string DescribeRelationshipProgressForPlayer(JsonObject relationship)
+    {
+        var value = GetNumberOrString(relationship, "value", "0");
+        var tier = GetString(relationship, "relationshipTier", "");
+        if (string.IsNullOrWhiteSpace(tier))
+            return $"{value}/100";
+
+        return $"{value}/100; уровень {DescribeRelationshipTierForPlayer(tier)}";
+    }
+
+    private static string DescribeRelationshipTierForPlayer(string tier)
+    {
+        var normalized = tier.Trim().Replace('_', ' ');
+        return string.IsNullOrWhiteSpace(normalized) ? "не указан" : normalized;
+    }
+
+    private static string DescribeNearestRelationshipThreshold(JsonObject relationship)
+    {
+        var value = GetInt(relationship["value"]);
+        var threshold = ResolveRelationshipThreshold(relationship);
+        if (threshold == null)
+            return "нет данных";
+
+        var delta = threshold.Value - value;
+        if (delta == 0)
+            return $"порог {threshold.Value} достигнут";
+        if (Math.Sign(delta) == Math.Sign(threshold.Value) || threshold.Value == 0)
+            return $"порог {threshold.Value}, до порога {Math.Abs(delta)}";
+
+        return $"порог {threshold.Value} пройден на {Math.Abs(delta)}";
+    }
+
+    private static int? ResolveRelationshipThreshold(JsonObject relationship)
+    {
+        if (relationship["relationshipLock"] is JsonObject relationshipLock &&
+            TryGetInt(relationshipLock["threshold"], out var lockThreshold))
+        {
+            return lockThreshold;
+        }
+
+        var value = GetInt(relationship["value"]);
+        if (value >= 50)
+            return 50;
+        if (value <= -50)
+            return -50;
+
+        return Math.Abs(50 - value) <= Math.Abs(value + 50) ? 50 : -50;
+    }
+
+    private static string DescribeRelationshipUnlockConditionForPlayer(JsonObject relationship)
+    {
+        var quest = (relationship[AfterlifeEntityProfileState.RelationshipGateQuestsProperty] as JsonArray)?
+            .OfType<JsonObject>()
+            .OrderBy(quest => string.Equals(GetString(quest, "status", ""), "active", StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+            .FirstOrDefault();
+        if (quest != null)
+        {
+            var title = GetString(quest, "title", "гейт отношений");
+            var questType = DescribeRelationshipQuestTypeForPlayer(GetString(quest, "questType", ""));
+            var status = DescribeAfterlifeRelationshipQuestStatus(GetString(quest, "status", "active"));
+            return $"условие: {questType} \"{title}\" ({status})";
+        }
+
+        var lockState = GetString(relationship["relationshipLock"] as JsonObject, "lockState", "");
+        return lockState.Trim().ToLowerInvariant() switch
+        {
+            "positive_locked" => "условие: личный прорыв",
+            "negative_locked" => "условие: искупление",
+            "point_of_no_return" => "точка невозврата зафиксирована",
+            "none" or "" => "нет активного гейта",
+            _ => "условие скрыто до сцены"
+        };
+    }
+
+    private static string DescribeRelationshipLockDiagnostics(JsonObject? relationshipLock)
+    {
+        if (relationshipLock == null)
+            return "нет";
+
+        var parts = new List<string>
+        {
+            $"lockState={GetString(relationshipLock, "lockState", "не указан")}",
+            $"direction={GetString(relationshipLock, "direction", "не указано")}"
+        };
+
+        if (TryGetInt(relationshipLock["threshold"], out var threshold))
+            parts.Add($"threshold={threshold}");
+        AddDiagnosticPart(parts, relationshipLock, "breakthroughQuestId");
+        AddDiagnosticPart(parts, relationshipLock, "redemptionQuestId");
+        AddDiagnosticPart(parts, relationshipLock, "reason");
+        AddDiagnosticPart(parts, relationshipLock, "evidence");
+        AddDiagnosticPart(parts, relationshipLock, "updatedAtTurn");
+        AddDiagnosticPart(parts, relationshipLock, "pointOfNoReturn");
+        AddDiagnosticPart(parts, relationshipLock, "proofSummary");
+        if (relationshipLock["proof"] is JsonObject proof)
+            parts.Add($"proof={proof.ToJsonString()}");
+
+        return string.Join("; ", parts);
+    }
+
+    private static string DescribeRelationshipQuestDiagnostics(JsonArray? quests)
+    {
+        if (quests == null || quests.Count == 0)
+            return "нет";
+
+        var summaries = quests
+            .OfType<JsonObject>()
+            .Select(quest =>
+            {
+                var parts = new List<string>();
+                AddDiagnosticPart(parts, quest, "questId");
+                AddDiagnosticPart(parts, quest, "questType");
+                AddDiagnosticPart(parts, quest, "status");
+                AddDiagnosticPart(parts, quest, "title");
+                AddDiagnosticPart(parts, quest, "sceneSummary");
+                AddDiagnosticPart(parts, quest, "successCondition");
+                AddDiagnosticPart(parts, quest, "gmThoughtsSummary");
+                AddDiagnosticPart(parts, quest, "evidence");
+                AddDiagnosticPart(parts, quest, "breakthroughQuestId");
+                AddDiagnosticPart(parts, quest, "redemptionQuestId");
+                AddDiagnosticPart(parts, quest, "updatedAtTurn");
+                return parts.Count == 0 ? "пустой квест" : string.Join("; ", parts);
+            });
+        return string.Join(" | ", summaries);
+    }
+
+    private static string DescribeRelationshipDiagnostics(JsonObject relationship)
+    {
+        var parts = new List<string>();
+        AddDiagnosticPart(parts, relationship, "reason");
+        AddDiagnosticPart(parts, relationship, "evidence");
+        AddDiagnosticPart(parts, relationship, "gmThoughtsSummary");
+        AddDiagnosticPart(parts, relationship, "updatedAtTurn");
+        return parts.Count == 0 ? "нет" : string.Join("; ", parts);
+    }
+
+    private static void AddDiagnosticPart(List<string> parts, JsonObject source, string propertyName)
+    {
+        var value = GetNodeString(source[propertyName]);
+        if (!string.IsNullOrWhiteSpace(value))
+            parts.Add($"{propertyName}={value}");
+    }
+
     private static UiTableBlock? BuildProfileMasksTable(JsonArray profiles, bool includeHiddenDiagnostics)
     {
         var rows = profiles
@@ -882,6 +1132,36 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             return notification.TargetProjectName;
         return EmptyFallback(notification.RequestId);
     }
+
+    private static string DescribeAfterlifeRelationshipAxis(string? axis) =>
+        axis?.Trim().ToLowerInvariant() switch
+        {
+            "trust" => "Доверие",
+            "romance" => "Романтическая связь",
+            "rivalry" => "Соперничество",
+            "oath" => "Клятва",
+            "fear" => "Страх",
+            "reverence" => "Почтение",
+            "debt" => "Долг",
+            _ => string.IsNullOrWhiteSpace(axis) ? "?" : axis
+        };
+
+    private static string DescribeRelationshipQuestTypeForPlayer(string? questType) =>
+        questType?.Trim().ToLowerInvariant() switch
+        {
+            "breakthrough" => "прорыв",
+            "redemption" => "искупление",
+            _ => "гейт отношений"
+        };
+
+    private static string DescribeAfterlifeRelationshipQuestStatus(string? status) =>
+        status?.Trim().ToLowerInvariant() switch
+        {
+            "completed" => "завершён",
+            "failed" => "провален",
+            "cancelled" => "отменён",
+            _ => "активен"
+        };
 
     private static string DescribeControlState(JsonObject? control)
     {
@@ -1165,6 +1445,22 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         if (node is JsonValue stringValue && stringValue.TryGetValue<string>(out var text) && int.TryParse(text, out var parsed))
             return parsed;
         return 0;
+    }
+
+    private static bool TryGetInt(JsonNode? node, out int result)
+    {
+        if (node is JsonValue value && value.TryGetValue<int>(out result))
+            return true;
+        if (node is JsonValue stringValue &&
+            stringValue.TryGetValue<string>(out var text) &&
+            int.TryParse(text, out var parsed))
+        {
+            result = parsed;
+            return true;
+        }
+
+        result = 0;
+        return false;
     }
 
     private static string GetString(JsonNode? node, string propertyName, string fallback)

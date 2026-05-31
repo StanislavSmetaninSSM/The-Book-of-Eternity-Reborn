@@ -1400,6 +1400,32 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_AfterlifeProfiles_DefaultProjectionShowsRelationshipProgressWithoutDebugInternals()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeProfilesRelationshipGatesFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var relationshipTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static table => table.Title == "Отношения");
+        var text = CollectBlockText([relationshipTable]);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Хранитель Зеркал", text, StringComparison.Ordinal);
+        Assert.Contains("Доверие", text, StringComparison.Ordinal);
+        Assert.Contains("49", text, StringComparison.Ordinal);
+        Assert.Contains("порог 50", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("до порога 1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Суд зеркальной клятвы", text, StringComparison.Ordinal);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("guardian_mirror_player_trust", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("quest_mirror_oath_trial", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("player_soul", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_lock_evidence_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_gate_gm_thoughts_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_AfterlifeProfiles_AdvancedProjectionShowsAllMaskDiagnostics()
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
@@ -1423,6 +1449,29 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("hidden_dormant_condition_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("hidden_threat_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("hidden_saref_marker", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfiles_AdvancedProjectionShowsRelationshipGateDiagnostics()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeProfilesRelationshipGatesFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/afterlife_profiles",
+            AdvancedEnabled: true));
+        var relationshipTable = Assert.Single(result.Blocks.OfType<UiTableBlock>(), static table => table.Title == "Отношения");
+        var text = CollectBlockText([relationshipTable]);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("guardian_mirror_player_trust", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("player_soul", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("positive_locked", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("threshold=50", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("quest_mirror_oath_trial", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_lock_evidence_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_gate_gm_thoughts_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Душа выбирает правду.", text, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2278,6 +2327,66 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "goals": {
                 "goalId": "goal_masked_truths",
                 "shortTermGoal": "Держать известные лица в порядке"
+              },
+              "soulDissipationTier": 0
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task WriteAfterlifeProfilesRelationshipGatesFixtureAsync()
+    {
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "locationName": "Зал честных отражений",
+              "currencies": { "inkFeathers": 4, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "tier": 1, "experience": 12 },
+                "radiance": { "tier": 0, "experience": 0 }
+              },
+              "standardArts": { "guard": 1 },
+              "relationships": [
+                {
+                  "relationshipId": "guardian_mirror_player_trust",
+                  "axis": "trust",
+                  "targetActorType": "player_soul",
+                  "targetActorId": "player_soul",
+                  "value": 49,
+                  "relationshipTier": "trust_breakthrough_required",
+                  "relationshipLock": {
+                    "lockState": "positive_locked",
+                    "direction": "positive",
+                    "threshold": 50,
+                    "breakthroughQuestId": "quest_mirror_oath_trial",
+                    "reason": "Хранитель не доверится глубже без личного испытания.",
+                    "evidence": "hidden_lock_evidence_marker",
+                    "updatedAtTurn": 41
+                  },
+                  "relationshipGateQuests": [
+                    {
+                      "questId": "quest_mirror_oath_trial",
+                      "questType": "breakthrough",
+                      "status": "active",
+                      "title": "Суд зеркальной клятвы",
+                      "sceneSummary": "Личное испытание доверия.",
+                      "successCondition": "Душа выбирает правду.",
+                      "gmThoughtsSummary": "hidden_gate_gm_thoughts_marker",
+                      "updatedAtTurn": 41
+                    }
+                  ]
+                }
+              ],
+              "goals": {
+                "goalId": "goal_mirror_guardian",
+                "shortTermGoal": "Проверить готовность души к правде"
               },
               "soulDissipationTier": 0
             }
