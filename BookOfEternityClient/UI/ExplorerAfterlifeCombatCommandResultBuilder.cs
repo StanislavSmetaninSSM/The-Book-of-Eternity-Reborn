@@ -45,28 +45,33 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     public static async Task<ExplorerCommandResult?> TryBuildAsync(
         string command,
         StateManager stateManager,
-        FileSystemManager fs)
+        FileSystemManager fs,
+        bool includeAdvancedDiagnostics = false)
     {
         var normalizedCommand = command.Trim();
         if (!CommandKinds.TryGetValue(normalizedCommand, out var kind))
             return null;
 
         await stateManager.RefreshGameStateAsync();
+        var includeRawDiagnostics = includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts;
 
         return kind switch
         {
-            CommandKind.Profiles => await BuildProfiles(normalizedCommand, fs),
+            CommandKind.Profiles => await BuildProfiles(normalizedCommand, fs, includeRawDiagnostics),
             CommandKind.Threats => await BuildThreats(normalizedCommand, fs),
             CommandKind.Inbox => await BuildInbox(normalizedCommand, fs),
             CommandKind.Conflict => await BuildConflict(normalizedCommand, fs),
             CommandKind.CombatLog => await BuildCombatLog(normalizedCommand, fs),
             CommandKind.Help => BuildHelp(normalizedCommand),
-            CommandKind.Arts => await BuildArts(normalizedCommand, fs),
+            CommandKind.Arts => await BuildArts(normalizedCommand, fs, includeRawDiagnostics),
             _ => null
         };
     }
 
-    private static async Task<ExplorerCommandResult> BuildProfiles(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildProfiles(
+        string command,
+        FileSystemManager fs,
+        bool includeRawDiagnostics)
     {
         var read = await ReadJson(fs, AfterlifeEntityProfileState.StatePath);
         var profiles = read.Node?[AfterlifeEntityProfileState.ProfilesProperty] as JsonArray;
@@ -78,7 +83,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     ("Опасных развеивателей души", CountProfilesWithDissipation(profiles).ToString()),
                     ("Особых духовных искусств", CountNestedArray(profiles, "specialArts").ToString()),
                     ("Кастомных состояний", CountNestedArray(profiles, AfterlifeEntityProfileState.CustomStatesProperty).ToString()),
-                    ("Открытых карт судьбы", CountUnlockedFateCards(profiles).ToString()),
+                    ("Открытых карт судьбы", CountUnlockedFateCards(profiles, includeRawDiagnostics).ToString()),
                     ("Активных личных квестов", CountActiveProfileQuests(profiles).ToString())))
         };
 
@@ -100,7 +105,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                             DescribeProfileProgression(profile),
                             DescribeStandardArts(profile["standardArts"] as JsonObject),
                             DescribeSpecialArts(profile["specialArts"] as JsonArray),
-                            DescribeFateCards(profile["fateCards"] as JsonArray),
+                            DescribeFateCards(profile["fateCards"] as JsonArray, includeRawDiagnostics),
                             DescribeProfileAgency(profile),
                             DescribeDissipation(profile)
                         ]
@@ -135,7 +140,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(Message("Профили не найдены", "ГМ создаёт профили значимых сущностей через afterlifeEntityProfileUpdates."));
         }
 
-        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeEntityProfileState.StatePath}", read);
+        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeEntityProfileState.StatePath}", read, includeRawDiagnostics);
         return Completed(command, blocks);
     }
 
@@ -357,7 +362,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     .ToList()
             });
 
-    private static async Task<ExplorerCommandResult> BuildArts(string command, FileSystemManager fs)
+    private static async Task<ExplorerCommandResult> BuildArts(
+        string command,
+        FileSystemManager fs,
+        bool includeRawDiagnostics)
     {
         var soul = await ReadJson(fs, SoulStatePath);
         var profiles = await ReadJson(fs, AfterlifeEntityProfileState.StatePath);
@@ -421,8 +429,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             blocks.Add(Message("Особые искусства не изучены", "ГМ может выдать обучение через afterlifeSpecialArtLearningReceipts, если ролевая сцена это признаёт."));
         }
 
-        AddRawOrWarning(blocks, "Полный JSON afterlifeCombatProfile", new JsonReadResult(soul.FileExists, combatProfile, soul.Error));
-        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeEntityProfileState.StatePath}", profiles);
+        AddRawOrWarning(blocks, "Полный JSON afterlifeCombatProfile", new JsonReadResult(soul.FileExists, combatProfile, soul.Error), includeRawDiagnostics);
+        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeEntityProfileState.StatePath}", profiles, includeRawDiagnostics);
         return Result(
             command,
             CommandExecutionState.RequiresInput,
@@ -547,12 +555,19 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             $"{GetString(art, "displayName", GetString(art, "artId", "?"))} {GetNumberOrString(art, "tier", "0")}"));
     }
 
-    private static string DescribeFateCards(JsonArray? fateCards)
+    private static string DescribeFateCards(JsonArray? fateCards, bool includeHiddenDiagnostics)
     {
         if (fateCards == null || fateCards.Count == 0)
             return "нет";
 
-        return string.Join("; ", fateCards.OfType<JsonObject>().Select(card =>
+        var visibleCards = fateCards
+            .OfType<JsonObject>()
+            .Where(card => includeHiddenDiagnostics || IsFateCardPlayerVisible(card))
+            .ToList();
+        if (visibleCards.Count == 0)
+            return "нет известных";
+
+        return string.Join("; ", visibleCards.Select(card =>
         {
             var name = GetString(card, "nameRu", GetString(card, "cardId", "?"));
             var status = DescribeFateCardStatus(GetString(card, "status", "locked"));
@@ -999,9 +1014,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     private static int CountNestedArray(JsonArray? owners, string propertyName) =>
         owners?.OfType<JsonObject>().Sum(owner => CountArray(owner, propertyName)) ?? 0;
 
-    private static int CountUnlockedFateCards(JsonArray? profiles) =>
+    private static int CountUnlockedFateCards(JsonArray? profiles, bool includeHiddenDiagnostics) =>
         profiles?.OfType<JsonObject>()
             .SelectMany(profile => (profile["fateCards"] as JsonArray)?.OfType<JsonObject>() ?? [])
+            .Where(card => includeHiddenDiagnostics || IsFateCardPlayerVisible(card))
             .Count(card => string.Equals(GetString(card, "status", ""), "unlocked", StringComparison.OrdinalIgnoreCase)) ?? 0;
 
     private static int CountActiveProfileQuests(JsonArray? profiles) =>
@@ -1075,11 +1091,25 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         }
     }
 
-    private static void AddRawOrWarning(List<UiBlock> blocks, string title, JsonReadResult read)
+    private static bool IsFateCardPlayerVisible(JsonObject card)
+    {
+        var secret = card["isSecret"] is JsonValue secretValue &&
+                     secretValue.TryGetValue<bool>(out var secretBool) &&
+                     secretBool;
+        var status = GetString(card, "status", "");
+        return !secret && !string.Equals(status, "hidden", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void AddRawOrWarning(
+        List<UiBlock> blocks,
+        string title,
+        JsonReadResult read,
+        bool includeRawDiagnostics = true)
     {
         if (read.Node != null)
         {
-            blocks.Add(Raw(title, read.Node));
+            if (includeRawDiagnostics)
+                blocks.Add(Raw(title, read.Node));
             return;
         }
 
