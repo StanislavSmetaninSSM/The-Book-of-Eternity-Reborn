@@ -71,6 +71,7 @@ const shellContextValue: ShellContextValue = {
   setComposerText: () => undefined,
   composerNotice: null,
   submitComposer: () => undefined,
+  submitComposerText: () => undefined,
   commandResult: null,
   isCommandView: false,
   executeCommand: async () => undefined,

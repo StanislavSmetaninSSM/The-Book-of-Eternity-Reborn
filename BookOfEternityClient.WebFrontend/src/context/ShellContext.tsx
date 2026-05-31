@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type FormEvent,
   type ReactNode
@@ -70,6 +71,7 @@ export interface ShellContextValue {
   setComposerText: (value: string) => void;
   composerNotice: string | null;
   submitComposer: (event: FormEvent<HTMLFormElement>) => void;
+  submitComposerText: (text: string) => void;
   commandResult: ExplorerCommandResult | null;
   isCommandView: boolean;
   executeCommand: (command: string) => Promise<void>;
@@ -139,6 +141,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
   const [composerNotice, setComposerNotice] = useState<string | null>(null);
   const [commandResult, setCommandResult] = useState<ExplorerCommandResult | null>(null);
   const [isCommandView, setIsCommandView] = useState(false);
+  const composerSubmissionInFlight = useRef(false);
   const { shellState, loadBrowserState } = useShellState(advancedEnabled);
 
   useEffect(() => {
@@ -195,14 +198,17 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     void loadBrowserState();
   }, [advancedEnabled, loadBrowserState]);
 
-  const submitComposer = useCallback((event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const normalized = composerText.trim();
-    if (!normalized) return;
+  const submitComposerText = useCallback((text: string) => {
+    const normalized = text.trim();
+    if (!normalized || composerSubmissionInFlight.current) return;
+
+    composerSubmissionInFlight.current = true;
 
     if (normalized.startsWith('/')) {
       setComposerTextState('');
-      void executeCommand(normalized);
+      void executeCommand(normalized).finally(() => {
+        composerSubmissionInFlight.current = false;
+      });
       return;
     }
 
@@ -220,8 +226,15 @@ export function ShellProvider({ children }: { children: ReactNode }) {
       }
     }).catch(() => {
       setComposerNotice('Ошибка соединения. Убедитесь, что клиент запущен.');
+    }).finally(() => {
+      composerSubmissionInFlight.current = false;
     });
-  }, [composerText, executeCommand, clearCommandResult, loadBrowserState]);
+  }, [executeCommand, clearCommandResult, loadBrowserState]);
+
+  const submitComposer = useCallback((event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    submitComposerText(composerText);
+  }, [composerText, submitComposerText]);
 
   const value = useMemo<ShellContextValue>(() => ({
     shellState,
@@ -242,6 +255,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     setComposerText,
     composerNotice,
     submitComposer,
+    submitComposerText,
     commandResult,
     isCommandView,
     executeCommand,
@@ -266,6 +280,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     setComposerText,
     composerNotice,
     submitComposer,
+    submitComposerText,
     commandResult,
     isCommandView,
     executeCommand,
