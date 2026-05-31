@@ -3,10 +3,9 @@ import { isSuccess, useShell } from '../context/ShellContext';
 import { CommandAutocomplete } from './CommandAutocomplete';
 
 export function UnifiedInput() {
-  const { composerText, setComposerText, composerNotice, submitComposer, readyState, gameScreen } = useShell();
+  const { composerText, setComposerText, composerNotice, submitComposer, submitComposerText, readyState, gameScreen } = useShell();
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
 
   const coverage = readyState?.commandCoverage;
   const commands = coverage && isSuccess(coverage) ? coverage.data.commands : [];
@@ -23,22 +22,20 @@ export function UnifiedInput() {
     inputRef.current?.focus();
   }
 
-  function handleKeyDown(e: React.KeyboardEvent) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Escape') {
       setShowAutocomplete(false);
       return;
     }
     // Enter without Shift submits form; Shift+Enter inserts newline
     if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.nativeEvent.isComposing) return;
       e.preventDefault();
-      // Close autocomplete if open, but do NOT return — fall through to submit
       if (showAutocomplete) {
         setShowAutocomplete(false);
       }
-      if (composerText.trim() && canSubmit) {
-        // Use requestSubmit to trigger native form submit event, ensuring React
-        // reconciles state before the handler reads composerText (fixes stale closure).
-        formRef.current?.requestSubmit();
+      if (e.currentTarget.value.trim() && canSubmit) {
+        submitComposerText(e.currentTarget.value);
       }
     }
   }
@@ -46,7 +43,7 @@ export function UnifiedInput() {
   return (
     <div className="unified-input">
       {composerNotice && <p className="unified-input__notice">{composerNotice}</p>}
-      <form ref={formRef} className="unified-input__form" onSubmit={submitComposer}>
+      <form className="unified-input__form" onSubmit={submitComposer}>
         <div className="unified-input__wrapper">
           <textarea
             ref={inputRef}

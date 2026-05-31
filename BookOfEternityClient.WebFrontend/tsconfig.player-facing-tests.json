@@ -21,6 +21,7 @@
     "test/playerFacingCommandResult.test.ts",
     "test/appRouteExtraction.test.ts",
     "test/useShellStateSettled.test.ts",
+    "test/unifiedInputSubmitRace.test.ts",
     "test/connectionBanner.test.ts",
     "test/gracefulDegradation.test.ts",
     "test/gameLauncherMenuLayout.test.ts",
