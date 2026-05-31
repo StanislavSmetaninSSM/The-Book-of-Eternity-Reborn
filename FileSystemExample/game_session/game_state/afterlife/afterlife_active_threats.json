@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "threats": [
+    {
+      "threatId": "chaos_soul_hunter_pack_example",
+      "realm": "Chaos Sea",
+      "scopeId": "chaos_black_tide_region",
+      "displayName": "Стая охотников за душами",
+      "threatArchetype": {
+        "motivation": "Consumption",
+        "method": "Opportunistic",
+        "summary": "Охотники выслеживают слабые души по обрывкам клятв и запаху Чернильных Перьев."
+      },
+      "intensity": 4,
+      "currentActivity": {
+        "activityId": "hunt_ink_scent_example_001",
+        "activityName": "Охота по чернильному следу",
+        "activeState": "active",
+        "description": "Стая отслеживает запах Чернильных Перьев у Черного прилива и выбирает момент для нападения.",
+        "totalTimeCostMinutes": 180,
+        "timeSpentMinutes": 60,
+        "currentStepNumber": 1,
+        "totalStepsInActivity": 3,
+        "summary": "Стая идет по запаху свежих Чернильных Перьев.",
+        "startedAtTurn": 44,
+        "targetRef": "player_soul"
+      },
+      "impactProfile": {
+        "primaryTargetType": "Scope",
+        "primaryTargetId": "afterlife_spiritual_conflict",
+        "primaryTargetName": "Духовный бой",
+        "primaryImpact": "Combat",
+        "baseImpactValue": 2,
+        "summary": "Если стая догонит душу, ближайший духовный бой начнется под давлением охоты."
+      },
+      "visibleToPlayer": true,
+      "linkedFactionId": null,
+      "linkedGuardianId": null,
+      "sarefLink": null,
+      "ledger": [
+        {
+          "turnNumber": 43,
+          "summary": "В Черном приливе замечены следы охотников."
+        }
+      ]
+    },
+    {
+      "threatId": "wings_hidden_cell_silver_hall_example",
+      "realm": "Shining Abode",
+      "scopeId": "silver_hall_oath_office",
+      "displayName": "Тихая ячейка в Серебряном Зале",
+      "threatArchetype": {
+        "motivation": "Corruption",
+        "method": "Covert",
+        "summary": "Ячейка ищет чиновников, готовых принять чужую клятву."
+      },
+      "intensity": 6,
+      "currentActivity": {
+        "activityId": "seed_oath_example_001",
+        "activityName": "Посев чужой клятвы",
+        "activeState": "active",
+        "description": "Скрытая ячейка проверяет уязвимые места церемонии присяги.",
+        "totalTimeCostMinutes": 360,
+        "timeSpentMinutes": 90,
+        "currentStepNumber": 1,
+        "totalStepsInActivity": 4,
+        "summary": "Агенты проверяют слабые места в церемонии присяги.",
+        "startedAtTurn": 45,
+        "targetRef": "silver_hall_oath_office"
+      },
+      "impactProfile": {
+        "primaryTargetType": "Faction",
+        "primaryTargetId": "faction_silver_lanterns",
+        "primaryTargetName": "Серебряные Фонари",
+        "primaryImpact": "Politics",
+        "baseImpactValue": 3,
+        "summary": "Может усилить скрытую политическую линию Крыльев после раскрытия."
+      },
+      "visibleToPlayer": false,
+      "linkedFactionId": "faction_wings_of_angels_shadow",
+      "linkedGuardianId": null,
+      "sarefLink": {
+        "role": "wings_cell",
+        "evidenceLevel": "unconfirmed",
+        "visibility": "hidden",
+        "notes": "Связано с Крыльями Ангелов, но игрок пока не знает, что искать."
+      },
+      "ledger": [
+        {
+          "turnNumber": 45,
+          "summary": "GM-only: ячейка впервые связана с чужим оттиском клятвы."
+        }
+      ]
+    }
+  ]
+}

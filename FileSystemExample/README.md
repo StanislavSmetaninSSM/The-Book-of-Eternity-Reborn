@@ -10,7 +10,7 @@ This directory demonstrates the CLI file-based architecture for "The Book of Ete
 game_session/
 ├── input/                    # CLI monitoring entry point
 │   └── turn_request.json     # Turn processing trigger (DEMO)
-├── game_state/               # Distributed game data (35 JSON files)
+├── game_state/               # Distributed game data and state examples
 │   ├── core/                 # Narrative, player status, manifests (4 files)
 │   │   ├── player_status.json (DEMO)
 │   │   └── system_mods.json (DEMO CANONICAL ACTIVE MOD MANIFEST)
@@ -25,6 +25,16 @@ game_session/
 │   ├── meta/                 # Soul System & Guardians (4 files)
 │   │   ├── soul_state.json (DEMO)
 │   │   └── guardians.json (DEMO)
+│   ├── afterlife/            # Afterlife display-state examples
+│   │   ├── afterlife_chronicles.json (DEMO)
+│   │   ├── afterlife_active_threats.json (DEMO)
+│   │   ├── afterlife_global_flags.json (DEMO)
+│   │   ├── afterlife_story_outline.json (DEMO)
+│   │   └── entity_profiles/ (DEMO)
+│   ├── shining_abode/        # Shining Abode display-state examples
+│   │   └── faction_chronicles.json (DEMO)
+│   ├── chaos_sea/            # Chaos Sea display-state examples
+│   │   └── guardian_politics.json (DEMO)
 │   ├── misc/                 # Vehicles & storage (2 files)
 │   └── control/              # Game flow control (3 files)
 │       └── incarnation_world_setup.json (DEMO CLIENT-AUTHORED PENDING SETUP)
@@ -102,6 +112,13 @@ game_session/
 - `inventory/items.json` - Player items and equipment slots  
 - `meta/soul_state.json` - Soul System progression and Soul Relics
 - `meta/guardians.json` - Guardian relationships and reputation
+- `afterlife/afterlife_chronicles.json` - Afterlife external-memory examples with archived events, current consequences, and unresolved private threads
+- `afterlife/afterlife_active_threats.json` - Visible and hidden persistent afterlife threat examples for display filtering
+- `afterlife/afterlife_global_flags.json` - Visible, hidden, and GM-only afterlife global flag examples
+- `afterlife/afterlife_story_outline.json` - Private afterlife Writer's Room planning example
+- `afterlife/entity_profiles/` - Split afterlife entity profile examples covering actor goals, Fate Cards, masks, and relationship gates
+- `shining_abode/faction_chronicles.json` - Shining faction chronicle and political memory examples with visible and hidden entries
+- `chaos_sea/guardian_politics.json` - Chaos Sea Guardian politics examples with known, hidden, and GM-only surfaces
 - `core/system_mods.json` - Canonical active system mods manifest for the GM
 - `control/incarnation_world_setup.json` - Pending pre-incarnation world setup
 

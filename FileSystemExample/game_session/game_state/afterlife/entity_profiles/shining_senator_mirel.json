@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "profiles": [
+    {
+      "actorType": "shining_faction_head",
+      "actorId": "senator_mirel",
+      "displayName": "Сенатор Мирель",
+      "realm": "Shining Abode",
+      "locationName": "Серебряный Зал",
+      "currencies": {
+        "inkFeathers": 36,
+        "lightSparks": 9
+      },
+      "progression": {
+        "enlightenment": {
+          "experience": 24,
+          "tier": 2
+        },
+        "radiance": {
+          "experience": 41,
+          "tier": 3
+        }
+      },
+      "standardArts": {
+        "binding": 2,
+        "maneuver": 1
+      },
+      "specialArts": [
+        {
+          "artId": "silver_senate_oath",
+          "displayName": "Серебряная клятва сената",
+          "ownerActorType": "shining_faction_head",
+          "ownerActorId": "senator_mirel",
+          "baseOperation": "binding",
+          "tier": 2,
+          "costMultiplierPercent": 175,
+          "upgradeCost": {
+            "inkFeathers": 20,
+            "lightSparks": 4
+          },
+          "canTeachPlayer": false,
+          "trainingConditions": [
+            "Требуется политический сан Серебряного Зала."
+          ],
+          "effectSummary": "Связывает цель условиями публичной клятвы и усиливает политические последствия."
+        }
+      ],
+      "customStates": [
+        {
+          "stateId": "foreign_oath_pressure",
+          "stateName": "Давление чужой клятвы",
+          "currentValue": 3,
+          "minValue": 0,
+          "maxValue": 6,
+          "description": "Скрытый след чужой клятвы влияет на решения Мирель.",
+          "progressionRule": {
+            "changePerTurn": 1,
+            "description": "Растет, если ячейка в Серебряном Зале остается нераскрытой."
+          },
+          "thresholds": [
+            {
+              "value": 4,
+              "summary": "Мирель начнет защищать сомнительные церемонии."
+            }
+          ]
+        }
+      ],
+      "fateCards": [
+        {
+          "cardId": "mirel_public_reformer",
+          "nameRu": "Реформатор Серебряного Зала",
+          "status": "available",
+          "isSecret": false,
+          "storyMeaning": "Мирель может стать открытым союзником игрока против тайной ячейки.",
+          "unlockConditions": [
+            "Игрок приносит доказательство чужой клятвы без публичного унижения фракции."
+          ]
+        },
+        {
+          "cardId": "mirel_oath_bound_to_wings",
+          "nameRu": "Клятва за белым пером",
+          "status": "hidden",
+          "isSecret": true,
+          "storyMeaning": "Мирель знает больше о Крыльях Ангелов, чем показывает.",
+          "unlockConditions": [
+            "Reveal-stage proof connects Серебряный Зал to wings_route_hidden_example."
+          ]
+        }
+      ],
+      "goals": {
+        "goalId": "goal_hold_silver_lanterns",
+        "shortTermGoal": "Удержать доверие Серебряных Фонарей после слухов о чужой клятве.",
+        "longTermGoal": "Не дать скрытой ячейке использовать фракцию как политический щит.",
+        "plan": "Публично усилить проверку клятв и тайно выяснить, кто оставил оттиск.",
+        "gmThoughtsSummary": "Мирель боится потерять власть, но еще не решила, предать ли ячейку.",
+        "updatedAtTurn": 46
+      },
+      "personalQuests": [
+        {
+          "questId": "quest_mirel_silver_hearing",
+          "goalId": "goal_hold_silver_lanterns",
+          "title": "Слушание Серебряного Зала",
+          "status": "active",
+          "planSummary": "Проверить доказательства игрока так, чтобы не раскрыть hidden Wings line досрочно.",
+          "successCondition": "Игрок отделяет реальную угрозу от политической паники.",
+          "createdAtTurn": 46
+        }
+      ],
+      "currentActivity": {
+        "activityId": "activity_prepare_silver_hearing",
+        "goalId": "goal_hold_silver_lanterns",
+        "linkedQuestId": "quest_mirel_silver_hearing",
+        "activityType": "political_preparation",
+        "summary": "Мирель собирает закрытое слушание о чужой клятве.",
+        "status": "active",
+        "gmThoughtsSummary": "Она готовит сцену проверки, но хочет контролировать объем раскрытия.",
+        "startedAtTurn": 46
+      },
+      "relationships": [
+        {
+          "relationshipId": "mirel_player_rivalry",
+          "axis": "rivalry",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "value": -51,
+          "relationshipTier": "redemption_required",
+          "relationshipLock": {
+            "lockState": "negative_locked",
+            "direction": "negative",
+            "threshold": -50,
+            "redemptionQuestId": "quest_mirel_silver_hearing",
+            "reason": "Мирель считает игрока угрозой репутации фракции.",
+            "evidence": "Игрок показал доказательство чужой клятвы публично.",
+            "updatedAtTurn": 46
+          },
+          "relationshipGateQuests": [
+            {
+              "questId": "quest_mirel_silver_hearing",
+              "questType": "redemption",
+              "status": "active",
+              "title": "Слушание Серебряного Зала",
+              "sceneSummary": "Игрок может доказать угрозу без уничтожения доверия к фракции.",
+              "successCondition": "Мирель получает доказательство и не теряет лицо перед резидентами.",
+              "gmThoughtsSummary": "Это политический redemption gate, а не обычная проверка репутации.",
+              "updatedAtTurn": 46
+            }
+          ]
+        }
+      ],
+      "activeMaskId": "_true_self_",
+      "masks": [
+        {
+          "maskId": "mask_wings_sympathizer",
+          "displayName": "Покровительница тихих клятв",
+          "publicArchetype": "строгий реформатор",
+          "visiblePersonality": "говорит о порядке, прозрачности и защите слабых фракций",
+          "concealedTruth": "Мирель однажды приняла помощь агента Крыльев и теперь боится старого долга.",
+          "directives": [
+            "Не произносить имя Сарефа первой.",
+            "Смягчать любые расследования Серебряного Зала."
+          ],
+          "revealConditions": [
+            "Игрок докажет связь чужой клятвы с белым пером."
+          ],
+          "deceptionRisk": "high",
+          "linkedThreatId": "wings_hidden_cell_silver_hall_example",
+          "linkedSarefAgentId": "saref_agent_silver_oath",
+          "isRevealed": false,
+          "updatedAtTurn": 46
+        }
+      ],
+      "soulDissipationTier": 0,
+      "progressionStrategy": {
+        "strategyId": "strategy_senator_mirel",
+        "summary": "Сохранять ресурсы на политические binding-искусства и radiance.",
+        "priorityOrder": [
+          "silver_senate_oath",
+          "radiance",
+          "binding"
+        ],
+        "resourceReserve": {
+          "inkFeathers": 10,
+          "lightSparks": 3
+        },
+        "allowedSpends": [
+          "specialArts",
+          "radiance",
+          "standardArts"
+        ]
+      },
+      "ledger": [
+        {
+          "entryId": "profile_ledger_senator_mirel_created",
+          "turnNumber": 46,
+          "reason": "example_profile",
+          "summary": "Профиль создан как FileSystemExample fixture для Shining faction head display filtering."
+        }
+      ]
+    }
+  ]
+}
