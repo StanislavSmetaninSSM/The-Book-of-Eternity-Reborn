@@ -276,6 +276,27 @@ public sealed class AgentConsoleObservationTests
         }
     }
 
+    [Fact]
+    public void LiveInputQueueContractIsDocumentedForFutureApiConsumers()
+    {
+        var doc = ReadRepoFile("docs", "agent-console", "snapshot-event-model.md");
+
+        foreach (var requiredText in new[]
+        {
+            "Issue: #751",
+            "AgentConsoleLiveInputSource",
+            "AgentConsoleActionRequest",
+            "key input",
+            "text line input",
+            "InputAccepted",
+            "InputRejected",
+            "does not expose HTTP endpoints"
+        })
+        {
+            Assert.Contains(requiredText, doc, StringComparison.Ordinal);
+        }
+    }
+
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)
     {
         var renderedAt = new DateTimeOffset(2026, 5, 31, 10, 0, 0, TimeSpan.Zero);
