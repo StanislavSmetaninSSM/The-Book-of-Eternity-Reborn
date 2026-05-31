@@ -113,6 +113,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     .ToList()
             });
 
+            var masksTable = BuildProfileMasksTable(profiles, includeRawDiagnostics);
+            if (masksTable != null)
+                blocks.Add(masksTable);
+
             blocks.Add(new UiTableBlock
             {
                 Title = "Стратегии прокачки",
@@ -599,6 +603,88 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return parts.Count == 0 ? "не указаны" : string.Join(" | ", parts);
     }
 
+    private static UiTableBlock? BuildProfileMasksTable(JsonArray profiles, bool includeHiddenDiagnostics)
+    {
+        var rows = profiles
+            .OfType<JsonObject>()
+            .SelectMany(profile => BuildProfileMaskRows(profile, includeHiddenDiagnostics))
+            .ToList();
+        if (rows.Count == 0)
+            return null;
+
+        return includeHiddenDiagnostics
+            ? new UiTableBlock
+            {
+                Title = "Маски",
+                Columns = ["Сущность", "Маска", "maskId", "Статус", "Публичная роль", "Видимое поведение", "Скрытая истина", "Директивы", "Условия раскрытия", "Связи", "Риск"],
+                Rows = rows
+            }
+            : new UiTableBlock
+            {
+                Title = "Маски",
+                Columns = ["Сущность", "Маска", "Статус", "Публичная роль", "Видимое поведение", "Раскрытая истина", "Риск"],
+                Rows = rows
+            };
+    }
+
+    private static IEnumerable<UiTableRow> BuildProfileMaskRows(JsonObject profile, bool includeHiddenDiagnostics)
+    {
+        if (profile[AfterlifeEntityProfileState.MasksProperty] is not JsonArray masks || masks.Count == 0)
+            yield break;
+
+        var profileName = GetString(profile, "displayName", GetString(profile, "actorId", "Без имени"));
+        var activeMaskId = GetString(profile, AfterlifeEntityProfileState.ActiveMaskIdProperty, "");
+        foreach (var mask in masks.OfType<JsonObject>())
+        {
+            var maskId = GetString(mask, "maskId", "");
+            var isActive = !string.IsNullOrWhiteSpace(maskId) &&
+                           string.Equals(maskId, activeMaskId, StringComparison.OrdinalIgnoreCase);
+            var isRevealed = IsAfterlifeMaskRevealed(mask);
+            if (!includeHiddenDiagnostics && !isActive && !isRevealed)
+                continue;
+
+            var displayName = GetString(mask, "displayName", string.IsNullOrWhiteSpace(maskId) ? "Без названия" : maskId);
+            var publicArchetype = GetString(mask, "publicArchetype", "не указан");
+            var visiblePersonality = GetString(mask, "visiblePersonality", "не указано");
+            var risk = DescribeMaskRisk(GetString(mask, "deceptionRisk", ""));
+            if (includeHiddenDiagnostics)
+            {
+                yield return new UiTableRow
+                {
+                    Cells =
+                    [
+                        profileName,
+                        displayName,
+                        string.IsNullOrWhiteSpace(maskId) ? "не указан" : maskId,
+                        DescribeMaskStatus(isActive, isRevealed),
+                        publicArchetype,
+                        visiblePersonality,
+                        GetString(mask, "concealedTruth", "не указана"),
+                        JoinLiteralStringArray(mask["directives"] as JsonArray),
+                        JoinLiteralStringArray(mask["revealConditions"] as JsonArray),
+                        DescribeMaskLinks(mask),
+                        risk
+                    ]
+                };
+                continue;
+            }
+
+            yield return new UiTableRow
+            {
+                Cells =
+                [
+                    profileName,
+                    displayName,
+                    DescribeMaskStatus(isActive, isRevealed),
+                    publicArchetype,
+                    visiblePersonality,
+                    isRevealed ? GetString(mask, "concealedTruth", "раскрыта, подробности не указаны") : "не раскрыта",
+                    risk
+                ]
+            };
+        }
+    }
+
     private static string DescribeDissipation(JsonObject profile)
     {
         var tier = GetInt(profile?["soulDissipationTier"]);
@@ -609,6 +695,38 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         return tier > 0
             ? $"ОПАСНО: развеивание души {tier}; устойчивость {Math.Max(0, coefficient)}"
             : "не умеет развеивать душу";
+    }
+
+    private static bool IsAfterlifeMaskRevealed(JsonObject mask) =>
+        mask["isRevealed"] is JsonValue value && value.TryGetValue<bool>(out var revealed) && revealed;
+
+    private static string DescribeMaskStatus(bool isActive, bool isRevealed)
+    {
+        var status = isRevealed ? "раскрыта" : "истина не раскрыта";
+        return isActive ? $"активная; {status}" : status;
+    }
+
+    private static string DescribeMaskRisk(string risk) =>
+        risk.Trim().ToLowerInvariant() switch
+        {
+            "low" => "низкий",
+            "medium" => "средний",
+            "high" => "высокий",
+            "critical" => "критический",
+            "" => "не указан",
+            _ => risk
+        };
+
+    private static string DescribeMaskLinks(JsonObject mask)
+    {
+        var links = new List<string>();
+        var linkedThreatId = GetString(mask, "linkedThreatId", "");
+        if (!string.IsNullOrWhiteSpace(linkedThreatId))
+            links.Add($"угроза {linkedThreatId}");
+        var linkedSarefAgentId = GetString(mask, "linkedSarefAgentId", "");
+        if (!string.IsNullOrWhiteSpace(linkedSarefAgentId))
+            links.Add($"агент Сарефа {linkedSarefAgentId}");
+        return links.Count == 0 ? "нет" : string.Join("; ", links);
     }
 
     private static bool IsThreatVisible(JsonObject threat) =>
@@ -1006,6 +1124,18 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             .Select(item => DescribeArt(item!))
             .ToArray();
         return items.Length == 0 ? "нет" : string.Join(", ", items);
+    }
+
+    private static string JoinLiteralStringArray(JsonArray? array)
+    {
+        if (array == null || array.Count == 0)
+            return "нет";
+
+        var items = array
+            .Select(GetNodeString)
+            .Where(static item => !string.IsNullOrWhiteSpace(item))
+            .ToArray();
+        return items.Length == 0 ? "нет" : string.Join("; ", items);
     }
 
     private static int CountProfilesWithDissipation(JsonArray? profiles) =>

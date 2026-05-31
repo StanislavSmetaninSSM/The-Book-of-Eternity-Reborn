@@ -1370,6 +1370,62 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_AfterlifeProfiles_DefaultProjectionShowsKnownMasksWithoutHiddenInternals()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeProfilesMaskProjectionFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Маски", text, StringComparison.Ordinal);
+        Assert.Contains("Хранитель Масок", text, StringComparison.Ordinal);
+        Assert.Contains("Активный посланник", text, StringComparison.Ordinal);
+        Assert.Contains("дипломат", text, StringComparison.Ordinal);
+        Assert.Contains("улыбается и просит доверия", text, StringComparison.Ordinal);
+        Assert.Contains("Раскрытая вывеска", text, StringComparison.Ordinal);
+        Assert.Contains("known_revealed_truth_marker", text, StringComparison.Ordinal);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.DoesNotContain("Скрытый запасной образ", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("hidden_active_truth_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_active_directive_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_active_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_dormant_truth_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_dormant_directive_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_dormant_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_threat_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_saref_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfiles_AdvancedProjectionShowsAllMaskDiagnostics()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeProfilesMaskProjectionFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/afterlife_profiles",
+            AdvancedEnabled: true));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Маски", text, StringComparison.Ordinal);
+        Assert.Contains("Активный посланник", text, StringComparison.Ordinal);
+        Assert.Contains("Раскрытая вывеска", text, StringComparison.Ordinal);
+        Assert.Contains("Скрытый запасной образ", text, StringComparison.Ordinal);
+        Assert.Contains("hidden_active_truth_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_active_directive_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_active_condition_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_dormant_truth_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_dormant_directive_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_dormant_condition_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_threat_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_saref_marker", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_AfterlifeProfiles_DebugProjectionIncludesFullRawState()
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
@@ -2153,6 +2209,77 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "summary": "Хранитель предлагает тёмный след из прошлой жизни.",
               "createdAtTurn": 6,
               "createdAtUtc": "2026-05-20T00:00:00Z"
+            }
+          ]
+        }
+        """);
+    }
+
+    private async Task WriteAfterlifeProfilesMaskProjectionFixtureAsync()
+    {
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_masked_truths",
+              "displayName": "Хранитель Масок",
+              "realm": "Chaos Sea",
+              "locationName": "Театр известных лиц",
+              "currencies": { "inkFeathers": 1, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "tier": 1, "experience": 0 },
+                "radiance": { "tier": 0, "experience": 0 }
+              },
+              "standardArts": { "guard": 1 },
+              "activeMaskId": "mask_active_envoy",
+              "masks": [
+                {
+                  "maskId": "mask_active_envoy",
+                  "displayName": "Активный посланник",
+                  "publicArchetype": "дипломат",
+                  "visiblePersonality": "улыбается и просит доверия",
+                  "concealedTruth": "hidden_active_truth_marker",
+                  "directives": [ "hidden_active_directive_marker" ],
+                  "revealConditions": [ "hidden_active_condition_marker" ],
+                  "deceptionRisk": "high",
+                  "linkedThreatId": "hidden_threat_marker",
+                  "linkedSarefAgentId": "hidden_saref_marker",
+                  "isRevealed": false
+                },
+                {
+                  "maskId": "mask_revealed_sign",
+                  "displayName": "Раскрытая вывеска",
+                  "publicArchetype": "бывший судья",
+                  "visiblePersonality": "говорит прямее после разоблачения",
+                  "concealedTruth": "known_revealed_truth_marker",
+                  "directives": [ "known_revealed_directive_marker" ],
+                  "revealConditions": [ "known_revealed_condition_marker" ],
+                  "deceptionRisk": "medium",
+                  "linkedThreatId": "known_revealed_threat_marker",
+                  "linkedSarefAgentId": "known_revealed_saref_marker",
+                  "isRevealed": true
+                },
+                {
+                  "maskId": "mask_dormant_shadow",
+                  "displayName": "Скрытый запасной образ",
+                  "publicArchetype": "будущий свидетель",
+                  "visiblePersonality": "молчит до сцены раскрытия",
+                  "concealedTruth": "hidden_dormant_truth_marker",
+                  "directives": [ "hidden_dormant_directive_marker" ],
+                  "revealConditions": [ "hidden_dormant_condition_marker" ],
+                  "deceptionRisk": "critical",
+                  "linkedThreatId": "hidden_dormant_threat_marker",
+                  "linkedSarefAgentId": "hidden_dormant_saref_marker",
+                  "isRevealed": false
+                }
+              ],
+              "goals": {
+                "goalId": "goal_masked_truths",
+                "shortTermGoal": "Держать известные лица в порядке"
+              },
+              "soulDissipationTier": 0
             }
           ]
         }
