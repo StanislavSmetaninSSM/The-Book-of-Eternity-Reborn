@@ -316,6 +316,9 @@ public partial class ExplorerMode
                 }
             }
 
+            if (visibleFactions.Count > 0)
+                AppendShiningFactionChronicleOverviewLines(lines, visibleFactions);
+
             if (factionCampaigns.Count > 0 && context != null)
             {
                 lines.Add("");
@@ -421,6 +424,10 @@ public partial class ExplorerMode
 
             if (visibleFactions.Count > 0 && context != null)
                 choices.Add("👥 Осмотреть политическое состояние фракции");
+            if (visibleFactions.Any(HasShiningFactionPoliticalMemory))
+                choices.Add("📖 Осмотреть хроники, влияние и ресурсы фракций");
+            if (_stateManager.Settings.ShowGmThoughts && visibleFactions.Any(HasShiningFactionPoliticalMemory))
+                choices.Add("🧠 Осмотреть strategicMemory/resourceLedger фракций");
             if (foundingRequests.Count > 0 || realignmentRequests.Count > 0 || leadershipRequests.Count > 0)
                 choices.Add("📝 Осмотреть ожидающие политические запросы");
             if ((context?.Root["factionFoundingReceipts"] as JsonArray)?.Count > 0 ||
@@ -452,6 +459,20 @@ public partial class ExplorerMode
                 continue;
             }
 
+            if (choice.Contains("хроники, влияние и ресурсы", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowShiningFactionChronicleMemoryInspectionPanel(context, includeAdvancedDiagnostics: false);
+                WaitForKey();
+                continue;
+            }
+
+            if (choice.Contains("strategicMemory/resourceLedger", StringComparison.OrdinalIgnoreCase))
+            {
+                ShowShiningFactionChronicleMemoryInspectionPanel(context, includeAdvancedDiagnostics: true);
+                WaitForKey();
+                continue;
+            }
+
             if (choice.Contains("ожидающие политические запросы", StringComparison.OrdinalIgnoreCase))
             {
                 ShowShiningPendingPoliticalInspectionPanel(context, foundingRequests, realignmentRequests, leadershipRequests);
@@ -476,6 +497,253 @@ public partial class ExplorerMode
                 await HandleShiningFactionCampaignStartAsync(context);
         }
     }
+
+    private static void AppendShiningFactionChronicleOverviewLines(List<string> lines, IReadOnlyList<JsonObject> visibleFactions)
+    {
+        var wroteHeader = false;
+        foreach (var faction in visibleFactions)
+        {
+            var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "фракция";
+            var chronicleEntries = EnumeratePlayerVisibleShiningChronicleEntries(faction)
+                .OrderByDescending(entry => GetNodeInt(entry["turnNumber"]))
+                .ThenBy(entry => GetNodeString(entry["entryId"]), StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            var influenceZones = EnumeratePlayerVisibleShiningInfluenceZones(faction)
+                .OrderByDescending(zone => GetNodeInt(zone["updatedAtTurn"]))
+                .ThenBy(zone => GetNodeString(zone["zoneId"]), StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            var resourceBalances = EnumerateCurrentShiningResourceBalances(faction)
+                .OrderBy(entry => TranslateShiningResourceType(GetNodeString(entry["resourceType"]) ?? "resource"), StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (chronicleEntries.Count == 0 && influenceZones.Count == 0 && resourceBalances.Count == 0)
+                continue;
+
+            if (!wroteHeader)
+            {
+                lines.Add("");
+                lines.Add("[bold]Хроники, влияние и ресурсы фракций:[/] [dim](игровая сводка без скрытой диагностики)[/]");
+                wroteHeader = true;
+            }
+
+            lines.Add($"  • {Markup.Escape(factionName)}");
+            foreach (var entry in chronicleEntries)
+            {
+                var turn = GetNodeInt(entry["turnNumber"]);
+                var summary = GetNodeString(entry["summary"]) ?? "без сводки";
+                var eventType = TranslateShiningFactionEventType(GetNodeString(entry["eventType"]) ?? "событие");
+                lines.Add($"    Хроника: ход {turn}, {Markup.Escape(eventType)} — {Markup.Escape(summary)}");
+            }
+
+            foreach (var zone in influenceZones)
+            {
+                var zoneName = GetNodeString(zone["displayName"]) ?? GetNodeString(zone["zoneId"]) ?? "зона";
+                var influence = GetNodeInt(zone["influenceValue"]);
+                var control = GetNodeInt(zone["controlLevel"]);
+                var publicStatus = GetNodeString(zone["publicStatus"]) ?? "не указано";
+                var summary = GetNodeString(zone["summary"]);
+                lines.Add($"    Влияние: {Markup.Escape(zoneName)} — влияние {influence}, контроль {control}, статус {Markup.Escape(publicStatus)}");
+                if (!string.IsNullOrWhiteSpace(summary))
+                    lines.Add($"      Сводка: [dim]{Markup.Escape(summary!)}[/]");
+            }
+
+            foreach (var entry in resourceBalances)
+            {
+                var resource = TranslateShiningResourceType(GetNodeString(entry["resourceType"]) ?? "resource");
+                var balance = GetNodeInt(entry["balanceAfter"]);
+                var delta = DescribeShiningSignedDelta(entry["delta"]);
+                var turn = GetNodeInt(entry["turnNumber"]);
+                lines.Add($"    Ресурсы: {Markup.Escape(resource)} — баланс {balance}, последнее изменение {Markup.Escape(delta)}, ход {turn}");
+            }
+        }
+    }
+
+    private void ShowShiningFactionChronicleMemoryInspectionPanel(ShiningContext context, bool includeAdvancedDiagnostics)
+    {
+        var visibleFactions = SarefMainStoryState.GetPlayerVisibleShiningFactions(context.Root).ToList();
+        var lines = new List<string>
+        {
+            "[bold yellow]Хроники, влияние и ресурсы фракций[/]",
+            includeAdvancedDiagnostics
+                ? "[dim]Расширенный режим: показаны полные strategicMemory/resourceLedger данные фракций.[/]"
+                : "[dim]Обычный режим: ключевые события, текущее влияние и ресурсный баланс без внутренней диагностики.[/]"
+        };
+
+        foreach (var faction in visibleFactions.Where(HasShiningFactionPoliticalMemory))
+        {
+            var factionName = GetNodeString(faction["charter"]?["factionName"]) ?? GetNodeString(faction["factionId"]) ?? "фракция";
+            var factionId = GetNodeString(faction["factionId"]) ?? "?";
+            lines.Add("");
+            lines.Add($"[bold]{Markup.Escape(factionName)}[/] [dim]factionId={Markup.Escape(factionId)}[/]");
+
+            var chronicleEntries = EnumeratePlayerVisibleShiningChronicleEntries(faction)
+                .OrderByDescending(entry => GetNodeInt(entry["turnNumber"]))
+                .ThenBy(entry => GetNodeString(entry["entryId"]), StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (chronicleEntries.Count > 0)
+            {
+                lines.Add("  [bold]Хроника:[/]");
+                foreach (var entry in chronicleEntries)
+                {
+                    var summary = GetNodeString(entry["summary"]) ?? "без сводки";
+                    lines.Add($"    • ход {GetNodeInt(entry["turnNumber"])} — {Markup.Escape(TranslateShiningFactionEventType(GetNodeString(entry["eventType"]) ?? "событие"))}: {Markup.Escape(summary)}");
+                    if (entry["consequences"] is JsonArray consequences)
+                    {
+                        foreach (var consequence in consequences.OfType<JsonValue>()
+                                     .Select(node => node.TryGetValue<string>(out var value) ? value?.Trim() ?? string.Empty : string.Empty)
+                                     .Where(value => !string.IsNullOrWhiteSpace(value) && !IsHiddenShiningMemoryText(value)))
+                        {
+                            lines.Add($"      ✓ [dim]{Markup.Escape(consequence)}[/]");
+                        }
+                    }
+                }
+            }
+
+            var influenceZones = EnumeratePlayerVisibleShiningInfluenceZones(faction)
+                .OrderByDescending(zone => GetNodeInt(zone["updatedAtTurn"]))
+                .ThenBy(zone => GetNodeString(zone["zoneId"]), StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (influenceZones.Count > 0)
+            {
+                lines.Add("  [bold]Влияние:[/]");
+                foreach (var zone in influenceZones)
+                {
+                    var zoneName = GetNodeString(zone["displayName"]) ?? GetNodeString(zone["zoneId"]) ?? "зона";
+                    lines.Add($"    • {Markup.Escape(zoneName)} — влияние {GetNodeInt(zone["influenceValue"])}, контроль {GetNodeInt(zone["controlLevel"])}, статус {Markup.Escape(GetNodeString(zone["publicStatus"]) ?? "не указано")}, ход {GetNodeInt(zone["updatedAtTurn"])}");
+                    var summary = GetNodeString(zone["summary"]);
+                    if (!string.IsNullOrWhiteSpace(summary))
+                        lines.Add($"      {Markup.Escape(summary!)}");
+                }
+            }
+
+            var resourceLedgerEntries = EnumeratePlayerVisibleShiningResourceLedgerEntries(faction)
+                .OrderByDescending(entry => GetNodeInt(entry["turnNumber"]))
+                .ThenBy(entry => GetNodeString(entry["entryId"]), StringComparer.OrdinalIgnoreCase)
+                .ToList();
+            if (resourceLedgerEntries.Count > 0)
+            {
+                lines.Add("  [bold]Ресурсы:[/]");
+                foreach (var entry in resourceLedgerEntries)
+                {
+                    var resource = TranslateShiningResourceType(GetNodeString(entry["resourceType"]) ?? "resource");
+                    var reason = GetNodeString(entry["reason"]);
+                    lines.Add($"    • {Markup.Escape(resource)} — баланс {GetNodeInt(entry["balanceAfter"])}, изменение {Markup.Escape(DescribeShiningSignedDelta(entry["delta"]))}, ход {GetNodeInt(entry["turnNumber"])}");
+                    if (!string.IsNullOrWhiteSpace(reason))
+                        lines.Add($"      Причина: [dim]{Markup.Escape(reason!)}[/]");
+                }
+            }
+
+            if (includeAdvancedDiagnostics)
+            {
+                lines.Add("  [bold red]Полная диагностика strategicMemory/resourceLedger:[/]");
+                if (faction[ShiningAbodeState.FactionStrategicMemoryProperty] is JsonObject strategicMemory)
+                    lines.Add($"    strategicMemory: {Markup.Escape(strategicMemory.ToJsonString(new JsonSerializerOptions { WriteIndented = true }))}");
+                if (faction[ShiningAbodeState.FactionResourceLedgerProperty] is JsonArray resourceLedger)
+                    lines.Add($"    resourceLedger: {Markup.Escape(resourceLedger.ToJsonString(new JsonSerializerOptions { WriteIndented = true }))}");
+            }
+        }
+
+        if (lines.Count <= 2)
+            lines.Add("Нет сохранённых хроник, влияния или ресурсного баланса по раскрытым фракциям.");
+
+        Clear();
+        Write(new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
+        {
+            Header = new PanelHeader(" 📖 Хроники фракций ", Justify.Center),
+            Border = BoxBorder.Rounded,
+            BorderStyle = new Style(includeAdvancedDiagnostics ? Color.Red : Color.Orange1),
+            Padding = new Padding(2, 1),
+            Expand = true
+        });
+    }
+
+    private static bool HasShiningFactionPoliticalMemory(JsonObject faction) =>
+        (faction[ShiningAbodeState.FactionChronicleProperty] as JsonArray)?.OfType<JsonObject>().Any() == true ||
+        (faction[ShiningAbodeState.FactionInfluenceProperty] as JsonArray)?.OfType<JsonObject>().Any() == true ||
+        faction[ShiningAbodeState.FactionStrategicMemoryProperty] is JsonObject ||
+        (faction[ShiningAbodeState.FactionResourceLedgerProperty] as JsonArray)?.OfType<JsonObject>().Any() == true;
+
+    private static IEnumerable<JsonObject> EnumeratePlayerVisibleShiningChronicleEntries(JsonObject faction) =>
+        EnumerateShiningObjects(faction[ShiningAbodeState.FactionChronicleProperty] as JsonArray)
+            .Where(IsPlayerVisibleShiningMemoryObject);
+
+    private static IEnumerable<JsonObject> EnumeratePlayerVisibleShiningInfluenceZones(JsonObject faction) =>
+        EnumerateShiningObjects(faction[ShiningAbodeState.FactionInfluenceProperty] as JsonArray)
+            .Where(zone => !IsHiddenShiningMemoryText(GetNodeString(zone["publicStatus"])) && IsPlayerVisibleShiningMemoryObject(zone));
+
+    private static IEnumerable<JsonObject> EnumeratePlayerVisibleShiningResourceLedgerEntries(JsonObject faction) =>
+        EnumerateShiningObjects(faction[ShiningAbodeState.FactionResourceLedgerProperty] as JsonArray)
+            .Where(IsPlayerVisibleShiningMemoryObject);
+
+    private static IEnumerable<JsonObject> EnumerateCurrentShiningResourceBalances(JsonObject faction) =>
+        EnumeratePlayerVisibleShiningResourceLedgerEntries(faction)
+            .GroupBy(entry => GetNodeString(entry["resourceType"]) ?? "resource", StringComparer.OrdinalIgnoreCase)
+            .Select(group => group
+                .OrderByDescending(entry => GetNodeInt(entry["turnNumber"]))
+                .ThenByDescending(entry => GetNodeString(entry["entryId"]), StringComparer.OrdinalIgnoreCase)
+                .First());
+
+    private static IEnumerable<JsonObject> EnumerateShiningObjects(JsonArray? array) =>
+        array?.OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>();
+
+    private static bool IsPlayerVisibleShiningMemoryObject(JsonObject entry)
+    {
+        if (IsFalseShiningFlag(entry["isPlayerVisible"]) || IsFalseShiningFlag(entry["playerVisible"]))
+            return false;
+
+        return !IsHiddenShiningMemoryText(GetNodeString(entry["visibility"]));
+    }
+
+    private static bool IsFalseShiningFlag(JsonNode? node) =>
+        node is JsonValue value &&
+        value.TryGetValue<bool>(out var flag) &&
+        !flag;
+
+    private static bool IsHiddenShiningMemoryText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var normalized = value.Trim();
+        return string.Equals(normalized, "hidden", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "gm_only", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "secret", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "private", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "internal", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "faction-internal", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string DescribeShiningSignedDelta(JsonNode? node)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue >= 0 ? $"+{intValue}" : intValue.ToString();
+            if (value.TryGetValue<long>(out var longValue))
+                return longValue >= 0 ? $"+{longValue}" : longValue.ToString();
+            if (value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text))
+                return text.Trim();
+        }
+
+        return "0";
+    }
+
+    private static string TranslateShiningResourceType(string value) => value switch
+    {
+        "lightSparks" or "light_sparks" => "Искры Света",
+        "inkFeathers" or "ink_feathers" => "Чернильные Перья",
+        _ => value
+    };
+
+    private static string TranslateShiningFactionEventType(string value) => value switch
+    {
+        "public_aid" => "публичная помощь",
+        "founding" => "основание",
+        "realignment" => "переход",
+        "leadership" or "leadership_transition" => "смена власти",
+        "resource_shift" => "ресурсный сдвиг",
+        _ => value
+    };
 
     private static string? GetNodeString(JsonNode? node)
     {

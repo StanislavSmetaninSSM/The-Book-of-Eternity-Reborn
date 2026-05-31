@@ -128,6 +128,23 @@ public sealed class AfterlifeShiningPlayerFacingSourceGuardTests
     }
 
     [Fact]
+    public void ShiningPoliticsOverview_MustExposeFactionChroniclesInfluenceAndResourceMemory()
+    {
+        var source = ReadSource("ExplorerMode.Afterlife.ShiningAbode.cs");
+
+        Assert.Contains("Хроники, влияние и ресурсы фракций", source, StringComparison.Ordinal);
+        Assert.Contains("AppendShiningFactionChronicleOverviewLines", source, StringComparison.Ordinal);
+        Assert.Contains("ShowShiningFactionChronicleMemoryInspectionPanel", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningAbodeState.FactionChronicleProperty", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningAbodeState.FactionInfluenceProperty", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningAbodeState.FactionStrategicMemoryProperty", source, StringComparison.Ordinal);
+        Assert.Contains("ShiningAbodeState.FactionResourceLedgerProperty", source, StringComparison.Ordinal);
+        Assert.Contains("strategicMemory/resourceLedger", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("chronicleEntries.Take(", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("resourceLedgerEntries.Take(", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShiningTradePreviewAndDuplicateConflict_MustExposeFullConsequences()
     {
         var tradeSource = ReadSource("ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs");
