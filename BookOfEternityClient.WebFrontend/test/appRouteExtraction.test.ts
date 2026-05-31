@@ -2,41 +2,35 @@ import type {
   BrowserApiResult,
   BrowserCommandCoverageDto
 } from '../src/api/contracts.js';
-import type { ComposerMode } from '../src/components/Composer.js';
 import type { BrowserShellState, ShellContextValue } from '../src/context/ShellContext.js';
 import { isSuccess } from '../src/context/ShellContext.js';
 
 const extractedModules = {
-  homeRoute: null as unknown as typeof import('../src/routes/HomeRoute.js').default,
-  gameRoute: null as unknown as typeof import('../src/routes/GameRoute.js').default,
-  soulRoute: null as unknown as typeof import('../src/routes/SoulRoute.js').default,
-  worldRoute: null as unknown as typeof import('../src/routes/WorldRoute.js').default,
-  journalRoute: null as unknown as typeof import('../src/routes/JournalRoute.js').default,
-  inventoryRoute: null as unknown as typeof import('../src/routes/InventoryRoute.js').default,
-  mediaRoute: null as unknown as typeof import('../src/routes/MediaRoute.js').default,
-  settingsRoute: null as unknown as typeof import('../src/routes/SettingsRoute.js').default,
-  actionCard: null as unknown as typeof import('../src/components/ActionCard.js').ActionCard,
-  actionPalette: null as unknown as typeof import('../src/components/ActionPalette.js').ActionPalette,
-  composer: null as unknown as typeof import('../src/components/Composer.js').Composer,
+  sceneView: null as unknown as typeof import('../src/components/SceneView.js').SceneView,
+  statusView: null as unknown as typeof import('../src/components/StatusView.js').StatusView,
+  helpView: null as unknown as typeof import('../src/components/HelpView.js').HelpView,
+  settingsView: null as unknown as typeof import('../src/components/SettingsView.js').SettingsView,
+  tabBar: null as unknown as typeof import('../src/components/TabBar.js').TabBar,
+  unifiedInput: null as unknown as typeof import('../src/components/UnifiedInput.js').UnifiedInput,
   commandResult: null as unknown as typeof import('../src/components/CommandResult.js').ActionCommandResult,
+  commandResultView: null as unknown as typeof import('../src/components/CommandResultView.js').CommandResultView,
+  gameLauncher: null as unknown as typeof import('../src/components/GameLauncher.js').GameLauncher,
   promptForm: null as unknown as typeof import('../src/components/PromptForm.js').PromptForm,
-  rebornSystemsPanel: null as unknown as typeof import('../src/components/RebornSystemsPanel.js').RebornSystemsPanel,
   qteScenePanel: null as unknown as typeof import('../src/components/QteScenePanel.js').QteScenePanel,
   audioPanel: null as unknown as typeof import('../src/components/AudioPanel.js').AudioPanel,
-  playerStatusSidebar: null as unknown as typeof import('../src/components/PlayerStatusSidebar.js').PlayerStatusSidebar,
   advancedDiagnostics: null as unknown as typeof import('../src/components/AdvancedDiagnostics.js').AdvancedDiagnosticsPanel
 };
 
 const shellContextValue = null as unknown as ShellContextValue;
-const composerState: Pick<ShellContextValue, 'composerText' | 'setComposerText' | 'composerNotice' | 'submitComposer'> = shellContextValue;
-const composerMode: ComposerMode = 'prose';
+const composerState: Pick<ShellContextValue, 'composerText' | 'setComposerText' | 'composerNotice' | 'submitComposer' | 'submitComposerText'> = shellContextValue;
+const activeTabState: Pick<ShellContextValue, 'activeTab' | 'setActiveTab'> = shellContextValue;
 
 const readyShellState = null as unknown as Extract<BrowserShellState, { status: 'ready' }>;
 const commandCoverage = null as BrowserApiResult<BrowserCommandCoverageDto> | null;
 
 void extractedModules;
 void composerState;
-void composerMode;
+void activeTabState;
 void readyShellState;
 void commandCoverage;
 void isSuccess;

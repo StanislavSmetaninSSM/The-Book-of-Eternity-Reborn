@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { resolveRouteShortcut, routeNav } from '../src/components/navBarConfig';
+import { resolveTabShortcut, tabNav } from '../src/components/tabBarConfig';
 
 const cwd = process.cwd();
 const frontendDir = basename(cwd) === 'BookOfEternityClient.WebFrontend'
@@ -12,63 +12,67 @@ function readSource(...relativePath: string[]): string {
   return readFileSync(join(frontendDir, ...relativePath), 'utf-8');
 }
 
-describe('sidebar navigation source', () => {
-  it('extends nav config with grouped items', () => {
-    const navConfig = readSource('src', 'components', 'navBarConfig.ts');
+describe('tab navigation source', () => {
+  it('defines the current four-tab player shell contract', () => {
+    const navConfig = readSource('src', 'components', 'tabBarConfig.ts');
 
-    expect(navConfig).toContain('export interface NavItem');
-    expect(navConfig).toContain("group: 'primary' | 'secondary';");
-    expect(routeNav).toEqual([
-      { id: 'home', glyph: '📖', label: 'Главная', shortcut: '1', group: 'primary' },
-      { id: 'game', glyph: '🔥', label: 'Игра', shortcut: '2', group: 'primary' },
-      { id: 'soul', glyph: '🕯️', label: 'Душа', shortcut: '3', group: 'primary' },
-      { id: 'world', glyph: '🗺️', label: 'Мир', shortcut: '4', group: 'primary' },
-      { id: 'journal', glyph: '📜', label: 'Журнал', shortcut: '5', group: 'primary' },
-      { id: 'inventory', glyph: '🎒', label: 'Инвентарь', shortcut: '6', group: 'primary' },
-      { id: 'media', glyph: '🖼️', label: 'Медиа', shortcut: '7', group: 'secondary' },
-      { id: 'settings', glyph: '⚙️', label: 'Настройки', shortcut: '8', group: 'secondary' }
+    expect(navConfig).toContain('export interface TabNavItem');
+    expect(navConfig).toContain('id: TabId;');
+    expect(tabNav).toEqual([
+      { id: 'scene', icon: '📖', label: 'Сцена', shortcut: '1' },
+      { id: 'status', icon: '📊', label: 'Статус', shortcut: '2' },
+      { id: 'help', icon: '❓', label: 'Помощь', shortcut: '3' },
+      { id: 'settings', icon: '⚙️', label: 'Настройки', shortcut: '4' }
     ]);
-    expect(resolveRouteShortcut('1')).toBe('home');
-    expect(resolveRouteShortcut('8')).toBe('settings');
-    expect(resolveRouteShortcut('0')).toBeNull();
-    expect(resolveRouteShortcut('x')).toBeNull();
+    expect(resolveTabShortcut('1')).toBe('scene');
+    expect(resolveTabShortcut('4')).toBe('settings');
+    expect(resolveTabShortcut('0')).toBeNull();
+    expect(resolveTabShortcut('x')).toBeNull();
   });
 
-  it('defines the sidebar component with grouped sections', () => {
-    const sidebarPath = join(frontendDir, 'src', 'components', 'Sidebar.tsx');
+  it('defines the tab bar component without reviving the old sidebar route grid', () => {
+    const tabBarPath = join(frontendDir, 'src', 'components', 'TabBar.tsx');
 
-    expect(existsSync(sidebarPath)).toBe(true);
+    expect(existsSync(tabBarPath)).toBe(true);
 
-    const sidebar = readFileSync(sidebarPath, 'utf-8');
-    expect(sidebar).toContain("const primary = routeNav.filter(r => r.group === 'primary');");
-    expect(sidebar).toContain("const secondary = routeNav.filter(r => r.group === 'secondary');");
-    expect(sidebar).toContain('<nav className="sidebar" aria-label="Разделы игры">');
-    expect(sidebar).toContain('<span className="sidebar__logo-icon">{realmTheme.icon}</span>');
-    expect(sidebar).toContain('<div className="sidebar__primary">');
-    expect(sidebar).toContain('<div className="sidebar__secondary">');
-    expect(sidebar).toContain('aria-current={activeRoute === item.id ? \'page\' : undefined}');
+    const tabBar = readFileSync(tabBarPath, 'utf-8');
+    expect(tabBar).toContain("import { resolveTabShortcut, tabNav } from './tabBarConfig';");
+    expect(tabBar).toContain('<nav className="tab-bar" role="tablist" aria-label="Навигация">');
+    expect(tabBar).toContain('tabNav.map((tab)');
+    expect(tabBar).toContain('aria-selected={activeTab === tab.id}');
+    expect(tabBar).toContain('onClick={() => setActiveTab(tab.id)}');
+    expect(tabBar).not.toContain('routeNav');
+    expect(tabBar).not.toContain('route-grid');
+    expect(tabBar).not.toContain('className="sidebar"');
   });
 
   it('handles keyboard shortcuts while ignoring text entry targets', () => {
-    const sidebar = readSource('src', 'components', 'Sidebar.tsx');
+    const tabBar = readSource('src', 'components', 'TabBar.tsx');
 
-    expect(sidebar).toContain('target instanceof HTMLInputElement');
-    expect(sidebar).toContain('target instanceof HTMLTextAreaElement');
-    expect(sidebar).toContain('target instanceof HTMLSelectElement');
-    expect(sidebar).toContain('target instanceof HTMLElement && target.isContentEditable');
-    expect(sidebar).toContain('isShortcutBlockedTarget(event.target) || event.ctrlKey || event.altKey || event.metaKey');
-    expect(sidebar).toContain("document.addEventListener('keydown', handleKeyDown);");
+    expect(tabBar).toContain('target instanceof HTMLInputElement');
+    expect(tabBar).toContain('target instanceof HTMLTextAreaElement');
+    expect(tabBar).toContain('target instanceof HTMLSelectElement');
+    expect(tabBar).toContain('target instanceof HTMLElement && target.isContentEditable');
+    expect(tabBar).toContain('isShortcutBlockedTarget(event.target) || event.ctrlKey || event.altKey || event.metaKey');
+    expect(tabBar).toContain("document.addEventListener('keydown', handleKeyDown);");
+    expect(tabBar).toContain('const tabId = resolveTabShortcut(event.key);');
   });
 
-  it('creates cinematic sidebar styles', () => {
-    const sidebarCssPath = join(frontendDir, 'src', 'styles', 'sidebar.css');
+  it('keeps tab bar styles in the command UI stylesheet', () => {
+    const commandUiCssPath = join(frontendDir, 'src', 'styles', 'command-ui.css');
 
-    expect(existsSync(sidebarCssPath)).toBe(true);
+    expect(existsSync(commandUiCssPath)).toBe(true);
 
-    const styles = readFileSync(sidebarCssPath, 'utf-8');
-    expect(styles).toContain('.sidebar {');
-    expect(styles).toContain('width: var(--sidebar-width);');
-    expect(styles).toContain('.sidebar__item.is-active::before {');
-    expect(styles).toContain('@media (max-width: 640px) {');
+    const styles = readFileSync(commandUiCssPath, 'utf-8');
+    expect(styles).toContain('.tab-bar {');
+    expect(styles).toContain('.tab-bar__tab {');
+    expect(styles).toContain('.tab-bar__tab.is-active');
+
+    const componentStyles = readSource('src', 'styles', 'components.css');
+    expect(componentStyles).not.toContain('.nav-bar');
+    expect(componentStyles).not.toContain('NavBar');
+
+    const motionStyles = readSource('src', 'styles', 'motion.css');
+    expect(motionStyles).not.toContain('.nav-bar');
   });
 });

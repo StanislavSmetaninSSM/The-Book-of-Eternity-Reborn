@@ -90,10 +90,13 @@ describe('realm theming integration', () => {
     expect(shellContext).not.toContain("accent: '#d8b36a'");
   });
 
-  it('renders the current realm label inside the realm badge', () => {
-    const navBar = readSource('src', 'components', 'NavBar.tsx');
+  it('keeps realm ownership on the shell instead of the tab contract', () => {
+    const appShell = readSource('src', 'App.tsx');
+    const tabBar = readSource('src', 'components', 'TabBar.tsx');
 
-    expect(navBar).toContain('<span className="realm-badge">');
-    expect(navBar).toContain('{realmTheme.icon} {realmTheme.label}');
+    expect(appShell).toContain('data-theme-key={realmTheme.key}');
+    expect(tabBar).toContain('gameScreen.world.turnNumber');
+    expect(tabBar).toContain("gameScreen.world.location || '—'");
+    expect(tabBar).not.toContain('realm-badge');
   });
 });

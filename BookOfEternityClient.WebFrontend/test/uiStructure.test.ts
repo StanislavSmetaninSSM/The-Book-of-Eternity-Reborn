@@ -18,64 +18,53 @@ function assertIncludes(source: string, expected: string, description: string) {
 
 const app = readSource('App.tsx');
 const appWithoutBlockComments = app.replace(/\/\*[\s\S]*?\*\//g, '');
-if (appWithoutBlockComments.includes('route-grid--primary') || appWithoutBlockComments.includes('route-grid--utility')) {
-  throw new Error('App.tsx should not render the old route-grid dashboard layout.');
+for (const staleSnippet of ['route-grid--primary', 'route-grid--utility', 'workspace-grid', '<Sidebar />', './routes/']) {
+  if (appWithoutBlockComments.includes(staleSnippet)) {
+    throw new Error(`App.tsx should not render the old route/dashboard shell: ${staleSnippet}`);
+  }
 }
-assertIncludes(app, "import { Sidebar } from './components/Sidebar';", 'App.tsx should import Sidebar.');
-assertIncludes(app, '<Sidebar />', 'App.tsx should render Sidebar.');
+assertIncludes(app, "import { ConnectionBanner } from './components/ConnectionBanner';", 'App.tsx should import ConnectionBanner.');
+assertIncludes(app, "import { TabBar } from './components/TabBar';", 'App.tsx should import TabBar.');
+assertIncludes(app, "import { SceneView } from './components/SceneView';", 'App.tsx should import SceneView.');
+assertIncludes(app, "import { StatusView } from './components/StatusView';", 'App.tsx should import StatusView.');
+assertIncludes(app, "import { HelpView } from './components/HelpView';", 'App.tsx should import HelpView.');
+assertIncludes(app, "import { SettingsView } from './components/SettingsView';", 'App.tsx should import SettingsView.');
+assertIncludes(app, "import { UnifiedInput } from './components/UnifiedInput';", 'App.tsx should import UnifiedInput.');
+assertIncludes(app, '<ConnectionBanner />', 'App.tsx should render ConnectionBanner.');
+assertIncludes(app, '<TabBar />', 'App.tsx should render TabBar.');
+assertIncludes(app, '<section className="content-area" aria-live="polite">', 'App.tsx should render the current content area.');
+assertIncludes(app, '<UnifiedInput />', 'App.tsx should render UnifiedInput as the default command surface.');
+assertIncludes(app, "case 'scene': return <SceneView />;", 'TabContent should route scene tab to SceneView.');
+assertIncludes(app, "case 'status': return <StatusView />;", 'TabContent should route status tab to StatusView.');
+assertIncludes(app, "case 'help': return <HelpView />;", 'TabContent should route help tab to HelpView.');
+assertIncludes(app, "case 'settings': return <SettingsView />;", 'TabContent should route settings tab to SettingsView.');
 
-const sidebar = readSource('components', 'Sidebar.tsx');
-if (!sidebar.includes('className="sidebar"')) {
-  throw new Error('Sidebar.tsx should render the sidebar component class.');
-}
+const tabBar = readSource('components', 'TabBar.tsx');
+assertIncludes(tabBar, '<nav className="tab-bar" role="tablist" aria-label="Навигация">', 'TabBar should expose tablist navigation.');
+assertIncludes(tabBar, 'tabNav.map((tab)', 'TabBar should render the shared tab navigation contract.');
+assertIncludes(tabBar, 'aria-selected={activeTab === tab.id}', 'TabBar should expose the active tab to assistive tech.');
+assertIncludes(tabBar, 'setActiveTab(tab.id)', 'TabBar should switch tabs directly.');
 
-const composer = readSource('components', 'Composer.tsx');
-if (!composer.includes('composer-container')) {
-  throw new Error('Composer.tsx should render the composer-container class.');
-}
-
-const homeRoute = readSource('routes', 'HomeRoute.tsx');
-assertIncludes(homeRoute, "import { SceneHero } from '../components/SceneHero';", 'HomeRoute should import SceneHero.');
-assertIncludes(homeRoute, '<SceneHero', 'HomeRoute should render SceneHero above the launcher.');
-assertIncludes(homeRoute, 'eyebrow="Книга Вечности"', 'HomeRoute should use the book eyebrow in SceneHero.');
-assertIncludes(homeRoute, 'title="Перерождение"', 'HomeRoute should use the rebirth title in SceneHero.');
-assertIncludes(homeRoute, 'subtitle="Бесконечное странствие души через жизни, смерти и перерождения"', 'HomeRoute should use the rebirth subtitle in SceneHero.');
-assertIncludes(homeRoute, '<GameLauncher menu={readyState.menu.data} />', 'HomeRoute should keep the launcher after SceneHero.');
-
-const gameRoute = readSource('routes', 'GameRoute.tsx');
-if (!gameRoute.includes('Composer')) {
-  throw new Error('GameRoute.tsx should render the Composer component.');
-}
-assertIncludes(gameRoute, "import type { BrowserGameScreenDto } from '../api/contracts';", 'GameRoute should import BrowserGameScreenDto for TurnStateCard typing.');
-assertIncludes(gameRoute, 'formatTurnLifecycleActionDescription', 'GameRoute should format recommended turn actions.');
-assertIncludes(gameRoute, '<TurnStateCard turnState={game.turnState} advancedEnabled={advancedEnabled} />', 'GameRoute should render the consolidated turn state card.');
-assertIncludes(gameRoute, '<h2>{game.theme.icon} Последний нарратив</h2>', 'GameRoute should keep a narrative heading without duplicating the SceneHero title.');
-assertIncludes(gameRoute, "const isWaitingForGm = turnState.phase === 'gm-turn' || turnState.phase === 'waiting-for-gm' || turnState.state === 'gm-turn';", 'TurnStateCard should classify GM-waiting states explicitly.');
-assertIncludes(gameRoute, "const needsRepair = turnState.severity === 'error' || turnState.severity === 'repair' || turnState.validationState === 'invalid';", 'TurnStateCard should classify repair-needed states explicitly.');
-assertIncludes(gameRoute, "const playerActions = turnState.recommendedActions.filter(a => a.surface === 'player-default');", 'TurnStateCard should only show player-default recommended actions.');
-assertIncludes(gameRoute, '<details className="turn-state-card__phases">', 'TurnStateCard should hide known phases behind details in advanced mode.');
-if (gameRoute.includes('TurnLifecycleActions') || gameRoute.includes('formatQteStateLabel') || gameRoute.includes('turn-status-compact') || gameRoute.includes('Быстрая сцена:')) {
-  throw new Error('GameRoute should remove the compact turn lifecycle/QTE presentation in favor of TurnStateCard.');
+const sceneView = readSource('components', 'SceneView.tsx');
+assertIncludes(sceneView, "import { SceneHero } from './SceneHero';", 'SceneView should import SceneHero.');
+assertIncludes(sceneView, "import { CommandResultView } from './CommandResultView';", 'SceneView should import CommandResultView.');
+assertIncludes(sceneView, '<SceneHero', 'SceneView should render the scene hero.');
+assertIncludes(sceneView, 'className="scene-quick-actions"', 'SceneView should expose player-default quick actions.');
+assertIncludes(sceneView, 'isCommandView', 'SceneView should swap to command results after slash commands.');
+if (sceneView.includes('ActionPalette') || sceneView.includes('<Composer') || sceneView.includes("from './Composer'")) {
+  throw new Error('SceneView should not revive the old action palette or composer components.');
 }
 
-const componentsCss = readSource('styles', 'components.css');
-for (const selector of [
-  '.turn-state-card {',
-  '.turn-state-card--waiting {',
-  '.turn-state-card--repair {',
-  '.turn-state-card--normal {',
-  '.turn-state-card__header {',
-  '.turn-state-card__guidance {',
-  '.turn-state-card__phases {',
-  '.turn-state-card__phases summary {'
-]) {
-  assertIncludes(componentsCss, selector, 'components.css should style the turn state card variants.');
-}
+const unifiedInput = readSource('components', 'UnifiedInput.tsx');
+assertIncludes(unifiedInput, 'className="unified-input"', 'UnifiedInput should render the current input shell.');
+assertIncludes(unifiedInput, 'submitComposerText(e.currentTarget.value);', 'UnifiedInput should submit Enter without moving gameplay logic into React.');
+assertIncludes(unifiedInput, '<CommandAutocomplete', 'UnifiedInput should keep slash command autocomplete available.');
 
-const worldRoute = readSource('routes', 'WorldRoute.tsx');
-if (!worldRoute.includes('action-catalog-toggle')) {
-  throw new Error('WorldRoute.tsx should use the action-catalog-toggle container.');
-}
-if (!worldRoute.includes('showAllActions')) {
-  throw new Error('WorldRoute.tsx should keep the action catalog collapsed behind showAllActions state.');
+const settingsView = readSource('components', 'SettingsView.tsx');
+assertIncludes(settingsView, 'Расширенный режим', 'SettingsView should keep advanced mode explicit and secondary.');
+assertIncludes(settingsView, 'Показывать технические данные', 'SettingsView should keep raw technical details behind advanced mode.');
+
+const commandUiCss = readSource('styles', 'command-ui.css');
+for (const selector of ['.tab-bar {', '.content-area {', '.scene-view {', '.status-view {', '.help-view {', '.settings-view {', '.unified-input {']) {
+  assertIncludes(commandUiCss, selector, 'command-ui.css should style the current minimalist shell.');
 }
