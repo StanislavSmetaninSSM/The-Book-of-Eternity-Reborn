@@ -8,6 +8,7 @@ public partial class ExplorerMode
 {
     private async Task ShowAfterlifeEntityProfilesAsync()
     {
+        var includeGmDiagnostics = _stateManager.Settings.ShowGmThoughts;
         if (!_stateManager.CurrentState.IsInAfterlifeRealm)
         {
             ShowEmptyPanel("Профили сущностей посмертия", "Профили сущностей посмертия доступны только в Море Хаоса и Сияющей Обители.");
@@ -21,7 +22,7 @@ public partial class ExplorerMode
             ShowEmptyPanel(
                 "Профили сущностей посмертия",
                 $"{AfterlifeEntityProfileState.StatePath} повреждён ({read.Error}). Сначала выполните repair состояния.");
-            if (!string.IsNullOrWhiteSpace(read.RawPayload))
+            if (includeGmDiagnostics && !string.IsNullOrWhiteSpace(read.RawPayload))
                 WriteJsonAuditPanel($"Raw {AfterlifeEntityProfileState.StatePath}", JsonValue.Create(read.RawPayload), Color.Red);
             return;
         }
@@ -46,7 +47,7 @@ public partial class ExplorerMode
         foreach (var profile in profiles.OfType<JsonObject>()
                      .OrderBy(profile => AfterlifeEntityProfileState.GetNodeString(profile["displayName"]) ?? string.Empty, StringComparer.OrdinalIgnoreCase))
         {
-            AppendAfterlifeEntityProfile(lines, profile);
+            AppendAfterlifeEntityProfile(lines, profile, includeGmDiagnostics);
             lines.Add("");
         }
 
@@ -60,13 +61,13 @@ public partial class ExplorerMode
             Expand = true
         });
 
-        if (read.Root != null)
+        if (includeGmDiagnostics && read.Root != null)
             WriteJsonAuditPanel($"Полный JSON {AfterlifeEntityProfileState.StatePath}", read.Root, Color.Cyan1);
 
         WaitForKey();
     }
 
-    private void AppendAfterlifeEntityProfile(List<string> lines, JsonObject profile)
+    private void AppendAfterlifeEntityProfile(List<string> lines, JsonObject profile, bool includeGmDiagnostics)
     {
         var displayName = AfterlifeEntityProfileState.GetNodeString(profile["displayName"]) ?? "Без имени";
         var actorType = AfterlifeEntityProfileState.GetNodeString(profile["actorType"]) ?? "?";
@@ -95,10 +96,10 @@ public partial class ExplorerMode
         AppendAfterlifeEntityStandardArts(lines, profile["standardArts"] as JsonObject);
         AppendAfterlifeEntitySpecialArts(lines, profile["specialArts"] as JsonArray);
         AppendAfterlifeEntityCustomStates(lines, profile[AfterlifeEntityProfileState.CustomStatesProperty] as JsonArray);
-        AppendAfterlifeEntityFateCards(lines, profile["fateCards"] as JsonArray);
+        AppendAfterlifeEntityFateCards(lines, profile["fateCards"] as JsonArray, includeGmDiagnostics);
         AppendAfterlifeEntityRelationships(lines, profile[AfterlifeEntityProfileState.RelationshipsProperty] as JsonArray);
         AppendAfterlifeEntityMasks(lines, profile);
-        AppendAfterlifeEntityAgency(lines, profile);
+        AppendAfterlifeEntityAgency(lines, profile, includeGmDiagnostics);
 
         var dissipationTier = AfterlifeEntityProfileState.GetNodeInt(profile["soulDissipationTier"]);
         var stabilityCoefficient = AfterlifeEntityProfileState.ResolveSoulStabilityCoefficient(profile);
@@ -203,13 +204,23 @@ public partial class ExplorerMode
         }
     }
 
-    private static void AppendAfterlifeEntityFateCards(List<string> lines, JsonArray? fateCards)
+    private static void AppendAfterlifeEntityFateCards(
+        List<string> lines,
+        JsonArray? fateCards,
+        bool includeGmDiagnostics)
     {
         if (fateCards == null || fateCards.Count == 0)
             return;
 
+        var visibleCards = fateCards
+            .OfType<JsonObject>()
+            .Where(card => includeGmDiagnostics || IsFateCardPlayerVisible(card))
+            .ToList();
+        if (visibleCards.Count == 0)
+            return;
+
         lines.Add("  • Карты судьбы:");
-        foreach (var card in fateCards.OfType<JsonObject>())
+        foreach (var card in visibleCards)
         {
             var name = AfterlifeEntityProfileState.GetNodeString(card["nameRu"]) ??
                        AfterlifeEntityProfileState.GetNodeString(card["cardId"]) ??
@@ -336,7 +347,10 @@ public partial class ExplorerMode
             lines.Add($"      [dim]Связанный агент Сарефа: {Markup.Escape(linkedSarefAgentId)}[/]");
     }
 
-    private static void AppendAfterlifeEntityAgency(List<string> lines, JsonObject profile)
+    private static void AppendAfterlifeEntityAgency(
+        List<string> lines,
+        JsonObject profile,
+        bool includeGmDiagnostics)
     {
         var goals = profile["goals"] as JsonObject;
         var currentActivity = profile["currentActivity"] as JsonObject;
@@ -358,7 +372,7 @@ public partial class ExplorerMode
                 lines.Add($"    - Дальняя цель: {Markup.Escape(longTerm)}");
             if (!string.IsNullOrWhiteSpace(plan))
                 lines.Add($"    - План: [dim]{Markup.Escape(plan)}[/]");
-            if (!string.IsNullOrWhiteSpace(thoughts))
+            if (includeGmDiagnostics && !string.IsNullOrWhiteSpace(thoughts))
                 lines.Add($"    - Мотивация: [dim]{Markup.Escape(thoughts)}[/]");
         }
 
@@ -388,7 +402,7 @@ public partial class ExplorerMode
                           "не описано";
             var thoughts = AfterlifeEntityProfileState.GetNodeString(currentActivity["gmThoughtsSummary"]);
             lines.Add($"    - Сейчас делает: [white]{Markup.Escape(summary)}[/]");
-            if (!string.IsNullOrWhiteSpace(thoughts))
+            if (includeGmDiagnostics && !string.IsNullOrWhiteSpace(thoughts))
                 lines.Add($"      [dim]Почему: {Markup.Escape(thoughts)}[/]");
         }
 
@@ -451,6 +465,15 @@ public partial class ExplorerMode
             "critical" => "критический",
             _ => risk ?? "не указан"
         };
+
+    private static bool IsFateCardPlayerVisible(JsonObject card)
+    {
+        var secret = card["isSecret"] is JsonValue secretValue &&
+                     secretValue.TryGetValue<bool>(out var secretBool) &&
+                     secretBool;
+        var status = AfterlifeEntityProfileState.GetNodeString(card["status"]);
+        return !secret && !string.Equals(status, "hidden", StringComparison.OrdinalIgnoreCase);
+    }
 
     private static int CountFateCardEffects(JsonObject card) =>
         AfterlifeEntityProfileState.FateCardMechanicalEffectProperties.Sum(propertyName =>

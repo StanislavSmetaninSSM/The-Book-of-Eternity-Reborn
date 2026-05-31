@@ -74,7 +74,7 @@ This glossary fixes the Russian player/GM labels for afterlife combat terms. Can
 | `/spiritual_combat_help` | `/духовный_бой` | Shows the player-facing combat guide: commands, tactics, Spiritual Arts, position, dice, bounded criticals, rewards, and upgrades. |
 | `/spiritual_action` | `/духовное_действие` | Sends one explicit tagged action inside an active conflict. Ordinary roleplay prose is still valid when it clearly acts inside the active conflict. |
 | `/spiritual_arts` | `/духовные_искусства` | Shows ranks, art tiers, `Средоточие Души`, upgrade costs, and performs client-owned Spiritual Art / Spirit Focus upgrades. |
-| `/afterlife_profiles` | `/профили_загробья` | Shows Профили сущностей посмертия: actor type, resources, progression, `standardArts`, `specialArts`, `customStates`, `soulDissipationTier`, danger warnings, `progressionStrategy`, `lastAutoProgressionCycleKey`, and latest `progressionLedger` entry. |
+| `/afterlife_profiles` | `/профили_загробья` | Shows player-facing Профили сущностей посмертия: actor type, resources, progression, `standardArts`, `specialArts`, visible `fateCards[]`, `customStates`, visible goals/activity summaries, known mask/persona summaries, `soulDissipationTier`, danger warnings, `progressionStrategy`, `lastAutoProgressionCycleKey`, and latest `progressionLedger` entry. Full raw profile JSON, `gmThoughtsSummary`, hidden Fate Cards, and unrevealed mask internals are diagnostics only, available through `ShowGmThoughts` or browser advanced mode. |
 
 ## Spiritual Art Operation Rules
 

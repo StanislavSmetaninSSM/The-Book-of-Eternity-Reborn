@@ -1299,6 +1299,49 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         AssertContainsGuardianPoliticsRawState(gmThoughtsResult);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfiles_DefaultProjectionOmitsHiddenProfileRawState()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeProfilesRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Contains("Хранитель Открытой Розы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открытая карта клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Открытая цель: защитить игрока", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_actor_motivation_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_activity_motivation_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_fate_card_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_card_story_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_concealed_truth_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_mask_directive_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_saref_agent_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeProfiles_DebugProjectionIncludesFullRawState()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeProfilesRawLeakFixtureAsync();
+
+        var advancedRequest = JsonSerializer.Deserialize<ExplorerWebCommandRequest>(
+            """{"command":"/afterlife_profiles","advancedEnabled":true}""",
+            JsonOptions)!;
+        var advancedResult = await _service.ExecuteAsync(advancedRequest);
+
+        AssertContainsAfterlifeProfilesRawState(advancedResult);
+
+        _stateManager.Settings.ShowGmThoughts = true;
+        var gmThoughtsResult = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+
+        AssertContainsAfterlifeProfilesRawState(gmThoughtsResult);
+    }
+
     [Theory]
     [InlineData("/shining_abode", CommandExecutionState.Completed)]
     [InlineData("/shining_politics", CommandExecutionState.Completed)]
@@ -1971,6 +2014,83 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         """);
     }
 
+    private async Task WriteAfterlifeProfilesRawLeakFixtureAsync()
+    {
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_open_rose",
+              "displayName": "Хранитель Открытой Розы",
+              "realm": "Chaos Sea",
+              "locationName": "Открытая обитель",
+              "currencies": { "inkFeathers": 12, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "tier": 1, "experience": 10 },
+                "radiance": { "tier": 0, "experience": 0 }
+              },
+              "standardArts": { "guard": 1 },
+              "fateCards": [
+                {
+                  "cardId": "visible_oath_card",
+                  "nameRu": "Открытая карта клятвы",
+                  "status": "available",
+                  "storyMeaning": "Игрок знает, что клятва может открыть обучение."
+                },
+                {
+                  "cardId": "hidden_saref_card",
+                  "nameRu": "Секретная карта Сарефа hidden_fate_card_marker",
+                  "status": "hidden",
+                  "isSecret": true,
+                  "storyMeaning": "hidden_card_story_marker",
+                  "unlockConditions": [ "hidden_condition_marker" ]
+                }
+              ],
+              "activeMaskId": "mask_courteous_envoy",
+              "masks": [
+                {
+                  "maskId": "mask_courteous_envoy",
+                  "displayName": "Учтивый посредник",
+                  "publicArchetype": "мягкий переговорщик",
+                  "visiblePersonality": "улыбается и говорит о мире",
+                  "concealedTruth": "hidden_concealed_truth_marker",
+                  "directives": [ "hidden_mask_directive_marker" ],
+                  "linkedSarefAgentId": "hidden_saref_agent_marker",
+                  "isRevealed": false
+                }
+              ],
+              "goals": {
+                "goalId": "goal_open_guard",
+                "shortTermGoal": "Открытая цель: защитить игрока",
+                "longTermGoal": "Сохранить обитель",
+                "plan": "Говорить только известные игроку части плана.",
+                "gmThoughtsSummary": "hidden_actor_motivation_marker"
+              },
+              "personalQuests": [
+                {
+                  "questId": "quest_visible_guard",
+                  "goalId": "goal_open_guard",
+                  "status": "active",
+                  "title": "Видимый личный квест",
+                  "planSummary": "Проверить клятву без раскрытия тайных мотивов."
+                }
+              ],
+              "currentActivity": {
+                "activityId": "activity_visible_watch",
+                "goalId": "goal_open_guard",
+                "linkedQuestId": "quest_visible_guard",
+                "summary": "Собирает видимые сведения",
+                "gmThoughtsSummary": "hidden_activity_motivation_marker"
+              },
+              "soulDissipationTier": 0
+            }
+          ]
+        }
+        """);
+    }
+
     private static string CollectBlockText(IEnumerable<UiBlock> blocks)
     {
         var parts = new List<string>();
@@ -1998,6 +2118,23 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("secret_project_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("is_player_visible_false_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("internal_motivation_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void AssertContainsAfterlifeProfilesRawState(ExplorerCommandResult result)
+    {
+        var raw = Assert.Single(result.Blocks.OfType<UiRawJsonBlock>());
+        var rawText = raw.Json?.ToJsonString(JsonOptions) ?? string.Empty;
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(AfterlifeEntityProfileState.StatePath, raw.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_actor_motivation_marker", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_activity_motivation_marker", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_fate_card_marker", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_card_story_marker", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_concealed_truth_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_mask_directive_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_saref_agent_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void CollectBlockText(UiBlock block, List<string> parts)

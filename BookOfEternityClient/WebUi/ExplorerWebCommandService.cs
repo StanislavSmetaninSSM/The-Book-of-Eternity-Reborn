@@ -111,7 +111,8 @@ public sealed class ExplorerWebCommandService
             ExplorerCommandBrowserHandlerKind.AfterlifeCombat => await ExplorerAfterlifeCombatCommandResultBuilder.TryBuildAsync(
                 commandToken,
                 _stateManager,
-                _fs),
+                _fs,
+                request.AdvancedEnabled == true),
             ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn => await ExplorerLifecycleLocalTurnCommandResultBuilder.TryBuildAsync(
                 commandToken,
                 _stateManager,
