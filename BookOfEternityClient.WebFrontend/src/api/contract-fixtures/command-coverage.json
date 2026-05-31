@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "descriptorCount": 69,
-    "aliasCount": 153,
+    "descriptorCount": 70,
+    "aliasCount": 155,
     "subcommandCount": 8,
-    "browserExecutableCount": 69,
-    "playerDefaultActionCount": 62,
+    "browserExecutableCount": 70,
+    "playerDefaultActionCount": 63,
     "advancedOnlyActionCount": 7,
     "mutatingCommandCount": 13,
     "commandsNeedingFollowUpCount": 0
@@ -1389,6 +1389,25 @@
       "formMode": "none",
       "primaryActionLabel": "\u0423\u0433\u0440\u043E\u0437\u044B \u043F\u043E\u0441\u043C\u0435\u0440\u0442\u0438\u044F",
       "primaryCommand": "/afterlife_threats",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": ""
+    },
+    {
+      "id": "afterlife_chronicles",
+      "aliases": [
+        "/afterlife_chronicles",
+        "/\u0445\u0440\u043E\u043D\u0438\u043A\u0438_\u043F\u043E\u0441\u043C\u0435\u0440\u0442\u0438\u044F"
+      ],
+      "group": "AfterlifeCombatAndEntities",
+      "mutationMode": "ReadOnly",
+      "browserStatus": "ReadOnlyParity",
+      "handlerKind": "AfterlifeCombat",
+      "uxDecision": "contextual-button",
+      "surface": "player-default",
+      "formMode": "none",
+      "primaryActionLabel": "\u0425\u0440\u043E\u043D\u0438\u043A\u0438 \u043F\u043E\u0441\u043C\u0435\u0440\u0442\u0438\u044F",
+      "primaryCommand": "/afterlife_chronicles",
       "subcommands": [],
       "followUpIssue": "",
       "reason": ""

@@ -304,6 +304,19 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
             Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries[command].Status);
     }
 
+    [Fact]
+    public void AfterlifeChroniclesCommand_IsReadOnlyBrowserParity()
+    {
+        var descriptor = ExplorerCommandCatalog.Require("afterlife_chronicles");
+
+        Assert.Equal(ExplorerCommandGroup.AfterlifeCombatAndEntities, descriptor.Group);
+        Assert.Equal(ExplorerCommandMutationMode.ReadOnly, descriptor.MutationMode);
+        Assert.Equal(ExplorerCommandBrowserHandlerKind.AfterlifeCombat, descriptor.BrowserHandlerKind);
+        Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, descriptor.BrowserStatus);
+        Assert.Contains("/afterlife_chronicles", descriptor.Aliases);
+        Assert.Contains("/хроники_посмертия", descriptor.Aliases);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_rootPath))

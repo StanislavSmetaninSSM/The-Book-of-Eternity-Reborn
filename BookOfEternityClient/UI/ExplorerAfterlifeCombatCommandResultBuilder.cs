@@ -14,6 +14,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
     {
         Profiles,
         Threats,
+        Chronicles,
         Inbox,
         Conflict,
         CombatLog,
@@ -28,6 +29,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             ["/профили_загробья"] = CommandKind.Profiles,
             ["/afterlife_threats"] = CommandKind.Threats,
             ["/угрозы_загробья"] = CommandKind.Threats,
+            ["/afterlife_chronicles"] = CommandKind.Chronicles,
+            ["/хроники_посмертия"] = CommandKind.Chronicles,
             ["/afterlife_inbox"] = CommandKind.Inbox,
             ["/уведомления_загробья"] = CommandKind.Inbox,
             ["/spiritual_conflict"] = CommandKind.Conflict,
@@ -59,6 +62,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             CommandKind.Profiles => await BuildProfiles(normalizedCommand, fs, includeRawDiagnostics),
             CommandKind.Threats => await BuildThreats(normalizedCommand, fs),
+            CommandKind.Chronicles => await BuildChronicles(normalizedCommand, fs, includeRawDiagnostics),
             CommandKind.Inbox => await BuildInbox(normalizedCommand, fs),
             CommandKind.Conflict => await BuildConflict(normalizedCommand, fs),
             CommandKind.CombatLog => await BuildCombatLog(normalizedCommand, fs),
@@ -204,6 +208,62 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             blocks.Add(Message("Видимых угроз нет", "Скрытые угрозы, если они есть, не раскрываются обычному интерфейсу до сюжетного раскрытия."));
         }
+
+        return Completed(command, blocks);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildChronicles(
+        string command,
+        FileSystemManager fs,
+        bool includeRawDiagnostics)
+    {
+        var read = await ReadJson(fs, AfterlifeChronicleState.StatePath);
+        var chronicles = read.Node?[AfterlifeChronicleState.ChroniclesProperty] as JsonArray;
+        var visibleChronicles = chronicles?
+            .OfType<JsonObject>()
+            .Where(IsChronicleVisibleToPlayer)
+            .OrderByDescending(GetChronicleLastUpdatedTurn)
+            .ThenBy(static chronicle => GetString(chronicle, "displayName", GetString(chronicle, "chronicleId", string.Empty)), StringComparer.OrdinalIgnoreCase)
+            .ToList() ?? [];
+        var totalChronicles = chronicles?.OfType<JsonObject>().Count() ?? 0;
+        var hiddenCount = Math.Max(0, totalChronicles - visibleChronicles.Count);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Хроники посмертия",
+                Grid(
+                    ("Источник", AfterlifeChronicleState.StatePath),
+                    ("Хроник", totalChronicles.ToString()),
+                    ("Показано игроку", visibleChronicles.Count.ToString()),
+                    ("Скрытых/служебных записей не показано", hiddenCount.ToString()),
+                    ("Последний ход", DescribeChronicleLatestTurn(visibleChronicles))))
+        };
+
+        if (read.FileExists && read.Node == null)
+        {
+            blocks.Add(Message("Файл хроник повреждён", $"Не удалось прочитать {AfterlifeChronicleState.StatePath}: {read.Error ?? "ошибка JSON"}"));
+            return Completed(command, blocks);
+        }
+
+        if (visibleChronicles.Count == 0)
+        {
+            blocks.Add(Message(
+                "Хроники пока пусты",
+                read.FileExists
+                    ? "В afterlife_chronicles.json пока нет записей, видимых игроку."
+                    : "Файл afterlife_chronicles.json пока не создан; когда ГМ запишет события посмертия, они появятся здесь."));
+        }
+        else
+        {
+            blocks.Add(BuildChronicleSummaryTable(visibleChronicles));
+
+            var timeline = BuildChronicleTimelineTable(visibleChronicles);
+            if (timeline.Rows.Count > 0)
+                blocks.Add(timeline);
+        }
+
+        if (includeRawDiagnostics && read.Node != null)
+            blocks.Add(Raw($"Полный JSON {AfterlifeChronicleState.StatePath}", read.Node));
 
         return Completed(command, blocks);
     }
@@ -1105,6 +1165,293 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "progression" => "прогрессия",
             _ => impactType
         };
+
+    private static UiTableBlock BuildChronicleSummaryTable(IReadOnlyList<JsonObject> chronicles) =>
+        new()
+        {
+            Title = "Ключевые события посмертия",
+            Columns = ["Хроника", "Область", "Ход", "Последнее событие", "Участники", "Последствия", "Открытые нити"],
+            Rows = chronicles.Select(chronicle => new UiTableRow
+            {
+                Cells =
+                [
+                    SafeChronicleText(GetString(chronicle, "displayName", GetString(chronicle, "chronicleId", "Без названия"))),
+                    DescribeChronicleScope(chronicle),
+                    GetNumberOrString(chronicle, "lastUpdatedTurn", "?"),
+                    SafeChronicleText(GetString(chronicle, "lastEventsDescription", "нет")),
+                    DescribeChronicleParticipants(chronicle),
+                    DescribeChronicleStringArray(chronicle, "persistentConsequences"),
+                    DescribeChronicleStringArray(chronicle, "openThreads")
+                ]
+            }).ToList()
+        };
+
+    private static UiTableBlock BuildChronicleTimelineTable(IReadOnlyList<JsonObject> chronicles)
+    {
+        var rows = new List<UiTableRow>();
+        foreach (var chronicle in chronicles)
+        {
+            var chronicleName = SafeChronicleText(GetString(chronicle, "displayName", GetString(chronicle, "chronicleId", "Хроника")));
+            foreach (var eventText in EnumerateChronicleTextArray(chronicle, "eventDescriptions"))
+            {
+                rows.Add(new UiTableRow
+                {
+                    Cells =
+                    [
+                        DescribeChronicleEventTurn(chronicle, eventText, preferLastUpdatedTurn: false),
+                        chronicleName,
+                        eventText
+                    ]
+                });
+            }
+
+            var lastEvents = SafeChronicleText(GetString(chronicle, "lastEventsDescription", ""));
+            if (!string.IsNullOrWhiteSpace(lastEvents))
+            {
+                rows.Add(new UiTableRow
+                {
+                    Cells =
+                    [
+                        DescribeChronicleEventTurn(chronicle, lastEvents, preferLastUpdatedTurn: true),
+                        chronicleName,
+                        lastEvents
+                    ]
+                });
+            }
+        }
+
+        return new UiTableBlock
+        {
+            Title = "Хронология",
+            Columns = ["Ход", "Хроника", "Событие"],
+            Rows = rows
+                .OrderByDescending(static row => TryParseInt(row.Cells[0], out var turn) ? turn : 0)
+                .ThenBy(static row => row.Cells[1], StringComparer.OrdinalIgnoreCase)
+                .ToList()
+        };
+    }
+
+    private static bool IsChronicleVisibleToPlayer(JsonObject chronicle)
+    {
+        if (!IsChronicleObjectVisibleToPlayer(chronicle))
+            return false;
+
+        return IsPlayerSafeChronicleText(GetString(chronicle, "chronicleId", "")) &&
+               IsPlayerSafeChronicleText(GetString(chronicle, "displayName", "")) &&
+               IsPlayerSafeChronicleText(GetString(chronicle, "scopeType", "")) &&
+               IsPlayerSafeChronicleText(GetString(chronicle, "scopeId", ""));
+    }
+
+    private static bool IsChronicleObjectVisibleToPlayer(JsonObject obj)
+    {
+        if (IsFalseFlag(obj["isPlayerVisible"]) ||
+            IsFalseFlag(obj["playerVisible"]) ||
+            IsFalseFlag(obj["visibleToPlayer"]) ||
+            IsFalseFlag(obj["visibleForPlayer"]))
+            return false;
+
+        if (IsTrueFlag(obj["isHidden"]) ||
+            IsTrueFlag(obj["hidden"]) ||
+            IsTrueFlag(obj["isSecret"]) ||
+            IsTrueFlag(obj["secret"]) ||
+            IsTrueFlag(obj["gmOnly"]) ||
+            IsTrueFlag(obj["isGmOnly"]) ||
+            IsTrueFlag(obj["internal"]) ||
+            IsTrueFlag(obj["isInternal"]))
+            return false;
+
+        var visibility = GetString(obj, "visibility", "");
+        if (IsChronicleHiddenVisibility(visibility))
+            return false;
+
+        var audience = GetString(obj, "audience", "");
+        return !IsChronicleHiddenVisibility(audience);
+    }
+
+    private static string DescribeChronicleLatestTurn(IReadOnlyList<JsonObject> chronicles)
+    {
+        var latest = chronicles.Select(GetChronicleLastUpdatedTurn).DefaultIfEmpty(0).Max();
+        return latest > 0 ? latest.ToString() : "нет";
+    }
+
+    private static int GetChronicleLastUpdatedTurn(JsonObject chronicle) =>
+        TryGetInt(chronicle["lastUpdatedTurn"], out var turn) ? turn : 0;
+
+    private static string DescribeChronicleScope(JsonObject chronicle)
+    {
+        var scopeType = SafeChronicleText(GetString(chronicle, "scopeType", ""));
+        var scopeId = SafeChronicleText(GetString(chronicle, "scopeId", ""));
+        if (string.IsNullOrWhiteSpace(scopeType) && string.IsNullOrWhiteSpace(scopeId))
+            return "не указано";
+        if (string.IsNullOrWhiteSpace(scopeType))
+            return scopeId;
+        if (string.IsNullOrWhiteSpace(scopeId))
+            return scopeType;
+        return $"{scopeType}:{scopeId}";
+    }
+
+    private static string DescribeChronicleParticipants(JsonObject chronicle)
+    {
+        var participants = new List<string>();
+        foreach (var propertyName in new[] { "participants", "participantActors", "linkedActors", "actors" })
+        {
+            if (IsChronicleHiddenPropertyName(propertyName) || chronicle[propertyName] is not JsonArray array)
+                continue;
+
+            foreach (var item in array)
+            {
+                var participant = DescribeChronicleParticipant(item);
+                if (!string.IsNullOrWhiteSpace(participant))
+                    participants.Add(participant);
+            }
+        }
+
+        var distinct = participants
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        return distinct.Length == 0 ? "нет" : string.Join("; ", distinct);
+    }
+
+    private static string? DescribeChronicleParticipant(JsonNode? item)
+    {
+        if (item is JsonValue)
+        {
+            var text = SafeChronicleText(GetNodeString(item) ?? string.Empty);
+            return string.IsNullOrWhiteSpace(text) ? null : text;
+        }
+
+        if (item is not JsonObject obj || !IsChronicleObjectVisibleToPlayer(obj))
+            return null;
+
+        var name = SafeChronicleText(GetString(obj, "displayName", GetString(obj, "name", GetString(obj, "actorId", ""))));
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+
+        var actorType = SafeChronicleText(GetString(obj, "actorType", GetString(obj, "type", "")));
+        return string.IsNullOrWhiteSpace(actorType)
+            ? name
+            : $"{name} ({DescribeActorType(actorType)})";
+    }
+
+    private static string DescribeChronicleStringArray(JsonObject chronicle, string propertyName)
+    {
+        if (IsChronicleHiddenPropertyName(propertyName))
+            return "нет";
+
+        var items = EnumerateChronicleTextArray(chronicle, propertyName).ToArray();
+        return items.Length == 0 ? "нет" : string.Join("; ", items);
+    }
+
+    private static IEnumerable<string> EnumerateChronicleTextArray(JsonObject chronicle, string propertyName)
+    {
+        if (chronicle[propertyName] is not JsonArray array)
+            yield break;
+
+        foreach (var item in array)
+        {
+            var text = SafeChronicleText(GetNodeString(item) ?? string.Empty);
+            if (!string.IsNullOrWhiteSpace(text))
+                yield return text;
+        }
+    }
+
+    private static string DescribeChronicleEventTurn(JsonObject chronicle, string eventText, bool preferLastUpdatedTurn)
+    {
+        if (preferLastUpdatedTurn && GetChronicleLastUpdatedTurn(chronicle) > 0)
+            return GetChronicleLastUpdatedTurn(chronicle).ToString();
+
+        if (TryParseTurnFromChronicleText(eventText, out var parsed))
+            return parsed.ToString();
+
+        return GetChronicleLastUpdatedTurn(chronicle) > 0
+            ? GetChronicleLastUpdatedTurn(chronicle).ToString()
+            : "?";
+    }
+
+    private static bool TryParseTurnFromChronicleText(string text, out int turn)
+    {
+        turn = 0;
+        var markerIndex = text.IndexOf("[Turn ", StringComparison.OrdinalIgnoreCase);
+        if (markerIndex < 0)
+            return false;
+
+        var start = markerIndex + "[Turn ".Length;
+        var end = start;
+        while (end < text.Length && char.IsDigit(text[end]))
+            end++;
+
+        return end > start && int.TryParse(text[start..end], out turn);
+    }
+
+    private static string SafeChronicleText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var trimmed = value.Trim();
+        return IsPlayerSafeChronicleText(trimmed) ? trimmed : string.Empty;
+    }
+
+    private static bool IsPlayerSafeChronicleText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return true;
+
+        var lower = value.Trim().ToLowerInvariant();
+        return !lower.Contains("hidden_", StringComparison.Ordinal) &&
+               !lower.Contains("secret_", StringComparison.Ordinal) &&
+               !lower.Contains("internal_", StringComparison.Ordinal) &&
+               !lower.Contains("gm_only", StringComparison.Ordinal) &&
+               !lower.Contains("gm-only", StringComparison.Ordinal) &&
+               !lower.Contains("gm only", StringComparison.Ordinal) &&
+               !lower.Contains("gmthoughts", StringComparison.Ordinal) &&
+               !lower.Contains("gm thoughts", StringComparison.Ordinal) &&
+               !lower.Contains("lastinvalidchronicleupdate", StringComparison.Ordinal) &&
+               !lower.Contains("не раскрывать", StringComparison.Ordinal) &&
+               !lower.Contains("не показывать игроку", StringComparison.Ordinal) &&
+               !lower.Contains("do not reveal", StringComparison.Ordinal) &&
+               !lower.Contains("don't reveal", StringComparison.Ordinal) &&
+               !lower.Contains("player-facing", StringComparison.Ordinal) &&
+               !lower.Contains("player facing", StringComparison.Ordinal);
+    }
+
+    private static bool IsChronicleHiddenPropertyName(string propertyName)
+    {
+        var normalized = propertyName.Trim();
+        return normalized.StartsWith("_", StringComparison.Ordinal) ||
+               normalized.StartsWith("hidden", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("secret", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("internal", StringComparison.OrdinalIgnoreCase) ||
+               normalized.StartsWith("gmThoughts", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, AfterlifeChronicleState.LastInvalidUpdateProperty, StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, AfterlifeChronicleState.LastInvalidUpdateReasonProperty, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsChronicleHiddenVisibility(string? visibility)
+    {
+        if (string.IsNullOrWhiteSpace(visibility))
+            return false;
+
+        var normalized = visibility.Trim();
+        return string.Equals(normalized, "hidden", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "gm_only", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "secret", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "private", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "internal", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsFalseFlag(JsonNode? node) =>
+        node is JsonValue value &&
+        value.TryGetValue<bool>(out var flag) &&
+        !flag;
+
+    private static bool IsTrueFlag(JsonNode? node) =>
+        node is JsonValue value &&
+        value.TryGetValue<bool>(out var flag) &&
+        flag;
+
+    private static bool TryParseInt(string? value, out int result) =>
+        int.TryParse(value, out result);
 
     private static string DescribeFateCardStatus(string? status) =>
         status?.Trim().ToLowerInvariant() switch

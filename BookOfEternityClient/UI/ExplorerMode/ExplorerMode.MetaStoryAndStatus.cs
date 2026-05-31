@@ -187,6 +187,7 @@ public partial class ExplorerMode
             table.AddRow("[yellow]/afterlife_archive[/]", "[yellow]/архив_души[/]", "[yellow]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[yellow]/archive_candidates[/]", "[yellow]/архив_кандидаты[/]", "[yellow]Выбрать, что сохранить в Архив по итогам жизни[/]");
             table.AddRow("[yellow]/afterlife_inbox[/]", "[yellow]/уведомления_загробья[/]", "[yellow]Ответы ГМ по торговле, Архиву и резидентам Обители[/]");
+            table.AddRow("[yellow]/afterlife_chronicles[/]", "[yellow]/хроники_посмертия[/]", "[yellow]Хроники ключевых событий Моря Хаоса и Сияющей Обители без скрытых полей ГМ[/]");
             table.AddRow("[yellow]/afterlife_threats[/]", "[yellow]/угрозы_загробья[/]", "[yellow]Видимые persistent угрозы посмертия; скрытые угрозы не раскрываются до игровых свидетельств[/]");
             table.AddRow("[yellow]/spiritual_conflict[/]", "[yellow]/духовный_конфликт[/]", "[yellow]Активный духовный конфликт посмертия: стороны, позиция, напряжение и журнал обменов[/]");
             table.AddRow("[yellow]/spiritual_combat_log[/]", "[yellow]/журнал_духовного_боя[/]", "[yellow]Журнал духовного боя: обмены действиями (exchangeLog), недавние конфликты (recentConflicts), кубики, позиции, напряжение и награды[/]");
@@ -228,6 +229,7 @@ public partial class ExplorerMode
             table.AddRow("[blue]/afterlife_archive[/]", "[blue]/архив_души[/]", "[blue]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[blue]/archive_candidates[/]", "[blue]/архив_кандидаты[/]", "[blue]Выбрать записи Кодекса, которые переживут смерть[/]");
             table.AddRow("[blue]/afterlife_inbox[/]", "[blue]/уведомления_загробья[/]", "[blue]Ответы ГМ по торговле, Архиву и резидентам Обители[/]");
+            table.AddRow("[blue]/afterlife_chronicles[/]", "[blue]/хроники_посмертия[/]", "[blue]Хроники ключевых событий Моря Хаоса и Сияющей Обители без скрытых полей ГМ[/]");
             table.AddRow("[blue]/afterlife_threats[/]", "[blue]/угрозы_загробья[/]", "[blue]Видимые persistent угрозы посмертия; скрытые угрозы не раскрываются до игровых свидетельств[/]");
             table.AddRow("[blue]/spiritual_conflict[/]", "[blue]/духовный_конфликт[/]", "[blue]Активный духовный конфликт посмертия: стороны, позиция, напряжение и журнал обменов[/]");
             table.AddRow("[blue]/spiritual_combat_log[/]", "[blue]/журнал_духовного_боя[/]", "[blue]Журнал духовного боя: обмены действиями (exchangeLog), недавние конфликты (recentConflicts), кубики, позиции, напряжение и награды[/]");
