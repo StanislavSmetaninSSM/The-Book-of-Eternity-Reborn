@@ -1255,6 +1255,50 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("system_saref_shadow", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_GuardianPolitics_DefaultProjectionOmitsGmOnlyRawState()
+    {
+        await SeedChaosSeaFilesAsync();
+        await WriteGuardianPoliticsRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/guardian_politics"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Contains("Азалия ищет союзников", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Публичный архивный пакт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Скрытых записей", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hiddenRelations", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("secretProjects", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("internalMotivations", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("system_saref_shadow", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("system_invisible_false_guardian", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("secret_project_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("is_player_visible_false_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("internal_motivation_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_GuardianPolitics_DebugProjectionIncludesFullRawState()
+    {
+        await SeedChaosSeaFilesAsync();
+        await WriteGuardianPoliticsRawLeakFixtureAsync();
+
+        var advancedRequest = JsonSerializer.Deserialize<ExplorerWebCommandRequest>(
+            """{"command":"/guardian_politics","advancedEnabled":true}""",
+            JsonOptions)!;
+        var advancedResult = await _service.ExecuteAsync(advancedRequest);
+
+        AssertContainsGuardianPoliticsRawState(advancedResult);
+
+        _stateManager.Settings.ShowGmThoughts = true;
+        var gmThoughtsResult = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/guardian_politics"));
+
+        AssertContainsGuardianPoliticsRawState(gmThoughtsResult);
+    }
+
     [Theory]
     [InlineData("/shining_abode", CommandExecutionState.Completed)]
     [InlineData("/shining_politics", CommandExecutionState.Completed)]
@@ -1597,6 +1641,91 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         """);
     }
 
+    private Task WriteGuardianPoliticsRawLeakFixtureAsync() =>
+        _fs.WriteFileAtomicAsync(ChaosSeaGuardianPoliticsState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "relations": [
+            {
+              "relationId": "azalia_seret_alliance",
+              "sourceGuardianId": "guardian_azalia",
+              "targetGuardianId": "guardian_seret",
+              "relationType": "alliance",
+              "attitudeScore": 62,
+              "visibility": "known",
+              "reason": "Азалия ищет союзников против охотников памяти.",
+              "lastChangedTurn": 12,
+              "effects": [ "training_discount" ]
+            },
+            {
+              "relationId": "azalia_hidden_dependency",
+              "sourceGuardianId": "guardian_azalia",
+              "targetGuardianId": "system_saref_shadow",
+              "relationType": "hidden_dependency",
+              "attitudeScore": -80,
+              "visibility": "hidden",
+              "reason": "Скрытая зависимость не должна отображаться игроку.",
+              "lastChangedTurn": 12,
+              "effects": []
+            },
+            {
+              "relationId": "azalia_player_invisible_false",
+              "sourceGuardianId": "guardian_azalia",
+              "targetGuardianId": "system_invisible_false_guardian",
+              "relationType": "alliance",
+              "attitudeScore": 10,
+              "visibility": "known",
+              "isPlayerVisible": false,
+              "reason": "is_player_visible_false_marker",
+              "lastChangedTurn": 12,
+              "effects": []
+            }
+          ],
+          "projects": [
+            {
+              "projectId": "project_archive_pact",
+              "ownerGuardianId": "guardian_azalia",
+              "targetGuardianId": "guardian_seret",
+              "projectType": "alliance",
+              "status": "active",
+              "summary": "Публичный архивный пакт укрепляет безопасные маршруты.",
+              "currentProgress": 2,
+              "requiredProgress": 5,
+              "lastUpdatedTurn": 12,
+              "visibility": "known"
+            },
+            {
+              "projectId": "secret_project_marker",
+              "ownerGuardianId": "guardian_azalia",
+              "targetGuardianId": "system_saref_shadow",
+              "projectType": "rivalry",
+              "status": "active",
+              "summary": "Секретный проект не должен попасть в обычный DTO.",
+              "currentProgress": 1,
+              "requiredProgress": 4,
+              "lastUpdatedTurn": 12,
+              "visibility": "gm_only"
+            }
+          ],
+          "influenceZones": [],
+          "chronicle": [],
+          "hiddenRelations": [
+            {
+              "relationId": "hidden_relations_marker",
+              "targetGuardianId": "system_saref_shadow"
+            }
+          ],
+          "secretProjects": [
+            {
+              "projectId": "secret_project_marker"
+            }
+          ],
+          "internalMotivations": {
+            "guardian_azalia": "internal_motivation_marker"
+          }
+        }
+        """);
+
     private async Task SeedShiningAbodeFilesAsync()
     {
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
@@ -1848,6 +1977,27 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         foreach (var block in blocks)
             CollectBlockText(block, parts);
         return string.Join("\n", parts);
+    }
+
+    private static string SerializeResult(ExplorerCommandResult result) =>
+        JsonSerializer.Serialize(result, JsonOptions);
+
+    private static void AssertContainsGuardianPoliticsRawState(ExplorerCommandResult result)
+    {
+        var raw = Assert.Single(result.Blocks.OfType<UiRawJsonBlock>());
+        var rawText = raw.Json?.ToJsonString(JsonOptions) ?? string.Empty;
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(ChaosSeaGuardianPoliticsState.StatePath, raw.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hiddenRelations", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("secretProjects", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("internalMotivations", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("system_saref_shadow", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("system_invisible_false_guardian", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("secret_project_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("is_player_visible_false_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("internal_motivation_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void CollectBlockText(UiBlock block, List<string> parts)

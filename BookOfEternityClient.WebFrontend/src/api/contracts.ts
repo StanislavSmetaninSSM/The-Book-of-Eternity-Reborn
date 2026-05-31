@@ -580,6 +580,7 @@ export interface ExplorerWebCommandRequest {
   command: string;
   ownerId?: string | null;
   ownerLabel?: string | null;
+  advancedEnabled?: boolean | null;
 }
 
 export interface ExplorerPromptSessionSubmitRequest {

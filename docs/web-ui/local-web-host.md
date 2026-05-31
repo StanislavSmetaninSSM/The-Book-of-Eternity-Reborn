@@ -232,11 +232,12 @@ The renderer currently supports these DTO surfaces:
 
 ```json
 {
-  "command": "/help"
+  "command": "/help",
+  "advancedEnabled": false
 }
 ```
 
-It returns an `ExplorerCommandResult` DTO. The command API uses the shared Explorer slash-command parser: the raw input is separated into canonical command identity, alias token, arguments, and recognized subcommand where applicable. This means browser calls may use the same base command aliases, argument tails, and supported subcommands as console-oriented command metadata. Browser-executable commands are executed through browser-safe DTO builders; planned, unknown, malformed, or blocked commands return structured `Blocked`/`Failed` DTOs in Russian instead of invoking console-bound handlers.
+It returns an `ExplorerCommandResult` DTO. `advancedEnabled` is optional and must be set only from the explicit browser advanced/debug mode; default player calls leave it false so GM-only raw JSON remains hidden. Chaos Sea Guardian Politics default output also omits rows marked `visibility: hidden`, `visibility: gm_only`, or `isPlayerVisible: false`, preserving only safe summaries and hidden counts. The command API uses the shared Explorer slash-command parser: the raw input is separated into canonical command identity, alias token, arguments, and recognized subcommand where applicable. This means browser calls may use the same base command aliases, argument tails, and supported subcommands as console-oriented command metadata. Browser-executable commands are executed through browser-safe DTO builders; planned, unknown, malformed, or blocked commands return structured `Blocked`/`Failed` DTOs in Russian instead of invoking console-bound handlers.
 
 If a migrated command returns `RequiresInput`, the browser host creates a local prompt session and attaches:
 

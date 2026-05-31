@@ -8,7 +8,8 @@ namespace BookOfEternityClient.WebUi;
 public sealed record ExplorerWebCommandRequest(
     string Command,
     string? OwnerId = null,
-    string? OwnerLabel = null);
+    string? OwnerLabel = null,
+    bool? AdvancedEnabled = null);
 
 public sealed class ExplorerWebCommandService
 {
@@ -48,7 +49,7 @@ public sealed class ExplorerWebCommandService
             !ExplorerCommandMigrationRegistry.IsBrowserExecutable(subcommand.BrowserStatus))
             return BuildBlockedMigrationResult(command, subcommand);
 
-        var result = await BuildMigratedResultAsync(parsed, descriptor);
+        var result = await BuildMigratedResultAsync(parsed, descriptor, effectiveRequest);
         return await _promptSessions.AttachSessionIfNeededAsync(result, effectiveRequest);
     }
 
@@ -63,7 +64,8 @@ public sealed class ExplorerWebCommandService
 
     private async Task<ExplorerCommandResult> BuildMigratedResultAsync(
         ExplorerParsedCommand parsed,
-        ExplorerCommandDescriptor descriptor)
+        ExplorerCommandDescriptor descriptor,
+        ExplorerWebCommandRequest request)
     {
         await _stateManager.RefreshGameStateAsync();
         var command = parsed.BuilderCommand;
@@ -100,7 +102,8 @@ public sealed class ExplorerWebCommandService
             ExplorerCommandBrowserHandlerKind.ChaosSea => await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(
                 commandToken,
                 _stateManager,
-                _fs),
+                _fs,
+                request.AdvancedEnabled == true),
             ExplorerCommandBrowserHandlerKind.ShiningAbode => await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
                 commandToken,
                 _stateManager,
