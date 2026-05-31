@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "profiles": [
+    {
+      "actorType": "guardian",
+      "actorId": "guardian_mirror",
+      "displayName": "Хранитель Зеркал",
+      "realm": "Chaos Sea",
+      "locationName": "Зеркальная Обитель",
+      "currencies": {
+        "inkFeathers": 120,
+        "lightSparks": 0
+      },
+      "progression": {
+        "enlightenment": {
+          "experience": 48,
+          "tier": 4
+        },
+        "radiance": {
+          "experience": 0,
+          "tier": 0
+        }
+      },
+      "standardArts": {
+        "pressure": 2,
+        "guard": 1,
+        "counter": 1
+      },
+      "specialArts": [
+        {
+          "artId": "mirror_guard",
+          "displayName": "Зеркальная Защита",
+          "ownerActorType": "guardian",
+          "ownerActorId": "guardian_mirror",
+          "baseOperation": "guard",
+          "tier": 1,
+          "costMultiplierPercent": 150,
+          "upgradeCost": {
+            "inkFeathers": 30,
+            "lightSparks": 0
+          },
+          "canTeachPlayer": true,
+          "trainingConditions": [
+            "Провести сцену обучения с Хранителем Зеркал.",
+            "Показать память, которую игрок готов защитить без награды."
+          ],
+          "effectSummary": "При успехе отражает часть давления в сторону противника."
+        }
+      ],
+      "customStates": [
+        {
+          "stateId": "oath_resonance",
+          "stateName": "Резонанс старой клятвы",
+          "currentValue": 2,
+          "minValue": 0,
+          "maxValue": 5,
+          "description": "Показывает, насколько сцена клятвы готова перейти в личное испытание.",
+          "progressionRule": {
+            "changePerTurn": 0,
+            "description": "Меняется только после значимых сцен доверия или отказа."
+          },
+          "thresholds": [
+            {
+              "value": 3,
+              "summary": "Хранитель начнет прямо говорить о зеркальном суде."
+            }
+          ]
+        }
+      ],
+      "fateCards": [
+        {
+          "cardId": "mirror_oath_unlocked",
+          "nameRu": "Осколок честной клятвы",
+          "status": "unlocked",
+          "storyMeaning": "Хранитель признал, что Душа способна выдержать правду.",
+          "unlockConditions": [
+            "Душа отвергает удобную ложь в сцене зеркального суда."
+          ],
+          "appliedAtTurn": 44,
+          "evidenceSummary": "Игрок сохранил память свидетеля и не попросил немедленную награду.",
+          "guardianEffects": [
+            {
+              "summary": "Хранитель Зеркал дает скидку на обучение Зеркальной Защите."
+            }
+          ]
+        },
+        {
+          "cardId": "mirror_wings_secret",
+          "nameRu": "Белое перо за зеркалом",
+          "status": "hidden",
+          "isSecret": true,
+          "storyMeaning": "Скрытая связь с ложей белых перьев; не показывать игроку до reveal proof.",
+          "unlockConditions": [
+            "Игрок сопоставляет белое перо, чужую клятву и память Азалии."
+          ]
+        }
+      ],
+      "goals": {
+        "goalId": "goal_mirror_oath",
+        "shortTermGoal": "Понять, способна ли Душа выдержать зеркальный суд.",
+        "longTermGoal": "Не позволить Сарефу снова использовать забытые клятвы.",
+        "plan": "Подготовить сцену испытания через личный квест и наблюдать за выбором Души.",
+        "gmThoughtsSummary": "Хранитель боится повторить старое предательство и поэтому проверяет игрока осторожно.",
+        "updatedAtTurn": 44
+      },
+      "personalQuests": [
+        {
+          "questId": "quest_mirror_oath_trial",
+          "goalId": "goal_mirror_oath",
+          "title": "Суд зеркальной клятвы",
+          "status": "active",
+          "planSummary": "Вывести Душу к испытанию, где удобная ложь будет выглядеть спасением.",
+          "successCondition": "Душа осознанно отвергнет ложь даже без немедленной награды.",
+          "createdAtTurn": 44
+        }
+      ],
+      "currentActivity": {
+        "activityId": "activity_prepare_oath_trial",
+        "goalId": "goal_mirror_oath",
+        "linkedQuestId": "quest_mirror_oath_trial",
+        "activityType": "offscreen_preparation",
+        "summary": "Хранитель собирает осколки старой клятвы для будущей сцены суда.",
+        "status": "active",
+        "gmThoughtsSummary": "Он не принуждает игрока, но готовит сцену так, чтобы выбор стал личным.",
+        "startedAtTurn": 44
+      },
+      "relationships": [
+        {
+          "relationshipId": "guardian_mirror_player_trust",
+          "axis": "trust",
+          "targetActorType": "player_soul",
+          "targetActorId": "player_soul",
+          "value": 52,
+          "relationshipTier": "trust_breakthrough_required",
+          "relationshipLock": {
+            "lockState": "positive_locked",
+            "direction": "positive",
+            "threshold": 50,
+            "breakthroughQuestId": "quest_mirror_oath_trial",
+            "reason": "Старая клятва делает слепое доверие невозможным.",
+            "evidence": "Душа почти достигла важного порога доверия.",
+            "updatedAtTurn": 44
+          },
+          "relationshipGateQuests": [
+            {
+              "questId": "quest_mirror_oath_trial",
+              "questType": "breakthrough",
+              "status": "active",
+              "title": "Суд зеркальной клятвы",
+              "sceneSummary": "Пороговая сцена, где Душа должна выбрать правду вместо удобной лжи.",
+              "successCondition": "Душа отвергает ложь без немедленной награды.",
+              "gmThoughtsSummary": "Это личное испытание доверия, а не рутинная доставка предмета.",
+              "updatedAtTurn": 44
+            }
+          ]
+        }
+      ],
+      "activeMaskId": "mask_memory_beggar",
+      "masks": [
+        {
+          "maskId": "mask_memory_beggar",
+          "displayName": "Нищий без памяти",
+          "publicArchetype": "сломанный странник",
+          "visiblePersonality": "просит помощи и делает вид, что не понимает политических намеков",
+          "concealedTruth": "Это бывший чиновник Сияющей Обители, которому Сареф стер память.",
+          "directives": [
+            "Скрывать знание о старой должности.",
+            "Проверять, узнает ли игрок символы Крыльев Ангелов."
+          ],
+          "revealConditions": [
+            "Игрок возвращает фрагмент памяти из смертной жизни."
+          ],
+          "deceptionRisk": "medium",
+          "linkedSarefAgentId": "saref_agent_amnesiac_official",
+          "isRevealed": false,
+          "updatedAtTurn": 44
+        }
+      ],
+      "soulDissipationTier": 1,
+      "progressionStrategy": {
+        "strategyId": "strategy_guardian_mirror",
+        "summary": "Сначала укрепляет защиту, затем давление.",
+        "priorityOrder": [
+          "guard",
+          "pressure",
+          "mirror_guard"
+        ],
+        "resourceReserve": {
+          "inkFeathers": 20,
+          "lightSparks": 0
+        },
+        "allowedSpends": [
+          "standardArts",
+          "specialArts",
+          "enlightenment"
+        ],
+        "lastUpdatedAtTurn": 44
+      },
+      "progressionLedger": [
+        {
+          "entryId": "profile_progression_guardian_mirror_chaos_44",
+          "cycleKey": "chaos:44",
+          "source": "client_auto_strategy",
+          "summary": "Хранитель сохранил резерв и не тратил Перья до завершения суда.",
+          "income": {
+            "inkFeathers": 12,
+            "lightSparks": 0
+          },
+          "spending": {
+            "inkFeathers": 0,
+            "lightSparks": 0
+          }
+        }
+      ],
+      "warnings": [
+        "ОПАСНО: может развеять душу после победы, если решит это сделать."
+      ],
+      "ledger": [
+        {
+          "entryId": "profile_ledger_guardian_mirror_created",
+          "turnNumber": 44,
+          "reason": "example_profile",
+          "summary": "Профиль создан как FileSystemExample fixture для проверки afterlife display filtering."
+        }
+      ]
+    }
+  ]
+}

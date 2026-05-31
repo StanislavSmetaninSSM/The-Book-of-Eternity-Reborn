@@ -661,6 +661,10 @@
     {
       "path": "game_state/control/qte_normalizer_backups/**",
       "reason": "QTE normalizer backup infrastructure, not a pending afterlife contract."
+    },
+    {
+      "path": "input/pending_player_action.json",
+      "reason": "Browser composer staging input for the next player action; not a GM-authored afterlife pending/control surface."
     }
   ],
   "followUpNotes": [
