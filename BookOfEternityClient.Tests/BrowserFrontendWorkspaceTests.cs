@@ -69,6 +69,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.True(File.Exists(Path.Combine(FrontendRoot, "tsconfig.json")));
         Assert.True(File.Exists(Path.Combine(FrontendRoot, "tsconfig.app.json")));
         Assert.True(File.Exists(Path.Combine(FrontendRoot, "tsconfig.node.json")));
+        Assert.True(File.Exists(Path.Combine(FrontendRoot, "tsconfig.player-facing-tests.json")));
         Assert.True(File.Exists(Path.Combine(FrontendRoot, "src", "main.tsx")));
         Assert.True(File.Exists(Path.Combine(FrontendRoot, "src", "App.tsx")));
         Assert.True(File.Exists(Path.Combine(FrontendRoot, "src", "styles.css")));
@@ -99,7 +100,7 @@ public sealed class BrowserFrontendWorkspaceTests
     {
         var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
         var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var app = ReadFrontendSource("App.tsx");
 
         Assert.Contains("npm install", readme, StringComparison.Ordinal);
         Assert.Contains("npm run dev", readme, StringComparison.Ordinal);
@@ -116,276 +117,184 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("standalone frontend assets", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("local-web-ui-shell.html", hostDoc, StringComparison.Ordinal);
 
-        Assert.Contains("Откройте книгу", app, StringComparison.Ordinal);
+        Assert.Contains("<ShellProvider>", app, StringComparison.Ordinal);
         Assert.DoesNotContain("debug dashboard", app, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("source of truth", app, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public void ReactAppShell_DefinesPlayerRoutesSharedStateAndAdvancedOptIn()
+    public void ReactAppShell_RendersCurrentTabCommandShellAndSharedState()
     {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var app = ReadFrontendSource("App.tsx");
+        var shellContext = ReadFrontendSource("context", "ShellContext.tsx");
+        var shellStateHook = ReadFrontendSource("hooks", "useShellState.ts");
         var styles = ReadFrontendStyles();
 
-        Assert.Contains("playerRoutes", app, StringComparison.Ordinal);
-        Assert.Contains("activeRoute", app, StringComparison.Ordinal);
-        Assert.Contains("advancedEnabled", app, StringComparison.Ordinal);
-        Assert.Contains("loadBrowserState", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getMainMenu", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getGameScreen", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getSessionStatus", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getAudioSettings", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getLifecycleDashboard", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getCommandCoverage", app, StringComparison.Ordinal);
-        Assert.Contains("advancedEnabled ? await Promise.all([", app, StringComparison.Ordinal);
-        Assert.Contains("Главная", app, StringComparison.Ordinal);
-        Assert.Contains("Игра", app, StringComparison.Ordinal);
-        Assert.Contains("Душа", app, StringComparison.Ordinal);
-        Assert.Contains("Мир", app, StringComparison.Ordinal);
-        Assert.Contains("Медиа", app, StringComparison.Ordinal);
-        Assert.Contains("Настройки", app, StringComparison.Ordinal);
-        Assert.Contains("Расширенный режим", app, StringComparison.Ordinal);
-        Assert.Contains("AdvancedDiagnosticsPanel", app, StringComparison.Ordinal);
-        Assert.Contains("CommandCoverageMatrix", app, StringComparison.Ordinal);
-        Assert.Contains("commandCoverage={commandCoverage}", app, StringComparison.Ordinal);
-        Assert.Contains("subcommand.canonicalCommand", app, StringComparison.Ordinal);
-        Assert.Contains("subcommand.browserStatus", app, StringComparison.Ordinal);
-        Assert.Contains("subcommand.aliases.join", app, StringComparison.Ordinal);
-        Assert.Contains("subcommand.followUpIssue", app, StringComparison.Ordinal);
-        Assert.Contains("ShellPanel", app, StringComparison.Ordinal);
-        Assert.Contains("StatusBar", app, StringComparison.Ordinal);
-        Assert.Contains("RealmTheme", app, StringComparison.Ordinal);
-        Assert.Contains("playerMessage", app, StringComparison.Ordinal);
-        Assert.Contains("ActionMenu", app, StringComparison.Ordinal);
-        Assert.Contains("Персонаж / Душа", app, StringComparison.Ordinal);
-        Assert.Contains("Подготовить форму", app, StringComparison.Ordinal);
-        Assert.Contains("mutationWarning", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.executeExplorerCommand({ command: action.advancedCommand", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.submitPromptSession", app, StringComparison.Ordinal);
-        Assert.Contains("renderPromptControl", app, StringComparison.Ordinal);
-        Assert.Contains("AudioSettingsPanel", app, StringComparison.Ordinal);
-        Assert.Contains("Включить музыку в браузере", app, StringComparison.Ordinal);
-        Assert.Contains("autoplayGuidance", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.updateAudioSettings", app, StringComparison.Ordinal);
-        Assert.Contains("new Audio()", app, StringComparison.Ordinal);
-        Assert.Contains("audioSettingsUpdateQueueRef", app, StringComparison.Ordinal);
-        Assert.Contains("audioSettingsUpdateQueueRef.current = audioSettingsUpdateQueueRef.current", app, StringComparison.Ordinal);
-        Assert.Contains("Музыка и звуковые подсказки", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("<div><dt>Музыка</dt><dd>{options.musicEnabled", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("<div><dt>Звук</dt><dd>{options.soundEnabled", app, StringComparison.Ordinal);
-        Assert.Contains("{readyState && <AudioSettingsPanel result={readyState.audio} activeRoute={activeRoute} advancedEnabled={advancedEnabled} />}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("<AudioSettingsPanel result={state.audio} activeRoute={activeRoute} />", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("useEffect(() => {\n    void audioElement", app, StringComparison.Ordinal);
-        Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("setAdvancedEnabled(true)", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("getCommandCoverage()", app[..app.IndexOf("advancedEnabled ? await Promise.all([", StringComparison.Ordinal)], StringComparison.Ordinal);
-        Assert.DoesNotContain("typed BrowserApiClient", app, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("endpoint.id", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("action.advancedCommand}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("C# каталога команд", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("C# протоколом", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("C# DTO", app, StringComparison.Ordinal);
+        Assert.Contains("import { ConnectionBanner } from './components/ConnectionBanner';", app, StringComparison.Ordinal);
+        Assert.Contains("import { TabBar } from './components/TabBar';", app, StringComparison.Ordinal);
+        Assert.Contains("import { SceneView } from './components/SceneView';", app, StringComparison.Ordinal);
+        Assert.Contains("import { StatusView } from './components/StatusView';", app, StringComparison.Ordinal);
+        Assert.Contains("import { HelpView } from './components/HelpView';", app, StringComparison.Ordinal);
+        Assert.Contains("import { SettingsView } from './components/SettingsView';", app, StringComparison.Ordinal);
+        Assert.Contains("import { UnifiedInput } from './components/UnifiedInput';", app, StringComparison.Ordinal);
+        Assert.Contains("<ConnectionBanner />", app, StringComparison.Ordinal);
+        Assert.Contains("<TabBar />", app, StringComparison.Ordinal);
+        Assert.Contains("<section className=\"content-area\" aria-live=\"polite\">", app, StringComparison.Ordinal);
+        Assert.Contains("<UnifiedInput />", app, StringComparison.Ordinal);
+        Assert.Contains("case 'scene': return <SceneView />;", app, StringComparison.Ordinal);
+        Assert.Contains("case 'status': return <StatusView />;", app, StringComparison.Ordinal);
+        Assert.Contains("case 'help': return <HelpView />;", app, StringComparison.Ordinal);
+        Assert.Contains("case 'settings': return <SettingsView />;", app, StringComparison.Ordinal);
+
+        Assert.Contains("export type TabId = 'scene' | 'status' | 'help' | 'settings';", shellContext, StringComparison.Ordinal);
+        Assert.Contains("const [activeTab, setActiveTabState] = useState<TabId>('scene');", shellContext, StringComparison.Ordinal);
+        Assert.Contains("const [advancedEnabled, setAdvancedEnabledState] = useState(false);", shellContext, StringComparison.Ordinal);
+        Assert.Contains("const { shellState, loadBrowserState } = useShellState(advancedEnabled);", shellContext, StringComparison.Ordinal);
+        Assert.Contains("browserApi.submitPlayerAction({ text: normalized })", shellContext, StringComparison.Ordinal);
+        Assert.Contains("browserApi.executeExplorerCommand({ command, advancedEnabled })", shellContext, StringComparison.Ordinal);
+        Assert.Contains("composerSubmissionInFlight", shellContext, StringComparison.Ordinal);
+        Assert.DoesNotContain("`/prose ${normalized}`", shellContext, StringComparison.Ordinal);
+        Assert.DoesNotContain("/prose", shellContext, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("await Promise.allSettled([", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getMainMenu()", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getGameScreen()", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getClientSettings()", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("if (advancedEnabled)", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getLifecycleDashboard()", shellStateHook, StringComparison.Ordinal);
+        Assert.Contains("browserApi.getCommandCoverage()", shellStateHook, StringComparison.Ordinal);
+
+        foreach (var staleSnippet in new[] { "./routes/", "<Sidebar />", "ActionPalette", "from './components/Composer'", "playerRoutes", "route-grid--primary", "route-grid--utility" })
+        {
+            Assert.DoesNotContain(staleSnippet, app, StringComparison.Ordinal);
+        }
+
         Assert.Contains(".browser-shell", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-grid", styles, StringComparison.Ordinal);
-        Assert.Contains(".action-menu", styles, StringComparison.Ordinal);
-        Assert.Contains(".audio-control-panel", styles, StringComparison.Ordinal);
-        Assert.Contains(".advanced-diagnostics", styles, StringComparison.Ordinal);
-        Assert.Contains("@media (max-width: 840px)", styles, StringComparison.Ordinal);
+        Assert.Contains(".content-area", styles, StringComparison.Ordinal);
+        Assert.Contains(".unified-input", styles, StringComparison.Ordinal);
+        Assert.Contains(".tab-bar", styles, StringComparison.Ordinal);
     }
+
     [Fact]
-    public void BrowserSettingsRoute_RendersSharedGameSettingsAndLocalityControls()
+    public void BrowserTabBar_UsesSharedShortcutContractAndBlocksTextInputs()
     {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var tabBar = ReadFrontendSource("components", "TabBar.tsx");
+        var config = ReadFrontendSource("components", "tabBarConfig.ts");
         var styles = ReadFrontendStyles();
 
-        Assert.Contains("BrowserClientSettingsDto", app, StringComparison.Ordinal);
-        Assert.Contains("BrowserClientSettingsUpdateRequest", app, StringComparison.Ordinal);
-        Assert.Contains("settings: BrowserApiResult<BrowserClientSettingsDto>", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.getClientSettings()", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.updateClientSettings", app, StringComparison.Ordinal);
-        Assert.Contains("clientSettingsUpdateQueueRef", app, StringComparison.Ordinal);
-        Assert.Contains("clientSettingsUpdateQueueRef.current = clientSettingsUpdateQueueRef.current", app, StringComparison.Ordinal);
-        Assert.Contains("className={browserShellClassName}", app, StringComparison.Ordinal);
+        Assert.False(File.Exists(Path.Combine(FrontendRoot, "src", "components", "NavBar.tsx")), "The stale NavBar component should not be compiled.");
+        Assert.False(File.Exists(Path.Combine(FrontendRoot, "src", "components", "navBarConfig.ts")), "The stale navBarConfig contract should not be restored.");
+
+        Assert.Contains("export interface TabNavItem", config, StringComparison.Ordinal);
+        Assert.Contains("export const tabNav: readonly TabNavItem[]", config, StringComparison.Ordinal);
+        Assert.Contains("id: 'scene'", config, StringComparison.Ordinal);
+        Assert.Contains("id: 'status'", config, StringComparison.Ordinal);
+        Assert.Contains("id: 'help'", config, StringComparison.Ordinal);
+        Assert.Contains("id: 'settings'", config, StringComparison.Ordinal);
+        Assert.Contains("shortcut: '1'", config, StringComparison.Ordinal);
+        Assert.Contains("shortcut: '4'", config, StringComparison.Ordinal);
+        Assert.Contains("export function resolveTabShortcut", config, StringComparison.Ordinal);
+
+        Assert.Contains("function isShortcutBlockedTarget", tabBar, StringComparison.Ordinal);
+        Assert.Contains("target instanceof HTMLInputElement", tabBar, StringComparison.Ordinal);
+        Assert.Contains("target instanceof HTMLTextAreaElement", tabBar, StringComparison.Ordinal);
+        Assert.Contains("target instanceof HTMLSelectElement", tabBar, StringComparison.Ordinal);
+        Assert.Contains("document.addEventListener('keydown', handleKeyDown);", tabBar, StringComparison.Ordinal);
+        Assert.Contains("return () => document.removeEventListener('keydown', handleKeyDown);", tabBar, StringComparison.Ordinal);
+        Assert.Contains("<nav className=\"tab-bar\" role=\"tablist\" aria-label=\"Навигация\">", tabBar, StringComparison.Ordinal);
+        Assert.Contains("aria-selected={activeTab === tab.id}", tabBar, StringComparison.Ordinal);
+        Assert.Contains("setActiveTab(tab.id)", tabBar, StringComparison.Ordinal);
+        Assert.Contains("Ход {gameScreen.world.turnNumber}", tabBar, StringComparison.Ordinal);
+
+        Assert.Contains(".tab-bar {", styles, StringComparison.Ordinal);
+        Assert.Contains(".tab-bar__tab.is-active", styles, StringComparison.Ordinal);
+        Assert.DoesNotContain(".nav-bar", styles, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BrowserCurrentViews_RenderPlayerFacingMinimalShell()
+    {
+        var sceneView = ReadFrontendSource("components", "SceneView.tsx");
+        var statusView = ReadFrontendSource("components", "StatusView.tsx");
+        var helpView = ReadFrontendSource("components", "HelpView.tsx");
+        var unifiedInput = ReadFrontendSource("components", "UnifiedInput.tsx");
+        var styles = ReadFrontendStyles();
+
+        Assert.Contains("import { SceneHero } from './SceneHero';", sceneView, StringComparison.Ordinal);
+        Assert.Contains("import { CommandResultView } from './CommandResultView';", sceneView, StringComparison.Ordinal);
+        Assert.Contains("if (isCommandView)", sceneView, StringComparison.Ordinal);
+        Assert.Contains("return <CommandResultView />;", sceneView, StringComparison.Ordinal);
+        Assert.Contains("className=\"scene-quick-actions\"", sceneView, StringComparison.Ordinal);
+        Assert.Contains("onClick={() => void onCommand(action.advancedCommand)}", sceneView, StringComparison.Ordinal);
+        Assert.DoesNotContain("ActionPalette", sceneView, StringComparison.Ordinal);
+        Assert.DoesNotContain("<Composer", sceneView, StringComparison.Ordinal);
+
+        Assert.Contains("<h3>🎭 Персонаж</h3>", statusView, StringComparison.Ordinal);
+        Assert.Contains("<h3>🕯️ Душа</h3>", statusView, StringComparison.Ordinal);
+        Assert.Contains("<h3>🗺️ Мир</h3>", statusView, StringComparison.Ordinal);
+        Assert.Contains("<h3>✨ Посмертие</h3>", statusView, StringComparison.Ordinal);
+        Assert.Contains("function StatusBar", statusView, StringComparison.Ordinal);
+        Assert.Contains("className=\"status-bar\"", statusView, StringComparison.Ordinal);
+
+        Assert.Contains("GROUP_LABELS", helpView, StringComparison.Ordinal);
+        Assert.Contains("Персонаж и душа", helpView, StringComparison.Ordinal);
+        Assert.Contains("Мир смертных", helpView, StringComparison.Ordinal);
+        Assert.Contains("placeholder=\"🔍 Поиск команды...\"", helpView, StringComparison.Ordinal);
+        Assert.Contains("cmd.browserStatus === 'not-browser-executable'", helpView, StringComparison.Ordinal);
+        Assert.Contains("void executeCommand(command);", helpView, StringComparison.Ordinal);
+        Assert.Contains("setActiveTab('scene');", helpView, StringComparison.Ordinal);
+
+        Assert.Contains("className=\"unified-input\"", unifiedInput, StringComparison.Ordinal);
+        Assert.Contains("submitComposerText(e.currentTarget.value);", unifiedInput, StringComparison.Ordinal);
+        Assert.Contains("<CommandAutocomplete", unifiedInput, StringComparison.Ordinal);
+        Assert.Contains("placeholder=\"Опишите действие или введите /команду...\"", unifiedInput, StringComparison.Ordinal);
+        Assert.Contains("disabled={!canSubmit}", unifiedInput, StringComparison.Ordinal);
+
+        Assert.Contains(".scene-view", styles, StringComparison.Ordinal);
+        Assert.Contains(".scene-quick-actions", styles, StringComparison.Ordinal);
+        Assert.Contains(".status-view", styles, StringComparison.Ordinal);
+        Assert.Contains(".help-view", styles, StringComparison.Ordinal);
+        Assert.Contains(".unified-input", styles, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BrowserSettingsAndDiagnostics_KeepTechnicalSurfacesExplicit()
+    {
+        var app = ReadFrontendSource("App.tsx");
+        var settingsView = ReadFrontendSource("components", "SettingsView.tsx");
+        var diagnostics = ReadFrontendSource("components", "AdvancedDiagnostics.tsx");
+        var styles = ReadFrontendStyles();
+
+        Assert.Contains("BrowserClientSettingsDto", settingsView, StringComparison.Ordinal);
+        Assert.Contains("BrowserClientSettingsUpdateRequest", settingsView, StringComparison.Ordinal);
+        Assert.Contains("browserApi.updateClientSettings", settingsView, StringComparison.Ordinal);
+        Assert.Contains("updateQueue", settingsView, StringComparison.Ordinal);
+        Assert.Contains("setTimeout(() =>", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Язык клиента", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Сложность", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Показывать мысли ГМа", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Звук", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Доступность", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Расширенный режим", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Показывать технические данные", settingsView, StringComparison.Ordinal);
+        Assert.Contains("setAdvancedEnabled((v) => !v)", settingsView, StringComparison.Ordinal);
         Assert.Contains("--browser-font-scale", app, StringComparison.Ordinal);
-        Assert.Contains("Настройки книги", app, StringComparison.Ordinal);
-        Assert.Contains("Язык клиента", app, StringComparison.Ordinal);
-        Assert.Contains("Сложность", app, StringComparison.Ordinal);
-        Assert.Contains("Показывать мысли ГМа", app, StringComparison.Ordinal);
-        Assert.Contains("Музыка и звуковые подсказки", app, StringComparison.Ordinal);
-        Assert.Contains("Доступность", app, StringComparison.Ordinal);
-        Assert.Contains("Локальность", app, StringComparison.Ordinal);
-        Assert.Contains("Только localhost/loopback", app, StringComparison.Ordinal);
-        Assert.Contains("sessionLabel", app, StringComparison.Ordinal);
-        Assert.Contains("gmBridgeLabel", app, StringComparison.Ordinal);
+        Assert.Contains("--browser-ui-scale", app, StringComparison.Ordinal);
         Assert.Contains("is-reduced-motion", app, StringComparison.Ordinal);
         Assert.Contains("is-contrast-friendly", app, StringComparison.Ordinal);
 
-        var settingsRouteStart = app.IndexOf("function SettingsRoute", StringComparison.Ordinal);
-        var audioPanelStart = app.IndexOf("function AudioSettingsPanel", StringComparison.Ordinal);
-        Assert.True(settingsRouteStart >= 0 && audioPanelStart > settingsRouteStart, "SettingsRoute should stay before AudioSettingsPanel.");
-        var settingsRoute = app[settingsRouteStart..audioPanelStart];
-        foreach (var hiddenTechnicalName in new[] { "OpenRouterApiKey", "PollinationsApiKey", "GmCliLaunchCommand", "GmBridgePipeNameOverride" })
-            Assert.DoesNotContain(hiddenTechnicalName, settingsRoute, StringComparison.Ordinal);
+        Assert.Contains("if (!advancedEnabled || !readyState)", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("return null;", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("className=\"advanced-diagnostics\"", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("CommandCoverageMatrix", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("browserApiContractSummary.endpointDocs", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("Подробности проверки", diagnostics, StringComparison.Ordinal);
 
-        Assert.Contains(".settings-route-grid", styles, StringComparison.Ordinal);
-        Assert.Contains(".settings-control-card", styles, StringComparison.Ordinal);
-        Assert.Contains(".browser-shell.is-reduced-motion", styles, StringComparison.Ordinal);
-        Assert.Contains(".browser-shell.is-contrast-friendly", styles, StringComparison.Ordinal);
-        Assert.Contains("#689", File.ReadAllText(Path.Combine(FrontendRoot, "README.md")), StringComparison.Ordinal);
-        Assert.Contains("#689", File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md")), StringComparison.Ordinal);
-    }
-
-
-    [Fact]
-    public void BrowserNavigationIa_SeparatesPrimaryPlayerRoutesFromUtilityAndAdvancedRoutes()
-    {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var styles = ReadFrontendStyles();
-        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
-        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
-
-        Assert.Contains("type RouteKind = 'primary' | 'utility';", app, StringComparison.Ordinal);
-        Assert.Contains("const primaryPlayerRoutes = playerRoutes.filter((route) => route.kind === 'primary');", app, StringComparison.Ordinal);
-        Assert.Contains("const utilityPlayerRoutes = playerRoutes.filter((route) => route.kind === 'utility');", app, StringComparison.Ordinal);
-        Assert.Contains("aria-label=\"Основные игровые разделы браузерного клиента\"", app, StringComparison.Ordinal);
-        Assert.Contains("aria-label=\"Дополнительные игровые разделы браузерного клиента\"", app, StringComparison.Ordinal);
-        Assert.Contains("className=\"route-grid route-grid--primary\"", app, StringComparison.Ordinal);
-        Assert.Contains("className=\"route-grid route-grid--utility\"", app, StringComparison.Ordinal);
-
-        var routeOrder = new[] { "id: 'home'", "id: 'game'", "id: 'soul'", "id: 'world'", "id: 'journal'", "id: 'inventory'", "id: 'media'", "id: 'settings'" };
-        var previousIndex = -1;
-        foreach (var marker in routeOrder)
-        {
-            var index = app.IndexOf(marker, StringComparison.Ordinal);
-            Assert.True(index > previousIndex, $"Route marker {marker} should appear after the previous player route marker.");
-            previousIndex = index;
-        }
-
-        Assert.Contains("label: 'Журнал'", app, StringComparison.Ordinal);
-        Assert.Contains("label: 'Инвентарь'", app, StringComparison.Ordinal);
-        Assert.Contains("function JournalRoute", app, StringComparison.Ordinal);
-        Assert.Contains("function InventoryRoute", app, StringComparison.Ordinal);
-        Assert.Contains("filterActionSections(game.actionMenu, journalSectionMatchers)", app, StringComparison.Ordinal);
-        Assert.Contains("filterActionSections(game.actionMenu, inventorySectionMatchers)", app, StringComparison.Ordinal);
-        Assert.Contains("Журнал ждёт главу", app, StringComparison.Ordinal);
-        Assert.Contains("Инвентарь ждёт главу", app, StringComparison.Ordinal);
-        Assert.Contains("Сводка / Игра / Душа / Мир / Журнал / Инвентарь", app, StringComparison.Ordinal);
-
-        var routeArrayStart = app.IndexOf("const playerRoutes", StringComparison.Ordinal);
-        var routeArrayEnd = app.IndexOf("const fallbackTheme", StringComparison.Ordinal);
-        Assert.True(routeArrayStart >= 0 && routeArrayEnd > routeArrayStart, "Route metadata should stay near the top of App.tsx.");
-        var routeMetadata = app[routeArrayStart..routeArrayEnd];
-        Assert.DoesNotContain("Debug", routeMetadata, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("API", routeMetadata, StringComparison.Ordinal);
-        Assert.DoesNotContain("Network", routeMetadata, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("command coverage", routeMetadata, StringComparison.OrdinalIgnoreCase);
-
-        Assert.Contains(".route-grid--primary", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-grid--utility", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card--journal", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card--inventory", styles, StringComparison.Ordinal);
-
-        Assert.Contains("#727", readme, StringComparison.Ordinal);
-        Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", readme, StringComparison.Ordinal);
-        Assert.Contains("#727", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", hostDoc, StringComparison.Ordinal);
-    }
-
-
-    [Fact]
-    public void BrowserMediaRoute_RendersGalleryMapAndQteAsPlayerSections()
-    {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var styles = ReadFrontendStyles();
-        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
-        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
-
-        Assert.Contains("function QteScenePanel", app, StringComparison.Ordinal);
-        Assert.Contains("function MediaGalleryPanel", app, StringComparison.Ordinal);
-        Assert.Contains("function MediaAtlasPanel", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.resolveQteOffer", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.resolveQteAction", app, StringComparison.Ordinal);
-        Assert.Contains("game.media.gallery", app, StringComparison.Ordinal);
-        Assert.Contains("game.media.map", app, StringComparison.Ordinal);
-        Assert.Contains("sceneImagePrompt", app, StringComparison.Ordinal);
-        Assert.Contains("Политическое влияние", app, StringComparison.Ordinal);
-        Assert.Contains("Выберите уровень", app, StringComparison.Ordinal);
-        Assert.Contains("Открыть изображение", app, StringComparison.Ordinal);
-
-        var mediaRouteStart = app.IndexOf("function MediaRoute", StringComparison.Ordinal);
-        var settingsRouteStart = app.IndexOf("function SettingsRoute", StringComparison.Ordinal);
-        Assert.True(mediaRouteStart >= 0 && settingsRouteStart > mediaRouteStart, "MediaRoute should remain before SettingsRoute.");
-        var mediaRouteSource = app[mediaRouteStart..settingsRouteStart];
-        Assert.DoesNotContain("/api/qte/state", mediaRouteSource, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("/api/media/", mediaRouteSource, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("relativePath", mediaRouteSource, StringComparison.OrdinalIgnoreCase);
-
-        Assert.Contains(".qte-scene-panel", styles, StringComparison.Ordinal);
-        Assert.Contains(".media-gallery-grid", styles, StringComparison.Ordinal);
-        Assert.Contains(".media-atlas-panel", styles, StringComparison.Ordinal);
-        Assert.Contains("#688", readme, StringComparison.Ordinal);
-        Assert.Contains("#688", hostDoc, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void BrowserRouteCards_UseInlineSvgIconsAndSemanticStates()
-    {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var styles = ReadFrontendStyles();
-
-        var routeArrayStart = app.IndexOf("const playerRoutes", StringComparison.Ordinal);
-        var routeArrayEnd = app.IndexOf("const fallbackTheme", StringComparison.Ordinal);
-        Assert.True(routeArrayStart >= 0 && routeArrayEnd > routeArrayStart, "Route metadata should stay near the top of App.tsx.");
-        var routeMetadata = app[routeArrayStart..routeArrayEnd];
-
-        foreach (var emojiIcon in new[] { "✦", "📖", "🕯️", "🗺️", "✍️", "🎒", "🎞️", "⚙️" })
-        {
-            Assert.DoesNotContain($"icon: '{emojiIcon}'", routeMetadata, StringComparison.Ordinal);
-        }
-
-        Assert.Contains("type RouteIconId = 'book' | 'flame' | 'soul' | 'map' | 'journal' | 'satchel' | 'gallery' | 'settings';", app, StringComparison.Ordinal);
-        Assert.Contains("type RouteAvailabilityState = 'active' | 'available' | 'locked' | 'loading' | 'attention';", app, StringComparison.Ordinal);
-        Assert.Contains("function RouteGlyph({ icon }: { icon: RouteIconId })", app, StringComparison.Ordinal);
-        Assert.Contains("<RouteGlyph icon={route.icon} />", app, StringComparison.Ordinal);
-        Assert.Contains("resolveRouteStates(playerRoutes, activeRoute, shellState, readyState)", app, StringComparison.Ordinal);
-        Assert.Contains("function isNoActiveSessionFailure(result: BrowserApiResult<unknown>): result is BrowserApiFailure", app, StringComparison.Ordinal);
-        Assert.Contains("isNoActiveSessionFailure(readyState.game)", app, StringComparison.Ordinal);
-        Assert.Contains("result.kind === 'no-active-session'", app, StringComparison.Ordinal);
-        Assert.Contains("data-route-state={routeState.state}", app, StringComparison.Ordinal);
-        Assert.Contains("route-card-state--${routeState.state}", app, StringComparison.Ordinal);
-        Assert.Contains("aria-label={`${route.label}. ${route.description} Состояние: ${routeState.label}`}", app, StringComparison.Ordinal);
-
-        Assert.Contains(".route-card__icon", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card__state", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card-state--active", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card-state--available", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card-state--locked", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card-state--loading", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card-state--attention", styles, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void BrowserNavigationIa_InventoryRouteMatchesCurrentActionMetadata()
-    {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var fixturePath = Path.Combine(FrontendRoot, "src", "api", "contract-fixtures", "game-screen.json");
-        using var document = JsonDocument.Parse(File.ReadAllText(fixturePath));
-        var sections = document.RootElement.GetProperty("actionMenu").GetProperty("sections").EnumerateArray();
-        var actionLocations = sections
-            .SelectMany(section => section.GetProperty("actions").EnumerateArray().Select(action => new
-            {
-                SectionId = section.GetProperty("id").GetString(),
-                ActionId = action.GetProperty("id").GetString(),
-            }))
-            .ToArray();
-
-        Assert.Contains(actionLocations, action => action.SectionId == "soul" && action.ActionId == "inventory");
-        Assert.Contains(actionLocations, action => action.SectionId == "world" && action.ActionId == "storage_access");
-        Assert.Contains(actionLocations, action => action.SectionId == "world" && action.ActionId == "craft");
-
-        Assert.Contains("function matchesActionSectionOrAction", app, StringComparison.Ordinal);
-        Assert.Contains("const matchingActions = section.actions.filter((action) => matchesActionSectionOrAction(section, action, matchers));", app, StringComparison.Ordinal);
-        Assert.Contains("actions: matchingActions", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("return matchers.some((matcher) => haystack.includes", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("<AdvancedDiagnosticsPanel />", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("browserApiContractSummary.endpointDocs", app, StringComparison.Ordinal);
+        Assert.Contains(".settings-view", styles, StringComparison.Ordinal);
+        Assert.Contains(".settings-card", styles, StringComparison.Ordinal);
+        Assert.Contains(".advanced-diagnostics", styles, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -393,12 +302,10 @@ public sealed class BrowserFrontendWorkspaceTests
     {
         var entryStyles = File.ReadAllText(Path.Combine(FrontendRoot, "src", "styles.css"));
         var styles = ReadFrontendStyles();
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var apiClient = File.ReadAllText(Path.Combine(FrontendRoot, "src", "api", "client.ts"));
-        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
-        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var app = ReadFrontendSource("App.tsx");
+        var apiClient = ReadFrontendSource("api", "client.ts");
 
-        foreach (var fileName in new[] { "tokens.css", "base.css", "components.css", "layout.css", "motion.css" })
+        foreach (var fileName in new[] { "tokens.css", "base.css", "components.css", "layout.css", "motion.css", "command-ui.css", "sidebar.css", "hero.css", "realms.css" })
         {
             Assert.True(File.Exists(Path.Combine(FrontendRoot, "src", "styles", fileName)), $"Missing frontend design-system CSS file {fileName}");
             Assert.Contains($"./styles/{fileName}", entryStyles, StringComparison.Ordinal);
@@ -412,433 +319,64 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("--state-qte", styles, StringComparison.Ordinal);
         Assert.Contains("--motion-panel", styles, StringComparison.Ordinal);
         Assert.Contains("prefers-reduced-motion", styles, StringComparison.Ordinal);
-        Assert.Contains(".design-system-grid", styles, StringComparison.Ordinal);
-        Assert.Contains(".route-card--game", styles, StringComparison.Ordinal);
-        Assert.Contains(".narrative-card.is-featured", styles, StringComparison.Ordinal);
-        Assert.Contains(".shell-panel[data-panel='turn']", styles, StringComparison.Ordinal);
         Assert.Contains("@media (max-width: 640px)", styles, StringComparison.Ordinal);
+        Assert.Contains(".browser-shell", styles, StringComparison.Ordinal);
+        Assert.Contains(".tab-bar", styles, StringComparison.Ordinal);
+        Assert.Contains(".content-area", styles, StringComparison.Ordinal);
+        Assert.Contains(".unified-input", styles, StringComparison.Ordinal);
+        Assert.Contains(".scene-view", styles, StringComparison.Ordinal);
+        Assert.Contains(".status-view", styles, StringComparison.Ordinal);
+        Assert.Contains(".settings-view", styles, StringComparison.Ordinal);
 
-        Assert.Contains("Книга Вечности: Перерождение", app, StringComparison.Ordinal);
         Assert.Contains("data-theme-key={realmTheme.key}", app, StringComparison.Ordinal);
-        Assert.Contains("route-card--${route.id}", app, StringComparison.Ordinal);
-        Assert.Contains("variant=\"turn\"", app, StringComparison.Ordinal);
-        Assert.Contains("formatSessionStatus(", app, StringComparison.Ordinal);
-        Assert.Contains("formatTurnStateLabel(", app, StringComparison.Ordinal);
-        Assert.Contains("formatQteStateLabel(", app, StringComparison.Ordinal);
+        Assert.Contains("formatSessionStatus(", ReadFrontendSource("utils", "formatters.ts"), StringComparison.Ordinal);
+        Assert.Contains("formatTurnStateLabel(", ReadFrontendSource("utils", "formatters.ts"), StringComparison.Ordinal);
+        Assert.Contains("formatQteStateLabel(", ReadFrontendSource("utils", "formatters.ts"), StringComparison.Ordinal);
         Assert.DoesNotContain("Book of Eternity Reborn · Browser Client", app, StringComparison.Ordinal);
         Assert.DoesNotContain("player-facing", app, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Текущий realm", app, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("{session.status}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("game_session найден", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("eyebrow={game.turnState.state}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("game.qte.notification ?? game.qte.state", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("qte.notification ?? qte.error ?? qte.state", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("локальный host", app, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("C# host", apiClient, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("локальный ресурс", apiClient, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("QTE и уведомления", app, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("локальный игровой клиент", apiClient, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("toPlayerFacingText(", app, StringComparison.Ordinal);
-        Assert.Contains("formatRealmName(soul.realm)", app, StringComparison.Ordinal);
-        Assert.Contains("formatDialogueCategory(option.category)", app, StringComparison.Ordinal);
-        Assert.Contains("formatTurnStateTitle(", app, StringComparison.Ordinal);
-        Assert.Contains("formatTurnStateMessage(", app, StringComparison.Ordinal);
-        Assert.Contains("getComposerGuidance(", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("gameScreen?.turnState.title", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{game.turnState.title}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{game.turnState.message}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("placeholder={game.actionComposer.placeholder", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{game.actionComposer.guidance}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{game.actionComposer.disabledReason}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{option.category}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("return qte.notification;", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{soul.realm}", app, StringComparison.Ordinal);
-        Assert.Contains("[/Slash-команды/gi, 'служебные команды']", app, StringComparison.Ordinal);
-        Assert.Contains("[/repair pending turn/gi, 'починка ожидающего хода']", app, StringComparison.Ordinal);
-        Assert.Contains("[/\\brepair\\b/gi, 'починка']", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(notification.title", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(block.text", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(block.title", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(item.key", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(prompt.prompt", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{notification.title}</strong> — {notification.message}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("return <p>{block.text}</p>", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("<h5>{block.title}</h5>", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("<dt>{item.key}</dt><dd>{item.value}</dd>", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("<span>{prompt.prompt}</span>", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("placeholder={prompt.placeholder}", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(menu.session.continueReason", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(action.description", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(menu.options.guidance", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(playlist.usage", app, StringComparison.Ordinal);
-        Assert.Contains("toPlayerFacingText(cue.label", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{menu.session.continueReason}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("action.enabled ? action.description : action.disabledReason", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{options.guidance}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{result.playerMessage}</p>", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("${playlist.label}: ${playlist.usage}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("{cue.label}: {cue.available ? 'готово' : 'нет файла'}", app, StringComparison.Ordinal);
-        Assert.Contains("[/game_session/gi, 'сохранение игры']", app, StringComparison.Ordinal);
-        Assert.Contains("[/write-flow/gi, 'запись хода']", app, StringComparison.Ordinal);
-        Assert.Contains("[/manual_saves/gi, 'ручные сохранения']", app, StringComparison.Ordinal);
-        Assert.Contains("[/autosaves/gi, 'автосохранения']", app, StringComparison.Ordinal);
-        Assert.Contains("[/--web/g, 'браузерный режим']", app, StringComparison.Ordinal);
-        Assert.Contains("[/snapshot artifact/gi, 'снимок состояния']", app, StringComparison.Ordinal);
-        Assert.Contains("[/state\\/contract/gi, 'файлы состояния и контракта']", app, StringComparison.Ordinal);
-        Assert.Contains("[/\\boffer\\b/gi, 'предложение']", app, StringComparison.Ordinal);
-        Assert.Contains("[/Browser Client/gi, 'браузерный клиент']", app, StringComparison.Ordinal);
-        Assert.Contains("[/sound-notification/gi, 'звуковая подсказка']", app, StringComparison.Ordinal);
-        Assert.Contains("[/\\brealm\\b/gi, 'царство']", app, StringComparison.Ordinal);
-        Assert.Contains("[/repair\\/validation/gi, 'починка и проверка']", app, StringComparison.Ordinal);
-        Assert.Contains("[/UI-блокировка/gi, 'блокировка интерфейса']", app, StringComparison.Ordinal);
-        Assert.Contains("[/\\bvalidation\\b/gi, 'проверка']", app, StringComparison.Ordinal);
-        Assert.Contains("[/game_state\\/meta\\/soul_state\\.json/gi, 'файл души']", app, StringComparison.Ordinal);
-        Assert.Contains("[/локальный запись хода/gi, 'локальную запись хода']", app, StringComparison.Ordinal);
-        Assert.Contains("[/тот же локальную/gi, 'ту же локальную']", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Валидация:", app, StringComparison.Ordinal);
-        Assert.Contains("prompt.allowCustom", app, StringComparison.Ordinal);
-        Assert.Contains("Или впишите свой вариант", app, StringComparison.Ordinal);
-        Assert.Contains("return prompt.defaultValue;", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("return toPlayerFacingText(prompt.defaultValue", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Подробность: ${message}", app, StringComparison.Ordinal);
-
-        Assert.Contains("#685", readme, StringComparison.Ordinal);
-        Assert.Contains("src/styles/tokens.css", readme, StringComparison.Ordinal);
-        Assert.Contains("dark-fantasy", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("#685", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("design-system", hostDoc, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
-    public void BrowserDefaultScreen_UsesPlayerFacingCopyAndNeutralEmptyStates()
+    public void BrowserLegacyRouteAndDashboardContracts_AreNotRevivedBySourceGuards()
     {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var styles = ReadFrontendStyles();
+        var app = ReadFrontendSource("App.tsx");
+        var tabBar = ReadFrontendSource("components", "TabBar.tsx");
+        var sceneView = ReadFrontendSource("components", "SceneView.tsx");
+        var sourceGuard = File.ReadAllText(Path.Combine(FrontendRoot, "test", "uiStructure.test.ts"));
+        var routeExtractionGuard = File.ReadAllText(Path.Combine(FrontendRoot, "test", "appRouteExtraction.test.ts"));
 
-        Assert.Contains("Книга Вечности: Перерождение", app, StringComparison.Ordinal);
-        Assert.Contains("Откройте книгу", app, StringComparison.Ordinal);
-        Assert.Contains("function EmptyState", app, StringComparison.Ordinal);
-        Assert.Contains("function EmptyOrFailure", app, StringComparison.Ordinal);
-        Assert.Contains("result.kind === 'no-active-session'", app, StringComparison.Ordinal);
-        Assert.Contains("return <ApiFailure title={errorTitle}", app, StringComparison.Ordinal);
-        Assert.Contains("className=\"empty-state\"", app, StringComparison.Ordinal);
-        Assert.Contains(".empty-state", styles, StringComparison.Ordinal);
-        Assert.Contains("Технические подробности доступны после явного включения расширенного режима", app, StringComparison.Ordinal);
-
-        Assert.DoesNotContain("<h1 id=\"browser-client-title\">Локальный игровой клиент</h1>", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("источник истины", app, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("маршруты", app, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("состояние интерфейса", app, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("посмертные контракты", app, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("отдельный слой", app, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Главное меню недоступно", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Игровой экран недоступен", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Данные души недоступны", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Мир недоступен", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Медиа недоступны", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Настройки недоступны", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Сессия недоступна", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Аудио-настройки недоступны", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("HomeRoute", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("GameRoute", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("SoulRoute", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("WorldRoute", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("ActionPalette", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("ActionCard", app, StringComparison.Ordinal);
+        Assert.DoesNotContain("NavBar", app, StringComparison.Ordinal);
+        Assert.Contains("tabNav.map((tab)", tabBar, StringComparison.Ordinal);
+        Assert.Contains("SceneView should not revive the old action palette or composer components", sourceGuard, StringComparison.Ordinal);
+        Assert.Contains("should not render the old route/dashboard shell", sourceGuard, StringComparison.Ordinal);
+        Assert.Contains("TabBar", routeExtractionGuard, StringComparison.Ordinal);
+        Assert.Contains("SceneView", routeExtractionGuard, StringComparison.Ordinal);
+        Assert.Contains("StatusView", routeExtractionGuard, StringComparison.Ordinal);
+        Assert.Contains("UnifiedInput", routeExtractionGuard, StringComparison.Ordinal);
+        Assert.DoesNotContain("../src/routes/", routeExtractionGuard, StringComparison.Ordinal);
+        Assert.DoesNotContain("navBarConfig", routeExtractionGuard, StringComparison.Ordinal);
+        Assert.DoesNotContain("ActionPalette", sceneView, StringComparison.Ordinal);
     }
 
-    [Fact]
-    public void BrowserHomeRoute_RendersPlayerFacingLauncherWithPrimaryCta()
+    private static string ReadFrontendSource(params string[] relativePath)
     {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var styles = ReadFrontendStyles();
-
-        Assert.Contains("function GameLauncher", app, StringComparison.Ordinal);
-        Assert.Contains("interface LauncherPrimaryAction", app, StringComparison.Ordinal);
-        Assert.Contains("selectPrimaryLauncherAction(", app, StringComparison.Ordinal);
-        Assert.Contains("launcher-menu", app, StringComparison.Ordinal);
-        Assert.Contains("launcher-save-list", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.loadSave({ saveId: slot.saveId })", app, StringComparison.Ordinal);
-        Assert.Contains("onActiveRouteChange('game')", app, StringComparison.Ordinal);
-        Assert.Contains("Открыть книгу", app, StringComparison.Ordinal);
-        Assert.Contains("Продолжить главу", app, StringComparison.Ordinal);
-        Assert.Contains("Начать новую главу", app, StringComparison.Ordinal);
-        Assert.Contains("Загрузить сохранение", app, StringComparison.Ordinal);
-        Assert.Contains("Настроить клиент", app, StringComparison.Ordinal);
-        Assert.Contains("Сведения о книге", app, StringComparison.Ordinal);
-        Assert.Contains("className=\"launcher-menu\"", app, StringComparison.Ordinal);
-        Assert.Contains("className=\"advanced-toggle\"", app, StringComparison.Ordinal);
-        Assert.Contains("function playerLauncherAboutText", app, StringComparison.Ordinal);
-        Assert.Contains("[/debug shell/gi, 'служебная оболочка']", app, StringComparison.Ordinal);
-        Assert.Contains("function toLauncherSaveFailureNotice", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("setLauncherNotice(toPlayerFacingText(result.data.error", app, StringComparison.Ordinal);
-        Assert.Contains("isLauncherMountedRef", app, StringComparison.Ordinal);
-        Assert.Contains("isLauncherMountedRef.current = false", app, StringComparison.Ordinal);
-        Assert.Contains("function NewChapterStartPanel", app, StringComparison.Ordinal);
-        Assert.Contains("const startCommand = modeAction?.command.trim() ?? '';", app, StringComparison.Ordinal);
-        Assert.Contains("async function openNewChapterFlow", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.executeExplorerCommand({ command: startCommand, ownerLabel: 'Главная книга' })", app, StringComparison.Ordinal);
-        Assert.Contains("sanitizePlayerDefaultCommandResult", app, StringComparison.Ordinal);
-        Assert.Contains("function sanitizeNewChapterCommandResult", app, StringComparison.Ordinal);
-        Assert.Contains("setNewChapterPromptAnswers(buildDefaultPromptAnswers(result.data.prompts));", app, StringComparison.Ordinal);
-        Assert.Contains("async function submitNewChapterPromptAnswers", app, StringComparison.Ordinal);
-        Assert.Contains("browserApi.submitPromptSession({", app, StringComparison.Ordinal);
-        Assert.Contains("<ActionCommandResult", app, StringComparison.Ordinal);
-        Assert.Contains("Форма новой главы открыта. Заполните поля ниже и отправьте её из браузера.", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Подготовить новую историю через управляемую форму браузера.", app, StringComparison.Ordinal);
-
-        var advancedDiagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
-        Assert.True(advancedDiagnosticsIndex > 0, "Advanced diagnostics must stay in a separate source section.");
-        var playerDefaultAppSlice = app[..advancedDiagnosticsIndex];
-        var hasRawDebugShellInPlayerDefaultSlice = playerDefaultAppSlice.Contains("debug shell", StringComparison.OrdinalIgnoreCase);
-        var hasExplicitDebugShellReplacement = app.Contains("[/debug shell/gi, 'служебная оболочка']", StringComparison.Ordinal);
-        Assert.True(!hasRawDebugShellInPlayerDefaultSlice || hasExplicitDebugShellReplacement, "Player-default launcher copy must not expose raw debug shell wording.");
-
-        Assert.Contains(".game-launcher", styles, StringComparison.Ordinal);
-        Assert.Contains(".launcher-menu", styles, StringComparison.Ordinal);
-        Assert.Contains(".launcher-menu__item", styles, StringComparison.Ordinal);
-        Assert.Contains(".launcher-save-list", styles, StringComparison.Ordinal);
-
-        var menuIndex = app.IndexOf("launcher-menu", StringComparison.Ordinal);
-        var advancedIndex = app.IndexOf("className=\"advanced-toggle\"", StringComparison.Ordinal);
-        Assert.True(menuIndex > 0, "Launcher menu must be explicit in source.");
-        Assert.True(advancedIndex > menuIndex, "Advanced mode must stay lower priority than launcher actions in source order.");
-    }
-
-    [Fact]
-    public void BrowserSidebar_RendersPlayerFacingStatusInsteadOfDebugDashboard()
-    {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var styles = ReadFrontendStyles();
-
-        Assert.Contains("function PlayerStatusSidebar", app, StringComparison.Ordinal);
-        Assert.Contains("function StatusSummaryCard", app, StringComparison.Ordinal);
-        Assert.Contains("className=\"player-status-sidebar\"", app, StringComparison.Ordinal);
-        Assert.Contains("Сводка книги", app, StringComparison.Ordinal);
-        Assert.Contains("Слой книги", app, StringComparison.Ordinal);
-        Assert.Contains("Герой и душа", app, StringComparison.Ordinal);
-        Assert.Contains("Сохранение", app, StringComparison.Ordinal);
-        Assert.Contains("Служебная панель", app, StringComparison.Ordinal);
-        Assert.Contains("Подробности ремонта, проверки и команд скрыты до явного включения.", app, StringComparison.Ordinal);
-        Assert.Contains("formatSidebarSessionSummary(", app, StringComparison.Ordinal);
-        Assert.Contains("formatSidebarAudioSummary(", app, StringComparison.Ordinal);
-        Assert.Contains("getSidebarFailure(", app, StringComparison.Ordinal);
-        Assert.Contains("formatSidebarStatusMetric(", app, StringComparison.Ordinal);
-        Assert.Contains("sidebarMenuFailure", app, StringComparison.Ordinal);
-        Assert.Contains("sidebarSessionFailure", app, StringComparison.Ordinal);
-        Assert.Contains("sidebarGameFailure", app, StringComparison.Ordinal);
-        Assert.Contains("attention={Boolean(sidebarGameFailure)}", app, StringComparison.Ordinal);
-        Assert.Contains("className=\"warning-text\">{sidebarGameFailure}", app, StringComparison.Ordinal);
-        Assert.Contains("function getTurnSidebarTitle(", app, StringComparison.Ordinal);
-        Assert.Contains("Ход ещё не начат", app, StringComparison.Ordinal);
-        Assert.Contains("<StatusSummaryCard title={getTurnSidebarTitle(hasGame, sidebarGameFailure)}", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("<StatusSummaryCard title=\"Ожидание ГМа\"", app, StringComparison.Ordinal);
-        Assert.Contains("formatHeroStatusLabel(gameScreen, menu)", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("menu?.session.validationLabel ?? 'Книга ждёт открытия'", app, StringComparison.Ordinal);
-        Assert.Contains("formatSidebarLayerStatus(menu)", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("toPlayerFacingText(menu.session.validationLabel, 'Книга ждёт открытия')", app, StringComparison.Ordinal);
-
-        Assert.DoesNotContain("<ShellPanel title=\"Сессия\" eyebrow=\"локальная книга\">", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("<ShellPanel title=\"Ход и ремонт\" eyebrow=\"безопасность хода\">", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("Проверка: {toPlayerFacingText(gameScreen.turnState.validationLabel", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("healthPercentage}%", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("energyPercentage}%", app, StringComparison.Ordinal);
-        Assert.DoesNotContain("poisePercentage}%", app, StringComparison.Ordinal);
-
-        var sidebarIndex = app.IndexOf("className=\"player-status-sidebar\"", StringComparison.Ordinal);
-        var advancedEntryIndex = app.IndexOf("className=\"advanced-sidebar-entry\"", StringComparison.Ordinal);
-        var diagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
-        Assert.True(sidebarIndex > 0, "Player status sidebar must render before advanced entry.");
-        Assert.True(advancedEntryIndex > sidebarIndex, "Advanced entry should be lower priority than player status cards.");
-        Assert.True(diagnosticsIndex > advancedEntryIndex, "Advanced diagnostics implementation should stay outside the default sidebar source slice.");
-
-        Assert.Contains(".player-status-sidebar", styles, StringComparison.Ordinal);
-        Assert.Contains(".status-summary-card", styles, StringComparison.Ordinal);
-        Assert.Contains(".advanced-sidebar-entry", styles, StringComparison.Ordinal);
-        Assert.Contains(".status-summary-grid", styles, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void BrowserDetailSurfaces_DefineReusableCardToModalPattern()
-    {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var detailSurfacePath = Path.Combine(FrontendRoot, "src", "components", "DetailSurface.tsx");
-        Assert.True(File.Exists(detailSurfacePath), $"Missing {detailSurfacePath}");
-        var detailSurface = File.ReadAllText(detailSurfacePath);
-        var styles = ReadFrontendStyles();
-        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
-        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
-
-        Assert.Contains("export interface DetailSurfaceSection", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("export function DetailSurfaceCard", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("role=\"dialog\"", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("aria-modal=\"true\"", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("aria-label=\"Вернуться к карточке\"", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("aria-label=\"Развернуть панель подробностей\"", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("aria-label=\"Закрыть подробности\"", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("event.key === 'Escape'", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("event.key === 'Tab'", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("getFocusableDetailControls", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("modalRef.current", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("role=\"group\"", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("triggerRef.current?.focus()", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("detail-surface-empty", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("detail-surface-error", detailSurface, StringComparison.Ordinal);
-        Assert.Contains("detail-surface-loading", detailSurface, StringComparison.Ordinal);
-        Assert.DoesNotContain("/api/", detailSurface, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("raw JSON", detailSurface, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("debug", detailSurface, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("advancedCommand", detailSurface, StringComparison.Ordinal);
-
-        Assert.Contains("import { DetailSurfaceCard", app, StringComparison.Ordinal);
-        Assert.Contains("<DetailSurfaceCard", app, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"soul-identity\"", app, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"player-condition\"", app, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"world-location\"", app, StringComparison.Ordinal);
-        Assert.Contains("Детали души", app, StringComparison.Ordinal);
-        Assert.Contains("Детали героя", app, StringComparison.Ordinal);
-        Assert.Contains("Детали локации", app, StringComparison.Ordinal);
-
-        Assert.Contains(".detail-surface-grid", styles, StringComparison.Ordinal);
-        Assert.Contains(".detail-surface-card", styles, StringComparison.Ordinal);
-        Assert.Contains(".detail-surface-overlay", styles, StringComparison.Ordinal);
-        Assert.Contains(".detail-surface-modal", styles, StringComparison.Ordinal);
-        Assert.Contains(".detail-surface-modal.is-fullscreen", styles, StringComparison.Ordinal);
-        Assert.Contains(".detail-surface-sections", styles, StringComparison.Ordinal);
-        Assert.Contains("@media (max-width: 640px)", styles, StringComparison.Ordinal);
-        Assert.Contains(".detail-surface-modal", styles[styles.IndexOf("@media (max-width: 640px)", StringComparison.Ordinal)..], StringComparison.Ordinal);
-
-        Assert.Contains("#728", readme, StringComparison.Ordinal);
-        Assert.Contains("card → modal/full-panel", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("detail-surfaces.html", readme, StringComparison.Ordinal);
-        Assert.Contains("#728", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("detail-surfaces.html", hostDoc, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void BrowserRebornPanels_DefinePlayerFacingAfterlifeShiningAndChaosSections()
-    {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var styles = ReadFrontendStyles();
-        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
-        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
-
-        Assert.Contains("function RebornSystemsPanel", app, StringComparison.Ordinal);
-        Assert.Contains("const rebornSectionMatchers", app, StringComparison.Ordinal);
-        Assert.Contains("const shiningAbodeActionMatchers", app, StringComparison.Ordinal);
-        Assert.Contains("const chaosSeaActionMatchers", app, StringComparison.Ordinal);
-        Assert.Contains("<RebornSystemsPanel game={game} />", app, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"reborn-afterlife-overview\"", app, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"reborn-shining-abode\"", app, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"reborn-chaos-sea\"", app, StringComparison.Ordinal);
-        Assert.Contains("Посмертие Reborn", app, StringComparison.Ordinal);
-        Assert.Contains("Сияющая Обитель", app, StringComparison.Ordinal);
-        Assert.Contains("Море Хаоса", app, StringComparison.Ordinal);
-        Assert.Contains("Посмертные панели откроются", app, StringComparison.Ordinal);
-        Assert.Contains("UI-only mapping for #729", app, StringComparison.Ordinal);
-        Assert.Contains("filterActionSections(game.actionMenu, rebornSectionMatchers)", app, StringComparison.Ordinal);
-        Assert.Contains("filterActionsForPanel(rebornSections, shiningAbodeActionMatchers)", app, StringComparison.Ordinal);
-        Assert.Contains("filterActionsForPanel(rebornSections, chaosSeaActionMatchers)", app, StringComparison.Ordinal);
-        Assert.Contains("game.flags.isInAfterlifeRealm", app, StringComparison.Ordinal);
-        Assert.Contains("game.flags.isInShiningAbode", app, StringComparison.Ordinal);
-        Assert.Contains("game.flags.isInChaosSea", app, StringComparison.Ordinal);
-
-        var worldRouteStart = app.IndexOf("function WorldRoute", StringComparison.Ordinal);
-        var actionMenuIndex = app.IndexOf("<ActionMenu menu={game.actionMenu} />", worldRouteStart, StringComparison.Ordinal);
-        var rebornPanelIndex = app.IndexOf("<RebornSystemsPanel game={game} />", worldRouteStart, StringComparison.Ordinal);
-        Assert.True(rebornPanelIndex > worldRouteStart, "Reborn panel should render inside the world route after the mortal-world overview.");
-        Assert.True(rebornPanelIndex < actionMenuIndex, "Reborn panel should be a conceptual section before the generic action catalogue.");
-
-        var panelStart = app.IndexOf("function RebornSystemsPanel", StringComparison.Ordinal);
-        var panelEnd = app.IndexOf("function FilteredActionSections", StringComparison.Ordinal);
-        Assert.True(panelStart >= 0 && panelEnd > panelStart, "Reborn panel source slice should be bounded before generic action helpers.");
-        var panelSource = app[panelStart..panelEnd];
-        Assert.DoesNotContain("pending_", panelSource, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("control/", panelSource, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("/api/", panelSource, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("raw JSON", panelSource, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("debug", panelSource, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("advancedCommand}", panelSource, StringComparison.Ordinal);
-
-        Assert.Contains(".reborn-systems-panel", styles, StringComparison.Ordinal);
-        Assert.Contains(".reborn-systems-panel__header", styles, StringComparison.Ordinal);
-        Assert.Contains(".reborn-systems-panel__actions", styles, StringComparison.Ordinal);
-
-        Assert.Contains("#729", readme, StringComparison.Ordinal);
-        Assert.Contains("Reborn panels", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("UI-only mapping", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("#729", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("reborn-panels.html", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("GM-facing afterlife contract docs were not changed", hostDoc, StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist()
-    {
-        var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
-        var smokeTest = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient.Tests", "LocalWebUiBuiltFrontendSmokeTests.cs"));
-        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
-        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
-
-        Assert.Contains("#723", readme, StringComparison.Ordinal);
-        Assert.Contains("#723", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("first-screen-visual-qa.html", smokeTest, StringComparison.Ordinal);
-        Assert.Contains("first-screen-visual-qa.html", readme, StringComparison.Ordinal);
-        Assert.Contains("first-screen-visual-qa.html", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("old React UI/UX reference only", smokeTest, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("old React UI/UX reference", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("old React UI/UX reference", hostDoc, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("primary CTA", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("no technical hero copy", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("no repeated unavailable alerts", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("no emoji route icons", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("advanced debug secondary", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("BrowserFrontendWorkspaceTests", readme, StringComparison.Ordinal);
-        Assert.Contains("LocalWebUiDocumentationTests", readme, StringComparison.Ordinal);
-
-        var advancedDiagnosticsIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
-        Assert.True(advancedDiagnosticsIndex > 0, "Advanced diagnostics panel should remain after default player UI source.");
-        var playerDefaultSlice = app[..advancedDiagnosticsIndex];
-        Assert.DoesNotContain("`/api/*`", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("raw /api/", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("command coverage", playerDefaultSlice, StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void ReactAppShell_DocumentsIssue704RoutingAndPlayerAdvancedBoundary()
-    {
-        var readme = File.ReadAllText(Path.Combine(FrontendRoot, "README.md"));
-        var hostDoc = File.ReadAllText(Path.Combine(RepoRoot, "docs", "web-ui", "local-web-host.md"));
-
-        Assert.Contains("#704", readme, StringComparison.Ordinal);
-        Assert.Contains("React app shell", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("player-facing routes", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("advanced", readme, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("dist/index.html", readme, StringComparison.Ordinal);
-        Assert.Contains("#704", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("React app shell", hostDoc, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("dist/index.html", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("Расширенный режим", hostDoc, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void FrontendHostContract_UsesExternalAssetsInsteadOfInlineShellBlob()
-    {
-        var hostSource = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient", "WebUi", "LocalWebUiHost.cs"));
-        var fallbackShell = Path.Combine(FrontendRoot, "public", "local-web-ui-shell.html");
-
-        Assert.True(File.Exists(fallbackShell), $"Missing {fallbackShell}");
-        Assert.DoesNotContain("BuildShellHtml", hostSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("data-menu-action=\"continue\"", hostSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("<!doctype html>", hostSource, StringComparison.OrdinalIgnoreCase);
+        return File.ReadAllText(Path.Combine(new[] { FrontendRoot, "src" }.Concat(relativePath).ToArray()));
     }
 
     private static string ReadFrontendStyles()
     {
-        var paths = new[]
-        {
-            Path.Combine(FrontendRoot, "src", "styles.css"),
-            Path.Combine(FrontendRoot, "src", "styles", "tokens.css"),
-            Path.Combine(FrontendRoot, "src", "styles", "base.css"),
-            Path.Combine(FrontendRoot, "src", "styles", "components.css"),
-            Path.Combine(FrontendRoot, "src", "styles", "layout.css"),
-            Path.Combine(FrontendRoot, "src", "styles", "motion.css"),
-        };
+        var paths = new[] { Path.Combine(FrontendRoot, "src", "styles.css") }
+            .Concat(Directory.EnumerateFiles(Path.Combine(FrontendRoot, "src", "styles"), "*.css").OrderBy(path => path, StringComparer.Ordinal));
 
-        return string.Join("\n", paths.Where(File.Exists).Select(File.ReadAllText));
+        return string.Join("\n", paths.Select(File.ReadAllText));
     }
 }
