@@ -9,7 +9,9 @@ interface PromptFormProps {
   promptAnswers: PromptAnswers;
   onPromptAnswerChange: (promptId: string, value: JsonValue | undefined) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onCancel?: () => void;
   isSubmitting: boolean;
+  isCancelling?: boolean;
 }
 
 export function PromptForm({
@@ -17,15 +19,26 @@ export function PromptForm({
   promptAnswers,
   onPromptAnswerChange,
   onSubmit,
-  isSubmitting
+  onCancel,
+  isSubmitting,
+  isCancelling = false
 }: PromptFormProps) {
+  const isBusy = isSubmitting || isCancelling;
+
   return (
     <form className="prompt-form" onSubmit={onSubmit}>
       <h5>Заполните игровую форму</h5>
       {prompts.map((prompt) => renderPromptControl(prompt, promptAnswers[prompt.id], onPromptAnswerChange))}
-      <button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Отправляем…' : 'Отправить форму'}
-      </button>
+      <div className="prompt-form__actions">
+        <button type="submit" disabled={isBusy}>
+          {isSubmitting ? 'Отправляем…' : 'Отправить форму'}
+        </button>
+        {onCancel && (
+          <button type="button" className="prompt-form__cancel" disabled={isBusy} onClick={onCancel}>
+            {isCancelling ? 'Отменяем…' : 'Отменить форму'}
+          </button>
+        )}
+      </div>
     </form>
   );
 }
