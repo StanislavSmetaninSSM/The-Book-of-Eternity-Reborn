@@ -26,6 +26,16 @@ The Agent Console model describes what the main console client is showing withou
 
 `AgentConsoleStateStore` keeps the current snapshot nullable for the no-screen state and retains only the configured number of most recent events. It is file-independent and host-independent, so tests or a future API endpoint can consume it without requiring normal console startup to use Agent Console services.
 
+## Live input queue
+
+Issue: #751
+
+`AgentConsoleLiveInputSource` is an in-process `IConsoleInputSource` implementation for Agent Console control. It accepts queued key input as `ConsoleKeyInfo` values and queued text line input as complete `ReadLine()` responses. It does not use OS-level keyboard automation or console-buffer scraping, and it does not expose HTTP endpoints.
+
+`AgentConsoleActionRequest` is the semantic action request shape. A request names an `actionId` and may include the caller's expected `screenId` and `inputKind`. The live input source accepts the request only when the current `AgentConsoleStateStore` snapshot exists, is awaiting input, exposes a matching enabled action, and can resolve that action to safe existing console input. Resolution prefers the action shortcut; when there is no shortcut, the selected/default action resolves to Enter, and menu actions with a safe one-digit index may resolve to that menu digit.
+
+Accepted key, text line, and action requests append `InputAccepted` events. Missing, disabled, stale-screen, mismatched-input-kind, unsupported, closed-queue, and full-queue requests append `InputRejected` events and do not consume unrelated queued input. Shutdown or cancellation unblocks waiting synchronous reads with a typed live-input exception instead of deadlocking the console flow.
+
 ## E2E compatibility mapping
 
 `AgentConsoleE2EObservationMapper.ToAgentConsoleSnapshot` maps the existing `ConsoleE2EObservationSnapshot` artifact model into the live snapshot model without reading or writing artifact files.
