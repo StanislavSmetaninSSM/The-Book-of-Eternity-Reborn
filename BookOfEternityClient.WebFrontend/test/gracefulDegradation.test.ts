@@ -31,9 +31,11 @@ const copy = readSrc('utils/playerCopy.ts');
 assert(copy.includes('export function sanitizePlayerMessage'), 'playerCopy should export sanitizePlayerMessage.');
 assert(copy.includes('containsTechnicalDetails'), 'playerCopy should keep containsTechnicalDetails.');
 
-const route = readSrc('routes/GameRoute.tsx');
-assert(route.includes('turn-state-card'), 'GameRoute should use the turn-state-card presentation.');
-assert(!route.includes('TurnLifecycleActions'), 'GameRoute should not render TurnLifecycleActions.');
+const sceneView = readSrc('components/SceneView.tsx');
+assert(sceneView.includes('scene-empty'), 'SceneView should render a neutral empty state when game data is missing.');
+assert(sceneView.includes('Игровая сессия не загружена.'), 'SceneView should explain missing game data in player-facing copy.');
+assert(!sceneView.includes('TurnLifecycleActions'), 'SceneView should not render the obsolete turn lifecycle action widget.');
+assert(!sceneView.includes('raw JSON'), 'SceneView should keep raw protocol details out of the player default surface.');
 
 const result = readSrc('components/CommandResult.tsx');
 assert(result.includes('sanitizePlayerMessage'), 'CommandResult should sanitize text blocks.');

@@ -138,7 +138,6 @@ h1 {
   animation-delay: 80ms;
 }
 
-.nav-bar__item:active,
 .launcher-menu__item:active:not(:disabled),
 .composer button[type='submit']:active,
 .composer-form button[type='submit']:active {

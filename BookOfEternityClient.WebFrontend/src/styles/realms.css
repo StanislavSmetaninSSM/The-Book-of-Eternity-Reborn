@@ -67,7 +67,7 @@
   color: color-mix(in srgb, var(--realm-shining) 55%, var(--color-parchment));
 }
 
-/* ── Realm badge (NavBar indicator) ── */
+/* ── Realm badge utility ── */
 .realm-badge {
   display: inline-flex;
   align-items: center;

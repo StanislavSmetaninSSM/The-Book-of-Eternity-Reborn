@@ -132,12 +132,16 @@ describe('playerCopy robustness', () => {
     expect(advancedDiagnostics).not.toContain('Repair:');
   });
 
-  it('keeps reborn systems panel copy in Russian', () => {
-    const rebornSystemsPanel = readSource('src', 'components', 'RebornSystemsPanel.tsx');
+  it('keeps current afterlife and command help copy in Russian', () => {
+    const statusView = readSource('src', 'components', 'StatusView.tsx');
+    const helpView = readSource('src', 'components', 'HelpView.tsx');
 
-    expect(rebornSystemsPanel).toContain('Посмертие, Сияющая Обитель и Море Хаоса отделены от смертного мира');
-    expect(rebornSystemsPanel).toContain('безопасные для игрока действия');
-    expect(rebornSystemsPanel).not.toContain('Afterlife,');
-    expect(rebornSystemsPanel).not.toContain('player-safe');
+    expect(statusView).toContain('✨ Посмертие');
+    expect(statusView).toContain('Сияние');
+    expect(statusView).toContain('Искры света');
+    expect(helpView).toContain("ChaosSea: 'Море Хаоса'");
+    expect(helpView).toContain("ShiningAbode: 'Сияющая Обитель'");
+    expect(statusView).not.toContain('Afterlife,');
+    expect(helpView).not.toContain('player-safe');
   });
 });

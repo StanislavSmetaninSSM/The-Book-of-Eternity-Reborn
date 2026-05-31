@@ -41,8 +41,9 @@ const commandResultSource = readSource('components', 'CommandResult.tsx');
 assert(commandResultSource.includes('sanitizePlayerMessage(block.text,'), 'CommandResult text blocks should sanitize player-facing text.');
 assert(commandResultSource.includes('className="muted">{safe}</p>'), 'CommandResult should mute sanitized technical text.');
 
-const actionCardSource = readSource('components', 'ActionCard.tsx');
-assert(actionCardSource.includes('const { advancedEnabled } = useShell();'), 'ActionCard should read advanced mode from shell context.');
-assert(/const noticeFallback = commandResult && !isSuccess\(commandResult\)\r?\n    \? 'Игровое действие сейчас недоступно\.'\r?\n    : 'Игровое действие обработано\.';/.test(actionCardSource), 'ActionCard should derive a fallback that preserves error semantics.');
-assert(actionCardSource.includes('sanitizePlayerMessage(notice, noticeFallback)'), 'ActionCard notices should sanitize player-facing text with context-aware fallback.');
-assert(actionCardSource.includes('advancedEnabled && <p className="muted">{notice}</p>'), 'ActionCard should keep raw diagnostics only in advanced mode.');
+const launcherSource = readSource('components', 'GameLauncher.tsx');
+assert(launcherSource.includes('sanitizePlayerDefaultCommandResult'), 'GameLauncher should sanitize command results shown in the player-default new chapter flow.');
+assert(launcherSource.includes('function sanitizeNewChapterCommandResult'), 'GameLauncher should keep a dedicated sanitizer for new chapter command results.');
+assert(launcherSource.includes("blockedTextFallback: 'Служебные подробности подготовки скрыты в обычном режиме.'"), 'GameLauncher should hide technical preparation details in normal mode.');
+assert(launcherSource.includes('toLauncherSaveFailureNotice(result.playerMessage)'), 'GameLauncher should translate save failures before showing them to the player.');
+assert(!launcherSource.includes('setLauncherNotice(result.playerMessage)'), 'GameLauncher should not show raw API failure messages directly.');
