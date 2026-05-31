@@ -1274,7 +1274,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("secretProjects", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("internalMotivations", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("system_saref_shadow", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("system_invisible_false_guardian", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("secret_project_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("is_player_visible_false_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("internal_motivation_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -1665,6 +1667,18 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "reason": "Скрытая зависимость не должна отображаться игроку.",
               "lastChangedTurn": 12,
               "effects": []
+            },
+            {
+              "relationId": "azalia_player_invisible_false",
+              "sourceGuardianId": "guardian_azalia",
+              "targetGuardianId": "system_invisible_false_guardian",
+              "relationType": "alliance",
+              "attitudeScore": 10,
+              "visibility": "known",
+              "isPlayerVisible": false,
+              "reason": "is_player_visible_false_marker",
+              "lastChangedTurn": 12,
+              "effects": []
             }
           ],
           "projects": [
@@ -1980,7 +1994,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("secretProjects", rawText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("internalMotivations", rawText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("system_saref_shadow", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("system_invisible_false_guardian", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("secret_project_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("is_player_visible_false_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("internal_motivation_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 

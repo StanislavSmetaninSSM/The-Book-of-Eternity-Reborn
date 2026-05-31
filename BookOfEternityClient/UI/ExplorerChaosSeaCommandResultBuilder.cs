@@ -531,8 +531,15 @@ public static class ExplorerChaosSeaCommandResultBuilder
     private static bool IsHidden(JsonObject item)
     {
         var visibility = GetString(item, "visibility");
-        return string.Equals(visibility, "hidden", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(visibility, "gm_only", StringComparison.OrdinalIgnoreCase);
+        if (string.Equals(visibility, "hidden", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(visibility, "gm_only", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return item["isPlayerVisible"] is JsonValue playerVisible &&
+               playerVisible.TryGetValue<bool>(out var isPlayerVisible) &&
+               !isPlayerVisible;
     }
 
     private static string TranslateRelationType(string relationType) =>
