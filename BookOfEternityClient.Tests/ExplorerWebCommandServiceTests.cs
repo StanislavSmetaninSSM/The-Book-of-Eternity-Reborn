@@ -1369,6 +1369,73 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("hidden_saref_agent_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("/afterlife_chronicles")]
+    [InlineData("/хроники_посмертия")]
+    public async Task ExecuteAsync_AfterlifeChronicles_DefaultProjectionShowsPlayerSafeChronology(string command)
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Contains("Хроники посмертия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зал зеркальной клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guardian_scene:guardian_mirror", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Игрок впервые вошёл в зал отражений", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Игрок услышал зов зеркал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зал отражений запомнил голос игрока", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Понять, почему зеркала зовут игрока", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Хранитель Зеркал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Игрок", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_chronicle_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("secret_participant_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("internal_scope_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("moon_visible_to_player_false_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("quiet_deal_boolean_secret_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("silent_boolean_hidden_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("closed_gm_only_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("gmThoughtsSummary", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("lastInvalidChronicleUpdate", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeChronicles_MissingStateReturnsFriendlyEmptyState()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_chronicles"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiRawJsonBlock);
+        Assert.Contains("Хроники пока пусты", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("afterlife_chronicles.json пока не создан", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AfterlifeChronicles_AdvancedProjectionIncludesFullRawState()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeChroniclesRawLeakFixtureAsync();
+
+        var advancedRequest = JsonSerializer.Deserialize<ExplorerWebCommandRequest>(
+            """{"command":"/afterlife_chronicles","advancedEnabled":true}""",
+            JsonOptions)!;
+        var advancedResult = await _service.ExecuteAsync(advancedRequest);
+
+        AssertContainsAfterlifeChroniclesRawState(advancedResult);
+
+        _stateManager.Settings.ShowGmThoughts = true;
+        var gmThoughtsResult = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_chronicles"));
+
+        AssertContainsAfterlifeChroniclesRawState(gmThoughtsResult);
+    }
+
     [Fact]
     public async Task ExecuteAsync_AfterlifeProfiles_DefaultProjectionShowsKnownMasksWithoutHiddenInternals()
     {
@@ -2472,6 +2539,74 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         """);
     }
 
+    private async Task WriteAfterlifeChroniclesRawLeakFixtureAsync()
+    {
+        await _fs.WriteFileAtomicAsync(AfterlifeChronicleState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "lastInvalidChronicleUpdate": {
+            "chronicleId": "hidden_invalid_update_marker"
+          },
+          "lastInvalidChronicleUpdateReason": "hidden_invalid_reason_marker",
+          "chronicles": [
+            {
+              "chronicleId": "guardian_scene_mirror",
+              "scopeType": "guardian_scene",
+              "scopeId": "guardian_mirror",
+              "displayName": "Зал зеркальной клятвы",
+              "eventDescriptions": [
+                "[Turn 4] Игрок впервые вошёл в зал отражений.",
+                "hidden_chronicle_marker: GM-only archived event"
+              ],
+              "lastEventsDescription": "[Turn 5] Игрок услышал зов зеркал.",
+              "persistentConsequences": [
+                "Зал отражений запомнил голос игрока.",
+                "secret_consequence_marker"
+              ],
+              "openThreads": [
+                "Понять, почему зеркала зовут игрока.",
+                "Не раскрывать игроку hidden_chronicle_marker"
+              ],
+              "participants": [
+                { "actorId": "player_soul", "displayName": "Игрок", "actorType": "player_soul" },
+                { "actorId": "guardian_mirror", "displayName": "Хранитель Зеркал", "actorType": "guardian" },
+                { "actorId": "secret_participant_marker", "displayName": "secret_participant_marker", "visibility": "gm_only" },
+                { "actorId": "moon_witness", "displayName": "moon_visible_to_player_false_marker", "visibleToPlayer": false },
+                { "actorId": "silent_witness", "displayName": "silent_boolean_hidden_marker", "isHidden": true }
+              ],
+              "linkedActors": [
+                { "actorId": "internal_scope_marker", "displayName": "internal_scope_marker", "isPlayerVisible": false },
+                { "actorId": "closed_architect", "displayName": "closed_gm_only_marker", "gmOnly": true }
+              ],
+              "gmThoughtsSummary": "hidden_chronicle_marker",
+              "secretPlan": "secret_chronicle_marker",
+              "internalNotes": "internal_chronicle_marker",
+              "_debug": "hidden_debug_marker",
+              "lastUpdatedTurn": 5
+            },
+            {
+              "chronicleId": "moon_witness_scene",
+              "scopeType": "guardian_scene",
+              "scopeId": "moon_witness",
+              "displayName": "moon_visible_to_player_false_marker",
+              "visibleToPlayer": false,
+              "lastEventsDescription": "[Turn 6] moon_visible_to_player_false_marker sees a closed oath.",
+              "lastUpdatedTurn": 6
+            },
+            {
+              "chronicleId": "quiet_deal_scene",
+              "scopeType": "guardian_scene",
+              "scopeId": "quiet_deal",
+              "displayName": "quiet_deal_boolean_secret_marker",
+              "isSecret": true,
+              "lastEventsDescription": "[Turn 7] quiet_deal_boolean_secret_marker stays behind the curtain.",
+              "lastUpdatedTurn": 7
+            }
+          ]
+        }
+        """);
+    }
+
     private static string CollectBlockText(IEnumerable<UiBlock> blocks)
     {
         var parts = new List<string>();
@@ -2516,6 +2651,21 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("hidden_concealed_truth_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("hidden_mask_directive_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("hidden_saref_agent_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static void AssertContainsAfterlifeChroniclesRawState(ExplorerCommandResult result)
+    {
+        var raw = Assert.Single(result.Blocks.OfType<UiRawJsonBlock>());
+        var rawText = raw.Json?.ToJsonString(JsonOptions) ?? string.Empty;
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains(AfterlifeChronicleState.StatePath, raw.Title, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("gmThoughtsSummary", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("lastInvalidChronicleUpdate", rawText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden_chronicle_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("secret_participant_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("internal_scope_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void AssertContainsShiningPoliticsRawState(ExplorerCommandResult result)

@@ -144,6 +144,74 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("Memory Gates", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("/afterlife_chronicles", "Chaos Sea")]
+    [InlineData("/хроники_посмертия", "Chaos Sea")]
+    [InlineData("/afterlife_chronicles", "Shining Abode")]
+    [InlineData("/хроники_посмертия", "Shining Abode")]
+    public async Task TryProcessCommand_AfterlifeChronicles_RendersPlayerSafeChronology(string command, string realm)
+    {
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа",
+            currentRealm = realm,
+            currentIncarnation = 1,
+            inkFeathers = new { current = 3 }
+        });
+        await WriteRawJsonAsync(AfterlifeChronicleState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "lastInvalidChronicleUpdate": { "chronicleId": "hidden_invalid_update_marker" },
+          "chronicles": [
+            {
+              "chronicleId": "guardian_scene_mirror",
+              "scopeType": "guardian_scene",
+              "scopeId": "guardian_mirror",
+              "displayName": "Зал зеркальной клятвы",
+              "eventDescriptions": [
+                "[Turn 4] Игрок впервые вошёл в зал отражений.",
+                "hidden_chronicle_marker"
+              ],
+              "lastEventsDescription": "[Turn 5] Игрок услышал зов зеркал.",
+              "persistentConsequences": [
+                "Зал отражений запомнил голос игрока.",
+                "secret_consequence_marker"
+              ],
+              "openThreads": [
+                "Понять, почему зеркала зовут игрока.",
+                "Не раскрывать игроку hidden_chronicle_marker"
+              ],
+              "participants": [
+                { "actorId": "player_soul", "displayName": "Игрок", "actorType": "player_soul" },
+                { "actorId": "guardian_mirror", "displayName": "Хранитель Зеркал", "actorType": "guardian" },
+                { "actorId": "secret_participant_marker", "displayName": "secret_participant_marker", "visibility": "gm_only" }
+              ],
+              "gmThoughtsSummary": "hidden_chronicle_marker",
+              "lastUpdatedTurn": 5
+            }
+          ]
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand(command);
+
+        Assert.Equal(string.Empty, result);
+        var text = ExtractRenderedText();
+        Assert.Contains("Хроники посмертия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зал зеркальной клятвы", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guardian_scene:guardian_mirror", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Игрок впервые вошёл в зал отражений", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Игрок услышал зов зеркал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Зал отражений запомнил голос игрока", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Понять, почему зеркала зовут игрока", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Хранитель Зеркал", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_chronicle_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("secret_participant_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("lastInvalidChronicleUpdate", text, StringComparison.OrdinalIgnoreCase);
+        AssertNoHiddenExplorerErrors("afterlife_chronicles");
+    }
+
     [Fact]
     public async Task TryProcessCommand_SarefFindWings_InChaosSea_BlocksWithoutPendingRequest()
     {
