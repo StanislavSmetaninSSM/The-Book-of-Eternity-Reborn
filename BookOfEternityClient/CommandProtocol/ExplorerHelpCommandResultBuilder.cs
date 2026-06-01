@@ -130,6 +130,8 @@ internal static class ExplorerHelpCommandResultBuilder
     {
         Section(table, "СМЕРТНАЯ ЖИЗНЬ");
         Add(table, "/inv", "/инв", "Показать инвентарь");
+        Add(table, "/equip", "/экипировать", "Экипировать обычный предмет из инвентаря");
+        Add(table, "/unequip", "/снять", "Снять обычный экипированный предмет в рюкзак");
         Add(table, "/npc /npcs", "/нпс", "Показать персонажей");
         Add(table, "/quests", "/квесты", "Показать квесты (смертные)");
         Add(table, "/map", "/карта", "Показать карту");
