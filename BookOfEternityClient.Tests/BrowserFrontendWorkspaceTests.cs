@@ -306,6 +306,39 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserCommandCoverageDiagnostics_RenderAuditFieldsOnlyInAdvancedSurface()
+    {
+        var app = ReadFrontendSource("App.tsx");
+        var sceneView = ReadFrontendSource("components", "SceneView.tsx");
+        var helpView = ReadFrontendSource("components", "HelpView.tsx");
+        var diagnostics = ReadFrontendSource("components", "AdvancedDiagnostics.tsx");
+        var contracts = ReadFrontendSource("api", "contracts.ts");
+
+        foreach (var field in new[]
+                 {
+                     "auditStatus",
+                     "sampleDataStatus",
+                     "browserEvidence",
+                     "consoleEvidence",
+                     "parityNotes",
+                     "readabilityNotes",
+                     "gapSummary"
+                 })
+        {
+            Assert.Contains($"{field}:", contracts, StringComparison.Ordinal);
+            Assert.Contains($"command.{field}", diagnostics, StringComparison.Ordinal);
+            Assert.DoesNotContain(field, app, StringComparison.Ordinal);
+            Assert.DoesNotContain(field, sceneView, StringComparison.Ordinal);
+            Assert.DoesNotContain(field, helpView, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("subcommand.auditStatus", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("subcommand.browserEvidence", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("subcommand.gapSummary", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("if (!advancedEnabled || !readyState)", diagnostics, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BrowserDesignSystem_HasMaintainableCssStructureAndVisualTokens()
     {
         var entryStyles = File.ReadAllText(Path.Combine(FrontendRoot, "src", "styles.css"));
