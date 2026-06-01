@@ -94,7 +94,7 @@ public sealed class LocalWebUiHostTests : IDisposable
         using var client = new HttpClient { BaseAddress = new Uri(url) };
         var root = JsonNode.Parse(await client.GetStringAsync("/api/explorer/command-coverage"))!.AsObject();
 
-        Assert.Equal(1, root["schemaVersion"]!.GetValue<int>());
+        Assert.Equal(2, root["schemaVersion"]!.GetValue<int>());
         Assert.True(root["summary"]!["descriptorCount"]!.GetValue<int>() >= 1);
         var commands = root["commands"]!.AsArray();
         Assert.Contains(commands, node => node?["id"]?.GetValue<string>() == "saref_story");

@@ -19,6 +19,31 @@ public sealed class BrowserApiContractTests
     private static readonly string ApiRoot = Path.Combine(FrontendRoot, "src", "api");
     private static readonly string FixtureRoot = Path.Combine(ApiRoot, "contract-fixtures");
     private static readonly DateTime SampleUtc = new(2026, 5, 25, 9, 30, 0, DateTimeKind.Utc);
+    private static readonly string[] Issue804CommandAliases =
+    [
+        "/inv",
+        "/npc",
+        "/quests",
+        "/map",
+        "/where_am_i",
+        "/factions",
+        "/skills",
+        "/stats",
+        "/distribute",
+        "/effects",
+        "/combat",
+        "/weather",
+        "/books",
+        "/locations",
+        "/transport",
+        "/world_news",
+        "/soul",
+        "/soul_relics",
+        "/gacha",
+        "/spiritual_arts",
+        "/craft",
+        "/storage_access"
+    ];
 
     [Fact]
     public void FrontendApiContractFiles_ArePresentAndDocumentEndpointMethods()
@@ -375,7 +400,7 @@ public sealed class BrowserApiContractTests
     {
         var coverage = BrowserCommandCoverageService.Build();
 
-        Assert.Equal(1, coverage.SchemaVersion);
+        Assert.Equal(2, coverage.SchemaVersion);
         Assert.Equal(ExplorerCommandCatalog.Descriptors.Count, coverage.Commands.Count);
         Assert.Equal(ExplorerCommandCatalog.Descriptors.SelectMany(static descriptor => descriptor.Aliases).Count(), coverage.Summary.AliasCount);
         Assert.Equal(ExplorerCommandCatalog.Descriptors.SelectMany(static descriptor => descriptor.SubcommandDescriptors).Count(), coverage.Summary.SubcommandCount);
@@ -432,6 +457,64 @@ public sealed class BrowserApiContractTests
         Assert.All(
             coverage.Commands.Where(static command => command.Surface == "player-default" && ExplorerCommandMigrationRegistry.IsBrowserExecutable(Enum.Parse<ExplorerCommandMigrationStatus>(command.BrowserStatus))),
             command => Assert.NotEqual("advanced-diagnostics", command.UxDecision));
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiParity")]
+    public void BrowserCommandCoverageContract_AuditsIssue804CommandsWithEvidence()
+    {
+        var root = JsonNode.Parse(JsonSerializer.Serialize(BrowserCommandCoverageService.Build(), WebJsonOptions))!.AsObject();
+        var commands = root["commands"]!.AsArray();
+
+        foreach (var alias in Issue804CommandAliases)
+        {
+            var command = Assert.Single(commands, node => JsonArrayContains(node!["aliases"]!.AsArray(), alias))!.AsObject();
+            AssertRequiredAuditFields(command, $"command {alias}");
+        }
+
+        var gacha = Assert.Single(commands, node => JsonArrayContains(node!["aliases"]!.AsArray(), "/gacha"))!.AsObject();
+        Assert.Equal("tracked-follow-up", RequiredString(gacha, "auditStatus", "command /gacha"));
+        Assert.Contains("#803", RequiredString(gacha, "followUpIssue", "command /gacha"), StringComparison.Ordinal);
+        Assert.DoesNotContain("game_state/", RequiredString(gacha, "gapSummary", "command /gacha"), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(".json", RequiredString(gacha, "gapSummary", "command /gacha"), StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    [Trait("Category", "BrowserWebUiParity")]
+    public void BrowserCommandCoverageContract_AuditMetadataIsCompleteForEveryCommandAndSubcommand()
+    {
+        var root = JsonNode.Parse(JsonSerializer.Serialize(BrowserCommandCoverageService.Build(), WebJsonOptions))!.AsObject();
+        var commands = root["commands"]!.AsArray();
+        var validStatuses = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "covered",
+            "tracked-follow-up",
+            "advanced-only",
+            "blocked"
+        };
+
+        foreach (var commandNode in commands)
+        {
+            var command = commandNode!.AsObject();
+            var commandContext = $"command {RequiredString(command, "id", "command")}";
+            Assert.Contains(RequiredString(command, "auditStatus", commandContext), validStatuses);
+            AssertRequiredAuditFields(command, commandContext);
+
+            foreach (var subcommandNode in command["subcommands"]!.AsArray())
+            {
+                var subcommand = subcommandNode!.AsObject();
+                var subcommandContext = $"{commandContext} subcommand {RequiredString(subcommand, "id", commandContext)}";
+                Assert.Contains(RequiredString(subcommand, "auditStatus", subcommandContext), validStatuses);
+                AssertRequiredAuditFields(subcommand, subcommandContext);
+                Assert.False(string.IsNullOrWhiteSpace(RequiredString(subcommand, "group", subcommandContext)));
+                Assert.False(string.IsNullOrWhiteSpace(RequiredString(subcommand, "mutationMode", subcommandContext)));
+                Assert.False(string.IsNullOrWhiteSpace(RequiredString(subcommand, "handlerKind", subcommandContext)));
+                Assert.False(string.IsNullOrWhiteSpace(RequiredString(subcommand, "surface", subcommandContext)));
+                Assert.False(string.IsNullOrWhiteSpace(RequiredString(subcommand, "formMode", subcommandContext)));
+                Assert.False(string.IsNullOrWhiteSpace(RequiredString(subcommand, "primaryActionLabel", subcommandContext)));
+                Assert.StartsWith("/", RequiredString(subcommand, "primaryCommand", subcommandContext), StringComparison.Ordinal);
+            }
+        }
     }
 
     public static IEnumerable<object[]> ContractFixtures()
@@ -860,6 +943,33 @@ public sealed class BrowserApiContractTests
                     yield return (action.DisabledReason, $"action {action.Id} disabled reason");
             }
         }
+    }
+
+    private static void AssertRequiredAuditFields(JsonObject node, string context)
+    {
+        foreach (var field in new[]
+                 {
+                     "auditStatus",
+                     "sampleDataStatus",
+                     "browserEvidence",
+                     "consoleEvidence",
+                     "parityNotes",
+                     "readabilityNotes",
+                     "gapSummary"
+                 })
+        {
+            Assert.False(string.IsNullOrWhiteSpace(RequiredString(node, field, context)));
+        }
+    }
+
+    private static bool JsonArrayContains(JsonArray values, string expected) =>
+        values.Any(value => string.Equals(value?.GetValue<string>(), expected, StringComparison.OrdinalIgnoreCase));
+
+    private static string RequiredString(JsonObject node, string field, string context)
+    {
+        Assert.True(node.TryGetPropertyValue(field, out var value), $"{context} is missing {field}.");
+        Assert.NotNull(value);
+        return value!.GetValue<string>();
     }
 
     private static AggregatedGameState BuildRepresentativeState(bool isChaosSea, bool isShiningAbode, bool isAfterlife) =>

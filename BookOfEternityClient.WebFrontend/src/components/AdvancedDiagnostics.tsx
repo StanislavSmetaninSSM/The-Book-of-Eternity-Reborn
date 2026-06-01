@@ -106,6 +106,12 @@ function CommandCoverageMatrix({ result }: { result: BrowserApiResult<BrowserCom
             <span>{command.surface} · {command.uxDecision} · {command.browserStatus} · {command.formMode}</span>
             <span>{command.group} · {command.mutationMode} · {command.handlerKind}</span>
             <span>Команда: {command.primaryCommand}; псевдонимы: {command.aliases.join(', ')}</span>
+            <span>Аудит: {command.auditStatus} · тестовые данные: {command.sampleDataStatus}</span>
+            <span>Браузер: {command.browserEvidence}</span>
+            <span>Консоль: {command.consoleEvidence}</span>
+            <span>Паритет: {command.parityNotes}</span>
+            <span>Читаемость: {command.readabilityNotes}</span>
+            <span>Разрыв: {command.gapSummary}</span>
             {command.subcommands.length > 0 && (
               <ul className="endpoint-list command-subcoverage-list" aria-label={`Подкоманды ${command.id}`}>
                 {command.subcommands.map((subcommand) => (
@@ -114,6 +120,12 @@ function CommandCoverageMatrix({ result }: { result: BrowserApiResult<BrowserCom
                     <span>{subcommand.surface} · {subcommand.uxDecision} · {subcommand.browserStatus} · {subcommand.formMode}</span>
                     <span>{subcommand.group} · {subcommand.mutationMode} · {subcommand.handlerKind}</span>
                     <span>Команда: {subcommand.canonicalCommand}; псевдонимы: {subcommand.aliases.join(', ')}</span>
+                    <span>Аудит: {subcommand.auditStatus} · тестовые данные: {subcommand.sampleDataStatus}</span>
+                    <span>Браузер: {subcommand.browserEvidence}</span>
+                    <span>Консоль: {subcommand.consoleEvidence}</span>
+                    <span>Паритет: {subcommand.parityNotes}</span>
+                    <span>Читаемость: {subcommand.readabilityNotes}</span>
+                    <span>Разрыв: {subcommand.gapSummary}</span>
                     {(subcommand.followUpIssue || subcommand.reason) && (
                       <span>{subcommand.followUpIssue || 'следующий шаг не указан'} · {subcommand.reason || 'причина не указана'}</span>
                     )}

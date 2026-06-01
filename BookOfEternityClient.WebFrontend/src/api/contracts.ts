@@ -479,6 +479,13 @@ export interface BrowserCommandCoverageEntryDto {
   subcommands: BrowserCommandSubcommandCoverageDto[];
   followUpIssue: string;
   reason: string;
+  auditStatus: string;
+  sampleDataStatus: string;
+  browserEvidence: string;
+  consoleEvidence: string;
+  parityNotes: string;
+  readabilityNotes: string;
+  gapSummary: string;
 }
 
 export interface BrowserCommandSubcommandCoverageDto {
@@ -496,6 +503,13 @@ export interface BrowserCommandSubcommandCoverageDto {
   primaryCommand: string;
   followUpIssue: string;
   reason: string;
+  auditStatus: string;
+  sampleDataStatus: string;
+  browserEvidence: string;
+  consoleEvidence: string;
+  parityNotes: string;
+  readabilityNotes: string;
+  gapSummary: string;
 }
 
 export interface BrowserGameScreenFlagsDto {
