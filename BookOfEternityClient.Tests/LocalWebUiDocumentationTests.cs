@@ -161,6 +161,30 @@ public sealed class LocalWebUiDocumentationTests
     }
 
     [Fact]
+    public void LocalWebHostDocs_DocumentLauncherBackgroundArtWorkflow()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
+        var sourceNotePath = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "public", "main-menu-bg.source.md");
+
+        Assert.Contains("#759", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("#759", readme, StringComparison.Ordinal);
+        Assert.Contains("main-menu-bg.webp", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("main-menu-bg.source.md", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("main-menu-background-art.html", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("dependency-light local HTML visual smoke artifact", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not an automated screenshot", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("main-menu-bg.source.md", readme, StringComparison.Ordinal);
+        Assert.Contains("main-menu-background-art.html", readme, StringComparison.Ordinal);
+
+        Assert.True(File.Exists(sourceNotePath), $"Missing launcher background source note at {sourceNotePath}");
+        var sourceNote = File.ReadAllText(sourceNotePath);
+        Assert.Contains("Pollinations AI API", sourceNote, StringComparison.Ordinal);
+        Assert.Contains("No external runtime dependency", sourceNote, StringComparison.Ordinal);
+        Assert.Contains("No text, logos, or third-party IP", sourceNote, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void LocalWebHostDocs_DocumentTypedBrowserApiContractWorkflow()
     {
         var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));

@@ -340,6 +340,37 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserLauncherBackgroundArt_HasTrackedLocalProvenanceAndReadabilityGuards()
+    {
+        var backgroundPath = Path.Combine(FrontendRoot, "public", "main-menu-bg.webp");
+        var sourceNotePath = Path.Combine(FrontendRoot, "public", "main-menu-bg.source.md");
+        var launcher = ReadFrontendSource("components", "GameLauncher.tsx");
+        var styles = ReadFrontendStyles();
+
+        Assert.True(File.Exists(backgroundPath), $"Missing local launcher background art at {backgroundPath}");
+        Assert.True(new FileInfo(backgroundPath).Length > 50 * 1024, "Launcher background art should be tracked as a real local bitmap asset.");
+        Assert.True(File.Exists(sourceNotePath), $"Missing launcher background source note at {sourceNotePath}");
+
+        var sourceNote = File.ReadAllText(sourceNotePath);
+        Assert.Contains("Pollinations AI API", sourceNote, StringComparison.Ordinal);
+        Assert.Contains("model=flux", sourceNote, StringComparison.Ordinal);
+        Assert.Contains("1920x1080", sourceNote, StringComparison.Ordinal);
+        Assert.Contains("dark library with arcane tomes", sourceNote, StringComparison.Ordinal);
+        Assert.Contains("cosmic purple/teal mists", sourceNote, StringComparison.Ordinal);
+        Assert.Contains("No external runtime dependency", sourceNote, StringComparison.Ordinal);
+        Assert.Contains("No text, logos, or third-party IP", sourceNote, StringComparison.Ordinal);
+
+        Assert.Contains("<div className=\"launcher-art-bg\" aria-hidden=\"true\">", launcher, StringComparison.Ordinal);
+        Assert.Contains("<img src=\"/main-menu-bg.webp\" alt=\"\" />", launcher, StringComparison.Ordinal);
+        Assert.Contains(".launcher-art-bg img", styles, StringComparison.Ordinal);
+        Assert.Contains("object-fit: cover;", styles, StringComparison.Ordinal);
+        Assert.Contains("object-position: center 30%;", styles, StringComparison.Ordinal);
+        Assert.Contains("filter: saturate(0.7) brightness(0.5);", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-art-bg::after", styles, StringComparison.Ordinal);
+        Assert.Contains("linear-gradient(to bottom", styles, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void BrowserLegacyRouteAndDashboardContracts_AreNotRevivedBySourceGuards()
     {
         var app = ReadFrontendSource("App.tsx");

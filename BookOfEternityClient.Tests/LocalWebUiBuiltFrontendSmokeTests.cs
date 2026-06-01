@@ -245,6 +245,50 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.DoesNotContain("screenshot", startNewChapterArtifact, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Fact]
+    [Trait("Category", "BrowserWebUiBuiltFrontend")]
+    [Trait("Category", "BrowserWebUiSmoke")]
+    public async Task BuiltFrontendSmoke_GeneratesMainMenuBackgroundArtArtifact()
+    {
+        var frontendDist = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "dist");
+        var indexPath = Path.Combine(frontendDist, "index.html");
+        var publicRoot = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "public");
+        var backgroundPath = Path.Combine(publicRoot, "main-menu-bg.webp");
+        var sourceNotePath = Path.Combine(publicRoot, "main-menu-bg.source.md");
+        var launcher = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src", "components", "GameLauncher.tsx"));
+        var styles = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src", "styles", "components.css"));
+        var artifactRoot = PrepareArtifactDirectory();
+        var mainMenuBackgroundArtifactPath = Path.Combine(artifactRoot, "main-menu-background-art.html");
+
+        Assert.True(
+            File.Exists(indexPath),
+            $"Missing built browser frontend at {indexPath}. Run `npm run verify --prefix BookOfEternityClient.WebFrontend` before the built-frontend smoke test.");
+        Assert.True(File.Exists(backgroundPath), $"Missing local launcher background art at {backgroundPath}");
+        Assert.True(File.Exists(sourceNotePath), $"Missing launcher background source note at {sourceNotePath}");
+        Assert.Contains("<div className=\"launcher-art-bg\" aria-hidden=\"true\">", launcher, StringComparison.Ordinal);
+        Assert.Contains("<img src=\"/main-menu-bg.webp\" alt=\"\" />", launcher, StringComparison.Ordinal);
+        Assert.Contains(".launcher-art-bg img", styles, StringComparison.Ordinal);
+        Assert.Contains("object-fit: cover;", styles, StringComparison.Ordinal);
+        Assert.Contains("object-position: center 30%;", styles, StringComparison.Ordinal);
+        Assert.Contains("filter: saturate(0.7) brightness(0.5);", styles, StringComparison.Ordinal);
+        Assert.Contains(".launcher-art-bg::after", styles, StringComparison.Ordinal);
+        Assert.Contains("linear-gradient(to bottom", styles, StringComparison.Ordinal);
+
+        await File.WriteAllTextAsync(mainMenuBackgroundArtifactPath, BuildMainMenuBackgroundArtifact());
+
+        Assert.True(File.Exists(mainMenuBackgroundArtifactPath), $"Missing main-menu background-art visual smoke artifact at {mainMenuBackgroundArtifactPath}");
+        var mainMenuBackgroundArtifact = await File.ReadAllTextAsync(mainMenuBackgroundArtifactPath);
+        Assert.Contains("data-artifact=\"main-menu-background-art\"", mainMenuBackgroundArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-background=\"enabled\"", mainMenuBackgroundArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"desktop\"", mainMenuBackgroundArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-viewport=\"narrow\"", mainMenuBackgroundArtifact, StringComparison.Ordinal);
+        Assert.Contains("main-menu-bg.webp", mainMenuBackgroundArtifact, StringComparison.Ordinal);
+        Assert.Contains("dependency-light local HTML visual smoke artifact", mainMenuBackgroundArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not an automated screenshot", mainMenuBackgroundArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("BookOfEternityClient.WebFrontend/public/main-menu-bg.webp", mainMenuBackgroundArtifact, StringComparison.Ordinal);
+        Assert.DoesNotContain("external runtime dependency", mainMenuBackgroundArtifact, StringComparison.OrdinalIgnoreCase);
+    }
+
     private static async Task<SmokeResponse> CaptureAsync(HttpClient client, string path)
     {
         using var response = await client.GetAsync(path);
@@ -258,6 +302,66 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
+
+    private static string BuildMainMenuBackgroundArtifact()
+    {
+        return """
+        <!doctype html>
+        <html lang="ru" data-artifact="main-menu-background-art" data-background="enabled">
+        <head>
+          <meta charset="utf-8">
+          <title>Browser Main Menu Background Art Visual Smoke</title>
+          <style>
+            :root { color-scheme: dark; font-family: Inter, "Segoe UI", sans-serif; background: #100b17; color: #f9ecd1; }
+            body { margin: 0; padding: 24px; background: #100b17; }
+            .artifact { display: grid; gap: 22px; max-width: 1180px; margin: 0 auto; }
+            .note { border: 1px solid rgba(216, 179, 106, 0.28); border-radius: 18px; padding: 14px 18px; background: rgba(31, 24, 45, 0.86); color: rgba(249, 236, 209, 0.78); }
+            .frame { position: relative; overflow: hidden; border: 1px solid rgba(216, 179, 106, 0.32); border-radius: 28px; min-height: 560px; background-image: url('../../BookOfEternityClient.WebFrontend/public/main-menu-bg.webp'); background-size: cover; background-position: center 30%; box-shadow: 0 28px 90px rgba(0, 0, 0, 0.42); }
+            .frame::before { position: absolute; inset: 0; content: ''; background: linear-gradient(to bottom, rgba(6, 8, 9, 0.3), rgba(6, 8, 9, 0.85) 70%, #060809), linear-gradient(to right, rgba(6, 8, 9, 0.32), transparent 55%, rgba(6, 8, 9, 0.32)); }
+            .window { position: relative; z-index: 1; display: grid; gap: 16px; max-width: 560px; margin: 48px; border: 1px solid rgba(249, 236, 209, 0.18); border-radius: 24px; padding: 24px; background: rgba(16, 12, 24, 0.72); backdrop-filter: blur(10px); }
+            h1, h2, p { margin: 0; }
+            h1 { color: #ffe2a6; font-size: clamp(2rem, 5vw, 4.2rem); }
+            .eyebrow { color: #d8b36a; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; }
+            .actions { display: grid; gap: 10px; }
+            .action { border: 1px solid rgba(216, 179, 106, 0.32); border-radius: 16px; padding: 12px 14px; background: rgba(255, 255, 255, 0.06); }
+            .action strong { display: block; color: #fff6df; }
+            .action span { color: rgba(249, 236, 209, 0.72); }
+            .narrow { width: min(100%, 390px); min-height: 640px; margin: 0 auto; }
+            .narrow .window { margin: 18px; padding: 18px; }
+          </style>
+        </head>
+        <body>
+          <main class="artifact">
+            <p class="note">This is a dependency-light local HTML visual smoke artifact, not an automated screenshot. It references the tracked local asset at BookOfEternityClient.WebFrontend/public/main-menu-bg.webp and keeps the main menu background enabled for readability review.</p>
+            <section class="frame" data-viewport="desktop" data-background="enabled" aria-label="Desktop main menu background art smoke">
+              <div class="window">
+                <p class="eyebrow">главная книга</p>
+                <h1>Открыть книгу</h1>
+                <p>Dark-fantasy menu art stays subdued behind an overlay so menu copy and calls to action remain readable.</p>
+                <div class="actions" aria-label="Действия главного меню">
+                  <article class="action"><strong>Продолжить главу</strong><span>Вернуться к текущей сохранённой главе.</span></article>
+                  <article class="action"><strong>Загрузить сохранение</strong><span>Выбрать локальную запись.</span></article>
+                  <article class="action"><strong>Начать новую главу</strong><span>Открыть подготовку новой главы.</span></article>
+                  <article class="action"><strong>Настроить клиент</strong><span>Открыть настройки локального клиента и звука.</span></article>
+                </div>
+              </div>
+            </section>
+            <section class="frame narrow" data-viewport="narrow" data-background="enabled" aria-label="Narrow main menu background art smoke">
+              <div class="window">
+                <p class="eyebrow">главная книга</p>
+                <h2>Открыть книгу</h2>
+                <p>At narrow width the cover crop keeps the focal art behind the same dark overlay while controls stay legible.</p>
+                <div class="actions">
+                  <article class="action"><strong>Продолжить главу</strong><span>Primary action remains readable.</span></article>
+                  <article class="action"><strong>Начать новую главу</strong><span>Secondary actions keep sufficient contrast.</span></article>
+                </div>
+              </div>
+            </section>
+          </main>
+        </body>
+        </html>
+        """;
+    }
 
     private static string BuildFirstScreenVisualQaArtifact(string appSource)
     {
