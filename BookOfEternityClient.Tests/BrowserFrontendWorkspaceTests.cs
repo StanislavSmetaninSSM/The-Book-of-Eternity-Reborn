@@ -238,8 +238,11 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("<h3>🕯️ Душа</h3>", statusView, StringComparison.Ordinal);
         Assert.Contains("<h3>🗺️ Мир</h3>", statusView, StringComparison.Ordinal);
         Assert.Contains("<h3>✨ Посмертие</h3>", statusView, StringComparison.Ordinal);
-        Assert.Contains("function StatusBar", statusView, StringComparison.Ordinal);
-        Assert.Contains("className=\"status-bar\"", statusView, StringComparison.Ordinal);
+        Assert.Contains("function StatusMeter", statusView, StringComparison.Ordinal);
+        Assert.Contains("className=\"status-meter\"", statusView, StringComparison.Ordinal);
+        Assert.DoesNotContain("className=\"status-bar\"", statusView, StringComparison.Ordinal);
+        Assert.Contains(".status-meter__label", styles, StringComparison.Ordinal);
+        Assert.Contains("text-shadow", styles, StringComparison.Ordinal);
 
         Assert.Contains("GROUP_LABELS", helpView, StringComparison.Ordinal);
         Assert.Contains("Персонаж и душа", helpView, StringComparison.Ordinal);

@@ -21,9 +21,9 @@ export function StatusView() {
           <div className="block-kv__row"><dt>Состояние</dt><dd>{player.currentCondition}</dd></div>
         </dl>
         <div className="status-bars">
-          <StatusBar label="❤️ Здоровье" value={player.healthPercentage} color="var(--color-error)" />
-          <StatusBar label="⚡ Энергия" value={player.energyPercentage} color="var(--color-accent)" />
-          <StatusBar label="🛡️ Самообладание" value={player.poisePercentage} color="var(--color-success)" />
+          <StatusMeter label="❤️ Здоровье" value={player.healthPercentage} color="var(--color-error)" />
+          <StatusMeter label="⚡ Энергия" value={player.energyPercentage} color="var(--color-accent)" />
+          <StatusMeter label="🛡️ Самообладание" value={player.poisePercentage} color="var(--color-success)" />
         </div>
         {player.activeConditions.length > 0 && (
           <div className="status-conditions">
@@ -69,13 +69,25 @@ export function StatusView() {
   );
 }
 
-function StatusBar({ label, value, color }: { label: string; value: string; color: string }) {
+function StatusMeter({ label, value, color }: { label: string; value: string; color: string }) {
   const numValue = parseInt(value) || 0;
   return (
-    <div className="status-bar">
-      <div className="status-bar__label">{label} <span>{value}</span></div>
-      <div className="status-bar__track">
-        <div className="status-bar__fill" style={{ width: `${numValue}%`, background: color }} />
+    <div className="status-meter">
+      <div className="status-meter__label">
+        <span>{label}</span>
+        <span className="status-meter__value">{value}</span>
+      </div>
+      <div
+        className="status-meter__track"
+        role="meter"
+        aria-label={`${label} ${value}`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={numValue}
+        aria-valuetext={value}
+        title={`${label} ${value}`}
+      >
+        <div className="status-meter__fill" style={{ width: `${numValue}%`, background: color }} />
       </div>
     </div>
   );

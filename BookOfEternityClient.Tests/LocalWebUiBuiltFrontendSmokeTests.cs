@@ -601,7 +601,9 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("<h3>🕯️ Душа</h3>", statusViewSource, StringComparison.Ordinal);
         Assert.Contains("<h3>🗺️ Мир</h3>", statusViewSource, StringComparison.Ordinal);
         Assert.Contains("<h3>✨ Посмертие</h3>", statusViewSource, StringComparison.Ordinal);
-        Assert.Contains("function StatusBar", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("function StatusMeter", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("className=\"status-meter\"", statusViewSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("className=\"status-bar\"", statusViewSource, StringComparison.Ordinal);
 
         return """
         <!doctype html>

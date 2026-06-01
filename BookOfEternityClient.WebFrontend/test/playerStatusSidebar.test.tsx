@@ -30,8 +30,16 @@ assertExcludes(appSource, 'workspace-sidebar');
 assertIncludes(commandUiSource, '.status-view {');
 assertIncludes(commandUiSource, '.status-card {');
 assertIncludes(commandUiSource, '.status-bars {');
-assertIncludes(commandUiSource, '.status-bar__track {');
-assertIncludes(commandUiSource, '.status-bar__fill {');
+assertIncludes(statusViewSource, 'className="status-meter"');
+assertExcludes(statusViewSource, 'className="status-bar"');
+assertExcludes(statusViewSource, 'status-bar__label');
+assertExcludes(statusViewSource, 'status-bar__track');
+assertExcludes(statusViewSource, 'status-bar__fill');
+assertIncludes(commandUiSource, '.status-meter {');
+assertIncludes(commandUiSource, '.status-meter__label {');
+assertIncludes(commandUiSource, '.status-meter__track {');
+assertIncludes(commandUiSource, '.status-meter__fill {');
+assertCssRuleIncludes(commandUiSource, '.status-meter__label', 'text-shadow');
 
 function readSource(...relativePath: string[]): string {
   return readFileSync(join(frontendDir, ...relativePath), 'utf8');
@@ -46,5 +54,17 @@ function assertIncludes(source: string, expected: string) {
 function assertExcludes(source: string, unexpected: string) {
   if (source.includes(unexpected)) {
     throw new Error(`Expected source to exclude: ${unexpected}`);
+  }
+}
+
+function assertCssRuleIncludes(source: string, selector: string, expected: string) {
+  const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = new RegExp(`${escapedSelector}\\s*\\{([^}]*)\\}`, 's').exec(source);
+  if (!match) {
+    throw new Error(`Expected CSS rule to exist: ${selector}`);
+  }
+
+  if (!match[1].includes(expected)) {
+    throw new Error(`Expected CSS rule ${selector} to include: ${expected}`);
   }
 }
