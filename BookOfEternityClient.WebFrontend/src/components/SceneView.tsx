@@ -1,6 +1,7 @@
 import type React from 'react';
 import { isSuccess, useShell } from '../context/ShellContext';
 import { SceneHero } from './SceneHero';
+import { TurnStatePanel } from './TurnStatePanel';
 import { CommandResultView } from './CommandResultView';
 import { useSceneImage } from '../hooks/useSceneImage';
 import { toPlayerFacingText } from '../utils/playerCopy';
@@ -43,6 +44,8 @@ function SceneContent({ game, onCommand }: {
       <article className="scene-narrative">
         <p>{game.narrative.text || 'Нарратив ещё не получен от ГМа.'}</p>
       </article>
+
+      <TurnStatePanel turnState={game.turnState} />
 
       {game.narrative.combatLog && (
         <section className="scene-combat-log">

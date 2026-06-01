@@ -134,8 +134,11 @@ public sealed class BrowserApiContractTests
     public void FrontendShell_ConsumesTypedApiContractSummaryInsteadOfHardCodedEndpointList()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var client = File.ReadAllText(Path.Combine(ApiRoot, "client.ts"));
+        var diagnostics = File.ReadAllText(Path.Combine(FrontendRoot, "src", "components", "AdvancedDiagnostics.tsx"));
 
-        Assert.Contains("browserApiContractSummary", app, StringComparison.Ordinal);
+        Assert.Contains("browserApiContractSummary", client, StringComparison.Ordinal);
+        Assert.Contains("browserApiContractSummary.endpointDocs", diagnostics, StringComparison.Ordinal);
         Assert.DoesNotContain("/api/main-menu", app, StringComparison.Ordinal);
         Assert.DoesNotContain("/api/game-screen", app, StringComparison.Ordinal);
         Assert.DoesNotContain("fetch(", app, StringComparison.Ordinal);
@@ -145,24 +148,27 @@ public sealed class BrowserApiContractTests
     public void FrontendShell_RendersLifecyclePhaseMachineWithoutDefaultRawValidationDetails()
     {
         var app = File.ReadAllText(Path.Combine(FrontendRoot, "src", "App.tsx"));
+        var sceneView = File.ReadAllText(Path.Combine(FrontendRoot, "src", "components", "SceneView.tsx"));
+        var turnStatePanel = File.ReadAllText(Path.Combine(FrontendRoot, "src", "components", "TurnStatePanel.tsx"));
+        var diagnostics = File.ReadAllText(Path.Combine(FrontendRoot, "src", "components", "AdvancedDiagnostics.tsx"));
 
-        Assert.Contains("turnState.phase", app, StringComparison.Ordinal);
-        Assert.Contains("turnState.playerGuidance", app, StringComparison.Ordinal);
-        Assert.Contains("recommendedActions", app, StringComparison.Ordinal);
-        Assert.Contains("knownPhases", app, StringComparison.Ordinal);
-        Assert.Contains("Жизненный цикл хода", app, StringComparison.Ordinal);
+        Assert.Contains("import { TurnStatePanel } from './TurnStatePanel';", sceneView, StringComparison.Ordinal);
+        Assert.Contains("<TurnStatePanel turnState={game.turnState} />", sceneView, StringComparison.Ordinal);
+        Assert.Contains("turnState.phase", turnStatePanel, StringComparison.Ordinal);
+        Assert.Contains("turnState.playerGuidance", turnStatePanel, StringComparison.Ordinal);
+        Assert.Contains("turnState.recommendedActions", turnStatePanel, StringComparison.Ordinal);
+        Assert.Contains("turnState.knownPhases", turnStatePanel, StringComparison.Ordinal);
+        Assert.Contains("Жизненный цикл хода", turnStatePanel, StringComparison.Ordinal);
 
-        var advancedIndex = app.IndexOf("function AdvancedDiagnosticsPanel", StringComparison.Ordinal);
-        Assert.True(advancedIndex > 0, "Advanced diagnostics function must stay explicit.");
-        var defaultApp = app[..advancedIndex];
-        Assert.DoesNotContain("validation.issues.map", defaultApp, StringComparison.Ordinal);
-        Assert.DoesNotContain("issue.filePath", defaultApp, StringComparison.Ordinal);
+        var defaultSources = string.Join('\n', app, sceneView, turnStatePanel);
+        Assert.DoesNotContain("validation.issues.map", defaultSources, StringComparison.Ordinal);
+        Assert.DoesNotContain("issue.filePath", defaultSources, StringComparison.Ordinal);
 
-        var advancedApp = app[advancedIndex..];
-        Assert.Contains("lifecycle.validation.groups", advancedApp, StringComparison.Ordinal);
-        Assert.Contains("validation.issues.map", advancedApp, StringComparison.Ordinal);
-        Assert.Contains("issue.filePath", advancedApp, StringComparison.Ordinal);
-        Assert.Contains("issue.repairHint", advancedApp, StringComparison.Ordinal);
+        Assert.Contains("function AdvancedDiagnosticsPanel", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("lifecycle.validation.groups", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("validation.issues.map", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("issue.filePath", diagnostics, StringComparison.Ordinal);
+        Assert.Contains("issue.repairHint", diagnostics, StringComparison.Ordinal);
     }
 
     [Fact]
