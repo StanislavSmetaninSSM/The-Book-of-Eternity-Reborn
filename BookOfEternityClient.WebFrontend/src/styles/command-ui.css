@@ -167,11 +167,12 @@
 .status-card { background: var(--surface-raised, #161b22); border-radius: 8px; padding: 1rem; border: 1px solid var(--border, #30363d); }
 .status-card h3 { font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--text-primary); }
 .status-bars { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; }
-.status-bar__label { display: flex; justify-content: space-between; font-size: 0.78rem; margin-bottom: 0.25rem; }
-.status-bar__label > :first-child { color: var(--text-primary, #c9d1d9); }
-.status-bar__label span { color: var(--text-muted, #8b949e); font-variant-numeric: tabular-nums; }
-.status-bar__track { height: 8px; background: var(--surface-base, #0d1117); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-subtle, #21262d); }
-.status-bar__fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+.status-meter { display: grid; gap: 0.3rem; min-width: 0; }
+.status-meter__label { display: flex; justify-content: space-between; gap: 0.75rem; min-width: 0; color: var(--text-primary, #c9d1d9); font-size: 0.8rem; font-weight: 600; line-height: 1.35; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.75); }
+.status-meter__label > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.status-meter__value { flex: 0 0 auto; color: var(--text-primary, #f0f6fc); font-variant-numeric: tabular-nums; }
+.status-meter__track { height: 8px; background: var(--surface-base, #0d1117); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-subtle, #21262d); }
+.status-meter__fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
 .status-conditions h4 { font-size: 0.8rem; color: var(--text-muted); margin: 0.5rem 0 0.25rem; }
 .status-conditions ul { list-style: none; padding: 0; font-size: 0.82rem; }
 .status-conditions li { padding: 0.15rem 0; }
