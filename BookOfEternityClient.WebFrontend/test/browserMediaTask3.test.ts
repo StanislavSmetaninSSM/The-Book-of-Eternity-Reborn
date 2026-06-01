@@ -28,6 +28,6 @@ assert(sceneViewSource.includes('imageUrl={sceneImage.url}'), 'SceneView should 
 assert(sceneViewSource.includes('loading={sceneImage.loading}'), 'SceneView should pass the loading state into SceneHero.');
 assert(sceneViewSource.includes("eyebrow={`Ход ${game.world.turnNumber}`}"), 'SceneView should show the current turn in SceneHero.');
 assert(sceneViewSource.includes('title={game.theme.label}'), 'SceneView should show the theme label in SceneHero.');
-assert(sceneViewSource.includes("subtitle={`${game.world.location || 'Локация уточняется'} · ${game.world.worldTime || ''}`}"), 'SceneView should show location and world time in SceneHero.');
+assert(sceneViewSource.includes("formatWorldTimeForPlayer(game.world.worldTime, '')"), 'SceneView should show localized world time in SceneHero.');
 assert(!sceneViewSource.includes('className="narrative-scene-hero"'), 'SceneView should remove the legacy inline narrative hero container.');
 assert(!sceneViewSource.includes('scene-generating-indicator'), 'SceneView should remove the legacy scene generating indicator markup.');

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { toPlayerFacingText, sanitizePlayerMessage } from '../src/utils/playerCopy';
+import * as formatters from '../src/utils/formatters';
 
 const fsSpecifier = 'node:fs';
 const pathSpecifier = 'node:path';
@@ -12,6 +13,13 @@ const frontendDir = basename(cwd) === 'BookOfEternityClient.WebFrontend'
 
 function readSource(...relativePath: string[]): string {
   return readFileSync(join(frontendDir, ...relativePath), 'utf-8');
+}
+
+type WorldTimeFormatter = (value: string | null | undefined, fallback?: string) => string;
+
+function formatWorldTimeViaBrowser(value: string | null | undefined): string {
+  const formatter = (formatters as Partial<{ formatWorldTimeForPlayer: WorldTimeFormatter }>).formatWorldTimeForPlayer;
+  return formatter ? formatter(value, 'время уточняется') : toPlayerFacingText(value, 'время уточняется');
 }
 
 describe('playerCopy robustness', () => {
@@ -104,6 +112,29 @@ describe('playerCopy robustness', () => {
     expect(result).toContain('инкарнация');
     expect(result).toContain('запись хода');
     expect(result).toContain('запись из браузера');
+  });
+
+  it('localizes canonical browser world time month names', () => {
+    const result = formatWorldTimeViaBrowser('1 Month of Beginnings 124, 08:00');
+
+    expect(result).toBe('1 Месяц Начал 124, 08:00');
+    expect(result).not.toContain('Month of Beginnings');
+  });
+
+  it('preserves custom GM-authored browser world time month names', () => {
+    const customTime = '15 Листопад 124, 08:00';
+
+    expect(formatWorldTimeViaBrowser(customTime)).toBe(customTime);
+  });
+
+  it('uses shared player-facing world time formatting on browser world surfaces', () => {
+    const sceneView = readSource('src', 'components', 'SceneView.tsx');
+    const statusView = readSource('src', 'components', 'StatusView.tsx');
+
+    expect(sceneView).toContain("import { formatWorldTimeForPlayer } from '../utils/formatters';");
+    expect(sceneView).toContain("formatWorldTimeForPlayer(game.world.worldTime, '')");
+    expect(statusView).toContain("import { formatWorldTimeForPlayer } from '../utils/formatters';");
+    expect(statusView).toContain("formatWorldTimeForPlayer(world.worldTime, '—')");
   });
 
   it('keeps advanced diagnostics hardcoded copy in Russian', () => {

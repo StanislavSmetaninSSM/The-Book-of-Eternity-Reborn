@@ -49,6 +49,22 @@ export function formatRealmName(realm: string): string {
   }
 }
 
+const canonicalWorldMonthReplacements: Array<[RegExp, string]> = [
+  [/\bMonth of Beginnings\b/g, 'Месяц Начал']
+];
+
+export function formatWorldTimeForPlayer(value: string | null | undefined, fallback = 'время уточняется'): string {
+  const source = value?.trim();
+  if (!source) {
+    return fallback;
+  }
+
+  return canonicalWorldMonthReplacements.reduce(
+    (text, [pattern, replacement]) => text.replace(pattern, replacement),
+    source
+  );
+}
+
 export function formatDialogueCategory(category: string): string {
   switch (category.trim().toLowerCase()) {
     case 'exploration':

@@ -5,6 +5,7 @@ import { TurnStatePanel } from './TurnStatePanel';
 import { CommandResultView } from './CommandResultView';
 import { useSceneImage } from '../hooks/useSceneImage';
 import { toPlayerFacingText } from '../utils/playerCopy';
+import { formatWorldTimeForPlayer } from '../utils/formatters';
 
 export function SceneView() {
   const { readyState, isCommandView, executeCommand } = useShell();
@@ -37,7 +38,7 @@ function SceneContent({ game, onCommand }: {
         imageUrl={sceneImage.url}
         eyebrow={`Ход ${game.world.turnNumber}`}
         title={game.theme.label}
-        subtitle={`${game.world.location || 'Локация уточняется'} · ${game.world.worldTime || ''}`}
+        subtitle={`${game.world.location || 'Локация уточняется'} · ${formatWorldTimeForPlayer(game.world.worldTime, '')}`}
         loading={sceneImage.loading}
       />
 

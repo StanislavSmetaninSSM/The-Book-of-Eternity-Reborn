@@ -20,7 +20,7 @@ function assert(condition: unknown, message: string) {
 }
 
 const sceneViewSource = readSource('components', 'SceneView.tsx');
-assert(sceneViewSource.includes("subtitle={`${game.world.location || 'Локация уточняется'} · ${game.world.worldTime || ''}`}"), 'SceneView should keep location and world time in the primary scene hero.');
+assert(sceneViewSource.includes("formatWorldTimeForPlayer(game.world.worldTime, '')"), 'SceneView should keep localized world time in the primary scene hero.');
 assert(sceneViewSource.includes('className="scene-quick-actions"'), 'SceneView should keep player-default action chips near the scene.');
 assert(!sceneViewSource.includes('className="world-location-hero"'), 'SceneView should not revive the legacy inline location hero container.');
 

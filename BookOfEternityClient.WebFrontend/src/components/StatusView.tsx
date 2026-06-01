@@ -1,4 +1,5 @@
 import { isSuccess, useShell } from '../context/ShellContext';
+import { formatWorldTimeForPlayer } from '../utils/formatters';
 
 export function StatusView() {
   const { readyState } = useShell();
@@ -49,7 +50,7 @@ export function StatusView() {
         <h3>🗺️ Мир</h3>
         <dl className="block-kv">
           <div className="block-kv__row"><dt>Локация</dt><dd>{world.location || '—'}</dd></div>
-          <div className="block-kv__row"><dt>Время</dt><dd>{world.worldTime || '—'}</dd></div>
+          <div className="block-kv__row"><dt>Время</dt><dd>{formatWorldTimeForPlayer(world.worldTime, '—')}</dd></div>
           <div className="block-kv__row"><dt>Ход</dt><dd>{world.turnNumber}</dd></div>
         </dl>
       </section>
