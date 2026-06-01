@@ -385,9 +385,6 @@ public partial class GameEngine
 
     private void WriteOptionsMenuObservation(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, string slug)
     {
-        if (_inputSource is not ConsoleE2EScriptedInputSource scriptedInput)
-            return;
-
         var boundedIndex = entries.Count == 0
             ? -1
             : Math.Clamp(selectedIndex, 0, entries.Count - 1);
@@ -398,7 +395,7 @@ public partial class GameEngine
             ? "Клиентские настройки."
             : $"Выбран пункт настроек: {selectedOption}";
 
-        scriptedInput.WriteObservation(
+        RecordConsoleObservation(
             ConsoleE2EInputMode.Menu,
             "⚙️ Опции",
             playerText,

@@ -35,8 +35,8 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
         ArgumentNullException.ThrowIfNull(stateStore);
 
         var effectiveReadTimeout = readTimeout ?? DefaultReadTimeout;
-        if (effectiveReadTimeout <= TimeSpan.Zero)
-            throw new ArgumentOutOfRangeException(nameof(readTimeout), readTimeout, "Read timeout must be positive.");
+        if (effectiveReadTimeout != Timeout.InfiniteTimeSpan && effectiveReadTimeout <= TimeSpan.Zero)
+            throw new ArgumentOutOfRangeException(nameof(readTimeout), readTimeout, "Read timeout must be positive or Timeout.InfiniteTimeSpan.");
         if (maxQueueLength <= 0)
             throw new ArgumentOutOfRangeException(nameof(maxQueueLength), maxQueueLength, "Queue length must be positive.");
 
@@ -73,6 +73,9 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
             AgentConsoleInputKind.Text,
             "Queued text line input.",
             screenId: _stateStore.GetSnapshot()?.ScreenId);
+
+    public AgentConsoleEvent PublishSnapshot(AgentConsoleSnapshot snapshot, string? message = null)
+        => _stateStore.UpdateSnapshot(snapshot, message);
 
     public AgentConsoleInputResult TryQueueAction(AgentConsoleActionRequest request)
     {
@@ -237,7 +240,8 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
 
     private QueuedInput ReadNext(QueuedInputKind expectedKind, AgentConsoleInputKind expectedInputKind, string operation)
     {
-        var deadlineUtc = DateTime.UtcNow + _readTimeout;
+        var waitsIndefinitely = _readTimeout == Timeout.InfiniteTimeSpan;
+        var deadlineUtc = waitsIndefinitely ? DateTime.MaxValue : DateTime.UtcNow + _readTimeout;
 
         lock (_sync)
         {
@@ -261,6 +265,12 @@ public sealed class AgentConsoleLiveInputSource : IConsoleInputSource, IDisposab
                     }
 
                     return _queue.Dequeue();
+                }
+
+                if (waitsIndefinitely)
+                {
+                    Monitor.Wait(_sync);
+                    continue;
                 }
 
                 var remaining = deadlineUtc - DateTime.UtcNow;

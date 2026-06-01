@@ -174,9 +174,6 @@ public partial class GameEngine
         ConsoleE2EInputMode inputMode,
         string slug)
     {
-        if (_inputSource is not ConsoleE2EScriptedInputSource scriptedInput)
-            return;
-
         var boundedIndex = options.Count == 0
             ? -1
             : Math.Clamp(selectedIndex, 0, options.Count - 1);
@@ -194,7 +191,7 @@ public partial class GameEngine
         if (selectedOption is not null)
             lines.Add($"{selectedOption.Title}: {selectedOption.Description}");
 
-        scriptedInput.WriteObservation(
+        RecordConsoleObservation(
             inputMode,
             _loc.T("app_title"),
             string.Join(Environment.NewLine, lines),

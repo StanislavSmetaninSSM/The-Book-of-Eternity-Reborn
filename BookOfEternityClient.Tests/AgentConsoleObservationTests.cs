@@ -290,11 +290,28 @@ public sealed class AgentConsoleObservationTests
             "text line input",
             "InputAccepted",
             "InputRejected",
-            "does not expose HTTP endpoints"
+            "Issue: #752",
+            "GET /api/agent-console/snapshot",
+            "GET /api/agent-console/events",
+            "POST /api/agent-console/key",
+            "POST /api/agent-console/text",
+            "POST /api/agent-console/action",
+            "Bearer token"
         })
         {
             Assert.Contains(requiredText, doc, StringComparison.Ordinal);
         }
+    }
+
+    [Fact]
+    public void ProgramWiresAgentConsoleInputWithoutIdleTimeout()
+    {
+        var program = ReadRepoFile("BookOfEternityClient", "Program.cs");
+
+        Assert.Contains(
+            "new AgentConsoleLiveInputSource(agentConsoleStateStore, readTimeout: Timeout.InfiniteTimeSpan)",
+            program,
+            StringComparison.Ordinal);
     }
 
     private static AgentConsoleSnapshot BuildMenuSnapshot(string screenId, int selectedIndex)
