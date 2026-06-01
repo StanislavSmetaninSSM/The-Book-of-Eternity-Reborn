@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Builder;
+using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.IO;
@@ -47,11 +49,24 @@ if (startupOptions.PlainOutput)
     Environment.SetEnvironmentVariable("NO_COLOR", "1");
 
 IConsoleInputSource inputSource;
+AgentConsoleStateStore? agentConsoleStateStore = null;
+AgentConsoleLiveInputSource? agentConsoleLiveInputSource = null;
+AgentConsoleAccessToken? agentConsoleAccessToken = null;
 try
 {
-    inputSource = string.IsNullOrWhiteSpace(startupOptions.E2EScriptPath)
-        ? SystemConsoleInputSource.Instance
-        : ConsoleE2EScriptedInputSource.FromFile(startupOptions.E2EScriptPath, startupOptions.E2EArtifactsPath);
+    if (startupOptions.AgentConsoleMode)
+    {
+        agentConsoleStateStore = new AgentConsoleStateStore();
+        agentConsoleLiveInputSource = new AgentConsoleLiveInputSource(agentConsoleStateStore, readTimeout: Timeout.InfiniteTimeSpan);
+        agentConsoleAccessToken = AgentConsoleAccessToken.Resolve(startupOptions.AgentConsoleToken!);
+        inputSource = agentConsoleLiveInputSource;
+    }
+    else
+    {
+        inputSource = string.IsNullOrWhiteSpace(startupOptions.E2EScriptPath)
+            ? SystemConsoleInputSource.Instance
+            : ConsoleE2EScriptedInputSource.FromFile(startupOptions.E2EScriptPath, startupOptions.E2EArtifactsPath);
+    }
 }
 catch (ConsoleE2EScriptInputException ex)
 {
@@ -256,9 +271,28 @@ var host = Host.CreateDefaultBuilder(args)
     .Build();
 
 // Run the game
-var engine = host.Services.GetRequiredService<GameEngine>();
+WebApplication? agentConsoleApp = null;
 try
 {
+    if (agentConsoleStateStore is not null &&
+        agentConsoleLiveInputSource is not null &&
+        agentConsoleAccessToken is not null)
+    {
+        agentConsoleApp = AgentConsoleApiHost.Build(
+            args,
+            new AgentConsoleApiHostOptions(
+                startupOptions.AgentConsoleUrl,
+                agentConsoleAccessToken.Value,
+                agentConsoleStateStore,
+                agentConsoleLiveInputSource));
+        await agentConsoleApp.StartAsync();
+
+        Console.Error.WriteLine($"Agent Console API listening at {startupOptions.AgentConsoleUrl}");
+        if (agentConsoleAccessToken.WasGenerated)
+            Console.Error.WriteLine($"Agent Console token: {agentConsoleAccessToken.Value}");
+    }
+
+    var engine = host.Services.GetRequiredService<GameEngine>();
     await engine.RunAsync();
     inputSource.AssertCompleted();
 }
@@ -267,4 +301,10 @@ catch (ConsoleE2EScriptInputException ex)
     Console.Error.WriteLine($"Console E2E scripted input failed at step {ex.NextStepIndex}: {ex.Message}");
     Console.Error.WriteLine($"Script: {ex.ScriptPath}");
     Environment.ExitCode = 2;
+}
+finally
+{
+    if (agentConsoleApp is not null)
+        await agentConsoleApp.DisposeAsync();
+    agentConsoleLiveInputSource?.Dispose();
 }

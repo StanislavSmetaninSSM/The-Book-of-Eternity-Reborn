@@ -72,6 +72,21 @@ public sealed class AgentConsoleLiveInputSourceTests
     }
 
     [Fact]
+    public void PublishSnapshot_UpdatesSharedStoreForApiReaders()
+    {
+        var store = new AgentConsoleStateStore();
+        var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromMilliseconds(100));
+        var snapshot = BuildMenuSnapshot("main-menu", selectedIndex: 0);
+
+        var agentEvent = input.PublishSnapshot(snapshot, "Rendered main menu.");
+
+        Assert.Same(snapshot, store.GetSnapshot());
+        Assert.Equal(AgentConsoleEventKind.ScreenRendered, agentEvent.Kind);
+        Assert.Equal("main-menu", agentEvent.ScreenId);
+        Assert.Equal("Rendered main menu.", agentEvent.Message);
+    }
+
+    [Fact]
     public void TryQueueAction_WhenSelectedActionHasNoShortcut_QueuesEnter()
     {
         var store = new AgentConsoleStateStore();
@@ -177,6 +192,20 @@ public sealed class AgentConsoleLiveInputSourceTests
 
         input.EnqueueLine("after cancel");
         Assert.Equal("after cancel", input.ReadLine());
+    }
+
+    [Fact]
+    public async Task InfiniteReadTimeout_WaitsForOperatorInputUntilQueued()
+    {
+        var store = new AgentConsoleStateStore();
+        using var input = new AgentConsoleLiveInputSource(store, readTimeout: Timeout.InfiniteTimeSpan);
+        var readTask = Task.Run(() => input.ReadLine());
+
+        await Task.Delay(50);
+
+        Assert.False(readTask.IsCompleted);
+        input.EnqueueLine("operator command");
+        Assert.Equal("operator command", await readTask.WaitAsync(TimeSpan.FromSeconds(1)));
     }
 
     [Fact]
