@@ -135,7 +135,7 @@ export function useShell() {
 }
 
 export function ShellProvider({ children }: { children: ReactNode }) {
-  const [activeTab, setActiveTabState] = useState<TabId>('scene');
+  const [activeRoute, setActiveRouteState] = useState<RouteId>('home');
   const [advancedEnabled, setAdvancedEnabledState] = useState(false);
   const [composerText, setComposerTextState] = useState('');
   const [composerNotice, setComposerNotice] = useState<string | null>(null);
@@ -157,14 +157,14 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     shellState.status === 'ready' ? shellState.connectionStatus :
     shellState.status === 'error' ? 'disconnected' : 'connected';
   const realmTheme = useMemo(() => resolveRealmTheme(gameScreen), [gameScreen]);
-  const activeRoute = useMemo(() => tabToRoute(activeTab), [activeTab]);
+  const activeTab = useMemo(() => routeToTab(activeRoute), [activeRoute]);
 
   const setActiveTab = useCallback((tab: TabId) => {
-    setActiveTabState(tab);
+    setActiveRouteState(tabToRoute(tab));
   }, []);
 
   const setActiveRoute = useCallback((route: RouteId) => {
-    setActiveTabState(routeToTab(route));
+    setActiveRouteState(route);
   }, []);
 
   const setAdvancedEnabled = useCallback((updater: (value: boolean) => boolean) => {
@@ -187,7 +187,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
       if (result.ok) {
         setCommandResult(result.data);
         setIsCommandView(true);
-        setActiveTabState('scene');
+        setActiveRouteState('game');
         setComposerNotice(null);
       } else {
         setComposerNotice(result.playerMessage);

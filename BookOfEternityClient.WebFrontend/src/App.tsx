@@ -9,6 +9,7 @@ import { StatusView } from './components/StatusView';
 import { HelpView } from './components/HelpView';
 import { SettingsView } from './components/SettingsView';
 import { UnifiedInput } from './components/UnifiedInput';
+import { GameLauncher } from './components/GameLauncher';
 import { ShellProvider, useShell, type TabId } from './context/ShellContext';
 
 export default function App() {
@@ -20,9 +21,11 @@ export default function App() {
 }
 
 function AppShell() {
-  const { advancedEnabled, clientSettings, readyState, realmTheme, shellState, activeTab } = useShell();
+  const { activeRoute, advancedEnabled, clientSettings, menu, readyState, realmTheme, shellState, activeTab } = useShell();
+  const isLauncherRoute = activeRoute === 'home' && menu !== null;
   const browserShellClassName = [
     'browser-shell',
+    isLauncherRoute ? 'is-launcher-route' : '',
     clientSettings?.accessibility.reducedMotion ? 'is-reduced-motion' : '',
     clientSettings?.accessibility.contrastFriendly ? 'is-contrast-friendly' : ''
   ].filter(Boolean).join(' ');
@@ -34,13 +37,13 @@ function AppShell() {
   return (
     <main className={browserShellClassName} data-theme-key={realmTheme.key} style={browserShellStyle}>
       <ConnectionBanner />
-      <TabBar />
-      <section className="content-area" aria-live="polite">
+      {!isLauncherRoute && <TabBar />}
+      <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
         {shellState.status === 'loading' && <LoadingCard />}
         {shellState.status === 'error' && <ErrorNotice title="Состояние клиента недоступно" failure={shellState} advancedEnabled={advancedEnabled} />}
-        {readyState && <TabContent activeTab={activeTab} />}
+        {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : <TabContent activeTab={activeTab} />)}
       </section>
-      <UnifiedInput />
+      {!isLauncherRoute && <UnifiedInput />}
     </main>
   );
 }
