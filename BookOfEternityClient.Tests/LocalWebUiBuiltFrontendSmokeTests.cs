@@ -120,44 +120,71 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var menu = JsonNode.Parse(menuResponse.Body)!.AsObject();
         var session = JsonNode.Parse(sessionResponse.Body)!.AsObject();
         var screen = JsonNode.Parse(screenResponse.Body)!.AsObject();
-        var appSource = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src", "App.tsx"));
-        await File.WriteAllTextAsync(firstScreenVisualQaArtifactPath, BuildFirstScreenVisualQaArtifact(appSource));
-        await File.WriteAllTextAsync(navigationArtifactPath, BuildNavigationIaArtifact(appSource));
-        await File.WriteAllTextAsync(detailSurfaceArtifactPath, BuildDetailSurfaceArtifact(appSource));
-        await File.WriteAllTextAsync(rebornPanelsArtifactPath, BuildRebornPanelsArtifact(appSource));
-        await File.WriteAllTextAsync(startNewChapterArtifactPath, BuildStartNewChapterFlowArtifact(appSource));
+        var frontendSourceRoot = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "src");
+        var appSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "App.tsx"));
+        var tabBarConfigSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "tabBarConfig.ts"));
+        var tabBarSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "TabBar.tsx"));
+        var launcherSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "GameLauncher.tsx"));
+        var sceneViewSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "SceneView.tsx"));
+        var statusViewSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "StatusView.tsx"));
+        var helpViewSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "HelpView.tsx"));
+        var settingsViewSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "SettingsView.tsx"));
+        var unifiedInputSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "UnifiedInput.tsx"));
+        var promptFormSource = File.ReadAllText(Path.Combine(frontendSourceRoot, "components", "PromptForm.tsx"));
+        var currentShellSources = string.Join(
+            '\n',
+            appSource,
+            tabBarConfigSource,
+            tabBarSource,
+            launcherSource,
+            sceneViewSource,
+            statusViewSource,
+            helpViewSource,
+            settingsViewSource,
+            unifiedInputSource,
+            promptFormSource);
+
+        await File.WriteAllTextAsync(firstScreenVisualQaArtifactPath, BuildFirstScreenVisualQaArtifact(appSource, tabBarConfigSource, launcherSource));
+        await File.WriteAllTextAsync(navigationArtifactPath, BuildNavigationIaArtifact(tabBarConfigSource));
+        await File.WriteAllTextAsync(detailSurfaceArtifactPath, BuildDetailSurfaceArtifact(statusViewSource));
+        await File.WriteAllTextAsync(rebornPanelsArtifactPath, BuildRebornPanelsArtifact(statusViewSource));
+        await File.WriteAllTextAsync(startNewChapterArtifactPath, BuildStartNewChapterFlowArtifact(launcherSource, promptFormSource));
 
         Assert.True(session["localOnly"]!.GetValue<bool>());
         Assert.Equal("CI-душа", menu["session"]!["soulName"]!.GetValue<string>());
         Assert.Equal("CI-душа", screen["soul"]!["name"]!.GetValue<string>());
         Assert.Equal("Проверочный тракт", screen["world"]!["location"]!.GetValue<string>());
         Assert.Contains("локальную книгу", screen["narrative"]!["text"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Главная", appSource, StringComparison.Ordinal);
-        Assert.Contains("Игра", appSource, StringComparison.Ordinal);
-        Assert.Contains("Расширенный режим", appSource, StringComparison.Ordinal);
-        Assert.Contains("ActionMenu", appSource, StringComparison.Ordinal);
-        Assert.Contains("Персонаж / Душа", appSource, StringComparison.Ordinal);
-        Assert.Contains("Подготовить форму", appSource, StringComparison.Ordinal);
-        Assert.Contains("browserApi.executeExplorerCommand({ command: action.advancedCommand", appSource, StringComparison.Ordinal);
-        Assert.Contains("browserApi.submitPromptSession", appSource, StringComparison.Ordinal);
-        Assert.Contains("renderPromptControl", appSource, StringComparison.Ordinal);
-        Assert.Contains("AudioSettingsPanel", appSource, StringComparison.Ordinal);
-        Assert.Contains("Включить музыку в браузере", appSource, StringComparison.Ordinal);
-        Assert.Contains("browserApi.updateAudioSettings", appSource, StringComparison.Ordinal);
-        Assert.Contains("new Audio()", appSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("setAdvancedEnabled(true)", appSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("action.advancedCommand}", appSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("C# каталога команд", appSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("C# протоколом", appSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("C# DTO", appSource, StringComparison.Ordinal);
+        Assert.Contains("import { TabBar } from './components/TabBar';", appSource, StringComparison.Ordinal);
+        Assert.Contains("<GameLauncher menu={menu} />", appSource, StringComparison.Ordinal);
+        Assert.Contains("{!isLauncherRoute && <UnifiedInput />}", appSource, StringComparison.Ordinal);
+        Assert.Contains("tabNav.map((tab)", tabBarSource, StringComparison.Ordinal);
+        Assert.Contains("Открыть книгу", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Продолжить главу", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Загрузить сохранение", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Начать новую главу", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Настроить клиент", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("<TurnStatePanel turnState={game.turnState} />", sceneViewSource, StringComparison.Ordinal);
+        Assert.Contains("className=\"scene-quick-actions\"", sceneViewSource, StringComparison.Ordinal);
+        Assert.Contains("placeholder=\"Опишите действие или введите /команду...\"", unifiedInputSource, StringComparison.Ordinal);
+        Assert.Contains("GROUP_LABELS", helpViewSource, StringComparison.Ordinal);
+        Assert.Contains("Расширенный режим", settingsViewSource, StringComparison.Ordinal);
+        Assert.Contains("browserApi.executeExplorerCommand({ command: startCommand", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("browserApi.submitPromptSession", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("renderPromptControl", promptFormSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("setAdvancedEnabled(true)", currentShellSources, StringComparison.Ordinal);
+        Assert.DoesNotContain("action.advancedCommand}", currentShellSources, StringComparison.Ordinal);
+        Assert.DoesNotContain("C# каталога команд", currentShellSources, StringComparison.Ordinal);
+        Assert.DoesNotContain("C# протоколом", currentShellSources, StringComparison.Ordinal);
+        Assert.DoesNotContain("C# DTO", currentShellSources, StringComparison.Ordinal);
 
         Assert.True(File.Exists(navigationArtifactPath), $"Missing browser navigation visual smoke artifact at {navigationArtifactPath}");
         var navigationArtifact = await File.ReadAllTextAsync(navigationArtifactPath);
         Assert.Contains("data-artifact=\"browser-navigation-ia\"", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("data-viewport=\"desktop\"", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("data-viewport=\"mobile\"", navigationArtifact, StringComparison.Ordinal);
-        Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", navigationArtifact, StringComparison.Ordinal);
-        Assert.Contains("Медиа → Настройки", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("Сцена → Статус → Помощь → Настройки", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("Текущий ход, повествование и быстрые действия.", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("Расширенный режим", navigationArtifact, StringComparison.Ordinal);
         Assert.DoesNotContain("Debug", navigationArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Network", navigationArtifact, StringComparison.OrdinalIgnoreCase);
@@ -167,13 +194,13 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var detailSurfaceArtifact = await File.ReadAllTextAsync(detailSurfaceArtifactPath);
         Assert.Contains("data-artifact=\"browser-detail-surfaces\"", detailSurfaceArtifact, StringComparison.Ordinal);
         Assert.Contains("data-viewport=\"desktop\"", detailSurfaceArtifact, StringComparison.Ordinal);
-        Assert.Contains("data-state=\"compact-cards\"", detailSurfaceArtifact, StringComparison.Ordinal);
-        Assert.Contains("data-state=\"opened-modal\"", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"status-overview\"", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("data-state=\"afterlife-available\"", detailSurfaceArtifact, StringComparison.Ordinal);
         Assert.Contains("data-viewport=\"mobile\"", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("Персонаж", detailSurfaceArtifact, StringComparison.Ordinal);
         Assert.Contains("Душа", detailSurfaceArtifact, StringComparison.Ordinal);
-        Assert.Contains("Детали души", detailSurfaceArtifact, StringComparison.Ordinal);
-        Assert.Contains("Детали героя", detailSurfaceArtifact, StringComparison.Ordinal);
-        Assert.Contains("Детали локации", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("Мир", detailSurfaceArtifact, StringComparison.Ordinal);
+        Assert.Contains("Посмертие", detailSurfaceArtifact, StringComparison.Ordinal);
         Assert.DoesNotContain("Debug", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("/api/", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("raw JSON", detailSurfaceArtifact, StringComparison.OrdinalIgnoreCase);
@@ -205,8 +232,8 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Продолжить главу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Загрузить сохранение", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Настроить клиент", firstScreenVisualQaArtifact, StringComparison.Ordinal);
-        Assert.Contains("Главная → Игра → Душа → Мир → Журнал → Инвентарь", firstScreenVisualQaArtifact, StringComparison.Ordinal);
-        Assert.Contains("old React UI/UX reference only", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Сцена → Статус → Помощь → Настройки", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("current minimal tab shell", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("advanced debug secondary", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("data-state=\"fresh-empty\"", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Активной главы пока нет", firstScreenVisualQaArtifact, StringComparison.Ordinal);
@@ -372,22 +399,19 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         """;
     }
 
-    private static string BuildFirstScreenVisualQaArtifact(string appSource)
+    private static string BuildFirstScreenVisualQaArtifact(string appSource, string tabBarConfigSource, string launcherSource)
     {
-        var routes = ExtractPlayerRoutes(appSource);
-        var primaryRoutes = routes.Where(route => route.Kind == "primary").ToArray();
-        var utilityRoutes = routes.Where(route => route.Kind == "utility").ToArray();
-        var primarySequence = string.Join(" → ", primaryRoutes.Select(route => route.Label));
-        var utilitySequence = string.Join(" → ", utilityRoutes.Select(route => route.Label));
+        var tabs = ExtractPlayerTabs(tabBarConfigSource);
+        var tabSequence = string.Join(" → ", tabs.Select(tab => tab.Label));
 
-        Assert.Equal(new[] { "home", "game", "soul", "world", "journal", "inventory" }, primaryRoutes.Select(route => route.Id));
-        Assert.Equal(new[] { "media", "settings" }, utilityRoutes.Select(route => route.Id));
-        Assert.Contains("Книга Вечности: Перерождение", appSource, StringComparison.Ordinal);
-        Assert.Contains("Открыть книгу", appSource, StringComparison.Ordinal);
-        Assert.Contains("Продолжить главу", appSource, StringComparison.Ordinal);
-        Assert.Contains("Загрузить сохранение", appSource, StringComparison.Ordinal);
-        Assert.Contains("Настроить клиент", appSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("<h1 id=\"browser-client-title\">Локальный игровой клиент</h1>", appSource, StringComparison.Ordinal);
+        Assert.Equal(new[] { "scene", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
+        Assert.Contains("<GameLauncher menu={menu} />", appSource, StringComparison.Ordinal);
+        Assert.Contains("Книга Вечности: Перерождение", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Открыть книгу", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Продолжить главу", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Загрузить сохранение", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Настроить клиент", launcherSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("<h1 id=\"browser-client-title\">Локальный игровой клиент</h1>", launcherSource, StringComparison.Ordinal);
 
         return $$"""
         <!doctype html>
@@ -421,14 +445,10 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
           <main class="artifact">
             <section class="frame" data-viewport="desktop" data-state="fresh-empty" aria-label="Desktop first-screen visual QA">
               <div class="desktop-shell">
-                <nav class="sidebar" aria-label="Player routes">
-                  <p class="brand">{{WebUtility.HtmlEncode(primarySequence)}}</p>
+                <nav class="sidebar" aria-label="Player tabs">
+                  <p class="brand">{{WebUtility.HtmlEncode(tabSequence)}}</p>
                   <div class="route-list">
-        {{RenderVisualQaRouteCards(primaryRoutes)}}
-                  </div>
-                  <p class="brand">{{WebUtility.HtmlEncode(utilitySequence)}}</p>
-                  <div class="route-list">
-        {{RenderVisualQaRouteCards(utilityRoutes)}}
+        {{RenderVisualQaRouteCards(tabs)}}
                   </div>
                   <div class="advanced">advanced debug secondary: Расширенный режим остаётся отдельным вторичным входом.</div>
                 </nav>
@@ -448,7 +468,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                   <h2>Сводка книги</h2>
                   <p class="muted">Слой книги · Герой и душа · Сохранение · Активной главы пока нет.</p>
                   <div class="checks">
-                    <div class="check">old React UI/UX reference only: central launcher, tabs/sections, polished cards, save/config actions.</div>
+                    <div class="check">current minimal tab shell: launcher, shared tabs, status, help, settings, single command input.</div>
                     <div class="check">no technical hero copy</div>
                     <div class="check">no repeated unavailable alerts</div>
                     <div class="check">no emoji route icons</div>
@@ -461,9 +481,9 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 <p class="brand">Книга Вечности: Перерождение</p>
                 <h1>Открыть книгу</h1>
                 <article class="primary">Primary CTA: Продолжить главу</article>
-                <p class="muted">{{WebUtility.HtmlEncode(primarySequence)}}</p>
+                <p class="muted">{{WebUtility.HtmlEncode(tabSequence)}}</p>
                 <div class="route-list">
-        {{RenderVisualQaRouteCards(primaryRoutes)}}
+        {{RenderVisualQaRouteCards(tabs)}}
                 </div>
                 <div class="advanced">advanced debug secondary</div>
               </div>
@@ -474,13 +494,14 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         """;
     }
 
-    private static string BuildStartNewChapterFlowArtifact(string appSource)
+    private static string BuildStartNewChapterFlowArtifact(string launcherSource, string promptFormSource)
     {
-        Assert.Contains("function NewChapterStartPanel", appSource, StringComparison.Ordinal);
-        Assert.Contains("Форма новой главы", appSource, StringComparison.Ordinal);
-        Assert.Contains("browserApi.executeExplorerCommand({ command: startCommand", appSource, StringComparison.Ordinal);
-        Assert.Contains("browserApi.submitPromptSession", appSource, StringComparison.Ordinal);
-        Assert.DoesNotContain("Подготовить новую историю через управляемую форму браузера.", appSource, StringComparison.Ordinal);
+        Assert.Contains("function NewChapterStartPanel", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Форма новой главы", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("browserApi.executeExplorerCommand({ command: startCommand", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("browserApi.submitPromptSession", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("renderPromptControl", promptFormSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("Подготовить новую историю через управляемую форму браузера.", launcherSource, StringComparison.Ordinal);
 
         return """
         <!doctype html>
@@ -538,14 +559,13 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         """;
     }
 
-    private static string BuildRebornPanelsArtifact(string appSource)
+    private static string BuildRebornPanelsArtifact(string statusViewSource)
     {
-        Assert.Contains("detailSurfaceId=\"reborn-afterlife-overview\"", appSource, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"reborn-shining-abode\"", appSource, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"reborn-chaos-sea\"", appSource, StringComparison.Ordinal);
-        Assert.Contains("Посмертие Reborn", appSource, StringComparison.Ordinal);
-        Assert.Contains("Сияющая Обитель", appSource, StringComparison.Ordinal);
-        Assert.Contains("Море Хаоса", appSource, StringComparison.Ordinal);
+        Assert.Contains("<h3>✨ Посмертие</h3>", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("Сияние", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("Искры света", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("Залы", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("Фракции", statusViewSource, StringComparison.Ordinal);
 
         return """
         <!doctype html>
@@ -575,14 +595,13 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         """;
     }
 
-    private static string BuildDetailSurfaceArtifact(string appSource)
+    private static string BuildDetailSurfaceArtifact(string statusViewSource)
     {
-        Assert.Contains("detailSurfaceId=\"soul-identity\"", appSource, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"player-condition\"", appSource, StringComparison.Ordinal);
-        Assert.Contains("detailSurfaceId=\"world-location\"", appSource, StringComparison.Ordinal);
-        Assert.Contains("Детали души", appSource, StringComparison.Ordinal);
-        Assert.Contains("Детали героя", appSource, StringComparison.Ordinal);
-        Assert.Contains("Детали локации", appSource, StringComparison.Ordinal);
+        Assert.Contains("<h3>🎭 Персонаж</h3>", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("<h3>🕯️ Душа</h3>", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("<h3>🗺️ Мир</h3>", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("<h3>✨ Посмертие</h3>", statusViewSource, StringComparison.Ordinal);
+        Assert.Contains("function StatusBar", statusViewSource, StringComparison.Ordinal);
 
         return """
         <!doctype html>
@@ -614,42 +633,42 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         </head>
         <body>
           <main class="artifact">
-            <section class="frame" data-viewport="desktop" data-state="compact-cards" aria-label="Compact card overview">
+            <section class="frame" data-viewport="desktop" data-state="status-overview" aria-label="Compact status overview">
               <header>
-                <h1>Card overview: detail-rich player data stays compact</h1>
-                <p class="sequence">Душа → Герой → Локация</p>
+                <h1>Status overview: player data stays compact</h1>
+                <p class="sequence">Персонаж → Душа → Мир</p>
               </header>
               <div class="cards">
-                <article class="card"><strong>🕯️ Душа</strong><p>Безымянная душа · Мир смертных</p><p>Открыть детали</p></article>
-                <article class="card"><strong>⚔️ Герой</strong><p>Герой · состояние уточняется</p><p>Открыть детали</p></article>
-                <article class="card"><strong>🗺️ Локация</strong><p>Проверочный тракт · утро</p><p>Открыть детали</p></article>
+                <article class="card"><strong>Персонаж</strong><p>Имя, класс, раса и состояние читаются как игровые сведения.</p></article>
+                <article class="card"><strong>Душа</strong><p>Имя души, царство, инкарнация и чернильные перья.</p></article>
+                <article class="card"><strong>Мир</strong><p>Локация, время и номер хода без технических путей.</p></article>
               </div>
             </section>
-            <section class="frame" data-viewport="desktop" data-state="opened-modal" aria-label="Opened detail modal">
-              <header><h1>Opened desktop detail surface</h1></header>
+            <section class="frame" data-viewport="desktop" data-state="afterlife-available" aria-label="Afterlife status card">
+              <header><h1>Посмертие</h1></header>
               <div class="modal-wrap">
                 <article class="modal">
                   <div class="modal-bar">
-                    <div><p class="sequence">душа и царство</p><h2>Детали души</h2></div>
-                    <div class="controls"><span>Назад</span><span>Развернуть</span><span>Закрыть</span></div>
+                    <div><p class="sequence">посмертный прогресс</p><h2>Посмертие</h2></div>
+                    <div class="controls"><span>Сияние</span><span>Искры света</span><span>Залы</span></div>
                   </div>
-                  <p>Эта панель показывает только текущую игровую сводку души из локальной книги.</p>
+                  <p>Эта панель показывает текущую игровую сводку посмертия без служебных pending/control путей.</p>
                   <div class="sections">
-                    <section class="section"><h3>Проявление</h3><p>Имя, царство и инкарнация читаются как игровые сведения.</p></section>
-                    <section class="section"><h3>Посмертный прогресс</h3><p>Чернильные перья, просветление и хранитель сгруппированы в понятный раздел.</p></section>
+                    <section class="section"><h3>Сияние</h3><p>Опыт, уровень и искры света сгруппированы в понятный раздел.</p></section>
+                    <section class="section"><h3>Залы</h3><p>Залы и фракции видны только как игровые счетчики.</p></section>
                   </div>
                 </article>
               </div>
             </section>
-            <section class="frame mobile" data-viewport="mobile" data-state="opened-modal" aria-label="Mobile full panel detail surface">
-              <header><h1>Mobile full-panel surface</h1></header>
+            <section class="frame mobile" data-viewport="mobile" data-state="status-overview" aria-label="Mobile status surface">
+              <header><h1>Mobile status surface</h1></header>
               <article class="modal">
                 <div class="modal-bar">
-                  <div><p class="sequence">герой</p><h2>Детали героя</h2></div>
-                  <div class="controls"><span>Назад</span><span>Закрыть</span></div>
+                  <div><p class="sequence">статус</p><h2>Персонаж</h2></div>
+                  <div class="controls"><span>Душа</span><span>Мир</span></div>
                 </div>
                 <section class="section"><h3>Состояние</h3><p>Здоровье, энергия и стойкость остаются читаемыми в узком окне.</p></section>
-                <section class="section"><h3>Детали локации</h3><p>Локация использует тот же full-panel язык на мобильном viewport.</p></section>
+                <section class="section"><h3>Локация</h3><p>Игровая локация и ход сохраняют плотный обзор без служебных данных.</p></section>
               </article>
             </section>
           </main>
@@ -658,16 +677,12 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         """;
     }
 
-    private static string BuildNavigationIaArtifact(string appSource)
+    private static string BuildNavigationIaArtifact(string tabBarConfigSource)
     {
-        var routes = ExtractPlayerRoutes(appSource);
-        var primaryRoutes = routes.Where(route => route.Kind == "primary").ToArray();
-        var utilityRoutes = routes.Where(route => route.Kind == "utility").ToArray();
-        var primarySequence = string.Join(" → ", primaryRoutes.Select(route => route.Label));
-        var utilitySequence = string.Join(" → ", utilityRoutes.Select(route => route.Label));
+        var tabs = ExtractPlayerTabs(tabBarConfigSource);
+        var tabSequence = string.Join(" → ", tabs.Select(tab => tab.Label));
 
-        Assert.Equal(new[] { "home", "game", "soul", "world", "journal", "inventory" }, primaryRoutes.Select(route => route.Id));
-        Assert.Equal(new[] { "media", "settings" }, utilityRoutes.Select(route => route.Id));
+        Assert.Equal(new[] { "scene", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
 
         return $$"""
         <!doctype html>
@@ -700,23 +715,17 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             <section class="frame" data-viewport="desktop" aria-label="Desktop browser navigation smoke">
               <header>
                 <h1>Desktop: player navigation taxonomy</h1>
-                <p class="sequence">{{WebUtility.HtmlEncode(primarySequence)}}</p>
+                <p class="sequence">{{WebUtility.HtmlEncode(tabSequence)}}</p>
               </header>
               <div class="desktop-shell">
                 <nav class="sidebar" aria-label="Основные игровые разделы браузерного клиента">
                   <div class="route-list">
-        {{RenderRouteCards(primaryRoutes)}}
-                  </div>
-                  <div class="utility" aria-label="Дополнительные игровые разделы браузерного клиента">
-                    <p class="sequence">{{WebUtility.HtmlEncode(utilitySequence)}}</p>
-                    <div class="route-list">
-        {{RenderRouteCards(utilityRoutes)}}
-                    </div>
+        {{RenderRouteCards(tabs)}}
                   </div>
                 </nav>
                 <section class="content" aria-label="Игровая область">
                   <h2>Откройте книгу</h2>
-                  <p>Обычное пустое состояние выглядит как игровая пауза: выберите главу, продолжите сохранение или перейдите к персонажу, миру, журналу и инвентарю.</p>
+                  <p>Обычное пустое состояние выглядит как игровая пауза: выберите главу, продолжите сохранение или перейдите к сцене, статусу, помощи и настройкам.</p>
                   <p class="advanced-note">Расширенный режим скрыт до явного включения и визуально вторичен.</p>
                 </section>
               </div>
@@ -724,11 +733,11 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
             <section class="frame mobile-shell" data-viewport="mobile" aria-label="Mobile browser navigation smoke">
               <header>
                 <h1>Mobile: compact player navigation</h1>
-                <p class="sequence">{{WebUtility.HtmlEncode(primarySequence)}}</p>
+                <p class="sequence">{{WebUtility.HtmlEncode(tabSequence)}}</p>
               </header>
               <nav class="mobile-nav" aria-label="Мобильные игровые разделы браузерного клиента">
                 <div class="route-list">
-        {{RenderRouteCards(primaryRoutes)}}
+        {{RenderRouteCards(tabs)}}
                 </div>
                 <div class="advanced-note">Расширенный режим остаётся отдельным вторичным переключателем.</div>
               </nav>
@@ -739,52 +748,51 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         """;
     }
 
-    private static BrowserNavigationRoute[] ExtractPlayerRoutes(string appSource)
+    private static BrowserNavigationTab[] ExtractPlayerTabs(string tabBarConfigSource)
     {
-        var routesMatch = Regex.Match(
-            appSource,
-            @"const playerRoutes: RouteCard\[\] = \[(?<routes>.*?)\];",
+        var tabsMatch = Regex.Match(
+            tabBarConfigSource,
+            @"export const tabNav: readonly TabNavItem\[\] = \[(?<tabs>.*?)\];",
             RegexOptions.Singleline);
-        Assert.True(routesMatch.Success, "App.tsx should define playerRoutes metadata for the visual smoke artifact.");
+        Assert.True(tabsMatch.Success, "tabBarConfig.ts should define tabNav metadata for the visual smoke artifact.");
 
-        var routeMatches = Regex.Matches(
-            routesMatch.Groups["routes"].Value,
-            @"\{\s*id:\s*'(?<id>[^']+)',\s*kind:\s*'(?<kind>[^']+)',\s*label:\s*'(?<label>[^']+)',\s*description:\s*'(?<description>[^']+)',\s*icon:\s*'(?<icon>[^']+)'\s*\}",
+        var tabMatches = Regex.Matches(
+            tabsMatch.Groups["tabs"].Value,
+            @"\{\s*id:\s*'(?<id>[^']+)',\s*icon:\s*'(?<icon>[^']+)',\s*label:\s*'(?<label>[^']+)',\s*shortcut:\s*'(?<shortcut>[^']+)',\s*description:\s*'(?<description>[^']+)'\s*\}",
             RegexOptions.Singleline);
 
-        var routes = routeMatches
-            .Select(match => new BrowserNavigationRoute(
+        var tabs = tabMatches
+            .Select(match => new BrowserNavigationTab(
                 match.Groups["id"].Value,
-                match.Groups["kind"].Value,
                 match.Groups["label"].Value,
-                match.Groups["description"].Value,
-                match.Groups["icon"].Value))
+                match.Groups["shortcut"].Value,
+                match.Groups["description"].Value))
             .ToArray();
-        Assert.Equal(8, routes.Length);
-        return routes;
+        Assert.Equal(4, tabs.Length);
+        return tabs;
     }
 
-    private static string RenderRouteCards(IEnumerable<BrowserNavigationRoute> routes) => string.Join(
+    private static string RenderRouteCards(IEnumerable<BrowserNavigationTab> tabs) => string.Join(
         Environment.NewLine,
-        routes.Select(route =>
+        tabs.Select(tab =>
             $"""
-                    <article class="route-card route-card--{WebUtility.HtmlEncode(route.Id)}">
-                      <strong><span>{WebUtility.HtmlEncode(route.Icon)}</span>{WebUtility.HtmlEncode(route.Label)}</strong>
-                      <p>{WebUtility.HtmlEncode(route.Description)}</p>
+                    <article class="route-card route-card--{WebUtility.HtmlEncode(tab.Id)}">
+                      <strong><span class="route-card__mark" aria-hidden="true">{WebUtility.HtmlEncode(tab.Shortcut)}</span>{WebUtility.HtmlEncode(tab.Label)}</strong>
+                      <p>{WebUtility.HtmlEncode(tab.Description)}</p>
                     </article>
             """));
 
-    private static string RenderVisualQaRouteCards(IEnumerable<BrowserNavigationRoute> routes) => string.Join(
+    private static string RenderVisualQaRouteCards(IEnumerable<BrowserNavigationTab> tabs) => string.Join(
         Environment.NewLine,
-        routes.Select(route =>
+        tabs.Select(tab =>
             $"""
-                    <article class="route-card route-card--{WebUtility.HtmlEncode(route.Id)}">
-                      <strong><span class="route-card__mark" aria-hidden="true"></span>{WebUtility.HtmlEncode(route.Label)}</strong>
-                      <p>{WebUtility.HtmlEncode(route.Description)}</p>
+                    <article class="route-card route-card--{WebUtility.HtmlEncode(tab.Id)}">
+                      <strong><span class="route-card__mark" aria-hidden="true">{WebUtility.HtmlEncode(tab.Shortcut)}</span>{WebUtility.HtmlEncode(tab.Label)}</strong>
+                      <p>{WebUtility.HtmlEncode(tab.Description)}</p>
                     </article>
             """));
 
-    private sealed record BrowserNavigationRoute(string Id, string Kind, string Label, string Description, string Icon);
+    private sealed record BrowserNavigationTab(string Id, string Label, string Shortcut, string Description);
 
     private sealed record SmokeResponse(string Path, HttpStatusCode StatusCode, string? ContentType, string Body)
     {
