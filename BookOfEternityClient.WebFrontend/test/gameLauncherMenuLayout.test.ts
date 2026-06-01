@@ -18,6 +18,12 @@ function readPublicAssetStats(...relativePath: string[]) {
   return { assetPath, exists: existsSync(assetPath), size: existsSync(assetPath) ? statSync(assetPath).size : 0 };
 }
 
+function readPublicText(...relativePath: string[]) {
+  const assetPath = join(frontendDir, 'public', ...relativePath);
+  assert(existsSync(assetPath), `Expected public asset note at ${assetPath}.`);
+  return { assetPath, text: readFileSync(assetPath, 'utf-8') };
+}
+
 function assert(condition: unknown, message: string) {
   if (!condition) {
     throw new Error(message);
@@ -38,10 +44,23 @@ const mainMenuBackground = readPublicAssetStats('main-menu-bg.webp');
 assert(mainMenuBackground.exists, `Expected launcher background art at ${mainMenuBackground.assetPath}.`);
 assert(mainMenuBackground.size > 50 * 1024, `Launcher background art should be larger than 50KB, got ${mainMenuBackground.size} bytes.`);
 
+const mainMenuBackgroundSource = readPublicText('main-menu-bg.source.md');
+assert(mainMenuBackgroundSource.text.includes('Pollinations AI API'), 'Launcher background source note should document the generation source.');
+assert(mainMenuBackgroundSource.text.includes('model=flux'), 'Launcher background source note should document the model.');
+assert(mainMenuBackgroundSource.text.includes('1920x1080'), 'Launcher background source note should document the generated 16:9 dimensions.');
+assert(mainMenuBackgroundSource.text.includes('dark library with arcane tomes'), 'Launcher background source note should document the art direction prompt.');
+assert(mainMenuBackgroundSource.text.includes('cosmic purple/teal mists'), 'Launcher background source note should document the color/mood prompt.');
+assert(mainMenuBackgroundSource.text.includes('No external runtime dependency'), 'Launcher background source note should state the runtime dependency boundary.');
+assert(mainMenuBackgroundSource.text.includes('No text, logos, or third-party IP'), 'Launcher background source note should record text/logo/IP safety review.');
+
 const componentsCss = readSource('styles', 'components.css');
 assert(componentsCss.includes('.launcher-menu {'), 'components.css should define launcher-menu styles.');
 assert(componentsCss.includes('.launcher-art-bg {'), 'components.css should define launcher-art-bg styles.');
 assert(componentsCss.includes('.launcher-art-bg img {'), 'components.css should define launcher-art-bg image styles.');
+assert(componentsCss.includes('object-fit: cover;'), 'Launcher background image should cover the menu frame responsively.');
+assert(componentsCss.includes('object-position: center 30%;'), 'Launcher background image should preserve the intended crop.');
+assert(componentsCss.includes('filter: saturate(0.7) brightness(0.5);'), 'Launcher background image should be subdued for readability.');
+assert(componentsCss.includes('.launcher-art-bg::after {'), 'Launcher background should include a readability overlay.');
 assert(componentsCss.includes('.launcher-menu__item {'), 'components.css should define launcher-menu item styles.');
 assert(componentsCss.includes('.launcher-menu__item.is-primary strong {'), 'components.css should highlight the primary launcher-menu item.');
 assert(!componentsCss.includes('launcher-primary-action'), 'components.css should remove launcher-primary-action selectors.');

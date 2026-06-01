@@ -87,6 +87,8 @@ The artifact is an HTML visual smoke artifact, not automated PNG screenshots. It
 
 Issue #742 extends the launcher artifact set with `start-new-chapter-flow.html`. It proves that `Начать новую главу` opens the existing C# world-setup prompt-session form when available, or shows a truthful unavailable state when local-write safety/command availability blocks it. The launcher sanitizes player-default command results so technical setup blocks, slash commands, endpoint names, file paths, and raw JSON labels stay out of the ordinary UI while the safe form fields remain visible. The artifact is local/offline HTML evidence, not a screenshot.
 
+Issue #759 adds the tracked local dark-fantasy launcher background `public/main-menu-bg.webp` plus `public/main-menu-bg.source.md` for the generation source, prompt/art-direction note, safety review, and runtime boundary. The built-frontend smoke coverage writes `TestResults/browser-smoke/main-menu-background-art.html`, a dependency-light local HTML visual smoke artifact, not an automated screenshot, so desktop and narrow main-menu readability can be reviewed with the background enabled.
+
 Regression checklist: primary CTA present; no technical hero copy; no repeated unavailable alerts; no emoji route icons; advanced debug secondary and behind explicit opt-in. Source guards live in `BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist` in `BrowserFrontendWorkspaceTests`, and documentation guards live in `LocalWebHostDocs_DocumentBrowserVisualQaArtifactWorkflow` in `LocalWebUiDocumentationTests`.
 
 ## Detail surfaces (#728)
