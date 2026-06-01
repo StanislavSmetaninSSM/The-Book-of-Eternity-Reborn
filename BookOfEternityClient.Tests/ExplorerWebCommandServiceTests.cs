@@ -1109,6 +1109,33 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Inventory_WithItemsButWithoutAuxiliaryFiles_HidesMissingAuxiliaryState()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            { "name": "Факел", "type": "utility", "count": 2 }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inventory"));
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
+        Assert.Equal("📦 Предметы (1)", table.Title);
+        Assert.Contains(table.Rows, static row => row.Cells.SequenceEqual(["Факел", "utility", "2", string.Empty, "✓"]));
+        Assert.Contains(result.Blocks.OfType<UiRawJsonBlock>(), static raw => raw.Title == "Полный JSON items.json");
+        Assert.DoesNotContain("отсутствует", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/inventory/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("item_resources.json", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("item_bonds.json", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("item_text_updates.json", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_NpcBundle_HidesPathsAndSkipsMissingFiles()
     {
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
