@@ -4,6 +4,8 @@ Issue: #679
 
 This runbook is the project-specific checklist for Hermes/Codex agents that need to drive the main console client without mutating a developer's live session. Start here, then use the lower-level sandbox reference in [`docs/console-e2e-sandbox.md`](../console-e2e-sandbox.md).
 
+For the live Agent Console API workflow, use [`docs/e2e/agent-console-runbook.md`](agent-console-runbook.md). That runbook launches the real console client with `--agent-console`, reads snapshots/events over loopback HTTP, submits token-gated key/text/action requests, and exits through the player-visible menu. The live Agent Console workflow complements this scripted E2E harness; it does not replace scripted E2E for deterministic regression coverage.
+
 ## Safety rules
 
 - Do implementation work only when it is linked to a tracked GitHub issue/task. Put the issue number in the branch, commit, PR body, and any new doc/test header when practical.
