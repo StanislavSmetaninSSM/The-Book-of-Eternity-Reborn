@@ -45,6 +45,8 @@ public sealed class BrowserMortalWorldWriteService
             "/distribute" or "/распределить" => await ApplyStatDistributionAsync(answers, owner),
             "/companion_directive" or "/директива_компаньону" => await ApplyCompanionDirectiveAsync(answers, owner),
             "/faction_directive" or "/директива_фракции" => await ApplyFactionDirectiveAsync(answers, owner),
+            "/equip" or "/экипировать" => await ApplyInventoryEquipAsync(command, answers, owner),
+            "/unequip" or "/снять" => await ApplyInventoryUnequipAsync(command, answers, owner),
             "/craft" or "/ремесло" => await ApplyCraftAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
         };
@@ -242,6 +244,76 @@ public sealed class BrowserMortalWorldWriteService
             });
     }
 
+    private async Task<BrowserPromptWriteResult> ApplyInventoryEquipAsync(
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_inventory_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите изменение экипировки.");
+
+        var itemIdentity = ReadAnswer(answers, "item_identity");
+        if (string.IsNullOrWhiteSpace(itemIdentity))
+            itemIdentity = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        if (string.IsNullOrWhiteSpace(itemIdentity))
+            return BrowserPromptWriteResult.ValidationError("Выберите предмет для экипировки.");
+
+        var slotKey = ReadAnswer(answers, "equipment_slot");
+        if (string.IsNullOrWhiteSpace(slotKey))
+            return BrowserPromptWriteResult.ValidationError("Выберите слот экипировки.");
+
+        var validation = await InventoryEquipmentService.ValidateEquipAsync(_fs, itemIdentity, slotKey);
+        if (!validation.Success)
+            return BrowserPromptWriteResult.ValidationError(validation.Message);
+
+        return await ExecuteAsync(
+            owner,
+            "Экипировка предмета",
+            [InventoryEquipmentService.ItemsPath],
+            async () =>
+            {
+                var outcome = await InventoryEquipmentService.EquipAsync(_fs, itemIdentity, slotKey);
+                if (!outcome.Success)
+                    throw new InventoryEquipmentWriteException(outcome.Message);
+            },
+            "Предмет экипирован",
+            validation.Message,
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyInventoryUnequipAsync(
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_inventory_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите снятие предмета.");
+
+        var slotKey = ReadAnswer(answers, "equipment_slot");
+        if (string.IsNullOrWhiteSpace(slotKey))
+            slotKey = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        if (string.IsNullOrWhiteSpace(slotKey))
+            return BrowserPromptWriteResult.ValidationError("Выберите слот, с которого нужно снять предмет.");
+
+        var validation = await InventoryEquipmentService.ValidateUnequipAsync(_fs, slotKey);
+        if (!validation.Success)
+            return BrowserPromptWriteResult.ValidationError(validation.Message);
+
+        return await ExecuteAsync(
+            owner,
+            "Снятие предмета",
+            [InventoryEquipmentService.ItemsPath],
+            async () =>
+            {
+                var outcome = await InventoryEquipmentService.UnequipAsync(_fs, slotKey);
+                if (!outcome.Success)
+                    throw new InventoryEquipmentWriteException(outcome.Message);
+            },
+            "Предмет снят",
+            validation.Message,
+            payload: null);
+    }
+
     private async Task<BrowserPromptWriteResult> ApplyCraftAsync(
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -281,7 +353,7 @@ public sealed class BrowserMortalWorldWriteService
         Func<Task> writeOperation,
         string title,
         string message,
-        JsonObject payload)
+        JsonObject? payload)
     {
         var result = await _coordinator.ExecuteAsync(
             new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
@@ -291,11 +363,26 @@ public sealed class BrowserMortalWorldWriteService
         if (result.Success)
             return BrowserPromptWriteResult.Completed(title, message, payload);
 
+        var failureMessage = SanitizeLocalWriteMessage(result.Message);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            result.Message);
+            failureMessage);
+    }
+
+    private static string SanitizeLocalWriteMessage(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return "Локальная запись не выполнена.";
+
+        return message
+            .Replace("Browser-write", "Локальная запись", StringComparison.Ordinal)
+            .Replace("GM-turn", "ход ГМ", StringComparison.Ordinal)
+            .Replace("rollback/snapshot artifact", "восстановление состояния", StringComparison.Ordinal)
+            .Replace("rollback", "восстановление состояния", StringComparison.Ordinal)
+            .Replace("game_session", "текущая игровая сессия", StringComparison.Ordinal)
+            .Replace("lease", "срока блокировки", StringComparison.Ordinal);
     }
 
     private async Task<JsonNode?> ReadNodeAsync(string path)
@@ -435,6 +522,18 @@ public sealed class BrowserMortalWorldWriteService
         return node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
     }
 
+    private static bool ReadBoolAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)
+    {
+        if (!answers.TryGetValue(key, out var node) || node is not JsonValue value)
+            return false;
+
+        if (value.TryGetValue<bool>(out var flag))
+            return flag;
+        return value.TryGetValue<string>(out var text) &&
+               bool.TryParse(text, out flag) &&
+               flag;
+    }
+
     private static string ReadString(JsonObject obj, string propertyName)
     {
         if (!obj.TryGetPropertyValue(propertyName, out var node) || node is not JsonValue value)
@@ -477,6 +576,8 @@ public sealed class BrowserMortalWorldWriteService
     }
 
     private string NowText() => _timeProvider.GetUtcNow().UtcDateTime.ToString("O");
+
+    private sealed class InventoryEquipmentWriteException(string message) : Exception(message);
 }
 
 public sealed record BrowserPromptWriteResult(
@@ -492,7 +593,7 @@ public sealed record BrowserPromptWriteResult(
     public static BrowserPromptWriteResult NotHandled() =>
         new(false, false, false, CommandExecutionState.Completed, UiNotificationSeverity.Info, string.Empty, string.Empty);
 
-    public static BrowserPromptWriteResult Completed(string title, string message, JsonObject payload) =>
+    public static BrowserPromptWriteResult Completed(string title, string message, JsonObject? payload = null) =>
         new(true, true, false, CommandExecutionState.Completed, UiNotificationSeverity.Success, title, message, payload);
 
     public static BrowserPromptWriteResult ValidationError(string message) =>

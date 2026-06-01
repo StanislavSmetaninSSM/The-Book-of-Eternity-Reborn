@@ -314,7 +314,14 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         var blocks = new List<UiBlock>();
-        var root = read.Node;
+        var inventoryContext = await InventoryEquipmentService.ReadContextAsync(fs);
+        var root = inventoryContext?.Root ?? read.Node as JsonObject;
+        if (root == null)
+        {
+            return Completed(command, [
+                Message(UiNotificationSeverity.Warning, "Инвентарь", "Файл инвентаря найден, но его корень не похож на обычный инвентарь.")
+            ]);
+        }
 
         var totalWeight = GetNodeString(root, "totalWeight");
         var maxWeight = GetNodeString(root, "maxWeight");
@@ -359,9 +366,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     continue;
                 }
 
-                var itemName = GetNodeString(prop.Value, "name")
-                    ?? GetNodeString(prop.Value, "itemName")
-                    ?? prop.Value.ToString();
+                var itemName = DescribeEquipmentValue(prop.Value, inventoryContext);
                 equipmentRows.Add(new UiKeyValueItem { Key = FormatSlotName(prop.Key), Value = itemName });
             }
 
@@ -424,7 +429,59 @@ public static class ExplorerMortalWorldCommandResultBuilder
         await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_bonds.json", "Связи предметов");
         await AddRawJsonIfPresent(blocks, fs, "game_state/inventory/item_text_updates.json", "Тексты предметов");
 
-        return Completed(command, blocks);
+        return Completed(command, blocks, BuildInventoryActions(inventoryContext));
+    }
+
+    private static IReadOnlyList<UiAction> BuildInventoryActions(InventoryEquipmentContext? inventory)
+    {
+        if (inventory == null)
+            return [];
+
+        var actions = new List<UiAction>();
+        foreach (var item in inventory.Items
+                     .Where(static item => item.IsEquippable &&
+                                           string.IsNullOrWhiteSpace(item.EquippedSlot) &&
+                                           !item.IsSoulRelic &&
+                                           !item.IsBroken))
+        {
+            var identity = FirstNonEmpty(item.Identity, item.Name);
+            actions.Add(new UiAction
+            {
+                Id = InventoryEquipmentService.BuildActionId("inventory-equip", identity),
+                Label = $"Экипировать «{item.Name}»",
+                Command = "/экипировать " + InventoryEquipmentService.FormatCommandArgument(identity),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["itemIdentity"] = item.Identity,
+                    ["itemName"] = item.Name,
+                    ["slot"] = item.ResolvedSlot
+                }
+            });
+        }
+
+        foreach (var equipped in inventory.Equipped
+                     .Where(static item => item.IsOrdinaryInventoryItem)
+                     .OrderBy(static item => SlotOrder(item.SlotKey)))
+        {
+            actions.Add(new UiAction
+            {
+                Id = InventoryEquipmentService.BuildActionId("inventory-unequip", equipped.SlotKey),
+                Label = $"Снять «{equipped.ItemName}»",
+                Command = "/снять " + InventoryEquipmentService.FormatCommandArgument(equipped.SlotKey),
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = false,
+                Payload = new JsonObject
+                {
+                    ["slot"] = equipped.SlotKey,
+                    ["itemIdentity"] = equipped.ItemIdentity,
+                    ["itemName"] = equipped.ItemName
+                }
+            });
+        }
+
+        return actions;
     }
 
     private static async Task AddRawJsonIfPresent(List<UiBlock> blocks, FileSystemManager fs, string path, string title)
@@ -435,27 +492,51 @@ public static class ExplorerMortalWorldCommandResultBuilder
     }
 
     private static string FormatSlotName(string slotKey) =>
-        slotKey switch
+        InventoryEquipmentService.FormatSlotName(slotKey switch
         {
-            "head" or "armor_head" => "🪖 Голова",
-            "body" or "armor_chest" => "🛡️ Тело",
-            "hands" => "🧤 Руки",
-            "feet" or "armor_feet" => "👢 Ноги",
-            "armor_legs" => "🦵 Ноги",
-            "mainHand" or "weapon_main" => "⚔️ Основная рука",
-            "offHand" or "weapon_secondary" => "🛡️ Вторая рука",
-            "neck" => "📿 Шея",
-            "ring1" or "accessory_1" => "💍 Аксессуар 1",
-            "ring2" or "accessory_2" => "💍 Аксессуар 2",
+            "armor_head" => "head",
+            "armor_chest" => "body",
+            "armor_feet" => "feet",
+            "armor_legs" => "feet",
+            "weapon_main" => "mainHand",
+            "weapon_secondary" => "offHand",
+            "accessory_1" => "ring1",
+            "accessory_2" => "ring2",
             _ => slotKey
-        };
+        });
+
+    private static string DescribeEquipmentValue(JsonNode? value, InventoryEquipmentContext? inventory)
+    {
+        if (TryGetScalarString(value, out var scalar))
+        {
+            var matched = inventory == null ? null : InventoryEquipmentService.FindItem(inventory.Items, scalar);
+            return matched?.Name ?? scalar;
+        }
+
+        var itemName = GetNodeString(value, "name") ?? GetNodeString(value, "itemName");
+        if (!string.IsNullOrWhiteSpace(itemName))
+            return itemName;
+
+        var itemIdentity = FirstNonEmpty(
+            GetNodeString(value, "existedId"),
+            GetNodeString(value, "itemId"),
+            GetNodeString(value, "id"));
+        if (!string.IsNullOrWhiteSpace(itemIdentity) && inventory != null)
+        {
+            var matched = InventoryEquipmentService.FindItem(inventory.Items, itemIdentity);
+            if (matched != null)
+                return matched.Name;
+        }
+
+        return string.IsNullOrWhiteSpace(itemIdentity) ? value?.ToString() ?? "— пусто —" : itemIdentity;
+    }
 
     private static string? GetNodeString(JsonNode? node, string property)
     {
-        if (node == null)
+        if (node is not JsonObject obj)
             return null;
 
-        return TryGetScalarString(node[property], out var value) ? value : null;
+        return TryGetScalarString(obj[property], out var value) ? value : null;
     }
 
     private static async Task<JsonReadResult> ReadJson(FileSystemManager fs, string path)
@@ -474,12 +555,16 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
     }
 
-    private static ExplorerCommandResult Completed(string command, IEnumerable<UiBlock> blocks) =>
+    private static ExplorerCommandResult Completed(
+        string command,
+        IEnumerable<UiBlock> blocks,
+        IEnumerable<UiAction>? actions = null) =>
         new()
         {
             Command = command,
             State = CommandExecutionState.Completed,
-            Blocks = blocks.ToList()
+            Blocks = blocks.ToList(),
+            Actions = actions?.ToList() ?? []
         };
 
     private static UiPanelBlock Panel(string title, params UiBlock[] blocks) =>
@@ -547,6 +632,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static string EmptyFallback(string? value) =>
         string.IsNullOrWhiteSpace(value) ? "не указано" : value.Trim();
+
+    private static int SlotOrder(string slotKey)
+    {
+        var index = 0;
+        foreach (var key in InventoryEquipmentService.SlotLabels.Keys)
+        {
+            if (string.Equals(key, slotKey, StringComparison.OrdinalIgnoreCase))
+                return index;
+            index++;
+        }
+
+        return int.MaxValue;
+    }
+
+    private static string FirstNonEmpty(params string?[] values) =>
+        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
 
     private sealed record SummarySpec(string Path, string PropertyName, string Label);
 

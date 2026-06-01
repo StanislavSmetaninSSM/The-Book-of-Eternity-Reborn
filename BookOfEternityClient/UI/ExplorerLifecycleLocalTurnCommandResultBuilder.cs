@@ -23,6 +23,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/distribute" or "/распределить" or
         "/companion_directive" or "/директива_компаньону" or
         "/faction_directive" or "/директива_фракции" or
+        "/equip" or "/экипировать" or
+        "/unequip" or "/снять" or
         "/craft" or "/ремесло" or
         "/abode_offering" or "/подношение_обители" or
         "/found_guardian_mantle" or "/учредить_хранителя" or
@@ -44,6 +46,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/distribute" or "/распределить" => await BuildStatDistributionAsync(command, fs),
             "/companion_directive" or "/директива_компаньону" => await BuildCompanionDirectiveAsync(command, fs),
             "/faction_directive" or "/директива_фракции" => await BuildFactionDirectiveAsync(command, fs),
+            "/equip" or "/экипировать" => await BuildInventoryEquipAsync(command, fs),
+            "/unequip" or "/снять" => await BuildInventoryUnequipAsync(command, fs),
             "/craft" or "/ремесло" => await BuildCraftAsync(command, fs),
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
             "/found_guardian_mantle" or "/учредить_хранителя" => await BuildPlayerGuardianFoundationAsync(command, fs),
@@ -359,6 +363,177 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             ]);
     }
 
+    private static async Task<ExplorerCommandResult> BuildInventoryEquipAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var inventory = await InventoryEquipmentService.ReadContextAsync(fs);
+        var requestedItem = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        var candidates = inventory?.Items
+            .Where(static item => item.IsEquippable &&
+                                  string.IsNullOrWhiteSpace(item.EquippedSlot) &&
+                                  !item.IsSoulRelic &&
+                                  !item.IsBroken)
+            .ToList() ?? [];
+        var matchedRequestedItem = InventoryEquipmentService.FindItem(candidates, requestedItem);
+        if (matchedRequestedItem != null)
+            candidates = [matchedRequestedItem];
+
+        var rows = candidates
+            .Select(static item => Row(
+                item.Name,
+                FirstNonEmpty(item.Type, "тип не указан"),
+                string.IsNullOrWhiteSpace(item.ResolvedSlot)
+                    ? "выберите слот"
+                    : InventoryEquipmentService.FormatSlotName(item.ResolvedSlot)))
+            .ToList();
+
+        var statusText = candidates.Count == 0
+            ? "В рюкзаке нет обычных предметов, которые можно экипировать."
+            : "Выберите предмет, слот и подтвердите экипировку. Запись выполняется локально после проверки хода и блокировки интерфейса.";
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Экипировка предмета",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = statusText,
+                        Tone = candidates.Count == 0 ? UiTone.Muted : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Доступные предметы",
+                        Columns = ["Предмет", "Тип", "Слот"],
+                        Rows = rows
+                    }
+                ]
+            }
+        };
+
+        if (candidates.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        var selected = candidates.Count == 1 ? candidates[0] : null;
+        IReadOnlyList<string> slotKeys = selected is { ResolvedSlot.Length: > 0 }
+            ? [selected.ResolvedSlot]
+            : InventoryEquipmentService.SlotLabels.Keys.ToArray();
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "item_identity",
+                    Prompt = "Предмет",
+                    Required = true,
+                    Options = candidates
+                        .Select(static item => Option(
+                            FirstNonEmpty(item.Identity, item.Name),
+                            item.Name,
+                            string.IsNullOrWhiteSpace(item.ResolvedSlot)
+                                ? "Слот нужно выбрать вручную."
+                                : $"Подходит: {InventoryEquipmentService.FormatSlotName(item.ResolvedSlot)}."))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "equipment_slot",
+                    Prompt = "Слот экипировки",
+                    Required = true,
+                    Options = slotKeys
+                        .Select(static slot => Option(slot, InventoryEquipmentService.FormatSlotName(slot), ""))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_inventory_write",
+                    Prompt = "Подтвердить изменение экипировки",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildInventoryUnequipAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var inventory = await InventoryEquipmentService.ReadContextAsync(fs);
+        var requestedSlot = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        var equipped = inventory?.Equipped
+            .Where(static item => item.IsOrdinaryInventoryItem)
+            .ToList() ?? [];
+        if (InventoryEquipmentService.TryNormalizeSlot(requestedSlot, out var normalizedSlot))
+        {
+            var matched = equipped.FirstOrDefault(item =>
+                string.Equals(item.SlotKey, normalizedSlot, StringComparison.OrdinalIgnoreCase));
+            if (matched != null)
+                equipped = [matched];
+        }
+
+        var rows = equipped
+            .Select(static item => Row(item.SlotLabel, item.ItemName))
+            .ToList();
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Снятие предмета",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = equipped.Count == 0
+                            ? "Обычные экипированные предметы не найдены."
+                            : "Выберите слот и подтвердите снятие предмета в рюкзак.",
+                        Tone = equipped.Count == 0 ? UiTone.Muted : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Экипировано",
+                        Columns = ["Слот", "Предмет"],
+                        Rows = rows
+                    }
+                ]
+            }
+        };
+
+        if (equipped.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "equipment_slot",
+                    Prompt = "Что снять",
+                    Required = true,
+                    Options = equipped
+                        .Select(static item => Option(item.SlotKey, $"{item.SlotLabel}: {item.ItemName}", ""))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_inventory_write",
+                    Prompt = "Подтвердить снятие предмета",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
     private static async Task<ExplorerCommandResult> BuildCraftAsync(string command, FileSystemManager fs)
     {
         var localTurn = BuildLocalTurnStatus(fs);
@@ -620,15 +795,15 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             ]);
     }
 
-    private static LocalTurnStatus BuildLocalTurnStatus(FileSystemManager fs)
+    private static LocalTurnStatus BuildLocalTurnStatus(FileSystemManager fs, bool playerFacing = false)
     {
         var entries = new List<UiTableRow>();
-        AddArtifact(entries, fs, TurnRequestPath, "Запрос хода GM");
-        AddArtifact(entries, fs, TurnCompletePath, "Готов успешный ответ");
-        AddArtifact(entries, fs, TurnErrorPath, "Готов terminal error");
-        AddArtifact(entries, fs, PendingTurnSnapshotManifestPath, "Validated pending snapshot");
-        AddDirectoryArtifact(entries, fs, PendingTurnSnapshotDirectory, "Копии snapshot файлов");
-        AddDirectoryArtifact(entries, fs, ExplorerRollbackDirectory, "Локальные rollback backup");
+        AddArtifact(entries, fs, TurnRequestPath, "Запрос хода GM", playerFacing);
+        AddArtifact(entries, fs, TurnCompletePath, "Готов успешный ответ", playerFacing);
+        AddArtifact(entries, fs, TurnErrorPath, playerFacing ? "Готова ошибка хода" : "Готов terminal error", playerFacing);
+        AddArtifact(entries, fs, PendingTurnSnapshotManifestPath, playerFacing ? "Снимок состояния хода" : "Validated pending snapshot", playerFacing);
+        AddDirectoryArtifact(entries, fs, PendingTurnSnapshotDirectory, playerFacing ? "Копии файлов текущего хода" : "Копии snapshot файлов", playerFacing);
+        AddDirectoryArtifact(entries, fs, ExplorerRollbackDirectory, playerFacing ? "Копии восстановления локальной записи" : "Локальные rollback backup", playerFacing);
 
         var hasActive = fs.FileExists(TurnRequestPath) ||
                         fs.FileExists(TurnCompletePath) ||
@@ -637,33 +812,41 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                         DirectoryHasContent(fs, PendingTurnSnapshotDirectory) ||
                         DirectoryHasContent(fs, ExplorerRollbackDirectory);
 
-        var message = hasActive
-            ? "Активный ход GM или локальный rollback/snapshot обнаружен. Browser-write команды должны дождаться завершения, ошибки или отмены этого протокола."
-            : "Активный ход GM не обнаружен. Browser DTO может безопасно показать форму локального действия.";
+        var message = playerFacing
+            ? hasActive
+                ? "Активный ход GM или локальное восстановление обнаружены. Дождитесь завершения, ошибки или отмены текущего хода перед локальной формой."
+                : "Активный ход GM не обнаружен. Можно открыть форму локального действия."
+            : hasActive
+                ? "Активный ход GM или локальный rollback/snapshot обнаружен. Browser-write команды должны дождаться завершения, ошибки или отмены этого протокола."
+                : "Активный ход GM не обнаружен. Browser DTO может безопасно показать форму локального действия.";
 
         return new LocalTurnStatus(
             hasActive,
             new UiPanelBlock
             {
-                Title = "Локальный ход / GM-turn protocol",
+                Title = playerFacing ? "Локальный ход" : "Локальный ход / GM-turn protocol",
                 Blocks =
                 [
                     Message(hasActive ? UiNotificationSeverity.Warning : UiNotificationSeverity.Info, hasActive ? "Активный ход GM" : "Локальный ход свободен", message),
                     new UiTableBlock
                     {
-                        Title = "Артефакты протокола",
-                        Columns = ["Артефакт", "Путь", "Статус"],
+                        Title = playerFacing ? "Состояние локальной записи" : "Артефакты протокола",
+                        Columns = playerFacing ? ["Проверка", "Статус"] : ["Артефакт", "Путь", "Статус"],
                         Rows = entries
                     }
                 ]
             });
     }
 
-    private static void AddArtifact(List<UiTableRow> rows, FileSystemManager fs, string path, string label) =>
-        rows.Add(Row(label, path, fs.FileExists(path) ? "есть" : "нет"));
+    private static void AddArtifact(List<UiTableRow> rows, FileSystemManager fs, string path, string label, bool playerFacing) =>
+        rows.Add(playerFacing
+            ? Row(label, fs.FileExists(path) ? "есть" : "нет")
+            : Row(label, path, fs.FileExists(path) ? "есть" : "нет"));
 
-    private static void AddDirectoryArtifact(List<UiTableRow> rows, FileSystemManager fs, string path, string label) =>
-        rows.Add(Row(label, path, DirectoryHasContent(fs, path) ? "есть файлы" : "нет файлов"));
+    private static void AddDirectoryArtifact(List<UiTableRow> rows, FileSystemManager fs, string path, string label, bool playerFacing) =>
+        rows.Add(playerFacing
+            ? Row(label, DirectoryHasContent(fs, path) ? "есть файлы" : "нет файлов")
+            : Row(label, path, DirectoryHasContent(fs, path) ? "есть файлы" : "нет файлов"));
 
     private static bool DirectoryHasContent(FileSystemManager fs, string path)
     {
@@ -733,7 +916,11 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         }
     }
 
-    private static string NormalizeCommand(string command) => command.Trim().ToLowerInvariant();
+    private static string NormalizeCommand(string command)
+    {
+        var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length == 0 ? string.Empty : parts[0].ToLowerInvariant();
+    }
 
     private static string FirstNonEmpty(params string?[] values) =>
         values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;

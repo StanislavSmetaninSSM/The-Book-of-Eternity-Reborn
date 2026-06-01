@@ -1136,6 +1136,236 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Inventory_AddsEquipAndUnequipActionsForOrdinaryItems()
+    {
+        await SeedInventoryEquipmentItemsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/inv"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var equipAction = Assert.Single(result.Actions, action => action.Label == "Экипировать «Кривой меч»");
+        Assert.Equal("inventory-equip-sword_1", equipAction.Id);
+        Assert.Equal("/экипировать sword_1", equipAction.Command);
+        Assert.Equal(UiActionStyle.Secondary, equipAction.Style);
+        Assert.False(equipAction.RequiresConfirmation);
+
+        var unequipAction = Assert.Single(result.Actions, action => action.Label == "Снять «Железный шлем»");
+        Assert.Equal("inventory-unequip-head", unequipAction.Id);
+        Assert.Equal("/снять head", unequipAction.Command);
+        Assert.Equal(UiActionStyle.Secondary, unequipAction.Style);
+        Assert.False(unequipAction.RequiresConfirmation);
+
+        Assert.DoesNotContain(result.Actions, action => action.Label.Contains("Факел", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Actions, action => action.Label.Contains("Сломанный лук", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(result.Actions, action => action.Label.Contains("Реликвия души", StringComparison.OrdinalIgnoreCase));
+        Assert.All(result.Actions, action =>
+        {
+            Assert.DoesNotContain("/", action.Label, StringComparison.Ordinal);
+            Assert.DoesNotContain("itemId", action.Label, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("API", action.Label, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("DTO", action.Label, StringComparison.OrdinalIgnoreCase);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_InventoryEquipAction_OpensPromptSessionWithItemSlotAndConfirmation()
+    {
+        await SeedInventoryEquipmentItemsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/экипировать sword_1",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.NotNull(result.InteractiveSession);
+        Assert.True(result.InteractiveSession.RequiresLocalUiLock);
+        Assert.Equal("/api/explorer/prompt-sessions/submit", result.InteractiveSession.SubmitEndpoint);
+        Assert.True(_fs.FileExists(LocalUiSessionLockService.LockPath));
+
+        var itemPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "item_identity"));
+        Assert.True(itemPrompt.Required);
+        Assert.Equal("sword_1", itemPrompt.Options.Single().Value);
+        Assert.Contains("Кривой меч", itemPrompt.Options.Single().Label, StringComparison.OrdinalIgnoreCase);
+
+        var slotPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "equipment_slot"));
+        Assert.True(slotPrompt.Required);
+        Assert.Contains(slotPrompt.Options, option => option.Value == "mainHand" && option.Label.Contains("Основная рука", StringComparison.OrdinalIgnoreCase));
+
+        var confirmation = Assert.IsType<UiConfirmationPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "confirm_inventory_write"));
+        Assert.True(confirmation.Required);
+        Assert.False(confirmation.DefaultValue);
+        var blockText = CollectBlockText(result.Blocks);
+        Assert.DoesNotContain("Browser-write", blockText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rollback", blockText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("snapshot", blockText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("terminal", blockText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/control", blockText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_InventoryEquip_WritesEquipmentAndReleasesLock()
+    {
+        await SeedInventoryEquipmentItemsAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/экипировать sword_1",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["item_identity"] = JsonValue.Create("sword_1"),
+                ["equipment_slot"] = JsonValue.Create("mainHand"),
+                ["confirm_inventory_write"] = JsonValue.Create(true)
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        Assert.Empty(completed.Prompts);
+        Assert.Null(completed.InteractiveSession);
+        Assert.Contains("Кривой меч", CollectBlockText(completed.Blocks), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("экипирован", CollectBlockText(completed.Blocks), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(completed.Blocks, static block =>
+            block is UiRawJsonBlock raw && raw.Title.Contains("JSON: результат браузерной записи", StringComparison.OrdinalIgnoreCase));
+
+        var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
+        Assert.Equal("sword_1", inventory["equipment"]!["mainHand"]!.GetValue<string>());
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_InventoryUnequip_WritesNullAndReleasesLock()
+    {
+        await SeedInventoryEquipmentItemsAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/снять head",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var slotPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(started.Prompts, prompt => prompt.Id == "equipment_slot"));
+        Assert.Equal("head", slotPrompt.Options.Single().Value);
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["equipment_slot"] = JsonValue.Create("head"),
+                ["confirm_inventory_write"] = JsonValue.Create(true)
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        Assert.Contains("Железный шлем", CollectBlockText(completed.Blocks), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("снят", CollectBlockText(completed.Blocks), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(completed.Blocks, static block =>
+            block is UiRawJsonBlock raw && raw.Title.Contains("JSON: результат браузерной записи", StringComparison.OrdinalIgnoreCase));
+
+        var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
+        Assert.Null(inventory["equipment"]!["head"]);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_InventoryEquip_WhenItemDisappears_KeepsSessionOpenWithPlayerFacingError()
+    {
+        await SeedInventoryEquipmentItemsAsync();
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/экипировать sword_1",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "equipment": {
+            "head": "helmet_1",
+            "mainHand": null,
+            "offHand": null
+          },
+          "items": [
+            { "existedId": "helmet_1", "name": "Железный шлем", "type": "helmet", "durability": "100%" }
+          ]
+        }
+        """);
+
+        var validation = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["item_identity"] = JsonValue.Create("sword_1"),
+                ["equipment_slot"] = JsonValue.Create("mainHand"),
+                ["confirm_inventory_write"] = JsonValue.Create(true)
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, validation.State);
+        Assert.NotNull(validation.InteractiveSession);
+        var notificationText = string.Join("\n", validation.Notifications.Select(notification => notification.Message));
+        Assert.Contains(validation.Notifications, notification =>
+            notification.Message.Contains("Предмет не найден", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain("Browser-write", notificationText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rollback", notificationText, StringComparison.OrdinalIgnoreCase);
+
+        var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
+        Assert.Null(inventory["equipment"]!["mainHand"]);
+        Assert.True(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_InventoryEquip_WithActiveGmTurn_BlocksPromptSession()
+    {
+        await SeedInventoryEquipmentItemsAsync();
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", """
+        {
+          "sessionId": "session_web",
+          "requestId": "request_web",
+          "turnNumber": 12,
+          "playerAction": "Тестовый ход",
+          "timestamp": "2026-05-20T00:00:00Z"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", """
+        {
+          "sessionId": "session_web",
+          "requestId": "request_web",
+          "turnNumber": 12,
+          "files": {}
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/экипировать sword_1"));
+
+        Assert.Equal(CommandExecutionState.Pending, result.State);
+        Assert.Null(result.InteractiveSession);
+        Assert.Contains("Активный ход GM", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
+        var notificationText = string.Join("\n", result.Notifications.Select(notification => notification.Message));
+        Assert.DoesNotContain("Browser-write", notificationText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("GM-turn", notificationText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("rollback", notificationText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_InventoryEquip_WithOtherLocalLock_BlocksPromptSession()
+    {
+        await SeedInventoryEquipmentItemsAsync();
+        var lockService = new LocalUiSessionLockService(_fs);
+        await lockService.AcquireOrRefreshAsync(
+            new LocalUiSessionLockOwner("console-owner", "console", "Консоль", TimeSpan.FromMinutes(5)),
+            "console inventory");
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/экипировать sword_1",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.Blocked, result.State);
+        Assert.Null(result.InteractiveSession);
+        Assert.Contains("Локальная UI-блокировка", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
+        var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
+        Assert.Null(inventory["equipment"]!["mainHand"]);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_NpcBundle_HidesPathsAndSkipsMissingFiles()
     {
         await _fs.WriteFileAtomicAsync("game_state/npcs/npc_core.json", """
@@ -2629,6 +2859,26 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
               "lastEventsDescription": "[Turn 7] quiet_deal_boolean_secret_marker stays behind the curtain.",
               "lastUpdatedTurn": 7
             }
+          ]
+        }
+        """);
+    }
+
+    private async Task SeedInventoryEquipmentItemsAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "equipment": {
+            "head": "helmet_1",
+            "mainHand": null,
+            "offHand": null
+          },
+          "items": [
+            { "existedId": "sword_1", "name": "Кривой меч", "type": "weapon", "durability": "100%" },
+            { "existedId": "helmet_1", "name": "Железный шлем", "type": "helmet", "durability": "100%" },
+            { "existedId": "torch_1", "name": "Факел", "type": "utility", "count": 2 },
+            { "existedId": "broken_bow_1", "name": "Сломанный лук", "type": "weapon", "durability": "0%" },
+            { "relicId": "soul_relic_1", "name": "Реликвия души", "type": "soul_relic", "equipmentSlot": "ring1" }
           ]
         }
         """);

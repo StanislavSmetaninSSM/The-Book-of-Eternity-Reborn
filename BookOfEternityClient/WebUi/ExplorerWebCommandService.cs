@@ -115,7 +115,7 @@ public sealed class ExplorerWebCommandService
                 _fs,
                 request.AdvancedEnabled == true),
             ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn => await ExplorerLifecycleLocalTurnCommandResultBuilder.TryBuildAsync(
-                commandToken,
+                descriptor.AcceptsArguments ? parsed.BuilderCommand : commandToken,
                 _stateManager,
                 _fs,
                 _validationService),

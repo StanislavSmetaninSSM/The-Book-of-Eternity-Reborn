@@ -119,6 +119,8 @@ public partial class ExplorerMode
             ("distribute", ShowStatDistributionCommand),
             ("companion_directive", SetCompanionDirective),
             ("faction_directive", SetFactionDirective),
+            ("inventory_equip", ShowInventory),
+            ("inventory_unequip", ShowInventory),
             ("world_news", ShowWorldNews),
             ("rival_threads", ShowRivalSoulThreads),
             ("guardian_corrections", ShowGuardianCorrections),
