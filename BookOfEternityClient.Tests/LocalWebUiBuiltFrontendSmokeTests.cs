@@ -263,6 +263,11 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.True(
             File.Exists(indexPath),
             $"Missing built browser frontend at {indexPath}. Run `npm run verify --prefix BookOfEternityClient.WebFrontend` before the built-frontend smoke test.");
+        var builtScriptBundle = string.Join(
+            Environment.NewLine,
+            Directory.EnumerateFiles(frontendDist, "*.js", SearchOption.AllDirectories)
+                .Order(StringComparer.Ordinal)
+                .Select(File.ReadAllText));
         Assert.True(File.Exists(backgroundPath), $"Missing local launcher background art at {backgroundPath}");
         Assert.True(File.Exists(sourceNotePath), $"Missing launcher background source note at {sourceNotePath}");
         Assert.Contains("<div className=\"launcher-art-bg\" aria-hidden=\"true\">", launcher, StringComparison.Ordinal);
@@ -273,6 +278,10 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("filter: saturate(0.7) brightness(0.5);", styles, StringComparison.Ordinal);
         Assert.Contains(".launcher-art-bg::after", styles, StringComparison.Ordinal);
         Assert.Contains("linear-gradient(to bottom", styles, StringComparison.Ordinal);
+        Assert.Contains("main-menu-bg.webp", builtScriptBundle, StringComparison.Ordinal);
+        Assert.Contains("launcher-art-bg", builtScriptBundle, StringComparison.Ordinal);
+        Assert.Contains("Открыть книгу", builtScriptBundle, StringComparison.Ordinal);
+        Assert.Contains("Продолжить главу", builtScriptBundle, StringComparison.Ordinal);
 
         await File.WriteAllTextAsync(mainMenuBackgroundArtifactPath, BuildMainMenuBackgroundArtifact());
 

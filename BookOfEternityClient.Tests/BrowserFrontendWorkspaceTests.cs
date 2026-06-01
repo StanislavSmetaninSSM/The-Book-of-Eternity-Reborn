@@ -46,7 +46,7 @@ public sealed class BrowserFrontendWorkspaceTests
         using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
         var scripts = document.RootElement.GetProperty("scripts");
         Assert.Equal("npm run typecheck && npm run test:player-facing && npm run build", scripts.GetProperty("verify").GetString());
-        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts", scripts.GetProperty("test:player-facing").GetString());
+        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts", scripts.GetProperty("test:player-facing").GetString());
 
         var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
         Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
@@ -137,17 +137,22 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("import { HelpView } from './components/HelpView';", app, StringComparison.Ordinal);
         Assert.Contains("import { SettingsView } from './components/SettingsView';", app, StringComparison.Ordinal);
         Assert.Contains("import { UnifiedInput } from './components/UnifiedInput';", app, StringComparison.Ordinal);
+        Assert.Contains("import { GameLauncher } from './components/GameLauncher';", app, StringComparison.Ordinal);
         Assert.Contains("<ConnectionBanner />", app, StringComparison.Ordinal);
-        Assert.Contains("<TabBar />", app, StringComparison.Ordinal);
-        Assert.Contains("<section className=\"content-area\" aria-live=\"polite\">", app, StringComparison.Ordinal);
-        Assert.Contains("<UnifiedInput />", app, StringComparison.Ordinal);
+        Assert.Contains("{!isLauncherRoute && <TabBar />}", app, StringComparison.Ordinal);
+        Assert.Contains("<section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live=\"polite\">", app, StringComparison.Ordinal);
+        Assert.Contains("<GameLauncher menu={menu} />", app, StringComparison.Ordinal);
+        Assert.Contains("{!isLauncherRoute && <UnifiedInput />}", app, StringComparison.Ordinal);
         Assert.Contains("case 'scene': return <SceneView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'status': return <StatusView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'help': return <HelpView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'settings': return <SettingsView />;", app, StringComparison.Ordinal);
 
         Assert.Contains("export type TabId = 'scene' | 'status' | 'help' | 'settings';", shellContext, StringComparison.Ordinal);
-        Assert.Contains("const [activeTab, setActiveTabState] = useState<TabId>('scene');", shellContext, StringComparison.Ordinal);
+        Assert.Contains("const [activeRoute, setActiveRouteState] = useState<RouteId>('home');", shellContext, StringComparison.Ordinal);
+        Assert.Contains("const activeTab = useMemo(() => routeToTab(activeRoute), [activeRoute]);", shellContext, StringComparison.Ordinal);
+        Assert.Contains("setActiveRouteState(tabToRoute(tab));", shellContext, StringComparison.Ordinal);
+        Assert.Contains("setActiveRouteState('game');", shellContext, StringComparison.Ordinal);
         Assert.Contains("const [advancedEnabled, setAdvancedEnabledState] = useState(false);", shellContext, StringComparison.Ordinal);
         Assert.Contains("const { shellState, loadBrowserState } = useShellState(advancedEnabled);", shellContext, StringComparison.Ordinal);
         Assert.Contains("browserApi.submitPlayerAction({ text: normalized })", shellContext, StringComparison.Ordinal);

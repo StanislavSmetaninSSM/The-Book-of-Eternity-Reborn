@@ -30,10 +30,12 @@ assertIncludes(app, "import { StatusView } from './components/StatusView';", 'Ap
 assertIncludes(app, "import { HelpView } from './components/HelpView';", 'App.tsx should import HelpView.');
 assertIncludes(app, "import { SettingsView } from './components/SettingsView';", 'App.tsx should import SettingsView.');
 assertIncludes(app, "import { UnifiedInput } from './components/UnifiedInput';", 'App.tsx should import UnifiedInput.');
+assertIncludes(app, "import { GameLauncher } from './components/GameLauncher';", 'App.tsx should import GameLauncher.');
 assertIncludes(app, '<ConnectionBanner />', 'App.tsx should render ConnectionBanner.');
-assertIncludes(app, '<TabBar />', 'App.tsx should render TabBar.');
-assertIncludes(app, '<section className="content-area" aria-live="polite">', 'App.tsx should render the current content area.');
-assertIncludes(app, '<UnifiedInput />', 'App.tsx should render UnifiedInput as the default command surface.');
+assertIncludes(app, '{!isLauncherRoute && <TabBar />}', 'App.tsx should render TabBar after leaving the launcher.');
+assertIncludes(app, '<section className={`content-area${isLauncherRoute ? \' content-area--launcher\' : \'\'}`} aria-live="polite">', 'App.tsx should render the current content area with a launcher variant.');
+assertIncludes(app, '<GameLauncher menu={menu} />', 'App.tsx should render GameLauncher on the default launcher route.');
+assertIncludes(app, '{!isLauncherRoute && <UnifiedInput />}', 'App.tsx should render UnifiedInput inside the game shell after leaving the launcher.');
 assertIncludes(app, "case 'scene': return <SceneView />;", 'TabContent should route scene tab to SceneView.');
 assertIncludes(app, "case 'status': return <StatusView />;", 'TabContent should route status tab to StatusView.');
 assertIncludes(app, "case 'help': return <HelpView />;", 'TabContent should route help tab to HelpView.');

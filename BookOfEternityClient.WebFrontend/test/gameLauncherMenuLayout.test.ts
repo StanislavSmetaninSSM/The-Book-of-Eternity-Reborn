@@ -31,6 +31,17 @@ function assert(condition: unknown, message: string) {
 }
 
 const launcherSource = readSource('components', 'GameLauncher.tsx');
+const appSource = readSource('App.tsx');
+const shellContextSource = readSource('context', 'ShellContext.tsx');
+
+assert(appSource.includes("import { GameLauncher } from './components/GameLauncher';"), 'App.tsx should import GameLauncher so the launcher art is reachable from the runtime bundle.');
+assert(appSource.includes("activeRoute === 'home'"), 'App.tsx should keep a default home/launcher route before the player enters the shell.');
+assert(appSource.includes('<GameLauncher menu={menu} />'), 'App.tsx should render GameLauncher from the ready default home route.');
+assert(appSource.includes('{!isLauncherRoute && <TabBar />}'), 'App.tsx should keep tab navigation out of the launcher and restore it after entering the shell.');
+assert(appSource.includes('{!isLauncherRoute && <UnifiedInput />}'), 'App.tsx should keep the command input in the game shell, not on the default launcher.');
+assert(shellContextSource.includes("useState<RouteId>('home')"), 'ShellContext should default the browser client to the home launcher route.');
+assert(shellContextSource.includes('setActiveRouteState(tabToRoute(tab))'), 'ShellContext tab changes should transition from the launcher into the existing shell routes.');
+
 assert(launcherSource.includes('<nav className="launcher-menu" aria-label="Действия главного меню">'), 'GameLauncher should render a single launcher-menu nav.');
 assert(launcherSource.includes('      <div className="launcher-art-bg" aria-hidden="true">'), 'GameLauncher should render the decorative launcher background wrapper.');
 assert(launcherSource.includes('        <img src="/main-menu-bg.webp" alt="" />'), 'GameLauncher should render the decorative launcher background image.');
