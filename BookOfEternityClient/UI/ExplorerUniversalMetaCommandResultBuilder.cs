@@ -122,7 +122,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
         {
             CommandKind.Status => BuildStatus(normalizedCommand, stateManager),
             CommandKind.Soul => await BuildSoul(normalizedCommand, fs),
-            CommandKind.SoulRelics => await BuildSoulSection(normalizedCommand, fs, "Реликвии души", "soulRelics"),
+            CommandKind.SoulRelics => await BuildSoulRelics(normalizedCommand, fs),
             CommandKind.AfterlifeArchive => await BuildSoulSection(normalizedCommand, fs, "Архив души", "afterlifeArchive"),
             CommandKind.ArchiveCandidates => await BuildJsonFile(normalizedCommand, fs, "Кандидаты в Архив", AfterlifeArchiveCandidateService.ManifestPath),
             CommandKind.SoulQuests => await BuildJsonFile(normalizedCommand, fs, "Квесты души", "game_state/meta/guardians.json"),
@@ -210,6 +210,120 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     ("Поле", propertyName),
                     ("Статус", section == null ? "не найдено" : "найдено"))),
             Raw($"JSON: soul_state.{propertyName}", section ?? new JsonObject()));
+    }
+
+    private static async Task<ExplorerCommandResult> BuildSoulRelics(string command, FileSystemManager fs)
+    {
+        var context = await SoulRelicEquipmentService.ReadContextAsync(fs);
+        if (context == null)
+        {
+            var read = await ReadJson(fs, SoulRelicEquipmentService.SoulStatePath);
+            return MissingOrMalformed(command, "Реликвии души", read);
+        }
+
+        var rows = new List<UiTableRow>();
+        rows.AddRange(context.Equipped.Select(static relic => new UiTableRow
+        {
+            Cells =
+            [
+                "Экипировано",
+                SoulRelicEquipmentService.FormatSlotLabel(relic.CurrentSlot),
+                string.IsNullOrWhiteSpace(relic.Name) ? relic.RelicId : relic.Name,
+                EmptyFallback(relic.Rarity),
+                EmptyFallback(relic.RelicId)
+            ]
+        }));
+        rows.AddRange(context.Stored.Select(static relic => new UiTableRow
+        {
+            Cells =
+            [
+                "Хранилище",
+                DescribeSoulRelicCompatibleSlots(relic),
+                string.IsNullOrWhiteSpace(relic.Name) ? relic.RelicId : relic.Name,
+                EmptyFallback(relic.Rarity),
+                EmptyFallback(relic.RelicId)
+            ]
+        }));
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Реликвии души",
+                Grid(
+                    ("Источник", SoulRelicEquipmentService.SoulStatePath),
+                    ("Экипировано", context.Equipped.Count.ToString()),
+                    ("В хранилище", context.Stored.Count.ToString()))),
+            new UiTableBlock
+            {
+                Title = "Реликвии души",
+                Columns = ["Статус", "Слот", "Реликвия", "Редкость", "ID"],
+                Rows = rows
+            },
+            Raw("JSON: soul_state.soulRelics", context.Root["soulRelics"]?.DeepClone() ?? new JsonObject())
+        };
+
+        if (rows.Count == 0)
+        {
+            blocks.Insert(1, Message(
+                UiNotificationSeverity.Info,
+                "Реликвии души",
+                "Реликвии души пока не найдены."));
+        }
+
+        var currentRealm = GetString(context.Root, "currentRealm");
+        var actions = RealmSemantics.IsChaosSea(currentRealm)
+            ? BuildSoulRelicActions(context)
+            : [];
+
+        return new ExplorerCommandResult
+        {
+            Command = command,
+            State = CommandExecutionState.Completed,
+            Blocks = blocks,
+            Actions = actions
+        };
+    }
+
+    private static List<UiAction> BuildSoulRelicActions(SoulRelicEquipmentContext context)
+    {
+        var actions = new List<UiAction>();
+        foreach (var relic in context.Stored)
+        {
+            var identity = FirstNonEmpty(relic.RelicId, relic.Name);
+            if (string.IsNullOrWhiteSpace(identity))
+                continue;
+
+            actions.Add(new UiAction
+            {
+                Id = SoulRelicEquipmentService.BuildActionId("soul-relic-equip", identity),
+                Label = $"Экипировать «{relic.Name}»",
+                Command = "/soul_relic_equip " + SoulRelicEquipmentService.FormatCommandArgument(identity),
+                Style = UiActionStyle.Secondary
+            });
+        }
+
+        foreach (var relic in context.Equipped)
+        {
+            if (string.IsNullOrWhiteSpace(relic.CurrentSlot))
+                continue;
+
+            actions.Add(new UiAction
+            {
+                Id = SoulRelicEquipmentService.BuildActionId("soul-relic-unequip", relic.CurrentSlot),
+                Label = $"Снять «{relic.Name}»",
+                Command = "/soul_relic_unequip " + SoulRelicEquipmentService.FormatCommandArgument(relic.CurrentSlot),
+                Style = UiActionStyle.Secondary
+            });
+        }
+
+        return actions;
+    }
+
+    private static string DescribeSoulRelicCompatibleSlots(SoulRelicItem relic)
+    {
+        if (relic.CompatibleSlots.Count == 0)
+            return "-";
+
+        return string.Join(", ", relic.CompatibleSlots.Select(SoulRelicEquipmentService.FormatSlotLabel));
     }
 
     private static async Task<ExplorerCommandResult> BuildChronicle(string command, FileSystemManager fs)
@@ -875,6 +989,9 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
 
     private static string EmptyFallback(string? value) =>
         string.IsNullOrWhiteSpace(value) ? "не указано" : value.Trim();
+
+    private static string FirstNonEmpty(params string[] values) =>
+        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
 
     private static int SafeCountLines(string path)
     {

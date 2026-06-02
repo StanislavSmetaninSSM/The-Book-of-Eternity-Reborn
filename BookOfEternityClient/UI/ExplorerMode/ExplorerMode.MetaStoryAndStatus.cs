@@ -226,6 +226,8 @@ public partial class ExplorerMode
             table.AddRow("[blue]/guardian_politics[/]", "[blue]/политика_хранителей[/]", "[blue]Политика, союзы, долги и влияние Хранителей Моря Хаоса[/]");
             table.AddRow("[blue]/soul[/]", "[blue]/душа[/]", "[blue]Состояние души (перья, просветление, история жизней)[/]");
             table.AddRow("[blue]/soul_relics[/]", "[blue]/реликвии[/]", "[blue]Реликвии души (экипировка, хранилище)[/]");
+            table.AddRow("[blue]/soul_relic_equip[/]", "[blue]/экипировать_реликвию[/]", "[blue]Экипировать реликвию души из хранилища в выбранный слот[/]");
+            table.AddRow("[blue]/soul_relic_unequip[/]", "[blue]/снять_реликвию[/]", "[blue]Снять экипированную реликвию обратно в хранилище[/]");
             table.AddRow("[blue]/afterlife_archive[/]", "[blue]/архив_души[/]", "[blue]Архив знаний и тайн, переживших смерть[/]");
             table.AddRow("[blue]/archive_candidates[/]", "[blue]/архив_кандидаты[/]", "[blue]Выбрать записи Кодекса, которые переживут смерть[/]");
             table.AddRow("[blue]/afterlife_inbox[/]", "[blue]/уведомления_загробья[/]", "[blue]Ответы ГМ по торговле, Архиву и резидентам Обители[/]");

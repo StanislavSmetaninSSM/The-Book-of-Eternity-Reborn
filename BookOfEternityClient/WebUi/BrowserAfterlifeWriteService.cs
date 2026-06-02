@@ -40,6 +40,8 @@ public sealed class BrowserAfterlifeWriteService
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionPayloadAsync(answers),
             "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(answers, owner),
             "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
+            "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(answers, owner),
+            "/soul_relic_unequip" or "/снять_реликвию" => await ApplySoulRelicUnequipAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
         };
     }
@@ -268,6 +270,68 @@ public sealed class BrowserAfterlifeWriteService
                 ["expectedResponseSurface"] = AfterlifeSpiritualConflictState.ResponseField,
                 ["stateFile"] = AfterlifeSpiritualConflictState.StatePath,
                 ["gmAction"] = actionText
+            });
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplySoulRelicEquipAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_soul_relic_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите экипировку реликвии.");
+
+        var relicIdOrName = ReadAnswer(answers, "soul_relic_identity");
+        var slotKey = ReadAnswer(answers, "soul_relic_slot");
+
+        return await ExecuteAsync(
+            owner,
+            "Browser soul relic equip",
+            [SoulStatePath],
+            async () =>
+            {
+                var outcome = await SoulRelicEquipmentService.EquipAsync(_fs, relicIdOrName, slotKey);
+                if (!outcome.Success)
+                    throw new InvalidOperationException(outcome.Message);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Реликвия души экипирована",
+            "Браузер переместил реликвию души из хранилища в слот экипировки.",
+            new JsonObject
+            {
+                ["sourceSurface"] = "soul_relic_equip_browser_write",
+                ["relicIdentity"] = relicIdOrName,
+                ["slot"] = slotKey,
+                ["affectedFiles"] = new JsonArray(SoulStatePath)
+            });
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplySoulRelicUnequipAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_soul_relic_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите снятие реликвии.");
+
+        var slotKey = ReadAnswer(answers, "soul_relic_slot");
+
+        return await ExecuteAsync(
+            owner,
+            "Browser soul relic unequip",
+            [SoulStatePath],
+            async () =>
+            {
+                var outcome = await SoulRelicEquipmentService.UnequipAsync(_fs, slotKey);
+                if (!outcome.Success)
+                    throw new InvalidOperationException(outcome.Message);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Реликвия души снята",
+            "Браузер вернул реликвию души из слота в хранилище.",
+            new JsonObject
+            {
+                ["sourceSurface"] = "soul_relic_unequip_browser_write",
+                ["slot"] = slotKey,
+                ["affectedFiles"] = new JsonArray(SoulStatePath)
             });
     }
 
@@ -854,6 +918,18 @@ public sealed class BrowserAfterlifeWriteService
     {
         var text = ReadAnswer(answers, key);
         return int.TryParse(text, out var value) ? value : fallback;
+    }
+
+    private static bool ReadBoolAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)
+    {
+        if (!answers.TryGetValue(key, out var node) || node is not JsonValue value)
+            return false;
+
+        if (value.TryGetValue<bool>(out var flag))
+            return flag;
+        return value.TryGetValue<string>(out var text) &&
+               bool.TryParse(text, out flag) &&
+               flag;
     }
 
     private static string? ReadJsonString(JsonElement root, string propertyName)
