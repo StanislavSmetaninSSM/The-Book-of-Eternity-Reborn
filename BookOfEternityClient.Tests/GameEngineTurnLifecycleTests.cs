@@ -1821,6 +1821,62 @@ public sealed class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CreatePreTurnBackup_BrowserDirectGachaRollbackEvidenceOverridesPostSpendSoulBackup()
+    {
+        const string soulStatePath = "game_state/meta/soul_state.json";
+        const string browserRollbackPath = "game_state/control/explorer_local_turn_rollback/browser_direct_gacha/game_state_meta_soul_state.json.rollback.test";
+        const string preSpendSoulJson = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 18, "total": 55 },
+          "soulRelics": { "stored": [], "equipped": [] }
+        }
+        """;
+        const string postSpendSoulJson = """
+        {
+          "soulName": "Тестовая Душа",
+          "currentRealm": "Chaos Sea",
+          "currentIncarnation": 4,
+          "inkFeathers": { "current": 11, "total": 55 },
+          "soulRelics": { "stored": [], "equipped": [] }
+        }
+        """;
+
+        await _fs.WriteFileAtomicAsync(soulStatePath, postSpendSoulJson);
+        await _fs.WriteFileAtomicAsync(browserRollbackPath, preSpendSoulJson);
+        var engine = CreateGameEngine();
+        var request = new TurnRequest
+        {
+            SessionId = "session_browser_gacha_rollback",
+            RequestId = "request_browser_gacha_rollback",
+            TurnNumber = 42,
+            PlayerAction = "[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит 7 Чернильных Перьев.",
+            Timestamp = "2026-06-02T00:00:00Z",
+            PreGeneratedDices1d20 = Enumerable.Range(1, 20).ToArray(),
+            GachaBaseResult = new GachaResult
+            {
+                DiceUsed = [18, 18, 18, 18],
+                BaseScore = 72,
+                BaseRarity = "Rare",
+                Formula = "client-computed gacha base (range 4-80)"
+            },
+            ProgressionControl = new ProgressionControl { CurrentRealm = "Chaos Sea" }
+        };
+
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "browser_direct_gacha");
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollbackSnapshot, "browser-direct-gacha-test");
+
+        var manifest = JsonNode.Parse((await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json"))!)!.AsObject();
+        var rollbackBackups = Assert.IsType<JsonObject>(manifest["rollbackBackups"]);
+        var rollbackBackupPath = rollbackBackups[soulStatePath]!.GetValue<string>();
+        Assert.StartsWith("game_state/control/explorer_local_turn_rollback/", rollbackBackupPath, StringComparison.OrdinalIgnoreCase);
+        var rollbackSoul = JsonNode.Parse((await _fs.ReadFileAsync(rollbackBackupPath))!)!.AsObject();
+        Assert.Equal(18, rollbackSoul["inkFeathers"]!["current"]!.GetValue<int>());
+    }
+
+    [Fact]
     public async Task ProcessPlayerTurn_StagingFailureRestoresConsumedIncarnationLocalPrepRollback()
     {
         const string worldSettingPath = "lore/current_world/world_setting.json";

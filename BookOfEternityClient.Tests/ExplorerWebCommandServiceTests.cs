@@ -1580,6 +1580,51 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Gacha_WhenPendingDiceMissing_CreatesAuthoritativeBaseForPromptAndSubmit()
+    {
+        await SeedChaosSeaFilesAsync();
+
+        Assert.False(_fs.FileExists(PendingTurnStateService.PendingDiceStatePath));
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/gacha",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.True(_fs.FileExists(PendingTurnStateService.PendingDiceStatePath));
+        var pending = JsonNode.Parse((await _fs.ReadFileAsync(PendingTurnStateService.PendingDiceStatePath))!)!.AsObject();
+        var gachaBase = pending["gachaBaseResult"]!.AsObject();
+        var expectedRarity = gachaBase["baseRarity"]!.GetValue<string>();
+        var expectedScore = gachaBase["baseScore"]!.GetValue<int>();
+        var expectedDice = gachaBase["diceUsed"]!.AsArray()
+            .Select(node => node!.GetValue<int>())
+            .ToArray();
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(expectedRarity, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedScore.ToString(), text, StringComparison.Ordinal);
+        Assert.Contains("[" + string.Join(", ", expectedDice) + "]", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("не подготовлен", text, StringComparison.OrdinalIgnoreCase);
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            result.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["gacha_banner"] = JsonValue.Create("direct_chaos_sea"),
+                ["feather_cost"] = JsonValue.Create(5),
+                ["confirm_gacha_pull"] = JsonValue.Create(true)
+            },
+            OwnerId: "browser-test"));
+
+        var payload = Assert.IsType<UiRawJsonBlock>(completed.Blocks.Last()).Json!.AsObject();
+        Assert.Equal(expectedRarity, payload["gachaBaseResult"]!["baseRarity"]!.GetValue<string>());
+        Assert.Equal(expectedScore, payload["gachaBaseResult"]!["baseScore"]!.GetValue<int>());
+        Assert.Equal(expectedDice, payload["gachaBaseResult"]!["diceUsed"]!.AsArray()
+            .Select(node => node!.GetValue<int>())
+            .ToArray());
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Gacha_InShiningAbode_DoesNotOpenDirectChaosSeaPrompt()
     {
         await SeedShiningAbodeFilesAsync();

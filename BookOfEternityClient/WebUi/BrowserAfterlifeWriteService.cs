@@ -329,25 +329,39 @@ public sealed class BrowserAfterlifeWriteService
                 if (currentFeathers < cost)
                     throw new InvalidOperationException($"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.");
 
-                var pendingTurnState = new PendingTurnStateService(
-                    _fs,
-                    NullLogger<PendingTurnStateService>.Instance);
-                var pending = await pendingTurnState.GetOrCreateAsync();
-                var remainingFeathers = currentFeathers - cost;
-                SetSoulInkFeathers(soulRoot, remainingFeathers);
-                await WriteObjectAsync(SoulStatePath, soulRoot);
-                await _stateManager.RefreshGameStateAsync();
+                string? stagedRollbackPath = null;
+                try
+                {
+                    stagedRollbackPath = await ExplorerLocalTurnRollbackArtifacts.StageFileAsync(
+                        _fs,
+                        SoulStatePath,
+                        "browser_direct_gacha");
 
-                var gachaBase = BuildGachaBaseResultPayload(pending.GachaBaseResult);
-                var gmAction = BuildDirectGachaGmAction(cost);
-                payload["remainingInkFeathers"] = remainingFeathers;
-                payload["currentInkFeathersBeforeSpend"] = currentFeathers;
-                payload["playerActionTag"] = "CHAOS_SEA_DIRECT_GACHA";
-                payload["gachaBaseResult"] = gachaBase;
-                payload["rarityRule"] = "finalRarity exactly equals gachaBaseResult.baseRarity; no guardian modifiers";
-                payload["expectedRelicMaterialization"] = "GM appends exactly one new Soul Relic; the browser does not materialize a concrete relic locally.";
-                payload["gmAction"] = gmAction;
-                payload["affectedFiles"] = new JsonArray(SoulStatePath, PendingTurnStateService.PendingDiceStatePath);
+                    var pendingTurnState = new PendingTurnStateService(
+                        _fs,
+                        NullLogger<PendingTurnStateService>.Instance);
+                    var pending = await pendingTurnState.GetOrCreateAsync();
+                    var remainingFeathers = currentFeathers - cost;
+                    SetSoulInkFeathers(soulRoot, remainingFeathers);
+                    await WriteObjectAsync(SoulStatePath, soulRoot);
+                    await _stateManager.RefreshGameStateAsync();
+
+                    var gachaBase = BuildGachaBaseResultPayload(pending.GachaBaseResult);
+                    var gmAction = BuildDirectGachaGmAction(cost);
+                    payload["remainingInkFeathers"] = remainingFeathers;
+                    payload["currentInkFeathersBeforeSpend"] = currentFeathers;
+                    payload["playerActionTag"] = "CHAOS_SEA_DIRECT_GACHA";
+                    payload["gachaBaseResult"] = gachaBase;
+                    payload["rarityRule"] = "finalRarity exactly equals gachaBaseResult.baseRarity; no guardian modifiers";
+                    payload["expectedRelicMaterialization"] = "GM appends exactly one new Soul Relic; the browser does not materialize a concrete relic locally.";
+                    payload["gmAction"] = gmAction;
+                    payload["affectedFiles"] = new JsonArray(SoulStatePath, PendingTurnStateService.PendingDiceStatePath);
+                }
+                catch
+                {
+                    ExplorerLocalTurnRollbackArtifacts.DeleteBackup(_fs, stagedRollbackPath);
+                    throw;
+                }
             },
             "Прямой призыв подготовлен",
             "Браузер списал Чернильные Перья и подготовил действие для ГМ: результатом должна стать ровно одна материализованная Реликвия Души без локального выбора имени.",

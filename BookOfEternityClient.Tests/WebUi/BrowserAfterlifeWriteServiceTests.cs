@@ -54,6 +54,31 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
+    [Fact]
+    public async Task TryApplyAsync_GachaDirectPull_StagesPreSpendExplorerRollbackEvidence()
+    {
+        await SeedSoulStateAsync(stored: Array.Empty<(string, string)>(), equipped: Array.Empty<(string, string, string)>(), inkFeathers: 18);
+        await SeedPendingGachaBaseAsync("Rare", 72, [18, 18, 18, 18]);
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await _service.TryApplyAsync(
+            "/gacha",
+            Answers(("gacha_banner", "direct_chaos_sea"), ("feather_cost", 7), ("confirm_gacha_pull", true)),
+            Owner("browser-test"));
+
+        Assert.True(result.Success, result.Message);
+        var rollbackRoot = _fs.ResolvePath("game_state/control/explorer_local_turn_rollback");
+        Assert.True(Directory.Exists(rollbackRoot));
+        var rollbackPath = Assert.Single(Directory.GetFiles(
+            rollbackRoot,
+            "*soul_state.json.rollback.*",
+            SearchOption.AllDirectories));
+        var rollbackJson = await File.ReadAllTextAsync(rollbackPath);
+        Assert.Equal(beforeSoul, rollbackJson);
+        var rollbackSoul = JsonNode.Parse(rollbackJson)!.AsObject();
+        Assert.Equal(18, rollbackSoul["inkFeathers"]!["current"]!.GetValue<int>());
+    }
+
     [Theory]
     [InlineData("Shining Abode")]
     [InlineData("Mortal World")]

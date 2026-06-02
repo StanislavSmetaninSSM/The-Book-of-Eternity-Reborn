@@ -4,6 +4,7 @@ using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.UI;
 
@@ -793,7 +794,6 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var soul = await ReadJson(fs, SoulStatePath);
-        var pendingDice = await ReadJson(fs, PendingTurnStateService.PendingDiceStatePath);
         var soulRoot = soul.Node as JsonObject;
         var arguments = ReadCommandArguments(command);
         var currentRealm = FirstNonEmpty(GetString(soulRoot, "currentRealm"), stateManager.CurrentState.CurrentRealm);
@@ -826,11 +826,13 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         }
 
         var availableFeathers = Math.Max(0, GetSoulInkFeathers(soulRoot, stateManager.CurrentState.InkFeathers));
-        var gachaBase = pendingDice.Node?["gachaBaseResult"] as JsonObject;
-        var baseRarity = FirstNonEmpty(GetString(gachaBase, "baseRarity"), "Common");
-        var baseScore = FirstNonEmpty(GetString(gachaBase, "baseScore"), "не подготовлен");
-        var formula = FirstNonEmpty(GetString(gachaBase, "formula"), "client-computed gacha base (range 4-80)");
-        var diceUsed = FormatDiceUsed(gachaBase?["diceUsed"] as JsonArray);
+        var pendingTurnState = new PendingTurnStateService(fs, NullLogger<PendingTurnStateService>.Instance);
+        var pendingState = await pendingTurnState.GetOrCreateAsync();
+        var gachaBase = pendingState.GachaBaseResult;
+        var baseRarity = FirstNonEmpty(gachaBase?.BaseRarity, "Common");
+        var baseScore = (gachaBase?.BaseScore ?? 0).ToString();
+        var formula = FirstNonEmpty(gachaBase?.Formula, "client-computed gacha base (range 4-80)");
+        var diceUsed = FormatDiceUsed(gachaBase?.DiceUsed);
 
         var blocks = new List<UiBlock>
         {
@@ -1338,6 +1340,14 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 : node?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) ?? "null")
             .ToArray();
         return "[" + string.Join(", ", values) + "]";
+    }
+
+    private static string FormatDiceUsed(IReadOnlyCollection<int>? diceUsed)
+    {
+        if (diceUsed == null || diceUsed.Count == 0)
+            return "[]";
+
+        return "[" + string.Join(", ", diceUsed) + "]";
     }
 
     private static bool TryGetBool(JsonObject obj, string propertyName)
