@@ -17,6 +17,7 @@ public sealed class BrowserAfterlifeWriteService
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly BrowserLocalWriteCoordinator _coordinator;
+    private readonly BrowserAfterlifeTurnRequestQueue _turnRequestQueue;
 
     public BrowserAfterlifeWriteService(
         FileSystemManager fs,
@@ -26,6 +27,7 @@ public sealed class BrowserAfterlifeWriteService
         _fs = fs;
         _stateManager = stateManager;
         _coordinator = coordinator;
+        _turnRequestQueue = new BrowserAfterlifeTurnRequestQueue(fs, stateManager);
     }
 
     public async Task<BrowserPromptWriteResult> TryApplyAsync(
@@ -348,6 +350,12 @@ public sealed class BrowserAfterlifeWriteService
 
                     var gachaBase = BuildGachaBaseResultPayload(pending.GachaBaseResult);
                     var gmAction = BuildDirectGachaGmAction(cost);
+                    var queuedTurn = await _turnRequestQueue.QueueDirectChaosSeaGachaAsync(
+                        owner,
+                        gmAction,
+                        pending,
+                        stagedRollbackPath ?? throw new InvalidOperationException("Не удалось сохранить pre-spend rollback evidence для direct /gacha."),
+                        currentRealm ?? "Chaos Sea");
                     payload["remainingInkFeathers"] = remainingFeathers;
                     payload["currentInkFeathersBeforeSpend"] = currentFeathers;
                     payload["playerActionTag"] = "CHAOS_SEA_DIRECT_GACHA";
@@ -355,7 +363,19 @@ public sealed class BrowserAfterlifeWriteService
                     payload["rarityRule"] = "finalRarity exactly equals gachaBaseResult.baseRarity; no guardian modifiers";
                     payload["expectedRelicMaterialization"] = "GM appends exactly one new Soul Relic; the browser does not materialize a concrete relic locally.";
                     payload["gmAction"] = gmAction;
-                    payload["affectedFiles"] = new JsonArray(SoulStatePath, PendingTurnStateService.PendingDiceStatePath);
+                    payload["queuedTurnRequest"] = new JsonObject
+                    {
+                        ["sessionId"] = queuedTurn.SessionId,
+                        ["requestId"] = queuedTurn.RequestId,
+                        ["turnNumber"] = queuedTurn.TurnNumber,
+                        ["playerAction"] = queuedTurn.PlayerAction
+                    };
+                    payload["affectedFiles"] = new JsonArray(
+                        SoulStatePath,
+                        PendingTurnStateService.PendingDiceStatePath,
+                        BrowserPendingTurnInspector.TurnRequestPath,
+                        BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,
+                        PendingTurnSnapshotAuthority.AuthorityPath);
                 }
                 catch
                 {
@@ -364,7 +384,7 @@ public sealed class BrowserAfterlifeWriteService
                 }
             },
             "Прямой призыв подготовлен",
-            "Браузер списал Чернильные Перья и подготовил действие для ГМ: результатом должна стать ровно одна материализованная Реликвия Души без локального выбора имени.",
+            "Браузер списал Чернильные Перья и поставил ход ГМ в очередь: результатом должна стать ровно одна материализованная Реликвия Души без локального выбора имени.",
             payload);
     }
 

@@ -1663,7 +1663,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task SubmitPromptSessionAsync_GachaDirectPull_DeductsFeathersAndReturnsGmPayload()
+    public async Task SubmitPromptSessionAsync_GachaDirectPull_QueuesGmTurnRequestWithSnapshot()
     {
         await SeedChaosSeaFilesAsync();
         await SeedPendingGachaBaseAsync("Uncommon", 55, [12, 13, 14, 16]);
@@ -1690,6 +1690,44 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Equal("Uncommon", payload["gachaBaseResult"]!["baseRarity"]!.GetValue<string>());
         Assert.Contains("5 Чернильных Перьев", payload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
         Assert.Contains("ровно одну новую Soul Relic", payload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.True(_fs.FileExists(BrowserPendingTurnInspector.TurnRequestPath));
+        Assert.True(_fs.FileExists(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
+        Assert.True(_fs.FileExists(PendingTurnSnapshotAuthority.AuthorityPath));
+        Assert.True(PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(
+            await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath),
+            out var authorityPayload));
+        Assert.NotNull(authorityPayload);
+        var pendingTurn = BrowserPendingTurnInspector.Build(_fs);
+        Assert.True(pendingTurn.HasActiveGmTurn);
+        Assert.Contains(
+            pendingTurn.Artifacts,
+            artifact => string.Equals(artifact.Path, BrowserPendingTurnInspector.TurnRequestPath, StringComparison.OrdinalIgnoreCase) &&
+                        artifact.Exists);
+
+        var request = JsonNode.Parse((await _fs.ReadFileAsync(BrowserPendingTurnInspector.TurnRequestPath))!)!.AsObject();
+        Assert.Contains("[CHAOS_SEA_DIRECT_GACHA]", request["playerAction"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Contains("5 Чернильных Перьев", request["playerAction"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Equal("Uncommon", request["gachaBaseResult"]!["baseRarity"]!.GetValue<string>());
+        Assert.Equal(55, request["gachaBaseResult"]!["baseScore"]!.GetValue<int>());
+        Assert.Equal(
+            Enumerable.Range(1, 20),
+            request["preGeneratedDices1d20"]!.AsArray().Select(node => node!.GetValue<int>()));
+
+        var manifest = JsonNode.Parse((await _fs.ReadFileAsync(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath))!)!.AsObject();
+        Assert.Equal(request["requestId"]!.GetValue<string>(), manifest["requestId"]!.GetValue<string>());
+        Assert.Equal(request["playerAction"]!.GetValue<string>(), manifest["playerAction"]!.GetValue<string>());
+        Assert.Equal("Uncommon", manifest["gachaBaseResult"]!["baseRarity"]!.GetValue<string>());
+        Assert.Equal(request["requestId"]!.GetValue<string>(), authorityPayload!.RequestId);
+        Assert.Equal(request["turnNumber"]!.GetValue<int>(), authorityPayload.TurnNumber);
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        Assert.True(files.ContainsKey("game_state/meta/soul_state.json"));
+        var snapshotSoulPath = files["game_state/meta/soul_state.json"]!.GetValue<string>();
+        var snapshotSoul = JsonNode.Parse((await _fs.ReadFileAsync(snapshotSoulPath))!)!.AsObject();
+        Assert.Equal(13, snapshotSoul["inkFeathers"]!["current"]!.GetValue<int>());
+        var rollbackBackups = Assert.IsType<JsonObject>(manifest["rollbackBackups"]);
+        Assert.True(rollbackBackups.ContainsKey("game_state/meta/soul_state.json"));
+        var rollbackSoul = JsonNode.Parse((await _fs.ReadFileAsync(rollbackBackups["game_state/meta/soul_state.json"]!.GetValue<string>()))!)!.AsObject();
+        Assert.Equal(18, rollbackSoul["inkFeathers"]!["current"]!.GetValue<int>());
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
