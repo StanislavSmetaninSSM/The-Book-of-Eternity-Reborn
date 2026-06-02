@@ -16,7 +16,6 @@ public static class BrowserCommandCoverageService
             ["inventory"] = Tracked("#806, #817", "Inventory items, equipment summary, resources, descriptions, and ordinary item equip/unequip actions are covered; stack-management actions remain tracked interactive work."),
             ["npcs"] = Tracked("#805, #807, #817", "Read-only NPC lists, details, relationships, and activities are covered; trade and start-conversation flows remain tracked interactive work."),
             ["soul_relics"] = Tracked("#802, #817", "Soul relic lists, stored/equipped state, and descriptions are covered; relic equip and unequip actions now covered by /soul_relic_equip and /soul_relic_unequip."),
-            ["gacha"] = Tracked("#803, #817", "Read-only Fate summon state is covered; spending charges and choosing summon results remain tracked interactive work."),
             ["storage_access"] = Tracked("#814, #817", "Storage visibility and access summaries are covered; deposit and withdraw item flows remain tracked interactive work."),
             ["transport"] = Tracked("#814, #817", "Read-only transport and route summaries are covered; transport-linked storage item movement remains tracked interactive work."),
             ["interactions"] = Tracked("#807, #808, #809, #817", "Read-only interaction summaries are covered; browser-first NPC, Guardian, and resident interaction starts remain tracked interactive work."),
