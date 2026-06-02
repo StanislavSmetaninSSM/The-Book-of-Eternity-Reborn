@@ -105,7 +105,9 @@ public partial class ExplorerMode
             ("spiritual_arts", ShowSpiritualArtsAsync),
             ("spiritual_action", ShowSpiritualActionAsync),
             ("gacha", ShowGachaInfo),
-            ("found_guardian_mantle", ShowPlayerGuardianFoundationAsync));
+            ("found_guardian_mantle", ShowPlayerGuardianFoundationAsync),
+            ("soul_relic_equip", ShowSoulRelics),
+            ("soul_relic_unequip", ShowSoulRelics));
 
         _mortalOnlyCommands = BuildCommandMap(
             ("inventory", ShowInventory),
@@ -282,5 +284,9 @@ public partial class ExplorerMode
         string.Equals(command, "/feathers", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/перья", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(command, "/soul_relics", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(command, "/реликвии", StringComparison.OrdinalIgnoreCase);
+        string.Equals(command, "/реликвии", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/soul_relic_equip", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/экипировать_реликвию", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/soul_relic_unequip", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(command, "/снять_реликвию", StringComparison.OrdinalIgnoreCase);
 }

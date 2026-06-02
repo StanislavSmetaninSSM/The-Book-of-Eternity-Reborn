@@ -19,6 +19,15 @@ public static class SoulRelicEquipmentService
         "soulAnchor"
     };
 
+    public static IReadOnlyDictionary<string, string> SlotLabels { get; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["head"] = "Голова",
+        ["body"] = "Тело",
+        ["mainHand"] = "Основная рука",
+        ["offHand"] = "Вспомогательная рука",
+        ["soulAnchor"] = "Якорь души"
+    };
+
     public static async Task<SoulRelicEquipmentContext?> ReadContextAsync(FileSystemManager fs)
     {
         var raw = await fs.ReadFileAsync(SoulStatePath);

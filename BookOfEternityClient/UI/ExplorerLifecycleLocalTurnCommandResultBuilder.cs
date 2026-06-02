@@ -28,7 +28,9 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/craft" or "/ремесло" or
         "/abode_offering" or "/подношение_обители" or
         "/found_guardian_mantle" or "/учредить_хранителя" or
-        "/spiritual_action" or "/духовное_действие" => true,
+        "/spiritual_action" or "/духовное_действие" or
+        "/soul_relic_equip" or "/экипировать_реликвию" or
+        "/soul_relic_unequip" or "/снять_реликвию" => true,
         _ => false
     };
 
@@ -52,6 +54,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
             "/found_guardian_mantle" or "/учредить_хранителя" => await BuildPlayerGuardianFoundationAsync(command, fs),
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionAsync(command, fs, stateManager),
+            "/soul_relic_equip" or "/экипировать_реликвию" => await BuildSoulRelicEquipAsync(command, fs),
+            "/soul_relic_unequip" or "/снять_реликвию" => await BuildSoulRelicUnequipAsync(command, fs),
             _ => null
         };
     }
@@ -528,6 +532,167 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 {
                     Id = "confirm_inventory_write",
                     Prompt = "Подтвердить снятие предмета",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildSoulRelicEquipAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var context = await SoulRelicEquipmentService.ReadContextAsync(fs);
+        var requestedRelic = SoulRelicEquipmentService.ReadFirstCommandArgument(command);
+        var stored = context?.Stored.ToList() ?? [];
+        if (!string.IsNullOrWhiteSpace(requestedRelic))
+        {
+            var matched = stored.FirstOrDefault(relic =>
+                string.Equals(relic.RelicId, requestedRelic, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(relic.Name, requestedRelic, StringComparison.OrdinalIgnoreCase));
+            if (matched != null)
+                stored = [matched];
+        }
+
+        var rows = stored
+            .Select(static relic => Row(
+                string.IsNullOrWhiteSpace(relic.Name) ? relic.RelicId : relic.Name,
+                string.IsNullOrWhiteSpace(relic.Rarity) ? "-" : relic.Rarity,
+                string.IsNullOrWhiteSpace(relic.RelicId) ? "-" : relic.RelicId))
+            .ToList();
+
+        var statusText = stored.Count == 0
+            ? "В хранилище нет реликвий, доступных для экипировки."
+            : "Выберите реликвию и слот. Запись выполняется локально после проверки хода и блокировки интерфейса.";
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Экипировка реликвии души",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = statusText,
+                        Tone = stored.Count == 0 ? UiTone.Muted : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Доступные реликвии",
+                        Columns = ["Название", "Редкость", "ID"],
+                        Rows = rows
+                    }
+                ]
+            }
+        };
+
+        if (stored.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "soul_relic_identity",
+                    Prompt = "Реликвия",
+                    Required = true,
+                    Options = stored
+                        .Select(static relic => Option(
+                            string.IsNullOrWhiteSpace(relic.RelicId) ? relic.Name : relic.RelicId,
+                            string.IsNullOrWhiteSpace(relic.Name) ? relic.RelicId : relic.Name,
+                            "Редкость: " + (string.IsNullOrWhiteSpace(relic.Rarity) ? "не указана" : relic.Rarity)))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "soul_relic_slot",
+                    Prompt = "Слот реликвии",
+                    Required = true,
+                    Options = SoulRelicEquipmentService.SlotLabels
+                        .Select(static pair => Option(pair.Key, pair.Value, ""))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_soul_relic_write",
+                    Prompt = "Подтвердить экипировку реликвии",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildSoulRelicUnequipAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var context = await SoulRelicEquipmentService.ReadContextAsync(fs);
+        var equipped = context?.Equipped.ToList() ?? [];
+
+        var rows = equipped
+            .Select(static relic => Row(
+                string.IsNullOrWhiteSpace(relic.Name) ? relic.RelicId : relic.Name,
+                SoulRelicEquipmentService.SlotLabels.TryGetValue(relic.CurrentSlot, out var slotLabel)
+                    ? slotLabel
+                    : (string.IsNullOrWhiteSpace(relic.CurrentSlot) ? "-" : relic.CurrentSlot)))
+            .ToList();
+
+        var statusText = equipped.Count == 0
+            ? "Сейчас нет экипированных реликвий."
+            : "Выберите слот и подтвердите снятие реликвии в хранилище.";
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Снятие реликвии души",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = statusText,
+                        Tone = equipped.Count == 0 ? UiTone.Muted : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Экипировано",
+                        Columns = ["Реликвия", "Слот"],
+                        Rows = rows
+                    }
+                ]
+            }
+        };
+
+        if (equipped.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "soul_relic_slot",
+                    Prompt = "Какой слот освободить",
+                    Required = true,
+                    Options = equipped
+                        .Select(relic => Option(
+                            relic.CurrentSlot,
+                            $"{SoulRelicEquipmentService.SlotLabels.GetValueOrDefault(relic.CurrentSlot, relic.CurrentSlot)}: {(string.IsNullOrWhiteSpace(relic.Name) ? relic.RelicId : relic.Name)}",
+                            ""))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_soul_relic_write",
+                    Prompt = "Подтвердить снятие реликвии",
                     Required = true,
                     DefaultValue = false
                 }

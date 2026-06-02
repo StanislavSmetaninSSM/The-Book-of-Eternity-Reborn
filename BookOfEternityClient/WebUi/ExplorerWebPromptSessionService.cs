@@ -389,6 +389,8 @@ public sealed class ExplorerWebPromptSessionService
             "/craft" or "/ремесло" or
             "/abode_offering" or "/подношение_обители" or
             "/found_guardian_mantle" or "/учредить_хранителя" or
+            "/soul_relic_equip" or "/экипировать_реликвию" or
+            "/soul_relic_unequip" or "/снять_реликвию" or
             "/shining_treasury" or "/казначейство" or
             "/source_of_light" or "/источник_света" or
             "/afterlife_inbox" or "/уведомления_загробья" or
