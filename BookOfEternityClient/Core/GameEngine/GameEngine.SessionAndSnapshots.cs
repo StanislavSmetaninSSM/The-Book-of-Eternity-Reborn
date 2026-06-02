@@ -1465,7 +1465,30 @@ public partial class GameEngine
             }
         }
 
+        await OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(snapshot);
         return snapshot;
+    }
+
+    private async Task OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(RollbackSnapshot snapshot)
+    {
+        var stagedBackups = ExplorerLocalTurnRollbackArtifacts.DiscoverBackups(_fs, snapshot.BaselineFiles);
+        foreach (var stagedBackup in stagedBackups)
+        {
+            var backupContent = await _fs.ReadFileAsync(stagedBackup.BackupPath);
+            if (backupContent == null)
+                continue;
+
+            if (snapshot.BackupFiles.TryGetValue(stagedBackup.TrackedFile, out var staleBackupPath) &&
+                !string.Equals(staleBackupPath, stagedBackup.BackupPath, StringComparison.OrdinalIgnoreCase) &&
+                _fs.FileExists(staleBackupPath))
+            {
+                _fs.DeleteFile(staleBackupPath);
+            }
+
+            snapshot.BaselineFiles.Add(stagedBackup.TrackedFile);
+            snapshot.BackupFiles[stagedBackup.TrackedFile] = stagedBackup.BackupPath;
+            snapshot.BackupHashes[stagedBackup.TrackedFile] = ComputeSha256(backupContent);
+        }
     }
 
     /// <summary>
@@ -1526,6 +1549,8 @@ public partial class GameEngine
                 _logger.LogDebug(ex, "Не удалось удалить rollback backup {BackupPath}.", backup);
             }
         }
+
+        ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs);
     }
 }
 

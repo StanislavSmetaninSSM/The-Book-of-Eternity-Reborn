@@ -3,17 +3,21 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.WebUi;
 
 public sealed class BrowserAfterlifeWriteService
 {
     private const string SoulStatePath = "game_state/meta/soul_state.json";
+    private const string DirectChaosSeaGachaBanner = "direct_chaos_sea";
 
     private readonly FileSystemManager _fs;
     private readonly StateManager _stateManager;
     private readonly BrowserLocalWriteCoordinator _coordinator;
+    private readonly BrowserAfterlifeTurnRequestQueue _turnRequestQueue;
 
     public BrowserAfterlifeWriteService(
         FileSystemManager fs,
@@ -23,6 +27,7 @@ public sealed class BrowserAfterlifeWriteService
         _fs = fs;
         _stateManager = stateManager;
         _coordinator = coordinator;
+        _turnRequestQueue = new BrowserAfterlifeTurnRequestQueue(fs, stateManager);
     }
 
     public async Task<BrowserPromptWriteResult> TryApplyAsync(
@@ -30,14 +35,17 @@ public sealed class BrowserAfterlifeWriteService
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
-        var token = NormalizeCommand(command);
-        return token switch
+        var parsed = ParseCommand(command);
+        return parsed.Token switch
         {
             "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(answers, owner),
             "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(answers, owner),
             "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
             "/spiritual_arts" or "/духовные_искусства" => await ApplySpiritualArtsAsync(answers, owner),
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionPayloadAsync(answers),
+            "/gacha" or "/гача" => string.IsNullOrWhiteSpace(parsed.Arguments)
+                ? await ApplyGachaPullAsync(answers, owner)
+                : BrowserPromptWriteResult.ValidationError("Команда /gacha не принимает аргументы. Выберите поддерживаемый прямой призыв Моря Хаоса через браузерную форму."),
             "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(answers, owner),
             "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
             "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(answers, owner),
@@ -271,6 +279,113 @@ public sealed class BrowserAfterlifeWriteService
                 ["stateFile"] = AfterlifeSpiritualConflictState.StatePath,
                 ["gmAction"] = actionText
             });
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyGachaPullAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        var banner = ReadAnswer(answers, "gacha_banner").Trim().ToLowerInvariant();
+        var cost = ReadIntAnswer(answers, "feather_cost", 0);
+        if (!ReadBoolAnswer(answers, "confirm_gacha_pull"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите прямой призыв судьбы.");
+        if (!string.Equals(banner, DirectChaosSeaGachaBanner, StringComparison.OrdinalIgnoreCase))
+            return BrowserPromptWriteResult.ValidationError("Браузер поддерживает только прямой призыв Моря Хаоса.");
+        if (cost <= 0)
+            return BrowserPromptWriteResult.ValidationError("Стоимость призыва должна быть положительным целым числом.");
+
+        GachaSoulValidationState validation;
+        try
+        {
+            validation = await ReadGachaSoulValidationStateAsync();
+        }
+        catch (Exception ex)
+        {
+            return BrowserPromptWriteResult.ValidationError($"soul_state.json недоступен или повреждён: {ex.Message}");
+        }
+        if (!RealmSemantics.IsChaosSea(validation.CurrentRealm))
+            return BrowserPromptWriteResult.ValidationError(DescribeDirectGachaRealmBlocker(validation.CurrentRealm));
+        if (validation.InkFeathers < cost)
+            return BrowserPromptWriteResult.ValidationError($"Недостаточно Чернильных Перьев: доступно {validation.InkFeathers}, нужно {cost}.");
+
+        var payload = new JsonObject
+        {
+            ["sourceSurface"] = "gacha_browser_write",
+            ["banner"] = DirectChaosSeaGachaBanner,
+            ["bannerLabel"] = "Прямой призыв Моря Хаоса",
+            ["spentInkFeathers"] = cost
+        };
+
+        return await ExecuteAsync(
+            owner,
+            "Browser direct Chaos Sea gacha",
+            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],
+            async () =>
+            {
+                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
+                var currentRealm = GetNodeString(soulRoot["currentRealm"]);
+                if (!RealmSemantics.IsChaosSea(currentRealm))
+                    throw new InvalidOperationException(DescribeDirectGachaRealmBlocker(currentRealm));
+
+                var currentFeathers = GetSoulInkFeathers(soulRoot);
+                if (currentFeathers < cost)
+                    throw new InvalidOperationException($"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.");
+
+                string? stagedRollbackPath = null;
+                try
+                {
+                    stagedRollbackPath = await ExplorerLocalTurnRollbackArtifacts.StageFileAsync(
+                        _fs,
+                        SoulStatePath,
+                        "browser_direct_gacha");
+
+                    var pendingTurnState = new PendingTurnStateService(
+                        _fs,
+                        NullLogger<PendingTurnStateService>.Instance);
+                    var pending = await pendingTurnState.GetOrCreateAsync();
+                    var remainingFeathers = currentFeathers - cost;
+                    SetSoulInkFeathers(soulRoot, remainingFeathers);
+                    await WriteObjectAsync(SoulStatePath, soulRoot);
+                    await _stateManager.RefreshGameStateAsync();
+
+                    var gachaBase = BuildGachaBaseResultPayload(pending.GachaBaseResult);
+                    var gmAction = BuildDirectGachaGmAction(cost);
+                    var queuedTurn = await _turnRequestQueue.QueueDirectChaosSeaGachaAsync(
+                        owner,
+                        gmAction,
+                        pending,
+                        stagedRollbackPath ?? throw new InvalidOperationException("Не удалось сохранить pre-spend rollback evidence для direct /gacha."),
+                        currentRealm ?? "Chaos Sea");
+                    payload["remainingInkFeathers"] = remainingFeathers;
+                    payload["currentInkFeathersBeforeSpend"] = currentFeathers;
+                    payload["playerActionTag"] = "CHAOS_SEA_DIRECT_GACHA";
+                    payload["gachaBaseResult"] = gachaBase;
+                    payload["rarityRule"] = "finalRarity exactly equals gachaBaseResult.baseRarity; no guardian modifiers";
+                    payload["expectedRelicMaterialization"] = "GM appends exactly one new Soul Relic; the browser does not materialize a concrete relic locally.";
+                    payload["gmAction"] = gmAction;
+                    payload["queuedTurnRequest"] = new JsonObject
+                    {
+                        ["sessionId"] = queuedTurn.SessionId,
+                        ["requestId"] = queuedTurn.RequestId,
+                        ["turnNumber"] = queuedTurn.TurnNumber,
+                        ["playerAction"] = queuedTurn.PlayerAction
+                    };
+                    payload["affectedFiles"] = new JsonArray(
+                        SoulStatePath,
+                        PendingTurnStateService.PendingDiceStatePath,
+                        BrowserPendingTurnInspector.TurnRequestPath,
+                        BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath,
+                        PendingTurnSnapshotAuthority.AuthorityPath);
+                }
+                catch
+                {
+                    ExplorerLocalTurnRollbackArtifacts.DeleteBackup(_fs, stagedRollbackPath);
+                    throw;
+                }
+            },
+            "Прямой призыв подготовлен",
+            "Браузер списал Чернильные Перья и поставил ход ГМ в очередь: результатом должна стать ровно одна материализованная Реликвия Души без локального выбора имени.",
+            payload);
     }
 
     private async Task<BrowserPromptWriteResult> ApplySoulRelicEquipAsync(
@@ -877,6 +992,41 @@ public sealed class BrowserAfterlifeWriteService
         }
     }
 
+    private async Task<GachaSoulValidationState> ReadGachaSoulValidationStateAsync()
+    {
+        var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
+        return new GachaSoulValidationState(
+            GetNodeString(soulRoot["currentRealm"]) ?? string.Empty,
+            GetSoulInkFeathers(soulRoot));
+    }
+
+    private static string DescribeDirectGachaRealmBlocker(string? currentRealm) =>
+        $"Прямой призыв Моря Хаоса доступен только в Ordinary Chaos Sea (currentRealm=Chaos Sea/Море Хаоса). Текущий realm: {FirstNonEmpty(currentRealm, "не определён")}.";
+
+    private static JsonObject BuildGachaBaseResultPayload(GachaResult? gacha)
+    {
+        var dice = new JsonArray();
+        foreach (var die in gacha?.DiceUsed ?? Array.Empty<int>())
+            dice.Add(die);
+
+        return new JsonObject
+        {
+            ["diceUsed"] = dice,
+            ["baseScore"] = gacha?.BaseScore ?? 0,
+            ["baseRarity"] = string.IsNullOrWhiteSpace(gacha?.BaseRarity) ? "Common" : gacha!.BaseRarity,
+            ["formula"] = string.IsNullOrWhiteSpace(gacha?.Formula)
+                ? "client-computed gacha base (range 4-80)"
+                : gacha!.Formula
+        };
+    }
+
+    private static string BuildDirectGachaGmAction(int cost) =>
+        $"[CHAOS_SEA_DIRECT_GACHA] Игрок напрямую тянет Реликвию Души из Моря Хаоса и тратит {cost} Чернильных Перьев. " +
+        "Это НЕ гача через текущего Хранителя: не применять репутацию Хранителя, его скидки, штрафы, социальные факторы, улучшенные или ухудшенные шансы. " +
+        "Результат должен быть нейтральным: finalRarity обязан точно совпадать с turn_request.gachaBaseResult.baseRarity, без апгрейдов или даунгрейдов. " +
+        "Реликвию нужно добавить напрямую в soul state игрока через metaStateUpdates.soulRelicOperations.addRelic как ровно одну новую Soul Relic; существующие реликвии не удалять. " +
+        "Перья уже списаны клиентом, GM не списывает их второй раз.";
+
     private async Task<JsonObject?> ReadObjectAsync(string path)
     {
         var raw = await _fs.ReadFileAsync(path);
@@ -894,10 +1044,15 @@ public sealed class BrowserAfterlifeWriteService
     private async Task WriteObjectAsync(string path, JsonObject root) =>
         await _fs.WriteFileAtomicAsync(path, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
-    private static string NormalizeCommand(string command)
+    private static CommandParts ParseCommand(string command)
     {
         var split = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-        return split.Length == 0 ? string.Empty : split[0].ToLowerInvariant();
+        return split.Length switch
+        {
+            0 => new CommandParts(string.Empty, string.Empty),
+            1 => new CommandParts(split[0].ToLowerInvariant(), string.Empty),
+            _ => new CommandParts(split[0].ToLowerInvariant(), split[1].Trim())
+        };
     }
 
     private static string ReadAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)
@@ -1067,4 +1222,8 @@ public sealed class BrowserAfterlifeWriteService
 
     private static string DescribeCurrency(string currency) =>
         currency == "light_sparks" ? "Искры Света" : "Чернильные Перья";
+
+    private sealed record CommandParts(string Token, string Arguments);
+
+    private sealed record GachaSoulValidationState(string CurrentRealm, int InkFeathers);
 }
