@@ -42,6 +42,17 @@ public sealed class ExplorerWebCommandService
         var effectiveRequest = request ?? new ExplorerWebCommandRequest(command);
 
         var descriptor = parsed.Descriptor!;
+        if (string.Equals(descriptor.Id, "gacha", StringComparison.OrdinalIgnoreCase) &&
+            !string.IsNullOrWhiteSpace(parsed.Arguments))
+        {
+            return MessageResult(
+                command,
+                CommandExecutionState.Failed,
+                UiNotificationSeverity.Error,
+                "Некорректные аргументы",
+                "Команда /gacha не принимает аргументы. Выберите поддерживаемый прямой призыв Моря Хаоса через браузерную форму.");
+        }
+
         if (!ExplorerCommandMigrationRegistry.IsBrowserExecutable(descriptor.BrowserStatus))
             return BuildBlockedMigrationResult(command, descriptor);
 

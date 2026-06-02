@@ -33,15 +33,17 @@ public sealed class BrowserAfterlifeWriteService
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
-        var token = NormalizeCommand(command);
-        return token switch
+        var parsed = ParseCommand(command);
+        return parsed.Token switch
         {
             "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(answers, owner),
             "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(answers, owner),
             "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
             "/spiritual_arts" or "/духовные_искусства" => await ApplySpiritualArtsAsync(answers, owner),
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionPayloadAsync(answers),
-            "/gacha" or "/гача" => await ApplyGachaPullAsync(answers, owner),
+            "/gacha" or "/гача" => string.IsNullOrWhiteSpace(parsed.Arguments)
+                ? await ApplyGachaPullAsync(answers, owner)
+                : BrowserPromptWriteResult.ValidationError("Команда /gacha не принимает аргументы. Выберите поддерживаемый прямой призыв Моря Хаоса через браузерную форму."),
             "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(answers, owner),
             "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
             "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(answers, owner),
@@ -290,9 +292,19 @@ public sealed class BrowserAfterlifeWriteService
         if (cost <= 0)
             return BrowserPromptWriteResult.ValidationError("Стоимость призыва должна быть положительным целым числом.");
 
-        var available = await TryReadSoulInkFeathersForValidationAsync();
-        if (available.HasValue && available.Value < cost)
-            return BrowserPromptWriteResult.ValidationError($"Недостаточно Чернильных Перьев: доступно {available.Value}, нужно {cost}.");
+        GachaSoulValidationState validation;
+        try
+        {
+            validation = await ReadGachaSoulValidationStateAsync();
+        }
+        catch (Exception ex)
+        {
+            return BrowserPromptWriteResult.ValidationError($"soul_state.json недоступен или повреждён: {ex.Message}");
+        }
+        if (!RealmSemantics.IsChaosSea(validation.CurrentRealm))
+            return BrowserPromptWriteResult.ValidationError(DescribeDirectGachaRealmBlocker(validation.CurrentRealm));
+        if (validation.InkFeathers < cost)
+            return BrowserPromptWriteResult.ValidationError($"Недостаточно Чернильных Перьев: доступно {validation.InkFeathers}, нужно {cost}.");
 
         var payload = new JsonObject
         {
@@ -309,6 +321,10 @@ public sealed class BrowserAfterlifeWriteService
             async () =>
             {
                 var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
+                var currentRealm = GetNodeString(soulRoot["currentRealm"]);
+                if (!RealmSemantics.IsChaosSea(currentRealm))
+                    throw new InvalidOperationException(DescribeDirectGachaRealmBlocker(currentRealm));
+
                 var currentFeathers = GetSoulInkFeathers(soulRoot);
                 if (currentFeathers < cost)
                     throw new InvalidOperationException($"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.");
@@ -942,18 +958,16 @@ public sealed class BrowserAfterlifeWriteService
         }
     }
 
-    private async Task<int?> TryReadSoulInkFeathersForValidationAsync()
+    private async Task<GachaSoulValidationState> ReadGachaSoulValidationStateAsync()
     {
-        try
-        {
-            var soulRoot = await ReadObjectAsync(SoulStatePath);
-            return soulRoot == null ? null : GetSoulInkFeathers(soulRoot);
-        }
-        catch
-        {
-            return null;
-        }
+        var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "soul_state.json недоступен.");
+        return new GachaSoulValidationState(
+            GetNodeString(soulRoot["currentRealm"]) ?? string.Empty,
+            GetSoulInkFeathers(soulRoot));
     }
+
+    private static string DescribeDirectGachaRealmBlocker(string? currentRealm) =>
+        $"Прямой призыв Моря Хаоса доступен только в Ordinary Chaos Sea (currentRealm=Chaos Sea/Море Хаоса). Текущий realm: {FirstNonEmpty(currentRealm, "не определён")}.";
 
     private static JsonObject BuildGachaBaseResultPayload(GachaResult? gacha)
     {
@@ -996,10 +1010,15 @@ public sealed class BrowserAfterlifeWriteService
     private async Task WriteObjectAsync(string path, JsonObject root) =>
         await _fs.WriteFileAtomicAsync(path, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
 
-    private static string NormalizeCommand(string command)
+    private static CommandParts ParseCommand(string command)
     {
         var split = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-        return split.Length == 0 ? string.Empty : split[0].ToLowerInvariant();
+        return split.Length switch
+        {
+            0 => new CommandParts(string.Empty, string.Empty),
+            1 => new CommandParts(split[0].ToLowerInvariant(), string.Empty),
+            _ => new CommandParts(split[0].ToLowerInvariant(), split[1].Trim())
+        };
     }
 
     private static string ReadAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)
@@ -1169,4 +1188,8 @@ public sealed class BrowserAfterlifeWriteService
 
     private static string DescribeCurrency(string currency) =>
         currency == "light_sparks" ? "Искры Света" : "Чернильные Перья";
+
+    private sealed record CommandParts(string Token, string Arguments);
+
+    private sealed record GachaSoulValidationState(string CurrentRealm, int InkFeathers);
 }

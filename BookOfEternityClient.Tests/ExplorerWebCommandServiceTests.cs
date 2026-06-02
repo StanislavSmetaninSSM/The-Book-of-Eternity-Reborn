@@ -1580,6 +1580,44 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Gacha_InShiningAbode_DoesNotOpenDirectChaosSeaPrompt()
+    {
+        await SeedShiningAbodeFilesAsync();
+        await SeedPendingGachaBaseAsync("Rare", 72, [18, 18, 18, 18]);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/gacha",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Null(result.InteractiveSession);
+        Assert.Empty(result.Prompts);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Море Хаоса", text, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Gacha_WithUnsupportedArgument_DoesNotOpenPrompt()
+    {
+        await SeedChaosSeaFilesAsync();
+        await SeedPendingGachaBaseAsync("Rare", 72, [18, 18, 18, 18]);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/gacha guardian_pull",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal(CommandExecutionState.Failed, result.State);
+        Assert.Null(result.InteractiveSession);
+        Assert.Empty(result.Prompts);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("аргумент", text, StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
+    }
+
+    [Fact]
     public async Task SubmitPromptSessionAsync_GachaDirectPull_DeductsFeathersAndReturnsGmPayload()
     {
         await SeedChaosSeaFilesAsync();

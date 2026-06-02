@@ -795,6 +795,36 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         var soul = await ReadJson(fs, SoulStatePath);
         var pendingDice = await ReadJson(fs, PendingTurnStateService.PendingDiceStatePath);
         var soulRoot = soul.Node as JsonObject;
+        var arguments = ReadCommandArguments(command);
+        var currentRealm = FirstNonEmpty(GetString(soulRoot, "currentRealm"), stateManager.CurrentState.CurrentRealm);
+        if (!string.IsNullOrWhiteSpace(arguments))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Failed,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Error,
+                        "Некорректные аргументы",
+                        "Команда /gacha не принимает аргументы. Выберите поддерживаемый прямой призыв Моря Хаоса через браузерную форму.")
+                ]);
+        }
+
+        if (!RealmSemantics.IsChaosSea(currentRealm))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Warning,
+                        "Призыв недоступен",
+                        $"Прямой призыв Моря Хаоса доступен только в Ordinary Chaos Sea (currentRealm=Chaos Sea/Море Хаоса). Текущий realm: {FirstNonEmpty(currentRealm, "не определён")}.")
+                ]);
+        }
+
         var availableFeathers = Math.Max(0, GetSoulInkFeathers(soulRoot, stateManager.CurrentState.InkFeathers));
         var gachaBase = pendingDice.Node?["gachaBaseResult"] as JsonObject;
         var baseRarity = FirstNonEmpty(GetString(gachaBase, "baseRarity"), "Common");
@@ -1231,6 +1261,12 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
         return parts.Length == 0 ? string.Empty : parts[0].ToLowerInvariant();
+    }
+
+    private static string ReadCommandArguments(string command)
+    {
+        var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        return parts.Length < 2 ? string.Empty : parts[1].Trim();
     }
 
     private static string FirstNonEmpty(params string?[] values) =>

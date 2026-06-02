@@ -54,6 +54,45 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
+    [Theory]
+    [InlineData("Shining Abode")]
+    [InlineData("Mortal World")]
+    [InlineData("chaosSea")]
+    public async Task TryApplyAsync_GachaDirectPull_RejectsNonOrdinaryChaosSeaRealmBeforeSpend(string currentRealm)
+    {
+        await SeedSoulStateAsync(
+            stored: Array.Empty<(string, string)>(),
+            equipped: Array.Empty<(string, string, string)>(),
+            inkFeathers: 18,
+            currentRealm: currentRealm);
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await _service.TryApplyAsync(
+            "/gacha",
+            Answers(("gacha_banner", "direct_chaos_sea"), ("feather_cost", 7), ("confirm_gacha_pull", true)),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("Море Хаоса", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
+    [Fact]
+    public async Task TryApplyAsync_GachaDirectPull_RejectsUnsupportedCommandArgumentsBeforeSpend()
+    {
+        await SeedSoulStateAsync(stored: Array.Empty<(string, string)>(), equipped: Array.Empty<(string, string, string)>(), inkFeathers: 18);
+        var beforeSoul = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+
+        var result = await _service.TryApplyAsync(
+            "/gacha guardian_pull",
+            Answers(("gacha_banner", "direct_chaos_sea"), ("feather_cost", 7), ("confirm_gacha_pull", true)),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("аргумент", result.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(beforeSoul, await _fs.ReadFileAsync("game_state/meta/soul_state.json"));
+    }
+
     [Fact]
     public async Task TryApplyAsync_GachaDirectPull_RequiresConfirmation()
     {
@@ -290,7 +329,8 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
     private async Task SeedSoulStateAsync(
         IReadOnlyList<(string relicId, string name)> stored,
         IReadOnlyList<(string relicId, string name, string slot)> equipped,
-        int inkFeathers = 0)
+        int inkFeathers = 0,
+        string currentRealm = "Chaos Sea")
     {
         var storedArray = new JsonArray();
         foreach (var (relicId, name) in stored)
@@ -321,7 +361,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
         var soul = new JsonObject
         {
             ["soulName"] = "Тестовая душа",
-            ["currentRealm"] = "chaosSea",
+            ["currentRealm"] = currentRealm,
             ["currentIncarnation"] = 4,
             ["inkFeathers"] = new JsonObject
             {
