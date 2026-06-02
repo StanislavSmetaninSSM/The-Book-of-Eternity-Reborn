@@ -40,6 +40,8 @@ public sealed class BrowserAfterlifeWriteService
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionPayloadAsync(answers),
             "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(answers, owner),
             "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
+            "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(answers, owner),
+            "/soul_relic_unequip" or "/снять_реликвию" => await ApplySoulRelicUnequipAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
         };
     }
@@ -268,6 +270,60 @@ public sealed class BrowserAfterlifeWriteService
                 ["expectedResponseSurface"] = AfterlifeSpiritualConflictState.ResponseField,
                 ["stateFile"] = AfterlifeSpiritualConflictState.StatePath,
                 ["gmAction"] = actionText
+            });
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplySoulRelicEquipAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        var relicIdOrName = ReadAnswer(answers, "soul_relic_identity");
+        var slotKey = ReadAnswer(answers, "soul_relic_slot");
+
+        return await ExecuteAsync(
+            owner,
+            "Browser soul relic equip",
+            [SoulStatePath],
+            async () =>
+            {
+                var outcome = await SoulRelicEquipmentService.EquipAsync(_fs, relicIdOrName, slotKey);
+                if (!outcome.Success)
+                    throw new InvalidOperationException(outcome.Message);
+            },
+            "Реликвия души экипирована",
+            "Браузер переместил реликвию души из хранилища в слот экипировки.",
+            new JsonObject
+            {
+                ["sourceSurface"] = "soul_relic_equip_browser_write",
+                ["relicIdentity"] = relicIdOrName,
+                ["slot"] = slotKey,
+                ["affectedFiles"] = new JsonArray(SoulStatePath)
+            });
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplySoulRelicUnequipAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        var slotKey = ReadAnswer(answers, "soul_relic_slot");
+
+        return await ExecuteAsync(
+            owner,
+            "Browser soul relic unequip",
+            [SoulStatePath],
+            async () =>
+            {
+                var outcome = await SoulRelicEquipmentService.UnequipAsync(_fs, slotKey);
+                if (!outcome.Success)
+                    throw new InvalidOperationException(outcome.Message);
+            },
+            "Реликвия души снята",
+            "Браузер вернул реликвию души из слота в хранилище.",
+            new JsonObject
+            {
+                ["sourceSurface"] = "soul_relic_unequip_browser_write",
+                ["slot"] = slotKey,
+                ["affectedFiles"] = new JsonArray(SoulStatePath)
             });
     }
 

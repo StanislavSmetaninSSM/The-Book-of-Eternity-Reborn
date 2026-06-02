@@ -79,40 +79,41 @@ public static class SoulRelicEquipmentService
 
         await fs.WriteFileAtomicAsync(
             SoulStatePath,
-            context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                context.Root,
+                GuardianPolicyContracts.SoulStatePatchConflictContext.None).ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         return outcome;
     }
 
     public static async Task<SoulRelicWriteOutcome> UnequipAsync(
         FileSystemManager fs,
-        string relicIdOrName)
+        string slotKey)
     {
         var context = await ReadContextAsync(fs);
         if (context == null)
             return SoulRelicWriteOutcome.Failed("soul_state.json отсутствует или повреждён.");
+        var validation = ValidateUnequip(context, slotKey);
+        if (!validation.Success) return validation;
 
-        var outcome = ValidateUnequip(context, relicIdOrName);
-        if (!outcome.Success)
-            return outcome;
-
-        var soulRelics = EnsureSoulRelicsObject(context.Root);
-        var stored = EnsureArray(soulRelics, "stored");
-        var equipped = EnsureArray(soulRelics, "equipped");
-
-        var relic = FindRelicIn(equipped, relicIdOrName);
-        if (relic == null)
+        var equipped = EnsureArray(context.Root["soulRelics"]!.AsObject(), "equipped");
+        var stored = EnsureArray(context.Root["soulRelics"]!.AsObject(), "stored");
+        var relicNode = FindRelicInEquippedSlot(equipped, validation.SlotKey);
+        if (relicNode == null)
             return SoulRelicWriteOutcome.Failed("Реликвия не найдена в экипировке.");
-
-        equipped.Remove(relic);
-        EnsureGameplayStatus(relic);
-        relic["gameplayStatus"]!["equipped"] = false;
-        relic["gameplayStatus"]!["currentSlot"] = string.Empty;
-        stored.Add(relic);
-
+        var gameplayStatus = relicNode["gameplayStatus"] as JsonObject;
+        if (gameplayStatus != null)
+        {
+            gameplayStatus["equipped"] = false;
+            gameplayStatus["currentSlot"] = string.Empty;
+        }
+        stored.Add(relicNode.DeepClone()!.AsObject());
+        equipped.Remove(relicNode);
         await fs.WriteFileAtomicAsync(
             SoulStatePath,
-            context.Root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-        return outcome;
+            GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+                context.Root,
+                GuardianPolicyContracts.SoulStatePatchConflictContext.None).ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        return validation;
     }
 
     public static async Task<SoulRelicWriteOutcome> ValidateEquipAsync(
@@ -128,12 +129,12 @@ public static class SoulRelicEquipmentService
 
     public static async Task<SoulRelicWriteOutcome> ValidateUnequipAsync(
         FileSystemManager fs,
-        string relicIdOrName)
+        string slotKey)
     {
         var context = await ReadContextAsync(fs);
         if (context == null)
             return SoulRelicWriteOutcome.Failed("soul_state.json отсутствует или повреждён.");
-        return ValidateUnequip(context, relicIdOrName);
+        return ValidateUnequip(context, slotKey);
     }
 
     public static string? ResolveRelicIdentity(JsonObject? relic)
@@ -284,20 +285,20 @@ public static class SoulRelicEquipmentService
 
     private static SoulRelicWriteOutcome ValidateUnequip(
         SoulRelicEquipmentContext context,
-        string relicIdOrName)
+        string slotKey)
     {
-        if (string.IsNullOrWhiteSpace(relicIdOrName))
-            return SoulRelicWriteOutcome.Failed("Укажите реликвию для снятия.");
+        if (!TryNormalizeSlot(slotKey, out var normalizedSlot))
+            return SoulRelicWriteOutcome.Failed("Выберите корректный слот для снятия реликвии.");
 
-        var equippedRelic = FindRelicInArray(context.Equipped, relicIdOrName);
+        var equippedRelic = FindRelicInEquippedBySlot(context.Equipped, normalizedSlot);
         if (equippedRelic == null)
-            return SoulRelicWriteOutcome.Failed($"Реликвия «{relicIdOrName}» не экипирована.");
+            return SoulRelicWriteOutcome.Failed($"В слоте {normalizedSlot} нет экипированной реликвии.");
 
         return SoulRelicWriteOutcome.Completed(
             $"Реликвия «{equippedRelic.Name}» снята и убрана в хранилище.",
             equippedRelic.RelicId,
             equippedRelic.Name,
-            equippedRelic.CurrentSlot);
+            normalizedSlot);
     }
 
     private static List<SoulRelicItem> ReadRelics(JsonArray? array)
@@ -358,6 +359,26 @@ public static class SoulRelicEquipmentService
         var nodeName = FirstNonEmpty(GetString(relic, "name"), GetString(relic, "itemName"));
         return !string.IsNullOrWhiteSpace(nodeName) &&
                string.Equals(nodeName, trimmed, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool RelicNodeInSlot(JsonObject relic, string normalizedSlot)
+    {
+        var gameplayStatus = relic["gameplayStatus"] as JsonObject;
+        if (gameplayStatus == null) return false;
+        if (gameplayStatus["currentSlot"] is not JsonValue slotVal) return false;
+        if (!slotVal.TryGetValue<string>(out var slotText)) return false;
+        return string.Equals(slotText, normalizedSlot, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject? FindRelicInEquippedSlot(JsonArray array, string normalizedSlot)
+    {
+        return array.OfType<JsonObject>().FirstOrDefault(node => RelicNodeInSlot(node, normalizedSlot));
+    }
+
+    private static SoulRelicItem? FindRelicInEquippedBySlot(IEnumerable<SoulRelicItem> items, string normalizedSlot)
+    {
+        return items.FirstOrDefault(item =>
+            string.Equals(item.CurrentSlot, normalizedSlot, StringComparison.OrdinalIgnoreCase));
     }
 
     private static JsonObject EnsureSoulRelicsObject(JsonObject root)

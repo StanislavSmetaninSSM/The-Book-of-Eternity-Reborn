@@ -28,12 +28,14 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
         var stored = storedIds.Select(id => (object)new
         {
             relicId = id,
-            name = $"Relic {id}"
+            name = $"Relic {id}",
+            rarity = "rare"
         }).ToArray();
         var equippedList = equipped.Select(e => (object)new
         {
             relicId = e.Id,
             name = $"Relic {e.Id}",
+            rarity = "rare",
             gameplayStatus = new { equipped = true, currentSlot = e.Slot }
         }).ToArray();
         var payload = new
@@ -110,7 +112,7 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
     {
         var fs = await SeedAsync(storedIds: Array.Empty<string>(), equipped: new[] { ("r1", "head") });
 
-        var outcome = await SoulRelicEquipmentService.UnequipAsync(fs, "r1");
+        var outcome = await SoulRelicEquipmentService.UnequipAsync(fs, "head");
 
         Assert.True(outcome.Success, outcome.Message);
         var ctx = await SoulRelicEquipmentService.ReadContextAsync(fs);
@@ -121,14 +123,25 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task UnequipAsync_WhenRelicNotEquipped_ReturnsFailure()
+    public async Task UnequipAsync_WhenSlotEmpty_ReturnsFailure()
     {
         var fs = await SeedAsync(storedIds: new[] { "r1" }, equipped: Array.Empty<(string, string)>());
 
-        var outcome = await SoulRelicEquipmentService.UnequipAsync(fs, "r1");
+        var outcome = await SoulRelicEquipmentService.UnequipAsync(fs, "head");
 
         Assert.False(outcome.Success);
-        Assert.Contains("не экипирована", outcome.Message);
+        Assert.Contains("нет экипированной реликвии", outcome.Message);
+    }
+
+    [Fact]
+    public async Task UnequipAsync_WhenInvalidSlot_ReturnsFailure()
+    {
+        var fs = await SeedAsync(storedIds: Array.Empty<string>(), equipped: new[] { ("r1", "head") });
+
+        var outcome = await SoulRelicEquipmentService.UnequipAsync(fs, "wing");
+
+        Assert.False(outcome.Success);
+        Assert.Contains("слот", outcome.Message);
     }
 
     [Fact]
@@ -138,8 +151,8 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
         {
             soulRelics = new object[]
             {
-                new { relicId = "r1", name = "A", gameplayStatus = new { equipped = false } },
-                new { relicId = "r2", name = "B", gameplayStatus = new { equipped = true, currentSlot = "head" } }
+                new { relicId = "r1", name = "A", rarity = "rare", gameplayStatus = new { equipped = false } },
+                new { relicId = "r2", name = "B", rarity = "rare", gameplayStatus = new { equipped = true, currentSlot = "head" } }
             }
         };
         await _fs.WriteFileAtomicAsync(
