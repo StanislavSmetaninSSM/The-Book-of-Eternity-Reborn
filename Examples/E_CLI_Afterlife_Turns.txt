@@ -6096,6 +6096,8 @@ The player may see a local preview such as:
 - Экипировать Реликвию Души: move one relic from soulRelics.stored[] to soulRelics.equipped[].
 - Снять Реликвию Души: move one relic from soulRelics.equipped[] to soulRelics.stored[].
 
+Browser parity uses the same ownership rule. The client routes `/soul_relic_equip` and `/soul_relic_unequip` (with Russian aliases `/экипировать_реликвию` and `/снять_реликвию`) through `BrowserAfterlifeWriteService` -> `SoulRelicEquipmentService`; both the console prompts and the browser prompt sessions are driven by `ExplorerLifecycleLocalTurnCommandResultBuilder` and resolve through the same client-local mutation on game_state/meta/soul_state.json. No GM turn, pending/control file, receipt array, or progression_report.json is produced by either entry point.
+
 Required handling:
 - no GM turn is sent
 - no pending/control file is created
