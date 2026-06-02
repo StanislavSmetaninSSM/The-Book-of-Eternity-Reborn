@@ -387,6 +387,7 @@ public sealed class ExplorerWebPromptSessionService
             "/equip" or "/экипировать" or
             "/unequip" or "/снять" or
             "/craft" or "/ремесло" or
+            "/gacha" or "/гача" or
             "/abode_offering" or "/подношение_обители" or
             "/found_guardian_mantle" or "/учредить_хранителя" or
             "/soul_relic_equip" or "/экипировать_реликвию" or

@@ -19,8 +19,7 @@ public static class ExplorerChaosSeaCommandResultBuilder
         AbodePower,
         GuardianProjects,
         GuardianPolitics,
-        Abodes,
-        Gacha
+        Abodes
     }
 
     private static readonly IReadOnlyDictionary<string, CommandKind> CommandKinds =
@@ -37,9 +36,7 @@ public static class ExplorerChaosSeaCommandResultBuilder
             ["/guardian_politics"] = CommandKind.GuardianPolitics,
             ["/политика_хранителей"] = CommandKind.GuardianPolitics,
             ["/abodes"] = CommandKind.Abodes,
-            ["/обители"] = CommandKind.Abodes,
-            ["/gacha"] = CommandKind.Gacha,
-            ["/гача"] = CommandKind.Gacha
+            ["/обители"] = CommandKind.Abodes
         };
 
     public static bool CanBuild(string command) => CommandKinds.ContainsKey(command.Trim());
@@ -71,7 +68,6 @@ public static class ExplorerChaosSeaCommandResultBuilder
                 fs,
                 includeAdvancedDiagnostics || stateManager.Settings.ShowGmThoughts),
             CommandKind.Abodes => await BuildAbodes(normalizedCommand, fs),
-            CommandKind.Gacha => await BuildGacha(normalizedCommand, fs),
             _ => null
         };
     }
@@ -152,26 +148,6 @@ public static class ExplorerChaosSeaCommandResultBuilder
                     ("Известных Обителей", CountKnownAbodes(read.Node).ToString()),
                     ("Хранителей с Обителью", CountGuardiansWithObject(read.Node, "abode").ToString()))),
             Raw($"Полный JSON {GuardiansPath}", read.Node));
-    }
-
-    private static async Task<ExplorerCommandResult> BuildGacha(string command, FileSystemManager fs)
-    {
-        var soul = await ReadJson(fs, SoulStatePath);
-        var guardians = await ReadJson(fs, GuardiansPath);
-
-        var blocks = new List<UiBlock>
-        {
-            Panel("Гача Моря Хаоса",
-                Grid(
-                    ("Чернильные Перья", DescribeInkFeathers(soul.Node)),
-                    ("Хранителей с гачей", CountGuardiansWithObject(guardians.Node, "gachaSystem").ToString()),
-                    ("Исторических попыток", CountGuardianNestedArray(guardians.Node, "gachaSystem", "gachaHistory").ToString()),
-                    ("Примечание", "Прямой призыв и подношения остаются client-owned pending/local-turn действиями.")))
-        };
-
-        AddRawOrWarning(blocks, $"Полный JSON {SoulStatePath}", soul);
-        AddRawOrWarning(blocks, $"Полный JSON {GuardiansPath}", guardians);
-        return Completed(command, blocks);
     }
 
     private static async Task<ExplorerCommandResult> BuildGuardianPolitics(

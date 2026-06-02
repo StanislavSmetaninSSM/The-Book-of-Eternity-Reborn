@@ -1535,7 +1535,6 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     [InlineData("/guardian_projects")]
     [InlineData("/guardian_politics")]
     [InlineData("/abodes")]
-    [InlineData("/gacha")]
     public async Task ExecuteAsync_MigratedChaosSeaReadOnlyCommands_ReturnCompletedDtos(string command)
     {
         await SeedChaosSeaFilesAsync();
@@ -1549,6 +1548,66 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
             result.Blocks,
             static block => block is UiMessageBlock message &&
                             message.Title.Contains("пока недоступна", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Gacha_ReturnsDirectChaosSeaPrompt()
+    {
+        await SeedChaosSeaFilesAsync();
+        await SeedPendingGachaBaseAsync("Rare", 72, [18, 18, 18, 18]);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/gacha",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        Assert.Equal("/gacha", result.Command);
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.NotNull(result.InteractiveSession);
+        Assert.True(result.InteractiveSession.RequiresLocalUiLock);
+        var bannerPrompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "gacha_banner"));
+        var banner = Assert.Single(bannerPrompt.Options);
+        Assert.Equal("direct_chaos_sea", banner.Value);
+        Assert.Contains("Прямой призыв", banner.Label, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("1-18", banner.Description, StringComparison.Ordinal);
+        Assert.Contains(result.Prompts, prompt => prompt.Id == "feather_cost");
+        Assert.IsType<UiConfirmationPrompt>(Assert.Single(result.Prompts, prompt => prompt.Id == "confirm_gacha_pull"));
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary", text, StringComparison.Ordinal);
+        Assert.Contains("Базовая редкость", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Rare", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Guardian-mediated", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task SubmitPromptSessionAsync_GachaDirectPull_DeductsFeathersAndReturnsGmPayload()
+    {
+        await SeedChaosSeaFilesAsync();
+        await SeedPendingGachaBaseAsync("Uncommon", 55, [12, 13, 14, 16]);
+        var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
+            "/gacha",
+            OwnerId: "browser-test",
+            OwnerLabel: "Browser test"));
+
+        var completed = await _service.SubmitPromptSessionAsync(new ExplorerPromptSessionSubmitRequest(
+            started.InteractiveSession!.SessionId,
+            new Dictionary<string, JsonNode?>
+            {
+                ["gacha_banner"] = JsonValue.Create("direct_chaos_sea"),
+                ["feather_cost"] = JsonValue.Create(5),
+                ["confirm_gacha_pull"] = JsonValue.Create(true)
+            },
+            OwnerId: "browser-test"));
+
+        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Equal(13, soul["inkFeathers"]!["current"]!.GetValue<int>());
+        var payload = Assert.IsType<UiRawJsonBlock>(completed.Blocks.Last()).Json!.AsObject();
+        Assert.Equal("CHAOS_SEA_DIRECT_GACHA", payload["playerActionTag"]!.GetValue<string>());
+        Assert.Equal("Uncommon", payload["gachaBaseResult"]!["baseRarity"]!.GetValue<string>());
+        Assert.Contains("5 Чернильных Перьев", payload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Contains("ровно одну новую Soul Relic", payload["gmAction"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
     [Fact]
@@ -2211,6 +2270,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           ]
         }
         """);
+    }
+
+    private async Task SeedPendingGachaBaseAsync(string baseRarity, int baseScore, IReadOnlyList<int> diceUsed)
+    {
+        var diceArray = new JsonArray();
+        foreach (var die in diceUsed)
+            diceArray.Add(die);
+
+        await _fs.WriteFileAtomicAsync(
+            PendingTurnStateService.PendingDiceStatePath,
+            new JsonObject
+            {
+                ["preGeneratedDices1d20"] = new JsonArray(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20),
+                ["gachaBaseResult"] = new JsonObject
+                {
+                    ["diceUsed"] = diceArray,
+                    ["baseScore"] = baseScore,
+                    ["baseRarity"] = baseRarity,
+                    ["formula"] = "client-computed gacha base (range 4-80)"
+                },
+                ["isFateLocked"] = false,
+                ["createdAtUtc"] = "2026-06-02T00:00:00Z",
+                ["lastUpdatedUtc"] = "2026-06-02T00:00:00Z"
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
     }
 
     private Task WriteGuardianPoliticsRawLeakFixtureAsync() =>

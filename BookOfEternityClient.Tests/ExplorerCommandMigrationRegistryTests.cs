@@ -140,6 +140,7 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
         Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/world_setup"].Status);
         Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/distribute"].Status);
         Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/abode_offering"].Status);
+        Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/gacha"].Status);
         Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/spiritual_action"].Status);
         Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/shining_treasury"].Status);
         Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries["/source_of_light"].Status);
@@ -264,11 +265,21 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
                  {
                      "/chaos_sea", "/море_хаоса", "/guardians", "/хранители", "/abode_power", "/сила_обители",
                      "/guardian_projects", "/проекты_хранителей", "/guardian_politics", "/политика_хранителей",
-                     "/abodes", "/обители", "/gacha", "/гача"
+                     "/abodes", "/обители"
                  })
         {
             Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);
         }
+    }
+
+    [Fact]
+    public void ChaosSeaGachaCommands_HaveMutatingBrowserParity()
+    {
+        var entries = ExplorerCommandMigrationRegistry.Entries
+            .ToDictionary(static entry => entry.Command, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var command in new[] { "/gacha", "/гача" })
+            Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries[command].Status);
     }
 
     [Fact]

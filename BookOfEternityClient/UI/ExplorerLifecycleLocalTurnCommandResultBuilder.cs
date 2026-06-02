@@ -15,6 +15,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     private const string PendingTurnSnapshotManifestPath = "game_state/control/pending_turn_snapshot.json";
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
     private const string ExplorerRollbackDirectory = "game_state/control/explorer_local_turn_rollback";
+    private const string SoulStatePath = "game_state/meta/soul_state.json";
 
     public static bool CanBuild(string command) => NormalizeCommand(command) switch
     {
@@ -26,6 +27,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/equip" or "/экипировать" or
         "/unequip" or "/снять" or
         "/craft" or "/ремесло" or
+        "/gacha" or "/гача" or
         "/abode_offering" or "/подношение_обители" or
         "/found_guardian_mantle" or "/учредить_хранителя" or
         "/spiritual_action" or "/духовное_действие" or
@@ -51,6 +53,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/equip" or "/экипировать" => await BuildInventoryEquipAsync(command, fs),
             "/unequip" or "/снять" => await BuildInventoryUnequipAsync(command, fs),
             "/craft" or "/ремесло" => await BuildCraftAsync(command, fs),
+            "/gacha" or "/гача" => await BuildGachaAsync(command, fs, stateManager),
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
             "/found_guardian_mantle" or "/учредить_хранителя" => await BuildPlayerGuardianFoundationAsync(command, fs),
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionAsync(command, fs, stateManager),
@@ -783,6 +786,119 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             ]);
     }
 
+    private static async Task<ExplorerCommandResult> BuildGachaAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var soul = await ReadJson(fs, SoulStatePath);
+        var pendingDice = await ReadJson(fs, PendingTurnStateService.PendingDiceStatePath);
+        var soulRoot = soul.Node as JsonObject;
+        var availableFeathers = Math.Max(0, GetSoulInkFeathers(soulRoot, stateManager.CurrentState.InkFeathers));
+        var gachaBase = pendingDice.Node?["gachaBaseResult"] as JsonObject;
+        var baseRarity = FirstNonEmpty(GetString(gachaBase, "baseRarity"), "Common");
+        var baseScore = FirstNonEmpty(GetString(gachaBase, "baseScore"), "не подготовлен");
+        var formula = FirstNonEmpty(GetString(gachaBase, "formula"), "client-computed gacha base (range 4-80)");
+        var diceUsed = FormatDiceUsed(gachaBase?["diceUsed"] as JsonArray);
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Призыв судьбы",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = availableFeathers > 0
+                            ? "Доступен прямой нейтральный призыв из Моря Хаоса. Хранители, репутация, заряды и скидки в этом баннере не участвуют."
+                            : "Чернильных Перьев сейчас нет. Прямой призыв из Моря Хаоса недоступен.",
+                        Tone = availableFeathers > 0 ? UiTone.Accent : UiTone.Warning
+                    },
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            KeyValue("Чернильные Перья", availableFeathers.ToString()),
+                            KeyValue("Поддерживаемые баннеры", "Прямой призыв Моря Хаоса"),
+                            KeyValue("Результат", "ГМ материализует ровно одну Реликвию Души после обычного хода")
+                        ]
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Доступные баннеры",
+                        Columns = ["Баннер", "Стоимость", "Шансы", "Разрешение"],
+                        Rows =
+                        [
+                            Row(
+                                "Прямой призыв Моря Хаоса",
+                                availableFeathers > 0 ? $"1-{availableFeathers} Чернильных Перьев" : "нет доступных Перьев",
+                                "Пороги: 4-48 Common, 49-67 Uncommon, 68-75 Rare, 76-79 Epic, 80 Legendary",
+                                "Итоговая редкость точно равна базовой; без модификаторов Хранителей")
+                        ]
+                    },
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            KeyValue("Кубики базового результата", diceUsed),
+                            KeyValue("Базовый счёт", baseScore),
+                            KeyValue("Базовая редкость", baseRarity),
+                            KeyValue("Формула", formula)
+                        ]
+                    }
+                ]
+            }
+        };
+
+        if (availableFeathers <= 0)
+        {
+            blocks.Add(Message(
+                UiNotificationSeverity.Warning,
+                "Призыв недоступен",
+                "Нужно хотя бы 1 Чернильное Перо."));
+            return Result(command, CommandExecutionState.Completed, blocks);
+        }
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "gacha_banner",
+                    Prompt = "Баннер призыва",
+                    Required = true,
+                    Options =
+                    [
+                        Option(
+                            "direct_chaos_sea",
+                            "Прямой призыв Моря Хаоса",
+                            $"Нейтральный призыв без Хранителя. Стоимость: 1-{availableFeathers} Чернильных Перьев.")
+                    ]
+                },
+                new UiTextInputPrompt
+                {
+                    Id = "feather_cost",
+                    Prompt = "Сколько Чернильных Перьев потратить",
+                    Required = true,
+                    Placeholder = $"1-{availableFeathers}",
+                    DefaultValue = "1"
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_gacha_pull",
+                    Prompt = "Подтвердить списание Перьев и подготовить прямой призыв",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
     private static async Task<ExplorerCommandResult> BuildAbodeOfferingAsync(
         string command,
         FileSystemManager fs,
@@ -1147,6 +1263,45 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             return parsed;
 
         return fallback;
+    }
+
+    private static int GetSoulInkFeathers(JsonObject? soulRoot, int fallback)
+    {
+        if (soulRoot == null)
+            return fallback;
+
+        if (!soulRoot.TryGetPropertyValue("inkFeathers", out var node) || node == null)
+            return fallback;
+
+        if (node is JsonObject inkFeathers)
+            return TryGetInt(inkFeathers, "current", fallback);
+
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<int>(out var number))
+                return number;
+            if (value.TryGetValue<string>(out var text) && int.TryParse(text, out var parsed))
+                return parsed;
+        }
+
+        return fallback;
+    }
+
+    private static string FormatDiceUsed(JsonArray? diceUsed)
+    {
+        if (diceUsed == null || diceUsed.Count == 0)
+            return "[]";
+
+        var values = diceUsed
+            .Select(static node => node is JsonValue value
+                ? value.TryGetValue<int>(out var number)
+                    ? number.ToString()
+                    : value.TryGetValue<string>(out var text)
+                        ? text
+                        : node.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)
+                : node?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) ?? "null")
+            .ToArray();
+        return "[" + string.Join(", ", values) + "]";
     }
 
     private static bool TryGetBool(JsonObject obj, string propertyName)
