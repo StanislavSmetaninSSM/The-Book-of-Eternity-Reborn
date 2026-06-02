@@ -35,7 +35,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_equip",
-            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "head")),
+            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "head"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.True(result.Success, result.Message);
@@ -55,7 +55,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_equip",
-            Answers(("soul_relic_identity", "Кулон Тишины"), ("soul_relic_slot", "body")),
+            Answers(("soul_relic_identity", "Кулон Тишины"), ("soul_relic_slot", "body"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.True(result.Success, result.Message);
@@ -74,7 +74,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_equip",
-            Answers(("soul_relic_identity", "missing"), ("soul_relic_slot", "head")),
+            Answers(("soul_relic_identity", "missing"), ("soul_relic_slot", "head"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.False(result.Success);
@@ -88,7 +88,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_equip",
-            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "body")),
+            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "body"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.False(result.Success);
@@ -102,7 +102,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_equip",
-            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "wing")),
+            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "wing"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.False(result.Success);
@@ -116,7 +116,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_unequip",
-            Answers(("soul_relic_slot", "head")),
+            Answers(("soul_relic_slot", "head"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.True(result.Success, result.Message);
@@ -135,7 +135,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_unequip",
-            Answers(("soul_relic_slot", "head")),
+            Answers(("soul_relic_slot", "head"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.False(result.Success);
@@ -149,7 +149,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_unequip",
-            Answers(("soul_relic_slot", "wing")),
+            Answers(("soul_relic_slot", "wing"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.False(result.Success);
@@ -163,7 +163,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         await _service.TryApplyAsync(
             "/soul_relic_equip",
-            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "head")),
+            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "head"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
@@ -177,7 +177,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         var result = await _service.TryApplyAsync(
             "/soul_relic_equip",
-            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "wing")),
+            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "wing"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.False(result.Success);
@@ -192,7 +192,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
 
         await _service.TryApplyAsync(
             "/soul_relic_unequip",
-            Answers(("soul_relic_slot", "head")),
+            Answers(("soul_relic_slot", "head"), ("confirm_soul_relic_write", true)),
             Owner("browser-test"));
 
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
@@ -255,11 +255,54 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
             soul.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
     }
 
-    private static IReadOnlyDictionary<string, JsonNode?> Answers(params (string key, string value)[] pairs)
+    [Fact]
+    public async Task TryApplyAsync_SoulRelicEquip_RequiresConfirmation()
+    {
+        await SeedSoulStateAsync(stored: new[] { ("r1", "Кулон Тишины") }, equipped: Array.Empty<(string, string, string)>());
+
+        var result = await _service.TryApplyAsync(
+            "/soul_relic_equip",
+            Answers(("soul_relic_identity", "r1"), ("soul_relic_slot", "head"), ("confirm_soul_relic_write", false)),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("Подтвердите", result.Message, StringComparison.OrdinalIgnoreCase);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Single(soul["soulRelics"]!["stored"]!.AsArray());
+        Assert.Empty(soul["soulRelics"]!["equipped"]!.AsArray());
+    }
+
+    [Fact]
+    public async Task TryApplyAsync_SoulRelicUnequip_RequiresConfirmation()
+    {
+        await SeedSoulStateAsync(stored: Array.Empty<(string, string)>(), equipped: new[] { ("r1", "Кулон Тишины", "head") });
+
+        var result = await _service.TryApplyAsync(
+            "/soul_relic_unequip",
+            Answers(("soul_relic_slot", "head"), ("confirm_soul_relic_write", false)),
+            Owner("browser-test"));
+
+        Assert.False(result.Success);
+        Assert.Contains("Подтвердите", result.Message, StringComparison.OrdinalIgnoreCase);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        Assert.Empty(soul["soulRelics"]!["stored"]!.AsArray());
+        Assert.Single(soul["soulRelics"]!["equipped"]!.AsArray());
+    }
+
+    private static IReadOnlyDictionary<string, JsonNode?> Answers(params (string key, object? value)[] pairs)
     {
         var dict = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
         foreach (var (key, value) in pairs)
-            dict[key] = JsonValue.Create(value);
+        {
+            dict[key] = value switch
+            {
+                null => null,
+                bool flag => JsonValue.Create(flag),
+                int number => JsonValue.Create(number),
+                string text => JsonValue.Create(text),
+                _ => JsonValue.Create(value.ToString())
+            };
+        }
         return dict;
     }
 

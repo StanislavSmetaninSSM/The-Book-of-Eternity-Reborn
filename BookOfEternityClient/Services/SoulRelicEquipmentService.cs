@@ -274,9 +274,6 @@ public static class SoulRelicEquipmentService
         if (string.IsNullOrWhiteSpace(relicIdOrName))
             return SoulRelicWriteOutcome.Failed("Укажите реликвию для экипировки.");
 
-        if (!TryNormalizeSlot(slotKey, out var normalizedSlot))
-            return SoulRelicWriteOutcome.Failed("Выберите корректный слот для реликвии.");
-
         var alreadyEquipped = FindRelicInArray(context.Equipped, relicIdOrName);
         if (alreadyEquipped != null)
             return SoulRelicWriteOutcome.Failed($"Реликвия «{alreadyEquipped.Name}» уже экипирована.");
@@ -285,8 +282,22 @@ public static class SoulRelicEquipmentService
         if (storedRelic == null)
             return SoulRelicWriteOutcome.Failed($"Реликвия «{relicIdOrName}» не найдена в хранилище.");
 
+        if (!TryNormalizeEquipSlot(slotKey, storedRelic, out var normalizedSlot))
+            return SoulRelicWriteOutcome.Failed("Выберите корректный слот для реликвии.");
+
+        if (storedRelic.CompatibleSlots.Count > 0 &&
+            !storedRelic.CompatibleSlots.Any(slot => SlotsEqual(slot, normalizedSlot)))
+        {
+            return SoulRelicWriteOutcome.Failed(
+                $"Реликвия «{storedRelic.Name}» подходит только для слота: {FormatSlotList(storedRelic.CompatibleSlots)}.");
+        }
+
+        var occupyingRelic = context.Equipped.FirstOrDefault(item => SlotsEqual(item.CurrentSlot, normalizedSlot));
+        if (occupyingRelic != null)
+            return SoulRelicWriteOutcome.Failed($"Слот {FormatSlotLabel(normalizedSlot)} уже занят реликвией «{occupyingRelic.Name}».");
+
         return SoulRelicWriteOutcome.Completed(
-            $"Реликвия «{storedRelic.Name}» экипирована в слот {normalizedSlot}.",
+            $"Реликвия «{storedRelic.Name}» экипирована в слот {FormatSlotLabel(normalizedSlot)}.",
             storedRelic.RelicId,
             storedRelic.Name,
             normalizedSlot);
@@ -296,12 +307,13 @@ public static class SoulRelicEquipmentService
         SoulRelicEquipmentContext context,
         string slotKey)
     {
-        if (!TryNormalizeSlot(slotKey, out var normalizedSlot))
+        if (string.IsNullOrWhiteSpace(slotKey))
             return SoulRelicWriteOutcome.Failed("Выберите корректный слот для снятия реликвии.");
 
+        var normalizedSlot = NormalizeSlotReference(slotKey);
         var equippedRelic = FindRelicInEquippedBySlot(context.Equipped, normalizedSlot);
         if (equippedRelic == null)
-            return SoulRelicWriteOutcome.Failed($"В слоте {normalizedSlot} нет экипированной реликвии.");
+            return SoulRelicWriteOutcome.Failed($"В слоте {FormatSlotLabel(normalizedSlot)} нет экипированной реликвии.");
 
         return SoulRelicWriteOutcome.Completed(
             $"Реликвия «{equippedRelic.Name}» снята и убрана в хранилище.",
@@ -324,7 +336,10 @@ public static class SoulRelicEquipmentService
     {
         var relicId = FirstNonEmpty(GetString(relic, "relicId"), GetString(relic, "id"));
         var name = FirstNonEmpty(GetString(relic, "name"), GetString(relic, "itemName"), "Безымянная реликвия");
-        var rarity = GetString(relic, "rarity");
+        var rarity = FirstNonEmpty(
+            GetString(relic, "rarity"),
+            GetString(relic, "quality"),
+            GetString(relic, "relicRarity"));
         var gameplayStatus = relic["gameplayStatus"] as JsonObject;
         var isEquipped = false;
         var currentSlot = string.Empty;
@@ -338,7 +353,14 @@ public static class SoulRelicEquipmentService
                     currentSlot = slotText;
             }
         }
-        return new SoulRelicItem(relicId, name, rarity, isEquipped, currentSlot);
+        var compatibleSlots = ReadCompatibleSlots(relic);
+        if (string.IsNullOrWhiteSpace(currentSlot) && isEquipped)
+        {
+            currentSlot = FirstNonEmpty(
+                GetString(relic, "currentSlot"),
+                compatibleSlots.FirstOrDefault() ?? string.Empty);
+        }
+        return new SoulRelicItem(relicId, name, rarity, isEquipped, NormalizeSlotReference(currentSlot), compatibleSlots);
     }
 
     private static JsonObject? FindRelicIn(JsonArray array, string relicIdOrName)
@@ -370,25 +392,106 @@ public static class SoulRelicEquipmentService
                string.Equals(nodeName, trimmed, StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool RelicNodeInSlot(JsonObject relic, string normalizedSlot)
-    {
-        var gameplayStatus = relic["gameplayStatus"] as JsonObject;
-        if (gameplayStatus == null) return false;
-        if (gameplayStatus["currentSlot"] is not JsonValue slotVal) return false;
-        if (!slotVal.TryGetValue<string>(out var slotText)) return false;
-        return string.Equals(slotText, normalizedSlot, StringComparison.OrdinalIgnoreCase);
-    }
-
     private static JsonObject? FindRelicInEquippedSlot(JsonArray array, string normalizedSlot)
     {
-        return array.OfType<JsonObject>().FirstOrDefault(node => RelicNodeInSlot(node, normalizedSlot));
+        return array.OfType<JsonObject>().FirstOrDefault(node => SlotsEqual(ReadRelic(node).CurrentSlot, normalizedSlot));
     }
 
     private static SoulRelicItem? FindRelicInEquippedBySlot(IEnumerable<SoulRelicItem> items, string normalizedSlot)
     {
         return items.FirstOrDefault(item =>
-            string.Equals(item.CurrentSlot, normalizedSlot, StringComparison.OrdinalIgnoreCase));
+            SlotsEqual(item.CurrentSlot, normalizedSlot));
     }
+
+    private static bool TryNormalizeEquipSlot(
+        string slotKey,
+        SoulRelicItem relic,
+        out string normalizedSlot)
+    {
+        normalizedSlot = string.Empty;
+        if (string.IsNullOrWhiteSpace(slotKey))
+            return false;
+
+        var requested = NormalizeSlotReference(slotKey);
+        if (AllowedSlots.Any(slot => SlotsEqual(slot, requested)) ||
+            relic.CompatibleSlots.Any(slot => SlotsEqual(slot, requested)))
+        {
+            normalizedSlot = requested;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static IReadOnlyList<string> ReadCompatibleSlots(JsonObject relic)
+    {
+        var slots = new List<string>();
+        AddSlotValues(slots, relic["slot"]);
+        AddSlotValues(slots, relic["equipmentSlot"]);
+        AddSlotValues(slots, relic["equipSlot"]);
+        AddSlotValues(slots, relic["compatibleSlots"]);
+        AddSlotValues(slots, relic["allowedSlots"]);
+
+        if (relic["equipmentData"] is JsonObject equipmentData)
+        {
+            AddSlotValues(slots, equipmentData["slot"]);
+            AddSlotValues(slots, equipmentData["equipmentSlot"]);
+            AddSlotValues(slots, equipmentData["equipSlot"]);
+            AddSlotValues(slots, equipmentData["compatibleSlots"]);
+            AddSlotValues(slots, equipmentData["allowedSlots"]);
+        }
+
+        return slots
+            .Select(NormalizeSlotReference)
+            .Where(static slot => !string.IsNullOrWhiteSpace(slot))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private static void AddSlotValues(List<string> slots, JsonNode? node)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text))
+                slots.Add(text);
+            return;
+        }
+
+        if (node is not JsonArray array)
+            return;
+
+        foreach (var entry in array)
+        {
+            if (entry is JsonValue entryValue &&
+                entryValue.TryGetValue<string>(out var text) &&
+                !string.IsNullOrWhiteSpace(text))
+            {
+                slots.Add(text);
+            }
+        }
+    }
+
+    private static bool SlotsEqual(string left, string right) =>
+        string.Equals(NormalizeSlotReference(left), NormalizeSlotReference(right), StringComparison.OrdinalIgnoreCase);
+
+    private static string NormalizeSlotReference(string slot)
+    {
+        if (string.IsNullOrWhiteSpace(slot))
+            return string.Empty;
+
+        var trimmed = slot.Trim();
+        var direct = AllowedSlots.FirstOrDefault(key =>
+            string.Equals(key, trimmed, StringComparison.OrdinalIgnoreCase));
+        return direct ?? trimmed;
+    }
+
+    public static string FormatSlotLabel(string slot) =>
+        SlotLabels.TryGetValue(NormalizeSlotReference(slot), out var label)
+            ? label
+            : NormalizeSlotReference(slot);
+
+    private static string FormatSlotList(IEnumerable<string> slots) =>
+        string.Join(", ", slots.Select(FormatSlotLabel));
 
     private static JsonObject EnsureSoulRelicsObject(JsonObject root)
     {
@@ -434,7 +537,8 @@ public sealed record SoulRelicItem(
     string Name,
     string Rarity,
     bool IsEquipped,
-    string CurrentSlot);
+    string CurrentSlot,
+    IReadOnlyList<string> CompatibleSlots);
 
 public sealed record SoulRelicWriteOutcome(
     bool Success,

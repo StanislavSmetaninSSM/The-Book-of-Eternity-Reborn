@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -62,11 +63,12 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
         var ctx = await SoulRelicEquipmentService.ReadContextAsync(fs);
 
         Assert.NotNull(ctx);
-        Assert.Single(ctx.Stored);
-        Assert.Single(ctx.Equipped);
-        Assert.Equal("r1", ctx.Stored[0].RelicId);
-        Assert.Equal("r2", ctx.Equipped[0].RelicId);
-        Assert.Equal("body", ctx.Equipped[0].CurrentSlot);
+        var context = ctx!;
+        Assert.Single(context.Stored);
+        Assert.Single(context.Equipped);
+        Assert.Equal("r1", context.Stored[0].RelicId);
+        Assert.Equal("r2", context.Equipped[0].RelicId);
+        Assert.Equal("body", context.Equipped[0].CurrentSlot);
     }
 
     [Fact]
@@ -78,11 +80,12 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
 
         Assert.True(outcome.Success, outcome.Message);
         var ctx = await SoulRelicEquipmentService.ReadContextAsync(fs);
-        Assert.Empty(ctx.Stored);
-        Assert.Single(ctx.Equipped);
-        Assert.Equal("r1", ctx.Equipped[0].RelicId);
-        Assert.True(ctx.Equipped[0].IsEquipped);
-        Assert.Equal("mainHand", ctx.Equipped[0].CurrentSlot);
+        var context = ctx!;
+        Assert.Empty(context.Stored);
+        Assert.Single(context.Equipped);
+        Assert.Equal("r1", context.Equipped[0].RelicId);
+        Assert.True(context.Equipped[0].IsEquipped);
+        Assert.Equal("mainHand", context.Equipped[0].CurrentSlot);
     }
 
     [Fact]
@@ -108,6 +111,58 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task EquipAsync_WhenSlotOccupied_ReturnsFailureAndPreservesCollections()
+    {
+        var fs = await SeedAsync(storedIds: new[] { "r2" }, equipped: new[] { ("r1", "head") });
+
+        var outcome = await SoulRelicEquipmentService.EquipAsync(fs, "r2", "head");
+
+        Assert.False(outcome.Success);
+        Assert.Contains("слот", outcome.Message, StringComparison.OrdinalIgnoreCase);
+        var ctx = await SoulRelicEquipmentService.ReadContextAsync(fs);
+        var context = ctx!;
+        Assert.Single(context.Stored);
+        Assert.Single(context.Equipped);
+        Assert.Equal("r2", context.Stored[0].RelicId);
+        Assert.Equal("r1", context.Equipped[0].RelicId);
+    }
+
+    [Fact]
+    public async Task EquipAsync_WhenRelicDeclaresCompatibleSlot_RejectsDifferentSlot()
+    {
+        var payload = new
+        {
+            soulRelics = new
+            {
+                stored = new object[]
+                {
+                    new
+                    {
+                        relicId = "r1",
+                        name = "Клинок Памяти",
+                        rarity = "rare",
+                        slot = "mainHand",
+                        gameplayStatus = new { equipped = false }
+                    }
+                },
+                equipped = Array.Empty<object>()
+            }
+        };
+        await _fs.WriteFileAtomicAsync(
+            SoulRelicEquipmentService.SoulStatePath,
+            JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true }));
+
+        var outcome = await SoulRelicEquipmentService.EquipAsync(_fs, "r1", "body");
+
+        Assert.False(outcome.Success);
+        Assert.Contains("подходит только", outcome.Message, StringComparison.OrdinalIgnoreCase);
+        var ctx = await SoulRelicEquipmentService.ReadContextAsync(_fs);
+        var context = ctx!;
+        Assert.Single(context.Stored);
+        Assert.Empty(context.Equipped);
+    }
+
+    [Fact]
     public async Task UnequipAsync_MovesRelicFromEquippedToStored()
     {
         var fs = await SeedAsync(storedIds: Array.Empty<string>(), equipped: new[] { ("r1", "head") });
@@ -116,10 +171,26 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
 
         Assert.True(outcome.Success, outcome.Message);
         var ctx = await SoulRelicEquipmentService.ReadContextAsync(fs);
-        Assert.Empty(ctx.Equipped);
-        Assert.Single(ctx.Stored);
-        Assert.Equal("r1", ctx.Stored[0].RelicId);
-        Assert.False(ctx.Stored[0].IsEquipped);
+        var context = ctx!;
+        Assert.Empty(context.Equipped);
+        Assert.Single(context.Stored);
+        Assert.Equal("r1", context.Stored[0].RelicId);
+        Assert.False(context.Stored[0].IsEquipped);
+    }
+
+    [Fact]
+    public async Task UnequipAsync_AllowsExistingLegacySlotOutsideDefaultSlotList()
+    {
+        var fs = await SeedAsync(storedIds: Array.Empty<string>(), equipped: new[] { ("r1", "weapon") });
+
+        var outcome = await SoulRelicEquipmentService.UnequipAsync(fs, "weapon");
+
+        Assert.True(outcome.Success, outcome.Message);
+        var ctx = await SoulRelicEquipmentService.ReadContextAsync(fs);
+        var context = ctx!;
+        Assert.Empty(context.Equipped);
+        Assert.Single(context.Stored);
+        Assert.Equal("r1", context.Stored[0].RelicId);
     }
 
     [Fact]
@@ -162,11 +233,12 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
         var ctx = await SoulRelicEquipmentService.ReadContextAsync(_fs);
 
         Assert.NotNull(ctx);
-        Assert.Single(ctx.Stored);
-        Assert.Single(ctx.Equipped);
-        Assert.Equal("r1", ctx.Stored[0].RelicId);
-        Assert.Equal("r2", ctx.Equipped[0].RelicId);
-        Assert.Equal("head", ctx.Equipped[0].CurrentSlot);
+        var context = ctx!;
+        Assert.Single(context.Stored);
+        Assert.Single(context.Equipped);
+        Assert.Equal("r1", context.Stored[0].RelicId);
+        Assert.Equal("r2", context.Equipped[0].RelicId);
+        Assert.Equal("head", context.Equipped[0].CurrentSlot);
     }
 
     [Fact]
@@ -203,8 +275,45 @@ public sealed class SoulRelicEquipmentServiceTests : IDisposable
         await SoulRelicEquipmentService.EquipAsync(_fs, "r1", "mainHand");
 
         var ctx = await SoulRelicEquipmentService.ReadContextAsync(_fs);
-        Assert.Single(ctx.Equipped);
-        Assert.Equal("rare", ctx.Equipped[0].Rarity);
-        Assert.Equal("Огненный Шар", ctx.Equipped[0].Name);
+        var context = ctx!;
+        Assert.Single(context.Equipped);
+        Assert.Equal("rare", context.Equipped[0].Rarity);
+        Assert.Equal("Огненный Шар", context.Equipped[0].Name);
+    }
+
+    [Fact]
+    public async Task ReadContextAsync_ResolvesRarityAndCompatibleSlotsFromAliases()
+    {
+        var soul = new JsonObject
+        {
+            ["soulRelics"] = new JsonObject
+            {
+                ["stored"] = new JsonArray
+                {
+                    new JsonObject
+                    {
+                        ["relicId"] = "r1",
+                        ["name"] = "Кольцо Тишины",
+                        ["quality"] = "legendary",
+                        ["equipmentData"] = new JsonObject
+                        {
+                            ["equipSlot"] = "soulAnchor"
+                        }
+                    }
+                },
+                ["equipped"] = new JsonArray()
+            }
+        };
+        await _fs.WriteFileAtomicAsync(
+            SoulRelicEquipmentService.SoulStatePath,
+            soul.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+
+        var ctx = await SoulRelicEquipmentService.ReadContextAsync(_fs);
+
+        Assert.NotNull(ctx);
+        var context = ctx!;
+        Assert.Single(context.Stored);
+        Assert.Equal("legendary", context.Stored[0].Rarity);
+        Assert.Equal(["soulAnchor"], context.Stored[0].CompatibleSlots);
     }
 }

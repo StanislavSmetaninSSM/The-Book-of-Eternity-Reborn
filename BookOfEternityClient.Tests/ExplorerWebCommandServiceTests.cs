@@ -1168,6 +1168,60 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SoulRelics_RendersStatusTableAndPlayerActions()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая душа",
+          "currentRealm": "Chaos Sea",
+          "soulRelics": {
+            "stored": [
+              {
+                "relicId": "relic_stored",
+                "name": "Клинок Памяти",
+                "rarity": "rare",
+                "slot": "mainHand",
+                "gameplayStatus": { "equipped": false }
+              }
+            ],
+            "equipped": [
+              {
+                "relicId": "relic_equipped",
+                "name": "Шлем Тишины",
+                "quality": "legendary",
+                "gameplayStatus": { "equipped": true, "currentSlot": "head" }
+              }
+            ]
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/soul_relics"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var table = Assert.Single(result.Blocks.OfType<UiTableBlock>(), block => block.Title == "Реликвии души");
+        Assert.Equal(["Статус", "Слот", "Реликвия", "Редкость", "ID"], table.Columns);
+        Assert.Contains(table.Rows, row =>
+            row.Cells.Contains("Хранилище") &&
+            row.Cells.Contains("Клинок Памяти") &&
+            row.Cells.Contains("rare"));
+        Assert.Contains(table.Rows, row =>
+            row.Cells.Contains("Экипировано") &&
+            row.Cells.Contains("Шлем Тишины") &&
+            row.Cells.Contains("legendary"));
+
+        var equipAction = Assert.Single(result.Actions, action => action.Id == "soul-relic-equip-relic_stored");
+        Assert.Equal("/soul_relic_equip relic_stored", equipAction.Command);
+        Assert.Equal(UiActionStyle.Secondary, equipAction.Style);
+        Assert.False(equipAction.RequiresConfirmation);
+
+        var unequipAction = Assert.Single(result.Actions, action => action.Id == "soul-relic-unequip-head");
+        Assert.Equal("/soul_relic_unequip head", unequipAction.Command);
+        Assert.Equal(UiActionStyle.Secondary, unequipAction.Style);
+        Assert.False(unequipAction.RequiresConfirmation);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_InventoryEquipAction_OpensPromptSessionWithItemSlotAndConfirmation()
     {
         await SeedInventoryEquipmentItemsAsync();

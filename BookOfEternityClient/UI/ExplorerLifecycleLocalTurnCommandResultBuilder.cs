@@ -559,6 +559,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 string.IsNullOrWhiteSpace(relic.Rarity) ? "-" : relic.Rarity,
                 string.IsNullOrWhiteSpace(relic.RelicId) ? "-" : relic.RelicId))
             .ToList();
+        var slotOptions = BuildSoulRelicEquipSlotOptions(stored);
 
         var statusText = stored.Count == 0
             ? "В хранилище нет реликвий, доступных для экипировки."
@@ -613,9 +614,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     Id = "soul_relic_slot",
                     Prompt = "Слот реликвии",
                     Required = true,
-                    Options = SoulRelicEquipmentService.SlotLabels
-                        .Select(static pair => Option(pair.Key, pair.Value, ""))
-                        .ToList()
+                    Options = slotOptions
                 },
                 new UiConfirmationPrompt
                 {
@@ -631,7 +630,9 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
     {
         var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
         var context = await SoulRelicEquipmentService.ReadContextAsync(fs);
-        var equipped = context?.Equipped.ToList() ?? [];
+        var equipped = context?.Equipped
+            .Where(static relic => !string.IsNullOrWhiteSpace(relic.CurrentSlot))
+            .ToList() ?? [];
 
         var rows = equipped
             .Select(static relic => Row(
@@ -697,6 +698,35 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                     DefaultValue = false
                 }
             ]);
+    }
+
+    private static List<UiSelectionOption> BuildSoulRelicEquipSlotOptions(IReadOnlyList<SoulRelicItem> stored)
+    {
+        var slots = new List<string>();
+        foreach (var relic in stored)
+        {
+            foreach (var compatibleSlot in relic.CompatibleSlots)
+            {
+                if (!string.IsNullOrWhiteSpace(compatibleSlot) &&
+                    !slots.Contains(compatibleSlot, StringComparer.OrdinalIgnoreCase))
+                {
+                    slots.Add(compatibleSlot);
+                }
+            }
+        }
+
+        if (slots.Count == 0 || stored.Count != 1)
+        {
+            foreach (var slot in SoulRelicEquipmentService.SlotLabels.Keys)
+            {
+                if (!slots.Contains(slot, StringComparer.OrdinalIgnoreCase))
+                    slots.Add(slot);
+            }
+        }
+
+        return slots
+            .Select(static slot => Option(slot, SoulRelicEquipmentService.FormatSlotLabel(slot), ""))
+            .ToList();
     }
 
     private static async Task<ExplorerCommandResult> BuildCraftAsync(string command, FileSystemManager fs)

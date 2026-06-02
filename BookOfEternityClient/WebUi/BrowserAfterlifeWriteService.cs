@@ -277,6 +277,9 @@ public sealed class BrowserAfterlifeWriteService
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
+        if (!ReadBoolAnswer(answers, "confirm_soul_relic_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите экипировку реликвии.");
+
         var relicIdOrName = ReadAnswer(answers, "soul_relic_identity");
         var slotKey = ReadAnswer(answers, "soul_relic_slot");
 
@@ -289,6 +292,7 @@ public sealed class BrowserAfterlifeWriteService
                 var outcome = await SoulRelicEquipmentService.EquipAsync(_fs, relicIdOrName, slotKey);
                 if (!outcome.Success)
                     throw new InvalidOperationException(outcome.Message);
+                await _stateManager.RefreshGameStateAsync();
             },
             "Реликвия души экипирована",
             "Браузер переместил реликвию души из хранилища в слот экипировки.",
@@ -305,6 +309,9 @@ public sealed class BrowserAfterlifeWriteService
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
     {
+        if (!ReadBoolAnswer(answers, "confirm_soul_relic_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите снятие реликвии.");
+
         var slotKey = ReadAnswer(answers, "soul_relic_slot");
 
         return await ExecuteAsync(
@@ -316,6 +323,7 @@ public sealed class BrowserAfterlifeWriteService
                 var outcome = await SoulRelicEquipmentService.UnequipAsync(_fs, slotKey);
                 if (!outcome.Success)
                     throw new InvalidOperationException(outcome.Message);
+                await _stateManager.RefreshGameStateAsync();
             },
             "Реликвия души снята",
             "Браузер вернул реликвию души из слота в хранилище.",
@@ -910,6 +918,18 @@ public sealed class BrowserAfterlifeWriteService
     {
         var text = ReadAnswer(answers, key);
         return int.TryParse(text, out var value) ? value : fallback;
+    }
+
+    private static bool ReadBoolAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)
+    {
+        if (!answers.TryGetValue(key, out var node) || node is not JsonValue value)
+            return false;
+
+        if (value.TryGetValue<bool>(out var flag))
+            return flag;
+        return value.TryGetValue<string>(out var text) &&
+               bool.TryParse(text, out flag) &&
+               flag;
     }
 
     private static string? ReadJsonString(JsonElement root, string propertyName)
