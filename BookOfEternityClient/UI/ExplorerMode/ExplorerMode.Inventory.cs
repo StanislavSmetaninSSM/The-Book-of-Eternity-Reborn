@@ -113,8 +113,8 @@ public partial class ExplorerMode
             foreach (var (identity, name, type, data) in inventoryItems)
             {
                 var qty = GetStr(data, "count", GetStr(data, "quantity", "1"));
-                var qtyStr = qty != "1" ? $" x{qty}" : "";
-                var typeStr = !string.IsNullOrEmpty(type) ? $" [{type}]" : "";
+                var qtyStr = qty != "1" ? $" x{Markup.Escape(qty)}" : "";
+                var typeStr = !string.IsNullOrEmpty(type) ? $" {Markup.Escape($"[{type}]")}" : "";
 
                 // Status flags
                 var flags = "";
@@ -133,7 +133,7 @@ public partial class ExplorerMode
                 if ((data.TryGetProperty("isEmpty", out var emp2) && emp2.ValueKind == JsonValueKind.True) && !isSidecarEmpty)
                     flags += " ⚠ ПУСТО";
 
-                inventoryChoiceEntries.Add(($"📦 {name}{qtyStr}{typeStr}{flags}", identity));
+                inventoryChoiceEntries.Add(($"📦 {Markup.Escape(name)}{qtyStr}{typeStr}{Markup.Escape(flags)}", identity));
             }
 
             choices.AddRange(MakeUniqueChoiceLabels(inventoryChoiceEntries));

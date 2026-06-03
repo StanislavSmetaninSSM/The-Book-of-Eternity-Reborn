@@ -28,6 +28,38 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_InventoryEscapesItemTypeInSelectionChoices()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/inventory/items.json", new
+        {
+            items = new[]
+            {
+                new
+                {
+                    itemId = "ring_001",
+                    name = "Перстень дома Вальмонт",
+                    type = "Кольцо",
+                    count = 1,
+                    equipmentSlot = "Finger1"
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("inventory_escape_item_type");
+        var inventoryChoices = _console.SelectionChoicesHistory
+            .Where(entry => entry.Title.Contains("Инвентарь", StringComparison.OrdinalIgnoreCase))
+            .SelectMany(entry => entry.Choices)
+            .ToArray();
+        Assert.Contains(inventoryChoices, choice => choice.Contains("[[Кольцо]]", StringComparison.Ordinal));
+        Assert.DoesNotContain(inventoryChoices, choice => choice.Contains(" [Кольцо]", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task TryProcessCommand_InventoryStorageMove_MovesItemIntoStorage()
     {
         await SeedMortalStateAsync();
