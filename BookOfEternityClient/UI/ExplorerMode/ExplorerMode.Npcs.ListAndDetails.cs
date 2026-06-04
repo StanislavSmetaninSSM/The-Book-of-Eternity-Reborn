@@ -1028,7 +1028,7 @@ private async Task ShowNPCs()
 
                 choices.Add(meta.Count > 0
                     ? ConsoleLayout.PlainChoiceLabel($"📦 {choiceItemName}", string.Join(" • ", meta))
-                    : $"📦 {choiceItemName}");
+                    : GameInterface.SafePromptChoice($"📦 {choiceItemName}"));
             }
 
             choices.Add("← Назад");

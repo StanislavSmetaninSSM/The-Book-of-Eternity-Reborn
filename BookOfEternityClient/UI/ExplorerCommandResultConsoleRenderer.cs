@@ -36,11 +36,13 @@ public static class ExplorerCommandResultConsoleRenderer
         UiRawJsonBlock rawJson => RenderRawJson(rawJson),
         UiImageBlock image => RenderImage(image),
         UiMapBlock map => RenderMap(map),
-        _ => new Markup(Markup.Escape(block.ToString() ?? string.Empty))
+        _ => GameInterface.SafeMarkupText(block.ToString() ?? string.Empty)
     };
 
     private static IRenderable RenderText(UiTextBlock block) =>
-        new Markup(ApplyTone(Markup.Escape(block.Text), block.Tone));
+        GameInterface.SafeMarkup(
+            ApplyTone(GameInterface.EscapeMarkup(block.Text), block.Tone),
+            "command result text");
 
     private static IRenderable RenderPanel(UiPanelBlock block)
     {
@@ -51,7 +53,7 @@ public static class ExplorerCommandResultConsoleRenderer
 
         return new Panel(grid)
         {
-            Header = new PanelHeader($" {Markup.Escape(block.Title)} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(block.Title),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Grey),
             Padding = new Padding(1, 0),
@@ -67,7 +69,7 @@ public static class ExplorerCommandResultConsoleRenderer
             .Expand();
 
         foreach (var column in block.Columns)
-            table.AddColumn(new TableColumn(Markup.Escape(column)));
+            table.AddColumn(new TableColumn(GameInterface.EscapeMarkup(column)));
 
         if (block.Columns.Count == 0)
             table.AddColumn(string.Empty);
@@ -75,16 +77,16 @@ public static class ExplorerCommandResultConsoleRenderer
         foreach (var row in block.Rows)
         {
             var cells = row.Cells
-                .Select(static cell => (IRenderable)new Markup(Markup.Escape(cell)))
+                .Select(static cell => (IRenderable)GameInterface.SafeMarkupText(cell))
                 .ToArray();
-            table.AddRow(cells.Length == 0 ? [new Markup(string.Empty)] : cells);
+            table.AddRow(cells.Length == 0 ? [GameInterface.SafeMarkupText(string.Empty)] : cells);
         }
 
         return string.IsNullOrWhiteSpace(block.Title)
             ? table
             : new Panel(table)
             {
-                Header = new PanelHeader($" {Markup.Escape(block.Title)} ", Justify.Center),
+                Header = GameInterface.SafePanelHeader(block.Title),
                 Border = BoxBorder.Rounded,
                 BorderStyle = new Style(Color.Grey),
                 Padding = new Padding(1, 0),
@@ -100,7 +102,7 @@ public static class ExplorerCommandResultConsoleRenderer
         for (var index = 0; index < block.Items.Count; index++)
         {
             var prefix = block.Ordered ? $"{index + 1}." : "•";
-            grid.AddRow(new Markup($"{prefix} {Markup.Escape(block.Items[index])}"));
+            grid.AddRow(GameInterface.SafeMarkupText($"{prefix} {block.Items[index]}"));
         }
 
         return grid;
@@ -118,8 +120,10 @@ public static class ExplorerCommandResultConsoleRenderer
         foreach (var item in block.Items)
         {
             table.AddRow(
-                new Markup($"[bold]{Markup.Escape(item.Key)}[/]"),
-                new Markup(Markup.Escape(item.Value)));
+                GameInterface.SafeMarkup(
+                    $"[bold]{GameInterface.EscapeMarkup(item.Key)}[/]",
+                    "command result key"),
+                GameInterface.SafeMarkupText(item.Value));
         }
 
         return table;
@@ -128,9 +132,9 @@ public static class ExplorerCommandResultConsoleRenderer
     private static IRenderable RenderMessage(UiMessageBlock block)
     {
         var color = SeverityColor(block.Severity);
-        return new Panel(new Markup(Markup.Escape(block.Message)))
+        return new Panel(GameInterface.SafeMarkupText(block.Message))
         {
-            Header = new PanelHeader($" {Markup.Escape(block.Title)} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(block.Title),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(color),
             Padding = new Padding(1, 0),
@@ -141,9 +145,9 @@ public static class ExplorerCommandResultConsoleRenderer
     private static IRenderable RenderRawJson(UiRawJsonBlock block)
     {
         var json = block.Json?.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed) ?? "null";
-        return new Panel(new Markup(Markup.Escape(json)))
+        return new Panel(GameInterface.SafeMarkupText(json))
         {
-            Header = new PanelHeader($" {Markup.Escape(block.Title)} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(block.Title),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Grey),
             Padding = new Padding(1, 0),
@@ -152,7 +156,7 @@ public static class ExplorerCommandResultConsoleRenderer
     }
 
     private static IRenderable RenderImage(UiImageBlock block) =>
-        new Panel(new Markup(Markup.Escape($"{block.Title}\n{block.RelativePath}\n{block.ContentType}, {block.Length} байт")))
+        new Panel(GameInterface.SafeMarkupText($"{block.Title}\n{block.RelativePath}\n{block.ContentType}, {block.Length} байт"))
         {
             Header = new PanelHeader(" Изображение ", Justify.Center),
             Border = BoxBorder.Rounded,
@@ -170,16 +174,18 @@ public static class ExplorerCommandResultConsoleRenderer
             .AddColumn("Поле")
             .AddColumn("Значение");
 
-        table.AddRow("Царство", Markup.Escape(block.Map.Realm));
-        table.AddRow("Локаций", block.Map.Nodes.Count.ToString());
-        table.AddRow("Связей", block.Map.Links.Count.ToString());
-        table.AddRow("Уровни", Markup.Escape(string.Join(", ", block.Map.ZLevels.Select(static level => level.Label))));
+        table.AddRow(GameInterface.SafeMarkupText("Царство"), GameInterface.SafeMarkupText(block.Map.Realm));
+        table.AddRow(GameInterface.SafeMarkupText("Локаций"), GameInterface.SafeMarkupText(block.Map.Nodes.Count.ToString()));
+        table.AddRow(GameInterface.SafeMarkupText("Связей"), GameInterface.SafeMarkupText(block.Map.Links.Count.ToString()));
+        table.AddRow(
+            GameInterface.SafeMarkupText("Уровни"),
+            GameInterface.SafeMarkupText(string.Join(", ", block.Map.ZLevels.Select(static level => level.Label))));
         if (!string.IsNullOrWhiteSpace(block.Map.CurrentNodeId))
-            table.AddRow("Текущая точка", Markup.Escape(block.Map.CurrentNodeId));
+            table.AddRow(GameInterface.SafeMarkupText("Текущая точка"), GameInterface.SafeMarkupText(block.Map.CurrentNodeId));
 
         return new Panel(table)
         {
-            Header = new PanelHeader($" {Markup.Escape(string.IsNullOrWhiteSpace(block.Title) ? "Карта" : block.Title)} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(string.IsNullOrWhiteSpace(block.Title) ? "Карта" : block.Title),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Green),
             Padding = new Padding(1, 0),
@@ -200,9 +206,9 @@ public static class ExplorerCommandResultConsoleRenderer
         foreach (var action in actions)
         {
             table.AddRow(
-                new Markup(Markup.Escape(action.Label)),
-                new Markup(Markup.Escape(action.Command)),
-                new Markup(Markup.Escape(action.Style.ToString())));
+                GameInterface.SafeMarkupText(action.Label),
+                GameInterface.SafeMarkupText(action.Command),
+                GameInterface.SafeMarkupText(action.Style.ToString()));
         }
 
         return new Panel(table)
@@ -228,9 +234,9 @@ public static class ExplorerCommandResultConsoleRenderer
         foreach (var prompt in prompts)
         {
             table.AddRow(
-                new Markup(Markup.Escape(prompt.Prompt)),
-                new Markup(Markup.Escape(DescribePromptType(prompt))),
-                new Markup(Markup.Escape(DescribePromptOptions(prompt))));
+                GameInterface.SafeMarkupText(prompt.Prompt),
+                GameInterface.SafeMarkupText(DescribePromptType(prompt)),
+                GameInterface.SafeMarkupText(DescribePromptOptions(prompt)));
         }
 
         return new Panel(table)
@@ -250,9 +256,9 @@ public static class ExplorerCommandResultConsoleRenderer
             ? "Уведомления"
             : $"Уведомления: {notification.Title}";
 
-        return new Panel(new Markup(Markup.Escape(notification.Message)))
+        return new Panel(GameInterface.SafeMarkupText(notification.Message))
         {
-            Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(title),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(color),
             Padding = new Padding(1, 0),

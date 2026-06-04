@@ -105,7 +105,7 @@ public partial class ExplorerMode
                 foreach (var (slotKey, _, itemName, _) in equippedEntries)
                 {
                     var slotLabel = SlotLabels.GetValueOrDefault(slotKey, slotKey);
-                    choices.Add($"⚔ {slotLabel}: {itemName}");
+                    choices.Add(GameInterface.SafePromptChoice($"⚔ {slotLabel}: {itemName}"));
                 }
             }
 
@@ -168,14 +168,14 @@ public partial class ExplorerMode
                         : (rp.Value.ValueKind == JsonValueKind.String ? rp.Value.GetString() ?? "" : "");
                     if (!string.IsNullOrEmpty(rv) && rv != "0")
                     {
-                        choices.Insert(infoPrefixCount, $"💎 {rp.Name}: {rv}");
+                        choices.Insert(infoPrefixCount, GameInterface.SafePromptChoice($"💎 {rp.Name}: {rv}"));
                         infoPrefixCount++;
                     }
                 }
             }
 
             // Location storages link — interactive
-            var accessibleStorages = new List<(string name, string storageId, int contCount)>();
+            var accessibleStorageChoices = new Dictionary<int, (string name, string storageId, int contCount)>();
             var locStorDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
             if (locStorDoc != null)
             {
@@ -190,14 +190,15 @@ public partial class ExplorerMode
                         var contCount = 0;
                         if (st.TryGetProperty("contents", out var cont) && cont.ValueKind == JsonValueKind.Array)
                             contCount = cont.GetArrayLength();
+                        var choiceIndex = choices.Count;
                         if (hasAccess)
                         {
-                            choices.Add($"📦 {sName} ({contCount} пр.) → управление");
-                            accessibleStorages.Add((sName, sId, contCount));
+                            choices.Add(GameInterface.SafePromptChoice($"📦 {sName} ({contCount} пр.) → управление"));
+                            accessibleStorageChoices[choiceIndex] = (sName, sId, contCount);
                         }
                         else
                         {
-                            choices.Add($"📦 🔒 {sName} ({contCount} пр.)");
+                            choices.Add(GameInterface.SafePromptChoice($"📦 🔒 {sName} ({contCount} пр.)"));
                         }
                     }
                 }
@@ -231,16 +232,10 @@ public partial class ExplorerMode
             if (idx < infoPrefixCount) continue;
 
             // Check if storage entry was selected
-            if (selected.Contains("→ управление") && accessibleStorages.Count > 0)
+            if (accessibleStorageChoices.TryGetValue(idx, out var stor))
             {
-                // Find which storage was clicked
-                var storIdx = accessibleStorages.FindIndex(s => selected.Contains(s.name, StringComparison.OrdinalIgnoreCase));
-                if (storIdx >= 0)
-                {
-                    var stor = accessibleStorages[storIdx];
-                    var storModified = await ShowStorageInteractivePanel(stor.name, stor.storageId);
-                    if (storModified) await _stateManager.RefreshGameStateAsync();
-                }
+                var storModified = await ShowStorageInteractivePanel(stor.name, stor.storageId);
+                if (storModified) await _stateManager.RefreshGameStateAsync();
                 continue;
             }
 

@@ -50,7 +50,7 @@ internal static class ConsoleLayout
 
     public static string PlainChoiceLabel(params string[] parts)
     {
-        return string.Join(" | ", parts.Where(p => !string.IsNullOrWhiteSpace(p)));
+        return GameInterface.SafePromptChoice(parts);
     }
 
     public static Table CreateInfoTable(int labelWidth = 22)

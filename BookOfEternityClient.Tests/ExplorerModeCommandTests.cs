@@ -1477,6 +1477,43 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
 
+    private void AssertSelectionChoicesAreSpectreMarkupSafe(string scenario, string titleFragment)
+    {
+        var matchedChoices = _console.SelectionChoicesHistory
+            .Where(entry => entry.Title.Contains(titleFragment, StringComparison.OrdinalIgnoreCase))
+            .SelectMany(entry => entry.Choices)
+            .ToArray();
+
+        Assert.True(matchedChoices.Length > 0, BuildConsoleDiagnostics(scenario));
+        foreach (var choice in matchedChoices)
+        {
+            var ex = Record.Exception(() => new Markup(choice));
+            Assert.True(
+                ex == null,
+                $"{scenario} has unsafe Spectre prompt choice '{choice}': {ex?.Message}. {BuildConsoleDiagnostics(scenario)}");
+        }
+    }
+
+    private void AssertMatchingSelectionChoicesAreSpectreMarkupSafe(
+        string scenario,
+        Func<string, bool> choicePredicate)
+    {
+        var matchedChoices = _console.SelectionChoicesHistory
+            .SelectMany(entry => entry.Choices)
+            .Where(choicePredicate)
+            .ToArray();
+
+        Assert.True(matchedChoices.Length > 0, BuildConsoleDiagnostics(scenario));
+        foreach (var choice in matchedChoices)
+        {
+            var ex = Record.Exception(() => new Markup(choice));
+            Assert.True(
+                ex == null,
+                $"{scenario} has unsafe Spectre prompt choice '{choice}': {ex?.Message}. {BuildConsoleDiagnostics(scenario)}");
+        }
+    }
+
+
     public void Dispose()
     {
         try

@@ -1,5 +1,7 @@
 using BookOfEternityClient.Models.GameState;
 using BookOfEternityClient.UI;
+using Spectre.Console;
+using System.Reflection;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -26,6 +28,38 @@ public sealed class GameInterfaceTests
     public void SafeMarkup_DoesNotThrow_OnValidMarkup()
     {
         var ex = Record.Exception(() => GameInterface.SafeMarkup("[dim]Текст[/] [white]в порядке[/]"));
+
+        Assert.Null(ex);
+    }
+
+    [Fact]
+    public void SafePromptChoice_EscapesBracketBearingPlainText()
+    {
+        var helper = typeof(GameInterface).GetMethod(
+            "SafePromptChoice",
+            BindingFlags.Public | BindingFlags.Static,
+            [typeof(string[])]);
+
+        Assert.NotNull(helper);
+
+        var choice = Assert.IsType<string>(helper.Invoke(null, [new[] { "Кольцо [debug]", "сломанный [tag" }]));
+
+        Assert.Contains("[[debug]]", choice, StringComparison.Ordinal);
+        Assert.Contains("[[tag", choice, StringComparison.Ordinal);
+        Assert.Null(Record.Exception(() => new Markup(choice)));
+    }
+
+    [Fact]
+    public void SafeMarkupText_EscapesPlainTextBeforeConstructingMarkup()
+    {
+        var helper = typeof(GameInterface).GetMethod(
+            "SafeMarkupText",
+            BindingFlags.Public | BindingFlags.Static,
+            [typeof(string)]);
+
+        Assert.NotNull(helper);
+
+        var ex = Record.Exception(() => helper.Invoke(null, ["selectedCardIds=[card_alpha, card_beta]"]));
 
         Assert.Null(ex);
     }

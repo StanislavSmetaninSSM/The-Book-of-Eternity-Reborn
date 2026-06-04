@@ -113,7 +113,7 @@ public partial class ExplorerMode
 
         var panel = new Panel(GameInterface.SafeMarkup(string.Join("\n", text)))
         {
-            Header = new PanelHeader($" {title} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(title),
             Border = BoxBorder.Double,
             BorderStyle = new Style(Color.Purple),
             Padding = new Padding(2, 1)

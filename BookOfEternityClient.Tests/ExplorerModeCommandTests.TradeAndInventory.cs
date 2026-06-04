@@ -60,6 +60,109 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_InventoryPromptChoices_EscapeBracketBearingDynamicLabels()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/inventory/items.json", new
+        {
+            resources = new Dictionary<string, string>
+            {
+                ["осколки [debug]"] = "3 [card_alpha, card_beta]"
+            },
+            items = new[]
+            {
+                new
+                {
+                    itemId = "ring_bracket_001",
+                    name = "Перстень [debug]",
+                    type = "Кольцо",
+                    count = 1,
+                    equipmentSlot = "ring1"
+                }
+            },
+            equipment = new
+            {
+                ring1 = new
+                {
+                    itemId = "ring_bracket_001",
+                    name = "Перстень [debug]"
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/world/current_location.json", new
+        {
+            name = "Тестовая площадь",
+            locationStorages = new[]
+            {
+                new
+                {
+                    storageId = "storage_bracket_001",
+                    name = "Сундук [broken",
+                    hasFullAccess = true,
+                    contents = Array.Empty<object>()
+                },
+                new
+                {
+                    storageId = "storage_locked_bracket_001",
+                    name = "Сейф [debug]",
+                    hasFullAccess = false,
+                    contents = Array.Empty<object>()
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("inventory_bracket_prompt_choices");
+        AssertSelectionChoicesAreSpectreMarkupSafe("inventory_bracket_prompt_choices", "Инвентарь");
+        var choices = _console.SelectionChoicesHistory
+            .Where(entry => entry.Title.Contains("Инвентарь", StringComparison.OrdinalIgnoreCase))
+            .SelectMany(entry => entry.Choices)
+            .ToArray();
+        Assert.Contains(choices, choice => choice.Contains("[[debug]]", StringComparison.Ordinal));
+        Assert.Contains(choices, choice => choice.Contains("[[broken", StringComparison.Ordinal));
+        Assert.Contains(choices, choice => choice.Contains("[[card_alpha, card_beta]]", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_NpcPromptChoices_EscapeBracketBearingDynamicLabels()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/npcs/npc_core.json", """
+        {
+          "UpdateNPCs": [
+            {
+              "npcId": "npc_bracket_001",
+              "name": "Лира [debug]",
+              "relationshipLevel": "доверие [ally]",
+              "currentLocation": "Площадь [broken",
+              "domain": "Домен [card_alpha, card_beta]",
+              "description": "НПС с bracket-bearing authored data."
+            }
+          ]
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/нпс"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("npcs_bracket_prompt_choices");
+        AssertMatchingSelectionChoicesAreSpectreMarkupSafe(
+            "npcs_bracket_prompt_choices",
+            choice => choice.Contains("Лира", StringComparison.OrdinalIgnoreCase));
+        var choices = _console.SelectionChoicesHistory
+            .SelectMany(entry => entry.Choices)
+            .Where(choice => choice.Contains("Лира", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        Assert.Contains(choices, choice => choice.Contains("[[debug]]", StringComparison.Ordinal));
+        Assert.Contains(choices, choice => choice.Contains("[[ally]]", StringComparison.Ordinal));
+        Assert.Contains(choices, choice => choice.Contains("[[broken", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public async Task TryProcessCommand_InventoryStorageMove_MovesItemIntoStorage()
     {
         await SeedMortalStateAsync();
