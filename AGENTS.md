@@ -6,9 +6,57 @@ Do not implement project changes without a tracked task.
 
 Before editing code, tests, prompts, documentation, examples, or game contracts, first ensure there is an explicit task for the work. If the user asks to implement something and no task exists, create or request a task record before making repository changes. Small exploratory reads, reviews, and planning may happen without a task, but implementation work must be tied to a task.
 
+## Spec Kit and Hermes/Codex orchestration guardrail
+
+GitHub Issues remain the task tracker for lifecycle, comments, triage, and closure.
+Spec Kit is the durable specification layer for large or contract-sensitive work,
+not a replacement for issues and not required for every bug fix.
+
+Before implementing a GitHub issue, decide whether it needs a Spec Kit feature.
+Create or update `specs/NNN-feature/` when the issue is an epic, spans multiple
+files or sessions, changes player-facing UX, changes console/browser parity,
+changes validation/normalizer/canonical state, changes GM-facing docs/examples,
+or touches afterlife/Chaos Sea/Shining Abode/Saref pending/control contracts.
+
+Do not create a Spec Kit feature for tiny one-file fixes, quick inspections,
+minor copy edits, or simple local refactors unless the user explicitly asks for
+Spec Kit.
+
+When Spec Kit is used:
+- Link the source GitHub issue(s) in `spec.md`, `plan.md`, and `tasks.md`.
+- Treat `.specify/memory/constitution.md` as project governance.
+- Use `$speckit-specify`, `$speckit-clarify`, `$speckit-plan`,
+  `$speckit-tasks`, and `$speckit-analyze` to keep artifacts aligned.
+- Use Superpowers as the execution method: brainstorming, TDD, systematic
+  debugging, review, and verification.
+- If Hermes delegates to Codex, Hermes should load `spec-kit-superpowers-bridge`
+  before `codex-delegate` and pass the active constitution/spec/plan/tasks and
+  verification commands into the Codex prompt.
+- Do not mark Spec Kit tasks complete or close GitHub issues from an agent report
+  alone; inspect diffs and run or confirm verification evidence first.
+
+## GM prompt, documentation, and example synchronization guardrail
+
+The GM does not read client implementation code during normal play. If code adds,
+removes, or changes a game capability, command, mechanic, state field,
+validation rule, normalizer side effect, lifecycle flow, pending/control surface,
+response field, receipt, report, or GM-authored output contract, update the
+relevant GM-facing prompts, documentation, examples, manifests, and
+documentation/source-guard tests in the same change.
+
+This applies to both Mortal World and afterlife content. Do not leave a
+code-only capability unless it is intentionally client-owned, not GM-authored,
+and the tracked issue/spec explicitly says no GM prompt or example update is
+required.
+
+Every GM-affecting feature must include at least one worked GM example or update
+an existing example that proves the GM can author the new or changed behavior.
+If no suitable example file exists, add one or create a tracked follow-up issue
+before completion.
+
 ## Afterlife contract documentation guardrail
 
-The GM does not read client implementation code during normal play. If you change any `Chaos Sea` / `Shining Abode` runtime contract, update the GM-facing documentation in the same change.
+If you change any `Chaos Sea` / `Shining Abode` runtime contract, update the GM-facing documentation in the same change.
 
 This applies when adding, renaming, removing, or changing any afterlife:
 - pending/control file in `game_state/control/`
@@ -32,3 +80,8 @@ Minimum verification for documentation-sensitive afterlife changes:
 ```powershell
 dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"
 ```
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
