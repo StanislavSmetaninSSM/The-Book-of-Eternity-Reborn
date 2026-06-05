@@ -9,14 +9,14 @@ export function ConnectionBanner() {
 
   const isDisconnected = connectionStatus === 'disconnected';
   const message = isDisconnected
-    ? 'Клиент недоступен. Проверьте, что игра запущена.'
+    ? 'Книга недоступна. Проверьте, что игра запущена.'
     : 'Некоторые разделы не загрузились. Часть данных может быть неактуальна.';
 
   return (
     <div className={`connection-banner ${isDisconnected ? 'is-disconnected' : 'is-partial'}`} role="alert">
       <span>{message}</span>
       <button type="button" onClick={() => void loadBrowserState()}>
-        Повторить подключение
+        Повторить
       </button>
     </div>
   );

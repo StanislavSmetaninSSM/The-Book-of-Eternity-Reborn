@@ -112,9 +112,10 @@ public sealed class BrowserClientSettingsService
         var settings = _stateManager.Settings;
         var language = NormalizeLanguage(settings.Language);
         var difficulty = NormalizeDifficulty(settings.Difficulty);
-        var sessionLabel = Path.GetFileName(_fs.GameSessionPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
-        if (string.IsNullOrWhiteSpace(sessionLabel))
-            sessionLabel = "game_session";
+        var gameSessionExists = Directory.Exists(_fs.GameSessionPath);
+        var sessionLabel = gameSessionExists
+            ? "Текущая глава книги"
+            : "Глава ещё не выбрана";
 
         return new BrowserClientSettingsDto(
             SchemaVersion: 1,
@@ -139,13 +140,13 @@ public sealed class BrowserClientSettingsService
                 ContrastFriendly: settings.BrowserContrastFriendly),
             Locality: new BrowserClientLocalityDto(
                 LocalhostOnly: true,
-                SessionLabel: $"{sessionLabel} — локальная папка книги",
-                GameSessionExists: Directory.Exists(_fs.GameSessionPath),
+                SessionLabel: sessionLabel,
+                GameSessionExists: gameSessionExists,
                 GmBridgeEnabled: settings.GmBridgeEnabled,
                 GmBridgeLabel: settings.GmBridgeEnabled
                     ? "Локальный мост ГМа включён"
                     : "Локальный мост ГМа выключен",
-                SafetySummary: "Браузерный клиент работает только через localhost/loopback и сохраняет настройки в общей конфигурации игры."));
+                SafetySummary: "Книга открыта только на этом устройстве и хранит настройки вместе с вашим прохождением."));
     }
 
     private async Task WriteGmSettingsProjectionAsync()

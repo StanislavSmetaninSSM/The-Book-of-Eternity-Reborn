@@ -70,6 +70,7 @@ public sealed class LocalWebUiDocumentationTests
     {
         var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
         var checklist = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "browser-parity-checklist.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
 
         Assert.Contains("root is the #704 React app shell", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Advanced / developer panel", hostDoc, StringComparison.Ordinal);
@@ -78,6 +79,12 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("separate explicit `Расширенный режим` opt-in", hostDoc, StringComparison.Ordinal);
         Assert.Contains("Advanced / developer panel", checklist, StringComparison.Ordinal);
         Assert.Contains("player-facing default", checklist, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("#738 player-copy boundary", checklist, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Player UI speaks to the player", checklist, StringComparison.Ordinal);
+        Assert.Contains("Implementation comments stay in code, docs, and advanced mode", checklist, StringComparison.Ordinal);
+        Assert.Contains("Generated HTML smoke artifacts are local/offline evidence", checklist, StringComparison.Ordinal);
+        Assert.Contains("#738 player-copy boundary", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("#738 player-copy boundary", readme, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -241,15 +248,19 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("GET /api/audio/assets/{assetId}", hostDoc, StringComparison.Ordinal);
         Assert.Contains("shared `GameSettings` audio fields", hostDoc, StringComparison.Ordinal);
         Assert.Contains("autoplay", hostDoc, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("Включить музыку в браузере", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("Включить музыку", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("current tab's sound permission", hostDoc, StringComparison.Ordinal);
         Assert.Contains("no local filesystem paths", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("missing audio files", hostDoc, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Включить музыку в браузере", hostDoc, StringComparison.Ordinal);
 
         Assert.Contains("#684", readme, StringComparison.Ordinal);
         Assert.Contains("getAudioSettings", readme, StringComparison.Ordinal);
         Assert.Contains("updateAudioSettings", readme, StringComparison.Ordinal);
-        Assert.Contains("Включить музыку в браузере", readme, StringComparison.Ordinal);
+        Assert.Contains("Включить музыку", readme, StringComparison.Ordinal);
+        Assert.Contains("current tab's sound permission", readme, StringComparison.Ordinal);
         Assert.Contains("shared `GameSettings` audio fields", readme, StringComparison.Ordinal);
         Assert.Contains("no local filesystem paths", readme, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Включить музыку в браузере", readme, StringComparison.Ordinal);
     }
 }

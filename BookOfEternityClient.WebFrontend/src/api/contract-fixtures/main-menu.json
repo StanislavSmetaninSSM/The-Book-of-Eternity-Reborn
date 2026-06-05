@@ -4,7 +4,7 @@
     "gameSessionExists": true,
     "hasReadableSoul": true,
     "canContinue": true,
-    "continueReason": "Текущую сессию можно продолжить в браузерном игровом экране.",
+    "continueReason": "Текущую главу можно продолжить.",
     "soulName": "Арион",
     "currentRealm": "Mortal World",
     "realmLabel": "Смертный мир",
@@ -48,15 +48,15 @@
     "musicEnabled": true,
     "soundEnabled": false,
     "consoleFontSize": 18,
-    "guidance": "Полное редактирование настроек остаётся в консольном меню до отдельной Browser Client задачи."
+    "guidance": "Настройки книги, звука и доступности открываются в отдельном разделе."
   },
   "about": {
     "title": "Книга Вечности: Перерождение",
-    "body": "Локальный браузерный клиент работает поверх того же C# runtime."
+    "body": "Книга Вечности: Перерождение открывает текущую главу, сохранения и настройки в одном локальном окне."
   },
   "advancedShell": {
     "label": "Расширенный режим",
-    "description": "Командная палитра и debug-инструменты скрыты от обычного главного меню.",
+    "description": "Служебные сведения и перенесённые команды скрыты от обычного главного меню.",
     "initiallyExpanded": false
   }
 }

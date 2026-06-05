@@ -31,7 +31,7 @@ const statusBarProps: StatusBarProps = {
 const errorNoticeProps: ErrorNoticeProps = {
   title: 'Ошибка',
   failure: {
-    playerMessage: 'Локальный игровой клиент вернул техническую ошибку.',
+    playerMessage: 'Локальная книга вернула ошибку.',
     technicalDetails: 'stack trace'
   },
   advancedEnabled: true

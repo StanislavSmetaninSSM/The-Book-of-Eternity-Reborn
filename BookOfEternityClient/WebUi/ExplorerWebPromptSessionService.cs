@@ -84,8 +84,8 @@ public sealed class ExplorerWebPromptSessionService
                         new UiMessageBlock
                         {
                             Severity = UiNotificationSeverity.Warning,
-                            Title = "Активный ход GM",
-                            Message = pending.Message
+                            Title = "Активный ход ГМа",
+                            Message = "Книга занята текущим ходом. Завершите или отмените его, затем повторите действие."
                         }
                     ],
                     Notifications =
@@ -94,13 +94,13 @@ public sealed class ExplorerWebPromptSessionService
                         {
                             Severity = UiNotificationSeverity.Warning,
                             Title = "Форма не открыта",
-                            Message = "Browser-write заблокирован до завершения текущего GM-turn/rollback протокола."
+                            Message = "Книга занята текущим ходом. Вернитесь к форме после завершения или отмены хода."
                         }
                     ]
                 };
             }
 
-            var lockResult = await _lockService.AcquireOrRefreshAsync(owner, $"Browser prompt session: {result.Command}");
+            var lockResult = await _lockService.AcquireOrRefreshAsync(owner, "Игровая форма действия");
             if (!lockResult.Acquired)
             {
                 return new ExplorerCommandResult
@@ -112,8 +112,8 @@ public sealed class ExplorerWebPromptSessionService
                         new UiMessageBlock
                         {
                             Severity = UiNotificationSeverity.Warning,
-                            Title = "Локальная UI-блокировка",
-                            Message = lockResult.BlockerMessage
+                            Title = "Форма уже открыта",
+                            Message = "Другая вкладка или окно сейчас записывает действие. Дождитесь завершения и повторите попытку."
                         }
                     ],
                     Notifications =
@@ -122,7 +122,7 @@ public sealed class ExplorerWebPromptSessionService
                         {
                             Severity = UiNotificationSeverity.Warning,
                             Title = "Форма не открыта",
-                            Message = "Другой интерфейс удерживает право локальной записи."
+                            Message = "Другая вкладка или окно сейчас записывает действие."
                         }
                     ]
                 };
@@ -205,11 +205,11 @@ public sealed class ExplorerWebPromptSessionService
         {
             Severity = UiNotificationSeverity.Success,
             Title = "Ответы формы приняты",
-            Message = "Браузерная prompt-session завершена без обращения к Spectre.Console. Прикладная запись будет подключаться отдельными миграционными задачами."
+            Message = "Форма получила ответы. Для этого действия запись пока не подключена, поэтому состояние игры не изменилось."
         });
         blocks.Add(new UiRawJsonBlock
         {
-            Title = "JSON: отправленные ответы формы",
+            Title = "Отправленные ответы формы",
             Json = submittedAnswers
         });
 
@@ -225,7 +225,7 @@ public sealed class ExplorerWebPromptSessionService
                 {
                     Severity = UiNotificationSeverity.Success,
                     Title = "Форма завершена",
-                    Message = $"Команда {snapshot.Result.Command} получила ответы браузера."
+                    Message = "Форма получила ответы и закрыта."
                 }
             ]
         };
@@ -268,7 +268,7 @@ public sealed class ExplorerWebPromptSessionService
         {
             blocks.Add(new UiRawJsonBlock
             {
-                Title = "JSON: результат браузерной записи",
+                Title = "Подробности записи",
                 Json = writeResult.Payload.DeepClone()
             });
         }
@@ -315,7 +315,7 @@ public sealed class ExplorerWebPromptSessionService
                 {
                     Severity = UiNotificationSeverity.Info,
                     Title = "Форма отменена",
-                    Message = $"Браузерная prompt-session для {snapshot.Result.Command} отменена."
+                    Message = "Форма закрыта без изменений."
                 }
             ],
             Notifications =
@@ -324,7 +324,7 @@ public sealed class ExplorerWebPromptSessionService
                 {
                     Severity = UiNotificationSeverity.Info,
                     Title = "Форма отменена",
-                    Message = "Локальная UI-блокировка освобождена, если она была нужна."
+                    Message = "Форма закрыта; действие можно выбрать заново."
                 }
             ]
         };
@@ -436,7 +436,7 @@ public sealed class ExplorerWebPromptSessionService
                 {
                     Severity = UiNotificationSeverity.Error,
                     Title = "Форма не найдена",
-                    Message = $"Prompt-session {sessionId} отсутствует или устарела."
+                    Message = "Эта игровая форма уже закрыта или устарела. Откройте действие заново."
                 }
             ]
         };
@@ -451,8 +451,8 @@ public sealed class ExplorerWebPromptSessionService
                 new UiMessageBlock
                 {
                     Severity = UiNotificationSeverity.Warning,
-                    Title = "Форма принадлежит другому UI",
-                    Message = $"Prompt-session принадлежит {snapshot.Owner.OwnerLabel}. Повторите действие из того же браузерного владельца."
+                    Title = "Форма открыта в другой вкладке",
+                    Message = "Вернитесь к той вкладке, где начали действие, или откройте форму заново."
                 }
             ]
         };
@@ -465,7 +465,7 @@ public sealed class ExplorerWebPromptSessionService
             answers.TryGetValue(prompt.Id, out var value);
             if (prompt.Required && IsEmpty(value))
             {
-                errors.Add($"Поле {prompt.Id} обязательно.");
+                errors.Add($"Заполните обязательное поле: {PromptLabel(prompt)}.");
                 continue;
             }
 
@@ -478,20 +478,25 @@ public sealed class ExplorerWebPromptSessionService
                 var option = selection.Options.FirstOrDefault(item =>
                     string.Equals(item.Value, selected, StringComparison.Ordinal));
                 if (option == null)
-                    errors.Add($"Поле {prompt.Id}: неизвестный вариант '{selected}'.");
+                    errors.Add($"Выберите доступный вариант для поля: {PromptLabel(prompt)}.");
                 else if (option.Disabled)
-                    errors.Add($"Поле {prompt.Id}: вариант '{selected}' сейчас недоступен.");
+                    errors.Add($"Этот вариант сейчас недоступен: {PromptLabel(prompt)}.");
             }
 
             if (prompt is UiConfirmationPrompt &&
                 (value is not JsonValue confirmationValue || !confirmationValue.TryGetValue<bool>(out _)))
             {
-                errors.Add($"Поле {prompt.Id}: подтверждение должно быть boolean.");
+                errors.Add($"Подтверждение должно быть включено или выключено: {PromptLabel(prompt)}.");
             }
         }
 
         return errors;
     }
+
+    private static string PromptLabel(UiPrompt prompt) =>
+        string.IsNullOrWhiteSpace(prompt.Prompt)
+            ? "поле формы"
+            : prompt.Prompt.Trim();
 
     private static bool IsEmpty(JsonNode? value) =>
         value == null ||

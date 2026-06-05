@@ -21,7 +21,7 @@ describe('tab navigation source', () => {
     expect(tabNav).toEqual([
       { id: 'scene', icon: '📖', label: 'Сцена', shortcut: '1', description: 'Текущий ход, повествование и быстрые действия.' },
       { id: 'status', icon: '📊', label: 'Статус', shortcut: '2', description: 'Персонаж, душа, мир и посмертный прогресс.' },
-      { id: 'help', icon: '❓', label: 'Помощь', shortcut: '3', description: 'Команды /help и подсказки текущего браузерного режима.' },
+      { id: 'help', icon: '❓', label: 'Помощь', shortcut: '3', description: 'Справка книги и подсказки текущей главы.' },
       { id: 'settings', icon: '⚙️', label: 'Настройки', shortcut: '4', description: 'Язык, звук, доступность и явный расширенный режим.' }
     ]);
     expect(resolveTabShortcut('1')).toBe('scene');

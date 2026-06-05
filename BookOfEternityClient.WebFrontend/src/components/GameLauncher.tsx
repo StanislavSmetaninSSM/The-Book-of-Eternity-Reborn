@@ -16,8 +16,8 @@ const launcherModeDetails: Record<LauncherMode, { label: string; description: st
   continue: { label: 'Продолжить главу', description: 'Вернуться к текущей сохранённой главе.' },
   load: { label: 'Загрузить сохранение', description: 'Выбрать одну из доступных локальных записей.' },
   'new-game': { label: 'Начать новую главу', description: 'Открыть подготовку новой главы, когда локальная книга разрешает этот шаг.' },
-  settings: { label: 'Настроить клиент', description: 'Открыть настройки локального клиента и звука.' },
-  about: { label: 'Сведения о книге', description: 'Показать краткое описание книги и браузерного клиента.' }
+  settings: { label: 'Настроить книгу', description: 'Открыть настройки книги и звука.' },
+  about: { label: 'Сведения о книге', description: 'Показать краткое описание книги.' }
 };
 
 export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
@@ -71,7 +71,7 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
       if (!isLauncherMountedRef.current) {
         return;
       }
-      setLauncherNotice('Сохранение не удалось загрузить. Проверьте локальный клиент и попробуйте ещё раз.');
+      setLauncherNotice('Сохранение не удалось загрузить. Проверьте, что книга запущена, и попробуйте ещё раз.');
     } finally {
       if (isLauncherMountedRef.current) {
         setLoadingSaveId(null);
@@ -129,9 +129,9 @@ export function GameLauncher({ menu }: { menu: BrowserMainMenuDto }) {
         return <NewChapterStartPanel modeAction={modeAction} modeDescription={modeDescription} />;
       case 'settings':
         return (
-          <section className="launcher-mode-panel" aria-label="Настройки клиента">
-            <h3>Настроить клиент</h3>
-            <p>{toPlayerFacingText(menu.options.guidance, 'Настройки локального клиента доступны в отдельном разделе.')}</p>
+          <section className="launcher-mode-panel" aria-label="Настройки книги">
+            <h3>Настроить книгу</h3>
+            <p>{toPlayerFacingText(menu.options.guidance, 'Настройки книги доступны в отдельном разделе.')}</p>
             <button type="button" className="launcher-secondary-action" onClick={() => onActiveRouteChange('settings')}>Открыть настройки</button>
           </section>
         );
@@ -197,9 +197,9 @@ function NewChapterStartPanel({ modeAction, modeDescription }: { modeAction: Bro
   const startCommand = modeAction?.command.trim() ?? '';
   const canOpenStartFlow = Boolean(modeAction?.enabled && startCommand);
   const unavailableReason = !modeAction
-    ? 'Подготовка новой главы пока недоступна из браузерного меню. Продолжите текущую главу, загрузите сохранение или проверьте состояние локальной книги.'
+    ? 'Подготовка новой главы пока недоступна из главного меню. Продолжите текущую главу, загрузите сохранение или проверьте состояние книги.'
     : modeAction.enabled && !startCommand
-      ? 'Подготовка новой главы пока не подключила браузерную форму. Действие не обещает поля, пока локальное меню не отдаст безопасный поток.'
+      ? 'Подготовка новой главы пока не открыла безопасные поля. Продолжите текущую главу или загрузите сохранение.'
       : launcherModeUnavailableReason(modeAction, modeDescription);
 
   useEffect(() => () => {
@@ -253,11 +253,11 @@ function NewChapterStartPanel({ modeAction, modeDescription }: { modeAction: Bro
     <section className="launcher-mode-panel launcher-new-chapter-flow" aria-label="Новая глава">
       <h3>Начать новую главу</h3>
       <p>{modeDescription}</p>
-      <p className="muted">Форма новой главы открывается из существующего локального потока книги; браузер только показывает поля и отправляет ответы.</p>
+      <p className="muted">Заполните поля подготовки и отправьте их книге, когда она разрешит новую главу.</p>
       {!canOpenStartFlow && <p className="warning-text">{unavailableReason}</p>}
       <button type="button" className="launcher-secondary-action" disabled={!canOpenStartFlow || isSubmitting} onClick={() => void openNewChapterFlow()}>
         <strong>{submissionMode === 'opening' ? 'Открываем…' : submissionMode === 'submitting' ? 'Отправляем…' : 'Открыть форму новой главы'}</strong>
-        <span>{canOpenStartFlow ? 'Показать поля подготовки мира и отправку формы.' : 'Сейчас доступно только продолжение или загрузка.'}</span>
+        <span>{canOpenStartFlow ? 'Показать поля подготовки мира.' : 'Сейчас доступно только продолжение или загрузка.'}</span>
       </button>
       {notice && <p className="composer-notice">{notice}</p>}
       {newChapterResult && (
@@ -279,14 +279,14 @@ function launcherModeUnavailableReason(modeAction: BrowserMainMenuDto['actions']
 
 function toNewChapterNotice(result: ExplorerCommandResult): string {
   if (result.state === 'RequiresInput') {
-    return 'Форма новой главы открыта. Заполните поля ниже и отправьте её из браузера.';
+    return 'Форма новой главы открыта. Заполните поля ниже и отправьте её книге.';
   }
   return toCommandNotice(result);
 }
 
 function sanitizeNewChapterCommandResult(result: BrowserApiResult<ExplorerCommandResult>): BrowserApiResult<ExplorerCommandResult> {
   return sanitizePlayerDefaultCommandResult(result, {
-    blockedTextFallback: 'Служебные подробности подготовки скрыты в обычном режиме.',
+    blockedTextFallback: 'Подробности подготовки скрыты в обычном режиме.',
     blockTitleFallback: 'Сведения подготовки новой главы',
     notificationTitleFallback: 'Форма новой главы',
     notificationMessageFallback: 'Форма новой главы готова к заполнению.',

@@ -30,13 +30,25 @@ const GROUP_LABELS: Record<string, string> = {
   Math: 'Утилиты'
 };
 
+const ADVANCED_ONLY_HELP_COMMAND_IDS = new Set([
+  'help',
+  'math',
+  'gm',
+  'debug',
+  'mods',
+  'system_guardians',
+  'validate'
+]);
+
 export function HelpView() {
-  const { readyState, executeCommand, setActiveTab } = useShell();
+  const { advancedEnabled, readyState, executeCommand, setActiveTab } = useShell();
   const [search, setSearch] = useState('');
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
   const coverage = readyState?.commandCoverage;
-  const commands = coverage && isSuccess(coverage) ? coverage.data.commands : [];
+  const commands = coverage && isSuccess(coverage)
+    ? coverage.data.commands.filter((cmd) => advancedEnabled || isDefaultHelpCommandVisible(cmd))
+    : [];
 
   const groups = useMemo(() => {
     const map = new Map<string, BrowserCommandCoverageEntryDto[]>();
@@ -78,9 +90,34 @@ export function HelpView() {
   }
 
   if (!coverage || !isSuccess(coverage)) {
+    if (!advancedEnabled) {
+      return (
+        <div className="help-view">
+          <section className="help-category">
+            <div className="help-category__header">
+              <span className="help-category__icon">❓</span>
+              <span className="help-category__label">Справка книги</span>
+            </div>
+            <div className="help-category__commands">
+              <button
+                type="button"
+                className="help-command"
+                onClick={() => handleCommandClick('/help')}
+              >
+                <span className="help-command__alias">Справка</span>
+                <span className="help-command__label">Открыть справку книги</span>
+                <span className="help-command__run">▶</span>
+              </button>
+            </div>
+          </section>
+          <p className="block-text--muted">Полный каталог команд открывается после включения расширенного режима в настройках.</p>
+        </div>
+      );
+    }
+
     return (
       <div className="help-view">
-        <p className="block-text--muted">Загрузка каталога команд… Включите расширенный режим в настройках для полного доступа.</p>
+        <p className="block-text--muted">Каталог команд загружается…</p>
       </div>
     );
   }
@@ -121,7 +158,7 @@ export function HelpView() {
                       className="help-command"
                       onClick={() => handleCommandClick(cmd.primaryCommand)}
                     >
-                      <span className="help-command__alias">{cmd.aliases[0]}</span>
+                      <span className="help-command__alias">{advancedEnabled ? cmd.aliases[0] : 'Действие'}</span>
                       <span className="help-command__label">{cmd.primaryActionLabel}</span>
                       <span className="help-command__run">▶</span>
                     </button>
@@ -134,4 +171,8 @@ export function HelpView() {
       </div>
     </div>
   );
+}
+
+function isDefaultHelpCommandVisible(cmd: BrowserCommandCoverageEntryDto): boolean {
+  return cmd.surface !== 'advanced-only' && !ADVANCED_ONLY_HELP_COMMAND_IDS.has(cmd.id);
 }

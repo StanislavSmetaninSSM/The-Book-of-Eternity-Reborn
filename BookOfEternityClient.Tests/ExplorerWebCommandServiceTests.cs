@@ -807,7 +807,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.NotNull(validation.InteractiveSession);
         Assert.Contains(validation.Notifications, static notification =>
             notification.Severity == UiNotificationSeverity.Error &&
-            notification.Message.Contains("world_setup_mode", StringComparison.OrdinalIgnoreCase));
+            notification.Message.Contains("Режим подготовки мира", StringComparison.OrdinalIgnoreCase) &&
+            !notification.Message.Contains("world_setup_mode", StringComparison.OrdinalIgnoreCase));
         Assert.True(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
@@ -1537,7 +1538,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
 
         Assert.Equal(CommandExecutionState.Blocked, result.State);
         Assert.Null(result.InteractiveSession);
-        Assert.Contains("Локальная UI-блокировка", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Форма уже открыта", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Локальная UI-блокировка", CollectBlockText(result.Blocks), StringComparison.OrdinalIgnoreCase);
         var inventory = JsonNode.Parse((await _fs.ReadFileAsync("game_state/inventory/items.json"))!)!.AsObject();
         Assert.Null(inventory["equipment"]!["mainHand"]);
     }

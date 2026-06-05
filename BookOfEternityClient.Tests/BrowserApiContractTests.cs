@@ -569,11 +569,11 @@ public sealed class BrowserApiContractTests
                 ContrastFriendly: false),
             Locality: new BrowserClientLocalityDto(
                 LocalhostOnly: true,
-                SessionLabel: "game_session — локальная папка книги",
+                SessionLabel: "Текущая глава книги",
                 GameSessionExists: true,
                 GmBridgeEnabled: true,
                 GmBridgeLabel: "Локальный мост ГМа включён",
-                SafetySummary: "Браузерный клиент работает только через localhost/loopback и сохраняет настройки в общей конфигурации игры."));
+                SafetySummary: "Книга открыта только на этом устройстве и хранит настройки вместе с вашим прохождением."));
 
     private static BrowserAudioSettingsDto BuildAudioSettings() =>
         new(
@@ -582,7 +582,7 @@ public sealed class BrowserApiContractTests
             MusicVolume: 65,
             SoundEnabled: true,
             SoundVolume: 75,
-            AutoplayGuidance: "Браузер не может запустить звук автоматически: нажмите «Включить музыку в браузере».",
+            AutoplayGuidance: "Звук запускается после вашего нажатия: нажмите «Включить музыку», чтобы разрешить музыку и звуковые подсказки для этой вкладки.",
             MissingAssetsMessage: string.Empty,
             Playlists:
             [
@@ -602,7 +602,7 @@ public sealed class BrowserApiContractTests
                 new BrowserAudioPlaylistDto(
                     Id: "in-game",
                     Label: "Игра",
-                    Usage: "Фоновая музыка для текущего игрового экрана и переходов realm.",
+                    Usage: "Фоновая музыка для текущей сцены и переходов между мирами.",
                     Available: false,
                     Tracks: [])
             ],
@@ -627,7 +627,7 @@ public sealed class BrowserApiContractTests
                 GameSessionExists: true,
                 HasReadableSoul: true,
                 CanContinue: true,
-                ContinueReason: "Текущую сессию можно продолжить в браузерном игровом экране.",
+                ContinueReason: "Текущую главу можно продолжить.",
                 SoulName: "Арион",
                 CurrentRealm: "Mortal World",
                 RealmLabel: "Смертный мир",
@@ -670,13 +670,13 @@ public sealed class BrowserApiContractTests
                 MusicEnabled: true,
                 SoundEnabled: false,
                 ConsoleFontSize: 18,
-                Guidance: "Полное редактирование настроек остаётся в консольном меню до отдельной Browser Client задачи."),
+                Guidance: "Настройки книги, звука и доступности открываются в отдельном разделе."),
             About: new BrowserAboutDto(
                 Title: "Книга Вечности: Перерождение",
-                Body: "Локальный браузерный клиент работает поверх того же C# runtime."),
+                Body: "Книга Вечности: Перерождение открывает текущую главу, сохранения и настройки в одном локальном окне."),
             AdvancedShell: new BrowserAdvancedShellDto(
                 Label: "Расширенный режим",
-                Description: "Командная палитра и debug-инструменты скрыты от обычного главного меню.",
+                Description: "Служебные сведения и перенесённые команды скрыты от обычного главного меню.",
                 InitiallyExpanded: false));
 
     private static LocalWebUiSessionStatus BuildSessionStatus() =>
@@ -1006,7 +1006,7 @@ public sealed class BrowserApiContractTests
     private static object BuildApiErrorPayload() =>
         new
         {
-            error = "Загрузка сохранения заблокирована: активный GM-turn или локальная UI-блокировка.",
+            error = "Загрузка сохранения сейчас недоступна: книга занята текущим ходом.",
             loadedSaveId = "manual:sample.json",
             menu = BuildMainMenu()
         };

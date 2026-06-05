@@ -69,6 +69,11 @@ assertIncludes(
   'const result = currentLocalResult ?? commandResult;',
   'CommandResultView must prefer local prompt results only for the current parent command result.'
 );
+assertIncludes(
+  commandResultView,
+  'sanitizeExplorerCommandResultForPlayer(response.data)',
+  'CommandResultView must sanitize returned prompt-session results before default rendering.'
+);
 
 assert(
   !commandResultView.includes('{result.interactiveSession && result.prompts.length > 0 && ('),
@@ -128,8 +133,8 @@ assertIncludes(
 );
 assertIncludes(
   cancelHandler,
-  'setLocalResult({ commandResult, result: response.data });',
-  'Prompt session cancellation must display the returned command result.'
+  'setLocalResult({ commandResult, result: advancedEnabled ? response.data : sanitizeExplorerCommandResultForPlayer(response.data) });',
+  'Prompt session cancellation must display a sanitized returned command result by default.'
 );
 assertIncludes(
   cancelHandler,
@@ -155,8 +160,8 @@ const submitHandler = extractBetween(
 );
 assertIncludes(
   submitHandler,
-  'setLocalResult({ commandResult, result: response.data });',
-  'Prompt session submission must tie returned command results to the current parent command result.'
+  'setLocalResult({ commandResult, result: advancedEnabled ? response.data : sanitizeExplorerCommandResultForPlayer(response.data) });',
+  'Prompt session submission must tie sanitized returned command results to the current parent command result by default.'
 );
 
 const actionHandler = extractBetween(

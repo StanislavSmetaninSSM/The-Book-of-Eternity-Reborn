@@ -16,7 +16,7 @@ if (networkFailure.kind !== 'network-error') {
 if (networkFailure.message !== 'Socket closed') {
   throw new Error(`Expected rejection message to be preserved, got ${networkFailure.message}.`);
 }
-if (networkFailure.playerMessage !== 'Локальный игровой клиент сейчас недоступен.') {
+if (networkFailure.playerMessage !== 'Локальная книга сейчас недоступна.') {
   throw new Error(`Expected player-safe network fallback message, got ${networkFailure.playerMessage}.`);
 }
 

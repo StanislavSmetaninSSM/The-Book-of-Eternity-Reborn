@@ -95,10 +95,10 @@ public sealed class BrowserAudioService
             MusicVolume: Math.Clamp(settings.MusicVolume, 0, 100),
             SoundEnabled: settings.SoundEnabled,
             SoundVolume: Math.Clamp(settings.SoundVolume, 0, 100),
-            AutoplayGuidance: "Браузер не может запустить звук автоматически: нажмите «Включить музыку в браузере», чтобы разрешить музыку и звуковые подсказки для этой вкладки.",
+            AutoplayGuidance: "Звук запускается после вашего нажатия: нажмите «Включить музыку», чтобы разрешить музыку и звуковые подсказки для этой вкладки.",
             MissingAssetsMessage: hasAssets
                 ? string.Empty
-                : "Локальные аудиофайлы не найдены. Клиент продолжит работу без музыки и звуковых подсказок.",
+                : "Локальные аудиофайлы не найдены. Игра продолжит работать без музыки и звуковых подсказок.",
             Playlists: playlists,
             Cues: cues);
     }
@@ -115,7 +115,7 @@ public sealed class BrowserAudioService
             BuildPlaylist(
                 InGamePlaylistId,
                 "Игра",
-                "Фоновая музыка для текущего игрового экрана и переходов realm.",
+                "Фоновая музыка для текущей сцены и переходов между мирами.",
                 ResolvePlaylistTracks(InGamePlaylistId))
         };
     }

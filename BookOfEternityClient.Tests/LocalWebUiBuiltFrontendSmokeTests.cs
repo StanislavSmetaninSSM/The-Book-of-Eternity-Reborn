@@ -163,7 +163,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Продолжить главу", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Загрузить сохранение", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Начать новую главу", launcherSource, StringComparison.Ordinal);
-        Assert.Contains("Настроить клиент", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Настроить книгу", launcherSource, StringComparison.Ordinal);
         Assert.Contains("<TurnStatePanel turnState={game.turnState} />", sceneViewSource, StringComparison.Ordinal);
         Assert.Contains("className=\"scene-quick-actions\"", sceneViewSource, StringComparison.Ordinal);
         Assert.Contains("placeholder=\"Опишите действие или введите /команду...\"", unifiedInputSource, StringComparison.Ordinal);
@@ -231,7 +231,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Открыть книгу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Продолжить главу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Загрузить сохранение", firstScreenVisualQaArtifact, StringComparison.Ordinal);
-        Assert.Contains("Настроить клиент", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Настроить книгу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Сцена → Статус → Помощь → Настройки", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("current minimal tab shell", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("advanced debug secondary", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
@@ -378,7 +378,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                   <article class="action"><strong>Продолжить главу</strong><span>Вернуться к текущей сохранённой главе.</span></article>
                   <article class="action"><strong>Загрузить сохранение</strong><span>Выбрать локальную запись.</span></article>
                   <article class="action"><strong>Начать новую главу</strong><span>Открыть подготовку новой главы.</span></article>
-                  <article class="action"><strong>Настроить клиент</strong><span>Открыть настройки локального клиента и звука.</span></article>
+                  <article class="action"><strong>Настроить книгу</strong><span>Открыть настройки книги и звука.</span></article>
                 </div>
               </div>
             </section>
@@ -410,7 +410,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Открыть книгу", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Продолжить главу", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Загрузить сохранение", launcherSource, StringComparison.Ordinal);
-        Assert.Contains("Настроить клиент", launcherSource, StringComparison.Ordinal);
+        Assert.Contains("Настроить книгу", launcherSource, StringComparison.Ordinal);
         Assert.DoesNotContain("<h1 id=\"browser-client-title\">Локальный игровой клиент</h1>", launcherSource, StringComparison.Ordinal);
 
         return $$"""
@@ -460,7 +460,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                   <div class="secondary-row">
                     <article class="secondary">Загрузить сохранение</article>
                     <article class="secondary">Начать новую главу</article>
-                    <article class="secondary">Настроить клиент</article>
+                    <article class="secondary">Настроить книгу</article>
                   </div>
                   <article class="secondary locked">Обычная no-session пауза выглядит приглушённо, без красных повторяющихся unavailable alerts.</article>
                 </section>
@@ -720,7 +720,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 <p class="sequence">{{WebUtility.HtmlEncode(tabSequence)}}</p>
               </header>
               <div class="desktop-shell">
-                <nav class="sidebar" aria-label="Основные игровые разделы браузерного клиента">
+                <nav class="sidebar" aria-label="Основные игровые разделы книги">
                   <div class="route-list">
         {{RenderRouteCards(tabs)}}
                   </div>
@@ -737,7 +737,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 <h1>Mobile: compact player navigation</h1>
                 <p class="sequence">{{WebUtility.HtmlEncode(tabSequence)}}</p>
               </header>
-              <nav class="mobile-nav" aria-label="Мобильные игровые разделы браузерного клиента">
+              <nav class="mobile-nav" aria-label="Мобильные игровые разделы книги">
                 <div class="route-list">
         {{RenderRouteCards(tabs)}}
                 </div>

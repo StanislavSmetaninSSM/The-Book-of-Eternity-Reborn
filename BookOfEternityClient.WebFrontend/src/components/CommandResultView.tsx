@@ -2,14 +2,15 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { browserApi } from '../api/client';
 import type { ExplorerCommandResult, JsonValue, UiAction, UiPrompt } from '../api/contracts';
 import { useShell } from '../context/ShellContext';
-import { toPlayerFacingText } from '../utils/playerCopy';
+import { commandStateLabel } from '../utils/formatters';
+import { sanitizeExplorerCommandResultForPlayer, sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { BlockList } from './BlockRenderer';
 import { PromptForm, type PromptAnswers } from './PromptForm';
 
 type LocalPromptResult = { commandResult: ExplorerCommandResult | null; result: ExplorerCommandResult };
 
 export function CommandResultView() {
-  const { commandResult, clearCommandResult, executeCommand, loadBrowserState } = useShell();
+  const { advancedEnabled, commandResult, clearCommandResult, executeCommand, loadBrowserState } = useShell();
   const [promptAnswers, setPromptAnswers] = useState<PromptAnswers>({});
   const [promptOperation, setPromptOperation] = useState<'submit' | 'cancel' | null>(null);
   const [localResult, setLocalResult] = useState<LocalPromptResult | null>(null);
@@ -48,7 +49,7 @@ export function CommandResultView() {
         answers: promptAnswers
       });
       if (response.ok) {
-        setLocalResult({ commandResult, result: response.data });
+        setLocalResult({ commandResult, result: advancedEnabled ? response.data : sanitizeExplorerCommandResultForPlayer(response.data) });
         setPromptAnswers({});
       }
       void loadBrowserState();
@@ -65,7 +66,7 @@ export function CommandResultView() {
         ownerId: result.interactiveSession.ownerId
       });
       if (response.ok) {
-        setLocalResult({ commandResult, result: response.data });
+        setLocalResult({ commandResult, result: advancedEnabled ? response.data : sanitizeExplorerCommandResultForPlayer(response.data) });
         setPromptAnswers({});
       }
       void loadBrowserState();
@@ -79,22 +80,23 @@ export function CommandResultView() {
         <button type="button" className="btn-back" onClick={clearCommandResult}>
           ← Назад к сцене
         </button>
-        <span className="command-result-view__command">{result.command}</span>
+        <span className="command-result-view__title">Сведения действия</span>
+        <span className="status-pill">{commandStateLabel(result.state)}</span>
       </div>
 
       {result.notifications.length > 0 && (
         <div className="command-result-view__notifications">
           {result.notifications.map((n, i) => (
             <div key={i} className={`block-message block-message--${n.severity.toLowerCase()}`}>
-              <strong>{n.title}</strong>
-              <p>{n.message}</p>
+              <strong>{sanitizePlayerMessage(n.title, 'Уведомление').safe}</strong>
+              <p>{sanitizePlayerMessage(n.message, 'Игровое действие изменило состояние.').safe}</p>
             </div>
           ))}
         </div>
       )}
 
       <div className="command-result-view__content">
-        <BlockList blocks={result.blocks} />
+        <BlockList blocks={result.blocks} advancedEnabled={advancedEnabled} />
       </div>
 
       {result.actions.length > 0 && (

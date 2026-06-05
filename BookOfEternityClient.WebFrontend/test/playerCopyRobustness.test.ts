@@ -10,9 +10,22 @@ const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.(
 const frontendDir = basename(cwd) === 'BookOfEternityClient.WebFrontend'
   ? cwd
   : join(cwd, 'BookOfEternityClient.WebFrontend');
+const repoRoot = basename(cwd) === 'BookOfEternityClient.WebFrontend'
+  ? join(cwd, '..')
+  : cwd;
 
 function readSource(...relativePath: string[]): string {
   return readFileSync(join(frontendDir, ...relativePath), 'utf-8');
+}
+
+function readRepoSource(...relativePath: string[]): string {
+  return readFileSync(join(repoRoot, ...relativePath), 'utf-8');
+}
+
+function stripSourceComments(source: string): string {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/.*$/gm, '');
 }
 
 type WorldTimeFormatter = (value: string | null | undefined, fallback?: string) => string;
@@ -96,6 +109,15 @@ describe('playerCopy robustness', () => {
     expect(safe).not.toContain('soul_state.json');
   });
 
+  it('sanitizes prompt-session protocol copy before default rendering', () => {
+    const technical = 'Browser-write заблокирован до завершения текущего GM-turn/rollback протокола. Prompt-session prompt_123 принадлежит другому UI.';
+    const { safe, hasTechnical } = sanitizePlayerMessage(technical, 'Игровая форма временно недоступна.');
+
+    expect(hasTechnical).toBe(true);
+    expect(safe).not.toMatch(/Browser-write|GM-turn|rollback|prompt-session|Prompt-session|протокол|другому UI|браузер/i);
+    expect(safe).toContain('Игровая форма');
+  });
+
   it('translates identifiers with underscores/hyphens', () => {
     const text = 'Check game_session for write-flow status in manual_saves';
     const result = toPlayerFacingText(text, 'fallback');
@@ -111,7 +133,7 @@ describe('playerCopy robustness', () => {
     expect(result).toContain('ожидание Моря Хаоса');
     expect(result).toContain('инкарнация');
     expect(result).toContain('запись хода');
-    expect(result).toContain('запись из браузера');
+    expect(result).toContain('запись действия');
   });
 
   it('localizes canonical browser world time month names', () => {
@@ -174,5 +196,93 @@ describe('playerCopy robustness', () => {
     expect(helpView).toContain("ShiningAbode: 'Сияющая Обитель'");
     expect(statusView).not.toContain('Afterlife,');
     expect(helpView).not.toContain('player-safe');
+  });
+
+  it('keeps default Browser Client source copy behind the player boundary', () => {
+    const defaultPlayerSources = [
+      ['BookOfEternityClient.WebFrontend/src/components/LoadingCard.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'LoadingCard.tsx')],
+      ['BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'GameLauncher.tsx')],
+      ['BookOfEternityClient.WebFrontend/src/components/tabBarConfig.ts', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'tabBarConfig.ts')],
+      ['BookOfEternityClient.WebFrontend/src/components/ConnectionBanner.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'ConnectionBanner.tsx')],
+      ['BookOfEternityClient.WebFrontend/src/components/AudioPanel.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'AudioPanel.tsx')],
+      ['BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'SettingsView.tsx')],
+      ['BookOfEternityClient.WebFrontend/src/api/contract-fixtures/client-settings.json', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'api', 'contract-fixtures', 'client-settings.json')],
+      ['BookOfEternityClient.WebFrontend/src/App.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'App.tsx')],
+      ['BookOfEternityClient.WebFrontend/src/hooks/useShellState.ts', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'hooks', 'useShellState.ts')],
+      ['BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'context', 'ShellContext.tsx')],
+      ['BookOfEternityClient.WebFrontend/src/components/CommandResultView.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'CommandResultView.tsx')],
+      ['BookOfEternityClient.WebFrontend/src/components/BlockRenderer.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'BlockRenderer.tsx')],
+      ['BookOfEternityClient/WebUi/BrowserClientSettingsService.cs', readRepoSource('BookOfEternityClient', 'WebUi', 'BrowserClientSettingsService.cs')],
+      ['BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs', readRepoSource('BookOfEternityClient', 'WebUi', 'LocalWebUiMainMenuService.cs')]
+    ] as const;
+
+    const bannedDefaultCopyPatterns: Array<[RegExp, string]> = [
+      [/игрокоориентирован/i, 'meta player-orientation phrasing'],
+      [/player[- ](?:facing|oriented)/i, 'English player-facing meta phrasing'],
+      [/C#\s+(?:host|runtime)/i, 'C# implementation framing'],
+      [/\bDTO\b/, 'DTO implementation framing'],
+      [/(?<!\.)\/api\/|API-подсказ/i, 'raw API or endpoint framing'],
+      [/\bendpoint\b/i, 'endpoint implementation wording'],
+      [/debug shell|debug-инструмент/i, 'debug shell wording'],
+      [/Raw validation details|raw JSON/i, 'raw JSON or validation diagnostics'],
+      [/локальн(?:ый|ого|ому|ом|ые|ых)?\s+клиент/i, 'local client wording'],
+      [/браузерн(?:ый|ого|ому|ом)\s+клиент/i, 'browser client wording'],
+      [/браузерн(?:ую|ая|ой|ом|ое|ого)\s+(?:форму|форма|меню|сессия|сессию|игровом экран|список|списка)/i, 'browser implementation surface wording'],
+      [/браузер\s+только/i, 'browser implementation justification'],
+      [/игров(?:ой|ом)\s+экран/i, 'game-screen implementation label'],
+      [/write-flow|repair\/validation|UI-блокиров/i, 'write-flow or repair implementation wording'],
+      [/localhost\/loopback/i, 'local transport implementation wording'],
+      [/Папка\s+game_session|game_session\s+—\s+локальная\s+папка\s+книги|game_session.+игровых контракт|В manual_saves и autosaves/i, 'internal save directory wording'],
+      [/Browser Client задач/i, 'project-task implementation wording'],
+      [/Браузер\s+не\s+(?:дал|может)|Включить музыку в браузере|Клиент продолжит/i, 'browser/client audio implementation wording']
+    ];
+
+    const leaks = defaultPlayerSources.flatMap(([path, source]) => {
+      const visibleSource = stripSourceComments(source);
+      return bannedDefaultCopyPatterns
+        .filter(([pattern]) => pattern.test(visibleSource))
+        .map(([pattern, label]) => `${path}: ${label} (${pattern})`);
+    });
+
+    expect(leaks).toEqual([]);
+  });
+
+  it('keeps command coverage and advanced Help commands behind opt-in', () => {
+    const helpView = readSource('src', 'components', 'HelpView.tsx');
+    const shellState = readSource('src', 'hooks', 'useShellState.ts');
+
+    expect(shellState).not.toContain('const coverageResult = await Promise.allSettled([browserApi.getCommandCoverage()]);');
+    expect(helpView).toContain('advancedEnabled');
+    expect(helpView).toContain('isDefaultHelpCommandVisible');
+    expect(helpView).toContain("cmd.surface !== 'advanced-only'");
+    expect(helpView).not.toContain('<span className="help-command__alias">/help</span>');
+    expect(helpView).toContain('<span className="help-command__alias">Справка</span>');
+    expect(helpView).toContain("<span className=\"help-command__alias\">{advancedEnabled ? cmd.aliases[0] : 'Действие'}</span>");
+    for (const commandId of ['help', 'math', 'gm', 'debug', 'mods', 'system_guardians', 'validate']) {
+      expect(helpView).toContain(`'${commandId}'`);
+    }
+  });
+
+  it('keeps raw command strings and raw JSON out of default command result rendering', () => {
+    const shellContext = readSource('src', 'context', 'ShellContext.tsx');
+    const commandResultView = readSource('src', 'components', 'CommandResultView.tsx');
+    const blockRenderer = readSource('src', 'components', 'BlockRenderer.tsx');
+
+    expect(shellContext).not.toContain('setCommandResult(result.data);');
+    expect(shellContext).toContain('sanitizeExplorerCommandResultForPlayer(result.data)');
+    expect(commandResultView).not.toContain('className="command-result-view__command">{result.command}</span>');
+    expect(commandResultView).not.toContain('setLocalResult({ commandResult, result: response.data });');
+    expect(commandResultView).toContain('sanitizeExplorerCommandResultForPlayer(response.data)');
+    expect(commandResultView).toContain('command-result-view__title');
+    expect(commandResultView).toContain('sanitizePlayerMessage');
+    expect(commandResultView).not.toContain('<strong>{n.title}</strong>');
+    expect(commandResultView).not.toContain('<p>{n.message}</p>');
+    expect(blockRenderer).not.toContain("<p>{toPlayerFacingText(block.message, '')}</p>");
+    expect(blockRenderer).toContain('sanitizePlayerMessage(block.message');
+    expect(commandResultView).toContain('<BlockList blocks={result.blocks} advancedEnabled={advancedEnabled} />');
+    expect(blockRenderer).toContain("import { JsonTreeViewer } from './JsonTreeViewer';");
+    expect(blockRenderer).toContain('if (advancedEnabled) {');
+    expect(blockRenderer).toContain('<JsonTreeViewer data={block.json}');
+    expect(blockRenderer).toContain('Подробные сведения доступны в расширенном режиме.');
   });
 });
