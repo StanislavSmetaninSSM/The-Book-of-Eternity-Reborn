@@ -76,6 +76,44 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_MapRussian_InMortalRealm_RendersMortalMapInsteadOfAfterlifeGuard()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/world/current_location.json", new
+        {
+            locationId = "loc_market_square",
+            name = "Рыночная площадь",
+            description = "Открытая смертная локация для проверки карты.",
+            coordinates = new { x = 1, y = 2, z = 0 },
+            adjacencyMap = new[]
+            {
+                new
+                {
+                    targetLocationId = "loc_east_gate",
+                    name = "Восточные ворота",
+                    direction = "восток",
+                    distance = "10 минут",
+                    linkState = "safe"
+                }
+            }
+        });
+        _console.QueueAnySelection("← Назад");
+        await _stateManager.RefreshGameStateAsync();
+
+        var result = await _explorer.TryProcessCommand("/карта");
+
+        Assert.Equal(string.Empty, result);
+        Assert.DoesNotContain(_console.MarkupLines,
+            line => line.Contains("загробном цикле", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.MarkupLines,
+            line => line.Contains("хранителями", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.SelectionTitles,
+            title => title.Contains("Карта", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+            choice => choice.Contains("Рыночная площадь", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task TryProcessCommand_ChaosSeaCommand_BlankRealmFailsClosed()
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new

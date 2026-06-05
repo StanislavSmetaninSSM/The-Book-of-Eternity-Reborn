@@ -221,6 +221,17 @@ public partial class ExplorerMode
                 return "";
             }
 
+            if (isMortal && _mortalOnlyCommands.TryGetValue(cmd, out var mortalHandlerForCurrentRealm))
+            {
+                if (!await TryAcquireLocalUiSessionMutationLockAsync(cmd))
+                    return "";
+
+                await SafeExecute(mortalHandlerForCurrentRealm, cmd);
+                if (string.IsNullOrEmpty(_pendingGmAction))
+                    await DiscardPendingLocalTurnRollbackSnapshotAsync();
+                return _pendingGmAction ?? "";
+            }
+
             if (IsExactChaosSeaCommand(cmd) && isAfterlife && !_stateManager.CurrentState.IsInChaosSea)
             {
                 MarkupLine("[yellow]⚠️ Эта команда доступна только в Море Хаоса.[/]");
