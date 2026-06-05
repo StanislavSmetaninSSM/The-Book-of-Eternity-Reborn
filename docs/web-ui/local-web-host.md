@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #688, #689, #691, #701, #702, #703, #704, #705, #723, #727, #728, #729, #742, #759
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #688, #689, #691, #701, #702, #703, #704, #705, #723, #727, #728, #729, #742, #759, #771
 Parent epic: #559
 
 ## Local-Only Model
@@ -71,20 +71,25 @@ Use the same base path as console mode when you want the browser to continue the
 
 ## Frontend Workspace
 
-Issue #701 added `BookOfEternityClient.WebFrontend/`, a Vite + React + TypeScript workspace for the long-term Browser Client. Issue #702 connects that workspace to `LocalWebUiHost`: C# owns the loopback APIs/runtime, and the browser root is served from standalone frontend assets instead of a C# raw-string HTML blob. Issue #704 turns the Vite entry point into the first React app shell with player-facing routes and explicit advanced/debug opt-in.
+Issue #701 added `BookOfEternityClient.WebFrontend/`, a Vite + React + TypeScript workspace for the long-term Browser Client. Issue #702 connects that workspace to `LocalWebUiHost`: C# owns the loopback APIs/runtime, and the browser root is served from standalone frontend assets instead of a C# raw-string HTML blob. Issue #704 turns the Vite entry point into the first React app shell with player-facing routes and explicit advanced/debug opt-in. Issue #771 adds a one-command loopback development workflow for running the C# backend and Vite frontend together.
 
 From the repository root:
 
 ```powershell
 npm install --prefix BookOfEternityClient.WebFrontend
 npm ci --prefix BookOfEternityClient.WebFrontend
+npm run dev:local --prefix BookOfEternityClient.WebFrontend
 npm run dev --prefix BookOfEternityClient.WebFrontend
 npm run typecheck --prefix BookOfEternityClient.WebFrontend
 npm run build --prefix BookOfEternityClient.WebFrontend
 npm run verify --prefix BookOfEternityClient.WebFrontend
 ```
 
-`npm run dev` binds the Vite development server to `127.0.0.1`. `npm run build` writes the preferred production asset root:
+`npm run dev:local` starts the C# local web host at `http://127.0.0.1:8787` with `--web` and starts the Vite development server on loopback, normally `http://127.0.0.1:5173`. Open the Vite URL for hot frontend reload. The Vite proxy forwards `/api` and `/assets` requests to the C# backend at `http://127.0.0.1:8787`, preserving C# runtime authority without broad CORS.
+
+This #771 workflow remains local-only: it does not enable public/LAN binding, `0.0.0.0`, cloud tunnels, telemetry, or an idle-exit workaround. If a backend idle-exit symptom is reproduced later, capture exact logs and use a separate tracked issue.
+
+`npm run dev` binds only the Vite development server to `127.0.0.1`; use it when the backend is already running in another terminal. `npm run build` writes the preferred production asset root:
 
 ```text
 BookOfEternityClient.WebFrontend/dist/

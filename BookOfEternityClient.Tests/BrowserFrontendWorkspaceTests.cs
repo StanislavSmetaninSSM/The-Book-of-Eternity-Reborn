@@ -40,6 +40,38 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void FrontendWorkspace_HasCombinedLoopbackDevWorkflow()
+    {
+        var packageJsonPath = Path.Combine(FrontendRoot, "package.json");
+        using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
+        var scripts = document.RootElement.GetProperty("scripts");
+
+        Assert.Equal("node scripts/dev-local.mjs", scripts.GetProperty("dev:local").GetString());
+
+        var helperPath = Path.Combine(FrontendRoot, "scripts", "dev-local.mjs");
+        Assert.True(File.Exists(helperPath), $"Missing combined Browser Client dev helper at {helperPath}");
+
+        var helper = File.ReadAllText(helperPath);
+        Assert.Contains("node:child_process", helper, StringComparison.Ordinal);
+        Assert.Contains("spawn(", helper, StringComparison.Ordinal);
+        Assert.Contains("stdio: 'inherit'", helper, StringComparison.Ordinal);
+        Assert.Contains("'dotnet'", helper, StringComparison.Ordinal);
+        Assert.Contains("'run'", helper, StringComparison.Ordinal);
+        Assert.Contains("'--project'", helper, StringComparison.Ordinal);
+        Assert.Contains("'--web'", helper, StringComparison.Ordinal);
+        Assert.Contains("'--web-url'", helper, StringComparison.Ordinal);
+        Assert.Contains("'http://127.0.0.1:8787'", helper, StringComparison.Ordinal);
+        Assert.Contains("'--host'", helper, StringComparison.Ordinal);
+        Assert.Contains("'127.0.0.1'", helper, StringComparison.Ordinal);
+        Assert.Contains("SIGINT", helper, StringComparison.Ordinal);
+        Assert.Contains("SIGTERM", helper, StringComparison.Ordinal);
+        Assert.Contains("child.kill", helper, StringComparison.Ordinal);
+        Assert.DoesNotContain("shell: true", helper, StringComparison.Ordinal);
+        Assert.DoesNotContain("exec(", helper, StringComparison.Ordinal);
+        Assert.DoesNotContain("0.0.0.0", helper, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void FrontendWorkspace_HasVerifyScriptAndCiFrontendWorkflow()
     {
         var packageJsonPath = Path.Combine(FrontendRoot, "package.json");
@@ -82,6 +114,18 @@ public sealed class BrowserFrontendWorkspaceTests
         var viteConfig = File.ReadAllText(Path.Combine(FrontendRoot, "vite.config.ts"));
         Assert.Contains("@vitejs/plugin-react", viteConfig, StringComparison.Ordinal);
         Assert.Contains("outDir: 'dist'", viteConfig, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void FrontendWorkspace_ProxiesApiAndAssetsToLoopbackBackend()
+    {
+        var viteConfig = File.ReadAllText(Path.Combine(FrontendRoot, "vite.config.ts"));
+
+        Assert.Contains("host: '127.0.0.1'", viteConfig, StringComparison.Ordinal);
+        Assert.Contains("'/api'", viteConfig, StringComparison.Ordinal);
+        Assert.Contains("'/assets'", viteConfig, StringComparison.Ordinal);
+        Assert.Equal(2, CountOccurrences(viteConfig, "target: 'http://127.0.0.1:8787'"));
+        Assert.DoesNotContain("0.0.0.0", viteConfig, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -450,5 +494,18 @@ public sealed class BrowserFrontendWorkspaceTests
             .Concat(Directory.EnumerateFiles(Path.Combine(FrontendRoot, "src", "styles"), "*.css").OrderBy(path => path, StringComparer.Ordinal));
 
         return string.Join("\n", paths.Select(File.ReadAllText));
+    }
+
+    private static int CountOccurrences(string text, string value)
+    {
+        var count = 0;
+        var index = 0;
+        while ((index = text.IndexOf(value, index, StringComparison.Ordinal)) >= 0)
+        {
+            count++;
+            index += value.Length;
+        }
+
+        return count;
     }
 }
