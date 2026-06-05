@@ -661,6 +661,39 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Books_WithOnlySealedDocument_RendersUnreadableReason()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/inventory/items.json", new
+        {
+            items = new[]
+            {
+                new
+                {
+                    existedId = "doc_sealed_cli_1",
+                    name = "Запечатанное письмо",
+                    type = "Документ",
+                    textContent = (string[]?)null,
+                    unreadableReason = "Печать не позволяет прочесть письмо сейчас."
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/книги"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("books_sealed_document_reason");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Запечатанное письмо", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Печать не позволяет прочесть письмо сейчас.", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Нет читаемых предметов", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors()
     {
