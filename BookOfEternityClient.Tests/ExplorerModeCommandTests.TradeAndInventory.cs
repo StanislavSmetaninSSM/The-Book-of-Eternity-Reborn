@@ -127,6 +127,39 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_InventoryDetail_UnresolvedMechanicalSummaryShowsReason()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/inventory/items.json", new
+        {
+            items = new[]
+            {
+                new
+                {
+                    itemId = "sealed_glove_1",
+                    name = "Запечатанная перчатка",
+                    description = "Руны на коже перчатки закрыты тусклой печатью.",
+                    type = "Перчатки",
+                    count = 1,
+                    bonuses = new[] { "Аркановедение +1" },
+                    mechanicalSummaryAuthority = "Unresolved",
+                    mechanicalSummaryUnresolvedReason = "Руны запечатаны, эффект станет ясен после ритуала распознавания."
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("inventory_unresolved_mechanics_reason");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Механика не раскрыта", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Руны запечатаны", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("• Аркановедение +1", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_NpcPromptChoices_EscapeBracketBearingDynamicLabels()
     {
         await SeedMortalStateAsync();

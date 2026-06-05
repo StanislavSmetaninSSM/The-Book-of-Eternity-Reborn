@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using System.Globalization;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
@@ -11,6 +12,47 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
+    private static readonly Regex InventoryMechanicalSummaryNumericRegex = new(
+        @"[+\-]\s*\d+|\d+\s*%",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    private static readonly Regex InventoryMechanicalSummaryValueRegex = new(
+        @"(?<sign>[+\-])?\s*(?<number>\d+(?:[.,]\d+)?)\s*(?<percent>%?)",
+        RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+    private static readonly string[] InventoryMechanicalSummaryTerms =
+    {
+        "damage", "heal", "healing", "health", "energy", "mana", "buff", "debuff",
+        "duration", "turn", "round", "activated", "reputation", "stealth", "strength",
+        "dexterity", "constitution", "intelligence", "wisdom", "faith", "luck",
+        "speed", "perception",
+        "урон", "восстанавлива", "исцел", "лечен", "здоров", "энерги", "мана", "маны",
+        "репутац", "скрытност", "сила", "ловкост", "выносливост", "интеллект",
+        "мудрост", "вера", "удач", "скорост", "восприяти", "аркановед",
+        "бафф", "дебафф", "штраф", "бонус", "перезаряд", "длительност",
+        "активируем", "активац"
+    };
+
+    private static readonly string[][] InventoryMechanicalAuthorityTargetAliases =
+    {
+        new[] { "strength", "сила", "силы" },
+        new[] { "dexterity", "ловкость", "ловкости" },
+        new[] { "constitution", "выносливость", "выносливости" },
+        new[] { "intelligence", "интеллект", "интеллекта" },
+        new[] { "wisdom", "мудрость", "мудрости" },
+        new[] { "faith", "вера", "веры" },
+        new[] { "luck", "удача", "удачи" },
+        new[] { "speed", "скорость", "скорости" },
+        new[] { "perception", "восприятие", "восприятия" },
+        new[] { "stealth", "скрытность", "скрытности" },
+        new[] { "arcana", "arcanum", "аркановедение", "аркановед" },
+        new[] { "reputation", "репутация", "репутац" },
+        new[] { "health", "hp", "heal", "healing", "здоровье", "здоровья", "исцел", "восстанавлива" },
+        new[] { "damage", "урон", "поврежден" },
+        new[] { "duration", "turn", "round", "длительность", "ход", "раунд" },
+        new[] { "condition", "state", "состояние", "условие" }
+    };
+
     private async Task ValidatePlayerStateFiles(List<ValidationIssue> issues)
     {
         await ValidatePlayerFile("game_state/core/player_status.json", issues);
@@ -1901,6 +1943,9 @@ public partial class ValidationService
             RequireArrayOfObjects(customProperties, $"{itemContext}.customProperties", issues);
         if (item.TryGetProperty("combatEffect", out var combatEffect))
             ValidateCombatActionArray(combatEffect, $"{itemContext}.combatEffect", issues);
+        ValidateOptionalString(item, itemContext, issues, "mechanicalSummaryAuthority");
+        ValidateOptionalString(item, itemContext, issues, "mechanicalSummaryUnresolvedReason");
+        ValidateInventoryMechanicalSummaryAuthority(item, itemContext, issues);
         if (item.TryGetProperty("disassembleTo", out var disassembleTo) && disassembleTo.ValueKind != JsonValueKind.Null)
             ValidateItemDisassemblyArray(disassembleTo, $"{itemContext}.disassembleTo", issues);
         ValidateItemBondAndFateCardContract(item, itemContext, issues, quality);
@@ -2671,12 +2716,28 @@ public partial class ValidationService
                 case "combatEffect":
                     ValidateCombatActionArray(prop.Value, $"{itemContext}.combatEffect", issues, section: section);
                     break;
+                case "mechanicalSummaryAuthority":
+                case "mechanicalSummaryUnresolvedReason":
+                    if (prop.Value.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(prop.Value.GetString()))
+                    {
+                        issues.Add(new ValidationIssue(
+                            $"{itemContext}.{prop.Name}",
+                            IssueSeverity.Error,
+                            $"{prop.Name} должен быть непустой строкой",
+                            code: "inventory_mechanical_summary_authority_invalid_string",
+                            section: section,
+                            repairHint: "Для narrative-only или unresolved item summary передай непустую player-facing строку в documented authority fields."));
+                    }
+                    break;
                 case "disassembleTo":
                     if (prop.Value.ValueKind != JsonValueKind.Null)
                         ValidateItemDisassemblyArray(prop.Value, $"{itemContext}.disassembleTo", issues);
                     break;
                 case "fateCards":
                 case "ownerBondLevelCurrent":
+                    break;
+                case "effects":
+                    ValidateInventorySummaryArray(prop.Value, $"{itemContext}.{prop.Name}", issues, section);
                     break;
                 case "contentsPath":
                     if (!forbidContentsPathMutation)
@@ -2722,7 +2783,630 @@ public partial class ValidationService
         {
             ValidateEquipmentSlotRequiresTwoHandsContract(effectiveEquipProfile, itemContext, issues, section);
         }
+
+        ValidateInventoryMechanicalSummaryAuthority(item, itemContext, issues, section);
     }
+
+    private void ValidateInventoryMechanicalSummaryAuthority(JsonElement item, string itemContext, List<ValidationIssue> issues, string section = "Inventory")
+    {
+        if (item.ValueKind != JsonValueKind.Object)
+            return;
+
+        var summaries = CollectInventorySummaryCandidates(item).ToList();
+        if (summaries.Count == 0)
+            return;
+
+        ValidateInventoryMechanicalSummaryAuthorityValue(item, itemContext, issues, section);
+
+        var explicitAuthority = GetFirstNonEmptyString(item, "mechanicalSummaryAuthority");
+        if (IsInventoryNarrativeOnlySummaryAuthority(explicitAuthority))
+            return;
+
+        if (IsInventoryUnresolvedSummaryAuthority(explicitAuthority))
+        {
+            if (HasInventoryMechanicalSummaryUnresolvedReason(item))
+                return;
+
+            var itemIdentity = GetInventoryItemIssueIdentity(item);
+            issues.Add(new ValidationIssue(
+                $"{itemContext}.item:{itemIdentity}.mechanicalSummaryUnresolvedReason",
+                IssueSeverity.Error,
+                "Unresolved inventory mechanics summary должен иметь player-facing reason",
+                code: "inventory_mechanical_summary_unresolved_missing_reason",
+                section: section,
+                expected: "mechanicalSummaryUnresolvedReason, unresolvedMechanicsReason, unidentifiedMechanicsReason, sealedReason, unreadableReason, or lockedReason",
+                actual: GetInventoryItemIssueIdentity(item),
+                repairHint: "Если механика предмета ещё неизвестна или запечатана, добавь player-facing причину вместо implied applied bonus."));
+            return;
+        }
+
+        var hasAnyMeaningfulStructuredAuthority = HasAnyMeaningfulInventoryStructuredSummaryAuthority(item);
+        foreach (var summary in summaries)
+        {
+            var itemIdentity = GetInventoryItemIssueIdentity(item);
+            var summaryContext = $"{itemContext}.item:{itemIdentity}.{summary.PropertyName}[{summary.Index}]";
+            if (LooksLikeMechanicalInventorySummary(summary.Text))
+            {
+                if (HasInventoryStructuredSummaryAuthorityForSummary(item, summary.Text))
+                    continue;
+
+                issues.Add(new ValidationIssue(
+                    summaryContext,
+                    IssueSeverity.Error,
+                    "Inventory bonus/effect summary выглядит механическим, но не имеет matching structured authority",
+                    code: "inventory_mechanical_summary_missing_structured_authority",
+                    section: section,
+                    expected: "matching structuredBonuses, combatEffect, customProperties, or mechanicalSummaryAuthority=Unresolved with player-facing reason",
+                    actual: $"{GetInventoryItemIssueIdentity(item)}: «{summary.Text}»",
+                    repairHint: "Не оставляй mechanical-looking bonuses/effects как единственный источник правды: добавь matching canonical structuredBonuses/combatEffect/customProperties или явно пометь механику unresolved с reason."));
+            }
+            else if (!hasAnyMeaningfulStructuredAuthority)
+            {
+                issues.Add(new ValidationIssue(
+                    summaryContext,
+                    IssueSeverity.Error,
+                    "Narrative inventory bonus/effect summary должен быть явно classified as narrative-only",
+                    code: "inventory_narrative_summary_missing_classification",
+                    section: section,
+                    expected: "mechanicalSummaryAuthority = NarrativeOnly, or structured authority if the summary has mechanics",
+                    actual: $"{GetInventoryItemIssueIdentity(item)}: «{summary.Text}»",
+                    repairHint: "Если строка является только flavor/lore, добавь mechanicalSummaryAuthority=\"NarrativeOnly\". Если она влияет на механику, добавь structured authority."));
+            }
+        }
+    }
+
+    private void ValidateInventoryMechanicalSummaryAuthorityValue(JsonElement item, string itemContext, List<ValidationIssue> issues, string section)
+    {
+        if (!item.TryGetProperty("mechanicalSummaryAuthority", out var authority))
+            return;
+
+        if (authority.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(authority.GetString()))
+            return;
+
+        var value = authority.GetString();
+        if (IsInventoryNarrativeOnlySummaryAuthority(value) ||
+            IsInventoryUnresolvedSummaryAuthority(value))
+            return;
+
+        issues.Add(new ValidationIssue(
+            $"{itemContext}.mechanicalSummaryAuthority",
+            IssueSeverity.Error,
+            "mechanicalSummaryAuthority использует unsupported value",
+            code: "inventory_mechanical_summary_authority_invalid_value",
+            section: section,
+            expected: "NarrativeOnly | FlavorOnly | Unresolved | Unknown | Unidentified | Sealed",
+            actual: value,
+            repairHint: "Используй NarrativeOnly для flavor/lore text или Unresolved/Unknown/Unidentified/Sealed вместе с player-facing reason."));
+    }
+
+    private static IEnumerable<InventorySummaryCandidate> CollectInventorySummaryCandidates(JsonElement item)
+    {
+        foreach (var summary in CollectInventorySummaryCandidates(item, "bonuses", includeObjectSummaries: false))
+            yield return summary;
+
+        foreach (var summary in CollectInventorySummaryCandidates(item, "effects", includeObjectSummaries: true))
+            yield return summary;
+    }
+
+    private static IEnumerable<InventorySummaryCandidate> CollectInventorySummaryCandidates(
+        JsonElement item,
+        string propertyName,
+        bool includeObjectSummaries)
+    {
+        if (!item.TryGetProperty(propertyName, out var value) || value.ValueKind != JsonValueKind.Array)
+            yield break;
+
+        var index = 0;
+        foreach (var entry in value.EnumerateArray())
+        {
+            if (entry.ValueKind == JsonValueKind.String)
+            {
+                var text = entry.GetString();
+                if (!string.IsNullOrWhiteSpace(text))
+                    yield return new InventorySummaryCandidate(propertyName, index, text.Trim());
+            }
+            else if (includeObjectSummaries && entry.ValueKind == JsonValueKind.Object)
+            {
+                var text = GetFirstNonEmptyString(entry, "effectDescription", "description", "name", "effect");
+                if (!string.IsNullOrWhiteSpace(text))
+                    yield return new InventorySummaryCandidate(propertyName, index, text.Trim());
+            }
+
+            index++;
+        }
+    }
+
+    private void ValidateInventorySummaryArray(JsonElement value, string context, List<ValidationIssue> issues, string section)
+    {
+        if (value.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Inventory effects должен быть массивом строк или summary objects",
+                code: "inventory_effects_invalid_array",
+                section: section,
+                repairHint: "Передай effects как массив user-facing strings или objects с name/effect/description/effectDescription."));
+            return;
+        }
+
+        var index = 0;
+        foreach (var entry in value.EnumerateArray())
+        {
+            if (entry.ValueKind == JsonValueKind.String)
+            {
+                if (string.IsNullOrWhiteSpace(entry.GetString()))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}[{index}]",
+                        IssueSeverity.Error,
+                        "Inventory effects string должен быть непустым",
+                        code: "inventory_effects_empty_string",
+                        section: section));
+                }
+            }
+            else if (entry.ValueKind == JsonValueKind.Object)
+            {
+                if (!HasAnyNonEmptyString(entry, "effectDescription", "description", "name", "effect"))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}[{index}]",
+                        IssueSeverity.Error,
+                        "Inventory effects object должен иметь user-facing summary",
+                        code: "inventory_effects_object_missing_summary",
+                        section: section,
+                        expected: "effectDescription, description, name, or effect",
+                        repairHint: "Добавь player-facing summary text к effects object."));
+                }
+            }
+            else
+            {
+                issues.Add(new ValidationIssue(
+                    $"{context}[{index}]",
+                    IssueSeverity.Error,
+                    "Inventory effects element должен быть строкой или объектом",
+                    code: "inventory_effects_invalid_entry",
+                    section: section));
+            }
+
+            index++;
+        }
+    }
+
+    private static bool HasAnyMeaningfulInventoryStructuredSummaryAuthority(JsonElement item)
+    {
+        return EnumerateInventoryStructuredSummaryAuthorityObjects(item)
+            .Any(HasMeaningfulInventoryStructuredSummaryAuthorityObject);
+    }
+
+    private static bool HasInventoryStructuredSummaryAuthorityForSummary(JsonElement item, string summary)
+    {
+        return EnumerateInventoryStructuredSummaryAuthorityObjects(item)
+            .Any(authority => InventoryStructuredSummaryAuthorityMatches(summary, authority));
+    }
+
+    private static IEnumerable<JsonElement> EnumerateInventoryStructuredSummaryAuthorityObjects(JsonElement item)
+    {
+        if (item.TryGetProperty("structuredBonuses", out var structuredBonuses) &&
+            structuredBonuses.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in structuredBonuses.EnumerateArray())
+            {
+                if (entry.ValueKind == JsonValueKind.Object)
+                    yield return entry;
+            }
+        }
+
+        if (item.TryGetProperty("customProperties", out var customProperties) &&
+            customProperties.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in customProperties.EnumerateArray())
+            {
+                if (entry.ValueKind == JsonValueKind.Object)
+                    yield return entry;
+            }
+        }
+
+        if (!item.TryGetProperty("combatEffect", out var combatEffect))
+            yield break;
+
+        if (combatEffect.ValueKind == JsonValueKind.Object)
+        {
+            yield return combatEffect;
+        }
+        else if (combatEffect.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in combatEffect.EnumerateArray())
+            {
+                if (entry.ValueKind == JsonValueKind.Object)
+                    yield return entry;
+            }
+        }
+    }
+
+    private static bool InventoryStructuredSummaryAuthorityMatches(string summary, JsonElement authority)
+    {
+        if (!HasMeaningfulInventoryStructuredSummaryAuthorityObject(authority))
+            return false;
+
+        foreach (var authoritySummary in EnumerateInventoryAuthoritySummaryTexts(authority))
+        {
+            if (InventoryAuthoritySummaryTextMatches(summary, authoritySummary))
+                return true;
+        }
+
+        return InventoryAuthorityMetadataMatchesSummary(summary, authority);
+    }
+
+    private static bool HasMeaningfulInventoryStructuredSummaryAuthorityObject(JsonElement authority)
+    {
+        return EnumerateInventoryAuthorityScalarValues(authority)
+            .Any(static value => !string.IsNullOrWhiteSpace(value));
+    }
+
+    private static bool InventoryAuthoritySummaryTextMatches(string summary, string authoritySummary)
+    {
+        var normalizedSummary = NormalizeInventoryAuthorityText(summary);
+        var normalizedAuthority = NormalizeInventoryAuthorityText(authoritySummary);
+        if (normalizedSummary.Length == 0 || normalizedAuthority.Length == 0)
+            return false;
+
+        return string.Equals(normalizedSummary, normalizedAuthority, StringComparison.Ordinal);
+    }
+
+    private static bool InventoryAuthorityMetadataMatchesSummary(string summary, JsonElement authority)
+    {
+        var hasTargetMatch = EnumerateInventoryAuthorityTargetTexts(authority)
+            .Any(target => InventoryAuthorityTargetMatchesSummary(summary, target));
+        if (!hasTargetMatch)
+            return false;
+
+        if (!TryExtractInventorySummaryValue(summary, out var summaryValue, out var summaryIsPercent))
+            return true;
+
+        return EnumerateInventoryAuthorityValueCandidates(authority)
+            .Any(candidate => InventoryAuthorityValueMatchesSummary(summaryValue, summaryIsPercent, candidate));
+    }
+
+    private static bool InventoryAuthorityTargetMatchesSummary(string summary, string target)
+    {
+        var normalizedSummary = NormalizeInventoryAuthorityText(summary);
+        var normalizedTarget = NormalizeInventoryAuthorityText(target);
+        if (normalizedSummary.Length == 0 || normalizedTarget.Length == 0)
+            return false;
+
+        if (normalizedTarget.Length >= 3 && normalizedSummary.Contains(normalizedTarget, StringComparison.Ordinal))
+            return true;
+
+        foreach (var aliases in InventoryMechanicalAuthorityTargetAliases)
+        {
+            var summaryMatchesAlias = aliases
+                .Select(NormalizeInventoryAuthorityText)
+                .Any(alias => alias.Length >= 3 && normalizedSummary.Contains(alias, StringComparison.Ordinal));
+            if (!summaryMatchesAlias)
+                continue;
+
+            var targetMatchesAlias = aliases
+                .Select(NormalizeInventoryAuthorityText)
+                .Any(alias => alias.Length >= 3 && normalizedTarget.Contains(alias, StringComparison.Ordinal));
+            if (targetMatchesAlias)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryExtractInventorySummaryValue(string summary, out decimal value, out bool isPercent)
+    {
+        foreach (Match match in InventoryMechanicalSummaryValueRegex.Matches(summary))
+        {
+            var numberText = match.Groups["number"].Value.Replace(',', '.');
+            if (!decimal.TryParse(numberText, NumberStyles.Number, CultureInfo.InvariantCulture, out value))
+                continue;
+
+            if (match.Groups["sign"].Value == "-")
+                value = -value;
+
+            isPercent = match.Groups["percent"].Value == "%";
+            return true;
+        }
+
+        value = 0;
+        isPercent = false;
+        return false;
+    }
+
+    private static bool InventoryAuthorityValueMatchesSummary(
+        decimal summaryValue,
+        bool summaryIsPercent,
+        InventoryAuthorityValueCandidate candidate)
+    {
+        if (Math.Abs(candidate.Value - summaryValue) > 0.0001m)
+            return false;
+
+        return !summaryIsPercent || candidate.IsPercent;
+    }
+
+    private static IEnumerable<string> EnumerateInventoryAuthoritySummaryTexts(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            yield break;
+
+        foreach (var property in root.EnumerateObject())
+        {
+            if (property.Value.ValueKind == JsonValueKind.String &&
+                IsInventoryAuthoritySummaryTextProperty(property.Name) &&
+                !string.IsNullOrWhiteSpace(property.Value.GetString()))
+            {
+                yield return property.Value.GetString()!;
+            }
+
+            if (property.Value.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var nested in EnumerateInventoryAuthoritySummaryTexts(property.Value))
+                    yield return nested;
+            }
+            else if (property.Value.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var entry in property.Value.EnumerateArray())
+                {
+                    foreach (var nested in EnumerateInventoryAuthoritySummaryTexts(entry))
+                        yield return nested;
+                }
+            }
+        }
+    }
+
+    private static bool IsInventoryAuthoritySummaryTextProperty(string propertyName)
+    {
+        return StringEqualsAny(
+            propertyName,
+            "description",
+            "display",
+            "displayText",
+            "summary",
+            "bonusSummary",
+            "effectSummary",
+            "effectDescription",
+            "playerFacingSummary",
+            "name",
+            "effect");
+    }
+
+    private static IEnumerable<string> EnumerateInventoryAuthorityTargetTexts(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            yield break;
+
+        foreach (var property in root.EnumerateObject())
+        {
+            if (property.Value.ValueKind == JsonValueKind.String &&
+                IsInventoryAuthorityTargetProperty(property.Name) &&
+                !string.IsNullOrWhiteSpace(property.Value.GetString()))
+            {
+                yield return property.Value.GetString()!;
+            }
+
+            if (property.Value.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var nested in EnumerateInventoryAuthorityTargetTexts(property.Value))
+                    yield return nested;
+            }
+            else if (property.Value.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var entry in property.Value.EnumerateArray())
+                {
+                    foreach (var nested in EnumerateInventoryAuthorityTargetTexts(entry))
+                        yield return nested;
+                }
+            }
+        }
+    }
+
+    private static bool IsInventoryAuthorityTargetProperty(string propertyName)
+    {
+        return StringEqualsAny(
+            propertyName,
+            "target",
+            "targetType",
+            "targetTypeDisplayName",
+            "targetStateName",
+            "stat",
+            "characteristic",
+            "skill",
+            "attribute",
+            "resource",
+            "resourceType",
+            "effectType",
+            "bonusType");
+    }
+
+    private static IEnumerable<InventoryAuthorityValueCandidate> EnumerateInventoryAuthorityValueCandidates(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            yield break;
+
+        var localValueTypeIsPercent = HasInventoryAuthorityPercentageValueType(root);
+        foreach (var property in root.EnumerateObject())
+        {
+            if (IsInventoryAuthorityValueProperty(property.Name) &&
+                TryReadInventoryAuthorityValue(property.Value, localValueTypeIsPercent, out var candidate))
+            {
+                yield return candidate;
+            }
+
+            if (property.Value.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var nested in EnumerateInventoryAuthorityValueCandidates(property.Value))
+                    yield return nested;
+            }
+            else if (property.Value.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var entry in property.Value.EnumerateArray())
+                {
+                    foreach (var nested in EnumerateInventoryAuthorityValueCandidates(entry))
+                        yield return nested;
+                }
+            }
+        }
+    }
+
+    private static bool IsInventoryAuthorityValueProperty(string propertyName)
+    {
+        return StringEqualsAny(
+            propertyName,
+            "value",
+            "changeValue",
+            "bonus",
+            "modifier",
+            "amount",
+            "percent",
+            "percentage",
+            "duration",
+            "poiseDamage",
+            "damageThreshold");
+    }
+
+    private static bool TryReadInventoryAuthorityValue(
+        JsonElement valueElement,
+        bool localValueTypeIsPercent,
+        out InventoryAuthorityValueCandidate candidate)
+    {
+        switch (valueElement.ValueKind)
+        {
+            case JsonValueKind.Number:
+                if (valueElement.TryGetDecimal(out var numericValue))
+                {
+                    candidate = new InventoryAuthorityValueCandidate(numericValue, localValueTypeIsPercent);
+                    return true;
+                }
+                break;
+
+            case JsonValueKind.String:
+                var valueText = valueElement.GetString() ?? string.Empty;
+                foreach (Match match in InventoryMechanicalSummaryValueRegex.Matches(valueText))
+                {
+                    var numberText = match.Groups["number"].Value.Replace(',', '.');
+                    if (!decimal.TryParse(numberText, NumberStyles.Number, CultureInfo.InvariantCulture, out var stringValue))
+                        continue;
+
+                    if (match.Groups["sign"].Value == "-")
+                        stringValue = -stringValue;
+
+                    candidate = new InventoryAuthorityValueCandidate(
+                        stringValue,
+                        localValueTypeIsPercent || match.Groups["percent"].Value == "%");
+                    return true;
+                }
+                break;
+        }
+
+        candidate = default;
+        return false;
+    }
+
+    private static bool HasInventoryAuthorityPercentageValueType(JsonElement root)
+    {
+        return GetFirstNonEmptyString(root, "valueType", "modifierType") is { } valueType &&
+               (valueType.Contains("percent", StringComparison.OrdinalIgnoreCase) ||
+                valueType.Contains("процент", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static IEnumerable<string> EnumerateInventoryAuthorityScalarValues(JsonElement root)
+    {
+        switch (root.ValueKind)
+        {
+            case JsonValueKind.Object:
+                foreach (var property in root.EnumerateObject())
+                {
+                    foreach (var value in EnumerateInventoryAuthorityScalarValues(property.Value))
+                        yield return value;
+                }
+                break;
+            case JsonValueKind.Array:
+                foreach (var entry in root.EnumerateArray())
+                {
+                    foreach (var value in EnumerateInventoryAuthorityScalarValues(entry))
+                        yield return value;
+                }
+                break;
+            case JsonValueKind.String:
+                yield return root.GetString() ?? string.Empty;
+                break;
+            case JsonValueKind.Number:
+            case JsonValueKind.True:
+            case JsonValueKind.False:
+                yield return root.GetRawText();
+                break;
+        }
+    }
+
+    private static string NormalizeInventoryAuthorityText(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var builder = new StringBuilder(value.Length);
+        foreach (var character in value.ToLowerInvariant())
+        {
+            if (char.IsLetterOrDigit(character))
+                builder.Append(character);
+        }
+
+        return builder.ToString();
+    }
+
+    private readonly record struct InventoryAuthorityValueCandidate(decimal Value, bool IsPercent);
+
+    private static bool HasInventoryMechanicalSummaryUnresolvedReason(JsonElement item)
+    {
+        return HasAnyNonEmptyString(
+            item,
+            "mechanicalSummaryUnresolvedReason",
+            "unresolvedMechanicsReason",
+            "unidentifiedMechanicsReason",
+            "unknownMechanicsReason",
+            "sealedReason",
+            "unreadableReason",
+            "lockedReason");
+    }
+
+    private static bool IsInventoryNarrativeOnlySummaryAuthority(string? value)
+    {
+        return StringEqualsAny(value, "NarrativeOnly", "FlavorOnly", "Narrative", "Flavor", "narrative-only", "flavor-only");
+    }
+
+    private static bool IsInventoryUnresolvedSummaryAuthority(string? value)
+    {
+        return StringEqualsAny(value, "Unresolved", "Unknown", "Unidentified", "Sealed");
+    }
+
+    private static bool LooksLikeMechanicalInventorySummary(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        if (InventoryMechanicalSummaryNumericRegex.IsMatch(text))
+            return true;
+
+        var normalized = text.ToLowerInvariant();
+        return InventoryMechanicalSummaryTerms.Any(term => normalized.Contains(term, StringComparison.Ordinal));
+    }
+
+    private static bool StringEqualsAny(string? value, params string[] candidates)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return candidates.Any(candidate => string.Equals(value.Trim(), candidate, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string GetInventoryItemIssueIdentity(JsonElement item)
+    {
+        return GetFirstNonEmptyString(item, "itemId", "existedId", "id", "name") ?? "unknown inventory item";
+    }
+
+    private readonly record struct InventorySummaryCandidate(string PropertyName, int Index, string Text);
 
     private static bool IsLikelyFullInventoryItemObject(JsonElement item)
     {

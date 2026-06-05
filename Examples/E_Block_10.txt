@@ -1257,4 +1257,135 @@
    </jsonresponse>
   </example>
  </rule>
+ <rule id="10.9">
+  <example contenttype="log_and_json_snippet" id="StructuredInventoryBonusAuthority_Example" type="good">
+   <title>
+    Example: Inventory bonus summaries have structured authority or explicit classification
+   </title>
+   <description>
+    Mechanical-looking `bonuses` or legacy `effects` strings are display summaries only. The GM must provide matching structured authority, or explicitly mark the item narrative-only/unresolved. Empty objects and unrelated structured entries do not authorize a displayed mechanical summary.
+   </description>
+   <jsonresponse>
+    <![CDATA[
+{
+  "response": "Вы разбираете трофеи и понимаете, какие свойства уже ясны, а какие ещё запечатаны.",
+  "UpdateInventory": [
+    {
+      "existedId": null,
+      "itemId": "item-valmont-ring-example",
+      "name": "Перстень дома Вальмонт",
+      "description": "Серебряный перстень с гербом дома Вальмонт. Его печать заметно помогает при общении с местной знатью.",
+      "image_prompt": "silver noble signet ring with heraldic crest",
+      "quality": "Uncommon",
+      "type": "Украшение",
+      "group": "Снаряжение",
+      "price": 120,
+      "count": 1,
+      "weight": 0.05,
+      "volume": 0.01,
+      "textContent": null,
+      "journalEntries": null,
+      "bonuses": [
+        "Репутация среди аристократов +3"
+      ],
+      "structuredBonuses": [
+        {
+          "description": "Репутация среди аристократов +3",
+          "bonusType": "ActionCheck",
+          "target": "Проверки репутации среди аристократов",
+          "valueType": "Flat",
+          "value": 3,
+          "application": "Permanent",
+          "condition": null
+        }
+      ],
+      "customProperties": [],
+      "contentsPath": null,
+      "isContainer": false,
+      "capacity": null,
+      "isConsumption": false,
+      "containerWeight": null,
+      "weightReduction": null,
+      "durability": "100%",
+      "combatEffect": [],
+      "equipmentSlot": null,
+      "accessoryForSlot": null,
+      "requiresTwoHands": false,
+      "disassembleTo": []
+    },
+    {
+      "existedId": null,
+      "itemId": "item-engraved-knife-example",
+      "name": "Нож с древней руной",
+      "description": "Походный нож с древним символом на рукояти. Символ не даёт механического эффекта.",
+      "image_prompt": "travel knife with ancient engraved rune",
+      "quality": "Common",
+      "type": "Инструмент",
+      "group": "Снаряжение",
+      "price": 20,
+      "count": 1,
+      "weight": 0.2,
+      "volume": 0.02,
+      "textContent": null,
+      "journalEntries": null,
+      "bonuses": [
+        "На рукояти выгравирован древний символ."
+      ],
+      "structuredBonuses": [],
+      "mechanicalSummaryAuthority": "NarrativeOnly",
+      "customProperties": [],
+      "contentsPath": null,
+      "isContainer": false,
+      "capacity": null,
+      "isConsumption": false,
+      "containerWeight": null,
+      "weightReduction": null,
+      "durability": "100%",
+      "combatEffect": [],
+      "equipmentSlot": null,
+      "accessoryForSlot": null,
+      "requiresTwoHands": false,
+      "disassembleTo": []
+    },
+    {
+      "existedId": null,
+      "itemId": "item-sealed-glove-example",
+      "name": "Запечатанная руническая перчатка",
+      "description": "Руны на перчатке обещают арканный отклик, но печать пока скрывает точное действие.",
+      "image_prompt": "sealed runic glove with dim arcane marks",
+      "quality": "Rare",
+      "type": "Магический предмет",
+      "group": "Снаряжение",
+      "price": 450,
+      "count": 1,
+      "weight": 0.3,
+      "volume": 0.04,
+      "textContent": null,
+      "journalEntries": null,
+      "bonuses": [
+        "Аркановедение +1"
+      ],
+      "structuredBonuses": [],
+      "mechanicalSummaryAuthority": "Unresolved",
+      "mechanicalSummaryUnresolvedReason": "Руны запечатаны, точный эффект станет ясен после ритуала распознавания.",
+      "customProperties": [],
+      "contentsPath": null,
+      "isContainer": false,
+      "capacity": null,
+      "isConsumption": false,
+      "containerWeight": null,
+      "weightReduction": null,
+      "durability": "100%",
+      "combatEffect": [],
+      "equipmentSlot": "hands",
+      "accessoryForSlot": null,
+      "requiresTwoHands": false,
+      "disassembleTo": []
+    }
+  ]
+}
+                        ]]>
+   </jsonresponse>
+  </example>
+ </rule>
 </instructionblock>
