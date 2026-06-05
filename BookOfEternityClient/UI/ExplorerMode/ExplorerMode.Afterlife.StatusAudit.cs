@@ -258,7 +258,7 @@ public partial class ExplorerMode
 
         Write(new Panel(new Text(rawPayload))
         {
-            Header = new PanelHeader($" {Markup.Escape(title)} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(title),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(borderColor ?? Color.Grey),
             Padding = new Padding(1, 1),

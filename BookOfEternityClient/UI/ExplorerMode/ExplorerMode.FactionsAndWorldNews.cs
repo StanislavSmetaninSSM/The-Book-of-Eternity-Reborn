@@ -48,13 +48,13 @@ public partial class ExplorerMode
                 var rep = GetInt(el, "reputation", 0);
                 var isMember = el.TryGetProperty("isPlayerMember", out var pm) && pm.ValueKind == JsonValueKind.True;
                 var lvl = GetStr(el, "level", "");
-                var label = $"🏛️ {name}";
+                var labelParts = new List<string> { $"🏛️ {name}" };
                 if (!string.IsNullOrEmpty(lvl))
-                    label = ConsoleLayout.PlainChoiceLabel(label, $"Уровень {lvl}");
-                label = ConsoleLayout.PlainChoiceLabel(label, ReputationDisplay.BuildPlainValueLabel(rep, ReputationScaleKind.Faction));
+                    labelParts.Add($"Уровень {lvl}");
+                labelParts.Add(ReputationDisplay.BuildPlainValueLabel(rep, ReputationScaleKind.Faction));
                 if (isMember)
-                    label = ConsoleLayout.PlainChoiceLabel(label, "Вы связаны с этой фракцией");
-                choices.Add(label);
+                    labelParts.Add("Вы связаны с этой фракцией");
+                choices.Add(ConsoleLayout.PlainChoiceLabel(labelParts.ToArray()));
             }
             choices.Add("← Назад");
 

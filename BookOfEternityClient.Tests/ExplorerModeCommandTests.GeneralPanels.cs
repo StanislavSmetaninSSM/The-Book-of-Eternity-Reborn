@@ -852,6 +852,152 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_BracketBearingMortalText_RendersStatusQuestsSkillsAndBooksSafely()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/core/player_status.json", new
+        {
+            healthPercentage = "85%",
+            energyPercentage = "70%",
+            poisePercentage = "60%",
+            currentCondition = "Собран [status]",
+            money = 120
+        });
+        await WriteJsonAsync("game_state/player/transformation.json", new
+        {
+            playerCharacterNameChange = "Элиан [debug]",
+            playerRaceChange = "Человек [broken",
+            playerClassChange = "Следопыт [card_alpha, card_beta]"
+        });
+        await WriteJsonAsync("game_state/player/experience.json", new
+        {
+            level = 3,
+            totalExperience = 120,
+            experienceForNextLevel = 200
+        });
+        await WriteJsonAsync("game_state/player/computed_characteristics.json", new
+        {
+            characteristics = new { strength = 6, dexterity = 7, constitution = 6, intelligence = 5, wisdom = 5, faith = 4, attractiveness = 5, trade = 4, persuasion = 4, perception = 7, luck = 5, speed = 6 },
+            modifiedCharacteristics = new { strength = 6, dexterity = 7, constitution = 6, intelligence = 5, wisdom = 5, faith = 4, attractiveness = 5, trade = 4, persuasion = 4, perception = 7, luck = 5, speed = 6 },
+            permanentlyModifiedCharacteristics = new { strength = 6, dexterity = 7, constitution = 6, intelligence = 5, wisdom = 5, faith = 4, attractiveness = 5, trade = 4, persuasion = 4, perception = 7, luck = 5, speed = 6 },
+            unspentStatPoints = 1
+        });
+        await WriteJsonAsync("game_state/player/effects.json", new[]
+        {
+            new { effectType = "buff [debug]", value = "+5% [broken", duration = 1, effectDescription = "Боевой тонус [card_alpha, card_beta]" }
+        });
+        await WriteJsonAsync("game_state/quests/regular_quests.json", new
+        {
+            quests = new[]
+            {
+                new
+                {
+                    questId = "quest_bracket_001",
+                    questName = "Контракт [debug]",
+                    status = "Active",
+                    questGiver = "Наниматель [broken",
+                    description = "Тестовый квест [card_alpha, card_beta].",
+                    objectives = new[]
+                    {
+                        new
+                        {
+                            description = "Проверить [objective]",
+                            status = "Active"
+                        }
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/player/skills_active.json", new
+        {
+            activeSkillChanges = new[]
+            {
+                new
+                {
+                    skillName = "Рывок [debug]",
+                    rarity = "Rare [Кольцо]",
+                    category = "Combat [broken",
+                    level = "2 [level]",
+                    description = "Быстрый рывок [card_alpha, card_beta]."
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/player/skills_passive.json", new
+        {
+            passiveSkillChanges = new[]
+            {
+                new
+                {
+                    skillName = "Острый глаз [debug]",
+                    rarity = "Uncommon [Кольцо]",
+                    type = "KnowledgeBased [broken",
+                    description = "Вы замечаете [details] быстрее других."
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/player/skill_mastery.json", new
+        {
+            skillMasteryChanges = new[]
+            {
+                new
+                {
+                    skillName = "Рывок [debug]",
+                    currentMasteryLevel = 2,
+                    experienceTowardsNextLevel = 10,
+                    experienceNeededForNextLevel = 20
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/inventory/items.json", new
+        {
+            items = new[]
+            {
+                new
+                {
+                    itemId = "item_book_bracket_001",
+                    name = "Дневник [debug]",
+                    textContent = new[]
+                    {
+                        "Первая запись [broken",
+                        "Вторая запись [card_alpha, card_beta]."
+                    }
+                }
+            }
+        });
+        await WriteJsonAsync("game_state/npcs/item_journals.json", new[]
+        {
+            new
+            {
+                itemName = "Шкатулка [debug]",
+                journalEntries = new object[]
+                {
+                    new
+                    {
+                        timestamp = "2026-03-19T12:00:00Z",
+                        @event = "Открытие [broken",
+                        description = "Внутри оказался лист [card_alpha, card_beta]."
+                    }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        foreach (var command in new[] { "/статус", "/квесты", "/навыки", "/книги" })
+        {
+            var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand(command));
+            Assert.Null(ex);
+            AssertNoHiddenExplorerErrors(command);
+        }
+
+        AssertSelectionChoicesAreSpectreMarkupSafe("mortal_bracket_quests", "Квесты");
+        AssertSelectionChoicesAreSpectreMarkupSafe("mortal_bracket_skills", "Навыки");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Элиан [debug]", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Контракт [debug]", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Дневник [debug]", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Factions_RendersWithoutHiddenErrors()
     {

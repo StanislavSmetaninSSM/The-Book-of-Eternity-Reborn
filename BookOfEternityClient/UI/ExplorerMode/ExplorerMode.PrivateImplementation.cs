@@ -264,9 +264,9 @@ public partial class ExplorerMode
 
     private void ShowEmptyPanel(string title, string message)
     {
-        var panel = new Panel(new Markup($"[dim]{message}[/]"))
+        var panel = new Panel(GameInterface.SafeMarkup($"[dim]{GameInterface.EscapeMarkup(message)}[/]", "empty panel"))
         {
-            Header = new PanelHeader($" {title} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(title),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Grey),
             Padding = new Padding(2, 1)
@@ -292,7 +292,7 @@ public partial class ExplorerMode
 
         Write(new Panel(new Text(json))
         {
-            Header = new PanelHeader($" {Markup.Escape(panelTitle)} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(panelTitle),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(borderColor ?? Color.Grey),
             Padding = new Padding(1, 1),
@@ -319,7 +319,7 @@ public partial class ExplorerMode
 
         Write(new Panel(new Text(json))
         {
-            Header = new PanelHeader($" {Markup.Escape(panelTitle)} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(panelTitle),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(borderColor ?? Color.Grey),
             Padding = new Padding(1, 1),
@@ -1026,7 +1026,7 @@ public partial class ExplorerMode
     {
         var panel = new Panel(content)
         {
-            Header = new PanelHeader($" {title} ", Justify.Center),
+            Header = GameInterface.SafePanelHeader(title),
             Border = BoxBorder.Double,
             BorderStyle = new Style(color),
             Expand = true

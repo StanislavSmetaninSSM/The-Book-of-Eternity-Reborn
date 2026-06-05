@@ -542,6 +542,22 @@ public class GameInterface
         }
     }
 
+    public static Markup SafeMarkupText(string? text)
+    {
+        return new Markup(EscapeMarkup(text ?? string.Empty));
+    }
+
+    public static PanelHeader SafePanelHeader(string? text, Justify justify = Justify.Center)
+    {
+        return new PanelHeader($" {EscapeMarkup(text ?? string.Empty)} ", justify);
+    }
+
+    public static string SafePromptChoice(params string?[] parts)
+    {
+        var label = string.Join(" | ", parts.Where(part => !string.IsNullOrWhiteSpace(part)));
+        return EscapeMarkup(label);
+    }
+
     private static string TryRemoveMarkup(string text)
     {
         try

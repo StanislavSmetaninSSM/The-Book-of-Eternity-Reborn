@@ -28,6 +28,11 @@ public sealed class ExplorerModeSourceGuardTests
         return string.Join(Environment.NewLine + Environment.NewLine, files.Select(File.ReadAllText));
     }
 
+    private static string ReadUiSourceFile(string relativePath)
+    {
+        return File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI", relativePath));
+    }
+
     [Fact]
     public void ExplorerMode_MustUseConsoleAdapterInsteadOfDirectAnsiConsoleCalls()
     {
@@ -56,6 +61,69 @@ public sealed class ExplorerModeSourceGuardTests
             : ReadGameEngineSource();
 
         Assert.DoesNotContain("new Markup(string.Join(\"\\n\", ", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ConsoleDynamicPlainText_MustUseCentralEscapingHelpersAtSpectreBoundaries()
+    {
+        var gameInterface = ReadUiSourceFile("GameInterface.cs");
+        var consoleLayout = ReadUiSourceFile("ConsoleLayout.cs");
+        var renderer = ReadUiSourceFile("ExplorerCommandResultConsoleRenderer.cs");
+        var explorerMode = ReadExplorerModeSource();
+
+        Assert.Contains("SafeMarkupText", gameInterface, StringComparison.Ordinal);
+        Assert.Contains("SafePanelHeader", gameInterface, StringComparison.Ordinal);
+        Assert.Contains("SafePromptChoice", gameInterface, StringComparison.Ordinal);
+        Assert.Contains("GameInterface.SafePromptChoice(parts)", consoleLayout, StringComparison.Ordinal);
+        Assert.Contains("GameInterface.SafeMarkupText(cell)", renderer, StringComparison.Ordinal);
+        Assert.Contains(
+            "table.AddRow(cells.Length == 0 ? [GameInterface.SafeMarkupText(string.Empty)] : cells);",
+            renderer,
+            StringComparison.Ordinal);
+        Assert.Contains("GameInterface.SafeMarkupText(action.Label)", renderer, StringComparison.Ordinal);
+        Assert.Contains("GameInterface.SafeMarkupText(prompt.Prompt)", renderer, StringComparison.Ordinal);
+        Assert.Contains("GameInterface.SafeMarkupText(notification.Message)", renderer, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("new Markup(Markup.Escape", renderer, StringComparison.Ordinal);
+        Assert.DoesNotContain("new PanelHeader($\" {Markup.Escape", renderer, StringComparison.Ordinal);
+        Assert.DoesNotMatch(@"new\s+Markup\s*\(\s*(?:\$@|@\$|\$)", renderer);
+        Assert.DoesNotMatch(@"new\s+PanelHeader\s*\(\s*(?:\$@|@\$|\$)", renderer);
+        Assert.DoesNotContain("new Markup(Markup.Escape", explorerMode, StringComparison.Ordinal);
+        Assert.DoesNotContain("new PanelHeader($\" {Markup.Escape", explorerMode, StringComparison.Ordinal);
+        Assert.DoesNotContain("new Markup($\"[dim]{message}[/]\")", explorerMode, StringComparison.Ordinal);
+        Assert.DoesNotContain("new PanelHeader($\" {title} \", Justify.Center)", explorerMode, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ExplorerMode_KnownDynamicPromptAndMarkupLineSurfaces_MustEscapePlainText()
+    {
+        var rootSource = ReadUiSourceFile("ExplorerMode.cs");
+        var inventorySource = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.Inventory.cs"));
+
+        Assert.DoesNotContain(
+            "MarkupLine($\"[yellow]⚠️ {parsedCommand.ErrorTitle}: {parsedCommand.ErrorMessage}[/]\");",
+            rootSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("choices.Add($\"⚔ {slotLabel}: {itemName}\");", inventorySource, StringComparison.Ordinal);
+        Assert.DoesNotContain("choices.Insert(infoPrefixCount, $\"💎 {rp.Name}: {rv}\");", inventorySource, StringComparison.Ordinal);
+        Assert.DoesNotContain("choices.Add($\"📦 {sName} ({contCount} пр.) → управление\");", inventorySource, StringComparison.Ordinal);
+        Assert.DoesNotContain("choices.Add($\"📦 🔒 {sName} ({contCount} пр.)\");", inventorySource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ExplorerMode_DynamicSelectionPromptChoices_MustBeEscapedBeforeAddChoices()
+    {
+        var inventorySource = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.Inventory.cs"));
+        var consoleLayout = ReadUiSourceFile("ConsoleLayout.cs");
+
+        Assert.Contains("PlainChoiceLabel", consoleLayout, StringComparison.Ordinal);
+        Assert.Contains("GameInterface.SafePromptChoice(parts)", consoleLayout, StringComparison.Ordinal);
+        Assert.Contains(".AddChoices(choices));", inventorySource, StringComparison.Ordinal);
+        Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"⚔ {slotLabel}: {itemName}\"));", inventorySource, StringComparison.Ordinal);
+        Assert.Contains("choices.Insert(infoPrefixCount, GameInterface.SafePromptChoice($\"💎 {rp.Name}: {rv}\"));", inventorySource, StringComparison.Ordinal);
+        Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"📦 {sName} ({contCount} пр.) → управление\"));", inventorySource, StringComparison.Ordinal);
+        Assert.Contains("choices.Add(GameInterface.SafePromptChoice($\"📦 🔒 {sName} ({contCount} пр.)\"));", inventorySource, StringComparison.Ordinal);
+        Assert.Contains("choices.AddRange(MakeUniqueChoiceLabels(inventoryChoiceEntries));", inventorySource, StringComparison.Ordinal);
     }
 
     [Fact]

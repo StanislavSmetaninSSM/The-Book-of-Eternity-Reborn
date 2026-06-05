@@ -1245,7 +1245,7 @@ public partial class ExplorerMode
                 var barClr = modVal >= 14 ? "green" : modVal >= 8 ? "yellow" : "red";
                 var filled = Math.Clamp(modVal * 10 / 20, 0, 10);
                 charTable.AddRow(
-                    new Markup(Markup.Escape(ruName)),
+                    GameInterface.SafeMarkupText(ruName),
                     new Markup(ConsoleLayout.CreateBar(filled, 10, barClr)),
                     new Markup($"[white]{modVal}[/]{diffStr}"),
                     new Markup("[dim][/]")
@@ -2310,12 +2310,10 @@ public partial class ExplorerMode
         // Select companion
         var choices = companions.Select(c =>
         {
-            var label = $"👤 {c.displayName}";
-            if (!string.IsNullOrEmpty(c.currentDirective))
-                label = ConsoleLayout.PlainChoiceLabel(label, $"Текущая директива: {c.currentDirective}");
-            else
-                label = ConsoleLayout.PlainChoiceLabel(label, "Директива не задана");
-            return label;
+            var directiveLabel = !string.IsNullOrEmpty(c.currentDirective)
+                ? $"Текущая директива: {c.currentDirective}"
+                : "Директива не задана";
+            return ConsoleLayout.PlainChoiceLabel($"👤 {c.displayName}", directiveLabel);
         }).ToList();
         choices.Add("← Назад");
 
@@ -2435,11 +2433,11 @@ public partial class ExplorerMode
         // Select faction
         var choices = factions.Select(f =>
         {
-            var label = $"🏛️ {f.name}";
-            if (f.isOwner) label = ConsoleLayout.PlainChoiceLabel(label, "Лидер");
+            var labelParts = new List<string> { $"🏛️ {f.name}" };
+            if (f.isOwner) labelParts.Add("Лидер");
             if (!string.IsNullOrEmpty(f.currentDirective))
-                label = ConsoleLayout.PlainChoiceLabel(label, $"Стратегия: {f.currentDirective}");
-            return label;
+                labelParts.Add($"Стратегия: {f.currentDirective}");
+            return ConsoleLayout.PlainChoiceLabel(labelParts.ToArray());
         }).ToList();
         choices.Add("← Назад");
 

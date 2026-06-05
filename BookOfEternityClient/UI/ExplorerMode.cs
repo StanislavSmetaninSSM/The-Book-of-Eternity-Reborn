@@ -175,7 +175,7 @@ public partial class ExplorerMode
         {
             if (string.Equals(parsedCommand.ErrorTitle, "Некорректные аргументы", StringComparison.OrdinalIgnoreCase))
             {
-                MarkupLine($"[yellow]⚠️ {parsedCommand.ErrorTitle}: {parsedCommand.ErrorMessage}[/]");
+                MarkupLine($"[yellow]⚠️ {GameInterface.EscapeMarkup(parsedCommand.ErrorTitle)}: {GameInterface.EscapeMarkup(parsedCommand.ErrorMessage)}[/]");
                 WaitForKey();
                 return "";
             }

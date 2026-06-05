@@ -263,7 +263,7 @@ public partial class ExplorerMode
         if (doc == null) { ShowEmptyPanel(_loc.T("gm_thoughts"), "Нет данных ГМ"); return; }
 
         var text = GetStr(doc.RootElement, "gm_thoughts_markdown", "Нет данных");
-        var panel = new Panel(new Markup(Markup.Escape(text)))
+        var panel = new Panel(GameInterface.SafeMarkupText(text))
         {
             Header = new PanelHeader($" {_loc.T("gm_thoughts")} ", Justify.Center),
             Border = BoxBorder.Rounded,

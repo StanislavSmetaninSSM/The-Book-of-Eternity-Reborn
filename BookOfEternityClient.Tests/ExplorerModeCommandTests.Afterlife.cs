@@ -788,6 +788,93 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_AfterlifeProfiles_BracketBearingProfileTextRendersSafely()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync(AfterlifeEntityProfileState.StatePath, new
+        {
+            schemaVersion = 1,
+            profiles = new[]
+            {
+                new
+                {
+                    actorId = "guardian_profile_[debug]",
+                    actorType = "guardian",
+                    displayName = "Хранитель [debug]",
+                    realm = "Chaos Sea [broken",
+                    abodeName = "Обитель [card_alpha, card_beta]",
+                    currencies = new { inkFeathers = 12, lightSparks = 0 },
+                    progression = new
+                    {
+                        enlightenment = new { tier = 1, experience = 5 },
+                        radiance = new { tier = 0, experience = 0 }
+                    },
+                    standardArts = new { guard = 1 },
+                    specialArts = new[]
+                    {
+                        new
+                        {
+                            artId = "art_[debug]",
+                            displayName = "Зеркальная защита [debug]",
+                            baseOperation = "guard",
+                            tier = 1,
+                            effectSummary = "Стабилизирует [card_alpha, card_beta]."
+                        }
+                    },
+                    customStates = new[]
+                    {
+                        new
+                        {
+                            stateId = "state_[debug]",
+                            displayName = "Голод эха [debug]",
+                            currentValue = 3,
+                            maxValue = 10,
+                            visibility = "player_known"
+                        }
+                    },
+                    relationships = new[]
+                    {
+                        new
+                        {
+                            targetActorId = "player_soul",
+                            targetDisplayName = "Игрок [debug]",
+                            relationshipLabel = "Доверие [ally]",
+                            relationshipValue = 25,
+                            isLocked = false
+                        }
+                    },
+                    warnings = new[] { "ОПАСНО [broken" },
+                    progressionStrategy = new
+                    {
+                        summary = "Сначала укрепляет [debug].",
+                        priorityOrder = new[] { "guard [debug]", "pressure [broken" },
+                        lastAutoProgressionCycleKey = "chaos:[5]"
+                    },
+                    progressionLedger = new[]
+                    {
+                        new
+                        {
+                            entryId = "ledger_[debug]",
+                            cycleKey = "chaos:[5]",
+                            summary = "Автопрокачка [card_alpha, card_beta]."
+                        }
+                    }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/afterlife_profiles"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("afterlife_profiles_bracket_text");
+        var text = ExtractRenderedText();
+        Assert.Contains("Хранитель [debug]", text, StringComparison.Ordinal);
+        Assert.Contains("Обитель [card_alpha, card_beta]", text, StringComparison.Ordinal);
+        Assert.Contains("Зеркальная защита [debug]", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_AfterlifeProfiles_ShowGmThoughtsIncludesFullRawState()
     {
         await SeedAfterlifeStateAsync();
@@ -5409,6 +5496,56 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains(_console.MarkupLines,
             line => line.Contains("Нельзя поднести реликвию", StringComparison.OrdinalIgnoreCase) &&
                     line.Contains("unsupported quality='Mythic'", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task TryProcessCommand_SoulRelics_BracketBearingPromptAndDetailTextRendersSafely()
+    {
+        await SeedAfterlifeStateAsync();
+        await WriteJsonAsync("game_state/meta/soul_state.json", new
+        {
+            soulName = "Тестовая Душа [debug]",
+            currentRealm = "Chaos Sea",
+            currentIncarnation = 1,
+            inkFeathers = new { current = 10, total = 10 },
+            soulRelics = new
+            {
+                stored = new[]
+                {
+                    new
+                    {
+                        relicId = "relic_bracket_001",
+                        name = "Отзвук [debug]",
+                        description = "Реликвия с текстом [card_alpha, card_beta].",
+                        rarity = "Rare [Кольцо]",
+                        slot = "mainHand [broken",
+                        formTag = "blade [debug]",
+                        properties = new object[]
+                        {
+                            new
+                            {
+                                propertyId = "prop_[debug]",
+                                name = "Свойство [debug]",
+                                stat = "memory [broken",
+                                band = "rare [Кольцо]"
+                            }
+                        }
+                    }
+                },
+                equipped = Array.Empty<object>()
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/реликвии"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("soul_relics_bracket_text");
+        AssertSelectionChoicesAreSpectreMarkupSafe("soul_relics_bracket_text", "Реликвии");
+        var text = ExtractRenderedText();
+        Assert.Contains("Отзвук [debug]", text, StringComparison.Ordinal);
+        Assert.Contains("Реликвия с текстом [card_alpha, card_beta]", text, StringComparison.Ordinal);
+        Assert.Contains("Свойство [debug]", text, StringComparison.Ordinal);
     }
 
     [Fact]
