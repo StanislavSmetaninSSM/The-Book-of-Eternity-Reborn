@@ -3026,37 +3026,58 @@ public partial class ValidationService
 
     private static bool InventoryStructuredSummaryAuthorityMatches(string summary, JsonElement authority)
     {
-        if (!HasMeaningfulInventoryStructuredSummaryAuthorityObject(authority))
-            return false;
-
-        foreach (var authoritySummary in EnumerateInventoryAuthoritySummaryTexts(authority))
-        {
-            if (InventoryAuthoritySummaryTextMatches(summary, authoritySummary))
-                return true;
-        }
-
-        return InventoryAuthorityMetadataMatchesSummary(summary, authority);
+        return EnumerateInventoryAuthorityUnitObjects(authority)
+            .Any(unit => InventoryAuthorityMetadataMatchesSummary(summary, unit));
     }
 
     private static bool HasMeaningfulInventoryStructuredSummaryAuthorityObject(JsonElement authority)
     {
-        return EnumerateInventoryAuthorityScalarValues(authority)
-            .Any(static value => !string.IsNullOrWhiteSpace(value));
+        return EnumerateInventoryAuthorityUnitObjects(authority)
+            .Any(HasMeaningfulLocalInventoryStructuredSummaryAuthorityObject);
     }
 
-    private static bool InventoryAuthoritySummaryTextMatches(string summary, string authoritySummary)
+    private static IEnumerable<JsonElement> EnumerateInventoryAuthorityUnitObjects(JsonElement root)
     {
-        var normalizedSummary = NormalizeInventoryAuthorityText(summary);
-        var normalizedAuthority = NormalizeInventoryAuthorityText(authoritySummary);
-        if (normalizedSummary.Length == 0 || normalizedAuthority.Length == 0)
-            return false;
+        if (root.ValueKind == JsonValueKind.Object)
+        {
+            yield return root;
+            foreach (var property in root.EnumerateObject())
+            {
+                if (property.Value.ValueKind == JsonValueKind.Object ||
+                    property.Value.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var nested in EnumerateInventoryAuthorityUnitObjects(property.Value))
+                        yield return nested;
+                }
+            }
+        }
+        else if (root.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var entry in root.EnumerateArray())
+            {
+                if (entry.ValueKind == JsonValueKind.Object ||
+                    entry.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var nested in EnumerateInventoryAuthorityUnitObjects(entry))
+                        yield return nested;
+                }
+            }
+        }
+    }
 
-        return string.Equals(normalizedSummary, normalizedAuthority, StringComparison.Ordinal);
+    private static bool HasMeaningfulLocalInventoryStructuredSummaryAuthorityObject(JsonElement authority)
+    {
+        return EnumerateLocalInventoryAuthorityTargetTexts(authority).Any() &&
+               (EnumerateLocalInventoryAuthorityValueCandidates(authority).Any() ||
+                HasLocalInventoryNonNumericAuthorityValue(authority));
     }
 
     private static bool InventoryAuthorityMetadataMatchesSummary(string summary, JsonElement authority)
     {
-        var hasTargetMatch = EnumerateInventoryAuthorityTargetTexts(authority)
+        if (!HasMeaningfulLocalInventoryStructuredSummaryAuthorityObject(authority))
+            return false;
+
+        var hasTargetMatch = EnumerateLocalInventoryAuthorityTargetTexts(authority)
             .Any(target => InventoryAuthorityTargetMatchesSummary(summary, target));
         if (!hasTargetMatch)
             return false;
@@ -3064,7 +3085,7 @@ public partial class ValidationService
         if (!TryExtractInventorySummaryValue(summary, out var summaryValue, out var summaryIsPercent))
             return true;
 
-        return EnumerateInventoryAuthorityValueCandidates(authority)
+        return EnumerateLocalInventoryAuthorityValueCandidates(authority)
             .Any(candidate => InventoryAuthorityValueMatchesSummary(summaryValue, summaryIsPercent, candidate));
     }
 
@@ -3124,56 +3145,10 @@ public partial class ValidationService
         if (Math.Abs(candidate.Value - summaryValue) > 0.0001m)
             return false;
 
-        return !summaryIsPercent || candidate.IsPercent;
+        return summaryIsPercent == candidate.IsPercent;
     }
 
-    private static IEnumerable<string> EnumerateInventoryAuthoritySummaryTexts(JsonElement root)
-    {
-        if (root.ValueKind != JsonValueKind.Object)
-            yield break;
-
-        foreach (var property in root.EnumerateObject())
-        {
-            if (property.Value.ValueKind == JsonValueKind.String &&
-                IsInventoryAuthoritySummaryTextProperty(property.Name) &&
-                !string.IsNullOrWhiteSpace(property.Value.GetString()))
-            {
-                yield return property.Value.GetString()!;
-            }
-
-            if (property.Value.ValueKind == JsonValueKind.Object)
-            {
-                foreach (var nested in EnumerateInventoryAuthoritySummaryTexts(property.Value))
-                    yield return nested;
-            }
-            else if (property.Value.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var entry in property.Value.EnumerateArray())
-                {
-                    foreach (var nested in EnumerateInventoryAuthoritySummaryTexts(entry))
-                        yield return nested;
-                }
-            }
-        }
-    }
-
-    private static bool IsInventoryAuthoritySummaryTextProperty(string propertyName)
-    {
-        return StringEqualsAny(
-            propertyName,
-            "description",
-            "display",
-            "displayText",
-            "summary",
-            "bonusSummary",
-            "effectSummary",
-            "effectDescription",
-            "playerFacingSummary",
-            "name",
-            "effect");
-    }
-
-    private static IEnumerable<string> EnumerateInventoryAuthorityTargetTexts(JsonElement root)
+    private static IEnumerable<string> EnumerateLocalInventoryAuthorityTargetTexts(JsonElement root)
     {
         if (root.ValueKind != JsonValueKind.Object)
             yield break;
@@ -3185,20 +3160,6 @@ public partial class ValidationService
                 !string.IsNullOrWhiteSpace(property.Value.GetString()))
             {
                 yield return property.Value.GetString()!;
-            }
-
-            if (property.Value.ValueKind == JsonValueKind.Object)
-            {
-                foreach (var nested in EnumerateInventoryAuthorityTargetTexts(property.Value))
-                    yield return nested;
-            }
-            else if (property.Value.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var entry in property.Value.EnumerateArray())
-                {
-                    foreach (var nested in EnumerateInventoryAuthorityTargetTexts(entry))
-                        yield return nested;
-                }
             }
         }
     }
@@ -3221,32 +3182,20 @@ public partial class ValidationService
             "bonusType");
     }
 
-    private static IEnumerable<InventoryAuthorityValueCandidate> EnumerateInventoryAuthorityValueCandidates(JsonElement root)
+    private static IEnumerable<InventoryAuthorityValueCandidate> EnumerateLocalInventoryAuthorityValueCandidates(JsonElement root)
     {
         if (root.ValueKind != JsonValueKind.Object)
             yield break;
 
-        var localValueTypeIsPercent = HasInventoryAuthorityPercentageValueType(root);
+        if (!TryGetInventoryAuthorityValueType(root, out var localValueTypeIsPercent))
+            yield break;
+
         foreach (var property in root.EnumerateObject())
         {
             if (IsInventoryAuthorityValueProperty(property.Name) &&
                 TryReadInventoryAuthorityValue(property.Value, localValueTypeIsPercent, out var candidate))
             {
                 yield return candidate;
-            }
-
-            if (property.Value.ValueKind == JsonValueKind.Object)
-            {
-                foreach (var nested in EnumerateInventoryAuthorityValueCandidates(property.Value))
-                    yield return nested;
-            }
-            else if (property.Value.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var entry in property.Value.EnumerateArray())
-                {
-                    foreach (var nested in EnumerateInventoryAuthorityValueCandidates(entry))
-                        yield return nested;
-                }
             }
         }
     }
@@ -3261,23 +3210,21 @@ public partial class ValidationService
             "modifier",
             "amount",
             "percent",
-            "percentage",
-            "duration",
-            "poiseDamage",
-            "damageThreshold");
+            "percentage");
     }
 
     private static bool TryReadInventoryAuthorityValue(
         JsonElement valueElement,
-        bool localValueTypeIsPercent,
+        bool? localValueTypeIsPercent,
         out InventoryAuthorityValueCandidate candidate)
     {
         switch (valueElement.ValueKind)
         {
             case JsonValueKind.Number:
-                if (valueElement.TryGetDecimal(out var numericValue))
+                if (localValueTypeIsPercent.HasValue &&
+                    valueElement.TryGetDecimal(out var numericValue))
                 {
-                    candidate = new InventoryAuthorityValueCandidate(numericValue, localValueTypeIsPercent);
+                    candidate = new InventoryAuthorityValueCandidate(numericValue, localValueTypeIsPercent.Value);
                     return true;
                 }
                 break;
@@ -3293,10 +3240,21 @@ public partial class ValidationService
                     if (match.Groups["sign"].Value == "-")
                         stringValue = -stringValue;
 
-                    candidate = new InventoryAuthorityValueCandidate(
-                        stringValue,
-                        localValueTypeIsPercent || match.Groups["percent"].Value == "%");
-                    return true;
+                    var stringValueIsPercent = match.Groups["percent"].Value == "%";
+                    if (localValueTypeIsPercent.HasValue)
+                    {
+                        if (stringValueIsPercent && !localValueTypeIsPercent.Value)
+                            continue;
+
+                        candidate = new InventoryAuthorityValueCandidate(stringValue, localValueTypeIsPercent.Value);
+                        return true;
+                    }
+
+                    if (stringValueIsPercent)
+                    {
+                        candidate = new InventoryAuthorityValueCandidate(stringValue, true);
+                        return true;
+                    }
                 }
                 break;
         }
@@ -3305,40 +3263,68 @@ public partial class ValidationService
         return false;
     }
 
-    private static bool HasInventoryAuthorityPercentageValueType(JsonElement root)
+    private static bool TryGetInventoryAuthorityValueType(JsonElement root, out bool? isPercent)
     {
-        return GetFirstNonEmptyString(root, "valueType", "modifierType") is { } valueType &&
-               (valueType.Contains("percent", StringComparison.OrdinalIgnoreCase) ||
-                valueType.Contains("процент", StringComparison.OrdinalIgnoreCase));
+        isPercent = null;
+        var valueType = GetFirstNonEmptyString(root, "valueType", "modifierType");
+        if (string.IsNullOrWhiteSpace(valueType))
+            return HasAnyNonEmptyString(root, "effectType", "targetType", "targetTypeDisplayName");
+
+        if (StringEqualsAny(valueType, "Percentage", "Percent", "%", "Процент", "Процентный"))
+        {
+            isPercent = true;
+            return true;
+        }
+
+        if (StringEqualsAny(valueType, "Flat", "Fixed", "Фикс", "Фиксированный"))
+        {
+            isPercent = false;
+            return true;
+        }
+
+        return false;
     }
 
-    private static IEnumerable<string> EnumerateInventoryAuthorityScalarValues(JsonElement root)
+    private static bool HasLocalInventoryNonNumericAuthorityValue(JsonElement root)
     {
-        switch (root.ValueKind)
+        if (!HasInventoryAuthorityNonNumericValueType(root))
+            return false;
+
+        foreach (var property in root.EnumerateObject())
         {
-            case JsonValueKind.Object:
-                foreach (var property in root.EnumerateObject())
-                {
-                    foreach (var value in EnumerateInventoryAuthorityScalarValues(property.Value))
-                        yield return value;
-                }
-                break;
-            case JsonValueKind.Array:
-                foreach (var entry in root.EnumerateArray())
-                {
-                    foreach (var value in EnumerateInventoryAuthorityScalarValues(entry))
-                        yield return value;
-                }
-                break;
-            case JsonValueKind.String:
-                yield return root.GetString() ?? string.Empty;
-                break;
-            case JsonValueKind.Number:
-            case JsonValueKind.True:
-            case JsonValueKind.False:
-                yield return root.GetRawText();
-                break;
+            if (IsInventoryAuthorityValueProperty(property.Name) &&
+                IsMeaningfulNonNumericInventoryAuthorityValue(property.Value))
+            {
+                return true;
+            }
         }
+
+        return false;
+    }
+
+    private static bool HasInventoryAuthorityNonNumericValueType(JsonElement root)
+    {
+        var valueType = GetFirstNonEmptyString(root, "valueType", "modifierType");
+        return StringEqualsAny(
+            valueType,
+            "String",
+            "Text",
+            "Boolean",
+            "Bool",
+            "Строка",
+            "Текст",
+            "Булевый",
+            "Логический");
+    }
+
+    private static bool IsMeaningfulNonNumericInventoryAuthorityValue(JsonElement value)
+    {
+        return value.ValueKind switch
+        {
+            JsonValueKind.String => !string.IsNullOrWhiteSpace(value.GetString()),
+            JsonValueKind.True or JsonValueKind.False => true,
+            _ => false
+        };
     }
 
     private static string NormalizeInventoryAuthorityText(string value)

@@ -1344,8 +1344,8 @@
                                 "quality": "Rare", 
                                 "bonuses": [ "+1 к Выносливости", "+2 к Мудрости при расшифровке древних текстов" ],
                                 "structuredBonuses": [
-                                    { "description": "+1 к Выносливости", "bonusType": "Characteristic", "target": "constitution", "value": 1, "application": "Permanent" },
-                                    { "description": "+2 к Мудрости при расшифровке древних текстов", "bonusType": "Characteristic", "target": "wisdom", "value": 2, "application": "Conditional", "condition": "при расшифровке древних текстов"}
+                                    { "description": "+1 к Выносливости", "bonusType": "Characteristic", "target": "constitution", "valueType": "Flat", "value": 1, "application": "Permanent" },
+                                    { "description": "+2 к Мудрости при расшифровке древних текстов", "bonusType": "Characteristic", "target": "wisdom", "valueType": "Flat", "value": 2, "application": "Conditional", "condition": "при расшифровке древних текстов"}
                                 ],
                                 "equipmentSlot": "Neck"
                             }

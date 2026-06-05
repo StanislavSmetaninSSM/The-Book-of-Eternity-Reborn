@@ -1345,7 +1345,7 @@
    </description>
    <scenariocontext>
     In a previous turn, the "Kingdom of Eldoria" was affected by a "Blight Plague" world event, which applied a temporary structured bonus (debuff) to them.
-                            From Context, their 'structuredBonuses' array contains: '{ "bonusId": "bonus-blight-debuff-xyz", "description": "-15 to Stability due to plague unrest", "bonusType": "PowerProfileScale", "target": "stability", "value": -15, ... } '.
+                            From Context, their 'structuredBonuses' array contains: '{ "bonusId": "bonus-blight-debuff-xyz", "description": "-15 to Stability due to plague unrest", "bonusType": "PowerProfileScale", "target": "stability", "valueType": "Flat", "value": -15, ... } '.
                             In the current turn, the player's actions have successfully cleansed the plague. The debuff must now be removed.
    </scenariocontext>
   <logoutput target="gm_thoughts_markdown">

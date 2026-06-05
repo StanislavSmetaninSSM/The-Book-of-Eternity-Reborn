@@ -90,6 +90,58 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithDescriptionOnlyStructuredBonus_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_description_only_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1"],
+            "structuredBonuses": [
+              {
+                "description": "Сила +1"
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_description_only_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithMatchingDescriptionButContradictoryMetadata_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_contradictory_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1"],
+            "structuredBonuses": [
+              {
+                "description": "Сила +1",
+                "bonusType": "Characteristic",
+                "target": "dexterity",
+                "valueType": "Flat",
+                "value": 2,
+                "application": "Permanent",
+                "condition": null
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_contradictory_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithNearNumericStructuredText_ReportsIssue()
     {
         await WriteInventoryAsync(CreateItem(
@@ -116,6 +168,195 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
             IsMissingAuthorityIssue(issue) &&
             issue.FilePath.Contains("strength_near_numeric_authority_1", StringComparison.OrdinalIgnoreCase) &&
             issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithPercentStructuredValue_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_percent_value_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1"],
+            "structuredBonuses": [
+              {
+                "description": "Сила +1%",
+                "bonusType": "Characteristic",
+                "target": "Сила",
+                "valueType": "Percentage",
+                "value": 1,
+                "application": "Permanent",
+                "condition": null
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_percent_value_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithMissingStructuredValueType_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_missing_value_type_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1"],
+            "structuredBonuses": [
+              {
+                "description": "Сила +1",
+                "bonusType": "Characteristic",
+                "target": "Сила",
+                "value": 1,
+                "application": "Permanent",
+                "condition": null
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_missing_value_type_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithUnsupportedStructuredValueType_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_unsupported_value_type_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1"],
+            "structuredBonuses": [
+              {
+                "description": "Сила +1",
+                "bonusType": "Characteristic",
+                "target": "Сила",
+                "valueType": "NotFlat",
+                "value": 1,
+                "application": "Permanent",
+                "condition": null
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_unsupported_value_type_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithMissingCustomPropertyValueType_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_missing_custom_property_value_type_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1"],
+            "structuredBonuses": [],
+            "customProperties": [
+              {
+                "targetStateName": "strength",
+                "changeValue": 1
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_missing_custom_property_value_type_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithCombatEffectSplitTargetAndValue_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_split_combat_effect_authority_1",
+            "Боевой браслет",
+            """
+            "bonuses": ["Сила +1"],
+            "structuredBonuses": [],
+            "combatEffect": [
+              {
+                "actionName": "Боевой импульс",
+                "isActivatedEffect": true,
+                "effects": [
+                  {
+                    "effectType": "Buff",
+                    "targetType": "strength",
+                    "targetTypeDisplayName": "Сила",
+                    "effectDescription": "Усиливает силу на 2%",
+                    "value": "2%",
+                    "duration": 5
+                  },
+                  {
+                    "effectType": "Buff",
+                    "targetType": "dexterity",
+                    "targetTypeDisplayName": "Ловкость",
+                    "effectDescription": "Усиливает ловкость на 1%",
+                    "value": "1%",
+                    "duration": 5
+                  }
+                ]
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_split_combat_effect_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithCombatEffectDurationValue_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_duration_combat_effect_authority_1",
+            "Боевой браслет",
+            """
+            "bonuses": ["Сила +5"],
+            "structuredBonuses": [],
+            "combatEffect": [
+              {
+                "actionName": "Боевой импульс",
+                "isActivatedEffect": true,
+                "effects": [
+                  {
+                    "effectType": "Buff",
+                    "targetType": "strength",
+                    "targetTypeDisplayName": "Сила",
+                    "effectDescription": "Усиливает силу на 2% на 5 ходов",
+                    "value": "2%",
+                    "duration": 5
+                  }
+                ]
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_duration_combat_effect_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +5", StringComparison.OrdinalIgnoreCase) == true);
     }
 
     [Fact]
@@ -209,6 +450,58 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
                 "target": "Сила",
                 "valueType": "Flat",
                 "value": 2,
+                "application": "Permanent",
+                "condition": null
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, IsMissingAuthorityIssue);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_UtilityBonusSummaryWithBooleanStructuredAuthority_DoesNotReportIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "utility_stealth_vision_1",
+            "Капюшон ночного охотника",
+            """
+            "bonuses": ["Скрытность в темноте"],
+            "structuredBonuses": [
+              {
+                "description": "Скрытность в темноте",
+                "bonusType": "Utility",
+                "target": "Скрытность в темноте",
+                "valueType": "Boolean",
+                "value": true,
+                "application": "Conditional",
+                "condition": "в темноте"
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, IsMissingAuthorityIssue);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_StateSummaryWithStringStructuredAuthority_DoesNotReportIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "utility_state_vision_1",
+            "Амулет ночного зрения",
+            """
+            "bonuses": ["Бонус состояния ночного зрения"],
+            "structuredBonuses": [
+              {
+                "description": "Состояние ночного зрения активно",
+                "bonusType": "Utility",
+                "target": "Бонус состояния ночного зрения",
+                "valueType": "String",
+                "value": "active",
                 "application": "Permanent",
                 "condition": null
               }

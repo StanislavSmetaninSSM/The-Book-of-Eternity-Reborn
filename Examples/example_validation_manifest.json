@@ -133,7 +133,7 @@
     },
     {
       "file": "E_Block_10.txt",
-      "line": 999,
+      "line": 1002,
       "reason": "Legacy educational block lists alternative item slot fragments, not one JSON document."
     },
     {

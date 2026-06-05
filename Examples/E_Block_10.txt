@@ -740,7 +740,7 @@
                                                 { "effectType": "DamageReduction", "value": "5%", "targetType": "all", "damageThreshold": 2 }
                                             ]}],
                                             "description": "Тяжелый боевой экзоскелет... Его композитные пластины обеспечивают превосходную защиту от кинетического урона, а встроенный генератор поля особенно эффективен против энергетических атак.",
-                                            "structuredBonuses": [{"description": "-3 к Ловкости", "bonusType": "Characteristic", "target": "dexterity", "value": -3}],
+                                            "structuredBonuses": [{"description": "-3 к Ловкости", "bonusType": "Characteristic", "target": "dexterity", "valueType": "Flat", "value": -3}],
                                             "effectDetails": "Носитель получает Помеху (Disadvantage) на все проверки Скрытности."
                                         }
 
@@ -859,6 +859,7 @@
                                             "description": "-2 к Ловкости", 
                                             "bonusType": "Characteristic", 
                                             "target": "dexterity", 
+                                            "valueType": "Flat",
                                             "value": -2
                                         }],
                                         "effectDetails": "Носитель получает Помеху (Disadvantage) на все проверки Скрытности."
@@ -901,6 +902,7 @@
                                             "description": "+40% к проверкам на скрытность", 
                                             "bonusType": "ActionCheck", 
                                             "target": "Проверки на скрытность",
+                                            "valueType": "Percentage",
                                             "value": 40
                                         }]
                                     }
@@ -942,6 +944,7 @@
                                             "description": "-5% к проверкам на скрытность", 
                                             "bonusType": "ActionCheck", 
                                             "target": "Проверки на скрытность", 
+                                            "valueType": "Percentage",
                                             "value": -5
                                         }]
                                     }
@@ -981,8 +984,8 @@
                                         ]}],
                                         "description": "Легендарный нагрудник, который, по слухам, несокрушим. Он тяжел, но его идеальный баланс немного смягчает скованность движений.",
                                         "structuredBonuses": [
-                                            {"description": "+5 к Выносливости", "bonusType": "Characteristic", "target": "constitution", "value": 5},
-                                            {"description": "-3 к Ловкости", "bonusType": "Characteristic", "target": "dexterity", "value": -3}
+                                            {"description": "+5 к Выносливости", "bonusType": "Characteristic", "target": "constitution", "valueType": "Flat", "value": 5},
+                                            {"description": "-3 к Ловкости", "bonusType": "Characteristic", "target": "dexterity", "valueType": "Flat", "value": -3}
                                         ],
                                         "effectDetails": "Носитель получает Помеху (Disadvantage) на все проверки Скрытности."
                                     }

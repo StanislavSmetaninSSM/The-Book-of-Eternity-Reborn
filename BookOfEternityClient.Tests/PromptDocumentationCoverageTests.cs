@@ -20,7 +20,9 @@ public sealed class PromptDocumentationCoverageTests
             "combatEffect",
             "customProperties",
             "display summaries only",
-            "matching structured authority"
+            "matching structured authority",
+            "description/display text alone does not authorize mechanics",
+            "target/value metadata must match"
         })
         {
             Assert.Contains(requiredText, block10, StringComparison.Ordinal);
