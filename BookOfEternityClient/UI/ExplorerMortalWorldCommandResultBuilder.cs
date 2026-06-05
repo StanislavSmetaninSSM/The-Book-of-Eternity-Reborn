@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models.GameState;
 using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.UI;
@@ -146,11 +147,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/world/world_map.json", "transportRoutes", "Маршрутов"),
                 new("game_state/world/current_location.json", "availableTransport", "Доступного транспорта")
             ]),
-            CommandKind.Effects => await BuildBundle(normalizedCommand, fs, "Эффекты", [
-                new("game_state/player/effects.json", "activeEffects", "Активных эффектов"),
-                new("game_state/player/effects.json", "wounds", "Ран"),
-                new("game_state/player/effects.json", "temporaryConditions", "Временных состояний")
-            ]),
+            CommandKind.Effects => await BuildEffects(normalizedCommand, fs, stateManager),
             CommandKind.Combat => await BuildBundle(normalizedCommand, fs, "Бой", [
                 new("game_state/combat/enemies.json", "enemies", "Врагов"),
                 new("game_state/combat/allies.json", "allies", "Союзников"),
@@ -235,6 +232,139 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         return Completed(command, blocks);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildEffects(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        const string title = "Эффекты";
+        const string effectsPath = "game_state/player/effects.json";
+        SummarySpec[] specs =
+        [
+            new(effectsPath, "activeEffects", "Активных эффектов"),
+            new(effectsPath, "wounds", "Ран"),
+            new(effectsPath, "temporaryConditions", "Временных состояний")
+        ];
+
+        var read = await ReadJson(fs, effectsPath);
+        var blocks = new List<UiBlock>();
+        var rows = BuildEffectsSummaryRows(read, specs);
+        if (rows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = title,
+                Columns = ["Раздел", "Состояние"],
+                Rows = rows
+            });
+        }
+
+        if (!HasVisibleStructuredEffectDetails(read.Node))
+            blocks.AddRange(BuildMortalStatusFallbackBlocks(stateManager.CurrentState.PlayerStatus));
+
+        if (blocks.Count == 0)
+            blocks.Add(Message(UiNotificationSeverity.Info, title, "Данные ещё не созданы."));
+
+        if (read.Node != null)
+            blocks.Add(Raw("Полная запись эффектов", read.Node));
+        else if (read.FileExists && !string.IsNullOrWhiteSpace(read.Error))
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Запись эффектов найдена, но не разобрана как JSON. {read.Error}"));
+
+        return Completed(command, blocks);
+    }
+
+    private static List<UiTableRow> BuildEffectsSummaryRows(JsonReadResult read, IReadOnlyList<SummarySpec> specs)
+    {
+        var rows = new List<UiTableRow>();
+        if (read.Node == null)
+            return rows;
+
+        if (read.Node is JsonArray array)
+        {
+            rows.Add(new UiTableRow
+            {
+                Cells = ["Активных эффектов", array.Count.ToString()]
+            });
+            return rows;
+        }
+
+        if (read.Node is not JsonObject root)
+            return rows;
+
+        foreach (var spec in specs)
+        {
+            if (!root.TryGetPropertyValue(spec.PropertyName, out var value))
+                continue;
+
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    spec.Label,
+                    DescribeEffectsNode(value)
+                ]
+            });
+        }
+
+        return rows;
+    }
+
+    private static string DescribeEffectsNode(JsonNode? node) => node switch
+    {
+        JsonArray array => array.Count.ToString(),
+        JsonObject obj => $"{obj.Count} полей",
+        JsonValue value when TryGetScalarString(value, out var text) => EmptyFallback(text),
+        _ => "не указано"
+    };
+
+    private static bool HasVisibleStructuredEffectDetails(JsonNode? node)
+    {
+        if (node is JsonArray array)
+            return array.Count > 0;
+
+        if (node is not JsonObject root)
+            return false;
+
+        foreach (var propertyName in new[] { "activeEffects", "wounds", "temporaryConditions" })
+        {
+            if (root.TryGetPropertyValue(propertyName, out var value) && HasVisibleEffectValue(value))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool HasVisibleEffectValue(JsonNode? node) => node switch
+    {
+        JsonArray array => array.Count > 0,
+        JsonObject obj => obj.Count > 0,
+        JsonValue value when TryGetScalarString(value, out var text) => !string.IsNullOrWhiteSpace(text),
+        _ => false
+    };
+
+    private static IReadOnlyList<UiBlock> BuildMortalStatusFallbackBlocks(PlayerStatusState status)
+    {
+        var rows = MortalStatusEffectFallback.BuildRows(status);
+        if (rows.Count == 0)
+            return [];
+
+        return
+        [
+            Message(
+                UiNotificationSeverity.Info,
+                "Эффекты",
+                MortalStatusEffectFallback.Message),
+            new UiTableBlock
+            {
+                Title = "Видимые состояния",
+                Columns = ["Раздел", "Подробности"],
+                Rows = rows
+                    .Select(static row => new UiTableRow { Cells = [row.Label, row.Details] })
+                    .ToList()
+            }
+        ];
     }
 
     private static async Task<ExplorerCommandResult> BuildBundle(string command, FileSystemManager fs, string title, IReadOnlyList<SummarySpec> specs)

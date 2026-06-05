@@ -80,6 +80,7 @@ public class StateManager
                 EnergyPercentage = GetString(root, "energyPercentage", "100%"),
                 PoisePercentage = GetString(root, "poisePercentage", "100%"),
                 CurrentCondition = GetString(root, "currentCondition", "Здоров"),
+                CurrentConditionDescription = GetString(root, "currentConditionDescription", ""),
                 ActiveConditions = GetStringArray(root, "activeConditions")
             };
         });

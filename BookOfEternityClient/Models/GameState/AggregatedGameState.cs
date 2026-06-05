@@ -85,5 +85,6 @@ public class PlayerStatusState
     public string EnergyPercentage { get; set; } = "100%";
     public string PoisePercentage { get; set; } = "100%";
     public string CurrentCondition { get; set; } = "Здоров";
+    public string CurrentConditionDescription { get; set; } = string.Empty;
     public string[] ActiveConditions { get; set; } = Array.Empty<string>();
 }
