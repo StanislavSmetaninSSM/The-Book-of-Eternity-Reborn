@@ -5,6 +5,44 @@ namespace BookOfEternityClient.Tests;
 public sealed class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void InventoryMechanicalBonusAuthorityContract_IsDocumentedForGm()
+    {
+        var block10 = ReadRepoFile("Rules", "Block_10.txt");
+        var example = ReadRepoFile("Examples", "E_Block_10.txt");
+
+        foreach (var requiredText in new[]
+        {
+            "mechanicalSummaryAuthority",
+            "mechanicalSummaryUnresolvedReason",
+            "NarrativeOnly",
+            "Unresolved",
+            "structuredBonuses",
+            "combatEffect",
+            "customProperties",
+            "display summaries only",
+            "matching structured authority",
+            "description/display text alone does not authorize mechanics",
+            "target/value metadata must match"
+        })
+        {
+            Assert.Contains(requiredText, block10, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "StructuredInventoryBonusAuthority_Example",
+            "Репутация среди аристократов +3",
+            "matching structured authority",
+            "\"mechanicalSummaryAuthority\": \"NarrativeOnly\"",
+            "\"mechanicalSummaryAuthority\": \"Unresolved\"",
+            "\"mechanicalSummaryUnresolvedReason\""
+        })
+        {
+            Assert.Contains(requiredText, example, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void DaemonSpecDocumentsQteOfferRuntimeContract()
     {
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");

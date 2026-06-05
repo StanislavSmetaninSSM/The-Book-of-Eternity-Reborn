@@ -365,31 +365,80 @@ public partial class ExplorerMode
             if (!string.IsNullOrEmpty(group))
                 lines.Add($"  📂 Группа: [white]{Markup.Escape(group)}[/]");
 
+            var mechanicalSummaryAuthority = GetInventoryMechanicalSummaryAuthority(item);
+            var renderUnresolvedSummaries = IsInventoryUnresolvedSummaryAuthority(mechanicalSummaryAuthority);
+            var renderNarrativeOnlySummaries = IsInventoryNarrativeOnlySummaryAuthority(mechanicalSummaryAuthority);
+            var unresolvedSummaryReason = renderUnresolvedSummaries
+                ? GetInventoryMechanicalSummaryUnresolvedReason(item)
+                : "";
+
             if (item.TryGetProperty("bonuses", out var bonuses) && bonuses.ValueKind == JsonValueKind.Array)
             {
-                lines.Add(""); lines.Add("  [bold]📊 Бонусы:[/]");
-                foreach (var b in bonuses.EnumerateArray())
+                var bonusSummaries = EnumerateInventorySummaryDisplayTexts(bonuses, includeObjectSummaries: true).ToList();
+                if (bonusSummaries.Count > 0)
                 {
-                    if (b.ValueKind == JsonValueKind.String)
-                        lines.Add($"    • [green]{Markup.Escape(b.GetString() ?? "")}[/]");
-                    else if (b.ValueKind == JsonValueKind.Object)
+                    lines.Add("");
+                    if (renderUnresolvedSummaries)
                     {
-                        var bName = GetStr(b, "name", GetStr(b, "stat", ""));
-                        var bVal = GetStr(b, "value", GetStr(b, "bonus", ""));
-                        if (!string.IsNullOrEmpty(bName))
-                            lines.Add($"    • [green]{Markup.Escape(bName)}: {Markup.Escape(bVal)}[/]");
+                        lines.Add("  [bold]📊 Нераскрытые свойства:[/]");
+                        lines.Add($"    [yellow]Механика не раскрыта:[/] {Markup.Escape(unresolvedSummaryReason)}");
+                        foreach (var summary in bonusSummaries)
+                            lines.Add($"      [dim]{Markup.Escape(summary)}[/]");
+                    }
+                    else if (renderNarrativeOnlySummaries)
+                    {
+                        lines.Add("  [bold]📊 Описательные свойства:[/]");
+                        foreach (var summary in bonusSummaries)
+                            lines.Add($"    [dim]Описание без применяемой механики: {Markup.Escape(summary)}[/]");
+                    }
+                    else
+                    {
+                        lines.Add("  [bold]📊 Бонусы:[/]");
+                        foreach (var b in bonuses.EnumerateArray())
+                        {
+                            if (b.ValueKind == JsonValueKind.String)
+                                lines.Add($"    • [green]{Markup.Escape(b.GetString() ?? "")}[/]");
+                            else if (b.ValueKind == JsonValueKind.Object)
+                            {
+                                var bName = GetStr(b, "name", GetStr(b, "stat", ""));
+                                var bVal = GetStr(b, "value", GetStr(b, "bonus", ""));
+                                if (!string.IsNullOrEmpty(bName))
+                                    lines.Add($"    • [green]{Markup.Escape(bName)}: {Markup.Escape(bVal)}[/]");
+                            }
+                        }
                     }
                 }
             }
 
             if (item.TryGetProperty("effects", out var effects) && effects.ValueKind == JsonValueKind.Array)
             {
-                lines.Add(""); lines.Add("  [bold]🔮 Эффекты:[/]");
-                foreach (var e in effects.EnumerateArray())
+                var effectSummaries = EnumerateInventorySummaryDisplayTexts(effects, includeObjectSummaries: true).ToList();
+                if (effectSummaries.Count > 0)
                 {
-                    var eName = e.ValueKind == JsonValueKind.String ? e.GetString() : GetStr(e, "name", GetStr(e, "effect", ""));
-                    if (!string.IsNullOrEmpty(eName))
-                        lines.Add($"    • [mediumpurple2]{Markup.Escape(eName!)}[/]");
+                    lines.Add("");
+                    if (renderUnresolvedSummaries)
+                    {
+                        lines.Add("  [bold]🔮 Нераскрытые эффекты:[/]");
+                        lines.Add($"    [yellow]Механика не раскрыта:[/] {Markup.Escape(unresolvedSummaryReason)}");
+                        foreach (var summary in effectSummaries)
+                            lines.Add($"      [dim]{Markup.Escape(summary)}[/]");
+                    }
+                    else if (renderNarrativeOnlySummaries)
+                    {
+                        lines.Add("  [bold]🔮 Описательные эффекты:[/]");
+                        foreach (var summary in effectSummaries)
+                            lines.Add($"    [dim]Описание без применяемой механики: {Markup.Escape(summary)}[/]");
+                    }
+                    else
+                    {
+                        lines.Add("  [bold]🔮 Эффекты:[/]");
+                        foreach (var e in effects.EnumerateArray())
+                        {
+                            var eName = e.ValueKind == JsonValueKind.String ? e.GetString() : GetStr(e, "name", GetStr(e, "effect", ""));
+                            if (!string.IsNullOrEmpty(eName))
+                                lines.Add($"    • [mediumpurple2]{Markup.Escape(eName!)}[/]");
+                        }
+                    }
                 }
             }
 
@@ -776,7 +825,9 @@ public partial class ExplorerMode
                 "textContent", "updateItemTextContents", "isConsumption", "weightReduction",
                 "containerWeight", "requiresTwoHands", "accessoryForSlot", "equipmentSlot", "group",
                 "resource", "maximumResource", "resourceType", "ownerBondLevelCurrent",
-                "fateCards", "itemJournalUpdates", "isBroken", "isEmpty" };
+                "fateCards", "itemJournalUpdates", "isBroken", "isEmpty", "mechanicalSummaryAuthority",
+                "mechanicalSummaryUnresolvedReason", "unresolvedMechanicsReason", "unidentifiedMechanicsReason",
+                "unknownMechanicsReason", "sealedReason", "unreadableReason", "lockedReason" };
             foreach (var prop in item.EnumerateObject())
             {
                 if (knownProps.Contains(prop.Name)) continue;
@@ -1008,6 +1059,78 @@ public partial class ExplorerMode
         if (!string.IsNullOrEmpty(itemType) && TypeToSlot.TryGetValue(itemType, out var slotFromType))
             return slotFromType;
         return null;
+    }
+
+    private static string GetInventoryMechanicalSummaryAuthority(JsonElement item)
+    {
+        return GetStr(item, "mechanicalSummaryAuthority", "");
+    }
+
+    private static bool IsInventoryUnresolvedSummaryAuthority(string value)
+    {
+        return StringEqualsAnyInventoryAuthority(value, "Unresolved", "Unknown", "Unidentified", "Sealed");
+    }
+
+    private static bool IsInventoryNarrativeOnlySummaryAuthority(string value)
+    {
+        return StringEqualsAnyInventoryAuthority(value, "NarrativeOnly", "FlavorOnly", "Narrative", "Flavor", "narrative-only", "flavor-only");
+    }
+
+    private static bool StringEqualsAnyInventoryAuthority(string value, params string[] candidates)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        return candidates.Any(candidate => string.Equals(value.Trim(), candidate, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string GetInventoryMechanicalSummaryUnresolvedReason(JsonElement item)
+    {
+        foreach (var propertyName in new[]
+        {
+            "mechanicalSummaryUnresolvedReason",
+            "unresolvedMechanicsReason",
+            "unidentifiedMechanicsReason",
+            "unknownMechanicsReason",
+            "sealedReason",
+            "unreadableReason",
+            "lockedReason"
+        })
+        {
+            var reason = GetStr(item, propertyName, "");
+            if (!string.IsNullOrWhiteSpace(reason))
+                return reason;
+        }
+
+        return "причина не указана";
+    }
+
+    private static IEnumerable<string> EnumerateInventorySummaryDisplayTexts(JsonElement summaries, bool includeObjectSummaries)
+    {
+        if (summaries.ValueKind != JsonValueKind.Array)
+            yield break;
+
+        foreach (var summary in summaries.EnumerateArray())
+        {
+            var text = GetInventorySummaryDisplayText(summary, includeObjectSummaries);
+            if (!string.IsNullOrWhiteSpace(text))
+                yield return text;
+        }
+    }
+
+    private static string GetInventorySummaryDisplayText(JsonElement summary, bool includeObjectSummaries)
+    {
+        if (summary.ValueKind == JsonValueKind.String)
+            return summary.GetString() ?? "";
+
+        if (!includeObjectSummaries || summary.ValueKind != JsonValueKind.Object)
+            return "";
+
+        return GetStr(summary, "effectDescription",
+            GetStr(summary, "description",
+                GetStr(summary, "name",
+                    GetStr(summary, "effect",
+                        GetStr(summary, "stat", "")))));
     }
 
     private static JsonElement? GetPlayerInventoryItemsElement(JsonElement root)
