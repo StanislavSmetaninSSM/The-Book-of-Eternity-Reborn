@@ -71,6 +71,46 @@ public sealed class PromptDocumentationCoverageTests
         Assert.Contains("output/qte_offer.json", qteExample, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void QuestRewardAuthorityContract_IsDocumentedForGm()
+    {
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var operations = ReadRepoFile("Rules", "Block_CLI_Operations.txt");
+        var example = ReadRepoFile("Examples", "E_CLI_Quest_Reward_Authority.txt");
+
+        foreach (var requiredText in new[]
+        {
+            "questRewards",
+            "itemsReceived",
+            "skillsUnlocked",
+            "relationshipChanges",
+            "authorityStatus",
+            "HistoricalOnly",
+            "Unavailable",
+            "reason",
+            "current inventory/skills/NPC relationship authority",
+            "bare strings are allowed only when they resolve"
+        })
+        {
+            Assert.Contains(requiredText, stepGuide, StringComparison.Ordinal);
+            Assert.Contains(requiredText, operations, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "QuestRewardAuthority_Example",
+            "\"questRewards\"",
+            "\"itemId\": \"item_merchant_seal\"",
+            "\"skillName\": \"Продвинутая торговля\"",
+            "\"npcId\": \"npc_guild_master\"",
+            "\"authorityStatus\": \"HistoricalOnly\"",
+            "\"reason\": \"Перстень остался в прошлой инкарнации.\""
+        })
+        {
+            Assert.Contains(requiredText, example, StringComparison.Ordinal);
+        }
+    }
+
     private static string ReadRepoFile(params string[] parts) =>
         File.ReadAllText(Path.Combine(new[] { TestRepoPaths.RepoRoot }.Concat(parts).ToArray()));
 }

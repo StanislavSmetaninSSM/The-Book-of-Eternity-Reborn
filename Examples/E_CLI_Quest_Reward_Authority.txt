@@ -1,0 +1,59 @@
+# Quest Reward Authority Example
+
+QuestRewardAuthority_Example
+
+For `game_state/quests/quest_history.json`, `questRewards` entries keep completed rewards readable after the quest is archived. Resolvable rewards should carry stable ids/names plus display labels; historical or unavailable rewards should carry `authorityStatus` and a player-facing `reason`.
+
+`itemsReceived`, `skillsUnlocked`, and `relationshipChanges` may still use legacy strings only when those strings resolve to current inventory/skills/NPC relationship authority.
+
+```json
+{
+  "questHistory": [
+    {
+      "questId": "quest_merchants_caravan",
+      "questName": "Караван купцов",
+      "outcome": "completed",
+      "completionDate": "2026-06-05T12:00:00Z",
+      "experience": 25,
+      "incarnationNumber": 1
+    }
+  ],
+  "questRewards": [
+    {
+      "questId": "quest_merchants_caravan",
+      "itemsReceived": [
+        {
+          "itemId": "item_merchant_seal",
+          "displayName": "Печать караванного мастера"
+        },
+        {
+          "itemId": "item_first_life_ring",
+          "displayName": "Перстень первой жизни",
+          "authorityStatus": "HistoricalOnly",
+          "reason": "Перстень остался в прошлой инкарнации."
+        }
+      ],
+      "skillsUnlocked": [
+        {
+          "skillName": "Продвинутая торговля",
+          "displayName": "Продвинутая торговля"
+        }
+      ],
+      "relationshipChanges": [
+        {
+          "npcId": "npc_guild_master",
+          "displayName": "Мастер гильдии",
+          "change": 20
+        },
+        {
+          "npcId": "npc_old_patron",
+          "displayName": "Старый покровитель",
+          "authorityStatus": "Unavailable",
+          "reason": "Старый покровитель умер до текущей инкарнации; союз сохранён только в истории."
+        }
+      ]
+    }
+  ],
+  "questChains": []
+}
+```

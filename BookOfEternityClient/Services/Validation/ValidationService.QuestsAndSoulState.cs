@@ -715,11 +715,11 @@ public partial class ValidationService
 
                     RequireString(item, itemContext, issues, "questId");
                     if (item.TryGetProperty("itemsReceived", out var itemsReceived))
-                        RequireArrayOfStrings(itemsReceived, $"{itemContext}.itemsReceived", issues);
+                        ValidateQuestRewardReferenceArrayShape(itemsReceived, $"{itemContext}.itemsReceived", issues);
                     if (item.TryGetProperty("skillsUnlocked", out var skillsUnlocked))
-                        RequireArrayOfStrings(skillsUnlocked, $"{itemContext}.skillsUnlocked", issues);
+                        ValidateQuestRewardReferenceArrayShape(skillsUnlocked, $"{itemContext}.skillsUnlocked", issues);
                     if (item.TryGetProperty("relationshipChanges", out var relationshipChanges))
-                        RequireArrayOfStrings(relationshipChanges, $"{itemContext}.relationshipChanges", issues);
+                        ValidateQuestRewardReferenceArrayShape(relationshipChanges, $"{itemContext}.relationshipChanges", issues);
                 }
             }
         }
@@ -765,6 +765,60 @@ public partial class ValidationService
                     }
                 }
             }
+        }
+    }
+
+
+    private static void ValidateQuestRewardReferenceArrayShape(JsonElement value, string context, List<ValidationIssue> issues)
+    {
+        if (value.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Quest reward reference collection должен быть массивом",
+                code: "quest_reward_references_invalid_array",
+                section: "QuestHistory",
+                expected: "array of non-empty strings or structured reward objects",
+                actual: value.ValueKind.ToString(),
+                repairHint: "Сохраняй itemsReceived/skillsUnlocked/relationshipChanges как массив строковых legacy-ссылок или structured reward objects с authority fields/reason."));
+            return;
+        }
+
+        var index = 0;
+        foreach (var entry in value.EnumerateArray())
+        {
+            var entryContext = $"{context}[{index++}]";
+            if (entry.ValueKind == JsonValueKind.String)
+            {
+                if (string.IsNullOrWhiteSpace(entry.GetString()))
+                {
+                    issues.Add(new ValidationIssue(
+                        entryContext,
+                        IssueSeverity.Error,
+                        "Quest reward legacy string не должен быть пустым",
+                        code: "quest_reward_reference_empty_string",
+                        section: "QuestHistory",
+                        expected: "non-empty reward reference",
+                        actual: "empty string",
+                        repairHint: "Для legacy reward string передай непустую ссылку, которая резолвится к canonical detail authority, либо используй structured reward object с reason."));
+                }
+
+                continue;
+            }
+
+            if (entry.ValueKind == JsonValueKind.Object)
+                continue;
+
+            issues.Add(new ValidationIssue(
+                entryContext,
+                IssueSeverity.Error,
+                "Quest reward reference должен быть строкой или structured object",
+                code: "quest_reward_reference_invalid_shape",
+                section: "QuestHistory",
+                expected: "non-empty string or structured reward object",
+                actual: entry.ValueKind.ToString(),
+                repairHint: "Для reward reference используй legacy строку только если она резолвится к detail authority; для исторических/недоступных наград используй object с displayName, authorityStatus и reason."));
         }
     }
 

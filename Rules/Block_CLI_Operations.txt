@@ -211,6 +211,7 @@
                     - game_state/quests/regular_quests.json ← UpdateQuests
                     - game_state/quests/soul_quests.json ← UpdateSoulQuests
                     - game_state/quests/quest_history.json ← questLog (legacy shorthand); canonical stored shape is questHistory + questRewards + questChains
+                    - questRewards.itemsReceived[] / skillsUnlocked[] / relationshipChanges[] must resolve to current inventory/skills/NPC relationship authority, or use structured reward objects with authorityStatus HistoricalOnly or Unavailable plus player-facing reason; bare strings are allowed only when they resolve to current detail authority.
                     - game_state/quests/plot_outline.json ← plotOutline
                     - regular_quests.json and soul_quests.json are canonically stored as full quests[] arrays
                     - On quest creation, include the full quest object with detailsLog

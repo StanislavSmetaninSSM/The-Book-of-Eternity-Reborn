@@ -14,14 +14,35 @@
     {
       "questId": "quest_merchants_caravan",
       "itemsReceived": [
-        "item_gold_ring",
-        "item_merchant_seal"
+        {
+          "itemId": "item_gold_ring",
+          "displayName": "Золотое кольцо купеческой гильдии",
+          "authorityStatus": "HistoricalOnly",
+          "reason": "Кольцо принадлежало прошлой инкарнации и не существует в текущем инвентаре."
+        },
+        {
+          "itemId": "item_merchant_seal",
+          "displayName": "Печать караванного мастера",
+          "authorityStatus": "HistoricalOnly",
+          "reason": "Печать осталась в архивной истории спасённого каравана."
+        }
       ],
       "skillsUnlocked": [
-        "skill_trading_advanced"
+        {
+          "skillId": "skill_trading_advanced",
+          "displayName": "Продвинутая торговля",
+          "authorityStatus": "HistoricalOnly",
+          "reason": "Навык был наградой прошлой жизни и не перенесён в текущую инкарнацию."
+        }
       ],
       "relationshipChanges": [
-        "npc_guild_master_+20"
+        {
+          "npcId": "npc_guild_master",
+          "displayName": "Мастер гильдии купцов",
+          "change": 20,
+          "authorityStatus": "HistoricalOnly",
+          "reason": "Отношение относится к прошлой инкарнации; текущий NPC authority отсутствует."
+        }
       ]
     }
   ],

@@ -1122,6 +1122,117 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Quests_HistoryRewardsRenderLabelsAndUnavailableReasonsWithoutRawIds()
+    {
+        await SeedMortalStateAsync();
+        await WriteRawJsonAsync("game_state/quests/quest_history.json", """
+        {
+          "questHistory": [
+            {
+              "questId": "quest_merchants_caravan",
+              "questName": "Караван купцов",
+              "outcome": "completed",
+              "completionDate": "2026-06-05T12:00:00Z",
+              "experience": 25,
+              "incarnationNumber": 1
+            }
+          ],
+          "questRewards": [
+            {
+              "questId": "quest_merchants_caravan",
+              "itemsReceived": [
+                {
+                  "itemId": "item_merchant_seal",
+                  "displayName": "Печать караванного мастера"
+                },
+                {
+                  "itemId": "item_first_life_ring",
+                  "displayName": "Перстень первой жизни",
+                  "authorityStatus": "HistoricalOnly",
+                  "reason": "Перстень остался в прошлой инкарнации."
+                }
+              ],
+              "skillsUnlocked": [
+                {
+                  "skillName": "Продвинутая торговля",
+                  "displayName": "Продвинутая торговля"
+                }
+              ],
+              "relationshipChanges": [
+                {
+                  "npcId": "npc_guild_master",
+                  "displayName": "Мастер гильдии",
+                  "change": 20
+                }
+              ]
+            }
+          ],
+          "questChains": []
+        }
+        """);
+        await WriteRawJsonAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            {
+              "itemId": "item_merchant_seal",
+              "name": "Печать караванного мастера",
+              "description": "Печать, полученная за охрану каравана.",
+              "type": "Квестовый предмет"
+            }
+          ]
+        }
+        """);
+        await WriteRawJsonAsync("game_state/player/skills_active.json", """
+        {
+          "activeSkillChanges": [
+            {
+              "skillName": "Продвинутая торговля",
+              "skillDescription": "Позволяет выгоднее вести сложные сделки.",
+              "rarity": "Uncommon",
+              "actionCost": 1,
+              "combatEffect": {
+                "actionName": "Торговая оценка",
+                "isActivatedEffect": true,
+                "effects": []
+              }
+            }
+          ]
+        }
+        """);
+        await WriteRawJsonAsync("game_state/npcs/npc_relationships.json", """
+        {
+          "NPCRelationshipChanges": [
+            {
+              "npcId": "npc_guild_master",
+              "npcName": "Мастер гильдии",
+              "relationshipLevel": 80,
+              "attitude": "Доверие и Расположение"
+            }
+          ]
+        }
+        """);
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/квесты"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("quest_history_reward_authority");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Печать караванного мастера", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Продвинутая торговля", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Мастер гильдии", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Перстень первой жизни", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Перстень остался в прошлой инкарнации.", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("item_merchant_seal", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("item_first_life_ring", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("npc_guild_master", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\"itemId\"", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("validation", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_PlayerInteractions_RendersWithoutHiddenErrors()
     {
