@@ -2985,7 +2985,7 @@ public partial class ValidationService
             .Any(authority => InventoryStructuredSummaryAuthorityMatches(summary, authority));
     }
 
-    private static IEnumerable<JsonElement> EnumerateInventoryStructuredSummaryAuthorityObjects(JsonElement item)
+    private static IEnumerable<InventoryAuthorityUnit> EnumerateInventoryStructuredSummaryAuthorityObjects(JsonElement item)
     {
         if (item.TryGetProperty("structuredBonuses", out var structuredBonuses) &&
             structuredBonuses.ValueKind == JsonValueKind.Array)
@@ -2993,7 +2993,7 @@ public partial class ValidationService
             foreach (var entry in structuredBonuses.EnumerateArray())
             {
                 if (entry.ValueKind == JsonValueKind.Object)
-                    yield return entry;
+                    yield return new InventoryAuthorityUnit(entry, AllowImplicitValueType: false);
             }
         }
 
@@ -3003,7 +3003,7 @@ public partial class ValidationService
             foreach (var entry in customProperties.EnumerateArray())
             {
                 if (entry.ValueKind == JsonValueKind.Object)
-                    yield return entry;
+                    yield return new InventoryAuthorityUnit(entry, AllowImplicitValueType: false);
             }
         }
 
@@ -3012,41 +3012,41 @@ public partial class ValidationService
 
         if (combatEffect.ValueKind == JsonValueKind.Object)
         {
-            yield return combatEffect;
+            yield return new InventoryAuthorityUnit(combatEffect, AllowImplicitValueType: true);
         }
         else if (combatEffect.ValueKind == JsonValueKind.Array)
         {
             foreach (var entry in combatEffect.EnumerateArray())
             {
                 if (entry.ValueKind == JsonValueKind.Object)
-                    yield return entry;
+                    yield return new InventoryAuthorityUnit(entry, AllowImplicitValueType: true);
             }
         }
     }
 
-    private static bool InventoryStructuredSummaryAuthorityMatches(string summary, JsonElement authority)
+    private static bool InventoryStructuredSummaryAuthorityMatches(string summary, InventoryAuthorityUnit authority)
     {
-        return EnumerateInventoryAuthorityUnitObjects(authority)
+        return EnumerateInventoryAuthorityUnitObjects(authority.Element, authority.AllowImplicitValueType)
             .Any(unit => InventoryAuthorityMetadataMatchesSummary(summary, unit));
     }
 
-    private static bool HasMeaningfulInventoryStructuredSummaryAuthorityObject(JsonElement authority)
+    private static bool HasMeaningfulInventoryStructuredSummaryAuthorityObject(InventoryAuthorityUnit authority)
     {
-        return EnumerateInventoryAuthorityUnitObjects(authority)
+        return EnumerateInventoryAuthorityUnitObjects(authority.Element, authority.AllowImplicitValueType)
             .Any(HasMeaningfulLocalInventoryStructuredSummaryAuthorityObject);
     }
 
-    private static IEnumerable<JsonElement> EnumerateInventoryAuthorityUnitObjects(JsonElement root)
+    private static IEnumerable<InventoryAuthorityUnit> EnumerateInventoryAuthorityUnitObjects(JsonElement root, bool allowImplicitValueType)
     {
         if (root.ValueKind == JsonValueKind.Object)
         {
-            yield return root;
+            yield return new InventoryAuthorityUnit(root, allowImplicitValueType);
             foreach (var property in root.EnumerateObject())
             {
                 if (property.Value.ValueKind == JsonValueKind.Object ||
                     property.Value.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (var nested in EnumerateInventoryAuthorityUnitObjects(property.Value))
+                    foreach (var nested in EnumerateInventoryAuthorityUnitObjects(property.Value, allowImplicitValueType))
                         yield return nested;
                 }
             }
@@ -3058,26 +3058,26 @@ public partial class ValidationService
                 if (entry.ValueKind == JsonValueKind.Object ||
                     entry.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (var nested in EnumerateInventoryAuthorityUnitObjects(entry))
+                    foreach (var nested in EnumerateInventoryAuthorityUnitObjects(entry, allowImplicitValueType))
                         yield return nested;
                 }
             }
         }
     }
 
-    private static bool HasMeaningfulLocalInventoryStructuredSummaryAuthorityObject(JsonElement authority)
+    private static bool HasMeaningfulLocalInventoryStructuredSummaryAuthorityObject(InventoryAuthorityUnit authority)
     {
-        return EnumerateLocalInventoryAuthorityTargetTexts(authority).Any() &&
-               (EnumerateLocalInventoryAuthorityValueCandidates(authority).Any() ||
-                HasLocalInventoryNonNumericAuthorityValue(authority));
+        return EnumerateLocalInventoryAuthorityTargetTexts(authority.Element).Any() &&
+               (EnumerateLocalInventoryAuthorityValueCandidates(authority.Element, authority.AllowImplicitValueType).Any() ||
+                HasLocalInventoryNonNumericAuthorityValue(authority.Element));
     }
 
-    private static bool InventoryAuthorityMetadataMatchesSummary(string summary, JsonElement authority)
+    private static bool InventoryAuthorityMetadataMatchesSummary(string summary, InventoryAuthorityUnit authority)
     {
         if (!HasMeaningfulLocalInventoryStructuredSummaryAuthorityObject(authority))
             return false;
 
-        var hasTargetMatch = EnumerateLocalInventoryAuthorityTargetTexts(authority)
+        var hasTargetMatch = EnumerateLocalInventoryAuthorityTargetTexts(authority.Element)
             .Any(target => InventoryAuthorityTargetMatchesSummary(summary, target));
         if (!hasTargetMatch)
             return false;
@@ -3085,7 +3085,7 @@ public partial class ValidationService
         if (!TryExtractInventorySummaryValue(summary, out var summaryValue, out var summaryIsPercent))
             return true;
 
-        return EnumerateLocalInventoryAuthorityValueCandidates(authority)
+        return EnumerateLocalInventoryAuthorityValueCandidates(authority.Element, authority.AllowImplicitValueType)
             .Any(candidate => InventoryAuthorityValueMatchesSummary(summaryValue, summaryIsPercent, candidate));
     }
 
@@ -3178,16 +3178,17 @@ public partial class ValidationService
             "attribute",
             "resource",
             "resourceType",
-            "effectType",
-            "bonusType");
+            "effectType");
     }
 
-    private static IEnumerable<InventoryAuthorityValueCandidate> EnumerateLocalInventoryAuthorityValueCandidates(JsonElement root)
+    private static IEnumerable<InventoryAuthorityValueCandidate> EnumerateLocalInventoryAuthorityValueCandidates(
+        JsonElement root,
+        bool allowImplicitValueType)
     {
         if (root.ValueKind != JsonValueKind.Object)
             yield break;
 
-        if (!TryGetInventoryAuthorityValueType(root, out var localValueTypeIsPercent))
+        if (!TryGetInventoryAuthorityValueType(root, allowImplicitValueType, out var localValueTypeIsPercent))
             yield break;
 
         foreach (var property in root.EnumerateObject())
@@ -3263,12 +3264,15 @@ public partial class ValidationService
         return false;
     }
 
-    private static bool TryGetInventoryAuthorityValueType(JsonElement root, out bool? isPercent)
+    private static bool TryGetInventoryAuthorityValueType(
+        JsonElement root,
+        bool allowImplicitValueType,
+        out bool? isPercent)
     {
         isPercent = null;
         var valueType = GetFirstNonEmptyString(root, "valueType", "modifierType");
         if (string.IsNullOrWhiteSpace(valueType))
-            return HasAnyNonEmptyString(root, "effectType", "targetType", "targetTypeDisplayName");
+            return allowImplicitValueType && HasAnyNonEmptyString(root, "effectType", "targetType", "targetTypeDisplayName");
 
         if (StringEqualsAny(valueType, "Percentage", "Percent", "%", "Процент", "Процентный"))
         {
@@ -3343,6 +3347,8 @@ public partial class ValidationService
     }
 
     private readonly record struct InventoryAuthorityValueCandidate(decimal Value, bool IsPercent);
+
+    private readonly record struct InventoryAuthorityUnit(JsonElement Element, bool AllowImplicitValueType);
 
     private static bool HasInventoryMechanicalSummaryUnresolvedReason(JsonElement item)
     {

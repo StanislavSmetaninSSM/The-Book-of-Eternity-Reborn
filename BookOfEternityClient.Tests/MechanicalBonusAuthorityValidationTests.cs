@@ -282,6 +282,80 @@ public sealed class MechanicalBonusAuthorityValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithStructuredBonusCombatStyleMissingValueType_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_structured_target_type_missing_value_type_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1%"],
+            "structuredBonuses": [
+              {
+                "targetType": "strength",
+                "value": "1%"
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_structured_target_type_missing_value_type_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1%", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithCustomPropertyCombatStyleMissingValueType_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_custom_target_type_missing_value_type_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1%"],
+            "structuredBonuses": [],
+            "customProperties": [
+              {
+                "targetType": "strength",
+                "value": "1%"
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_custom_target_type_missing_value_type_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1%", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithBonusTypeOnlyTarget_ReportsIssue()
+    {
+        await WriteInventoryAsync(CreateItem(
+            "strength_bonus_type_only_target_authority_1",
+            "Пояс силы",
+            """
+            "bonuses": ["Сила +1"],
+            "structuredBonuses": [
+              {
+                "bonusType": "Сила",
+                "valueType": "Flat",
+                "value": 1
+              }
+            ],
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            IsMissingAuthorityIssue(issue) &&
+            issue.FilePath.Contains("strength_bonus_type_only_target_authority_1", StringComparison.OrdinalIgnoreCase) &&
+            issue.Actual?.Contains("Сила +1", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_MechanicalBonusSummaryWithCombatEffectSplitTargetAndValue_ReportsIssue()
     {
         await WriteInventoryAsync(CreateItem(
