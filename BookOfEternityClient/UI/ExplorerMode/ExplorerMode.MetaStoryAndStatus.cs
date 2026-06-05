@@ -334,6 +334,7 @@ public partial class ExplorerMode
     private async Task ShowEffects()
     {
         var content = new Grid().AddColumn(new GridColumn());
+        var hasStructuredEffectDetails = false;
 
         // Active effects
         var effDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/effects.json");
@@ -376,7 +377,10 @@ public partial class ExplorerMode
                     string.IsNullOrWhiteSpace(desc) ? "[dim]Без дополнительного пояснения[/]" : $"[dim]{Markup.Escape(desc)}[/]");
             });
             if (hasEffects)
+            {
+                hasStructuredEffectDetails = true;
                 content.AddRow(effectTable);
+            }
             else
                 content.AddRow(new Markup("[dim]Нет активных эффектов[/]"));
         }
@@ -464,7 +468,9 @@ public partial class ExplorerMode
                     treatment.Count == 0 ? "[dim]Нет данных о лечении[/]" : $"[cyan]{string.Join("\n", treatment)}[/]");
             });
             if (hasWounds)
+            {
                 content.AddRow(woundTable);
+            }
             else
                 content.AddRow(new Markup("[dim green]Ран нет — вы здоровы[/]"));
         }
@@ -487,10 +493,15 @@ public partial class ExplorerMode
                 RenderCustomStateItem(stateLines, item, "  ");
             });
             if (hasStates)
+            {
                 content.AddRow(GameInterface.SafeMarkup(string.Join("\n", stateLines)));
+            }
             else
                 content.AddRow(new Markup("[dim]Нет особых состояний[/]"));
         }
+
+        if (!hasStructuredEffectDetails)
+            AddMortalStatusEffectFallback(content);
 
         // Stealth state
         var stDoc = await _stateManager.LoadGameStateFileAsync("game_state/player/stealth.json");
@@ -559,6 +570,28 @@ public partial class ExplorerMode
         };
         Write(panel);
         WaitForKey();
+    }
+
+    private void AddMortalStatusEffectFallback(Grid content)
+    {
+        var rows = MortalStatusEffectFallback.BuildRows(_stateManager.CurrentState.PlayerStatus);
+        if (rows.Count == 0)
+            return;
+
+        content.AddRow(new Markup(""));
+        content.AddRow(new Markup($"[yellow]{Markup.Escape(MortalStatusEffectFallback.Message)}[/]"));
+
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .BorderColor(Color.Yellow)
+            .Expand()
+            .AddColumn(new TableColumn("[bold]Раздел[/]").NoWrap())
+            .AddColumn(new TableColumn("[bold]Подробности[/]"));
+
+        foreach (var row in rows)
+            table.AddRow($"[white]{Markup.Escape(row.Label)}[/]", Markup.Escape(row.Details));
+
+        content.AddRow(table);
     }
 
     private async Task ShowCombat()

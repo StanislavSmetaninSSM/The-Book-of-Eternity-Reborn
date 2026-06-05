@@ -1169,6 +1169,115 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_Effects_InMortalRealm_WithStatusConditionsAndOtherSections_RendersStatusFallback()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/core/player_status.json", new
+        {
+            healthPercentage = "92%",
+            energyPercentage = "64%",
+            poisePercentage = "70%",
+            currentCondition = "Лёгкое недомогание",
+            currentConditionDescription = "Тело ломит, а мысли держатся будто сквозь туман.",
+            activeConditions = new[]
+            {
+                "Головная боль после тяжёлых снов (-1 к Восприятию до полудня)",
+                "Магический резонанс: слабое покалывание в пальцах"
+            }
+        });
+        await WriteJsonAsync("game_state/player/effects.json", new
+        {
+            activeEffects = Array.Empty<object>(),
+            wounds = Array.Empty<object>(),
+            temporaryConditions = Array.Empty<object>()
+        });
+        await WriteJsonAsync("game_state/player/wounds.json", new[]
+        {
+            new
+            {
+                woundName = "Порез",
+                severity = "light",
+                descriptionOfEffects = "Мешает точным движениям."
+            }
+        });
+        await WriteJsonAsync("game_state/player/custom_states.json", new[]
+        {
+            new
+            {
+                stateName = "Голод",
+                currentLevel = 2,
+                description = "Нужно перекусить."
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/эффекты"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("effects_status_fallback_with_other_sections");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Подробная запись эффекта ещё не заведена", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лёгкое недомогание", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Тело ломит, а мысли держатся будто сквозь туман.", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Головная боль после тяжёлых снов (-1 к Восприятию до полудня)", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Порез", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Голод", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_state/player/effects.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task TryProcessCommand_Effects_InMortalRealm_WithStatusConditionsAndMissingStructuredEffects_RendersStatusFallback(
+        bool writeEmptyStructuredEffects)
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/core/player_status.json", new
+        {
+            healthPercentage = "92%",
+            energyPercentage = "64%",
+            poisePercentage = "70%",
+            currentCondition = "Лёгкое недомогание",
+            currentConditionDescription = "Тело ломит, а мысли держатся будто сквозь туман.",
+            activeConditions = new[]
+            {
+                "Головная боль после тяжёлых снов (-1 к Восприятию до полудня)",
+                "Магический резонанс: слабое покалывание в пальцах"
+            }
+        });
+
+        if (writeEmptyStructuredEffects)
+        {
+            await WriteJsonAsync("game_state/player/effects.json", new
+            {
+                activeEffects = Array.Empty<object>(),
+                wounds = Array.Empty<object>(),
+                temporaryConditions = Array.Empty<object>()
+            });
+        }
+
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/эффекты"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("effects_status_fallback");
+        var renderedText = ExtractRenderedText();
+        Assert.Contains("Подробная запись эффекта ещё не заведена", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лёгкое недомогание", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Тело ломит, а мысли держатся будто сквозь туман.", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Головная боль после тяжёлых снов (-1 к Восприятию до полудня)", renderedText, StringComparison.Ordinal);
+        Assert.Contains("Магический резонанс: слабое покалывание в пальцах", renderedText, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_state/player/effects.json", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("API", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("debug", renderedText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
 
     public async Task TryProcessCommand_Combat_RendersWithoutHiddenErrors()
     {
