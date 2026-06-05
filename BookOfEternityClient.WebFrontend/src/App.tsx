@@ -40,7 +40,7 @@ function AppShell() {
       {!isLauncherRoute && <TabBar />}
       <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
         {shellState.status === 'loading' && <LoadingCard />}
-        {shellState.status === 'error' && <ErrorNotice title="Состояние клиента недоступно" failure={shellState} advancedEnabled={advancedEnabled} />}
+        {shellState.status === 'error' && <ErrorNotice title="Книга сейчас недоступна" failure={shellState} advancedEnabled={advancedEnabled} />}
         {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : <TabContent activeTab={activeTab} />)}
       </section>
       {!isLauncherRoute && <UnifiedInput />}

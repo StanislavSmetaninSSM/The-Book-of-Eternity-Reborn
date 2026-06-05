@@ -28,8 +28,8 @@ export function useShellState(advancedEnabled: boolean) {
     if (allFailed) {
       setShellState({
         status: 'error',
-        playerMessage: 'Локальный игровой клиент недоступен. Убедитесь, что клиент запущен.',
-        technicalDetails: !menu.ok ? menu.message : 'All API calls failed.'
+        playerMessage: 'Локальная книга недоступна. Убедитесь, что игра запущена.',
+        technicalDetails: !menu.ok ? menu.message : 'Запросы к книге не ответили.'
       });
       return;
     }
@@ -46,9 +46,6 @@ export function useShellState(advancedEnabled: boolean) {
       ]);
       lifecycle = settledToResult(advResults[0]);
       commandCoverage = settledToResult(advResults[1]);
-    } else {
-      const coverageResult = await Promise.allSettled([browserApi.getCommandCoverage()]);
-      commandCoverage = settledToResult(coverageResult[0]);
     }
 
     setShellState({

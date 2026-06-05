@@ -11,7 +11,7 @@ export function settledToResult<T>(outcome: PromiseSettledResult<BrowserApiResul
     status: null,
     kind: 'network-error',
     message,
-    playerMessage: 'Локальный игровой клиент сейчас недоступен.',
+    playerMessage: 'Локальная книга сейчас недоступна.',
     technicalDetails: message
   } satisfies BrowserApiFailure;
 }

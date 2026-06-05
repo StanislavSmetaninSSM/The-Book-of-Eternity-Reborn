@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import type { JsonValue, UiBlock, UiTone } from '../api/contracts';
-import { toPlayerFacingText } from '../utils/playerCopy';
+import type { UiBlock, UiTone } from '../api/contracts';
+import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { JsonTreeViewer } from './JsonTreeViewer';
 
 function toneClassName(tone: UiTone): string {
@@ -15,17 +15,19 @@ function toneClassName(tone: UiTone): string {
   }
 }
 
-export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
+export function BlockRenderer({ block, advancedEnabled = false }: { block: UiBlock; advancedEnabled?: boolean }): ReactNode {
   switch (block.kind) {
-    case 'text':
-      return <p className={`block-text ${toneClassName(block.tone)}`}>{block.text}</p>;
+    case 'text': {
+      const { safe, hasTechnical } = sanitizePlayerMessage(block.text, 'Текст действия недоступен.');
+      return <p className={`block-text ${hasTechnical ? 'block-text--muted' : toneClassName(block.tone)}`}>{safe}</p>;
+    }
 
     case 'panel':
       return (
         <section className="block-panel">
           <h4 className="block-panel__title">{toPlayerFacingText(block.title, 'Панель')}</h4>
           <div className="block-panel__body">
-            {block.blocks.map((child, i) => <BlockRenderer key={`${child.kind}-${i}`} block={child} />)}
+            {block.blocks.map((child, i) => <BlockRenderer key={`${child.kind}-${i}`} block={child} advancedEnabled={advancedEnabled} />)}
           </div>
         </section>
       );
@@ -37,11 +39,11 @@ export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
           <div className="block-table__scroll">
             <table>
               <thead>
-                <tr>{block.columns.map((col) => <th key={col}>{col}</th>)}</tr>
+                <tr>{block.columns.map((col) => <th key={col}>{toSafeBlockText(col, 'Столбец')}</th>)}</tr>
               </thead>
               <tbody>
                 {block.rows.map((row, i) => (
-                  <tr key={i}>{row.cells.map((cell, j) => <td key={j}>{cell}</td>)}</tr>
+                  <tr key={i}>{row.cells.map((cell, j) => <td key={j}>{toSafeBlockText(cell, '—')}</td>)}</tr>
                 ))}
               </tbody>
             </table>
@@ -53,7 +55,7 @@ export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
       const ListTag = block.ordered ? 'ol' : 'ul';
       return (
         <ListTag className="block-list">
-          {block.items.map((item, i) => <li key={i}>{item}</li>)}
+          {block.items.map((item, i) => <li key={i}>{toSafeBlockText(item, 'пункт списка')}</li>)}
         </ListTag>
       );
     }
@@ -63,8 +65,8 @@ export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
         <dl className="block-kv">
           {block.items.map((item) => (
             <div key={item.key} className="block-kv__row">
-              <dt>{item.key}</dt>
-              <dd>{item.value}</dd>
+              <dt>{toSafeBlockText(item.key, 'параметр')}</dt>
+              <dd>{toSafeBlockText(item.value, 'значение')}</dd>
             </div>
           ))}
         </dl>
@@ -72,10 +74,12 @@ export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
 
     case 'message': {
       const severityClass = `block-message--${block.severity.toLowerCase()}`;
+      const title = sanitizePlayerMessage(block.title, 'Сообщение').safe;
+      const message = sanitizePlayerMessage(block.message, 'Игровое действие изменило состояние.').safe;
       return (
         <div className={`block-message ${severityClass}`}>
-          <strong>{toPlayerFacingText(block.title, 'Сообщение')}</strong>
-          <p>{toPlayerFacingText(block.message, '')}</p>
+          <strong>{title}</strong>
+          <p>{message}</p>
         </div>
       );
     }
@@ -88,7 +92,7 @@ export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
           ) : (
             <p className="block-text--muted">Изображение недоступно</p>
           )}
-          {block.title && <figcaption>{block.title}</figcaption>}
+          {block.title && <figcaption>{toSafeBlockText(block.title, 'Изображение')}</figcaption>}
         </figure>
       );
 
@@ -100,7 +104,7 @@ export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
           <ul className="block-map__nodes">
             {block.map.nodes.slice(0, 20).map((node) => (
               <li key={node.id} className={node.isCurrent ? 'is-current' : ''}>
-                {node.label} {node.isCurrent && '← вы здесь'}
+                {toSafeBlockText(node.label, 'точка карты')} {node.isCurrent && '← вы здесь'}
               </li>
             ))}
             {block.map.nodes.length > 20 && <li className="block-text--muted">…и ещё {block.map.nodes.length - 20}</li>}
@@ -109,21 +113,26 @@ export function BlockRenderer({ block }: { block: UiBlock }): ReactNode {
       );
 
     case 'rawJson':
+      if (advancedEnabled) {
+        return <JsonTreeViewer data={block.json} title={toPlayerFacingText(block.title, 'Подробные сведения')} defaultExpanded={false} />;
+      }
+
       return (
-        <JsonTreeViewer
-          data={block.json as JsonValue}
-          title={toPlayerFacingText(block.title, 'Данные')}
-          defaultExpanded
-          maxInitialDepth={2}
-        />
+        <p className="block-text block-text--muted">
+          <strong>{toPlayerFacingText(block.title, 'Подробные сведения')}</strong> — Подробные сведения доступны в расширенном режиме.
+        </p>
       );
   }
 }
 
-export function BlockList({ blocks }: { blocks: UiBlock[] }) {
+function toSafeBlockText(value: string | null | undefined, fallback: string): string {
+  return sanitizePlayerMessage(value, fallback).safe;
+}
+
+export function BlockList({ blocks, advancedEnabled = false }: { blocks: UiBlock[]; advancedEnabled?: boolean }) {
   return (
     <div className="block-list-container">
-      {blocks.map((block, i) => <BlockRenderer key={`${block.kind}-${i}`} block={block} />)}
+      {blocks.map((block, i) => <BlockRenderer key={`${block.kind}-${i}`} block={block} advancedEnabled={advancedEnabled} />)}
     </div>
   );
 }

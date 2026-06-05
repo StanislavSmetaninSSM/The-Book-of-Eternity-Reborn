@@ -30,7 +30,7 @@ export function SettingsView() {
       <section className="settings-card">
         <h3>⚙️ Основные</h3>
         <div className="settings-row">
-          <label>Язык клиента</label>
+          <label>Язык книги</label>
           <select
             value={settings.language.value}
             onChange={(e) => {

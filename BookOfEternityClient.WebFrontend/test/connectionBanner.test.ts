@@ -21,11 +21,11 @@ const connectionBanner = readSource('components', 'ConnectionBanner.tsx');
 assertIncludes(connectionBanner, "const { connectionStatus, loadBrowserState } = useShell();", 'ConnectionBanner should read shell connection state and reload action.');
 assertIncludes(connectionBanner, "if (connectionStatus === 'connected') {", 'ConnectionBanner should stay hidden when the client is connected.');
 assertIncludes(connectionBanner, "const isDisconnected = connectionStatus === 'disconnected';", 'ConnectionBanner should distinguish partial and disconnected states.');
-assertIncludes(connectionBanner, "'Клиент недоступен. Проверьте, что игра запущена.'", 'ConnectionBanner should show a disconnected warning.');
+assertIncludes(connectionBanner, "'Книга недоступна. Проверьте, что игра запущена.'", 'ConnectionBanner should show a disconnected warning.');
 assertIncludes(connectionBanner, "'Некоторые разделы не загрузились. Часть данных может быть неактуальна.'", 'ConnectionBanner should show a partial-data warning.');
 assertIncludes(connectionBanner, "className={`connection-banner ${isDisconnected ? 'is-disconnected' : 'is-partial'}`}", 'ConnectionBanner should expose state-specific classes.');
 assertIncludes(connectionBanner, 'role="alert"', 'ConnectionBanner should announce connection issues as alerts.');
-assertIncludes(connectionBanner, 'Повторить подключение', 'ConnectionBanner should render a retry button label.');
+assertIncludes(connectionBanner, 'Повторить', 'ConnectionBanner should render a retry button label.');
 assertIncludes(connectionBanner, 'onClick={() => void loadBrowserState()}', 'ConnectionBanner retry button should trigger a full reload.');
 
 const app = readSource('App.tsx');

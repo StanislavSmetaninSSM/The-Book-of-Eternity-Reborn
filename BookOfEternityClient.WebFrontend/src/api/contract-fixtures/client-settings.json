@@ -52,10 +52,10 @@
   },
   "locality": {
     "localhostOnly": true,
-    "sessionLabel": "game_session — локальная папка книги",
+    "sessionLabel": "Текущая глава книги",
     "gameSessionExists": true,
     "gmBridgeEnabled": true,
     "gmBridgeLabel": "Локальный мост ГМа включён",
-    "safetySummary": "Браузерный клиент работает только через localhost/loopback и сохраняет настройки в общей конфигурации игры."
+    "safetySummary": "Книга открыта только на этом устройстве и хранит настройки вместе с вашим прохождением."
   }
 }

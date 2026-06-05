@@ -46,7 +46,7 @@ public sealed class LocalWebUiMainMenuService
             About: BuildAboutSummary(),
             AdvancedShell: new BrowserAdvancedShellDto(
                 Label: "Расширенный режим",
-                Description: "Командная палитра, API-подсказки и debug-инструменты скрыты от обычного главного меню, но остаются доступны для проверки и перенесённых команд.",
+                Description: "Служебные сведения и перенесённые команды скрыты от обычного главного меню, но остаются доступны для проверки в расширенном режиме.",
                 InitiallyExpanded: false));
     }
 
@@ -59,7 +59,7 @@ public sealed class LocalWebUiMainMenuService
         {
             return new BrowserLoadSaveResultDto(
                 Success: false,
-                Error: "Сохранение не найдено в текущем списке браузерного меню.",
+                Error: "Сохранение не найдено в текущем списке загрузки.",
                 LoadedSaveId: saveId,
                 Menu: await BuildAsync());
         }
@@ -133,12 +133,12 @@ public sealed class LocalWebUiMainMenuService
     private static string BuildContinueReadyMessage(BrowserLifecycleDashboardDto dashboard)
     {
         if (dashboard.Validation.ErrorCount > 0)
-            return $"Сессия читается, но валидация обнаружила ошибки: {dashboard.Validation.ErrorCount}. Перед длинной игрой откройте repair/validation из панели состояния.";
+            return $"Книга открылась, но проверка нашла ошибки: {dashboard.Validation.ErrorCount}. Перед длинной игрой откройте расширенный режим и проверьте состояние.";
 
         if (dashboard.Validation.WarningCount > 0)
-            return $"Текущую сессию можно продолжить, но есть предупреждения валидации: {dashboard.Validation.WarningCount}.";
+            return $"Текущую главу можно продолжить, но книга просит внимания: {dashboard.Validation.WarningCount}.";
 
-        return "Текущую сессию можно продолжить в браузерном игровом экране.";
+        return "Текущую главу можно продолжить.";
     }
 
     private static string BuildContinueBlocker(
@@ -149,30 +149,27 @@ public sealed class LocalWebUiMainMenuService
             return $"{terminalSoulDissipationMessage} Текущую сессию продолжить нельзя; загрузите сохранение через меню загрузки.";
 
         if (!dashboard.Session.GameSessionExists)
-            return "Папка game_session ещё не создана. Начните новую игру или загрузите сохранение.";
+            return "Активной главы пока нет. Начните новую игру или загрузите сохранение.";
 
         if (!dashboard.Soul.IsReadable)
             return string.IsNullOrWhiteSpace(dashboard.Soul.ReadError)
-                ? "Не удалось прочитать текущую душу. Проверьте файлы сессии или загрузите сохранение."
+                ? "Не удалось прочитать текущую душу. Загрузите сохранение или откройте расширенный режим."
                 : dashboard.Soul.ReadError;
 
-        return "Продолжение сейчас недоступно. Проверьте состояние локальной сессии.";
+        return "Продолжение сейчас недоступно. Проверьте состояние главы.";
     }
 
     private static string BuildBrowserWriteBlockedMessage(BrowserLocalWriteStatus status)
     {
         if (status.PendingTurn.HasActiveGmTurn)
-            return $"Загрузка сохранения заблокирована: {status.PendingTurn.Message}";
+            return $"Книга занята текущим ходом: {status.PendingTurn.Message}";
 
         if (status.LocalUiLock.Exists && !status.LocalUiLock.IsStale)
         {
-            var owner = string.IsNullOrWhiteSpace(status.LocalUiLock.OwnerLabel)
-                ? status.LocalUiLock.OwnerId
-                : status.LocalUiLock.OwnerLabel;
-            return $"Загрузка сохранения заблокирована свежей локальной UI-блокировкой: {owner}. Дождитесь завершения операции или освободите блокировку.";
+            return "Книга занята другим действием. Дождитесь завершения операции или откройте расширенный режим.";
         }
 
-        return "Загрузка сохранения заблокирована текущим состоянием локальной сессии.";
+        return "Загрузка сохранения сейчас недоступна из-за состояния главы.";
     }
 
     private static IReadOnlyList<BrowserMainMenuActionDto> BuildActions(
@@ -183,7 +180,7 @@ public sealed class LocalWebUiMainMenuService
         var newGameEnabled = dashboard.CanStartBrowserWrite;
         var newGameReason = newGameEnabled
             ? string.Empty
-            : "Новая игра через браузерную форму недоступна, пока активен ход ГМа или локальная UI-блокировка.";
+            : "Новая глава недоступна, пока книга занята ходом ГМа или другим действием.";
         var hasSaves = saves.Count > 0;
         var loadEnabled = hasSaves && dashboard.CanStartBrowserWrite;
         var loadDisabledReason = hasSaves
@@ -210,7 +207,7 @@ public sealed class LocalWebUiMainMenuService
             new BrowserMainMenuActionDto(
                 Id: "new-game",
                 Label: "Новая игра",
-                Description: "Открыть браузерную форму подготовки новой жизни/мира через тот же локальный write-flow.",
+                Description: "Открыть подготовку новой жизни и мира.",
                 Enabled: newGameEnabled,
                 DisabledReason: newGameReason,
                 Kind: "command",
@@ -220,8 +217,8 @@ public sealed class LocalWebUiMainMenuService
                 Id: "load",
                 Label: "Загрузить",
                 Description: hasSaves
-                    ? (loadEnabled ? "Выберите сохранение из браузерного списка." : loadDisabledReason)
-                    : "В manual_saves и autosaves пока нет сохранений.",
+                    ? (loadEnabled ? "Выберите сохранение из списка." : loadDisabledReason)
+                    : "Сохранений пока нет.",
                 Enabled: loadEnabled,
                 DisabledReason: loadEnabled ? string.Empty : loadDisabledReason,
                 Kind: "panel",
@@ -230,7 +227,7 @@ public sealed class LocalWebUiMainMenuService
             new BrowserMainMenuActionDto(
                 Id: "options",
                 Label: "Настройки",
-                Description: "Показать локальные настройки клиента и подсказку по настройкам консоли.",
+                Description: "Показать настройки книги, звука и доступности.",
                 Enabled: true,
                 DisabledReason: string.Empty,
                 Kind: "panel",
@@ -238,8 +235,8 @@ public sealed class LocalWebUiMainMenuService
                 TargetPanel: "options-panel"),
             new BrowserMainMenuActionDto(
                 Id: "about",
-                Label: "О мире / клиенте",
-                Description: "Кратко описать Reborn и границы локального браузерного клиента.",
+                Label: "О мире / книге",
+                Description: "Кратко описать Reborn и границы этой книги.",
                 Enabled: true,
                 DisabledReason: string.Empty,
                 Kind: "panel",
@@ -248,9 +245,9 @@ public sealed class LocalWebUiMainMenuService
             new BrowserMainMenuActionDto(
                 Id: "exit",
                 Label: "Выход",
-                Description: "Закрытие вкладки или остановка локального процесса завершает браузерную сессию.",
+                Description: "Закрытие вкладки оставляет книгу в текущем состоянии.",
                 Enabled: false,
-                DisabledReason: "Браузер не завершает локальный процесс напрямую; закройте вкладку или остановите `--web` в терминале.",
+                DisabledReason: "Чтобы завершить работу, закройте вкладку или остановите игру в том окне, где она была запущена.",
                 Kind: "panel",
                 Command: string.Empty,
                 TargetPanel: "exit-panel")
@@ -264,13 +261,13 @@ public sealed class LocalWebUiMainMenuService
             MusicEnabled: settings.MusicEnabled,
             SoundEnabled: settings.SoundEnabled,
             ConsoleFontSize: settings.ConsoleFontSize,
-            Guidance: "Этот браузерный срез показывает состояние настроек. Полное редактирование настроек остаётся в консольном меню до отдельной Browser Client задачи.");
+            Guidance: "Настройки книги, звука и доступности открываются в отдельном разделе.");
     }
 
     private static BrowserAboutDto BuildAboutSummary() =>
         new(
             Title: "Книга Вечности: Перерождение",
-            Body: "Локальный браузерный клиент работает поверх того же C# runtime, game_session и игровых контрактов, что и консоль. Он постепенно заменяет debug shell на полноценный игровой интерфейс, не создавая отдельной игровой логики.");
+            Body: "Книга Вечности: Перерождение открывает текущую главу, сохранения и настройки в одном локальном окне. Игровые решения остаются в книге; этот экран помогает выбрать продолжение, новую главу или сохранение.");
 
     private async Task<IReadOnlyList<BrowserSaveSlotDto>> BuildSaveSlotsAsync()
     {

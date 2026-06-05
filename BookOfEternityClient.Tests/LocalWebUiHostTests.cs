@@ -259,7 +259,9 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.True(root["accessibility"]!["reducedMotion"]!.GetValue<bool>());
         Assert.True(root["accessibility"]!["contrastFriendly"]!.GetValue<bool>());
         Assert.True(root["locality"]!["localhostOnly"]!.GetValue<bool>());
-        Assert.Contains("game_session", root["locality"]!["sessionLabel"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        var sessionLabel = root["locality"]!["sessionLabel"]!.GetValue<string>();
+        Assert.Contains("Текущая глава", sessionLabel, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_session", sessionLabel, StringComparison.OrdinalIgnoreCase);
         Assert.False(root["locality"]!["gmBridgeEnabled"]!.GetValue<bool>());
         Assert.DoesNotContain(_rootPath, root.ToJsonString(), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("secret-token-not-for-browser", root.ToJsonString(), StringComparison.OrdinalIgnoreCase);
@@ -401,7 +403,10 @@ public sealed class LocalWebUiHostTests : IDisposable
         Assert.Equal(32, root["musicVolume"]!.GetValue<int>());
         Assert.True(root["soundEnabled"]!.GetValue<bool>());
         Assert.Equal(54, root["soundVolume"]!.GetValue<int>());
-        Assert.Contains("браузер", root["autoplayGuidance"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        var autoplayGuidance = root["autoplayGuidance"]!.GetValue<string>();
+        Assert.Contains("Включить музыку", autoplayGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("вклад", autoplayGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("браузер", autoplayGuidance, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(_rootPath, root.ToJsonString(), StringComparison.OrdinalIgnoreCase);
         var mainMenu = root["playlists"]!.AsArray().Single(node => node!["id"]!.GetValue<string>() == "main-menu")!.AsObject();
         Assert.True(mainMenu["available"]!.GetValue<bool>());
@@ -544,9 +549,11 @@ public sealed class LocalWebUiHostTests : IDisposable
         var loadBody = JsonNode.Parse(await loadResponse.Content.ReadAsStringAsync())!.AsObject();
 
         Assert.False(loadAction!["enabled"]!.GetValue<bool>());
-        Assert.Contains("заблок", loadAction["disabledReason"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Книга занята", loadAction["disabledReason"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("текущ", loadAction["disabledReason"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.Equal(HttpStatusCode.BadRequest, loadResponse.StatusCode);
-        Assert.Contains("заблок", loadBody["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Книга занята", loadBody["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("текущ", loadBody["error"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Изменённая душа", File.ReadAllText(Path.Combine(_rootPath, "game_session", "game_state", "meta", "soul_state.json")), StringComparison.Ordinal);
     }
 

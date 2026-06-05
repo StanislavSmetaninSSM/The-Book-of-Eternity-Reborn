@@ -44,6 +44,6 @@ assert(commandResultSource.includes('className="muted">{safe}</p>'), 'CommandRes
 const launcherSource = readSource('components', 'GameLauncher.tsx');
 assert(launcherSource.includes('sanitizePlayerDefaultCommandResult'), 'GameLauncher should sanitize command results shown in the player-default new chapter flow.');
 assert(launcherSource.includes('function sanitizeNewChapterCommandResult'), 'GameLauncher should keep a dedicated sanitizer for new chapter command results.');
-assert(launcherSource.includes("blockedTextFallback: 'Служебные подробности подготовки скрыты в обычном режиме.'"), 'GameLauncher should hide technical preparation details in normal mode.');
+assert(launcherSource.includes("blockedTextFallback: 'Подробности подготовки скрыты в обычном режиме.'"), 'GameLauncher should hide technical preparation details in normal mode.');
 assert(launcherSource.includes('toLauncherSaveFailureNotice(result.playerMessage)'), 'GameLauncher should translate save failures before showing them to the player.');
 assert(!launcherSource.includes('setLauncherNotice(result.playerMessage)'), 'GameLauncher should not show raw API failure messages directly.');

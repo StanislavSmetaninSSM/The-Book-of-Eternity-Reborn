@@ -15,7 +15,7 @@ export type QteAction = NonNullable<NonNullable<BrowserGameScreenDto['qte']['act
 export function toCommandNotice(result: ExplorerCommandResult): string {
   switch (result.state) {
     case 'RequiresInput':
-      return 'Форма открыта. Заполните поля ниже и отправьте её из браузера.';
+      return 'Форма открыта. Заполните поля ниже и отправьте её книге.';
     case 'Completed':
       return 'Игровое действие выполнено.';
     case 'Pending':

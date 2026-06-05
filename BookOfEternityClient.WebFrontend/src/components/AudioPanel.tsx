@@ -40,7 +40,7 @@ export function AudioPanel() {
         errorTitle="Музыка требует внимания"
         empty={{
           title: 'Музыка ждёт локальные настройки',
-          message: 'Панель звука появится, когда клиент отдаст общие настройки аудио.',
+          message: 'Панель звука появится, когда книга отдаст общие настройки аудио.',
           action: 'Игра продолжит работать без музыки; технические подробности остаются в расширенном режиме.'
         }}
       />
@@ -68,12 +68,12 @@ export function AudioPanel() {
                 currentElement.pause();
               }
             }
-            setNotice('Настройки звука сохранены в общей конфигурации клиента.');
+            setNotice('Настройки звука сохранены в общей конфигурации книги.');
           } else {
             setNotice(toPlayerFacingText(updated.playerMessage, 'Не удалось сохранить настройки звука.'));
           }
         } catch {
-          setNotice('Не удалось сохранить настройки звука. Попробуйте ещё раз или проверьте локальный клиент.');
+          setNotice('Не удалось сохранить настройки звука. Попробуйте ещё раз или проверьте, что книга запущена.');
         }
       });
     return audioSettingsUpdateQueueRef.current;
@@ -81,13 +81,13 @@ export function AudioPanel() {
 
   async function unlockBrowserMusic() {
     if (!audio.musicEnabled) {
-      setNotice('Музыка выключена в общих настройках клиента. Включите её переключателем ниже.');
+      setNotice('Музыка выключена в общих настройках книги. Включите её переключателем ниже.');
       return;
     }
 
     const track = playlist?.tracks[0];
     if (!track) {
-      setNotice(toPlayerFacingText(audio.missingAssetsMessage, 'Аудиофайлы для выбранного плейлиста не найдены. Клиент продолжит игру без музыки.'));
+      setNotice(toPlayerFacingText(audio.missingAssetsMessage, 'Аудиофайлы для выбранного плейлиста не найдены. Книга продолжит игру без музыки.'));
       return;
     }
 
@@ -103,7 +103,7 @@ export function AudioPanel() {
       await element.play();
       setNotice(`Музыка включена: ${toPlayerFacingText(playlist?.label ?? track.label, 'выбранный плейлист')}. Управление громкостью сохраняется в общих настройках.`);
     } catch {
-      setNotice('Браузер не дал запустить музыку автоматически. Нажмите кнопку ещё раз или проверьте разрешения вкладки.');
+      setNotice('Вкладка пока не разрешила запустить музыку. Нажмите кнопку ещё раз или проверьте разрешение на звук для этой вкладки.');
     }
   }
 
@@ -114,7 +114,7 @@ export function AudioPanel() {
     }
 
     if (!audio.soundEnabled) {
-      setNotice('Звуковые подсказки выключены в общих настройках клиента.');
+      setNotice('Звуковые подсказки выключены в общих настройках книги.');
       return;
     }
 
@@ -125,7 +125,7 @@ export function AudioPanel() {
       await cueAudio.play();
       setNotice(`Звуковая подсказка воспроизведена: ${toPlayerFacingText(asset.label, 'подсказка')}.`);
     } catch {
-      setNotice('Браузер не дал запустить звуковую подсказку. Нажмите кнопку ещё раз или проверьте разрешения вкладки.');
+      setNotice('Вкладка пока не разрешила запустить звуковую подсказку. Нажмите кнопку ещё раз или проверьте разрешение на звук для этой вкладки.');
     }
   }
 
@@ -133,7 +133,7 @@ export function AudioPanel() {
     <section className="audio-control-panel" aria-labelledby="browser-audio-title">
       <div>
         <p className="panel-eyebrow">музыка и звук</p>
-        <h2 id="browser-audio-title">Аудио браузерного клиента</h2>
+        <h2 id="browser-audio-title">Музыка и звук</h2>
         <p>{toPlayerFacingText(audio.autoplayGuidance, 'Музыка запускается только после вашего нажатия.')}</p>
         <p className="muted">{formatSidebarAudioSummary(audio)}</p>
         {audio.missingAssetsMessage && <p className="warning-text">{toPlayerFacingText(audio.missingAssetsMessage, 'Локальные аудиофайлы не найдены.')}</p>}
@@ -144,9 +144,9 @@ export function AudioPanel() {
           <h3>Музыка</h3>
           <p>{playlist ? `${toPlayerFacingText(playlist.label, 'Плейлист')}: ${toPlayerFacingText(playlist.usage, 'музыка для текущего раздела')}` : 'Плейлисты пока недоступны.'}</p>
           <button type="button" onClick={unlockBrowserMusic} disabled={!audio.musicEnabled || !hasMusic}>
-            Включить музыку в браузере
+            Включить музыку
           </button>
-          {!hasMusic && <p className="muted">Когда в локальной папке появятся треки, браузер сможет включить их после вашего нажатия.</p>}
+          {!hasMusic && <p className="muted">Когда в локальной папке появятся треки, книга сможет включить их после вашего нажатия.</p>}
         </div>
         <div className="summary-card">
           <h3>Звуковые подсказки</h3>

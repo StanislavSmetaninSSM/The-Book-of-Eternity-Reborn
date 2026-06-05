@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -322,7 +323,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("browserApi.updateClientSettings", settingsView, StringComparison.Ordinal);
         Assert.Contains("updateQueue", settingsView, StringComparison.Ordinal);
         Assert.Contains("setTimeout(() =>", settingsView, StringComparison.Ordinal);
-        Assert.Contains("Язык клиента", settingsView, StringComparison.Ordinal);
+        Assert.Contains("Язык книги", settingsView, StringComparison.Ordinal);
         Assert.Contains("Сложность", settingsView, StringComparison.Ordinal);
         Assert.Contains("Показывать мысли ГМа", settingsView, StringComparison.Ordinal);
         Assert.Contains("Звук", settingsView, StringComparison.Ordinal);
@@ -383,6 +384,86 @@ public sealed class BrowserFrontendWorkspaceTests
     }
 
     [Fact]
+    public void BrowserDefaultPlayerCopy_SourceGuardBlocksImplementationFraming()
+    {
+        var sources = new Dictionary<string, string>
+        {
+            ["BookOfEternityClient.WebFrontend/src/components/LoadingCard.tsx"] = ReadFrontendSource("components", "LoadingCard.tsx"),
+            ["BookOfEternityClient.WebFrontend/src/components/GameLauncher.tsx"] = ReadFrontendSource("components", "GameLauncher.tsx"),
+            ["BookOfEternityClient.WebFrontend/src/components/tabBarConfig.ts"] = ReadFrontendSource("components", "tabBarConfig.ts"),
+            ["BookOfEternityClient.WebFrontend/src/components/ConnectionBanner.tsx"] = ReadFrontendSource("components", "ConnectionBanner.tsx"),
+            ["BookOfEternityClient.WebFrontend/src/components/AudioPanel.tsx"] = ReadFrontendSource("components", "AudioPanel.tsx"),
+            ["BookOfEternityClient.WebFrontend/src/components/SettingsView.tsx"] = ReadFrontendSource("components", "SettingsView.tsx"),
+            ["BookOfEternityClient.WebFrontend/src/api/contract-fixtures/client-settings.json"] = File.ReadAllText(Path.Combine(FrontendRoot, "src", "api", "contract-fixtures", "client-settings.json")),
+            ["BookOfEternityClient.WebFrontend/src/App.tsx"] = ReadFrontendSource("App.tsx"),
+            ["BookOfEternityClient.WebFrontend/src/hooks/useShellState.ts"] = ReadFrontendSource("hooks", "useShellState.ts"),
+            ["BookOfEternityClient/WebUi/BrowserClientSettingsService.cs"] = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient", "WebUi", "BrowserClientSettingsService.cs")),
+            ["BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs"] = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient", "WebUi", "LocalWebUiMainMenuService.cs"))
+        };
+        var banned = new (Regex Pattern, string Label)[]
+        {
+            (new Regex("игрокоориентирован", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "meta player-orientation phrasing"),
+            (new Regex("player[- ](?:facing|oriented)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "English player-facing meta phrasing"),
+            (new Regex("C#\\s+(?:host|runtime)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "C# implementation framing"),
+            (new Regex("\\bDTO\\b", RegexOptions.CultureInvariant), "DTO implementation framing"),
+            (new Regex("(?<!\\.)/api/|API-подсказ", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "raw API or endpoint framing"),
+            (new Regex("\\bendpoint\\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "endpoint implementation wording"),
+            (new Regex("debug shell|debug-инструмент", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "debug shell wording"),
+            (new Regex("Raw validation details|raw JSON", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "raw JSON or validation diagnostics"),
+            (new Regex("локальн(?:ый|ого|ому|ом|ые|ых)?\\s+клиент", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "local client wording"),
+            (new Regex("браузерн(?:ый|ого|ому|ом)\\s+клиент", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "browser client wording"),
+            (new Regex("браузерн(?:ую|ая|ой|ом|ое|ого)\\s+(?:форму|форма|меню|сессия|сессию|игровом экран|список|списка)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "browser implementation surface wording"),
+            (new Regex("браузер\\s+только", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "browser implementation justification"),
+            (new Regex("игров(?:ой|ом)\\s+экран", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "game-screen implementation label"),
+            (new Regex("write-flow|repair/validation|UI-блокиров", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "write-flow or repair implementation wording"),
+            (new Regex("localhost/loopback", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "local transport implementation wording"),
+            (new Regex("Папка\\s+game_session|game_session\\s+—\\s+локальная\\s+папка\\s+книги|game_session.+игровых контракт|В manual_saves и autosaves", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "internal save directory wording"),
+            (new Regex("Browser Client задач", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "project-task implementation wording"),
+            (new Regex("Браузер\\s+не\\s+(?:дал|может)|Включить музыку в браузере|Клиент продолжит", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "browser/client audio implementation wording")
+        };
+
+        var leaks = sources
+            .SelectMany(source => banned
+                .Where(rule => rule.Pattern.IsMatch(StripSourceComments(source.Value)))
+                .Select(rule => $"{source.Key}: {rule.Label}"))
+            .ToArray();
+
+        Assert.Empty(leaks);
+
+        var advancedDiagnostics = ReadFrontendSource("components", "AdvancedDiagnostics.tsx");
+        Assert.Contains("browserApiContractSummary.endpointDocs", advancedDiagnostics, StringComparison.Ordinal);
+        Assert.Contains("CommandCoverageMatrix", advancedDiagnostics, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BrowserDefaultCommandAndAudioCopy_SourceGuardBlocksBackendTechnicalFraming()
+    {
+        var sources = new Dictionary<string, string>
+        {
+            ["BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs"] = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient", "WebUi", "ExplorerWebPromptSessionService.cs")),
+            ["BookOfEternityClient/WebUi/BrowserAudioService.cs"] = File.ReadAllText(Path.Combine(RepoRoot, "BookOfEternityClient", "WebUi", "BrowserAudioService.cs"))
+        };
+        var banned = new (Regex Pattern, string Label)[]
+        {
+            (new Regex("Browser-write|Browser prompt session", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "browser-write/prompt-session operation framing"),
+            (new Regex("Браузерн(?:ая|ую)\\s+prompt-session|(?<!/)prompt-session", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "prompt-session wording"),
+            (new Regex("GM-turn|rollback\\s+протокол|протокол[а-я]*", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "GM-turn/rollback protocol wording"),
+            (new Regex("Spectre\\.Console|JSON:\\s|Команда\\s+\\{snapshot\\.Result\\.Command\\}|\\{snapshot\\.Result\\.Command\\}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "raw command or diagnostics wording"),
+            (new Regex("другому\\s+UI|браузерн(?:ого|ый)\\s+владельц", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "UI/browser owner wording"),
+            (new Regex("Локальная\\s+UI-блокировка", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "local UI lock wording"),
+            (new Regex("Браузер\\s+не\\s+(?:дал|может)|Включить музыку в браузере|Клиент продолжит", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant), "browser/client audio wording")
+        };
+
+        var leaks = sources
+            .SelectMany(source => banned
+                .Where(rule => rule.Pattern.IsMatch(StripSourceComments(source.Value)))
+                .Select(rule => $"{source.Key}: {rule.Label}"))
+            .ToArray();
+
+        Assert.Empty(leaks);
+    }
+
+    [Fact]
     public void BrowserDesignSystem_HasMaintainableCssStructureAndVisualTokens()
     {
         var entryStyles = File.ReadAllText(Path.Combine(FrontendRoot, "src", "styles.css"));
@@ -421,7 +502,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("player-facing", app, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("C# host", apiClient, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("локальный ресурс", apiClient, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("локальный игровой клиент", apiClient, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Локальная книга", apiClient, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -494,6 +575,12 @@ public sealed class BrowserFrontendWorkspaceTests
             .Concat(Directory.EnumerateFiles(Path.Combine(FrontendRoot, "src", "styles"), "*.css").OrderBy(path => path, StringComparer.Ordinal));
 
         return string.Join("\n", paths.Select(File.ReadAllText));
+    }
+
+    private static string StripSourceComments(string source)
+    {
+        var withoutBlockComments = Regex.Replace(source, @"/\*.*?\*/", string.Empty, RegexOptions.Singleline);
+        return Regex.Replace(withoutBlockComments, @"//.*?$", string.Empty, RegexOptions.Multiline);
     }
 
     private static int CountOccurrences(string text, string value)

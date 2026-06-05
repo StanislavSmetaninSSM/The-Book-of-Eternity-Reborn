@@ -57,6 +57,8 @@ Issue #727 refines the player navigation taxonomy. The primary chain is now `Г�
 
 The shell keeps default UI Russian-first and player-facing. Command IDs, `/api/*` endpoint details, lifecycle validation internals, command coverage, and slash-command diagnostics stay behind explicit `Расширенный режим` opt-in. Player route failures should render `playerMessage`; `technicalDetails` belongs in the advanced diagnostics/details surface.
 
+#738 player-copy boundary: Player UI speaks to the player. Implementation comments stay in code, docs, and advanced mode; default screens should not explain browser internals, endpoints, DTO/API terms, raw command coverage, file paths, raw JSON, or debug/repair details without explicit `Расширенный режим`. Generated HTML smoke artifacts are local/offline evidence under `TestResults/browser-smoke/` and are not committed.
+
 Issue #688 makes the `Медиа` route consume `/api/game-screen.media` and render gallery images, the realm atlas, and QTE controls as player-facing sections. Raw endpoint diagnostics for media/QTE remain advanced-only.
 
 Future Browser Client tasks (#683-#689) should extend these route regions rather than recreating ad-hoc DOM manipulation:
@@ -136,7 +138,7 @@ Default UI does not show raw slash command IDs. Advanced/debug commands remain g
 
 Issue #684 adds browser-tab music and cue controls to a persistent browser audio panel that stays mounted while the player moves between routes, with the `Настройки` route pointing to the same controls. React consumes `browserApi.getAudioSettings()` and `browserApi.updateAudioSettings()` from `src/api/client.ts`, but the local C# host remains authoritative for the shared `GameSettings` audio fields (`MusicEnabled`, `MusicVolume`, `SoundEnabled`, and `SoundVolume`). Browser slider/toggle changes persist to the same settings file the console client uses, and the host applies the updated values back to the existing C# audio service.
 
-The player must click `Включить музыку в браузере` before music playback starts. This is intentional browser-autoplay handling: the React shell may load metadata on startup, but it does not call `play()` for music until a user gesture chooses the main-menu or in-game playlist. Cue previews use their own explicit preview click. Missing local audio files render as ordinary unavailable metadata and player-facing notices rather than crashes.
+The player must click `Включить музыку` before music playback starts. The React shell may load metadata on startup, but it does not call `play()` for music until a user gesture chooses the main-menu or in-game playlist. Cue previews use their own explicit preview click. Playback failures use short player-facing notices about the current tab's sound permission. Missing local audio files render as ordinary unavailable metadata and player-facing notices rather than crashes.
 
 Audio assets are served only through opaque `/api/audio/assets/{assetId}` URLs returned by the C# catalog. The DTO exposes no local filesystem paths, and invalid/path-traversal asset IDs return safe failures.
 

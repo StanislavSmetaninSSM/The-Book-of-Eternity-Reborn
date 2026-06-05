@@ -8,6 +8,9 @@ Map rendering parity is enforced through the shared map package: console `output
 
 ## Shell And Navigation
 
+- #738 player-copy boundary: Player UI speaks to the player. Default screens use Russian in-world or plain player-readable wording for loading, launcher, tabs, help, settings, audio, connection, and command results.
+- Implementation comments stay in code, docs, and advanced mode. Raw command coverage, endpoint names, DTO/API wording, file paths, validation internals, raw JSON, and debug/repair details require explicit `Расширенный режим` or a technical disclosure.
+- Generated HTML smoke artifacts are local/offline evidence. Review `TestResults/browser-smoke/*.html` for default-player copy drift, but do not commit generated smoke output.
 - The root page keeps the player-facing default: title, current session summary, Continue/New Game/Load/Options/About/Exit actions, a player-facing game screen, and short Russian guidance before any developer tools.
 - Continue/New Game actions must not reveal diagnostics automatically; Continue refreshes/scrolls to the game screen, and any player path that still needs a technical bridge shows a short game-facing message plus an explicit opt-in advanced button.
 - Player-facing errors stay concise in Russian, with technical details behind a `Подробности` disclosure. The primary prose action composer stays in the default player area, must not expose the command palette as the main action model, and must not auto-execute slash commands without an explicit advanced-mode action.

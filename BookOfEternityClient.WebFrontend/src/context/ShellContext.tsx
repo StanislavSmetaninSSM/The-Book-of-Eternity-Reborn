@@ -22,6 +22,7 @@ import type {
   LocalWebUiSessionStatus
 } from '../api/contracts';
 import { useShellState } from '../hooks/useShellState';
+import { sanitizeExplorerCommandResultForPlayer } from '../utils/playerCopy';
 
 export type TabId = 'scene' | 'status' | 'help' | 'settings';
 
@@ -185,7 +186,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
     try {
       const result = await browserApi.executeExplorerCommand({ command, advancedEnabled });
       if (result.ok) {
-        setCommandResult(result.data);
+        setCommandResult(advancedEnabled ? result.data : sanitizeExplorerCommandResultForPlayer(result.data));
         setIsCommandView(true);
         setActiveRouteState('game');
         setComposerNotice(null);
@@ -225,7 +226,7 @@ export function ShellProvider({ children }: { children: ReactNode }) {
         setComposerNotice('Не удалось отправить действие. Попробуйте ещё раз.');
       }
     }).catch(() => {
-      setComposerNotice('Ошибка соединения. Убедитесь, что клиент запущен.');
+      setComposerNotice('Ошибка соединения. Убедитесь, что игра запущена.');
     }).finally(() => {
       composerSubmissionInFlight.current = false;
     });
