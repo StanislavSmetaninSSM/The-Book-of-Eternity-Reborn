@@ -11,6 +11,7 @@ From the repository root:
 ```powershell
 npm install --prefix BookOfEternityClient.WebFrontend
 npm ci --prefix BookOfEternityClient.WebFrontend
+npm run dev:local --prefix BookOfEternityClient.WebFrontend
 npm run dev --prefix BookOfEternityClient.WebFrontend
 npm run typecheck --prefix BookOfEternityClient.WebFrontend
 npm run build --prefix BookOfEternityClient.WebFrontend
@@ -23,6 +24,7 @@ Or from this directory:
 ```powershell
 npm install
 npm ci
+npm run dev:local
 npm run dev
 npm run typecheck
 npm run build
@@ -30,7 +32,11 @@ npm run verify
 npm run preview
 ```
 
-`npm run dev` and `npm run preview` bind to `127.0.0.1` for local development. `npm run build` writes production assets to `dist/`. `npm run verify` is the CI/local frontend gate: it typechecks both TypeScript projects, runs the player-facing command-result sanitizer fixture for launcher/prompt-session copy, and then builds the production bundle.
+`npm run dev:local` is the one-command local Browser Client workflow for #771. It starts the C# local web host at `http://127.0.0.1:8787` with `--web` and starts the Vite development server on loopback, normally `http://127.0.0.1:5173`; open the Vite URL while editing React so hot reload stays active. The Vite proxy forwards `/api` and `/assets` requests to the C# backend at `http://127.0.0.1:8787`, so local development does not need broad CORS.
+
+The combined command is local-only. It does not enable public/LAN binding, `0.0.0.0`, cloud tunnels, telemetry, or an idle-exit workaround. If a backend idle-exit symptom is reproduced later, handle it with exact logs in a separate tracked issue instead of changing this helper.
+
+`npm run dev` starts only Vite and `npm run preview` starts only the preview server; both bind to `127.0.0.1` for local development. Use them when you intentionally run the C# backend separately. `npm run build` writes production assets to `dist/`. `npm run verify` is the CI/local frontend gate: it typechecks both TypeScript projects, runs the player-facing command-result sanitizer fixture for launcher/prompt-session copy, and then builds the production bundle.
 
 ## Relationship to `dotnet run -- --web`
 

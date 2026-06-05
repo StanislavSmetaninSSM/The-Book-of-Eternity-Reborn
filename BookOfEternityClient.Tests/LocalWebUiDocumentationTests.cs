@@ -114,6 +114,28 @@ public sealed class LocalWebUiDocumentationTests
     }
 
     [Fact]
+    public void LocalWebHostDocs_DocumentCombinedLoopbackDevelopmentWorkflow()
+    {
+        var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
+        var readme = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.WebFrontend", "README.md"));
+
+        foreach (var text in new[] { hostDoc, readme })
+        {
+            Assert.Contains("#771", text, StringComparison.Ordinal);
+            Assert.Contains("npm run dev:local", text, StringComparison.Ordinal);
+            Assert.Contains("http://127.0.0.1:8787", text, StringComparison.Ordinal);
+            Assert.Contains("http://127.0.0.1:5173", text, StringComparison.Ordinal);
+            Assert.Contains("Vite proxy", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("`/api`", text, StringComparison.Ordinal);
+            Assert.Contains("`/assets`", text, StringComparison.Ordinal);
+            Assert.Contains("loopback", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("0.0.0.0", text, StringComparison.Ordinal);
+            Assert.Contains("public/LAN binding", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("idle-exit", text, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void LocalWebHostDocs_DocumentFrontendVerificationPipeline()
     {
         var hostDoc = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "local-web-host.md"));
