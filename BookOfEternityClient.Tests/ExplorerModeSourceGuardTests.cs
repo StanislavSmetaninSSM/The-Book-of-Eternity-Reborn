@@ -95,6 +95,28 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
+    public void GameInterface_MortalHudBars_MustUseFixedMetricColumnsForPercentAlignment()
+    {
+        var source = ReadUiSourceFile("GameInterface.cs");
+        var statusBarStart = source.IndexOf("public void RenderStatusBar", StringComparison.Ordinal);
+        var afterlifeStart = source.IndexOf("private void RenderAfterlifeStatus", StringComparison.Ordinal);
+        Assert.True(statusBarStart >= 0, "RenderStatusBar source must be present.");
+        Assert.True(afterlifeStart > statusBarStart, "RenderStatusBar block must end before RenderAfterlifeStatus.");
+
+        var statusBarSource = source[statusBarStart..afterlifeStart];
+
+        Assert.Contains(
+            "ConsoleLayout.CreateBarMetricTable(labelWidth: 16, barWidth: 22, valueWidth: 6)",
+            statusBarSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            ".AddColumn(new TableColumn(\"\").NoWrap())",
+            statusBarSource,
+            StringComparison.Ordinal);
+        Assert.Equal(3, statusBarSource.Split("new Markup(string.Empty)", StringSplitOptions.None).Length - 1);
+    }
+
+    [Fact]
     public void ExplorerMode_KnownDynamicPromptAndMarkupLineSurfaces_MustEscapePlainText()
     {
         var rootSource = ReadUiSourceFile("ExplorerMode.cs");

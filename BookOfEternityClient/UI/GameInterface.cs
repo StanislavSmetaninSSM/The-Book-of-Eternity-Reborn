@@ -354,26 +354,23 @@ public class GameInterface
             _ => "🎭"
         };
 
-        var table = new Table()
-            .Border(TableBorder.None)
-            .HideHeaders()
-            .Expand()
-            .AddColumn(new TableColumn("").NoWrap().Width(16))
-            .AddColumn(new TableColumn("").NoWrap())
-            .AddColumn(new TableColumn("").RightAligned().NoWrap().Width(6));
+        var table = ConsoleLayout.CreateBarMetricTable(labelWidth: 16, barWidth: 22, valueWidth: 6);
 
         table.AddRow(
             new Markup($"[{healthColor}]❤️ Здоровье[/]"),
             new Markup(healthBar),
-            new Markup($"[{healthColor}]{healthPct,3}%[/]"));
+            new Markup($"[{healthColor}]{healthPct,3}%[/]"),
+            new Markup(string.Empty));
         table.AddRow(
             new Markup($"[{energyColor}]⚡ Энергия[/]"),
             new Markup(energyBar),
-            new Markup($"[{energyColor}]{energyPct,3}%[/]"));
+            new Markup($"[{energyColor}]{energyPct,3}%[/]"),
+            new Markup(string.Empty));
         table.AddRow(
             new Markup($"[{poiseColor}]🛡️ Равновесие[/]"),
             new Markup(poiseBar),
-            new Markup($"[{poiseColor}]{poisePct,3}%[/]"));
+            new Markup($"[{poiseColor}]{poisePct,3}%[/]"),
+            new Markup(string.Empty));
 
         var content = new Grid().AddColumn(new GridColumn());
         content.AddRow(table);
