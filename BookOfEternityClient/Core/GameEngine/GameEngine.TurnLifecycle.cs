@@ -2604,6 +2604,7 @@ QUEST UPDATE PROTOCOL — HARD REQUIREMENT:
   - On quest creation, send the full quest object with detailsLog.
   - On quest-log updates, send questId + newDetailsLogEntry instead of resending the whole detailsLog array.
   - quest_history.json is canonically stored as questHistory + questRewards + questChains; legacy questLog is only shorthand input.
+  - questRewards itemsReceived/skillsUnlocked/relationshipChanges must resolve to current inventory/skills/NPC relationship authority, or use structured authorityStatus HistoricalOnly/Unavailable records with player-facing reason; bare strings are allowed only when they resolve to current detail authority.
 
 PROGRESSION CONTROL — CLIENT-AUTHORITATIVE SCHEDULER:
 This request contains a 'progressionControl' object. Treat it as authoritative system control, not optional advice.

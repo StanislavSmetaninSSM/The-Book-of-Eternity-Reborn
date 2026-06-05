@@ -381,26 +381,10 @@ public partial class ExplorerMode
             lines.Add("");
             lines.Add("  [bold]🎁 Фактически получено:[/]");
 
-            if (historyRewardInfo.Value.TryGetProperty("itemsReceived", out var itemsReceived) &&
-                itemsReceived.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var item in itemsReceived.EnumerateArray())
-                    lines.Add($"    📦 {Markup.Escape(item.ValueKind == JsonValueKind.String ? item.GetString() ?? "?" : item.ToString())}");
-            }
-
-            if (historyRewardInfo.Value.TryGetProperty("skillsUnlocked", out var skillsUnlocked) &&
-                skillsUnlocked.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var skill in skillsUnlocked.EnumerateArray())
-                    lines.Add($"    ⚔️ Навык: {Markup.Escape(skill.ValueKind == JsonValueKind.String ? skill.GetString() ?? "?" : skill.ToString())}");
-            }
-
-            if (historyRewardInfo.Value.TryGetProperty("relationshipChanges", out var relationshipChanges) &&
-                relationshipChanges.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var relation in relationshipChanges.EnumerateArray())
-                    lines.Add($"    🤝 Отношение: {Markup.Escape(relation.ValueKind == JsonValueKind.String ? relation.GetString() ?? "?" : relation.ToString())}");
-            }
+            var rewardAuthorityContext = await ReadQuestRewardAuthorityContextAsync();
+            RenderQuestRewardEntries(lines, historyRewardInfo.Value, "itemsReceived", QuestRewardKind.Item, "📦", rewardAuthorityContext);
+            RenderQuestRewardEntries(lines, historyRewardInfo.Value, "skillsUnlocked", QuestRewardKind.Skill, "⚔️ Навык:", rewardAuthorityContext);
+            RenderQuestRewardEntries(lines, historyRewardInfo.Value, "relationshipChanges", QuestRewardKind.Relationship, "🤝 Отношение:", rewardAuthorityContext);
         }
 
         if (isHistory && relatedChains is { Count: > 0 })
@@ -453,6 +437,63 @@ public partial class ExplorerMode
         }
 
         await WaitForKeyWithImage("quest", name, GetStr(q, "image_prompt", ""), GetStr(q, "questId", name));
+    }
+
+    private async Task<QuestRewardAuthorityContext> ReadQuestRewardAuthorityContextAsync()
+    {
+        return QuestRewardAuthorityContext.Create(
+            ParseDocumentRootNode(await _stateManager.LoadGameStateFileAsync("game_state/inventory/items.json")),
+            ParseDocumentRootNode(await _stateManager.LoadGameStateFileAsync("game_state/player/skills_active.json")),
+            ParseDocumentRootNode(await _stateManager.LoadGameStateFileAsync("game_state/player/skills_passive.json")),
+            ParseDocumentRootNode(await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_core.json")),
+            ParseDocumentRootNode(await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_relationships.json")));
+    }
+
+    private static JsonNode? ParseDocumentRootNode(JsonDocument? doc)
+    {
+        if (doc == null)
+            return null;
+
+        try
+        {
+            return JsonNode.Parse(doc.RootElement.GetRawText());
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private static void RenderQuestRewardEntries(
+        List<string> lines,
+        JsonElement rewardInfo,
+        string propertyName,
+        QuestRewardKind kind,
+        string prefix,
+        QuestRewardAuthorityContext rewardAuthorityContext)
+    {
+        if (!rewardInfo.TryGetProperty(propertyName, out var rewards) || rewards.ValueKind != JsonValueKind.Array)
+            return;
+
+        foreach (var reward in rewards.EnumerateArray())
+        {
+            var rewardNode = ParseRewardNode(reward);
+            var description = QuestRewardAuthority.DescribePlayerReward(kind, rewardNode, rewardAuthorityContext);
+            if (!string.IsNullOrWhiteSpace(description))
+                lines.Add($"    {prefix} {Markup.Escape(description)}");
+        }
+    }
+
+    private static JsonNode? ParseRewardNode(JsonElement reward)
+    {
+        try
+        {
+            return JsonNode.Parse(reward.GetRawText());
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 
     private static bool HistoryChainMatchesQuest(JsonElement chain, string questId, string questName)
