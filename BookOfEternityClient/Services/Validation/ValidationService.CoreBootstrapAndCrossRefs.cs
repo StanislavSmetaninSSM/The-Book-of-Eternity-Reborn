@@ -31,6 +31,7 @@ public partial class ValidationService
         var knownNpcInventoryContainerIdsByNpc = await ReadKnownNpcInventoryContainerIdsByNpcAsync();
         await ValidateInventoryItemSidecarCrossReferencesAsync(issues, knownInventoryItemReferences, knownNpcInventoryItemReferences);
         await ValidatePlayerInventoryCrossReferencesAsync(issues, knownInventoryItemReferences);
+        await ValidateReadableInventoryDocumentAuthorityAsync(issues);
         await ValidateNpcInventoryCrossReferencesAsync(issues, knownNpcReferences, knownNpcInventoryItemReferencesByNpc, knownNpcInventoryContainerIdsByNpc);
 
         await ValidateNpcQuestCrossReferencesAsync(issues, knownNpcReferences);

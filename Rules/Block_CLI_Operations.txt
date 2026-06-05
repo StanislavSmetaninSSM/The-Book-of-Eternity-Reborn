@@ -173,6 +173,7 @@
 	                    - Canonical stored shape for item_resources.json: entries[] with item identity + resource / maximumResource / resourceType
 	                    - game_state/inventory/item_text_updates.json ← updateItemTextContents
 	                    - Canonical stored shape for item_text_updates.json: entries[] with item identity + textContent[]
+	                    - Readable-looking inventory documents (books, letters, scrolls, notes, documents, inscriptions, and Russian equivalents) must have textContent, a matching item_text_updates/item_journals entry by stable itemId/existedId, or an explicit player-facing unreadableReason/sealedReason/lockedReason that /книги can show.
 	                    - game_state/inventory/item_movements.json ← moveInventoryItems
                     - game_state/inventory/item_removals.json ← removeInventoryItems
                     - game_state/inventory/item_bonds.json ← itemBondLevelChanges, itemFateCardUnlocks

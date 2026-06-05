@@ -1096,6 +1096,15 @@
                             - The 'description' field (Rule #10.2.1) MUST describe the PHYSICAL OBJECT.
                             - The 'textContent' array MUST contain WHAT IS WRITTEN ON the object, with each logical block of text as a separate string element in the array.
 
+                            READABLE AUTHORITY REQUIREMENT:
+                            - If an inventory item looks text-bearing by type, group, name, or metadata (book, letter, scroll, note, document, inscription, книга, письмо, свиток, записка, документ, надпись), the player must be able to understand it through /книги.
+                            - Such an item MUST have at least one of:
+                              1. Non-empty 'textContent' with the readable writing.
+                              2. A matching 'updateItemTextContents' / item_text_updates entry, matched by stable itemId/existedId first; itemName fallback is only for legacy/name-based entries.
+                              3. A matching sentient-item journal entry in itemJournalUpdates / item_journals when the item is a journal-bearing sentient item.
+                              4. A player-facing unreadable reason field such as 'unreadableReason', 'sealedReason', or 'lockedReason' explaining why the text cannot currently be read.
+                            - 'description' alone is not readable authority. It describes the object, not the writing on or inside it.
+
                             Backward Compatibility Note:
                             The system is designed to handle this new array format. You MUST generate all new readable items using this structure.
 

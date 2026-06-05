@@ -158,10 +158,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/world/weather.json", "currentState", "Погода"),
                 new("game_state/world/weather.json", "description", "Описание")
             ]),
-            CommandKind.Books => await BuildBundle(normalizedCommand, fs, "Книги и тексты", [
-                new("game_state/inventory/item_text_updates.json", "entries", "Текстов"),
-                new("game_state/npcs/item_journals.json", "entries", "Журнальных записей")
-            ]),
+            CommandKind.Books => await BuildBooks(normalizedCommand, fs),
             CommandKind.StorageAccess => await BuildBundle(normalizedCommand, fs, "Доступ к хранилищам", [
                 new("game_state/misc/storage_access.json", "storages", "Хранилищ"),
                 new("game_state/misc/storage_access.json", "entries", "Записей")
@@ -433,6 +430,71 @@ public static class ExplorerMortalWorldCommandResultBuilder
         };
     }
 
+    private static async Task<ExplorerCommandResult> BuildBooks(string command, FileSystemManager fs)
+    {
+        const string title = "Книги и тексты";
+        var inventoryRead = await ReadJson(fs, "game_state/inventory/items.json");
+        var textRead = await ReadJson(fs, "game_state/inventory/item_text_updates.json");
+        var journalRead = await ReadJson(fs, "game_state/npcs/item_journals.json");
+        var documents = ReadableInventoryDocumentAuthority.ResolveDocuments(
+            inventoryRead.Node,
+            textRead.Node,
+            journalRead.Node);
+        var itemTextEntries = ReadableInventoryDocumentAuthority.CollectItemTextEntries(textRead.Node);
+        var journalEntries = ReadableInventoryDocumentAuthority.CollectItemJournalEntries(journalRead.Node);
+
+        var rows = new List<UiTableRow>();
+        foreach (var document in documents)
+        {
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    document.Name,
+                    document.HasReadableAuthority ? "Можно читать" : "Не прочесть",
+                    document.HasReadableAuthority
+                        ? JoinReadableEntries(document.TextEntries)
+                        : document.UnreadableReason ?? "Текст пока недоступен."
+                ]
+            });
+        }
+
+        foreach (var sidecar in itemTextEntries.Concat(journalEntries)
+                     .Where(sidecar => !documents.Any(document => ReadableInventoryDocumentAuthority.SidecarMatchesDocument(sidecar, document))))
+        {
+            rows.Add(new UiTableRow
+            {
+                Cells =
+                [
+                    FirstNonEmpty(sidecar.Name, sidecar.Identities.FirstOrDefault()) ?? "Безымянный текст",
+                    "Запись",
+                    JoinReadableEntries(sidecar.TextEntries)
+                ]
+            });
+        }
+
+        var blocks = new List<UiBlock>();
+        if (rows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = title,
+                Columns = ["Предмет", "Доступ", "Запись"],
+                Rows = rows
+            });
+        }
+        else
+        {
+            blocks.Add(Message(UiNotificationSeverity.Info, title, "Данные ещё не созданы."));
+        }
+
+        AddBookReadWarning(blocks, title, inventoryRead);
+        AddBookReadWarning(blocks, title, textRead);
+        AddBookReadWarning(blocks, title, journalRead);
+
+        return Completed(command, blocks);
+    }
+
     private static async Task<ExplorerCommandResult> BuildInventory(string command, FileSystemManager fs)
     {
         var read = await ReadJson(fs, "game_state/inventory/items.json");
@@ -621,6 +683,12 @@ public static class ExplorerMortalWorldCommandResultBuilder
             blocks.Add(Raw(title, read.Node));
     }
 
+    private static void AddBookReadWarning(List<UiBlock> blocks, string title, JsonReadResult read)
+    {
+        if (read.FileExists && read.Node == null)
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, "Одна из записей текстов найдена, но не разобрана как JSON."));
+    }
+
     private static string FormatSlotName(string slotKey) =>
         InventoryEquipmentService.FormatSlotName(slotKey switch
         {
@@ -762,6 +830,9 @@ public static class ExplorerMortalWorldCommandResultBuilder
 
     private static string EmptyFallback(string? value) =>
         string.IsNullOrWhiteSpace(value) ? "не указано" : value.Trim();
+
+    private static string JoinReadableEntries(IEnumerable<string> entries) =>
+        string.Join("\n", entries.Where(static entry => !string.IsNullOrWhiteSpace(entry)));
 
     private static int SlotOrder(string slotKey)
     {

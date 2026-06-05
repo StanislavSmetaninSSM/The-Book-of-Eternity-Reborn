@@ -112,6 +112,27 @@
                 "Полезна для навигации, адресов и обычной городской логистики. Ассортимент: Товары общего назначения."
               ]
             }
+          },
+          {
+            "slotId": "npc_trade_merchant_kolja_184320_4",
+            "itemId": "npc_item_merchant_kolja_sealed_letter_184320_4",
+            "price": 8,
+            "merchantProfile": "GeneralGoods",
+            "soldOut": false,
+            "itemData": {
+              "itemId": "npc_item_merchant_kolja_sealed_letter_184320_4",
+              "name": "Запечатанное письмо без адресата",
+              "description": "Плотное письмо под чужой печатью. Внешне это бумажный конверт с сургучом; написанное внутри не видно.",
+              "type": "Document",
+              "tradeItemClass": "FlavorOrUtility",
+              "quality": "Common",
+              "price": 7,
+              "baseSellPrice": 3,
+              "weight": "0.1",
+              "group": "Документы и медиа",
+              "textContent": null,
+              "unreadableReason": "Письмо запечатано чужой печатью; его нельзя прочесть, не вскрыв конверт."
+            }
           }
         ]
       }

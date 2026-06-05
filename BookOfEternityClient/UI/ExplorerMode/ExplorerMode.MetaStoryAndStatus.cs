@@ -1833,142 +1833,51 @@ public partial class ExplorerMode
     }
 
 	    private async Task ShowItemTexts()
-	    {
-	        var doc = await _stateManager.LoadGameStateFileAsync("game_state/inventory/item_text_updates.json");
-	        var itemsDoc = await _stateManager.LoadGameStateFileAsync("game_state/inventory/items.json");
-            var itemJournalsDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/item_journals.json");
+    {
+        var itemTextDoc = await _stateManager.LoadGameStateFileAsync("game_state/inventory/item_text_updates.json");
+        var itemsDoc = await _stateManager.LoadGameStateFileAsync("game_state/inventory/items.json");
+        var itemJournalsDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/item_journals.json");
 
-	        var text = new List<string>();
-	        var renderedBlocks = new HashSet<string>(StringComparer.Ordinal);
+        var inventoryRoot = ToJsonNode(itemsDoc);
+        var itemTextRoot = ToJsonNode(itemTextDoc);
+        var itemJournalRoot = ToJsonNode(itemJournalsDoc);
+        var documents = ReadableInventoryDocumentAuthority.ResolveDocuments(inventoryRoot, itemTextRoot, itemJournalRoot);
+        var sidecarEntries = ReadableInventoryDocumentAuthority
+            .CollectItemTextEntries(itemTextRoot)
+            .Concat(ReadableInventoryDocumentAuthority.CollectItemJournalEntries(itemJournalRoot))
+            .ToList();
 
-	        // From item_text_updates
-	        if (doc != null)
-	        {
-	            EnumerateJsonItems(doc.RootElement, item =>
-	            {
-	                var name = GetStr(item, "itemName", GetStr(item, "name", "?"));
-	                if (item.TryGetProperty("textContent", out var textContent) &&
-	                    textContent.ValueKind == JsonValueKind.Array &&
-	                    textContent.GetArrayLength() > 0)
-	                {
-	                    var entryLines = new List<string>();
-	                    foreach (var entry in textContent.EnumerateArray())
-	                    {
-	                        var content = entry.ValueKind == JsonValueKind.String ? entry.GetString() ?? "" : entry.ToString();
-	                        if (!string.IsNullOrWhiteSpace(content))
-	                            entryLines.Add($"  {Markup.Escape(content)}");
-	                    }
+        var text = new List<string>();
+        var renderedBlocks = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-	                    if (entryLines.Count > 0)
-	                    {
-	                        var signature = $"{name}|{string.Join("\n", entryLines)}";
-	                        if (renderedBlocks.Add(signature))
-	                        {
-	                            text.Add($"[bold yellow]📜 {Markup.Escape(name)}[/]");
-	                            text.AddRange(entryLines);
-	                            text.Add("");
-	                        }
-	                    }
-	                    return;
-	                }
+        foreach (var document in documents)
+        {
+            IReadOnlyList<string> entryLines = document.HasReadableAuthority
+                ? document.TextEntries.Select(static entry => $"  {Markup.Escape(entry)}").ToList()
+                : [
+                    $"  [yellow]{Markup.Escape(document.UnreadableReason ?? "Текст пока недоступен.")}[/]"
+                ];
 
-	                var appendText = GetStr(item, "textToAppend", GetStr(item, "content", ""));
-	                if (string.IsNullOrWhiteSpace(appendText))
-	                    return;
+            AddReadableTextBlock(
+                text,
+                renderedBlocks,
+                document.ContextIdentity,
+                document.Name,
+                document.HasReadableAuthority ? null : "не прочесть",
+                entryLines);
+        }
 
-	                var appendSignature = $"{name}|{appendText}";
-	                if (!renderedBlocks.Add(appendSignature))
-	                    return;
-
-	                text.Add($"[bold yellow]📜 {Markup.Escape(name)}[/]");
-	                text.Add($"  {Markup.Escape(appendText)}");
-	                text.Add("");
-	            });
-	        }
-
-        // From items with textContent
-        var inventoryItems = itemsDoc != null ? GetPlayerInventoryItemsElement(itemsDoc.RootElement) : null;
-	        if (inventoryItems.HasValue)
-	        {
-            foreach (var item in inventoryItems.Value.EnumerateArray())
-            {
-                if (item.TryGetProperty("textContent", out var tc) && tc.ValueKind == JsonValueKind.Array && tc.GetArrayLength() > 0)
-	                {
-	                    var name = GetStr(item, "name", "?");
-	                    var entryLines = new List<string>();
-	                    foreach (var entry in tc.EnumerateArray())
-	                    {
-	                        var entryStr = entry.ValueKind == JsonValueKind.String ? entry.GetString() ?? "" : entry.ToString();
-	                        if (!string.IsNullOrWhiteSpace(entryStr))
-	                            entryLines.Add($"  {Markup.Escape(entryStr)}");
-	                    }
-
-	                    if (entryLines.Count == 0)
-	                        continue;
-
-	                    var signature = $"{name}|{string.Join("\n", entryLines)}";
-	                    if (!renderedBlocks.Add(signature))
-	                        continue;
-
-	                    text.Add($"[bold yellow]📜 {Markup.Escape(name)}[/]");
-	                    text.AddRange(entryLines);
-	                    text.Add("");
-	                }
-	            }
-	        }
-
-            if (itemJournalsDoc != null)
-            {
-                EnumerateJsonItems(itemJournalsDoc.RootElement, item =>
-                {
-                    var name = GetStr(item, "itemName", GetStr(item, "name", "?"));
-                    if (!item.TryGetProperty("journalEntries", out var journalEntries) ||
-                        journalEntries.ValueKind != JsonValueKind.Array ||
-                        journalEntries.GetArrayLength() == 0)
-                    {
-                        return;
-                    }
-
-                    var entryLines = new List<string>();
-                    foreach (var entry in journalEntries.EnumerateArray())
-                    {
-                        if (entry.ValueKind == JsonValueKind.String)
-                        {
-                            var textEntry = entry.GetString() ?? "";
-                            if (!string.IsNullOrWhiteSpace(textEntry))
-                                entryLines.Add($"  {Markup.Escape(textEntry)}");
-                            continue;
-                        }
-
-                        if (entry.ValueKind != JsonValueKind.Object)
-                            continue;
-
-                        var parts = new List<string>();
-                        var timestamp = GetStr(entry, "timestamp", "");
-                        var eventName = GetStr(entry, "event", "");
-                        var description = GetStr(entry, "description", GetStr(entry, "text", GetStr(entry, "spiritVoice", "")));
-                        if (!string.IsNullOrWhiteSpace(timestamp))
-                            parts.Add($"[dim]{Markup.Escape(timestamp)}[/]");
-                        if (!string.IsNullOrWhiteSpace(eventName))
-                            parts.Add($"[cyan]{Markup.Escape(eventName)}[/]");
-                        if (!string.IsNullOrWhiteSpace(description))
-                            parts.Add(Markup.Escape(description));
-                        if (parts.Count > 0)
-                            entryLines.Add($"  {string.Join(" — ", parts)}");
-                    }
-
-                    if (entryLines.Count == 0)
-                        return;
-
-                    var signature = $"{name}|journal|{string.Join("\n", entryLines)}";
-                    if (!renderedBlocks.Add(signature))
-                        return;
-
-                    text.Add($"[bold yellow]📜 {Markup.Escape(name)}[/] [dim](журнал предмета)[/]");
-                    text.AddRange(entryLines);
-                    text.Add("");
-                });
-            }
+        foreach (var sidecar in sidecarEntries
+                     .Where(sidecar => !documents.Any(document => ReadableInventoryDocumentAuthority.SidecarMatchesDocument(sidecar, document))))
+        {
+            AddReadableTextBlock(
+                text,
+                renderedBlocks,
+                string.Join("|", sidecar.Identities.DefaultIfEmpty(sidecar.Name)),
+                FirstNonEmpty(sidecar.Name, sidecar.Identities.FirstOrDefault()) ?? "Безымянный текст",
+                "запись",
+                sidecar.TextEntries.Select(static entry => $"  {Markup.Escape(entry)}").ToList());
+        }
 
         if (text.Count == 0)
             text.Add("[dim]Нет читаемых предметов (книг, писем, свитков и т.д.)[/]");
@@ -1982,6 +1891,35 @@ public partial class ExplorerMode
         };
         Write(panel);
         WaitForKey();
+
+        static string? FirstNonEmpty(params string?[] values) =>
+            values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value));
+
+        static JsonNode? ToJsonNode(JsonDocument? document) =>
+            document == null ? null : JsonNode.Parse(document.RootElement.GetRawText());
+
+        static void AddReadableTextBlock(
+            List<string> text,
+            HashSet<string> renderedBlocks,
+            string identity,
+            string name,
+            string? label,
+            IReadOnlyList<string> entryLines)
+        {
+            if (entryLines.Count == 0)
+                return;
+
+            var signature = $"{identity}|{name}|{string.Join("\n", entryLines)}";
+            if (!renderedBlocks.Add(signature))
+                return;
+
+            var suffix = string.IsNullOrWhiteSpace(label)
+                ? string.Empty
+                : $" [dim]({Markup.Escape(label)})[/]";
+            text.Add($"[bold yellow]📜 {Markup.Escape(name)}[/]{suffix}");
+            text.AddRange(entryLines);
+            text.Add(string.Empty);
+        }
     }
 }
 

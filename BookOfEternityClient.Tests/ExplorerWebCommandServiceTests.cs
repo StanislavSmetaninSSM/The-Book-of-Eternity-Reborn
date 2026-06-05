@@ -1136,6 +1136,129 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_Books_ShowsReadableInventoryDocumentsAndSealedReasons()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            {
+              "existedId": "doc_inline_1",
+              "name": "Письмо с площади",
+              "type": "Документ",
+              "group": "Документы и медиа",
+              "textContent": [
+                "Лира просит встретиться у фонтана до рассвета."
+              ]
+            },
+            {
+              "existedId": "doc_sidecar_1",
+              "name": "Записка с рынка",
+              "type": "note",
+              "group": "Документы и медиа",
+              "textContent": null
+            },
+            {
+              "existedId": "doc_journal_1",
+              "name": "Памятная книга",
+              "type": "Книга",
+              "textContent": null
+            },
+            {
+              "existedId": "doc_sealed_1",
+              "name": "Запечатанное письмо",
+              "type": "Документ",
+              "description": "Письмо запечатано неизвестной печатью.",
+              "textContent": null,
+              "unreadableReason": "Письмо запечатано неизвестной печатью."
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/item_text_updates.json", """
+        {
+          "entries": [
+            {
+              "itemId": "doc_sidecar_1",
+              "itemName": "Не это имя",
+              "textContent": [
+                "На обороте записки указан путь через северные ворота."
+              ]
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/npcs/item_journals.json", """
+        {
+          "entries": [
+            {
+              "itemId": "doc_journal_1",
+              "itemName": "Другое имя",
+              "journalEntries": [
+                {
+                  "event": "Пробуждение",
+                  "description": "Книга шепчет о владельце."
+                }
+              ]
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/книги"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Письмо с площади", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Лира просит встретиться у фонтана до рассвета.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Записка с рынка", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("На обороте записки указан путь через северные ворота.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Памятная книга", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Книга шепчет о владельце.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Запечатанное письмо", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Письмо запечатано неизвестной печатью.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("item_text_updates", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Books_WithOnlySealedDocument_DoesNotShowEmptyBooksMessage()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "currentRealm": "Mortal World"
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/inventory/items.json", """
+        {
+          "items": [
+            {
+              "existedId": "doc_sealed_only_1",
+              "name": "Запечатанное письмо",
+              "type": "Документ",
+              "textContent": null,
+              "unreadableReason": "Печать не позволяет прочесть письмо сейчас."
+            }
+          ]
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/books"));
+        var text = CollectBlockText(result.Blocks);
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Запечатанное письмо", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Печать не позволяет прочесть письмо сейчас.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Данные ещё не созданы.", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Inventory_AddsEquipAndUnequipActionsForOrdinaryItems()
     {
         await SeedInventoryEquipmentItemsAsync();
