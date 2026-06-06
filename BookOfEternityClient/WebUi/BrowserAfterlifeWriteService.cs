@@ -50,6 +50,7 @@ public sealed class BrowserAfterlifeWriteService
             "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(answers, owner),
             "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
             "/guardian_trade" or "/торговля_хранителя" => await ApplyGuardianTradeAsync(parsed.Arguments, answers, owner),
+            "/guardian_social" or "/talk_guardian" or "/поговорить_с_хранителем" or "/общение_хранителя" => await ApplyGuardianSocialAsync(parsed.Arguments, answers, owner),
             "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(answers, owner),
             "/soul_relic_unequip" or "/снять_реликвию" => await ApplySoulRelicUnequipAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
@@ -171,6 +172,121 @@ public sealed class BrowserAfterlifeWriteService
             },
             payload: null);
     }
+
+    private async Task<BrowserPromptWriteResult> ApplyGuardianSocialAsync(
+        string commandArguments,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        await _stateManager.RefreshGameStateAsync();
+        var soulRoot = await ReadObjectAsync(SoulStatePath);
+        var currentRealm = FirstNonEmpty(GetNodeString(soulRoot?["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
+        if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                "Общение с Хранителем недоступно",
+                "Разговор или просьбу о знаниях можно отправить только в посмертии. Сейчас действие недоступно для текущего царства.");
+        }
+
+        var guardianId = ReadAnswer(answers, "guardian_id");
+        if (string.IsNullOrWhiteSpace(guardianId))
+            guardianId = commandArguments.Trim();
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return BrowserPromptWriteResult.ValidationError("Выберите Хранителя.");
+
+        var interactionType = ReadAnswer(answers, "guardian_interaction_type").Trim().ToLowerInvariant();
+        if (!ActorSocialInteractionRequestState.IsSupportedGuardianInteractionType(interactionType))
+            return BrowserPromptWriteResult.ValidationError("Выберите тип обращения: разговор или знания.");
+
+        var guardiansRoot = await ReadObjectAsync("game_state/meta/guardians.json");
+        if (guardiansRoot == null)
+            return BrowserPromptWriteResult.ValidationError("Список Хранителей сейчас недоступен.");
+
+        var guardian = FindGuardianByIdOrName(guardiansRoot, guardianId);
+        if (guardian == null)
+            return BrowserPromptWriteResult.ValidationError("Такого Хранителя сейчас нет среди известных.");
+
+        var manifestation = guardian["manifestation"] as JsonObject;
+        var stableGuardianId = FirstNonEmpty(GetNodeString(guardian["guardianId"]), GetNodeString(guardian["id"]), guardianId);
+        var guardianName = FirstNonEmpty(
+            GetNodeString(guardian["canonicalName"]),
+            GetNodeString(guardian["guardianName"]),
+            GetNodeString(guardian["name"]),
+            GetNodeString(manifestation?["currentDisplayName"]),
+            GetNodeString(guardian["displayName"]),
+            stableGuardianId);
+
+        var pendingState = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
+        if (pendingState.IsMalformed)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Failed,
+                UiNotificationSeverity.Error,
+                "Обращение не отправлено",
+                "Запрос общения временно ждёт проверки состояния. Повторите действие после восстановления игрового состояния.");
+        }
+
+        if (HasPendingGuardianSocialRequest(pendingState.Requests, stableGuardianId, interactionType))
+            return BuildDuplicateGuardianSocialResult(guardianName, interactionType);
+
+        var currentTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber);
+        var request = new ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest
+        {
+            GuardianId = stableGuardianId,
+            GuardianName = guardianName,
+            InteractionType = interactionType,
+            CreatedAtTurn = currentTurn
+        };
+
+        var duplicateDuringWrite = false;
+        var writeResult = await ExecuteAsync(
+            owner,
+            "Общение с Хранителем",
+            [ActorSocialInteractionRequestState.PendingGuardianRequestPath],
+            async () =>
+            {
+                var state = await ActorSocialInteractionRequestState.ReadGuardianRequestsStateAsync(_fs);
+                if (state.IsMalformed)
+                    throw new InvalidOperationException("Запрос общения временно ждёт проверки состояния.");
+
+                duplicateDuringWrite = HasPendingGuardianSocialRequest(state.Requests, stableGuardianId, interactionType);
+                if (!duplicateDuringWrite)
+                    await ActorSocialInteractionRequestState.WriteGuardianRequestAsync(_fs, request);
+            },
+            interactionType == ActorSocialInteractionRequestState.GuardianInteractionTypeLore
+                ? "Просьба о знаниях отправлена ГМ"
+                : "Разговор отправлен ГМ",
+            interactionType == ActorSocialInteractionRequestState.GuardianInteractionTypeLore
+                ? $"ГМ получит просьбу о знаниях от Хранителя {guardianName}."
+                : $"ГМ получит запрос разговора с Хранителем {guardianName}.",
+            payload: null);
+
+        return duplicateDuringWrite
+            ? BuildDuplicateGuardianSocialResult(guardianName, interactionType)
+            : writeResult;
+    }
+
+    private static BrowserPromptWriteResult BuildDuplicateGuardianSocialResult(string guardianName, string interactionType)
+    {
+        var isLore = string.Equals(interactionType, ActorSocialInteractionRequestState.GuardianInteractionTypeLore, StringComparison.OrdinalIgnoreCase);
+        return BrowserPromptWriteResult.Failed(
+            CommandExecutionState.Pending,
+            UiNotificationSeverity.Warning,
+            isLore ? "Просьба о знаниях уже ожидает ГМ" : "Разговор уже ожидает ГМ",
+            isLore
+                ? $"Просьба о знаниях для Хранителя {guardianName} уже ожидает ответа ГМ. Дождитесь результата, затем отправьте новую просьбу."
+                : $"Разговор с Хранителем {guardianName} уже ожидает ответа ГМ. Дождитесь результата, затем начните новый разговор.");
+    }
+
+    private static bool HasPendingGuardianSocialRequest(
+        IEnumerable<ActorSocialInteractionRequestState.PendingGuardianSocialInteractionRequest> requests,
+        string guardianId,
+        string interactionType) =>
+        requests.Any(request =>
+            string.Equals(request.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(request.InteractionType, interactionType, StringComparison.OrdinalIgnoreCase));
 
     private static async Task<GuardianTradeService.GuardianTradeOperationResult> BuildGuardianTradeRequestResultAsync(
         GuardianTradeService service,
@@ -1350,6 +1466,57 @@ public sealed class BrowserAfterlifeWriteService
             }
         }
         return null;
+    }
+
+    private static JsonObject? FindGuardianByIdOrName(JsonNode node, string expected)
+    {
+        if (string.IsNullOrWhiteSpace(expected))
+            return null;
+
+        return EnumerateCanonicalGuardianObjects(node)
+            .FirstOrDefault(guardian => GuardianMatches(guardian, expected));
+    }
+
+    private static IEnumerable<JsonObject> EnumerateCanonicalGuardianObjects(JsonNode node)
+    {
+        if (node is JsonArray directArray)
+        {
+            foreach (var guardian in directArray.OfType<JsonObject>())
+                yield return guardian;
+            yield break;
+        }
+
+        if (node is not JsonObject root)
+            yield break;
+
+        if (root["guardians"] is JsonArray guardians)
+        {
+            foreach (var guardian in guardians.OfType<JsonObject>())
+                yield return guardian;
+        }
+
+        if (root["activeGuardian"] is JsonObject activeGuardian)
+            yield return activeGuardian;
+    }
+
+    private static bool GuardianMatches(JsonObject guardian, string expected)
+    {
+        var stableId = FirstNonEmpty(GetNodeString(guardian["guardianId"]), GetNodeString(guardian["id"]));
+        if (string.IsNullOrWhiteSpace(stableId))
+            return false;
+
+        var manifestation = guardian["manifestation"] as JsonObject;
+        var candidates = new[]
+        {
+            stableId,
+            GetNodeString(guardian["canonicalName"]),
+            GetNodeString(guardian["guardianName"]),
+            GetNodeString(guardian["name"]),
+            GetNodeString(guardian["displayName"]),
+            GetNodeString(manifestation?["currentDisplayName"])
+        };
+
+        return candidates.Any(candidate => string.Equals(candidate, expected, StringComparison.OrdinalIgnoreCase));
     }
 
     private static int GetSoulInkFeathers(JsonObject soulRoot)
