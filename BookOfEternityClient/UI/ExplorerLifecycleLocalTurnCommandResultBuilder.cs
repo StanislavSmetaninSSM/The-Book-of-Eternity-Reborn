@@ -37,6 +37,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/abode_offering" or "/подношение_обители" or
         "/found_guardian_mantle" or "/учредить_хранителя" or
         "/guardian_trade" or "/торговля_хранителя" or
+        "/guardian_social" or "/talk_guardian" or "/поговорить_с_хранителем" or "/общение_хранителя" or
         "/shining_trade" or "/сияющая_торговля" or
         "/spiritual_action" or "/духовное_действие" or
         "/soul_relic_equip" or "/экипировать_реликвию" or
@@ -70,6 +71,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
             "/found_guardian_mantle" or "/учредить_хранителя" => await BuildPlayerGuardianFoundationAsync(command, fs),
             "/guardian_trade" or "/торговля_хранителя" => await BuildGuardianTradeAsync(command, fs, stateManager),
+            "/guardian_social" or "/talk_guardian" or "/поговорить_с_хранителем" or "/общение_хранителя" => await BuildGuardianSocialAsync(command, fs, stateManager),
             "/shining_trade" or "/сияющая_торговля" => await BuildShiningTradeAsync(command, fs, stateManager),
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionAsync(command, fs, stateManager),
             "/soul_relic_equip" or "/экипировать_реликвию" => await BuildSoulRelicEquipAsync(command, fs),
@@ -1418,6 +1420,139 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             ]);
     }
 
+    private static async Task<ExplorerCommandResult> BuildGuardianSocialAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var soulRoot = (await ReadJson(fs, SoulStatePath)).Node as JsonObject;
+        var currentRealm = FirstNonEmpty(GetString(soulRoot, "currentRealm"), stateManager.CurrentState.CurrentRealm);
+        if (!RealmSemantics.IsAfterlifeRealm(currentRealm))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Blocked,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Warning,
+                        "Общение с Хранителем недоступно",
+                        "Разговор или просьбу о знаниях можно отправить только в посмертии. Сейчас действие недоступно для текущего царства.")
+                ]);
+        }
+
+        var requestedGuardian = ReadCommandArguments(command);
+        var guardiansRead = await ReadJson(fs, "game_state/meta/guardians.json");
+        if (!string.IsNullOrWhiteSpace(guardiansRead.Error))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Warning,
+                        "Общение с Хранителем",
+                        "Список Хранителей временно недоступен. Повторите действие после проверки состояния.")
+                ]);
+        }
+
+        var guardians = CollectGuardianSocialOptions(guardiansRead.Node).ToList();
+        if (guardians.Count == 0)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Info,
+                        "Общение с Хранителем",
+                        "Сейчас нет известных Хранителей, которым можно отправить отдельный разговор или просьбу о знаниях.")
+                ]);
+        }
+
+        var selected = ResolveGuardianSocialOption(guardians, requestedGuardian);
+        var orderedGuardians = guardians
+            .OrderByDescending(guardian => selected != null && string.Equals(guardian.GuardianId, selected.GuardianId, StringComparison.OrdinalIgnoreCase))
+            .ThenBy(guardian => guardian.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var statusText = selected == null
+            ? string.IsNullOrWhiteSpace(requestedGuardian)
+                ? "Выберите Хранителя и тип обращения. ГМ разыграет сцену или ответ о знаниях в следующем принятом ходе."
+                : "Указанный Хранитель не найден среди известных. Выберите Хранителя из списка или уточните ввод."
+            : $"Выбран Хранитель: {selected.Name}. Можно выбрать другого Хранителя из списка.";
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Общение с Хранителем",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = statusText,
+                        Tone = selected == null && !string.IsNullOrWhiteSpace(requestedGuardian) ? UiTone.Warning : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Известные Хранители",
+                        Columns = ["Хранитель", "Домен", "Обитель"],
+                        Rows = orderedGuardians
+                            .Take(20)
+                            .Select(static guardian => Row(
+                                guardian.Name,
+                                FirstNonEmpty(guardian.Domain, "-"),
+                                FirstNonEmpty(guardian.AbodeName, "-")))
+                            .ToList()
+                    }
+                ]
+            }
+        };
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "guardian_id",
+                    Prompt = "С каким Хранителем обратиться",
+                    Required = selected == null,
+                    AllowCustom = true,
+                    Options = orderedGuardians
+                        .Select(static guardian => Option(
+                            guardian.GuardianId,
+                            guardian.Name,
+                            FirstNonEmpty(guardian.Domain, guardian.AbodeName, "Известный Хранитель")))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "guardian_interaction_type",
+                    Prompt = "Тип обращения",
+                    Required = true,
+                    Options =
+                    [
+                        Option(
+                            ActorSocialInteractionRequestState.GuardianInteractionTypeTalk,
+                            "Поговорить",
+                            "Обычный разговор с Хранителем."),
+                        Option(
+                            ActorSocialInteractionRequestState.GuardianInteractionTypeLore,
+                            "Попросить знания",
+                            "Попросить Хранителя раскрыть лор или знание.")
+                    ]
+                }
+            ]);
+    }
+
     private static UiConfirmationPrompt TradeConfirmationPrompt() => new()
     {
         Id = "confirm_trade_write",
@@ -2219,6 +2354,71 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                    string.Equals(npc.Name, requestedNpcId, StringComparison.OrdinalIgnoreCase));
     }
 
+    private static IEnumerable<GuardianSocialOption> CollectGuardianSocialOptions(JsonNode? node)
+    {
+        return EnumerateCanonicalGuardianObjects(node)
+            .Select(static obj =>
+            {
+                var stableId = FirstNonEmpty(GetString(obj, "guardianId"), GetString(obj, "id"));
+                if (string.IsNullOrWhiteSpace(stableId))
+                    return null;
+
+                var manifestation = obj["manifestation"] as JsonObject;
+                var abode = obj["abode"] as JsonObject;
+                var name = FirstNonEmpty(
+                    GetString(obj, "canonicalName"),
+                    GetString(obj, "guardianName"),
+                    GetString(obj, "name"),
+                    GetString(manifestation, "currentDisplayName"),
+                    GetString(obj, "displayName"),
+                    stableId);
+
+                return new GuardianSocialOption(
+                    stableId,
+                    name,
+                    FirstNonEmpty(GetString(obj, "domain"), GetString(obj, "domainTag")),
+                    FirstNonEmpty(GetString(abode, "name"), GetString(obj, "abodeName"), GetString(abode, "abodeId")));
+            })
+            .Where(static guardian => guardian != null)
+            .Cast<GuardianSocialOption>()
+            .DistinctBy(static guardian => guardian.GuardianId, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static IEnumerable<JsonObject> EnumerateCanonicalGuardianObjects(JsonNode? node)
+    {
+        if (node is JsonArray directArray)
+        {
+            foreach (var guardian in directArray.OfType<JsonObject>())
+                yield return guardian;
+            yield break;
+        }
+
+        if (node is not JsonObject root)
+            yield break;
+
+        if (root["guardians"] is JsonArray guardians)
+        {
+            foreach (var guardian in guardians.OfType<JsonObject>())
+                yield return guardian;
+        }
+
+        if (root["activeGuardian"] is JsonObject activeGuardian)
+            yield return activeGuardian;
+    }
+
+    private static GuardianSocialOption? ResolveGuardianSocialOption(
+        IReadOnlyList<GuardianSocialOption> guardians,
+        string requestedGuardian)
+    {
+        if (string.IsNullOrWhiteSpace(requestedGuardian))
+            return null;
+
+        return guardians.FirstOrDefault(guardian =>
+                   string.Equals(guardian.GuardianId, requestedGuardian, StringComparison.OrdinalIgnoreCase)) ??
+               guardians.FirstOrDefault(guardian =>
+                   string.Equals(guardian.Name, requestedGuardian, StringComparison.OrdinalIgnoreCase));
+    }
+
     private static string NormalizeCommand(string command)
     {
         var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
@@ -2351,6 +2551,12 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         string Name,
         string Location,
         string Relationship);
+
+    private sealed record GuardianSocialOption(
+        string GuardianId,
+        string Name,
+        string Domain,
+        string AbodeName);
 
     private sealed record JsonReadResult(string Path, bool FileExists, JsonNode? Node, string Error);
 

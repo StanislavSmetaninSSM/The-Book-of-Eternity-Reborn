@@ -396,6 +396,7 @@ public sealed class ExplorerWebPromptSessionService
             "/abode_offering" or "/подношение_обители" or
             "/found_guardian_mantle" or "/учредить_хранителя" or
             "/guardian_trade" or "/торговля_хранителя" or
+            "/guardian_social" or "/talk_guardian" or "/поговорить_с_хранителем" or "/общение_хранителя" or
             "/soul_relic_equip" or "/экипировать_реликвию" or
             "/soul_relic_unequip" or "/снять_реликвию" or
             "/shining_trade" or "/сияющая_торговля" or
