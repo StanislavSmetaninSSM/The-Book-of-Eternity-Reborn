@@ -386,12 +386,15 @@ public sealed class ExplorerWebPromptSessionService
             "/faction_directive" or "/директива_фракции" or
             "/equip" or "/экипировать" or
             "/unequip" or "/снять" or
+            "/npc_trade" or "/торговля_нпс" or
             "/craft" or "/ремесло" or
             "/gacha" or "/гача" or
             "/abode_offering" or "/подношение_обители" or
             "/found_guardian_mantle" or "/учредить_хранителя" or
+            "/guardian_trade" or "/торговля_хранителя" or
             "/soul_relic_equip" or "/экипировать_реликвию" or
             "/soul_relic_unequip" or "/снять_реликвию" or
+            "/shining_trade" or "/сияющая_торговля" or
             "/shining_treasury" or "/казначейство" or
             "/source_of_light" or "/источник_света" or
             "/afterlife_inbox" or "/уведомления_загробья" or
