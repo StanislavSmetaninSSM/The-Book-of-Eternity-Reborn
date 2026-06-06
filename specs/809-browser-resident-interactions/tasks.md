@@ -23,17 +23,17 @@
 
 **Purpose**: Define expected browser resident behavior before production changes.
 
-- [ ] T005 [P] [US1] Add a RED C# command-result/prompt-session test proving a browser resident roster command opens a form with Guardian/Abode selection when a Guardian has a Shining Abode.
-- [ ] T006 [P] [US1] Add a RED C# write-handler test proving a valid roster submit writes one `GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest` for the selected Guardian/Abode and current turn.
-- [ ] T007 [P] [US1] Add a RED duplicate roster pending test proving a second matching Guardian/Abode roster request is rejected or kept pending with player-facing copy instead of silently overwriting/duplicating.
-- [ ] T008 [P] [US2] Add a RED C# command-result/prompt-session test proving a browser resident interaction command opens a form with canonical resident selection and `talk` / `history` choice.
-- [ ] T009 [P] [US2] Add a RED write-handler test proving valid `talk` submission writes one `PendingGuardianAbodeResidentInteractionRequest` with `interactionType=talk`.
-- [ ] T010 [P] [US2] Add a RED write-handler test proving valid `history` submission writes one `PendingGuardianAbodeResidentInteractionRequest` with `interactionType=history`.
-- [ ] T011 [P] [US2] Add RED duplicate/malformed-pending tests for resident talk/history that prove duplicate interaction type for the same resident is blocked and malformed bundles are not overwritten.
-- [ ] T012 [P] [US3] Add RED transfer tests for target transfer and departure-only submit, asserting `PendingGuardianAbodeResidentTransferRequest` fields and no write when resident is not transfer-ready or already has a transfer pending.
-- [ ] T013 [P] [US4] Add RED realm-guard tests for direct command open outside valid afterlife/Shining Abode context and stale prompt submit after realm switch to Mortal World.
-- [ ] T014 [P] [US4] Add a RED player-facing copy/source-guard test proving default browser messages for malformed/blocked resident state do not expose raw `.json`, `pending_`, `requestId`, API, DTO, rollback, snapshot, debug, or `game_state/` wording.
-- [ ] T015 [US4] Decide from current docs/tests whether resident roster/interactions/transfers pending shapes and GM closure guidance already cover browser-originated requests. If shape/guidance changes or docs are missing, update docs/examples/tests in Phase 6.
+- [X] T005 [P] [US1] Add a RED C# command-result/prompt-session test proving a browser resident roster command opens a form with Guardian/Abode selection when a Guardian has a Shining Abode.
+- [X] T006 [P] [US1] Add a RED C# write-handler test proving a valid roster submit writes one `GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest` for the selected Guardian/Abode and current turn.
+- [X] T007 [P] [US1] Add a RED duplicate roster pending test proving a second matching Guardian/Abode roster request is rejected or kept pending with player-facing copy instead of silently overwriting/duplicating.
+- [X] T008 [P] [US2] Add a RED C# command-result/prompt-session test proving a browser resident interaction command opens a form with canonical resident selection and `talk` / `history` choice.
+- [X] T009 [P] [US2] Add a RED write-handler test proving valid `talk` submission writes one `PendingGuardianAbodeResidentInteractionRequest` with `interactionType=talk`.
+- [X] T010 [P] [US2] Add a RED write-handler test proving valid `history` submission writes one `PendingGuardianAbodeResidentInteractionRequest` with `interactionType=history`.
+- [X] T011 [P] [US2] Add RED duplicate/malformed-pending tests for resident talk/history that prove duplicate interaction type for the same resident is blocked and malformed bundles are not overwritten.
+- [X] T012 [P] [US3] Add RED transfer tests for target transfer and departure-only submit, asserting `PendingGuardianAbodeResidentTransferRequest` fields and no write when resident is not transfer-ready or already has a transfer pending.
+- [X] T013 [P] [US4] Add RED realm-guard tests for direct command open outside valid afterlife/Shining Abode context and stale prompt submit after realm switch to Mortal World.
+- [X] T014 [P] [US4] Add a RED player-facing copy/source-guard test proving default browser messages for malformed/blocked resident state do not expose raw `.json`, `pending_`, `requestId`, API, DTO, rollback, snapshot, debug, or `game_state/` wording.
+- [X] T015 [US4] Decide from current docs/tests whether resident roster/interactions/transfers pending shapes and GM closure guidance already cover browser-originated requests. If shape/guidance changes or docs are missing, update docs/examples/tests in Phase 6.
 
 **Checkpoint**: RED tests fail for missing browser resident parity for the expected reason, not because of typos or fixture setup.
 
@@ -47,10 +47,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T016 [US1] Add command catalog/help metadata for the resident roster action, including English/Russian aliases, browser-supported mutating status under the Shining Abode/Guardians group, and optional Guardian/Abode argument acceptance when consistent with existing catalog patterns.
-- [ ] T017 [US1] Implement command-result prompt construction in `ExplorerLifecycleLocalTurnCommandResultBuilder`: list eligible Guardians with Abodes from `guardians.json`, include founder-attraction request-mode context when applicable, and return player-facing empty-state copy when no eligible Abodes are available.
-- [ ] T018 [US1] Implement `BrowserAfterlifeWriteService` handling for roster submit: validate realm, Guardian/Abode identity, duplicate/malformed pending request, current reputation/request mode, local write coordination, and write through `GuardianAbodeResidentRequestState.WriteResidentsRequestAsync`.
-- [ ] T019 [US1] Run the focused RED tests from T005-T007 and confirm they now pass; then rerun the focused C# verification filter from `plan.md`.
+- [X] T016 [US1] Add command catalog/help metadata for the resident roster action, including English/Russian aliases, browser-supported mutating status under the Shining Abode/Guardians group, and optional Guardian/Abode argument acceptance when consistent with existing catalog patterns.
+- [X] T017 [US1] Implement command-result prompt construction in `ExplorerLifecycleLocalTurnCommandResultBuilder`: list eligible Guardians with Abodes from `guardians.json`, include founder-attraction request-mode context when applicable, and return player-facing empty-state copy when no eligible Abodes are available.
+- [X] T018 [US1] Implement `BrowserAfterlifeWriteService` handling for roster submit: validate realm, Guardian/Abode identity, duplicate/malformed pending request, current reputation/request mode, local write coordination, and write through `GuardianAbodeResidentRequestState.WriteResidentsRequestAsync`.
+- [X] T019 [US1] Run the focused RED tests from T005-T007 and confirm they now pass; then rerun the focused C# verification filter from `plan.md`.
 
 **Checkpoint**: User Story 1 is functional from C# command/prompt-session tests.
 
@@ -64,12 +64,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Add command catalog/help metadata for resident interaction action(s), including English/Russian aliases, browser-supported mutating status, and optional resident argument acceptance when consistent with existing catalog patterns.
-- [ ] T021 [US2] Implement prompt construction that enumerates only canonical resident roster entries from `guardian_abode_residents.json` associated with a Guardian/Abode; do not enumerate nested history/receipt/transfer objects merely because they carry `residentId`.
-- [ ] T022 [US2] Implement interaction type availability using console-equivalent semantics: default to `talk`/`history` when `availableInteractions` is empty, respect explicit omissions, and block non-present residents when console semantics require it.
-- [ ] T023 [US2] Implement `BrowserAfterlifeWriteService` handling for `talk`/`history`: validate realm, resident identity, Guardian/Abode relationship, interaction type, duplicate/malformed pending bundle, local write coordination, and write through `GuardianAbodeResidentRequestState.WriteInteractionRequestAsync`.
-- [ ] T024 [US2] Sanitize duplicate, missing-state, malformed-pending, and local-write failure messages for default browser result surfaces.
-- [ ] T025 [US2] Run the focused RED tests from T008-T011 and confirm they now pass; then rerun the focused C# verification filter from `plan.md`.
+- [X] T020 [US2] Add command catalog/help metadata for resident interaction action(s), including English/Russian aliases, browser-supported mutating status, and optional resident argument acceptance when consistent with existing catalog patterns.
+- [X] T021 [US2] Implement prompt construction that enumerates only canonical resident roster entries from `guardian_abode_residents.json` associated with a Guardian/Abode; do not enumerate nested history/receipt/transfer objects merely because they carry `residentId`.
+- [X] T022 [US2] Implement interaction type availability using console-equivalent semantics: default to `talk`/`history` when `availableInteractions` is empty, respect explicit omissions, and block non-present residents when console semantics require it.
+- [X] T023 [US2] Implement `BrowserAfterlifeWriteService` handling for `talk`/`history`: validate realm, resident identity, Guardian/Abode relationship, interaction type, duplicate/malformed pending bundle, local write coordination, and write through `GuardianAbodeResidentRequestState.WriteInteractionRequestAsync`.
+- [X] T024 [US2] Sanitize duplicate, missing-state, malformed-pending, and local-write failure messages for default browser result surfaces.
+- [X] T025 [US2] Run the focused RED tests from T008-T011 and confirm they now pass; then rerun the focused C# verification filter from `plan.md`.
 
 **Checkpoint**: User Story 2 is functional from C# command/prompt-session tests.
 
@@ -83,11 +83,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T026 [US3] Add command catalog/help metadata for resident transfer action, including English/Russian aliases and browser-supported mutating status.
-- [ ] T027 [US3] Implement transfer prompt construction that selects a transfer-ready canonical resident and builds safe target/departure choices using shared `GuardianAbodeResidentState.BuildTransferCompetitionCandidates` or existing equivalent C# logic.
-- [ ] T028 [US3] Implement `BrowserAfterlifeWriteService` handling for transfer submit: validate realm, resident identity, transfer readiness, target/departure selection, duplicate/malformed pending transfer bundle, local write coordination, and write through `GuardianAbodeResidentRequestState.WriteTransferRequestAsync`.
-- [ ] T029 [US3] Ensure transfer result copy explains GM resolution without exposing raw IDs/paths in default UI while preserving enough player context about source/target Abode or departure-only choice.
-- [ ] T030 [US3] Run the focused RED tests from T012 and confirm they now pass; then rerun the focused C# verification filter from `plan.md`.
+- [X] T026 [US3] Add command catalog/help metadata for resident transfer action, including English/Russian aliases and browser-supported mutating status.
+- [X] T027 [US3] Implement transfer prompt construction that selects a transfer-ready canonical resident and builds safe target/departure choices using shared `GuardianAbodeResidentState.BuildTransferCompetitionCandidates` or existing equivalent C# logic.
+- [X] T028 [US3] Implement `BrowserAfterlifeWriteService` handling for transfer submit: validate realm, resident identity, transfer readiness, target/departure selection, duplicate/malformed pending transfer bundle, local write coordination, and write through `GuardianAbodeResidentRequestState.WriteTransferRequestAsync`.
+- [X] T029 [US3] Ensure transfer result copy explains GM resolution without exposing raw IDs/paths in default UI while preserving enough player context about source/target Abode or departure-only choice.
+- [X] T030 [US3] Run the focused RED tests from T012 and confirm they now pass; then rerun the focused C# verification filter from `plan.md`.
 
 **Checkpoint**: User Story 3 is functional from C# command/prompt-session tests.
 
@@ -101,14 +101,14 @@
 
 ### Implementation for User Story 4
 
-- [ ] T031 [US4] Add command-level valid-realm guards before opening resident prompts; invalid realms return Russian player-facing blockers and not `RequiresInput`.
-- [ ] T032 [US4] Add write-level valid-realm guards in `BrowserAfterlifeWriteService` before writing roster, interaction, or transfer pending files; stale prompt sessions after realm switch must not write.
-- [ ] T033 [US4] Update `/help`, browser command coverage/action metadata, API contract fixtures, and C# source guards so resident commands are discoverable without raw debug framing.
-- [ ] T034 [US4] Ensure prompt-session submission/cancel continues through existing `browserApi.submitPromptSession` and `browserApi.cancelPromptSession`; update React fixture/types only if the C# contract fixture changes.
-- [ ] T035 [US4] Inspect `CLI_API_Specification.md`, `CLI_Agent_Daemon_Specification.md`, `OtherGuides/Afterlife_Contract_Matrix.md`, examples/manifests, and documentation coverage tests for resident roster/talk/history/transfer closure coverage. If any guidance or example is missing/stale, update it in this PR; if no docs update is required, record the no-shape-drift rationale in the PR/final report.
-- [ ] T036 [US4] Run docs/contract tests when docs/contracts/examples are touched, or record explicit no-docs rationale when existing guidance already covers these contracts.
-- [ ] T037 [US4] Run `npm run verify --prefix BookOfEternityClient.WebFrontend` after any fixture/frontend change.
-- [ ] T038 [US4] Run `.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` and confirm `FEATURE_DIR` resolves to `specs/809-browser-resident-interactions` or document any repo-local Spec Kit script limitation.
+- [X] T031 [US4] Add command-level valid-realm guards before opening resident prompts; invalid realms return Russian player-facing blockers and not `RequiresInput`.
+- [X] T032 [US4] Add write-level valid-realm guards in `BrowserAfterlifeWriteService` before writing roster, interaction, or transfer pending files; stale prompt sessions after realm switch must not write.
+- [X] T033 [US4] Update `/help`, browser command coverage/action metadata, API contract fixtures, and C# source guards so resident commands are discoverable without raw debug framing.
+- [X] T034 [US4] Ensure prompt-session submission/cancel continues through existing `browserApi.submitPromptSession` and `browserApi.cancelPromptSession`; update React fixture/types only if the C# contract fixture changes.
+- [X] T035 [US4] Inspect `CLI_API_Specification.md`, `CLI_Agent_Daemon_Specification.md`, `OtherGuides/Afterlife_Contract_Matrix.md`, examples/manifests, and documentation coverage tests for resident roster/talk/history/transfer closure coverage. If any guidance or example is missing/stale, update it in this PR; if no docs update is required, record the no-shape-drift rationale in the PR/final report.
+- [X] T036 [US4] Run docs/contract tests when docs/contracts/examples are touched, or record explicit no-docs rationale when existing guidance already covers these contracts.
+- [X] T037 [US4] Run `npm run verify --prefix BookOfEternityClient.WebFrontend` after any fixture/frontend change.
+- [X] T038 [US4] Run `.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` and confirm `FEATURE_DIR` resolves to `specs/809-browser-resident-interactions` or document any repo-local Spec Kit script limitation.
 
 **Checkpoint**: Default browser metadata is player-facing and contract/docs status is explicit.
 
@@ -118,16 +118,21 @@
 
 **Purpose**: Verify, review, merge, close #809, and keep #817 open for remaining child tasks.
 
-- [ ] T039 Run `dotnet build BookOfEternityClient/BookOfEternityClient.csproj --no-restore --verbosity:minimal` after restore/build artifacts exist.
-- [ ] T040 Run `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --verbosity:minimal` after restore/build artifacts exist.
-- [ ] T041 Run the focused C# verification filter from `plan.md` and record exact pass/fail/skip counts.
-- [ ] T042 Run `npm run verify --prefix BookOfEternityClient.WebFrontend` and record typecheck/test/build evidence.
-- [ ] T043 Run docs/contract verification when docs/contracts/examples changed, or record the explicit no-docs rationale.
-- [ ] T044 Run `git diff --check origin/main...HEAD`.
-- [ ] T045 Run an added-line static scan excluding `docs/superpowers/plans/*.md`; inspect any token/secret/raw-diagnostic matches manually.
-- [ ] T046 Run a refined default player-facing raw diagnostic scan over production UI/frontend additions for `.json`, `pending_`, `requestId`, API, DTO, rollback, snapshot, debug, raw, and `game_state/` leakage; exclude tests/specs and internal rollback constants from automated failure while still reviewing them.
-- [ ] T047 Reconcile `spec.md`, `plan.md`, and this `tasks.md` against the final diff. Do not mark tasks complete unless code/tests/docs and verification evidence exist.
-- [ ] T048 Obtain independent review before PR/merge. Critical/Important findings must be fixed and re-reviewed before merging.
+- [X] T039 Run `dotnet build BookOfEternityClient/BookOfEternityClient.csproj --no-restore --verbosity:minimal` after restore/build artifacts exist.
+- [X] T040 Run `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --verbosity:minimal` after restore/build artifacts exist.
+- [X] T041 Run the focused C# verification filter from `plan.md` and record exact pass/fail/skip counts.
+- [X] T042 Run `npm run verify --prefix BookOfEternityClient.WebFrontend` and record typecheck/test/build evidence.
+- [X] T043 Run docs/contract verification when docs/contracts/examples changed, or record the explicit no-docs rationale.
+- [X] T044 Run `git diff --check origin/main...HEAD`.
+- [X] T045 Run an added-line static scan excluding `docs/superpowers/plans/*.md`; inspect any token/secret/raw-diagnostic matches manually.
+- [X] T046 Run a refined default player-facing raw diagnostic scan over production UI/frontend additions for `.json`, `pending_`, `requestId`, API, DTO, rollback, snapshot, debug, raw, and `game_state/` leakage; exclude tests/specs and internal rollback constants from automated failure while still reviewing them.
+- [X] T047 Reconcile `spec.md`, `plan.md`, and this `tasks.md` against the final diff. Do not mark tasks complete unless code/tests/docs and verification evidence exist.
+- [X] T048 Obtain independent review before PR/merge. Critical/Important findings must be fixed and re-reviewed before merging.
+  - Initial independent review `E:/Games/codex-runs/20260607-0857-boe-809-residents-review` returned `CHANGES_REQUIRED`: generic `/resident_interaction` and `/resident_transfer` browser forms derived dependent choices from the first sorted resident, making later residents' `history` or transfer choices unreachable from the default quick-action path.
+  - Added RED regressions `SubmitAsync_ResidentInteraction_GenericPromptAllowsLaterResidentHistoryChoice` and `SubmitAsync_ResidentTransfer_GenericPromptAllowsLaterReadyResidentTransferChoice`; both failed before the fix for the expected missing-option reason.
+  - Fixed command-result prompt construction so no-argument resident forms aggregate valid interaction/transfer choices across selectable residents while submit/write handlers still validate the selected resident.
+  - Post-fix focused #809 gate passed: `BrowserResidentInteractionsParityTests|GuardianAbodeResident` => 65/65; affected browser/social/docs/contract slice => 241/241.
+  - Re-review `E:/Games/codex-runs/20260607-0920-boe-809-residents-rereview` returned `VERDICT: APPROVED`, previous Important blocker fixed, Critical/Important/Minor findings none, safe to merge yes.
 - [ ] T049 Create/update PR for #809 with local verification evidence and `GitHub Actions: not required`; squash-merge with `[skip ci]` after local-gated approval.
 - [ ] T050 Verify PR is `MERGED`, issue #809 is `CLOSED`/`COMPLETED`, `main` fast-forwards, focused post-merge check passes, and the issue worktree/branch are cleaned up.
 

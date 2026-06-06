@@ -1730,7 +1730,7 @@ internal static class GuardianAbodeResidentState
 
         foreach (var guardian in guardians.OfType<JsonObject>())
         {
-            var targetGuardianId = GetNodeString(guardian["guardianId"]);
+            var targetGuardianId = GetNodeString(guardian["guardianId"]) ?? GetNodeString(guardian["id"]);
             if (string.IsNullOrWhiteSpace(targetGuardianId))
                 continue;
 
@@ -1797,7 +1797,7 @@ internal static class GuardianAbodeResidentState
 
         foreach (var guardian in guardians.OfType<JsonObject>())
         {
-            var guardianId = GetNodeString(guardian["guardianId"]);
+            var guardianId = GetNodeString(guardian["guardianId"]) ?? GetNodeString(guardian["id"]);
             if (string.IsNullOrWhiteSpace(guardianId))
                 continue;
 

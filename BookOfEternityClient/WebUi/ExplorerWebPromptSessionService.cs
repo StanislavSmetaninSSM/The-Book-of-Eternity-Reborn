@@ -397,6 +397,9 @@ public sealed class ExplorerWebPromptSessionService
             "/found_guardian_mantle" or "/учредить_хранителя" or
             "/guardian_trade" or "/торговля_хранителя" or
             "/guardian_social" or "/talk_guardian" or "/поговорить_с_хранителем" or "/общение_хранителя" or
+            "/abode_residents" or "/обитатели_обители" or
+            "/resident_interaction" or "/общение_резидента" or "/поговорить_с_резидентом" or "/история_резидента" or
+            "/resident_transfer" or "/переход_резидента" or
             "/soul_relic_equip" or "/экипировать_реликвию" or
             "/soul_relic_unequip" or "/снять_реликвию" or
             "/shining_trade" or "/сияющая_торговля" or

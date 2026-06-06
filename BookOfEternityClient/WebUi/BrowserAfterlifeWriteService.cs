@@ -51,6 +51,9 @@ public sealed class BrowserAfterlifeWriteService
             "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
             "/guardian_trade" or "/торговля_хранителя" => await ApplyGuardianTradeAsync(parsed.Arguments, answers, owner),
             "/guardian_social" or "/talk_guardian" or "/поговорить_с_хранителем" or "/общение_хранителя" => await ApplyGuardianSocialAsync(parsed.Arguments, answers, owner),
+            "/abode_residents" or "/обитатели_обители" => await ApplyAbodeResidentsAsync(parsed.Arguments, answers, owner),
+            "/resident_interaction" or "/общение_резидента" or "/поговорить_с_резидентом" or "/история_резидента" => await ApplyResidentInteractionAsync(parsed.Arguments, answers, owner),
+            "/resident_transfer" or "/переход_резидента" => await ApplyResidentTransferAsync(parsed.Arguments, answers, owner),
             "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(answers, owner),
             "/soul_relic_unequip" or "/снять_реликвию" => await ApplySoulRelicUnequipAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
@@ -286,6 +289,297 @@ public sealed class BrowserAfterlifeWriteService
         string interactionType) =>
         requests.Any(request =>
             string.Equals(request.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(request.InteractionType, interactionType, StringComparison.OrdinalIgnoreCase));
+
+    private async Task<BrowserPromptWriteResult> ApplyAbodeResidentsAsync(
+        string commandArguments,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildResidentRealmBlockerAsync("Обитатели Обители недоступны");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        var selection = ReadAnswer(answers, "guardian_abode_id");
+        if (string.IsNullOrWhiteSpace(selection))
+            selection = commandArguments.Trim();
+        if (string.IsNullOrWhiteSpace(selection))
+            return BrowserPromptWriteResult.ValidationError("Выберите Обитель.");
+
+        var guardiansRoot = await TryReadObjectSafeAsync("game_state/meta/guardians.json");
+        if (guardiansRoot == null)
+            return BrowserPromptWriteResult.ValidationError("Список Хранителей сейчас недоступен.");
+
+        var abode = ResolveGuardianAbodeOption(CollectGuardianAbodeOptions(guardiansRoot).ToList(), selection);
+        if (abode == null)
+            return BrowserPromptWriteResult.ValidationError("Такой Обители сейчас нет среди известных.");
+
+        if (await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs))
+            return BuildMalformedResidentPendingResult("Запрос состава не отправлен");
+
+        var existingRequests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
+        if (HasPendingResidentsRequest(existingRequests, abode.GuardianId, abode.AbodeId))
+            return BuildDuplicateResidentsRequestResult(abode);
+
+        var isFoundedGuardian = PlayerGuardianFoundationState.IsPlayerFoundedGuardian(abode.Guardian);
+        var request = new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest
+        {
+            GuardianId = abode.GuardianId,
+            GuardianName = abode.GuardianName,
+            AbodeId = abode.AbodeId,
+            AbodeName = abode.AbodeName,
+            CurrentReputation = abode.CurrentReputation,
+            RequestMode = isFoundedGuardian
+                ? GuardianAbodeResidentRequestState.ResidentsRequestModeFounderAttraction
+                : GuardianAbodeResidentRequestState.ResidentsRequestModeStandardRoster,
+            FounderFeatureTitle = isFoundedGuardian ? PlayerGuardianFoundationState.GetFounderAbodeFeatureTitle(abode.Guardian) : null,
+            FounderFeatureSummary = isFoundedGuardian ? PlayerGuardianFoundationState.GetFounderAbodeFeatureSummary(abode.Guardian) : null,
+            CreatedAtTurn = Math.Max(0, _stateManager.CurrentState.TurnNumber)
+        };
+
+        var duplicateDuringWrite = false;
+        var writeResult = await ExecuteAsync(
+            owner,
+            "Обитатели Обители",
+            [GuardianAbodeResidentRequestState.PendingResidentsRequestPath],
+            async () =>
+            {
+                if (await GuardianAbodeResidentRequestState.IsResidentsRequestFileMalformedAsync(_fs))
+                    throw new InvalidOperationException("Запрос состава временно ждёт проверки состояния.");
+
+                var currentRequests = await GuardianAbodeResidentRequestState.ReadResidentsRequestsAsync(_fs);
+                duplicateDuringWrite = HasPendingResidentsRequest(currentRequests, abode.GuardianId, abode.AbodeId);
+                if (!duplicateDuringWrite)
+                    await GuardianAbodeResidentRequestState.WriteResidentsRequestAsync(_fs, request);
+            },
+            "Запрос состава отправлен ГМ",
+            $"ГМ получит просьбу подготовить состав Обители {abode.AbodeName} Хранителя {abode.GuardianName}.",
+            payload: null);
+
+        return duplicateDuringWrite ? BuildDuplicateResidentsRequestResult(abode) : writeResult;
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyResidentInteractionAsync(
+        string commandArguments,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildResidentRealmBlockerAsync("Общение с обитателем недоступно");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        var residentId = ReadAnswer(answers, "resident_id");
+        if (string.IsNullOrWhiteSpace(residentId))
+            residentId = commandArguments.Trim();
+        if (string.IsNullOrWhiteSpace(residentId))
+            return BrowserPromptWriteResult.ValidationError("Выберите обитателя.");
+
+        var interactionType = ReadAnswer(answers, "resident_interaction_type").Trim().ToLowerInvariant();
+        if (interactionType is not (GuardianAbodeResidentState.InteractionTypeTalk or GuardianAbodeResidentState.InteractionTypeHistory))
+            return BrowserPromptWriteResult.ValidationError("Выберите разговор или раскрытие истории.");
+
+        var context = await ReadResidentWriteContextAsync();
+        if (!string.IsNullOrWhiteSpace(context.ErrorMessage))
+            return BrowserPromptWriteResult.ValidationError(context.ErrorMessage);
+
+        var resident = ResolveResidentWriteOption(context.Residents, residentId);
+        if (resident == null)
+            return BrowserPromptWriteResult.ValidationError("Такого обитателя сейчас нет среди состава Обители.");
+        if (!resident.Entry.IsPresent)
+            return BrowserPromptWriteResult.ValidationError("Этот обитатель сейчас не находится в Обители.");
+        if (!ResidentInteractionAllowed(resident.Entry, interactionType))
+            return BrowserPromptWriteResult.ValidationError("Этот тип обращения сейчас недоступен для выбранного обитателя.");
+
+        if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs))
+            return BuildMalformedResidentPendingResult("Обращение не отправлено");
+
+        var existingRequests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs);
+        if (HasPendingInteractionRequest(existingRequests, resident.Entry.ResidentId, interactionType))
+            return BuildDuplicateInteractionRequestResult(resident, interactionType);
+
+        var request = new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest
+        {
+            GuardianId = resident.Entry.GuardianId,
+            GuardianName = resident.GuardianName,
+            AbodeId = resident.Entry.AbodeId,
+            AbodeName = resident.AbodeName,
+            ResidentId = resident.Entry.ResidentId,
+            ResidentName = resident.Entry.DisplayName,
+            InteractionType = interactionType,
+            CreatedAtTurn = Math.Max(0, _stateManager.CurrentState.TurnNumber)
+        };
+
+        var duplicateDuringWrite = false;
+        var writeResult = await ExecuteAsync(
+            owner,
+            "Общение с обитателем",
+            [GuardianAbodeResidentRequestState.PendingInteractionsRequestPath],
+            async () =>
+            {
+                if (await GuardianAbodeResidentRequestState.IsInteractionRequestFileMalformedAsync(_fs))
+                    throw new InvalidOperationException("Обращение временно ждёт проверки состояния.");
+
+                var currentRequests = await GuardianAbodeResidentRequestState.ReadInteractionRequestsAsync(_fs);
+                duplicateDuringWrite = HasPendingInteractionRequest(currentRequests, resident.Entry.ResidentId, interactionType);
+                if (!duplicateDuringWrite)
+                    await GuardianAbodeResidentRequestState.WriteInteractionRequestAsync(_fs, request);
+            },
+            string.Equals(interactionType, GuardianAbodeResidentState.InteractionTypeHistory, StringComparison.OrdinalIgnoreCase)
+                ? "Просьба об истории отправлена ГМ"
+                : "Разговор отправлен ГМ",
+            string.Equals(interactionType, GuardianAbodeResidentState.InteractionTypeHistory, StringComparison.OrdinalIgnoreCase)
+                ? $"ГМ получит просьбу раскрыть историю обитателя {resident.Entry.DisplayName}."
+                : $"ГМ получит запрос разговора с обитателем {resident.Entry.DisplayName}.",
+            payload: null);
+
+        return duplicateDuringWrite ? BuildDuplicateInteractionRequestResult(resident, interactionType) : writeResult;
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyResidentTransferAsync(
+        string commandArguments,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildResidentRealmBlockerAsync("Переход обитателя недоступен");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        var residentId = ReadAnswer(answers, "resident_id");
+        if (string.IsNullOrWhiteSpace(residentId))
+            residentId = commandArguments.Trim();
+        if (string.IsNullOrWhiteSpace(residentId))
+            return BrowserPromptWriteResult.ValidationError("Выберите обитателя.");
+
+        var transferChoice = ReadAnswer(answers, "resident_transfer_choice");
+        if (string.IsNullOrWhiteSpace(transferChoice))
+            return BrowserPromptWriteResult.ValidationError("Выберите направление перехода.");
+
+        var context = await ReadResidentWriteContextAsync();
+        if (!string.IsNullOrWhiteSpace(context.ErrorMessage))
+            return BrowserPromptWriteResult.ValidationError(context.ErrorMessage);
+
+        var resident = ResolveResidentWriteOption(context.Residents, residentId);
+        if (resident == null)
+            return BrowserPromptWriteResult.ValidationError("Такого обитателя сейчас нет среди состава Обители.");
+        if (!resident.Entry.IsPresent)
+            return BrowserPromptWriteResult.ValidationError("Этот обитатель сейчас не находится в Обители.");
+        if (!string.Equals(resident.Entry.MigrationState, GuardianAbodeResidentState.MigrationStateReadyToTransfer, StringComparison.OrdinalIgnoreCase))
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                "Переход не отправлен",
+                $"Обитатель {resident.Entry.DisplayName} ещё не готов к переходу. Дождитесь явного состояния готовности.");
+        }
+
+        if (await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs))
+            return BuildMalformedResidentPendingResult("Переход не отправлен");
+
+        var existingTransfer = await GuardianAbodeResidentRequestState.FindPendingTransferAsync(_fs, resident.Entry.ResidentId);
+        if (existingTransfer != null)
+            return BuildDuplicateTransferRequestResult(resident);
+
+        if (!TryBuildTransferChoice(transferChoice, resident, context.GuardiansRoot, context.ResidentsRoot, out var transferRequest, out var validationMessage))
+            return BrowserPromptWriteResult.ValidationError(validationMessage);
+        transferRequest.CreatedAtTurn = Math.Max(0, _stateManager.CurrentState.TurnNumber);
+
+        var duplicateDuringWrite = false;
+        var writeResult = await ExecuteAsync(
+            owner,
+            "Переход обитателя",
+            [GuardianAbodeResidentRequestState.PendingTransfersRequestPath],
+            async () =>
+            {
+                if (await GuardianAbodeResidentRequestState.IsTransferRequestFileMalformedAsync(_fs))
+                    throw new InvalidOperationException("Переход временно ждёт проверки состояния.");
+
+                var currentTransfer = await GuardianAbodeResidentRequestState.FindPendingTransferAsync(_fs, resident.Entry.ResidentId);
+                duplicateDuringWrite = currentTransfer != null;
+                if (!duplicateDuringWrite)
+                    await GuardianAbodeResidentRequestState.WriteTransferRequestAsync(_fs, transferRequest);
+            },
+            "Переход отправлен ГМ",
+            string.Equals(transferRequest.TransferMode, GuardianAbodeResidentState.TransferModeDepartureOnly, StringComparison.OrdinalIgnoreCase)
+                ? $"ГМ получит просьбу отпустить обитателя {resident.Entry.DisplayName} без новой Обители."
+                : $"ГМ получит просьбу о переходе обитателя {resident.Entry.DisplayName} в Обитель {transferRequest.TargetAbodeName}.",
+            payload: null);
+
+        return duplicateDuringWrite ? BuildDuplicateTransferRequestResult(resident) : writeResult;
+    }
+
+    private async Task<BrowserPromptWriteResult?> TryBuildResidentRealmBlockerAsync(string title)
+    {
+        JsonObject? soulRoot = null;
+        try
+        {
+            soulRoot = await ReadObjectAsync(SoulStatePath);
+        }
+        catch
+        {
+            // Fall back to StateManager's resolved realm below.
+        }
+
+        var currentRealm = FirstNonEmpty(GetNodeString(soulRoot?["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
+        if (RealmSemantics.IsAfterlifeRealm(currentRealm))
+            return null;
+
+        return BrowserPromptWriteResult.Failed(
+            CommandExecutionState.Blocked,
+            UiNotificationSeverity.Warning,
+            title,
+            "Действия с обитателями Обители доступны только в посмертии. Сейчас действие недоступно для текущего царства.");
+    }
+
+    private static BrowserPromptWriteResult BuildMalformedResidentPendingResult(string title) =>
+        BrowserPromptWriteResult.Failed(
+            CommandExecutionState.Failed,
+            UiNotificationSeverity.Error,
+            title,
+            "Запрос временно ждёт проверки состояния. Повторите действие после восстановления игрового состояния.");
+
+    private static BrowserPromptWriteResult BuildDuplicateResidentsRequestResult(GuardianAbodeBrowserOption abode) =>
+        BrowserPromptWriteResult.Failed(
+            CommandExecutionState.Pending,
+            UiNotificationSeverity.Warning,
+            "Запрос состава уже ожидает ГМ",
+            $"Запрос состава Обители {abode.AbodeName} Хранителя {abode.GuardianName} уже ожидает ответа ГМ. Дождитесь результата, затем отправьте новый запрос.");
+
+    private static BrowserPromptWriteResult BuildDuplicateInteractionRequestResult(ResidentWriteOption resident, string interactionType)
+    {
+        var isHistory = string.Equals(interactionType, GuardianAbodeResidentState.InteractionTypeHistory, StringComparison.OrdinalIgnoreCase);
+        return BrowserPromptWriteResult.Failed(
+            CommandExecutionState.Pending,
+            UiNotificationSeverity.Warning,
+            isHistory ? "Просьба об истории уже ожидает ГМ" : "Разговор уже ожидает ГМ",
+            isHistory
+                ? $"Просьба об истории обитателя {resident.Entry.DisplayName} уже ожидает ответа ГМ. Дождитесь результата, затем отправьте новую просьбу."
+                : $"Разговор с обитателем {resident.Entry.DisplayName} уже ожидает ответа ГМ. Дождитесь результата, затем начните новый разговор.");
+    }
+
+    private static BrowserPromptWriteResult BuildDuplicateTransferRequestResult(ResidentWriteOption resident) =>
+        BrowserPromptWriteResult.Failed(
+            CommandExecutionState.Pending,
+            UiNotificationSeverity.Warning,
+            "Переход уже ожидает ГМ",
+            $"Переход обитателя {resident.Entry.DisplayName} уже ожидает ответа ГМ. Дождитесь результата перед новым запросом.");
+
+    private static bool HasPendingResidentsRequest(
+        IEnumerable<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentsRequest> requests,
+        string guardianId,
+        string abodeId) =>
+        requests.Any(request =>
+            string.Equals(request.GuardianId, guardianId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(request.AbodeId, abodeId, StringComparison.OrdinalIgnoreCase));
+
+    private static bool HasPendingInteractionRequest(
+        IEnumerable<GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentInteractionRequest> requests,
+        string residentId,
+        string interactionType) =>
+        requests.Any(request =>
+            string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(request.InteractionType, interactionType, StringComparison.OrdinalIgnoreCase));
 
     private static async Task<GuardianTradeService.GuardianTradeOperationResult> BuildGuardianTradeRequestResultAsync(
@@ -1320,6 +1614,18 @@ public sealed class BrowserAfterlifeWriteService
         return JsonNode.Parse(raw) as JsonObject;
     }
 
+    private async Task<JsonObject?> TryReadObjectSafeAsync(string path)
+    {
+        try
+        {
+            return await ReadObjectAsync(path);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private async Task<JsonObject> ReadRequiredObjectAsync(string path, string error)
     {
         var root = await ReadObjectAsync(path);
@@ -1477,6 +1783,194 @@ public sealed class BrowserAfterlifeWriteService
             .FirstOrDefault(guardian => GuardianMatches(guardian, expected));
     }
 
+    private static IEnumerable<GuardianAbodeBrowserOption> CollectGuardianAbodeOptions(JsonNode node)
+    {
+        return EnumerateCanonicalGuardianObjects(node)
+            .Select(static guardian =>
+            {
+                var stableId = FirstNonEmpty(GetNodeString(guardian["guardianId"]), GetNodeString(guardian["id"]));
+                if (string.IsNullOrWhiteSpace(stableId) || guardian["abode"] is not JsonObject abode)
+                    return null;
+
+                var abodeId = FirstNonEmpty(GetNodeString(abode["abodeId"]), GetNodeString(abode["id"]));
+                if (string.IsNullOrWhiteSpace(abodeId))
+                    return null;
+
+                var manifestation = guardian["manifestation"] as JsonObject;
+                var guardianName = FirstNonEmpty(
+                    GetNodeString(guardian["canonicalName"]),
+                    GetNodeString(guardian["guardianName"]),
+                    GetNodeString(guardian["name"]),
+                    GetNodeString(guardian["displayName"]),
+                    GetNodeString(manifestation?["currentDisplayName"]),
+                    stableId);
+                var relationship = guardian["relationshipData"] as JsonObject;
+                return new GuardianAbodeBrowserOption(
+                    stableId,
+                    guardianName,
+                    FirstNonEmpty(GetNodeString(guardian["domain"]), GetNodeString(guardian["afterlifeDomain"])),
+                    abodeId,
+                    FirstNonEmpty(GetNodeString(abode["name"]), GetNodeString(abode["displayName"]), GetNodeString(guardian["abodeName"]), abodeId),
+                    GetNodeInt(relationship?["currentReputation"], GetNodeInt(guardian["reputation"])),
+                    AbodePowerRules.GetCurrentPower(guardian),
+                    guardian);
+            })
+            .Where(static option => option != null)
+            .Cast<GuardianAbodeBrowserOption>()
+            .DistinctBy(static option => option.CompositeId, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static GuardianAbodeBrowserOption? ResolveGuardianAbodeOption(
+        IReadOnlyList<GuardianAbodeBrowserOption> abodes,
+        string requested)
+    {
+        if (string.IsNullOrWhiteSpace(requested))
+            return null;
+
+        return abodes.FirstOrDefault(abode =>
+                   string.Equals(abode.CompositeId, requested, StringComparison.OrdinalIgnoreCase)) ??
+               abodes.FirstOrDefault(abode =>
+                   string.Equals(abode.GuardianId, requested, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(abode.AbodeId, requested, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(abode.GuardianName, requested, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(abode.AbodeName, requested, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task<ResidentWriteContext> ReadResidentWriteContextAsync()
+    {
+        var guardiansRoot = await TryReadObjectSafeAsync("game_state/meta/guardians.json");
+        if (guardiansRoot == null)
+            return ResidentWriteContext.Failed("Список Хранителей сейчас недоступен.");
+
+        var residentsRoot = await TryReadObjectSafeAsync(GuardianAbodeResidentState.StatePath);
+        if (residentsRoot == null)
+            return new ResidentWriteContext(guardiansRoot, null, []);
+
+        if (residentsRoot["entries"] is not JsonArray entries)
+            return new ResidentWriteContext(guardiansRoot, residentsRoot, []);
+
+        var abodes = CollectGuardianAbodeOptions(guardiansRoot).ToList();
+        var powerByGuardian = GuardianAbodeResidentState.CollectGuardianAbodePowerById(guardiansRoot);
+        var residents = new List<ResidentWriteOption>();
+        foreach (var entry in entries.OfType<JsonObject>())
+        {
+            var guardianId = GetNodeString(entry["guardianId"]);
+            if (string.IsNullOrWhiteSpace(guardianId))
+                continue;
+
+            var currentPower = powerByGuardian.TryGetValue(guardianId, out var power) ? power : (int?)null;
+            var resident = GuardianAbodeResidentState.ReadResidentEntry(entry, currentPower);
+            if (string.IsNullOrWhiteSpace(resident.ResidentId))
+                continue;
+
+            var abode = abodes.FirstOrDefault(candidate =>
+                string.Equals(candidate.GuardianId, resident.GuardianId, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(candidate.AbodeId, resident.AbodeId, StringComparison.OrdinalIgnoreCase));
+            residents.Add(new ResidentWriteOption(
+                resident,
+                FirstNonEmpty(abode?.GuardianName, resident.GuardianId),
+                FirstNonEmpty(abode?.AbodeName, resident.AbodeId)));
+        }
+
+        return new ResidentWriteContext(
+            guardiansRoot,
+            residentsRoot,
+            residents
+                .DistinctBy(static resident => resident.Entry.ResidentId, StringComparer.OrdinalIgnoreCase)
+                .ToList());
+    }
+
+    private static ResidentWriteOption? ResolveResidentWriteOption(
+        IReadOnlyList<ResidentWriteOption> residents,
+        string requestedResident)
+    {
+        if (string.IsNullOrWhiteSpace(requestedResident))
+            return null;
+
+        return residents.FirstOrDefault(resident =>
+                   string.Equals(resident.Entry.ResidentId, requestedResident, StringComparison.OrdinalIgnoreCase)) ??
+               residents.FirstOrDefault(resident =>
+                   string.Equals(resident.Entry.DisplayName, requestedResident, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool ResidentInteractionAllowed(GuardianAbodeResidentState.ResidentEntry resident, string interactionType)
+    {
+        var allowed = resident.AvailableInteractions
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Select(static value => value.Trim().ToLowerInvariant())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return allowed.Count == 0 || allowed.Contains(interactionType);
+    }
+
+    private static bool TryBuildTransferChoice(
+        string transferChoice,
+        ResidentWriteOption resident,
+        JsonObject guardiansRoot,
+        JsonObject? residentsRoot,
+        out GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest transferRequest,
+        out string validationMessage)
+    {
+        transferRequest = new GuardianAbodeResidentRequestState.PendingGuardianAbodeResidentTransferRequest
+        {
+            ResidentId = resident.Entry.ResidentId,
+            ResidentName = resident.Entry.DisplayName,
+            SourceGuardianId = resident.Entry.GuardianId,
+            SourceGuardianName = resident.GuardianName,
+            SourceAbodeId = resident.Entry.AbodeId,
+            SourceAbodeName = resident.AbodeName,
+            AbodeDevotionLevel = resident.Entry.AbodeDevotionLevel,
+            AbodeDevotionTier = resident.Entry.AbodeDevotionTier,
+            Restlessness = resident.Entry.Restlessness,
+            MigrationState = resident.Entry.MigrationState
+        };
+        validationMessage = string.Empty;
+
+        if (string.Equals(transferChoice, "departure_only", StringComparison.OrdinalIgnoreCase))
+        {
+            transferRequest.TransferMode = GuardianAbodeResidentState.TransferModeDepartureOnly;
+            transferRequest.SelectionMode = GuardianAbodeResidentRequestState.TransferSelectionModeDepartureOnly;
+            return true;
+        }
+
+        const string targetPrefix = "target:";
+        if (!transferChoice.StartsWith(targetPrefix, StringComparison.OrdinalIgnoreCase))
+        {
+            validationMessage = "Выберите доступное направление перехода.";
+            return false;
+        }
+
+        var target = transferChoice[targetPrefix.Length..];
+        var parts = target.Split("::", 2, StringSplitOptions.TrimEntries);
+        if (parts.Length != 2 || string.IsNullOrWhiteSpace(parts[0]) || string.IsNullOrWhiteSpace(parts[1]))
+        {
+            validationMessage = "Выберите доступную Обитель для перехода.";
+            return false;
+        }
+
+        var candidate = GuardianAbodeResidentState.BuildTransferCompetitionCandidates(resident.Entry, guardiansRoot, residentsRoot)
+            .FirstOrDefault(item =>
+                string.Equals(item.TargetGuardianId, parts[0], StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(item.TargetAbodeId, parts[1], StringComparison.OrdinalIgnoreCase));
+        if (candidate == null)
+        {
+            validationMessage = "Выбранная Обитель сейчас недоступна для перехода.";
+            return false;
+        }
+
+        transferRequest.TransferMode = GuardianAbodeResidentState.TransferModeAcceptedTransfer;
+        transferRequest.TargetGuardianId = candidate.TargetGuardianId;
+        transferRequest.TargetGuardianName = candidate.TargetGuardianName;
+        transferRequest.TargetAbodeId = candidate.TargetAbodeId;
+        transferRequest.TargetAbodeName = candidate.TargetAbodeName;
+        transferRequest.SelectionMode = candidate.CompetitionScore >= 50
+            ? GuardianAbodeResidentRequestState.TransferSelectionModeCompetitionRecommended
+            : GuardianAbodeResidentRequestState.TransferSelectionModeManualOverride;
+        transferRequest.CompetitionScore = candidate.CompetitionScore;
+        transferRequest.CompetitionLabel = candidate.CompetitionLabel;
+        transferRequest.CompetitionReason = candidate.CompetitionReason;
+        return true;
+    }
+
     private static IEnumerable<JsonObject> EnumerateCanonicalGuardianObjects(JsonNode node)
     {
         if (node is JsonArray directArray)
@@ -1574,6 +2068,36 @@ public sealed class BrowserAfterlifeWriteService
         currency == "light_sparks" ? "Искры Света" : "Чернильные Перья";
 
     private sealed record CommandParts(string Token, string Arguments);
+
+    private sealed record GuardianAbodeBrowserOption(
+        string GuardianId,
+        string GuardianName,
+        string Domain,
+        string AbodeId,
+        string AbodeName,
+        int CurrentReputation,
+        int CurrentAbodePower,
+        JsonObject Guardian)
+    {
+        public string CompositeId => $"{GuardianId}::{AbodeId}";
+    }
+
+    private sealed record ResidentWriteOption(
+        GuardianAbodeResidentState.ResidentEntry Entry,
+        string GuardianName,
+        string AbodeName);
+
+    private sealed record ResidentWriteContext(
+        JsonObject GuardiansRoot,
+        JsonObject? ResidentsRoot,
+        IReadOnlyList<ResidentWriteOption> Residents,
+        string ErrorMessage = "")
+    {
+        public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
+
+        public static ResidentWriteContext Failed(string errorMessage) =>
+            new(new JsonObject(), null, [], errorMessage);
+    }
 
     private sealed record GachaSoulValidationState(string CurrentRealm, int InkFeathers);
 }
