@@ -28,6 +28,9 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/npc_trade" or "/торговля_нпс" or
         "/equip" or "/экипировать" or
         "/unequip" or "/снять" or
+        "/inventory_drop" or "/выбросить_предмет" or
+        "/inventory_split" or "/разделить_стопку" or
+        "/inventory_merge" or "/объединить_стопки" or
         "/craft" or "/ремесло" or
         "/gacha" or "/гача" or
         "/abode_offering" or "/подношение_обители" or
@@ -57,6 +60,9 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/npc_trade" or "/торговля_нпс" => await BuildNpcTradeAsync(command, fs, stateManager),
             "/equip" or "/экипировать" => await BuildInventoryEquipAsync(command, fs),
             "/unequip" or "/снять" => await BuildInventoryUnequipAsync(command, fs),
+            "/inventory_drop" or "/выбросить_предмет" => await BuildInventoryDropAsync(command, fs),
+            "/inventory_split" or "/разделить_стопку" => await BuildInventorySplitAsync(command, fs),
+            "/inventory_merge" or "/объединить_стопки" => await BuildInventoryMergeAsync(command, fs),
             "/craft" or "/ремесло" => await BuildCraftAsync(command, fs),
             "/gacha" or "/гача" => await BuildGachaAsync(command, fs, stateManager),
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
@@ -547,6 +553,312 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 }
             ]);
     }
+
+    private static async Task<ExplorerCommandResult> BuildInventoryDropAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var inventory = await InventoryManagementService.ReadContextAsync(fs);
+        var requestedItem = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        var allItems = inventory?.Items.ToList() ?? [];
+        var matchedRequestedItem = InventoryManagementService.FindItem(allItems, requestedItem);
+        var candidates = new List<InventoryManagementItem>();
+        if (!string.IsNullOrWhiteSpace(requestedItem))
+        {
+            if (matchedRequestedItem != null)
+                candidates.Add(matchedRequestedItem);
+        }
+        else
+        {
+            candidates.AddRange(allItems);
+        }
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Выброс предмета",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = BuildInventoryDropStatusText(candidates.Count, requestedItem),
+                        Tone = candidates.Count == 0 ? UiTone.Muted : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Доступные предметы",
+                        Columns = ["Предмет", "Количество", "Состояние"],
+                        Rows = candidates
+                            .Select(static item => Row(item.Name, FormatInventoryCount(item), FormatInventoryPlacement(item)))
+                            .ToList()
+                    }
+                ]
+            }
+        };
+
+        if (candidates.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "item_identity",
+                    Prompt = "Предмет",
+                    Required = true,
+                    Options = candidates.Select(BuildInventoryOption).ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_inventory_drop",
+                    Prompt = "Подтвердить выброс предмета",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildInventorySplitAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var inventory = await InventoryManagementService.ReadContextAsync(fs);
+        var requestedItem = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        var allItems = inventory?.Items.ToList() ?? [];
+        var matchedRequestedItem = InventoryManagementService.FindItem(allItems, requestedItem);
+        var candidates = new List<InventoryManagementItem>();
+        if (!string.IsNullOrWhiteSpace(requestedItem))
+        {
+            if (matchedRequestedItem is { Count: > 1 })
+                candidates.Add(matchedRequestedItem);
+        }
+        else
+        {
+            candidates.AddRange(allItems.Where(static item => item.Count > 1));
+        }
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Разделение стопки",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = BuildInventorySplitStatusText(candidates.Count, matchedRequestedItem, requestedItem),
+                        Tone = candidates.Count == 0 ? UiTone.Muted : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Стопки для разделения",
+                        Columns = ["Предмет", "Количество", "Можно отделить"],
+                        Rows = candidates
+                            .Select(static item => Row(item.Name, item.Count.ToString(), $"1-{item.Count - 1}"))
+                            .ToList()
+                    }
+                ]
+            }
+        };
+
+        if (candidates.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        var selected = candidates.Count == 1 ? candidates[0] : null;
+        var quantityPrompt = selected == null
+            ? "Сколько отделить"
+            : $"Сколько отделить (1-{selected.Count - 1})";
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "item_identity",
+                    Prompt = "Стопка",
+                    Required = true,
+                    Options = candidates.Select(BuildInventorySplitOption).ToList()
+                },
+                new UiTextInputPrompt
+                {
+                    Id = "split_quantity",
+                    Prompt = quantityPrompt,
+                    Placeholder = selected == null ? "Количество меньше выбранной стопки" : "1",
+                    Required = true
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_inventory_split",
+                    Prompt = "Подтвердить разделение стопки",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildInventoryMergeAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var inventory = await InventoryManagementService.ReadContextAsync(fs);
+        var requestedItem = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        var allItems = inventory?.Items.ToList() ?? [];
+        var matchedRequestedItem = InventoryManagementService.FindItem(allItems, requestedItem);
+        var candidates = new List<InventoryManagementItem>();
+
+        if (inventory != null)
+        {
+            if (!string.IsNullOrWhiteSpace(requestedItem))
+            {
+                if (matchedRequestedItem != null &&
+                    InventoryManagementService.FindCompatibleStacks(inventory, matchedRequestedItem).Count > 1)
+                {
+                    candidates.Add(matchedRequestedItem);
+                }
+            }
+            else
+            {
+                candidates.AddRange(allItems.Where(item =>
+                    InventoryManagementService.FindCompatibleStacks(inventory, item).Count > 1));
+            }
+        }
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Объединение стопок",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = BuildInventoryMergeStatusText(candidates.Count, matchedRequestedItem, requestedItem),
+                        Tone = candidates.Count == 0 ? UiTone.Muted : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Совместимые стопки",
+                        Columns = ["Предмет", "Стопок", "Итог"],
+                        Rows = inventory == null
+                            ? []
+                            : candidates
+                                .Select(item =>
+                                {
+                                    var compatible = InventoryManagementService.FindCompatibleStacks(inventory, item);
+                                    return Row(item.Name, compatible.Count.ToString(), compatible.Sum(static match => match.Count).ToString());
+                                })
+                                .ToList()
+                    }
+                ]
+            }
+        };
+
+        if (candidates.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "item_identity",
+                    Prompt = "Какие стопки объединить",
+                    Required = true,
+                    Options = candidates.Select(item => BuildInventoryMergeOption(inventory!, item)).ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_inventory_merge",
+                    Prompt = "Подтвердить объединение стопок",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static string BuildInventoryDropStatusText(int candidateCount, string requestedItem)
+    {
+        if (candidateCount == 0)
+            return string.IsNullOrWhiteSpace(requestedItem)
+                ? "В инвентаре нет предметов для выброса."
+                : "Выбранный предмет не найден в инвентаре.";
+
+        return "Выберите предмет и подтвердите выброс. Если предмет сейчас экипирован, его слот будет освобождён.";
+    }
+
+    private static string BuildInventorySplitStatusText(
+        int candidateCount,
+        InventoryManagementItem? requestedItem,
+        string requestedItemText)
+    {
+        if (candidateCount > 0)
+            return "Выберите стопку, укажите количество и подтвердите разделение.";
+
+        if (!string.IsNullOrWhiteSpace(requestedItemText) && requestedItem != null)
+            return "У выбранного предмета нет стопки, которую можно разделить.";
+
+        return string.IsNullOrWhiteSpace(requestedItemText)
+            ? "В инвентаре нет стопок, которые можно разделить."
+            : "Выбранная стопка не найдена.";
+    }
+
+    private static string BuildInventoryMergeStatusText(
+        int candidateCount,
+        InventoryManagementItem? requestedItem,
+        string requestedItemText)
+    {
+        if (candidateCount > 0)
+            return "Выберите совместимые стопки и подтвердите объединение.";
+
+        if (!string.IsNullOrWhiteSpace(requestedItemText) && requestedItem != null)
+            return "Для выбранного предмета нет другой совместимой стопки.";
+
+        return string.IsNullOrWhiteSpace(requestedItemText)
+            ? "В инвентаре нет совместимых стопок для объединения."
+            : "Выбранная стопка не найдена.";
+    }
+
+    private static UiSelectionOption BuildInventoryOption(InventoryManagementItem item) =>
+        Option(
+            FirstNonEmpty(item.Identity, item.Name),
+            item.Name,
+            $"{FormatInventoryCount(item)}. {FormatInventoryPlacement(item)}.");
+
+    private static UiSelectionOption BuildInventorySplitOption(InventoryManagementItem item) =>
+        Option(
+            FirstNonEmpty(item.Identity, item.Name),
+            item.Name,
+            $"Сейчас {item.Count} шт.; можно отделить 1-{item.Count - 1}.");
+
+    private static UiSelectionOption BuildInventoryMergeOption(
+        InventoryManagementContext inventory,
+        InventoryManagementItem item)
+    {
+        var compatible = InventoryManagementService.FindCompatibleStacks(inventory, item);
+        return Option(
+            FirstNonEmpty(item.Identity, item.Name),
+            item.Name,
+            $"Совместимых стопок: {compatible.Count}; после объединения: {compatible.Sum(static match => match.Count)} шт.");
+    }
+
+    private static string FormatInventoryCount(InventoryManagementItem item) =>
+        item.Count == 1 ? "1 шт." : $"{item.Count} шт.";
+
+    private static string FormatInventoryPlacement(InventoryManagementItem item) =>
+        string.IsNullOrWhiteSpace(item.EquippedSlot)
+            ? "В рюкзаке"
+            : $"Экипирован: {InventoryEquipmentService.FormatSlotName(item.EquippedSlot)}";
 
     private static async Task<ExplorerCommandResult> BuildNpcTradeAsync(
         string command,

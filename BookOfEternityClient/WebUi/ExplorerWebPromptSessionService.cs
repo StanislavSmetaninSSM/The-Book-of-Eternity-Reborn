@@ -386,6 +386,9 @@ public sealed class ExplorerWebPromptSessionService
             "/faction_directive" or "/директива_фракции" or
             "/equip" or "/экипировать" or
             "/unequip" or "/снять" or
+            "/inventory_drop" or "/выбросить_предмет" or
+            "/inventory_split" or "/разделить_стопку" or
+            "/inventory_merge" or "/объединить_стопки" or
             "/npc_trade" or "/торговля_нпс" or
             "/craft" or "/ремесло" or
             "/gacha" or "/гача" or

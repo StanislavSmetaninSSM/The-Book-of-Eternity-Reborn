@@ -13,7 +13,6 @@ public static class BrowserCommandCoverageService
     private static readonly IReadOnlyDictionary<string, BrowserCommandAuditOverride> AuditOverrides =
         new Dictionary<string, BrowserCommandAuditOverride>(StringComparer.OrdinalIgnoreCase)
         {
-            ["inventory"] = Tracked("#806, #817", "Inventory items, equipment summary, resources, descriptions, and ordinary item equip/unequip actions are covered; stack-management actions remain tracked interactive work."),
             ["npcs"] = Tracked("#807, #817", "Read-only NPC lists, details, relationships, activities, and trade entry points are covered; start-conversation flows remain tracked interactive work."),
             ["soul_relics"] = Tracked("#802, #817", "Soul relic lists, stored/equipped state, and descriptions are covered; relic equip and unequip actions now covered by /soul_relic_equip and /soul_relic_unequip."),
             ["storage_access"] = Tracked("#814, #817", "Storage visibility and access summaries are covered; deposit and withdraw item flows remain tracked interactive work."),
