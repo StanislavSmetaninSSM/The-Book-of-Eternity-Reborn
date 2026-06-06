@@ -291,7 +291,8 @@ function sanitizeNewChapterCommandResult(result: BrowserApiResult<ExplorerComman
     notificationTitleFallback: 'Форма новой главы',
     notificationMessageFallback: 'Форма новой главы готова к заполнению.',
     promptTextFallback: 'Заполните поле формы новой главы',
-    failureMessageFallback: 'Форма новой главы сейчас недоступна.'
+    failureMessageFallback: 'Форма новой главы сейчас недоступна.',
+    preserveSafeBlocks: false
   });
 }
 

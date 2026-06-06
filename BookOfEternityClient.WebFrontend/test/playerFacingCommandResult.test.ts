@@ -133,11 +133,58 @@ const unsafeFailure: BrowserApiResult<ExplorerCommandResult> = {
   technicalDetails: 'C:\\Users\\Ёж\\debug.log'
 };
 
+const safeReadOnlyActionResult: BrowserApiResult<ExplorerCommandResult> = {
+  ok: true,
+  status: 200,
+  data: {
+    command: '/where',
+    state: 'Completed',
+    blocks: [
+      {
+        kind: 'panel',
+        title: 'Где я',
+        blocks: [
+          {
+            kind: 'text',
+            tone: 'Default',
+            text: 'Вы стоите у северных ворот.'
+          },
+          {
+            kind: 'list',
+            ordered: false,
+            items: [
+              'Каменная арка',
+              'GET /api/explorer/command'
+            ]
+          },
+          {
+            kind: 'keyValueGrid',
+            items: [
+              { key: 'Регион', value: 'Северный тракт' },
+              { key: 'raw_path', value: 'game_state/world/current_location.json' }
+            ]
+          },
+          {
+            kind: 'rawJson',
+            title: 'raw JSON',
+            json: { endpoint: '/api/explorer/command' }
+          }
+        ]
+      }
+    ],
+    actions: [],
+    prompts: [],
+    notifications: [],
+    interactiveSession: null
+  }
+};
+
 const sanitized = sanitizePlayerDefaultCommandResult(unsafeWorldSetupResult, {
   blockedTextFallback: 'Служебные подробности скрыты в обычном режиме.',
   notificationTitleFallback: 'Форма новой главы',
   notificationMessageFallback: 'Форма новой главы готова к заполнению.',
-  failureMessageFallback: 'Форма новой главы сейчас недоступна.'
+  failureMessageFallback: 'Форма новой главы сейчас недоступна.',
+  preserveSafeBlocks: false
 });
 
 if (!sanitized.ok) {
@@ -181,6 +228,29 @@ for (const pattern of forbiddenVisiblePatterns) {
 
 if (safeFailure.playerMessage !== 'Форма новой главы сейчас недоступна.') {
   throw new Error(`Expected unsafe failure text to fall back to player copy, got: ${safeFailure.playerMessage}`);
+}
+
+const safeReadOnly = sanitizePlayerDefaultCommandResult(safeReadOnlyActionResult);
+
+if (!safeReadOnly.ok) {
+  throw new Error('Expected safe read-only command result to stay successful.');
+}
+
+if (safeReadOnly.data.blocks.length === 0) {
+  throw new Error('Expected default player command presentation to preserve safe read-only result blocks.');
+}
+
+const safeReadOnlyVisibleText = collectVisibleCommandText(safeReadOnly.data).join('\n');
+for (const expected of ['Где я', 'Вы стоите у северных ворот.', 'Каменная арка', 'Регион', 'Северный тракт']) {
+  if (!safeReadOnlyVisibleText.includes(expected)) {
+    throw new Error(`Expected safe read-only result text to remain visible: ${expected}\n${safeReadOnlyVisibleText}`);
+  }
+}
+
+for (const pattern of forbiddenVisiblePatterns) {
+  if (pattern.test(safeReadOnlyVisibleText)) {
+    throw new Error(`Safe read-only command result leaked forbidden pattern ${pattern}:\n${safeReadOnlyVisibleText}`);
+  }
 }
 
 function collectVisibleCommandText(result: ExplorerCommandResult): string[] {

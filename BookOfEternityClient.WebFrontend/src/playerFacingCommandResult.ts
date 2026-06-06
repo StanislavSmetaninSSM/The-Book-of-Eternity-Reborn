@@ -27,7 +27,7 @@ const defaultPlayerDefaultCommandOptions: Required<PlayerDefaultCommandPresentat
   promptPlaceholderFallback: '',
   optionLabelFallback: 'вариант',
   failureMessageFallback: 'Игровое действие сейчас недоступно.',
-  preserveSafeBlocks: false
+  preserveSafeBlocks: true
 };
 
 const playerDefaultForbiddenPatterns: RegExp[] = [
