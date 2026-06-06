@@ -4,6 +4,7 @@ using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.WebUi;
 
@@ -47,6 +48,7 @@ public sealed class BrowserMortalWorldWriteService
             "/faction_directive" or "/директива_фракции" => await ApplyFactionDirectiveAsync(answers, owner),
             "/equip" or "/экипировать" => await ApplyInventoryEquipAsync(command, answers, owner),
             "/unequip" or "/снять" => await ApplyInventoryUnequipAsync(command, answers, owner),
+            "/npc_trade" or "/торговля_нпс" => await ApplyNpcTradeAsync(command, answers, owner),
             "/craft" or "/ремесло" => await ApplyCraftAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
         };
@@ -314,6 +316,83 @@ public sealed class BrowserMortalWorldWriteService
             payload: null);
     }
 
+    private async Task<BrowserPromptWriteResult> ApplyNpcTradeAsync(
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_trade_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите сделку.");
+
+        var npcId = ReadFirstCommandArgument(command);
+        if (string.IsNullOrWhiteSpace(npcId))
+            npcId = ReadAnswer(answers, "npc_id");
+        if (string.IsNullOrWhiteSpace(npcId))
+            return BrowserPromptWriteResult.ValidationError("Выберите торговца.");
+
+        var choice = ReadAnswer(answers, "npc_trade_choice");
+        if (!TryParseTradeChoice(choice, out var operation, out var targetId))
+            return BrowserPromptWriteResult.ValidationError("Выберите покупку, продажу, обратный выкуп или запрос витрины.");
+        if (operation == "request" && string.Equals(targetId, "__selected__", StringComparison.OrdinalIgnoreCase))
+            targetId = npcId;
+
+        var currentTurn = await ReadCurrentTurnNumberAsync();
+        var service = new NpcTradeService(_fs, NullLogger<NpcTradeService>.Instance);
+        var rollbackPaths = new[]
+        {
+            NpcCorePath,
+            "game_state/inventory/items.json",
+            "game_state/core/player_status.json",
+            NpcTradeRequestState.PendingRequestPath
+        };
+
+        return await ExecuteAsync(
+            owner,
+            "Торговля с НПС",
+            rollbackPaths,
+            async () =>
+            {
+                var result = operation switch
+                {
+                    "request" => await BuildNpcTradeRequestResultAsync(service, targetId, currentTurn),
+                    "buy" => await service.BuyAsync(npcId, targetId, currentTurn),
+                    "sell" => await service.SellAsync(npcId, targetId, currentTurn),
+                    "buyback" => await service.BuyBackAsync(npcId, targetId, currentTurn),
+                    _ => new NpcTradeService.NpcTradeOperationResult(false, false, "Выберите поддерживаемую сделку.")
+                };
+
+                if (!result.Success)
+                    throw new InvalidOperationException(result.Message);
+            },
+            "Торговля завершена",
+            operation switch
+            {
+                "request" => "Запрос ассортимента торговца отправлен.",
+                "buy" => "Покупка у торговца выполнена.",
+                "sell" => "Продажа торговцу выполнена.",
+                "buyback" => "Обратный выкуп выполнен.",
+                _ => "Сделка выполнена."
+            },
+            payload: null);
+    }
+
+    private static async Task<NpcTradeService.NpcTradeOperationResult> BuildNpcTradeRequestResultAsync(
+        NpcTradeService service,
+        string npcId,
+        int currentTurn)
+    {
+        var view = await service.EnsureTradeInventoryAsync(npcId, currentTurn, createPendingRequests: true);
+        if (view == null)
+            return new NpcTradeService.NpcTradeOperationResult(false, false, "Торговец не найден.");
+        if (view.TradeBlocked)
+            return new NpcTradeService.NpcTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
+        if (view.InventoryReady)
+            return new NpcTradeService.NpcTradeOperationResult(true, false, "Витрина торговца уже готова.");
+        if (view.InventoryRequestPending)
+            return new NpcTradeService.NpcTradeOperationResult(true, view.InventoryRequestCreatedThisCall, view.InventoryStatusMessage ?? "Витрина торговца запрошена.");
+        return new NpcTradeService.NpcTradeOperationResult(false, false, view.InventoryStatusMessage ?? "Не удалось запросить витрину торговца.");
+    }
+
     private async Task<BrowserPromptWriteResult> ApplyCraftAsync(
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -502,6 +581,54 @@ public sealed class BrowserMortalWorldWriteService
         var trimmed = command.Trim();
         var split = trimmed.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
         return split.Length == 0 ? string.Empty : split[0].ToLowerInvariant();
+    }
+
+    private static string ReadFirstCommandArgument(string command)
+    {
+        var split = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        return split.Length < 2 ? string.Empty : split[1].Trim();
+    }
+
+    private static bool TryParseTradeChoice(string choice, out string operation, out string targetId)
+    {
+        operation = string.Empty;
+        targetId = string.Empty;
+        var parts = choice.Trim().Split(':', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length != 2)
+            return false;
+
+        operation = parts[0].ToLowerInvariant();
+        targetId = parts[1];
+        return operation is "request" or "buy" or "sell" or "buyback" &&
+               !string.IsNullOrWhiteSpace(targetId);
+    }
+
+    private async Task<int> ReadCurrentTurnNumberAsync()
+    {
+        var storiesRoot = _fs.ResolvePath("stories");
+        if (!Directory.Exists(storiesRoot))
+            return 1;
+
+        var latestTurn = 0;
+        foreach (var path in Directory.EnumerateFiles(storiesRoot, "*.json", SearchOption.AllDirectories))
+        {
+            try
+            {
+                using var document = JsonDocument.Parse(await File.ReadAllTextAsync(path));
+                if (document.RootElement.TryGetProperty("turnNumber", out var turnNode) &&
+                    turnNode.ValueKind == JsonValueKind.Number &&
+                    turnNode.TryGetInt32(out var turn))
+                {
+                    latestTurn = Math.Max(latestTurn, turn);
+                }
+            }
+            catch
+            {
+                // Ignore unrelated or partial story files while deriving a safe browser write turn.
+            }
+        }
+
+        return Math.Max(1, latestTurn);
     }
 
     private static string ReadAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)

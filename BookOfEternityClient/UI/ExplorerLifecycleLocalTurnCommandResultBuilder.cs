@@ -25,12 +25,15 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/distribute" or "/распределить" or
         "/companion_directive" or "/директива_компаньону" or
         "/faction_directive" or "/директива_фракции" or
+        "/npc_trade" or "/торговля_нпс" or
         "/equip" or "/экипировать" or
         "/unequip" or "/снять" or
         "/craft" or "/ремесло" or
         "/gacha" or "/гача" or
         "/abode_offering" or "/подношение_обители" or
         "/found_guardian_mantle" or "/учредить_хранителя" or
+        "/guardian_trade" or "/торговля_хранителя" or
+        "/shining_trade" or "/сияющая_торговля" or
         "/spiritual_action" or "/духовное_действие" or
         "/soul_relic_equip" or "/экипировать_реликвию" or
         "/soul_relic_unequip" or "/снять_реликвию" => true,
@@ -51,12 +54,15 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/distribute" or "/распределить" => await BuildStatDistributionAsync(command, fs),
             "/companion_directive" or "/директива_компаньону" => await BuildCompanionDirectiveAsync(command, fs),
             "/faction_directive" or "/директива_фракции" => await BuildFactionDirectiveAsync(command, fs),
+            "/npc_trade" or "/торговля_нпс" => await BuildNpcTradeAsync(command, fs, stateManager),
             "/equip" or "/экипировать" => await BuildInventoryEquipAsync(command, fs),
             "/unequip" or "/снять" => await BuildInventoryUnequipAsync(command, fs),
             "/craft" or "/ремесло" => await BuildCraftAsync(command, fs),
             "/gacha" or "/гача" => await BuildGachaAsync(command, fs, stateManager),
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
             "/found_guardian_mantle" or "/учредить_хранителя" => await BuildPlayerGuardianFoundationAsync(command, fs),
+            "/guardian_trade" or "/торговля_хранителя" => await BuildGuardianTradeAsync(command, fs, stateManager),
+            "/shining_trade" or "/сияющая_торговля" => await BuildShiningTradeAsync(command, fs, stateManager),
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionAsync(command, fs, stateManager),
             "/soul_relic_equip" or "/экипировать_реликвию" => await BuildSoulRelicEquipAsync(command, fs),
             "/soul_relic_unequip" or "/снять_реликвию" => await BuildSoulRelicUnequipAsync(command, fs),
@@ -541,6 +547,491 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 }
             ]);
     }
+
+    private static async Task<ExplorerCommandResult> BuildNpcTradeAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var npcId = ReadCommandArguments(command);
+        if (string.IsNullOrWhiteSpace(npcId))
+        {
+            return Result(
+                command,
+                localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Info,
+                        "Торговля с НПС",
+                        "Укажите торговца командой /npc_trade <npc_id> или введите ID торговца в форме.")
+                ],
+                prompts:
+                [
+                    new UiTextInputPrompt
+                    {
+                        Id = "npc_id",
+                        Prompt = "ID торговца",
+                        Required = true,
+                        Placeholder = "npcId"
+                    },
+                    new UiSelectionPrompt
+                    {
+                        Id = "npc_trade_choice",
+                        Prompt = "Действие торговли",
+                        Required = true,
+                        Options =
+                        [
+                            Option("request:__selected__", "Запросить витрину", "Попросить ГМа подготовить ассортимент выбранного торговца.")
+                        ]
+                    },
+                    TradeConfirmationPrompt()
+                ]);
+        }
+
+        var service = new NpcTradeService(fs, NullLogger<NpcTradeService>.Instance);
+        var currentTurn = Math.Max(1, stateManager.CurrentState.TurnNumber);
+        var view = await service.EnsureTradeInventoryAsync(npcId, currentTurn, createPendingRequests: false);
+        if (view == null)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Торговец не найден", "Такого торговца сейчас нет среди известных персонажей.")
+                ]);
+        }
+
+        var sellOffers = await service.GetSellableItemsAsync(view.NpcId);
+        var options = new List<UiSelectionOption>();
+        if (!view.TradeBlocked && !view.InventoryReady && !view.InventoryRequestPending)
+            options.Add(Option($"request:{view.NpcId}", "Запросить витрину", "Попросить ГМа подготовить ассортимент текущего цикла."));
+        options.AddRange(view.Offers.Select(offer => new UiSelectionOption
+        {
+            Value = $"buy:{offer.SlotId}",
+            Label = $"Купить: {offer.Name}",
+            Description = $"{offer.Price} монет; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}",
+            Disabled = offer.SoldOut || view.CurrentMoney < offer.Price
+        }));
+        options.AddRange(sellOffers.Select(offer => Option(
+            $"sell:{offer.ItemId}",
+            $"Продать: {offer.Name}",
+            $"+{offer.Price} монет; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}")));
+        options.AddRange(view.BuybackOffers.Select(offer => new UiSelectionOption
+        {
+            Value = $"buyback:{offer.BuybackEntryId}",
+            Label = $"Выкупить: {offer.Name}",
+            Description = $"{offer.Price} монет; ранее продано за {offer.SoldForPrice}",
+            Disabled = view.CurrentMoney < offer.Price
+        }));
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Торговля с НПС",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = BuildTradeStatusText(view.TradeBlocked, view.BlockReason, view.InventoryReady, view.InventoryRequestPending, view.InventoryStatusMessage, "Витрина торговца готова."),
+                        Tone = view.TradeBlocked ? UiTone.Warning : view.InventoryReady ? UiTone.Accent : UiTone.Muted
+                    },
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            KeyValue("Торговец", view.NpcName),
+                            KeyValue("Профиль", view.MerchantProfileDisplay),
+                            KeyValue("Деньги", view.CurrentMoney.ToString()),
+                            KeyValue("Витрина", view.InventoryReady ? "готова" : view.InventoryRequestPending ? "ожидает ГМ" : "нужно запросить")
+                        ]
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Покупка",
+                        Columns = ["Товар", "Редкость", "Цена", "Статус"],
+                        Rows = view.Offers
+                            .Select(offer => Row(
+                                offer.Name,
+                                FirstNonEmpty(offer.Rarity, "-"),
+                                offer.Price.ToString(),
+                                offer.SoldOut ? "куплено" : view.CurrentMoney < offer.Price ? "не хватает денег" : "доступно"))
+                            .ToList()
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Продажа из рюкзака",
+                        Columns = ["Предмет", "Редкость", "Цена"],
+                        Rows = sellOffers
+                            .Select(offer => Row(offer.Name, FirstNonEmpty(offer.Rarity, "-"), offer.Price.ToString()))
+                            .ToList()
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Обратный выкуп",
+                        Columns = ["Предмет", "Редкость", "Цена"],
+                        Rows = view.BuybackOffers
+                            .Select(offer => Row(offer.Name, FirstNonEmpty(offer.Rarity, "-"), offer.Price.ToString()))
+                            .ToList()
+                    }
+                ]
+            }
+        };
+
+        if (options.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "npc_trade_choice",
+                    Prompt = "Сделка",
+                    Required = true,
+                    Options = options
+                },
+                TradeConfirmationPrompt()
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildShiningTradeAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var factionId = ReadCommandArguments(command);
+        if (string.IsNullOrWhiteSpace(factionId))
+        {
+            return Result(
+                command,
+                localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Info, "Сияющая торговля", "Укажите фракцию командой /shining_trade <faction_id> или введите ID фракции в форме.")
+                ],
+                prompts:
+                [
+                    new UiTextInputPrompt
+                    {
+                        Id = "faction_id",
+                        Prompt = "ID сияющей фракции",
+                        Required = true,
+                        Placeholder = "factionId"
+                    },
+                    new UiSelectionPrompt
+                    {
+                        Id = "shining_trade_choice",
+                        Prompt = "Действие торговли",
+                        Required = true,
+                        Options =
+                        [
+                            Option("request:__selected__", "Запросить витрину", "Попросить ГМа подготовить ассортимент выбранной сияющей фракции.")
+                        ]
+                    },
+                    TradeConfirmationPrompt()
+                ]);
+        }
+
+        var view = await ShiningTradeService.ReadTradeViewAsync(fs, factionId);
+        if (view == null)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Фракция не найдена", "Такой сияющей фракции сейчас нет в Обители.")
+                ]);
+        }
+
+        var feathers = GetSoulInkFeathers((await ReadJson(fs, SoulStatePath)).Node as JsonObject, stateManager.CurrentState.InkFeathers);
+        var options = new List<UiSelectionOption>();
+        if (!view.TradeBlocked && !view.InventoryReady && !view.InventoryRequestPending)
+            options.Add(Option($"request:{view.FactionId}", "Запросить витрину", "Попросить ГМа подготовить ассортимент сияющей фракции."));
+        options.AddRange(view.Offers.Select(offer => new UiSelectionOption
+        {
+            Value = $"buy:{offer.SlotId}",
+            Label = $"Купить: {offer.Name}",
+            Description = $"{offer.PriceInFeathers} Чернильных Перьев; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}",
+            Disabled = offer.SoldOut || feathers < offer.PriceInFeathers
+        }));
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Сияющая торговля",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = BuildTradeStatusText(view.TradeBlocked, view.BlockReason, view.InventoryReady, view.InventoryRequestPending, view.InventoryStatusMessage, "Витрина сияющей фракции готова."),
+                        Tone = view.TradeBlocked ? UiTone.Warning : view.InventoryReady ? UiTone.Accent : UiTone.Muted
+                    },
+                    new UiTextBlock
+                    {
+                        Text = "Продажа сияющим фракциям пока не поддержана текущими правилами торговли; браузер не создаёт отдельную механику продажи.",
+                        Tone = UiTone.Muted
+                    },
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            KeyValue("Фракция", view.FactionName),
+                            KeyValue("Чернильные Перья", feathers.ToString()),
+                            KeyValue("Уровень торговли", view.TradeTier.ToString()),
+                            KeyValue("Витрина", view.InventoryReady ? "готова" : view.InventoryRequestPending ? "ожидает ГМ" : "нужно запросить")
+                        ]
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Покупка",
+                        Columns = ["Реликвия", "Редкость", "Цена", "Статус"],
+                        Rows = view.Offers
+                            .Select(offer => Row(
+                                offer.Name,
+                                FirstNonEmpty(offer.Rarity, "-"),
+                                offer.PriceInFeathers.ToString(),
+                                offer.SoldOut ? "куплено" : feathers < offer.PriceInFeathers ? "не хватает перьев" : "доступно"))
+                            .ToList()
+                    }
+                ]
+            }
+        };
+
+        if (options.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "shining_trade_choice",
+                    Prompt = "Действие торговли",
+                    Required = true,
+                    Options = options
+                },
+                TradeConfirmationPrompt()
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildGuardianTradeAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var guardianId = ReadCommandArguments(command);
+        if (string.IsNullOrWhiteSpace(guardianId))
+        {
+            return Result(
+                command,
+                localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Info, "Торговля хранителя", "Укажите Хранителя командой /guardian_trade <guardian_id> или введите ID Хранителя в форме.")
+                ],
+                prompts:
+                [
+                    new UiTextInputPrompt
+                    {
+                        Id = "guardian_id",
+                        Prompt = "ID хранителя",
+                        Required = true,
+                        Placeholder = "guardianId"
+                    },
+                    new UiSelectionPrompt
+                    {
+                        Id = "guardian_trade_choice",
+                        Prompt = "Действие торговли",
+                        Required = true,
+                        Options =
+                        [
+                            Option("request:__selected__", "Запросить витрину", "Попросить ГМа подготовить ассортимент выбранного Хранителя.")
+                        ]
+                    },
+                    TradeConfirmationPrompt()
+                ]);
+        }
+
+        var service = new GuardianTradeService(fs, NullLogger<GuardianTradeService>.Instance);
+        var currentTurn = Math.Max(1, stateManager.CurrentState.TurnNumber);
+        var currentIncarnation = Math.Max(1, stateManager.CurrentState.Incarnation);
+        var view = await service.EnsureTradeInventoryAsync(guardianId, currentIncarnation, currentTurn, createPendingRequests: false);
+        if (view == null)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Хранитель не найден", "Такого Хранителя сейчас нет в доступной Обители.")
+                ]);
+        }
+
+        var sellOffers = await service.GetSellableRelicsAsync(view.GuardianId);
+        var soul = (await ReadJson(fs, SoulStatePath)).Node as JsonObject;
+        var feathers = GetSoulInkFeathers(soul, stateManager.CurrentState.InkFeathers);
+        var options = new List<UiSelectionOption>();
+        if (!view.TradeBlocked && !view.InventoryReady && !view.InventoryRequestPending)
+            options.Add(Option($"request:{view.GuardianId}", "Запросить витрину", "Попросить ГМа подготовить ассортимент Хранителя."));
+        options.AddRange(view.Offers.Select(offer => new UiSelectionOption
+        {
+            Value = $"buy:{offer.SlotId}",
+            Label = $"Купить: {offer.Name}",
+            Description = $"{offer.PriceInFeathers} Чернильных Перьев; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}",
+            Disabled = offer.SoldOut || feathers < offer.PriceInFeathers
+        }));
+        options.AddRange(sellOffers.Select(offer => Option(
+            $"sell:{offer.RelicId}",
+            $"Продать: {offer.Name}",
+            $"+{offer.PriceInFeathers} Чернильных Перьев; редкость: {FirstNonEmpty(offer.Rarity, "не указана")}")));
+        options.AddRange(view.BuybackOffers.Select(offer => new UiSelectionOption
+        {
+            Value = $"buyback:{offer.BuybackEntryId}",
+            Label = $"Выкупить: {offer.Name}",
+            Description = $"{offer.PriceInFeathers} Чернильных Перьев; ранее продано за {offer.SoldForPrice}",
+            Disabled = feathers < offer.PriceInFeathers
+        }));
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Торговля хранителя",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = BuildTradeStatusText(view.TradeBlocked, view.BlockReason, view.InventoryReady, view.InventoryRequestPending, view.InventoryStatusMessage, "Витрина Хранителя готова."),
+                        Tone = view.TradeBlocked ? UiTone.Warning : view.InventoryReady ? UiTone.Accent : UiTone.Muted
+                    },
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            KeyValue("Хранитель", view.GuardianName),
+                            KeyValue("Домен", view.DomainDisplay),
+                            KeyValue("Чернильные Перья", feathers.ToString()),
+                            KeyValue("Витрина", view.InventoryReady ? "готова" : view.InventoryRequestPending ? "ожидает ГМ" : "нужно запросить")
+                        ]
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Покупка",
+                        Columns = ["Реликвия", "Редкость", "Цена", "Статус"],
+                        Rows = view.Offers
+                            .Select(offer => Row(
+                                offer.Name,
+                                FirstNonEmpty(offer.Rarity, "-"),
+                                offer.PriceInFeathers.ToString(),
+                                offer.SoldOut ? "куплено" : feathers < offer.PriceInFeathers ? "не хватает перьев" : "доступно"))
+                            .ToList()
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Продажа реликвий",
+                        Columns = ["Реликвия", "Редкость", "Цена"],
+                        Rows = sellOffers
+                            .Select(offer => Row(offer.Name, FirstNonEmpty(offer.Rarity, "-"), offer.PriceInFeathers.ToString()))
+                            .ToList()
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Обратный выкуп",
+                        Columns = ["Реликвия", "Редкость", "Цена"],
+                        Rows = view.BuybackOffers
+                            .Select(offer => Row(offer.Name, FirstNonEmpty(offer.Rarity, "-"), offer.PriceInFeathers.ToString()))
+                            .ToList()
+                    }
+                ]
+            }
+        };
+
+        if (options.Count == 0)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "guardian_trade_choice",
+                    Prompt = "Действие торговли",
+                    Required = true,
+                    Options = options
+                },
+                TradeConfirmationPrompt()
+            ]);
+    }
+
+    private static UiConfirmationPrompt TradeConfirmationPrompt() => new()
+    {
+        Id = "confirm_trade_write",
+        Prompt = "Подтвердить сделку",
+        Required = true,
+        DefaultValue = false
+    };
+
+    private static string BuildTradeStatusText(
+        bool tradeBlocked,
+        string? blockReason,
+        bool inventoryReady,
+        bool inventoryRequestPending,
+        string? inventoryStatusMessage,
+        string readyMessage)
+    {
+        if (tradeBlocked)
+            return SanitizeBrowserTradeStatusText(FirstNonEmpty(blockReason, "Торговля сейчас недоступна."));
+        if (inventoryReady)
+            return readyMessage;
+        if (!string.IsNullOrWhiteSpace(inventoryStatusMessage))
+            return SanitizeBrowserTradeStatusText(inventoryStatusMessage!);
+        return inventoryRequestPending
+            ? "Витрина уже запрошена и ждёт ответа ГМ."
+            : "Витрина ещё не подготовлена; можно отправить запрос ассортимента.";
+    }
+
+    private static string SanitizeBrowserTradeStatusText(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return "Торговля сейчас недоступна.";
+
+        return ContainsBrowserTradeDiagnosticFragment(message)
+            ? "Торговля временно ждёт проверки ГМ. Завершите или обновите текущий торговый запрос, затем повторите действие."
+            : message;
+    }
+
+    private static bool ContainsBrowserTradeDiagnosticFragment(string value) =>
+        value.Contains(".json", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("pending_", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("canonical", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("contract", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("requestId=", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("slotId", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("repair", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("cleanup", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("raw", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("debug", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("game_state/", StringComparison.OrdinalIgnoreCase);
 
     private static async Task<ExplorerCommandResult> BuildSoulRelicEquipAsync(string command, FileSystemManager fs)
     {

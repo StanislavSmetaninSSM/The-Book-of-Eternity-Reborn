@@ -38,6 +38,7 @@ public sealed class BrowserAfterlifeWriteService
         var parsed = ParseCommand(command);
         return parsed.Token switch
         {
+            "/shining_trade" or "/сияющая_торговля" => await ApplyShiningTradeAsync(parsed.Arguments, answers, owner),
             "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(answers, owner),
             "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(answers, owner),
             "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
@@ -48,10 +49,145 @@ public sealed class BrowserAfterlifeWriteService
                 : BrowserPromptWriteResult.ValidationError("Команда /gacha не принимает аргументы. Выберите поддерживаемый прямой призыв Моря Хаоса через браузерную форму."),
             "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(answers, owner),
             "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
+            "/guardian_trade" or "/торговля_хранителя" => await ApplyGuardianTradeAsync(parsed.Arguments, answers, owner),
             "/soul_relic_equip" or "/экипировать_реликвию" => await ApplySoulRelicEquipAsync(answers, owner),
             "/soul_relic_unequip" or "/снять_реликвию" => await ApplySoulRelicUnequipAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
         };
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningTradeAsync(
+        string commandArguments,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_trade_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите сделку.");
+
+        var factionId = string.IsNullOrWhiteSpace(commandArguments)
+            ? ReadAnswer(answers, "faction_id")
+            : commandArguments.Trim();
+        if (string.IsNullOrWhiteSpace(factionId))
+            return BrowserPromptWriteResult.ValidationError("Выберите сияющую фракцию.");
+
+        var choice = ReadAnswer(answers, "shining_trade_choice");
+        if (!TryParseTradeChoice(choice, out var operation, out var targetId))
+            return BrowserPromptWriteResult.ValidationError("Выберите запрос витрины или покупку.");
+        if (operation == "request" && string.Equals(targetId, "__selected__", StringComparison.OrdinalIgnoreCase))
+            targetId = factionId;
+        if (operation == "sell")
+            return BrowserPromptWriteResult.ValidationError("Продажа сияющим фракциям пока не поддержана текущими правилами торговли.");
+        if (operation is not ("request" or "buy"))
+            return BrowserPromptWriteResult.ValidationError("Сияющая торговля поддерживает запрос витрины и покупку из готовой витрины.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var currentTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber);
+        var rollbackPaths = operation == "buy"
+            ? new[] { SoulStatePath, ShiningAbodeState.StatePath, ShiningTradeRequestState.PendingRequestsPath }
+            : new[] { ShiningTradeRequestState.PendingRequestsPath, ShiningAbodeState.StatePath };
+
+        return await ExecuteAsync(
+            owner,
+            "Сияющая торговля",
+            rollbackPaths,
+            async () =>
+            {
+                var result = operation switch
+                {
+                    "request" => await ShiningTradeService.RequestInventoryAsync(_fs, targetId, currentTurn),
+                    "buy" => await ShiningTradeService.BuyAsync(_fs, factionId, targetId, currentTurn),
+                    _ => new ShiningTradeService.ShiningTradeOperationResult(false, false, "Выберите поддерживаемое действие.")
+                };
+
+                if (!result.Success)
+                    throw new InvalidOperationException(result.Message);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            operation == "request" ? "Витрина запрошена" : "Покупка завершена",
+            operation == "request"
+                ? "Запрос ассортимента сияющей фракции отправлен."
+                : "Покупка из сияющей витрины выполнена.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyGuardianTradeAsync(
+        string commandArguments,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_trade_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите сделку.");
+
+        var guardianId = string.IsNullOrWhiteSpace(commandArguments)
+            ? ReadAnswer(answers, "guardian_id")
+            : commandArguments.Trim();
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return BrowserPromptWriteResult.ValidationError("Выберите Хранителя.");
+
+        var choice = ReadAnswer(answers, "guardian_trade_choice");
+        if (!TryParseTradeChoice(choice, out var operation, out var targetId))
+            return BrowserPromptWriteResult.ValidationError("Выберите запрос витрины, покупку, продажу или обратный выкуп.");
+        if (operation == "request" && string.Equals(targetId, "__selected__", StringComparison.OrdinalIgnoreCase))
+            targetId = guardianId;
+
+        await _stateManager.RefreshGameStateAsync();
+        var currentTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber);
+        var currentIncarnation = Math.Max(1, _stateManager.CurrentState.Incarnation);
+        var service = new GuardianTradeService(_fs, NullLogger<GuardianTradeService>.Instance);
+        var rollbackPaths = operation switch
+        {
+            "request" => new[] { GuardianTradeRequestState.PendingRequestPath, "game_state/meta/guardians.json", GuardianProjectState.TrackerPath },
+            "buy" => new[] { SoulStatePath, "game_state/meta/guardians.json", GuardianProjectState.TrackerPath, GuardianTradeRequestState.PendingRequestPath },
+            _ => new[] { SoulStatePath, "game_state/meta/guardians.json" }
+        };
+
+        return await ExecuteAsync(
+            owner,
+            "Торговля хранителя",
+            rollbackPaths,
+            async () =>
+            {
+                var result = operation switch
+                {
+                    "request" => await BuildGuardianTradeRequestResultAsync(service, targetId, currentIncarnation, currentTurn),
+                    "buy" => await service.BuyAsync(guardianId, targetId, currentIncarnation, currentTurn),
+                    "sell" => await service.SellAsync(guardianId, targetId, currentTurn),
+                    "buyback" => await service.BuyBackAsync(guardianId, targetId, currentTurn),
+                    _ => new GuardianTradeService.GuardianTradeOperationResult(false, false, "Выберите поддерживаемую сделку.")
+                };
+
+                if (!result.Success)
+                    throw new InvalidOperationException(result.Message);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            operation == "request" ? "Витрина запрошена" : "Торговля завершена",
+            operation switch
+            {
+                "request" => "Запрос ассортимента Хранителя отправлен.",
+                "buy" => "Покупка у Хранителя выполнена.",
+                "sell" => "Продажа Хранителю выполнена.",
+                "buyback" => "Обратный выкуп у Хранителя выполнен.",
+                _ => "Сделка выполнена."
+            },
+            payload: null);
+    }
+
+    private static async Task<GuardianTradeService.GuardianTradeOperationResult> BuildGuardianTradeRequestResultAsync(
+        GuardianTradeService service,
+        string guardianId,
+        int currentIncarnation,
+        int currentTurn)
+    {
+        var view = await service.EnsureTradeInventoryAsync(guardianId, currentIncarnation, currentTurn, createPendingRequests: true);
+        if (view == null)
+            return new GuardianTradeService.GuardianTradeOperationResult(false, false, "Хранитель не найден.");
+        if (view.TradeBlocked)
+            return new GuardianTradeService.GuardianTradeOperationResult(false, false, view.BlockReason ?? "Торговля недоступна.");
+        if (view.InventoryReady)
+            return new GuardianTradeService.GuardianTradeOperationResult(true, false, "Витрина Хранителя уже готова.");
+        if (view.InventoryRequestPending)
+            return new GuardianTradeService.GuardianTradeOperationResult(true, view.InventoryRequestCreatedThisCall, view.InventoryStatusMessage ?? "Витрина Хранителя запрошена.");
+        return new GuardianTradeService.GuardianTradeOperationResult(false, false, view.InventoryStatusMessage ?? "Не удалось запросить витрину Хранителя.");
     }
 
     private async Task<BrowserPromptWriteResult> ApplyShiningTreasuryAsync(
@@ -566,7 +702,7 @@ public sealed class BrowserAfterlifeWriteService
         Func<Task> writeOperation,
         string title,
         string message,
-        JsonObject payload)
+        JsonObject? payload)
     {
         var result = await _coordinator.ExecuteAsync(
             new BrowserLocalWriteRequest(owner.OwnerId, owner.OwnerLabel, operationLabel),
@@ -576,12 +712,45 @@ public sealed class BrowserAfterlifeWriteService
         if (result.Success)
             return BrowserPromptWriteResult.Completed(title, message, payload);
 
+        var failureMessage = SanitizeLocalWriteMessage(result.Message);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            result.Message);
+            failureMessage);
     }
+
+    private static string SanitizeLocalWriteMessage(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return "Локальная запись не выполнена.";
+
+        var sanitized = message
+            .Replace("Browser-write отменён, rollback восстановлен:", "Локальная запись не выполнена, состояние восстановлено:", StringComparison.Ordinal)
+            .Replace("Browser-write", "Локальная запись", StringComparison.Ordinal)
+            .Replace("GM-turn", "ход ГМ", StringComparison.Ordinal)
+            .Replace("rollback/snapshot artifact", "восстановление состояния", StringComparison.Ordinal)
+            .Replace("rollback", "восстановление состояния", StringComparison.Ordinal)
+            .Replace("game_session", "текущая игровая сессия", StringComparison.Ordinal)
+            .Replace("lease", "срока блокировки", StringComparison.Ordinal);
+
+        return ContainsBrowserTradeDiagnosticFragment(sanitized)
+            ? "Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие."
+            : sanitized;
+    }
+
+    private static bool ContainsBrowserTradeDiagnosticFragment(string value) =>
+        value.Contains(".json", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("pending_", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("canonical", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("contract", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("requestId=", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("slotId", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("repair", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("cleanup", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("raw", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("debug", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("game_state/", StringComparison.OrdinalIgnoreCase);
 
     private async Task<string?> TryDescribeTreasuryCostBlockerAsync(JsonObject shiningRoot)
     {
@@ -1053,6 +1222,20 @@ public sealed class BrowserAfterlifeWriteService
             1 => new CommandParts(split[0].ToLowerInvariant(), string.Empty),
             _ => new CommandParts(split[0].ToLowerInvariant(), split[1].Trim())
         };
+    }
+
+    private static bool TryParseTradeChoice(string choice, out string operation, out string targetId)
+    {
+        operation = string.Empty;
+        targetId = string.Empty;
+        var parts = choice.Trim().Split(':', 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length != 2)
+            return false;
+
+        operation = parts[0].ToLowerInvariant();
+        targetId = parts[1];
+        return operation is "request" or "buy" or "sell" or "buyback" &&
+               !string.IsNullOrWhiteSpace(targetId);
     }
 
     private static string ReadAnswer(IReadOnlyDictionary<string, JsonNode?> answers, string key)

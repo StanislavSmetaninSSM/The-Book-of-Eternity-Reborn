@@ -30,7 +30,7 @@ public sealed partial class NpcTradeService
         _logger = logger;
     }
 
-    public async Task<NpcTradeView?> EnsureTradeInventoryAsync(string npcId, int currentTurn)
+    public async Task<NpcTradeView?> EnsureTradeInventoryAsync(string npcId, int currentTurn, bool createPendingRequests = true)
     {
         if (currentTurn <= 0)
             throw new ArgumentOutOfRangeException(nameof(currentTurn), "Подготовка или проверка витрины НПС требует актуальный номер хода.");
@@ -46,7 +46,13 @@ public sealed partial class NpcTradeService
             return null;
 
         var currentWorldMinutes = await ResolveCurrentWorldMinutesAsync();
-        var (changed, view) = await EnsureNpcTradeInventoryStateAsync(npcRoot, npc, statusRoot, currentWorldMinutes, currentTurn);
+        var (changed, view) = await EnsureNpcTradeInventoryStateAsync(
+            npcRoot,
+            npc,
+            statusRoot,
+            currentWorldMinutes,
+            currentTurn,
+            createPendingRequests);
         if (changed)
             await _fs.WriteFileAtomicAsync(NpcCorePath, npcRoot.ToJsonString(JsonOpts));
 
@@ -447,7 +453,8 @@ public sealed partial class NpcTradeService
         JsonObject npc,
         JsonObject statusRoot,
         int currentWorldMinutes,
-        int currentTurn)
+        int currentTurn,
+        bool createPendingRequests = true)
     {
         var npcId = GetNpcIdentity(npc);
         var npcName = GetNodeString(npc["name"]) ?? npcId;
@@ -510,7 +517,7 @@ public sealed partial class NpcTradeService
                     derivedTradeSlotCount,
                     refreshAfterWorldMinutes);
 
-                if (!inventoryRequestPending)
+                if (!inventoryRequestPending && createPendingRequests)
                 {
                     request = new NpcTradeRequestState.PendingNpcTradeInventoryRequest
                     {
@@ -536,7 +543,9 @@ public sealed partial class NpcTradeService
 
                 inventoryStatusMessage = inventoryRequestCreatedThisCall
                     ? "Витрина торговца подготавливается. Запрос на ассортимент отправлен GM."
-                    : "Витрина торговца ещё подготавливается. Повторите после ответа GM.";
+                    : inventoryRequestPending
+                        ? "Витрина торговца ещё подготавливается. Повторите после ответа GM."
+                        : "Для этой торговли нужно запросить ассортимент торговца.";
             }
         }
 
