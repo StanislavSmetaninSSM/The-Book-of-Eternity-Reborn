@@ -1,14 +1,14 @@
 {
   "schemaVersion": 2,
   "summary": {
-    "descriptorCount": 74,
-    "aliasCount": 163,
+    "descriptorCount": 80,
+    "aliasCount": 175,
     "subcommandCount": 8,
-    "browserExecutableCount": 74,
-    "playerDefaultActionCount": 67,
+    "browserExecutableCount": 80,
+    "playerDefaultActionCount": 73,
     "advancedOnlyActionCount": 7,
-    "mutatingCommandCount": 18,
-    "commandsNeedingFollowUpCount": 13
+    "mutatingCommandCount": 24,
+    "commandsNeedingFollowUpCount": 12
   },
   "commands": [
     {
@@ -913,15 +913,15 @@
       "primaryActionLabel": "\u0418\u043D\u0432\u0435\u043D\u0442\u0430\u0440\u044C",
       "primaryCommand": "/inv",
       "subcommands": [],
-      "followUpIssue": "#806, #817",
-      "reason": "Inventory items, equipment summary, resources, descriptions, and ordinary item equip/unequip actions are covered; stack-management actions remain tracked interactive work.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# MortalWorld handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Inventory items, equipment summary, resources, descriptions, and ordinary item equip/unequip actions are covered; stack-management actions remain tracked interactive work."
+      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
     },
     {
       "id": "npcs",
@@ -942,15 +942,15 @@
       "primaryActionLabel": "\u041F\u0435\u0440\u0441\u043E\u043D\u0430\u0436\u0438",
       "primaryCommand": "/npc",
       "subcommands": [],
-      "followUpIssue": "#805, #807, #817",
-      "reason": "Read-only NPC lists, details, relationships, and activities are covered; trade and start-conversation flows remain tracked interactive work.",
+      "followUpIssue": "#807, #817",
+      "reason": "Read-only NPC lists, details, relationships, activities, and trade entry points are covered; start-conversation flows remain tracked interactive work.",
       "auditStatus": "tracked-follow-up",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# MortalWorld handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only NPC lists, details, relationships, and activities are covered; trade and start-conversation flows remain tracked interactive work."
+      "gapSummary": "Read-only NPC lists, details, relationships, activities, and trade entry points are covered; start-conversation flows remain tracked interactive work."
     },
     {
       "id": "quests",
@@ -1527,6 +1527,110 @@
       "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
     },
     {
+      "id": "inventory_drop",
+      "aliases": [
+        "/\u0432\u044B\u0431\u0440\u043E\u0441\u0438\u0442\u044C_\u043F\u0440\u0435\u0434\u043C\u0435\u0442",
+        "/inventory_drop"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0412\u044B\u0431\u0440\u043E\u0441\u0438\u0442\u044C \u043F\u0440\u0435\u0434\u043C\u0435\u0442",
+      "primaryCommand": "/\u0432\u044B\u0431\u0440\u043E\u0441\u0438\u0442\u044C_\u043F\u0440\u0435\u0434\u043C\u0435\u0442",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# LifecycleLocalTurn handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+    },
+    {
+      "id": "inventory_split",
+      "aliases": [
+        "/\u0440\u0430\u0437\u0434\u0435\u043B\u0438\u0442\u044C_\u0441\u0442\u043E\u043F\u043A\u0443",
+        "/inventory_split"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0420\u0430\u0437\u0434\u0435\u043B\u0438\u0442\u044C \u0441\u0442\u043E\u043F\u043A\u0443",
+      "primaryCommand": "/\u0440\u0430\u0437\u0434\u0435\u043B\u0438\u0442\u044C_\u0441\u0442\u043E\u043F\u043A\u0443",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# LifecycleLocalTurn handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+    },
+    {
+      "id": "inventory_merge",
+      "aliases": [
+        "/\u043E\u0431\u044A\u0435\u0434\u0438\u043D\u0438\u0442\u044C_\u0441\u0442\u043E\u043F\u043A\u0438",
+        "/inventory_merge"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041E\u0431\u044A\u0435\u0434\u0438\u043D\u0438\u0442\u044C \u0441\u0442\u043E\u043F\u043A\u0438",
+      "primaryCommand": "/\u043E\u0431\u044A\u0435\u0434\u0438\u043D\u0438\u0442\u044C_\u0441\u0442\u043E\u043F\u043A\u0438",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# LifecycleLocalTurn handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+    },
+    {
+      "id": "npc_trade",
+      "aliases": [
+        "/npc_trade",
+        "/\u0442\u043E\u0440\u0433\u043E\u0432\u043B\u044F_\u043D\u043F\u0441"
+      ],
+      "group": "MortalWorld",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0422\u043E\u0440\u0433\u043E\u0432\u043B\u044F \u0441 \u041D\u041F\u0421",
+      "primaryCommand": "/npc_trade",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# LifecycleLocalTurn handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+    },
+    {
       "id": "craft",
       "aliases": [
         "/craft",
@@ -1787,10 +1891,10 @@
       "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
     },
     {
-      "id": "soul_relic_equip",
+      "id": "guardian_trade",
       "aliases": [
-        "/soul_relic_equip",
-        "/\u044d\u043a\u0438\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c_\u0440\u0435\u043b\u0438\u043a\u0432\u0438\u044e"
+        "/guardian_trade",
+        "/\u0442\u043E\u0440\u0433\u043E\u0432\u043B\u044F_\u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u044F"
       ],
       "group": "ChaosSea",
       "mutationMode": "LocalTurn",
@@ -1799,7 +1903,33 @@
       "uxDecision": "guided-form",
       "surface": "player-default",
       "formMode": "guided-form",
-      "primaryActionLabel": "\u042d\u043a\u0438\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0440\u0435\u043b\u0438\u043a\u0432\u0438\u044e",
+      "primaryActionLabel": "\u0422\u043E\u0440\u0433\u043E\u0432\u043B\u044F \u0445\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u044F",
+      "primaryCommand": "/guardian_trade",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# LifecycleLocalTurn handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+    },
+    {
+      "id": "soul_relic_equip",
+      "aliases": [
+        "/soul_relic_equip",
+        "/\u044D\u043A\u0438\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C_\u0440\u0435\u043B\u0438\u043A\u0432\u0438\u044E"
+      ],
+      "group": "ChaosSea",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u042D\u043A\u0438\u043F\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u0440\u0435\u043B\u0438\u043A\u0432\u0438\u044E",
       "primaryCommand": "/soul_relic_equip",
       "subcommands": [],
       "followUpIssue": "",
@@ -1816,7 +1946,7 @@
       "id": "soul_relic_unequip",
       "aliases": [
         "/soul_relic_unequip",
-        "/\u0441\u043d\u044f\u0442\u044c_\u0440\u0435\u043b\u0438\u043a\u0432\u0438\u044e"
+        "/\u0441\u043D\u044F\u0442\u044C_\u0440\u0435\u043B\u0438\u043A\u0432\u0438\u044E"
       ],
       "group": "ChaosSea",
       "mutationMode": "LocalTurn",
@@ -1825,7 +1955,7 @@
       "uxDecision": "guided-form",
       "surface": "player-default",
       "formMode": "guided-form",
-      "primaryActionLabel": "\u0421\u043d\u044f\u0442\u044c \u0440\u0435\u043b\u0438\u043a\u0432\u0438\u044e",
+      "primaryActionLabel": "\u0421\u043D\u044F\u0442\u044C \u0440\u0435\u043B\u0438\u043A\u0432\u0438\u044E",
       "primaryCommand": "/soul_relic_unequip",
       "subcommands": [],
       "followUpIssue": "",
@@ -1889,6 +2019,32 @@
       "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
       "gapSummary": "Read-only Shining politics data is covered; founding, regrouping, and leadership actions remain tracked interactive work."
+    },
+    {
+      "id": "shining_trade",
+      "aliases": [
+        "/shining_trade",
+        "/\u0441\u0438\u044F\u044E\u0449\u0430\u044F_\u0442\u043E\u0440\u0433\u043E\u0432\u043B\u044F"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "LifecycleLocalTurn",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0421\u0438\u044F\u044E\u0449\u0430\u044F \u0442\u043E\u0440\u0433\u043E\u0432\u043B\u044F",
+      "primaryCommand": "/shining_trade",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# LifecycleLocalTurn handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
     },
     {
       "id": "shining_treasury",
