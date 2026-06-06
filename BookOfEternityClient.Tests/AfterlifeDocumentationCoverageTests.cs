@@ -1644,6 +1644,27 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void MortalNpcSocialTopicContractIsDocumented()
+    {
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var example = ReadRepoFile("Examples", "E_CLI_Mortal_Npc_Social_Turns.txt");
+
+        foreach (var doc in new[] { taskGuide, apiSpec, example })
+        {
+            Assert.Contains("pending_npc_social_interactions.json", doc, StringComparison.Ordinal);
+            Assert.Contains("topic", doc, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("npcInteractionJournalUpdates", doc, StringComparison.Ordinal);
+            Assert.Contains("requestId", doc, StringComparison.Ordinal);
+            Assert.Contains("npcId", doc, StringComparison.Ordinal);
+            Assert.Contains("interactionType", doc, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("спросить о рыжем ключе", example, StringComparison.Ordinal);
+        Assert.Contains("talk_scene", example, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifePromptDocsCoverFullRuntimeForbiddenFileGroups()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

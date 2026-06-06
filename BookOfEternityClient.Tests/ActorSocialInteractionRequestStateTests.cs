@@ -215,6 +215,33 @@ public sealed class ActorSocialInteractionRequestStateTests : IDisposable
     }
 
     [Fact]
+    public async Task BuildSystemReminderFragmentAsync_MortalRealm_IncludesNpcSocialTopic()
+    {
+        await _fs.WriteFileAtomicAsync(ActorSocialInteractionRequestState.PendingNpcRequestPath, """
+        {
+          "requests": [
+            {
+              "requestId": "npc_req_topic",
+              "npcId": "npc_merchant_01",
+              "npcName": "Старый Торговец",
+              "interactionType": "talk",
+              "topic": "спросить о рыжем ключе",
+              "createdAtTurn": 7,
+              "createdAtUtc": "2026-03-27T08:00:00Z"
+            }
+          ]
+        }
+        """);
+
+        var reminder = await ActorSocialInteractionRequestState.BuildSystemReminderFragmentAsync(_fs, "Mortal World");
+
+        Assert.NotNull(reminder);
+        Assert.Contains("спросить о рыжем ключе", reminder, StringComparison.Ordinal);
+        Assert.Contains("npcInteractionJournalUpdates", reminder, StringComparison.Ordinal);
+        Assert.Contains("requestId", reminder, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task EnsureHealthyAsync_MalformedGuardianRequestFile_PreservesCorruptionAndBlocksOverwrite()
     {
         await _fs.WriteFileAtomicAsync(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "{");

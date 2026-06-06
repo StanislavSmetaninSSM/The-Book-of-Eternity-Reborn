@@ -282,7 +282,7 @@
       "emptyWrapperSemantics": "Valid empty/stale files may be removed as clutter by lifecycle hygiene; malformed/non-empty files are preserved.",
       "malformedBehavior": "Malformed file blocks afterlife lifecycle repair rather than being closed with afterlife output.",
       "blockerBehavior": "Blocks Soul Gates/afterlife exits when non-empty or malformed.",
-      "closureSurface": "Mortal World NPC social closure only.",
+      "closureSurface": "Mortal World NPC social closure only; optional topic is answered in Mortal accepted turns only.",
       "docAnchors": [
         "OtherGuides/Afterlife_Contract_Matrix.md#Universal Afterlife Rules"
       ],

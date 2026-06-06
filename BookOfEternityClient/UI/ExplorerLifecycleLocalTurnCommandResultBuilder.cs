@@ -25,6 +25,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/distribute" or "/распределить" or
         "/companion_directive" or "/директива_компаньону" or
         "/faction_directive" or "/директива_фракции" or
+        "/npc_talk" or "/talk_npc" or "/поговорить_с_нпс" or "/разговор_с_нпс" or
         "/npc_trade" or "/торговля_нпс" or
         "/equip" or "/экипировать" or
         "/unequip" or "/снять" or
@@ -57,6 +58,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/distribute" or "/распределить" => await BuildStatDistributionAsync(command, fs),
             "/companion_directive" or "/директива_компаньону" => await BuildCompanionDirectiveAsync(command, fs),
             "/faction_directive" or "/директива_фракции" => await BuildFactionDirectiveAsync(command, fs),
+            "/npc_talk" or "/talk_npc" or "/поговорить_с_нпс" or "/разговор_с_нпс" => await BuildNpcTalkAsync(command, fs),
             "/npc_trade" or "/торговля_нпс" => await BuildNpcTradeAsync(command, fs, stateManager),
             "/equip" or "/экипировать" => await BuildInventoryEquipAsync(command, fs),
             "/unequip" or "/снять" => await BuildInventoryUnequipAsync(command, fs),
@@ -859,6 +861,127 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         string.IsNullOrWhiteSpace(item.EquippedSlot)
             ? "В рюкзаке"
             : $"Экипирован: {InventoryEquipmentService.FormatSlotName(item.EquippedSlot)}";
+
+    private static async Task<ExplorerCommandResult> BuildNpcTalkAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var currentRealm = GetString((await ReadJson(fs, SoulStatePath)).Node as JsonObject, "currentRealm");
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Blocked,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Warning,
+                        "Разговор с НПС недоступен",
+                        "Разговор с НПС можно начать только в смертном мире. Сейчас действие недоступно для текущего царства.")
+                ]);
+        }
+
+        var requestedNpcId = ReadCommandArguments(command);
+        var npcRead = await ReadJson(fs, "game_state/npcs/npc_core.json");
+        if (!string.IsNullOrWhiteSpace(npcRead.Error))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Warning,
+                        "Разговор с НПС",
+                        "Список известных персонажей временно недоступен. Повторите действие после проверки состояния.")
+                ]);
+        }
+
+        var npcs = CollectNpcConversationOptions(npcRead.Node).ToList();
+        if (npcs.Count == 0)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(
+                        UiNotificationSeverity.Info,
+                        "Разговор с НПС",
+                        "Сейчас нет известных персонажей, с которыми можно начать отдельный разговор.")
+                ]);
+        }
+
+        var selected = ResolveNpcConversationOption(npcs, requestedNpcId);
+        var orderedNpcs = npcs
+            .OrderByDescending(npc => selected != null && string.Equals(npc.NpcId, selected.NpcId, StringComparison.OrdinalIgnoreCase))
+            .ThenBy(npc => npc.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var statusText = selected == null
+            ? string.IsNullOrWhiteSpace(requestedNpcId)
+                ? "Выберите собеседника и кратко опишите тему разговора. ГМ разыграет сцену в следующем принятом ходе."
+                : "Указанный собеседник не найден среди известных персонажей. Выберите персонажа из списка или уточните ввод."
+            : $"Выбран собеседник: {selected.Name}. Можно выбрать другого персонажа из списка.";
+
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Разговор с НПС",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = statusText,
+                        Tone = selected == null && !string.IsNullOrWhiteSpace(requestedNpcId) ? UiTone.Warning : UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Известные персонажи",
+                        Columns = ["Имя", "Где находится", "Отношение"],
+                        Rows = orderedNpcs
+                            .Take(20)
+                            .Select(static npc => Row(
+                                npc.Name,
+                                FirstNonEmpty(npc.Location, "-"),
+                                string.IsNullOrWhiteSpace(npc.Relationship) ? "-" : npc.Relationship))
+                            .ToList()
+                    }
+                ]
+            }
+        };
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "npc_id",
+                    Prompt = "С кем поговорить",
+                    Required = selected == null,
+                    AllowCustom = true,
+                    Options = orderedNpcs
+                        .Select(static npc => Option(
+                            npc.NpcId,
+                            npc.Name,
+                            FirstNonEmpty(npc.Location, "Известный персонаж")))
+                        .ToList()
+                },
+                new UiLongTextInputPrompt
+                {
+                    Id = "npc_conversation_topic",
+                    Prompt = "Опишите тему разговора",
+                    Required = true,
+                    Placeholder = "Кратко опишите, о чём спросить или что обсудить.",
+                    MinLines = 2,
+                    MaxLines = 6
+                }
+            ]);
+    }
 
     private static async Task<ExplorerCommandResult> BuildNpcTradeAsync(
         string command,
@@ -2062,6 +2185,40 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         }
     }
 
+    private static IEnumerable<NpcConversationOption> CollectNpcConversationOptions(JsonNode? node)
+    {
+        return CollectObjects(node)
+            .Select(static obj =>
+            {
+                var stableId = FirstNonEmpty(GetString(obj, "npcId"), GetString(obj, "id"));
+                var name = FirstNonEmpty(GetString(obj, "name"), GetString(obj, "npcName"), GetString(obj, "displayName"), stableId);
+                if (string.IsNullOrWhiteSpace(stableId) || string.IsNullOrWhiteSpace(name))
+                    return null;
+
+                return new NpcConversationOption(
+                    stableId,
+                    name,
+                    FirstNonEmpty(GetString(obj, "currentLocation"), GetString(obj, "currentLocationId"), GetString(obj, "location")),
+                    FirstNonEmpty(GetString(obj, "relationshipLevel"), GetString(obj, "relationship"), GetString(obj, "attitude")));
+            })
+            .Where(static npc => npc != null)
+            .Cast<NpcConversationOption>()
+            .DistinctBy(static npc => npc.NpcId, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private static NpcConversationOption? ResolveNpcConversationOption(
+        IReadOnlyList<NpcConversationOption> npcs,
+        string requestedNpcId)
+    {
+        if (string.IsNullOrWhiteSpace(requestedNpcId))
+            return null;
+
+        return npcs.FirstOrDefault(npc =>
+                   string.Equals(npc.NpcId, requestedNpcId, StringComparison.OrdinalIgnoreCase)) ??
+               npcs.FirstOrDefault(npc =>
+                   string.Equals(npc.Name, requestedNpcId, StringComparison.OrdinalIgnoreCase));
+    }
+
     private static string NormalizeCommand(string command)
     {
         var parts = command.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
@@ -2188,6 +2345,12 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
 
     private static UiRawJsonBlock Raw(string title, JsonNode node) =>
         new() { Title = title, Json = node.DeepClone() };
+
+    private sealed record NpcConversationOption(
+        string NpcId,
+        string Name,
+        string Location,
+        string Relationship);
 
     private sealed record JsonReadResult(string Path, bool FileExists, JsonNode? Node, string Error);
 

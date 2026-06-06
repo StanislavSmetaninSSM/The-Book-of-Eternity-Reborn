@@ -16,6 +16,7 @@ public sealed class BrowserMortalWorldWriteService
     private const string CharacteristicsPath = "game_state/misc/characteristics.json";
     private const string NpcCorePath = "game_state/npcs/npc_core.json";
     private const string FactionCorePath = "game_state/factions/faction_core.json";
+    private const string SoulStatePath = "game_state/meta/soul_state.json";
 
     private readonly FileSystemManager _fs;
     private readonly BrowserLocalWriteCoordinator _coordinator;
@@ -46,6 +47,7 @@ public sealed class BrowserMortalWorldWriteService
             "/distribute" or "/распределить" => await ApplyStatDistributionAsync(answers, owner),
             "/companion_directive" or "/директива_компаньону" => await ApplyCompanionDirectiveAsync(answers, owner),
             "/faction_directive" or "/директива_фракции" => await ApplyFactionDirectiveAsync(answers, owner),
+            "/npc_talk" or "/talk_npc" or "/поговорить_с_нпс" or "/разговор_с_нпс" => await ApplyNpcTalkAsync(command, answers, owner),
             "/equip" or "/экипировать" => await ApplyInventoryEquipAsync(command, answers, owner),
             "/unequip" or "/снять" => await ApplyInventoryUnequipAsync(command, answers, owner),
             "/inventory_drop" or "/выбросить_предмет" => await ApplyInventoryDropAsync(command, answers, owner),
@@ -247,6 +249,96 @@ public sealed class BrowserMortalWorldWriteService
                 ["factionId"] = factionId,
                 ["playerStrategyDirective"] = string.IsNullOrWhiteSpace(directive) ? null : directive.Trim()
             });
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyNpcTalkAsync(
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        var currentRealm = await ReadCurrentRealmAsync();
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                "Разговор с НПС недоступен",
+                "Разговор с НПС можно отправить только в смертном мире. Сейчас действие недоступно для текущего царства.");
+        }
+
+        var npcId = ReadAnswer(answers, "npc_id");
+        if (string.IsNullOrWhiteSpace(npcId))
+            npcId = ReadFirstCommandArgument(command);
+        if (string.IsNullOrWhiteSpace(npcId))
+            return BrowserPromptWriteResult.ValidationError("Выберите собеседника.");
+
+        var topic = ReadAnswer(answers, "npc_conversation_topic");
+        if (string.IsNullOrWhiteSpace(topic))
+            return BrowserPromptWriteResult.ValidationError("Опишите тему разговора.");
+
+        var root = await ReadNodeAsync(NpcCorePath);
+        if (root == null)
+            return BrowserPromptWriteResult.ValidationError("Список известных персонажей сейчас недоступен.");
+
+        var target = FindObjectById(root, ["npcId", "id"], npcId);
+        if (target == null)
+            return BrowserPromptWriteResult.ValidationError("Такого собеседника сейчас нет среди известных персонажей.");
+
+        var stableNpcId = FirstNonEmpty(ReadString(target, "npcId"), ReadString(target, "id"), npcId);
+        var npcName = FirstNonEmpty(ReadString(target, "name"), ReadString(target, "npcName"), ReadString(target, "displayName"), stableNpcId);
+        var pendingState = await ActorSocialInteractionRequestState.ReadNpcRequestsStateAsync(_fs);
+        if (pendingState.IsMalformed)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Failed,
+                UiNotificationSeverity.Error,
+                "Разговор не отправлен",
+                "Запрос разговора временно ждёт проверки состояния. Повторите действие после восстановления игрового состояния.");
+        }
+
+        var existing = pendingState.Requests.FirstOrDefault(request =>
+            string.Equals(request.NpcId, stableNpcId, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(request.InteractionType, ActorSocialInteractionRequestState.NpcInteractionTypeTalk, StringComparison.OrdinalIgnoreCase));
+        if (existing != null)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Pending,
+                UiNotificationSeverity.Warning,
+                "Разговор уже ожидает ГМ",
+                $"Разговор с {npcName} уже ожидает ответа ГМ. Дождитесь результата, затем начните новый разговор.");
+        }
+
+        var currentTurn = await ReadCurrentTurnNumberAsync();
+        var request = new ActorSocialInteractionRequestState.PendingNpcSocialInteractionRequest
+        {
+            NpcId = stableNpcId,
+            NpcName = npcName,
+            InteractionType = ActorSocialInteractionRequestState.NpcInteractionTypeTalk,
+            Topic = topic.Trim(),
+            CreatedAtTurn = currentTurn,
+            CreatedAtUtc = NowText()
+        };
+
+        var duplicateDuringWrite = false;
+        var writeResult = await ExecuteAsync(
+            owner,
+            "Разговор с НПС",
+            [ActorSocialInteractionRequestState.PendingNpcRequestPath],
+            async () =>
+            {
+                duplicateDuringWrite = !await ActorSocialInteractionRequestState.TryWriteNpcRequestIfAbsentAsync(_fs, request);
+            },
+            "Разговор отправлен ГМ",
+            $"ГМ получит запрос разговора с {npcName} и тему: {request.Topic}.",
+            payload: null);
+
+        return duplicateDuringWrite
+            ? BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Pending,
+                UiNotificationSeverity.Warning,
+                "Разговор уже ожидает ГМ",
+                $"Разговор с {npcName} уже ожидает ответа ГМ. Дождитесь результата, затем начните новый разговор.")
+            : writeResult;
     }
 
     private async Task<BrowserPromptWriteResult> ApplyInventoryEquipAsync(
@@ -567,7 +659,13 @@ public sealed class BrowserMortalWorldWriteService
             .Replace("GM-turn", "ход ГМ", StringComparison.Ordinal)
             .Replace("rollback/snapshot artifact", "восстановление состояния", StringComparison.Ordinal)
             .Replace("rollback", "восстановление состояния", StringComparison.Ordinal)
+            .Replace(LocalUiSessionLockService.LockPath, "локальную блокировку интерфейса", StringComparison.OrdinalIgnoreCase)
+            .Replace(ActorSocialInteractionRequestState.PendingNpcRequestPath, "состояние запросов разговора с НПС", StringComparison.OrdinalIgnoreCase)
+            .Replace(ActorSocialInteractionRequestState.PendingGuardianRequestPath, "состояние запросов разговора с хранителем", StringComparison.OrdinalIgnoreCase)
             .Replace("game_session", "текущая игровая сессия", StringComparison.Ordinal)
+            .Replace("game_state/", "игровое состояние/", StringComparison.OrdinalIgnoreCase)
+            .Replace("pending_", string.Empty, StringComparison.OrdinalIgnoreCase)
+            .Replace(".json", " файл", StringComparison.OrdinalIgnoreCase)
             .Replace("lease", "срока блокировки", StringComparison.Ordinal);
     }
 
@@ -708,6 +806,15 @@ public sealed class BrowserMortalWorldWriteService
         targetId = parts[1];
         return operation is "request" or "buy" or "sell" or "buyback" &&
                !string.IsNullOrWhiteSpace(targetId);
+    }
+
+    private static string FirstNonEmpty(params string?[] values) =>
+        values.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
+
+    private async Task<string?> ReadCurrentRealmAsync()
+    {
+        var soul = await ReadObjectAsync(SoulStatePath);
+        return soul == null ? null : ReadString(soul, "currentRealm");
     }
 
     private async Task<int> ReadCurrentTurnNumberAsync()
