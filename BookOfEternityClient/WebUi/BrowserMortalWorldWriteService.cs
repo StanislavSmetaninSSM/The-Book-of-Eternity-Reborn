@@ -48,6 +48,9 @@ public sealed class BrowserMortalWorldWriteService
             "/faction_directive" or "/директива_фракции" => await ApplyFactionDirectiveAsync(answers, owner),
             "/equip" or "/экипировать" => await ApplyInventoryEquipAsync(command, answers, owner),
             "/unequip" or "/снять" => await ApplyInventoryUnequipAsync(command, answers, owner),
+            "/inventory_drop" or "/выбросить_предмет" => await ApplyInventoryDropAsync(command, answers, owner),
+            "/inventory_split" or "/разделить_стопку" => await ApplyInventorySplitAsync(command, answers, owner),
+            "/inventory_merge" or "/объединить_стопки" => await ApplyInventoryMergeAsync(command, answers, owner),
             "/npc_trade" or "/торговля_нпс" => await ApplyNpcTradeAsync(command, answers, owner),
             "/craft" or "/ремесло" => await ApplyCraftAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
@@ -313,6 +316,110 @@ public sealed class BrowserMortalWorldWriteService
             },
             "Предмет снят",
             validation.Message,
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyInventoryDropAsync(
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_inventory_drop"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите выброс предмета.");
+
+        var itemIdentity = ReadAnswer(answers, "item_identity");
+        if (string.IsNullOrWhiteSpace(itemIdentity))
+            itemIdentity = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        if (string.IsNullOrWhiteSpace(itemIdentity))
+            return BrowserPromptWriteResult.ValidationError("Выберите предмет.");
+
+        var validation = await InventoryManagementService.ValidateDropAsync(_fs, itemIdentity);
+        if (!validation.Success)
+            return BrowserPromptWriteResult.ValidationError(validation.Message);
+
+        return await ExecuteAsync(
+            owner,
+            "Выброс предмета",
+            [InventoryEquipmentService.ItemsPath],
+            async () =>
+            {
+                var outcome = await InventoryManagementService.DropAsync(_fs, itemIdentity);
+                if (!outcome.Success)
+                    throw new InventoryManagementWriteException(outcome.Message);
+            },
+            "Предмет выброшен",
+            validation.Count > 1
+                ? $"«{validation.ItemName}» выброшен ({validation.Count} шт.)."
+                : $"«{validation.ItemName}» выброшен.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyInventorySplitAsync(
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_inventory_split"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите разделение стопки.");
+
+        var itemIdentity = ReadAnswer(answers, "item_identity");
+        if (string.IsNullOrWhiteSpace(itemIdentity))
+            itemIdentity = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        if (string.IsNullOrWhiteSpace(itemIdentity))
+            return BrowserPromptWriteResult.ValidationError("Выберите стопку.");
+
+        if (!TryReadIntAnswer(answers, "split_quantity", out var splitQuantity))
+            return BrowserPromptWriteResult.ValidationError("Введите количество целым числом.");
+
+        var validation = await InventoryManagementService.ValidateSplitAsync(_fs, itemIdentity, splitQuantity);
+        if (!validation.Success)
+            return BrowserPromptWriteResult.ValidationError(validation.Message);
+
+        return await ExecuteAsync(
+            owner,
+            "Разделение стопки",
+            [InventoryEquipmentService.ItemsPath],
+            async () =>
+            {
+                var outcome = await InventoryManagementService.SplitAsync(_fs, itemIdentity, splitQuantity);
+                if (!outcome.Success)
+                    throw new InventoryManagementWriteException(outcome.Message);
+            },
+            "Стопка разделена",
+            $"Стопка «{validation.ItemName}» разделена: отделено {validation.Count}.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyInventoryMergeAsync(
+        string command,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_inventory_merge"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите объединение стопок.");
+
+        var itemIdentity = ReadAnswer(answers, "item_identity");
+        if (string.IsNullOrWhiteSpace(itemIdentity))
+            itemIdentity = InventoryEquipmentService.ReadFirstCommandArgument(command);
+        if (string.IsNullOrWhiteSpace(itemIdentity))
+            return BrowserPromptWriteResult.ValidationError("Выберите стопки.");
+
+        var validation = await InventoryManagementService.ValidateMergeAsync(_fs, itemIdentity);
+        if (!validation.Success)
+            return BrowserPromptWriteResult.ValidationError(validation.Message);
+
+        return await ExecuteAsync(
+            owner,
+            "Объединение стопок",
+            [InventoryEquipmentService.ItemsPath],
+            async () =>
+            {
+                var outcome = await InventoryManagementService.MergeAsync(_fs, itemIdentity);
+                if (!outcome.Success)
+                    throw new InventoryManagementWriteException(outcome.Message);
+            },
+            "Стопки объединены",
+            $"Стопки «{validation.ItemName}» объединены: {validation.Count} шт.",
             payload: null);
     }
 
@@ -661,6 +768,22 @@ public sealed class BrowserMortalWorldWriteService
                flag;
     }
 
+    private static bool TryReadIntAnswer(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        string key,
+        out int result)
+    {
+        result = 0;
+        if (!answers.TryGetValue(key, out var node) || node is not JsonValue value)
+            return false;
+
+        if (value.TryGetValue<int>(out result))
+            return true;
+
+        return value.TryGetValue<string>(out var text) &&
+               int.TryParse(text, out result);
+    }
+
     private static string ReadString(JsonObject obj, string propertyName)
     {
         if (!obj.TryGetPropertyValue(propertyName, out var node) || node is not JsonValue value)
@@ -705,6 +828,7 @@ public sealed class BrowserMortalWorldWriteService
     private string NowText() => _timeProvider.GetUtcNow().UtcDateTime.ToString("O");
 
     private sealed class InventoryEquipmentWriteException(string message) : Exception(message);
+    private sealed class InventoryManagementWriteException(string message) : Exception(message);
 }
 
 public sealed record BrowserPromptWriteResult(
