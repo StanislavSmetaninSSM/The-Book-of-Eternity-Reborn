@@ -502,13 +502,14 @@
   - Guardians: `guardianThoughtJournalUpdates` = current thoughts, `guardianSocialJournalUpdates` = important past interactions
   - Residents: `residentThoughtJournalUpdates` = current thoughts, `residentInteractionLogUpdates` = important past interactions, `UpdateGuardianAbodeResidentHistoryLog` = revealed past
 - If `game_state/control/pending_guardian_social_interactions.json` exists, close each request in the same accepted turn through `guardianSocialJournalUpdates`.
-- If `game_state/control/pending_npc_social_interactions.json` exists, close each request only in the same accepted MortalWorldProfile turn through `npcInteractionJournalUpdates`. In `Chaos Sea` or `Shining Abode`, this file is MortalWorldProfile-only wrong-realm repair context: do not close it, do not write `npcInteractionJournalUpdates`, and do not mutate `game_state/npcs/*`. Non-empty or malformed NPC social pending files must be resolved in Mortal World or repaired before Soul Gates.
+- If `game_state/control/pending_npc_social_interactions.json` exists, close each request only in the same accepted MortalWorldProfile turn through `npcInteractionJournalUpdates`. If a request includes `topic`, answer that player-supplied topic explicitly in the scene and summarize the result in the matching closure. In `Chaos Sea` or `Shining Abode`, this file is MortalWorldProfile-only wrong-realm repair context: do not close it, do not write `npcInteractionJournalUpdates`, and do not mutate `game_state/npcs/*`. Non-empty or malformed NPC social pending files must be resolved in Mortal World or repaired before Soul Gates.
 - If `game_state/control/pending_npc_trade_inventory_requests.json` or `[NPC_TRADE_REQUEST]` exists in `Chaos Sea` or `Shining Abode`, treat it as MortalWorldProfile-only wrong-realm repair context too. Do not materialize NPC trade stock, `UpdateNpcTradeInventoryReceipts`, or `game_state/npcs/*` from afterlife; non-empty or malformed NPC trade pending files must be resolved in Mortal World or repaired before Soul Gates.
 - If `game_state/control/pending_resident_companion_manifestation_request.json` exists in `Chaos Sea` or `Shining Abode`, it is MortalWorldProfile-only next-life context. Valid non-empty files are preserved and do not block Soul Gates; malformed manifestation files block Soul Gates until repair. Do not materialize Mortal NPCs/encounters, `UpdateNPCs`, `NPCsInScene`, `UpdateQuests`, or `worldEventsLog`, and do not close it by afterlife receipts.
 - These guardian/NPC social closures are machine-readable journal entries with:
   - `requestId`
   - actor id (`guardianId` or `npcId`)
   - `interactionType`
+  - optional request `topic` for NPC social requests; do not copy it into hidden state unless the scene outcome makes it true in-world
   - `status = accepted | rejected | cancelled`
   - optional `responseMode`
   - ordinary `title`, `summary`, `turn`, `timestamp`

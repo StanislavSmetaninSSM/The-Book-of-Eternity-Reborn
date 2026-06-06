@@ -1,0 +1,53 @@
+# Mortal NPC social request examples
+
+These examples document the MortalWorldProfile-only NPC social pending request
+contract in `game_state/control/pending_npc_social_interactions.json`. The
+browser and console clients create the pending request; the GM answers it only
+in a Mortal World accepted turn and closes it through `npcInteractionJournalUpdates`.
+
+## Example 1 - Topic-bearing browser NPC conversation
+
+Pre-turn pending request:
+
+```json
+{
+  "requests": [
+    {
+      "requestId": "npc_social_topic_001",
+      "npcId": "npc_elara_001",
+      "npcName": "Элара",
+      "interactionType": "talk",
+      "topic": "спросить о рыжем ключе",
+      "createdAtTurn": 42,
+      "createdAtUtc": "2026-06-06T01:00:00Z"
+    }
+  ]
+}
+```
+
+Accepted Mortal World response excerpt:
+
+```json
+{
+  "response": "Элара на мгновение сжимает пальцы на краю прилавка. «Рыжий ключ не открывает дверь, он выбирает свидетеля. И если он у тебя, значит, старая кладовая уже проснулась».",
+  "npcInteractionJournalUpdates": [
+    {
+      "entryId": "npc_social_elara_key_043",
+      "npcId": "npc_elara_001",
+      "requestId": "npc_social_topic_001",
+      "interactionType": "talk",
+      "status": "accepted",
+      "responseMode": "talk_scene",
+      "turn": 43,
+      "timestamp": "2026-06-06T01:05:00Z",
+      "title": "Элара объяснила рыжий ключ",
+      "summary": "Элара ответила на тему игрока: рыжий ключ выбирает свидетеля старой кладовой, а не просто открывает замок."
+    }
+  ]
+}
+```
+
+The matching closure must preserve `requestId`, `npcId`, and
+`interactionType=talk`. The `topic` is request input, not a separate journal
+field; the GM should answer it in the scene and summarize the outcome in the
+closure entry.

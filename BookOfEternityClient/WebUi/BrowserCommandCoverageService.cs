@@ -13,11 +13,10 @@ public static class BrowserCommandCoverageService
     private static readonly IReadOnlyDictionary<string, BrowserCommandAuditOverride> AuditOverrides =
         new Dictionary<string, BrowserCommandAuditOverride>(StringComparer.OrdinalIgnoreCase)
         {
-            ["npcs"] = Tracked("#807, #817", "Read-only NPC lists, details, relationships, activities, and trade entry points are covered; start-conversation flows remain tracked interactive work."),
             ["soul_relics"] = Tracked("#802, #817", "Soul relic lists, stored/equipped state, and descriptions are covered; relic equip and unequip actions now covered by /soul_relic_equip and /soul_relic_unequip."),
             ["storage_access"] = Tracked("#814, #817", "Storage visibility and access summaries are covered; deposit and withdraw item flows remain tracked interactive work."),
             ["transport"] = Tracked("#814, #817", "Read-only transport and route summaries are covered; transport-linked storage item movement remains tracked interactive work."),
-            ["interactions"] = Tracked("#807, #808, #809, #817", "Read-only interaction summaries are covered; browser-first NPC, Guardian, and resident interaction starts remain tracked interactive work."),
+            ["interactions"] = Tracked("#808, #809, #817", "Read-only interaction summaries are covered; Guardian and resident interaction starts remain tracked interactive work."),
             ["guardians"] = Tracked("#808, #817", "Read-only Guardian state and relationship data are covered; Guardian conversation and lore actions remain tracked interactive work."),
             ["abodes"] = Tracked("#809, #817", "Read-only Abode state is covered; resident conversation, history, and transfer actions remain tracked interactive work."),
             ["shining_abode"] = Tracked("#811, #812, #817", "Read-only Shining Abode state is covered; broader faction/project and incarnation-gate actions remain tracked interactive work."),

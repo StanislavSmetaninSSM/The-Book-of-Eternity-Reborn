@@ -45,6 +45,7 @@ public static class ExplorerCommandCatalog
 
         D("inventory", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/inv", "/inventory", "/инв", "/инвентарь"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("npcs", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/npc", "/npcs", "/characters", "/нпс", "/персонажи"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
+        D("npc_talk", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.LocalTurn, ExplorerCommandBrowserHandlerKind.LifecycleLocalTurn, ["/npc_talk", "/talk_npc", "/поговорить_с_нпс", "/разговор_с_нпс"], browserStatus: ExplorerCommandMigrationStatus.MutatingParity, acceptsArguments: true),
         D("quests", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/quests", "/квесты"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("map", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/map", "/карта"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),
         D("where_am_i", ExplorerCommandGroup.MortalWorld, ExplorerCommandMutationMode.ReadOnly, ExplorerCommandBrowserHandlerKind.MortalWorld, ["/where_am_i", "/где_я"], browserStatus: ExplorerCommandMigrationStatus.ReadOnlyParity),

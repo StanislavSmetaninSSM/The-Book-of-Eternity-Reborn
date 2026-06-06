@@ -384,6 +384,7 @@ public sealed class ExplorerWebPromptSessionService
             "/distribute" or "/распределить" or
             "/companion_directive" or "/директива_компаньону" or
             "/faction_directive" or "/директива_фракции" or
+            "/npc_talk" or "/talk_npc" or "/поговорить_с_нпс" or "/разговор_с_нпс" or
             "/equip" or "/экипировать" or
             "/unequip" or "/снять" or
             "/inventory_drop" or "/выбросить_предмет" or

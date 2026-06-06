@@ -427,7 +427,7 @@ public sealed class BrowserTradeParityTests : IDisposable
         var npcs = Assert.Single(coverage.Commands, item => item.Id == "npcs");
         Assert.DoesNotContain("#805", npcs.FollowUpIssue, StringComparison.Ordinal);
         Assert.DoesNotContain("trade and start-conversation flows remain tracked", npcs.GapSummary, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("#807", npcs.FollowUpIssue, StringComparison.Ordinal);
+        Assert.DoesNotContain("#807", npcs.FollowUpIssue, StringComparison.Ordinal);
     }
 
     private async Task SeedStoryTurnAsync(int turnNumber)

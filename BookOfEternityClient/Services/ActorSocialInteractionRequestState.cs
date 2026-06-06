@@ -29,6 +29,7 @@ internal static class ActorSocialInteractionRequestState
     public const string ResponseModeAttitudeShift = "attitude_shift";
 
     private static readonly JsonSerializerOptions JsonOpts = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
+    private static readonly SemaphoreSlim NpcRequestWriteGate = new(1, 1);
 
     internal sealed record RequestReadState<T>(
         bool FilePresent,
@@ -69,6 +70,10 @@ internal static class ActorSocialInteractionRequestState
 
         [JsonPropertyName("interactionType")]
         public string InteractionType { get; set; } = NpcInteractionTypeTalk;
+
+        [JsonPropertyName("topic")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? Topic { get; set; }
 
         [JsonPropertyName("createdAtTurn")]
         public int CreatedAtTurn { get; set; }
@@ -186,11 +191,51 @@ internal static class ActorSocialInteractionRequestState
         await WriteNpcRequestsAsync(fs, existing);
     }
 
+    public static async Task<bool> TryWriteNpcRequestIfAbsentAsync(FileSystemManager fs, PendingNpcSocialInteractionRequest request)
+    {
+        await NpcRequestWriteGate.WaitAsync();
+        try
+        {
+            var existingState = await ReadNpcRequestsStateAsync(fs);
+            if (existingState.IsMalformed)
+                throw new InvalidOperationException("pending_npc_social_interactions.json повреждён и должен быть исправлен или очищен до записи нового NPC social request.");
+
+            var existing = existingState.Requests.ToList();
+            if (existing.Any(existingRequest =>
+                    string.Equals(existingRequest.NpcId, request.NpcId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(existingRequest.InteractionType, request.InteractionType, StringComparison.OrdinalIgnoreCase)))
+            {
+                return false;
+            }
+
+            existing.Add(request);
+            await WriteNpcRequestsSnapshotAsync(fs, existing);
+            return true;
+        }
+        finally
+        {
+            NpcRequestWriteGate.Release();
+        }
+    }
+
     public static async Task<IReadOnlyList<PendingGuardianSocialInteractionRequest>> ReadGuardianRequestsAsync(FileSystemManager fs) =>
         (await ReadGuardianRequestsStateAsync(fs)).Requests;
 
     public static async Task<IReadOnlyList<PendingNpcSocialInteractionRequest>> ReadNpcRequestsAsync(FileSystemManager fs) =>
         (await ReadNpcRequestsStateAsync(fs)).Requests;
+
+    private static async Task WriteNpcRequestsSnapshotAsync(FileSystemManager fs, IReadOnlyCollection<PendingNpcSocialInteractionRequest> requests)
+    {
+        if (requests.Count == 0)
+        {
+            ClearNpcRequests(fs);
+            return;
+        }
+
+        await fs.WriteFileAtomicAsync(
+            PendingNpcRequestPath,
+            JsonSerializer.Serialize(new Dictionary<string, object?> { [RequestsProperty] = requests }, JsonOpts));
+    }
 
     internal static async Task<RequestReadState<PendingGuardianSocialInteractionRequest>> ReadGuardianRequestsStateAsync(FileSystemManager fs) =>
         await ReadRequestsStateAsync(fs, PendingGuardianRequestPath, static json => JsonSerializer.Deserialize<PendingGuardianSocialInteractionRequest>(json, JsonOpts));
@@ -301,11 +346,17 @@ internal static class ActorSocialInteractionRequestState
             "NPC SOCIAL REQUESTS:",
             $"There are {npcRequests.Count} pending entries in pending_npc_social_interactions.json.",
             "For each request, roleplay the scene in accepted turn and close it canonically through npcInteractionJournalUpdates.",
-            "Each closure entry must carry requestId, npcId, interactionType, status=accepted|rejected|cancelled, optional responseMode, title, summary, turn, and timestamp."
+            "Each closure entry must carry requestId, npcId, interactionType, status=accepted|rejected|cancelled, optional responseMode, title, summary, turn, and timestamp.",
+            "If topic is present, answer that player-supplied topic explicitly in the scene and summarize the result in the closure entry."
         };
 
         foreach (var request in npcRequests.Take(5))
-            npcLines.Add($"- npcId={request.NpcId}, interactionType={request.InteractionType}, npcName={request.NpcName}");
+        {
+            var topic = string.IsNullOrWhiteSpace(request.Topic)
+                ? string.Empty
+                : $", topic={request.Topic}";
+            npcLines.Add($"- requestId={request.RequestId}, npcId={request.NpcId}, interactionType={request.InteractionType}, npcName={request.NpcName}{topic}");
+        }
 
         return string.Join("\n", npcLines);
     }
