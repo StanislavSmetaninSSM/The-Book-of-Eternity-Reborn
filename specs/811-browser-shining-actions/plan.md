@@ -123,7 +123,7 @@ dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj -p:IsTe
 C# build:
 
 ```powershell
-dotnet build BookOfEternityClient.sln --no-restore
+dotnet build BookOfEternityClient/BookOfEternityClient.sln --no-restore
 ```
 
 Whitespace and added-line checks:

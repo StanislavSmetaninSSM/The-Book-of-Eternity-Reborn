@@ -27,7 +27,7 @@
 5. Build and scan:
 
    ```powershell
-   dotnet build BookOfEternityClient.sln --no-restore
+   dotnet build BookOfEternityClient/BookOfEternityClient.sln --no-restore
    git diff --check origin/main...HEAD
    git diff --unified=0 origin/main...HEAD -- . ":(exclude)specs/811-browser-shining-actions/**" | Select-String -Pattern "password|passwd|secret|token|apikey|api_key|authorization|bearer|client_secret|connectionstring|private_key|BEGIN RSA|BEGIN OPENSSH" -CaseSensitive:$false
    ```
