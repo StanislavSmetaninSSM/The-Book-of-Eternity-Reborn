@@ -3,6 +3,7 @@ import type { BrowserApiResult, ExplorerCommandResult, JsonValue, UiBlock } from
 import { isSuccess } from '../context/ShellContext';
 import { commandStateLabel } from '../utils/formatters';
 import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
+import { MapBlock } from './MapBlock';
 import { PromptForm, type PromptAnswers } from './PromptForm';
 
 interface ActionCommandResultProps {
@@ -112,7 +113,7 @@ export function renderCommandBlock(block: UiBlock): ReactNode {
         </figure>
       );
     case 'map':
-      return <p>{toPlayerFacingText(block.title, 'Карта')}: карта содержит {block.map.nodes.length} точек.</p>;
+      return <MapBlock block={block} variant="compact" />;
     case 'rawJson':
       return <p className="muted">{toPlayerFacingText(block.title, 'Подробные данные')}: подробные данные доступны в расширенном режиме.</p>;
   }

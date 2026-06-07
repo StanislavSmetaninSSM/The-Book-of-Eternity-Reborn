@@ -33,6 +33,30 @@ public sealed class ExplorerModeSourceGuardTests
         return File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient", "UI", relativePath));
     }
 
+    private static string ExtractMethodSource(string source, string signature)
+    {
+        var start = source.IndexOf(signature, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Could not find method signature '{signature}'.");
+
+        var openBrace = source.IndexOf('{', start);
+        Assert.True(openBrace >= 0, $"Could not find method body for '{signature}'.");
+
+        var depth = 0;
+        for (var index = openBrace; index < source.Length; index++)
+        {
+            if (source[index] == '{')
+                depth++;
+            else if (source[index] == '}')
+                depth--;
+
+            if (depth == 0)
+                return source[start..(index + 1)];
+        }
+
+        Assert.Fail($"Could not extract method body for '{signature}'.");
+        return string.Empty;
+    }
+
     [Fact]
     public void ExplorerMode_MustUseConsoleAdapterInsteadOfDirectAnsiConsoleCalls()
     {
@@ -40,6 +64,46 @@ public sealed class ExplorerModeSourceGuardTests
 
         Assert.DoesNotContain("AnsiConsole.", source, StringComparison.Ordinal);
         Assert.DoesNotContain("Console.ReadKey(true)", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ExplorerMode_MapCommand_MustUseVisualMapViewerInsteadOfLocationSelector()
+    {
+        var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.WorldAndStatus.cs"));
+        var showMap = ExtractMethodSource(source, "private async Task ShowMap()");
+
+        Assert.Contains("LocalMapViewService.BuildCurrentRealmMapAsync(_fs)", showMap, StringComparison.Ordinal);
+        Assert.Contains("new UiMapBlock", showMap, StringComparison.Ordinal);
+        Assert.Contains("LocalMapViewerLauncher.WriteAndOpenAsync(_fs, map)", showMap, StringComparison.Ordinal);
+        Assert.DoesNotContain("new SelectionPrompt<string>()", showMap, StringComparison.Ordinal);
+        Assert.DoesNotContain("ShowLocationDetailPanel", showMap, StringComparison.Ordinal);
+        Assert.DoesNotContain("current location + adjacent + discovered", showMap, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ExplorerMode_LocationsCommand_MustOwnCurrentAdjacentAndDiscoveredDetailsFlow()
+    {
+        var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.MetaLoreAndTravel.cs"));
+        var showLocations = ExtractMethodSource(source, "private async Task ShowLocations()");
+
+        Assert.Contains("game_state/world/current_location.json", showLocations, StringComparison.Ordinal);
+        Assert.Contains("game_state/world/world_map.json", showLocations, StringComparison.Ordinal);
+        Assert.Contains("adjacencyMap", showLocations, StringComparison.Ordinal);
+        Assert.Contains("EnumerateWorldMapLocations(mapDoc, \"newLocations\")", showLocations, StringComparison.Ordinal);
+        Assert.Contains("EnumerateWorldMapLocations(mapDoc, \"locationUpdates\")", showLocations, StringComparison.Ordinal);
+        Assert.Contains("worldMapUpdates", source, StringComparison.Ordinal);
+        Assert.Contains("new SelectionPrompt<string>()", showLocations, StringComparison.Ordinal);
+        Assert.Contains("ShowLocationDetailPanel", showLocations, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ExplorerMode_LocationDetailPanel_MustUseSharedLocationNameFallbacks()
+    {
+        var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.WorldAndStatus.cs"));
+        var detailPanel = ExtractMethodSource(source, "private async Task ShowLocationDetailPanel(JsonElement loc, bool isCurrent)");
+
+        Assert.Contains("GetLocationName(loc)", detailPanel, StringComparison.Ordinal);
+        Assert.DoesNotContain("GetStr(loc, \"name\", GetStr(loc, \"targetLocationId\", \"Неизвестно\"))", detailPanel, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -11,139 +11,36 @@ using BookOfEternityClient.Services;
 namespace BookOfEternityClient.UI;
 
 public partial class ExplorerMode
-{private async Task ShowMap()
+{
+    private async Task ShowMap()
     {
-        if (RealmSemantics.IsAfterlifeRealm(_stateManager.CurrentState.CurrentRealm))
-        {
-            var map = await LocalMapViewService.BuildCurrentRealmMapAsync(_fs);
-            ExplorerCommandResultConsoleRenderer.Render(
-                _console,
-                new ExplorerCommandResult
-                {
-                    Command = "/map",
-                    State = CommandExecutionState.Completed,
-                    Blocks =
-                    [
-                        new UiMapBlock
-                        {
-                            Title = "Карта",
-                            Map = map
-                        }
-                    ]
-                });
-
-            var launch = await LocalMapViewerLauncher.WriteAndOpenAsync(_fs, map);
-            MarkupLine(launch.Opened
-                ? $"[green]Открыта локальная карта:[/] [cyan]{Markup.Escape(launch.RelativePath)}[/]"
-                : $"[yellow]HTML карты сохранён:[/] [cyan]{Markup.Escape(launch.RelativePath)}[/] [dim]({Markup.Escape(launch.Error)})[/]");
-            WaitForKey();
-            return;
-        }
-
-        var locDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/current_location.json");
-        var mapDoc = await _stateManager.LoadGameStateFileAsync("game_state/world/world_map.json");
-
-        if (locDoc == null) { ShowEmptyPanel(_loc.T("map"), "Местоположение неизвестно"); return; }
-
-        var root = locDoc.RootElement;
-        var curName = GetStr(root, "name", "Неизвестно");
-        var curX = 0; var curY = 0; var curZ = 0;
-        if (root.TryGetProperty("coordinates", out var coords))
-        {
-            curX = GetInt(coords, "x", 0);
-            curY = GetInt(coords, "y", 0);
-            curZ = GetInt(coords, "z", 0);
-        }
-
-        while (true)
-        {
-            // Build interactive menu: current location + adjacent + discovered
-            var menuItems = new List<(string Label, string Action, JsonElement? Data)>();
-
-            // Current location — always first
-            menuItems.Add(($"[bold green]📍 {Markup.Escape(curName)}[/] [dim](текущая)[/]", "current", root));
-
-            // Adjacent locations
-            if (root.TryGetProperty("adjacencyMap", out var adj) && adj.ValueKind == JsonValueKind.Array)
+        var map = await LocalMapViewService.BuildCurrentRealmMapAsync(_fs);
+        ExplorerCommandResultConsoleRenderer.Render(
+            _console,
+            new ExplorerCommandResult
             {
-                foreach (var entry in adj.EnumerateArray())
-                {
-                    var aName = GetStr(entry, "name", "");
-                    if (string.IsNullOrEmpty(aName))
-                        aName = GetStr(entry, "targetLocationId", "?");
-                    var direction = GetStr(entry, "direction", "");
-                    var distance = GetStr(entry, "distance", "");
-                    var linkState = GetStr(entry, "linkState", "");
-                    var stateColor = linkState.ToLower() switch
+                Command = "/map",
+                State = CommandExecutionState.Completed,
+                Blocks =
+                [
+                    new UiMapBlock
                     {
-                        "dangerous" => "red", "hidden" => "grey", "blocked" => "maroon", _ => "aqua"
-                    };
-                    var dirStr = !string.IsNullOrEmpty(direction) ? $" ({Markup.Escape(direction)})" : "";
-                    var distStr = !string.IsNullOrEmpty(distance) ? $" [dim]{Markup.Escape(distance)}[/]" : "";
-                    var stateStr = !string.IsNullOrEmpty(linkState) && linkState.ToLower() != "safe"
-                        ? $" [yellow][[{Markup.Escape(linkState)}]][/]" : "";
-                    menuItems.Add(($"  🧭 [{stateColor}]{Markup.Escape(aName)}[/]{dirStr}{distStr}{stateStr}", "adjacent", entry));
-                }
-            }
+                        Title = "Карта",
+                        Map = map
+                    }
+                ]
+            });
 
-            var mapRoot = mapDoc != null &&
-                          mapDoc.RootElement.TryGetProperty("worldMapUpdates", out var wrappedMapRoot) &&
-                          wrappedMapRoot.ValueKind == JsonValueKind.Object
-                ? wrappedMapRoot
-                : mapDoc?.RootElement;
-
-            // Discovered locations from world_map
-            if (mapRoot.HasValue && mapRoot.Value.TryGetProperty("newLocations", out var newLocs) &&
-                newLocs.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var loc in newLocs.EnumerateArray())
-                {
-                    var n = GetStr(loc, "name", "?");
-                    var lt = GetStr(loc, "locationType", "");
-                    if (n == curName) continue;
-                    menuItems.Add(($"  🗺 [dim]{Markup.Escape(n)}[/]" +
-                        (!string.IsNullOrEmpty(lt) ? $" [dim]({Markup.Escape(lt)})[/]" : ""), "discovered", loc));
-                }
-            }
-
-            if (mapRoot.HasValue && mapRoot.Value.TryGetProperty("locationUpdates", out var updatedLocs) &&
-                updatedLocs.ValueKind == JsonValueKind.Array)
-            {
-                foreach (var loc in updatedLocs.EnumerateArray())
-                {
-                    var n = GetStr(loc, "name", "?");
-                    var lt = GetStr(loc, "locationType", "");
-                    if (n == curName) continue;
-                    menuItems.Add(($"  🗺 [dim]{Markup.Escape(n)}[/] [dim](обновлено)[/]" +
-                        (!string.IsNullOrEmpty(lt) ? $" [dim]({Markup.Escape(lt)})[/]" : ""), "discovered", loc));
-                }
-            }
-
-            var choices = menuItems.Select(m => m.Label).ToList();
-            choices.Add("[grey]← Назад[/]");
-
-            var selected = Prompt(new SelectionPrompt<string>()
-                .Title($"[bold green]🗺 {_loc.T("map")}[/]  [dim](выберите локацию для подробностей)[/]")
-                .PageSize(20)
-                .HighlightStyle(new Style(Color.Green))
-                .AddChoices(choices));
-
-            if (selected.Contains("← Назад")) break;
-
-            var selIdx = choices.IndexOf(selected);
-            if (selIdx < 0 || selIdx >= menuItems.Count) break;
-
-            var (_, action, data) = menuItems[selIdx];
-            if (action == "current")
-                await ShowLocationDetailPanel(root, true);
-            else if (data.HasValue)
-                await ShowLocationDetailPanel(data.Value, false);
-        }
+        var launch = await LocalMapViewerLauncher.WriteAndOpenAsync(_fs, map);
+        MarkupLine(launch.Opened
+            ? $"[green]Открыта локальная карта:[/] [cyan]{Markup.Escape(launch.RelativePath)}[/]"
+            : $"[yellow]HTML карты сохранён:[/] [cyan]{Markup.Escape(launch.RelativePath)}[/] [dim]({Markup.Escape(launch.Error)})[/]");
+        WaitForKey();
     }
 
     private async Task ShowLocationDetailPanel(JsonElement loc, bool isCurrent)
     {
-        var name = GetStr(loc, "name", GetStr(loc, "targetLocationId", "Неизвестно"));
+        var name = GetLocationName(loc);
         var playerLevel = await GetPlayerLevelAsync();
         var lines = new List<string>();
         lines.Add($"[bold green]{(isCurrent ? "📍" : "🗺")} {Markup.Escape(name)}[/]");

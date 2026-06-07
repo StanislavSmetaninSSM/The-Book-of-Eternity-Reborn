@@ -1,10 +1,10 @@
 # Browser Parity Checklist
 
-Tracked tasks: #594, #619, #620, #621, #622, #623, #624, #625, #682, #691
+Tracked tasks: #594, #619, #620, #621, #622, #623, #624, #625, #682, #691, #880, #881
 
 Use this checklist for manual smoke testing when the local browser UI changes. The browser must stay a local shell over the same `game_session` data and must not duplicate game rules in JavaScript.
 
-Map rendering parity is enforced through the shared map package: console `output/map_viewer.html` and WebUI map blocks both consume the same `MapViewDto` and `LocalMapViewerAssets` renderer. WebUI should load `/assets/map-viewer.css` and `/assets/map-viewer.js`; no realm-specific map renderer should be reimplemented inside the browser shell.
+Map rendering parity is enforced through the shared `MapViewDto`: console `/карта` writes `output/map_viewer.html` with `LocalMapViewerAssets`, while React command-result map blocks render a local SVG atlas from the same DTO. `/карта` / `/map` must stay the visual map surface; `/локации` / `/locations` must stay the current/adjacent/discovered/updated location list and details flow.
 
 ## Shell And Navigation
 
@@ -25,10 +25,11 @@ Map rendering parity is enforced through the shared map package: console `output
 ## Mortal World
 
 - Мир смертных navigation opens status, quests, inventory, map, NPCs, factions, combat, and gallery surfaces.
-- Карта renders as a local SVG viewer, supports pan/zoom, z-level filter, layer filter, node selection, and detail cards without fetching anything from the network.
-- Карта uses the shared dark-fantasy parchment atlas visual system: Russian controls, visible legend, clear selected/hover states, readable labels, and a Russian empty-state message for hidden/empty levels.
+- Карта renders as a local SVG viewer, supports zoom/reset, z-level filter, layer filter, node selection, and detail cards without fetching anything from the network.
+- Карта uses the dark-fantasy parchment atlas visual system: Russian controls, visible legend, clear selected/hover states, readable labels, and a Russian empty-state message for hidden/empty levels.
 - Карта reads wrapped and unwrapped Mortal World location state, separates z-levels, marks the current location, and uses schematic fallback coordinates when the GM has not authored exact coordinates yet.
-- Карта exposes a `Политическое влияние` toggle. Controlled locations show faction halos/regions, disputed locations are visually distinct, and location cards include faction control type/level when present.
+- Карта shows controlled-location regions and disputed locations when faction influence is present, and location cards include faction ownership details when the projection can provide them.
+- Локации show the current location, adjacent exits, discovered locations, and updated locations from both root-level `world_map` arrays and wrapped `worldMapUpdates`.
 - Tables, warnings, actions, and raw JSON render consistently.
 - Mutating forms that are already migrated still use the shared local UI lock and show blocked/pending states when a GM turn is active.
 

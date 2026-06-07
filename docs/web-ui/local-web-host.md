@@ -1,6 +1,6 @@
 # Local Web Host
 
-Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #688, #689, #691, #701, #702, #703, #704, #705, #723, #727, #728, #729, #742, #759, #771
+Tracked tasks: #565, #567, #569, #570, #571, #572, #573, #574, #576, #577, #585, #586, #587, #588, #589, #590, #591, #592, #593, #594, #619, #620, #621, #622, #682, #684, #685, #687, #688, #689, #691, #701, #702, #703, #704, #705, #723, #727, #728, #729, #742, #759, #771, #880, #881
 Parent epic: #559
 
 ## Local-Only Model
@@ -336,7 +336,9 @@ Mortal World read-only parity currently includes:
 - `/storage_access`, `/доступ_к_хранилищам`
 - `/interactions`, `/взаимодействия`
 
-`/map` and `/карта` now return a shared `map` DTO block in addition to the raw JSON repair payloads. The browser renderer draws it locally as SVG with pan/zoom, z-level filtering, layer filtering, node selection, and detail cards. The same renderer package is reused by the console-launched standalone HTML viewer and the embedded WebUI: `LocalMapViewerAssets.StyleSheet` and `LocalMapViewerAssets.Script` are inlined into `output/map_viewer.html`, and the WebUI serves the identical package through `/assets/map-viewer.css` and `/assets/map-viewer.js`. New realm projections should extend `LocalMapViewService` and the `MapViewDto`; they should not add a second JavaScript map implementation.
+`/map` and `/карта` mean the visual map. They return a shared `map` DTO block in addition to the raw JSON repair payloads. Console `/карта` writes `output/map_viewer.html` through the standalone `LocalMapViewerAssets` package. React command results render the same `MapViewDto` as a local SVG atlas with zoom/reset controls, z-level filtering, layer filtering, node selection, legend, and detail cards. New realm projections should extend `LocalMapViewService` and the `MapViewDto`; they should not create a new runtime authority for map state.
+
+`/locations` and `/локации` mean the location list/details flow. Browser command results show current location, adjacent exits, discovered locations, and updated locations, including both root-level `newLocations` / `locationUpdates` and wrapped `worldMapUpdates.newLocations` / `worldMapUpdates.locationUpdates` shapes. Raw JSON remains available as advanced detail, but the default player result must be meaningful without opening raw data.
 
 The DTO is realm-agnostic (`realm`, `nodes`, `links`, `regions`, `layers`, `zLevels`, owner/influence fields) so Mortal World, Chaos Sea, and Shining Abode projections can reuse the same renderer. The map service chooses the projection from `game_state/meta/soul_state.json.currentRealm`: Mortal World reads `game_state/world/current_location.json` and `game_state/world/world_map.json`; Chaos Sea reads `game_state/meta/guardians.json` and builds a non-geographic Guardian Abode constellation from `activeGuardian`, `chaosSeaNavigation.currentAbodeId`, `discoveredAbodes`/`knownAbodes`, and Guardian `abode` data; Shining Abode reads `game_state/meta/shining_abode_state.json` and builds a civic mandala from `halls[]`, `factions[]`, residents, leadership, and projects. It keeps console fallback behavior unchanged and writes no game state.
 
