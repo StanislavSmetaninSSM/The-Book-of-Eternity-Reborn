@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -35,6 +36,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/storage_move" or "/хранилище_предметы" or
         "/vehicle_move" or "/транспорт_предметы" or
         "/craft" or "/ремесло" or
+        "/reveal_fate" or "/открыть_судьбу" or
+        "/rewrite_fate" or "/переписать_судьбу" or
         "/gacha" or "/гача" or
         "/abode_offering" or "/подношение_обители" or
         "/found_guardian_mantle" or "/учредить_хранителя" or
@@ -74,6 +77,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/storage_move" or "/хранилище_предметы" => await BuildStorageItemMoveAsync(command, fs),
             "/vehicle_move" or "/транспорт_предметы" => await BuildVehicleItemMoveAsync(command, fs),
             "/craft" or "/ремесло" => await BuildCraftAsync(command, fs),
+            "/reveal_fate" or "/открыть_судьбу" => await BuildInkFeatherRevealFateAsync(command, fs, stateManager),
+            "/rewrite_fate" or "/переписать_судьбу" => await BuildInkFeatherRewriteFateAsync(command, fs, stateManager),
             "/gacha" or "/гача" => await BuildGachaAsync(command, fs, stateManager),
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
             "/found_guardian_mantle" or "/учредить_хранителя" => await BuildPlayerGuardianFoundationAsync(command, fs),
@@ -2335,6 +2340,216 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             ]);
     }
 
+    private static async Task<ExplorerCommandResult> BuildInkFeatherRevealFateAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var soul = await ReadJson(fs, SoulStatePath);
+        if (soul.Node is not JsonObject soulRoot)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Судьба недоступна", "Состояние души сейчас недоступно. Откройте форму позже.")
+                ]);
+        }
+
+        var arguments = ReadCommandArguments(command);
+        if (!string.IsNullOrWhiteSpace(arguments))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Failed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Error, "Некорректные аргументы", "Команда раскрытия судьбы не принимает аргументы. Откройте форму и подтвердите списание Перьев.")
+                ]);
+        }
+
+        var currentRealm = FirstNonEmpty(GetString(soulRoot, "currentRealm"), stateManager.CurrentState.CurrentRealm);
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Судьба недоступна", "Раскрытие судьбы доступно только во время смертной жизни.")
+                ]);
+        }
+
+        var availableFeathers = Math.Max(0, GetSoulInkFeathers(soulRoot, stateManager.CurrentState.InkFeathers));
+        var cost = ComputeRevealFateCost(availableFeathers);
+        if (availableFeathers < cost)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Недостаточно Перьев", $"Для раскрытия судьбы нужно {cost} Чернильных Перьев, доступно {availableFeathers}.")
+                ]);
+        }
+
+        var remaining = availableFeathers - cost;
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Открыть Судьбу",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = $"Раскрытие покажет предстоящие кубики и базу судьбы. Стоимость: {cost} Чернильных Перьев; после списания останется {remaining}.",
+                        Tone = UiTone.Accent
+                    },
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            KeyValue("Доступно Перьев", availableFeathers.ToString()),
+                            KeyValue("Стоимость", $"{cost} Чернильных Перьев"),
+                            KeyValue("После списания", remaining.ToString())
+                        ]
+                    }
+                ]
+            }
+        };
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_ink_feather_fate_reveal",
+                    Prompt = $"Потратить {cost} Чернильных Перьев и открыть судьбу?",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildInkFeatherRewriteFateAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var soul = await ReadJson(fs, SoulStatePath);
+        if (soul.Node is not JsonObject soulRoot)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Переписывание недоступно", "Состояние души сейчас недоступно. Откройте форму позже.")
+                ]);
+        }
+
+        var arguments = ReadCommandArguments(command);
+        if (!string.IsNullOrWhiteSpace(arguments))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Failed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Error, "Некорректные аргументы", "Команда переписывания судьбы не принимает аргументы. Откройте форму и подтвердите списание Перьев.")
+                ]);
+        }
+
+        var currentRealm = FirstNonEmpty(GetString(soulRoot, "currentRealm"), stateManager.CurrentState.CurrentRealm);
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Переписывание недоступно", "Переписывание судьбы доступно только во время смертной жизни.")
+                ]);
+        }
+
+        var pendingService = new PendingTurnStateService(fs, NullLogger<PendingTurnStateService>.Instance);
+        var pending = await pendingService.TryReadExistingAsync();
+        if (pending == null || !pending.IsFateLocked)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Нет открытой судьбы", "Сначала нужно открыть судьбу. Переписывание доступно только для уже раскрытых кубиков и Гача-базы.")
+                ]);
+        }
+
+        var availableFeathers = Math.Max(0, GetSoulInkFeathers(soulRoot, stateManager.CurrentState.InkFeathers));
+        var cost = ComputeRewriteFateCost(availableFeathers);
+        if (availableFeathers < cost)
+        {
+            return Result(
+                command,
+                CommandExecutionState.Completed,
+                [
+                    localTurn.Panel,
+                    Message(UiNotificationSeverity.Warning, "Недостаточно Перьев", $"Для переписывания судьбы нужно {cost} Чернильных Перьев, доступно {availableFeathers}.")
+                ]);
+        }
+
+        var remaining = availableFeathers - cost;
+        var blocks = new List<UiBlock>
+        {
+            localTurn.Panel,
+            new UiPanelBlock
+            {
+                Title = "Переписать Судьбу",
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = $"Переписывание заменит текущие кости судьбы и Гача-базу новым открытым набором. Стоимость: {cost} Чернильных Перьев; после списания останется {remaining}.",
+                        Tone = UiTone.Warning
+                    },
+                    new UiKeyValueGridBlock
+                    {
+                        Items =
+                        [
+                            KeyValue("Текущие кубики", FormatDiceUsed(pending.PreGeneratedDices1d20)),
+                            KeyValue("Гача-база", FormatGachaBaseSummary(pending.GachaBaseResult)),
+                            KeyValue("Стоимость", $"{cost} Чернильных Перьев"),
+                            KeyValue("После списания", remaining.ToString())
+                        ]
+                    }
+                ]
+            }
+        };
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_ink_feather_fate_rewrite",
+                    Prompt = $"Потратить {cost} Чернильных Перьев и переписать открытую судьбу?",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
     private static async Task<ExplorerCommandResult> BuildGachaAsync(
         string command,
         FileSystemManager fs,
@@ -3293,6 +3508,20 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             return "[]";
 
         return "[" + string.Join(", ", diceUsed) + "]";
+    }
+
+    private static int ComputeRevealFateCost(int currentFeathers) =>
+        Math.Max(5, (int)(Math.Max(0, currentFeathers) * 0.10));
+
+    private static int ComputeRewriteFateCost(int currentFeathers) =>
+        Math.Max(15, (int)(Math.Max(0, currentFeathers) * 0.25));
+
+    private static string FormatGachaBaseSummary(GachaResult? gacha)
+    {
+        if (gacha == null)
+            return "не определена";
+
+        return $"{FirstNonEmpty(gacha.BaseRarity, "Common")} ({gacha.BaseScore}); кубики {FormatDiceUsed(gacha.DiceUsed)}";
     }
 
     private static bool TryGetBool(JsonObject obj, string propertyName)

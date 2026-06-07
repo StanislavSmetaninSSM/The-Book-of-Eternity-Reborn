@@ -37,6 +37,12 @@ public sealed class PendingTurnStateService
         return created;
     }
 
+    public async Task<PendingTurnState?> TryReadExistingAsync()
+    {
+        var existing = await ReadAsync();
+        return IsValid(existing) ? existing : null;
+    }
+
     public async Task<PendingTurnState> RevealAsync()
     {
         var state = await GetOrCreateAsync();
