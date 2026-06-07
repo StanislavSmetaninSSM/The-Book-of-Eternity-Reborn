@@ -59,6 +59,8 @@ public sealed class BrowserAfterlifeWriteService
             "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
             "/spiritual_arts" or "/духовные_искусства" => await ApplySpiritualArtsAsync(answers, owner),
             "/spiritual_action" or "/духовное_действие" => await BuildSpiritualActionPayloadAsync(answers),
+            "/reveal_fate" or "/открыть_судьбу" => await ApplyInkFeatherRevealFateAsync(answers, owner),
+            "/rewrite_fate" or "/переписать_судьбу" => await ApplyInkFeatherRewriteFateAsync(answers, owner),
             "/gacha" or "/гача" => string.IsNullOrWhiteSpace(parsed.Arguments)
                 ? await ApplyGachaPullAsync(answers, owner)
                 : BrowserPromptWriteResult.ValidationError("Команда /gacha не принимает аргументы. Выберите поддерживаемый прямой призыв Моря Хаоса через браузерную форму."),
@@ -1736,6 +1738,158 @@ public sealed class BrowserAfterlifeWriteService
             });
     }
 
+    private async Task<BrowserPromptWriteResult> ApplyInkFeatherRevealFateAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_ink_feather_fate_reveal"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите раскрытие судьбы.");
+
+        InkFeatherFateSoulValidationState validation;
+        try
+        {
+            validation = await ReadInkFeatherFateSoulValidationStateAsync();
+        }
+        catch
+        {
+            return BrowserPromptWriteResult.ValidationError("Состояние души сейчас недоступно.");
+        }
+
+        if (!RealmSemantics.IsMortalRealm(validation.CurrentRealm))
+            return BrowserPromptWriteResult.ValidationError("Раскрытие судьбы доступно только во время смертной жизни.");
+
+        var initialCost = ComputeRevealFateCost(validation.InkFeathers);
+        if (validation.InkFeathers < initialCost)
+            return BrowserPromptWriteResult.ValidationError($"Недостаточно Чернильных Перьев: доступно {validation.InkFeathers}, нужно {initialCost}.");
+
+        var payload = new JsonObject
+        {
+            ["sourceSurface"] = "ink_feather_fate_reveal_browser_write",
+            ["action"] = "reveal_fate"
+        };
+        var completionMessage = "Судьба открыта: Чернильные Перья списаны, кубики и Гача-база зафиксированы для следующего хода.";
+
+        var result = await ExecuteAsync(
+            owner,
+            "Раскрытие судьбы",
+            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],
+            async () =>
+            {
+                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
+                var currentRealm = FirstNonEmpty(GetNodeString(soulRoot["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
+                if (!RealmSemantics.IsMortalRealm(currentRealm))
+                    throw new InvalidOperationException("Раскрытие судьбы доступно только во время смертной жизни.");
+
+                var currentFeathers = GetSoulInkFeathers(soulRoot);
+                var cost = ComputeRevealFateCost(currentFeathers);
+                if (currentFeathers < cost)
+                    throw new InvalidOperationException($"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.");
+
+                var pendingTurnState = new PendingTurnStateService(
+                    _fs,
+                    NullLogger<PendingTurnStateService>.Instance);
+                await pendingTurnState.GetOrCreateAsync();
+
+                var remainingFeathers = currentFeathers - cost;
+                SetSoulInkFeathers(soulRoot, remainingFeathers);
+                await WriteObjectAsync(SoulStatePath, soulRoot);
+
+                var revealed = await pendingTurnState.RevealAsync();
+                await _stateManager.RefreshGameStateAsync();
+
+                payload["spentInkFeathers"] = cost;
+                payload["remainingInkFeathers"] = remainingFeathers;
+                payload["currentInkFeathersBeforeSpend"] = currentFeathers;
+                payload["revealedFate"] = BuildFatePayload(revealed);
+                payload["summary"] = BuildFateSummary(revealed);
+                completionMessage = $"Судьба открыта. Списано: {cost}. Осталось: {remainingFeathers}. Кости судьбы: {FormatDiceUsed(revealed.PreGeneratedDices1d20)}. Гача-база: {FormatGachaBaseSummary(revealed.GachaBaseResult)}.";
+            },
+            "Судьба открыта",
+            completionMessage,
+            payload);
+        return result.Success ? result with { Message = completionMessage } : result;
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyInkFeatherRewriteFateAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_ink_feather_fate_rewrite"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите переписывание судьбы.");
+
+        InkFeatherFateSoulValidationState validation;
+        try
+        {
+            validation = await ReadInkFeatherFateSoulValidationStateAsync();
+        }
+        catch
+        {
+            return BrowserPromptWriteResult.ValidationError("Состояние души сейчас недоступно.");
+        }
+
+        if (!RealmSemantics.IsMortalRealm(validation.CurrentRealm))
+            return BrowserPromptWriteResult.ValidationError("Переписывание судьбы доступно только во время смертной жизни.");
+
+        var initialCost = ComputeRewriteFateCost(validation.InkFeathers);
+        if (validation.InkFeathers < initialCost)
+            return BrowserPromptWriteResult.ValidationError($"Недостаточно Чернильных Перьев: доступно {validation.InkFeathers}, нужно {initialCost}.");
+
+        var pendingTurnState = new PendingTurnStateService(
+            _fs,
+            NullLogger<PendingTurnStateService>.Instance);
+        var initialPending = await pendingTurnState.TryReadExistingAsync();
+        if (initialPending == null || !initialPending.IsFateLocked)
+            return BrowserPromptWriteResult.ValidationError("Сначала нужно открыть судьбу. Переписывание доступно только для уже раскрытых кубиков и Гача-базы.");
+
+        var payload = new JsonObject
+        {
+            ["sourceSurface"] = "ink_feather_fate_rewrite_browser_write",
+            ["action"] = "rewrite_fate"
+        };
+        var completionMessage = "Судьба переписана: Чернильные Перья списаны, старые кубики заменены новым открытым набором.";
+
+        var result = await ExecuteAsync(
+            owner,
+            "Переписывание судьбы",
+            [SoulStatePath, PendingTurnStateService.PendingDiceStatePath],
+            async () =>
+            {
+                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
+                var currentRealm = FirstNonEmpty(GetNodeString(soulRoot["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
+                if (!RealmSemantics.IsMortalRealm(currentRealm))
+                    throw new InvalidOperationException("Переписывание судьбы доступно только во время смертной жизни.");
+
+                var currentPending = await pendingTurnState.TryReadExistingAsync();
+                if (currentPending == null || !currentPending.IsFateLocked)
+                    throw new InvalidOperationException("Сначала нужно открыть судьбу. Переписывание доступно только для уже раскрытых кубиков и Гача-базы.");
+
+                var currentFeathers = GetSoulInkFeathers(soulRoot);
+                var cost = ComputeRewriteFateCost(currentFeathers);
+                if (currentFeathers < cost)
+                    throw new InvalidOperationException($"Недостаточно Чернильных Перьев: доступно {currentFeathers}, нужно {cost}.");
+
+                var remainingFeathers = currentFeathers - cost;
+                SetSoulInkFeathers(soulRoot, remainingFeathers);
+                await WriteObjectAsync(SoulStatePath, soulRoot);
+
+                var rewritten = await pendingTurnState.RewriteAsync();
+                await _stateManager.RefreshGameStateAsync();
+
+                payload["spentInkFeathers"] = cost;
+                payload["remainingInkFeathers"] = remainingFeathers;
+                payload["currentInkFeathersBeforeSpend"] = currentFeathers;
+                payload["oldFate"] = BuildFatePayload(currentPending);
+                payload["newFate"] = BuildFatePayload(rewritten);
+                payload["oldSummary"] = BuildFateSummary(currentPending);
+                payload["newSummary"] = BuildFateSummary(rewritten);
+                completionMessage = $"Судьба переписана. Списано: {cost}. Осталось: {remainingFeathers}. Старые кости: {FormatDiceUsed(currentPending.PreGeneratedDices1d20)}. Новые кости: {FormatDiceUsed(rewritten.PreGeneratedDices1d20)}. Гача-база: {FormatGachaBaseSummary(rewritten.GachaBaseResult)}.";
+            },
+            "Судьба переписана",
+            completionMessage,
+            payload);
+        return result.Success ? result with { Message = completionMessage } : result;
+    }
+
     private async Task<BrowserPromptWriteResult> ApplyGachaPullAsync(
         IReadOnlyDictionary<string, JsonNode?> answers,
         LocalUiSessionLockOwner owner)
@@ -2488,8 +2642,55 @@ public sealed class BrowserAfterlifeWriteService
             GetSoulInkFeathers(soulRoot));
     }
 
+    private async Task<InkFeatherFateSoulValidationState> ReadInkFeatherFateSoulValidationStateAsync()
+    {
+        var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
+        return new InkFeatherFateSoulValidationState(
+            FirstNonEmpty(GetNodeString(soulRoot["currentRealm"]), _stateManager.CurrentState.CurrentRealm),
+            GetSoulInkFeathers(soulRoot));
+    }
+
     private static string DescribeDirectGachaRealmBlocker(string? currentRealm) =>
         $"Прямой призыв Моря Хаоса доступен только в Ordinary Chaos Sea (currentRealm=Chaos Sea/Море Хаоса). Текущий realm: {FirstNonEmpty(currentRealm, "не определён")}.";
+
+    private static int ComputeRevealFateCost(int currentFeathers) =>
+        Math.Max(5, (int)(Math.Max(0, currentFeathers) * 0.10));
+
+    private static int ComputeRewriteFateCost(int currentFeathers) =>
+        Math.Max(15, (int)(Math.Max(0, currentFeathers) * 0.25));
+
+    private static JsonObject BuildFatePayload(PendingTurnState state)
+    {
+        var dice = new JsonArray();
+        foreach (var die in state.PreGeneratedDices1d20)
+            dice.Add(die);
+
+        return new JsonObject
+        {
+            ["isFateLocked"] = state.IsFateLocked,
+            ["preGeneratedDices1d20"] = dice,
+            ["gachaBaseResult"] = BuildGachaBaseResultPayload(state.GachaBaseResult)
+        };
+    }
+
+    private static string BuildFateSummary(PendingTurnState state) =>
+        $"Кубики 1d20: {FormatDiceUsed(state.PreGeneratedDices1d20)}; Гача-база: {FormatGachaBaseSummary(state.GachaBaseResult)}.";
+
+    private static string FormatGachaBaseSummary(GachaResult? gacha)
+    {
+        if (gacha == null)
+            return "не определена";
+
+        return $"{FirstNonEmpty(gacha.BaseRarity, "Common")} ({gacha.BaseScore}); кубики {FormatDiceUsed(gacha.DiceUsed)}";
+    }
+
+    private static string FormatDiceUsed(IReadOnlyCollection<int>? diceUsed)
+    {
+        if (diceUsed == null || diceUsed.Count == 0)
+            return "[]";
+
+        return "[" + string.Join(", ", diceUsed) + "]";
+    }
 
     private static JsonObject BuildGachaBaseResultPayload(GachaResult? gacha)
     {
@@ -3509,4 +3710,5 @@ public sealed class BrowserAfterlifeWriteService
     }
 
     private sealed record GachaSoulValidationState(string CurrentRealm, int InkFeathers);
+    private sealed record InkFeatherFateSoulValidationState(string CurrentRealm, int InkFeathers);
 }

@@ -23,7 +23,7 @@ public static class BrowserCommandCoverageService
             ["shining_politics"] = Tracked("#817", "Read-only Shining politics data is covered; dedicated founding, realignment, and leadership forms cover the #810 browser slice while broader Shining actions stay tracked separately."),
             ["shining_treasury"] = Tracked("#817", "Treasury browser parity is covered; remaining Shining umbrella parity work stays tracked separately."),
             ["afterlife_archive"] = Tracked("#816, #817", "Read-only afterlife archive data is covered; consultation, project fuel, and direct pull actions remain tracked interactive work."),
-            ["feathers"] = Tracked("#815, #817", "Ink Feather totals and related soul data are covered; fate reveal and rewrite actions remain tracked interactive work.")
+            ["feathers"] = Tracked("#817", "Ink Feather totals, reveal fate, and rewrite fate browser surfaces are covered; remaining umbrella parity work stays tracked separately.")
         };
 
     public static BrowserCommandCoverageDto Build()

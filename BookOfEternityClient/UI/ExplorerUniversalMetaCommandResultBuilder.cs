@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 using BookOfEternityClient.CommandProtocol;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.UI;
 
@@ -132,7 +133,7 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             CommandKind.Story => BuildStory(normalizedCommand, fs),
             CommandKind.Behavior => await BuildJsonFile(normalizedCommand, fs, "Поведение игрока", "game_state/meta/player_behavior.json"),
             CommandKind.Lives => await BuildSoulSection(normalizedCommand, fs, "История жизней", "livesHistory"),
-            CommandKind.Feathers => await BuildSoulSection(normalizedCommand, fs, "Чернильные Перья", "inkFeathers"),
+            CommandKind.Feathers => await BuildInkFeathers(normalizedCommand, fs, stateManager),
             CommandKind.WorldRules => await BuildJsonFile(normalizedCommand, fs, "Досье текущего мира", WorldDirectiveService.ActiveDirectivesPath),
             CommandKind.Gallery => BuildGallery(normalizedCommand, fs),
             CommandKind.Gm => await BuildGmThoughts(normalizedCommand, fs, loc),
@@ -210,6 +211,97 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
                     ("Поле", propertyName),
                     ("Статус", section == null ? "не найдено" : "найдено"))),
             Raw($"JSON: soul_state.{propertyName}", section ?? new JsonObject()));
+    }
+
+    private static async Task<ExplorerCommandResult> BuildInkFeathers(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var read = await ReadJson(fs, "game_state/meta/soul_state.json");
+        if (read.Node is not JsonObject soulRoot)
+        {
+            return Completed(
+                command,
+                new UiMessageBlock
+                {
+                    Severity = UiNotificationSeverity.Warning,
+                    Title = "Чернильные Перья",
+                    Message = "Состояние души сейчас недоступно. Откройте сводку позже."
+                });
+        }
+
+        var currentRealm = GetString(soulRoot, "currentRealm", stateManager.CurrentState.CurrentRealm);
+        var current = Math.Max(0, GetInkFeatherCurrent(soulRoot, stateManager.CurrentState.InkFeathers));
+        var total = Math.Max(current, GetInkFeatherTotal(soulRoot, current));
+        var revealCost = ComputeRevealFateCost(current);
+        var rewriteCost = ComputeRewriteFateCost(current);
+        var pendingService = new PendingTurnStateService(fs, NullLogger<PendingTurnStateService>.Instance);
+        var pending = await pendingService.TryReadExistingAsync();
+        var hasLockedFate = pending?.IsFateLocked == true;
+        var isMortalRealm = RealmSemantics.IsMortalRealm(currentRealm);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                "Чернильные Перья",
+                new UiTextBlock
+                {
+                    Text = "Чернильные Перья можно потратить на раскрытие или переписывание судьбы во время смертной жизни.",
+                    Tone = UiTone.Accent
+                },
+                Grid(
+                    ("Сейчас", current.ToString()),
+                    ("Всего накоплено", total.ToString()),
+                    ("Открытая судьба", hasLockedFate ? "есть" : "нет"),
+                    ("Открыть Судьбу", current >= revealCost ? $"{revealCost} Чернильных Перьев" : $"нужно {revealCost}, доступно {current}"),
+                    ("Переписать Судьбу", hasLockedFate
+                        ? current >= rewriteCost ? $"{rewriteCost} Чернильных Перьев" : $"нужно {rewriteCost}, доступно {current}"
+                        : "сначала откройте судьбу")))
+        };
+
+        if (!isMortalRealm)
+        {
+            blocks.Add(new UiMessageBlock
+            {
+                Severity = UiNotificationSeverity.Warning,
+                Title = "Формы судьбы недоступны",
+                Message = "Раскрытие и переписывание судьбы доступны только во время смертной жизни."
+            });
+        }
+
+        var actions = new List<UiAction>();
+        if (isMortalRealm && current >= revealCost)
+        {
+            actions.Add(new UiAction
+            {
+                Id = "ink-feather-reveal-fate",
+                Label = $"Открыть Судьбу ({revealCost} Перьев)",
+                Command = "/reveal_fate",
+                Style = UiActionStyle.Primary,
+                RequiresConfirmation = true
+            });
+        }
+
+        if (isMortalRealm && hasLockedFate && current >= rewriteCost)
+        {
+            actions.Add(new UiAction
+            {
+                Id = "ink-feather-rewrite-fate",
+                Label = $"Переписать Судьбу ({rewriteCost} Перьев)",
+                Command = "/rewrite_fate",
+                Style = UiActionStyle.Secondary,
+                RequiresConfirmation = true
+            });
+        }
+
+        return new ExplorerCommandResult
+        {
+            Command = command,
+            State = CommandExecutionState.Completed,
+            Blocks = blocks,
+            Actions = actions
+        };
     }
 
     private static async Task<ExplorerCommandResult> BuildSoulRelics(string command, FileSystemManager fs)
@@ -894,6 +986,45 @@ public static partial class ExplorerUniversalMetaCommandResultBuilder
             _ => "не указано"
         };
     }
+
+    private static int GetInkFeatherCurrent(JsonObject soulRoot, int fallback)
+    {
+        var feathers = soulRoot["inkFeathers"];
+        if (feathers is JsonObject obj)
+            return GetIntValue(obj["current"], fallback);
+
+        return GetIntValue(feathers, fallback);
+    }
+
+    private static int GetInkFeatherTotal(JsonObject soulRoot, int fallback)
+    {
+        var feathers = soulRoot["inkFeathers"];
+        if (feathers is JsonObject obj)
+            return GetIntValue(obj["total"], fallback);
+
+        return fallback;
+    }
+
+    private static int GetIntValue(JsonNode? node, int fallback)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<int>(out var number))
+                return number;
+            if (value.TryGetValue<long>(out var longValue) && longValue is >= int.MinValue and <= int.MaxValue)
+                return (int)longValue;
+            if (value.TryGetValue<string>(out var text) && int.TryParse(text, out var parsed))
+                return parsed;
+        }
+
+        return fallback;
+    }
+
+    private static int ComputeRevealFateCost(int currentFeathers) =>
+        Math.Max(5, (int)(Math.Max(0, currentFeathers) * 0.10));
+
+    private static int ComputeRewriteFateCost(int currentFeathers) =>
+        Math.Max(15, (int)(Math.Max(0, currentFeathers) * 0.25));
 
     private static string DescribeNested(JsonNode? node, string propertyName)
     {
