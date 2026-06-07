@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "summary": {
-    "descriptorCount": 98,
-    "aliasCount": 217,
+    "descriptorCount": 99,
+    "aliasCount": 219,
     "subcommandCount": 8,
-    "browserExecutableCount": 98,
-    "playerDefaultActionCount": 91,
+    "browserExecutableCount": 99,
+    "playerDefaultActionCount": 92,
     "advancedOnlyActionCount": 7,
-    "mutatingCommandCount": 42,
+    "mutatingCommandCount": 43,
     "commandsNeedingFollowUpCount": 11
   },
   "commands": [
@@ -2495,6 +2495,32 @@
       "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
+      "id": "shining_relic_forge",
+      "aliases": [
+        "/shining_relic_forge",
+        "/\u0441\u0438\u044F\u044E\u0449\u0430\u044F_\u043A\u043E\u0432\u043A\u0430"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041A\u043E\u0432\u043A\u0430 \u0440\u0435\u043B\u0438\u043A\u0432\u0438\u0439",
+      "primaryCommand": "/shining_relic_forge",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
+    },
+    {
       "id": "shining_trade",
       "aliases": [
         "/shining_trade",
@@ -2536,15 +2562,15 @@
       "primaryActionLabel": "\u041A\u0430\u0437\u043D\u0430\u0447\u0435\u0439\u0441\u0442\u0432\u043E",
       "primaryCommand": "/shining_treasury",
       "subcommands": [],
-      "followUpIssue": "#813, #817",
-      "reason": "Treasury browser parity is covered; relic-forge flows remain tracked interactive work.",
+      "followUpIssue": "#817",
+      "reason": "Treasury browser parity is covered; remaining Shining umbrella parity work stays tracked separately.",
       "auditStatus": "tracked-follow-up",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
       "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "Treasury browser parity is covered; relic-forge flows remain tracked interactive work."
+      "gapSummary": "Treasury browser parity is covered; remaining Shining umbrella parity work stays tracked separately."
     },
     {
       "id": "source_of_light",
