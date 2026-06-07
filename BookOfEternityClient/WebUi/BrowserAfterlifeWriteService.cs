@@ -43,6 +43,11 @@ public sealed class BrowserAfterlifeWriteService
             "/shining_faction_founding" or "/основание_сияющей_фракции" => await ApplyShiningFactionFoundingAsync(answers, owner),
             "/shining_faction_realignment" or "/перестройка_сияющей_фракции" => await ApplyShiningFactionRealignmentAsync(answers, owner),
             "/shining_faction_leadership" or "/смена_главы_сияющей_фракции" => await ApplyShiningFactionLeadershipAsync(answers, owner),
+            "/shining_native_faction_discovery" or "/открытие_нативной_фракции" => await ApplyShiningNativeFactionDiscoveryAsync(answers, owner),
+            "/shining_faction_investment" or "/инвестиция_в_сияющую_фракцию" => await ApplyShiningFactionInvestmentAsync(parsed.Arguments, answers, owner),
+            "/shining_project_support" or "/поддержать_сияющий_проект" => await ApplyShiningProjectSupportMutationAsync(answers, owner, support: true),
+            "/shining_project_unsupport" or "/снять_поддержку_сияющего_проекта" => await ApplyShiningProjectSupportMutationAsync(answers, owner, support: false),
+            "/shining_project_retirement" or "/отправить_сияющий_проект_в_историю" => await ApplyShiningProjectRetirementAsync(answers, owner),
             "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(answers, owner),
             "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(answers, owner),
             "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
@@ -844,6 +849,198 @@ public sealed class BrowserAfterlifeWriteService
             payload: null);
     }
 
+    private async Task<BrowserPromptWriteResult> ApplyShiningNativeFactionDiscoveryAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите открытие нативной фракции.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Открытие нативной фракции недоступно");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAsync(
+            owner,
+            "Открытие нативной фракции",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, SoulStatePath],
+            async () =>
+            {
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var cost = ShiningAbodeState.GetNativeDiscoveryCost();
+                var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    ActionType = ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
+                    RadianceTierAtRequest = GetNodeInt(shiningRoot["radiance"]?["tier"]),
+                    QuotedCostFeathers = cost.Feathers,
+                    QuotedCostLightSparks = cost.LightSparks,
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningCoreActionValidationMessage(validation));
+
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Открытие отправлено ГМ",
+            "Запрос открытия нативной фракции отправлен. ГМ разрешит появление новой сияющей фракции.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningFactionInvestmentAsync(
+        string commandArguments,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите инвестицию в сияющую фракцию.");
+
+        var factionId = string.IsNullOrWhiteSpace(commandArguments)
+            ? ReadAnswer(answers, "faction_id")
+            : commandArguments.Trim();
+        if (string.IsNullOrWhiteSpace(factionId))
+            return BrowserPromptWriteResult.ValidationError("Выберите сияющую фракцию.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Инвестиция в сияющую фракцию недоступна");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAsync(
+            owner,
+            "Инвестиция в сияющую фракцию",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, SoulStatePath],
+            async () =>
+            {
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var faction = FindVisibleOperationalFaction(shiningRoot, factionId);
+                if (faction == null)
+                    throw new InvalidOperationException("Выберите видимую действующую фракцию Сияющей Обители.");
+
+                var cost = ShiningAbodeState.GetFactionInvestmentCost();
+                var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    ActionType = ShiningCoreActionRequestState.ActionTypeInvestInFaction,
+                    FactionId = factionId.Trim(),
+                    FactionName = ResolveFactionName(faction, factionId.Trim()),
+                    QuotedCostFeathers = cost.Feathers,
+                    QuotedCostLightSparks = cost.LightSparks,
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningCoreActionValidationMessage(validation));
+
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Инвестиция отправлена ГМ",
+            "Запрос инвестиции в сияющую фракцию отправлен. ГМ разрешит итог вложения.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningProjectSupportMutationAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner,
+        bool support)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
+            return BrowserPromptWriteResult.ValidationError(support ? "Подтвердите поддержку проекта." : "Подтвердите снятие поддержки проекта.");
+
+        var projectChoice = ReadAnswer(answers, "project_choice");
+        if (!TryParseProjectChoice(projectChoice, out var factionId, out var projectId))
+            return BrowserPromptWriteResult.ValidationError("Выберите сияющий проект.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(support ? "Поддержка сияющего проекта недоступна" : "Снятие поддержки сияющего проекта недоступно");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAsync(
+            owner,
+            support ? "Поддержка сияющего проекта" : "Снятие поддержки сияющего проекта",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath],
+            async () =>
+            {
+                var (faction, project) = await ResolveVisibleShiningProjectAsync(factionId, projectId);
+                if (!support && !IsCompletedProject(project))
+                    throw new InvalidOperationException("Снимать поддержку можно только с завершённого проекта.");
+
+                var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    ActionType = support
+                        ? ShiningCoreActionRequestState.ActionTypeSupportProject
+                        : ShiningCoreActionRequestState.ActionTypeUnsupportProject,
+                    FactionId = factionId,
+                    FactionName = ResolveFactionName(faction, factionId),
+                    ProjectId = projectId,
+                    ProjectDisplayName = ResolveProjectName(project, projectId),
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningCoreActionValidationMessage(validation));
+
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            support ? "Поддержка отправлена ГМ" : "Снятие поддержки отправлено ГМ",
+            support
+                ? "Запрос поддержки сияющего проекта отправлен. ГМ разрешит итог поддержки."
+                : "Запрос снятия поддержки сияющего проекта отправлен. ГМ разрешит итог изменения.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningProjectRetirementAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите отправку проекта в историю.");
+
+        var projectChoice = ReadAnswer(answers, "project_choice");
+        if (!TryParseProjectChoice(projectChoice, out var factionId, out var projectId))
+            return BrowserPromptWriteResult.ValidationError("Выберите сияющий проект.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Отправка сияющего проекта в историю недоступна");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAsync(
+            owner,
+            "Отправка сияющего проекта в историю",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath],
+            async () =>
+            {
+                var (faction, project) = await ResolveVisibleShiningProjectAsync(factionId, projectId);
+                var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    ActionType = ShiningCoreActionRequestState.ActionTypeRetireProject,
+                    FactionId = factionId,
+                    FactionName = ResolveFactionName(faction, factionId),
+                    ProjectId = projectId,
+                    ProjectDisplayName = ResolveProjectName(project, projectId),
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningCoreActionValidationMessage(validation));
+
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Проект отправлен ГМ",
+            "Запрос отправки сияющего проекта в историю передан ГМ.",
+            payload: null);
+    }
+
     private async Task<BrowserPromptWriteResult?> TryBuildShiningPoliticsRealmBlockerAsync(string title)
     {
         JsonObject? soulRoot = null;
@@ -894,6 +1091,74 @@ public sealed class BrowserAfterlifeWriteService
         }
 
         return null;
+    }
+
+    private async Task<BrowserPromptWriteResult?> TryBuildShiningCoreActionRealmBlockerAsync(string title)
+    {
+        JsonObject? soulRoot = null;
+        JsonObject? shiningRoot = null;
+        try
+        {
+            soulRoot = await ReadObjectAsync(SoulStatePath);
+            shiningRoot = await ReadObjectAsync(ShiningAbodeState.StatePath);
+        }
+        catch
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                title,
+                "Действие Сияющей Обители временно недоступно: состояние души или Обители нужно восстановить перед запросом.");
+        }
+
+        var currentRealm = FirstNonEmpty(GetNodeString(soulRoot?["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
+        if (!RealmSemantics.IsShiningRealm(currentRealm))
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                title,
+                "Действия Сияющей Обители доступны только в Сияющей Обители. Сейчас действие недоступно для текущего царства.");
+        }
+
+        if (shiningRoot == null ||
+            !string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) ||
+            ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                title,
+                "Действия доступны только в обычной активной Сияющей Обители.");
+        }
+
+        var rawStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+        if (!string.IsNullOrWhiteSpace(rawStateError))
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                title,
+                "Сияющая Обитель сейчас не готова к действиям. Проверьте состояние перед новым запросом.");
+        }
+
+        return null;
+    }
+
+    private async Task<(JsonObject Faction, JsonObject Project)> ResolveVisibleShiningProjectAsync(
+        string factionId,
+        string projectId)
+    {
+        var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+        var faction = FindVisibleOperationalFaction(shiningRoot, factionId);
+        if (faction == null)
+            throw new InvalidOperationException("Выберите видимую действующую фракцию Сияющей Обители.");
+
+        var project = FindProject(faction, projectId);
+        if (project == null || !IsPlayerVisibleObject(project))
+            throw new InvalidOperationException("Выберите видимый проект этой сияющей фракции.");
+
+        return (faction, project);
     }
 
     private static async Task<GuardianTradeService.GuardianTradeOperationResult> BuildGuardianTradeRequestResultAsync(
@@ -1984,6 +2249,18 @@ public sealed class BrowserAfterlifeWriteService
             .FirstOrDefault(faction => string.Equals(GetNodeString(faction["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
     }
 
+    private static JsonObject? FindProject(JsonObject? faction, string projectId)
+    {
+        if (faction?["projects"] is not JsonArray projects)
+            return null;
+
+        return projects.OfType<JsonObject>()
+            .FirstOrDefault(project => string.Equals(GetNodeString(project["projectId"]), projectId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsCompletedProject(JsonObject project) =>
+        string.Equals(GetNodeString(project["status"]), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase);
+
     private static JsonObject? FindVisibleOperationalFaction(JsonObject? shiningRoot, string factionId) =>
         shiningRoot == null || string.IsNullOrWhiteSpace(factionId)
             ? null
@@ -2109,6 +2386,12 @@ public sealed class BrowserAfterlifeWriteService
             GetNodeString(faction?["factionName"]),
             fallbackId);
 
+    private static string ResolveProjectName(JsonObject? project, string fallbackId) =>
+        FirstNonEmpty(
+            GetNodeString(project?["displayName"]),
+            GetNodeString(project?["projectName"]),
+            fallbackId);
+
     private static string GetResidentName(JsonObject resident) =>
         FirstNonEmpty(
             GetNodeString(resident["displayName"]),
@@ -2132,6 +2415,19 @@ public sealed class BrowserAfterlifeWriteService
         return true;
     }
 
+    private static bool TryParseProjectChoice(string value, out string factionId, out string projectId)
+    {
+        factionId = string.Empty;
+        projectId = string.Empty;
+        var parts = value.Split('|', 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 2 || string.IsNullOrWhiteSpace(parts[0]) || string.IsNullOrWhiteSpace(parts[1]))
+            return false;
+
+        factionId = parts[0];
+        projectId = parts[1];
+        return true;
+    }
+
     private static string SanitizeShiningPoliticsValidationMessage(string message)
     {
         if (string.IsNullOrWhiteSpace(message))
@@ -2142,6 +2438,19 @@ public sealed class BrowserAfterlifeWriteService
 
         return ContainsBrowserTradeDiagnosticFragment(message)
             ? "Политический запрос временно ждёт проверки состояния. Повторите действие после восстановления политических ожиданий."
+            : message;
+    }
+
+    private static string SanitizeShiningCoreActionValidationMessage(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return "Действие Сияющей Обители не прошло проверку состояния.";
+
+        if (message.Contains("currentRealm", StringComparison.OrdinalIgnoreCase))
+            return "Действия Сияющей Обители доступны только в Сияющей Обители.";
+
+        return ContainsBrowserTradeDiagnosticFragment(message)
+            ? "Действие Сияющей Обители временно ждёт проверки состояния. Повторите действие после восстановления текущих ожиданий."
             : message;
     }
 
