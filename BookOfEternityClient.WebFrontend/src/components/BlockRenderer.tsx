@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { UiBlock, UiTone } from '../api/contracts';
 import { sanitizePlayerMessage, toPlayerFacingText } from '../utils/playerCopy';
 import { JsonTreeViewer } from './JsonTreeViewer';
+import { MapBlock } from './MapBlock';
 
 function toneClassName(tone: UiTone): string {
   switch (tone) {
@@ -97,20 +98,7 @@ export function BlockRenderer({ block, advancedEnabled = false }: { block: UiBlo
       );
 
     case 'map':
-      return (
-        <div className="block-map">
-          <h4>{toPlayerFacingText(block.title, 'Карта')}</h4>
-          <p className="block-text--muted">Карта: {block.map.nodes.length} точек, {block.map.links.length} связей</p>
-          <ul className="block-map__nodes">
-            {block.map.nodes.slice(0, 20).map((node) => (
-              <li key={node.id} className={node.isCurrent ? 'is-current' : ''}>
-                {toSafeBlockText(node.label, 'точка карты')} {node.isCurrent && '← вы здесь'}
-              </li>
-            ))}
-            {block.map.nodes.length > 20 && <li className="block-text--muted">…и ещё {block.map.nodes.length - 20}</li>}
-          </ul>
-        </div>
-      );
+      return <MapBlock block={block} />;
 
     case 'rawJson':
       if (advancedEnabled) {

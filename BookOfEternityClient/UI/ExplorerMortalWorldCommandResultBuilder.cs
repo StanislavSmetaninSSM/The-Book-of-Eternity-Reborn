@@ -139,10 +139,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
             CommandKind.GuardianCorrections => await BuildBundle(normalizedCommand, fs, "Коррективы Хранителя", [
                 new(GuardianCorrectionService.StatePath, "corrections", "Корректив")
             ]),
-            CommandKind.Locations => await BuildBundle(normalizedCommand, fs, "Локации", [
-                new("game_state/world/world_map.json", "newLocations", "Открытых"),
-                new("game_state/world/world_map.json", "locationUpdates", "Обновлений")
-            ]),
+            CommandKind.Locations => await BuildLocations(normalizedCommand, fs),
             CommandKind.Transport => await BuildBundle(normalizedCommand, fs, "Транспорт", [
                 new("game_state/world/world_map.json", "transportRoutes", "Маршрутов"),
                 new("game_state/world/current_location.json", "availableTransport", "Доступного транспорта")
@@ -428,6 +425,170 @@ public static class ExplorerMortalWorldCommandResultBuilder
             JsonValue value when TryGetScalarString(value, out var text) => EmptyFallback(text),
             _ => "найдено"
         };
+    }
+
+    private static async Task<ExplorerCommandResult> BuildLocations(string command, FileSystemManager fs)
+    {
+        const string title = "Локации";
+        var currentRead = await ReadJson(fs, "game_state/world/current_location.json");
+        var mapRead = await ReadJson(fs, "game_state/world/world_map.json");
+        var rows = new List<UiTableRow>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        if (UnwrapCurrentLocationNode(currentRead.Node) is { } current)
+        {
+            AddLocationRow(rows, seen, "Текущая", current, DescribeCurrentLocation(current));
+
+            if (current["adjacencyMap"] is JsonArray adjacency)
+            {
+                foreach (var entry in adjacency.OfType<JsonObject>())
+                {
+                    var name = FirstNonEmpty(
+                        GetLocationNodeString(entry, "name", "targetLocationName"),
+                        GetLocationNodeString(entry, "targetLocationId"),
+                        "Неизвестная локация");
+                    var details = JoinLocationDetails(
+                        GetLocationNodeString(entry, "direction"),
+                        GetLocationNodeString(entry, "distance"),
+                        DescribeLinkState(GetLocationNodeString(entry, "linkState")));
+                    var key = FirstNonEmpty(GetLocationNodeString(entry, "targetLocationId"), name);
+                    if (seen.Add($"adjacent:{key}"))
+                    {
+                        rows.Add(new UiTableRow
+                        {
+                            Cells = ["Рядом", name, EmptyFallback(details)]
+                        });
+                    }
+                }
+            }
+        }
+
+        foreach (var location in EnumerateWorldMapLocationObjects(mapRead.Node, "newLocations"))
+            AddLocationRow(rows, seen, "Открыта", location, DescribeWorldMapLocation(location));
+
+        foreach (var location in EnumerateWorldMapLocationObjects(mapRead.Node, "locationUpdates"))
+            AddLocationRow(rows, seen, "Обновлена", location, DescribeWorldMapLocation(location));
+
+        var blocks = new List<UiBlock>();
+        if (rows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = title,
+                Columns = ["Раздел", "Локация", "Сведения"],
+                Rows = rows
+            });
+        }
+        else
+        {
+            blocks.Add(Message(UiNotificationSeverity.Info, title, "Локации пока не обнаружены."));
+        }
+
+        AddLocationRawState(blocks, title, currentRead);
+        AddLocationRawState(blocks, title, mapRead);
+        return Completed(command, blocks);
+    }
+
+    private static JsonObject? UnwrapCurrentLocationNode(JsonNode? node)
+    {
+        if (node is not JsonObject root)
+            return null;
+
+        return root["currentLocationData"] as JsonObject ?? root;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateWorldMapLocationObjects(JsonNode? node, string propertyName)
+    {
+        if (node is not JsonObject root)
+            yield break;
+
+        foreach (var location in EnumerateLocationArray(root, propertyName))
+            yield return location;
+
+        if (root["worldMapUpdates"] is not JsonObject wrappedRoot)
+            yield break;
+
+        foreach (var location in EnumerateLocationArray(wrappedRoot, propertyName))
+            yield return location;
+    }
+
+    private static IEnumerable<JsonObject> EnumerateLocationArray(JsonObject root, string propertyName)
+    {
+        if (root[propertyName] is not JsonArray array)
+            yield break;
+
+        foreach (var node in array.OfType<JsonObject>())
+            yield return node;
+    }
+
+    private static void AddLocationRow(
+        List<UiTableRow> rows,
+        HashSet<string> seen,
+        string section,
+        JsonObject location,
+        string details)
+    {
+        var name = FirstNonEmpty(GetLocationNodeString(location, "name", "locationName", "displayName"), "Безымянная локация");
+        var key = StableLocationNodeKey(location, name);
+        if (!seen.Add(key))
+            return;
+
+        rows.Add(new UiTableRow
+        {
+            Cells = [section, name, EmptyFallback(details)]
+        });
+    }
+
+    private static string StableLocationNodeKey(JsonObject location, string fallbackName) =>
+        FirstNonEmpty(
+            GetLocationNodeString(location, "locationId", "id", "targetLocationId"),
+            fallbackName).Trim();
+
+    private static string DescribeCurrentLocation(JsonObject location) =>
+        JoinLocationDetails(
+            GetLocationNodeString(location, "region"),
+            GetLocationNodeString(location, "locationType"),
+            GetLocationNodeString(location, "description", "shortDescription"));
+
+    private static string DescribeWorldMapLocation(JsonObject location) =>
+        JoinLocationDetails(
+            GetLocationNodeString(location, "locationType"),
+            GetLocationNodeString(location, "indoorType"),
+            GetLocationNodeString(location, "shortDescription", "description"),
+            GetLocationNodeString(location, "lastEventsDescription"));
+
+    private static string DescribeLinkState(string linkState)
+    {
+        if (string.IsNullOrWhiteSpace(linkState) ||
+            string.Equals(linkState, "safe", StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Empty;
+        }
+
+        return $"состояние пути: {linkState}";
+    }
+
+    private static string JoinLocationDetails(params string[] parts) =>
+        string.Join("; ", parts.Where(static part => !string.IsNullOrWhiteSpace(part)).Select(static part => part.Trim()));
+
+    private static string GetLocationNodeString(JsonNode? node, params string[] properties)
+    {
+        foreach (var property in properties)
+        {
+            var value = GetNodeString(node, property);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static void AddLocationRawState(List<UiBlock> blocks, string title, JsonReadResult read)
+    {
+        if (read.Node != null)
+            blocks.Add(Raw($"Полный JSON {read.Path}", read.Node));
+        else if (read.FileExists)
+            blocks.Add(Message(UiNotificationSeverity.Warning, title, $"Файл найден, но не разобран как JSON: {read.Path}. {read.Error}"));
     }
 
     private static async Task<ExplorerCommandResult> BuildBooks(string command, FileSystemManager fs)

@@ -1654,6 +1654,119 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Theory]
+    [InlineData("/локации")]
+    [InlineData("/locations")]
+    public async Task ExecuteAsync_Locations_IncludesCurrentAdjacentAndWrappedWorldMapUpdates(string command)
+    {
+        await SeedMortalFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/current_location.json", """
+        {
+          "locationId": "loc_square",
+          "name": "Старая площадь",
+          "description": "Площадь с тёмным фонтаном.",
+          "adjacencyMap": [
+            {
+              "targetLocationId": "loc_gate",
+              "targetLocationName": "Северные ворота",
+              "direction": "север",
+              "distance": "10 минут",
+              "linkState": "safe"
+            }
+          ]
+        }
+        """);
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
+        {
+          "worldMapUpdates": {
+            "newLocations": [
+              {
+                "locationId": "loc_tower",
+                "name": "Пепельная башня",
+                "locationType": "watchtower",
+                "description": "Башня над дорогой."
+              }
+            ],
+            "locationUpdates": [
+              {
+                "locationId": "loc_bridge",
+                "name": "Сломанный мост",
+                "locationType": "bridge",
+                "lastEventsDescription": "Мост осел после ночного дождя."
+              }
+            ]
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(command, result.Command);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.DoesNotContain(result.Blocks, static block => block is UiMapBlock);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Старая площадь", text, StringComparison.Ordinal);
+        Assert.Contains("Северные ворота", text, StringComparison.Ordinal);
+        Assert.Contains("север", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Пепельная башня", text, StringComparison.Ordinal);
+        Assert.Contains("Сломанный мост", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_Locations_PreservesRootLevelUpdatesAndDeduplicatesWrappedMatches()
+    {
+        await SeedMortalFilesAsync();
+        await _fs.WriteFileAtomicAsync("game_state/world/world_map.json", """
+        {
+          "newLocations": [
+            {
+              "locationId": "loc_gate",
+              "name": "Северные ворота",
+              "locationType": "gate"
+            }
+          ],
+          "locationUpdates": [
+            {
+              "locationId": "loc_market",
+              "name": "Старый рынок",
+              "locationType": "market"
+            }
+          ],
+          "worldMapUpdates": {
+            "newLocations": [
+              {
+                "locationId": "loc_gate",
+                "name": "Северные ворота",
+                "locationType": "gate"
+              },
+              {
+                "locationId": "loc_garden",
+                "name": "Сад у стены",
+                "locationType": "garden"
+              }
+            ],
+            "locationUpdates": [
+              {
+                "locationId": "loc_market",
+                "name": "Старый рынок",
+                "locationType": "market"
+              }
+            ]
+          }
+        }
+        """);
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/locations"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Северные ворота", text, StringComparison.Ordinal);
+        Assert.Contains("Сад у стены", text, StringComparison.Ordinal);
+        Assert.Contains("Старый рынок", text, StringComparison.Ordinal);
+        Assert.Equal(1, CountOccurrences(text, "Северные ворота"));
+        Assert.Equal(1, CountOccurrences(text, "Старый рынок"));
+    }
+
+    [Theory]
     [InlineData("/chaos_sea")]
     [InlineData("/guardians")]
     [InlineData("/abode_power")]
@@ -3273,6 +3386,19 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         foreach (var block in blocks)
             CollectBlockText(block, parts);
         return string.Join("\n", parts);
+    }
+
+    private static int CountOccurrences(string text, string value)
+    {
+        var count = 0;
+        var index = 0;
+        while ((index = text.IndexOf(value, index, StringComparison.Ordinal)) >= 0)
+        {
+            count++;
+            index += value.Length;
+        }
+
+        return count;
     }
 
     private static string SerializeResult(ExplorerCommandResult result) =>

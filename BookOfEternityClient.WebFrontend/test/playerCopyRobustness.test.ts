@@ -4,7 +4,7 @@ import * as formatters from '../src/utils/formatters';
 
 const fsSpecifier = 'node:fs';
 const pathSpecifier = 'node:path';
-const { readFileSync } = await import(fsSpecifier);
+const { existsSync, readFileSync } = await import(fsSpecifier);
 const { basename, join } = await import(pathSpecifier);
 const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
 const frontendDir = basename(cwd) === 'BookOfEternityClient.WebFrontend'
@@ -284,5 +284,38 @@ describe('playerCopy robustness', () => {
     expect(blockRenderer).toContain('if (advancedEnabled) {');
     expect(blockRenderer).toContain('<JsonTreeViewer data={block.json}');
     expect(blockRenderer).toContain('Подробные сведения доступны в расширенном режиме.');
+  });
+
+  it('renders command map blocks through a visual atlas surface instead of text or node lists', () => {
+    const commandResult = readSource('src', 'components', 'CommandResult.tsx');
+    const blockRenderer = readSource('src', 'components', 'BlockRenderer.tsx');
+    const mapBlockPath = join(frontendDir, 'src', 'components', 'MapBlock.tsx');
+
+    expect(commandResult).not.toContain('карта содержит');
+    expect(blockRenderer).not.toContain('block.map.nodes.slice');
+    expect(existsSync(mapBlockPath)).toBe(true);
+    if (!existsSync(mapBlockPath)) return;
+
+    const mapBlock = readFileSync(mapBlockPath, 'utf-8');
+    expect(commandResult).toContain("import { MapBlock } from './MapBlock';");
+    expect(blockRenderer).toContain("import { MapBlock } from './MapBlock';");
+    expect(commandResult).toContain('<MapBlock block={block} variant="compact" />');
+    expect(blockRenderer).toContain('<MapBlock block={block} />');
+    expect(mapBlock).toContain('<svg');
+    expect(mapBlock).toContain('className="map-canvas"');
+    expect(mapBlock).toContain('block.map.links.map');
+    expect(mapBlock).toContain('aria-label={mapTitle}');
+  });
+
+  it('resets browser map selection controls when a different map block is rendered', () => {
+    const mapBlock = readSource('src', 'components', 'MapBlock.tsx');
+
+    expect(mapBlock).toContain("import { useEffect, useMemo, useState } from 'react';");
+    expect(mapBlock).toContain('useEffect(() => {');
+    expect(mapBlock).toContain('setSelectedZ(defaultZ);');
+    expect(mapBlock).toContain('setSelectedLayer(defaultLayer);');
+    expect(mapBlock).toContain('setSelectedNodeId(defaultNodeId);');
+    expect(mapBlock).toContain('const mapResetKey = block.map;');
+    expect(mapBlock).toContain('[defaultLayer, defaultNodeId, defaultZ, mapResetKey]');
   });
 });

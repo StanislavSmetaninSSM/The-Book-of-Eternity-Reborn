@@ -76,7 +76,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task TryProcessCommand_MapRussian_InMortalRealm_RendersMortalMapInsteadOfAfterlifeGuard()
+    public async Task TryProcessCommand_MapRussian_InMortalRealm_OpensVisualMapViewerInsteadOfLocationList()
     {
         await SeedMortalStateAsync();
         await WriteJsonAsync("game_state/world/current_location.json", new
@@ -97,7 +97,6 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 }
             }
         });
-        _console.QueueAnySelection("← Назад");
         await _stateManager.RefreshGameStateAsync();
 
         var result = await _explorer.TryProcessCommand("/карта");
@@ -107,9 +106,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             line => line.Contains("загробном цикле", StringComparison.OrdinalIgnoreCase));
         Assert.DoesNotContain(_console.MarkupLines,
             line => line.Contains("хранителями", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(_console.SelectionTitles,
+        Assert.True(File.Exists(_fs.ResolvePath("output/map_viewer.html")));
+        Assert.Contains(_console.MarkupLines,
+            line => line.Contains("output/map_viewer.html", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(_console.SelectionTitles,
             title => title.Contains("Карта", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
+        Assert.DoesNotContain(_console.SelectionChoicesHistory.SelectMany(entry => entry.Choices),
             choice => choice.Contains("Рыночная площадь", StringComparison.OrdinalIgnoreCase));
     }
 
