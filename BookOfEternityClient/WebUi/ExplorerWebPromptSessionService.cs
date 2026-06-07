@@ -397,6 +397,8 @@ public sealed class ExplorerWebPromptSessionService
             "/reveal_fate" or "/открыть_судьбу" or
             "/rewrite_fate" or "/переписать_судьбу" or
             "/gacha" or "/гача" or
+            "/archive_consultation" or "/архивная_консультация" or
+            "/archive_project_fuel" or "/архивная_подпитка_проекта" or
             "/abode_offering" or "/подношение_обители" or
             "/found_guardian_mantle" or "/учредить_хранителя" or
             "/guardian_trade" or "/торговля_хранителя" or

@@ -64,6 +64,8 @@ public sealed class BrowserAfterlifeWriteService
             "/gacha" or "/гача" => string.IsNullOrWhiteSpace(parsed.Arguments)
                 ? await ApplyGachaPullAsync(answers, owner)
                 : BrowserPromptWriteResult.ValidationError("Команда /gacha не принимает аргументы. Выберите поддерживаемый прямой призыв Моря Хаоса через браузерную форму."),
+            "/archive_consultation" or "/архивная_консультация" => await ApplyArchiveConsultationAsync(answers, owner),
+            "/archive_project_fuel" or "/архивная_подпитка_проекта" => await ApplyArchiveProjectFuelAsync(answers, owner),
             "/abode_offering" or "/подношение_обители" => await ApplyAbodeOfferingAsync(answers, owner),
             "/found_guardian_mantle" or "/учредить_хранителя" => await ApplyPlayerGuardianFoundationAsync(answers, owner),
             "/guardian_trade" or "/торговля_хранителя" => await ApplyGuardianTradeAsync(parsed.Arguments, answers, owner),
@@ -1995,6 +1997,178 @@ public sealed class BrowserAfterlifeWriteService
             "Прямой призыв подготовлен",
             "Браузер списал Чернильные Перья и поставил ход ГМ в очередь: результатом должна стать ровно одна материализованная Реликвия Души без локального выбора имени.",
             payload);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyArchiveConsultationAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_archive_consultation"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите архивную консультацию.");
+
+        var archiveId = ReadAnswer(answers, "archive_id");
+        var guardianId = ReadAnswer(answers, "guardian_id");
+        if (string.IsNullOrWhiteSpace(archiveId))
+            return BrowserPromptWriteResult.ValidationError("Выберите запись Архива.");
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return BrowserPromptWriteResult.ValidationError("Выберите Хранителя.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var context = await BrowserAfterlifeArchiveActionContextReader.ReadConsultationAsync(_fs, _stateManager);
+        if (context.IsBlocked)
+            return BrowserPromptWriteResult.ValidationError(context.BlockerMessage);
+
+        var selectedEntry = context.ResolveEntry(archiveId);
+        if (selectedEntry == null)
+            return BrowserPromptWriteResult.ValidationError("Выбранная запись Архива уже недоступна. Откройте форму заново.");
+
+        var selectedGuardian = context.ResolveGuardian(guardianId);
+        if (selectedGuardian == null)
+            return BrowserPromptWriteResult.ValidationError("Выбранный Хранитель сейчас недоступен для архивной консультации. Откройте форму заново.");
+
+        var payload = new JsonObject
+        {
+            ["sourceSurface"] = "archive_consultation_browser_write",
+            ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeConsultation,
+            ["actionTag"] = AfterlifeArchiveActionState.ConsultationActionTag,
+            ["archiveId"] = selectedEntry.ArchiveId,
+            ["archiveTitle"] = selectedEntry.Title,
+            ["guardianId"] = selectedGuardian.GuardianId,
+            ["guardianName"] = selectedGuardian.GuardianName
+        };
+        var completionMessage = $"Архивная консультация создана: {selectedGuardian.GuardianName} изучит «{selectedEntry.Title}» после ответа ГМ.";
+
+        var result = await ExecuteAsync(
+            owner,
+            "Архивная консультация",
+            [SoulStatePath, AfterlifeArchiveActionState.ConsultationRequestPath],
+            async () =>
+            {
+                await _stateManager.RefreshGameStateAsync();
+                var freshContext = await BrowserAfterlifeArchiveActionContextReader.ReadConsultationAsync(_fs, _stateManager);
+                if (freshContext.IsBlocked)
+                    throw new InvalidOperationException(freshContext.BlockerMessage);
+
+                var freshEntry = freshContext.ResolveEntry(archiveId) ??
+                                 throw new InvalidOperationException("Выбранная запись Архива уже недоступна. Откройте форму заново.");
+                var freshGuardian = freshContext.ResolveGuardian(guardianId) ??
+                                    throw new InvalidOperationException("Выбранный Хранитель сейчас недоступен для архивной консультации. Откройте форму заново.");
+
+                var service = new AfterlifeArchiveConsultationService(
+                    _fs,
+                    NullLogger<AfterlifeArchiveConsultationService>.Instance);
+                var prepared = await service.CreateRequestAsync(
+                    freshGuardian.GuardianId,
+                    freshGuardian.GuardianName,
+                    freshEntry.ArchiveId,
+                    Math.Max(1, _stateManager.CurrentState.Incarnation),
+                    freshContext.CurrentRealm,
+                    Math.Max(1, _stateManager.CurrentState.TurnNumber),
+                    commit: false);
+                if (prepared == null)
+                    throw new InvalidOperationException("Архивная консультация сейчас не может быть создана. Откройте форму заново и проверьте выбор.");
+
+                if (!await service.CommitPreparedRequestAsync(prepared))
+                    throw new InvalidOperationException("Архивная консультация не записана: состояние изменилось перед подтверждением. Откройте форму заново.");
+
+                await _stateManager.RefreshGameStateAsync();
+                payload["requestId"] = prepared.RequestId;
+                payload["summary"] = prepared.Summary;
+                payload["gmAction"] = prepared.PendingGmAction;
+                completionMessage = $"Архивная консультация создана: {freshGuardian.GuardianName} изучит «{freshEntry.Title}» после ответа ГМ.";
+            },
+            "Архивная консультация создана",
+            completionMessage,
+            payload);
+        return result.Success ? result with { Message = completionMessage } : result;
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyArchiveProjectFuelAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_archive_project_fuel"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите подпитку проекта Архивом.");
+
+        var archiveId = ReadAnswer(answers, "archive_id");
+        var guardianId = ReadAnswer(answers, "guardian_id");
+        if (string.IsNullOrWhiteSpace(archiveId))
+            return BrowserPromptWriteResult.ValidationError("Выберите запись Архива.");
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return BrowserPromptWriteResult.ValidationError("Выберите Хранителя с активным проектом.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var context = await BrowserAfterlifeArchiveActionContextReader.ReadProjectFuelAsync(_fs, _stateManager);
+        if (context.IsBlocked)
+            return BrowserPromptWriteResult.ValidationError(context.BlockerMessage);
+
+        var selectedEntry = context.ResolveEntry(archiveId);
+        if (selectedEntry == null)
+            return BrowserPromptWriteResult.ValidationError("Выбранная запись Архива уже недоступна. Откройте форму заново.");
+
+        var selectedGuardian = context.ResolveGuardian(guardianId);
+        if (selectedGuardian?.FuelAvailable != true)
+            return BrowserPromptWriteResult.ValidationError("Выбранный Хранитель сейчас не ведёт активный проект. Откройте форму заново.");
+
+        var payload = new JsonObject
+        {
+            ["sourceSurface"] = "archive_project_fuel_browser_write",
+            ["requestedMode"] = AfterlifeArchiveActionState.RequestedModeProjectFuel,
+            ["actionTag"] = AfterlifeArchiveActionState.ProjectFuelActionTag,
+            ["archiveId"] = selectedEntry.ArchiveId,
+            ["archiveTitle"] = selectedEntry.Title,
+            ["guardianId"] = selectedGuardian.GuardianId,
+            ["guardianName"] = selectedGuardian.GuardianName,
+            ["targetProjectId"] = selectedGuardian.TargetProjectId,
+            ["targetProjectName"] = selectedGuardian.TargetProjectName
+        };
+        var completionMessage = $"Подпитка проекта создана: «{selectedEntry.Title}» направлена в проект «{selectedGuardian.TargetProjectName}».";
+
+        var result = await ExecuteAsync(
+            owner,
+            "Подпитка проекта Архивом",
+            [SoulStatePath, AfterlifeArchiveActionState.ProjectFuelRequestPath],
+            async () =>
+            {
+                await _stateManager.RefreshGameStateAsync();
+                var freshContext = await BrowserAfterlifeArchiveActionContextReader.ReadProjectFuelAsync(_fs, _stateManager);
+                if (freshContext.IsBlocked)
+                    throw new InvalidOperationException(freshContext.BlockerMessage);
+
+                var freshEntry = freshContext.ResolveEntry(archiveId) ??
+                                 throw new InvalidOperationException("Выбранная запись Архива уже недоступна. Откройте форму заново.");
+                var freshGuardian = freshContext.ResolveGuardian(guardianId);
+                if (freshGuardian?.FuelAvailable != true)
+                    throw new InvalidOperationException("Выбранный Хранитель сейчас не ведёт активный проект. Откройте форму заново.");
+
+                var service = new AfterlifeArchiveProjectFuelService(
+                    _fs,
+                    NullLogger<AfterlifeArchiveProjectFuelService>.Instance);
+                var prepared = await service.CreateRequestAsync(
+                    freshGuardian.GuardianId,
+                    freshGuardian.GuardianName,
+                    freshEntry.ArchiveId,
+                    freshContext.CurrentRealm,
+                    Math.Max(1, _stateManager.CurrentState.TurnNumber),
+                    commit: false);
+                if (prepared == null)
+                    throw new InvalidOperationException("Подпитка проекта сейчас не может быть создана. Откройте форму заново и проверьте выбор.");
+
+                if (!await service.CommitPreparedRequestAsync(prepared))
+                    throw new InvalidOperationException("Подпитка проекта не записана: состояние изменилось перед подтверждением. Откройте форму заново.");
+
+                await _stateManager.RefreshGameStateAsync();
+                payload["requestId"] = prepared.RequestId;
+                payload["summary"] = prepared.Summary;
+                payload["gmAction"] = prepared.PendingGmAction;
+                payload["targetProjectId"] = prepared.ProjectId;
+                payload["targetProjectName"] = prepared.ProjectName;
+                completionMessage = $"Подпитка проекта создана: «{freshEntry.Title}» направлена в проект «{prepared.ProjectName}».";
+            },
+            "Подпитка проекта создана",
+            completionMessage,
+            payload);
+        return result.Success ? result with { Message = completionMessage } : result;
     }
 
     private async Task<BrowserPromptWriteResult> ApplySoulRelicEquipAsync(

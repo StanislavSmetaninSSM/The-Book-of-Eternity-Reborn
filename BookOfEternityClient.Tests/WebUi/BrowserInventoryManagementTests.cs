@@ -278,7 +278,9 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         var storageAccess = Assert.Single(coverage.Commands, item => item.Id == "storage_access");
         Assert.DoesNotContain("#814", storageAccess.FollowUpIssue, StringComparison.Ordinal);
         Assert.Contains("#817", storageAccess.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains(coverage.Commands, item => item.Id == "afterlife_archive" && item.FollowUpIssue.Contains("#816", StringComparison.Ordinal));
+        var archive = Assert.Single(coverage.Commands, item => item.Id == "afterlife_archive");
+        Assert.DoesNotContain("#816", archive.FollowUpIssue, StringComparison.Ordinal);
+        Assert.Contains("#817", archive.FollowUpIssue, StringComparison.Ordinal);
     }
 
     private async Task SeedInventoryAsync()
