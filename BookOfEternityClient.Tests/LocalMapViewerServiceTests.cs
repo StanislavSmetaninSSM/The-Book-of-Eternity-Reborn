@@ -380,6 +380,20 @@ public sealed class LocalMapViewerServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task LocalMapViewerLauncher_WritesHtmlWithoutOpeningBrowserUnderTests()
+    {
+        await SeedMortalMapAsync();
+        var map = await LocalMapViewService.BuildMortalWorldMapAsync(_fs);
+
+        var result = await LocalMapViewerLauncher.WriteAndOpenAsync(_fs, map);
+
+        Assert.False(result.Opened);
+        Assert.Equal("output/map_viewer.html", result.RelativePath);
+        Assert.True(File.Exists(_fs.ResolvePath(result.RelativePath)));
+        Assert.Contains("disabled", result.Error, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task LocalMapViewerRenderer_UsesDarkFantasyAtlasVisualSystem()
     {
         await SeedMortalMapAsync();

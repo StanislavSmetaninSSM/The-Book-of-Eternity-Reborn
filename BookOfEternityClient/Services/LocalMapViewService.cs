@@ -1510,6 +1510,7 @@ public sealed record LocalMapViewerLaunchResult(bool Opened, string RelativePath
 
 public static class LocalMapViewerLauncher
 {
+    public const string DisableBrowserOpenEnvironmentVariable = "BOOK_OF_ETERNITY_DISABLE_BROWSER_OPEN";
     public const string ViewerPath = "output/map_viewer.html";
 
     public static async Task<LocalMapViewerLaunchResult> WriteAndOpenAsync(
@@ -1523,6 +1524,15 @@ public static class LocalMapViewerLauncher
 
         try
         {
+            if (openFile is null && IsBrowserOpenDisabled())
+            {
+                return new LocalMapViewerLaunchResult(
+                    false,
+                    ViewerPath,
+                    fullPath,
+                    "Browser launch disabled for this process.");
+            }
+
             if (openFile != null)
             {
                 openFile(fullPath);
@@ -1542,5 +1552,19 @@ public static class LocalMapViewerLauncher
         {
             return new LocalMapViewerLaunchResult(false, ViewerPath, fullPath, ex.Message);
         }
+    }
+
+    private static bool IsBrowserOpenDisabled()
+    {
+        var configured = Environment.GetEnvironmentVariable(DisableBrowserOpenEnvironmentVariable);
+        if (string.Equals(configured, "1", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(configured, "true", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(configured, "yes", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return AppDomain.CurrentDomain.GetAssemblies().Any(static assembly =>
+            assembly.GetName().Name?.StartsWith("xunit", StringComparison.OrdinalIgnoreCase) == true);
     }
 }
