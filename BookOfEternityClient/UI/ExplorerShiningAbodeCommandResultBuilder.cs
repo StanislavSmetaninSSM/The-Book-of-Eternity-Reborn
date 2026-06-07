@@ -19,6 +19,11 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         FactionFounding,
         FactionRealignment,
         FactionLeadership,
+        NativeFactionDiscovery,
+        FactionInvestment,
+        ProjectSupport,
+        ProjectUnsupport,
+        ProjectRetirement,
         Treasury,
         SourceOfLight
     }
@@ -36,6 +41,16 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ["/перестройка_сияющей_фракции"] = CommandKind.FactionRealignment,
             ["/shining_faction_leadership"] = CommandKind.FactionLeadership,
             ["/смена_главы_сияющей_фракции"] = CommandKind.FactionLeadership,
+            ["/shining_native_faction_discovery"] = CommandKind.NativeFactionDiscovery,
+            ["/открытие_нативной_фракции"] = CommandKind.NativeFactionDiscovery,
+            ["/shining_faction_investment"] = CommandKind.FactionInvestment,
+            ["/инвестиция_в_сияющую_фракцию"] = CommandKind.FactionInvestment,
+            ["/shining_project_support"] = CommandKind.ProjectSupport,
+            ["/поддержать_сияющий_проект"] = CommandKind.ProjectSupport,
+            ["/shining_project_unsupport"] = CommandKind.ProjectUnsupport,
+            ["/снять_поддержку_сияющего_проекта"] = CommandKind.ProjectUnsupport,
+            ["/shining_project_retirement"] = CommandKind.ProjectRetirement,
+            ["/отправить_сияющий_проект_в_историю"] = CommandKind.ProjectRetirement,
             ["/shining_treasury"] = CommandKind.Treasury,
             ["/казначейство"] = CommandKind.Treasury,
             ["/source_of_light"] = CommandKind.SourceOfLight,
@@ -84,6 +99,11 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             CommandKind.FactionFounding => await BuildFactionFounding(normalizedCommand, fs, stateManager),
             CommandKind.FactionRealignment => await BuildFactionRealignment(normalizedCommand, fs, stateManager, commandArguments),
             CommandKind.FactionLeadership => await BuildFactionLeadership(normalizedCommand, fs, stateManager, commandArguments),
+            CommandKind.NativeFactionDiscovery => await BuildNativeFactionDiscovery(normalizedCommand, fs, stateManager),
+            CommandKind.FactionInvestment => await BuildFactionInvestment(normalizedCommand, fs, stateManager, commandArguments),
+            CommandKind.ProjectSupport => await BuildProjectSupportMutation(normalizedCommand, fs, stateManager, support: true),
+            CommandKind.ProjectUnsupport => await BuildProjectSupportMutation(normalizedCommand, fs, stateManager, support: false),
+            CommandKind.ProjectRetirement => await BuildProjectRetirement(normalizedCommand, fs, stateManager),
             CommandKind.Treasury => await BuildTreasury(normalizedCommand, fs),
             CommandKind.SourceOfLight => await BuildSourceOfLight(normalizedCommand, fs),
             _ => null
@@ -522,6 +542,259 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ]);
     }
 
+    private static async Task<ExplorerCommandResult> BuildNativeFactionDiscovery(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        if (context.Blocker != null)
+            return Blocked(command, "Открытие нативной фракции недоступно", context.Blocker);
+
+        if (context.ShiningRoot["pendingNativeFactionDiscovery"] is JsonObject)
+            return Blocked(command, "Открытие нативной фракции уже ожидает", "Открытие новой нативной фракции уже ожидает решения ГМ.");
+
+        var cost = ShiningAbodeState.GetNativeDiscoveryCost();
+        var radianceTier = GetInt(context.ShiningRoot["radiance"], "tier");
+        if (radianceTier < 1)
+            return Blocked(command, "Сияния пока недостаточно", "Открытие нативной фракции доступно с первого тира Сияния.");
+
+        var currentFeathers = GetSoulInkFeathers(context.SoulRoot);
+        var currentSparks = GetInt(context.ShiningRoot["lightSparks"], 0);
+        if (currentFeathers < cost.Feathers || currentSparks < cost.LightSparks)
+        {
+            return Blocked(
+                command,
+                "Не хватает ресурсов",
+                $"Для открытия нужны {cost.Feathers} Чернильных Перьев и {cost.LightSparks} Искр Света. Сейчас доступно: {currentFeathers} Перьев и {currentSparks} Искр.");
+        }
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Открытие нативной фракции",
+                Grid(
+                    ("Сияние", $"тир {radianceTier}"),
+                    ("Чернильные Перья", $"{currentFeathers} доступно / нужно {cost.Feathers}"),
+                    ("Искры Света", $"{currentSparks} доступно / нужно {cost.LightSparks}"))),
+            Message(
+                UiNotificationSeverity.Info,
+                "Запрос для ГМ",
+                "После подтверждения браузер отправит просьбу об открытии нативной фракции через существующее ожидание Сияющей Обители.")
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_core_action_write",
+                    Prompt = "Подтвердить открытие нативной фракции и стоимость",
+                    Required = true
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildFactionInvestment(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager,
+        string commandArguments)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        if (context.Blocker != null)
+            return Blocked(command, "Инвестиция в сияющую фракцию недоступна", context.Blocker);
+
+        var cost = ShiningAbodeState.GetFactionInvestmentCost();
+        var currentFeathers = GetSoulInkFeathers(context.SoulRoot);
+        var currentSparks = GetInt(context.ShiningRoot["lightSparks"], 0);
+        if (currentFeathers < cost.Feathers || currentSparks < cost.LightSparks)
+        {
+            return Blocked(
+                command,
+                "Не хватает ресурсов",
+                $"Для инвестиции нужны {cost.Feathers} Чернильных Перьев и {cost.LightSparks} Искр Света. Сейчас доступно: {currentFeathers} Перьев и {currentSparks} Искр.");
+        }
+
+        var factions = GetVisibleFactions(context.ShiningRoot)
+            .Where(static faction => Math.Clamp(GetInt(faction["investCountThisAscension"], 0), 0, 3) < 3)
+            .OrderBy(static faction => ResolveFactionDisplayName(faction), StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        if (factions.Length == 0)
+            return Blocked(command, "Нет доступных фракций", "Сейчас нет видимых сияющих фракций, куда можно вложиться в этом восхождении.");
+
+        var requestedFactionId = ExtractFirstArgument(commandArguments);
+        if (!string.IsNullOrWhiteSpace(requestedFactionId))
+        {
+            factions = factions
+                .Where(faction => string.Equals(GetString(faction, "factionId", string.Empty), requestedFactionId, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            if (factions.Length == 0)
+                return Blocked(command, "Фракция недоступна", "Выберите видимую сияющую фракцию, в которую сейчас можно вложиться.");
+        }
+
+        var blocks = new List<UiBlock>
+        {
+            Panel("Инвестиция в сияющую фракцию",
+                Grid(
+                    ("Чернильные Перья", $"{currentFeathers} доступно / нужно {cost.Feathers}"),
+                    ("Искры Света", $"{currentSparks} доступно / нужно {cost.LightSparks}")),
+                new UiTextBlock { Text = "Доступные фракции:\n- " + string.Join("\n- ", factions.Select(BuildFactionInvestmentLabel)) }),
+            Message(
+                UiNotificationSeverity.Info,
+                "Запрос для ГМ",
+                "После подтверждения браузер отправит инвестицию через существующее ожидание Сияющей Обители.")
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "faction_id",
+                    Prompt = "Фракция для инвестиции",
+                    Required = true,
+                    Options = factions
+                        .Select(static faction => Option(
+                            GetString(faction, "factionId", string.Empty),
+                            BuildFactionInvestmentLabel(faction),
+                            "Выберите видимую фракцию, которая ещё принимает инвестиции."))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_core_action_write",
+                    Prompt = "Подтвердить инвестицию и стоимость",
+                    Required = true
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildProjectSupportMutation(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager,
+        bool support)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        var title = support ? "Поддержка сияющего проекта недоступна" : "Снятие поддержки сияющего проекта недоступно";
+        if (context.Blocker != null)
+            return Blocked(command, title, context.Blocker);
+
+        if (support &&
+            ShiningAbodeState.CountSupportedProjectsAcrossState(context.ShiningRoot) >=
+            ShiningAbodeState.GetSupportedProjectCap(GetInt(context.ShiningRoot["radiance"], "tier")))
+        {
+            return Blocked(command, "Лимит поддержки достигнут", "Сейчас достигнут лимит поддерживаемых проектов Сияющей Обители.");
+        }
+
+        var projects = EnumerateVisibleProjectOptions(
+                context.ShiningRoot,
+                support
+                    ? static project => IsCompletedProject(project) && !GetBool(project["isSupported"])
+                    : static project => IsCompletedProject(project) && GetBool(project["isSupported"]))
+            .ToArray();
+        if (projects.Length == 0)
+        {
+            return Blocked(
+                command,
+                support ? "Нет проектов для поддержки" : "Нет поддерживаемых проектов",
+                support
+                    ? "Сейчас нет видимых завершённых проектов без поддержки."
+                    : "Сейчас нет видимых проектов, с которых можно снять поддержку.");
+        }
+
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                support ? "Поддержка сияющего проекта" : "Снятие поддержки сияющего проекта",
+                new UiTextBlock { Text = "Доступные проекты:\n- " + string.Join("\n- ", projects.Select(static option => option.Label)) }),
+            Message(
+                UiNotificationSeverity.Info,
+                "Запрос для ГМ",
+                support
+                    ? "После подтверждения браузер отправит просьбу поддержать выбранный проект."
+                    : "После подтверждения браузер отправит просьбу снять поддержку с выбранного проекта.")
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "project_choice",
+                    Prompt = support ? "Проект для поддержки" : "Проект для снятия поддержки",
+                    Required = true,
+                    Options = projects
+                        .Select(static option => Option(option.Value, option.Label, option.Description))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_core_action_write",
+                    Prompt = support ? "Подтвердить поддержку проекта" : "Подтвердить снятие поддержки",
+                    Required = true
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildProjectRetirement(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        if (context.Blocker != null)
+            return Blocked(command, "Отправка сияющего проекта в историю недоступна", context.Blocker);
+
+        var projects = EnumerateVisibleProjectOptions(context.ShiningRoot, static project => IsCompletedProject(project))
+            .ToArray();
+        if (projects.Length == 0)
+            return Blocked(command, "Нет проектов для истории", "Сейчас нет видимых завершённых проектов, которые можно отправить в историю.");
+
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                "Отправка сияющего проекта в историю",
+                new UiTextBlock { Text = "Доступные проекты:\n- " + string.Join("\n- ", projects.Select(static option => option.Label)) }),
+            Message(
+                UiNotificationSeverity.Info,
+                "Запрос для ГМ",
+                "После подтверждения браузер отправит просьбу вывести выбранный проект из активного вклада фракции.")
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "project_choice",
+                    Prompt = "Проект для истории",
+                    Required = true,
+                    Options = projects
+                        .Select(static option => Option(option.Value, option.Label, option.Description))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_core_action_write",
+                    Prompt = "Подтвердить отправку проекта в историю",
+                    Required = true
+                }
+            ]);
+    }
+
     private static async Task<ExplorerCommandResult> BuildTreasury(string command, FileSystemManager fs)
     {
         var shining = await ReadJson(fs, ShiningAbodeState.StatePath);
@@ -787,6 +1060,47 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         return new PoliticalPromptContext(shiningRoot, soulRoot, residentRoot, guardiansRoot, null);
     }
 
+    private static async Task<ActionPromptContext> ReadCoreActionPromptContext(
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var soul = await ReadJson(fs, SoulStatePath);
+        var shining = await ReadJson(fs, ShiningAbodeState.StatePath);
+        var residents = await ReadJson(fs, GuardianAbodeResidentState.StatePath);
+        var guardians = await ReadJson(fs, GuardiansPath);
+
+        var currentRealm = FirstNonEmpty(GetString(soul.Node, "currentRealm", string.Empty), stateManager.CurrentState.CurrentRealm);
+        if (!RealmSemantics.IsShiningRealm(currentRealm))
+            return ActionPromptContext.Blocked("Действия Сияющей Обители доступны только в Сияющей Обители. Сейчас душа находится в другом царстве.");
+
+        if (shining.Node is not JsonObject shiningRoot)
+            return ActionPromptContext.Blocked("Состояние Сияющей Обители сейчас недоступно. Повторите действие после восстановления состояния.");
+        if (soul.Node is not JsonObject soulRoot)
+            return ActionPromptContext.Blocked("Состояние души сейчас недоступно. Повторите действие после восстановления состояния.");
+
+        var rawOwnerStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+        if (!string.IsNullOrWhiteSpace(rawOwnerStateError))
+            return ActionPromptContext.Blocked("Сияющая Обитель сейчас не готова к действиям. Проверьте состояние перед новым запросом.");
+
+        if (!string.Equals(GetString(shiningRoot, "availability", string.Empty), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
+            return ActionPromptContext.Blocked("Действия доступны только в активной Сияющей Обители.");
+
+        var packageMode = ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot);
+        if (packageMode != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+            return ActionPromptContext.Blocked("Действия недоступны, пока Сияющая Обитель ждёт передачу в новую жизнь.");
+
+        var pending = await ShiningCoreActionRequestState.ReadRequestsStateAsync(fs);
+        if (pending.IsMalformed)
+            return ActionPromptContext.Blocked("Ожидающее действие Сияющей Обители требует проверки состояния. Повторите после восстановления ожиданий.");
+        if (pending.Requests.Count > 0)
+            return ActionPromptContext.Blocked("Другое действие Сияющей Обители уже ожидает решения ГМ. Дождитесь результата перед новым запросом.");
+
+        var residentRoot = residents.Node as JsonObject;
+        var guardiansRoot = guardians.Node as JsonObject;
+        ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
+        return new ActionPromptContext(shiningRoot, soulRoot, residentRoot, guardiansRoot, null);
+    }
+
     private static List<UiSelectionOption> BuildProjectArchetypeOptions() =>
     [
         Option(ShiningAbodeState.ProjectArchetypeAccord, "Согласие", "Союзы, договоры и социальная ткань фракции."),
@@ -901,6 +1215,63 @@ public static class ExplorerShiningAbodeCommandResultBuilder
 
     private static string BuildFactionPoliticalLabel(JsonObject faction) =>
         $"{ResolveFactionDisplayName(faction)} ({GetString(faction, "factionId", string.Empty)}; сила {GetNumberOrString(faction, "factionStrength", "0")})";
+
+    private static string BuildFactionInvestmentLabel(JsonObject faction)
+    {
+        var current = Math.Clamp(GetInt(faction["investCountThisAscension"], 0), 0, 3);
+        return $"{ResolveFactionDisplayName(faction)} (инвестиций {current}/3; сила {GetNumberOrString(faction, "factionStrength", "0")})";
+    }
+
+    private static IEnumerable<ShiningProjectPromptOption> EnumerateVisibleProjectOptions(
+        JsonObject shiningRoot,
+        Func<JsonObject, bool> predicate)
+    {
+        foreach (var faction in GetVisibleFactions(shiningRoot).OrderBy(static faction => ResolveFactionDisplayName(faction), StringComparer.OrdinalIgnoreCase))
+        {
+            var factionId = GetString(faction, "factionId", string.Empty);
+            if (string.IsNullOrWhiteSpace(factionId) || faction["projects"] is not JsonArray projects)
+                continue;
+
+            foreach (var project in projects
+                         .OfType<JsonObject>()
+                         .Where(IsPlayerVisibleMemoryObject)
+                         .Where(predicate)
+                         .OrderBy(static project => ResolveProjectDisplayName(project), StringComparer.OrdinalIgnoreCase))
+            {
+                var projectId = GetString(project, "projectId", string.Empty);
+                if (string.IsNullOrWhiteSpace(projectId))
+                    continue;
+
+                var projectName = ResolveProjectDisplayName(project);
+                var factionName = ResolveFactionDisplayName(faction);
+                yield return new ShiningProjectPromptOption(
+                    $"{factionId}|{projectId}",
+                    $"{factionName} - {projectName}",
+                    $"{DescribeProjectSupport(project)}; {DescribeProjectStatus(project)}.");
+            }
+        }
+    }
+
+    private static bool IsCompletedProject(JsonObject project) =>
+        string.Equals(GetString(project, "status", string.Empty), ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase);
+
+    private static string ResolveProjectDisplayName(JsonObject project) =>
+        FirstNonEmpty(
+            GetString(project, "displayName", string.Empty),
+            GetString(project, "projectName", string.Empty),
+            GetString(project, "projectId", "проект"));
+
+    private static string DescribeProjectStatus(JsonObject project) =>
+        GetString(project, "status", string.Empty) switch
+        {
+            var status when string.Equals(status, ShiningAbodeState.ProjectStatusCompleted, StringComparison.OrdinalIgnoreCase) => "завершён",
+            var status when string.Equals(status, ShiningAbodeState.ProjectStatusRetired, StringComparison.OrdinalIgnoreCase) => "в истории",
+            "" => "статус не указан",
+            _ => "ещё не завершён"
+        };
+
+    private static string DescribeProjectSupport(JsonObject project) =>
+        GetBool(project["isSupported"]) ? "поддерживается" : "без поддержки";
 
     private static string BuildFactionLeadershipLabel(JsonObject faction)
     {
@@ -1242,6 +1613,19 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         return fallback;
     }
 
+    private static bool GetBool(JsonNode? node)
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<bool>(out var flag))
+                return flag;
+            if (value.TryGetValue<string>(out var text) && bool.TryParse(text, out flag))
+                return flag;
+        }
+
+        return false;
+    }
+
     private static string GetString(JsonNode? node, string propertyName, string fallback)
     {
         if (node?[propertyName] is JsonValue value && value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text))
@@ -1281,4 +1665,20 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         public static PoliticalPromptContext Blocked(string blocker) =>
             new(new JsonObject(), new JsonObject(), null, null, blocker);
     }
+
+    private sealed record ActionPromptContext(
+        JsonObject ShiningRoot,
+        JsonObject SoulRoot,
+        JsonObject? ResidentsRoot,
+        JsonObject? GuardiansRoot,
+        string? Blocker)
+    {
+        public static ActionPromptContext Blocked(string blocker) =>
+            new(new JsonObject(), new JsonObject(), null, null, blocker);
+    }
+
+    private sealed record ShiningProjectPromptOption(
+        string Value,
+        string Label,
+        string Description);
 }

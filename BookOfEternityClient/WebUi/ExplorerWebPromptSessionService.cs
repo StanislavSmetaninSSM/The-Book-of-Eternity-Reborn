@@ -405,6 +405,11 @@ public sealed class ExplorerWebPromptSessionService
             "/shining_faction_founding" or "/основание_сияющей_фракции" or
             "/shining_faction_realignment" or "/перестройка_сияющей_фракции" or
             "/shining_faction_leadership" or "/смена_главы_сияющей_фракции" or
+            "/shining_native_faction_discovery" or "/открытие_нативной_фракции" or
+            "/shining_faction_investment" or "/инвестиция_в_сияющую_фракцию" or
+            "/shining_project_support" or "/поддержать_сияющий_проект" or
+            "/shining_project_unsupport" or "/снять_поддержку_сияющего_проекта" or
+            "/shining_project_retirement" or "/отправить_сияющий_проект_в_историю" or
             "/shining_trade" or "/сияющая_торговля" or
             "/shining_treasury" or "/казначейство" or
             "/source_of_light" or "/источник_света" or
