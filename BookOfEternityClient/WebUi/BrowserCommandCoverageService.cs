@@ -20,7 +20,7 @@ public static class BrowserCommandCoverageService
             ["guardians"] = Tracked("#817", "Read-only Guardian state, relationship data, trade, and talk/lore starts are covered; remaining umbrella parity work stays tracked separately."),
             ["abodes"] = Tracked("#817", "Read-only Abode state and resident conversation, history, and transfer starts are covered; remaining umbrella parity work stays tracked separately."),
             ["shining_abode"] = Tracked("#811, #812, #817", "Read-only Shining Abode state is covered; broader faction/project and incarnation-gate actions remain tracked interactive work."),
-            ["shining_politics"] = Tracked("#810, #817", "Read-only Shining politics data is covered; founding, regrouping, and leadership actions remain tracked interactive work."),
+            ["shining_politics"] = Tracked("#817", "Read-only Shining politics data is covered; dedicated founding, realignment, and leadership forms cover the #810 browser slice while broader Shining actions stay tracked separately."),
             ["shining_treasury"] = Tracked("#811, #813, #817", "Treasury browser parity is covered; broader Shining project and relic-forge flows remain tracked interactive work."),
             ["afterlife_archive"] = Tracked("#816, #817", "Read-only afterlife archive data is covered; consultation, project fuel, and direct pull actions remain tracked interactive work."),
             ["feathers"] = Tracked("#815, #817", "Ink Feather totals and related soul data are covered; fate reveal and rewrite actions remain tracked interactive work.")

@@ -291,7 +291,7 @@ public sealed class ExplorerCommandMigrationRegistryTests : IDisposable
         foreach (var command in new[] { "/shining_abode", "/сияющая_обитель", "/shining_politics", "/сияющая_политика" })
             Assert.Equal(ExplorerCommandMigrationStatus.ReadOnlyParity, entries[command].Status);
 
-        foreach (var command in new[] { "/shining_treasury", "/казначейство", "/source_of_light", "/источник_света" })
+        foreach (var command in new[] { "/shining_faction_founding", "/основание_сияющей_фракции", "/shining_faction_realignment", "/перестройка_сияющей_фракции", "/shining_faction_leadership", "/смена_главы_сияющей_фракции", "/shining_treasury", "/казначейство", "/source_of_light", "/источник_света" })
             Assert.Equal(ExplorerCommandMigrationStatus.MutatingParity, entries[command].Status);
     }
 

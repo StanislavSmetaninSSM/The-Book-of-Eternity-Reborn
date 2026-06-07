@@ -10,6 +10,31 @@ public partial class ExplorerMode
 {
     private sealed record ShiningActorChoice(string Label, string ActorType, string ActorId);
 
+    private async Task ShowShiningFactionFoundingAsync() =>
+        await RunShiningPoliticsMutationAsync(HandleShiningFoundingRequestAsync);
+
+    private async Task ShowShiningFactionRealignmentAsync() =>
+        await RunShiningPoliticsMutationAsync(HandleShiningRealignmentRequestAsync);
+
+    private async Task ShowShiningFactionLeadershipAsync() =>
+        await RunShiningPoliticsMutationAsync(HandleShiningLeadershipTransitionRequestAsync);
+
+    private async Task RunShiningPoliticsMutationAsync(Func<ShiningContext, Task> handler)
+    {
+        if (!EnsureActiveShiningAbodeAvailable("Политика Сияющей Обители"))
+            return;
+
+        var context = await LoadShiningContextAsync();
+        if (context == null)
+        {
+            ShowEmptyPanel("Политика Сияющей Обители", "Состояние Сияющей Обители ещё не проявлено достаточно явно.");
+            WaitForKey();
+            return;
+        }
+
+        await handler(context);
+    }
+
     private async Task HandleShiningFactionCampaignStartAsync(ShiningContext context)
     {
         if (!EnsureActiveShiningAbodeAvailable("Политика Сияющей Обители"))
