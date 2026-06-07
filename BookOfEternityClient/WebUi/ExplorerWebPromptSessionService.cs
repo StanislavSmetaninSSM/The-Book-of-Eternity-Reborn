@@ -415,6 +415,7 @@ public sealed class ExplorerWebPromptSessionService
             "/shining_gates_deselect" or "/снять_благословение" or
             "/shining_gates_reroll" or "/обновить_врата" or
             "/shining_incarnation_prepare" or "/подготовить_новую_жизнь" or
+            "/shining_relic_forge" or "/сияющая_ковка" or
             "/shining_trade" or "/сияющая_торговля" or
             "/shining_treasury" or "/казначейство" or
             "/source_of_light" or "/источник_света" or

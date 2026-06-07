@@ -53,6 +53,7 @@ public sealed class BrowserAfterlifeWriteService
             "/shining_gates_deselect" or "/снять_благословение" => await ApplyShiningGatesBlessingSelectionAsync(parsed.Arguments, answers, owner, select: false),
             "/shining_gates_reroll" or "/обновить_врата" => await ApplyShiningGatesRerollAsync(answers, owner),
             "/shining_incarnation_prepare" or "/подготовить_новую_жизнь" => await ApplyShiningIncarnationPrepareAsync(answers, owner),
+            "/shining_relic_forge" or "/сияющая_ковка" => await ApplyShiningRelicForgeAsync(answers, owner),
             "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(answers, owner),
             "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(answers, owner),
             "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
@@ -1197,6 +1198,167 @@ public sealed class BrowserAfterlifeWriteService
             },
             "Новая жизнь подготовлена к решению ГМ",
             "Запрос подготовки новой жизни отправлен. ГМ закрепит выбранные благословения.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningRelicForgeAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_relic_forge_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите ковку реликвии.");
+
+        var factionId = ReadAnswer(answers, "faction_id");
+        var actionType = ReadAnswer(answers, "forge_action_type").Trim().ToLowerInvariant();
+        var relicId = ReadAnswer(answers, "relic_id");
+        if (string.IsNullOrWhiteSpace(factionId))
+            return BrowserPromptWriteResult.ValidationError("Выберите сияющую фракцию.");
+        if (!ShiningAbodeState.IsForgeActionType(actionType))
+            return BrowserPromptWriteResult.ValidationError("Выберите поддерживаемое действие ковки.");
+        if (string.IsNullOrWhiteSpace(relicId))
+            return BrowserPromptWriteResult.ValidationError("Выберите реликвию души.");
+
+        var targetFormTag = string.Empty;
+        var propertyIndex = -1;
+        JsonObject? replacementProperty = null;
+        JsonArray? addedProperties = null;
+        var relicRerollsToCommit = ReadIntAnswer(answers, "relic_rerolls_to_commit", 0);
+        if (relicRerollsToCommit < 0)
+            return BrowserPromptWriteResult.ValidationError("Количество перебросов должно быть неотрицательным.");
+        if (relicRerollsToCommit > 0 &&
+            actionType is not (ShiningCoreActionRequestState.ActionTypeForgeRelicReshape or ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty))
+        {
+            return BrowserPromptWriteResult.ValidationError("Переброс благословения доступен только для формы или свойства реликвии.");
+        }
+
+        switch (actionType)
+        {
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicReshape:
+                targetFormTag = ReadAnswer(answers, "target_form_tag");
+                if (string.IsNullOrWhiteSpace(targetFormTag))
+                    return BrowserPromptWriteResult.ValidationError("Укажите новую форму реликвии.");
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty:
+                if (!TryParseForgePropertyChoice(ReadAnswer(answers, "property_choice"), relicId, out propertyIndex))
+                    return BrowserPromptWriteResult.ValidationError("Выберите свойство выбранной реликвии.");
+                if (!TryParseJsonObjectAnswer(ReadAnswer(answers, "replacement_property_choice"), out replacementProperty) || replacementProperty == null)
+                    return BrowserPromptWriteResult.ValidationError("Выберите новое свойство для перенастройки.");
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand:
+                if (!TryParseForgePropertyChoice(ReadAnswer(answers, "property_choice"), relicId, out propertyIndex))
+                    return BrowserPromptWriteResult.ValidationError("Выберите свойство выбранной реликвии.");
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity:
+                var addedPropertiesAnswer = ReadAnswer(answers, "added_properties_choice");
+                if (!string.IsNullOrWhiteSpace(addedPropertiesAnswer) &&
+                    (!TryParseJsonArrayAnswer(addedPropertiesAnswer, out addedProperties) || addedProperties == null))
+                {
+                    return BrowserPromptWriteResult.ValidationError("Выберите дополнительное свойство для новой редкости.");
+                }
+                break;
+        }
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Ковка реликвий недоступна");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        if (relicRerollsToCommit > 0)
+        {
+            var soulRoot = await TryReadObjectSafeAsync(SoulStatePath);
+            if (ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot) < relicRerollsToCommit)
+            {
+                return BrowserPromptWriteResult.Failed(
+                    CommandExecutionState.Blocked,
+                    UiNotificationSeverity.Warning,
+                    "Ковка реликвий недоступна",
+                    "Право на переброс реликвии уже недоступно. Откройте ковку заново.");
+            }
+        }
+
+        return await ExecuteAsync(
+            owner,
+            "Ковка реликвий",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, SoulStatePath],
+            async () =>
+            {
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
+                var residentRoot = await TryReadObjectSafeAsync(GuardianAbodeResidentState.StatePath);
+                var guardiansRoot = await TryReadObjectSafeAsync(GuardiansPath);
+                ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
+
+                var faction = FindVisibleOperationalFaction(shiningRoot, factionId);
+                if (faction == null)
+                    throw new InvalidOperationException("Выберите видимую действующую фракцию Сияющей Обители.");
+                if (!ShiningAbodeState.FactionHasSupportedProjectArchetype(faction, ShiningAbodeState.ProjectArchetypeRefinement))
+                    throw new InvalidOperationException("Выбранная сияющая фракция сейчас не поддерживает огранку реликвий.");
+
+                var relicChoice = FindSoulRelicForForge(soulRoot, relicId);
+                if (relicChoice == null)
+                    throw new InvalidOperationException("Выбранная реликвия больше не доступна душе. Откройте ковку заново.");
+
+                if (relicRerollsToCommit > ShiningBlessingEffectState.GetPendingRelicRerolls(soulRoot))
+                    throw new InvalidOperationException("Право на переброс реликвии уже недоступно. Откройте ковку заново.");
+
+                if (!ShiningAbodeState.TryQuoteForgeAction(
+                        shiningRoot,
+                        soulRoot,
+                        residentRoot,
+                        actionType,
+                        factionId,
+                        relicId,
+                        targetFormTag,
+                        propertyIndex,
+                        replacementProperty,
+                        addedProperties,
+                        out var cost,
+                        out var error))
+                {
+                    throw new InvalidOperationException(SanitizeShiningForgeValidationMessage(error));
+                }
+
+                var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    ActionType = actionType,
+                    FactionId = factionId.Trim(),
+                    FactionName = ResolveFactionName(faction, factionId.Trim()),
+                    RadianceTierAtRequest = GetNodeInt(shiningRoot["radiance"]?["tier"]),
+                    QuotedCostFeathers = cost.Feathers,
+                    QuotedCostLightSparks = cost.LightSparks,
+                    RelicId = relicChoice.Value.RelicId,
+                    RelicName = relicChoice.Value.RelicName,
+                    TargetFormTag = targetFormTag.Trim(),
+                    PropertyIndex = propertyIndex,
+                    ReplacementProperty = replacementProperty?.DeepClone().AsObject(),
+                    AddedProperties = addedProperties?.DeepClone().AsArray(),
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningForgeValidationMessage(validation));
+
+                try
+                {
+                    await ShiningCoreActionRequestState.WriteForgeRequestWithRelicRerollCommitAsync(
+                        _fs,
+                        request,
+                        Math.Max(1, _stateManager.CurrentState.TurnNumber),
+                        relicRerollsToCommit);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    throw new InvalidOperationException(SanitizeShiningForgeValidationMessage(ex.Message), ex);
+                }
+
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Ковка отправлена ГМ",
+            "Запрос ковки реликвии отправлен. ГМ разрешит изменение реликвии через Сияющую Обитель.",
             payload: null);
     }
 
@@ -2595,6 +2757,170 @@ public sealed class BrowserAfterlifeWriteService
         projectId = parts[1];
         return true;
     }
+
+    private static bool TryParseForgePropertyChoice(string value, string relicId, out int propertyIndex)
+    {
+        propertyIndex = -1;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var parts = value.Split('|', 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 2)
+        {
+            if (!string.Equals(parts[0], relicId, StringComparison.OrdinalIgnoreCase))
+                return false;
+            return int.TryParse(parts[1], out propertyIndex) && propertyIndex >= 0;
+        }
+
+        return int.TryParse(value.Trim(), out propertyIndex) && propertyIndex >= 0;
+    }
+
+    private static bool TryParseJsonObjectAnswer(string raw, out JsonObject? value)
+    {
+        value = null;
+        if (string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        try
+        {
+            value = JsonNode.Parse(raw) as JsonObject;
+            return value != null;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TryParseJsonArrayAnswer(string raw, out JsonArray? value)
+    {
+        value = null;
+        if (string.IsNullOrWhiteSpace(raw))
+            return false;
+
+        try
+        {
+            value = JsonNode.Parse(raw) as JsonArray;
+            return value != null;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static (string RelicId, string RelicName, JsonObject Relic)? FindSoulRelicForForge(JsonObject soulRoot, string relicId) =>
+        EnumerateSoulRelicsForForge(soulRoot)
+            .FirstOrDefault(relic => string.Equals(relic.RelicId, relicId, StringComparison.OrdinalIgnoreCase)) is var match &&
+                                     !string.IsNullOrWhiteSpace(match.RelicId)
+            ? match
+            : null;
+
+    private static IEnumerable<(string RelicId, string RelicName, JsonObject Relic)> EnumerateSoulRelicsForForge(JsonObject soulRoot)
+    {
+        if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is not JsonArray collection)
+                    continue;
+
+                foreach (var relic in collection.OfType<JsonObject>())
+                {
+                    var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]) ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(relicId))
+                        continue;
+
+                    var relicName = FirstNonEmpty(GetNodeString(relic["name"]), GetNodeString(relic["displayName"]), relicId);
+                    yield return (relicId, relicName, relic);
+                }
+            }
+        }
+        else if (soulRoot["soulRelics"] is JsonArray flatCollection)
+        {
+            foreach (var relic in flatCollection.OfType<JsonObject>())
+            {
+                var relicId = GetNodeString(relic["relicId"]) ?? GetNodeString(relic["id"]) ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(relicId))
+                    continue;
+
+                var relicName = FirstNonEmpty(GetNodeString(relic["name"]), GetNodeString(relic["displayName"]), relicId);
+                yield return (relicId, relicName, relic);
+            }
+        }
+    }
+
+    private static string SanitizeShiningForgeValidationMessage(string? message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return "Ковка реликвии сейчас не прошла проверку состояния.";
+
+        if (message.Contains("currentRealm", StringComparison.OrdinalIgnoreCase))
+            return "Ковка реликвий доступна только в Сияющей Обители.";
+        if (message.Contains("Radiance tier", StringComparison.OrdinalIgnoreCase))
+            return "Сияния пока недостаточно для выбранного действия ковки.";
+        if (message.Contains("supported completed refinement", StringComparison.OrdinalIgnoreCase))
+            return "Выбранная сияющая фракция сейчас не поддерживает огранку реликвий.";
+        if (message.Contains("Soul Relic не найдена", StringComparison.OrdinalIgnoreCase))
+            return "Выбранная реликвия больше не доступна душе. Откройте ковку заново.";
+        if (message.Contains("Relic reroll entitlement", StringComparison.OrdinalIgnoreCase))
+            return "Право на переброс реликвии уже недоступно. Откройте ковку заново.";
+        if (message.Contains("previous", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("Пока не разреш", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("уже содержит", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Другое действие Сияющей Обители уже ожидает решения ГМ. Дождитесь результата перед новой ковкой.";
+        }
+        if (message.Contains("Новый formTag", StringComparison.OrdinalIgnoreCase))
+            return "Новая форма реликвии должна отличаться от текущей.";
+        if (message.Contains("targetFormTag", StringComparison.OrdinalIgnoreCase))
+            return "Укажите новую форму реликвии.";
+        if (message.Contains("companion relic", StringComparison.OrdinalIgnoreCase))
+            return "Стабилизация эха доступна только для подходящей реликвии спутника.";
+        if (message.Contains("Недостаточно Перьев", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("Недостаточно Искр", StringComparison.OrdinalIgnoreCase))
+        {
+            return message.Trim();
+        }
+
+        var sanitized = message
+            .Replace("Soul Relic", "Реликвия Души", StringComparison.OrdinalIgnoreCase)
+            .Replace("formTag", "форма", StringComparison.OrdinalIgnoreCase)
+            .Replace("replacementProperty", "новое свойство", StringComparison.OrdinalIgnoreCase)
+            .Replace("propertyIndex", "выбранное свойство", StringComparison.OrdinalIgnoreCase)
+            .Replace("uplift_rarity", "возвышение редкости", StringComparison.OrdinalIgnoreCase)
+            .Replace("retune_property", "перенастройка свойства", StringComparison.OrdinalIgnoreCase)
+            .Replace("strengthen_band", "усиление свойства", StringComparison.OrdinalIgnoreCase)
+            .Replace("stabilize_echo", "стабилизация эха", StringComparison.OrdinalIgnoreCase)
+            .Replace("forge action", "действие ковки", StringComparison.OrdinalIgnoreCase)
+            .Trim();
+
+        return ContainsShiningForgeDiagnosticFragment(sanitized)
+            ? "Ковка реликвии временно ждёт проверки состояния. Повторите после восстановления текущих ожиданий."
+            : sanitized;
+    }
+
+    private static bool ContainsShiningForgeDiagnosticFragment(string value) =>
+        value.Contains(".json", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("pending_", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("pending Shining", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("core action", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("requestId", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("actionType", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("forge_relic", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("targetFormTag", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("propertyIndex", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("replacementProperty", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("addedProperties", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("canonical", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("contract", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("DTO", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("endpoint", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("api", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("snapshot", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("debug", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("raw", StringComparison.OrdinalIgnoreCase) ||
+        value.Contains("game_state/", StringComparison.OrdinalIgnoreCase);
 
     private static string SanitizeShiningPoliticsValidationMessage(string message)
     {

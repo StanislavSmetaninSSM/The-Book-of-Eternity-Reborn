@@ -29,6 +29,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         GatesDeselect,
         GatesReroll,
         IncarnationPrepare,
+        RelicForge,
         Treasury,
         SourceOfLight
     }
@@ -66,6 +67,8 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ["/обновить_врата"] = CommandKind.GatesReroll,
             ["/shining_incarnation_prepare"] = CommandKind.IncarnationPrepare,
             ["/подготовить_новую_жизнь"] = CommandKind.IncarnationPrepare,
+            ["/shining_relic_forge"] = CommandKind.RelicForge,
+            ["/сияющая_ковка"] = CommandKind.RelicForge,
             ["/shining_treasury"] = CommandKind.Treasury,
             ["/казначейство"] = CommandKind.Treasury,
             ["/source_of_light"] = CommandKind.SourceOfLight,
@@ -124,6 +127,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             CommandKind.GatesDeselect => await BuildGatesBlessingSelection(normalizedCommand, fs, stateManager, commandArguments, select: false),
             CommandKind.GatesReroll => await BuildGatesReroll(normalizedCommand, fs, stateManager),
             CommandKind.IncarnationPrepare => await BuildIncarnationPrepare(normalizedCommand, fs, stateManager),
+            CommandKind.RelicForge => await BuildRelicForge(normalizedCommand, fs, stateManager),
             CommandKind.Treasury => await BuildTreasury(normalizedCommand, fs),
             CommandKind.SourceOfLight => await BuildSourceOfLight(normalizedCommand, fs),
             _ => null
@@ -1028,6 +1032,135 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ]);
     }
 
+    private static async Task<ExplorerCommandResult> BuildRelicForge(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        if (context.Blocker != null)
+            return Blocked(command, "Ковка реликвий недоступна", context.Blocker);
+
+        var currentFeathers = GetSoulInkFeathers(context.SoulRoot);
+        var currentSparks = GetInt(context.ShiningRoot["lightSparks"], 0);
+        var radianceTier = GetInt(context.ShiningRoot["radiance"], "tier");
+        var factions = GetVisibleFactions(context.ShiningRoot)
+            .Where(static faction => ShiningAbodeState.FactionHasSupportedProjectArchetype(faction, ShiningAbodeState.ProjectArchetypeRefinement))
+            .OrderBy(static faction => ResolveFactionDisplayName(faction), StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        if (factions.Length == 0)
+            return Blocked(command, "Нет фракции-кузни", "Сейчас нет видимой действующей сияющей фракции с поддержанным проектом огранки реликвий.");
+
+        var relics = EnumerateSoulRelics(context.SoulRoot)
+            .OrderBy(static relic => relic.RelicName, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        if (relics.Length == 0)
+            return Blocked(command, "Нет реликвий души", "У души сейчас нет реликвий, которые можно передать на сияющую ковку.");
+
+        var actionOptions = BuildForgeActionOptions(context.ShiningRoot, context.SoulRoot, context.ResidentsRoot, factions, relics).ToList();
+        if (actionOptions.All(static option => option.Disabled))
+            return Blocked(command, "Ковка пока недоступна", "Текущего сияния или ресурсов не хватает ни на один вид ковки реликвий.");
+
+        var propertyOptions = BuildForgePropertyChoiceOptions(relics).ToList();
+        var replacementOptions = BuildForgeReplacementPropertyOptions(context.SoulRoot).ToList();
+        var addedPropertyOptions = BuildForgeAddedPropertyOptions(context.SoulRoot).ToList();
+        var rerolls = ShiningBlessingEffectState.GetPendingRelicRerolls(context.SoulRoot);
+
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                "Ковка реликвий Сияющей Обители",
+                Grid(
+                    ("Сияние", $"тир {radianceTier}"),
+                    ("Чернильные Перья", currentFeathers.ToString()),
+                    ("Искры Света", currentSparks.ToString()),
+                    ("Перебросы благословения", rerolls.ToString())),
+                new UiTextBlock { Text = "Фракции-кузницы:\n- " + string.Join("\n- ", factions.Select(BuildForgeFactionLabel)) },
+                new UiTextBlock { Text = "Реликвии души:\n- " + string.Join("\n- ", relics.Select(BuildSoulRelicForgeLabel)) }),
+            Message(
+                UiNotificationSeverity.Info,
+                "Запрос для ГМ",
+                "После подтверждения ГМ получит просьбу о перековке реликвии через Сияющую Обитель. Браузер не меняет реликвию напрямую.")
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "faction_id",
+                    Prompt = "Фракция-кузница",
+                    Required = true,
+                    Options = factions
+                        .Select(static faction => Option(
+                            GetString(faction, "factionId", string.Empty),
+                            ResolveFactionDisplayName(faction),
+                            "Эта фракция поддерживает огранку реликвий."))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "forge_action_type",
+                    Prompt = "Действие ковки",
+                    Required = true,
+                    Options = actionOptions
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "relic_id",
+                    Prompt = "Реликвия души",
+                    Required = true,
+                    Options = relics
+                        .Select(static relic => Option(
+                            relic.RelicId,
+                            relic.RelicName,
+                            $"{DescribeForgeRarity(ResolveForgeRarityKey(relic.Relic))}; форма {DescribeForgeFormTag(GetString(relic.Relic, "formTag", string.Empty))}; {DescribeSoulRelicCollection(relic.Collection)}."))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "target_form_tag",
+                    Prompt = "Новая форма для перековки",
+                    AllowCustom = true,
+                    Options = BuildForgeFormTagOptions(relics).ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "property_choice",
+                    Prompt = "Свойство реликвии",
+                    Options = propertyOptions
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "replacement_property_choice",
+                    Prompt = "Новое свойство",
+                    Options = replacementOptions
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "added_properties_choice",
+                    Prompt = "Дополнительное свойство для новой редкости",
+                    AllowCustom = true,
+                    Options = addedPropertyOptions
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "relic_rerolls_to_commit",
+                    Prompt = "Перебросы благословения",
+                    Options = BuildForgeRerollOptions(rerolls).ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_relic_forge_write",
+                    Prompt = "Подтвердить запрос ковки",
+                    Required = true
+                }
+            ]);
+    }
+
     private static async Task<ExplorerCommandResult> BuildTreasury(string command, FileSystemManager fs)
     {
         var shining = await ReadJson(fs, ShiningAbodeState.StatePath);
@@ -1539,6 +1672,474 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         Option(ShiningAbodeState.HallServiceTagRelic, "Служба реликвий", "Реликвии и огранка.")
     ];
 
+    private static IEnumerable<UiSelectionOption> BuildForgeActionOptions(
+        JsonObject shiningRoot,
+        JsonObject soulRoot,
+        JsonObject? residentRoot,
+        IReadOnlyList<JsonObject> factions,
+        IReadOnlyList<(string RelicId, string RelicName, string Collection, JsonObject Relic)> relics)
+    {
+        foreach (var action in new[]
+                 {
+                     (
+                         Type: ShiningCoreActionRequestState.ActionTypeForgeRelicReshape,
+                         Label: "Перековать форму реликвии",
+                         Summary: "сменить форму без прямого изменения сущности реликвии"
+                     ),
+                     (
+                         Type: ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty,
+                         Label: "Перенастроить свойство реликвии",
+                         Summary: "заменить выбранное свойство равноценным вариантом"
+                     ),
+                     (
+                         Type: ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand,
+                         Label: "Усилить ступень свойства",
+                         Summary: "поднять выбранное свойство на следующий допустимый шаг"
+                     ),
+                     (
+                         Type: ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho,
+                         Label: "Стабилизировать эхо реликвии",
+                         Summary: "закрепить проявление спутника в подходящей реликвии"
+                     ),
+                     (
+                         Type: ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity,
+                         Label: "Возвысить редкость реликвии",
+                         Summary: "поднять реликвию на следующую ступень редкости"
+                     )
+                 })
+        {
+            var requiredTier = ShiningAbodeState.GetForgeRequiredRadianceTier(action.Type);
+            var hasCurrentQuote = TryFindBestForgeActionQuote(
+                shiningRoot,
+                soulRoot,
+                residentRoot,
+                factions,
+                relics,
+                action.Type,
+                useAbundantResources: false,
+                out var cost);
+            var hasPreviewQuote = hasCurrentQuote ||
+                                  TryFindBestForgeActionQuote(
+                                      shiningRoot,
+                                      soulRoot,
+                                      residentRoot,
+                                      factions,
+                                      relics,
+                                      action.Type,
+                                      useAbundantResources: true,
+                                      out cost);
+            var costText = hasPreviewQuote
+                ? $"минимальная цена {cost.Feathers} Перьев и {cost.LightSparks} Искр"
+                : "нет подходящей видимой реликвии или фракции";
+
+            yield return Option(
+                action.Type,
+                action.Label,
+                $"{action.Summary}; нужно сияние {requiredTier}, {costText}.",
+                disabled: !hasCurrentQuote);
+        }
+    }
+
+    private static bool TryFindBestForgeActionQuote(
+        JsonObject shiningRoot,
+        JsonObject soulRoot,
+        JsonObject? residentRoot,
+        IEnumerable<JsonObject> factions,
+        IEnumerable<(string RelicId, string RelicName, string Collection, JsonObject Relic)> relics,
+        string actionType,
+        bool useAbundantResources,
+        out ShiningAbodeState.ResourceCost bestCost)
+    {
+        bestCost = default;
+        var found = false;
+        var quoteShiningRoot = shiningRoot;
+        var quoteSoulRoot = soulRoot;
+        if (useAbundantResources)
+        {
+            quoteShiningRoot = shiningRoot.DeepClone().AsObject();
+            quoteSoulRoot = soulRoot.DeepClone().AsObject();
+            quoteShiningRoot["lightSparks"] = 1_000_000;
+            if (quoteSoulRoot["inkFeathers"] is JsonObject inkFeathers)
+                inkFeathers["current"] = 1_000_000;
+            else
+                quoteSoulRoot["inkFeathers"] = 1_000_000;
+        }
+
+        foreach (var faction in factions)
+        {
+            var factionId = GetString(faction, "factionId", string.Empty);
+            if (string.IsNullOrWhiteSpace(factionId))
+                continue;
+
+            foreach (var relic in relics)
+            {
+                foreach (var sample in BuildForgeQuoteSamples(actionType, soulRoot, relic))
+                {
+                    if (!ShiningAbodeState.TryQuoteForgeAction(
+                            quoteShiningRoot,
+                            quoteSoulRoot,
+                            residentRoot,
+                            actionType,
+                            factionId,
+                            relic.RelicId,
+                            sample.TargetFormTag,
+                            sample.PropertyIndex,
+                            sample.ReplacementProperty,
+                            sample.AddedProperties,
+                            out var cost,
+                            out _))
+                    {
+                        continue;
+                    }
+
+                    if (!found || IsLowerForgeCost(cost, bestCost))
+                        bestCost = cost;
+                    found = true;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    private static IEnumerable<ForgeQuoteSample> BuildForgeQuoteSamples(
+        string actionType,
+        JsonObject soulRoot,
+        (string RelicId, string RelicName, string Collection, JsonObject Relic) relic)
+    {
+        switch (actionType)
+        {
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicReshape:
+                var currentFormTag = GetString(relic.Relic, "formTag", string.Empty);
+                if (!string.IsNullOrWhiteSpace(currentFormTag))
+                    yield return new ForgeQuoteSample(ResolveAlternateForgeFormTag(currentFormTag), -1, null, null);
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicRetuneProperty:
+                if (relic.Relic["properties"] is not JsonArray retuneProperties)
+                    break;
+
+                var replacementProperties = EnumerateDistinctForgeProperties(soulRoot).ToArray();
+                for (var index = 0; index < retuneProperties.Count; index++)
+                {
+                    foreach (var replacementProperty in replacementProperties)
+                    {
+                        yield return new ForgeQuoteSample(
+                            string.Empty,
+                            index,
+                            replacementProperty.DeepClone().AsObject(),
+                            null);
+                    }
+                }
+
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicStrengthenBand:
+                if (relic.Relic["properties"] is not JsonArray strengthenProperties)
+                    break;
+
+                for (var index = 0; index < strengthenProperties.Count; index++)
+                    yield return new ForgeQuoteSample(string.Empty, index, null, null);
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicStabilizeEcho:
+                yield return new ForgeQuoteSample(string.Empty, -1, null, null);
+                break;
+
+            case ShiningCoreActionRequestState.ActionTypeForgeRelicUpliftRarity:
+                yield return new ForgeQuoteSample(string.Empty, -1, null, BuildForgeAddedPropertiesQuoteSample(soulRoot));
+                break;
+        }
+    }
+
+    private static JsonArray BuildForgeAddedPropertiesQuoteSample(JsonObject soulRoot)
+    {
+        var properties = new JsonArray();
+        foreach (var property in EnumerateDistinctForgeProperties(soulRoot))
+            properties.Add(property.DeepClone());
+        return properties;
+    }
+
+    private static string ResolveAlternateForgeFormTag(string currentFormTag)
+    {
+        foreach (var candidate in new[] { "lance", "ring", "blade", "mirror", "lantern", "chalice", "companion_echo" })
+        {
+            if (!string.Equals(candidate, currentFormTag, StringComparison.OrdinalIgnoreCase))
+                return candidate;
+        }
+
+        return "relic";
+    }
+
+    private static bool IsLowerForgeCost(ShiningAbodeState.ResourceCost candidate, ShiningAbodeState.ResourceCost current) =>
+        candidate.Feathers + candidate.LightSparks < current.Feathers + current.LightSparks ||
+        candidate.Feathers + candidate.LightSparks == current.Feathers + current.LightSparks &&
+        (candidate.Feathers < current.Feathers ||
+         candidate.Feathers == current.Feathers && candidate.LightSparks < current.LightSparks);
+
+    private static IEnumerable<UiSelectionOption> BuildForgeFormTagOptions(
+        IEnumerable<(string RelicId, string RelicName, string Collection, JsonObject Relic)> relics)
+    {
+        var known = relics
+            .Select(static relic => GetString(relic.Relic, "formTag", string.Empty))
+            .Concat(["lance", "ring", "blade", "mirror", "lantern", "chalice", "companion_echo"])
+            .Where(static formTag => !string.IsNullOrWhiteSpace(formTag))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(static formTag => DescribeForgeFormTag(formTag), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var formTag in known)
+            yield return Option(formTag, DescribeForgeFormTag(formTag), "Можно выбрать предложенную форму или вписать свою.");
+    }
+
+    private static IEnumerable<UiSelectionOption> BuildForgePropertyChoiceOptions(
+        IEnumerable<(string RelicId, string RelicName, string Collection, JsonObject Relic)> relics)
+    {
+        foreach (var relic in relics)
+        {
+            if (relic.Relic["properties"] is not JsonArray properties)
+                continue;
+
+            for (var index = 0; index < properties.Count; index++)
+            {
+                if (properties[index] is not JsonObject property)
+                    continue;
+
+                yield return Option(
+                    $"{relic.RelicId}|{index}",
+                    $"{relic.RelicName} - {RenderForgePropertyLabel(property, index)}",
+                    "Выберите это свойство для перенастройки или усиления.");
+            }
+        }
+    }
+
+    private static IEnumerable<UiSelectionOption> BuildForgeReplacementPropertyOptions(JsonObject soulRoot) =>
+        EnumerateDistinctForgeProperties(soulRoot)
+            .Select(static property => Option(
+                property.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                RenderForgePropertyLabel(property),
+                "Предложенный вариант для перенастройки свойства."));
+
+    private static IEnumerable<UiSelectionOption> BuildForgeAddedPropertyOptions(JsonObject soulRoot) =>
+        EnumerateDistinctForgeProperties(soulRoot)
+            .Select(static property =>
+            {
+                var value = new JsonArray(property.DeepClone());
+                return Option(
+                    value.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                    RenderForgePropertyLabel(property),
+                    "Предложенное дополнительное свойство для новой редкости.");
+            });
+
+    private static IEnumerable<JsonObject> EnumerateDistinctForgeProperties(JsonObject soulRoot) =>
+        EnumerateSoulRelics(soulRoot)
+            .SelectMany(static relic => (relic.Relic["properties"] as JsonArray ?? new JsonArray()).OfType<JsonObject>())
+            .GroupBy(BuildForgePropertySuggestionKey, StringComparer.OrdinalIgnoreCase)
+            .Select(static group => group.First().DeepClone().AsObject())
+            .OrderBy(static property => BuildForgePropertySuggestionKey(property), StringComparer.OrdinalIgnoreCase);
+
+    private static IEnumerable<UiSelectionOption> BuildForgeRerollOptions(int rerolls)
+    {
+        yield return Option("0", "Без переброса", "Не тратить благословение на этот запрос.");
+        for (var index = 1; index <= Math.Max(0, rerolls); index++)
+        {
+            yield return Option(
+                index.ToString(),
+                index == 1 ? "Потратить 1 переброс" : $"Потратить {index} переброса",
+                "Переброс будет списан только вместе с созданием запроса ковки.");
+        }
+    }
+
+    private static string BuildForgeFactionLabel(JsonObject faction) =>
+        $"{ResolveFactionDisplayName(faction)} - сила {GetInt(faction["factionStrength"], 0)}, поддержана огранка реликвий";
+
+    private static string BuildSoulRelicForgeLabel((string RelicId, string RelicName, string Collection, JsonObject Relic) relic)
+    {
+        var formTag = GetString(relic.Relic, "formTag", string.Empty);
+        var rarity = ResolveForgeRarityKey(relic.Relic);
+        return $"{relic.RelicName} - {DescribeForgeRarity(rarity)}, {DescribeSoulRelicCollection(relic.Collection)}, форма {DescribeForgeFormTag(formTag)}, свойств {GetForgePropertyCount(relic.Relic)}";
+    }
+
+    private static string RenderForgePropertyLabel(JsonObject property, int? propertyIndex = null)
+    {
+        var propertyName = FirstNonEmpty(
+            GetString(property, "name", string.Empty),
+            DescribeShiningForgeStat(GetString(property, "stat", string.Empty)),
+            HumanizeProtocolValue(GetString(property, "propertyId", string.Empty)),
+            "свойство");
+        var prefix = propertyIndex.HasValue ? $"Свойство {propertyIndex.Value + 1}: " : string.Empty;
+        return $"{prefix}{propertyName} (ступень: {DescribeForgeBand(property["band"])})";
+    }
+
+    private static string BuildForgePropertySuggestionKey(JsonObject property)
+    {
+        var propertyId = GetString(property, "propertyId", string.Empty);
+        var name = GetString(property, "name", string.Empty);
+        var stat = GetString(property, "stat", string.Empty);
+        var band = GetStringValue(property["band"]);
+        return $"{propertyId}|{name}|{stat}|{band}";
+    }
+
+    private static string DescribeShiningForgeStat(string? stat) =>
+        (stat ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            ShiningAbodeState.EffectFamilyLore => "Знание",
+            ShiningAbodeState.EffectFamilySocial => "Связи",
+            ShiningAbodeState.EffectFamilyResource => "Ресурсы",
+            ShiningAbodeState.EffectFamilyMemory => "Память",
+            ShiningAbodeState.EffectFamilyDescent => "Нисхождение",
+            ShiningAbodeState.EffectFamilySurvival => "Стойкость",
+            ShiningAbodeState.EffectFamilyRelic => "Реликвия",
+            ShiningAbodeState.EffectFamilyRoute => "Путь",
+            _ => string.Empty
+        };
+
+    private static string DescribeSoulRelicCollection(string collection) =>
+        (collection ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            "equipped" => "экипировано",
+            "stored" => "хранилище",
+            _ => string.IsNullOrWhiteSpace(collection) ? "неизвестно" : collection
+        };
+
+    private static string DescribeForgeFormTag(string? formTag)
+    {
+        if (string.IsNullOrWhiteSpace(formTag))
+            return "неопределённая форма";
+
+        var normalized = formTag.Trim();
+        return normalized.ToLowerInvariant() switch
+        {
+            "glass_path" => "стекло пути",
+            "solar_crown" => "солнечный венец",
+            "lance" => "копьё",
+            _ => HumanizeForgeFormTag(normalized)
+        };
+    }
+
+    private static string HumanizeForgeFormTag(string formTag)
+    {
+        var words = formTag
+            .Replace('_', ' ')
+            .Replace('-', ' ')
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(static word => word.ToLowerInvariant() switch
+            {
+                "blade" => "клинок",
+                "spear" => "копьё",
+                "lance" => "копьё",
+                "ring" => "кольцо",
+                "seed" => "зерно",
+                "companion" => "спутник",
+                "echo" => "эхо",
+                "lantern" => "фонарь",
+                "mirror" => "зеркало",
+                "chalice" => "чаша",
+                "sigil" => "печать",
+                "memory" => "память",
+                "dawn" => "рассвет",
+                "radiant" => "сияющий",
+                "route" => "путь",
+                "glass" => "стекло",
+                "path" => "путь",
+                "solar" => "солнечный",
+                "crown" => "венец",
+                _ => word
+            })
+            .ToArray();
+
+        return words.Length == 0 ? "неопределённая форма" : string.Join(' ', words);
+    }
+
+    private static string ResolveForgeRarityKey(JsonObject relic)
+    {
+        var rarity = GetString(relic, "quality", string.Empty);
+        if (string.IsNullOrWhiteSpace(rarity))
+            rarity = GetString(relic, "rarity", string.Empty);
+
+        return rarity.Trim().ToLowerInvariant();
+    }
+
+    private static string DescribeForgeRarity(string rarityKey) =>
+        (rarityKey ?? string.Empty).Trim().ToLowerInvariant() switch
+        {
+            ShiningAbodeState.RarityCommon => "обычная",
+            ShiningAbodeState.RarityUncommon => "необычная",
+            ShiningAbodeState.RarityRare => "редкая",
+            ShiningAbodeState.RarityEpic => "эпическая",
+            ShiningAbodeState.RarityLegendary => "легендарная",
+            ShiningAbodeState.RarityRadiant => "сияющая",
+            _ => string.IsNullOrWhiteSpace(rarityKey) ? "неизвестная" : rarityKey
+        };
+
+    private static string DescribeForgeBand(JsonNode? bandNode)
+    {
+        if (bandNode is JsonValue value)
+        {
+            if (value.TryGetValue<int>(out var numericBand))
+                return $"ступень {numericBand}";
+
+            if (value.TryGetValue<string>(out var stringBand))
+            {
+                var normalized = stringBand.Trim().ToLowerInvariant();
+                return int.TryParse(normalized, out var parsedBand)
+                    ? $"ступень {parsedBand}"
+                    : DescribeForgeRarity(normalized);
+            }
+        }
+
+        return "неизвестна";
+    }
+
+    private static int GetForgePropertyCount(JsonObject relic) => (relic["properties"] as JsonArray)?.Count ?? 0;
+
+    private static IEnumerable<(string RelicId, string RelicName, string Collection, JsonObject Relic)> EnumerateSoulRelics(JsonObject soulRoot)
+    {
+        if (soulRoot["soulRelics"] is JsonObject soulRelicsObject)
+        {
+            foreach (var collectionName in new[] { "equipped", "stored" })
+            {
+                if (soulRelicsObject[collectionName] is not JsonArray collection)
+                    continue;
+
+                foreach (var relic in collection.OfType<JsonObject>())
+                {
+                    var relicId = FirstNonEmpty(GetString(relic, "relicId", string.Empty), GetString(relic, "id", string.Empty));
+                    if (string.IsNullOrWhiteSpace(relicId))
+                        continue;
+
+                    var relicName = FirstNonEmpty(GetString(relic, "name", string.Empty), GetString(relic, "displayName", string.Empty), relicId);
+                    yield return (relicId, relicName, collectionName, relic);
+                }
+            }
+        }
+        else if (soulRoot["soulRelics"] is JsonArray flatCollection)
+        {
+            foreach (var relic in flatCollection.OfType<JsonObject>())
+            {
+                var relicId = FirstNonEmpty(GetString(relic, "relicId", string.Empty), GetString(relic, "id", string.Empty));
+                if (string.IsNullOrWhiteSpace(relicId))
+                    continue;
+
+                var relicName = FirstNonEmpty(GetString(relic, "name", string.Empty), GetString(relic, "displayName", string.Empty), relicId);
+                yield return (relicId, relicName, "stored", relic);
+            }
+        }
+    }
+
+    private static string HumanizeProtocolValue(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        return string.Join(
+            ' ',
+            value
+                .Trim()
+                .Replace('-', '_')
+                .Split('_', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(static part => part.Length == 0 ? part : char.ToUpperInvariant(part[0]) + part[1..]));
+    }
+
     private static IEnumerable<JsonObject> GetVisibleFactions(JsonObject shiningRoot) =>
         SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
             .Where(IsPlayerVisibleMemoryObject)
@@ -1908,8 +2509,8 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             Message = message
         };
 
-    private static UiSelectionOption Option(string value, string label, string description) =>
-        new() { Value = value, Label = label, Description = description };
+    private static UiSelectionOption Option(string value, string label, string description, bool disabled = false) =>
+        new() { Value = value, Label = label, Description = description, Disabled = disabled };
 
     private static UiRawJsonBlock Raw(string title, JsonNode node) =>
         new()
@@ -2036,6 +2637,21 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         return fallback;
     }
 
+    private static string GetStringValue(JsonNode? node, string fallback = "")
+    {
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var text) && !string.IsNullOrWhiteSpace(text))
+                return text.Trim();
+            if (value.TryGetValue<int>(out var intValue))
+                return intValue.ToString();
+            if (value.TryGetValue<long>(out var longValue))
+                return longValue.ToString();
+        }
+
+        return fallback;
+    }
+
     private static string GetNumberOrString(JsonNode? node, string propertyName, string fallback)
     {
         if (node?[propertyName] is not JsonValue value)
@@ -2084,4 +2700,10 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         string Value,
         string Label,
         string Description);
+
+    private sealed record ForgeQuoteSample(
+        string TargetFormTag,
+        int PropertyIndex,
+        JsonObject? ReplacementProperty,
+        JsonArray? AddedProperties);
 }
