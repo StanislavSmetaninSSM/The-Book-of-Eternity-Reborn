@@ -8,7 +8,7 @@
     "playerDefaultActionCount": 98,
     "advancedOnlyActionCount": 7,
     "mutatingCommandCount": 49,
-    "commandsNeedingFollowUpCount": 11
+    "commandsNeedingFollowUpCount": 0
   },
   "commands": [
     {
@@ -105,15 +105,15 @@
       "primaryActionLabel": "\u0420\u0435\u043B\u0438\u043A\u0432\u0438\u0438 \u0434\u0443\u0448\u0438",
       "primaryCommand": "/soul_relics",
       "subcommands": [],
-      "followUpIssue": "#802, #817",
-      "reason": "Soul relic lists, stored/equipped state, and descriptions are covered; relic equip and unequip actions now covered by /soul_relic_equip and /soul_relic_unequip.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# UniversalMeta handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Soul relic lists, stored/equipped state, and descriptions are covered; relic equip and unequip actions now covered by /soul_relic_equip and /soul_relic_unequip."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "afterlife_archive",
@@ -131,15 +131,15 @@
       "primaryActionLabel": "\u0410\u0440\u0445\u0438\u0432 \u0434\u0443\u0448\u0438",
       "primaryCommand": "/afterlife_archive",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Read-only afterlife archive data is covered; #816 consultation, project fuel, and direct pull browser evidence is covered by dedicated guided commands while remaining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# UniversalMeta handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only afterlife archive data is covered; #816 consultation, project fuel, and direct pull browser evidence is covered by dedicated guided commands while remaining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "archive_candidates",
@@ -366,15 +366,15 @@
       "primaryActionLabel": "\u0427\u0435\u0440\u043D\u0438\u043B\u044C\u043D\u044B\u0435 \u043F\u0435\u0440\u044C\u044F",
       "primaryCommand": "/feathers",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Ink Feather totals, reveal fate, and rewrite fate browser surfaces are covered; remaining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# UniversalMeta handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Ink Feather totals, reveal fate, and rewrite fate browser surfaces are covered; remaining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "world_rules",
@@ -1257,15 +1257,15 @@
       "primaryActionLabel": "\u0422\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442",
       "primaryCommand": "/transport",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Read-only transport and route summaries are covered; item movement is handled by the transport move form while remaining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# MortalWorld handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only transport and route summaries are covered; item movement is handled by the transport move form while remaining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "effects",
@@ -1388,15 +1388,15 @@
       "primaryActionLabel": "\u0414\u043E\u0441\u0442\u0443\u043F \u043A \u0445\u0440\u0430\u043D\u0438\u043B\u0438\u0449\u0430\u043C",
       "primaryCommand": "/storage_access",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Storage visibility and access summaries are covered; item movement is handled by the storage move form while remaining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# MortalWorld handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Storage visibility and access summaries are covered; item movement is handled by the storage move form while remaining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "interactions",
@@ -1414,15 +1414,15 @@
       "primaryActionLabel": "\u0412\u0437\u0430\u0438\u043C\u043E\u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F",
       "primaryCommand": "/interactions",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Read-only interaction summaries plus mortal, Guardian, and resident starts are covered; remaining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# MortalWorld handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only interaction summaries plus mortal, Guardian, and resident starts are covered; remaining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "ink_feather_reveal_fate",
@@ -1830,15 +1830,15 @@
       "primaryActionLabel": "\u0425\u0440\u0430\u043D\u0438\u0442\u0435\u043B\u0438",
       "primaryCommand": "/guardians",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Read-only Guardian state, relationship data, trade, and talk/lore starts are covered; remaining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# ChaosSea handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only Guardian state, relationship data, trade, and talk/lore starts are covered; remaining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "abode_power",
@@ -1934,15 +1934,15 @@
       "primaryActionLabel": "\u041E\u0431\u0438\u0442\u0435\u043B\u0438",
       "primaryCommand": "/abodes",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Read-only Abode state and resident conversation, history, and transfer starts are covered; remaining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# ChaosSea handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only Abode state and resident conversation, history, and transfer starts are covered; remaining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "gacha",
@@ -2276,15 +2276,15 @@
       "primaryActionLabel": "\u0421\u0438\u044F\u044E\u0449\u0430\u044F \u041E\u0431\u0438\u0442\u0435\u043B\u044C",
       "primaryCommand": "/shining_abode",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Read-only Shining Abode state and guided Gates actions are covered; remaining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only Shining Abode state and guided Gates actions are covered; remaining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_politics",
@@ -2302,15 +2302,15 @@
       "primaryActionLabel": "\u041F\u043E\u043B\u0438\u0442\u0438\u043A\u0430 \u0421\u0438\u044F\u043D\u0438\u044F",
       "primaryCommand": "/shining_politics",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Read-only Shining politics data is covered; dedicated founding, realignment, and leadership forms cover the #810 browser slice while broader Shining actions stay tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only Shining politics data is covered; dedicated founding, realignment, and leadership forms cover the #810 browser slice while broader Shining actions stay tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_faction_founding",
@@ -2718,15 +2718,15 @@
       "primaryActionLabel": "\u041A\u0430\u0437\u043D\u0430\u0447\u0435\u0439\u0441\u0442\u0432\u043E",
       "primaryCommand": "/shining_treasury",
       "subcommands": [],
-      "followUpIssue": "#817",
-      "reason": "Treasury browser parity is covered; remaining Shining umbrella parity work stays tracked separately.",
-      "auditStatus": "tracked-follow-up",
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
       "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
-      "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "Treasury browser parity is covered; remaining Shining umbrella parity work stays tracked separately."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "source_of_light",

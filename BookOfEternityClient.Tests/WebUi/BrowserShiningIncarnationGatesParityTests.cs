@@ -318,7 +318,7 @@ public sealed class BrowserShiningIncarnationGatesParityTests : IDisposable
         }
 
         var shiningAbode = Assert.Single(coverage.Commands, item => item.Id == "shining_abode");
-        Assert.Contains("#817", shiningAbode.FollowUpIssue, StringComparison.Ordinal);
+        Assert.DoesNotContain("#817", shiningAbode.FollowUpIssue, StringComparison.Ordinal);
         Assert.DoesNotContain("#812", shiningAbode.FollowUpIssue, StringComparison.Ordinal);
         Assert.DoesNotContain("incarnation", shiningAbode.GapSummary, StringComparison.OrdinalIgnoreCase);
     }

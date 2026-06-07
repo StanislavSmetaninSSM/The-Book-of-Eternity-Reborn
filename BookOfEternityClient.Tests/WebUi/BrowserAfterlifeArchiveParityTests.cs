@@ -350,7 +350,7 @@ public sealed class BrowserAfterlifeArchiveParityTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserAfterlifeArchiveParity")]
-    public void BrowserCommandCoverage_Issue816ArchiveAndDirectPullAreCoveredWhileUmbrellaRemainsOpen()
+    public void BrowserCommandCoverage_Issue816ArchiveAndDirectPullAreCoveredWithoutParentFollowUp()
     {
         var coverage = BrowserCommandCoverageService.Build();
 
@@ -372,7 +372,7 @@ public sealed class BrowserAfterlifeArchiveParityTests : IDisposable
 
         var archive = Assert.Single(coverage.Commands, command => command.Id == "afterlife_archive");
         Assert.DoesNotContain("#816", archive.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains("#817", archive.FollowUpIssue, StringComparison.Ordinal);
+        Assert.DoesNotContain("#817", archive.FollowUpIssue, StringComparison.Ordinal);
     }
 
     public void Dispose()

@@ -329,8 +329,9 @@ public sealed class BrowserGuardianSocialParityTests : IDisposable
         Assert.DoesNotContain("#808", command.FollowUpIssue, StringComparison.Ordinal);
 
         var guardians = Assert.Single(coverage.Commands, item => item.Id == "guardians");
+        Assert.Equal("covered", guardians.AuditStatus);
         Assert.DoesNotContain("#808", guardians.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains("talk/lore starts are covered", guardians.GapSummary, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("#817", guardians.FollowUpIssue, StringComparison.Ordinal);
         Assert.DoesNotContain("remain tracked interactive work", guardians.GapSummary, StringComparison.OrdinalIgnoreCase);
     }
 
