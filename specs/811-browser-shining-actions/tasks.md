@@ -58,6 +58,7 @@
 - Hermes reconciliation diff/static checks: `.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` found `specs/811-browser-shining-actions`; `git diff --check origin/main...HEAD` and `git diff --check` passed; added-line static scan found only internal C# `rawStateError` variable names, reviewed as non-player-facing/non-secret false positives; refined default player-facing raw diagnostic scan returned no matches.
 - Spec consistency: manual pass confirmed issue #811 links in `spec.md`, `plan.md`, `tasks.md`, and supporting artifacts, plus no planned afterlife contract shape change.
 - Commit: local focused commit created with `[skip ci]`; final SHA is updated by Hermes reconciliation after fixture-sync amend.
+- Independent review fix: Codex review `E:/Games/codex-runs/20260607-1608-boe-811-shining-actions-review` returned `CHANGES_REQUIRED` because stale-submit Shining core action validation could leak internal pending/action wording. Hermes added `SubmitAsync_ShiningActionPromptAfterAnotherPendingCoreActionAppears_ReturnsPlayerFacingBlocker`, expanded raw-diagnostic guards for Shining action ids/no-op/internal pending text, sanitized non-realm Shining core action validation messages to player-facing copy, and verified RED by temporarily restoring the previous conditional sanitizer: 1 failed / 0 passed with `pending Shining` leak; restored fix passed 1/1.
 
 ## Notes
 

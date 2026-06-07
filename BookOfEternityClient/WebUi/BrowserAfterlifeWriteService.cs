@@ -2449,9 +2449,7 @@ public sealed class BrowserAfterlifeWriteService
         if (message.Contains("currentRealm", StringComparison.OrdinalIgnoreCase))
             return "Действия Сияющей Обители доступны только в Сияющей Обители.";
 
-        return ContainsBrowserTradeDiagnosticFragment(message)
-            ? "Действие Сияющей Обители временно ждёт проверки состояния. Повторите действие после восстановления текущих ожиданий."
-            : message;
+        return "Действие Сияющей Обители временно ждёт проверки состояния. Повторите действие после восстановления текущих ожиданий.";
     }
 
     private async Task<JsonObject?> ReadObjectAsync(string path)

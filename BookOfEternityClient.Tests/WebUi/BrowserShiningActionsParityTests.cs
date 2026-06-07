@@ -297,6 +297,28 @@ public sealed class BrowserShiningActionsParityTests : IDisposable
     }
 
     [Fact]
+    [Trait("Category", "ShiningActions")]
+    public async Task SubmitAsync_ShiningActionPromptAfterAnotherPendingCoreActionAppears_ReturnsPlayerFacingBlocker()
+    {
+        await SeedShiningActionsStateAsync();
+        var prompt = await ExecuteCommandAsync("/shining_project_support");
+        Assert.NotNull(prompt.InteractiveSession);
+        await WriteBlockingPendingCoreActionRequestAsync();
+
+        var result = await SubmitPromptAsync(
+            prompt,
+            Answers(
+                ("project_choice", "faction_lanterns|project_dawn"),
+                ("confirm_shining_core_action_write", true)));
+
+        Assert.NotEqual(CommandExecutionState.Completed, result.State);
+        var text = CollectResultAndPromptText(result);
+        AssertNoRawShiningDiagnosticText(text);
+        var request = AssertSingleCoreActionRequest();
+        Assert.Equal("existing_blocker", request["requestId"]!.GetValue<string>());
+    }
+
+    [Fact]
     [Trait("Category", "BrowserWebUiParity")]
     public void BrowserCommandCoverage_Issue811ShiningActionsCommandsAreCovered()
     {
@@ -495,6 +517,30 @@ public sealed class BrowserShiningActionsParityTests : IDisposable
         """);
     }
 
+    private async Task WriteBlockingPendingCoreActionRequestAsync()
+    {
+        var root = new JsonObject
+        {
+            [ShiningCoreActionRequestState.RequestsProperty] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["requestId"] = "existing_blocker",
+                    ["actionType"] = ShiningCoreActionRequestState.ActionTypeDiscoverNativeFaction,
+                    ["radianceTierAtRequest"] = 3,
+                    ["quotedCostFeathers"] = 25,
+                    ["quotedCostLightSparks"] = 20,
+                    ["createdAtTurn"] = 88,
+                    ["createdAtUtc"] = "2026-06-07T00:00:00.0000000Z"
+                }
+            }
+        };
+
+        await _fs.WriteFileAtomicAsync(
+            ShiningCoreActionRequestState.PendingActionsRequestPath,
+            root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
     private static JsonObject CreateHall(string hallId, string hallName) => new()
     {
         ["hallId"] = hallId,
@@ -672,7 +718,16 @@ public sealed class BrowserShiningActionsParityTests : IDisposable
         Assert.DoesNotContain("game_state/", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".json", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("pending_", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending Shining", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("core action", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("requestId", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("actionType", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("discover_native_faction", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("invest_in_faction", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("support_project", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("unsupport_project", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("retire_project", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("no-op", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("api", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("DTO", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("rollback", text, StringComparison.OrdinalIgnoreCase);
