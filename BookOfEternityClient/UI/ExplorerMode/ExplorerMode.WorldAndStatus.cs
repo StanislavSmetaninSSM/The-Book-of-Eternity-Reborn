@@ -992,13 +992,7 @@ public partial class ExplorerMode
         identityTable.AddRow(new Markup("[dim]Уровень[/]"), new Markup($"[cyan]{level}[/]"));
         leftContent.AddRow(identityTable);
 
-        var summaryTable = new Table()
-            .Border(TableBorder.None)
-            .HideHeaders()
-            .Expand()
-            .AddColumn(new TableColumn("").NoWrap().Width(18))
-            .AddColumn(new TableColumn("").NoWrap().Width(20))
-            .AddColumn(new TableColumn("").RightAligned().NoWrap().Width(18));
+        var summaryTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 18, barWidth: 18, valueWidth: 18);
 
         if (xpForNext > 0)
         {
@@ -1006,14 +1000,16 @@ public partial class ExplorerMode
             summaryTable.AddRow(
                 new Markup("[yellow]Опыт[/]"),
                 new Markup(ConsoleLayout.CreateBarFromPercent(xpPct, 18, "yellow")),
-                new Markup($"[yellow]{totalXp}/{xpForNext} ({xpPct}%)[/]"));
+                new Markup($"[yellow]{totalXp}/{xpForNext} ({xpPct}%)[/]"),
+                new Markup(string.Empty));
         }
         else if (totalXp > 0)
         {
             summaryTable.AddRow(
                 new Markup("[yellow]Опыт[/]"),
                 new Markup(""),
-                new Markup($"[yellow]{totalXp}[/]"));
+                new Markup($"[yellow]{totalXp}[/]"),
+                new Markup(string.Empty));
         }
 
         var hpPctValue = int.TryParse(state.PlayerStatus.HealthPercentage.Replace("%", "").Trim(), out var hpV) ? hpV : 100;
@@ -1022,22 +1018,26 @@ public partial class ExplorerMode
         summaryTable.AddRow(
             new Markup("[red]Здоровье[/]"),
             new Markup(ConsoleLayout.CreateBarFromPercent(hpPctValue, 18, hpPctValue > 60 ? "green" : hpPctValue > 30 ? "yellow" : "red")),
-            new Markup($"[red]{Markup.Escape(state.PlayerStatus.HealthPercentage)}[/]"));
+            new Markup($"[red]{Markup.Escape(state.PlayerStatus.HealthPercentage)}[/]"),
+            new Markup(string.Empty));
         summaryTable.AddRow(
             new Markup("[cyan]Энергия[/]"),
             new Markup(ConsoleLayout.CreateBarFromPercent(enPctValue, 18, enPctValue > 60 ? "deepskyblue1" : enPctValue > 30 ? "yellow" : "red")),
-            new Markup($"[cyan]{Markup.Escape(state.PlayerStatus.EnergyPercentage)}[/]"));
+            new Markup($"[cyan]{Markup.Escape(state.PlayerStatus.EnergyPercentage)}[/]"),
+            new Markup(string.Empty));
         summaryTable.AddRow(
             new Markup("[blue]Равновесие[/]"),
             new Markup(ConsoleLayout.CreateBarFromPercent(poPctValue, 18, poPctValue > 60 ? "steelblue" : poPctValue > 30 ? "yellow" : "red")),
-            new Markup($"[blue]{Markup.Escape(state.PlayerStatus.PoisePercentage)}[/]"));
+            new Markup($"[blue]{Markup.Escape(state.PlayerStatus.PoisePercentage)}[/]"),
+            new Markup(string.Empty));
         summaryTable.AddRow(
             new Markup("[yellow]Состояние[/]"),
             new Markup(""),
-            new Markup($"[yellow]{Markup.Escape(state.PlayerStatus.CurrentCondition)}[/]"));
+            new Markup($"[yellow]{Markup.Escape(state.PlayerStatus.CurrentCondition)}[/]"),
+            new Markup(string.Empty));
 
         if (totalMoney > 0)
-            summaryTable.AddRow(new Markup("[gold1]Деньги[/]"), new Markup(""), new Markup($"[gold1]{totalMoney}[/]"));
+            summaryTable.AddRow(new Markup("[gold1]Деньги[/]"), new Markup(""), new Markup($"[gold1]{totalMoney}[/]"), new Markup(string.Empty));
 
         if (maxWeight > 0)
         {
@@ -1046,9 +1046,10 @@ public partial class ExplorerMode
             summaryTable.AddRow(
                 new Markup($"[{wColor}]Вес[/]"),
                 new Markup(ConsoleLayout.CreateBarFromPercent(weightPct, 18, wColor)),
-                new Markup($"[{wColor}]{totalWeight}/{maxWeight} кг{(isOverloaded ? " (ПЕРЕГРУЗКА)" : "")}[/]"));
+                new Markup($"[{wColor}]{totalWeight}/{maxWeight} кг{(isOverloaded ? " (ПЕРЕГРУЗКА)" : "")}[/]"),
+                new Markup(string.Empty));
             if (additionalEnergyExpenditure > 0)
-                summaryTable.AddRow(new Markup("[yellow]Доп. расход[/]"), new Markup(""), new Markup($"[yellow]+{additionalEnergyExpenditure}/ход[/]"));
+                summaryTable.AddRow(new Markup("[yellow]Доп. расход[/]"), new Markup(""), new Markup($"[yellow]+{additionalEnergyExpenditure}/ход[/]"), new Markup(string.Empty));
         }
 
         leftContent.AddRow(summaryTable);
@@ -1062,13 +1063,7 @@ public partial class ExplorerMode
             var stDesc = GetStr(sr, "description", GetStr(sr, "state", ""));
             if (isActive || detLevel >= 0 || !string.IsNullOrEmpty(stDesc))
             {
-                var stealthTable = new Table()
-                    .Border(TableBorder.None)
-                    .HideHeaders()
-                    .Expand()
-                    .AddColumn(new TableColumn("").NoWrap().Width(18))
-                    .AddColumn(new TableColumn("").NoWrap().Width(20))
-                    .AddColumn(new TableColumn("").RightAligned().NoWrap().Width(18));
+                var stealthTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 18, barWidth: 18, valueWidth: 18);
 
                 if (detLevel >= 0)
                 {
@@ -1083,11 +1078,12 @@ public partial class ExplorerMode
                     stealthTable.AddRow(
                         new Markup("[green]Скрытность[/]"),
                         new Markup(ConsoleLayout.CreateBarFromPercent(detLevel, 18, color)),
-                        new Markup($"[{color}]{label} ({detLevel}%)[/]"));
+                        new Markup($"[{color}]{label} ({detLevel}%)[/]"),
+                        new Markup(string.Empty));
                 }
                 else
                 {
-                    stealthTable.AddRow(new Markup("[green]Скрытность[/]"), new Markup(""), new Markup(isActive ? "[green]Скрыт[/]" : $"[dim]{Markup.Escape(stDesc)}[/]"));
+                    stealthTable.AddRow(new Markup("[green]Скрытность[/]"), new Markup(""), new Markup(isActive ? "[green]Скрыт[/]" : $"[dim]{Markup.Escape(stDesc)}[/]"), new Markup(string.Empty));
                 }
                 leftContent.AddRow(stealthTable);
             }

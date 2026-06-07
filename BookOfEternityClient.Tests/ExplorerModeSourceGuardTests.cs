@@ -181,6 +181,68 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
+    public void ConsoleLayout_BarMetricTable_MustKeepMetricColumnsBounded()
+    {
+        var source = ReadUiSourceFile("ConsoleLayout.cs");
+        var metricTableSource = ExtractMethodSource(source, "public static Table CreateBarMetricTable");
+
+        Assert.DoesNotContain(".Expand()", metricTableSource, StringComparison.Ordinal);
+
+        var labelColumn = ".AddColumn(new TableColumn(\"\").NoWrap().Width(labelWidth))";
+        var barColumn = ".AddColumn(new TableColumn(\"\").NoWrap().Width(barWidth))";
+        var valueColumn = ".AddColumn(new TableColumn(\"\").RightAligned().NoWrap().Width(valueWidth))";
+        var trailingColumn = ".AddColumn(new TableColumn(\"\"));";
+
+        var labelIndex = metricTableSource.IndexOf(labelColumn, StringComparison.Ordinal);
+        var barIndex = metricTableSource.IndexOf(barColumn, StringComparison.Ordinal);
+        var valueIndex = metricTableSource.IndexOf(valueColumn, StringComparison.Ordinal);
+        var trailingIndex = metricTableSource.IndexOf(trailingColumn, StringComparison.Ordinal);
+
+        Assert.True(labelIndex >= 0, "Metric tables must keep a fixed label column.");
+        Assert.True(barIndex > labelIndex, "Metric tables must keep a fixed bar column after the label.");
+        Assert.True(valueIndex > barIndex, "Metric tables must keep a fixed, right-aligned value column after the bar.");
+        Assert.True(trailingIndex > valueIndex, "Any flexible/trailing text must come after the fixed metric group.");
+    }
+
+    [Fact]
+    public void GameInterface_MortalHudBars_MustKeepEmojiWidthOutOfMetricLabels()
+    {
+        var source = ReadUiSourceFile("GameInterface.cs");
+        var statusBarStart = source.IndexOf("public void RenderStatusBar", StringComparison.Ordinal);
+        var afterlifeStart = source.IndexOf("private void RenderAfterlifeStatus", StringComparison.Ordinal);
+        Assert.True(statusBarStart >= 0, "RenderStatusBar source must be present.");
+        Assert.True(afterlifeStart > statusBarStart, "RenderStatusBar block must end before RenderAfterlifeStatus.");
+
+        var statusBarSource = source[statusBarStart..afterlifeStart];
+
+        Assert.Contains("new Markup($\"[{healthColor}]Здоровье[/]\")", statusBarSource, StringComparison.Ordinal);
+        Assert.Contains("new Markup($\"[{energyColor}]Энергия[/]\")", statusBarSource, StringComparison.Ordinal);
+        Assert.Contains("new Markup($\"[{poiseColor}]Равновесие[/]\")", statusBarSource, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("❤️ Здоровье", statusBarSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("⚡ Энергия", statusBarSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("🛡️ Равновесие", statusBarSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ExplorerMode_DetailedStatusMetricTables_MustUseSharedBarMetricHelper()
+    {
+        var source = ReadUiSourceFile(Path.Combine("ExplorerMode", "ExplorerMode.WorldAndStatus.cs"));
+        var statusSource = ExtractMethodSource(source, "private async Task ShowDetailedStatus()");
+
+        Assert.Contains(
+            "var summaryTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 18, barWidth: 18, valueWidth: 18);",
+            statusSource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "var stealthTable = ConsoleLayout.CreateBarMetricTable(labelWidth: 18, barWidth: 18, valueWidth: 18);",
+            statusSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("var summaryTable = new Table()", statusSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("var stealthTable = new Table()", statusSource, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ExplorerMode_KnownDynamicPromptAndMarkupLineSurfaces_MustEscapePlainText()
     {
         var rootSource = ReadUiSourceFile("ExplorerMode.cs");
