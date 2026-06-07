@@ -24,6 +24,11 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         ProjectSupport,
         ProjectUnsupport,
         ProjectRetirement,
+        GatesOpen,
+        GatesSelect,
+        GatesDeselect,
+        GatesReroll,
+        IncarnationPrepare,
         Treasury,
         SourceOfLight
     }
@@ -51,6 +56,16 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ["/снять_поддержку_сияющего_проекта"] = CommandKind.ProjectUnsupport,
             ["/shining_project_retirement"] = CommandKind.ProjectRetirement,
             ["/отправить_сияющий_проект_в_историю"] = CommandKind.ProjectRetirement,
+            ["/shining_gates_open"] = CommandKind.GatesOpen,
+            ["/открыть_врата_инкарнации"] = CommandKind.GatesOpen,
+            ["/shining_gates_select"] = CommandKind.GatesSelect,
+            ["/выбрать_благословение"] = CommandKind.GatesSelect,
+            ["/shining_gates_deselect"] = CommandKind.GatesDeselect,
+            ["/снять_благословение"] = CommandKind.GatesDeselect,
+            ["/shining_gates_reroll"] = CommandKind.GatesReroll,
+            ["/обновить_врата"] = CommandKind.GatesReroll,
+            ["/shining_incarnation_prepare"] = CommandKind.IncarnationPrepare,
+            ["/подготовить_новую_жизнь"] = CommandKind.IncarnationPrepare,
             ["/shining_treasury"] = CommandKind.Treasury,
             ["/казначейство"] = CommandKind.Treasury,
             ["/source_of_light"] = CommandKind.SourceOfLight,
@@ -104,6 +119,11 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             CommandKind.ProjectSupport => await BuildProjectSupportMutation(normalizedCommand, fs, stateManager, support: true),
             CommandKind.ProjectUnsupport => await BuildProjectSupportMutation(normalizedCommand, fs, stateManager, support: false),
             CommandKind.ProjectRetirement => await BuildProjectRetirement(normalizedCommand, fs, stateManager),
+            CommandKind.GatesOpen => await BuildGatesOpen(normalizedCommand, fs, stateManager),
+            CommandKind.GatesSelect => await BuildGatesBlessingSelection(normalizedCommand, fs, stateManager, commandArguments, select: true),
+            CommandKind.GatesDeselect => await BuildGatesBlessingSelection(normalizedCommand, fs, stateManager, commandArguments, select: false),
+            CommandKind.GatesReroll => await BuildGatesReroll(normalizedCommand, fs, stateManager),
+            CommandKind.IncarnationPrepare => await BuildIncarnationPrepare(normalizedCommand, fs, stateManager),
             CommandKind.Treasury => await BuildTreasury(normalizedCommand, fs),
             CommandKind.SourceOfLight => await BuildSourceOfLight(normalizedCommand, fs),
             _ => null
@@ -795,6 +815,219 @@ public static class ExplorerShiningAbodeCommandResultBuilder
             ]);
     }
 
+    private static async Task<ExplorerCommandResult> BuildGatesOpen(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        if (context.Blocker != null)
+            return Blocked(command, "Открытие Врат недоступно", context.Blocker);
+
+        var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+        {
+            ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+            CreatedAtTurn = Math.Max(1, stateManager.CurrentState.TurnNumber + 1)
+        };
+        var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, request);
+        if (!string.IsNullOrWhiteSpace(validation))
+            return Blocked(command, "Открытие Врат недоступно", SanitizeShiningGatesValidationMessage(validation));
+
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                "Открытие Врат инкарнации",
+                Grid(
+                    ("Сияние", DescribeRadiance(context.ShiningRoot)),
+                    ("Текущий набор", DescribeGatesDraftState(context.ShiningRoot["gates"] as JsonObject))),
+                new UiTextBlock { Text = "После подтверждения ГМ получит просьбу открыть Врата и показать благословения для будущей жизни." })
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_core_action_write",
+                    Prompt = "Подтвердить открытие Врат",
+                    Required = true
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildGatesBlessingSelection(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager,
+        string commandArguments,
+        bool select)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        if (context.Blocker != null)
+            return Blocked(command, select ? "Выбор благословения недоступен" : "Снятие благословения недоступно", context.Blocker);
+        if (!TryGetOpenFreshGatesForBrowser(context.ShiningRoot, out var gates, out var blocker))
+            return Blocked(command, select ? "Выбор благословения недоступен" : "Снятие благословения недоступно", blocker);
+
+        var requestedCardId = ExtractFirstArgument(commandArguments);
+        var selectedIds = ReadGatesStringArray(gates, "selectedBlessingCardIds")
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var availableCards = (gates["availableBlessingCards"] as JsonArray)?.OfType<JsonObject>().ToArray() ?? [];
+        var optionCards = availableCards
+            .Where(card =>
+            {
+                var cardId = GetString(card, "cardId", string.Empty);
+                if (string.IsNullOrWhiteSpace(cardId))
+                    return false;
+                if (!string.IsNullOrWhiteSpace(requestedCardId) && !string.Equals(cardId, requestedCardId, StringComparison.OrdinalIgnoreCase))
+                    return false;
+                return select || selectedIds.Contains(cardId);
+            })
+            .ToArray();
+
+        if (optionCards.Length == 0)
+        {
+            return Blocked(
+                command,
+                select ? "Нет доступного благословения" : "Нет выбранного благословения",
+                select
+                    ? "В текущем наборе Врат нет подходящих благословений для выбора."
+                    : "Сейчас в Вратах нет выбранных благословений, которые можно снять.");
+        }
+
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                select ? "Выбор благословения Врат" : "Снятие благословения Врат",
+                Grid(
+                    ("Набор Врат", DescribeGatesDraftState(gates)),
+                    ("Выбрано", selectedIds.Count == 0 ? "пока ничего" : string.Join(", ", selectedIds.Select(id => ResolveGatesCardLabel(gates, id))))),
+                new UiTextBlock { Text = "Доступные благословения:\n- " + string.Join("\n- ", availableCards.Select(card => BuildBlessingCardLabel(card, selectedIds))) })
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "blessing_card_id",
+                    Prompt = select ? "Благословение для выбора" : "Благословение для снятия",
+                    Required = true,
+                    Options = optionCards
+                        .Select(card => Option(
+                            GetString(card, "cardId", string.Empty),
+                            BuildBlessingCardPromptLabel(card, selectedIds),
+                            BuildBlessingCardDescription(card)))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_gates_local_write",
+                    Prompt = select ? "Подтвердить выбор благословения" : "Подтвердить снятие благословения",
+                    Required = true
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildGatesReroll(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        if (context.Blocker != null)
+            return Blocked(command, "Обновление Врат недоступно", context.Blocker);
+        if (!TryGetOpenFreshGatesForBrowser(context.ShiningRoot, out var gates, out var blocker))
+            return Blocked(command, "Обновление Врат недоступно", blocker);
+
+        var projectedRoot = JsonNode.Parse(context.ShiningRoot.ToJsonString())!.AsObject();
+        if (!ShiningAbodeState.TryRerollGatesDraft(projectedRoot, out var error))
+            return Blocked(command, "Обновление Врат недоступно", SanitizeShiningGatesValidationMessage(error));
+
+        var projectedGates = projectedRoot["gates"] as JsonObject;
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                "Обновление Врат",
+                Grid(
+                    ("Осталось обновлений", $"{GetInt(gates["rerollsRemaining"], 0)} -> {GetInt(projectedGates?["rerollsRemaining"], 0)}"),
+                    ("Текущие благословения", FormatGatesCardNames(gates)),
+                    ("После обновления", FormatGatesCardNames(projectedGates))),
+                new UiTextBlock { Text = "Выбранные благословения сохраняются, а Врата заменят часть невыбранного набора." })
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_gates_local_write",
+                    Prompt = "Подтвердить обновление Врат",
+                    Required = true
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildIncarnationPrepare(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var context = await ReadCoreActionPromptContext(fs, stateManager);
+        if (context.Blocker != null)
+            return Blocked(command, "Подготовка новой жизни недоступна", context.Blocker);
+        if (!TryGetOpenFreshGatesForBrowser(context.ShiningRoot, out var gates, out var blocker))
+            return Blocked(command, "Подготовка новой жизни недоступна", blocker);
+
+        var selectedIds = ReadGatesStringArray(gates, "selectedBlessingCardIds");
+        if (selectedIds.Count == 0)
+            return Blocked(command, "Нет выбранных благословений", "Перед подготовкой новой жизни выберите хотя бы одно благословение Врат.");
+
+        var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+        {
+            ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+            SourceDraftVersion = GetInt(gates["draftVersion"], 0),
+            SelectedCardIds = selectedIds,
+            SelectedCards = BuildSelectedGatesCardSnapshot(gates, selectedIds),
+            CreatedAtTurn = Math.Max(1, stateManager.CurrentState.TurnNumber + 1)
+        };
+        var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(fs, request);
+        if (!string.IsNullOrWhiteSpace(validation))
+            return Blocked(command, "Подготовка новой жизни недоступна", SanitizeShiningGatesValidationMessage(validation));
+
+        var blocks = new List<UiBlock>
+        {
+            Panel(
+                "Подготовка новой жизни",
+                Grid(
+                    ("Набор Врат", DescribeGatesDraftState(gates)),
+                    ("Выбранные благословения", string.Join(", ", selectedIds.Select(id => ResolveGatesCardLabel(gates, id))))),
+                new UiTextBlock { Text = "После подтверждения ГМ получит просьбу закрепить выбранные благословения для следующей жизни." })
+        };
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_shining_core_action_write",
+                    Prompt = "Подтвердить подготовку новой жизни",
+                    Required = true
+                }
+            ]);
+    }
+
     private static async Task<ExplorerCommandResult> BuildTreasury(string command, FileSystemManager fs)
     {
         var shining = await ReadJson(fs, ShiningAbodeState.StatePath);
@@ -1099,6 +1332,176 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         var guardiansRoot = guardians.Node as JsonObject;
         ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
         return new ActionPromptContext(shiningRoot, soulRoot, residentRoot, guardiansRoot, null);
+    }
+
+    private static bool TryGetOpenFreshGatesForBrowser(JsonObject shiningRoot, out JsonObject gates, out string blocker)
+    {
+        gates = shiningRoot["gates"] as JsonObject ?? new JsonObject();
+        if (!GetBool(gates["hasOpenDraft"]))
+        {
+            blocker = "Сначала откройте Врата инкарнации.";
+            return false;
+        }
+
+        if (GetBool(gates["isStale"]))
+        {
+            blocker = "Текущий набор Врат устарел. Откройте Врата заново.";
+            return false;
+        }
+
+        blocker = string.Empty;
+        return true;
+    }
+
+    private static string DescribeGatesDraftState(JsonObject? gates)
+    {
+        if (gates == null || !GetBool(gates["hasOpenDraft"]))
+            return "закрыт";
+
+        var freshness = GetBool(gates["isStale"]) ? "устарел" : "свежий";
+        var selected = ReadGatesStringArray(gates, "selectedBlessingCardIds").Count;
+        return $"открыт, {freshness}; выбрано {selected}";
+    }
+
+    private static List<string> ReadGatesStringArray(JsonObject? gates, string propertyName) =>
+        (gates?[propertyName] as JsonArray)?.OfType<JsonValue>()
+        .Where(static node => node.TryGetValue<string>(out _))
+        .Select(static node => node.GetValue<string>().Trim())
+        .Where(static value => !string.IsNullOrWhiteSpace(value))
+        .ToList() ?? [];
+
+    private static string FormatGatesCardNames(JsonObject? gates)
+    {
+        var names = (gates?["availableBlessingCards"] as JsonArray)?.OfType<JsonObject>()
+            .Select(static card => GetString(card, "displayName", GetString(card, "cardId", "благословение")))
+            .Where(static name => !string.IsNullOrWhiteSpace(name))
+            .ToArray() ?? [];
+
+        return names.Length == 0 ? "нет доступных благословений" : string.Join(", ", names);
+    }
+
+    private static JsonArray BuildSelectedGatesCardSnapshot(JsonObject gates, IReadOnlyList<string> selectedIds)
+    {
+        var snapshot = new JsonArray();
+        foreach (var selectedId in selectedIds)
+        {
+            var card = FindGatesCard(gates, selectedId);
+            if (card != null)
+                snapshot.Add(card.DeepClone());
+        }
+
+        return snapshot;
+    }
+
+    private static JsonObject? FindGatesCard(JsonObject? gates, string cardId)
+    {
+        if (gates == null || string.IsNullOrWhiteSpace(cardId))
+            return null;
+
+        foreach (var propertyName in new[] { "availableBlessingCards", "allCandidateBlessingCards" })
+        {
+            if (gates[propertyName] is not JsonArray cards)
+                continue;
+
+            var card = cards.OfType<JsonObject>().FirstOrDefault(item =>
+                string.Equals(GetString(item, "cardId", string.Empty), cardId, StringComparison.OrdinalIgnoreCase));
+            if (card != null)
+                return card;
+        }
+
+        return null;
+    }
+
+    private static string ResolveGatesCardLabel(JsonObject gates, string cardId)
+    {
+        var card = FindGatesCard(gates, cardId);
+        return card == null
+            ? "благословение больше не видно"
+            : GetString(card, "displayName", cardId);
+    }
+
+    private static string BuildBlessingCardLabel(JsonObject card, ISet<string> selectedIds)
+    {
+        var name = GetString(card, "displayName", GetString(card, "cardId", "Благословение"));
+        var marker = selectedIds.Contains(GetString(card, "cardId", string.Empty)) ? "выбрано" : "доступно";
+        return $"{name} - {DescribeEffectFamily(GetString(card, "effectFamily", string.Empty))}, {DescribeRarity(GetString(card, "rarity", string.Empty))}, {marker}";
+    }
+
+    private static string BuildBlessingCardPromptLabel(JsonObject card, ISet<string> selectedIds)
+    {
+        var name = GetString(card, "displayName", GetString(card, "cardId", "Благословение"));
+        return selectedIds.Contains(GetString(card, "cardId", string.Empty))
+            ? $"{name} (выбрано)"
+            : name;
+    }
+
+    private static string BuildBlessingCardDescription(JsonObject card)
+    {
+        var summary = GetString(card, "displaySummary", string.Empty);
+        var parts = new[]
+            {
+                DescribeEffectFamily(GetString(card, "effectFamily", string.Empty)),
+                DescribeRarity(GetString(card, "rarity", string.Empty)),
+                summary
+            }
+            .Where(static part => !string.IsNullOrWhiteSpace(part));
+        return string.Join("; ", parts);
+    }
+
+    private static string DescribeEffectFamily(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            ShiningAbodeState.EffectFamilyLore => "знание",
+            ShiningAbodeState.EffectFamilySocial => "связи",
+            ShiningAbodeState.EffectFamilyResource => "ресурсы",
+            ShiningAbodeState.EffectFamilyMemory => "память",
+            ShiningAbodeState.EffectFamilyDescent => "нисхождение",
+            ShiningAbodeState.EffectFamilySurvival => "стойкость",
+            ShiningAbodeState.EffectFamilyRelic => "реликвии",
+            ShiningAbodeState.EffectFamilyRoute => "путь",
+            _ => "сияние"
+        };
+
+    private static string DescribeRarity(string value) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            ShiningAbodeState.RarityCommon => "простое",
+            ShiningAbodeState.RarityUncommon => "необычное",
+            ShiningAbodeState.RarityRare => "редкое",
+            ShiningAbodeState.RarityEpic => "эпическое",
+            ShiningAbodeState.RarityLegendary => "легендарное",
+            ShiningAbodeState.RarityRadiant => "сияющее",
+            _ => "особое"
+        };
+
+    private static string SanitizeShiningGatesValidationMessage(string? message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return "Врата сейчас не прошли проверку состояния. Повторите действие после восстановления Обители.";
+
+        if (message.Contains("currentRealm", StringComparison.OrdinalIgnoreCase))
+            return "Действия Врат доступны только в Сияющей Обители.";
+        if (message.Contains("preparedIncarnationPackage", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("frozen", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("handoff", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Сияющая Обитель уже ждёт передачу в новую жизнь.";
+        }
+
+        var sanitized = message
+            .Replace("draft", "набор Врат", StringComparison.OrdinalIgnoreCase)
+            .Replace("reroll", "обновление", StringComparison.OrdinalIgnoreCase)
+            .Replace("replacement", "новое благословение", StringComparison.OrdinalIgnoreCase);
+
+        return sanitized.Contains("open_gates", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("prepare_incarnation_package", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("selectedCardIds", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("sourceDraftVersion", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("selectedCards", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("pending_", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains(".json", StringComparison.OrdinalIgnoreCase)
+            ? "Врата сейчас не прошли проверку состояния. Повторите действие после восстановления Обители."
+            : sanitized;
     }
 
     private static List<UiSelectionOption> BuildProjectArchetypeOptions() =>

@@ -410,6 +410,11 @@ public sealed class ExplorerWebPromptSessionService
             "/shining_project_support" or "/поддержать_сияющий_проект" or
             "/shining_project_unsupport" or "/снять_поддержку_сияющего_проекта" or
             "/shining_project_retirement" or "/отправить_сияющий_проект_в_историю" or
+            "/shining_gates_open" or "/открыть_врата_инкарнации" or
+            "/shining_gates_select" or "/выбрать_благословение" or
+            "/shining_gates_deselect" or "/снять_благословение" or
+            "/shining_gates_reroll" or "/обновить_врата" or
+            "/shining_incarnation_prepare" or "/подготовить_новую_жизнь" or
             "/shining_trade" or "/сияющая_торговля" or
             "/shining_treasury" or "/казначейство" or
             "/source_of_light" or "/источник_света" or
