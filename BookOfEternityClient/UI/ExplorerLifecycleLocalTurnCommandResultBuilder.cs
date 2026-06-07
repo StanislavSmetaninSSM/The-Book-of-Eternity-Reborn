@@ -32,6 +32,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/inventory_drop" or "/выбросить_предмет" or
         "/inventory_split" or "/разделить_стопку" or
         "/inventory_merge" or "/объединить_стопки" or
+        "/storage_move" or "/хранилище_предметы" or
+        "/vehicle_move" or "/транспорт_предметы" or
         "/craft" or "/ремесло" or
         "/gacha" or "/гача" or
         "/abode_offering" or "/подношение_обители" or
@@ -69,6 +71,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/inventory_drop" or "/выбросить_предмет" => await BuildInventoryDropAsync(command, fs),
             "/inventory_split" or "/разделить_стопку" => await BuildInventorySplitAsync(command, fs),
             "/inventory_merge" or "/объединить_стопки" => await BuildInventoryMergeAsync(command, fs),
+            "/storage_move" or "/хранилище_предметы" => await BuildStorageItemMoveAsync(command, fs),
+            "/vehicle_move" or "/транспорт_предметы" => await BuildVehicleItemMoveAsync(command, fs),
             "/craft" or "/ремесло" => await BuildCraftAsync(command, fs),
             "/gacha" or "/гача" => await BuildGachaAsync(command, fs, stateManager),
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
@@ -796,6 +800,232 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 }
             ]);
     }
+
+    private static async Task<ExplorerCommandResult> BuildStorageItemMoveAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var currentRealm = GetString((await ReadJson(fs, SoulStatePath)).Node as JsonObject, "currentRealm");
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
+            return StorageTransportMortalRealmBlocker(command, localTurn.Panel);
+
+        if (localTurn.HasActiveGmTurn)
+            return Result(command, CommandExecutionState.Pending, [localTurn.Panel]);
+
+        var context = await StorageTransportMoveService.ReadStorageMoveContextAsync(fs);
+        var blocks = new List<UiBlock> { localTurn.Panel };
+        if (!context.Success)
+        {
+            blocks.Add(Message(UiNotificationSeverity.Warning, "Хранилище недоступно", context.Message));
+            return Result(command, CommandExecutionState.Completed, blocks);
+        }
+
+        var storageRows = context.Storages
+            .Select(static storage => Row(storage.Name, storage.ContentsCount.ToString()))
+            .ToList();
+        var canDeposit = context.InventoryItems.Count > 0 && context.Storages.Count > 0;
+        var canRetrieve = context.Storages.Any(static storage => storage.Contents.Count > 0);
+        var statusText = (canDeposit, canRetrieve) switch
+        {
+            (true, true) => "Выберите направление, хранилище и предмет. Перемещение выполняется локально после повторной проверки состояния.",
+            (true, false) => "Можно положить предмет из рюкзака в доступное хранилище. В хранилищах сейчас нет предметов для возврата.",
+            (false, true) => "Можно забрать предмет из доступного хранилища в рюкзак. В рюкзаке сейчас нет предметов для вклада.",
+            _ => "Сейчас нет доступных предметов для перемещения между рюкзаком и хранилищем."
+        };
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = "Предметы в хранилище",
+            Blocks =
+            [
+                new UiTextBlock
+                {
+                    Text = statusText,
+                    Tone = canDeposit || canRetrieve ? UiTone.Accent : UiTone.Muted
+                },
+                new UiTableBlock
+                {
+                    Title = "Доступные хранилища",
+                    Columns = ["Хранилище", "Предметов"],
+                    Rows = storageRows
+                }
+            ]
+        });
+
+        if (!canDeposit && !canRetrieve)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "storage_move_direction",
+                    Prompt = "Что сделать",
+                    Required = true,
+                    Options =
+                    [
+                        Option("deposit", "Положить в хранилище", canDeposit ? "Из рюкзака в выбранное хранилище." : "В рюкзаке нет предметов для вклада.", disabled: !canDeposit),
+                        Option("retrieve", "Забрать из хранилища", canRetrieve ? "Из выбранного хранилища в рюкзак." : "В доступных хранилищах сейчас нет предметов.", disabled: !canRetrieve)
+                    ]
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "storage_key",
+                    Prompt = "Хранилище",
+                    Required = true,
+                    Options = context.Storages
+                        .Select(static storage => Option(storage.Key, storage.Name, $"Предметов: {storage.ContentsCount}."))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "inventory_item_key",
+                    Prompt = "Предмет из рюкзака",
+                    Required = false,
+                    Options = context.InventoryItems
+                        .Select(static item => Option(item.Key, item.Label, item.Description))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "storage_item_key",
+                    Prompt = "Предмет из хранилища",
+                    Required = false,
+                    Options = context.Storages
+                        .SelectMany(static storage => storage.Contents.Select(item => Option(item.Key, item.Label, item.Description)))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_storage_move",
+                    Prompt = "Подтвердить перемещение",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildVehicleItemMoveAsync(string command, FileSystemManager fs)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var currentRealm = GetString((await ReadJson(fs, SoulStatePath)).Node as JsonObject, "currentRealm");
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
+            return StorageTransportMortalRealmBlocker(command, localTurn.Panel);
+
+        if (localTurn.HasActiveGmTurn)
+            return Result(command, CommandExecutionState.Pending, [localTurn.Panel]);
+
+        var context = await StorageTransportMoveService.ReadVehicleMoveContextAsync(fs);
+        var blocks = new List<UiBlock> { localTurn.Panel };
+        if (!context.Success)
+        {
+            blocks.Add(Message(UiNotificationSeverity.Warning, "Транспорт недоступен", context.Message));
+            return Result(command, CommandExecutionState.Completed, blocks);
+        }
+
+        var vehicleRows = context.Vehicles
+            .Select(static vehicle => Row(vehicle.Name, vehicle.ContentsCount.ToString()))
+            .ToList();
+        var canDeposit = context.InventoryItems.Count > 0 && context.Vehicles.Count > 0;
+        var canRetrieve = context.Vehicles.Any(static vehicle => vehicle.Contents.Count > 0);
+        var statusText = (canDeposit, canRetrieve) switch
+        {
+            (true, true) => "Выберите направление, транспорт и предмет. Перемещение выполняется локально после повторной проверки состояния.",
+            (true, false) => "Можно положить предмет из рюкзака в транспорт. В транспорте сейчас нет предметов для возврата.",
+            (false, true) => "Можно забрать предмет из транспорта в рюкзак. В рюкзаке сейчас нет предметов для вклада.",
+            _ => "Сейчас нет доступных предметов для перемещения между рюкзаком и транспортом."
+        };
+
+        blocks.Add(new UiPanelBlock
+        {
+            Title = "Предметы в транспорте",
+            Blocks =
+            [
+                new UiTextBlock
+                {
+                    Text = statusText,
+                    Tone = canDeposit || canRetrieve ? UiTone.Accent : UiTone.Muted
+                },
+                new UiTableBlock
+                {
+                    Title = "Доступный транспорт",
+                    Columns = ["Транспорт", "Предметов"],
+                    Rows = vehicleRows
+                }
+            ]
+        });
+
+        if (!canDeposit && !canRetrieve)
+            return Result(command, CommandExecutionState.Completed, blocks);
+
+        return Result(
+            command,
+            CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "vehicle_move_direction",
+                    Prompt = "Что сделать",
+                    Required = true,
+                    Options =
+                    [
+                        Option("deposit", "Положить в транспорт", canDeposit ? "Из рюкзака в выбранный транспорт." : "В рюкзаке нет предметов для вклада.", disabled: !canDeposit),
+                        Option("retrieve", "Забрать из транспорта", canRetrieve ? "Из выбранного транспорта в рюкзак." : "В транспорте сейчас нет предметов.", disabled: !canRetrieve)
+                    ]
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "vehicle_key",
+                    Prompt = "Транспорт",
+                    Required = true,
+                    Options = context.Vehicles
+                        .Select(static vehicle => Option(vehicle.Key, vehicle.Name, $"Предметов: {vehicle.ContentsCount}."))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "inventory_item_key",
+                    Prompt = "Предмет из рюкзака",
+                    Required = false,
+                    Options = context.InventoryItems
+                        .Select(static item => Option(item.Key, item.Label, item.Description))
+                        .ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "vehicle_item_key",
+                    Prompt = "Предмет из транспорта",
+                    Required = false,
+                    Options = context.Vehicles
+                        .SelectMany(static vehicle => vehicle.Contents.Select(item => Option(item.Key, item.Label, item.Description)))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_vehicle_move",
+                    Prompt = "Подтвердить перемещение",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static ExplorerCommandResult StorageTransportMortalRealmBlocker(string command, UiPanelBlock localTurnPanel) =>
+        Result(
+            command,
+            CommandExecutionState.Blocked,
+            [
+                localTurnPanel,
+                Message(
+                    UiNotificationSeverity.Warning,
+                    "Перемещение предметов недоступно",
+                    "Перемещение предметов между рюкзаком, хранилищем и транспортом доступно только в смертном мире. Сейчас действие недоступно для текущего царства.")
+            ]);
 
     private static string BuildInventoryDropStatusText(int candidateCount, string requestedItem)
     {
@@ -3092,8 +3322,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
 
     private static UiKeyValueItem KeyValue(string key, string value) => new() { Key = key, Value = value };
 
-    private static UiSelectionOption Option(string value, string label, string description) =>
-        new() { Value = value, Label = label, Description = description };
+    private static UiSelectionOption Option(string value, string label, string description, bool disabled = false) =>
+        new() { Value = value, Label = label, Description = description, Disabled = disabled };
 
     private static UiMessageBlock Message(UiNotificationSeverity severity, string title, string message) =>
         new() { Severity = severity, Title = title, Message = message };

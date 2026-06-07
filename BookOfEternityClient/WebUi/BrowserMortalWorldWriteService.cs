@@ -53,6 +53,8 @@ public sealed class BrowserMortalWorldWriteService
             "/inventory_drop" or "/выбросить_предмет" => await ApplyInventoryDropAsync(command, answers, owner),
             "/inventory_split" or "/разделить_стопку" => await ApplyInventorySplitAsync(command, answers, owner),
             "/inventory_merge" or "/объединить_стопки" => await ApplyInventoryMergeAsync(command, answers, owner),
+            "/storage_move" or "/хранилище_предметы" => await ApplyStorageItemMoveAsync(answers, owner),
+            "/vehicle_move" or "/транспорт_предметы" => await ApplyVehicleItemMoveAsync(answers, owner),
             "/npc_trade" or "/торговля_нпс" => await ApplyNpcTradeAsync(command, answers, owner),
             "/craft" or "/ремесло" => await ApplyCraftAsync(answers, owner),
             _ => BrowserPromptWriteResult.NotHandled()
@@ -515,6 +517,85 @@ public sealed class BrowserMortalWorldWriteService
             payload: null);
     }
 
+    private async Task<BrowserPromptWriteResult> ApplyStorageItemMoveAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_storage_move"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите перемещение предмета.");
+
+        var currentRealm = await ReadCurrentRealmAsync();
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
+            return StorageTransportMortalRealmBlocker();
+
+        var direction = ReadAnswer(answers, "storage_move_direction");
+        var storageKey = ReadAnswer(answers, "storage_key");
+        var itemKey = string.Equals(direction, StorageTransportMoveService.DirectionRetrieve, StringComparison.OrdinalIgnoreCase)
+            ? ReadAnswer(answers, "storage_item_key")
+            : ReadAnswer(answers, "inventory_item_key");
+
+        var validation = await StorageTransportMoveService.ValidateStorageMoveAsync(_fs, direction, storageKey, itemKey);
+        if (!validation.Success)
+            return BrowserPromptWriteResult.ValidationError(validation.Message);
+
+        return await ExecuteAsync(
+            owner,
+            "Перемещение предмета в хранилище",
+            [StorageTransportMoveService.InventoryPath, StorageTransportMoveService.CurrentLocationPath],
+            async () =>
+            {
+                var outcome = await StorageTransportMoveService.MoveStorageItemAsync(_fs, direction, storageKey, itemKey);
+                if (!outcome.Success)
+                    throw new StorageTransportMoveWriteException(outcome.Message);
+            },
+            "Предмет перемещён",
+            validation.Message,
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyVehicleItemMoveAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_vehicle_move"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите перемещение предмета.");
+
+        var currentRealm = await ReadCurrentRealmAsync();
+        if (!RealmSemantics.IsMortalRealm(currentRealm))
+            return StorageTransportMortalRealmBlocker();
+
+        var direction = ReadAnswer(answers, "vehicle_move_direction");
+        var vehicleKey = ReadAnswer(answers, "vehicle_key");
+        var itemKey = string.Equals(direction, StorageTransportMoveService.DirectionRetrieve, StringComparison.OrdinalIgnoreCase)
+            ? ReadAnswer(answers, "vehicle_item_key")
+            : ReadAnswer(answers, "inventory_item_key");
+
+        var validation = await StorageTransportMoveService.ValidateVehicleMoveAsync(_fs, direction, vehicleKey, itemKey);
+        if (!validation.Success)
+            return BrowserPromptWriteResult.ValidationError(validation.Message);
+
+        return await ExecuteAsync(
+            owner,
+            "Перемещение предмета в транспорт",
+            [StorageTransportMoveService.InventoryPath, StorageTransportMoveService.VehiclesPath],
+            async () =>
+            {
+                var outcome = await StorageTransportMoveService.MoveVehicleItemAsync(_fs, direction, vehicleKey, itemKey);
+                if (!outcome.Success)
+                    throw new StorageTransportMoveWriteException(outcome.Message);
+            },
+            "Предмет перемещён",
+            validation.Message,
+            payload: null);
+    }
+
+    private static BrowserPromptWriteResult StorageTransportMortalRealmBlocker() =>
+        BrowserPromptWriteResult.Failed(
+            CommandExecutionState.Blocked,
+            UiNotificationSeverity.Warning,
+            "Перемещение предметов недоступно",
+            "Перемещение предметов между рюкзаком, хранилищем и транспортом доступно только в смертном мире. Сейчас действие недоступно для текущего царства.");
+
     private async Task<BrowserPromptWriteResult> ApplyNpcTradeAsync(
         string command,
         IReadOnlyDictionary<string, JsonNode?> answers,
@@ -936,6 +1017,7 @@ public sealed class BrowserMortalWorldWriteService
 
     private sealed class InventoryEquipmentWriteException(string message) : Exception(message);
     private sealed class InventoryManagementWriteException(string message) : Exception(message);
+    private sealed class StorageTransportMoveWriteException(string message) : Exception(message);
 }
 
 public sealed record BrowserPromptWriteResult(
