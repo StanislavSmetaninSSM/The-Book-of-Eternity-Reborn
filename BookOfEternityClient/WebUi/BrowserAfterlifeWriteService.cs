@@ -48,6 +48,11 @@ public sealed class BrowserAfterlifeWriteService
             "/shining_project_support" or "/поддержать_сияющий_проект" => await ApplyShiningProjectSupportMutationAsync(answers, owner, support: true),
             "/shining_project_unsupport" or "/снять_поддержку_сияющего_проекта" => await ApplyShiningProjectSupportMutationAsync(answers, owner, support: false),
             "/shining_project_retirement" or "/отправить_сияющий_проект_в_историю" => await ApplyShiningProjectRetirementAsync(answers, owner),
+            "/shining_gates_open" or "/открыть_врата_инкарнации" => await ApplyShiningGatesOpenAsync(answers, owner),
+            "/shining_gates_select" or "/выбрать_благословение" => await ApplyShiningGatesBlessingSelectionAsync(parsed.Arguments, answers, owner, select: true),
+            "/shining_gates_deselect" or "/снять_благословение" => await ApplyShiningGatesBlessingSelectionAsync(parsed.Arguments, answers, owner, select: false),
+            "/shining_gates_reroll" or "/обновить_врата" => await ApplyShiningGatesRerollAsync(answers, owner),
+            "/shining_incarnation_prepare" or "/подготовить_новую_жизнь" => await ApplyShiningIncarnationPrepareAsync(answers, owner),
             "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(answers, owner),
             "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(answers, owner),
             "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
@@ -1039,6 +1044,169 @@ public sealed class BrowserAfterlifeWriteService
             "Проект отправлен ГМ",
             "Запрос отправки сияющего проекта в историю передан ГМ.",
             payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningGatesOpenAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите открытие Врат.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Открытие Врат недоступно");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAsync(
+            owner,
+            "Открытие Врат инкарнации",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath],
+            async () =>
+            {
+                var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    ActionType = ShiningCoreActionRequestState.ActionTypeOpenGates,
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningGatesValidationMessage(validation));
+
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Врата отправлены ГМ",
+            "Запрос открытия Врат отправлен. ГМ подготовит набор благословений для будущей жизни.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningGatesBlessingSelectionAsync(
+        string commandArguments,
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner,
+        bool select)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_gates_local_write"))
+            return BrowserPromptWriteResult.ValidationError(select ? "Подтвердите выбор благословения." : "Подтвердите снятие благословения.");
+
+        var cardId = string.IsNullOrWhiteSpace(commandArguments)
+            ? ReadAnswer(answers, "blessing_card_id")
+            : commandArguments.Trim();
+        if (string.IsNullOrWhiteSpace(cardId))
+            return BrowserPromptWriteResult.ValidationError("Выберите благословение Врат.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync(select ? "Выбор благословения недоступен" : "Снятие благословения недоступно");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAsync(
+            owner,
+            select ? "Выбор благословения Врат" : "Снятие благословения Врат",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath],
+            async () =>
+            {
+                await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync();
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                string? error = null;
+                var success = select
+                    ? ShiningAbodeState.TrySelectBlessingCard(shiningRoot, cardId, out error)
+                    : ShiningAbodeState.TryDeselectBlessingCard(shiningRoot, cardId, out error);
+                if (!success)
+                    throw new InvalidOperationException(SanitizeShiningGatesValidationMessage(error));
+
+                await WriteObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            select ? "Благословение выбрано" : "Благословение снято",
+            select
+                ? "Выбор благословения сохранён в текущем наборе Врат."
+                : "Благословение убрано из текущего набора Врат.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningGatesRerollAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_gates_local_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите обновление Врат.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Обновление Врат недоступно");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAsync(
+            owner,
+            "Обновление Врат инкарнации",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath],
+            async () =>
+            {
+                await EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync();
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                if (!ShiningAbodeState.TryRerollGatesDraft(shiningRoot, out var error))
+                    throw new InvalidOperationException(SanitizeShiningGatesValidationMessage(error));
+
+                await WriteObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Врата обновлены",
+            "Доступные благословения Врат обновлены. Уже выбранные благословения сохранены.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningIncarnationPrepareAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_core_action_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите подготовку новой жизни.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningCoreActionRealmBlockerAsync("Подготовка новой жизни недоступна");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        return await ExecuteAsync(
+            owner,
+            "Подготовка новой жизни",
+            [ShiningCoreActionRequestState.PendingActionsRequestPath, ShiningAbodeState.StatePath],
+            async () =>
+            {
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var gates = shiningRoot["gates"] as JsonObject ?? new JsonObject();
+                var selectedIds = ReadGatesStringArray(gates, "selectedBlessingCardIds");
+                var request = new ShiningCoreActionRequestState.PendingShiningCoreActionRequest
+                {
+                    ActionType = ShiningCoreActionRequestState.ActionTypePrepareIncarnationPackage,
+                    SourceDraftVersion = GetNodeInt(gates["draftVersion"]),
+                    SelectedCardIds = selectedIds,
+                    SelectedCards = BuildSelectedGatesCardSnapshot(gates, selectedIds),
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningCoreActionRequestState.ValidateRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningGatesValidationMessage(validation));
+
+                await ShiningCoreActionRequestState.WriteRequestAsync(_fs, request);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Новая жизнь подготовлена к решению ГМ",
+            "Запрос подготовки новой жизни отправлен. ГМ закрепит выбранные благословения.",
+            payload: null);
+    }
+
+    private async Task EnsureNoPendingShiningCoreActionForLocalGatesMutationAsync()
+    {
+        var pendingState = await ShiningCoreActionRequestState.ReadRequestsStateAsync(_fs);
+        if (pendingState.IsMalformed)
+            throw new InvalidOperationException("Ожидающее действие Сияющей Обители требует восстановления перед изменением Врат.");
+        if (pendingState.Requests.Count > 0)
+            throw new InvalidOperationException("Другое действие Сияющей Обители уже ожидает решения ГМ. Дождитесь результата перед изменением Врат.");
     }
 
     private async Task<BrowserPromptWriteResult?> TryBuildShiningPoliticsRealmBlockerAsync(string title)
@@ -2450,6 +2618,75 @@ public sealed class BrowserAfterlifeWriteService
             return "Действия Сияющей Обители доступны только в Сияющей Обители.";
 
         return "Действие Сияющей Обители временно ждёт проверки состояния. Повторите действие после восстановления текущих ожиданий.";
+    }
+
+    private static string SanitizeShiningGatesValidationMessage(string? message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return "Врата сейчас не прошли проверку состояния. Повторите действие после восстановления Обители.";
+
+        if (message.Contains("currentRealm", StringComparison.OrdinalIgnoreCase))
+            return "Действия Врат доступны только в Сияющей Обители.";
+        if (message.Contains("preparedIncarnationPackage", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("frozen", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("handoff", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Сияющая Обитель уже ждёт передачу в новую жизнь.";
+        }
+
+        var sanitized = message
+            .Replace("draft", "набор Врат", StringComparison.OrdinalIgnoreCase)
+            .Replace("reroll", "обновление", StringComparison.OrdinalIgnoreCase)
+            .Replace("replacement", "новое благословение", StringComparison.OrdinalIgnoreCase);
+
+        return sanitized.Contains("open_gates", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("prepare_incarnation_package", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("selectedCardIds", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("sourceDraftVersion", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("selectedCards", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains("pending_", StringComparison.OrdinalIgnoreCase) ||
+               sanitized.Contains(".json", StringComparison.OrdinalIgnoreCase)
+            ? "Врата сейчас не прошли проверку состояния. Повторите действие после восстановления Обители."
+            : sanitized;
+    }
+
+    private static List<string> ReadGatesStringArray(JsonObject? gates, string propertyName) =>
+        (gates?[propertyName] as JsonArray)?.OfType<JsonValue>()
+        .Where(static node => node.TryGetValue<string>(out _))
+        .Select(static node => node.GetValue<string>().Trim())
+        .Where(static value => !string.IsNullOrWhiteSpace(value))
+        .ToList() ?? [];
+
+    private static JsonArray BuildSelectedGatesCardSnapshot(JsonObject gates, IReadOnlyList<string> selectedIds)
+    {
+        var snapshot = new JsonArray();
+        foreach (var selectedId in selectedIds)
+        {
+            var card = FindGatesCard(gates, selectedId);
+            if (card != null)
+                snapshot.Add(card.DeepClone());
+        }
+
+        return snapshot;
+    }
+
+    private static JsonObject? FindGatesCard(JsonObject? gates, string cardId)
+    {
+        if (gates == null || string.IsNullOrWhiteSpace(cardId))
+            return null;
+
+        foreach (var propertyName in new[] { "availableBlessingCards", "allCandidateBlessingCards" })
+        {
+            if (gates[propertyName] is not JsonArray cards)
+                continue;
+
+            var card = cards.OfType<JsonObject>().FirstOrDefault(item =>
+                string.Equals(GetNodeString(item["cardId"]), cardId, StringComparison.OrdinalIgnoreCase));
+            if (card != null)
+                return card;
+        }
+
+        return null;
     }
 
     private async Task<JsonObject?> ReadObjectAsync(string path)

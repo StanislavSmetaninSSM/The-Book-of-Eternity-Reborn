@@ -475,7 +475,7 @@ public sealed class BrowserApiContractTests
         var gacha = Assert.Single(commands, node => JsonArrayContains(node!["aliases"]!.AsArray(), "/gacha"))!.AsObject();
         Assert.Equal("covered", RequiredString(gacha, "auditStatus", "command /gacha"));
         Assert.DoesNotContain("#803", RequiredString(gacha, "followUpIssue", "command /gacha"), StringComparison.Ordinal);
-        Assert.Equal("No tracked browser parity gap for the command scope audited in #804.", RequiredString(gacha, "gapSummary", "command /gacha"));
+        Assert.Equal("No tracked browser parity gap for the audited command scope.", RequiredString(gacha, "gapSummary", "command /gacha"));
         Assert.Contains("prompt flow", RequiredString(gacha, "parityNotes", "command /gacha"), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", RequiredString(gacha, "gapSummary", "command /gacha"), StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(".json", RequiredString(gacha, "gapSummary", "command /gacha"), StringComparison.OrdinalIgnoreCase);

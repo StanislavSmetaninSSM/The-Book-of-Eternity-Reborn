@@ -19,7 +19,7 @@ public static class BrowserCommandCoverageService
             ["interactions"] = Tracked("#817", "Read-only interaction summaries plus mortal, Guardian, and resident starts are covered; remaining umbrella parity work stays tracked separately."),
             ["guardians"] = Tracked("#817", "Read-only Guardian state, relationship data, trade, and talk/lore starts are covered; remaining umbrella parity work stays tracked separately."),
             ["abodes"] = Tracked("#817", "Read-only Abode state and resident conversation, history, and transfer starts are covered; remaining umbrella parity work stays tracked separately."),
-            ["shining_abode"] = Tracked("#812, #817", "Read-only Shining Abode state is covered; incarnation-gate actions remain tracked interactive work."),
+            ["shining_abode"] = Tracked("#817", "Read-only Shining Abode state and guided Gates actions are covered; remaining umbrella parity work stays tracked separately."),
             ["shining_politics"] = Tracked("#817", "Read-only Shining politics data is covered; dedicated founding, realignment, and leadership forms cover the #810 browser slice while broader Shining actions stay tracked separately."),
             ["shining_treasury"] = Tracked("#813, #817", "Treasury browser parity is covered; relic-forge flows remain tracked interactive work."),
             ["afterlife_archive"] = Tracked("#816, #817", "Read-only afterlife archive data is covered; consultation, project fuel, and direct pull actions remain tracked interactive work."),
@@ -204,7 +204,7 @@ public static class BrowserCommandCoverageService
     private static string BuildGapSummary(string auditStatus) =>
         auditStatus switch
         {
-            Covered => "No tracked browser parity gap for the command scope audited in #804.",
+            Covered => "No tracked browser parity gap for the audited command scope.",
             AdvancedOnly => "Advanced-only by design; hidden from the default player UI and available through explicit diagnostics.",
             Blocked => "Blocked in browser; keep the console path as authority until the follow-up issue removes the blocker.",
             _ => "Follow-up issue tracks remaining browser interaction beyond the current readable or prompt-backed surface."

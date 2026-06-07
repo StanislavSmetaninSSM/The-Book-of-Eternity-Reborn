@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "summary": {
-    "descriptorCount": 93,
-    "aliasCount": 207,
+    "descriptorCount": 98,
+    "aliasCount": 217,
     "subcommandCount": 8,
-    "browserExecutableCount": 93,
-    "playerDefaultActionCount": 86,
+    "browserExecutableCount": 98,
+    "playerDefaultActionCount": 91,
     "advancedOnlyActionCount": 7,
-    "mutatingCommandCount": 37,
+    "mutatingCommandCount": 42,
     "commandsNeedingFollowUpCount": 11
   },
   "commands": [
@@ -87,7 +87,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "soul_relics",
@@ -165,7 +165,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "soul_quests",
@@ -191,7 +191,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "codex",
@@ -217,7 +217,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "achievements",
@@ -243,7 +243,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "chronicle",
@@ -269,7 +269,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "story",
@@ -296,7 +296,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "behavior",
@@ -322,7 +322,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "lives",
@@ -348,7 +348,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "feathers",
@@ -400,7 +400,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "gallery",
@@ -426,7 +426,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "status",
@@ -452,7 +452,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "gm",
@@ -605,7 +605,7 @@
           "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
           "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
           "readabilityNotes": "Browser keeps the subcommand behind the same guided form/local-write safety path as the parent command.",
-          "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
         },
         {
           "id": "use_advantage",
@@ -634,7 +634,7 @@
           "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
           "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
           "readabilityNotes": "Browser keeps the subcommand behind the same guided form/local-write safety path as the parent command.",
-          "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
         },
         {
           "id": "confrontation",
@@ -664,7 +664,7 @@
           "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
           "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
           "readabilityNotes": "Browser keeps the subcommand behind the same guided form/local-write safety path as the parent command.",
-          "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
         },
         {
           "id": "break_oath",
@@ -694,7 +694,7 @@
           "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
           "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
           "readabilityNotes": "Browser keeps the subcommand behind the same guided form/local-write safety path as the parent command.",
-          "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
         },
         {
           "id": "agenda",
@@ -723,7 +723,7 @@
           "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
           "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
           "readabilityNotes": "Browser keeps the subcommand behind the same guided form/local-write safety path as the parent command.",
-          "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
         }
       ],
       "followUpIssue": "",
@@ -734,7 +734,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "saref_memory_scene",
@@ -778,7 +778,7 @@
           "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
           "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
           "readabilityNotes": "Browser keeps the subcommand result in the same typed block renderer as the parent command.",
-          "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
         },
         {
           "id": "start",
@@ -804,7 +804,7 @@
           "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
           "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
           "readabilityNotes": "Browser keeps the subcommand result in the same typed block renderer as the parent command.",
-          "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
         },
         {
           "id": "abilities",
@@ -830,7 +830,7 @@
           "consoleEvidence": "Console parser and renderer remain the C# authority for the same canonical subcommand.",
           "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
           "readabilityNotes": "Browser keeps the subcommand result in the same typed block renderer as the parent command.",
-          "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+          "gapSummary": "No tracked browser parity gap for the audited command scope."
         }
       ],
       "followUpIssue": "",
@@ -841,7 +841,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "validate",
@@ -893,7 +893,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "inventory",
@@ -921,7 +921,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "npcs",
@@ -950,7 +950,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "npc_talk",
@@ -978,7 +978,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "quests",
@@ -1004,7 +1004,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "map",
@@ -1030,7 +1030,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "where_am_i",
@@ -1056,7 +1056,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "factions",
@@ -1082,7 +1082,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "skills",
@@ -1108,7 +1108,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "stats",
@@ -1135,7 +1135,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "world_news",
@@ -1161,7 +1161,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "rival_threads",
@@ -1187,7 +1187,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "guardian_corrections",
@@ -1213,7 +1213,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "locations",
@@ -1239,7 +1239,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "transport",
@@ -1291,7 +1291,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "combat",
@@ -1317,7 +1317,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "weather",
@@ -1343,7 +1343,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "books",
@@ -1370,7 +1370,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "storage_access",
@@ -1448,7 +1448,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "companion_directive",
@@ -1474,7 +1474,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "faction_directive",
@@ -1500,7 +1500,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "inventory_equip",
@@ -1526,7 +1526,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "inventory_unequip",
@@ -1552,7 +1552,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "inventory_drop",
@@ -1578,7 +1578,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "inventory_split",
@@ -1604,7 +1604,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "inventory_merge",
@@ -1630,7 +1630,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "npc_trade",
@@ -1656,7 +1656,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "craft",
@@ -1682,7 +1682,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "chaos_sea",
@@ -1708,7 +1708,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "guardians",
@@ -1760,7 +1760,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "guardian_projects",
@@ -1786,7 +1786,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "guardian_politics",
@@ -1812,7 +1812,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "abodes",
@@ -1864,7 +1864,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "abode_offering",
@@ -1890,7 +1890,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "found_guardian_mantle",
@@ -1916,7 +1916,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "guardian_trade",
@@ -1942,7 +1942,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "guardian_social",
@@ -1970,7 +1970,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "abode_residents",
@@ -1996,7 +1996,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "resident_interaction",
@@ -2024,7 +2024,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "resident_transfer",
@@ -2050,7 +2050,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "soul_relic_equip",
@@ -2076,7 +2076,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "soul_relic_unequip",
@@ -2102,7 +2102,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_abode",
@@ -2120,15 +2120,15 @@
       "primaryActionLabel": "\u0421\u0438\u044F\u044E\u0449\u0430\u044F \u041E\u0431\u0438\u0442\u0435\u043B\u044C",
       "primaryCommand": "/shining_abode",
       "subcommands": [],
-      "followUpIssue": "#812, #817",
-      "reason": "Read-only Shining Abode state is covered; incarnation-gate actions remain tracked interactive work.",
+      "followUpIssue": "#817",
+      "reason": "Read-only Shining Abode state and guided Gates actions are covered; remaining umbrella parity work stays tracked separately.",
       "auditStatus": "tracked-follow-up",
       "sampleDataStatus": "Command-coverage fixture records this row; seeded read-only command fixtures exercise the C# DTO builder family for this command group.",
       "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/none coverage metadata.",
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "Read-only Shining Abode state is covered; incarnation-gate actions remain tracked interactive work."
+      "gapSummary": "Read-only Shining Abode state and guided Gates actions are covered; remaining umbrella parity work stays tracked separately."
     },
     {
       "id": "shining_politics",
@@ -2180,7 +2180,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_faction_realignment",
@@ -2206,7 +2206,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_faction_leadership",
@@ -2232,7 +2232,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_native_faction_discovery",
@@ -2258,7 +2258,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_faction_investment",
@@ -2284,7 +2284,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_project_support",
@@ -2310,7 +2310,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_project_unsupport",
@@ -2336,7 +2336,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_project_retirement",
@@ -2362,7 +2362,137 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
+    },
+    {
+      "id": "shining_gates_open",
+      "aliases": [
+        "/shining_gates_open",
+        "/\u043E\u0442\u043A\u0440\u044B\u0442\u044C_\u0432\u0440\u0430\u0442\u0430_\u0438\u043D\u043A\u0430\u0440\u043D\u0430\u0446\u0438\u0438"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041E\u0442\u043A\u0440\u044B\u0442\u044C \u0412\u0440\u0430\u0442\u0430",
+      "primaryCommand": "/shining_gates_open",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
+    },
+    {
+      "id": "shining_gates_select",
+      "aliases": [
+        "/shining_gates_select",
+        "/\u0432\u044B\u0431\u0440\u0430\u0442\u044C_\u0431\u043B\u0430\u0433\u043E\u0441\u043B\u043E\u0432\u0435\u043D\u0438\u0435"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0412\u044B\u0431\u0440\u0430\u0442\u044C \u0431\u043B\u0430\u0433\u043E\u0441\u043B\u043E\u0432\u0435\u043D\u0438\u0435",
+      "primaryCommand": "/shining_gates_select",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
+    },
+    {
+      "id": "shining_gates_deselect",
+      "aliases": [
+        "/shining_gates_deselect",
+        "/\u0441\u043D\u044F\u0442\u044C_\u0431\u043B\u0430\u0433\u043E\u0441\u043B\u043E\u0432\u0435\u043D\u0438\u0435"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u0421\u043D\u044F\u0442\u044C \u0431\u043B\u0430\u0433\u043E\u0441\u043B\u043E\u0432\u0435\u043D\u0438\u0435",
+      "primaryCommand": "/shining_gates_deselect",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
+    },
+    {
+      "id": "shining_gates_reroll",
+      "aliases": [
+        "/shining_gates_reroll",
+        "/\u043E\u0431\u043D\u043E\u0432\u0438\u0442\u044C_\u0432\u0440\u0430\u0442\u0430"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041E\u0431\u043D\u043E\u0432\u0438\u0442\u044C \u0412\u0440\u0430\u0442\u0430",
+      "primaryCommand": "/shining_gates_reroll",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
+    },
+    {
+      "id": "shining_incarnation_prepare",
+      "aliases": [
+        "/shining_incarnation_prepare",
+        "/\u043F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u0438\u0442\u044C_\u043D\u043E\u0432\u0443\u044E_\u0436\u0438\u0437\u043D\u044C"
+      ],
+      "group": "ShiningAbode",
+      "mutationMode": "LocalTurn",
+      "browserStatus": "MutatingParity",
+      "handlerKind": "ShiningAbode",
+      "uxDecision": "guided-form",
+      "surface": "player-default",
+      "formMode": "guided-form",
+      "primaryActionLabel": "\u041F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u0438\u0442\u044C \u043D\u043E\u0432\u0443\u044E \u0436\u0438\u0437\u043D\u044C",
+      "primaryCommand": "/shining_incarnation_prepare",
+      "subcommands": [],
+      "followUpIssue": "",
+      "reason": "",
+      "auditStatus": "covered",
+      "sampleDataStatus": "Command-coverage fixture records this row; seeded local-turn prompt fixtures exercise the C# DTO/prompt family for this command group.",
+      "browserEvidence": "Browser uses the C# ShiningAbode handler through /api/explorer/command and exposes player-default/guided-form coverage metadata.",
+      "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
+      "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
+      "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_trade",
@@ -2388,7 +2518,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "shining_treasury",
@@ -2440,7 +2570,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "afterlife_profiles",
@@ -2466,7 +2596,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "afterlife_threats",
@@ -2492,7 +2622,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "afterlife_chronicles",
@@ -2518,7 +2648,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "afterlife_inbox",
@@ -2544,7 +2674,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "spiritual_conflict",
@@ -2570,7 +2700,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "spiritual_combat_log",
@@ -2596,7 +2726,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "spiritual_combat_help",
@@ -2622,7 +2752,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser read surface is expected to be no worse than console output for player-visible data in the audited command scope.",
       "readabilityNotes": "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "spiritual_arts",
@@ -2648,7 +2778,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     },
     {
       "id": "spiritual_action",
@@ -2674,7 +2804,7 @@
       "consoleEvidence": "Console command execution remains the C# gameplay authority; browser output reuses ExplorerCommandResult DTOs instead of TypeScript gameplay logic.",
       "parityNotes": "Browser prompt flow is expected to match console command data and local-write validation for the audited command scope.",
       "readabilityNotes": "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details.",
-      "gapSummary": "No tracked browser parity gap for the command scope audited in #804."
+      "gapSummary": "No tracked browser parity gap for the audited command scope."
     }
   ]
 }
