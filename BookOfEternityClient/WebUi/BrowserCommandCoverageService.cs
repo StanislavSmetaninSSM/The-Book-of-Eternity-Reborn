@@ -10,22 +10,6 @@ public static class BrowserCommandCoverageService
     private const string AdvancedOnly = "advanced-only";
     private const string Blocked = "blocked";
 
-    private static readonly IReadOnlyDictionary<string, BrowserCommandAuditOverride> AuditOverrides =
-        new Dictionary<string, BrowserCommandAuditOverride>(StringComparer.OrdinalIgnoreCase)
-        {
-            ["soul_relics"] = Tracked("#802, #817", "Soul relic lists, stored/equipped state, and descriptions are covered; relic equip and unequip actions now covered by /soul_relic_equip and /soul_relic_unequip."),
-            ["storage_access"] = Tracked("#817", "Storage visibility and access summaries are covered; item movement is handled by the storage move form while remaining umbrella parity work stays tracked separately."),
-            ["transport"] = Tracked("#817", "Read-only transport and route summaries are covered; item movement is handled by the transport move form while remaining umbrella parity work stays tracked separately."),
-            ["interactions"] = Tracked("#817", "Read-only interaction summaries plus mortal, Guardian, and resident starts are covered; remaining umbrella parity work stays tracked separately."),
-            ["guardians"] = Tracked("#817", "Read-only Guardian state, relationship data, trade, and talk/lore starts are covered; remaining umbrella parity work stays tracked separately."),
-            ["abodes"] = Tracked("#817", "Read-only Abode state and resident conversation, history, and transfer starts are covered; remaining umbrella parity work stays tracked separately."),
-            ["shining_abode"] = Tracked("#817", "Read-only Shining Abode state and guided Gates actions are covered; remaining umbrella parity work stays tracked separately."),
-            ["shining_politics"] = Tracked("#817", "Read-only Shining politics data is covered; dedicated founding, realignment, and leadership forms cover the #810 browser slice while broader Shining actions stay tracked separately."),
-            ["shining_treasury"] = Tracked("#817", "Treasury browser parity is covered; remaining Shining umbrella parity work stays tracked separately."),
-            ["afterlife_archive"] = Tracked("#817", "Read-only afterlife archive data is covered; #816 consultation, project fuel, and direct pull browser evidence is covered by dedicated guided commands while remaining umbrella parity work stays tracked separately."),
-            ["feathers"] = Tracked("#817", "Ink Feather totals, reveal fate, and rewrite fate browser surfaces are covered; remaining umbrella parity work stays tracked separately.")
-        };
-
     public static BrowserCommandCoverageDto Build()
     {
         var commands = ExplorerCommandCatalog.Descriptors
@@ -127,18 +111,6 @@ public static class BrowserCommandCoverageService
                 ? "Browser presents a guided prompt form and local-write status before submit; resulting blocks render as typed tables, lists, key-value grids, maps, images, or advanced raw details."
                 : "Browser renders typed tables, lists, key-value grids, maps, and images where available; raw diagnostic JSON is not the only player surface.",
             GapSummary: BuildGapSummary(status));
-
-        if (AuditOverrides.TryGetValue(descriptor.Id, out var auditOverride))
-        {
-            audit = audit with
-            {
-                AuditStatus = auditOverride.AuditStatus,
-                FollowUpIssue = auditOverride.FollowUpIssue,
-                Reason = auditOverride.GapSummary,
-                GapSummary = auditOverride.GapSummary,
-                ParityNotes = "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately."
-            };
-        }
 
         if (string.Equals(descriptor.Id, "gacha", StringComparison.OrdinalIgnoreCase))
         {
@@ -276,9 +248,6 @@ public static class BrowserCommandCoverageService
     private static bool RequiresFollowUp(string status) =>
         Enum.TryParse<ExplorerCommandMigrationStatus>(status, out var parsed) &&
         parsed is not ExplorerCommandMigrationStatus.ReadOnlyParity and not ExplorerCommandMigrationStatus.MutatingParity;
-
-    private static BrowserCommandAuditOverride Tracked(string followUpIssue, string gapSummary) =>
-        new(TrackedFollowUp, followUpIssue, gapSummary);
 }
 
 internal sealed record BrowserCommandAuditMetadata(
@@ -291,11 +260,6 @@ internal sealed record BrowserCommandAuditMetadata(
     string GapSummary,
     string FollowUpIssue = "",
     string Reason = "");
-
-internal sealed record BrowserCommandAuditOverride(
-    string AuditStatus,
-    string FollowUpIssue,
-    string GapSummary);
 
 public sealed record BrowserCommandCoverageDto(
     int SchemaVersion,

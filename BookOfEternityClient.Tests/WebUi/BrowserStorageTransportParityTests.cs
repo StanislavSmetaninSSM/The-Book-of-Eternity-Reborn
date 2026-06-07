@@ -480,7 +480,7 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
 
     [Fact]
     [Trait("Category", "BrowserStorageTransportParity")]
-    public void BrowserCommandCoverage_Issue814StorageTransportMoveCommandsAreCoveredAndUmbrellaRemainsOpen()
+    public void BrowserCommandCoverage_Issue814StorageTransportMoveCommandsAreCoveredWithoutParentFollowUp()
     {
         var coverage = BrowserCommandCoverageService.Build();
 
@@ -496,10 +496,10 @@ public sealed class BrowserStorageTransportParityTests : IDisposable
 
         var storageAccess = Assert.Single(coverage.Commands, item => item.Id == "storage_access");
         Assert.DoesNotContain("#814", storageAccess.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains("#817", storageAccess.FollowUpIssue, StringComparison.Ordinal);
+        Assert.DoesNotContain("#817", storageAccess.FollowUpIssue, StringComparison.Ordinal);
         var transport = Assert.Single(coverage.Commands, item => item.Id == "transport");
         Assert.DoesNotContain("#814", transport.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains("#817", transport.FollowUpIssue, StringComparison.Ordinal);
+        Assert.DoesNotContain("#817", transport.FollowUpIssue, StringComparison.Ordinal);
     }
 
     private async Task<ExplorerCommandResult> ExecuteAsync(string command) =>

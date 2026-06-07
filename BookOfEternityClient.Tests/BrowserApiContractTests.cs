@@ -519,6 +519,45 @@ public sealed class BrowserApiContractTests
         }
     }
 
+    [Fact]
+    [Trait("Category", "BrowserWebUiParity")]
+    public void BrowserCommandCoverageContract_DoesNotExposeIssue817ParentClosureFollowUps()
+    {
+        var coverage = BrowserCommandCoverageService.Build();
+        var forbiddenPhrases = new[] { "#817", "remaining umbrella", "remaining interactive scope" };
+        var staleReferences = new List<string>();
+
+        foreach (var command in coverage.Commands)
+        {
+            CollectStaleCoverageReferences(
+                $"command {command.Id}",
+                [
+                    ("FollowUpIssue", command.FollowUpIssue),
+                    ("Reason", command.Reason),
+                    ("GapSummary", command.GapSummary),
+                    ("ParityNotes", command.ParityNotes)
+                ],
+                forbiddenPhrases,
+                staleReferences);
+
+            foreach (var subcommand in command.Subcommands)
+            {
+                CollectStaleCoverageReferences(
+                    $"command {command.Id} subcommand {subcommand.Id}",
+                    [
+                        ("FollowUpIssue", subcommand.FollowUpIssue),
+                        ("Reason", subcommand.Reason),
+                        ("GapSummary", subcommand.GapSummary),
+                        ("ParityNotes", subcommand.ParityNotes)
+                    ],
+                    forbiddenPhrases,
+                    staleReferences);
+            }
+        }
+
+        Assert.Empty(staleReferences);
+    }
+
     public static IEnumerable<object[]> ContractFixtures()
     {
         yield return ["main-menu.json", BuildMainMenu()];
@@ -972,6 +1011,22 @@ public sealed class BrowserApiContractTests
         Assert.True(node.TryGetPropertyValue(field, out var value), $"{context} is missing {field}.");
         Assert.NotNull(value);
         return value!.GetValue<string>();
+    }
+
+    private static void CollectStaleCoverageReferences(
+        string context,
+        IEnumerable<(string Field, string Value)> fields,
+        IReadOnlyCollection<string> forbiddenPhrases,
+        ICollection<string> staleReferences)
+    {
+        foreach (var (field, value) in fields)
+        {
+            foreach (var forbidden in forbiddenPhrases)
+            {
+                if (value.Contains(forbidden, StringComparison.OrdinalIgnoreCase))
+                    staleReferences.Add($"{context} {field} contains '{forbidden}': {value}");
+            }
+        }
     }
 
     private static AggregatedGameState BuildRepresentativeState(bool isChaosSea, bool isShiningAbode, bool isAfterlife) =>

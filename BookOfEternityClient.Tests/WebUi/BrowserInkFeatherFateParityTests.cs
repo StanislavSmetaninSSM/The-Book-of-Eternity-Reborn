@@ -341,7 +341,7 @@ public sealed class BrowserInkFeatherFateParityTests : IDisposable
     }
 
     [Fact]
-    public void BrowserCommandCoverage_Issue815FateActionsAreCoveredAndSiblingIssuesRemainOpen()
+    public void BrowserCommandCoverage_Issue815FateActionsAreCoveredWithoutParentFollowUp()
     {
         var coverage = BrowserCommandCoverageService.Build();
 
@@ -356,10 +356,10 @@ public sealed class BrowserInkFeatherFateParityTests : IDisposable
 
         var feathers = Assert.Single(coverage.Commands, command => command.Id == "feathers");
         Assert.DoesNotContain("#815", feathers.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains("#817", feathers.FollowUpIssue, StringComparison.Ordinal);
+        Assert.DoesNotContain("#817", feathers.FollowUpIssue, StringComparison.Ordinal);
         var archive = Assert.Single(coverage.Commands, command => command.Id == "afterlife_archive");
         Assert.DoesNotContain("#816", archive.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains("#817", archive.FollowUpIssue, StringComparison.Ordinal);
+        Assert.DoesNotContain("#817", archive.FollowUpIssue, StringComparison.Ordinal);
     }
 
     public void Dispose()

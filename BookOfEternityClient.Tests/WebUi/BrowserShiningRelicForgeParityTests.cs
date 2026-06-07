@@ -407,7 +407,7 @@ public sealed class BrowserShiningRelicForgeParityTests : IDisposable
 
         var treasury = Assert.Single(coverage.Commands, item => item.Id == "shining_treasury");
         Assert.DoesNotContain("#813", treasury.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains("#817", treasury.FollowUpIssue, StringComparison.Ordinal);
+        Assert.DoesNotContain("#817", treasury.FollowUpIssue, StringComparison.Ordinal);
     }
 
     [Fact]
