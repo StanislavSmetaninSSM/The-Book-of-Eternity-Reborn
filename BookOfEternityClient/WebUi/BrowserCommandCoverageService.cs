@@ -22,7 +22,7 @@ public static class BrowserCommandCoverageService
             ["shining_abode"] = Tracked("#817", "Read-only Shining Abode state and guided Gates actions are covered; remaining umbrella parity work stays tracked separately."),
             ["shining_politics"] = Tracked("#817", "Read-only Shining politics data is covered; dedicated founding, realignment, and leadership forms cover the #810 browser slice while broader Shining actions stay tracked separately."),
             ["shining_treasury"] = Tracked("#817", "Treasury browser parity is covered; remaining Shining umbrella parity work stays tracked separately."),
-            ["afterlife_archive"] = Tracked("#816, #817", "Read-only afterlife archive data is covered; consultation, project fuel, and direct pull actions remain tracked interactive work."),
+            ["afterlife_archive"] = Tracked("#817", "Read-only afterlife archive data is covered; #816 consultation, project fuel, and direct pull browser evidence is covered by dedicated guided commands while remaining umbrella parity work stays tracked separately."),
             ["feathers"] = Tracked("#817", "Ink Feather totals, reveal fate, and rewrite fate browser surfaces are covered; remaining umbrella parity work stays tracked separately.")
         };
 
@@ -137,6 +137,15 @@ public static class BrowserCommandCoverageService
                 Reason = auditOverride.GapSummary,
                 GapSummary = auditOverride.GapSummary,
                 ParityNotes = "Current browser read/prompt parity is documented; remaining interactive scope is tracked separately."
+            };
+        }
+
+        if (string.Equals(descriptor.Id, "gacha", StringComparison.OrdinalIgnoreCase))
+        {
+            audit = audit with
+            {
+                BrowserEvidence = audit.BrowserEvidence + " Direct Chaos Sea gacha uses the existing C# prompt/write/queue path and [CHAOS_SEA_DIRECT_GACHA] GM action.",
+                ParityNotes = audit.ParityNotes + " #816 direct pull audit confirms the browser does not materialize a relic locally."
             };
         }
 

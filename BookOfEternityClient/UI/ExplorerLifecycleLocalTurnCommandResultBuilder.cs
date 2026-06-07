@@ -5,6 +5,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.UI;
@@ -39,6 +40,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
         "/reveal_fate" or "/открыть_судьбу" or
         "/rewrite_fate" or "/переписать_судьбу" or
         "/gacha" or "/гача" or
+        "/archive_consultation" or "/архивная_консультация" or
+        "/archive_project_fuel" or "/архивная_подпитка_проекта" or
         "/abode_offering" or "/подношение_обители" or
         "/found_guardian_mantle" or "/учредить_хранителя" or
         "/guardian_trade" or "/торговля_хранителя" or
@@ -80,6 +83,8 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
             "/reveal_fate" or "/открыть_судьбу" => await BuildInkFeatherRevealFateAsync(command, fs, stateManager),
             "/rewrite_fate" or "/переписать_судьбу" => await BuildInkFeatherRewriteFateAsync(command, fs, stateManager),
             "/gacha" or "/гача" => await BuildGachaAsync(command, fs, stateManager),
+            "/archive_consultation" or "/архивная_консультация" => await BuildArchiveConsultationAsync(command, fs, stateManager),
+            "/archive_project_fuel" or "/архивная_подпитка_проекта" => await BuildArchiveProjectFuelAsync(command, fs, stateManager),
             "/abode_offering" or "/подношение_обители" => await BuildAbodeOfferingAsync(command, fs, stateManager),
             "/found_guardian_mantle" or "/учредить_хранителя" => await BuildPlayerGuardianFoundationAsync(command, fs),
             "/guardian_trade" or "/торговля_хранителя" => await BuildGuardianTradeAsync(command, fs, stateManager),
@@ -2693,6 +2698,173 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 }
             ]);
     }
+
+    private static async Task<ExplorerCommandResult> BuildArchiveConsultationAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var context = await BrowserAfterlifeArchiveActionContextReader.ReadConsultationAsync(fs, stateManager);
+        if (context.IsBlocked)
+            return ArchiveActionBlockedResult(command, localTurn.Panel, context);
+
+        var blocks = BuildArchiveActionBlocks(
+            localTurn.Panel,
+            "Архивная консультация",
+            "Выберите свободную запись Архива и дружественного Хранителя. После подтверждения запись будет зарезервирована до ответа ГМ.",
+            context);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "archive_id",
+                    Prompt = "Запись Архива",
+                    Required = true,
+                    Options = context.Entries.Select(BuildArchiveEntryOption).ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "guardian_id",
+                    Prompt = "Хранитель",
+                    Required = true,
+                    Options = context.Guardians
+                        .Select(static guardian => Option(
+                            guardian.GuardianId,
+                            guardian.GuardianName,
+                            $"Репутация: {guardian.Reputation}. Домен: {FirstNonEmpty(guardian.Domain, "не указан")}."))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_archive_consultation",
+                    Prompt = "Подтвердить архивную консультацию",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static async Task<ExplorerCommandResult> BuildArchiveProjectFuelAsync(
+        string command,
+        FileSystemManager fs,
+        StateManager stateManager)
+    {
+        var localTurn = BuildLocalTurnStatus(fs, playerFacing: true);
+        var context = await BrowserAfterlifeArchiveActionContextReader.ReadProjectFuelAsync(fs, stateManager);
+        if (context.IsBlocked)
+            return ArchiveActionBlockedResult(command, localTurn.Panel, context);
+
+        var blocks = BuildArchiveActionBlocks(
+            localTurn.Panel,
+            "Подпитка проекта Архивом",
+            "Выберите свободную запись Архива и дружественного Хранителя с активным проектом. После подтверждения запись будет зарезервирована до ответа ГМ.",
+            context);
+
+        return Result(
+            command,
+            localTurn.HasActiveGmTurn ? CommandExecutionState.Pending : CommandExecutionState.RequiresInput,
+            blocks,
+            prompts:
+            [
+                new UiSelectionPrompt
+                {
+                    Id = "archive_id",
+                    Prompt = "Запись Архива",
+                    Required = true,
+                    Options = context.Entries.Select(BuildArchiveEntryOption).ToList()
+                },
+                new UiSelectionPrompt
+                {
+                    Id = "guardian_id",
+                    Prompt = "Хранитель и проект",
+                    Required = true,
+                    Options = context.Guardians
+                        .Select(static guardian => Option(
+                            guardian.GuardianId,
+                            guardian.GuardianName,
+                            $"Активный проект: {guardian.TargetProjectName}. Репутация: {guardian.Reputation}."))
+                        .ToList()
+                },
+                new UiConfirmationPrompt
+                {
+                    Id = "confirm_archive_project_fuel",
+                    Prompt = "Подтвердить подпитку проекта Архивом",
+                    Required = true,
+                    DefaultValue = false
+                }
+            ]);
+    }
+
+    private static ExplorerCommandResult ArchiveActionBlockedResult(
+        string command,
+        UiPanelBlock localTurnPanel,
+        BrowserAfterlifeArchiveActionContext context) =>
+        Result(
+            command,
+            CommandExecutionState.Blocked,
+            [
+                localTurnPanel,
+                Message(UiNotificationSeverity.Warning, context.BlockerTitle, context.BlockerMessage)
+            ]);
+
+    private static List<UiBlock> BuildArchiveActionBlocks(
+        UiPanelBlock localTurnPanel,
+        string title,
+        string statusText,
+        BrowserAfterlifeArchiveActionContext context)
+    {
+        List<string> guardianColumns = context.Guardians.Any(static guardian => guardian.FuelAvailable)
+            ? ["Хранитель", "Репутация", "Проект"]
+            : ["Хранитель", "Репутация", "Домен"];
+
+        return
+        [
+            localTurnPanel,
+            new UiPanelBlock
+            {
+                Title = title,
+                Blocks =
+                [
+                    new UiTextBlock
+                    {
+                        Text = statusText,
+                        Tone = UiTone.Accent
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Свободные записи Архива",
+                        Columns = ["Запись", "Тип", "Редкость"],
+                        Rows = context.Entries
+                            .Select(static entry => Row(entry.Title, AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType), entry.Rarity))
+                            .ToList()
+                    },
+                    new UiTableBlock
+                    {
+                        Title = "Дружественные Хранители",
+                        Columns = guardianColumns,
+                        Rows = context.Guardians
+                            .Select(static guardian => Row(
+                                guardian.GuardianName,
+                                guardian.Reputation.ToString(),
+                                guardian.FuelAvailable ? guardian.TargetProjectName : FirstNonEmpty(guardian.Domain, "не указан")))
+                            .ToList()
+                    }
+                ]
+            }
+        ];
+    }
+
+    private static UiSelectionOption BuildArchiveEntryOption(BrowserAfterlifeArchiveEntryChoice entry) =>
+        Option(
+            entry.ArchiveId,
+            entry.Title,
+            $"{AfterlifeArchiveState.GetEntryTypeLabel(entry.EntryType)}; редкость: {entry.Rarity}. {entry.Summary}");
 
     private static async Task<ExplorerCommandResult> BuildAbodeOfferingAsync(
         string command,

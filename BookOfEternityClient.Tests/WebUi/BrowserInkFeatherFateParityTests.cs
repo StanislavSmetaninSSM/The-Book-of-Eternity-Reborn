@@ -357,7 +357,9 @@ public sealed class BrowserInkFeatherFateParityTests : IDisposable
         var feathers = Assert.Single(coverage.Commands, command => command.Id == "feathers");
         Assert.DoesNotContain("#815", feathers.FollowUpIssue, StringComparison.Ordinal);
         Assert.Contains("#817", feathers.FollowUpIssue, StringComparison.Ordinal);
-        Assert.Contains(coverage.Commands, command => command.Id == "afterlife_archive" && command.FollowUpIssue.Contains("#816", StringComparison.Ordinal));
+        var archive = Assert.Single(coverage.Commands, command => command.Id == "afterlife_archive");
+        Assert.DoesNotContain("#816", archive.FollowUpIssue, StringComparison.Ordinal);
+        Assert.Contains("#817", archive.FollowUpIssue, StringComparison.Ordinal);
     }
 
     public void Dispose()
