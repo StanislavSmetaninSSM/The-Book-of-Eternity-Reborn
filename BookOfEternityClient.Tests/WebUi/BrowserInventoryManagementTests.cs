@@ -275,7 +275,9 @@ public sealed class BrowserInventoryManagementTests : IDisposable
         var npcs = Assert.Single(coverage.Commands, item => item.Id == "npcs");
         Assert.DoesNotContain("#807", npcs.FollowUpIssue, StringComparison.Ordinal);
         Assert.DoesNotContain("start-conversation", npcs.GapSummary, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains(coverage.Commands, item => item.Id == "storage_access" && item.FollowUpIssue.Contains("#814", StringComparison.Ordinal));
+        var storageAccess = Assert.Single(coverage.Commands, item => item.Id == "storage_access");
+        Assert.DoesNotContain("#814", storageAccess.FollowUpIssue, StringComparison.Ordinal);
+        Assert.Contains("#817", storageAccess.FollowUpIssue, StringComparison.Ordinal);
         Assert.Contains(coverage.Commands, item => item.Id == "afterlife_archive" && item.FollowUpIssue.Contains("#816", StringComparison.Ordinal));
     }
 

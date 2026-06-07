@@ -186,6 +186,8 @@ internal static class ExplorerHelpCommandResultBuilder
         Add(table, "/books", "/книги", "Книги, письма, свитки");
         Add(table, "/world_rules", "/правила_мира", "Досье и директивы текущего мира");
         Add(table, "/storage_access", "/доступ_к_хранилищам", "Доступ к хранилищам");
+        Add(table, "/storage_move", "/хранилище_предметы", "Положить предмет в доступное хранилище или забрать из него");
+        Add(table, "/vehicle_move", "/транспорт_предметы", "Положить предмет в транспорт или забрать из него");
         Add(table, "/interactions", "/взаимодействия", "Взаимодействия других игроков");
         Blank(table);
         Add(table, "/soul_relics", "/реликвии", "Реликвии души (только просмотр!)");

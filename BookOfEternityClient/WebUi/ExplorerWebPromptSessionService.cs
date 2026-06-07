@@ -390,6 +390,8 @@ public sealed class ExplorerWebPromptSessionService
             "/inventory_drop" or "/выбросить_предмет" or
             "/inventory_split" or "/разделить_стопку" or
             "/inventory_merge" or "/объединить_стопки" or
+            "/storage_move" or "/хранилище_предметы" or
+            "/vehicle_move" or "/транспорт_предметы" or
             "/npc_trade" or "/торговля_нпс" or
             "/craft" or "/ремесло" or
             "/gacha" or "/гача" or

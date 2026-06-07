@@ -14,8 +14,8 @@ public static class BrowserCommandCoverageService
         new Dictionary<string, BrowserCommandAuditOverride>(StringComparer.OrdinalIgnoreCase)
         {
             ["soul_relics"] = Tracked("#802, #817", "Soul relic lists, stored/equipped state, and descriptions are covered; relic equip and unequip actions now covered by /soul_relic_equip and /soul_relic_unequip."),
-            ["storage_access"] = Tracked("#814, #817", "Storage visibility and access summaries are covered; deposit and withdraw item flows remain tracked interactive work."),
-            ["transport"] = Tracked("#814, #817", "Read-only transport and route summaries are covered; transport-linked storage item movement remains tracked interactive work."),
+            ["storage_access"] = Tracked("#817", "Storage visibility and access summaries are covered; item movement is handled by the storage move form while remaining umbrella parity work stays tracked separately."),
+            ["transport"] = Tracked("#817", "Read-only transport and route summaries are covered; item movement is handled by the transport move form while remaining umbrella parity work stays tracked separately."),
             ["interactions"] = Tracked("#817", "Read-only interaction summaries plus mortal, Guardian, and resident starts are covered; remaining umbrella parity work stays tracked separately."),
             ["guardians"] = Tracked("#817", "Read-only Guardian state, relationship data, trade, and talk/lore starts are covered; remaining umbrella parity work stays tracked separately."),
             ["abodes"] = Tracked("#817", "Read-only Abode state and resident conversation, history, and transfer starts are covered; remaining umbrella parity work stays tracked separately."),
