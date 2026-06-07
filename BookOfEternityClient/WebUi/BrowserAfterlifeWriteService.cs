@@ -12,6 +12,7 @@ namespace BookOfEternityClient.WebUi;
 public sealed class BrowserAfterlifeWriteService
 {
     private const string SoulStatePath = "game_state/meta/soul_state.json";
+    private const string GuardiansPath = "game_state/meta/guardians.json";
     private const string DirectChaosSeaGachaBanner = "direct_chaos_sea";
 
     private readonly FileSystemManager _fs;
@@ -39,6 +40,9 @@ public sealed class BrowserAfterlifeWriteService
         return parsed.Token switch
         {
             "/shining_trade" or "/сияющая_торговля" => await ApplyShiningTradeAsync(parsed.Arguments, answers, owner),
+            "/shining_faction_founding" or "/основание_сияющей_фракции" => await ApplyShiningFactionFoundingAsync(answers, owner),
+            "/shining_faction_realignment" or "/перестройка_сияющей_фракции" => await ApplyShiningFactionRealignmentAsync(answers, owner),
+            "/shining_faction_leadership" or "/смена_главы_сияющей_фракции" => await ApplyShiningFactionLeadershipAsync(answers, owner),
             "/shining_treasury" or "/казначейство" => await ApplyShiningTreasuryAsync(answers, owner),
             "/source_of_light" or "/источник_света" => await ApplySourceOfLightAsync(answers, owner),
             "/afterlife_inbox" or "/уведомления_загробья" => await ApplyAfterlifeInboxAsync(answers, owner),
@@ -581,6 +585,316 @@ public sealed class BrowserAfterlifeWriteService
         requests.Any(request =>
             string.Equals(request.ResidentId, residentId, StringComparison.OrdinalIgnoreCase) &&
             string.Equals(request.InteractionType, interactionType, StringComparison.OrdinalIgnoreCase));
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningFactionFoundingAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_politics_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите основание сияющей фракции.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync("Основание сияющей фракции недоступно");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        var factionName = ReadAnswer(answers, "faction_name");
+        var hallName = ReadAnswer(answers, "hall_name");
+        var charterSummary = ReadAnswer(answers, "charter_summary");
+        var hallDescription = ReadAnswer(answers, "hall_description");
+        var favoredArchetype = ReadAnswer(answers, "favored_archetype");
+        var patronEffectFamily = ReadAnswer(answers, "patron_effect_family");
+        var secondaryTag = ReadAnswer(answers, "hall_secondary_service_tag");
+        var supporterIds = ParseIdList(ReadAnswer(answers, "supporting_resident_ids"));
+
+        if (string.IsNullOrWhiteSpace(factionName) ||
+            string.IsNullOrWhiteSpace(hallName) ||
+            string.IsNullOrWhiteSpace(charterSummary) ||
+            string.IsNullOrWhiteSpace(hallDescription))
+        {
+            return BrowserPromptWriteResult.ValidationError("Заполните название фракции, название зала, хартию и описание зала.");
+        }
+
+        if (!ShiningAbodeState.IsSupportedProjectArchetype(favoredArchetype))
+            return BrowserPromptWriteResult.ValidationError("Выберите поддерживаемый архетип проектов.");
+        if (!ShiningAbodeState.IsSupportedEffectFamily(patronEffectFamily))
+            return BrowserPromptWriteResult.ValidationError("Выберите поддерживаемую семью эффекта.");
+        if (supporterIds.Count < 3)
+            return BrowserPromptWriteResult.ValidationError("Для основания нужны минимум три уникальных сторонника.");
+
+        return await ExecuteAsync(
+            owner,
+            "Основание сияющей фракции",
+            [SoulStatePath, ShiningAbodeState.StatePath, GuardianAbodeResidentState.StatePath, ShiningFactionRequestState.PendingFoundingsRequestPath],
+            async () =>
+            {
+                var soulRoot = await ReadRequiredObjectAsync(SoulStatePath, "Состояние души сейчас недоступно.");
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var residentsRoot = await ReadRequiredObjectAsync(GuardianAbodeResidentState.StatePath, "Состав обитателей сейчас недоступен.");
+                if (supporterIds.Any(supporterId => !IsVisibleAscendedResidentForPolitics(shiningRoot, residentsRoot, supporterId, allowFactionless: true)))
+                    throw new InvalidOperationException("Выберите видимых вознесённых сторонников, доступных в политике Сияющей Обители.");
+
+                var feathersBefore = GetSoulInkFeathers(soulRoot);
+                var sparksBefore = GetNodeInt(shiningRoot["lightSparks"]);
+                if (feathersBefore < ShiningFactionRequestState.FactionFoundingCostFeathers ||
+                    sparksBefore < ShiningFactionRequestState.FactionFoundingCostLightSparks)
+                {
+                    throw new InvalidOperationException($"Недостаточно ресурсов: нужно {ShiningFactionRequestState.FactionFoundingCostFeathers} Чернильных Перьев и {ShiningFactionRequestState.FactionFoundingCostLightSparks} Искр Света.");
+                }
+
+                var request = new ShiningFactionRequestState.PendingShiningFactionFoundingRequest
+                {
+                    ProposedFactionId = BuildSlugId("faction", factionName),
+                    ProposedHallId = BuildSlugId("hall", hallName),
+                    ProposedHallName = hallName.Trim(),
+                    ProposedHallDescription = hallDescription.Trim(),
+                    ProposedHallServiceTags = BuildFoundingServiceTags(patronEffectFamily, secondaryTag),
+                    Charter = new ShiningFactionRequestState.FactionCharterPayload
+                    {
+                        FactionName = factionName.Trim(),
+                        FavoredArchetype = favoredArchetype.Trim(),
+                        PatronEffectFamily = patronEffectFamily.Trim(),
+                        Summary = charterSummary.Trim()
+                    },
+                    SupportingResidentIds = supporterIds,
+                    QuotedCostFeathers = ShiningFactionRequestState.FactionFoundingCostFeathers,
+                    QuotedCostLightSparks = ShiningFactionRequestState.FactionFoundingCostLightSparks,
+                    ReservedInkFeathersBefore = feathersBefore,
+                    ReservedLightSparksBefore = sparksBefore,
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningFactionRequestState.ValidateFoundingRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningPoliticsValidationMessage(validation));
+
+                await ShiningFactionRequestState.WriteFoundingRequestAsync(_fs, request);
+                SetSoulInkFeathers(soulRoot, feathersBefore - ShiningFactionRequestState.FactionFoundingCostFeathers);
+                shiningRoot["lightSparks"] = sparksBefore - ShiningFactionRequestState.FactionFoundingCostLightSparks;
+                await WriteObjectAsync(SoulStatePath, soulRoot);
+                await WriteObjectAsync(ShiningAbodeState.StatePath, shiningRoot);
+
+                var postValidation = await ShiningFactionRequestState.ValidateFoundingRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(postValidation))
+                    throw new InvalidOperationException(SanitizeShiningPoliticsValidationMessage(postValidation));
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Основание отправлено ГМ",
+            $"Запрос основания фракции {factionName.Trim()} отправлен. Ресурсы зарезервированы до ответа ГМ.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningFactionRealignmentAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_politics_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите запрос перестройки.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync("Перестройка сияющей фракции недоступна");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        var residentId = ReadAnswer(answers, "resident_id");
+        var mode = ReadAnswer(answers, "realignment_mode").Trim().ToLowerInvariant();
+        var targetFactionId = ReadAnswer(answers, "target_faction_id");
+        if (string.IsNullOrWhiteSpace(residentId))
+            return BrowserPromptWriteResult.ValidationError("Выберите обитателя для перестройки.");
+        if (mode is not (ShiningFactionRequestState.RealignmentModeAcceptedTransfer or ShiningFactionRequestState.RealignmentModeDepartureToNeutral))
+            return BrowserPromptWriteResult.ValidationError("Выберите переход в другую фракцию или нейтралитет.");
+        if (string.Equals(mode, ShiningFactionRequestState.RealignmentModeAcceptedTransfer, StringComparison.OrdinalIgnoreCase) &&
+            string.IsNullOrWhiteSpace(targetFactionId))
+        {
+            return BrowserPromptWriteResult.ValidationError("Для перехода выберите целевую фракцию.");
+        }
+
+        return await ExecuteAsync(
+            owner,
+            "Перестройка сияющей фракции",
+            [ShiningFactionRequestState.PendingRealignmentsRequestPath, GuardianAbodeResidentState.StatePath, ShiningAbodeState.StatePath],
+            async () =>
+            {
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var residentsRoot = await ReadRequiredObjectAsync(GuardianAbodeResidentState.StatePath, "Состав обитателей сейчас недоступен.");
+                var resident = FindResident(residentsRoot, residentId);
+                if (resident == null)
+                    throw new InvalidOperationException("Такого обитателя сейчас нет среди состава Сияющей Обители.");
+
+                var sourceFactionId = GetNodeString(resident["shiningFactionId"]) ?? string.Empty;
+                var sourceFaction = FindVisibleOperationalFaction(shiningRoot, sourceFactionId);
+                if (sourceFaction == null)
+                    throw new InvalidOperationException("Выбранный обитатель больше не принадлежит видимой действующей фракции Сияющей Обители.");
+
+                var request = new ShiningFactionRequestState.PendingShiningFactionRealignmentRequest
+                {
+                    ResidentId = GetNodeString(resident["residentId"]) ?? residentId,
+                    ResidentName = GetResidentName(resident),
+                    SourceFactionId = sourceFactionId,
+                    SourceFactionName = ResolveFactionName(sourceFaction, sourceFactionId),
+                    RealignmentMode = mode,
+                    FactionLoyaltyLevel = GetNodeInt(resident["factionLoyaltyLevel"]),
+                    FactionLoyaltyTier = GetNodeString(resident["factionLoyaltyTier"]) ?? ShiningAbodeState.ResolveFactionLoyaltyTier(GetNodeInt(resident["factionLoyaltyLevel"])),
+                    FactionRestlessness = GetNodeInt(resident["factionRestlessness"]),
+                    FactionRealignmentState = GetNodeString(resident["factionRealignmentState"]) ?? ShiningAbodeState.ResolveFactionRealignmentState(GetNodeInt(resident["factionLoyaltyLevel"]), GetNodeInt(resident["factionRestlessness"])),
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                if (string.Equals(mode, ShiningFactionRequestState.RealignmentModeAcceptedTransfer, StringComparison.OrdinalIgnoreCase))
+                {
+                    var targetFaction = FindVisibleOperationalFaction(shiningRoot, targetFactionId);
+                    if (targetFaction == null)
+                        throw new InvalidOperationException("Выберите видимую действующую целевую фракцию Сияющей Обители.");
+                    request.TargetFactionId = targetFactionId.Trim();
+                    request.TargetFactionName = ResolveFactionName(targetFaction, targetFactionId.Trim());
+                }
+
+                var validation = await ShiningFactionRequestState.ValidateRealignmentRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningPoliticsValidationMessage(validation));
+
+                await ShiningFactionRequestState.WriteRealignmentRequestAsync(_fs, request);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Перестройка отправлена ГМ",
+            "Запрос фракционной перестройки отправлен. ГМ разрешит переход или нейтральный уход.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult> ApplyShiningFactionLeadershipAsync(
+        IReadOnlyDictionary<string, JsonNode?> answers,
+        LocalUiSessionLockOwner owner)
+    {
+        if (!ReadBoolAnswer(answers, "confirm_shining_politics_write"))
+            return BrowserPromptWriteResult.ValidationError("Подтвердите запрос смены главы.");
+
+        await _stateManager.RefreshGameStateAsync();
+        var realmBlocker = await TryBuildShiningPoliticsRealmBlockerAsync("Смена главы сияющей фракции недоступна");
+        if (realmBlocker != null)
+            return realmBlocker;
+
+        var factionId = ReadAnswer(answers, "faction_id");
+        var mode = ReadAnswer(answers, "transition_mode").Trim().ToLowerInvariant();
+        var candidateChoice = ReadAnswer(answers, "candidate_head_choice");
+        var supporterIds = ParseIdList(ReadAnswer(answers, "supporting_resident_ids"));
+
+        if (string.IsNullOrWhiteSpace(factionId))
+            return BrowserPromptWriteResult.ValidationError("Выберите фракцию.");
+        if (!ShiningFactionRequestState.IsSupportedTransitionMode(mode))
+            return BrowserPromptWriteResult.ValidationError("Выберите поддерживаемый режим смены власти.");
+        if (!string.Equals(mode, ShiningFactionRequestState.TransitionModeAbdication, StringComparison.OrdinalIgnoreCase) &&
+            !TryParseActorChoice(candidateChoice, out _, out _))
+        {
+            return BrowserPromptWriteResult.ValidationError("Выберите кандидата на главу.");
+        }
+
+        return await ExecuteAsync(
+            owner,
+            "Смена главы сияющей фракции",
+            [ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath, GuardianAbodeResidentState.StatePath, ShiningAbodeState.StatePath, GuardiansPath],
+            async () =>
+            {
+                var shiningRoot = await ReadRequiredObjectAsync(ShiningAbodeState.StatePath, "Состояние Сияющей Обители сейчас недоступно.");
+                var residentsRoot = await ReadRequiredObjectAsync(GuardianAbodeResidentState.StatePath, "Состав обитателей сейчас недоступен.");
+                var guardiansRoot = await TryReadObjectSafeAsync(GuardiansPath);
+                var faction = FindVisibleOperationalFaction(shiningRoot, factionId);
+                if (faction == null)
+                    throw new InvalidOperationException("Выберите видимую действующую фракцию Сияющей Обители.");
+
+                var leadership = faction["leadership"] as JsonObject ?? new JsonObject();
+                TryParseActorChoice(candidateChoice, out var candidateType, out var candidateId);
+                if (string.Equals(mode, ShiningFactionRequestState.TransitionModeAbdication, StringComparison.OrdinalIgnoreCase) &&
+                    string.IsNullOrWhiteSpace(candidateChoice))
+                {
+                    candidateType = string.Empty;
+                    candidateId = string.Empty;
+                }
+
+                if (!string.Equals(mode, ShiningFactionRequestState.TransitionModeAbdication, StringComparison.OrdinalIgnoreCase) &&
+                    !IsVisibleLeadershipCandidate(shiningRoot, residentsRoot, guardiansRoot, factionId, candidateType, candidateId))
+                {
+                    throw new InvalidOperationException("Выберите видимого кандидата, подходящего для этой фракции.");
+                }
+
+                if (supporterIds.Any(supporterId => !IsVisibleAscendedResidentForPolitics(shiningRoot, residentsRoot, supporterId, allowFactionless: false, requiredFactionId: factionId)))
+                    throw new InvalidOperationException("Выберите видимых вознесённых сторонников из этой фракции.");
+
+                var request = new ShiningFactionRequestState.PendingShiningFactionLeadershipTransitionRequest
+                {
+                    FactionId = factionId.Trim(),
+                    FactionName = ResolveFactionName(faction, factionId.Trim()),
+                    TransitionMode = mode,
+                    IncumbentHeadActorType = GetNodeString(leadership["headActorType"]) ?? string.Empty,
+                    IncumbentHeadActorId = GetNodeString(leadership["headActorId"]) ?? string.Empty,
+                    CandidateHeadActorType = candidateType,
+                    CandidateHeadActorId = candidateId,
+                    SupportingResidentIds = supporterIds,
+                    CreatedAtTurn = Math.Max(1, _stateManager.CurrentState.TurnNumber + 1)
+                };
+
+                var validation = await ShiningFactionRequestState.ValidateLeadershipTransitionRequestAgainstCurrentStateAsync(_fs, request);
+                if (!string.IsNullOrWhiteSpace(validation))
+                    throw new InvalidOperationException(SanitizeShiningPoliticsValidationMessage(validation));
+
+                await ShiningFactionRequestState.WriteLeadershipTransitionRequestAsync(_fs, request);
+                await _stateManager.RefreshGameStateAsync();
+            },
+            "Смена главы отправлена ГМ",
+            "Запрос смены главы сияющей фракции отправлен. ГМ разрешит политический исход.",
+            payload: null);
+    }
+
+    private async Task<BrowserPromptWriteResult?> TryBuildShiningPoliticsRealmBlockerAsync(string title)
+    {
+        JsonObject? soulRoot = null;
+        JsonObject? shiningRoot = null;
+        try
+        {
+            soulRoot = await ReadObjectAsync(SoulStatePath);
+            shiningRoot = await ReadObjectAsync(ShiningAbodeState.StatePath);
+        }
+        catch
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                title,
+                "Политическое действие временно недоступно: состояние души или Сияющей Обители нужно восстановить перед запросом.");
+        }
+
+        var currentRealm = FirstNonEmpty(GetNodeString(soulRoot?["currentRealm"]), _stateManager.CurrentState.CurrentRealm);
+        if (!RealmSemantics.IsShiningRealm(currentRealm))
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                title,
+                "Политические действия доступны только в Сияющей Обители. Сейчас действие недоступно для текущего царства.");
+        }
+
+        if (shiningRoot == null ||
+            !string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) ||
+            ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                title,
+                "Политические действия доступны только в обычной активной Сияющей Обители.");
+        }
+
+        var rawStateError = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+        if (!string.IsNullOrWhiteSpace(rawStateError))
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Blocked,
+                UiNotificationSeverity.Warning,
+                title,
+                "Сияющая Обитель сейчас не готова к политическим действиям. Проверьте состояние перед новым запросом.");
+        }
+
+        return null;
+    }
 
     private static async Task<GuardianTradeService.GuardianTradeOperationResult> BuildGuardianTradeRequestResultAsync(
         GuardianTradeService service,
@@ -1605,6 +1919,231 @@ public sealed class BrowserAfterlifeWriteService
         "Результат должен быть нейтральным: finalRarity обязан точно совпадать с turn_request.gachaBaseResult.baseRarity, без апгрейдов или даунгрейдов. " +
         "Реликвию нужно добавить напрямую в soul state игрока через metaStateUpdates.soulRelicOperations.addRelic как ровно одну новую Soul Relic; существующие реликвии не удалять. " +
         "Перья уже списаны клиентом, GM не списывает их второй раз.";
+
+    private static List<string> ParseIdList(string value) =>
+        value
+            .Split([',', ';', '\n', '\r', '\t', ' '], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(static item => !string.IsNullOrWhiteSpace(item))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+    private static string BuildSlugId(string prefix, string value)
+    {
+        var normalized = value.Trim().ToLowerInvariant();
+        var builder = new System.Text.StringBuilder(normalized.Length);
+        foreach (var ch in normalized)
+        {
+            if (char.IsLetterOrDigit(ch))
+                builder.Append(ch);
+            else if (builder.Length > 0 && builder[^1] != '_')
+                builder.Append('_');
+        }
+
+        var slug = builder.ToString().Trim('_');
+        return $"{prefix}_{slug}";
+    }
+
+    private static List<string> BuildFoundingServiceTags(string patronEffectFamily, string secondaryTag)
+    {
+        var tags = new List<string> { MapPatronFamilyToHallServiceTag(patronEffectFamily) };
+        if (!string.IsNullOrWhiteSpace(secondaryTag) &&
+            ShiningAbodeState.IsSupportedHallServiceTag(secondaryTag) &&
+            !tags.Contains(secondaryTag.Trim(), StringComparer.OrdinalIgnoreCase))
+        {
+            tags.Add(secondaryTag.Trim());
+        }
+
+        return tags;
+    }
+
+    private static string MapPatronFamilyToHallServiceTag(string patronEffectFamily) => patronEffectFamily switch
+    {
+        ShiningAbodeState.EffectFamilyLore => ShiningAbodeState.HallServiceTagLore,
+        ShiningAbodeState.EffectFamilyMemory => ShiningAbodeState.HallServiceTagMemory,
+        ShiningAbodeState.EffectFamilyResource => ShiningAbodeState.HallServiceTagResource,
+        ShiningAbodeState.EffectFamilyRelic => ShiningAbodeState.HallServiceTagRelic,
+        ShiningAbodeState.EffectFamilyDescent or ShiningAbodeState.EffectFamilyRoute => ShiningAbodeState.HallServiceTagDescent,
+        _ => ShiningAbodeState.HallServiceTagSocial
+    };
+
+    private static JsonObject? FindResident(JsonObject? residentsRoot, string residentId)
+    {
+        if (residentsRoot?[GuardianAbodeResidentState.EntriesProperty] is not JsonArray entries)
+            return null;
+
+        return entries.OfType<JsonObject>()
+            .FirstOrDefault(entry => string.Equals(GetNodeString(entry["residentId"]), residentId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static JsonObject? FindFaction(JsonObject? shiningRoot, string factionId)
+    {
+        if (shiningRoot?["factions"] is not JsonArray factions)
+            return null;
+
+        return factions.OfType<JsonObject>()
+            .FirstOrDefault(faction => string.Equals(GetNodeString(faction["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static JsonObject? FindVisibleOperationalFaction(JsonObject? shiningRoot, string factionId) =>
+        shiningRoot == null || string.IsNullOrWhiteSpace(factionId)
+            ? null
+            : SarefMainStoryState.GetPlayerVisibleShiningFactions(shiningRoot)
+                .Where(IsPlayerVisibleObject)
+                .Where(static faction => ShiningAbodeState.IsFactionOperational(faction))
+                .FirstOrDefault(faction => string.Equals(GetNodeString(faction["factionId"]), factionId, StringComparison.OrdinalIgnoreCase));
+
+    private static bool IsVisibleAscendedResidentForPolitics(
+        JsonObject shiningRoot,
+        JsonObject? residentsRoot,
+        string residentId,
+        bool allowFactionless,
+        string? requiredFactionId = null)
+    {
+        var resident = FindResident(residentsRoot, residentId);
+        if (resident == null ||
+            !string.Equals(GetNodeString(resident["ascensionState"]), ShiningAbodeState.AscensionStateAscended, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var factionId = GetNodeString(resident["shiningFactionId"]) ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(requiredFactionId) &&
+            !string.Equals(factionId, requiredFactionId, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(factionId))
+            return allowFactionless;
+
+        return FindVisibleOperationalFaction(shiningRoot, factionId) != null;
+    }
+
+    private static bool IsVisibleLeadershipCandidate(
+        JsonObject shiningRoot,
+        JsonObject? residentsRoot,
+        JsonObject? guardiansRoot,
+        string factionId,
+        string candidateType,
+        string candidateId)
+    {
+        if (string.Equals(candidateType, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase))
+            return string.Equals(candidateId, ShiningAbodeState.HeadActorTypePlayerSoul, StringComparison.OrdinalIgnoreCase);
+
+        if (string.Equals(candidateType, ShiningAbodeState.HeadActorTypeResident, StringComparison.OrdinalIgnoreCase))
+            return IsVisibleAscendedResidentForPolitics(shiningRoot, residentsRoot, candidateId, allowFactionless: false, requiredFactionId: factionId);
+
+        if (string.Equals(candidateType, ShiningAbodeState.HeadActorTypeGuardian, StringComparison.OrdinalIgnoreCase))
+            return GuardianExists(guardiansRoot, candidateId);
+
+        if (!string.Equals(candidateType, ShiningAbodeState.HeadActorTypeRadiantActor, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var actor = FindVisibleRadiantActor(shiningRoot, candidateId);
+        if (actor == null)
+            return false;
+
+        var currentFactionId = GetNodeString(actor["currentFactionId"]) ?? string.Empty;
+        return string.IsNullOrWhiteSpace(currentFactionId) ||
+               string.Equals(currentFactionId, factionId, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject? FindVisibleRadiantActor(JsonObject shiningRoot, string actorId)
+    {
+        if (shiningRoot["shiningPoliticalActors"] is not JsonArray actors)
+            return null;
+
+        return actors.OfType<JsonObject>()
+            .Where(IsPlayerVisibleObject)
+            .FirstOrDefault(actor => string.Equals(GetNodeString(actor["actorId"]), actorId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool GuardianExists(JsonObject? guardiansRoot, string guardianId)
+    {
+        if (string.IsNullOrWhiteSpace(guardianId))
+            return false;
+
+        if (guardiansRoot?["activeGuardian"] is JsonObject activeGuardian &&
+            (string.Equals(GetNodeString(activeGuardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(GetNodeString(activeGuardian["id"]), guardianId, StringComparison.OrdinalIgnoreCase)))
+        {
+            return true;
+        }
+
+        return guardiansRoot?["guardians"] is JsonArray guardians &&
+               guardians.OfType<JsonObject>().Any(guardian =>
+                   string.Equals(GetNodeString(guardian["guardianId"]), guardianId, StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(GetNodeString(guardian["id"]), guardianId, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool IsPlayerVisibleObject(JsonObject entry)
+    {
+        if (IsFalseFlag(entry["isPlayerVisible"]) || IsFalseFlag(entry["playerVisible"]))
+            return false;
+
+        return !IsHiddenText(GetNodeString(entry["visibility"]));
+    }
+
+    private static bool IsFalseFlag(JsonNode? node) =>
+        node is JsonValue value &&
+        value.TryGetValue<bool>(out var flag) &&
+        !flag;
+
+    private static bool IsHiddenText(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        var normalized = value.Trim();
+        return string.Equals(normalized, "hidden", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "gm_only", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "secret", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "private", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "internal", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(normalized, "faction-internal", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string ResolveFactionName(JsonObject? faction, string fallbackId) =>
+        FirstNonEmpty(
+            GetNodeString(faction?["charter"]?["factionName"]),
+            GetNodeString(faction?["factionName"]),
+            fallbackId);
+
+    private static string GetResidentName(JsonObject resident) =>
+        FirstNonEmpty(
+            GetNodeString(resident["displayName"]),
+            GetNodeString(resident["residentName"]),
+            GetNodeString(resident["residentId"]));
+
+    private static bool TryParseActorChoice(string value, out string actorType, out string actorId)
+    {
+        actorType = string.Empty;
+        actorId = string.Empty;
+        var parts = value.Split(':', 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 2 ||
+            !ShiningAbodeState.IsSupportedHeadActorType(parts[0]) ||
+            string.IsNullOrWhiteSpace(parts[1]))
+        {
+            return false;
+        }
+
+        actorType = parts[0];
+        actorId = parts[1];
+        return true;
+    }
+
+    private static string SanitizeShiningPoliticsValidationMessage(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return "Политический запрос не прошёл проверку состояния.";
+
+        if (message.Contains("currentRealm", StringComparison.OrdinalIgnoreCase))
+            return "Политические действия доступны только в Сияющей Обители.";
+
+        return ContainsBrowserTradeDiagnosticFragment(message)
+            ? "Политический запрос временно ждёт проверки состояния. Повторите действие после восстановления политических ожиданий."
+            : message;
+    }
 
     private async Task<JsonObject?> ReadObjectAsync(string path)
     {

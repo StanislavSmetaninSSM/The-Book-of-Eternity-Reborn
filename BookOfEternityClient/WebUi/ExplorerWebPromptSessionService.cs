@@ -402,6 +402,9 @@ public sealed class ExplorerWebPromptSessionService
             "/resident_transfer" or "/переход_резидента" or
             "/soul_relic_equip" or "/экипировать_реликвию" or
             "/soul_relic_unequip" or "/снять_реликвию" or
+            "/shining_faction_founding" or "/основание_сияющей_фракции" or
+            "/shining_faction_realignment" or "/перестройка_сияющей_фракции" or
+            "/shining_faction_leadership" or "/смена_главы_сияющей_фракции" or
             "/shining_trade" or "/сияющая_торговля" or
             "/shining_treasury" or "/казначейство" or
             "/source_of_light" or "/источник_света" or

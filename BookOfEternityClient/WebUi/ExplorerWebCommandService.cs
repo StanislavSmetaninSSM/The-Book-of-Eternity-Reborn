@@ -116,7 +116,7 @@ public sealed class ExplorerWebCommandService
                 _fs,
                 request.AdvancedEnabled == true),
             ExplorerCommandBrowserHandlerKind.ShiningAbode => await ExplorerShiningAbodeCommandResultBuilder.TryBuildAsync(
-                commandToken,
+                descriptor.AcceptsArguments ? parsed.BuilderCommand : commandToken,
                 _stateManager,
                 _fs,
                 request.AdvancedEnabled == true),
