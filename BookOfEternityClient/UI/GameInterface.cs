@@ -357,17 +357,17 @@ public class GameInterface
         var table = ConsoleLayout.CreateBarMetricTable(labelWidth: 16, barWidth: 22, valueWidth: 6);
 
         table.AddRow(
-            new Markup($"[{healthColor}]❤️ Здоровье[/]"),
+            new Markup($"[{healthColor}]Здоровье[/]"),
             new Markup(healthBar),
             new Markup($"[{healthColor}]{healthPct,3}%[/]"),
             new Markup(string.Empty));
         table.AddRow(
-            new Markup($"[{energyColor}]⚡ Энергия[/]"),
+            new Markup($"[{energyColor}]Энергия[/]"),
             new Markup(energyBar),
             new Markup($"[{energyColor}]{energyPct,3}%[/]"),
             new Markup(string.Empty));
         table.AddRow(
-            new Markup($"[{poiseColor}]🛡️ Равновесие[/]"),
+            new Markup($"[{poiseColor}]Равновесие[/]"),
             new Markup(poiseBar),
             new Markup($"[{poiseColor}]{poisePct,3}%[/]"),
             new Markup(string.Empty));

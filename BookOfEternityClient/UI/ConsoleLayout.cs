@@ -68,7 +68,6 @@ internal static class ConsoleLayout
         return new Table()
             .Border(TableBorder.None)
             .HideHeaders()
-            .Expand()
             .AddColumn(new TableColumn("").NoWrap().Width(labelWidth))
             .AddColumn(new TableColumn("").NoWrap().Width(barWidth))
             .AddColumn(new TableColumn("").RightAligned().NoWrap().Width(valueWidth))
