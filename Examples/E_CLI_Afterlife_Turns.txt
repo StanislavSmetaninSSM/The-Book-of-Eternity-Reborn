@@ -6762,6 +6762,12 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
           },
           "affectedOperations": [ "pressure", "counter", "binding" ],
           "mechanicalAxes": [ "rollMode", "specialArtAudit.effectNote" ],
+          "payoff": {
+            "sourceType": "combat_condition",
+            "effect": "advantage",
+            "level": "ordinary",
+            "axis": "rollMode"
+          },
           "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
           "counterplay": [ "Лиора может потратить guard или break_binding, чтобы сбить метку до следующего обмена." ],
           "summary": "Следующая точная атака игрока по Лиоре получает одно условное Преимущество."
@@ -6786,6 +6792,12 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
           },
           "affectedOperations": [ "guard", "incarnation_resistance" ],
           "mechanicalAxes": [ "actionCostAudit", "specialArtAudit.effectNote" ],
+          "payoff": {
+            "sourceType": "combat_condition",
+            "effect": "action_cost_ward",
+            "level": "one_use",
+            "axis": "actionCostAudit"
+          },
           "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
           "counterplay": [ "Противник может pressure через другого lead contestant или force_binding, чтобы сделать оберег слишком дорогим." ],
           "summary": "Оберег делает один ответ против forced incarnation защищённым от дополнительного ОД штрафа."
@@ -6808,6 +6820,12 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
           },
           "affectedOperations": [ "negotiate", "surrender" ],
           "mechanicalAxes": [ "counterPayoff", "actionCostAudit" ],
+          "payoff": {
+            "sourceType": "combat_condition",
+            "effect": "counterpayoff_pressure",
+            "level": "gm_only",
+            "axis": "counterPayoff"
+          },
           "duration": { "remainingUses": 1, "expiresAtTurn": 43 },
           "counterplay": [ "Не раскрывать игроку; может быть снято только после явной сюжетной проверки или раскрытого контр-доказательства." ],
           "summary": "Private no-spoiler pressure; ordinary player output must not mention Saref or the hidden source."
@@ -6830,6 +6848,12 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
           },
           "affectedOperations": [ "counter" ],
           "mechanicalAxes": [ "counterPayoff", "conflictPosition" ],
+          "payoff": {
+            "sourceType": "combat_condition",
+            "effect": "position_shift",
+            "level": "consumed",
+            "axis": "conflictPosition"
+          },
           "duration": { "remainingUses": 0, "expiresAtTurn": 42 },
           "counterplay": [ "Уже израсходовано текущим counterPayoff." ],
           "consumedByExchangeId": "afterlife_conflict_exchange_conditions_001",
@@ -6855,6 +6879,12 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
           },
           "affectedOperations": [ "incarnation_resistance" ],
           "mechanicalAxes": [ "rollMode" ],
+          "payoff": {
+            "sourceType": "combat_condition",
+            "effect": "advantage",
+            "level": "expired",
+            "axis": "rollMode"
+          },
           "duration": { "remainingUses": 0, "expiresAtTurn": 42 },
           "counterplay": [ "Истёк по сроку; не даёт новых источников Преимущества." ],
           "summary": "Старый обет больше не активен и не должен оставаться пассивным бонусом."
