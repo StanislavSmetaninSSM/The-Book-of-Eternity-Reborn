@@ -129,6 +129,19 @@ public sealed class ValidationServiceQteTests : IDisposable
             issue.Code?.StartsWith("qte_mash_input_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnQteOfferAsync_AcceptsValidPatternMemoryConfig()
+    {
+        await WritePatternMemoryOfferAsync();
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "qte_invalid_check_type", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("qte_pattern_memory_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     [Theory]
     [InlineData("emptyKeys", "qte_mash_input_keys_empty")]
     [InlineData("unsupportedKey", "qte_mash_input_key_invalid")]
@@ -144,6 +157,31 @@ public sealed class ValidationServiceQteTests : IDisposable
         string expectedCode)
     {
         await WriteMashInputOfferAsync(mutation);
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("missingConfig", "qte_pattern_memory_config_missing")]
+    [InlineData("emptyAlphabet", "qte_pattern_memory_alphabet_empty")]
+    [InlineData("duplicateToken", "qte_pattern_memory_alphabet_duplicate")]
+    [InlineData("unsupportedToken", "qte_pattern_memory_alphabet_token_invalid")]
+    [InlineData("shortSequence", "qte_pattern_memory_sequence_length_out_of_range")]
+    [InlineData("longSequence", "qte_pattern_memory_sequence_length_out_of_range")]
+    [InlineData("shortReveal", "qte_pattern_memory_reveal_ms_out_of_range")]
+    [InlineData("longReveal", "qte_pattern_memory_reveal_ms_out_of_range")]
+    [InlineData("shortInputTimeout", "qte_pattern_memory_input_timeout_ms_out_of_range")]
+    [InlineData("sequenceImpossibleTimeout", "qte_pattern_memory_input_timeout_ms_impossible")]
+    [InlineData("negativeMistakes", "qte_pattern_memory_allowed_mistakes_out_of_range")]
+    [InlineData("failureImpossibleMistakes", "qte_pattern_memory_allowed_mistakes_out_of_range")]
+    public async Task ValidateAcceptedTurnQteOfferAsync_RejectsMalformedPatternMemoryConfig(
+        string mutation,
+        string expectedCode)
+    {
+        await WritePatternMemoryOfferAsync(mutation);
 
         var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
 
@@ -260,6 +298,133 @@ public sealed class ValidationServiceQteTests : IDisposable
                 break;
             case "outOfRangePartialThreshold":
                 config["partialThreshold"] = 1.25;
+                break;
+        }
+
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, offer.ToJsonString());
+    }
+
+    private async Task WritePatternMemoryOfferAsync(string? mutation = null)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+
+        var offer = JsonNode.Parse("""
+        {
+          "qteId": "qte_pattern_memory_test",
+          "title": "Рунный замок",
+          "offerText": "Нужно запомнить вспышки рун и повторить их на камнях.",
+          "introNarrative": "На арке загорается короткая последовательность знаков.",
+          "startChapterId": "rune_lock",
+          "chapters": [
+            {
+              "chapterId": "rune_lock",
+              "title": "Память рун",
+              "narrative": "Замок принимает только точное повторение ритма.",
+              "actions": [
+                {
+                  "actionId": "repeat_runes",
+                  "label": "Повторить узор",
+                  "check": {
+                    "type": "PatternMemory",
+                    "baseDifficulty": 3,
+                    "primaryCharacteristic": "intelligence",
+                    "config": {
+                      "alphabet": ["q", "w", "e", "space"],
+                      "sequenceLength": 4,
+                      "revealMs": 2500,
+                      "inputTimeoutMs": 6000,
+                      "allowedMistakes": 1
+                    }
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "seal_open" },
+                    "partial": { "terminalOutcomeId": "seal_flickers" },
+                    "fail": { "terminalOutcomeId": "alarm" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "seal_open",
+              "title": "Печать открыта",
+              "finalNarrative": "Руны вспыхивают в правильном порядке, и арка открывается.",
+              "gmSummary": "Игрок успешно повторил PatternMemory последовательность.",
+              "responseFragment": {
+                "response": "Печать пропускает вас дальше.",
+                "experienceGained": 40
+              }
+            },
+            {
+              "outcomeId": "seal_flickers",
+              "title": "Печать ослабла",
+              "finalNarrative": "Часть рун гаснет, оставляя узкую щель.",
+              "gmSummary": "Игрок частично повторил PatternMemory последовательность.",
+              "responseFragment": {
+                "response": "Проход открывается ненадолго.",
+                "experienceGained": 10
+              }
+            },
+            {
+              "outcomeId": "alarm",
+              "title": "Рунная тревога",
+              "finalNarrative": "Ошибочный знак будит защитный контур.",
+              "gmSummary": "Игрок провалил PatternMemory последовательность.",
+              "responseFragment": {
+                "response": "Замок отталкивает вас вспышкой.",
+                "currentPoiseChange": -10
+              }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var check = offer["chapters"]![0]!["actions"]![0]!["check"]!.AsObject();
+        var config = check["config"]!.AsObject();
+        switch (mutation)
+        {
+            case "missingConfig":
+                check.Remove("config");
+                break;
+            case "emptyAlphabet":
+                config["alphabet"] = new JsonArray();
+                break;
+            case "duplicateToken":
+                config["alphabet"] = new JsonArray("q", "q");
+                break;
+            case "unsupportedToken":
+                config["alphabet"] = new JsonArray("q", "enter");
+                break;
+            case "shortSequence":
+                config["sequenceLength"] = 1;
+                break;
+            case "longSequence":
+                config["sequenceLength"] = 13;
+                break;
+            case "shortReveal":
+                config["revealMs"] = 100;
+                break;
+            case "longReveal":
+                config["revealMs"] = 25000;
+                break;
+            case "shortInputTimeout":
+                config["inputTimeoutMs"] = 500;
+                break;
+            case "sequenceImpossibleTimeout":
+                config["sequenceLength"] = 8;
+                config["inputTimeoutMs"] = 1500;
+                break;
+            case "negativeMistakes":
+                config["allowedMistakes"] = -1;
+                break;
+            case "failureImpossibleMistakes":
+                config["sequenceLength"] = 4;
+                config["allowedMistakes"] = 4;
                 break;
         }
 

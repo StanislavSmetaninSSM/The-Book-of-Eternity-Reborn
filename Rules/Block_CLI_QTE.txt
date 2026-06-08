@@ -124,6 +124,7 @@
 
                     Node types allowed in QTE v2:
                     - `MashInput`
+                    - `PatternMemory`
 
                     For `MashInput`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.keys`: non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
@@ -133,6 +134,18 @@
                     - Higher `baseDifficulty` raises the effective required press count; a higher relevant `primaryCharacteristic` tier lowers it.
                     - Escape/cancel resolves as fail.
                     - Browser interactive MashInput parity remains #918; in this issue the console client owns live MashInput play, and browser surfaces must not claim live interactive support.
+
+                    For `PatternMemory`, `check.config` is MANDATORY and MUST contain:
+                    - `check.config.alphabet`: non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
+                    - `sequenceLength`: integer from 2 to 12.
+                    - `revealMs`: integer from 500 to 15000 for the фаза показа, when the client shows the generated sequence.
+                    - `inputTimeoutMs`: integer from 1000 to 30000 for the фаза ввода; it must be at least `sequenceLength * 300`.
+                    - `allowedMistakes`: integer from 0 to `sequenceLength - 1`, so failure remains possible.
+                    - Higher `baseDifficulty` may increase effective sequence length, reduce reveal/input time, or reduce mistake tolerance.
+                    - A higher relevant `primaryCharacteristic` tier must not make the same PatternMemory config harder.
+                    - Perfect repeat resolves success; an imperfect repeat within tolerance and with meaningful progress resolves partial.
+                    - Too many mistakes, timeout, or Escape/cancel resolves fail.
+                    - Browser interactive PatternMemory parity remains #918; in this issue the console client owns live PatternMemory play, and browser surfaces must not claim live interactive support.
 
                     Keyboard/layout rule:
                     - QTE reaction checks use physical QTE keys, not ordinary typed prose.

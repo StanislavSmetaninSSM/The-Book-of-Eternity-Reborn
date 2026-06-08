@@ -28,6 +28,13 @@
 - `MashInput` adjusts the effective required press count by `baseDifficulty` and the relevant `primaryCharacteristic`.
 - Escape/cancel resolves as fail in MashInput.
 - Browser interactive MashInput parity remains #918; browser surfaces must not claim live MashInput support yet.
+- For `PatternMemory`, `check.config.alphabet`, `sequenceLength`, `revealMs`, `inputTimeoutMs`, and `allowedMistakes` are required.
+- `PatternMemory` alphabet must use unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, or `space`.
+- `PatternMemory` uses a фаза показа to show the sequence and a фаза ввода where the player repeats it from memory.
+- `PatternMemory` sequenceLength is 2..12, revealMs is 500..15000, inputTimeoutMs is 1000..30000 and at least `sequenceLength * 300`, and allowedMistakes is 0..`sequenceLength - 1`.
+- `PatternMemory` adjusts effective sequence length, reveal/input time, or mistake tolerance by `baseDifficulty` and the relevant `primaryCharacteristic`.
+- Perfect repeat resolves success; tolerated imperfect repeat resolves partial; too many mistakes, timeout, or Escape/cancel resolves fail in PatternMemory.
+- Browser interactive PatternMemory parity remains #918; browser surfaces must not claim live PatternMemory support yet.
 - `responseFragment` is the final local mechanical outcome for an accepted QTE branch.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
@@ -116,6 +123,90 @@
       "responseFragment": {
         "response": "Дверь захлопывается, и вам приходится искать другой путь.",
         "currentPoiseChange": -15
+      }
+    }
+  ]
+}
+```
+
+## PatternMemory `output/qte_offer.json`
+
+```json
+{
+  "qteId": "qte_rune_lock_pattern_001",
+  "title": "Рунный замок",
+  "offerText": "Мастер Игры предлагает короткое QTE: нужно запомнить порядок вспышек на печати и повторить его на каменных клавишах.",
+  "introNarrative": "На двери вспыхивают четыре руны. Они гаснут одна за другой, оставляя в воздухе тонкий световой след.",
+  "declineHint": "Если игрок откажется, ту же ситуацию нужно разрешить обычной проверкой интеллекта или восприятия.",
+  "cinematicJustification": "Сцена длится несколько секунд и проверяет память под давлением.",
+  "sceneImagePrompt": "Ancient rune-locked door with glowing symbols, magical lock memory puzzle, cinematic fantasy tension",
+  "startChapterId": "rune_sequence",
+  "chapters": [
+    {
+      "chapterId": "rune_sequence",
+      "title": "Печать вспышек",
+      "narrative": "Клиент сначала покажет фазу показа с последовательностью рун, затем фазу ввода, где игрок повторит её физическими QTE клавишами.",
+      "chapterImagePrompt": "Close view of luminous runes pulsing over a stone lock, memory sequence challenge",
+      "actions": [
+        {
+          "actionId": "repeat_rune_pattern",
+          "label": "Повторить порядок рун",
+          "check": {
+            "type": "PatternMemory",
+            "baseDifficulty": 3,
+            "primaryCharacteristic": "intelligence",
+            "config": {
+              "alphabet": ["q", "w", "e", "space"],
+              "sequenceLength": 4,
+              "revealMs": 2500,
+              "inputTimeoutMs": 6000,
+              "allowedMistakes": 1
+            }
+          },
+          "routing": {
+            "success": { "terminalOutcomeId": "seal_open" },
+            "partial": { "terminalOutcomeId": "seal_flickers" },
+            "fail": { "terminalOutcomeId": "rune_alarm" }
+          },
+          "successText": "Вы повторяете вспышки без ошибки, и печать раскрывается.",
+          "partialText": "Вы сбиваетесь на одном знаке, но удерживаете большую часть ритма.",
+          "failText": "Последовательность рассыпается, и замок отвечает тревожной вспышкой."
+        }
+      ]
+    }
+  ],
+  "terminalOutcomes": [
+    {
+      "outcomeId": "seal_open",
+      "title": "Печать открыта",
+      "finalNarrative": "Руны вспыхивают в правильном порядке, и каменная дверь открывается без шума.",
+      "gmSummary": "Игрок успешно прошёл PatternMemory QTE и открыл рунный замок.",
+      "outcomeImagePrompt": "Rune-locked stone door opening quietly, glowing symbols fading, cinematic fantasy",
+      "responseFragment": {
+        "response": "Вы повторяете последовательность и проходите через открытую печать.",
+        "experienceGained": 40,
+        "timeChange": 3
+      }
+    },
+    {
+      "outcomeId": "seal_flickers",
+      "title": "Печать дрогнула",
+      "finalNarrative": "Часть рун гаснет, но одна линия остаётся нестабильной. Проход открывается только на несколько секунд.",
+      "gmSummary": "Игрок получил частичный исход PatternMemory: замок ослаб, но сцена осложняется спешкой.",
+      "responseFragment": {
+        "response": "Вы успеваете проскользнуть через дрожащий проём, но теряете темп.",
+        "experienceGained": 10,
+        "timeChange": 10
+      }
+    },
+    {
+      "outcomeId": "rune_alarm",
+      "title": "Рунная тревога",
+      "finalNarrative": "Ошибочная последовательность зажигает защитный контур, и дверь остаётся закрытой.",
+      "gmSummary": "Игрок провалил PatternMemory или отменил его через Escape/cancel; сцену нужно продолжать с активной защитой.",
+      "responseFragment": {
+        "response": "Рунная печать отталкивает вас вспышкой защитного света.",
+        "currentPoiseChange": -10
       }
     }
   ]
