@@ -622,7 +622,16 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             upgradeCost = new { inkFeathers = 30, lightSparks = 0 },
                             canTeachPlayer = true,
                             trainingConditions = new[] { "Провести сцену обучения с Хранителем Зеркал." },
-                            effectSummary = "При успехе отражает часть давления в сторону противника."
+                            effectSummary = "При успехе отражает часть давления в сторону противника.",
+                            combatEffect = new
+                            {
+                                summary = "Отражённая грань превращает успешную защиту в темповое окно.",
+                                trigger = "Когда Зеркальная Защита полностью блокирует прямое давление.",
+                                mechanicalAxis = "tempoAdvantage",
+                                allowedPayoff = "Можно получить одно Преимущество для следующего духовного действия.",
+                                limit = "Один раз за конфликт, пока окно не потрачено или не сбито контрприёмом.",
+                                auditRequirement = "specialArtAudit.effectNote называет блокированное давление и созданное tempoAdvantage."
+                            }
                         }
                     },
                     customStates = new[]
@@ -741,6 +750,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Просветление: тир 4, опыт 48", text, StringComparison.Ordinal);
         Assert.Contains("Давление: 2", text, StringComparison.Ordinal);
         Assert.Contains("Зеркальная Защита", text, StringComparison.Ordinal);
+        Assert.Contains("Отражённая грань превращает успешную защиту в темповое окно", text, StringComparison.Ordinal);
+        Assert.Contains("полностью блокирует прямое давление", text, StringComparison.Ordinal);
+        Assert.Contains("Преимущество для следующего духовного действия", text, StringComparison.Ordinal);
+        Assert.Contains("Один раз за конфликт", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("combatEffect", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("auditRequirement", text, StringComparison.Ordinal);
         Assert.Contains("может обучать игрока", text, StringComparison.Ordinal);
         Assert.Contains("Провести сцену обучения", text, StringComparison.Ordinal);
         Assert.Contains("Кастомные состояния", text, StringComparison.Ordinal);
@@ -8968,7 +8983,16 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             tier = 1,
                             costMultiplierPercent = 150,
                             upgradeCost = new { inkFeathers = 30, lightSparks = 0 },
-                            effectSummary = "Отражает часть чужого давления."
+                            effectSummary = "Отражает часть чужого давления.",
+                            combatEffect = new
+                            {
+                                summary = "Отражённая грань превращает успешную защиту в темповое окно.",
+                                trigger = "Когда Зеркальная Защита полностью блокирует прямое pressure.",
+                                mechanicalAxis = "tempoAdvantage",
+                                allowedPayoff = "Можно получить одно Преимущество для следующего духовного действия.",
+                                limit = "Один раз за конфликт, пока окно не потрачено или не сбито контрприёмом.",
+                                auditRequirement = "specialArtAudit.effectNote называет блокированное pressure и созданное tempoAdvantage."
+                            }
                         }
                     },
                     soulDissipationTier = 0,
@@ -8993,6 +9017,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Зеркальная Защита", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("особое искусство на основе действия «Защита»", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Отражает часть чужого давления", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Отражённая грань превращает успешную защиту в темповое окно", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("полностью блокирует прямое pressure", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Преимущество для следующего духовного действия", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Один раз за конфликт", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("combatEffect", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("auditRequirement", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

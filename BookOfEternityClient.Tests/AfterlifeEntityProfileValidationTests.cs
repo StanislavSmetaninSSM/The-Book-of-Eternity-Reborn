@@ -80,6 +80,119 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CurrentTeachableSpecialArtRequiresCombatEffect()
+    {
+        await WriteProfileStateAsync(BuildCurrentProfileUpdateWithSpecialArt(
+            """
+                  "effectSummary": "При успехе отражает часть давления в сторону противника."
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_missing_combat_effect", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CurrentTeachableSpecialArtAcceptsMeaningfulCombatEffect()
+    {
+        await WriteProfileStateAsync(BuildCurrentProfileUpdateWithSpecialArt(
+            """
+                  "effectSummary": "При успехе отражает часть давления в сторону противника.",
+                  "combatEffect": {
+                    "summary": "Отражённая грань превращает успешную защиту в одно темповое окно для следующего действия.",
+                    "trigger": "Когда guard этого искусства полностью блокирует прямое pressure.",
+                    "mechanicalAxis": "tempoAdvantage",
+                    "allowedPayoff": "Можно создать одно tempoAdvantage.player с источником Зеркальной Защиты.",
+                    "limit": "Один раз за конфликт, пока окно не будет потрачено или погашено контрприёмом.",
+                    "auditRequirement": "specialArtAudit.effectNote должен назвать блокированное pressure и созданное tempoAdvantage."
+                  }
+            """));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("afterlife_entity_profile_special_art_", StringComparison.OrdinalIgnoreCase) == true);
+        Assert.DoesNotContain(issues, issue =>
+            issue.FilePath.StartsWith(AfterlifeEntityProfileState.StatePath, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData(
+        """
+              "effectSummary": "При успехе отражает часть давления в сторону противника.",
+              "combatEffect": {
+                "summary": "Особый эффект применяется.",
+                "trigger": "Когда guard этого искусства полностью блокирует прямое pressure.",
+                "mechanicalAxis": "tempoAdvantage",
+                "allowedPayoff": "Можно создать одно tempoAdvantage.player с источником Зеркальной Защиты.",
+                "limit": "Один раз за конфликт, пока окно не будет потрачено.",
+                "auditRequirement": "specialArtAudit.effectNote должен назвать созданное tempoAdvantage."
+              }
+        """,
+        "afterlife_entity_profile_special_art_invalid_combat_effect_summary")]
+    [InlineData(
+        """
+              "effectSummary": "При успехе отражает часть давления в сторону противника.",
+              "combatEffect": {
+                "summary": "Отражённая грань превращает успешную защиту в одно темповое окно для следующего действия.",
+                "trigger": "Когда guard этого искусства полностью блокирует прямое pressure.",
+                "mechanicalAxis": "hitPoints",
+                "allowedPayoff": "Можно нанести урон HP противника.",
+                "limit": "Один раз за конфликт.",
+                "auditRequirement": "specialArtAudit.effectNote должен назвать HP-урон."
+              }
+        """,
+        "afterlife_entity_profile_special_art_invalid_combat_effect_axis")]
+    [InlineData(
+        """
+              "effectSummary": "При успехе отражает часть давления в сторону противника.",
+              "combatEffect": {
+                "summary": "Отражённая грань превращает успешную защиту в одно темповое окно для следующего действия.",
+                "mechanicalAxis": "tempoAdvantage",
+                "allowedPayoff": "Можно создать одно tempoAdvantage.player с источником Зеркальной Защиты.",
+                "limit": "Один раз за конфликт.",
+                "auditRequirement": "specialArtAudit.effectNote должен назвать созданное tempoAdvantage."
+              }
+        """,
+        "afterlife_entity_profile_special_art_combat_effect_missing_required_field")]
+    [InlineData(
+        """
+              "effectSummary": "При успехе отражает часть давления в сторону противника.",
+              "combatEffect": {
+                "summary": "Пассивный безлимитный бонус обходит baseOperation и tactical matrix.",
+                "trigger": "Всегда активен.",
+                "mechanicalAxis": "rollMode",
+                "allowedPayoff": "Всегда даёт great_advantage без условия.",
+                "limit": "Безлимитно.",
+                "auditRequirement": "specialArtAudit.effectNote может ничего не объяснять."
+              }
+        """,
+        "afterlife_entity_profile_special_art_invalid_combat_effect_scope")]
+    public async Task ValidateGameStateAsync_CurrentSpecialArtRejectsInvalidCombatEffect(
+        string artPayload,
+        string expectedCode)
+    {
+        await WriteProfileStateAsync(BuildCurrentProfileUpdateWithSpecialArt(artPayload));
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_LegacyPersistedSpecialArtWithoutCombatEffect_RemainsLoadable()
+    {
+        await WriteProfileStateAsync(BuildValidProfileJson());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_entity_profile_special_art_missing_combat_effect", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_ValidAfterlifeActorMask_PassesProfileValidation()
     {
         await WriteProfileStateAsync(BuildValidProfileJson().Replace(
@@ -1463,6 +1576,54 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
 
         return json.Insert(insertionIndex, ",\n" + rootProperties.TrimEnd());
     }
+
+    private static string BuildCurrentProfileUpdateWithSpecialArt(string specialArtPayload) =>
+        $$"""
+        {
+          "schemaVersion": 1,
+          "afterlifeEntityProfileUpdates": [
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_mirror",
+              "displayName": "Хранитель Зеркал",
+              "realm": "Chaos Sea",
+              "locationName": "Зеркальная Обитель",
+              "currencies": { "inkFeathers": 120, "lightSparks": 0 },
+              "progression": {
+                "enlightenment": { "experience": 48, "tier": 4 },
+                "radiance": { "experience": 0, "tier": 0 }
+              },
+              "standardArts": { "pressure": 2, "guard": 1 },
+              "specialArts": [
+                {
+                  "artId": "mirror_guard",
+                  "displayName": "Зеркальная Защита",
+                  "ownerActorType": "guardian",
+                  "ownerActorId": "guardian_mirror",
+                  "baseOperation": "guard",
+                  "tier": 1,
+                  "costMultiplierPercent": 150,
+                  "upgradeCost": { "inkFeathers": 30, "lightSparks": 0 },
+                  "canTeachPlayer": true,
+                  "trainingConditions": ["Провести сцену обучения с Хранителем Зеркал."],
+        {{specialArtPayload}}
+                }
+              ],
+              "customStates": [],
+              "fateCards": [],
+              "soulDissipationTier": 1,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_mirror",
+                "summary": "Сначала укрепляет защиту, затем давление.",
+                "priorityOrder": ["guard", "pressure"],
+                "lastUpdatedAtTurn": 22
+              },
+              "warnings": [],
+              "ledger": []
+            }
+          ]
+        }
+        """;
 
     private static string BuildValidProfileJson() =>
         """

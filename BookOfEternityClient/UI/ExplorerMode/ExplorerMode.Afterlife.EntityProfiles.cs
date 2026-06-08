@@ -175,7 +175,33 @@ public partial class ExplorerMode
                 lines.Add($"      [dim]Условия обучения: {Markup.Escape(string.Join("; ", trainingConditions))}[/]");
             if (!string.IsNullOrWhiteSpace(effect))
                 lines.Add($"      [dim]{Markup.Escape(effect)}[/]");
+            var combatEffect = FormatAfterlifeSpecialArtCombatEffect(art);
+            if (!string.IsNullOrWhiteSpace(combatEffect))
+                lines.Add($"      [dim]{Markup.Escape(combatEffect)}[/]");
         }
+    }
+
+    private static string? FormatAfterlifeSpecialArtCombatEffect(JsonObject art)
+    {
+        if (art["combatEffect"] is not JsonObject combatEffect)
+            return null;
+
+        var parts = new List<string>();
+        var summary = AfterlifeEntityProfileState.GetNodeString(combatEffect["summary"]);
+        var trigger = AfterlifeEntityProfileState.GetNodeString(combatEffect["trigger"]);
+        var payoff = AfterlifeEntityProfileState.GetNodeString(combatEffect["allowedPayoff"]);
+        var limit = AfterlifeEntityProfileState.GetNodeString(combatEffect["limit"]);
+
+        if (!string.IsNullOrWhiteSpace(summary))
+            parts.Add($"Боевой эффект: {summary}");
+        if (!string.IsNullOrWhiteSpace(trigger))
+            parts.Add($"срабатывает: {trigger}");
+        if (!string.IsNullOrWhiteSpace(payoff))
+            parts.Add($"выигрыш: {payoff}");
+        if (!string.IsNullOrWhiteSpace(limit))
+            parts.Add($"предел: {limit}");
+
+        return parts.Count == 0 ? null : string.Join("; ", parts);
     }
 
     private static void AppendAfterlifeEntityCustomStates(List<string> lines, JsonArray? states)

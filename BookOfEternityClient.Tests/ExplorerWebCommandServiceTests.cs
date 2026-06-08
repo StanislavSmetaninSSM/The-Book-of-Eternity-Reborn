@@ -2336,6 +2336,26 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_AfterlifeSpecialArtSurfaces_ShowCombatEffectWithoutRawContractLeak()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+
+        var profilesResult = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/afterlife_profiles"));
+        var artsResult = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_arts"));
+        var combinedText = CollectBlockText(profilesResult.Blocks) + "\n" + CollectBlockText(artsResult.Blocks);
+        var payload = SerializeResult(profilesResult) + "\n" + SerializeResult(artsResult);
+
+        Assert.Contains("Зеркало Ночной Розы", combinedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("контрприём превращает входящее давление в брешь", combinedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Когда counter отвечает на прямое pressure", combinedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Преимущество для ответного pressure", combinedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Один раз за конфликт", combinedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("combatEffect", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("auditRequirement", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_saref_combat_effect_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_SpiritualConflict_RendersVisibleCombatConditionsAndSuppressesHiddenOnes()
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
@@ -3040,6 +3060,14 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                   "baseOperation": "counter",
                   "tier": 1,
                   "effectSummary": "Контрприём оставляет болезненный образ в клятве противника.",
+                  "combatEffect": {
+                    "summary": "Ночной контрприём превращает входящее давление в брешь для ответа.",
+                    "trigger": "Когда counter отвечает на прямое pressure или binding.",
+                    "mechanicalAxis": "rollMode",
+                    "allowedPayoff": "Можно дать Преимущество для ответного pressure через condition-backed rollMode source.",
+                    "limit": "Один раз за конфликт, пока брешь не потрачена или не закрыта guard.",
+                    "auditRequirement": "specialArtAudit.effectNote должен назвать входящее действие и источник Преимущества hidden_saref_combat_effect_marker."
+                  },
                   "costMultiplierPercent": 150,
                   "canTeachPlayer": true
                 }

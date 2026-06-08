@@ -26,7 +26,8 @@ public partial class ExplorerMode
         string? BlockReason,
         string? SpecialArtId = null,
         string? SpecialArtDisplayName = null,
-        string? SpecialArtEffectSummary = null)
+        string? SpecialArtEffectSummary = null,
+        string? SpecialArtCombatEffect = null)
     {
         public bool IsSpecialArt => !string.IsNullOrWhiteSpace(SpecialArtId);
     }
@@ -1088,7 +1089,8 @@ public partial class ExplorerMode
                 blockReason,
                 artId,
                 displayName,
-                AfterlifeEntityProfileState.GetNodeString(specialArt["effectSummary"])));
+                AfterlifeEntityProfileState.GetNodeString(specialArt["effectSummary"]),
+                FormatAfterlifeSpecialArtCombatEffect(specialArt)));
         }
 
         return result;
@@ -1254,7 +1256,9 @@ public partial class ExplorerMode
         var effect = string.IsNullOrWhiteSpace(quote.SpecialArtEffectSummary)
             ? "особый эффект должен быть описан ГМ при применении искусства"
             : quote.SpecialArtEffectSummary;
-        return $"особое искусство на основе действия «{FormatSpiritualArtLabel(quote.Art)}»; {effect}";
+        return string.IsNullOrWhiteSpace(quote.SpecialArtCombatEffect)
+            ? $"особое искусство на основе действия «{FormatSpiritualArtLabel(quote.Art)}»; {effect}"
+            : $"особое искусство на основе действия «{FormatSpiritualArtLabel(quote.Art)}»; {effect}; {quote.SpecialArtCombatEffect}";
     }
 
     private static string FormatSpiritualArtQuoteRule(SpiritualArtUpgradeQuote quote)
