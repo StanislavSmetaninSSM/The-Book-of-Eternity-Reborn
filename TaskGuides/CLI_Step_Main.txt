@@ -140,6 +140,8 @@
                - If the player `experience.json` already has level/progress fields, the client will also process the local QTE level-up transition automatically
                - `declineHint` and `cinematicJustification`, if you provide them, are shown to the player in the QTE offer prompt
                - Do NOT put ordinary `image_prompt` inside QTE `responseFragment`; use `sceneImagePrompt`, `chapterImagePrompt`, or `outcomeImagePrompt`
+               - For reaction checks, the client handles physical key/RU-EN normalization: labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` describe physical QTE keys
+               - GM-authored QTE configs do not encode player keyboard layout; normal text input, dialogue, names, and narrative prose remain ordinary text
 
             4. Record the chosen profile and the forbidden systems in `gm_thoughts_markdown`.
             5. Do NOT execute any subsystem that is forbidden for the active profile.

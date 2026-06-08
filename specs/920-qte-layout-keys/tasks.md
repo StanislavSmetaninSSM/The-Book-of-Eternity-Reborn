@@ -16,9 +16,9 @@ description: "Task list for QTE layout-independent key input"
 
 **Purpose**: Confirm scope, branch, and baseline before implementation.
 
-- [ ] T001 Confirm source GitHub issue #920, current branch `work/920-qte-layout-keys`, `git status --short`, and feature path `specs/920-qte-layout-keys/`.
-- [ ] T002 Read `AGENTS.md`, `.specify/memory/constitution.md`, `spec.md`, `plan.md`, `contracts/qte-layout-input.md`, issue #920 body, and nearby QTE code/tests.
-- [ ] T003 Run or record a focused baseline for `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "QteSceneServiceTests|ValidationServiceQteTests|BrowserApiContractTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests"` and `npm run verify --prefix BookOfEternityClient.WebFrontend`.
+- [X] T001 Confirm source GitHub issue #920, current branch `work/920-qte-layout-keys`, `git status --short`, and feature path `specs/920-qte-layout-keys/`.
+- [X] T002 Read `AGENTS.md`, `.specify/memory/constitution.md`, `spec.md`, `plan.md`, `contracts/qte-layout-input.md`, issue #920 body, and nearby QTE code/tests.
+- [X] T003 Run or record a focused baseline for `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "QteSceneServiceTests|ValidationServiceQteTests|BrowserApiContractTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests"` and `npm run verify --prefix BookOfEternityClient.WebFrontend`.
 
 ---
 
@@ -26,11 +26,11 @@ description: "Task list for QTE layout-independent key input"
 
 **Purpose**: Define the QTE-only normalization/display contract before UI or docs work.
 
-- [ ] T004 [P] Add a C# RED test in `BookOfEternityClient.Tests/QteSceneServiceTests.cs` proving the RU fallback mappings `й->q`, `ц->w`, `у->e`, `ф->a`, `ы->s`, `в->d` and uppercase variants normalize for QTE matching.
-- [ ] T005 [P] Add a frontend RED test for a QTE key-normalization helper proving `KeyboardEvent.code` values `KeyQ`, `KeyW`, `KeyE`, `KeyA`, `KeyS`, `KeyD`, and `Space` win over produced characters.
-- [ ] T006 [P] Add a frontend RED test proving fallback Cyrillic `key` values normalize when `KeyboardEvent.code` is absent or unsupported.
-- [ ] T007 Define/implement the scoped C# QTE key token/display helper only after T004 is RED.
-- [ ] T008 Define/implement the scoped frontend QTE key token/display helper only after T005/T006 are RED.
+- [X] T004 [P] Add a C# RED test in `BookOfEternityClient.Tests/QteSceneServiceTests.cs` proving the RU fallback mappings `й->q`, `ц->w`, `у->e`, `ф->a`, `ы->s`, `в->d` and uppercase variants normalize for QTE matching.
+- [X] T005 [P] Add a frontend RED test for a QTE key-normalization helper proving `KeyboardEvent.code` values `KeyQ`, `KeyW`, `KeyE`, `KeyA`, `KeyS`, `KeyD`, and `Space` win over produced characters.
+- [X] T006 [P] Add a frontend RED test proving fallback Cyrillic `key` values normalize when `KeyboardEvent.code` is absent or unsupported.
+- [X] T007 Define/implement the scoped C# QTE key token/display helper only after T004 is RED.
+- [X] T008 Define/implement the scoped frontend QTE key token/display helper only after T005/T006 are RED.
 
 **Checkpoint**: Console/shared and browser helpers exist and are tested without changing ordinary text input paths.
 
@@ -44,13 +44,13 @@ description: "Task list for QTE layout-independent key input"
 
 ### Tests for User Story 1
 
-- [ ] T009 [US1] Add/extend C# tests for QTE key display labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space`.
-- [ ] T010 [US1] Run the focused `QteSceneServiceTests` and verify the new tests fail for the expected missing helper/display behavior.
+- [X] T009 [US1] Add/extend C# tests for QTE key display labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space`.
+- [X] T010 [US1] Run the focused `QteSceneServiceTests` and verify the new tests fail for the expected missing helper/display behavior.
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Wire the C# QTE key helper into relevant console QTE prompt/comparison surfaces without changing ordinary command/text input behavior.
-- [ ] T012 [US1] Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "QteSceneServiceTests"` and verify the new tests pass.
+- [X] T011 [US1] Wire the C# QTE key helper into relevant console QTE prompt/comparison surfaces without changing ordinary command/text input behavior.
+- [X] T012 [US1] Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "QteSceneServiceTests"` and verify the new tests pass.
 
 **Checkpoint**: Console QTE normalization and labels are covered and green.
 
@@ -64,13 +64,13 @@ description: "Task list for QTE layout-independent key input"
 
 ### Tests for User Story 2
 
-- [ ] T013 [US2] Add a focused frontend test file for QTE key normalization/keyboard handling under `BookOfEternityClient.WebFrontend/test/`.
-- [ ] T014 [US2] Run the focused frontend test command or `npm run verify --prefix BookOfEternityClient.WebFrontend` and verify the new tests fail before implementation.
+- [X] T013 [US2] Add a focused frontend test file for QTE key normalization/keyboard handling under `BookOfEternityClient.WebFrontend/test/`.
+- [X] T014 [US2] Run the focused frontend test command or `npm run verify --prefix BookOfEternityClient.WebFrontend` and verify the new tests fail before implementation.
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Wire the frontend QTE key helper into `QteScenePanel` or the nearest QTE-only event handling surface while leaving command/composer text paths untouched.
-- [ ] T016 [US2] Run `npm run verify --prefix BookOfEternityClient.WebFrontend` and verify the new tests pass.
+- [X] T015 [US2] Wire the frontend QTE key helper into `QteScenePanel` or the nearest QTE-only event handling surface while leaving command/composer text paths untouched.
+- [X] T016 [US2] Run `npm run verify --prefix BookOfEternityClient.WebFrontend` and verify the new tests pass.
 
 **Checkpoint**: Browser QTE key handling is layout-independent and scoped to QTE.
 
@@ -84,14 +84,14 @@ description: "Task list for QTE layout-independent key input"
 
 ### Tests for User Story 3
 
-- [ ] T017 [US3] Add/update C# documentation/source-guard tests in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs`, `ExampleDocumentationValidationTests.cs`, or nearby QTE docs tests proving the physical-key/RU-EN guidance exists.
-- [ ] T018 [US3] Run the focused docs/QTE test filter and verify the new documentation test fails before doc updates.
+- [X] T017 [US3] Add/update C# documentation/source-guard tests in `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs`, `ExampleDocumentationValidationTests.cs`, or nearby QTE docs tests proving the physical-key/RU-EN guidance exists.
+- [X] T018 [US3] Run the focused docs/QTE test filter and verify the new documentation test fails before doc updates.
 
 ### Implementation for User Story 3
 
-- [ ] T019 [US3] Update `Rules/Block_CLI_QTE.txt`, `Examples/E_CLI_QTE_Offer.txt`, and any active QTE task guide entrypoint with concise physical-key/RU-EN guidance.
-- [ ] T020 [US3] Update player-facing console/browser copy only if the current implementation exposes prompt/key labels on those surfaces.
-- [ ] T021 [US3] Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|QteSceneServiceTests|BrowserApiContractTests"` and verify the docs/player-copy tests pass.
+- [X] T019 [US3] Update `Rules/Block_CLI_QTE.txt`, `Examples/E_CLI_QTE_Offer.txt`, and any active QTE task guide entrypoint with concise physical-key/RU-EN guidance.
+- [X] T020 [US3] Update player-facing console/browser copy only if the current implementation exposes prompt/key labels on those surfaces.
+- [X] T021 [US3] Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|QteSceneServiceTests|BrowserApiContractTests"` and verify the docs/player-copy tests pass.
 
 **Checkpoint**: QTE authoring docs/examples and player-facing copy are synchronized.
 
@@ -101,13 +101,20 @@ description: "Task list for QTE layout-independent key input"
 
 **Purpose**: Verify compatibility, reconcile Spec Kit artifacts, and prepare PR closure.
 
-- [ ] T022 Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "QteSceneServiceTests|ValidationServiceQteTests|BrowserApiContractTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests"`.
-- [ ] T023 Run `npm run verify --prefix BookOfEternityClient.WebFrontend`.
-- [ ] T024 Run `git diff --check origin/main...HEAD`.
-- [ ] T025 Run added-line static security scan over `origin/main...HEAD`, excluding docs/spec text false positives where appropriate.
-- [ ] T026 Reconcile `spec.md`, `plan.md`, `tasks.md`, and `contracts/qte-layout-input.md` with the final diff; mark tasks complete only with implementation and verification evidence.
-- [ ] T027 Perform independent review before PR/merge; fix critical/important findings or document technical pushback.
+- [X] T022 Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "QteSceneServiceTests|ValidationServiceQteTests|BrowserApiContractTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests"`.
+  - Evidence: Hermes rerun passed 75/75. Hermes broad suite then exposed `BrowserFrontendWorkspaceTests.FrontendWorkspace_HasVerifyScriptAndCiFrontendWorkflow` source-guard drift because `test/qteLayoutInput.test.ts` was added to `test:player-facing`; after synchronizing the guard, the exact failing test passed 1/1 and the full suite passed 3646/3646.
+- [X] T023 Run `npm run verify --prefix BookOfEternityClient.WebFrontend`.
+  - Evidence: Hermes rerun passed typecheck; player-facing Vitest 6 files / 44 tests; Vite build transformed 46 modules.
+- [X] T024 Run `git diff --check origin/main...HEAD`.
+  - Evidence: Hermes rerun returned no whitespace errors.
+- [X] T025 Run added-line static security scan over `origin/main...HEAD`, excluding docs/spec text false positives where appropriate.
+  - Evidence: Hermes production scan excluding Spec Kit docs returned `NO_MATCHES`.
+- [X] T026 Reconcile `spec.md`, `plan.md`, `tasks.md`, and `contracts/qte-layout-input.md` with the final diff; mark tasks complete only with implementation and verification evidence.
+  - Evidence: this task list now records Codex RED/GREEN evidence, Hermes reruns, the broad-suite source-guard fix, and final local verification.
+- [X] T027 Perform independent review before PR/merge; fix critical/important findings or document technical pushback.
+  - Evidence: independent Codex review run `E:/Games/codex-runs/20260609-045841-boe-920-qte-layout-review` returned `APPROVED` with no blocking findings. Non-blocking risk recorded: current React QTE v1 UI still resolves via grade/buttons, so future live browser keyboard-event handlers must call `normalizeQteKeyboardInput` at their event boundary.
 - [ ] T028 Create/update PR for #920, squash-merge after local gates, fetch main, verify PR merged and issue #920 closed.
+  - PR evidence: created PR #922 (`https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/922`) with `Closes #920`, local verification evidence, independent review verdict, and `GitHub Actions: not required` note. Readback showed `mergeStateStatus=CLEAN`, empty `statusCheckRollup`, and closing reference to #920 before merge.
 
 ## Dependencies & Execution Order
 

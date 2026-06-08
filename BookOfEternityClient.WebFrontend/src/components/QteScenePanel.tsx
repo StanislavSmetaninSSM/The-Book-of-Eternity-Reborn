@@ -12,6 +12,7 @@ import {
   type QteGrade
 } from '../utils/formatters';
 import { toPlayerFacingText } from '../utils/playerCopy';
+import { qteLayoutSupportNote } from '../utils/qteKeyInput';
 
 export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
   const [qteState, setQteState] = useState(qte);
@@ -87,6 +88,7 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
         <article className="summary-card">
           <h3>{toPlayerFacingText(qteState.offer.title, 'Быстрая сцена')}</h3>
           <p>{toPlayerFacingText(qteState.offer.offerText ?? qteState.offer.introNarrative, 'Книга предлагает короткую сцену выбора.')}</p>
+          <p className="muted">{qteLayoutSupportNote}</p>
           {qteState.offer.cinematicJustification && <p className="muted">{toPlayerFacingText(qteState.offer.cinematicJustification, 'Сцена подходит текущему моменту.')}</p>}
           {qteState.offer.sceneImagePrompt && <p className="muted">Образ сцены: {toPlayerFacingText(qteState.offer.sceneImagePrompt, 'образ уточняется')}</p>}
           {qteState.offer.declineHint && <p className="muted">{toPlayerFacingText(qteState.offer.declineHint, 'Можно отказаться и продолжить обычный ход.')}</p>}
@@ -107,6 +109,7 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
           {activeChapter ? (
             <>
               <p>{toPlayerFacingText(activeChapter.narrative ?? activeChapter.title, 'Выберите действие для этой сцены.')}</p>
+              <p className="muted">{qteLayoutSupportNote}</p>
               {activeChapter.chapterImagePrompt && <p className="muted">Образ главы: {toPlayerFacingText(activeChapter.chapterImagePrompt, 'образ уточняется')}</p>}
               {activeChapter.actions.length > 0 ? (
                 <div className="qte-action-list">
