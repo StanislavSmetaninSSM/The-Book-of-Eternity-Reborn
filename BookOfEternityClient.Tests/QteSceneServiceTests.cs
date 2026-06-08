@@ -36,6 +36,62 @@ public sealed class QteSceneServiceTests : IDisposable
             NullLogger<QteSceneService>.Instance);
     }
 
+    [Theory]
+    [InlineData('q', "q")]
+    [InlineData('Q', "q")]
+    [InlineData('й', "q")]
+    [InlineData('Й', "q")]
+    [InlineData('ц', "w")]
+    [InlineData('Ц', "w")]
+    [InlineData('у', "e")]
+    [InlineData('У', "e")]
+    [InlineData('ф', "a")]
+    [InlineData('Ф', "a")]
+    [InlineData('ы', "s")]
+    [InlineData('Ы', "s")]
+    [InlineData('в', "d")]
+    [InlineData('В', "d")]
+    public void QteKeyInput_NormalizesConsoleFallbackCharacters(char input, string expectedToken)
+    {
+        Assert.Equal(expectedToken, QteKeyInput.NormalizeCharacter(input));
+        Assert.Equal(expectedToken, QteKeyInput.NormalizeConsoleInput(new ConsoleKeyInfo(input, 0, false, false, false)));
+    }
+
+    [Theory]
+    [InlineData(ConsoleKey.Q, "Q / Й")]
+    [InlineData(ConsoleKey.W, "W / Ц")]
+    [InlineData(ConsoleKey.E, "E / У")]
+    [InlineData(ConsoleKey.A, "A / Ф")]
+    [InlineData(ConsoleKey.S, "S / Ы")]
+    [InlineData(ConsoleKey.D, "D / В")]
+    [InlineData(ConsoleKey.Spacebar, "Space")]
+    public void QteKeyInput_FormatsPhysicalKeyLabelsWithRuFallback(ConsoleKey key, string expectedLabel)
+    {
+        Assert.Equal(expectedLabel, QteKeyInput.FormatPromptLabel(key));
+    }
+
+    [Theory]
+    [InlineData('й', ConsoleKey.Q)]
+    [InlineData('ц', ConsoleKey.W)]
+    [InlineData('у', ConsoleKey.E)]
+    [InlineData('ф', ConsoleKey.A)]
+    [InlineData('ы', ConsoleKey.S)]
+    [InlineData('в', ConsoleKey.D)]
+    [InlineData(' ', ConsoleKey.Spacebar)]
+    public void QteKeyInput_MatchesConsoleFallbackInputToExpectedPhysicalKey(char input, ConsoleKey expectedKey)
+    {
+        var keyInfo = new ConsoleKeyInfo(input, 0, false, false, false);
+
+        Assert.True(QteKeyInput.MatchesConsoleKey(keyInfo, expectedKey));
+    }
+
+    [Fact]
+    public void QteKeyInput_LeavesUnsupportedCharactersUnmatched()
+    {
+        Assert.Null(QteKeyInput.NormalizeCharacter('ж'));
+        Assert.False(QteKeyInput.MatchesConsoleKey(new ConsoleKeyInfo('ж', 0, false, false, false), ConsoleKey.Q));
+    }
+
     [Fact]
     public async Task EnsureRuntimeStateHealthyAsync_DeletesInvalidJsonRuntimeFile()
     {

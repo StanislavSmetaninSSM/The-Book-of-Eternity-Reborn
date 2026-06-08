@@ -72,6 +72,44 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void QteLayoutIndependentKeyboardContract_IsDocumentedForGmAndPlayers()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "physical QTE keys",
+            "Q / Й",
+            "W / Ц",
+            "E / У",
+            "A / Ф",
+            "S / Ы",
+            "D / В",
+            "GM-authored QTE configs do not encode player keyboard layout",
+            "normal text input"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "client handles physical key/RU-EN normalization",
+            "GM-authored QTE configs do not encode player keyboard layout",
+            "Q / Й",
+            "normal text input"
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+            Assert.Contains(requiredText, stepGuide, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void QuestRewardAuthorityContract_IsDocumentedForGm()
     {
         var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");

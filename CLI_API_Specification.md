@@ -1179,6 +1179,8 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `PromptChain`
   - `BalanceMeter`
   - `ChargeRelease`
+- QTE reaction checks use physical QTE keys. Player-facing labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` describe physical keys; the client handles physical key/RU-EN normalization and must not tell the player to switch OS layout.
+- GM-authored QTE configs do not encode player keyboard layout, and this QTE-only normalization does not apply to normal text input, dialogue, names, or narrative prose.
 - `check.primaryCharacteristic` must be one of these canonical lowercase ids:
   - `strength`, `dexterity`, `constitution`, `intelligence`, `wisdom`, `faith`, `attractiveness`, `trade`, `persuasion`, `perception`, `luck`, `speed`
 - For `BranchChoice`, `check.config.choiceGrade` is required and must be exactly one of:

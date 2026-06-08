@@ -1066,12 +1066,12 @@ public sealed class QteSceneService
         {
             RenderMiniGamePanel(
                 "Timing Bar",
-                "Нажмите Space, когда маркер будет в центральной зоне.",
+                $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, когда маркер будет в центральной зоне.",
                 BuildTimingBar(width, position, successStart, successWidth, partialStart, partialWidth));
 
             if (TryReadImmediateKey(out var key))
             {
-                if (key.Key == ConsoleKey.Spacebar)
+                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
                 {
                     if (position >= successStart && position < successStart + successWidth)
                         return QteGrade.Success;
@@ -1111,7 +1111,7 @@ public sealed class QteSceneService
                 $"Тайм-аут: {timeoutMs} мс | Ошибок допустимо: {allowedMistakes}");
 
             var pressed = await ReadKeyWithTimeoutAsync(timeoutMs);
-            if (pressed == null || pressed.Value.Key != prompt)
+            if (pressed == null || !QteKeyInput.MatchesConsoleKey(pressed.Value, prompt))
                 mistakes++;
 
             if (mistakes > allowedMistakes)
@@ -1136,9 +1136,9 @@ public sealed class QteSceneService
         {
             if (TryReadImmediateKey(out var key))
             {
-                if (key.Key == ConsoleKey.A || key.Key == ConsoleKey.LeftArrow)
+                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.A) || key.Key == ConsoleKey.LeftArrow)
                     value = Math.Max(0, value - 10);
-                else if (key.Key == ConsoleKey.D || key.Key == ConsoleKey.RightArrow)
+                else if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.D) || key.Key == ConsoleKey.RightArrow)
                     value = Math.Min(100, value + 10);
                 else if (key.Key == ConsoleKey.Escape)
                     return QteGrade.Fail;
@@ -1150,7 +1150,7 @@ public sealed class QteSceneService
 
             RenderMiniGamePanel(
                 "Balance Meter",
-                "Удерживайте индикатор в центральной зоне клавишами A/D.",
+                $"Удерживайте индикатор в центральной зоне клавишами {QteKeyInput.FormatPromptLabel(ConsoleKey.A)} или {QteKeyInput.FormatPromptLabel(ConsoleKey.D)}.",
                 BuildBalanceMeter(value, safeHalfWidth, i + 1, ticks));
 
             await Task.Delay(tickMs);
@@ -1180,8 +1180,8 @@ public sealed class QteSceneService
             RenderMiniGamePanel(
                 "Charge Release",
                 charging
-                    ? "Нажмите Space ещё раз, чтобы отпустить заряд."
-                    : "Нажмите Space, чтобы начать заряд.",
+                    ? $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)} ещё раз, чтобы отпустить заряд."
+                    : $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, чтобы начать заряд.",
                 BuildChargeMeter(charge, targetStart, targetWidth));
 
             if (TryReadImmediateKey(out var key))
@@ -1189,7 +1189,7 @@ public sealed class QteSceneService
                 if (key.Key == ConsoleKey.Escape)
                     return QteGrade.Fail;
 
-                if (key.Key == ConsoleKey.Spacebar)
+                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
                 {
                     if (!charging)
                     {
@@ -1388,6 +1388,7 @@ public sealed class QteSceneService
             $"[bold cyan]{Markup.Escape(title)}[/]",
             "",
             $"[white]{Markup.Escape(instructions)}[/]",
+            $"[dim]{Markup.Escape(QteKeyInput.LayoutSupportNote)}[/]",
             "",
             body
         })))
@@ -1472,11 +1473,7 @@ public sealed class QteSceneService
         return null;
     }
 
-    private static string DisplayKey(ConsoleKey key) => key switch
-    {
-        ConsoleKey.Spacebar => "Space",
-        _ => key.ToString().ToUpperInvariant()
-    };
+    private static string DisplayKey(ConsoleKey key) => QteKeyInput.FormatPromptLabel(key);
 
     private static string? GetConfigString(JsonObject? config, string propertyName)
     {

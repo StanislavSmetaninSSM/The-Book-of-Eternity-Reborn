@@ -29,6 +29,8 @@
 - If the local `experience.json` already contains `level`/`playerLevel`, `experience` or `currentExperience`, and `experienceForNextLevel`, the client will also advance the level locally by the standard progression rule.
 - `declineHint` and `cinematicJustification`, if present, are shown in the offer prompt, so keep them short.
 - `responseFragment` must not use ordinary `image_prompt`; QTE images go through `sceneImagePrompt`, `chapterImagePrompt`, or `outcomeImagePrompt`.
+- For reaction checks, the client handles physical key/RU-EN normalization: prompt labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` refer to physical QTE keys.
+- GM-authored QTE configs do not encode player keyboard layout; normal text input, dialogue, names, and narrative prose remain ordinary text.
 
 ## Example `output/qte_offer.json`
 

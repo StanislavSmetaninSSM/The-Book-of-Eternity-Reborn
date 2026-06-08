@@ -122,6 +122,13 @@
                     - `BalanceMeter`
                     - `ChargeRelease`
 
+                    Keyboard/layout rule:
+                    - QTE reaction checks use physical QTE keys, not ordinary typed prose.
+                    - The player-facing key labels are `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` where those keys are used by the client.
+                    - The client handles physical key/RU-EN normalization for QTE checks; the player should not be told to switch OS keyboard layout.
+                    - GM-authored QTE configs do not encode player keyboard layout.
+                    - This QTE-only normalization does not apply to normal text input, dialogue, action descriptions, names, or narrative text.
+
                     Image rule:
                     - During the active QTE challenge itself, the client must not interrupt the player with external image viewing.
                     - Scene images may be offered only on post-chapter or post-outcome result screens.
