@@ -3304,6 +3304,83 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void SarefMainStoryE2EAuditMatrixCoversIssue692StagesAndEvidence()
+    {
+        var audit = ReadRepoFile("OtherGuides", "Saref_Main_Story_E2E_Audit_Matrix.md");
+
+        Assert.Contains("GitHub issue #692", audit, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Крылья над Бездной", audit, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(SarefMainStoryState.StatePath, audit, StringComparison.Ordinal);
+        Assert.Contains(SarefMainStoryState.PendingWingsInfiltrationPath, audit, StringComparison.Ordinal);
+
+        foreach (var stage in new[]
+                 {
+                     SarefMainStoryState.RevealStageUnknown,
+                     SarefMainStoryState.RevealStageShadow,
+                     SarefMainStoryState.RevealStageNameRevealed,
+                     SarefMainStoryState.RevealStageWingsRevealed,
+                     SarefMainStoryState.RevealStageInfiltrationActive,
+                     SarefMainStoryState.RevealStageConfrontationAvailable,
+                     SarefMainStoryState.RevealStageCompleted,
+                     SarefMainStoryState.PostStoryStateOathbound
+                 })
+        {
+            Assert.Contains(stage, audit, StringComparison.Ordinal);
+        }
+
+        foreach (var branch in new[]
+                 {
+                     SarefMainStoryState.DefeatOutcomeForcedOath,
+                     SarefMainStoryState.DefeatOutcomeExileToChaosSea,
+                     SarefMainStoryState.DefeatOutcomeMemorySuppression,
+                     SarefMainStoryState.DefeatOutcomeSoulDissipation,
+                     SarefMainStoryState.DefeatOutcomePyrrhicEscape,
+                     SarefMainStoryState.OathBreakRouteSeret,
+                     SarefMainStoryState.OathBreakRouteLucian,
+                     SarefMainStoryState.OathBreakRouteIlarion,
+                     SarefMainStoryState.OathBreakRouteVeyra,
+                     SarefMainStoryState.OathBreakRouteDeepStoryEvidence
+                 })
+        {
+            Assert.Contains(branch, audit, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredSurface in new[]
+                 {
+                     "Player-facing command behavior",
+                     "GM-authored response surface",
+                     "Validation issue evidence",
+                     "Normalizer / cleanup evidence",
+                     "Docs and example evidence",
+                     "follow-up issue draft"
+                 })
+        {
+            Assert.Contains(requiredSurface, audit, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var issueCode in new[]
+                 {
+                     "saref_main_story_no_spoiler_stage_has_revealed_content",
+                     "saref_main_story_quest_four_missing_memory_scene_proof",
+                     "saref_wings_pending_missing_unlock_route",
+                     "saref_wings_pending_missing_closure",
+                     "saref_main_story_completed_without_final_confrontation",
+                     "saref_main_story_ending_deal_missing_oath_cost",
+                     "saref_main_story_defeat_soul_dissipation_missing_proof",
+                     "saref_main_story_oath_break_missing_proof"
+                 })
+        {
+            Assert.Contains(issueCode, audit, StringComparison.Ordinal);
+        }
+
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var example27 = ExtractRequiredSection(examples, "EXAMPLE 27", "EXAMPLE 28");
+        Assert.Contains("game_state/meta/shining_abode_state.json", example27, StringComparison.Ordinal);
+        Assert.Contains("Do not use an unsupported top-level `shiningAbodeState` response field", example27, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"shiningAbodeState\"", example27, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void SarefMemorySystemBoundariesAreDocumented()
     {
         var boundaries = ReadRepoFile("OtherGuides", "Saref_Memory_System_Boundaries.md");

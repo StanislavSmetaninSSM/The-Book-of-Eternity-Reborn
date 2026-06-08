@@ -219,6 +219,50 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
     }
 
     [Fact]
+    public void SarefStoryScreensProtectSpoilersAndUseInWorldPlayerFacingLabels()
+    {
+        var sarefStory = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.SarefStory.cs");
+        var memoryScene = ReadSource("UI", "ExplorerMode", "ExplorerMode.Afterlife.MemoryScene.cs");
+        var catalog = ReadSource("CommandProtocol", "ExplorerCommandCatalog.cs");
+
+        Assert.Contains("/сареф", catalog, StringComparison.Ordinal);
+        Assert.Contains("/сареф найти_крылья", catalog, StringComparison.Ordinal);
+        Assert.Contains("/воспоминание", catalog, StringComparison.Ordinal);
+        Assert.Contains("Ты пока не знаешь, что искать.", sarefStory, StringComparison.Ordinal);
+        Assert.True(
+            sarefStory.IndexOf("IsSarefStoryStillUnknown(root)", StringComparison.Ordinal) <
+            sarefStory.IndexOf("DescribeSarefRevealStage", StringComparison.Ordinal),
+            "/сареф must check the hidden no-spoiler state before rendering any reveal-stage details.");
+
+        var pendingPanel = ExtractRequiredSection(
+            sarefStory,
+            "private static Panel BuildSarefWingsPendingPanel",
+            "private static bool IsSarefStoryStillUnknown");
+        foreach (var leakedContractLabel in new[]
+                 {
+                     "requestId:",
+                     "routeSafety:",
+                     "entryMode:",
+                     "response surface:"
+                 })
+        {
+            Assert.DoesNotContain(leakedContractLabel, pendingPanel, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("Поиск Крыльев Ангелов уже ожидает решения.", pendingPanel, StringComparison.Ordinal);
+        Assert.Contains("Не создавайте второй запрос", pendingPanel, StringComparison.Ordinal);
+        Assert.Contains("Море Хаоса можно собирать фрагменты, но нельзя начать внедрение", sarefStory, StringComparison.Ordinal);
+        Assert.Contains("Ты пока не знаешь, что искать. Нужен маршрут", sarefStory, StringComparison.Ordinal);
+
+        Assert.Contains("Это не Врата Памяти и не Наследие Памяти.", memoryScene, StringComparison.Ordinal);
+        Assert.Contains("Смертный инвентарь не переносится", memoryScene, StringComparison.Ordinal);
+        Assert.DoesNotContain("pendingMemoryLegacy", ExtractRequiredSection(
+            memoryScene,
+            "private static List<string> BuildSarefMemoryScenePlayerLines",
+            "private static void AppendSarefMemorySceneObjects"), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeExplorerPanelsAvoidEnglishContractJargonInVisibleText()
     {
         var sources = string.Join("\n", new[]
@@ -261,6 +305,17 @@ public sealed class AfterlifePlayerFacingSourceGuardTests
         {
             Assert.DoesNotContain(leakedPhrase, sources, StringComparison.Ordinal);
         }
+    }
+
+    private static string ExtractRequiredSection(string text, string startMarker, string endMarker)
+    {
+        var start = text.IndexOf(startMarker, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Missing section start marker: {startMarker}");
+
+        var end = text.IndexOf(endMarker, start + startMarker.Length, StringComparison.Ordinal);
+        Assert.True(end >= 0, $"Missing section end marker: {endMarker}");
+
+        return text[start..end];
     }
 
     private static string ReadSource(params string[] pathParts) =>
