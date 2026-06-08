@@ -30,7 +30,7 @@ assertExcludes(appSource, 'workspace-sidebar');
 assertIncludes(commandUiSource, '.status-view {');
 assertIncludes(commandUiSource, '.status-card {');
 assertIncludes(commandUiSource, '.status-bars {');
-assertIncludes(statusViewSource, 'className="status-meter"');
+assertIncludes(statusViewSource, 'className={`status-meter status-meter--${severity}`}');
 assertExcludes(statusViewSource, 'className="status-bar"');
 assertExcludes(statusViewSource, 'status-bar__label');
 assertExcludes(statusViewSource, 'status-bar__track');
@@ -39,6 +39,9 @@ assertIncludes(commandUiSource, '.status-meter {');
 assertIncludes(commandUiSource, '.status-meter__label {');
 assertIncludes(commandUiSource, '.status-meter__track {');
 assertIncludes(commandUiSource, '.status-meter__fill {');
+assertIncludes(commandUiSource, '.status-meter--good .status-meter__fill {');
+assertIncludes(commandUiSource, '.status-meter--warning .status-meter__fill {');
+assertIncludes(commandUiSource, '.status-meter--danger .status-meter__fill {');
 assertCssRuleIncludes(commandUiSource, '.status-meter__label', 'text-shadow');
 
 function readSource(...relativePath: string[]): string {

@@ -436,6 +436,9 @@
 .status-meter__value { flex: 0 0 auto; color: var(--text-primary, #f0f6fc); font-variant-numeric: tabular-nums; }
 .status-meter__track { height: 8px; background: var(--surface-base, #0d1117); border-radius: 4px; overflow: hidden; border: 1px solid var(--border-subtle, #21262d); }
 .status-meter__fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+.status-meter--good .status-meter__fill { background: linear-gradient(90deg, color-mix(in srgb, var(--state-success) 72%, #203a25), var(--state-success)); }
+.status-meter--warning .status-meter__fill { background: linear-gradient(90deg, color-mix(in srgb, var(--state-warning) 72%, #3b2d14), var(--state-warning)); }
+.status-meter--danger .status-meter__fill { background: linear-gradient(90deg, color-mix(in srgb, var(--state-danger) 72%, #3a1414), var(--state-danger)); }
 .status-conditions h4 { font-size: 0.8rem; color: var(--text-muted); margin: 0.5rem 0 0.25rem; }
 .status-conditions ul { list-style: none; padding: 0; font-size: 0.82rem; }
 .status-conditions li { padding: 0.15rem 0; }

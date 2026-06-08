@@ -79,7 +79,7 @@ public sealed class BrowserFrontendWorkspaceTests
         using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
         var scripts = document.RootElement.GetProperty("scripts");
         Assert.Equal("npm run typecheck && npm run test:player-facing && npm run build", scripts.GetProperty("verify").GetString());
-        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts", scripts.GetProperty("test:player-facing").GetString());
+        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts test/browserCardSpacing.test.ts test/browserCardHierarchy.test.tsx", scripts.GetProperty("test:player-facing").GetString());
 
         var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
         Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
@@ -284,7 +284,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("<h3>🗺️ Мир</h3>", statusView, StringComparison.Ordinal);
         Assert.Contains("<h3>✨ Посмертие</h3>", statusView, StringComparison.Ordinal);
         Assert.Contains("function StatusMeter", statusView, StringComparison.Ordinal);
-        Assert.Contains("className=\"status-meter\"", statusView, StringComparison.Ordinal);
+        Assert.Contains("className={`status-meter status-meter--${severity}`}", statusView, StringComparison.Ordinal);
         Assert.DoesNotContain("className=\"status-bar\"", statusView, StringComparison.Ordinal);
         Assert.Contains(".status-meter__label", styles, StringComparison.Ordinal);
         Assert.Contains("text-shadow", styles, StringComparison.Ordinal);
