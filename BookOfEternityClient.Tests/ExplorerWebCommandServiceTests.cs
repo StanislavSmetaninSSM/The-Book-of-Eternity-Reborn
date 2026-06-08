@@ -2355,6 +2355,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("remainingUses=1", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("break_binding", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Клятва подсвечена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guard_tempo_window_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("concealed_condition_marker", text, StringComparison.OrdinalIgnoreCase);
@@ -3249,7 +3251,61 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "auditRequirement": "spoiler_condition_marker"
               }
             ],
-            "exchangeLog": []
+            "exchangeLog": [
+              {
+                "exchangeId": "exchange_hidden_roll_source_marker_001",
+                "operationType": "pressure",
+                "outcome": "success",
+                "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+                "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+                "diceAudit": {
+                  "rollMode": {
+                    "player": {
+                      "effectiveMode": "normal",
+                      "advantageSources": [
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "mark_oath_flare_001",
+                          "level": "advantage",
+                          "summary": "visible_condition_roll_source_marker"
+                        },
+                        {
+                          "sourceType": "guard_tempo_window",
+                          "sourceId": "tempo_guard_valid_001",
+                          "level": "advantage",
+                          "summary": "guard_tempo_window_marker"
+                        }
+                      ],
+                      "disadvantageSources": [
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "hidden_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "hidden_condition_marker"
+                        },
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "concealed_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "concealed_condition_marker"
+                        },
+                        {
+                          "sourceType": "combat_condition",
+                          "sourceId": "spoiler_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "spoiler_condition_marker"
+                        }
+                      ]
+                    },
+                    "opposition": {
+                      "effectiveMode": "normal",
+                      "advantageSources": [],
+                      "disadvantageSources": []
+                    }
+                  }
+                }
+              }
+            ]
           },
           "recentConflicts": []
         }

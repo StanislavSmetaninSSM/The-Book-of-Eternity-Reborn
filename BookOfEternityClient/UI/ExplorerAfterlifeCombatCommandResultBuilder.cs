@@ -584,7 +584,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         var rows = combatConditions
             .OfType<JsonObject>()
-            .Where(IsCombatConditionVisibleToPlayer)
+            .Where(AfterlifeCombatConditionPlayerAuditSanitizer.IsVisibleToPlayer)
             .Where(static condition => string.Equals(GetString(condition, "status", "active"), "active", StringComparison.OrdinalIgnoreCase))
             .Select(condition => new UiTableRow
             {
@@ -610,23 +610,6 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 Columns = ["Название", "Вид", "Цель", "Источник", "Действия", "Срок", "Ответ", "Итог"],
                 Rows = rows
             };
-    }
-
-    private static bool IsCombatConditionVisibleToPlayer(JsonObject condition)
-    {
-        if (condition["visibleToPlayer"] is JsonValue visibleValue &&
-            visibleValue.TryGetValue<bool>(out var visibleToPlayer) &&
-            !visibleToPlayer)
-        {
-            return false;
-        }
-
-        var visibility = GetString(condition, "visibility", "");
-        if (IsHiddenPlayerFacingVisibility(visibility))
-            return false;
-
-        var audience = GetString(condition, "audience", "");
-        return !IsHiddenPlayerFacingVisibility(audience);
     }
 
     private static string DescribeCombatConditionTarget(JsonObject condition)
@@ -2000,39 +1983,10 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         if (read.Node == null)
             return read;
 
-        var clone = read.Node.DeepClone();
-        SanitizeCombatConditionArrays(clone);
-        return new JsonReadResult(read.FileExists, clone, read.Error);
-    }
-
-    private static void SanitizeCombatConditionArrays(JsonNode? node)
-    {
-        switch (node)
-        {
-            case JsonObject obj:
-            {
-                if (obj["combatConditions"] is JsonArray combatConditions)
-                    obj["combatConditions"] = FilterVisibleCombatConditions(combatConditions);
-
-                foreach (var child in obj.Select(static property => property.Value).ToArray())
-                    SanitizeCombatConditionArrays(child);
-                break;
-            }
-            case JsonArray array:
-            {
-                foreach (var child in array.ToArray())
-                    SanitizeCombatConditionArrays(child);
-                break;
-            }
-        }
-    }
-
-    private static JsonArray FilterVisibleCombatConditions(JsonArray combatConditions)
-    {
-        var visible = new JsonArray();
-        foreach (var condition in combatConditions.OfType<JsonObject>().Where(IsCombatConditionVisibleToPlayer))
-            visible.Add(condition.DeepClone());
-        return visible;
+        return new JsonReadResult(
+            read.FileExists,
+            AfterlifeCombatConditionPlayerAuditSanitizer.Sanitize(read.Node),
+            read.Error);
     }
 
     private static bool IsFateCardPlayerVisible(JsonObject card)

@@ -137,8 +137,9 @@ public partial class ExplorerMode
 
         await _stateManager.RefreshGameStateAsync();
         var root = await ReadJsonObjectForAfterlifeStatusAsync(AfterlifeSpiritualConflictState.StatePath);
-        var active = root?["activeConflict"] as JsonObject;
-        var recentConflicts = root?["recentConflicts"] as JsonArray;
+        var playerFacingRoot = BuildPlayerFacingCombatConditionAudit(root) as JsonObject;
+        var active = playerFacingRoot?["activeConflict"] as JsonObject;
+        var recentConflicts = playerFacingRoot?["recentConflicts"] as JsonArray;
         var lines = new List<string>
         {
             "[bold cyan]Журнал духовного боя[/]",
@@ -197,8 +198,8 @@ public partial class ExplorerMode
             Expand = true
         });
 
-        if (root != null)
-            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", BuildPlayerFacingCombatConditionAudit(root), Color.Cyan1);
+        if (playerFacingRoot != null)
+            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", playerFacingRoot, Color.Cyan1);
 
         WaitForKey();
     }
@@ -1646,7 +1647,7 @@ public partial class ExplorerMode
 
         var visible = combatConditions
             .OfType<JsonObject>()
-            .Where(IsCombatConditionVisibleToPlayer)
+            .Where(AfterlifeCombatConditionPlayerAuditSanitizer.IsVisibleToPlayer)
             .Where(static condition => string.Equals(AfterlifeSpiritualConflictState.GetNodeString(condition["status"]) ?? "active", "active", StringComparison.OrdinalIgnoreCase))
             .ToArray();
         if (visible.Length == 0)
@@ -1674,24 +1675,6 @@ public partial class ExplorerMode
 
         lines.Add("");
     }
-
-    private static bool IsCombatConditionVisibleToPlayer(JsonObject condition)
-    {
-        if (condition["visibleToPlayer"] is JsonValue visibleValue &&
-            visibleValue.TryGetValue<bool>(out var visibleToPlayer) &&
-            !visibleToPlayer)
-        {
-            return false;
-        }
-
-        var visibility = NormalizeKey(AfterlifeSpiritualConflictState.GetNodeString(condition["visibility"]));
-        var audience = NormalizeKey(AfterlifeSpiritualConflictState.GetNodeString(condition["audience"]));
-        return !IsHiddenCombatConditionVisibility(visibility) &&
-               !IsHiddenCombatConditionVisibility(audience);
-    }
-
-    private static bool IsHiddenCombatConditionVisibility(string? visibility) =>
-        visibility is "hidden" or "gm_only" or "private" or "secret" or "concealed" or "spoiler";
 
     private static string DescribeCombatConditionTarget(JsonObject condition)
     {
@@ -1772,35 +1755,7 @@ public partial class ExplorerMode
         if (root == null)
             return null;
 
-        var clone = root.DeepClone();
-        SanitizeCombatConditionAudit(clone);
-        return clone;
-    }
-
-    private static void SanitizeCombatConditionAudit(JsonNode? node)
-    {
-        switch (node)
-        {
-            case JsonObject obj:
-                if (obj["combatConditions"] is JsonArray combatConditions)
-                    obj["combatConditions"] = BuildVisibleCombatConditionsArray(combatConditions);
-
-                foreach (var child in obj.Select(static property => property.Value).ToArray())
-                    SanitizeCombatConditionAudit(child);
-                break;
-            case JsonArray array:
-                foreach (var child in array.ToArray())
-                    SanitizeCombatConditionAudit(child);
-                break;
-        }
-    }
-
-    private static JsonArray BuildVisibleCombatConditionsArray(JsonArray combatConditions)
-    {
-        var visible = new JsonArray();
-        foreach (var condition in combatConditions.OfType<JsonObject>().Where(IsCombatConditionVisibleToPlayer))
-            visible.Add(condition.DeepClone());
-        return visible;
+        return AfterlifeCombatConditionPlayerAuditSanitizer.Sanitize(root);
     }
 
     private static void AppendSpiritualExchangeLog(List<string> lines, JsonArray exchangeLog)
