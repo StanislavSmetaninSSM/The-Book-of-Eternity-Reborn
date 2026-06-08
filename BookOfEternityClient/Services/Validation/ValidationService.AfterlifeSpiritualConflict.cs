@@ -1269,6 +1269,7 @@ public partial class ValidationService
         ValidateEnumNode(conflict, context, issues, "conflictPosition", AfterlifeSpiritualConflictState.ConflictPositions, "afterlife_conflict_invalid_position");
         ValidateControlStateShape(conflict["controlState"], $"{context}.controlState", issues, required: false);
         ValidateTempoAdvantageShape(conflict["tempoAdvantage"], $"{context}.tempoAdvantage", issues);
+        var combatConditionIds = ValidateCombatConditions(conflict["combatConditions"], $"{context}.combatConditions", issues);
         var resolutionState = ValidateEnumNode(conflict, context, issues, "resolutionState", AfterlifeSpiritualConflictState.ResolutionStates, "afterlife_conflict_invalid_resolution_state");
         if (string.Equals(resolutionState, "resolved", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(resolutionState, "repair_cancelled", StringComparison.OrdinalIgnoreCase))
@@ -1324,7 +1325,8 @@ public partial class ValidationService
                         issues,
                         diceContext,
                         actionCostAuthority,
-                        isPreTurnExchange);
+                        isPreTurnExchange,
+                        combatConditionIds);
                     if (isCurrentExchange)
                     {
                         if (ExchangeExpectsPlayerActionCostAudit(exchange))
@@ -1535,6 +1537,7 @@ public partial class ValidationService
         HashSet<string> rewardConflictIds,
         AfterlifeSoulDissipationContext soulDissipationContext)
     {
+        var combatConditionIds = ValidateCombatConditions(proof["combatConditions"], $"{context}.combatConditions", issues);
         var diceRequired = ResolveDiceAuditRequired(proof);
         if (diceRequired && proof["diceAudit"] is not JsonObject)
         {
@@ -1551,7 +1554,7 @@ public partial class ValidationService
 
         if (proof["diceAudit"] is JsonObject diceAudit)
         {
-            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext, combatConditionIds);
             ValidateLightIncarnateDiceAuditModifier(proof, diceAudit, $"{context}.diceAudit", issues, diceContext);
         }
 
@@ -2698,10 +2701,13 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         AfterlifeConflictDiceContext diceContext,
         AfterlifeActionCostAuthorityContext actionCostAuthority,
-        bool isPreTurnExchange)
+        bool isPreTurnExchange,
+        IReadOnlySet<string>? combatConditionIds = null)
     {
         RequireNodeString(exchange, context, issues, "exchangeId");
         var operationType = ValidateEnumNode(exchange, context, issues, "operationType", AfterlifeSpiritualConflictState.OperationTypes, "afterlife_conflict_invalid_operation_type");
+        var exchangeCombatConditionIds = ValidateCombatConditions(exchange["combatConditions"], $"{context}.combatConditions", issues);
+        var effectiveCombatConditionIds = MergeCombatConditionIds(combatConditionIds, exchangeCombatConditionIds);
         var outcome = ValidateEnumNode(exchange, context, issues, "outcome", AfterlifeSpiritualConflictState.OperationOutcomes, "afterlife_conflict_invalid_operation_outcome");
 
         if (string.Equals(outcome, "blocked", StringComparison.OrdinalIgnoreCase) &&
@@ -2834,7 +2840,7 @@ public partial class ValidationService
 
         if (exchange["diceAudit"] is JsonObject diceAudit)
         {
-            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext);
+            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext, effectiveCombatConditionIds);
             if (before != null)
                 ValidateConflictPositionDiceModifier(diceAudit, before, context, issues);
             ValidateLightIncarnateDiceAuditModifier(exchange, diceAudit, $"{context}.diceAudit", issues, diceContext);
@@ -6023,9 +6029,11 @@ public partial class ValidationService
         JsonObject audit,
         string context,
         List<ValidationIssue>? issues,
-        AfterlifeConflictDiceContext diceContext)
+        AfterlifeConflictDiceContext diceContext,
+        IReadOnlySet<string>? combatConditionIds = null)
     {
         var valid = true;
+        ValidateCombatConditionRollModeSources(audit, context, issues, combatConditionIds);
 
         var formulaVersion = AfterlifeSpiritualConflictState.GetNodeString(audit["formulaVersion"]);
         if (!string.Equals(formulaVersion, "afterlife_spiritual_conflict_v1", StringComparison.Ordinal))

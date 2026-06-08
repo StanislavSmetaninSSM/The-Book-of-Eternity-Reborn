@@ -2336,6 +2336,66 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SpiritualConflict_RendersVisibleCombatConditionsAndSuppressesHiddenOnes()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_conflict"));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Боевые условия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Разогретая клятва", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("mark", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("opposition", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guardian_azalia", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pressure", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("remainingUses=1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("break_binding", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Клятва подсвечена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ordinary_visible_roll_reason", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guard_tempo_window_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_condition_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_summary_legacy_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_summary_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_audit_legacy_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_audit_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("concealed_condition_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("concealed_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("spoiler_condition_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("spoiler_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_SpiritualAction_SanitizesActiveCombatConditionRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await SeedChaosSeaFilesAsync();
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_action"));
+
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Contains("JSON: active afterlife spiritual conflict", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ordinary_visible_roll_reason", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guard_tempo_window_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_summary_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_audit_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("concealed_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("spoiler_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_EmptyCommand_ReturnsFailedDto()
     {
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("   "));
@@ -3083,6 +3143,211 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         }
         """);
     }
+
+    private Task WriteAfterlifeConflictStateWithCombatConditionsAsync() =>
+        _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "activeConflict": {
+            "conflictId": "conflict_conditions_1",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "resolutionState": "active",
+            "actionEconomy": {
+              "player": { "current": 7, "max": 8, "source": "spirit_focus" },
+              "opposition": { "current": 5, "max": 6, "source": "profile" }
+            },
+            "playerSide": { "leadContestant": { "actorId": "player_soul", "displayName": "Test Soul" } },
+            "oppositionSide": { "leadContestant": { "actorId": "guardian_shadow", "displayName": "Тень Хранителя" } },
+            "combatConditions": [
+              {
+                "conditionId": "mark_oath_flare_001",
+                "displayName": "Разогретая клятва",
+                "kind": "mark",
+                "polarity": "buff",
+                "status": "active",
+                "source": {
+                  "type": "special_art",
+                  "actorType": "guardian",
+                  "actorId": "guardian_azalia",
+                  "displayName": "Азалия"
+                },
+                "targetSide": "opposition",
+                "targetActorRef": "guardian_shadow",
+                "affectedOperations": [ "pressure", "counter" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": {
+                  "effect": "advantage",
+                  "level": "advantage",
+                  "sourceType": "combat_condition"
+                },
+                "duration": {
+                  "type": "next_matching_operation",
+                  "remainingUses": 1
+                },
+                "counterplay": [ "break_binding против контекста клятвы", "выбрать действие вне pressure/counter" ],
+                "visibility": "player_visible",
+                "summary": "Клятва подсвечена: pressure и counter легче направить в противника.",
+                "auditRequirement": "При расходовании rollMode должен сослаться на conditionId."
+              },
+              {
+                "conditionId": "hidden_condition_marker",
+                "displayName": "hidden_condition_marker",
+                "kind": "vow",
+                "polarity": "debuff",
+                "status": "active",
+                "source": {
+                  "type": "story_link",
+                  "actorType": "guardian",
+                  "actorId": "guardian_hidden",
+                  "displayName": "hidden_condition_marker"
+                },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": {
+                  "effect": "disadvantage",
+                  "level": "disadvantage",
+                  "sourceType": "combat_condition"
+                },
+                "duration": {
+                  "type": "scene",
+                  "remainingUses": 1
+                },
+                "counterplay": [ "hidden_condition_marker" ],
+                "visibility": "gm_only",
+                "summary": "hidden_summary_legacy_marker",
+                "auditRequirement": "hidden_audit_legacy_marker"
+              },
+              {
+                "conditionId": "concealed_condition_marker",
+                "displayName": "concealed_condition_marker",
+                "kind": "vow",
+                "polarity": "debuff",
+                "status": "active",
+                "source": {
+                  "type": "story_link",
+                  "actorType": "guardian",
+                  "actorId": "guardian_concealed",
+                  "displayName": "concealed_condition_marker"
+                },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": {
+                  "effect": "disadvantage",
+                  "level": "disadvantage",
+                  "sourceType": "combat_condition"
+                },
+                "duration": {
+                  "type": "scene",
+                  "remainingUses": 1
+                },
+                "counterplay": [ "concealed_condition_marker" ],
+                "visibility": "concealed",
+                "summary": "concealed_condition_marker",
+                "auditRequirement": "concealed_condition_marker"
+              },
+              {
+                "conditionId": "spoiler_condition_marker",
+                "displayName": "spoiler_condition_marker",
+                "kind": "vow",
+                "polarity": "debuff",
+                "status": "active",
+                "source": {
+                  "type": "story_link",
+                  "actorType": "guardian",
+                  "actorId": "guardian_spoiler",
+                  "displayName": "spoiler_condition_marker"
+                },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": {
+                  "effect": "disadvantage",
+                  "level": "disadvantage",
+                  "sourceType": "combat_condition"
+                },
+                "duration": {
+                  "type": "scene",
+                  "remainingUses": 1
+                },
+                "counterplay": [ "spoiler_condition_marker" ],
+                "visibility": "spoiler",
+                "summary": "spoiler_condition_marker",
+                "auditRequirement": "spoiler_condition_marker"
+              }
+            ],
+            "exchangeLog": [
+              {
+                "exchangeId": "exchange_hidden_roll_source_marker_001",
+                "operationType": "pressure",
+                "outcome": "success",
+                "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+                "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+                "diceAudit": {
+                  "rollMode": {
+                    "player": {
+                      "effectiveMode": "normal",
+                      "advantageSources": [
+                        "позиционное преимущество",
+                        "ordinary_visible_roll_reason",
+                        "mark_oath_flare_001",
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "mark_oath_flare_001",
+                          "level": "advantage",
+                          "summary": "visible_condition_roll_source_marker"
+                        },
+                        {
+                          "sourceType": "guard_tempo_window",
+                          "sourceId": "tempo_guard_valid_001",
+                          "level": "advantage",
+                          "summary": "guard_tempo_window_marker"
+                        }
+                      ],
+                      "disadvantageSources": [
+                        "hidden_condition_marker",
+                        "hidden_summary_legacy_marker",
+                        "hidden_audit_legacy_marker",
+                        "concealed_condition_marker",
+                        "spoiler_condition_marker",
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "hidden_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "hidden_condition_marker"
+                        },
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "concealed_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "concealed_condition_marker"
+                        },
+                        {
+                          "sourceType": "combat_condition",
+                          "sourceId": "spoiler_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "spoiler_condition_marker"
+                        }
+                      ]
+                    },
+                    "opposition": {
+                      "effectiveMode": "normal",
+                      "advantageSources": [],
+                      "disadvantageSources": []
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "recentConflicts": []
+        }
+        """);
 
     private async Task WriteAfterlifeProfilesMaskProjectionFixtureAsync()
     {

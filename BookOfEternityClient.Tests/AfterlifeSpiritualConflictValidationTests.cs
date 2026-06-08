@@ -169,6 +169,245 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_AbsentCombatConditions_RemainsBackwardCompatible()
+    {
+        await WriteSoulStateAsync();
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        root.Remove("lastInvalidUpdate");
+        root.Remove("lastInvalidUpdateReason");
+        root.Remove("lastInvalidUpdateAtUtc");
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_combat_condition_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ValidActiveCombatCondition_AllowsKnownContractShape()
+    {
+        await WriteSoulStateAsync();
+        await WriteActiveConflictWithCombatConditionsAsync(BuildValidCombatCondition().ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_combat_condition_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ValidCombatConditionCanonicalAliases_AllowsDocumentedShape()
+    {
+        await WriteSoulStateAsync();
+        await WriteActiveConflictWithCombatConditionsAsync(BuildCanonicalCombatCondition().ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code is not null &&
+            issue.Code.StartsWith("afterlife_combat_condition_", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ActiveCombatConditionMissingRequiredFields_IsRejected()
+    {
+        await WriteSoulStateAsync();
+        await WriteActiveConflictWithCombatConditionsAsync("""
+        {
+          "conditionId": "condition_missing_fields",
+          "status": "active"
+        }
+        """);
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_missing_required_field", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(".combatConditions[0].displayName", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_missing_required_field", StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(".combatConditions[0].counterplay", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CombatConditionRejectsUnsupportedKindAndAxis()
+    {
+        await WriteSoulStateAsync();
+        var condition = BuildValidCombatCondition();
+        condition["kind"] = "rage";
+        condition["mechanicalAxis"] = "strength";
+        await WriteActiveConflictWithCombatConditionsAsync(condition.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_invalid_kind", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_invalid_mechanical_axis", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_ActiveCombatConditionRequiresCounterplayAndLiveDuration()
+    {
+        await WriteSoulStateAsync();
+        var condition = BuildValidCombatCondition();
+        condition["counterplay"] = new JsonArray();
+        condition["duration"] = new JsonObject
+        {
+            ["type"] = "next_matching_operation",
+            ["remainingUses"] = 0
+        };
+        await WriteActiveConflictWithCombatConditionsAsync(condition.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_missing_counterplay", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_active_duration_spent", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_CombatConditionRejectsControlPayoffOutsideAntiControlOperations()
+    {
+        await WriteSoulStateAsync();
+        var condition = BuildValidCombatCondition();
+        condition["conditionId"] = "illegal_control_condition";
+        condition["mechanicalAxis"] = "controlState";
+        condition["affectedOperations"] = new JsonArray(JsonValue.Create("pressure"));
+        condition["payoff"] = new JsonObject
+        {
+            ["effect"] = "create_control",
+            ["sourceType"] = "combat_condition"
+        };
+        await WriteActiveConflictWithCombatConditionsAsync(condition.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_illegal_control_payoff", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RollModeCombatConditionSourceMustReferenceActiveCondition()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_missing_condition_source_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "advantage",
+              new JsonNode?[] { BuildCombatConditionRollModeSource("missing_condition_id") },
+              Array.Empty<JsonNode?>(),
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, false), (1, 18, true) }).ToJsonString()}}
+        }
+        """);
+        await SetActiveCombatConditionsAsync(BuildValidCombatCondition().ToJsonString());
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_roll_source_missing_active_condition", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RollModeCombatConditionSourceCannotReferenceConsumedCondition()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_consumed_condition_source_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "advantage",
+              new JsonNode?[] { BuildCombatConditionRollModeSource("consumed_condition_id") },
+              Array.Empty<JsonNode?>(),
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, false), (1, 18, true) }).ToJsonString()}}
+        }
+        """);
+        var consumed = BuildValidCombatCondition("consumed_condition_id");
+        consumed["status"] = "consumed";
+        consumed["duration"] = new JsonObject
+        {
+            ["type"] = "next_matching_operation",
+            ["remainingUses"] = 0
+        };
+        await SetActiveCombatConditionsAsync(consumed.ToJsonString());
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_roll_source_missing_active_condition", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ValidateGameStateAsync_RollModeNonCombatConditionSourceWithSourceId_RemainsValid()
+    {
+        await WriteSoulStateAsync();
+        await WriteConflictStateWithRawExchangeAsync($$"""
+        {
+          "exchangeId": "exchange_tempo_window_source_001",
+          "operationType": "pressure",
+          "outcome": "success",
+          "before": { "playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested" },
+          "after": { "playerSideStrain": "clear", "oppositionSideStrain": "strained", "conflictPosition": "contested" },
+          "diceAudit": {{BuildPlayerTieredRollDiceAudit(
+              "advantage",
+              new JsonNode?[]
+              {
+                  new JsonObject
+                  {
+                      ["sourceType"] = "guard_tempo_window",
+                      ["sourceId"] = "tempo_guard_valid_001",
+                      ["level"] = "advantage",
+                      ["summary"] = "Темповое окно после успешной защиты."
+                  }
+              },
+              Array.Empty<JsonNode?>(),
+              new (int SourceIndex, int Value, bool Selected)[] { (0, 5, false), (1, 18, true) }).ToJsonString()}}
+        }
+        """);
+        await SetActiveCombatConditionsAsync(BuildValidCombatCondition().ToJsonString());
+        await WritePreTurnActiveConflictSnapshotAsync();
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "afterlife_combat_condition_roll_source_missing_active_condition", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [MemberData(nameof(MalformedActiveCombatConditionCases))]
+    public async Task ValidateGameStateAsync_MalformedActiveCombatCondition_IsRejected(
+        string expectedCode,
+        string expectedPathSuffix,
+        Action<JsonObject> mutateCondition)
+    {
+        await WriteSoulStateAsync();
+        var condition = BuildValidCombatCondition("malformed_condition_001");
+        mutateCondition(condition);
+        await WriteActiveConflictWithCombatConditionsAsync(condition.ToJsonString());
+
+        var issues = await _validator.ValidateGameStateAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.EndsWith(expectedPathSuffix, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_GreatAdvantageDiceAudit_WithTwoDice_ReportsCountMismatch()
     {
         await WriteSoulStateAsync();
@@ -12770,6 +13009,134 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         ["summary"] = summary
     };
 
+    private static JsonObject BuildCombatConditionRollModeSource(string conditionId) => new()
+    {
+        ["level"] = "advantage",
+        ["sourceType"] = "combat_condition",
+        ["conditionId"] = conditionId,
+        ["summary"] = "Метка условия открывает цель для давления."
+    };
+
+    public static IEnumerable<object[]> MalformedActiveCombatConditionCases()
+    {
+        yield return
+        [
+            "afterlife_combat_condition_missing_source_identity",
+            ".combatConditions[0].source",
+            new Action<JsonObject>(condition => condition["source"] = new JsonObject())
+        ];
+        yield return
+        [
+            "afterlife_combat_condition_missing_finite_duration",
+            ".combatConditions[0].duration",
+            new Action<JsonObject>(condition => condition["duration"] = new JsonObject())
+        ];
+        yield return
+        [
+            "afterlife_combat_condition_missing_finite_duration",
+            ".combatConditions[0].duration",
+            new Action<JsonObject>(condition =>
+                condition["duration"] = new JsonObject { ["type"] = "next_matching_operation" })
+        ];
+        yield return
+        [
+            "afterlife_combat_condition_invalid_affected_operation",
+            ".combatConditions[0].affectedOperations[0]",
+            new Action<JsonObject>(condition =>
+                condition["affectedOperations"] = new JsonArray(JsonValue.Create("mortal_attack")))
+        ];
+        yield return
+        [
+            "afterlife_combat_condition_missing_payoff_effect",
+            ".combatConditions[0].payoff",
+            new Action<JsonObject>(condition =>
+                condition["payoff"] = new JsonObject { ["sourceType"] = "combat_condition" })
+        ];
+    }
+
+    private static JsonObject BuildValidCombatCondition(string conditionId = "mark_oath_flare_001") => new()
+    {
+        ["conditionId"] = conditionId,
+        ["displayName"] = "Разогретая клятва",
+        ["kind"] = "mark",
+        ["polarity"] = "buff",
+        ["status"] = "active",
+        ["source"] = new JsonObject
+        {
+            ["type"] = "special_art",
+            ["actorType"] = "guardian",
+            ["actorId"] = "guardian_azalia",
+            ["displayName"] = "Азалия"
+        },
+        ["targetSide"] = "opposition",
+        ["targetActorRef"] = "guardian_liora",
+        ["affectedOperations"] = new JsonArray(
+            JsonValue.Create("pressure"),
+            JsonValue.Create("counter")),
+        ["mechanicalAxis"] = "rollMode",
+        ["payoff"] = new JsonObject
+        {
+            ["effect"] = "advantage",
+            ["level"] = "advantage",
+            ["sourceType"] = "combat_condition"
+        },
+        ["duration"] = new JsonObject
+        {
+            ["type"] = "next_matching_operation",
+            ["remainingUses"] = 1
+        },
+        ["counterplay"] = new JsonArray(
+            JsonValue.Create("break_binding против контекста клятвы"),
+            JsonValue.Create("выбрать действие вне pressure/counter")),
+        ["visibility"] = "player_visible",
+        ["summary"] = "Клятва подсвечена: давление и контрприём легче направить в противника.",
+        ["auditRequirement"] = "При расходовании rollMode должен сослаться на conditionId."
+    };
+
+    private static JsonObject BuildCanonicalCombatCondition() => new()
+    {
+        ["conditionId"] = "ward_choice_mirror_001",
+        ["name"] = "Оберег зеркального выбора",
+        ["kind"] = "ward",
+        ["polarity"] = "buff",
+        ["status"] = "active",
+        ["source"] = new JsonObject
+        {
+            ["sourceType"] = "special_art",
+            ["actorType"] = "guardian",
+            ["actorId"] = "guardian_azalia",
+            ["displayName"] = "Азалия"
+        },
+        ["target"] = new JsonObject
+        {
+            ["side"] = "player",
+            ["actorType"] = "player",
+            ["actorId"] = "player_soul",
+            ["displayName"] = "Игрок"
+        },
+        ["affectedOperations"] = new JsonArray(
+            JsonValue.Create("guard"),
+            JsonValue.Create("incarnation_resistance")),
+        ["mechanicalAxes"] = new JsonArray(
+            JsonValue.Create("actionCostAudit"),
+            JsonValue.Create("specialArtAudit.effectNote")),
+        ["payoff"] = new JsonObject
+        {
+            ["effect"] = "protected_cost",
+            ["sourceType"] = "combat_condition"
+        },
+        ["duration"] = new JsonObject
+        {
+            ["type"] = "next_matching_operation",
+            ["remainingUses"] = 1
+        },
+        ["counterplay"] = new JsonArray(
+            JsonValue.Create("force_binding через другой lead contestant"),
+            JsonValue.Create("pressure, чтобы сделать оберег слишком дорогим")),
+        ["visibility"] = "visible",
+        ["summary"] = "Оберег защищает один ответ от дополнительного ОД штрафа."
+    };
+
     private static JsonObject BuildPlayerTieredRollDiceAudit(
         string effectiveMode,
         IReadOnlyCollection<JsonNode?> advantageSources,
@@ -14416,6 +14783,32 @@ public sealed class AfterlifeSpiritualConflictValidationTests : IDisposable
         }
         """);
     }
+
+    private async Task WriteActiveConflictWithCombatConditionsAsync(string combatConditionJson)
+    {
+        await WriteEmptyGuardianPowerJournalAsync();
+        var root = BuildRootWithActiveConflictAndInvalidMarkers();
+        root.Remove("lastInvalidUpdate");
+        root.Remove("lastInvalidUpdateReason");
+        root.Remove("lastInvalidUpdateAtUtc");
+        var active = (JsonObject)root["activeConflict"]!;
+        active["combatConditions"] = new JsonArray(JsonNode.Parse(combatConditionJson));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
+    }
+
+    private async Task SetActiveCombatConditionsAsync(string combatConditionJson)
+    {
+        await WriteEmptyGuardianPowerJournalAsync();
+        var current = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath)
+            ?? throw new InvalidOperationException("Expected active conflict fixture before adding combatConditions.");
+        var root = JsonNode.Parse(current)!.AsObject();
+        var active = (JsonObject)root["activeConflict"]!;
+        active["combatConditions"] = new JsonArray(JsonNode.Parse(combatConditionJson));
+        await _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
+    }
+
+    private Task WriteEmptyGuardianPowerJournalAsync() =>
+        _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, """{ "entries": [] }""");
 
     private static string AddDefaultMatchupAudit(string exchangeJson)
     {

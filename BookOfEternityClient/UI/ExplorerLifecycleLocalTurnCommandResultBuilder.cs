@@ -3035,7 +3035,7 @@ public static class ExplorerLifecycleLocalTurnCommandResultBuilder
                 ]
             }
         };
-        AddRawOrWarning(blocks, "JSON: active afterlife spiritual conflict", new JsonReadResult(AfterlifeSpiritualConflictState.StatePath, conflictRoot.FileExists, active?.DeepClone(), conflictRoot.Error));
+        AddRawOrWarning(blocks, "JSON: active afterlife spiritual conflict", new JsonReadResult(AfterlifeSpiritualConflictState.StatePath, conflictRoot.FileExists, AfterlifeCombatConditionPlayerAuditSanitizer.Sanitize(active), conflictRoot.Error));
 
         return Result(
             command,

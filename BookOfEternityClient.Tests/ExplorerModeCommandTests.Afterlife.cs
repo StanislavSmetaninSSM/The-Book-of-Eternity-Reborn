@@ -9536,6 +9536,69 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             "oppositionSideStrain": "strained",
             "conflictPosition": "player_advantaged",
             "resolutionState": "active",
+            "combatConditions": [
+              {
+                "conditionId": "visible_condition_marker",
+                "displayName": "Видимое окно клятвы",
+                "kind": "mark",
+                "status": "active",
+                "source": { "sourceType": "special_art", "actorId": "guardian_azalia" },
+                "targetSide": "opposition",
+                "affectedOperations": [ "pressure" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": { "sourceType": "combat_condition", "effect": "advantage", "level": "advantage" },
+                "duration": { "type": "next_matching_operation", "remainingUses": 1 },
+                "counterplay": [ "break_binding" ],
+                "visibility": "player_visible",
+                "summary": "Видимое условие можно показывать игроку."
+              },
+              {
+                "conditionId": "hidden_condition_marker",
+                "displayName": "hidden_condition_marker",
+                "kind": "vow",
+                "status": "active",
+                "source": { "sourceType": "story_link", "actorId": "hidden_condition_marker" },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": { "sourceType": "combat_condition", "effect": "disadvantage", "level": "disadvantage" },
+                "duration": { "type": "scene", "remainingUses": 1 },
+                "counterplay": [ "hidden_condition_marker" ],
+                "visibility": "gm_only",
+                "summary": "hidden_summary_legacy_marker",
+                "auditRequirement": "hidden_audit_legacy_marker"
+              },
+              {
+                "conditionId": "concealed_condition_marker",
+                "displayName": "concealed_condition_marker",
+                "kind": "vow",
+                "status": "active",
+                "source": { "sourceType": "story_link", "actorId": "concealed_condition_marker" },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": { "sourceType": "combat_condition", "effect": "disadvantage", "level": "disadvantage" },
+                "duration": { "type": "scene", "remainingUses": 1 },
+                "counterplay": [ "concealed_condition_marker" ],
+                "visibility": "concealed",
+                "summary": "concealed_condition_marker"
+              },
+              {
+                "conditionId": "spoiler_condition_marker",
+                "displayName": "spoiler_condition_marker",
+                "kind": "vow",
+                "status": "active",
+                "source": { "sourceType": "story_link", "actorId": "spoiler_condition_marker" },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": { "sourceType": "combat_condition", "effect": "disadvantage", "level": "disadvantage" },
+                "duration": { "type": "scene", "remainingUses": 1 },
+                "counterplay": [ "spoiler_condition_marker" ],
+                "visibility": "spoiler",
+                "summary": "spoiler_condition_marker"
+              }
+            ],
             "exchangeLog": [
               {
                 "exchangeId": "exchange_log_pressure_001",
@@ -9581,9 +9644,48 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                   ],
                   "rollMode": {
                     "player": {
-                      "effectiveMode": "advantage",
-                      "advantageSources": [ "позиционное преимущество" ],
-                      "disadvantageSources": []
+                      "effectiveMode": "normal",
+                      "advantageSources": [
+                        "позиционное преимущество",
+                        "visible_condition_marker",
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "visible_condition_marker",
+                          "level": "advantage",
+                          "summary": "visible_condition_roll_source_marker"
+                        },
+                        {
+                          "sourceType": "guard_tempo_window",
+                          "sourceId": "tempo_guard_valid_001",
+                          "level": "advantage",
+                          "summary": "guard_tempo_window_marker"
+                        }
+                      ],
+                      "disadvantageSources": [
+                        "hidden_condition_marker",
+                        "hidden_summary_legacy_marker",
+                        "hidden_audit_legacy_marker",
+                        "concealed_condition_marker",
+                        "spoiler_condition_marker",
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "hidden_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "hidden_condition_marker"
+                        },
+                        {
+                          "sourceType": "combat_condition",
+                          "conditionId": "concealed_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "concealed_condition_marker"
+                        },
+                        {
+                          "sourceType": "combat_condition",
+                          "sourceId": "spoiler_condition_marker",
+                          "level": "disadvantage",
+                          "summary": "spoiler_condition_marker"
+                        }
+                      ]
                     },
                     "opposition": {
                       "effectiveMode": "normal",
@@ -9649,6 +9751,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("позиционное преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible_condition_roll_source_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guard_tempo_window_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_summary_legacy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_audit_legacy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("concealed_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("spoiler_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("сложность: Тяжёлая", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("модификатор противника +1", renderedText, StringComparison.OrdinalIgnoreCase);

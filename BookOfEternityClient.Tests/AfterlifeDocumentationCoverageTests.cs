@@ -2883,6 +2883,40 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeCombatConditionsContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var combinedGuidance = matrix + examples + daemonSpec + daemonScript + glossary;
+
+        foreach (var text in new[] { matrix, examples, daemonSpec, daemonScript, glossary })
+        {
+            Assert.Contains("combatConditions", text, StringComparison.Ordinal);
+            Assert.Contains("mark", text, StringComparison.Ordinal);
+            Assert.Contains("ward", text, StringComparison.Ordinal);
+            Assert.Contains("burden", text, StringComparison.Ordinal);
+            Assert.Contains("opening", text, StringComparison.Ordinal);
+            Assert.Contains("vow", text, StringComparison.Ordinal);
+            Assert.Contains("counterplay", text, StringComparison.Ordinal);
+            Assert.Contains("rollMode", text, StringComparison.Ordinal);
+            Assert.Contains("actionCostAudit", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("visible active combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("hidden/gm_only combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("specialArtAudit.effectNote", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("no generic passive stat stacking", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("create, consume, expire, or clear combatConditions", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("condition-backed rollMode", combinedGuidance, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("afterlife_spiritual_conflict_combat_conditions_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_spiritual_conflict_combat_conditions_v1", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption()
     {
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
