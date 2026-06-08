@@ -10,16 +10,42 @@ export function StatusView() {
   }
 
   const { player, soul, world, afterlife } = game;
+  const hasMissingPlayerIdentity = [
+    player.name,
+    player.class,
+    player.race,
+    player.currentCondition
+  ].some(isMissingStatusValue);
+  const hasMissingSoulIdentity = [
+    soul.name,
+    soul.realm,
+    soul.enlightenmentTier,
+    soul.activeGuardianName
+  ].some(isMissingStatusValue);
+  const worldTime = formatWorldTimeForPlayer(world.worldTime, '—');
+  const hasMissingWorldDetail = isMissingStatusValue(world.location) || isMissingStatusValue(worldTime);
+  const hasAfterlifeProgress =
+    afterlife.shiningRadianceExperience > 0 ||
+    afterlife.shiningRadianceTier > 0 ||
+    afterlife.shiningLightSparks > 0 ||
+    afterlife.shiningHallCount > 0 ||
+    afterlife.shiningFactionCount > 0;
 
   return (
     <div className="status-view">
       <section className="status-card">
         <h3>🎭 Персонаж</h3>
+        {hasMissingPlayerIdentity && (
+          <StatusEmptyState
+            title="Летопись героя ещё ждёт первых строк."
+            body="Имя, класс, раса и состояние появятся после записи главы."
+          />
+        )}
         <dl className="block-kv">
-          <div className="block-kv__row"><dt>Имя</dt><dd>{player.name}</dd></div>
-          <div className="block-kv__row"><dt>Класс</dt><dd>{player.class}</dd></div>
-          <div className="block-kv__row"><dt>Раса</dt><dd>{player.race}</dd></div>
-          <div className="block-kv__row"><dt>Состояние</dt><dd>{player.currentCondition}</dd></div>
+          <StatusRow label="Имя" value={player.name} />
+          <StatusRow label="Класс" value={player.class} />
+          <StatusRow label="Раса" value={player.race} />
+          <StatusRow label="Состояние" value={player.currentCondition} />
         </dl>
         <div className="status-bars">
           <StatusMeter label="❤️ Здоровье" value={player.healthPercentage} />
@@ -36,38 +62,114 @@ export function StatusView() {
 
       <section className="status-card">
         <h3>🕯️ Душа</h3>
+        {hasMissingSoulIdentity && (
+          <StatusEmptyState
+            title="Душа ещё не обрела полную запись."
+            body="Имя души, царство и хранитель проявятся, когда книга закрепит их в главе."
+          />
+        )}
         <dl className="block-kv">
-          <div className="block-kv__row"><dt>Имя души</dt><dd>{soul.name}</dd></div>
-          <div className="block-kv__row"><dt>Царство</dt><dd>{soul.realm}</dd></div>
-          <div className="block-kv__row"><dt>Инкарнация</dt><dd>{soul.incarnation}</dd></div>
-          <div className="block-kv__row"><dt>Чернильные перья</dt><dd>{soul.inkFeathers}</dd></div>
-          <div className="block-kv__row"><dt>Просветление</dt><dd>{soul.enlightenmentTier}</dd></div>
-          <div className="block-kv__row"><dt>Хранитель</dt><dd>{soul.activeGuardianName}</dd></div>
+          <StatusRow label="Имя души" value={soul.name} />
+          <StatusRow label="Царство" value={soul.realm} />
+          <StatusRow label="Инкарнация" value={soul.incarnation} />
+          <StatusRow label="Чернильные перья" value={soul.inkFeathers} />
+          <StatusRow label="Просветление" value={soul.enlightenmentTier} />
+          <StatusRow label="Хранитель" value={soul.activeGuardianName} />
         </dl>
       </section>
 
       <section className="status-card">
         <h3>🗺️ Мир</h3>
+        {hasMissingWorldDetail && (
+          <StatusEmptyState
+            title="Путь пока скрыт туманом."
+            body="Место и время станут яснее после следующей записи."
+          />
+        )}
         <dl className="block-kv">
-          <div className="block-kv__row"><dt>Локация</dt><dd>{world.location || '—'}</dd></div>
-          <div className="block-kv__row"><dt>Время</dt><dd>{formatWorldTimeForPlayer(world.worldTime, '—')}</dd></div>
-          <div className="block-kv__row"><dt>Ход</dt><dd>{world.turnNumber}</dd></div>
+          <StatusRow label="Локация" value={world.location} fallback="место уточняется" />
+          <StatusRow label="Время" value={worldTime} fallback="время уточняется" />
+          <StatusRow label="Ход" value={world.turnNumber} />
         </dl>
       </section>
 
-      {(afterlife.shiningRadianceExperience > 0 || afterlife.shiningHallCount > 0) && (
-        <section className="status-card">
-          <h3>✨ Посмертие</h3>
-          <dl className="block-kv">
-            <div className="block-kv__row"><dt>Сияние</dt><dd>{afterlife.shiningRadianceExperience} (уровень {afterlife.shiningRadianceTier})</dd></div>
-            <div className="block-kv__row"><dt>Искры света</dt><dd>{afterlife.shiningLightSparks}</dd></div>
-            <div className="block-kv__row"><dt>Залы</dt><dd>{afterlife.shiningHallCount}</dd></div>
-            <div className="block-kv__row"><dt>Фракции</dt><dd>{afterlife.shiningFactionCount}</dd></div>
-          </dl>
-        </section>
-      )}
+      <section className="status-card">
+        <h3>✨ Посмертие</h3>
+        {!hasAfterlifeProgress && (
+          <StatusEmptyState
+            title="Следы посмертия пока не открыты."
+            body="Сияние, искры и залы останутся на нуле, пока душа не вступит в посмертный путь."
+          />
+        )}
+        <dl className="block-kv">
+          <div className="block-kv__row"><dt>Сияние</dt><dd>{afterlife.shiningRadianceExperience} (уровень {afterlife.shiningRadianceTier})</dd></div>
+          <StatusRow label="Искры света" value={afterlife.shiningLightSparks} />
+          <StatusRow label="Залы" value={afterlife.shiningHallCount} />
+          <StatusRow label="Фракции" value={afterlife.shiningFactionCount} />
+        </dl>
+      </section>
     </div>
   );
+}
+
+type StatusValue = string | number | null | undefined;
+
+const missingStatusValues = new Set([
+  'не указан',
+  'не указана',
+  'не указано',
+  'не назначен',
+  'unknown',
+  'n/a',
+  '—'
+]);
+
+function StatusEmptyState({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="status-empty-state" role="note">
+      <strong>{title}</strong>
+      <p>{body}</p>
+    </div>
+  );
+}
+
+function StatusRow({
+  label,
+  value,
+  fallback = 'Пока не записано'
+}: {
+  label: string;
+  value: StatusValue;
+  fallback?: string;
+}) {
+  return (
+    <div className="block-kv__row">
+      <dt>{label}</dt>
+      <dd>{formatStatusValue(value, fallback)}</dd>
+    </div>
+  );
+}
+
+function formatStatusValue(value: StatusValue, fallback: string) {
+  if (typeof value === 'number') {
+    return value;
+  }
+
+  const normalized = value?.trim();
+  if (!normalized || missingStatusValues.has(normalized.toLowerCase())) {
+    return <span className="status-empty-inline">{fallback}</span>;
+  }
+
+  return normalized;
+}
+
+function isMissingStatusValue(value: StatusValue): boolean {
+  if (typeof value === 'number') {
+    return false;
+  }
+
+  const normalized = value?.trim().toLowerCase();
+  return !normalized || missingStatusValues.has(normalized);
 }
 
 type StatusMeterSeverity = 'good' | 'warning' | 'danger';
