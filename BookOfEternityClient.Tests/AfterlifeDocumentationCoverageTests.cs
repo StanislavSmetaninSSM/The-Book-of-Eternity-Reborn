@@ -2917,6 +2917,46 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void AfterlifeSpecialArtCombatEffectContractIsDocumentedForGm()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+        var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
+        var daemonScript = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var combinedGuidance = matrix + examples + apiSpec + daemonSpec + daemonScript + taskGuide + glossary;
+
+        foreach (var text in new[] { matrix, examples, apiSpec, daemonSpec, daemonScript, taskGuide, glossary })
+        {
+            Assert.Contains("specialArts[].combatEffect", text, StringComparison.Ordinal);
+            Assert.Contains("effectSummary", text, StringComparison.Ordinal);
+            Assert.Contains("mechanicalAxis", text, StringComparison.Ordinal);
+            Assert.Contains("allowedPayoff", text, StringComparison.Ordinal);
+            Assert.Contains("auditRequirement", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("summary", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("trigger", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("limit", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("baseOperation", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudit.effectNote", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("rollMode", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("conflictPosition", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("tempoAdvantage", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("sideStrain", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("counterPayoff", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("actionCostAudit", combinedGuidance, StringComparison.Ordinal);
+        Assert.Contains("player-owned learned special art", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("non-player Guardian special art", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("multiplied ОД", examples, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("afterlife_special_art_combat_effect_v1", examples, StringComparison.Ordinal);
+        Assert.Contains("afterlife_special_art_combat_effect_v1", manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption()
     {
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");

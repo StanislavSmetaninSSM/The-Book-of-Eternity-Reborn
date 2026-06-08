@@ -286,6 +286,8 @@ public partial class ValidationService
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "schemaVersion", AfterlifeEntityProfileState.ProfilesProperty,
+                AfterlifeEntityProfileState.ResponseProfilesProperty,
+                AfterlifeEntityProfileState.UpdateProperty,
                 AfterlifeEntityProfileState.LastInvalidProgressionOverrideProperty,
                 AfterlifeEntityProfileState.LastInvalidProgressionOverrideReasonProperty,
                 AfterlifeEntityProfileState.LastInvalidCommandProperty,

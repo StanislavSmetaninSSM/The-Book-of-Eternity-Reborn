@@ -495,7 +495,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                             GetString(art, "displayName", GetString(art, "artId", "Без названия")),
                             DescribeArt(GetString(art, "baseOperation", "?")),
                             GetNumberOrString(art, "tier", "0"),
-                            GetString(art, "effectSummary", "эффект не описан"),
+                            DescribeSpecialArtEffect(art),
                             DescribeSpecialArtCost(art)
                         ]
                     })
@@ -729,7 +729,46 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             return "нет";
 
         return string.Join("; ", arts.OfType<JsonObject>().Select(art =>
-            $"{GetString(art, "displayName", GetString(art, "artId", "?"))} {GetNumberOrString(art, "tier", "0")}"));
+        {
+            var name = GetString(art, "displayName", GetString(art, "artId", "?"));
+            var tier = GetNumberOrString(art, "tier", "0");
+            var effect = DescribeSpecialArtEffect(art);
+            return string.IsNullOrWhiteSpace(effect)
+                ? $"{name} {tier}"
+                : $"{name} {tier}: {effect}";
+        }));
+    }
+
+    private static string DescribeSpecialArtEffect(JsonObject art)
+    {
+        var summary = GetString(art, "effectSummary", "эффект не описан");
+        var combatEffect = FormatSpecialArtCombatEffect(art["combatEffect"] as JsonObject);
+        return string.IsNullOrWhiteSpace(combatEffect)
+            ? summary
+            : $"{summary}; {combatEffect}";
+    }
+
+    private static string? FormatSpecialArtCombatEffect(JsonObject? combatEffect)
+    {
+        if (combatEffect == null)
+            return null;
+
+        var parts = new List<string>();
+        var summary = GetString(combatEffect, "summary", "");
+        var trigger = GetString(combatEffect, "trigger", "");
+        var payoff = GetString(combatEffect, "allowedPayoff", "");
+        var limit = GetString(combatEffect, "limit", "");
+
+        if (!string.IsNullOrWhiteSpace(summary))
+            parts.Add($"Боевой эффект: {summary}");
+        if (!string.IsNullOrWhiteSpace(trigger))
+            parts.Add($"срабатывает: {trigger}");
+        if (!string.IsNullOrWhiteSpace(payoff))
+            parts.Add($"выигрыш: {payoff}");
+        if (!string.IsNullOrWhiteSpace(limit))
+            parts.Add($"предел: {limit}");
+
+        return parts.Count == 0 ? null : string.Join("; ", parts);
     }
 
     private static string DescribeFateCards(JsonArray? fateCards, bool includeHiddenDiagnostics)

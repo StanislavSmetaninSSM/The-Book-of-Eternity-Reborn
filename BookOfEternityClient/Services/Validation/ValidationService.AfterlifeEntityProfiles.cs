@@ -34,6 +34,32 @@ public partial class ValidationService
         "blocked"
     };
 
+    private static readonly HashSet<string> AfterlifeSpecialArtCombatEffectAxes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "rollMode",
+        "conflictPosition",
+        "controlState",
+        "sideStrain",
+        "playerSideStrain",
+        "oppositionSideStrain",
+        "tempoAdvantage",
+        "counterPayoff",
+        "actionEconomy",
+        "actionCostAudit",
+        "combatCondition",
+        "combatConditions"
+    };
+
+    private static readonly string[] AfterlifeSpecialArtCombatEffectRequiredFields =
+    [
+        "summary",
+        "trigger",
+        "mechanicalAxis",
+        "allowedPayoff",
+        "limit",
+        "auditRequirement"
+    ];
+
     private static readonly HashSet<string> AfterlifeFateCardStatuses = new(StringComparer.OrdinalIgnoreCase)
     {
         "locked",
@@ -146,8 +172,8 @@ public partial class ValidationService
             hasUpdates);
         var identities = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         ValidateProfileArrayIfPresent(profiles, hasProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ProfilesProperty}", identities, issues);
-        ValidateProfileArrayIfPresent(responseProfiles, hasResponseProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ResponseProfilesProperty}", identities, issues);
-        ValidateProfileArrayIfPresent(updates, hasUpdates, $"{contextPrefix}.{AfterlifeEntityProfileState.UpdateProperty}", identities, issues);
+        ValidateProfileArrayIfPresent(responseProfiles, hasResponseProfiles, $"{contextPrefix}.{AfterlifeEntityProfileState.ResponseProfilesProperty}", identities, issues, requireCurrentSpecialArtCombatEffect: true);
+        ValidateProfileArrayIfPresent(updates, hasUpdates, $"{contextPrefix}.{AfterlifeEntityProfileState.UpdateProperty}", identities, issues, requireCurrentSpecialArtCombatEffect: true);
         ValidateAfterlifeEntityCustomStateChangesIfPresent(
             customStateChanges,
             hasCustomStateChanges,
@@ -245,7 +271,8 @@ public partial class ValidationService
         bool hasProfiles,
         string context,
         HashSet<string> identities,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool requireCurrentSpecialArtCombatEffect = false)
     {
         if (!hasProfiles)
             return;
@@ -266,7 +293,7 @@ public partial class ValidationService
         var index = 0;
         foreach (var profile in profiles.EnumerateArray())
         {
-            ValidateAfterlifeEntityProfile(profile, $"{context}[{index++}]", identities, issues);
+            ValidateAfterlifeEntityProfile(profile, $"{context}[{index++}]", identities, issues, requireCurrentSpecialArtCombatEffect);
         }
     }
 
@@ -274,7 +301,8 @@ public partial class ValidationService
         JsonElement profile,
         string context,
         HashSet<string> identities,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool requireCurrentSpecialArtCombatEffect = false)
     {
         if (profile.ValueKind != JsonValueKind.Object)
         {
@@ -361,7 +389,7 @@ public partial class ValidationService
         ValidateAfterlifeProfileCurrencies(profile, context, issues);
         ValidateAfterlifeProfileProgression(profile, context, issues);
         ValidateAfterlifeProfileStandardArts(profile, context, issues);
-        ValidateAfterlifeProfileSpecialArts(profile, context, actorType, actorId, issues);
+        ValidateAfterlifeProfileSpecialArts(profile, context, actorType, actorId, issues, requireCurrentSpecialArtCombatEffect);
         ValidateAfterlifeProfileCustomStates(profile, context, issues);
         ValidateAfterlifeProfileFateCards(profile, context, issues);
         ValidateAfterlifeProfileSoulDissipation(profile, context, issues);
@@ -2244,7 +2272,8 @@ public partial class ValidationService
         string context,
         string? profileActorType,
         string? profileActorId,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool requireCurrentSpecialArtCombatEffect = false)
     {
         if (!TryRequireProfileArray(profile, context, "specialArts", "afterlife_entity_profile_missing_special_arts", issues, out var specialArts))
             return;
@@ -2282,6 +2311,13 @@ public partial class ValidationService
 
             RequireProfileString(art, artContext, "displayName", "afterlife_entity_profile_special_art_missing_display_name", issues);
             RequireProfileString(art, artContext, "effectSummary", "afterlife_entity_profile_special_art_missing_effect", issues);
+            ValidateSpecialArtCombatEffect(
+                art,
+                artContext,
+                issues,
+                requireCurrentSpecialArtCombatEffect &&
+                art.TryGetProperty("canTeachPlayer", out var teachableNode) &&
+                teachableNode.ValueKind == JsonValueKind.True);
             var ownerActorType = RequireProfileString(art, artContext, "ownerActorType", "afterlife_entity_profile_special_art_missing_owner_actor_type", issues);
             RequireProfileString(art, artContext, "ownerActorId", "afterlife_entity_profile_special_art_missing_owner_actor_id", issues);
             if (!string.IsNullOrWhiteSpace(ownerActorType) && !AfterlifeEntityProfileState.ActorTypes.Contains(ownerActorType))
@@ -2389,6 +2425,135 @@ public partial class ValidationService
                     actual: trainingConditions.ValueKind.ToString()));
             }
         }
+    }
+
+    private static void ValidateSpecialArtCombatEffect(
+        JsonElement art,
+        string artContext,
+        List<ValidationIssue> issues,
+        bool isRequired)
+    {
+        if (!art.TryGetProperty("combatEffect", out var combatEffect))
+        {
+            if (isRequired)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{artContext}.combatEffect",
+                    IssueSeverity.Error,
+                    "Текущее teachable specialArts[] должно содержать structured combatEffect для ordinary afterlife combat payoff.",
+                    code: "afterlife_entity_profile_special_art_missing_combat_effect",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "combatEffect object with summary/trigger/mechanicalAxis/allowedPayoff/limit/auditRequirement",
+                    actual: "missing"));
+            }
+
+            return;
+        }
+
+        if (combatEffect.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                $"{artContext}.combatEffect",
+                IssueSeverity.Error,
+                "combatEffect особого духовного искусства должен быть object.",
+                code: "afterlife_entity_profile_special_art_invalid_combat_effect",
+                section: "AfterlifeEntityProfiles",
+                expected: "object",
+                actual: combatEffect.ValueKind.ToString()));
+            return;
+        }
+
+        foreach (var field in AfterlifeSpecialArtCombatEffectRequiredFields)
+        {
+            if (!combatEffect.TryGetProperty(field, out var value) ||
+                value.ValueKind != JsonValueKind.String ||
+                string.IsNullOrWhiteSpace(value.GetString()))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{artContext}.combatEffect.{field}",
+                    IssueSeverity.Error,
+                    "combatEffect должен содержать все required player/GM authority fields.",
+                    code: "afterlife_entity_profile_special_art_combat_effect_missing_required_field",
+                    section: "AfterlifeEntityProfiles",
+                    expected: string.Join("/", AfterlifeSpecialArtCombatEffectRequiredFields),
+                    actual: combatEffect.TryGetProperty(field, out var actual) ? actual.ToString() : "missing"));
+            }
+        }
+
+        var summary = GetProfileString(combatEffect, "summary");
+        if (!string.IsNullOrWhiteSpace(summary) && IsGenericSpecialArtCombatEffectSummary(summary))
+        {
+            issues.Add(new ValidationIssue(
+                $"{artContext}.combatEffect.summary",
+                IssueSeverity.Error,
+                "combatEffect.summary должен описывать конкретную боевую нишу, а не generic placeholder.",
+                code: "afterlife_entity_profile_special_art_invalid_combat_effect_summary",
+                section: "AfterlifeEntityProfiles",
+                expected: "specific player-facing ordinary combat niche with trigger/payoff context",
+                actual: summary));
+        }
+
+        var axis = GetProfileString(combatEffect, "mechanicalAxis");
+        if (!string.IsNullOrWhiteSpace(axis) && !AfterlifeSpecialArtCombatEffectAxes.Contains(axis))
+        {
+            issues.Add(new ValidationIssue(
+                $"{artContext}.combatEffect.mechanicalAxis",
+                IssueSeverity.Error,
+                "combatEffect.mechanicalAxis должен ссылаться только на легальные afterlife combat surfaces.",
+                code: "afterlife_entity_profile_special_art_invalid_combat_effect_axis",
+                section: "AfterlifeEntityProfiles",
+                expected: string.Join("/", AfterlifeSpecialArtCombatEffectAxes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                actual: axis));
+        }
+
+        if (CombatEffectTextLooksLikeBypassOrPowerCreep(combatEffect))
+        {
+            issues.Add(new ValidationIssue(
+                $"{artContext}.combatEffect",
+                IssueSeverity.Error,
+                "combatEffect не должен обходить baseOperation/tactical matrix, давать безлимитный passive bonus или использовать Mortal HP/status vocabulary.",
+                code: "afterlife_entity_profile_special_art_invalid_combat_effect_scope",
+                section: "AfterlifeEntityProfiles",
+                expected: "bounded payoff inside legal afterlife combat axes and specialArtAudit.effectNote",
+                actual: combatEffect.ToString()));
+        }
+    }
+
+    private static bool IsGenericSpecialArtCombatEffectSummary(string summary)
+    {
+        var normalized = summary.Trim().ToLowerInvariant();
+        if (normalized.Length < 24)
+            return true;
+
+        return normalized.Contains("unique effect applies", StringComparison.Ordinal) ||
+               normalized.Contains("special effect", StringComparison.Ordinal) ||
+               normalized.Contains("combat bonus", StringComparison.Ordinal) ||
+               normalized.Contains("особый эффект", StringComparison.Ordinal) ||
+               normalized.Contains("уникальный эффект", StringComparison.Ordinal) ||
+               normalized.Contains("боевой бонус", StringComparison.Ordinal);
+    }
+
+    private static bool CombatEffectTextLooksLikeBypassOrPowerCreep(JsonElement combatEffect)
+    {
+        var text = string.Join(" ", AfterlifeSpecialArtCombatEffectRequiredFields
+            .Select(field => GetProfileString(combatEffect, field))
+            .Where(value => !string.IsNullOrWhiteSpace(value)))
+            .ToLowerInvariant();
+
+        return text.Contains("bypass", StringComparison.Ordinal) ||
+               text.Contains("обходит", StringComparison.Ordinal) ||
+               text.Contains("tactical matrix", StringComparison.Ordinal) ||
+               text.Contains("безлимит", StringComparison.Ordinal) ||
+               text.Contains("unlimited", StringComparison.Ordinal) ||
+               text.Contains("always active", StringComparison.Ordinal) ||
+               text.Contains("всегда актив", StringComparison.Ordinal) ||
+               text.Contains("пассивный безлимит", StringComparison.Ordinal) ||
+               text.Contains("ничего не объяснять", StringComparison.Ordinal) ||
+               text.Contains("hit point", StringComparison.Ordinal) ||
+               text.Contains("hitpoint", StringComparison.Ordinal) ||
+               text.Contains(" hp", StringComparison.Ordinal) ||
+               text.Contains("здоров", StringComparison.Ordinal) ||
+               text.Contains("mortal", StringComparison.Ordinal);
     }
 
     private void ValidateAfterlifeSpecialArtLearningReceiptsIfPresent(

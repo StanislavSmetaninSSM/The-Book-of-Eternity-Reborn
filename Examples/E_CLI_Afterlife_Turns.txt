@@ -6689,6 +6689,8 @@ Correct contested exchange response:
 
 `afterlife_spiritual_conflict_combat_conditions_v1`: `combatConditions[]` is the dedicated short-lived condition layer for afterlife spiritual combat. Use kinds `mark`, `ward`, `burden`, `opening`, and `vow`; each active entry needs visible/private identity, source, target side/actor, affected operations, finite duration/uses, `counterplay`, and summary. A condition must map to an existing legal axis: condition-backed rollMode, `conflictPosition`, legal anti-control `controlState` softening/narrowing, `playerSideStrain`, `oppositionSideStrain`, `tempoAdvantage`, `counterPayoff`, `actionCostAudit` / ОД costs, or `specialArtAudit.effectNote`. This is no generic passive stat stacking. The GM must create, consume, expire, or clear combatConditions explicitly, and ordinary player output shows visible active combatConditions while hidden/gm_only combatConditions remain private. Hidden Saref-linked or Guardian-linked setup may exist in state, but the visible `response` must stay non-spoiler.
 
+`afterlife_special_art_combat_effect_v1`: current/new teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; legacy `effectSummary`-only profiles remain readable.
+
 Worked combatConditions lifecycle fragment: this exchange creates a visible `mark`, a visible `ward`, and a hidden/gm_only `burden`; it consumes an `opening`; it expires a `vow`; it uses a condition-backed rollMode source; it records counterplay; and the named special art explains its condition interaction only through `specialArtAudit.effectNote`.
 
 ```json
@@ -6890,14 +6892,14 @@ Worked combatConditions lifecycle fragment: this exchange creates a visible `mar
           "summary": "Старый обет больше не активен и не должен оставаться пассивным бонусом."
         }
       ],
-      "specialArtAudit": {
-        "artId": "guardian_mirror_oath",
-        "ownerActorType": "guardian",
-        "ownerActorId": "guardian_azalia_001",
-        "baseOperation": "guard",
-        "costMultiplierPercent": 150,
-        "effectNote": "The special art sustains ward_choice_mirror_001 for one use; its effect is audited through combatConditions[] and does not add a generic passive stat bonus."
-      },
+        "specialArtAudit": {
+          "artId": "guardian_mirror_oath",
+          "ownerActorType": "guardian",
+          "ownerActorId": "guardian_azalia_001",
+          "baseOperation": "guard",
+          "costMultiplierPercent": 150,
+          "effectNote": "Read specialArts[].combatEffect: the guard-triggered effect sustains ward_choice_mirror_001 for one use through combatConditions[] / actionCostAudit only, preserving baseOperation=guard and adding no generic passive stat bonus."
+        },
       "actionCostAudit": {
         "player": {
           "operationType": "counter",
@@ -7592,7 +7594,7 @@ Scenario:
 - Actor agency uses `afterlifeActorGoalUpdates[]`, `afterlifeActorQuestUpdates[]`, `afterlifeActorActivityUpdates[]`, and `completeAfterlifeActorActivities[]`. Canonical profiles store `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]`; every goal/current activity needs `gmThoughtsSummary`; `currentActivity` must link to current `goals.goalId` and an active `personalQuests[].questId`. Complete activities through `completeAfterlifeActorActivities[]`; do not erase `currentActivity` directly.
 - Relationship gates use `relationships[]` plus `afterlifeRelationshipChanges[]`, `afterlifeRelationshipLockUpdates[]`, and `afterlifeBreakthroughQuestUpdates[]`. Supported axes are `trust`, `romance`, `rivalry`, `oath`, `fear`, `reverence`, and `debt`; `value >= 50` requires a positive `breakthroughQuestId` lock/proof, `value <= -50` requires `redemptionQuestId` or `pointOfNoReturn` proof. Completed breakthrough/redemption quests clear linked ids only with `_clear_`; these are afterlife-only and must not use Mortal `NPCRelationshipChanges`.
 - Actor masks use profile `masks[]` and `activeMaskId` plus `afterlifeActorMaskAdds[]`, `afterlifeActorMaskUpdates[]`, `afterlifeActorMaskRemovals[]`, and `afterlifeActorActiveMaskChanges[]`. `activeMaskId` is either an existing `masks[].maskId` or `_true_self_`; use `_true_self_`, not `null`, to remove the active mask. Each mask includes `maskId`, `displayName`, `publicArchetype`, `visiblePersonality`, hidden `concealedTruth`, `directives[]`, `revealConditions[]`, `deceptionRisk=low|medium|high|critical`, and optional `linkedThreatId` / `linkedSarefAgentId`. Ordinary player-facing UI may show only the visible mask until `isRevealed=true`; do not leak hidden truth fields before reveal, and do not use Mortal `NPCMaskAdds`.
-- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, and `trainingConditions` when teachable; `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
+- Special arts require owner identity, `costMultiplierPercent`, `upgradeCost`, `effectSummary`, `specialArts[].combatEffect`, and `trainingConditions` when teachable; `combatEffect` carries `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement` for legal afterlife surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, include at least one positive value, and may be Ink-only, Spark-only, or mixed. Spark-only learned-art upgrades are client-local to ordinary active Shining Abode.
 - Roleplay training that teaches the player a special art is recorded through `afterlifeSpecialArtLearningReceipts[]`; the teacher profile, player profile, source `specialArts[].artId`, and `canTeachPlayer=true` must resolve in profile authority. Learned special arts start at tier 0; do not use `initialTier` to grant progression.
 - Learned special arts / изученные особые духовные искусства are upgraded by the client through `/spiritual_arts`; GM conflict output may use them only from validated pre-turn authority.
 - If the GM does not write `afterlifeEntityProgressionOverrides[]`, the client uses only the current-turn `progression_report.json` whose `sessionId/requestId/turnNumber` match the current request to apply deterministic income, one affordable `progressionStrategy.priorityOrder` upgrade, `lastAutoProgressionCycleKey`, and `progressionLedger[]`; stale or missing-context reports are ignored for profile auto-progression. This is per profile realm: Chaos Sea profiles consume Chaos/Guardian/Resident contours and receive Ink Feather income only; Shining Abode profiles consume Shining contours and receive Ink Feather + Light Spark income. Priority entries may be standard art ids, `specialArts[].artId`, `enlightenment`, `radiance`, or `soul_dissipation`. Strategy constraints are executable: `resourceReserve` is a hard minimum remaining balance, `allowedSpends` is an allow-list of spend categories, and `forbiddenSpends` is a deny-list; valid categories are `standardArts`, `specialArts`, `enlightenment`, `radiance`, and `soulDissipationTier`. If both lists are present, the allow-list is applied first and the deny-list can still block the spend. Forced `specialArtTierDeltas` must target an existing `specialArts[].artId` on the same profile; unknown ids are repair-blocking, not no-op.
@@ -7653,6 +7655,14 @@ Valid response fragment:
             "lightSparks": 0
           },
           "effectSummary": "При успехе отражает часть давления в сторону противника.",
+          "combatEffect": {
+            "summary": "Зеркальная защита ловит прямое давление и создаёт одно темповое окно защиты вместо урона по противнику.",
+            "trigger": "Использовать mirror_guard как guard против pressure, force_incarnation или condition-backed угрозы напряжения стороны.",
+            "mechanicalAxis": "tempoAdvantage",
+            "allowedPayoff": "Записать after.tempoAdvantage для защищённой стороны или удержать playerSideStrain от ухудшения больше чем на один ранг.",
+            "limit": "Один обмен защиты; baseOperation остаётся guard и не превращается в pressure, binding или force_binding.",
+            "auditRequirement": "specialArtAudit.effectNote должен назвать mirror_guard, входящую операцию и созданное tempoAdvantage или sideStrain изменение."
+          },
           "canTeachPlayer": true,
           "trainingConditions": [
             "Провести сцену обучения у Хранителя Зеркал.",
@@ -7799,6 +7809,99 @@ Valid response fragment:
           "turnNumber": 22,
           "reason": "initial_profile",
           "summary": "Профиль создан при встрече с хранителем."
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "profileVersion": "afterlife_entity_profiles_v1",
+      "actorType": "player_soul",
+      "actorId": "player_soul",
+      "displayName": "Душа игрока",
+      "realm": "Chaos Sea",
+      "locationName": "Зеркальная Обитель",
+      "currencies": {
+        "inkFeathers": 90,
+        "lightSparks": 0
+      },
+      "progression": {
+        "enlightenment": {
+          "experience": 32,
+          "tier": 2
+        },
+        "radiance": {
+          "experience": 0,
+          "tier": 0
+        }
+      },
+      "standardArts": {
+        "pressure": 1,
+        "guard": 1,
+        "counter": 1,
+        "maneuver": 0,
+        "binding": 0,
+        "force_binding": 0,
+        "break_binding": 0,
+        "incarnation_resistance": 1,
+        "champion_coordination": 0,
+        "recover_spiritual_power": 1
+      },
+      "specialArts": [
+        {
+          "artId": "mirror_guard",
+          "displayName": "Зеркальная Защита",
+          "ownerActorType": "player_soul",
+          "ownerActorId": "player_soul",
+          "baseOperation": "guard",
+          "tier": 0,
+          "costMultiplierPercent": 150,
+          "upgradeCost": {
+            "inkFeathers": 30,
+            "lightSparks": 0
+          },
+          "effectSummary": "Player-owned learned special art: при защите душа разворачивает давление в безопасное темповое окно.",
+          "combatEffect": {
+            "summary": "Player-owned learned special art turns a successful guard against direct pressure into a one-use rollMode advantage source for the next counter or maneuver.",
+            "trigger": "Use mirror_guard as guard against pressure after the learning receipt is in pre-turn authority.",
+            "mechanicalAxis": "rollMode",
+            "allowedPayoff": "Add one special_art source to diceAudit.rollMode.player.advantageSources[] or preserve current conflictPosition without harming opposition strain.",
+            "limit": "One current exchange payoff only; baseOperation stays guard and cannot become pressure or binding.",
+            "auditRequirement": "specialArtAudit.effectNote must name mirror_guard, the guard trigger, and the exact rollMode source or conflictPosition preservation."
+          },
+          "canTeachPlayer": false,
+          "trainingConditions": []
+        }
+      ],
+      "customStates": [],
+      "fateCards": [],
+      "relationships": [],
+      "soulDissipationTier": 0,
+      "progressionStrategy": {
+        "strategyId": "strategy_player_soul_mirror_guard",
+        "summary": "Игрок сначала улучшает изученную Зеркальную Защиту, затем обычную защиту.",
+        "priorityOrder": [
+          "mirror_guard",
+          "guard"
+        ],
+        "resourceReserve": {
+          "inkFeathers": 20,
+          "lightSparks": 0
+        },
+        "allowedSpends": [
+          "specialArts",
+          "standardArts"
+        ],
+        "forbiddenSpends": [],
+        "lastUpdatedAtTurn": 23
+      },
+      "progressionLedger": [],
+      "warnings": [],
+      "ledger": [
+        {
+          "entryId": "profile_ledger_player_mirror_guard_001",
+          "turnNumber": 23,
+          "reason": "learned_special_art_profile_update",
+          "summary": "Профиль игрока показывает изученное особое искусство с боевым эффектом для решения о прокачке."
         }
       ]
     }
@@ -8065,9 +8168,9 @@ Correct reasoning checklist:
 - `actorType + actorId` is the identity key; do not create duplicate profiles for the same entity.
 - `player_soul` is a reserved identity: the player profile uses `actorType=player_soul` and `actorId=player_soul`, and no non-player profile may use that actor id.
 - `standardArts` and `specialArts[].baseOperation` use the canonical spiritual action ids, while player-facing prose may show Russian labels.
-- `specialArts[]` is more expensive than the base action: `ownerActorType/ownerActorId` must match the enclosing profile, `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, and teachable arts must list `trainingConditions`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, and include at least one positive value. Spark-only `upgradeCost` is valid only as a learned-art upgrade path in ordinary active Shining Abode.
+- `specialArts[]` is more expensive than the base action: `ownerActorType/ownerActorId` must match the enclosing profile, `costMultiplierPercent` must be above 100, `upgradeCost` records higher progression cost, teachable arts must list `trainingConditions`, and current/new teachable arts must include `specialArts[].combatEffect` beside `effectSummary`. `combatEffect` uses `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; it preserves `baseOperation` and maps only to legal afterlife axes such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. `upgradeCost` must be non-empty, use only `inkFeathers`/`lightSparks`, and include at least one positive value. Spark-only `upgradeCost` is valid only as a learned-art upgrade path in ordinary active Shining Abode.
 - If a learned art is recognized, write `afterlifeSpecialArtLearningReceipts[]`; do not silently add it to the player without a receipt, do not grant learned-art tiers through `initialTier`, and do not reference a missing or non-teachable source art.
-- If a conflict exchange uses a special art, include either `specialArtAudit` with `effectNote`, owner identity, `baseOperation`, and `costMultiplierPercent`, or `specialArtAudits[]` with one object per art when both player and opposition use named special arts in the same exchange; never write both fields on one exchange. Every audit must match the validated pre-turn profile of that owner. Player-owned learned special arts that power the player's exchange operation require `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; non-player/incoming special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must be owned by the resolved opposition actor, use the matching `specialArts[].tier` as `actionCostAudit.opposition.artTier`, and require the same special-art cost fields and multiplied `effectiveCost` under `actionCostAudit.opposition`. Do not attach a non-player special art to the player's own `exchange.operationType`, to an earlier `incomingAction.operationType`, or to any other stale candidate; if `incomingAction.finalOperationType` exists, that final operation is authoritative. Its `baseOperation` must match the resolved opposition operation used for `actionCostAudit.opposition`.
+- If a conflict exchange uses a special art, first read `specialArts[].combatEffect`, then include either `specialArtAudit` with `effectNote`, owner identity, `baseOperation`, and `costMultiplierPercent`, or `specialArtAudits[]` with one object per art when both player and opposition use named special arts in the same exchange; never write both fields on one exchange. Every audit must match the validated pre-turn profile of that owner, and `effectNote` must cite the combatEffect trigger/payoff actually used. Player-owned learned special arts that power the player's exchange operation require `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and multiplied `effectiveCost`; non-player/incoming special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must be owned by the resolved opposition actor, use the matching `specialArts[].tier` as `actionCostAudit.opposition.artTier`, and require the same special-art cost fields and multiplied `effectiveCost` under `actionCostAudit.opposition`. Do not attach a non-player special art to the player's own `exchange.operationType`, to an earlier `incomingAction.operationType`, or to any other stale candidate; if `incomingAction.finalOperationType` exists, that final operation is authoritative. Its `baseOperation` must match the resolved opposition operation used for `actionCostAudit.opposition`.
 - `customStates[]` is visible in `/afterlife_profiles`; remove ended states through `afterlifeEntityCustomStateChanges[].statesToRemove[]` instead of leaving stale states forever.
 - `fateCards[]` stores story potential and mechanical unlocks. Locked/hidden/available cards cannot grant `guardianEffects`, `playerUnlocks`, `politicalEffects`, `combatEffects`, or `trainingUnlocks`; unlock them only through `afterlifeFateCardUnlocks[]` with `appliedAtTurn`, evidence, and at least one effect object with `summary`.
 - `goals`, `personalQuests[]`, `currentActivity`, and `completedActivities[]` are the afterlife actor agency layer. A current activity without `gmThoughtsSummary`, current goal link, and active personal quest link is invalid.
