@@ -58,7 +58,7 @@
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
       "responseSurface": "specialArts[].combatEffect / specialArtAudit.effectNote / specialArtAudits[].effectNote",
-      "description": "Structured afterlife-only combatEffect beside effectSummary for current teachable special arts: summary, trigger, mechanicalAxis, allowedPayoff, limit, auditRequirement, legal rollMode/conflictPosition/controlState/sideStrain/tempoAdvantage/counterPayoff/actionEconomy/actionCostAudit/combatConditions axes, player-owned learned special art, non-player Guardian special art, and multiplied ОД audit notes."
+      "description": "Structured afterlife-only combatEffect beside effectSummary for current teachable special arts: summary, trigger, mechanicalAxis, allowedPayoff, limit, auditRequirement, legal rollMode/conflictPosition/controlState/sideStrain/tempoAdvantage/counterPayoff/actionEconomy/actionCostAudit/combatConditions axes, player-owned learned special art, non-player Guardian special art, and multiplied ОД audit notes. Combat-useful Predvechnye special-art examples must prove the unique combat effect beyond the base operation through specialArtAudit.effectNote instead of generic flavor."
     },
     {
       "contractId": "afterlife_soul_dissipation_v1",

@@ -6691,6 +6691,280 @@ Correct contested exchange response:
 
 `afterlife_special_art_combat_effect_v1`: current/new teachable `specialArts[]` entries carry `specialArts[].combatEffect` beside `effectSummary`. Required fields are `summary`, `trigger`, `mechanicalAxis`, `allowedPayoff`, `limit`, and `auditRequirement`; legal axes are afterlife spiritual-conflict surfaces such as `rollMode`, `conflictPosition`, `controlState`, `sideStrain`, `tempoAdvantage`, `counterPayoff`, `actionEconomy`, `actionCostAudit`, or `combatConditions`. Worked mapping: a player-owned learned special art can map `baseOperation=guard` to a one-use `rollMode.player.advantageSources[]` / `tempoAdvantage` payoff, while a non-player Guardian special art can map its opposition operation to `actionCostAudit.opposition.specialCostMultiplierPercent` and multiplied ОД plus a concrete `specialArtAudit.effectNote`. The GM must preserve `baseOperation`, read `combatEffect`, and record the exact trigger/payoff in `specialArtAudit.effectNote` or `specialArtAudits[].effectNote`; legacy `effectSummary`-only profiles remain readable.
 
+#896 Predvechnye special-art combat-effect coverage start
+
+Combat-useful Predvechnye special-art examples must prove that Guardian arts are not generic color over a standard operation. The examples below show a player-owned learned Predvechnye Guardian special art and a non-player Guardian/opposition Predvechnye special art whose unique combat effect beyond the base operation changes the audited result. They are fragments for authoring inside an active afterlife spiritual conflict; the GM still preserves the primary `baseOperation` lane and records the applied trigger/payoff through `specialArtAudit.effectNote`.
+
+```json
+{
+  "playerOwnedLearnedPredvechnyeArtExample": {
+    "contract": "afterlife_special_art_combat_effect_v1",
+    "profileAuthority": {
+      "actorType": "player_soul",
+      "actorId": "player_soul",
+      "specialArts": [
+        {
+          "artId": "azalia_chosen_oath_flame",
+          "displayName": "Пламя Избранной Клятвы",
+          "ownerActorType": "player_soul",
+          "ownerActorId": "player_soul",
+          "sourceGuardianId": "azalia",
+          "baseOperation": "binding",
+          "tier": 0,
+          "costMultiplierPercent": 150,
+          "upgradeCost": {
+            "inkFeathers": 80,
+            "lightSparks": 0
+          },
+          "effectSummary": "Player-owned learned Predvechnye Guardian special art: душа научилась у Азалии связывать цель через выбранную ею клятву, а не через грубую силу.",
+          "combatEffect": {
+            "summary": "Искусство ловит цель на добровольной клятве или ложной преданности и превращает обычное binding в видимое боевое условие, которое влияет на следующий спор о выборе.",
+            "trigger": "Use the learned art as binding only when the GM can name the target's real promise, chosen service, false devotion, or desire to be chosen.",
+            "mechanicalAxis": "combatConditions",
+            "allowedPayoff": "Create a visible mark or burden that can supply a condition-backed rollMode source or make one listed operation harder through the next exchange.",
+            "limit": "One named promise per conflict; honest refusal, self-sufficiency, or admitting 'I choose myself' blocks or clears the effect.",
+            "auditRequirement": "specialArtAudit.effectNote must name the voluntary oath trigger, the created combatConditions[] entry, and the exact payoff beyond baseOperation=binding."
+          },
+          "canTeachPlayer": false,
+          "trainingConditions": []
+        }
+      ]
+    },
+    "exchangeUse": {
+      "afterlifeSpiritualConflictUpdate": {
+        "mode": "exchange",
+        "exchange": {
+          "exchangeId": "exchange_azalia_oath_flame_player_001",
+          "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
+          "operationType": "binding",
+          "outcome": "success",
+          "summary": "Игрок применяет Пламя Избранной Клятвы: связь цепляется не за силу Лиоры, а за её собственную фразу 'я обязана выбрать путь за тебя'.",
+          "matchupAudit": {
+            "playerOperation": "binding",
+            "oppositionOperation": "guard",
+            "primaryResolutionLane": "binding",
+            "riskProfile": "control_leverage",
+            "matchupRationale": "Операция остаётся binding; уникальный эффект только добавляет видимое условие по добровольной клятве, а не заменяет оковы давлением."
+          },
+          "before": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "actionEconomy": {
+              "player": { "current": 8, "max": 8, "source": "Средоточие Души tier 2" },
+              "opposition": { "current": 5, "max": 6, "source": "guardian spiritual authority" }
+            }
+          },
+          "after": {
+            "conflictPosition": "player_advantaged",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "actionEconomy": {
+              "player": { "current": 2, "max": 8, "source": "Средоточие Души tier 2" },
+              "opposition": { "current": 5, "max": 6, "source": "guardian spiritual authority" }
+            }
+          },
+          "combatConditions": [
+            {
+              "conditionId": "condition_chosen_oath_flame_001",
+              "kind": "mark",
+              "name": "Пламя выбранной клятвы",
+              "visibility": "visible",
+              "status": "active",
+              "target": {
+                "side": "opposition",
+                "actorType": "guardian",
+                "actorId": "guardian_liora_001",
+                "displayName": "Лиора"
+              },
+              "source": {
+                "sourceType": "special_art",
+                "actorType": "player_soul",
+                "actorId": "player_soul",
+                "artId": "azalia_chosen_oath_flame"
+              },
+              "affectedOperations": [ "guard", "negotiate", "counter" ],
+              "mechanicalAxes": [ "rollMode", "specialArtAudit.effectNote" ],
+              "payoff": {
+                "sourceType": "combat_condition",
+                "effect": "disadvantage",
+                "level": "ordinary",
+                "axis": "rollMode"
+              },
+              "duration": { "remainingUses": 1, "expiresAtTurn": 44 },
+              "counterplay": [ "Лиора может честно отказаться от права выбирать за игрока или использовать break_binding против названной клятвы." ],
+              "summary": "Следующая защита, переговоры или counter Лиоры получают условную Помеху, если она продолжает действовать из добровольной клятвы выбирать за душу."
+            }
+          ],
+          "specialArtAudit": {
+            "artId": "azalia_chosen_oath_flame",
+            "displayName": "Пламя Избранной Клятвы",
+            "ownerActorType": "player_soul",
+            "ownerActorId": "player_soul",
+            "baseOperation": "binding",
+            "costMultiplierPercent": 150,
+            "effectNote": "Read specialArts[].combatEffect: the player-owned learned Predvechnye Guardian special art used the voluntary oath trigger ('я обязана выбрать путь за тебя') to create condition_chosen_oath_flame_001. The tactical result changed beyond ordinary baseOperation=binding because the next affected Liora guard/negotiate/counter can carry a condition-backed rollMode disadvantage source instead of only adding control flavor."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "binding",
+              "baseCost": 4,
+              "minCost": 2,
+              "artTier": 0,
+              "standardEffectiveCost": 4,
+              "specialArtId": "azalia_chosen_oath_flame",
+              "specialCostMultiplierPercent": 150,
+              "effectiveCost": 6,
+              "before": 8,
+              "after": 2
+            }
+          }
+        }
+      }
+    }
+  },
+  "nonPlayerGuardianOppositionPredvechnyeArtExample": {
+    "contract": "afterlife_special_art_combat_effect_v1",
+    "profileAuthority": {
+      "actorType": "guardian",
+      "actorId": "guardian_seret_001",
+      "displayName": "Серет",
+      "specialArts": [
+        {
+          "artId": "seret_open_contract",
+          "displayName": "Разомкнутый Договор",
+          "ownerActorType": "guardian",
+          "ownerActorId": "guardian_seret_001",
+          "baseOperation": "break_binding",
+          "tier": 1,
+          "costMultiplierPercent": 175,
+          "upgradeCost": {
+            "inkFeathers": 0,
+            "lightSparks": 18
+          },
+          "effectSummary": "Non-player Guardian/opposition Predvechnye special art: Серет находит скрытое условие договора и делает путь разрыва спорным, но не бесплатным.",
+          "combatEffect": {
+            "summary": "Разомкнутый Договор раскрывает скрытое условие в связи и превращает его в contestable counterPayoff вместо полного исчезновения цены.",
+            "trigger": "Use this break_binding art when an oath, seal, or bargain has an unnamed clause that currently holds the target.",
+            "mechanicalAxis": "counterPayoff",
+            "allowedPayoff": "Expose the hidden clause, weaken or narrow the active controlState, and record a counterPayoff or actionCostAudit price for the lawful exit.",
+            "limit": "One hidden clause per use; the price remains visible and must still be paid, contested, or carried as a condition.",
+            "auditRequirement": "specialArtAudit.effectNote must name the hidden clause, the remaining price, and the exact counterPayoff or actionCostAudit delta."
+          },
+          "canTeachPlayer": true,
+          "trainingConditions": [
+            "Серет должна признать, что игрок понимает цену договора.",
+            "Сцена обучения должна назвать условие, а не только желание разрыва."
+          ]
+        }
+      ]
+    },
+    "exchangeUse": {
+      "afterlifeSpiritualConflictUpdate": {
+        "mode": "exchange",
+        "exchange": {
+          "exchangeId": "exchange_seret_open_contract_001",
+          "conflictId": "afterlife_conflict_oath_clause_001",
+          "operationType": "guard",
+          "outcome": "partial_success",
+          "summary": "Игрок удерживает клятвенную защиту, но Серет раскрывает скрытое условие договора и превращает полный замок в спорную цену выхода.",
+          "incomingAction": {
+            "operationType": "break_binding",
+            "finalOperationType": "break_binding",
+            "source": "guardian_special_art",
+            "guardianId": "guardian_seret_001",
+            "specialArtId": "seret_open_contract",
+            "summary": "Серет применяет Разомкнутый Договор против скрытого условия клятвенной связи."
+          },
+          "matchupAudit": {
+            "playerOperation": "guard",
+            "oppositionOperation": "break_binding",
+            "primaryResolutionLane": "guard",
+            "riskProfile": "safe_defense",
+            "matchupRationale": "Игрок защищает действующую связь, а оппозиция отвечает break_binding; уникальный эффект Серет меняет цену и payoff, но не превращает break_binding в pressure."
+          },
+          "before": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "controlState": {
+              "level": "bound",
+              "controllerSide": "player",
+              "controlId": "control_oath_clause_001",
+              "sourceOperation": "binding",
+              "restrictedOperations": [ "maneuver", "force_binding" ],
+              "summary": "Договор держит проход закрытым, но условие выхода ещё не раскрыто."
+            },
+            "actionEconomy": {
+              "player": { "current": 4, "max": 8, "source": "Средоточие Души tier 2" },
+              "opposition": { "current": 7, "max": 9, "source": "Seret guardian authority" }
+            }
+          },
+          "after": {
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "controlState": {
+              "level": "hindered",
+              "controllerSide": "player",
+              "controlId": "control_oath_clause_001",
+              "sourceOperation": "break_binding",
+              "restrictedOperations": [ "force_binding" ],
+              "summary": "Скрытое условие стало видимым: связь ещё мешает силовому принуждению, но манёвр выхода теперь спорен."
+            },
+            "actionEconomy": {
+              "player": { "current": 3, "max": 8, "source": "Средоточие Души tier 2" },
+              "opposition": { "current": 3, "max": 9, "source": "Seret guardian authority" }
+            }
+          },
+          "counterPayoff": {
+            "axis": "controlState",
+            "from": "bound",
+            "to": "hindered",
+            "sourceArtId": "seret_open_contract",
+            "summary": "Скрытое условие договора раскрыто; оковы не исчезли, но стали уже и спорнее."
+          },
+          "specialArtAudit": {
+            "artId": "seret_open_contract",
+            "displayName": "Разомкнутый Договор",
+            "ownerActorType": "guardian",
+            "ownerActorId": "guardian_seret_001",
+            "baseOperation": "break_binding",
+            "costMultiplierPercent": 175,
+            "effectNote": "Read specialArts[].combatEffect: the non-player Guardian/opposition Predvechnye special art found the hidden clause 'выход открыт только через названную цену'. The unique combat effect beyond baseOperation=break_binding changed the result from simple weakening into a counterPayoff that narrows controlState bound->hindered and records the remaining price instead of erasing it."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "guard",
+              "baseCost": 2,
+              "minCost": 1,
+              "artTier": 1,
+              "effectiveCost": 1,
+              "before": 4,
+              "after": 3
+            },
+            "opposition": {
+              "operationType": "break_binding",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 1,
+              "standardEffectiveCost": 2,
+              "specialArtId": "seret_open_contract",
+              "specialCostMultiplierPercent": 175,
+              "effectiveCost": 4,
+              "before": 7,
+              "after": 3
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#896 Predvechnye special-art combat-effect coverage end
+
 Worked combatConditions lifecycle fragment: this exchange creates a visible `mark`, a visible `ward`, and a hidden/gm_only `burden`; it consumes an `opening`; it expires a `vow`; it uses a condition-backed rollMode source; it records counterplay; and the named special art explains its condition interaction only through `specialArtAudit.effectNote`.
 
 ```json
