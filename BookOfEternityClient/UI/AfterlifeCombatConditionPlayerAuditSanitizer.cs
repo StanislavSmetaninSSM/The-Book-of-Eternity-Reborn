@@ -4,11 +4,13 @@ namespace BookOfEternityClient.UI;
 
 internal static class AfterlifeCombatConditionPlayerAuditSanitizer
 {
-    private static readonly string[] HiddenConditionIdentityFields =
+    private static readonly string[] HiddenConditionTokenFields =
     [
         "conditionId",
         "displayName",
-        "name"
+        "name",
+        "summary",
+        "auditRequirement"
     ];
 
     private static readonly string[] RollModeConditionReferenceFields =
@@ -86,15 +88,18 @@ internal static class AfterlifeCombatConditionPlayerAuditSanitizer
             if (IsVisibleToPlayer(condition))
                 continue;
 
-            foreach (var field in HiddenConditionIdentityFields)
-            {
-                var identityValue = ReadString(condition[field]);
-                if (!string.IsNullOrWhiteSpace(identityValue))
-                    hiddenConditionTokens.Add(identityValue);
-            }
+            foreach (var field in HiddenConditionTokenFields)
+                AddHiddenConditionToken(hiddenConditionTokens, condition[field]);
         }
 
         return hiddenConditionTokens;
+    }
+
+    private static void AddHiddenConditionToken(HashSet<string> hiddenConditionTokens, JsonNode? node)
+    {
+        var token = ReadString(node)?.Trim();
+        if (!string.IsNullOrWhiteSpace(token))
+            hiddenConditionTokens.Add(token);
     }
 
     private static JsonArray FilterVisibleCombatConditions(JsonArray combatConditions)
@@ -134,8 +139,7 @@ internal static class AfterlifeCombatConditionPlayerAuditSanitizer
         var visibleSources = new JsonArray();
         foreach (var source in sources)
         {
-            if (source is JsonObject sourceObject &&
-                IsHiddenCombatConditionRollModeSource(sourceObject, hiddenConditionTokens))
+            if (IsHiddenCombatConditionRollModeSource(source, hiddenConditionTokens))
             {
                 continue;
             }
@@ -147,11 +151,18 @@ internal static class AfterlifeCombatConditionPlayerAuditSanitizer
     }
 
     private static bool IsHiddenCombatConditionRollModeSource(
-        JsonObject source,
+        JsonNode? source,
         IReadOnlySet<string> hiddenConditionTokens)
     {
-        var sourceType = NormalizeKey(ReadString(source["sourceType"]) ?? ReadString(source["type"]));
-        var conditionId = ReadString(source["conditionId"]);
+        if (source is not JsonObject sourceObject)
+        {
+            var legacySource = ReadString(source)?.Trim();
+            return !string.IsNullOrWhiteSpace(legacySource) &&
+                   hiddenConditionTokens.Contains(legacySource);
+        }
+
+        var sourceType = NormalizeKey(ReadString(sourceObject["sourceType"]) ?? ReadString(sourceObject["type"]));
+        var conditionId = ReadString(sourceObject["conditionId"]);
         var isConditionBacked =
             sourceType == "combat_condition" ||
             !string.IsNullOrWhiteSpace(conditionId);
@@ -159,7 +170,7 @@ internal static class AfterlifeCombatConditionPlayerAuditSanitizer
             return false;
 
         return RollModeConditionReferenceFields
-            .Select(field => ReadString(source[field]))
+            .Select(field => ReadString(sourceObject[field])?.Trim())
             .Any(value => !string.IsNullOrWhiteSpace(value) && hiddenConditionTokens.Contains(value));
     }
 

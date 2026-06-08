@@ -2355,10 +2355,16 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("remainingUses=1", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("break_binding", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Клятва подсвечена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ordinary_visible_roll_reason", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("guard_tempo_window_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_summary_legacy_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_summary_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_audit_legacy_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_audit_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("concealed_condition_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("concealed_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("spoiler_condition_marker", text, StringComparison.OrdinalIgnoreCase);
@@ -3189,8 +3195,8 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 },
                 "counterplay": [ "hidden_condition_marker" ],
                 "visibility": "gm_only",
-                "summary": "hidden_condition_marker",
-                "auditRequirement": "hidden_condition_marker"
+                "summary": "hidden_summary_legacy_marker",
+                "auditRequirement": "hidden_audit_legacy_marker"
               },
               {
                 "conditionId": "concealed_condition_marker",
@@ -3263,6 +3269,9 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                     "player": {
                       "effectiveMode": "normal",
                       "advantageSources": [
+                        "позиционное преимущество",
+                        "ordinary_visible_roll_reason",
+                        "mark_oath_flare_001",
                         {
                           "sourceType": "combat_condition",
                           "conditionId": "mark_oath_flare_001",
@@ -3277,6 +3286,11 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                         }
                       ],
                       "disadvantageSources": [
+                        "hidden_condition_marker",
+                        "hidden_summary_legacy_marker",
+                        "hidden_audit_legacy_marker",
+                        "concealed_condition_marker",
+                        "spoiler_condition_marker",
                         {
                           "sourceType": "combat_condition",
                           "conditionId": "hidden_condition_marker",

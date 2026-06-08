@@ -9565,7 +9565,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                 "duration": { "type": "scene", "remainingUses": 1 },
                 "counterplay": [ "hidden_condition_marker" ],
                 "visibility": "gm_only",
-                "summary": "hidden_condition_marker"
+                "summary": "hidden_summary_legacy_marker",
+                "auditRequirement": "hidden_audit_legacy_marker"
               },
               {
                 "conditionId": "concealed_condition_marker",
@@ -9646,6 +9647,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                       "effectiveMode": "normal",
                       "advantageSources": [
                         "позиционное преимущество",
+                        "visible_condition_marker",
                         {
                           "sourceType": "combat_condition",
                           "conditionId": "visible_condition_marker",
@@ -9660,6 +9662,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                         }
                       ],
                       "disadvantageSources": [
+                        "hidden_condition_marker",
+                        "hidden_summary_legacy_marker",
+                        "hidden_audit_legacy_marker",
+                        "concealed_condition_marker",
+                        "spoiler_condition_marker",
                         {
                           "sourceType": "combat_condition",
                           "conditionId": "hidden_condition_marker",
@@ -9744,9 +9751,12 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Contains("Преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("отброшено: 5", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("позиционное преимущество", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("visible_condition_roll_source_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("guard_tempo_window_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_summary_legacy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_audit_legacy_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("concealed_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("spoiler_condition_marker", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("d20 противника=9", renderedText, StringComparison.OrdinalIgnoreCase);
