@@ -93,6 +93,65 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public void MashInputGrade_ResolvesSuccessPartialAndFailFromMatchingPressCounts()
+    {
+        Assert.Equal(
+            "success",
+            ResolveMashInputGrade(["space"], successTarget: 5, partialTarget: 3, RepeatKey(ConsoleKey.Spacebar, 5)));
+        Assert.Equal(
+            "partial",
+            ResolveMashInputGrade(["space"], successTarget: 5, partialTarget: 3, RepeatKey(ConsoleKey.Spacebar, 3)));
+        Assert.Equal(
+            "fail",
+            ResolveMashInputGrade(["space"], successTarget: 5, partialTarget: 3, RepeatKey(ConsoleKey.Spacebar, 2)));
+    }
+
+    [Fact]
+    public void MashInputGrade_EscapeCancelsAsFail()
+    {
+        var inputs = new[]
+        {
+            new ConsoleKeyInfo(' ', ConsoleKey.Spacebar, false, false, false),
+            new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, false, false, false),
+            new ConsoleKeyInfo(' ', ConsoleKey.Spacebar, false, false, false),
+            new ConsoleKeyInfo(' ', ConsoleKey.Spacebar, false, false, false)
+        };
+
+        Assert.Equal(
+            "fail",
+            ResolveMashInputGrade(["space"], successTarget: 3, partialTarget: 1, inputs));
+    }
+
+    [Fact]
+    public void MashInputGrade_CountsRuFallbackOnlyForConfiguredQteKeys()
+    {
+        var inputs = new[]
+        {
+            new ConsoleKeyInfo('й', 0, false, false, false),
+            new ConsoleKeyInfo('ц', 0, false, false, false),
+            new ConsoleKeyInfo('q', 0, false, false, false),
+            new ConsoleKeyInfo(' ', ConsoleKey.Spacebar, false, false, false)
+        };
+
+        Assert.Equal(
+            "success",
+            ResolveMashInputGrade(["q"], successTarget: 2, partialTarget: 1, inputs));
+    }
+
+    [Fact]
+    public void MashInputEffectiveTarget_IsMonotonicForStatTierAndDifficulty()
+    {
+        var lowStatTarget = ComputeMashInputEffectiveTargetPresses(12, baseDifficulty: 3, statTier: -2);
+        var highStatTarget = ComputeMashInputEffectiveTargetPresses(12, baseDifficulty: 3, statTier: 3);
+        var easyDifficultyTarget = ComputeMashInputEffectiveTargetPresses(12, baseDifficulty: 1, statTier: 0);
+        var hardDifficultyTarget = ComputeMashInputEffectiveTargetPresses(12, baseDifficulty: 5, statTier: 0);
+
+        Assert.True(highStatTarget <= lowStatTarget);
+        Assert.True(hardDifficultyTarget >= easyDifficultyTarget);
+        Assert.Equal(6, ComputeMashInputPartialTargetPresses(successTarget: 12, partialThreshold: 0.5));
+    }
+
+    [Fact]
     public async Task EnsureRuntimeStateHealthyAsync_DeletesInvalidJsonRuntimeFile()
     {
         await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, "{ invalid json");
@@ -743,6 +802,27 @@ public sealed class QteSceneServiceTests : IDisposable
         var backupDirectory = _fs.ResolvePath(QteNormalizerBackupDirectory);
         Assert.False(Directory.Exists(backupDirectory));
     }
+
+    private static ConsoleKeyInfo[] RepeatKey(ConsoleKey key, int count)
+    {
+        var keyChar = key == ConsoleKey.Spacebar ? ' ' : char.ToLowerInvariant(key.ToString()[0]);
+        return Enumerable.Range(0, count)
+            .Select(_ => new ConsoleKeyInfo(keyChar, key, false, false, false))
+            .ToArray();
+    }
+
+    private static string ResolveMashInputGrade(
+        string[] acceptedTokens,
+        int successTarget,
+        int partialTarget,
+        ConsoleKeyInfo[] inputs) =>
+        QteSceneService.ResolveMashInputGrade(acceptedTokens, successTarget, partialTarget, inputs);
+
+    private static int ComputeMashInputEffectiveTargetPresses(int targetPresses, int baseDifficulty, int statTier) =>
+        QteSceneService.ComputeMashInputEffectiveTargetPresses(targetPresses, baseDifficulty, statTier);
+
+    private static int ComputeMashInputPartialTargetPresses(int successTarget, double partialThreshold) =>
+        QteSceneService.ComputeMashInputPartialTargetPresses(successTarget, partialThreshold);
 
     public void Dispose()
     {

@@ -18,6 +18,11 @@ public sealed class QteSceneService
     public const string QteHistoryPath = "game_state/history/qte_history.json";
     public const string OrdinaryPlayerTurnSourceLabel = "обработки хода";
     internal const string QteNormalizerBackupDirectory = "game_state/control/qte_normalizer_backups";
+    internal const int MashInputMinDurationMs = 750;
+    internal const int MashInputMaxDurationMs = 10000;
+    internal const int MashInputMinTargetPresses = 1;
+    internal const int MashInputMaxTargetPresses = 80;
+    internal const int MashInputMaxPressesPerSecond = 12;
     private const int ExperienceBaseXp = 100;
     private const double ExperienceExponent = 2.5;
 
@@ -1027,6 +1032,7 @@ public sealed class QteSceneService
             "PromptChain" => await RunPromptChainAsync(action.Check),
             "BalanceMeter" => await RunBalanceMeterAsync(action.Check),
             "ChargeRelease" => await RunChargeReleaseAsync(action.Check),
+            "MashInput" => await RunMashInputAsync(action.Check),
             _ => QteGrade.Fail
         };
     }
@@ -1048,6 +1054,152 @@ public sealed class QteSceneService
         QteGrade.Partial => action.PartialText ?? "Частичный успех.",
         _ => action.FailText ?? "Неудача."
     };
+
+    private async Task<QteGrade> RunMashInputAsync(QteCheck check)
+    {
+        if (!TryReadMashInputConfig(
+                check.Config,
+                out var acceptedTokens,
+                out var durationMs,
+                out var targetPresses,
+                out var partialThreshold))
+        {
+            return QteGrade.Fail;
+        }
+
+        var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
+        var successTarget = ComputeMashInputEffectiveTargetPresses(targetPresses, check.BaseDifficulty, statTier);
+        var partialTarget = ComputeMashInputPartialTargetPresses(successTarget, partialThreshold);
+        var accepted = acceptedTokens.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var keyLabels = FormatMashInputKeyLabels(acceptedTokens);
+        var matchedPresses = 0;
+        var started = DateTime.UtcNow;
+
+        while (true)
+        {
+            var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
+            var remainingMs = Math.Max(0, durationMs - elapsedMs);
+            if (remainingMs <= 0)
+                break;
+
+            while (TryReadImmediateKey(out var key))
+            {
+                if (key.Key == ConsoleKey.Escape)
+                    return QteGrade.Fail;
+
+                var token = QteKeyInput.NormalizeConsoleInput(key);
+                if (token != null && accepted.Contains(token))
+                {
+                    matchedPresses++;
+                    if (matchedPresses >= successTarget)
+                        return QteGrade.Success;
+                }
+            }
+
+            RenderMiniGamePanel(
+                "Рывок на усилие",
+                $"Быстро нажимайте {keyLabels}. Esc - безопасный отказ считается провалом.",
+                BuildMashInputProgress(matchedPresses, successTarget, partialTarget, remainingMs));
+
+            await Task.Delay(20);
+        }
+
+        return ParseGrade(ResolveMashInputGradeFromCount(matchedPresses, successTarget, partialTarget));
+    }
+
+    internal static int ComputeMashInputEffectiveTargetPresses(int targetPresses, int baseDifficulty, int statTier)
+    {
+        var difficultyOffset = Math.Clamp(baseDifficulty, 1, 5) - 3;
+        var adjusted = targetPresses + difficultyOffset - statTier;
+        return Math.Clamp(adjusted, MashInputMinTargetPresses, MashInputMaxTargetPresses);
+    }
+
+    internal static int ComputeMashInputPartialTargetPresses(int successTarget, double partialThreshold)
+    {
+        var clampedTarget = Math.Clamp(successTarget, MashInputMinTargetPresses, MashInputMaxTargetPresses);
+        var partial = (int)Math.Ceiling(clampedTarget * partialThreshold);
+        return Math.Clamp(partial, MashInputMinTargetPresses, clampedTarget);
+    }
+
+    internal static int ComputeMashInputMaxTargetPressesForDuration(int durationMs) =>
+        Math.Max(MashInputMinTargetPresses, (int)Math.Floor(durationMs / 1000d * MashInputMaxPressesPerSecond));
+
+    internal static string ResolveMashInputGrade(
+        IReadOnlyCollection<string> acceptedTokens,
+        int successTarget,
+        int partialTarget,
+        IEnumerable<ConsoleKeyInfo> inputs)
+    {
+        var accepted = acceptedTokens.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var matchedPresses = 0;
+
+        foreach (var input in inputs)
+        {
+            if (input.Key == ConsoleKey.Escape)
+                return "fail";
+
+            var token = QteKeyInput.NormalizeConsoleInput(input);
+            if (token != null && accepted.Contains(token))
+                matchedPresses++;
+        }
+
+        return ResolveMashInputGradeFromCount(matchedPresses, successTarget, partialTarget);
+    }
+
+    private static string ResolveMashInputGradeFromCount(int matchedPresses, int successTarget, int partialTarget)
+    {
+        if (matchedPresses >= successTarget)
+            return "success";
+
+        return matchedPresses >= partialTarget ? "partial" : "fail";
+    }
+
+    private static bool TryReadMashInputConfig(
+        JsonObject? config,
+        out IReadOnlyList<string> acceptedTokens,
+        out int durationMs,
+        out int targetPresses,
+        out double partialThreshold)
+    {
+        acceptedTokens = [];
+        durationMs = 0;
+        targetPresses = 0;
+        partialThreshold = 0;
+
+        if (config == null ||
+            config["keys"] is not JsonArray keys ||
+            config["durationMs"] is not JsonValue durationNode ||
+            config["targetPresses"] is not JsonValue targetNode ||
+            config["partialThreshold"] is not JsonValue thresholdNode)
+        {
+            return false;
+        }
+
+        var tokens = new List<string>();
+        foreach (var key in keys)
+        {
+            if (key is not JsonValue keyValue ||
+                !keyValue.TryGetValue<string>(out var token) ||
+                string.IsNullOrWhiteSpace(token))
+            {
+                return false;
+            }
+
+            tokens.Add(token.Trim().ToLowerInvariant());
+        }
+
+        if (tokens.Count == 0 ||
+            !tokens.All(QteKeyInput.IsSupportedToken) ||
+            !durationNode.TryGetValue<int>(out durationMs) ||
+            !targetNode.TryGetValue<int>(out targetPresses) ||
+            !thresholdNode.TryGetValue<double>(out partialThreshold))
+        {
+            return false;
+        }
+
+        acceptedTokens = tokens;
+        return true;
+    }
 
     private async Task<QteGrade> RunTimingBarAsync(QteCheck check)
     {
@@ -1449,6 +1601,25 @@ public sealed class QteSceneService
 
         return string.Join("", parts);
     }
+
+    private static string BuildMashInputProgress(int matchedPresses, int successTarget, int partialTarget, int remainingMs)
+    {
+        const int width = 24;
+        var filled = Math.Clamp((int)Math.Round(width * Math.Min(matchedPresses, successTarget) / (double)successTarget), 0, width);
+        var bar = string.Concat(Enumerable.Range(0, width).Select(index =>
+            index < filled ? "[green]█[/]" : "[dim]░[/]"));
+        var remainingSeconds = remainingMs / 1000d;
+
+        return string.Join("\n", new[]
+        {
+            bar,
+            $"[white]Прогресс: {matchedPresses}/{successTarget}[/]",
+            $"[dim]Частичный успех: {partialTarget} | Осталось: {remainingSeconds:0.0} с[/]"
+        });
+    }
+
+    private static string FormatMashInputKeyLabels(IEnumerable<string> acceptedTokens) =>
+        string.Join(" или ", acceptedTokens.Select(QteKeyInput.FormatPromptLabel));
 
     private bool TryReadImmediateKey(out ConsoleKeyInfo key)
     {
