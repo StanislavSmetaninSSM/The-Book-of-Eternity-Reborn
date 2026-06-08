@@ -67,6 +67,13 @@
       "description": "Afterlife spiritual conflict two-level Преимущество/Помеха: effectiveMode normal/advantage/great_advantage/disadvantage/dire_disadvantage, legacy or object roll-mode sources with levels, exact 1/2/3 d20 selection, step cancellation, no same-direction stacking, and guard-created tempoAdvantage consumed by sourceType=guard_tempo_window."
     },
     {
+      "contractId": "afterlife_spiritual_conflict_combat_conditions_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "responseSurface": "activeConflict.combatConditions[] / exchange.combatConditions[] / diceAudit.rollMode sourceType=combat_condition",
+      "description": "Dedicated combatConditions[] layer for afterlife spiritual combat: mark, ward, burden, opening, vow; visible active conditions, hidden/gm_only privacy, finite duration/uses, counterplay, legal axis mapping, condition-backed rollMode, actionCostAudit and specialArtAudit.effectNote integration, plus explicit create/consume/expire/clear lifecycle."
+    },
+    {
       "contractId": "afterlife_spiritual_conflict_difficulty_audit_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",

@@ -365,13 +365,17 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                     SideRow("Противостоящая сторона", active["oppositionSide"] as JsonObject)
                 ]
             });
+
+            var visibleConditions = BuildVisibleCombatConditionsTable(active["combatConditions"] as JsonArray);
+            if (visibleConditions != null)
+                blocks.Add(visibleConditions);
         }
         else
         {
             blocks.Add(Message("Активного духовного конфликта нет", "ГМ может начать конфликт через afterlifeSpiritualConflictUpdate с mode=start."));
         }
 
-        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", read);
+        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", SanitizeCombatConditionsForPlayer(read));
         return Completed(command, blocks);
     }
 
@@ -393,12 +397,18 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
 
         if (exchangeLog is { Count: > 0 })
             blocks.Add(BuildExchangeTable(exchangeLog));
+        if (active?["combatConditions"] is JsonArray combatConditions)
+        {
+            var visibleConditions = BuildVisibleCombatConditionsTable(combatConditions);
+            if (visibleConditions != null)
+                blocks.Add(visibleConditions);
+        }
         if (recent is { Count: > 0 })
             blocks.Add(BuildRecentConflictTable(recent));
         if ((exchangeLog?.Count ?? 0) == 0 && (recent?.Count ?? 0) == 0)
             blocks.Add(Message("Журнал пуст", "Когда ГМ проведёт обмен или завершит конфликт, здесь появятся кубики, позиция, напряжение и награды."));
 
-        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", read);
+        AddRawOrWarning(blocks, $"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", SanitizeCombatConditionsForPlayer(read));
         return Completed(command, blocks);
     }
 
@@ -566,6 +576,122 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 })
                 .ToList()
         };
+
+    private static UiTableBlock? BuildVisibleCombatConditionsTable(JsonArray? combatConditions)
+    {
+        if (combatConditions == null)
+            return null;
+
+        var rows = combatConditions
+            .OfType<JsonObject>()
+            .Where(IsCombatConditionVisibleToPlayer)
+            .Where(static condition => string.Equals(GetString(condition, "status", "active"), "active", StringComparison.OrdinalIgnoreCase))
+            .Select(condition => new UiTableRow
+            {
+                Cells =
+                [
+                    GetString(condition, "displayName", GetString(condition, "name", GetString(condition, "conditionId", "Без названия"))),
+                    GetString(condition, "kind", "?"),
+                    DescribeCombatConditionTarget(condition),
+                    DescribeCombatConditionSource(condition["source"] as JsonObject),
+                    DescribeStringArray(condition["affectedOperations"] as JsonArray),
+                    DescribeCombatConditionDuration(condition["duration"] as JsonObject),
+                    DescribeStringArray(condition["counterplay"] as JsonArray),
+                    GetString(condition, "summary", "")
+                ]
+            })
+            .ToList();
+
+        return rows.Count == 0
+            ? null
+            : new UiTableBlock
+            {
+                Title = "Боевые условия (combatConditions)",
+                Columns = ["Название", "Вид", "Цель", "Источник", "Действия", "Срок", "Ответ", "Итог"],
+                Rows = rows
+            };
+    }
+
+    private static bool IsCombatConditionVisibleToPlayer(JsonObject condition)
+    {
+        if (condition["visibleToPlayer"] is JsonValue visibleValue &&
+            visibleValue.TryGetValue<bool>(out var visibleToPlayer) &&
+            !visibleToPlayer)
+        {
+            return false;
+        }
+
+        var visibility = GetString(condition, "visibility", "");
+        if (IsChronicleHiddenVisibility(visibility))
+            return false;
+
+        var audience = GetString(condition, "audience", "");
+        return !IsChronicleHiddenVisibility(audience);
+    }
+
+    private static string DescribeCombatConditionTarget(JsonObject condition)
+    {
+        if (condition["target"] is JsonObject target)
+        {
+            var targetSideValue = GetString(target, "side", GetString(target, "targetSide", "?"));
+            var targetActorValue = GetString(target, "displayName", GetString(target, "actorId", GetString(target, "actorRef", "")));
+            return string.IsNullOrWhiteSpace(targetActorValue)
+                ? targetSideValue
+                : $"{targetSideValue}:{targetActorValue}";
+        }
+
+        var targetSide = GetString(condition, "targetSide", "?");
+        var targetActor = GetString(condition, "targetActorRef", GetString(condition, "targetActorId", ""));
+        return string.IsNullOrWhiteSpace(targetActor)
+            ? targetSide
+            : $"{targetSide}:{targetActor}";
+    }
+
+    private static string DescribeCombatConditionSource(JsonObject? source)
+    {
+        if (source == null)
+            return "не указан";
+
+        var type = GetString(source, "type", GetString(source, "sourceType", ""));
+        var actorId = GetString(source, "actorId", GetString(source, "sourceId", ""));
+        var displayName = GetString(source, "displayName", "");
+        var parts = new[] { type, actorId, displayName }
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        return parts.Length == 0 ? "не указан" : string.Join(":", parts);
+    }
+
+    private static string DescribeCombatConditionDuration(JsonObject? duration)
+    {
+        if (duration == null)
+            return "не указано";
+
+        var parts = new List<string>();
+        var type = GetString(duration, "type", "");
+        if (!string.IsNullOrWhiteSpace(type))
+            parts.Add(type);
+        if (duration.ContainsKey("remainingUses"))
+            parts.Add($"remainingUses={GetNumberOrString(duration, "remainingUses", "?")}");
+        if (duration.ContainsKey("expiresAtTurn"))
+            parts.Add($"expiresAtTurn={GetNumberOrString(duration, "expiresAtTurn", "?")}");
+        if (duration.ContainsKey("until"))
+            parts.Add($"until={GetString(duration, "until", "?")}");
+        return parts.Count == 0 ? "не указано" : string.Join("; ", parts);
+    }
+
+    private static string DescribeStringArray(JsonArray? array)
+    {
+        if (array == null)
+            return "нет";
+
+        var values = array
+            .Select(GetNodeString)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        return values.Length == 0 ? "нет" : string.Join("; ", values);
+    }
 
     private static UiTableRow SideRow(string label, JsonObject? side)
     {
@@ -1862,6 +1988,46 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             return new JsonReadResult(true, null, ex.Message);
         }
+    }
+
+    private static JsonReadResult SanitizeCombatConditionsForPlayer(JsonReadResult read)
+    {
+        if (read.Node == null)
+            return read;
+
+        var clone = read.Node.DeepClone();
+        SanitizeCombatConditionArrays(clone);
+        return new JsonReadResult(read.FileExists, clone, read.Error);
+    }
+
+    private static void SanitizeCombatConditionArrays(JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+            {
+                if (obj["combatConditions"] is JsonArray combatConditions)
+                    obj["combatConditions"] = FilterVisibleCombatConditions(combatConditions);
+
+                foreach (var child in obj.Select(static property => property.Value).ToArray())
+                    SanitizeCombatConditionArrays(child);
+                break;
+            }
+            case JsonArray array:
+            {
+                foreach (var child in array.ToArray())
+                    SanitizeCombatConditionArrays(child);
+                break;
+            }
+        }
+    }
+
+    private static JsonArray FilterVisibleCombatConditions(JsonArray combatConditions)
+    {
+        var visible = new JsonArray();
+        foreach (var condition in combatConditions.OfType<JsonObject>().Where(IsCombatConditionVisibleToPlayer))
+            visible.Add(condition.DeepClone());
+        return visible;
     }
 
     private static bool IsFateCardPlayerVisible(JsonObject card)

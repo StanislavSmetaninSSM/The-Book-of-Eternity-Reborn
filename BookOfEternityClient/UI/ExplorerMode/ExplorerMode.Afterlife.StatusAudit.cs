@@ -133,7 +133,7 @@ public partial class ExplorerMode
             WriteJsonAuditPanel("Полный JSON gachaSystem Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["gachaSystem"]), Color.Gold1);
             WriteJsonAuditPanel("Полный JSON Сокровищницы Сияющей Обители", CloneShiningJsonForPlayerFacingAudit(shiningContext.Root["treasury"]), Color.Gold1);
         }
-        WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", spiritualConflictRead.Root, Color.Cyan1);
+        WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", BuildPlayerFacingCombatConditionAudit(spiritualConflictRead.Root), Color.Cyan1);
         WriteJsonAuditPanel($"Полный JSON {AfterlifeEntityProfileState.StatePath}", entityProfilesRead.Root, Color.Cyan1);
         WriteJsonAuditPanel($"Полный JSON {AfterlifeGlobalFlagState.StatePath}", BuildPlayerFacingAfterlifeGlobalFlagsAudit(globalFlagsRead.Root), Color.Cyan1);
         await WriteAfterlifeProgressionAuditPanelsAsync();

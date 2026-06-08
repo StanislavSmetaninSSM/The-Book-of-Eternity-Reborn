@@ -2336,6 +2336,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SpiritualConflict_RendersVisibleCombatConditionsAndSuppressesHiddenOnes()
+    {
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_conflict"));
+
+        var text = CollectBlockText(result.Blocks);
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Contains("Боевые условия", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Разогретая клятва", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("mark", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("opposition", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guardian_azalia", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("pressure", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("remainingUses=1", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("break_binding", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Клятва подсвечена", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_condition_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_EmptyCommand_ReturnsFailedDto()
     {
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("   "));
@@ -3083,6 +3107,91 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         }
         """);
     }
+
+    private Task WriteAfterlifeConflictStateWithCombatConditionsAsync() =>
+        _fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, """
+        {
+          "schemaVersion": 1,
+          "activeConflict": {
+            "conflictId": "conflict_conditions_1",
+            "realm": "Chaos Sea",
+            "sideModel": "direct_duel",
+            "conflictPosition": "contested",
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "resolutionState": "active",
+            "actionEconomy": {
+              "player": { "current": 7, "max": 8, "source": "spirit_focus" },
+              "opposition": { "current": 5, "max": 6, "source": "profile" }
+            },
+            "playerSide": { "leadContestant": { "actorId": "player_soul", "displayName": "Test Soul" } },
+            "oppositionSide": { "leadContestant": { "actorId": "guardian_shadow", "displayName": "Тень Хранителя" } },
+            "combatConditions": [
+              {
+                "conditionId": "mark_oath_flare_001",
+                "displayName": "Разогретая клятва",
+                "kind": "mark",
+                "polarity": "buff",
+                "status": "active",
+                "source": {
+                  "type": "special_art",
+                  "actorType": "guardian",
+                  "actorId": "guardian_azalia",
+                  "displayName": "Азалия"
+                },
+                "targetSide": "opposition",
+                "targetActorRef": "guardian_shadow",
+                "affectedOperations": [ "pressure", "counter" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": {
+                  "effect": "advantage",
+                  "level": "advantage",
+                  "sourceType": "combat_condition"
+                },
+                "duration": {
+                  "type": "next_matching_operation",
+                  "remainingUses": 1
+                },
+                "counterplay": [ "break_binding против контекста клятвы", "выбрать действие вне pressure/counter" ],
+                "visibility": "player_visible",
+                "summary": "Клятва подсвечена: pressure и counter легче направить в противника.",
+                "auditRequirement": "При расходовании rollMode должен сослаться на conditionId."
+              },
+              {
+                "conditionId": "hidden_condition_marker",
+                "displayName": "hidden_condition_marker",
+                "kind": "vow",
+                "polarity": "debuff",
+                "status": "active",
+                "source": {
+                  "type": "story_link",
+                  "actorType": "guardian",
+                  "actorId": "guardian_hidden",
+                  "displayName": "hidden_condition_marker"
+                },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": {
+                  "effect": "disadvantage",
+                  "level": "disadvantage",
+                  "sourceType": "combat_condition"
+                },
+                "duration": {
+                  "type": "scene",
+                  "remainingUses": 1
+                },
+                "counterplay": [ "hidden_condition_marker" ],
+                "visibility": "gm_only",
+                "summary": "hidden_condition_marker",
+                "auditRequirement": "hidden_condition_marker"
+              }
+            ],
+            "exchangeLog": []
+          },
+          "recentConflicts": []
+        }
+        """);
 
     private async Task WriteAfterlifeProfilesMaskProjectionFixtureAsync()
     {

@@ -95,6 +95,7 @@ public partial class ExplorerMode
             lines.Add("");
             AppendConflictSideSummary(lines, "Сторона игрока (playerSide)", active["playerSide"] as JsonObject);
             AppendConflictSideSummary(lines, "Противостоящая сторона (oppositionSide)", active["oppositionSide"] as JsonObject);
+            AppendVisibleCombatConditions(lines, active["combatConditions"] as JsonArray);
             lines.Add("");
             lines.Add($"  • Записано обменов действиями (exchangeLog): [white]{(active["exchangeLog"] as JsonArray)?.Count ?? 0}[/]");
         }
@@ -118,7 +119,7 @@ public partial class ExplorerMode
         });
 
         if (root != null)
-            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", root, Color.Cyan1);
+            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", BuildPlayerFacingCombatConditionAudit(root), Color.Cyan1);
 
         WaitForKey();
     }
@@ -158,6 +159,7 @@ public partial class ExplorerMode
             lines.Add($"  • Текущее напряжение: игрок=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["playerSideStrain"])))}[/], противник=[white]{Markup.Escape(FormatSideStrainLabel(AfterlifeSpiritualConflictState.GetNodeString(active["oppositionSideStrain"])))}[/]");
             lines.Add($"  • Текущий контроль/оковы: [white]{Markup.Escape(DescribeControlState(active["controlState"] as JsonObject))}[/]");
             lines.Add("");
+            AppendVisibleCombatConditions(lines, active["combatConditions"] as JsonArray);
 
             if (active["exchangeLog"] is JsonArray activeExchangeLog && activeExchangeLog.Count > 0)
             {
@@ -196,7 +198,7 @@ public partial class ExplorerMode
         });
 
         if (root != null)
-            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", root, Color.Cyan1);
+            WriteJsonAuditPanel($"Полный JSON {AfterlifeSpiritualConflictState.StatePath}", BuildPlayerFacingCombatConditionAudit(root), Color.Cyan1);
 
         WaitForKey();
     }
@@ -1636,6 +1638,170 @@ public partial class ExplorerMode
             "" => "?",
             _ => value ?? "?"
         };
+
+    private static void AppendVisibleCombatConditions(List<string> lines, JsonArray? combatConditions)
+    {
+        if (combatConditions == null)
+            return;
+
+        var visible = combatConditions
+            .OfType<JsonObject>()
+            .Where(IsCombatConditionVisibleToPlayer)
+            .Where(static condition => string.Equals(AfterlifeSpiritualConflictState.GetNodeString(condition["status"]) ?? "active", "active", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (visible.Length == 0)
+            return;
+
+        lines.Add("[bold]Боевые условия[/] [dim](combatConditions)[/]");
+        foreach (var condition in visible)
+        {
+            var name = AfterlifeSpiritualConflictState.GetNodeString(condition["displayName"]) ??
+                       AfterlifeSpiritualConflictState.GetNodeString(condition["name"]) ??
+                       AfterlifeSpiritualConflictState.GetNodeString(condition["conditionId"]) ??
+                       "Без названия";
+            var kind = AfterlifeSpiritualConflictState.GetNodeString(condition["kind"]) ?? "?";
+            var target = DescribeCombatConditionTarget(condition);
+            var source = DescribeCombatConditionSource(condition["source"] as JsonObject);
+            var operations = DescribeCombatConditionStringArray(condition["affectedOperations"] as JsonArray);
+            var duration = DescribeCombatConditionDuration(condition["duration"] as JsonObject);
+            var counterplay = DescribeCombatConditionStringArray(condition["counterplay"] as JsonArray);
+            var summary = AfterlifeSpiritualConflictState.GetNodeString(condition["summary"]) ?? "";
+            lines.Add($"  • [white]{Markup.Escape(name)}[/] ({Markup.Escape(kind)}): цель={Markup.Escape(target)}, источник={Markup.Escape(source)}, действия={Markup.Escape(operations)}, срок={Markup.Escape(duration)}");
+            lines.Add($"    Ответ: {Markup.Escape(counterplay)}");
+            if (!string.IsNullOrWhiteSpace(summary))
+                lines.Add($"    Итог: {Markup.Escape(summary)}");
+        }
+
+        lines.Add("");
+    }
+
+    private static bool IsCombatConditionVisibleToPlayer(JsonObject condition)
+    {
+        if (condition["visibleToPlayer"] is JsonValue visibleValue &&
+            visibleValue.TryGetValue<bool>(out var visibleToPlayer) &&
+            !visibleToPlayer)
+        {
+            return false;
+        }
+
+        var visibility = NormalizeKey(AfterlifeSpiritualConflictState.GetNodeString(condition["visibility"]));
+        var audience = NormalizeKey(AfterlifeSpiritualConflictState.GetNodeString(condition["audience"]));
+        return !IsHiddenCombatConditionVisibility(visibility) &&
+               !IsHiddenCombatConditionVisibility(audience);
+    }
+
+    private static bool IsHiddenCombatConditionVisibility(string? visibility) =>
+        visibility is "hidden" or "gm_only" or "private" or "secret" or "concealed" or "spoiler";
+
+    private static string DescribeCombatConditionTarget(JsonObject condition)
+    {
+        if (condition["target"] is JsonObject target)
+        {
+            var targetSideValue = AfterlifeSpiritualConflictState.GetNodeString(target["side"]) ??
+                                  AfterlifeSpiritualConflictState.GetNodeString(target["targetSide"]) ??
+                                  "?";
+            var targetActorValue = AfterlifeSpiritualConflictState.GetNodeString(target["displayName"]) ??
+                                   AfterlifeSpiritualConflictState.GetNodeString(target["actorId"]) ??
+                                   AfterlifeSpiritualConflictState.GetNodeString(target["actorRef"]);
+            return string.IsNullOrWhiteSpace(targetActorValue)
+                ? targetSideValue
+                : $"{targetSideValue}:{targetActorValue}";
+        }
+
+        var targetSide = AfterlifeSpiritualConflictState.GetNodeString(condition["targetSide"]) ?? "?";
+        var targetActor = AfterlifeSpiritualConflictState.GetNodeString(condition["targetActorRef"]) ??
+                          AfterlifeSpiritualConflictState.GetNodeString(condition["targetActorId"]);
+        return string.IsNullOrWhiteSpace(targetActor)
+            ? targetSide
+            : $"{targetSide}:{targetActor}";
+    }
+
+    private static string DescribeCombatConditionSource(JsonObject? source)
+    {
+        if (source == null)
+            return "не указан";
+
+        var parts = new[]
+        {
+            AfterlifeSpiritualConflictState.GetNodeString(source["type"]) ??
+            AfterlifeSpiritualConflictState.GetNodeString(source["sourceType"]),
+            AfterlifeSpiritualConflictState.GetNodeString(source["actorId"]) ??
+            AfterlifeSpiritualConflictState.GetNodeString(source["sourceId"]),
+            AfterlifeSpiritualConflictState.GetNodeString(source["displayName"])
+        }
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        return parts.Length == 0 ? "не указан" : string.Join(":", parts);
+    }
+
+    private static string DescribeCombatConditionDuration(JsonObject? duration)
+    {
+        if (duration == null)
+            return "не указано";
+
+        var parts = new List<string>();
+        var type = AfterlifeSpiritualConflictState.GetNodeString(duration["type"]);
+        if (!string.IsNullOrWhiteSpace(type))
+            parts.Add(type);
+        if (duration.ContainsKey("remainingUses"))
+            parts.Add($"remainingUses={AfterlifeSpiritualConflictState.GetNodeInt(duration["remainingUses"])}");
+        if (duration.ContainsKey("expiresAtTurn"))
+            parts.Add($"expiresAtTurn={AfterlifeSpiritualConflictState.GetNodeInt(duration["expiresAtTurn"])}");
+        var until = AfterlifeSpiritualConflictState.GetNodeString(duration["until"]);
+        if (!string.IsNullOrWhiteSpace(until))
+            parts.Add($"until={until}");
+        return parts.Count == 0 ? "не указано" : string.Join("; ", parts);
+    }
+
+    private static string DescribeCombatConditionStringArray(JsonArray? array)
+    {
+        if (array == null)
+            return "нет";
+
+        var values = array
+            .Select(AfterlifeSpiritualConflictState.GetNodeString)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        return values.Length == 0 ? "нет" : string.Join("; ", values);
+    }
+
+    private static JsonNode? BuildPlayerFacingCombatConditionAudit(JsonNode? root)
+    {
+        if (root == null)
+            return null;
+
+        var clone = root.DeepClone();
+        SanitizeCombatConditionAudit(clone);
+        return clone;
+    }
+
+    private static void SanitizeCombatConditionAudit(JsonNode? node)
+    {
+        switch (node)
+        {
+            case JsonObject obj:
+                if (obj["combatConditions"] is JsonArray combatConditions)
+                    obj["combatConditions"] = BuildVisibleCombatConditionsArray(combatConditions);
+
+                foreach (var child in obj.Select(static property => property.Value).ToArray())
+                    SanitizeCombatConditionAudit(child);
+                break;
+            case JsonArray array:
+                foreach (var child in array.ToArray())
+                    SanitizeCombatConditionAudit(child);
+                break;
+        }
+    }
+
+    private static JsonArray BuildVisibleCombatConditionsArray(JsonArray combatConditions)
+    {
+        var visible = new JsonArray();
+        foreach (var condition in combatConditions.OfType<JsonObject>().Where(IsCombatConditionVisibleToPlayer))
+            visible.Add(condition.DeepClone());
+        return visible;
+    }
 
     private static void AppendSpiritualExchangeLog(List<string> lines, JsonArray exchangeLog)
     {
