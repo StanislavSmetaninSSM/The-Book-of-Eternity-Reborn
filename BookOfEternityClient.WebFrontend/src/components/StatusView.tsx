@@ -22,9 +22,9 @@ export function StatusView() {
           <div className="block-kv__row"><dt>Состояние</dt><dd>{player.currentCondition}</dd></div>
         </dl>
         <div className="status-bars">
-          <StatusMeter label="❤️ Здоровье" value={player.healthPercentage} color="var(--color-error)" />
-          <StatusMeter label="⚡ Энергия" value={player.energyPercentage} color="var(--color-accent)" />
-          <StatusMeter label="🛡️ Самообладание" value={player.poisePercentage} color="var(--color-success)" />
+          <StatusMeter label="❤️ Здоровье" value={player.healthPercentage} />
+          <StatusMeter label="⚡ Энергия" value={player.energyPercentage} />
+          <StatusMeter label="🛡️ Самообладание" value={player.poisePercentage} />
         </div>
         {player.activeConditions.length > 0 && (
           <div className="status-conditions">
@@ -70,26 +70,57 @@ export function StatusView() {
   );
 }
 
-function StatusMeter({ label, value, color }: { label: string; value: string; color: string }) {
-  const numValue = parseInt(value) || 0;
+type StatusMeterSeverity = 'good' | 'warning' | 'danger';
+
+function StatusMeter({ label, value }: { label: string; value: string }) {
+  const numValue = parseStatusMeterPercent(value);
+  const severity = resolveStatusMeterSeverity(numValue);
+  const displayValue = `${formatStatusMeterPercent(numValue)}%`;
+
   return (
-    <div className="status-meter">
+    <div className={`status-meter status-meter--${severity}`}>
       <div className="status-meter__label">
         <span>{label}</span>
-        <span className="status-meter__value">{value}</span>
+        <span className="status-meter__value">{displayValue}</span>
       </div>
       <div
         className="status-meter__track"
         role="meter"
-        aria-label={`${label} ${value}`}
+        aria-label={`${label} ${displayValue}`}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={numValue}
-        aria-valuetext={value}
-        title={`${label} ${value}`}
+        aria-valuetext={displayValue}
+        title={`${label} ${displayValue}`}
       >
-        <div className="status-meter__fill" style={{ width: `${numValue}%`, background: color }} />
+        <div className="status-meter__fill" style={{ width: `${numValue}%` }} />
       </div>
     </div>
   );
+}
+
+function parseStatusMeterPercent(value: string): number {
+  const match = value.trim().replace(',', '.').match(/^(-?\d+(?:\.\d+)?)\s*%?$/);
+  if (!match) {
+    return 0;
+  }
+
+  const numericValue = Number.parseFloat(match[1]);
+  return Number.isFinite(numericValue) ? Math.max(0, Math.min(100, numericValue)) : 0;
+}
+
+function resolveStatusMeterSeverity(percent: number): StatusMeterSeverity {
+  if (percent > 66) {
+    return 'good';
+  }
+
+  if (percent > 33) {
+    return 'warning';
+  }
+
+  return 'danger';
+}
+
+function formatStatusMeterPercent(percent: number): string {
+  return Number.isInteger(percent) ? String(percent) : percent.toFixed(1).replace(/\.0$/, '');
 }
