@@ -9472,27 +9472,25 @@ GM closure for the pending Wings search:
 }
 ```
 
-After `reveal_wings`, materialize or reveal the Shining faction actor:
+After `reveal_wings`, materialize or reveal the Shining faction actor through canonical `game_state/meta/shining_abode_state.json` state, not as a top-level GameResponse field:
 
 ```json
 {
-  "shiningAbodeState": {
-    "factions": [
-      {
-        "factionId": "wings_of_angels",
-        "sarefFactionRole": "wings_of_angels",
-        "sarefVisibility": "revealed",
-        "charter": {
-          "factionName": "Крылья Ангелов",
-          "summary": "Тайная военизированная фракция Сарефа стала actionable actor Сияющей Обители."
-        },
-        "factionStrength": 95,
-        "factionLifecycle": {
-          "state": "active"
-        }
+  "factions": [
+    {
+      "factionId": "wings_of_angels",
+      "sarefFactionRole": "wings_of_angels",
+      "sarefVisibility": "revealed",
+      "charter": {
+        "factionName": "Крылья Ангелов",
+        "summary": "Тайная военизированная фракция Сарефа стала actionable actor Сияющей Обители."
+      },
+      "factionStrength": 95,
+      "factionLifecycle": {
+        "state": "active"
       }
-    ]
-  }
+    }
+  ]
 }
 ```
 

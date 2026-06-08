@@ -3372,6 +3372,12 @@ public sealed class AfterlifeDocumentationCoverageTests
         {
             Assert.Contains(issueCode, audit, StringComparison.Ordinal);
         }
+
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var example27 = ExtractRequiredSection(examples, "EXAMPLE 27", "EXAMPLE 28");
+        Assert.Contains("game_state/meta/shining_abode_state.json", example27, StringComparison.Ordinal);
+        Assert.Contains("Do not use an unsupported top-level `shiningAbodeState` response field", example27, StringComparison.Ordinal);
+        Assert.DoesNotContain("\"shiningAbodeState\"", example27, StringComparison.Ordinal);
     }
 
     [Fact]
