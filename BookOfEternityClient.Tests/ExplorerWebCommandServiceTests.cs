@@ -2372,6 +2372,30 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ExecuteAsync_SpiritualAction_SanitizesActiveCombatConditionRawJson()
+    {
+        await SeedUniversalMetaFilesAsync();
+        await SeedChaosSeaFilesAsync();
+        await SeedAfterlifeCombatAndEntityFilesAsync();
+        await WriteAfterlifeConflictStateWithCombatConditionsAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_action"));
+
+        var payload = SerializeResult(result);
+        Assert.Equal(CommandExecutionState.RequiresInput, result.State);
+        Assert.Contains("JSON: active afterlife spiritual conflict", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ordinary_visible_roll_reason", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("mark_oath_flare_001", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("visible_condition_roll_source_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("guard_tempo_window_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_summary_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("hidden_audit_legacy_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("concealed_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("spoiler_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_EmptyCommand_ReturnsFailedDto()
     {
         var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("   "));
