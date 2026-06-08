@@ -125,6 +125,7 @@
                     Node types allowed in QTE v2:
                     - `MashInput`
                     - `PatternMemory`
+                    - `RhythmPulse`
 
                     For `MashInput`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.keys`: non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
@@ -146,6 +147,19 @@
                     - Perfect repeat resolves success; an imperfect repeat within tolerance and with meaningful progress resolves partial.
                     - Too many mistakes, timeout, or Escape/cancel resolves fail.
                     - Browser interactive PatternMemory parity remains #918; in this issue the console client owns live PatternMemory play, and browser surfaces must not claim live interactive support.
+
+                    For `RhythmPulse`, `check.config` is MANDATORY and MUST contain:
+                    - `check.config.pulseCount`: integer from 2 to 16.
+                    - `beatIntervalMs`: integer from 300 to 3000.
+                    - `hitWindowMs`: integer from 40 to 1000; `hitWindowMs * 2` MUST be strictly less than `beatIntervalMs` so pulse windows do not overlap.
+                    - `allowedMisses`: integer from 0 to `pulseCount - 1`, so failure remains possible.
+                    - Optional `patternVariation`: `steady`, `accelerating`, or `swing`.
+                    - Higher `baseDifficulty` may increase effective pulse count, reduce the hit window, or reduce miss tolerance.
+                    - A higher relevant `primaryCharacteristic` tier must not make the same RhythmPulse config harder.
+                    - Console RhythmPulse uses Space as the local pulse key and must show visual/textual pulse timing; audio cues are optional enhancement only.
+                    - Success resolves when missed pulses stay within tolerance; at least half of pulses hit resolves partial.
+                    - Too few hits, timeout, or Escape/cancel resolves fail.
+                    - Browser interactive RhythmPulse parity remains #918; in this issue the console client owns live RhythmPulse play, and browser surfaces must not claim live interactive support.
 
                     Keyboard/layout rule:
                     - QTE reaction checks use physical QTE keys, not ordinary typed prose.

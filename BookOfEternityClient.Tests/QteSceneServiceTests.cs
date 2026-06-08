@@ -284,6 +284,130 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public void RhythmPulseGrade_ResolvesSuccessPartialAndFailFromPulseWindows()
+    {
+        var pulses = new[] { 500, 1000, 1500, 2000 };
+
+        Assert.Equal(
+            "success",
+            ResolveRhythmPulseGrade(
+                pulses,
+                hitWindowMs: 80,
+                allowedMisses: 1,
+                [
+                    RhythmInput(500),
+                    RhythmInput(930),
+                    RhythmInput(1510)
+                ]));
+        Assert.Equal(
+            "partial",
+            ResolveRhythmPulseGrade(
+                pulses,
+                hitWindowMs: 80,
+                allowedMisses: 1,
+                [
+                    RhythmInput(500),
+                    RhythmInput(1510)
+                ]));
+        Assert.Equal(
+            "fail",
+            ResolveRhythmPulseGrade(
+                pulses,
+                hitWindowMs: 80,
+                allowedMisses: 1,
+                [
+                    RhythmInput(500)
+                ]));
+    }
+
+    [Fact]
+    public void RhythmPulseGrade_NoMeaningfulInputResolvesAsFail()
+    {
+        Assert.Equal(
+            "fail",
+            ResolveRhythmPulseGrade(
+                [500, 1000, 1500, 2000],
+                hitWindowMs: 80,
+                allowedMisses: 1,
+                []));
+    }
+
+    [Fact]
+    public void RhythmPulseGrade_EscapeCancelsAsFail()
+    {
+        var inputs = new[]
+        {
+            RhythmInput(500),
+            RhythmInput(610, ConsoleKey.Escape),
+            RhythmInput(1000)
+        };
+
+        Assert.Equal(
+            "fail",
+            ResolveRhythmPulseGrade(
+                [500, 1000, 1500, 2000],
+                hitWindowMs: 80,
+                allowedMisses: 1,
+                inputs));
+    }
+
+    [Fact]
+    public void RhythmPulseScheduleVariation_IsDeterministicAndStrictlyIncreasing()
+    {
+        var steady = GenerateRhythmPulseSchedule(pulseCount: 4, beatIntervalMs: 650, patternVariation: "steady");
+        var swing = GenerateRhythmPulseSchedule(pulseCount: 4, beatIntervalMs: 650, patternVariation: "swing");
+        var accelerating = GenerateRhythmPulseSchedule(pulseCount: 4, beatIntervalMs: 650, patternVariation: "accelerating");
+
+        Assert.Equal(new[] { 650, 1300, 1950, 2600 }, steady);
+        Assert.Equal(steady.Count, swing.Count);
+        Assert.Equal(steady.Count, accelerating.Count);
+        Assert.NotEqual(steady, swing);
+        Assert.NotEqual(steady, accelerating);
+        AssertStrictlyIncreasing(swing);
+        AssertStrictlyIncreasing(accelerating);
+    }
+
+    [Fact]
+    public void RhythmPulseEffectiveRequirement_IsMonotonicForStatTierAndDifficulty()
+    {
+        var lowStat = ComputeRhythmPulseEffectiveRequirement(
+            pulseCount: 6,
+            beatIntervalMs: 650,
+            hitWindowMs: 120,
+            allowedMisses: 1,
+            baseDifficulty: 3,
+            statTier: -2);
+        var highStat = ComputeRhythmPulseEffectiveRequirement(
+            pulseCount: 6,
+            beatIntervalMs: 650,
+            hitWindowMs: 120,
+            allowedMisses: 1,
+            baseDifficulty: 3,
+            statTier: 3);
+        var easyDifficulty = ComputeRhythmPulseEffectiveRequirement(
+            pulseCount: 6,
+            beatIntervalMs: 650,
+            hitWindowMs: 120,
+            allowedMisses: 1,
+            baseDifficulty: 1,
+            statTier: 0);
+        var hardDifficulty = ComputeRhythmPulseEffectiveRequirement(
+            pulseCount: 6,
+            beatIntervalMs: 650,
+            hitWindowMs: 120,
+            allowedMisses: 1,
+            baseDifficulty: 5,
+            statTier: 0);
+
+        Assert.True(highStat.PulseCount <= lowStat.PulseCount);
+        Assert.True(highStat.HitWindowMs >= lowStat.HitWindowMs);
+        Assert.True(highStat.AllowedMisses >= lowStat.AllowedMisses);
+        Assert.True(hardDifficulty.PulseCount >= easyDifficulty.PulseCount);
+        Assert.True(hardDifficulty.HitWindowMs <= easyDifficulty.HitWindowMs);
+        Assert.True(hardDifficulty.AllowedMisses <= easyDifficulty.AllowedMisses);
+    }
+
+    [Fact]
     public async Task EnsureRuntimeStateHealthyAsync_DeletesInvalidJsonRuntimeFile()
     {
         await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, "{ invalid json");
@@ -989,6 +1113,45 @@ public sealed class QteSceneServiceTests : IDisposable
         int sequenceLength,
         string seed) =>
         QteSceneService.GeneratePatternMemorySequence(alphabet, sequenceLength, seed);
+
+    private static string ResolveRhythmPulseGrade(
+        int[] pulseOffsetsMs,
+        int hitWindowMs,
+        int allowedMisses,
+        QteSceneService.RhythmPulseInput[] inputs) =>
+        QteSceneService.ResolveRhythmPulseGrade(pulseOffsetsMs, hitWindowMs, allowedMisses, inputs);
+
+    private static IReadOnlyList<int> GenerateRhythmPulseSchedule(
+        int pulseCount,
+        int beatIntervalMs,
+        string? patternVariation) =>
+        QteSceneService.GenerateRhythmPulseSchedule(pulseCount, beatIntervalMs, patternVariation);
+
+    private static QteSceneService.RhythmPulseEffectiveRequirement ComputeRhythmPulseEffectiveRequirement(
+        int pulseCount,
+        int beatIntervalMs,
+        int hitWindowMs,
+        int allowedMisses,
+        int baseDifficulty,
+        int statTier) =>
+        QteSceneService.ComputeRhythmPulseEffectiveRequirement(
+            pulseCount,
+            beatIntervalMs,
+            hitWindowMs,
+            allowedMisses,
+            baseDifficulty,
+            statTier);
+
+    private static QteSceneService.RhythmPulseInput RhythmInput(
+        int offsetMs,
+        ConsoleKey key = ConsoleKey.Spacebar) =>
+        new(offsetMs, Key(key));
+
+    private static void AssertStrictlyIncreasing(IReadOnlyList<int> values)
+    {
+        for (var i = 1; i < values.Count; i++)
+            Assert.True(values[i] > values[i - 1], $"{values[i]} should be greater than {values[i - 1]} at index {i}.");
+    }
 
     public void Dispose()
     {

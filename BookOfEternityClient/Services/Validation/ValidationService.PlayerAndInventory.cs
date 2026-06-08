@@ -563,7 +563,7 @@ public partial class ValidationService
                     }
                     var primaryCharacteristic = RequireString(check, $"{actionContext}.check", issues, "primaryCharacteristic");
                     if (!string.IsNullOrWhiteSpace(checkType) &&
-                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory")
+                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory" and not "RhythmPulse")
                     {
                         issues.Add(new ValidationIssue(
                             $"{actionContext}.check.type",
@@ -571,7 +571,7 @@ public partial class ValidationService
                             "Неподдерживаемый QTE check type",
                             code: "qte_invalid_check_type",
                             section: "QTE",
-                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory",
+                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory | RhythmPulse",
                             actual: checkType));
                     }
 
@@ -625,6 +625,10 @@ public partial class ValidationService
                     else if (string.Equals(checkType, "PatternMemory", StringComparison.Ordinal))
                     {
                         ValidatePatternMemoryConfig(check, actionContext, issues);
+                    }
+                    else if (string.Equals(checkType, "RhythmPulse", StringComparison.Ordinal))
+                    {
+                        ValidateRhythmPulseConfig(check, actionContext, issues);
                     }
 
                     if (!action.TryGetProperty("routing", out var routing))
@@ -1243,6 +1247,159 @@ public partial class ValidationService
         }
     }
 
+    private static void ValidateRhythmPulseConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)
+    {
+        var configContext = $"{actionContext}.check.config";
+        if (!check.TryGetProperty("config", out var config) || config.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                configContext,
+                IssueSeverity.Error,
+                "RhythmPulse требует check.config object",
+                code: "qte_rhythm_pulse_config_missing",
+                section: "QTE",
+                expected: "config object with pulseCount, beatIntervalMs, hitWindowMs, allowedMisses",
+                actual: check.TryGetProperty("config", out var existingConfig) ? existingConfig.ValueKind.ToString() : "missing"));
+            return;
+        }
+
+        var hasPulseCount = TryReadRequiredRhythmPulseInteger(
+            config,
+            configContext,
+            issues,
+            "pulseCount",
+            "qte_rhythm_pulse_pulse_count_missing",
+            "qte_rhythm_pulse_pulse_count_invalid",
+            out var pulseCount);
+        if (hasPulseCount &&
+            (pulseCount < QteSceneService.RhythmPulseMinPulseCount ||
+             pulseCount > QteSceneService.RhythmPulseMaxPulseCount))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.pulseCount",
+                IssueSeverity.Error,
+                "RhythmPulse pulseCount должен быть в игровом диапазоне",
+                code: "qte_rhythm_pulse_pulse_count_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.RhythmPulseMinPulseCount}..{QteSceneService.RhythmPulseMaxPulseCount}",
+                actual: pulseCount.ToString(CultureInfo.InvariantCulture),
+                repairHint: "Используй короткий ритмический рисунок с несколькими пульсами."));
+            hasPulseCount = false;
+        }
+
+        var hasBeatInterval = TryReadRequiredRhythmPulseInteger(
+            config,
+            configContext,
+            issues,
+            "beatIntervalMs",
+            "qte_rhythm_pulse_beat_interval_ms_missing",
+            "qte_rhythm_pulse_beat_interval_ms_invalid",
+            out var beatIntervalMs);
+        if (hasBeatInterval &&
+            (beatIntervalMs < QteSceneService.RhythmPulseMinBeatIntervalMs ||
+             beatIntervalMs > QteSceneService.RhythmPulseMaxBeatIntervalMs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.beatIntervalMs",
+                IssueSeverity.Error,
+                "RhythmPulse beatIntervalMs должен быть в игровом диапазоне",
+                code: "qte_rhythm_pulse_beat_interval_ms_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.RhythmPulseMinBeatIntervalMs}..{QteSceneService.RhythmPulseMaxBeatIntervalMs}",
+                actual: beatIntervalMs.ToString(CultureInfo.InvariantCulture),
+                repairHint: "Используй ритм, который можно увидеть и нажать в короткой QTE-сцене."));
+            hasBeatInterval = false;
+        }
+
+        var hasHitWindow = TryReadRequiredRhythmPulseInteger(
+            config,
+            configContext,
+            issues,
+            "hitWindowMs",
+            "qte_rhythm_pulse_hit_window_ms_missing",
+            "qte_rhythm_pulse_hit_window_ms_invalid",
+            out var hitWindowMs);
+        if (hasHitWindow &&
+            (hitWindowMs < QteSceneService.RhythmPulseMinHitWindowMs ||
+             hitWindowMs > QteSceneService.RhythmPulseMaxHitWindowMs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.hitWindowMs",
+                IssueSeverity.Error,
+                "RhythmPulse hitWindowMs должен быть в игровом диапазоне",
+                code: "qte_rhythm_pulse_hit_window_ms_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.RhythmPulseMinHitWindowMs}..{QteSceneService.RhythmPulseMaxHitWindowMs}",
+                actual: hitWindowMs.ToString(CultureInfo.InvariantCulture)));
+            hasHitWindow = false;
+        }
+
+        if (hasBeatInterval && hasHitWindow && hitWindowMs * 2 >= beatIntervalMs)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.hitWindowMs",
+                IssueSeverity.Error,
+                "RhythmPulse hitWindowMs не должен перекрывать соседние пульсы",
+                code: "qte_rhythm_pulse_hit_window_ms_overlaps",
+                section: "QTE",
+                expected: $"hitWindowMs * 2 < beatIntervalMs ({beatIntervalMs})",
+                actual: hitWindowMs.ToString(CultureInfo.InvariantCulture),
+                repairHint: "Сократи hitWindowMs или увеличь beatIntervalMs, чтобы окна попадания оставались различимыми."));
+        }
+
+        var hasAllowedMisses = TryReadRequiredRhythmPulseInteger(
+            config,
+            configContext,
+            issues,
+            "allowedMisses",
+            "qte_rhythm_pulse_allowed_misses_missing",
+            "qte_rhythm_pulse_allowed_misses_invalid",
+            out var allowedMisses);
+        if (hasAllowedMisses && hasPulseCount &&
+            (allowedMisses < 0 || allowedMisses >= pulseCount))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.allowedMisses",
+                IssueSeverity.Error,
+                "RhythmPulse allowedMisses должен оставлять возможность провала",
+                code: "qte_rhythm_pulse_allowed_misses_out_of_range",
+                section: "QTE",
+                expected: $"0..{pulseCount - 1}",
+                actual: allowedMisses.ToString(CultureInfo.InvariantCulture)));
+        }
+        else if (hasAllowedMisses && allowedMisses < 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.allowedMisses",
+                IssueSeverity.Error,
+                "RhythmPulse allowedMisses не может быть отрицательным",
+                code: "qte_rhythm_pulse_allowed_misses_out_of_range",
+                section: "QTE",
+                expected: ">= 0",
+                actual: allowedMisses.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        if (!config.TryGetProperty("patternVariation", out var variation) ||
+            variation.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (variation.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(variation.GetString()) ||
+            !QteSceneService.RhythmPulsePatternVariations.Contains(variation.GetString()!.Trim(), StringComparer.Ordinal))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.patternVariation",
+                IssueSeverity.Error,
+                "RhythmPulse patternVariation должен быть поддерживаемым canonical token или null",
+                code: "qte_rhythm_pulse_pattern_variation_invalid",
+                section: "QTE",
+                expected: string.Join(" | ", QteSceneService.RhythmPulsePatternVariations),
+                actual: variation.ValueKind == JsonValueKind.String ? variation.GetString() : variation.ValueKind.ToString()));
+        }
+    }
+
     private static void ValidatePatternMemoryAlphabet(JsonElement config, string configContext, List<ValidationIssue> issues)
     {
         if (!config.TryGetProperty("alphabet", out var alphabet))
@@ -1361,6 +1518,43 @@ public partial class ValidationService
             $"{configContext}.{propName}",
             IssueSeverity.Error,
             $"PatternMemory {propName} должен быть целым числом",
+            code: invalidCode,
+            section: "QTE",
+            expected: "integer",
+            actual: node.ValueKind.ToString()));
+        return false;
+    }
+
+    private static bool TryReadRequiredRhythmPulseInteger(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        string propName,
+        string missingCode,
+        string invalidCode,
+        out int value)
+    {
+        value = 0;
+        if (!config.TryGetProperty(propName, out var node))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.{propName}",
+                IssueSeverity.Error,
+                $"RhythmPulse требует {propName}",
+                code: missingCode,
+                section: "QTE",
+                expected: "integer",
+                actual: "missing"));
+            return false;
+        }
+
+        if (node.ValueKind == JsonValueKind.Number && node.TryGetInt32(out value))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{configContext}.{propName}",
+            IssueSeverity.Error,
+            $"RhythmPulse {propName} должен быть целым числом",
             code: invalidCode,
             section: "QTE",
             expected: "integer",

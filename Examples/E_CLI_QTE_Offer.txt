@@ -35,6 +35,12 @@
 - `PatternMemory` adjusts effective sequence length, reveal/input time, or mistake tolerance by `baseDifficulty` and the relevant `primaryCharacteristic`.
 - Perfect repeat resolves success; tolerated imperfect repeat resolves partial; too many mistakes, timeout, or Escape/cancel resolves fail in PatternMemory.
 - Browser interactive PatternMemory parity remains #918; browser surfaces must not claim live PatternMemory support yet.
+- For `RhythmPulse`, `check.config.pulseCount`, `beatIntervalMs`, `hitWindowMs`, and `allowedMisses` are required; `patternVariation` is optional.
+- `RhythmPulse` pulseCount is 2..16, beatIntervalMs is 300..3000, hitWindowMs is 40..1000, and `hitWindowMs * 2` must be less than `beatIntervalMs`.
+- `RhythmPulse` allowedMisses is 0..`pulseCount - 1`, and patternVariation may be `steady`, `accelerating`, or `swing`.
+- `RhythmPulse` uses Space in the console and must show visual/textual pulse timing so the scene is not audio-only.
+- `RhythmPulse` adjusts effective pulse count, hit window, or miss tolerance by `baseDifficulty` and the relevant `primaryCharacteristic`.
+- Browser interactive RhythmPulse parity remains #918; browser surfaces must not claim live RhythmPulse support yet.
 - `responseFragment` is the final local mechanical outcome for an accepted QTE branch.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
@@ -206,6 +212,90 @@
       "gmSummary": "Игрок провалил PatternMemory или отменил его через Escape/cancel; сцену нужно продолжать с активной защитой.",
       "responseFragment": {
         "response": "Рунная печать отталкивает вас вспышкой защитного света.",
+        "currentPoiseChange": -10
+      }
+    }
+  ]
+}
+```
+
+## RhythmPulse `output/qte_offer.json`
+
+```json
+{
+  "qteId": "qte_resonance_pulse_001",
+  "title": "Резонанс печати",
+  "offerText": "Мастер Игры предлагает короткое QTE: нужно нажимать Space в момент визуальной пульсации, чтобы синхронизироваться с магической печатью.",
+  "introNarrative": "На полу вспыхивает круг рун. Свет бьётся короткими ударами, и каждый неверный шаг может сорвать ритуал.",
+  "declineHint": "Если игрок откажется, ту же ситуацию нужно разрешить обычной проверкой восприятия или веры.",
+  "cinematicJustification": "Сцена длится несколько секунд и проверяет чувство ритма под давлением.",
+  "sceneImagePrompt": "Glowing ritual seal pulsing with rhythmic light on a stone floor, cinematic fantasy resonance challenge",
+  "startChapterId": "resonance_ring",
+  "chapters": [
+    {
+      "chapterId": "resonance_ring",
+      "title": "Пульс резонанса",
+      "narrative": "Клиент показывает визуальную дорожку пульсов и текстовый счётчик; звук может помочь, но не нужен для прохождения.",
+      "chapterImagePrompt": "Close view of a magic seal pulsing in visible rings, hero timing movement to the flashes",
+      "actions": [
+        {
+          "actionId": "match_resonance",
+          "label": "Попасть в ритм печати",
+          "check": {
+            "type": "RhythmPulse",
+            "baseDifficulty": 3,
+            "primaryCharacteristic": "perception",
+            "config": {
+              "pulseCount": 4,
+              "beatIntervalMs": 650,
+              "hitWindowMs": 120,
+              "allowedMisses": 1,
+              "patternVariation": "steady"
+            }
+          },
+          "routing": {
+            "success": { "terminalOutcomeId": "resonance_matched" },
+            "partial": { "terminalOutcomeId": "resonance_wavers" },
+            "fail": { "terminalOutcomeId": "resonance_breaks" }
+          },
+          "successText": "Вы нажимаете точно в каждую вспышку, и печать принимает ваш ритм.",
+          "partialText": "Вы сбиваетесь на одном пульсе, но удерживаете основную волну.",
+          "failText": "Ритм распадается, и печать отвечает резким отталкивающим импульсом."
+        }
+      ]
+    }
+  ],
+  "terminalOutcomes": [
+    {
+      "outcomeId": "resonance_matched",
+      "title": "Ритм совпал",
+      "finalNarrative": "Печать раскрывается ровной волной света, и герой проходит через круг без ожога.",
+      "gmSummary": "Игрок успешно прошёл RhythmPulse QTE и синхронизировался с магической печатью.",
+      "outcomeImagePrompt": "Magic seal opening in harmonious pulses, hero stepping through golden resonance, cinematic fantasy",
+      "responseFragment": {
+        "response": "Вы попадаете в ритм печати и проходите через круг резонанса.",
+        "experienceGained": 40,
+        "timeChange": 3
+      }
+    },
+    {
+      "outcomeId": "resonance_wavers",
+      "title": "Резонанс дрогнул",
+      "finalNarrative": "Печать пропускает героя рывком, но нестабильная волна обжигает ладони.",
+      "gmSummary": "Игрок получил частичный исход RhythmPulse: ритм удержан не полностью, сцена осложняется откатом печати.",
+      "responseFragment": {
+        "response": "Вы проходите через дрожащую волну, но теряете часть темпа.",
+        "experienceGained": 10,
+        "currentPoiseChange": -5
+      }
+    },
+    {
+      "outcomeId": "resonance_breaks",
+      "title": "Ритм сорван",
+      "finalNarrative": "Несвоевременное движение ломает рисунок света, и печать отбрасывает героя от круга.",
+      "gmSummary": "Игрок провалил RhythmPulse или отменил его через Escape/cancel; сцену нужно продолжать с сорванным резонансом.",
+      "responseFragment": {
+        "response": "Печать отталкивает вас вспышкой, и ритуальный ритм распадается.",
         "currentPoiseChange": -10
       }
     }
