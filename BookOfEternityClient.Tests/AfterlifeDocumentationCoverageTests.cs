@@ -2957,6 +2957,75 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void PredvechnyeSpecialArtCombatEffectExamplesStayCombatActionable()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        var combinedGuidance = matrix + examples + glossary + manifest;
+        var predvechnyeSection = ExtractRequiredSection(
+            examples,
+            "#896 Predvechnye special-art combat-effect coverage start",
+            "#896 Predvechnye special-art combat-effect coverage end");
+
+        Assert.Contains("player-owned learned Predvechnye Guardian special art", predvechnyeSection, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("non-player Guardian/opposition Predvechnye special art", predvechnyeSection, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("specialArts[].combatEffect", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"specialArts\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"combatEffect\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"summary\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"trigger\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"mechanicalAxis\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"allowedPayoff\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"limit\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"auditRequirement\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("specialArtAudit.effectNote", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"effectNote\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"ownerActorType\": \"player_soul\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"ownerActorType\": \"guardian\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"baseOperation\": \"binding\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"baseOperation\": \"break_binding\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"mechanicalAxis\": \"combatConditions\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"mechanicalAxis\": \"counterPayoff\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("\"specialCostMultiplierPercent\"", predvechnyeSection, StringComparison.Ordinal);
+        Assert.Contains("добровольн", predvechnyeSection, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("скрытое условие", predvechnyeSection, StringComparison.OrdinalIgnoreCase);
+
+        var guardianArts = new[]
+        {
+            "Пламя Избранной Клятвы",
+            "Клеймо Честной Трещины",
+            "Милость Незаживающей Раны",
+            "Якорь Невытравленного Имени",
+            "След, Которого Не Было",
+            "Лунный Разрез Клятвы",
+            "Пепельная Формула Чужого Мира",
+            "Разомкнутый Договор",
+            "Трещина в Строю",
+            "Маска Среди Крыльев"
+        };
+        var coveredArts = guardianArts
+            .Where(art => predvechnyeSection.Contains(art, StringComparison.Ordinal))
+            .ToArray();
+
+        Assert.True(
+            coveredArts.Length >= 2,
+            "Afterlife examples must keep at least two #894 Predvechnye Guardian arts in combat-effect worked examples.");
+        Assert.Contains("Пламя Избранной Клятвы", coveredArts);
+        Assert.Contains("Разомкнутый Договор", coveredArts);
+
+        foreach (var text in new[] { matrix, glossary, manifest })
+        {
+            Assert.Contains("combat-useful Predvechnye special-art examples", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("unique combat effect beyond the base operation", text, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("specialArtAudit.effectNote", text, StringComparison.Ordinal);
+        }
+
+        Assert.Contains("afterlife_special_art_combat_effect_v1", combinedGuidance, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption()
     {
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");

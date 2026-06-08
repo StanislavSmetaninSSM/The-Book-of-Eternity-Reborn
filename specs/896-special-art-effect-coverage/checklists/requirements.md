@@ -1,7 +1,7 @@
 # Requirements Checklist: Special-art combat-effect examples and regression coverage (#896)
 
-**Feature**: `specs/896-special-art-effect-coverage`  
-**Source issue**: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/896  
+**Feature**: `specs/896-special-art-effect-coverage`
+**Source issue**: https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/896
 **Created**: 2026-06-08
 
 ## Completeness

@@ -1,8 +1,8 @@
 # Implementation Plan: Special-art combat-effect examples and regression coverage (#896)
 
-**Source issue:** GitHub #896 — https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/896  
-**Spec:** `specs/896-special-art-effect-coverage/spec.md`  
-**Branch/worktree:** `codex/896-special-art-coverage` at `E:/Games/worktrees/boe-896-special-art-coverage`  
+**Source issue:** GitHub #896 — https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/896
+**Spec:** `specs/896-special-art-effect-coverage/spec.md`
+**Branch/worktree:** `codex/896-special-art-coverage` at `E:/Games/worktrees/boe-896-special-art-coverage`
 **Created:** 2026-06-08
 
 ## Summary

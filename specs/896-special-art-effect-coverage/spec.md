@@ -1,8 +1,8 @@
 # Feature Specification: Special-art combat-effect examples and regression coverage (#896)
 
-**Feature Branch**: `codex/896-special-art-coverage`  
-**Created**: 2026-06-08  
-**Status**: Draft for autonomous implementation  
+**Feature Branch**: `codex/896-special-art-coverage`
+**Created**: 2026-06-08
+**Status**: Draft for autonomous implementation
 **Source Issue**: GitHub issue #896 — https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/896
 
 ## Source Issues & Scope
