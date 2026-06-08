@@ -622,11 +622,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         }
 
         var visibility = GetString(condition, "visibility", "");
-        if (IsChronicleHiddenVisibility(visibility))
+        if (IsHiddenPlayerFacingVisibility(visibility))
             return false;
 
         var audience = GetString(condition, "audience", "");
-        return !IsChronicleHiddenVisibility(audience);
+        return !IsHiddenPlayerFacingVisibility(audience);
     }
 
     private static string DescribeCombatConditionTarget(JsonObject condition)
@@ -1565,6 +1565,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                string.Equals(normalized, "private", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(normalized, "internal", StringComparison.OrdinalIgnoreCase);
     }
+
+    private static bool IsHiddenPlayerFacingVisibility(string? visibility) =>
+        IsChronicleHiddenVisibility(visibility) ||
+        string.Equals(visibility?.Trim(), "concealed", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(visibility?.Trim(), "spoiler", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsFalseFlag(JsonNode? node) =>
         node is JsonValue value &&

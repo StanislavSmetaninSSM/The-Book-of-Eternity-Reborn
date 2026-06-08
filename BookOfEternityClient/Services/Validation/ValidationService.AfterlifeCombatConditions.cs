@@ -54,6 +54,31 @@ public partial class ValidationService
         "reverse_control"
     };
 
+    private static readonly string[] AfterlifeCombatConditionFiniteDurationFields =
+    [
+        "remainingUses",
+        "expiresAtTurn",
+        "expiresAtExchangeId",
+        "expiresAfterExchangeId",
+        "expiresAfterTurns",
+        "expiresAtScene",
+        "sceneId"
+    ];
+
+    private static readonly string[] AfterlifeCombatConditionSourceIdentityFields =
+    [
+        "sourceType",
+        "type",
+        "sourceId",
+        "id",
+        "actorType",
+        "actorId",
+        "actorRef",
+        "artId",
+        "sourceOperation",
+        "sourceExchangeId"
+    ];
+
     private static HashSet<string> ValidateCombatConditions(
         JsonNode? node,
         string context,
@@ -130,7 +155,8 @@ public partial class ValidationService
         if (!string.IsNullOrWhiteSpace(conditionId) && ConflictTokenEquals(status, "active"))
             conditionIds.Add(conditionId);
 
-        RequireCombatConditionObject(condition, context, issues, "source");
+        var source = RequireCombatConditionObject(condition, context, issues, "source");
+        ValidateCombatConditionSource(source, $"{context}.source", issues);
         ValidateCombatConditionTarget(condition, context, issues);
         var mechanicalAxes = RequireCombatConditionMechanicalAxes(condition, context, issues);
         foreach (var mechanicalAxis in mechanicalAxes)
@@ -153,7 +179,31 @@ public partial class ValidationService
         RequireCombatConditionString(condition, context, issues, "summary");
         ValidateCombatConditionCounterplay(condition["counterplay"], $"{context}.counterplay", issues);
         ValidateCombatConditionDuration(duration, status, $"{context}.duration", issues);
+        ValidateCombatConditionAffectedOperations(affectedOperations, $"{context}.affectedOperations", issues);
         ValidateCombatConditionPayoff(mechanicalAxes, affectedOperations, payoff, context, issues);
+    }
+
+    private static void ValidateCombatConditionSource(
+        JsonObject? source,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        if (source == null)
+            return;
+
+        if (AfterlifeCombatConditionSourceIdentityFields.Any(field =>
+                !string.IsNullOrWhiteSpace(AfterlifeSpiritualConflictState.GetNodeString(source[field]))))
+        {
+            return;
+        }
+
+        AddCombatConditionIssue(
+            issues,
+            context,
+            "combatConditions.source должен содержать источник или стабильную identity.",
+            "afterlife_combat_condition_missing_source_identity",
+            string.Join("/", AfterlifeCombatConditionSourceIdentityFields),
+            source.ToJsonString());
     }
 
     private static void ValidateCombatConditionCounterplay(
@@ -211,6 +261,18 @@ public partial class ValidationService
         var remainingUses = hasRemainingUses
             ? AfterlifeSpiritualConflictState.GetNodeInt(duration["remainingUses"])
             : 1;
+        if (ConflictTokenEquals(status, "active") &&
+            !AfterlifeCombatConditionFiniteDurationFields.Any(duration.ContainsKey))
+        {
+            AddCombatConditionIssue(
+                issues,
+                context,
+                "active combatCondition должен иметь finite duration/uses.",
+                "afterlife_combat_condition_missing_finite_duration",
+                string.Join("/", AfterlifeCombatConditionFiniteDurationFields),
+                duration.ToJsonString());
+        }
+
         if (ConflictTokenEquals(status, "active") && hasRemainingUses && remainingUses <= 0)
         {
             AddCombatConditionIssue(
@@ -220,6 +282,31 @@ public partial class ValidationService
                 "afterlife_combat_condition_active_duration_spent",
                 "remainingUses > 0 or status consumed/expired/cleared",
                 remainingUses.ToString());
+        }
+    }
+
+    private static void ValidateCombatConditionAffectedOperations(
+        IReadOnlyCollection<string> affectedOperations,
+        string context,
+        List<ValidationIssue> issues)
+    {
+        var index = 0;
+        foreach (var operation in affectedOperations)
+        {
+            if (AfterlifeSpiritualConflictState.OperationTypes.Contains(operation))
+            {
+                index++;
+                continue;
+            }
+
+            AddCombatConditionIssue(
+                issues,
+                $"{context}[{index}]",
+                "combatConditions.affectedOperations должен содержать только legal afterlife operations.",
+                "afterlife_combat_condition_invalid_affected_operation",
+                string.Join("/", AfterlifeSpiritualConflictState.OperationTypes.OrderBy(value => value, StringComparer.OrdinalIgnoreCase)),
+                operation);
+            index++;
         }
     }
 
@@ -247,10 +334,21 @@ public partial class ValidationService
                 AfterlifeSpiritualConflictState.GetNodeString(payoff["sourceType"]) ?? "missing");
         }
 
+        var effect = AfterlifeSpiritualConflictState.GetNodeString(payoff["effect"]);
+        if (string.IsNullOrWhiteSpace(effect))
+        {
+            AddCombatConditionIssue(
+                issues,
+                $"{context}.payoff",
+                "combatConditions.payoff должен иметь meaningful effect.",
+                "afterlife_combat_condition_missing_payoff_effect",
+                "non-empty effect",
+                payoff.ToJsonString());
+        }
+
         if (!mechanicalAxes.Any(axis => ConflictTokenEquals(axis, "controlState")))
             return;
 
-        var effect = AfterlifeSpiritualConflictState.GetNodeString(payoff["effect"]);
         var effectIsLegal = !string.IsNullOrWhiteSpace(effect) &&
                             AfterlifeCombatConditionControlPayoffs.Contains(effect);
         var operationsAreLegal = affectedOperations.Count > 0 &&
@@ -464,16 +562,19 @@ public partial class ValidationService
             if (sources[index] is not JsonObject source)
                 continue;
 
-            var sourceType = AfterlifeSpiritualConflictState.GetNodeString(source["sourceType"]);
-            var conditionId = AfterlifeSpiritualConflictState.GetNodeString(source["conditionId"]) ??
-                              AfterlifeSpiritualConflictState.GetNodeString(source["sourceId"]) ??
-                              AfterlifeSpiritualConflictState.GetNodeString(source["id"]);
-            if (!ConflictTokenEquals(sourceType, "combat_condition") &&
-                string.IsNullOrWhiteSpace(conditionId))
+            var sourceType = AfterlifeSpiritualConflictState.GetNodeString(source["sourceType"]) ??
+                             AfterlifeSpiritualConflictState.GetNodeString(source["type"]);
+            var conditionId = AfterlifeSpiritualConflictState.GetNodeString(source["conditionId"]);
+            var isConditionBackedSource =
+                ConflictTokenEquals(sourceType, "combat_condition") ||
+                !string.IsNullOrWhiteSpace(conditionId);
+            if (!isConditionBackedSource)
             {
                 continue;
             }
 
+            conditionId ??= AfterlifeSpiritualConflictState.GetNodeString(source["sourceId"]) ??
+                            AfterlifeSpiritualConflictState.GetNodeString(source["id"]);
             if (string.IsNullOrWhiteSpace(conditionId) ||
                 conditionIds == null ||
                 !conditionIds.Contains(conditionId))

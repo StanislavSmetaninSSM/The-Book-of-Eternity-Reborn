@@ -2357,6 +2357,10 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Клятва подсвечена", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("hidden_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("concealed_condition_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("concealed_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("spoiler_condition_marker", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("spoiler_condition_marker", payload, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -3185,6 +3189,64 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
                 "visibility": "gm_only",
                 "summary": "hidden_condition_marker",
                 "auditRequirement": "hidden_condition_marker"
+              },
+              {
+                "conditionId": "concealed_condition_marker",
+                "displayName": "concealed_condition_marker",
+                "kind": "vow",
+                "polarity": "debuff",
+                "status": "active",
+                "source": {
+                  "type": "story_link",
+                  "actorType": "guardian",
+                  "actorId": "guardian_concealed",
+                  "displayName": "concealed_condition_marker"
+                },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": {
+                  "effect": "disadvantage",
+                  "level": "disadvantage",
+                  "sourceType": "combat_condition"
+                },
+                "duration": {
+                  "type": "scene",
+                  "remainingUses": 1
+                },
+                "counterplay": [ "concealed_condition_marker" ],
+                "visibility": "concealed",
+                "summary": "concealed_condition_marker",
+                "auditRequirement": "concealed_condition_marker"
+              },
+              {
+                "conditionId": "spoiler_condition_marker",
+                "displayName": "spoiler_condition_marker",
+                "kind": "vow",
+                "polarity": "debuff",
+                "status": "active",
+                "source": {
+                  "type": "story_link",
+                  "actorType": "guardian",
+                  "actorId": "guardian_spoiler",
+                  "displayName": "spoiler_condition_marker"
+                },
+                "targetSide": "player",
+                "affectedOperations": [ "guard" ],
+                "mechanicalAxis": "rollMode",
+                "payoff": {
+                  "effect": "disadvantage",
+                  "level": "disadvantage",
+                  "sourceType": "combat_condition"
+                },
+                "duration": {
+                  "type": "scene",
+                  "remainingUses": 1
+                },
+                "counterplay": [ "spoiler_condition_marker" ],
+                "visibility": "spoiler",
+                "summary": "spoiler_condition_marker",
+                "auditRequirement": "spoiler_condition_marker"
               }
             ],
             "exchangeLog": []
