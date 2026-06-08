@@ -20,7 +20,7 @@ public partial class ExplorerMode
         {
             ShowEmptyPanel(
                 "Скрытая нить",
-                $"Состояние скрытой линии повреждено ({read.Error}). Сначала нужен repair состояния.");
+                $"Состояние скрытой линии повреждено ({read.Error}). Сначала нужен ремонт состояния.");
             if (!string.IsNullOrWhiteSpace(read.RawPayload))
                 WriteJsonAuditPanel("Raw hidden main story state", JsonValue.Create(read.RawPayload), Color.Red);
             return;
@@ -92,7 +92,7 @@ public partial class ExplorerMode
         {
             ShowEmptyPanel(
                 "Поиск Крыльев Ангелов",
-                $"{SarefMainStoryState.PendingWingsInfiltrationPath} повреждён: {pending.Error}. Исправьте pending-файл перед повторной попыткой.");
+                "Ожидающий поиск повреждён. Сначала нужен ремонт состояния, затем поиск можно повторить.");
             WaitForKey();
             return;
         }
@@ -117,7 +117,7 @@ public partial class ExplorerMode
         {
             ShowEmptyPanel(
                 "Поиск Крыльев Ангелов",
-                $"Состояние скрытой линии повреждено ({read.Error}). Сначала нужен repair состояния.");
+                $"Состояние скрытой линии повреждено ({read.Error}). Сначала нужен ремонт состояния.");
             WaitForKey();
             return;
         }
@@ -157,7 +157,7 @@ public partial class ExplorerMode
             "При reveal_wings запиши main_story_saref_state.revealStage=wings_revealed, wingsInfiltration.status=revealed, resolvedAtTurn и factionLinks.visibility=revealed. " +
             "Не оставляй pending-файл без accepted closure/repair.";
 
-        MarkupLine("[green]Поиск Крыльев Ангелов начат: pending request создан и GM action подготовлен.[/]");
+        MarkupLine("[green]Поиск Крыльев Ангелов начат: ожидающий запрос создан, действие для ГМ подготовлено.[/]");
         WaitForKey();
     }
 
@@ -189,16 +189,17 @@ public partial class ExplorerMode
     private static Panel BuildSarefWingsAvailablePanel(JsonObject request)
     {
         var routeSafety = GetNodeString(request["routeSafety"]) ?? "?";
+        var entryMode = GetNodeString(request["entryMode"]);
         var lines = new List<string>
         {
             "[bold gold1]Поиск Крыльев Ангелов[/]",
             "",
             $"Маршрут: [white]{Markup.Escape(DescribeSarefWingsRouteSafety(routeSafety))}[/]",
-            $"Режим входа: [white]{Markup.Escape(GetNodeString(request["entryMode"]) ?? "?")}[/]",
+            $"Способ входа: [white]{Markup.Escape(DescribeSarefWingsEntryMode(entryMode))}[/]",
             $"Фрагментов маршрута: [white]{CountArray(request["routeFragments"])}[/]; замен: [white]{CountArray(request["substituteFragments"])}[/]",
             $"Доступных преимуществ: [white]{CountArray(request["availableAdvantages"])}[/]",
             "",
-            "[dim]После подтверждения клиент создаст pending-файл, а ГМ будет обязан закрыть его accepted closure или repair.[/]"
+            "[dim]После подтверждения начнётся ожидающий поиск, а ГМ будет обязан дать решение или ремонт состояния.[/]"
         };
 
         if (request["disadvantages"] is JsonArray { Count: > 0 } disadvantages)
@@ -225,21 +226,25 @@ public partial class ExplorerMode
 
     private static Panel BuildSarefWingsPendingPanel(JsonObject request)
     {
+        var routeSafety = GetNodeString(request["routeSafety"]);
+        var entryMode = GetNodeString(request["entryMode"]);
+        var fragmentCount = CountArray(request["routeFragments"]);
+        var substituteCount = CountArray(request["substituteFragments"]);
+        var advantageCount = CountArray(request["availableAdvantages"]);
         var lines = new List<string>
         {
-            "[bold gold1]Поиск Крыльев Ангелов уже ожидает закрытия ГМ.[/]",
+            "[bold gold1]Поиск Крыльев Ангелов уже ожидает решения.[/]",
             "",
-            $"  • requestId: [white]{Markup.Escape(GetNodeString(request["requestId"]) ?? "?")}[/]",
-            $"  • routeSafety: [white]{Markup.Escape(GetNodeString(request["routeSafety"]) ?? "?")}[/]",
-            $"  • entryMode: [white]{Markup.Escape(GetNodeString(request["entryMode"]) ?? "?")}[/]",
-            $"  • response surface: [white]{Markup.Escape(SarefMainStoryState.ResponseField)}[/]",
+            $"  • Маршрут: [white]{Markup.Escape(DescribeSarefWingsRouteSafety(routeSafety))}[/]",
+            $"  • Способ входа: [white]{Markup.Escape(DescribeSarefWingsEntryMode(entryMode))}[/]",
+            $"  • Собрано фрагментов: [white]{fragmentCount}[/]; замен: [white]{substituteCount}[/]; преимуществ: [white]{advantageCount}[/]",
             "",
-            "[dim]Не создавайте второй запрос; дождитесь reveal_wings/refuse_wings/block_wings или repair pending-файла.[/]"
+            "[dim]Не создавайте второй запрос; дождитесь решения ГМ или ремонта ожидающего поиска.[/]"
         };
 
         return new Panel(GameInterface.SafeMarkup(string.Join("\n", lines)))
         {
-            Header = new PanelHeader(" Поиск Крыльев ожидает закрытия ", Justify.Center),
+            Header = new PanelHeader(" Поиск Крыльев ожидает решения ", Justify.Center),
             Border = BoxBorder.Rounded,
             BorderStyle = new Style(Color.Gold1),
             Padding = new Padding(2, 1),
@@ -598,6 +603,15 @@ public partial class ExplorerMode
             "risky" => "рискованный маршрут",
             "desperate" => "отчаянный маршрут",
             _ => routeSafety ?? "неизвестно"
+        };
+
+    private static string DescribeSarefWingsEntryMode(string? entryMode) =>
+        entryMode?.Trim().ToLowerInvariant() switch
+        {
+            "safe_infiltration" => "подготовленное внедрение",
+            "risky_infiltration" => "внедрение под подозрением",
+            "desperate_infiltration" => "отчаянный вход через слабые следы",
+            _ => entryMode ?? "неизвестно"
         };
 
     private static string FormatSarefAdvantageState(string? state) =>
