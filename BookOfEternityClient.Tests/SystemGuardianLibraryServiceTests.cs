@@ -392,6 +392,252 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         }
     }
 
+    [Fact]
+    public void BuiltInPermanentGuardianDossiers_DescribeDistinctSpecialArtCombatEffects()
+    {
+        var builtInRoot = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            SystemGuardianLibraryService.RootDirectoryName,
+            SystemGuardianLibraryService.BuiltInDirectoryName);
+        var standardPath = Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "OtherGuides",
+            "System_Guardian_Dossier_Standard.md");
+        var expectedDossiers = new[]
+        {
+            new
+            {
+                PresetId = "azalia",
+                ArtName = "Пламя Избранной Клятвы",
+                BaseOperation = "Базовое действие - наложение оков.",
+                Fragments = new[]
+                {
+                    "добровольной преданности",
+                    "назвать реальное обещание",
+                    "боевое условие",
+                    "преимущество к броску",
+                    "честный отказ"
+                }
+            },
+            new
+            {
+                PresetId = "brann",
+                ArtName = "Клеймо Честной Трещины",
+                BaseOperation = "Базовое действие - давление.",
+                Fragments = new[]
+                {
+                    "дефект опоры",
+                    "назвать трещину",
+                    "позицию конфликта",
+                    "боевое условие",
+                    "ремонт"
+                }
+            },
+            new
+            {
+                PresetId = "elyara",
+                ArtName = "Милость Незаживающей Раны",
+                BaseOperation = "Базовое действие - защита.",
+                Fragments = new[]
+                {
+                    "тяжелое последствие",
+                    "одному союзнику",
+                    "нагрузку стороны",
+                    "ответную цену",
+                    "нельзя стереть цену"
+                }
+            },
+            new
+            {
+                PresetId = "ilarion",
+                ArtName = "Якорь Невытравленного Имени",
+                BaseOperation = "Базовое действие - защита.",
+                Fragments = new[]
+                {
+                    "одно названное свидетельство",
+                    "стирание",
+                    "боевое условие-защиту",
+                    "границу контроля",
+                    "контрдоказательство"
+                }
+            },
+            new
+            {
+                PresetId = "lissara",
+                ArtName = "След, Которого Не Было",
+                BaseOperation = "Базовое действие - маневр.",
+                Fragments = new[]
+                {
+                    "ложный след",
+                    "преследователя",
+                    "темп",
+                    "позицию конфликта",
+                    "повторение учит врага"
+                }
+            },
+            new
+            {
+                PresetId = "lucian",
+                ArtName = "Лунный Разрез Клятвы",
+                BaseOperation = "Базовое действие - прорыв оков.",
+                Fragments = new[]
+                {
+                    "один слой клятвы",
+                    "названной печати",
+                    "боевое условие",
+                    "ответную цену",
+                    "один слой за применение"
+                }
+            },
+            new
+            {
+                PresetId = "myriel",
+                ArtName = "Пепельная Формула Чужого Мира",
+                BaseOperation = "Базовое действие - давление.",
+                Fragments = new[]
+                {
+                    "чужого закона",
+                    "несовместимость",
+                    "преимущество к броску",
+                    "нагрузку стороны",
+                    "местная адаптация"
+                }
+            },
+            new
+            {
+                PresetId = "seret",
+                ArtName = "Разомкнутый Договор",
+                BaseOperation = "Базовое действие - прорыв оков.",
+                Fragments = new[]
+                {
+                    "юридическую лазейку",
+                    "скрытое условие",
+                    "ответную цену",
+                    "экономию действия",
+                    "цена не исчезает"
+                }
+            },
+            new
+            {
+                PresetId = "varak",
+                ArtName = "Трещина в Строю",
+                BaseOperation = "Базовое действие - давление.",
+                Fragments = new[]
+                {
+                    "подавленную волю",
+                    "одного боевого узла",
+                    "позицию конфликта",
+                    "преимущество темпа",
+                    "обновленный приказ"
+                }
+            },
+            new
+            {
+                PresetId = "veyra",
+                ArtName = "Маска Среди Крыльев",
+                BaseOperation = "Базовое действие - маневр.",
+                Fragments = new[]
+                {
+                    "временную роль",
+                    "первую проверку доступа",
+                    "экономию действия",
+                    "преимущество к броску",
+                    "противоречие"
+                }
+            }
+        };
+        var forbiddenRawDossierTerms = new[]
+        {
+            "combatEffect",
+            "combatCondition",
+            "rollMode",
+            "conflictPosition",
+            "controlState",
+            "sideStrain",
+            "tempoAdvantage",
+            "counterPayoff",
+            "actionEconomy",
+            "actionCostAudit",
+            "DTO",
+            "JSON",
+            "game_state"
+        };
+        var errors = new List<string>();
+        var combatClauses = new List<string>();
+
+        Assert.True(Directory.Exists(builtInRoot), "Built-in system guardian library must exist.");
+        Assert.True(File.Exists(standardPath), "System Guardian dossier standard must exist.");
+
+        var standard = File.ReadAllText(standardPath);
+        foreach (var standardFragment in new[]
+                 {
+                     "Боевой эффект:",
+                     "боевую нишу",
+                     "триггер",
+                     "цель",
+                     "разрешенную ось",
+                     "контригру",
+                     "GM-заметку"
+                 })
+        {
+            if (!standard.Contains(standardFragment, StringComparison.Ordinal))
+                errors.Add($"Dossier standard is missing required special-art combat guidance fragment: {standardFragment}");
+        }
+
+        foreach (var expected in expectedDossiers)
+        {
+            var dossierPath = Path.Combine(builtInRoot, expected.PresetId, "dossier.md");
+            if (!File.Exists(dossierPath))
+            {
+                errors.Add($"{expected.PresetId}: dossier.md is missing.");
+                continue;
+            }
+
+            var dossier = File.ReadAllText(dossierPath);
+            var paragraph = ExtractParagraphContaining(dossier, $"Особое духовное искусство: \"{expected.ArtName}\"");
+            if (paragraph.Length == 0)
+            {
+                errors.Add($"{expected.PresetId}: special-art paragraph for {expected.ArtName} is missing.");
+                continue;
+            }
+
+            foreach (var requiredFragment in new[]
+                     {
+                         $"Особое духовное искусство: \"{expected.ArtName}\"",
+                         expected.BaseOperation,
+                         "Художественный эффект:",
+                         "При применении ГМ обязан"
+                     })
+            {
+                if (!paragraph.Contains(requiredFragment, StringComparison.Ordinal))
+                    errors.Add($"{expected.PresetId}: special-art paragraph no longer preserves required fragment: {requiredFragment}");
+            }
+
+            if (!paragraph.Contains("Боевой эффект:", StringComparison.Ordinal))
+                errors.Add($"{expected.PresetId}: {expected.ArtName} is missing a Боевой эффект clause.");
+
+            foreach (var fragment in expected.Fragments)
+            {
+                if (!paragraph.Contains(fragment, StringComparison.OrdinalIgnoreCase))
+                    errors.Add($"{expected.PresetId}: combat-effect clause is missing required fragment: {fragment}");
+            }
+
+            foreach (var forbiddenTerm in forbiddenRawDossierTerms)
+            {
+                if (paragraph.Contains(forbiddenTerm, StringComparison.Ordinal))
+                    errors.Add($"{expected.PresetId}: dossier combat-effect paragraph exposes raw/debug term: {forbiddenTerm}");
+            }
+
+            combatClauses.Add(paragraph);
+        }
+
+        if (combatClauses.Distinct(StringComparer.Ordinal).Count() != expectedDossiers.Length)
+            errors.Add("Guardian combat-effect paragraphs must be distinct per dossier.");
+
+        Assert.True(errors.Count == 0, string.Join(Environment.NewLine, errors));
+    }
+
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {
         var presetDir = Path.Combine(rootDir, presetId);
@@ -452,6 +698,22 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
             SystemGuardianLibraryService.RootDirectoryName,
             SystemGuardianLibraryService.BuiltInDirectoryName,
             presetId);
+
+    private static string ExtractParagraphContaining(string text, string marker)
+    {
+        var markerIndex = text.IndexOf(marker, StringComparison.Ordinal);
+        if (markerIndex < 0)
+            return string.Empty;
+
+        var paragraphStart = text.LastIndexOf("\n\n", markerIndex, StringComparison.Ordinal);
+        paragraphStart = paragraphStart < 0 ? 0 : paragraphStart + 2;
+
+        var paragraphEnd = text.IndexOf("\n\n", markerIndex, StringComparison.Ordinal);
+        if (paragraphEnd < 0)
+            paragraphEnd = text.Length;
+
+        return text.Substring(paragraphStart, paragraphEnd - paragraphStart).Trim();
+    }
 
     private static void CopyDirectory(string sourceDirectory, string targetDirectory)
     {
