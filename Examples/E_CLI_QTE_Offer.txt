@@ -22,6 +22,12 @@
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `primaryCharacteristic` must use a canonical lowercase stat id such as `dexterity`, `speed`, `wisdom`, or `perception`.
 - For `BranchChoice`, `check.config.choiceGrade` must be exactly `success`, `partial`, or `fail`.
+- For `MashInput`, `check.config.keys`, `durationMs`, `targetPresses`, and `partialThreshold` are required.
+- `MashInput` keys must use canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, or `space`.
+- `MashInput` duration is 750..10000 ms; target presses are 1..80 and must be physically possible for the duration.
+- `MashInput` adjusts the effective required press count by `baseDifficulty` and the relevant `primaryCharacteristic`.
+- Escape/cancel resolves as fail in MashInput.
+- Browser interactive MashInput parity remains #918; browser surfaces must not claim live MashInput support yet.
 - `responseFragment` is the final local mechanical outcome for an accepted QTE branch.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
@@ -36,128 +42,80 @@
 
 ```json
 {
-  "qteId": "qte_rooftop_escape_001",
-  "title": "Побег по крышам",
-  "offerText": "Мастер Игры предлагает кинематографически разыграть короткий побег по крышам.",
-  "introNarrative": "Преследователи уже рядом, а впереди остаётся только серия опасных прыжков и быстрых решений.",
-  "declineHint": "Если игрок откажется, ту же ситуацию нужно разрешить обычными игровыми механиками.",
-  "cinematicJustification": "Сцена короткая, наглядная и не требует полной тактической симуляции.",
-  "sceneImagePrompt": "Nighttime rooftop chase above a dense city, tense cinematic action, rain-slick tiles, lantern glow",
-  "startChapterId": "ledge_jump",
+  "qteId": "qte_closing_door_mash_001",
+  "title": "Закрывающаяся дверь",
+  "offerText": "Мастер Игры предлагает короткое QTE: нужно быстро продавить каменную дверь, пока механизм не захлопнул её.",
+  "introNarrative": "Плиты дрожат, цепи внутри стены срываются с натяжением, и проход начинает закрываться перед героем.",
+  "declineHint": "Если игрок откажется, ту же ситуацию нужно разрешить обычной проверкой силы или выносливости.",
+  "cinematicJustification": "Сцена длится несколько секунд и проверяет резкий физический натиск.",
+  "sceneImagePrompt": "Ancient stone door closing in a torchlit corridor, hero forcing the slab open, tense cinematic fantasy action",
+  "startChapterId": "door_gap",
   "chapters": [
     {
-      "chapterId": "ledge_jump",
-      "title": "Первый пролёт",
-      "narrative": "Герой вырывается на край крыши. До соседнего здания один длинный прыжок.",
-      "chapterImagePrompt": "Hero preparing to leap between city rooftops at night, dramatic angle, rain, cinematic action",
+      "chapterId": "door_gap",
+      "title": "Последний просвет",
+      "narrative": "Остаётся узкая щель. Чтобы удержать проход, герою нужно быстро нажимать Space и вдавить плечо в створку.",
+      "chapterImagePrompt": "Close view of a heavy stone door narrowing, sparks and dust, desperate physical effort",
       "actions": [
         {
-          "actionId": "jump_now",
-          "label": "Прыгнуть без паузы",
+          "actionId": "force_door",
+          "label": "Продавить дверь плечом",
           "check": {
-            "type": "TimingBar",
+            "type": "MashInput",
             "baseDifficulty": 3,
-            "primaryCharacteristic": "dexterity"
-          },
-          "routing": {
-            "success": { "nextChapterId": "guard_turn" },
-            "partial": { "nextChapterId": "guard_turn" },
-            "fail": { "terminalOutcomeId": "fall_back" }
-          },
-          "successText": "Прыжок вышел чистым и быстрым.",
-          "partialText": "Вы приземлились жёстко, но удержались.",
-          "failText": "Вы сбились с ритма и сорвались вниз."
-        }
-      ]
-    },
-    {
-      "chapterId": "guard_turn",
-      "title": "Поворот на патруль",
-      "narrative": "На следующей крыше путь раздваивается: слева узкий карниз, справа освещённый проход мимо патруля.",
-      "actions": [
-        {
-          "actionId": "narrow_ledge",
-          "label": "Уйти по узкому карнизу",
-          "check": {
-            "type": "BranchChoice",
-            "baseDifficulty": 2,
-            "primaryCharacteristic": "dexterity",
+            "primaryCharacteristic": "strength",
             "config": {
-              "choiceGrade": "success"
+              "keys": ["space"],
+              "durationMs": 2500,
+              "targetPresses": 12,
+              "partialThreshold": 0.5
             }
           },
           "routing": {
-            "success": { "terminalOutcomeId": "clean_escape" },
-            "partial": { "terminalOutcomeId": "noisy_escape" },
-            "fail": { "terminalOutcomeId": "captured" }
-          }
-        },
-        {
-          "actionId": "through_patrol",
-          "label": "Пройти мимо патруля на скорости",
-          "check": {
-            "type": "PromptChain",
-            "baseDifficulty": 4,
-            "primaryCharacteristic": "speed"
+            "success": { "terminalOutcomeId": "door_open" },
+            "partial": { "terminalOutcomeId": "door_stuck" },
+            "fail": { "terminalOutcomeId": "caught_at_door" }
           },
-          "routing": {
-            "success": { "terminalOutcomeId": "clean_escape" },
-            "partial": { "terminalOutcomeId": "noisy_escape" },
-            "fail": { "terminalOutcomeId": "captured" }
-          }
+          "successText": "Дверь поддаётся под резким натиском.",
+          "partialText": "Створка не открывается полностью, но оставляет щель для рывка.",
+          "failText": "Механизм захлопывает проход быстрее, чем вы успеваете продавить створку."
         }
       ]
     }
   ],
   "terminalOutcomes": [
     {
-      "outcomeId": "clean_escape",
-      "title": "Чистый отрыв",
-      "finalNarrative": "Герой полностью уходит от преследования и растворяется в лабиринте крыш.",
-      "gmSummary": "Игрок ушёл от сцены преследования без немедленных последствий.",
-      "outcomeImagePrompt": "Rainy city rooftop skyline after a successful escape, distant lantern light, tense calm after pursuit",
+      "outcomeId": "door_open",
+      "title": "Проход открыт",
+      "finalNarrative": "Каменная створка с глухим скрежетом уходит в сторону, и герой успевает проскочить дальше.",
+      "gmSummary": "Игрок успешно продавил дверь в MashInput QTE и сохранил темп сцены.",
+      "outcomeImagePrompt": "Heavy stone door forced open, hero rushing through torchlit dust, cinematic fantasy action",
       "responseFragment": {
-        "response": "Вы отрываетесь от погони и выигрываете несколько драгоценных минут.",
-        "experienceGained": 45,
-        "timeChange": 10
+        "response": "Вы продавливаете дверь и выигрываете несколько драгоценных секунд.",
+        "experienceGained": 35,
+        "timeChange": 5
       }
     },
     {
-      "outcomeId": "noisy_escape",
-      "title": "Шумный отход",
-      "finalNarrative": "Герой уходит, но оставляет достаточно следов, чтобы слух о побеге быстро разошёлся.",
-      "gmSummary": "Игрок ушёл, но создал дополнительные осложнения.",
+      "outcomeId": "door_stuck",
+      "title": "Щель в створке",
+      "finalNarrative": "Дверь не открывается полностью, но герой протискивается в узкую щель и теряет часть темпа.",
+      "gmSummary": "Игрок получил частичный исход MashInput: проход есть, но сцена осложняется задержкой.",
       "responseFragment": {
-        "response": "Вы уходите от погони, но поднимаете слишком много шума.",
-        "experienceGained": 20,
-        "timeChange": 10,
-        "worldEventsLog": [
-          {
-            "eventName": "Шумный побег по крышам",
-            "description": "Свидетели обсуждают дерзкий ночной побег."
-          }
-        ]
+        "response": "Вы протискиваетесь через дверь, но теряете равновесие и время.",
+        "experienceGained": 10,
+        "timeChange": 15,
+        "currentPoiseChange": -10
       }
     },
     {
-      "outcomeId": "fall_back",
-      "title": "Срыв",
-      "finalNarrative": "Прыжок ломается на середине движения, и герой падает обратно в опасную зону.",
-      "gmSummary": "Игрок не прошёл первый QTE момент и не смог уйти от угрозы.",
+      "outcomeId": "caught_at_door",
+      "title": "Проход захлопнулся",
+      "finalNarrative": "Створка с ударом закрывается перед героем, отрезая короткий путь.",
+      "gmSummary": "Игрок провалил MashInput или отменил его через Escape/cancel; сцену нужно продолжать с закрытым проходом.",
       "responseFragment": {
-        "response": "Вы срываетесь и теряете инициативу.",
-        "currentHealthChange": -10,
+        "response": "Дверь захлопывается, и вам приходится искать другой путь.",
         "currentPoiseChange": -15
-      }
-    },
-    {
-      "outcomeId": "captured",
-      "title": "Перехват",
-      "finalNarrative": "Патруль успевает перерезать путь, и герой оказывается в окружении.",
-      "gmSummary": "QTE завершился неудачей, дальнейшая сцена должна учитывать перехват героя.",
-      "responseFragment": {
-        "response": "Путь отрезан, и вас берут в кольцо.",
-        "currentPoiseChange": -20
       }
     }
   ]

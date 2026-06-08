@@ -563,7 +563,7 @@ public partial class ValidationService
                     }
                     var primaryCharacteristic = RequireString(check, $"{actionContext}.check", issues, "primaryCharacteristic");
                     if (!string.IsNullOrWhiteSpace(checkType) &&
-                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease")
+                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput")
                     {
                         issues.Add(new ValidationIssue(
                             $"{actionContext}.check.type",
@@ -571,7 +571,7 @@ public partial class ValidationService
                             "Неподдерживаемый QTE check type",
                             code: "qte_invalid_check_type",
                             section: "QTE",
-                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease",
+                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput",
                             actual: checkType));
                     }
 
@@ -617,6 +617,10 @@ public partial class ValidationService
                                     repairHint: "Используй точное lowercase значение без лишних пробелов."));
                             }
                         }
+                    }
+                    else if (string.Equals(checkType, "MashInput", StringComparison.Ordinal))
+                    {
+                        ValidateMashInputConfig(check, actionContext, issues);
                     }
 
                     if (!action.TryGetProperty("routing", out var routing))
@@ -882,6 +886,257 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private static void ValidateMashInputConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)
+    {
+        var configContext = $"{actionContext}.check.config";
+        if (!check.TryGetProperty("config", out var config) || config.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                configContext,
+                IssueSeverity.Error,
+                "MashInput требует check.config object",
+                code: "qte_mash_input_config_missing",
+                section: "QTE",
+                expected: "config object with keys, durationMs, targetPresses, partialThreshold",
+                actual: check.TryGetProperty("config", out var existingConfig) ? existingConfig.ValueKind.ToString() : "missing"));
+            return;
+        }
+
+        ValidateMashInputKeys(config, configContext, issues);
+
+        var hasDuration = TryReadRequiredMashInputInteger(
+            config,
+            configContext,
+            issues,
+            "durationMs",
+            "qte_mash_input_duration_missing",
+            "qte_mash_input_duration_invalid",
+            out var durationMs);
+        if (hasDuration &&
+            (durationMs < QteSceneService.MashInputMinDurationMs || durationMs > QteSceneService.MashInputMaxDurationMs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.durationMs",
+                IssueSeverity.Error,
+                "MashInput durationMs должен быть в игровом диапазоне",
+                code: "qte_mash_input_duration_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.MashInputMinDurationMs}..{QteSceneService.MashInputMaxDurationMs}",
+                actual: durationMs.ToString(CultureInfo.InvariantCulture),
+                repairHint: "Используй короткое кинематографическое окно, пригодное для локальной QTE-сцены."));
+        }
+
+        var hasTarget = TryReadRequiredMashInputInteger(
+            config,
+            configContext,
+            issues,
+            "targetPresses",
+            "qte_mash_input_target_missing",
+            "qte_mash_input_target_invalid",
+            out var targetPresses);
+        if (hasTarget && targetPresses <= 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.targetPresses",
+                IssueSeverity.Error,
+                "MashInput targetPresses должен быть положительным целым числом",
+                code: "qte_mash_input_target_invalid",
+                section: "QTE",
+                expected: "> 0",
+                actual: targetPresses.ToString(CultureInfo.InvariantCulture)));
+            hasTarget = false;
+        }
+
+        if (hasTarget && targetPresses > QteSceneService.MashInputMaxTargetPresses)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.targetPresses",
+                IssueSeverity.Error,
+                "MashInput targetPresses превышает поддерживаемый максимум",
+                code: "qte_mash_input_target_out_of_range",
+                section: "QTE",
+                expected: $"<= {QteSceneService.MashInputMaxTargetPresses}",
+                actual: targetPresses.ToString(CultureInfo.InvariantCulture)));
+            hasTarget = false;
+        }
+
+        if (hasDuration && hasTarget && durationMs >= QteSceneService.MashInputMinDurationMs)
+        {
+            var maxTarget = QteSceneService.ComputeMashInputMaxTargetPressesForDuration(durationMs);
+            if (targetPresses > maxTarget)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{configContext}.targetPresses",
+                    IssueSeverity.Error,
+                    "MashInput targetPresses невозможен для заданного durationMs",
+                    code: "qte_mash_input_target_impossible",
+                    section: "QTE",
+                    expected: $"<= {maxTarget} for durationMs={durationMs}",
+                    actual: targetPresses.ToString(CultureInfo.InvariantCulture),
+                    repairHint: "Уменьши targetPresses или увеличь durationMs, чтобы требование оставалось физически выполнимым."));
+            }
+        }
+
+        if (!config.TryGetProperty("partialThreshold", out var partialThreshold))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.partialThreshold",
+                IssueSeverity.Error,
+                "MashInput требует partialThreshold",
+                code: "qte_mash_input_partial_threshold_missing",
+                section: "QTE",
+                expected: "number > 0 and <= 1",
+                actual: "missing"));
+        }
+        else if (partialThreshold.ValueKind != JsonValueKind.Number || !partialThreshold.TryGetDouble(out var threshold))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.partialThreshold",
+                IssueSeverity.Error,
+                "MashInput partialThreshold должен быть числом",
+                code: "qte_mash_input_partial_threshold_invalid",
+                section: "QTE",
+                expected: "number > 0 and <= 1",
+                actual: partialThreshold.ValueKind.ToString()));
+        }
+        else if (threshold <= 0 || threshold > 1)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.partialThreshold",
+                IssueSeverity.Error,
+                "MashInput partialThreshold должен быть в диапазоне (0..1]",
+                code: "qte_mash_input_partial_threshold_out_of_range",
+                section: "QTE",
+                expected: "> 0 and <= 1",
+                actual: threshold.ToString(CultureInfo.InvariantCulture)));
+        }
+    }
+
+    private static void ValidateMashInputKeys(JsonElement config, string configContext, List<ValidationIssue> issues)
+    {
+        if (!config.TryGetProperty("keys", out var keys))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.keys",
+                IssueSeverity.Error,
+                "MashInput требует keys array",
+                code: "qte_mash_input_keys_missing",
+                section: "QTE",
+                expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                actual: "missing"));
+            return;
+        }
+
+        if (keys.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.keys",
+                IssueSeverity.Error,
+                "MashInput keys должен быть массивом canonical QTE key tokens",
+                code: "qte_mash_input_keys_invalid",
+                section: "QTE",
+                expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                actual: keys.ValueKind.ToString()));
+            return;
+        }
+
+        if (keys.GetArrayLength() == 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.keys",
+                IssueSeverity.Error,
+                "MashInput требует хотя бы одну QTE клавишу",
+                code: "qte_mash_input_keys_empty",
+                section: "QTE",
+                expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                actual: "empty array"));
+            return;
+        }
+
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var key in keys.EnumerateArray())
+        {
+            var keyContext = $"{configContext}.keys[{index++}]";
+            if (key.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(key.GetString()))
+            {
+                issues.Add(new ValidationIssue(
+                    keyContext,
+                    IssueSeverity.Error,
+                    "MashInput key token должен быть непустой строкой",
+                    code: "qte_mash_input_key_invalid",
+                    section: "QTE",
+                    expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                    actual: key.ValueKind.ToString()));
+                continue;
+            }
+
+            var token = key.GetString()!.Trim();
+            if (!string.Equals(token, token.ToLowerInvariant(), StringComparison.Ordinal) ||
+                !QteKeyInput.IsSupportedToken(token))
+            {
+                issues.Add(new ValidationIssue(
+                    keyContext,
+                    IssueSeverity.Error,
+                    "MashInput key token должен быть canonical supported QTE key",
+                    code: "qte_mash_input_key_invalid",
+                    section: "QTE",
+                    expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                    actual: token));
+                continue;
+            }
+
+            if (!seen.Add(token))
+            {
+                issues.Add(new ValidationIssue(
+                    keyContext,
+                    IssueSeverity.Error,
+                    "MashInput keys не должен содержать повторяющиеся клавиши",
+                    code: "qte_mash_input_key_duplicate",
+                    section: "QTE",
+                    expected: "unique QTE key tokens",
+                    actual: token));
+            }
+        }
+    }
+
+    private static bool TryReadRequiredMashInputInteger(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        string propName,
+        string missingCode,
+        string invalidCode,
+        out int value)
+    {
+        value = 0;
+        if (!config.TryGetProperty(propName, out var node))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.{propName}",
+                IssueSeverity.Error,
+                $"MashInput требует {propName}",
+                code: missingCode,
+                section: "QTE",
+                expected: "integer",
+                actual: "missing"));
+            return false;
+        }
+
+        if (node.ValueKind == JsonValueKind.Number && node.TryGetInt32(out value))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{configContext}.{propName}",
+            IssueSeverity.Error,
+            $"MashInput {propName} должен быть целым числом",
+            code: invalidCode,
+            section: "QTE",
+            expected: "integer",
+            actual: node.ValueKind.ToString()));
+        return false;
     }
 
     private async Task ValidatePlayerFile(string filePath, List<ValidationIssue> issues)

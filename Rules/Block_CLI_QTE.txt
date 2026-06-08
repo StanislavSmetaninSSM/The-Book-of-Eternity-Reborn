@@ -122,6 +122,18 @@
                     - `BalanceMeter`
                     - `ChargeRelease`
 
+                    Node types allowed in QTE v2:
+                    - `MashInput`
+
+                    For `MashInput`, `check.config` is MANDATORY and MUST contain:
+                    - `check.config.keys`: non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
+                    - `durationMs`: integer from 750 to 10000.
+                    - `targetPresses`: positive integer from 1 to 80; it must also be physically possible for `durationMs` at the client limit of 12 presses per second.
+                    - `partialThreshold`: number greater than 0 and less than or equal to 1.
+                    - Higher `baseDifficulty` raises the effective required press count; a higher relevant `primaryCharacteristic` tier lowers it.
+                    - Escape/cancel resolves as fail.
+                    - Browser interactive MashInput parity remains #918; in this issue the console client owns live MashInput play, and browser surfaces must not claim live interactive support.
+
                     Keyboard/layout rule:
                     - QTE reaction checks use physical QTE keys, not ordinary typed prose.
                     - The player-facing key labels are `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` where those keys are used by the client.

@@ -5,6 +5,17 @@ internal static class QteKeyInput
     internal const string LayoutSupportNote =
         "Клавиши быстрых сцен читаются как физические: Q / Й, W / Ц, E / У, A / Ф, S / Ы, D / В и Space работают без смены раскладки.";
 
+    internal static readonly IReadOnlyList<string> SupportedTokens =
+    [
+        "q",
+        "w",
+        "e",
+        "a",
+        "s",
+        "d",
+        "space"
+    ];
+
     private static readonly Dictionary<ConsoleKey, string> KeyTokens = new()
     {
         [ConsoleKey.Q] = "q",
@@ -71,4 +82,6 @@ internal static class QteKeyInput
 
     internal static string FormatPromptLabel(string token) =>
         PromptLabels.TryGetValue(token, out var label) ? label : token.ToUpperInvariant();
+
+    internal static bool IsSupportedToken(string token) => PromptLabels.ContainsKey(token);
 }

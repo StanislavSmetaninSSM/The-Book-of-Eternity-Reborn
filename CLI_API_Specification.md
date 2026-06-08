@@ -1179,6 +1179,8 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `PromptChain`
   - `BalanceMeter`
   - `ChargeRelease`
+- QTE v2 node types currently implemented:
+  - `MashInput`
 - QTE reaction checks use physical QTE keys. Player-facing labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` describe physical keys; the client handles physical key/RU-EN normalization and must not tell the player to switch OS layout.
 - GM-authored QTE configs do not encode player keyboard layout, and this QTE-only normalization does not apply to normal text input, dialogue, names, or narrative prose.
 - `check.primaryCharacteristic` must be one of these canonical lowercase ids:
@@ -1187,6 +1189,14 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `success`
   - `partial`
   - `fail`
+- For `MashInput`, `check.config.keys`, `durationMs`, `targetPresses`, and `partialThreshold` are required.
+  - `check.config.keys` must be a non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
+  - `durationMs` must be an integer from 750 to 10000.
+  - `targetPresses` must be a positive integer from 1 to 80 and must be possible for `durationMs` at the client limit of 12 presses per second.
+  - `partialThreshold` must be a number greater than 0 and less than or equal to 1.
+  - Higher `baseDifficulty` raises the effective required press count; a higher relevant `primaryCharacteristic` tier lowers it.
+  - Escape/cancel resolves as fail.
+  - Browser interactive MashInput parity remains #918; browser surfaces must not claim live interactive support in this slice.
 - Every terminal outcome must contain a local `responseFragment` using normal `GameResponse` field names.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `responseFragment` is the authoritative final mechanical outcome for an accepted QTE branch; the GM must not rely on a follow-up GM turn to add the real reward later.

@@ -110,6 +110,44 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void MashInputQteContract_IsDocumentedForGmAndPlayers()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "MashInput",
+            "check.config.keys",
+            "durationMs",
+            "targetPresses",
+            "partialThreshold",
+            "Escape/cancel resolves as fail",
+            "Browser interactive MashInput parity remains #918"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "\"type\": \"MashInput\"",
+            "\"keys\": [\"space\"]",
+            "\"durationMs\": 2500",
+            "\"targetPresses\": 12",
+            "\"partialThreshold\": 0.5",
+            "\"terminalOutcomeId\": \"door_open\"",
+            "\"terminalOutcomeId\": \"door_stuck\"",
+            "\"terminalOutcomeId\": \"caught_at_door\""
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void QuestRewardAuthorityContract_IsDocumentedForGm()
     {
         var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
