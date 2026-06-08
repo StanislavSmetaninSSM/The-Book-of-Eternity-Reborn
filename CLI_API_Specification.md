@@ -1181,6 +1181,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `ChargeRelease`
 - QTE v2 node types currently implemented:
   - `MashInput`
+  - `PatternMemory`
 - QTE reaction checks use physical QTE keys. Player-facing labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` describe physical keys; the client handles physical key/RU-EN normalization and must not tell the player to switch OS layout.
 - GM-authored QTE configs do not encode player keyboard layout, and this QTE-only normalization does not apply to normal text input, dialogue, names, or narrative prose.
 - `check.primaryCharacteristic` must be one of these canonical lowercase ids:
@@ -1197,6 +1198,15 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - Higher `baseDifficulty` raises the effective required press count; a higher relevant `primaryCharacteristic` tier lowers it.
   - Escape/cancel resolves as fail.
   - Browser interactive MashInput parity remains #918; browser surfaces must not claim live interactive support in this slice.
+- For `PatternMemory`, `check.config.alphabet`, `sequenceLength`, `revealMs`, `inputTimeoutMs`, and `allowedMistakes` are required.
+  - `check.config.alphabet` must be a non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
+  - `sequenceLength` must be an integer from 2 to 12.
+  - `revealMs` must be an integer from 500 to 15000 for the фаза показа.
+  - `inputTimeoutMs` must be an integer from 1000 to 30000 for the фаза ввода and at least `sequenceLength * 300`.
+  - `allowedMistakes` must be an integer from 0 to `sequenceLength - 1` so failure remains possible.
+  - Higher `baseDifficulty` may increase effective sequence length, reduce reveal/input time, or reduce mistake tolerance; a higher relevant `primaryCharacteristic` tier must not make the same config harder.
+  - Perfect repeat resolves success; an imperfect repeat within tolerance and with meaningful progress resolves partial; too many mistakes, timeout, or Escape/cancel resolves fail.
+  - Browser interactive PatternMemory parity remains #918; browser surfaces must not claim live interactive support in this slice.
 - Every terminal outcome must contain a local `responseFragment` using normal `GameResponse` field names.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `responseFragment` is the authoritative final mechanical outcome for an accepted QTE branch; the GM must not rely on a follow-up GM turn to add the real reward later.

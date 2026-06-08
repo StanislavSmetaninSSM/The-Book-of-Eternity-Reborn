@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -23,6 +25,13 @@ public sealed class QteSceneService
     internal const int MashInputMinTargetPresses = 1;
     internal const int MashInputMaxTargetPresses = 80;
     internal const int MashInputMaxPressesPerSecond = 12;
+    internal const int PatternMemoryMinSequenceLength = 2;
+    internal const int PatternMemoryMaxSequenceLength = 12;
+    internal const int PatternMemoryMinRevealMs = 500;
+    internal const int PatternMemoryMaxRevealMs = 15000;
+    internal const int PatternMemoryMinInputTimeoutMs = 1000;
+    internal const int PatternMemoryMaxInputTimeoutMs = 30000;
+    internal const int PatternMemoryMinInputMsPerSymbol = 300;
     private const int ExperienceBaseXp = 100;
     private const double ExperienceExponent = 2.5;
 
@@ -1033,6 +1042,7 @@ public sealed class QteSceneService
             "BalanceMeter" => await RunBalanceMeterAsync(action.Check),
             "ChargeRelease" => await RunChargeReleaseAsync(action.Check),
             "MashInput" => await RunMashInputAsync(action.Check),
+            "PatternMemory" => await RunPatternMemoryAsync(action),
             _ => QteGrade.Fail
         };
     }
@@ -1198,6 +1208,265 @@ public sealed class QteSceneService
         }
 
         acceptedTokens = tokens;
+        return true;
+    }
+
+    private async Task<QteGrade> RunPatternMemoryAsync(QteAction action)
+    {
+        if (!TryReadPatternMemoryConfig(
+                action.Check.Config,
+                out var alphabet,
+                out var sequenceLength,
+                out var revealMs,
+                out var inputTimeoutMs,
+                out var allowedMistakes))
+        {
+            return QteGrade.Fail;
+        }
+
+        var statTier = await ResolveStatTierAsync(action.Check.PrimaryCharacteristic);
+        var effective = ComputePatternMemoryEffectiveRequirement(
+            sequenceLength,
+            revealMs,
+            inputTimeoutMs,
+            allowedMistakes,
+            action.Check.BaseDifficulty,
+            statTier);
+        var sequence = GeneratePatternMemorySequence(
+            alphabet,
+            effective.SequenceLength,
+            $"{action.ActionId}:{action.Check.BaseDifficulty}:{action.Check.PrimaryCharacteristic}:{string.Join(",", alphabet)}");
+
+        var revealStarted = DateTime.UtcNow;
+        while ((DateTime.UtcNow - revealStarted).TotalMilliseconds < effective.RevealMs)
+        {
+            while (TryReadImmediateKey(out var revealKey))
+            {
+                if (revealKey.Key == ConsoleKey.Escape)
+                    return QteGrade.Fail;
+            }
+
+            var remainingMs = Math.Max(0, effective.RevealMs - (int)(DateTime.UtcNow - revealStarted).TotalMilliseconds);
+            RenderMiniGamePanel(
+                "Память рун: фаза показа",
+                "Запомните порядок знаков. Ввод начнётся после показа. Esc - безопасный отказ считается провалом.",
+                BuildPatternMemoryReveal(sequence, remainingMs));
+
+            await Task.Delay(20);
+        }
+
+        var inputs = new List<ConsoleKeyInfo>();
+        var inputStarted = DateTime.UtcNow;
+        while ((DateTime.UtcNow - inputStarted).TotalMilliseconds < effective.InputTimeoutMs)
+        {
+            while (TryReadImmediateKey(out var inputKey))
+            {
+                if (inputKey.Key == ConsoleKey.Escape)
+                    return QteGrade.Fail;
+
+                inputs.Add(inputKey);
+                if (inputs.Count >= sequence.Count)
+                {
+                    return ParseGrade(ResolvePatternMemoryGrade(
+                        sequence,
+                        effective.AllowedMistakes,
+                        inputs));
+                }
+            }
+
+            var remainingMs = Math.Max(0, effective.InputTimeoutMs - (int)(DateTime.UtcNow - inputStarted).TotalMilliseconds);
+            RenderMiniGamePanel(
+                "Память рун: фаза ввода",
+                "Повторите показанную последовательность теми же физическими клавишами. Esc - безопасный отказ считается провалом.",
+                BuildPatternMemoryInputProgress(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
+
+            await Task.Delay(20);
+        }
+
+        return ParseGrade(ResolvePatternMemoryGrade(
+            sequence,
+            effective.AllowedMistakes,
+            inputs,
+            timedOut: true));
+    }
+
+    internal sealed record PatternMemoryEffectiveRequirement(
+        int SequenceLength,
+        int RevealMs,
+        int InputTimeoutMs,
+        int AllowedMistakes);
+
+    internal static PatternMemoryEffectiveRequirement ComputePatternMemoryEffectiveRequirement(
+        int sequenceLength,
+        int revealMs,
+        int inputTimeoutMs,
+        int allowedMistakes,
+        int baseDifficulty,
+        int statTier)
+    {
+        var baseSequenceLength = Math.Clamp(
+            sequenceLength,
+            PatternMemoryMinSequenceLength,
+            PatternMemoryMaxSequenceLength);
+        var difficultyOffset = Math.Clamp(baseDifficulty, 1, 5) - 3;
+        var difficultyPenalty = Math.Max(0, difficultyOffset);
+        var statBonus = Math.Max(0, statTier / 2);
+        var minimumAdjustedLength = Math.Max(PatternMemoryMinSequenceLength, baseSequenceLength - 2);
+        var effectiveSequenceLength = Math.Clamp(
+            baseSequenceLength + difficultyPenalty - statBonus,
+            minimumAdjustedLength,
+            PatternMemoryMaxSequenceLength);
+        var effectiveRevealMs = Math.Clamp(
+            revealMs - (difficultyOffset * 150) + (statTier * 100),
+            PatternMemoryMinRevealMs,
+            PatternMemoryMaxRevealMs);
+        var effectiveInputTimeoutMs = Math.Clamp(
+            inputTimeoutMs - (difficultyOffset * 250) + (statTier * 150),
+            PatternMemoryMinInputTimeoutMs,
+            PatternMemoryMaxInputTimeoutMs);
+        effectiveInputTimeoutMs = Math.Max(
+            effectiveInputTimeoutMs,
+            effectiveSequenceLength * PatternMemoryMinInputMsPerSymbol);
+        var effectiveAllowedMistakes = Math.Clamp(
+            allowedMistakes - difficultyPenalty + statBonus,
+            0,
+            effectiveSequenceLength - 1);
+
+        return new PatternMemoryEffectiveRequirement(
+            effectiveSequenceLength,
+            effectiveRevealMs,
+            effectiveInputTimeoutMs,
+            effectiveAllowedMistakes);
+    }
+
+    internal static IReadOnlyList<string> GeneratePatternMemorySequence(
+        IReadOnlyList<string> alphabet,
+        int sequenceLength,
+        string seed)
+    {
+        var tokens = alphabet
+            .Where(token => !string.IsNullOrWhiteSpace(token))
+            .Select(token => token.Trim().ToLowerInvariant())
+            .Where(QteKeyInput.IsSupportedToken)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (tokens.Length == 0 || sequenceLength <= 0)
+            return [];
+
+        var length = Math.Clamp(sequenceLength, PatternMemoryMinSequenceLength, PatternMemoryMaxSequenceLength);
+        var sequence = new List<string>(length);
+        for (var i = 0; i < length; i++)
+        {
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes($"{seed}:{i}"));
+            var value = BitConverter.ToUInt32(bytes, 0);
+            sequence.Add(tokens[(int)(value % tokens.Length)]);
+        }
+
+        return sequence;
+    }
+
+    internal static string ResolvePatternMemoryGrade(
+        IReadOnlyList<string> expectedSequence,
+        int allowedMistakes,
+        IEnumerable<ConsoleKeyInfo> inputs,
+        bool timedOut = false)
+    {
+        if (timedOut || expectedSequence.Count == 0)
+            return "fail";
+
+        var normalizedExpected = expectedSequence
+            .Select(token => token.Trim().ToLowerInvariant())
+            .ToArray();
+        var mistakes = 0;
+        var matches = 0;
+        var index = 0;
+
+        foreach (var input in inputs)
+        {
+            if (input.Key == ConsoleKey.Escape)
+                return "fail";
+            if (index >= normalizedExpected.Length)
+                break;
+
+            var token = QteKeyInput.NormalizeConsoleInput(input);
+            if (string.Equals(token, normalizedExpected[index], StringComparison.Ordinal))
+                matches++;
+            else
+                mistakes++;
+
+            index++;
+        }
+
+        if (index < normalizedExpected.Length)
+            return "fail";
+        if (mistakes == 0 && matches == normalizedExpected.Length)
+            return "success";
+
+        var effectiveAllowedMistakes = Math.Clamp(allowedMistakes, 0, normalizedExpected.Length - 1);
+        var partialMatchTarget = Math.Max(1, (int)Math.Ceiling(normalizedExpected.Length / 2d));
+        return mistakes <= effectiveAllowedMistakes && matches >= partialMatchTarget
+            ? "partial"
+            : "fail";
+    }
+
+    private static bool TryReadPatternMemoryConfig(
+        JsonObject? config,
+        out IReadOnlyList<string> alphabet,
+        out int sequenceLength,
+        out int revealMs,
+        out int inputTimeoutMs,
+        out int allowedMistakes)
+    {
+        alphabet = [];
+        sequenceLength = 0;
+        revealMs = 0;
+        inputTimeoutMs = 0;
+        allowedMistakes = 0;
+
+        if (config == null ||
+            config["alphabet"] is not JsonArray alphabetArray ||
+            config["sequenceLength"] is not JsonValue sequenceNode ||
+            config["revealMs"] is not JsonValue revealNode ||
+            config["inputTimeoutMs"] is not JsonValue timeoutNode ||
+            config["allowedMistakes"] is not JsonValue mistakesNode)
+        {
+            return false;
+        }
+
+        var tokens = new List<string>();
+        foreach (var key in alphabetArray)
+        {
+            if (key is not JsonValue keyValue ||
+                !keyValue.TryGetValue<string>(out var token) ||
+                string.IsNullOrWhiteSpace(token))
+            {
+                return false;
+            }
+
+            tokens.Add(token.Trim().ToLowerInvariant());
+        }
+
+        if (tokens.Count == 0 ||
+            tokens.Distinct(StringComparer.Ordinal).Count() != tokens.Count ||
+            !tokens.All(QteKeyInput.IsSupportedToken) ||
+            !sequenceNode.TryGetValue<int>(out sequenceLength) ||
+            !revealNode.TryGetValue<int>(out revealMs) ||
+            !timeoutNode.TryGetValue<int>(out inputTimeoutMs) ||
+            !mistakesNode.TryGetValue<int>(out allowedMistakes) ||
+            sequenceLength < PatternMemoryMinSequenceLength ||
+            sequenceLength > PatternMemoryMaxSequenceLength ||
+            revealMs < PatternMemoryMinRevealMs ||
+            revealMs > PatternMemoryMaxRevealMs ||
+            inputTimeoutMs < PatternMemoryMinInputTimeoutMs ||
+            inputTimeoutMs > PatternMemoryMaxInputTimeoutMs ||
+            inputTimeoutMs < sequenceLength * PatternMemoryMinInputMsPerSymbol ||
+            allowedMistakes < 0 ||
+            allowedMistakes >= sequenceLength)
+        {
+            return false;
+        }
+
+        alphabet = tokens;
         return true;
     }
 
@@ -1617,6 +1886,39 @@ public sealed class QteSceneService
             $"[dim]Частичный успех: {partialTarget} | Осталось: {remainingSeconds:0.0} с[/]"
         });
     }
+
+    private static string BuildPatternMemoryReveal(IReadOnlyList<string> sequence, int remainingMs)
+    {
+        var labels = FormatPatternMemorySequence(sequence);
+        var remainingSeconds = remainingMs / 1000d;
+        return string.Join("\n", new[]
+        {
+            $"[white]Показ: {labels}[/]",
+            $"[dim]Запомните {sequence.Count} знака. До ввода: {remainingSeconds:0.0} с[/]"
+        });
+    }
+
+    private static string BuildPatternMemoryInputProgress(
+        int sequenceLength,
+        IReadOnlyList<ConsoleKeyInfo> inputs,
+        int allowedMistakes,
+        int remainingMs)
+    {
+        var entered = inputs
+            .Select(input => QteKeyInput.NormalizeConsoleInput(input))
+            .Select(token => token == null ? "?" : QteKeyInput.FormatPromptLabel(token));
+        var enteredText = inputs.Count == 0 ? "[dim]пока нет ввода[/]" : Markup.Escape(string.Join("  ", entered));
+        var remainingSeconds = remainingMs / 1000d;
+
+        return string.Join("\n", new[]
+        {
+            $"[white]Введено: {enteredText}[/]",
+            $"[dim]Шаг {Math.Min(inputs.Count, sequenceLength)}/{sequenceLength} | Ошибок можно: {allowedMistakes} | Осталось: {remainingSeconds:0.0} с[/]"
+        });
+    }
+
+    private static string FormatPatternMemorySequence(IEnumerable<string> sequence) =>
+        Markup.Escape(string.Join("  ", sequence.Select(QteKeyInput.FormatPromptLabel)));
 
     private static string FormatMashInputKeyLabels(IEnumerable<string> acceptedTokens) =>
         string.Join(" или ", acceptedTokens.Select(QteKeyInput.FormatPromptLabel));

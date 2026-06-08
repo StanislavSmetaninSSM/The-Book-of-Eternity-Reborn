@@ -148,6 +148,47 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void PatternMemoryQteContract_IsDocumentedForGmAndPlayers()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "PatternMemory",
+            "check.config.alphabet",
+            "sequenceLength",
+            "revealMs",
+            "inputTimeoutMs",
+            "allowedMistakes",
+            "фаза показа",
+            "фаза ввода",
+            "Browser interactive PatternMemory parity remains #918"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "\"type\": \"PatternMemory\"",
+            "\"alphabet\": [\"q\", \"w\", \"e\", \"space\"]",
+            "\"sequenceLength\": 4",
+            "\"revealMs\": 2500",
+            "\"inputTimeoutMs\": 6000",
+            "\"allowedMistakes\": 1",
+            "\"terminalOutcomeId\": \"seal_open\"",
+            "\"terminalOutcomeId\": \"seal_flickers\"",
+            "\"terminalOutcomeId\": \"rune_alarm\""
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void QuestRewardAuthorityContract_IsDocumentedForGm()
     {
         var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");

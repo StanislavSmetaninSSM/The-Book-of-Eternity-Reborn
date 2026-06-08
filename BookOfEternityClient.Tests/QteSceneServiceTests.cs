@@ -152,6 +152,138 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public void PatternMemoryGrade_ResolvesSuccessPartialAndFailFromSequenceMatch()
+    {
+        var sequence = new[] { "q", "w", "e", "space" };
+
+        Assert.Equal(
+            "success",
+            ResolvePatternMemoryGrade(sequence, allowedMistakes: 1, [
+                Key(ConsoleKey.Q),
+                Key(ConsoleKey.W),
+                Key(ConsoleKey.E),
+                Key(ConsoleKey.Spacebar)
+            ]));
+        Assert.Equal(
+            "partial",
+            ResolvePatternMemoryGrade(sequence, allowedMistakes: 1, [
+                Key(ConsoleKey.Q),
+                Key(ConsoleKey.D),
+                Key(ConsoleKey.E),
+                Key(ConsoleKey.Spacebar)
+            ]));
+        Assert.Equal(
+            "fail",
+            ResolvePatternMemoryGrade(sequence, allowedMistakes: 1, [
+                Key(ConsoleKey.Q),
+                Key(ConsoleKey.D),
+                Key(ConsoleKey.A),
+                Key(ConsoleKey.Spacebar)
+            ]));
+    }
+
+    [Fact]
+    public void PatternMemoryGrade_TimeoutResolvesAsFail()
+    {
+        Assert.Equal(
+            "fail",
+            ResolvePatternMemoryGrade(
+                ["q", "w"],
+                allowedMistakes: 0,
+                [Key(ConsoleKey.Q), Key(ConsoleKey.W)],
+                timedOut: true));
+    }
+
+    [Fact]
+    public void PatternMemoryGrade_EscapeCancelsAsFail()
+    {
+        var inputs = new[]
+        {
+            Key(ConsoleKey.Q),
+            new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, false, false, false),
+            Key(ConsoleKey.W)
+        };
+
+        Assert.Equal("fail", ResolvePatternMemoryGrade(["q", "w"], allowedMistakes: 1, inputs));
+    }
+
+    [Fact]
+    public void PatternMemoryGrade_UsesRuFallbackOnlyForConfiguredQteKeys()
+    {
+        Assert.Equal(
+            "success",
+            ResolvePatternMemoryGrade(
+                ["q", "space"],
+                allowedMistakes: 0,
+                [
+                    new ConsoleKeyInfo('й', 0, false, false, false),
+                    Key(ConsoleKey.Spacebar)
+                ]));
+        Assert.Equal(
+            "fail",
+            ResolvePatternMemoryGrade(
+                ["q", "q"],
+                allowedMistakes: 0,
+                [
+                    new ConsoleKeyInfo('ц', 0, false, false, false),
+                    Key(ConsoleKey.Q)
+                ]));
+    }
+
+    [Fact]
+    public void PatternMemoryEffectiveRequirement_IsMonotonicForStatTierAndDifficulty()
+    {
+        var lowStat = ComputePatternMemoryEffectiveRequirement(
+            sequenceLength: 6,
+            revealMs: 2500,
+            inputTimeoutMs: 6000,
+            allowedMistakes: 1,
+            baseDifficulty: 3,
+            statTier: -2);
+        var highStat = ComputePatternMemoryEffectiveRequirement(
+            sequenceLength: 6,
+            revealMs: 2500,
+            inputTimeoutMs: 6000,
+            allowedMistakes: 1,
+            baseDifficulty: 3,
+            statTier: 3);
+        var easyDifficulty = ComputePatternMemoryEffectiveRequirement(
+            sequenceLength: 6,
+            revealMs: 2500,
+            inputTimeoutMs: 6000,
+            allowedMistakes: 1,
+            baseDifficulty: 1,
+            statTier: 0);
+        var hardDifficulty = ComputePatternMemoryEffectiveRequirement(
+            sequenceLength: 6,
+            revealMs: 2500,
+            inputTimeoutMs: 6000,
+            allowedMistakes: 1,
+            baseDifficulty: 5,
+            statTier: 0);
+
+        Assert.True(highStat.SequenceLength <= lowStat.SequenceLength);
+        Assert.True(highStat.RevealMs >= lowStat.RevealMs);
+        Assert.True(highStat.InputTimeoutMs >= lowStat.InputTimeoutMs);
+        Assert.True(highStat.AllowedMistakes >= lowStat.AllowedMistakes);
+        Assert.True(hardDifficulty.SequenceLength >= easyDifficulty.SequenceLength);
+        Assert.True(hardDifficulty.RevealMs <= easyDifficulty.RevealMs);
+        Assert.True(hardDifficulty.InputTimeoutMs <= easyDifficulty.InputTimeoutMs);
+        Assert.True(hardDifficulty.AllowedMistakes <= easyDifficulty.AllowedMistakes);
+    }
+
+    [Fact]
+    public void PatternMemorySequenceGeneration_IsDeterministicAndUsesAlphabet()
+    {
+        var first = GeneratePatternMemorySequence(["q", "w", "space"], sequenceLength: 6, seed: "qte:rune_lock:repeat");
+        var second = GeneratePatternMemorySequence(["q", "w", "space"], sequenceLength: 6, seed: "qte:rune_lock:repeat");
+
+        Assert.Equal(first, second);
+        Assert.Equal(6, first.Count);
+        Assert.All(first, token => Assert.Contains(token, new[] { "q", "w", "space" }));
+    }
+
+    [Fact]
     public async Task EnsureRuntimeStateHealthyAsync_DeletesInvalidJsonRuntimeFile()
     {
         await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, "{ invalid json");
@@ -811,6 +943,12 @@ public sealed class QteSceneServiceTests : IDisposable
             .ToArray();
     }
 
+    private static ConsoleKeyInfo Key(ConsoleKey key)
+    {
+        var keyChar = key == ConsoleKey.Spacebar ? ' ' : char.ToLowerInvariant(key.ToString()[0]);
+        return new ConsoleKeyInfo(keyChar, key, false, false, false);
+    }
+
     private static string ResolveMashInputGrade(
         string[] acceptedTokens,
         int successTarget,
@@ -823,6 +961,34 @@ public sealed class QteSceneServiceTests : IDisposable
 
     private static int ComputeMashInputPartialTargetPresses(int successTarget, double partialThreshold) =>
         QteSceneService.ComputeMashInputPartialTargetPresses(successTarget, partialThreshold);
+
+    private static string ResolvePatternMemoryGrade(
+        string[] expectedSequence,
+        int allowedMistakes,
+        ConsoleKeyInfo[] inputs,
+        bool timedOut = false) =>
+        QteSceneService.ResolvePatternMemoryGrade(expectedSequence, allowedMistakes, inputs, timedOut);
+
+    private static QteSceneService.PatternMemoryEffectiveRequirement ComputePatternMemoryEffectiveRequirement(
+        int sequenceLength,
+        int revealMs,
+        int inputTimeoutMs,
+        int allowedMistakes,
+        int baseDifficulty,
+        int statTier) =>
+        QteSceneService.ComputePatternMemoryEffectiveRequirement(
+            sequenceLength,
+            revealMs,
+            inputTimeoutMs,
+            allowedMistakes,
+            baseDifficulty,
+            statTier);
+
+    private static IReadOnlyList<string> GeneratePatternMemorySequence(
+        string[] alphabet,
+        int sequenceLength,
+        string seed) =>
+        QteSceneService.GeneratePatternMemorySequence(alphabet, sequenceLength, seed);
 
     public void Dispose()
     {

@@ -563,7 +563,7 @@ public partial class ValidationService
                     }
                     var primaryCharacteristic = RequireString(check, $"{actionContext}.check", issues, "primaryCharacteristic");
                     if (!string.IsNullOrWhiteSpace(checkType) &&
-                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput")
+                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory")
                     {
                         issues.Add(new ValidationIssue(
                             $"{actionContext}.check.type",
@@ -571,7 +571,7 @@ public partial class ValidationService
                             "Неподдерживаемый QTE check type",
                             code: "qte_invalid_check_type",
                             section: "QTE",
-                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput",
+                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory",
                             actual: checkType));
                     }
 
@@ -621,6 +621,10 @@ public partial class ValidationService
                     else if (string.Equals(checkType, "MashInput", StringComparison.Ordinal))
                     {
                         ValidateMashInputConfig(check, actionContext, issues);
+                    }
+                    else if (string.Equals(checkType, "PatternMemory", StringComparison.Ordinal))
+                    {
+                        ValidatePatternMemoryConfig(check, actionContext, issues);
                     }
 
                     if (!action.TryGetProperty("routing", out var routing))
@@ -1100,6 +1104,268 @@ public partial class ValidationService
                     actual: token));
             }
         }
+    }
+
+    private static void ValidatePatternMemoryConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)
+    {
+        var configContext = $"{actionContext}.check.config";
+        if (!check.TryGetProperty("config", out var config) || config.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                configContext,
+                IssueSeverity.Error,
+                "PatternMemory требует check.config object",
+                code: "qte_pattern_memory_config_missing",
+                section: "QTE",
+                expected: "config object with alphabet, sequenceLength, revealMs, inputTimeoutMs, allowedMistakes",
+                actual: check.TryGetProperty("config", out var existingConfig) ? existingConfig.ValueKind.ToString() : "missing"));
+            return;
+        }
+
+        ValidatePatternMemoryAlphabet(config, configContext, issues);
+
+        var hasSequenceLength = TryReadRequiredPatternMemoryInteger(
+            config,
+            configContext,
+            issues,
+            "sequenceLength",
+            "qte_pattern_memory_sequence_length_missing",
+            "qte_pattern_memory_sequence_length_invalid",
+            out var sequenceLength);
+        if (hasSequenceLength &&
+            (sequenceLength < QteSceneService.PatternMemoryMinSequenceLength ||
+             sequenceLength > QteSceneService.PatternMemoryMaxSequenceLength))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.sequenceLength",
+                IssueSeverity.Error,
+                "PatternMemory sequenceLength должен быть в игровом диапазоне",
+                code: "qte_pattern_memory_sequence_length_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.PatternMemoryMinSequenceLength}..{QteSceneService.PatternMemoryMaxSequenceLength}",
+                actual: sequenceLength.ToString(CultureInfo.InvariantCulture)));
+            hasSequenceLength = false;
+        }
+
+        var hasRevealMs = TryReadRequiredPatternMemoryInteger(
+            config,
+            configContext,
+            issues,
+            "revealMs",
+            "qte_pattern_memory_reveal_ms_missing",
+            "qte_pattern_memory_reveal_ms_invalid",
+            out var revealMs);
+        if (hasRevealMs &&
+            (revealMs < QteSceneService.PatternMemoryMinRevealMs ||
+             revealMs > QteSceneService.PatternMemoryMaxRevealMs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.revealMs",
+                IssueSeverity.Error,
+                "PatternMemory revealMs должен быть в игровом диапазоне",
+                code: "qte_pattern_memory_reveal_ms_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.PatternMemoryMinRevealMs}..{QteSceneService.PatternMemoryMaxRevealMs}",
+                actual: revealMs.ToString(CultureInfo.InvariantCulture),
+                repairHint: "Используй короткую фазу показа, которую можно запомнить в кинематографической сцене."));
+        }
+
+        var hasInputTimeoutMs = TryReadRequiredPatternMemoryInteger(
+            config,
+            configContext,
+            issues,
+            "inputTimeoutMs",
+            "qte_pattern_memory_input_timeout_ms_missing",
+            "qte_pattern_memory_input_timeout_ms_invalid",
+            out var inputTimeoutMs);
+        if (hasInputTimeoutMs &&
+            (inputTimeoutMs < QteSceneService.PatternMemoryMinInputTimeoutMs ||
+             inputTimeoutMs > QteSceneService.PatternMemoryMaxInputTimeoutMs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.inputTimeoutMs",
+                IssueSeverity.Error,
+                "PatternMemory inputTimeoutMs должен быть в игровом диапазоне",
+                code: "qte_pattern_memory_input_timeout_ms_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.PatternMemoryMinInputTimeoutMs}..{QteSceneService.PatternMemoryMaxInputTimeoutMs}",
+                actual: inputTimeoutMs.ToString(CultureInfo.InvariantCulture)));
+            hasInputTimeoutMs = false;
+        }
+
+        if (hasSequenceLength && hasInputTimeoutMs)
+        {
+            var minimumTimeoutMs = sequenceLength * QteSceneService.PatternMemoryMinInputMsPerSymbol;
+            if (inputTimeoutMs < minimumTimeoutMs)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{configContext}.inputTimeoutMs",
+                    IssueSeverity.Error,
+                    "PatternMemory inputTimeoutMs невозможен для заданного sequenceLength",
+                    code: "qte_pattern_memory_input_timeout_ms_impossible",
+                    section: "QTE",
+                    expected: $">= {minimumTimeoutMs} for sequenceLength={sequenceLength}",
+                    actual: inputTimeoutMs.ToString(CultureInfo.InvariantCulture),
+                    repairHint: "Увеличь inputTimeoutMs или сократи sequenceLength, чтобы у игрока было время повторить всю последовательность."));
+            }
+        }
+
+        var hasAllowedMistakes = TryReadRequiredPatternMemoryInteger(
+            config,
+            configContext,
+            issues,
+            "allowedMistakes",
+            "qte_pattern_memory_allowed_mistakes_missing",
+            "qte_pattern_memory_allowed_mistakes_invalid",
+            out var allowedMistakes);
+        if (hasAllowedMistakes && hasSequenceLength &&
+            (allowedMistakes < 0 || allowedMistakes >= sequenceLength))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.allowedMistakes",
+                IssueSeverity.Error,
+                "PatternMemory allowedMistakes должен оставлять возможность провала",
+                code: "qte_pattern_memory_allowed_mistakes_out_of_range",
+                section: "QTE",
+                expected: $"0..{sequenceLength - 1}",
+                actual: allowedMistakes.ToString(CultureInfo.InvariantCulture)));
+        }
+        else if (hasAllowedMistakes && allowedMistakes < 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.allowedMistakes",
+                IssueSeverity.Error,
+                "PatternMemory allowedMistakes не может быть отрицательным",
+                code: "qte_pattern_memory_allowed_mistakes_out_of_range",
+                section: "QTE",
+                expected: ">= 0",
+                actual: allowedMistakes.ToString(CultureInfo.InvariantCulture)));
+        }
+    }
+
+    private static void ValidatePatternMemoryAlphabet(JsonElement config, string configContext, List<ValidationIssue> issues)
+    {
+        if (!config.TryGetProperty("alphabet", out var alphabet))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.alphabet",
+                IssueSeverity.Error,
+                "PatternMemory требует alphabet array",
+                code: "qte_pattern_memory_alphabet_missing",
+                section: "QTE",
+                expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                actual: "missing"));
+            return;
+        }
+
+        if (alphabet.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.alphabet",
+                IssueSeverity.Error,
+                "PatternMemory alphabet должен быть массивом canonical QTE key tokens",
+                code: "qte_pattern_memory_alphabet_invalid",
+                section: "QTE",
+                expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                actual: alphabet.ValueKind.ToString()));
+            return;
+        }
+
+        if (alphabet.GetArrayLength() == 0)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.alphabet",
+                IssueSeverity.Error,
+                "PatternMemory требует хотя бы одну QTE клавишу в alphabet",
+                code: "qte_pattern_memory_alphabet_empty",
+                section: "QTE",
+                expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                actual: "empty array"));
+            return;
+        }
+
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var key in alphabet.EnumerateArray())
+        {
+            var keyContext = $"{configContext}.alphabet[{index++}]";
+            if (key.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(key.GetString()))
+            {
+                issues.Add(new ValidationIssue(
+                    keyContext,
+                    IssueSeverity.Error,
+                    "PatternMemory alphabet token должен быть непустой строкой",
+                    code: "qte_pattern_memory_alphabet_token_invalid",
+                    section: "QTE",
+                    expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                    actual: key.ValueKind.ToString()));
+                continue;
+            }
+
+            var token = key.GetString()!.Trim();
+            if (!string.Equals(token, token.ToLowerInvariant(), StringComparison.Ordinal) ||
+                !QteKeyInput.IsSupportedToken(token))
+            {
+                issues.Add(new ValidationIssue(
+                    keyContext,
+                    IssueSeverity.Error,
+                    "PatternMemory alphabet token должен быть canonical supported QTE key",
+                    code: "qte_pattern_memory_alphabet_token_invalid",
+                    section: "QTE",
+                    expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                    actual: token));
+                continue;
+            }
+
+            if (!seen.Add(token))
+            {
+                issues.Add(new ValidationIssue(
+                    keyContext,
+                    IssueSeverity.Error,
+                    "PatternMemory alphabet не должен содержать повторяющиеся клавиши",
+                    code: "qte_pattern_memory_alphabet_duplicate",
+                    section: "QTE",
+                    expected: "unique QTE key tokens",
+                    actual: token));
+            }
+        }
+    }
+
+    private static bool TryReadRequiredPatternMemoryInteger(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        string propName,
+        string missingCode,
+        string invalidCode,
+        out int value)
+    {
+        value = 0;
+        if (!config.TryGetProperty(propName, out var node))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.{propName}",
+                IssueSeverity.Error,
+                $"PatternMemory требует {propName}",
+                code: missingCode,
+                section: "QTE",
+                expected: "integer",
+                actual: "missing"));
+            return false;
+        }
+
+        if (node.ValueKind == JsonValueKind.Number && node.TryGetInt32(out value))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{configContext}.{propName}",
+            IssueSeverity.Error,
+            $"PatternMemory {propName} должен быть целым числом",
+            code: invalidCode,
+            section: "QTE",
+            expected: "integer",
+            actual: node.ValueKind.ToString()));
+        return false;
     }
 
     private static bool TryReadRequiredMashInputInteger(
