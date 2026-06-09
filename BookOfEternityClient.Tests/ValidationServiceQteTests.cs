@@ -181,6 +181,19 @@ public sealed class ValidationServiceQteTests : IDisposable
             issue.Code?.StartsWith("qte_stealth_noise_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnQteOfferAsync_AcceptsValidLockPinSetConfig()
+    {
+        await WriteLockPinSetOfferAsync();
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "qte_invalid_check_type", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("qte_lock_pin_set_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     [Theory]
     [InlineData("emptyKeys", "qte_mash_input_keys_empty")]
     [InlineData("unsupportedKey", "qte_mash_input_key_invalid")]
@@ -315,6 +328,48 @@ public sealed class ValidationServiceQteTests : IDisposable
         string expectedCode)
     {
         await WriteStealthNoiseOfferAsync(mutation);
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("missingConfig", "qte_lock_pin_set_config_missing")]
+    [InlineData("nonObjectConfig", "qte_lock_pin_set_config_missing")]
+    [InlineData("pinCountTooLow", "qte_lock_pin_set_pin_count_out_of_range")]
+    [InlineData("pinCountTooHigh", "qte_lock_pin_set_pin_count_out_of_range")]
+    [InlineData("missingPinWindows", "qte_lock_pin_set_pin_windows_missing")]
+    [InlineData("wrongPinWindowCount", "qte_lock_pin_set_pin_windows_count_mismatch")]
+    [InlineData("nonObjectPinWindow", "qte_lock_pin_set_pin_window_invalid")]
+    [InlineData("unorderedPinWindow", "qte_lock_pin_set_pin_window_bounds_invalid")]
+    [InlineData("outOfRangePinWindow", "qte_lock_pin_set_pin_window_bounds_out_of_range")]
+    [InlineData("pinNumberMismatch", "qte_lock_pin_set_pin_window_pin_mismatch")]
+    [InlineData("tooShortTimer", "qte_lock_pin_set_timer_out_of_range")]
+    [InlineData("tooLongTimer", "qte_lock_pin_set_timer_out_of_range")]
+    [InlineData("zeroDurability", "qte_lock_pin_set_durability_out_of_range")]
+    [InlineData("excessiveDurability", "qte_lock_pin_set_durability_out_of_range")]
+    [InlineData("negativeMistakes", "qte_lock_pin_set_max_mistakes_out_of_range")]
+    [InlineData("mistakesExceedDurability", "qte_lock_pin_set_max_mistakes_out_of_range")]
+    [InlineData("negativeDrift", "qte_lock_pin_set_drift_out_of_range")]
+    [InlineData("excessiveDrift", "qte_lock_pin_set_drift_out_of_range")]
+    [InlineData("missingGradeThresholds", "qte_lock_pin_set_grade_thresholds_missing")]
+    [InlineData("missingSuccessTime", "qte_lock_pin_set_grade_success_time_missing")]
+    [InlineData("successTimeExceedsTimer", "qte_lock_pin_set_grade_success_time_out_of_range")]
+    [InlineData("partialTimeBelowSuccess", "qte_lock_pin_set_grade_time_not_monotonic")]
+    [InlineData("partialMistakesBelowSuccess", "qte_lock_pin_set_grade_mistakes_not_monotonic")]
+    [InlineData("unsupportedAdjustKey", "qte_lock_pin_set_adjust_key_invalid")]
+    [InlineData("unsupportedSetKey", "qte_lock_pin_set_set_key_invalid")]
+    [InlineData("emptyPinLabel", "qte_lock_pin_set_pin_label_invalid")]
+    [InlineData("emptyDurabilityLabel", "qte_lock_pin_set_durability_label_invalid")]
+    [InlineData("emptyWarningLabel", "qte_lock_pin_set_warning_label_invalid")]
+    [InlineData("missingRoutingPartial", "qte_missing_required_branch")]
+    public async Task ValidateAcceptedTurnQteOfferAsync_RejectsMalformedLockPinSetConfig(
+        string mutation,
+        string expectedCode)
+    {
+        await WriteLockPinSetOfferAsync(mutation);
 
         var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
 
@@ -1051,6 +1106,206 @@ public sealed class ValidationServiceQteTests : IDisposable
                 break;
             case "unsupportedRecoveryKey":
                 config["recoveryKey"] = "enter";
+                break;
+        }
+
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, offer.ToJsonString());
+    }
+
+    private async Task WriteLockPinSetOfferAsync(string? mutation = null)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+
+        var offer = JsonNode.Parse("""
+        {
+          "qteId": "qte_lock_pin_set_test",
+          "title": "Архивный замок",
+          "offerText": "Нужно выставить штифты отмычкой, пока патруль не вернулся.",
+          "introNarrative": "Внутри замка сухо щёлкают старые латунные штифты.",
+          "startChapterId": "archive_lock",
+          "chapters": [
+            {
+              "chapterId": "archive_lock",
+              "title": "Латунные штифты",
+              "narrative": "Каждый штифт нужно поставить в своё окно без лишнего скрежета.",
+              "actions": [
+                {
+                  "actionId": "pick_archive_lock",
+                  "label": "Вскрыть архивный замок",
+                  "check": {
+                    "type": "LockPinSet",
+                    "baseDifficulty": 3,
+                    "primaryCharacteristic": "dexterity",
+                    "config": {
+                      "pinCount": 4,
+                      "pinWindows": [
+                        { "pin": 1, "min": 18, "max": 32, "label": "первый штифт" },
+                        { "pin": 2, "min": 42, "max": 55, "label": "второй штифт" },
+                        { "pin": 3, "min": 58, "max": 70, "label": "третий штифт" },
+                        { "pin": 4, "min": 75, "max": 88, "label": "последний штифт" }
+                      ],
+                      "timerMs": 14000,
+                      "pickDurability": 5,
+                      "maxMistakes": 2,
+                      "pinDriftPerSecond": 3,
+                      "adjustKey": "q",
+                      "setKey": "space",
+                      "pinLabel": "штифт",
+                      "durabilityLabel": "отмычка скрипит в пальцах",
+                      "warningLabel": "Отмычка начинает гнуться.",
+                      "gradeThresholds": {
+                        "successMaxTimeMs": 9000,
+                        "successMaxMistakes": 0,
+                        "partialMaxTimeMs": 14000,
+                        "partialMaxMistakes": 2
+                      }
+                    }
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "archive_open_silently" },
+                    "partial": { "terminalOutcomeId": "archive_open_noisy" },
+                    "fail": { "terminalOutcomeId": "lockpick_alarm" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "archive_open_silently",
+              "title": "Замок открыт тихо",
+              "finalNarrative": "Штифты становятся ровно, и дверь в архив мягко отходит.",
+              "gmSummary": "Игрок чисто прошёл LockPinSet и открыл замок без шума.",
+              "responseFragment": {
+                "response": "Архив открывается без тревоги.",
+                "experienceGained": 40
+              }
+            },
+            {
+              "outcomeId": "archive_open_noisy",
+              "title": "Замок поддался со скрежетом",
+              "finalNarrative": "Дверь открыта, но металл громко цепляет накладку.",
+              "gmSummary": "Игрок получил частичный LockPinSet исход: замок открыт, но шум или задержка осложняет сцену.",
+              "responseFragment": {
+                "response": "Вы открываете архив, оставляя за собой резкий металлический звук.",
+                "experienceGained": 10
+              }
+            },
+            {
+              "outcomeId": "lockpick_alarm",
+              "title": "Отмычка сорвалась",
+              "finalNarrative": "Отмычка ломается, и за дверью звенит тревожная пластина.",
+              "gmSummary": "Игрок провалил LockPinSet или отменил QTE; сцену нужно продолжать с шумом или тревогой.",
+              "responseFragment": {
+                "response": "Замок клинит, а коридор отвечает тревожным звоном.",
+                "currentPoiseChange": -10
+              }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var action = offer["chapters"]![0]!["actions"]![0]!.AsObject();
+        var check = action["check"]!.AsObject();
+        var config = check["config"]!.AsObject();
+        var windows = config["pinWindows"]!.AsArray();
+        var gradeThresholds = config["gradeThresholds"]!.AsObject();
+        switch (mutation)
+        {
+            case "missingConfig":
+                check.Remove("config");
+                break;
+            case "nonObjectConfig":
+                check["config"] = "pins";
+                break;
+            case "pinCountTooLow":
+                config["pinCount"] = 1;
+                break;
+            case "pinCountTooHigh":
+                config["pinCount"] = 9;
+                break;
+            case "missingPinWindows":
+                config.Remove("pinWindows");
+                break;
+            case "wrongPinWindowCount":
+                windows.RemoveAt(3);
+                break;
+            case "nonObjectPinWindow":
+                windows[1] = "second pin";
+                break;
+            case "unorderedPinWindow":
+                windows[0]!["min"] = 32;
+                windows[0]!["max"] = 18;
+                break;
+            case "outOfRangePinWindow":
+                windows[0]!["min"] = -1;
+                break;
+            case "pinNumberMismatch":
+                windows[1]!["pin"] = 4;
+                break;
+            case "tooShortTimer":
+                config["timerMs"] = 500;
+                break;
+            case "tooLongTimer":
+                config["timerMs"] = 90000;
+                break;
+            case "zeroDurability":
+                config["pickDurability"] = 0;
+                break;
+            case "excessiveDurability":
+                config["pickDurability"] = 21;
+                break;
+            case "negativeMistakes":
+                config["maxMistakes"] = -1;
+                break;
+            case "mistakesExceedDurability":
+                config["pickDurability"] = 2;
+                config["maxMistakes"] = 3;
+                break;
+            case "negativeDrift":
+                config["pinDriftPerSecond"] = -0.5;
+                break;
+            case "excessiveDrift":
+                config["pinDriftPerSecond"] = 101;
+                break;
+            case "missingGradeThresholds":
+                config.Remove("gradeThresholds");
+                break;
+            case "missingSuccessTime":
+                gradeThresholds.Remove("successMaxTimeMs");
+                break;
+            case "successTimeExceedsTimer":
+                gradeThresholds["successMaxTimeMs"] = 15000;
+                break;
+            case "partialTimeBelowSuccess":
+                gradeThresholds["successMaxTimeMs"] = 9000;
+                gradeThresholds["partialMaxTimeMs"] = 8000;
+                break;
+            case "partialMistakesBelowSuccess":
+                gradeThresholds["successMaxMistakes"] = 2;
+                gradeThresholds["partialMaxMistakes"] = 1;
+                break;
+            case "unsupportedAdjustKey":
+                config["adjustKey"] = "enter";
+                break;
+            case "unsupportedSetKey":
+                config["setKey"] = "enter";
+                break;
+            case "emptyPinLabel":
+                config["pinLabel"] = " ";
+                break;
+            case "emptyDurabilityLabel":
+                config["durabilityLabel"] = " ";
+                break;
+            case "emptyWarningLabel":
+                config["warningLabel"] = " ";
+                break;
+            case "missingRoutingPartial":
+                action["routing"]!.AsObject().Remove("partial");
                 break;
         }
 

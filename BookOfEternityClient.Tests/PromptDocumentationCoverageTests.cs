@@ -317,6 +317,50 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void LockPinSetQteContract_IsDocumentedForGmAndPlayers()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "LockPinSet",
+            "check.config.pinCount",
+            "pinWindows",
+            "timerMs",
+            "pickDurability",
+            "maxMistakes",
+            "pinDriftPerSecond",
+            "gradeThresholds",
+            "each pin state",
+            "Browser interactive LockPinSet parity remains #918"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "\"type\": \"LockPinSet\"",
+            "\"pinCount\": 4",
+            "\"pinWindows\"",
+            "\"timerMs\": 14000",
+            "\"pickDurability\": 5",
+            "\"maxMistakes\": 2",
+            "\"pinDriftPerSecond\": 3",
+            "\"gradeThresholds\"",
+            "\"terminalOutcomeId\": \"archive_open_silently\"",
+            "\"terminalOutcomeId\": \"archive_open_noisy\"",
+            "\"terminalOutcomeId\": \"lockpick_alarm\""
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void QuestRewardAuthorityContract_IsDocumentedForGm()
     {
         var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");

@@ -563,7 +563,7 @@ public partial class ValidationService
                     }
                     var primaryCharacteristic = RequireString(check, $"{actionContext}.check", issues, "primaryCharacteristic");
                     if (!string.IsNullOrWhiteSpace(checkType) &&
-                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory" and not "RhythmPulse" and not "PrecisionChoice" and not "StealthNoise")
+                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory" and not "RhythmPulse" and not "PrecisionChoice" and not "StealthNoise" and not "LockPinSet")
                     {
                         issues.Add(new ValidationIssue(
                             $"{actionContext}.check.type",
@@ -571,7 +571,7 @@ public partial class ValidationService
                             "Неподдерживаемый QTE check type",
                             code: "qte_invalid_check_type",
                             section: "QTE",
-                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory | RhythmPulse | PrecisionChoice | StealthNoise",
+                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory | RhythmPulse | PrecisionChoice | StealthNoise | LockPinSet",
                             actual: checkType));
                     }
 
@@ -637,6 +637,10 @@ public partial class ValidationService
                     else if (string.Equals(checkType, "StealthNoise", StringComparison.Ordinal))
                     {
                         ValidateStealthNoiseConfig(check, actionContext, issues);
+                    }
+                    else if (string.Equals(checkType, "LockPinSet", StringComparison.Ordinal))
+                    {
+                        ValidateLockPinSetConfig(check, actionContext, issues);
                     }
 
                     if (!action.TryGetProperty("routing", out var routing))
@@ -1782,6 +1786,545 @@ public partial class ValidationService
                     actual: choiceId));
             }
         }
+    }
+
+    private static void ValidateLockPinSetConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)
+    {
+        var configContext = $"{actionContext}.check.config";
+        if (!check.TryGetProperty("config", out var config) || config.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                configContext,
+                IssueSeverity.Error,
+                "LockPinSet требует check.config object",
+                code: "qte_lock_pin_set_config_missing",
+                section: "QTE",
+                expected: "config object with pinCount, pinWindows, timerMs, pickDurability, maxMistakes, pinDriftPerSecond, gradeThresholds",
+                actual: check.TryGetProperty("config", out var existingConfig) ? existingConfig.ValueKind.ToString() : "missing"));
+            return;
+        }
+
+        var hasPinCount = TryReadRequiredLockPinSetInteger(
+            config,
+            configContext,
+            issues,
+            "pinCount",
+            "qte_lock_pin_set_pin_count_missing",
+            "qte_lock_pin_set_pin_count_invalid",
+            out var pinCount);
+        if (hasPinCount &&
+            (pinCount < QteSceneService.LockPinSetMinPinCount ||
+             pinCount > QteSceneService.LockPinSetMaxPinCount))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.pinCount",
+                IssueSeverity.Error,
+                "LockPinSet pinCount должен быть в игровом диапазоне",
+                code: "qte_lock_pin_set_pin_count_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.LockPinSetMinPinCount}..{QteSceneService.LockPinSetMaxPinCount}",
+                actual: pinCount.ToString(CultureInfo.InvariantCulture)));
+            hasPinCount = false;
+        }
+
+        ValidateLockPinSetPinWindows(config, configContext, issues, hasPinCount, pinCount);
+
+        var hasTimer = TryReadRequiredLockPinSetInteger(
+            config,
+            configContext,
+            issues,
+            "timerMs",
+            "qte_lock_pin_set_timer_missing",
+            "qte_lock_pin_set_timer_invalid",
+            out var timerMs);
+        if (hasTimer &&
+            (timerMs < QteSceneService.LockPinSetMinTimerMs ||
+             timerMs > QteSceneService.LockPinSetMaxTimerMs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.timerMs",
+                IssueSeverity.Error,
+                "LockPinSet timerMs должен быть в игровом диапазоне",
+                code: "qte_lock_pin_set_timer_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.LockPinSetMinTimerMs}..{QteSceneService.LockPinSetMaxTimerMs}",
+                actual: timerMs.ToString(CultureInfo.InvariantCulture)));
+            hasTimer = false;
+        }
+
+        var hasDurability = TryReadRequiredLockPinSetInteger(
+            config,
+            configContext,
+            issues,
+            "pickDurability",
+            "qte_lock_pin_set_durability_missing",
+            "qte_lock_pin_set_durability_invalid",
+            out var pickDurability);
+        if (hasDurability &&
+            (pickDurability < QteSceneService.LockPinSetMinPickDurability ||
+             pickDurability > QteSceneService.LockPinSetMaxPickDurability))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.pickDurability",
+                IssueSeverity.Error,
+                "LockPinSet pickDurability должен быть в игровом диапазоне",
+                code: "qte_lock_pin_set_durability_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.LockPinSetMinPickDurability}..{QteSceneService.LockPinSetMaxPickDurability}",
+                actual: pickDurability.ToString(CultureInfo.InvariantCulture)));
+            hasDurability = false;
+        }
+
+        var hasMaxMistakes = TryReadRequiredLockPinSetInteger(
+            config,
+            configContext,
+            issues,
+            "maxMistakes",
+            "qte_lock_pin_set_max_mistakes_missing",
+            "qte_lock_pin_set_max_mistakes_invalid",
+            out var maxMistakes);
+        if (hasMaxMistakes &&
+            (maxMistakes < 0 || (hasDurability && maxMistakes > pickDurability)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.maxMistakes",
+                IssueSeverity.Error,
+                "LockPinSet maxMistakes должен быть в диапазоне 0..pickDurability",
+                code: "qte_lock_pin_set_max_mistakes_out_of_range",
+                section: "QTE",
+                expected: hasDurability ? $"0..{pickDurability}" : "0..pickDurability",
+                actual: maxMistakes.ToString(CultureInfo.InvariantCulture)));
+            hasMaxMistakes = false;
+        }
+
+        var hasDrift = TryReadRequiredLockPinSetNumber(
+            config,
+            configContext,
+            issues,
+            "pinDriftPerSecond",
+            "qte_lock_pin_set_drift_missing",
+            "qte_lock_pin_set_drift_invalid",
+            out var pinDriftPerSecond);
+        if (hasDrift &&
+            (pinDriftPerSecond < QteSceneService.LockPinSetMinPinDriftPerSecond ||
+             pinDriftPerSecond > QteSceneService.LockPinSetMaxPinDriftPerSecond))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.pinDriftPerSecond",
+                IssueSeverity.Error,
+                "LockPinSet pinDriftPerSecond должен быть в диапазоне 0..100",
+                code: "qte_lock_pin_set_drift_out_of_range",
+                section: "QTE",
+                expected: "0..100",
+                actual: pinDriftPerSecond.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        ValidateLockPinSetGradeThresholds(
+            config,
+            configContext,
+            issues,
+            hasTimer,
+            timerMs,
+            hasMaxMistakes,
+            maxMistakes);
+        ValidateLockPinSetOptionalKey(config, configContext, issues, "adjustKey", "qte_lock_pin_set_adjust_key_invalid");
+        ValidateLockPinSetOptionalKey(config, configContext, issues, "setKey", "qte_lock_pin_set_set_key_invalid");
+        ValidateLockPinSetOptionalLabel(config, configContext, issues, "pinLabel", "qte_lock_pin_set_pin_label_invalid");
+        ValidateLockPinSetOptionalLabel(config, configContext, issues, "durabilityLabel", "qte_lock_pin_set_durability_label_invalid");
+        ValidateLockPinSetOptionalLabel(config, configContext, issues, "warningLabel", "qte_lock_pin_set_warning_label_invalid");
+    }
+
+    private static void ValidateLockPinSetPinWindows(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        bool hasPinCount,
+        int pinCount)
+    {
+        var windowsContext = $"{configContext}.pinWindows";
+        if (!config.TryGetProperty("pinWindows", out var pinWindows))
+        {
+            issues.Add(new ValidationIssue(
+                windowsContext,
+                IssueSeverity.Error,
+                "LockPinSet требует pinWindows array",
+                code: "qte_lock_pin_set_pin_windows_missing",
+                section: "QTE",
+                expected: "one window object per pin",
+                actual: "missing"));
+            return;
+        }
+
+        if (pinWindows.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                windowsContext,
+                IssueSeverity.Error,
+                "LockPinSet pinWindows должен быть array",
+                code: "qte_lock_pin_set_pin_windows_invalid",
+                section: "QTE",
+                expected: "array",
+                actual: pinWindows.ValueKind.ToString()));
+            return;
+        }
+
+        if (hasPinCount && pinWindows.GetArrayLength() != pinCount)
+        {
+            issues.Add(new ValidationIssue(
+                windowsContext,
+                IssueSeverity.Error,
+                "LockPinSet pinWindows должен содержать ровно pinCount окон",
+                code: "qte_lock_pin_set_pin_windows_count_mismatch",
+                section: "QTE",
+                expected: pinCount.ToString(CultureInfo.InvariantCulture),
+                actual: pinWindows.GetArrayLength().ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var index = 0;
+        foreach (var window in pinWindows.EnumerateArray())
+        {
+            var windowContext = $"{windowsContext}[{index}]";
+            if (window.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    windowContext,
+                    IssueSeverity.Error,
+                    "LockPinSet pinWindow должен быть object",
+                    code: "qte_lock_pin_set_pin_window_invalid",
+                    section: "QTE",
+                    expected: "object with min/max bounds",
+                    actual: window.ValueKind.ToString()));
+                index++;
+                continue;
+            }
+
+            if (window.TryGetProperty("pin", out var pinNode))
+            {
+                if (pinNode.ValueKind != JsonValueKind.Number ||
+                    !pinNode.TryGetInt32(out var pin) ||
+                    pin != index + 1)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{windowContext}.pin",
+                        IssueSeverity.Error,
+                        "LockPinSet pinWindow pin должен соответствовать позиции окна",
+                        code: "qte_lock_pin_set_pin_window_pin_mismatch",
+                        section: "QTE",
+                        expected: (index + 1).ToString(CultureInfo.InvariantCulture),
+                        actual: pinNode.ToString()));
+                }
+            }
+
+            var hasMin = TryReadRequiredLockPinSetNumber(
+                window,
+                windowContext,
+                issues,
+                "min",
+                "qte_lock_pin_set_pin_window_bounds_missing",
+                "qte_lock_pin_set_pin_window_bounds_invalid",
+                out var min);
+            var hasMax = TryReadRequiredLockPinSetNumber(
+                window,
+                windowContext,
+                issues,
+                "max",
+                "qte_lock_pin_set_pin_window_bounds_missing",
+                "qte_lock_pin_set_pin_window_bounds_invalid",
+                out var max);
+
+            if (hasMin && hasMax)
+            {
+                if (min < QteSceneService.LockPinSetMinPosition ||
+                    max > QteSceneService.LockPinSetMaxPosition)
+                {
+                    issues.Add(new ValidationIssue(
+                        windowContext,
+                        IssueSeverity.Error,
+                        "LockPinSet pinWindow bounds должны быть внутри 0..100",
+                        code: "qte_lock_pin_set_pin_window_bounds_out_of_range",
+                        section: "QTE",
+                        expected: "0..100",
+                        actual: $"{min.ToString(CultureInfo.InvariantCulture)}..{max.ToString(CultureInfo.InvariantCulture)}"));
+                }
+                else if (min >= max)
+                {
+                    issues.Add(new ValidationIssue(
+                        windowContext,
+                        IssueSeverity.Error,
+                        "LockPinSet pinWindow требует ordered nonzero min/max bounds",
+                        code: "qte_lock_pin_set_pin_window_bounds_invalid",
+                        section: "QTE",
+                        expected: "min < max",
+                        actual: $"{min.ToString(CultureInfo.InvariantCulture)}..{max.ToString(CultureInfo.InvariantCulture)}"));
+                }
+            }
+
+            ValidateLockPinSetOptionalLabel(window, windowContext, issues, "label", "qte_lock_pin_set_pin_window_label_invalid");
+            index++;
+        }
+    }
+
+    private static void ValidateLockPinSetGradeThresholds(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        bool hasTimer,
+        int timerMs,
+        bool hasMaxMistakes,
+        int maxMistakes)
+    {
+        var thresholdsContext = $"{configContext}.gradeThresholds";
+        if (!config.TryGetProperty("gradeThresholds", out var thresholds) ||
+            thresholds.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                thresholdsContext,
+                IssueSeverity.Error,
+                "LockPinSet требует gradeThresholds object",
+                code: "qte_lock_pin_set_grade_thresholds_missing",
+                section: "QTE",
+                expected: "successMaxTimeMs, successMaxMistakes, partialMaxTimeMs, partialMaxMistakes",
+                actual: config.TryGetProperty("gradeThresholds", out var existing) ? existing.ValueKind.ToString() : "missing"));
+            return;
+        }
+
+        var hasSuccessMaxTime = TryReadRequiredLockPinSetInteger(
+            thresholds,
+            thresholdsContext,
+            issues,
+            "successMaxTimeMs",
+            "qte_lock_pin_set_grade_success_time_missing",
+            "qte_lock_pin_set_grade_success_time_invalid",
+            out var successMaxTimeMs);
+        if (hasSuccessMaxTime &&
+            (successMaxTimeMs < 0 || (hasTimer && successMaxTimeMs > timerMs)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.successMaxTimeMs",
+                IssueSeverity.Error,
+                "LockPinSet successMaxTimeMs должен быть в диапазоне 0..timerMs",
+                code: "qte_lock_pin_set_grade_success_time_out_of_range",
+                section: "QTE",
+                expected: hasTimer ? $"0..{timerMs}" : "0..timerMs",
+                actual: successMaxTimeMs.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasSuccessMaxMistakes = TryReadRequiredLockPinSetInteger(
+            thresholds,
+            thresholdsContext,
+            issues,
+            "successMaxMistakes",
+            "qte_lock_pin_set_grade_success_mistakes_missing",
+            "qte_lock_pin_set_grade_success_mistakes_invalid",
+            out var successMaxMistakes);
+        if (hasSuccessMaxMistakes &&
+            (successMaxMistakes < 0 || (hasMaxMistakes && successMaxMistakes > maxMistakes)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.successMaxMistakes",
+                IssueSeverity.Error,
+                "LockPinSet successMaxMistakes должен быть в диапазоне 0..maxMistakes",
+                code: "qte_lock_pin_set_grade_success_mistakes_out_of_range",
+                section: "QTE",
+                expected: hasMaxMistakes ? $"0..{maxMistakes}" : "0..maxMistakes",
+                actual: successMaxMistakes.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasPartialMaxTime = TryReadRequiredLockPinSetInteger(
+            thresholds,
+            thresholdsContext,
+            issues,
+            "partialMaxTimeMs",
+            "qte_lock_pin_set_grade_partial_time_missing",
+            "qte_lock_pin_set_grade_partial_time_invalid",
+            out var partialMaxTimeMs);
+        if (hasPartialMaxTime &&
+            (partialMaxTimeMs < 0 || (hasTimer && partialMaxTimeMs > timerMs)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.partialMaxTimeMs",
+                IssueSeverity.Error,
+                "LockPinSet partialMaxTimeMs должен быть в диапазоне 0..timerMs",
+                code: "qte_lock_pin_set_grade_partial_time_out_of_range",
+                section: "QTE",
+                expected: hasTimer ? $"0..{timerMs}" : "0..timerMs",
+                actual: partialMaxTimeMs.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        if (hasSuccessMaxTime && hasPartialMaxTime && partialMaxTimeMs < successMaxTimeMs)
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.partialMaxTimeMs",
+                IssueSeverity.Error,
+                "LockPinSet partialMaxTimeMs не может быть ниже successMaxTimeMs",
+                code: "qte_lock_pin_set_grade_time_not_monotonic",
+                section: "QTE",
+                expected: "partialMaxTimeMs >= successMaxTimeMs",
+                actual: partialMaxTimeMs.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasPartialMaxMistakes = TryReadRequiredLockPinSetInteger(
+            thresholds,
+            thresholdsContext,
+            issues,
+            "partialMaxMistakes",
+            "qte_lock_pin_set_grade_partial_mistakes_missing",
+            "qte_lock_pin_set_grade_partial_mistakes_invalid",
+            out var partialMaxMistakes);
+        if (hasPartialMaxMistakes &&
+            (partialMaxMistakes < 0 || (hasMaxMistakes && partialMaxMistakes > maxMistakes)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.partialMaxMistakes",
+                IssueSeverity.Error,
+                "LockPinSet partialMaxMistakes должен быть в диапазоне 0..maxMistakes",
+                code: "qte_lock_pin_set_grade_partial_mistakes_out_of_range",
+                section: "QTE",
+                expected: hasMaxMistakes ? $"0..{maxMistakes}" : "0..maxMistakes",
+                actual: partialMaxMistakes.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        if (hasSuccessMaxMistakes &&
+            hasPartialMaxMistakes &&
+            partialMaxMistakes < successMaxMistakes)
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.partialMaxMistakes",
+                IssueSeverity.Error,
+                "LockPinSet partialMaxMistakes не может быть ниже successMaxMistakes",
+                code: "qte_lock_pin_set_grade_mistakes_not_monotonic",
+                section: "QTE",
+                expected: "partialMaxMistakes >= successMaxMistakes",
+                actual: partialMaxMistakes.ToString(CultureInfo.InvariantCulture)));
+        }
+    }
+
+    private static void ValidateLockPinSetOptionalKey(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        string propertyName,
+        string code)
+    {
+        if (!config.TryGetProperty(propertyName, out var key) ||
+            key.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (key.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(key.GetString()) ||
+            !QteKeyInput.IsSupportedToken(key.GetString()!.Trim().ToLowerInvariant()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.{propertyName}",
+                IssueSeverity.Error,
+                $"LockPinSet {propertyName} должен быть canonical supported QTE key",
+                code: code,
+                section: "QTE",
+                expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                actual: key.ValueKind == JsonValueKind.String ? key.GetString() : key.ValueKind.ToString()));
+        }
+    }
+
+    private static void ValidateLockPinSetOptionalLabel(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        string propertyName,
+        string code)
+    {
+        if (!config.TryGetProperty(propertyName, out var label) ||
+            label.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (label.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(label.GetString()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.{propertyName}",
+                IssueSeverity.Error,
+                $"LockPinSet {propertyName} должен быть непустым player-facing text",
+                code: code,
+                section: "QTE",
+                expected: "non-empty string",
+                actual: label.ValueKind == JsonValueKind.String ? label.GetString() : label.ValueKind.ToString()));
+        }
+    }
+
+    private static bool TryReadRequiredLockPinSetInteger(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues,
+        string propName,
+        string missingCode,
+        string invalidCode,
+        out int value)
+    {
+        value = 0;
+        if (!root.TryGetProperty(propName, out var node))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{propName}",
+                IssueSeverity.Error,
+                $"LockPinSet требует {propName}",
+                code: missingCode,
+                section: "QTE",
+                expected: "integer",
+                actual: "missing"));
+            return false;
+        }
+
+        if (node.ValueKind == JsonValueKind.Number && node.TryGetInt32(out value))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{context}.{propName}",
+            IssueSeverity.Error,
+            $"LockPinSet {propName} должен быть целым числом",
+            code: invalidCode,
+            section: "QTE",
+            expected: "integer",
+            actual: node.ValueKind.ToString()));
+        return false;
+    }
+
+    private static bool TryReadRequiredLockPinSetNumber(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues,
+        string propName,
+        string missingCode,
+        string invalidCode,
+        out double value)
+    {
+        value = 0;
+        if (!root.TryGetProperty(propName, out var node))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{propName}",
+                IssueSeverity.Error,
+                $"LockPinSet требует {propName}",
+                code: missingCode,
+                section: "QTE",
+                expected: "number",
+                actual: "missing"));
+            return false;
+        }
+
+        if (node.ValueKind == JsonValueKind.Number && node.TryGetDouble(out value))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{context}.{propName}",
+            IssueSeverity.Error,
+            $"LockPinSet {propName} должен быть числом",
+            code: invalidCode,
+            section: "QTE",
+            expected: "number",
+            actual: node.ValueKind.ToString()));
+        return false;
     }
 
     private static void ValidateStealthNoiseConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)

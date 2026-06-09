@@ -645,6 +645,139 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public void LockPinSetGrade_ResolvesCleanPartialAndFailFromPinWindows()
+    {
+        var effective = LockPinSetRequirement();
+
+        Assert.Equal(
+            "success",
+            QteSceneService.ResolveLockPinSetGrade(
+                effective,
+                [
+                    LockPinAttempt(1000, 0, 15),
+                    LockPinAttempt(2200, 1, 45),
+                    LockPinAttempt(4200, 2, 75)
+                ]));
+        Assert.Equal(
+            "partial",
+            QteSceneService.ResolveLockPinSetGrade(
+                effective,
+                [
+                    LockPinAttempt(1000, 0, 5),
+                    LockPinAttempt(2500, 0, 15),
+                    LockPinAttempt(5200, 1, 45),
+                    LockPinAttempt(7600, 2, 75)
+                ]));
+        Assert.Equal(
+            "fail",
+            QteSceneService.ResolveLockPinSetGrade(
+                effective,
+                [
+                    LockPinAttempt(1000, 0, 15),
+                    LockPinAttempt(2200, 1, 45)
+                ]));
+    }
+
+    [Fact]
+    public void LockPinSetGrade_BrokenPickOrExceededMistakesResolvesFail()
+    {
+        var fragile = LockPinSetRequirement(pickDurability: 2, maxMistakes: 2);
+        var strict = LockPinSetRequirement(pickDurability: 5, maxMistakes: 1);
+
+        Assert.Equal(
+            "fail",
+            QteSceneService.ResolveLockPinSetGrade(
+                fragile,
+                [
+                    LockPinAttempt(1000, 0, 5),
+                    LockPinAttempt(1500, 0, 6)
+                ]));
+        Assert.Equal(
+            "fail",
+            QteSceneService.ResolveLockPinSetGrade(
+                strict,
+                [
+                    LockPinAttempt(1000, 0, 5),
+                    LockPinAttempt(1500, 0, 6)
+                ]));
+    }
+
+    [Fact]
+    public void LockPinSetGrade_TimeoutWithUnopenedPinsResolvesFail()
+    {
+        Assert.Equal(
+            "fail",
+            QteSceneService.ResolveLockPinSetGrade(
+                LockPinSetRequirement(),
+                [
+                    LockPinAttempt(1000, 0, 15),
+                    LockPinAttempt(2200, 1, 45)
+                ],
+                timedOut: true));
+    }
+
+    [Fact]
+    public void LockPinSetGrade_EscapeCancelsAsFail()
+    {
+        Assert.Equal(
+            "fail",
+            QteSceneService.ResolveLockPinSetGrade(
+                LockPinSetRequirement(),
+                [
+                    LockPinAttempt(1000, 0, 15, canceled: true),
+                    LockPinAttempt(2200, 1, 45)
+                ]));
+    }
+
+    [Fact]
+    public void LockPinSetGrade_MalformedConfigResolvesAsFail()
+    {
+        Assert.Equal(
+            "fail",
+            QteSceneService.ResolveLockPinSetGrade(
+                config: new JsonObject
+                {
+                    ["pinCount"] = 4,
+                    ["timerMs"] = 12000
+                },
+                baseDifficulty: 3,
+                statTier: 0,
+                inputs: []));
+    }
+
+    [Fact]
+    public void LockPinSetEffectiveRequirement_HigherStatDoesNotMakeLockHarder()
+    {
+        var lowStat = ComputeLockPinSetEffectiveRequirement(
+            baseDifficulty: 3,
+            statTier: -2);
+        var highStat = ComputeLockPinSetEffectiveRequirement(
+            baseDifficulty: 3,
+            statTier: 3);
+
+        Assert.True(WindowWidth(highStat.PinWindows[0]) >= WindowWidth(lowStat.PinWindows[0]));
+        Assert.True(highStat.TimerMs >= lowStat.TimerMs);
+        Assert.True(highStat.PinDriftPerSecond <= lowStat.PinDriftPerSecond);
+        Assert.True(highStat.MaxMistakes >= lowStat.MaxMistakes);
+    }
+
+    [Fact]
+    public void LockPinSetEffectiveRequirement_HigherDifficultyDoesNotMakeLockEasier()
+    {
+        var easyDifficulty = ComputeLockPinSetEffectiveRequirement(
+            baseDifficulty: 1,
+            statTier: 0);
+        var hardDifficulty = ComputeLockPinSetEffectiveRequirement(
+            baseDifficulty: 5,
+            statTier: 0);
+
+        Assert.True(WindowWidth(hardDifficulty.PinWindows[0]) <= WindowWidth(easyDifficulty.PinWindows[0]));
+        Assert.True(hardDifficulty.TimerMs <= easyDifficulty.TimerMs);
+        Assert.True(hardDifficulty.PinDriftPerSecond >= easyDifficulty.PinDriftPerSecond);
+        Assert.True(hardDifficulty.MaxMistakes <= easyDifficulty.MaxMistakes);
+    }
+
+    [Fact]
     public async Task EnsureRuntimeStateHealthyAsync_DeletesInvalidJsonRuntimeFile()
     {
         await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, "{ invalid json");
@@ -1467,6 +1600,61 @@ public sealed class QteSceneServiceTests : IDisposable
             baseDifficulty,
             statTier,
             recoveryKey: "space");
+
+    private static QteSceneService.LockPinSetGradeThresholds LockPinSetThresholds() =>
+        new(
+            SuccessMaxTimeMs: 5000,
+            SuccessMaxMistakes: 0,
+            PartialMaxTimeMs: 10000,
+            PartialMaxMistakes: 2);
+
+    private static QteSceneService.LockPinWindow[] LockPinWindows() =>
+    [
+        new(Pin: 1, Min: 10, Max: 20, Label: "первый штифт"),
+        new(Pin: 2, Min: 40, Max: 50, Label: "второй штифт"),
+        new(Pin: 3, Min: 70, Max: 80, Label: "третий штифт")
+    ];
+
+    private static QteSceneService.LockPinSetEffectiveRequirement LockPinSetRequirement(
+        int pickDurability = 5,
+        int maxMistakes = 2) =>
+        QteSceneService.ComputeLockPinSetEffectiveRequirement(
+            pinCount: 3,
+            pinWindows: LockPinWindows(),
+            timerMs: 10000,
+            pickDurability,
+            maxMistakes,
+            pinDriftPerSecond: 4,
+            gradeThresholds: LockPinSetThresholds(),
+            baseDifficulty: 3,
+            statTier: 0,
+            adjustKey: "q",
+            setKey: "space");
+
+    private static QteSceneService.LockPinSetEffectiveRequirement ComputeLockPinSetEffectiveRequirement(
+        int baseDifficulty,
+        int statTier) =>
+        QteSceneService.ComputeLockPinSetEffectiveRequirement(
+            pinCount: 3,
+            pinWindows: LockPinWindows(),
+            timerMs: 10000,
+            pickDurability: 5,
+            maxMistakes: 2,
+            pinDriftPerSecond: 4,
+            gradeThresholds: LockPinSetThresholds(),
+            baseDifficulty,
+            statTier,
+            adjustKey: "q",
+            setKey: "space");
+
+    private static QteSceneService.LockPinSetInput LockPinAttempt(
+        int offsetMs,
+        int pinIndex,
+        double position,
+        bool canceled = false) =>
+        new(offsetMs, pinIndex, position, canceled);
+
+    private static double WindowWidth(QteSceneService.LockPinWindow window) => window.Max - window.Min;
 
     private static void AssertStrictlyIncreasing(IReadOnlyList<int> values)
     {
