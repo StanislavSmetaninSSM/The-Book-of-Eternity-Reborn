@@ -98,12 +98,7 @@ public static class ExplorerMortalWorldCommandResultBuilder
         return kind switch
         {
             CommandKind.Inventory => await BuildInventory(normalizedCommand, fs),
-            CommandKind.Npcs => await BuildBundle(normalizedCommand, fs, "Персонажи", [
-                new("game_state/npcs/npc_core.json", "npcs", "NPC"),
-                new("game_state/npcs/npc_relationships.json", "entries", "Отношений"),
-                new("game_state/npcs/npc_activities.json", "entries", "Активностей"),
-                new("game_state/npcs/npc_custom_states.json", "entries", "Особых состояний")
-            ]),
+            CommandKind.Npcs => await BuildNpcs(normalizedCommand, fs),
             CommandKind.Quests => await BuildBundle(normalizedCommand, fs, "Квесты", [
                 new("game_state/quests/regular_quests.json", "activeQuests", "Активных"),
                 new("game_state/quests/regular_quests.json", "completedQuests", "Завершённых"),
@@ -359,6 +354,30 @@ public static class ExplorerMortalWorldCommandResultBuilder
                     .ToList()
             }
         ];
+    }
+
+    private static async Task<ExplorerCommandResult> BuildNpcs(string command, FileSystemManager fs)
+    {
+        SummarySpec[] specs =
+        [
+            new("game_state/npcs/npc_core.json", "npcs", "NPC"),
+            new("game_state/npcs/npc_relationships.json", "entries", "Отношений"),
+            new("game_state/npcs/npc_activities.json", "entries", "Активностей"),
+            new("game_state/npcs/npc_custom_states.json", "entries", "Особых состояний")
+        ];
+
+        var coreRead = await ReadJson(fs, "game_state/npcs/npc_core.json");
+        if (!NpcJournalFallbackProjection.HasVisibleNpcCore(coreRead.Node))
+        {
+            var fallbackEntries = await NpcJournalFallbackProjection.ReadAsync(fs);
+            if (fallbackEntries.Count > 0)
+            {
+                var rows = NpcJournalFallbackProjection.BuildConsoleRows(fallbackEntries);
+                return Completed(command, NpcJournalFallbackProjection.BuildBlocks(rows));
+            }
+        }
+
+        return await BuildBundle(command, fs, "Персонажи", specs);
     }
 
     private static async Task<ExplorerCommandResult> BuildBundle(string command, FileSystemManager fs, string title, IReadOnlyList<SummarySpec> specs)
