@@ -229,6 +229,49 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void PrecisionChoiceQteContract_IsDocumentedForGmAndPlayers()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "PrecisionChoice",
+            "check.config.choices",
+            "correctChoiceId",
+            "timeoutMs",
+            "timeoutGrade",
+            "decoyHints",
+            "stable numbered choices",
+            "Timeout resolves as fail by default and may resolve partial",
+            "Browser interactive PrecisionChoice parity remains #918"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "\"type\": \"PrecisionChoice\"",
+            "\"correctChoiceId\": \"salt_wind\"",
+            "\"timeoutMs\": 6000",
+            "\"timeoutGrade\": \"fail\"",
+            "\"decoyHints\"",
+            "\"grade\": \"success\"",
+            "\"grade\": \"partial\"",
+            "\"grade\": \"fail\"",
+            "\"terminalOutcomeId\": \"chase_escape\"",
+            "\"terminalOutcomeId\": \"chase_scraped\"",
+            "\"terminalOutcomeId\": \"chase_caught\""
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void QuestRewardAuthorityContract_IsDocumentedForGm()
     {
         var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");

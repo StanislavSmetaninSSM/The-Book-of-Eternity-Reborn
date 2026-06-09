@@ -38,6 +38,10 @@ public sealed class QteSceneService
     internal const int RhythmPulseMaxBeatIntervalMs = 3000;
     internal const int RhythmPulseMinHitWindowMs = 40;
     internal const int RhythmPulseMaxHitWindowMs = 1000;
+    internal const int PrecisionChoiceMinChoices = 2;
+    internal const int PrecisionChoiceMaxChoices = 8;
+    internal const int PrecisionChoiceMinTimeoutMs = 1000;
+    internal const int PrecisionChoiceMaxTimeoutMs = 30000;
     internal static readonly IReadOnlyList<string> RhythmPulsePatternVariations =
     [
         "steady",
@@ -1056,6 +1060,7 @@ public sealed class QteSceneService
             "MashInput" => await RunMashInputAsync(action.Check),
             "PatternMemory" => await RunPatternMemoryAsync(action),
             "RhythmPulse" => await RunRhythmPulseAsync(action.Check),
+            "PrecisionChoice" => await RunPrecisionChoiceAsync(action.Check),
             _ => QteGrade.Fail
         };
     }
@@ -1650,6 +1655,164 @@ public sealed class QteSceneService
         return hits >= partialHitTarget ? "partial" : "fail";
     }
 
+    private async Task<QteGrade> RunPrecisionChoiceAsync(QteCheck check)
+    {
+        if (!TryReadPrecisionChoiceConfig(
+                check.Config,
+                out var choices,
+                out var timeoutMs,
+                out var timeoutGrade,
+                out var decoyHints))
+        {
+            return QteGrade.Fail;
+        }
+
+        var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
+        var availableHintCount = decoyHints.Count + choices.Count(choice => !string.IsNullOrWhiteSpace(choice.Hint));
+        var effective = ComputePrecisionChoiceEffectiveRequirement(
+            timeoutMs,
+            check.BaseDifficulty,
+            statTier,
+            availableHintCount);
+        var gradeChoices = choices
+            .Select(choice => new PrecisionChoiceChoice(choice.Id, choice.Grade))
+            .ToArray();
+        var started = DateTime.UtcNow;
+
+        while (true)
+        {
+            var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
+            var remainingMs = Math.Max(0, effective.TimeoutMs - elapsedMs);
+            if (remainingMs <= 0)
+            {
+                return ParseGrade(ResolvePrecisionChoiceGrade(
+                    gradeChoices,
+                    selectedChoiceId: null,
+                    elapsedMs,
+                    effective.TimeoutMs,
+                    timeoutGrade));
+            }
+
+            while (TryReadImmediateKey(out var key))
+            {
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return ParseGrade(ResolvePrecisionChoiceGrade(
+                        gradeChoices,
+                        selectedChoiceId: null,
+                        elapsedMs,
+                        effective.TimeoutMs,
+                        timeoutGrade,
+                        canceled: true));
+                }
+
+                if (TryGetPrecisionChoiceIndex(key, choices.Count, out var choiceIndex))
+                {
+                    return ParseGrade(ResolvePrecisionChoiceGrade(
+                        gradeChoices,
+                        choices[choiceIndex].Id,
+                        elapsedMs,
+                        effective.TimeoutMs,
+                        timeoutGrade));
+                }
+            }
+
+            RenderMiniGamePanel(
+                "Точный выбор",
+                "Нажмите номер варианта до истечения таймера. Esc - безопасный отказ считается провалом.",
+                BuildPrecisionChoiceProgress(choices, decoyHints, effective.RevealedDecoyHintCount, remainingMs));
+
+            await Task.Delay(20);
+        }
+    }
+
+    internal sealed record PrecisionChoiceChoice(string Id, string Grade);
+
+    internal sealed record PrecisionChoiceEffectiveRequirement(
+        int TimeoutMs,
+        int RevealedDecoyHintCount);
+
+    private sealed record PrecisionChoiceDisplayChoice(
+        string Id,
+        string Label,
+        string? Description,
+        string? Hint,
+        string Grade);
+
+    private sealed record PrecisionChoiceDecoyHint(string ChoiceId, string Hint);
+
+    internal static PrecisionChoiceEffectiveRequirement ComputePrecisionChoiceEffectiveRequirement(
+        int timeoutMs,
+        int baseDifficulty,
+        int statTier,
+        int decoyHintCount)
+    {
+        var authoredTimeoutMs = Math.Clamp(
+            timeoutMs,
+            PrecisionChoiceMinTimeoutMs,
+            PrecisionChoiceMaxTimeoutMs);
+        var difficultyOffset = Math.Clamp(baseDifficulty, 1, 5) - 3;
+        var adjustedTimeoutMs = authoredTimeoutMs - (difficultyOffset * 300) + (statTier * 250);
+        adjustedTimeoutMs = Math.Clamp(
+            adjustedTimeoutMs,
+            PrecisionChoiceMinTimeoutMs,
+            PrecisionChoiceMaxTimeoutMs);
+        adjustedTimeoutMs = Math.Max(
+            adjustedTimeoutMs,
+            Math.Max(PrecisionChoiceMinTimeoutMs, (int)Math.Ceiling(authoredTimeoutMs / 2d)));
+
+        var hintCount = Math.Clamp(decoyHintCount, 0, PrecisionChoiceMaxChoices - 1);
+        var revealedHints = 0;
+        if (hintCount > 0)
+        {
+            var easyBonus = Math.Max(0, -difficultyOffset);
+            var difficultyPenalty = Math.Max(0, difficultyOffset);
+            var statBonus = Math.Max(0, statTier / 2);
+            var weakStatPenalty = statTier < 0 ? 1 : 0;
+            revealedHints = Math.Clamp(
+                1 + easyBonus + statBonus - difficultyPenalty - weakStatPenalty,
+                0,
+                hintCount);
+        }
+
+        return new PrecisionChoiceEffectiveRequirement(adjustedTimeoutMs, revealedHints);
+    }
+
+    internal static string ResolvePrecisionChoiceGrade(
+        IReadOnlyList<PrecisionChoiceChoice> choices,
+        string? selectedChoiceId,
+        int elapsedMs,
+        int timeoutMs,
+        string? timeoutGrade = null,
+        bool canceled = false)
+    {
+        if (canceled)
+            return "fail";
+
+        var effectiveTimeoutMs = Math.Clamp(
+            timeoutMs,
+            PrecisionChoiceMinTimeoutMs,
+            PrecisionChoiceMaxTimeoutMs);
+        if (elapsedMs >= effectiveTimeoutMs || string.IsNullOrWhiteSpace(selectedChoiceId))
+            return NormalizePrecisionChoiceTimeoutGrade(timeoutGrade);
+
+        var choice = choices.FirstOrDefault(item =>
+            string.Equals(item.Id, selectedChoiceId, StringComparison.Ordinal));
+        return choice == null
+            ? "fail"
+            : NormalizePrecisionChoiceChoiceGrade(choice.Grade);
+    }
+
+    private static string NormalizePrecisionChoiceChoiceGrade(string? grade) => grade switch
+    {
+        "success" => "success",
+        "partial" => "partial",
+        _ => "fail"
+    };
+
+    private static string NormalizePrecisionChoiceTimeoutGrade(string? timeoutGrade) =>
+        string.Equals(timeoutGrade, "partial", StringComparison.Ordinal) ? "partial" : "fail";
+
     private static int CountRhythmPulseHits(
         IReadOnlyList<int> pulseOffsetsMs,
         int hitWindowMs,
@@ -1744,6 +1907,132 @@ public sealed class QteSceneService
         patternVariation = variation;
         return true;
     }
+
+    private static bool TryReadPrecisionChoiceConfig(
+        JsonObject? config,
+        out IReadOnlyList<PrecisionChoiceDisplayChoice> choices,
+        out int timeoutMs,
+        out string timeoutGrade,
+        out IReadOnlyList<PrecisionChoiceDecoyHint> decoyHints)
+    {
+        choices = [];
+        timeoutMs = 0;
+        timeoutGrade = "fail";
+        decoyHints = [];
+
+        if (config == null ||
+            config["choices"] is not JsonArray choicesArray ||
+            config["correctChoiceId"] is not JsonValue correctChoiceNode ||
+            config["timeoutMs"] is not JsonValue timeoutNode ||
+            !correctChoiceNode.TryGetValue<string>(out var correctChoiceId) ||
+            string.IsNullOrWhiteSpace(correctChoiceId) ||
+            !timeoutNode.TryGetValue<int>(out timeoutMs) ||
+            timeoutMs < PrecisionChoiceMinTimeoutMs ||
+            timeoutMs > PrecisionChoiceMaxTimeoutMs ||
+            choicesArray.Count < PrecisionChoiceMinChoices ||
+            choicesArray.Count > PrecisionChoiceMaxChoices)
+        {
+            return false;
+        }
+
+        if (config["timeoutGrade"] is not null)
+        {
+            if (config["timeoutGrade"] is not JsonValue timeoutGradeNode ||
+                !timeoutGradeNode.TryGetValue<string>(out var timeoutGradeValue) ||
+                string.IsNullOrWhiteSpace(timeoutGradeValue))
+            {
+                return false;
+            }
+
+            timeoutGradeValue = timeoutGradeValue.Trim();
+            if (!string.Equals(timeoutGradeValue, "fail", StringComparison.Ordinal) &&
+                !string.Equals(timeoutGradeValue, "partial", StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            timeoutGrade = timeoutGradeValue;
+        }
+
+        var parsedChoices = new List<PrecisionChoiceDisplayChoice>(choicesArray.Count);
+        var gradesById = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var choiceNode in choicesArray)
+        {
+            if (choiceNode is not JsonObject choiceObject ||
+                !TryGetPrecisionChoiceString(choiceObject, "id", out var id) ||
+                !TryGetPrecisionChoiceString(choiceObject, "label", out var label) ||
+                !TryGetPrecisionChoiceString(choiceObject, "grade", out var grade) ||
+                !AllowedPrecisionChoiceGrade(grade) ||
+                gradesById.ContainsKey(id))
+            {
+                return false;
+            }
+
+            var description = TryGetPrecisionChoiceString(choiceObject, "description", out var descriptionValue)
+                ? descriptionValue
+                : null;
+            var hint = TryGetPrecisionChoiceString(choiceObject, "hint", out var hintValue)
+                ? hintValue
+                : null;
+
+            gradesById[id] = grade;
+            parsedChoices.Add(new PrecisionChoiceDisplayChoice(id, label, description, hint, grade));
+        }
+
+        if (!gradesById.TryGetValue(correctChoiceId.Trim(), out var correctGrade) ||
+            !string.Equals(correctGrade, "success", StringComparison.Ordinal) ||
+            gradesById.Count(pair => string.Equals(pair.Value, "success", StringComparison.Ordinal)) != 1 ||
+            gradesById.All(pair => string.Equals(pair.Value, "success", StringComparison.Ordinal)))
+        {
+            return false;
+        }
+
+        if (config["decoyHints"] is JsonArray decoyHintArray)
+        {
+            var parsedDecoyHints = new List<PrecisionChoiceDecoyHint>(decoyHintArray.Count);
+            foreach (var decoyHintNode in decoyHintArray)
+            {
+                if (decoyHintNode is not JsonObject decoyHintObject ||
+                    !TryGetPrecisionChoiceString(decoyHintObject, "choiceId", out var choiceId) ||
+                    !TryGetPrecisionChoiceString(decoyHintObject, "hint", out var hint) ||
+                    !gradesById.TryGetValue(choiceId, out var choiceGrade) ||
+                    string.Equals(choiceGrade, "success", StringComparison.Ordinal))
+                {
+                    return false;
+                }
+
+                parsedDecoyHints.Add(new PrecisionChoiceDecoyHint(choiceId, hint));
+            }
+
+            decoyHints = parsedDecoyHints;
+        }
+        else if (config["decoyHints"] is not null)
+        {
+            return false;
+        }
+
+        choices = parsedChoices;
+        return true;
+    }
+
+    private static bool TryGetPrecisionChoiceString(JsonObject root, string propertyName, out string value)
+    {
+        value = "";
+        if (root[propertyName] is not JsonValue node ||
+            !node.TryGetValue<string>(out var text) ||
+            string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        value = text.Trim();
+        return true;
+    }
+
+    private static bool AllowedPrecisionChoiceGrade(string grade) =>
+        string.Equals(grade, "success", StringComparison.Ordinal) ||
+        string.Equals(grade, "partial", StringComparison.Ordinal) ||
+        string.Equals(grade, "fail", StringComparison.Ordinal);
 
     private static string NormalizeRhythmPulsePatternVariation(string? patternVariation)
     {
@@ -2247,6 +2536,42 @@ public sealed class QteSceneService
         });
     }
 
+    private static string BuildPrecisionChoiceProgress(
+        IReadOnlyList<PrecisionChoiceDisplayChoice> choices,
+        IReadOnlyList<PrecisionChoiceDecoyHint> decoyHints,
+        int revealedHintCount,
+        int remainingMs)
+    {
+        var lines = new List<string>();
+        for (var index = 0; index < choices.Count; index++)
+        {
+            var choice = choices[index];
+            lines.Add($"[bold cyan]{index + 1}.[/] [white]{Markup.Escape(choice.Label)}[/]");
+            if (!string.IsNullOrWhiteSpace(choice.Description))
+                lines.Add($"   [dim]{Markup.Escape(choice.Description)}[/]");
+        }
+
+        var availableHints = choices
+            .Where(choice => !string.IsNullOrWhiteSpace(choice.Hint))
+            .Select(choice => choice.Hint!)
+            .Concat(decoyHints.Select(hint => hint.Hint))
+            .ToArray();
+        var revealedHints = availableHints
+            .Take(Math.Clamp(revealedHintCount, 0, availableHints.Length))
+            .ToArray();
+        if (revealedHints.Length > 0)
+        {
+            lines.Add("");
+            lines.Add("[yellow]Наблюдения:[/]");
+            foreach (var hint in revealedHints)
+                lines.Add($"[dim]- {Markup.Escape(hint)}[/]");
+        }
+
+        lines.Add("");
+        lines.Add($"[dim]Осталось: {remainingMs / 1000d:0.0} с | Введите 1-{choices.Count}[/]");
+        return string.Join("\n", lines);
+    }
+
     private static string FormatPatternMemorySequence(IEnumerable<string> sequence) =>
         Markup.Escape(string.Join("  ", sequence.Select(QteKeyInput.FormatPromptLabel)));
 
@@ -2274,6 +2599,29 @@ public sealed class QteSceneService
         }
 
         return null;
+    }
+
+    private static bool TryGetPrecisionChoiceIndex(ConsoleKeyInfo key, int choiceCount, out int index)
+    {
+        index = -1;
+        var digit = key.Key switch
+        {
+            ConsoleKey.D1 or ConsoleKey.NumPad1 => 1,
+            ConsoleKey.D2 or ConsoleKey.NumPad2 => 2,
+            ConsoleKey.D3 or ConsoleKey.NumPad3 => 3,
+            ConsoleKey.D4 or ConsoleKey.NumPad4 => 4,
+            ConsoleKey.D5 or ConsoleKey.NumPad5 => 5,
+            ConsoleKey.D6 or ConsoleKey.NumPad6 => 6,
+            ConsoleKey.D7 or ConsoleKey.NumPad7 => 7,
+            ConsoleKey.D8 or ConsoleKey.NumPad8 => 8,
+            _ => char.IsDigit(key.KeyChar) ? key.KeyChar - '0' : 0
+        };
+
+        if (digit <= 0 || digit > choiceCount)
+            return false;
+
+        index = digit - 1;
+        return true;
     }
 
     private static string DisplayKey(ConsoleKey key) => QteKeyInput.FormatPromptLabel(key);

@@ -41,6 +41,15 @@
 - `RhythmPulse` uses Space in the console and must show visual/textual pulse timing so the scene is not audio-only.
 - `RhythmPulse` adjusts effective pulse count, hit window, or miss tolerance by `baseDifficulty` and the relevant `primaryCharacteristic`.
 - Browser interactive RhythmPulse parity remains #918; browser surfaces must not claim live RhythmPulse support yet.
+- For `PrecisionChoice`, `check.config.choices`, `correctChoiceId`, and `timeoutMs` are required; `timeoutGrade` and `decoyHints` are optional.
+- `PrecisionChoice` choices must contain 2..8 unique ids, player-facing labels, and grade values `success`, `partial`, or `fail`.
+- `correctChoiceId` must point to the single success choice.
+- `timeoutMs` is 1000..30000 ms; `timeoutGrade` may be `fail` or `partial`, never `success`.
+- `decoyHints` may reference only existing non-success choices and must contain non-empty hint text.
+- Console PrecisionChoice shows stable numbered choices, a visible remaining-time cue, and escaped labels/descriptions/hints.
+- `PrecisionChoice` adjusts effective timeout or hint clarity by `baseDifficulty` and the relevant `primaryCharacteristic`.
+- Timeout resolves as fail by default and may resolve partial when configured; Escape/cancel resolves fail.
+- Browser interactive PrecisionChoice parity remains #918; browser surfaces must not claim live PrecisionChoice support yet.
 - `responseFragment` is the final local mechanical outcome for an accepted QTE branch.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
@@ -297,6 +306,121 @@
       "responseFragment": {
         "response": "Печать отталкивает вас вспышкой, и ритуальный ритм распадается.",
         "currentPoiseChange": -10
+      }
+    }
+  ]
+}
+```
+
+## PrecisionChoice `output/qte_offer.json`
+
+```json
+{
+  "qteId": "qte_warehouse_chase_choice_001",
+  "title": "Погоня у складов",
+  "offerText": "Мастер Игры предлагает короткое QTE: нужно выбрать верный проход, пока преследователи сужают кольцо.",
+  "introNarrative": "За спиной лязгают цепи, впереди расходятся три тёмных прохода между складами.",
+  "declineHint": "Если игрок откажется, ту же ситуацию нужно разрешить обычной проверкой восприятия или скорости.",
+  "cinematicJustification": "Сцена длится несколько секунд и проверяет точный выбор под давлением.",
+  "sceneImagePrompt": "Night warehouse chase, three narrow alleys, fantasy rogue choosing a path under pressure, cinematic action",
+  "startChapterId": "warehouse_split",
+  "chapters": [
+    {
+      "chapterId": "warehouse_split",
+      "title": "Три прохода",
+      "narrative": "Клиент покажет стабильные пронумерованные варианты и таймер. Игрок должен нажать номер прохода до истечения времени.",
+      "chapterImagePrompt": "Close view of three dark warehouse alleys, salt wind from one path, tense fantasy chase",
+      "actions": [
+        {
+          "actionId": "choose_escape_path",
+          "label": "Выбрать проход",
+          "check": {
+            "type": "PrecisionChoice",
+            "baseDifficulty": 3,
+            "primaryCharacteristic": "perception",
+            "config": {
+              "timeoutMs": 6000,
+              "timeoutGrade": "fail",
+              "correctChoiceId": "salt_wind",
+              "choices": [
+                {
+                  "id": "salt_wind",
+                  "label": "Проход, откуда тянет солью и ветром",
+                  "description": "Сквозняк указывает на открытую набережную.",
+                  "grade": "success",
+                  "hint": "Пыль у входа уходит внутрь прохода."
+                },
+                {
+                  "id": "red_lantern",
+                  "label": "Арка под красным фонарём",
+                  "description": "Свет обещает укрытие, но двор слишком тихий.",
+                  "grade": "partial",
+                  "hint": "Фонарь отвлекает преследователей, но двор узкий."
+                },
+                {
+                  "id": "dry_well",
+                  "label": "Лестница к сухому колодцу",
+                  "description": "Камень у ступеней сухой, хотя после дождя всё вокруг мокро.",
+                  "grade": "fail"
+                }
+              ],
+              "decoyHints": [
+                {
+                  "choiceId": "red_lantern",
+                  "hint": "Фонарь выглядит безопасным, но тень за ним не движется."
+                },
+                {
+                  "choiceId": "dry_well",
+                  "hint": "У сухого колодца нет свежих следов наружу."
+                }
+              ]
+            }
+          },
+          "routing": {
+            "success": { "terminalOutcomeId": "chase_escape" },
+            "partial": { "terminalOutcomeId": "chase_scraped" },
+            "fail": { "terminalOutcomeId": "chase_caught" }
+          },
+          "successText": "Солёный ветер выводит вас к открытому причалу.",
+          "partialText": "Вы выбираете двор с фонарём и уходите через стену, но теряете темп.",
+          "failText": "Вы ныряете в тупик, и преследователи перекрывают выход."
+        }
+      ]
+    }
+  ],
+  "terminalOutcomes": [
+    {
+      "outcomeId": "chase_escape",
+      "title": "Чистый отрыв",
+      "finalNarrative": "Солёный ветер выводит героя к набережной, где шум воды заглушает шаги.",
+      "gmSummary": "Игрок выбрал correctChoiceId в PrecisionChoice и полностью оторвался от погони.",
+      "outcomeImagePrompt": "Fantasy rogue escaping onto a moonlit dock, pursuers lost in warehouse alleys, cinematic action",
+      "responseFragment": {
+        "response": "Вы выбираете проход с солёным ветром и уходите от погони.",
+        "experienceGained": 45,
+        "timeChange": 3
+      }
+    },
+    {
+      "outcomeId": "chase_scraped",
+      "title": "Двор с фонарём",
+      "finalNarrative": "Двор оказывается ловушкой, но низкая стена даёт шанс уйти через груду ящиков.",
+      "gmSummary": "Игрок выбрал partial вариант PrecisionChoice: спасся, но получил осложнение.",
+      "responseFragment": {
+        "response": "Вы перелезаете через стену и уходите, но теряете несколько секунд.",
+        "experienceGained": 10,
+        "timeChange": 12,
+        "currentPoiseChange": -5
+      }
+    },
+    {
+      "outcomeId": "chase_caught",
+      "title": "Кольцо сомкнулось",
+      "finalNarrative": "Сухой колодец ведёт в тупик, и преследователи перекрывают единственный выход.",
+      "gmSummary": "Игрок провалил PrecisionChoice, выбрал fail вариант, не успел до timeout или отменил через Escape/cancel.",
+      "responseFragment": {
+        "response": "Вы попадаете в тупик между складами.",
+        "currentPoiseChange": -15
       }
     }
   ]

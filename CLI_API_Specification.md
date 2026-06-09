@@ -1183,6 +1183,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `MashInput`
   - `PatternMemory`
   - `RhythmPulse`
+  - `PrecisionChoice`
 - QTE reaction checks use physical QTE keys. Player-facing labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` describe physical keys; the client handles physical key/RU-EN normalization and must not tell the player to switch OS layout.
 - GM-authored QTE configs do not encode player keyboard layout, and this QTE-only normalization does not apply to normal text input, dialogue, names, or narrative prose.
 - `check.primaryCharacteristic` must be one of these canonical lowercase ids:
@@ -1218,6 +1219,17 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - Console RhythmPulse uses Space as the local pulse key and must show visual/textual pulse timing; audio cues are optional enhancement only.
   - Success resolves when missed pulses stay within tolerance; at least half of pulses hit resolves partial; too few hits or Escape/cancel resolves fail.
   - Browser interactive RhythmPulse parity remains #918; browser surfaces must not claim live interactive support in this slice.
+- For `PrecisionChoice`, `check.config.choices`, `correctChoiceId`, and `timeoutMs` are required; `timeoutGrade` and `decoyHints` are optional.
+  - `check.config.choices` must contain 2..8 choice objects.
+  - Each choice must contain unique non-empty `id`, non-empty player-facing `label`, and `grade` exactly `success`, `partial`, or `fail`; optional `description` and `hint` are player-facing text.
+  - `correctChoiceId` must reference the single choice whose `grade` is `success`; at least one non-success choice must remain so the timed choice is meaningful.
+  - `timeoutMs` must be an integer from 1000 to 30000.
+  - `timeoutGrade`, when present, may be only `fail` or `partial`; `success` is forbidden for timeout.
+  - `decoyHints`, when present, must be an array of `{ "choiceId": "...", "hint": "..." }` objects that reference existing non-success choices and use non-empty hint text.
+  - The console must show stable numbered choices, a visible remaining-time cue, and escaped labels/descriptions/hints without layout instability.
+  - Higher `baseDifficulty` reduces effective timeout or hint clarity; a higher relevant `primaryCharacteristic` tier must not make the same PrecisionChoice config harder.
+  - Selecting a configured choice before timeout resolves to that choice grade. Timeout resolves as fail by default and may resolve partial when `timeoutGrade` is `partial`; unknown choice ids and Escape/cancel resolve fail.
+  - Browser interactive PrecisionChoice parity remains #918; browser surfaces must not claim live interactive support or duplicate gameplay resolution in this slice.
 - Every terminal outcome must contain a local `responseFragment` using normal `GameResponse` field names.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `responseFragment` is the authoritative final mechanical outcome for an accepted QTE branch; the GM must not rely on a follow-up GM turn to add the real reward later.
