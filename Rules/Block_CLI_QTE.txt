@@ -128,6 +128,7 @@
                     - `RhythmPulse`
                     - `PrecisionChoice`
                     - `StealthNoise`
+                    - `LockPinSet`
 
                     For `MashInput`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.keys`: non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
@@ -193,6 +194,23 @@
                     - A higher relevant `primaryCharacteristic` tier must not make the same StealthNoise config harder.
                     - Final noise plus accumulated over-threshold time resolve success/partial/fail through `gradeThresholds`; Escape/cancel resolves fail.
                     - Browser interactive StealthNoise parity remains #918; in this issue the console client owns live StealthNoise play, and browser surfaces must not claim live interactive support or duplicate gameplay resolution.
+
+                    For `LockPinSet`, `check.config` is MANDATORY and MUST contain:
+                    - `check.config.pinCount`: integer from 2 to 8.
+                    - `pinWindows`: array with exactly one object per pin. Each window MUST use numeric `min` and `max` bounds inside the 0..100 pin track, with `min < max`; optional `pin` MUST match the one-based window position.
+                    - `timerMs`: integer from 1000 to 60000.
+                    - `pickDurability`: integer from 1 to 20.
+                    - `maxMistakes`: integer from 0 to `pickDurability`.
+                    - `pinDriftPerSecond`: number from 0 to 100.
+                    - `gradeThresholds`: object with `successMaxTimeMs`, `successMaxMistakes`, `partialMaxTimeMs`, and `partialMaxMistakes`; partial thresholds MUST NOT be stricter than success thresholds. Runtime clamps effective thresholds to the post-difficulty timer and mistake allowance so accepted hard locks still resolve success/partial/fail.
+                    - Optional `adjustKey` and `setKey`: canonical QTE key tokens and must be distinct; absent means `q` raises the current pin, `Shift+q` lowers it, and `space` sets it. Do not encode RU/EN layout details in GM config.
+                    - Optional `pinLabel`, `durabilityLabel`, and `warningLabel`: non-empty player-facing text when present.
+                    - Console LockPinSet must show each pin state, target window, current position, remaining time, mistakes, and pick durability as readable text; sound/color can only be an enhancement.
+                    - Higher `baseDifficulty` narrows effective pin windows, increases drift, or lowers timer/mistake forgiveness.
+                    - A higher relevant `primaryCharacteristic` tier must not make the same LockPinSet config harder.
+                    - Clean all-pins-open within success thresholds resolves success; slow or noisy open within partial thresholds resolves partial.
+                    - Broken pick, too many mistakes, unopened pins at timeout, or Escape/cancel resolves fail.
+                    - Browser interactive LockPinSet parity remains #918; in this issue the console client owns live LockPinSet play, and browser surfaces must not claim live interactive support or duplicate gameplay resolution.
 
                     Keyboard/layout rule:
                     - QTE reaction checks use physical QTE keys, not ordinary typed prose.

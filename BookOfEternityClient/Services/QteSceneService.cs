@@ -48,6 +48,16 @@ public sealed class QteSceneService
     internal const int StealthNoiseMaxMeterValue = 100;
     internal const int StealthNoiseMinDangerThreshold = 1;
     internal const int StealthNoiseMinPositiveValue = 1;
+    internal const int LockPinSetMinPinCount = 2;
+    internal const int LockPinSetMaxPinCount = 8;
+    internal const int LockPinSetMinPosition = 0;
+    internal const int LockPinSetMaxPosition = 100;
+    internal const int LockPinSetMinTimerMs = 1000;
+    internal const int LockPinSetMaxTimerMs = 60000;
+    internal const int LockPinSetMinPickDurability = 1;
+    internal const int LockPinSetMaxPickDurability = 20;
+    internal const int LockPinSetMinPinDriftPerSecond = 0;
+    internal const int LockPinSetMaxPinDriftPerSecond = 100;
     internal static readonly IReadOnlyList<string> RhythmPulsePatternVariations =
     [
         "steady",
@@ -1068,6 +1078,7 @@ public sealed class QteSceneService
             "RhythmPulse" => await RunRhythmPulseAsync(action.Check),
             "PrecisionChoice" => await RunPrecisionChoiceAsync(action.Check),
             "StealthNoise" => await RunStealthNoiseAsync(action.Check),
+            "LockPinSet" => await RunLockPinSetAsync(action.Check),
             _ => QteGrade.Fail
         };
     }
@@ -2218,6 +2229,581 @@ public sealed class QteSceneService
             ? recoveryKey.Trim().ToLowerInvariant()
             : "space";
 
+    private async Task<QteGrade> RunLockPinSetAsync(QteCheck check)
+    {
+        if (!TryReadLockPinSetConfig(
+                check.Config,
+                out var pinCount,
+                out var pinWindows,
+                out var timerMs,
+                out var pickDurability,
+                out var maxMistakes,
+                out var pinDriftPerSecond,
+                out var gradeThresholds,
+                out var adjustKey,
+                out var setKey,
+                out var pinLabel,
+                out var durabilityLabel,
+                out var warningLabel))
+        {
+            return QteGrade.Fail;
+        }
+
+        var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
+        var effective = ComputeLockPinSetEffectiveRequirement(
+            pinCount,
+            pinWindows,
+            timerMs,
+            pickDurability,
+            maxMistakes,
+            pinDriftPerSecond,
+            gradeThresholds,
+            check.BaseDifficulty,
+            statTier,
+            adjustKey,
+            setKey);
+        var opened = new bool[effective.PinCount];
+        var inputs = new List<LockPinSetInput>();
+        var currentPinIndex = 0;
+        var currentPosition = 50d;
+        var mistakes = 0;
+        var durabilityRemaining = effective.PickDurability;
+        var started = DateTime.UtcNow;
+        var lastTick = started;
+        var pinName = string.IsNullOrWhiteSpace(pinLabel) ? "штифт" : pinLabel;
+        var durabilityPrompt = string.IsNullOrWhiteSpace(durabilityLabel)
+            ? "беречь отмычку"
+            : durabilityLabel;
+
+        while (true)
+        {
+            var now = DateTime.UtcNow;
+            var elapsedMs = (int)(now - started).TotalMilliseconds;
+            if (elapsedMs >= effective.TimerMs)
+                break;
+
+            var deltaMs = (int)(now - lastTick).TotalMilliseconds;
+            lastTick = now;
+            currentPosition = ApplyLockPinSetDrift(currentPosition, effective.PinDriftPerSecond, deltaMs, currentPinIndex);
+
+            while (TryReadImmediateKey(out var key))
+            {
+                if (key.Key == ConsoleKey.Escape)
+                    return QteGrade.Fail;
+
+                if (TryGetLockPinSetAdjustmentDirection(key, effective.AdjustKey, out var adjustmentDirection))
+                {
+                    currentPosition = ApplyLockPinSetAdjustment(currentPosition, adjustmentDirection);
+                    continue;
+                }
+
+                var token = QteKeyInput.NormalizeConsoleInput(key);
+                if (!string.Equals(token, effective.SetKey, StringComparison.Ordinal))
+                    continue;
+
+                var attempt = new LockPinSetInput(elapsedMs, currentPinIndex, currentPosition);
+                inputs.Add(attempt);
+                if (IsLockPinInputInsideWindow(effective, attempt))
+                {
+                    opened[currentPinIndex] = true;
+                    if (opened.All(value => value))
+                        return ParseGrade(ResolveLockPinSetGrade(effective, inputs));
+
+                    currentPinIndex = FindNextClosedLockPin(opened, currentPinIndex);
+                    currentPosition = 50d;
+                    continue;
+                }
+
+                mistakes++;
+                durabilityRemaining--;
+                if (mistakes > effective.MaxMistakes || durabilityRemaining <= 0)
+                    return QteGrade.Fail;
+            }
+
+            var remainingMs = Math.Max(0, effective.TimerMs - elapsedMs);
+            RenderMiniGamePanel(
+                "Штифты замка",
+                $"{QteKeyInput.FormatPromptLabel(effective.AdjustKey)} поднимает текущий {pinName}; Shift+{QteKeyInput.FormatPromptLabel(effective.AdjustKey)} опускает; {QteKeyInput.FormatPromptLabel(effective.SetKey)} фиксирует. Нужно {durabilityPrompt}. Esc - безопасный отказ считается провалом.",
+                BuildLockPinSetProgress(
+                    effective,
+                    opened,
+                    currentPinIndex,
+                    currentPosition,
+                    mistakes,
+                    durabilityRemaining,
+                    remainingMs,
+                    pinName,
+                    warningLabel));
+
+            await Task.Delay(20);
+        }
+
+        return ParseGrade(ResolveLockPinSetGrade(effective, inputs));
+    }
+
+    internal sealed record LockPinWindow(int Pin, double Min, double Max, string? Label);
+
+    internal sealed record LockPinSetGradeThresholds(
+        int SuccessMaxTimeMs,
+        int SuccessMaxMistakes,
+        int PartialMaxTimeMs,
+        int PartialMaxMistakes);
+
+    internal sealed record LockPinSetEffectiveRequirement(
+        int PinCount,
+        IReadOnlyList<LockPinWindow> PinWindows,
+        int TimerMs,
+        int PickDurability,
+        int MaxMistakes,
+        double PinDriftPerSecond,
+        LockPinSetGradeThresholds GradeThresholds,
+        string AdjustKey,
+        string SetKey);
+
+    internal sealed record LockPinSetInput(int OffsetMs, int PinIndex, double Position, bool Canceled = false);
+
+    internal static LockPinSetEffectiveRequirement ComputeLockPinSetEffectiveRequirement(
+        int pinCount,
+        IReadOnlyList<LockPinWindow> pinWindows,
+        int timerMs,
+        int pickDurability,
+        int maxMistakes,
+        double pinDriftPerSecond,
+        LockPinSetGradeThresholds gradeThresholds,
+        int baseDifficulty,
+        int statTier,
+        string adjustKey,
+        string setKey)
+    {
+        var effectivePinCount = Math.Clamp(pinCount, LockPinSetMinPinCount, LockPinSetMaxPinCount);
+        var difficultyOffset = Math.Clamp(baseDifficulty, 1, 5) - 3;
+        var windowPadding = statTier - Math.Max(0, difficultyOffset);
+        var effectiveWindows = pinWindows
+            .Take(effectivePinCount)
+            .Select(window => AdjustLockPinWindow(window, windowPadding))
+            .ToArray();
+        var effectiveTimerMs = Math.Clamp(
+            timerMs - (difficultyOffset * 500) + (statTier * 250),
+            LockPinSetMinTimerMs,
+            LockPinSetMaxTimerMs);
+        var effectivePickDurability = Math.Clamp(
+            pickDurability,
+            LockPinSetMinPickDurability,
+            LockPinSetMaxPickDurability);
+        var statMistakeBonus = Math.Min(2, Math.Max(0, statTier) / 2);
+        var effectiveMaxMistakes = Math.Clamp(
+            maxMistakes - Math.Max(0, difficultyOffset) + statMistakeBonus,
+            0,
+            effectivePickDurability);
+        var effectiveDrift = Math.Clamp(
+            pinDriftPerSecond + (difficultyOffset * 0.5d) - (statTier * 0.25d),
+            LockPinSetMinPinDriftPerSecond,
+            LockPinSetMaxPinDriftPerSecond);
+        var effectiveGradeThresholds = ClampLockPinSetGradeThresholds(
+            gradeThresholds,
+            effectiveTimerMs,
+            effectiveMaxMistakes);
+
+        return new LockPinSetEffectiveRequirement(
+            effectivePinCount,
+            effectiveWindows,
+            effectiveTimerMs,
+            effectivePickDurability,
+            effectiveMaxMistakes,
+            effectiveDrift,
+            effectiveGradeThresholds,
+            NormalizeLockPinSetKey(adjustKey, "q"),
+            NormalizeLockPinSetKey(setKey, "space"));
+    }
+
+    internal static bool TryGetLockPinSetAdjustmentDirection(
+        ConsoleKeyInfo key,
+        string adjustKey,
+        out int direction)
+    {
+        direction = 0;
+        var token = QteKeyInput.NormalizeConsoleInput(key);
+        if (!string.Equals(token, NormalizeLockPinSetKey(adjustKey, "q"), StringComparison.Ordinal))
+            return false;
+
+        direction = key.Modifiers.HasFlag(ConsoleModifiers.Shift) ? -1 : 1;
+        return true;
+    }
+
+    internal static double ApplyLockPinSetAdjustment(double position, int direction)
+    {
+        if (direction == 0)
+            return ClampLockPinPosition(position);
+
+        return ClampLockPinPosition(position + (Math.Sign(direction) * 5d));
+    }
+
+    internal static string ResolveLockPinSetGrade(
+        LockPinSetEffectiveRequirement effective,
+        IEnumerable<LockPinSetInput> inputs,
+        bool canceled = false)
+    {
+        if (canceled || !IsLockPinSetRequirementUsable(effective))
+            return "fail";
+
+        var opened = new bool[effective.PinCount];
+        var mistakes = 0;
+        var durabilityRemaining = effective.PickDurability;
+        int? openedAtMs = null;
+
+        foreach (var input in inputs.OrderBy(input => input.OffsetMs))
+        {
+            if (input.Canceled)
+                return "fail";
+            if (input.OffsetMs < 0)
+                continue;
+            if (input.OffsetMs > effective.TimerMs)
+                break;
+
+            if (input.PinIndex < 0 || input.PinIndex >= effective.PinCount)
+            {
+                mistakes++;
+                durabilityRemaining--;
+            }
+            else if (!opened[input.PinIndex] && IsLockPinInputInsideWindow(effective, input))
+            {
+                opened[input.PinIndex] = true;
+                if (opened.All(value => value))
+                {
+                    openedAtMs = input.OffsetMs;
+                    break;
+                }
+            }
+            else if (!opened[input.PinIndex])
+            {
+                mistakes++;
+                durabilityRemaining--;
+            }
+
+            if (durabilityRemaining <= 0 || mistakes > effective.MaxMistakes)
+                return "fail";
+        }
+
+        if (!opened.All(value => value) || openedAtMs == null)
+            return "fail";
+
+        var thresholds = effective.GradeThresholds;
+        if (openedAtMs.Value <= thresholds.SuccessMaxTimeMs &&
+            mistakes <= thresholds.SuccessMaxMistakes)
+        {
+            return "success";
+        }
+
+        return openedAtMs.Value <= thresholds.PartialMaxTimeMs &&
+               mistakes <= thresholds.PartialMaxMistakes
+            ? "partial"
+            : "fail";
+    }
+
+    internal static string ResolveLockPinSetGrade(
+        JsonObject? config,
+        int baseDifficulty,
+        int statTier,
+        IEnumerable<LockPinSetInput> inputs,
+        bool canceled = false)
+    {
+        if (!TryReadLockPinSetConfig(
+                config,
+                out var pinCount,
+                out var pinWindows,
+                out var timerMs,
+                out var pickDurability,
+                out var maxMistakes,
+                out var pinDriftPerSecond,
+                out var gradeThresholds,
+                out var adjustKey,
+                out var setKey,
+                out _,
+                out _,
+                out _))
+        {
+            return "fail";
+        }
+
+        var effective = ComputeLockPinSetEffectiveRequirement(
+            pinCount,
+            pinWindows,
+            timerMs,
+            pickDurability,
+            maxMistakes,
+            pinDriftPerSecond,
+            gradeThresholds,
+            baseDifficulty,
+            statTier,
+            adjustKey,
+            setKey);
+        return ResolveLockPinSetGrade(effective, inputs, canceled);
+    }
+
+    private static bool TryReadLockPinSetConfig(
+        JsonObject? config,
+        out int pinCount,
+        out IReadOnlyList<LockPinWindow> pinWindows,
+        out int timerMs,
+        out int pickDurability,
+        out int maxMistakes,
+        out double pinDriftPerSecond,
+        out LockPinSetGradeThresholds gradeThresholds,
+        out string adjustKey,
+        out string setKey,
+        out string? pinLabel,
+        out string? durabilityLabel,
+        out string? warningLabel)
+    {
+        pinCount = 0;
+        pinWindows = [];
+        timerMs = 0;
+        pickDurability = 0;
+        maxMistakes = 0;
+        pinDriftPerSecond = 0;
+        gradeThresholds = new LockPinSetGradeThresholds(0, 0, 0, 0);
+        adjustKey = "q";
+        setKey = "space";
+        pinLabel = null;
+        durabilityLabel = null;
+        warningLabel = null;
+
+        if (config == null ||
+            !TryGetLockPinSetInt(config, "pinCount", out pinCount) ||
+            config["pinWindows"] is not JsonArray windows ||
+            !TryGetLockPinSetInt(config, "timerMs", out timerMs) ||
+            !TryGetLockPinSetInt(config, "pickDurability", out pickDurability) ||
+            !TryGetLockPinSetInt(config, "maxMistakes", out maxMistakes) ||
+            !TryGetLockPinSetDouble(config, "pinDriftPerSecond", out pinDriftPerSecond) ||
+            config["gradeThresholds"] is not JsonObject thresholds ||
+            !TryGetLockPinSetInt(thresholds, "successMaxTimeMs", out var successMaxTimeMs) ||
+            !TryGetLockPinSetInt(thresholds, "successMaxMistakes", out var successMaxMistakes) ||
+            !TryGetLockPinSetInt(thresholds, "partialMaxTimeMs", out var partialMaxTimeMs) ||
+            !TryGetLockPinSetInt(thresholds, "partialMaxMistakes", out var partialMaxMistakes))
+        {
+            return false;
+        }
+
+        if (pinCount < LockPinSetMinPinCount ||
+            pinCount > LockPinSetMaxPinCount ||
+            windows.Count != pinCount ||
+            timerMs < LockPinSetMinTimerMs ||
+            timerMs > LockPinSetMaxTimerMs ||
+            pickDurability < LockPinSetMinPickDurability ||
+            pickDurability > LockPinSetMaxPickDurability ||
+            maxMistakes < 0 ||
+            maxMistakes > pickDurability ||
+            pinDriftPerSecond < LockPinSetMinPinDriftPerSecond ||
+            pinDriftPerSecond > LockPinSetMaxPinDriftPerSecond ||
+            successMaxTimeMs < 0 ||
+            successMaxTimeMs > timerMs ||
+            successMaxMistakes < 0 ||
+            successMaxMistakes > maxMistakes ||
+            partialMaxTimeMs < successMaxTimeMs ||
+            partialMaxTimeMs > timerMs ||
+            partialMaxMistakes < successMaxMistakes ||
+            partialMaxMistakes > maxMistakes)
+        {
+            return false;
+        }
+
+        var parsedWindows = new List<LockPinWindow>(pinCount);
+        for (var index = 0; index < windows.Count; index++)
+        {
+            if (windows[index] is not JsonObject window ||
+                !TryGetLockPinSetDouble(window, "min", out var min) ||
+                !TryGetLockPinSetDouble(window, "max", out var max) ||
+                min < LockPinSetMinPosition ||
+                max > LockPinSetMaxPosition ||
+                min >= max)
+            {
+                return false;
+            }
+
+            if (window["pin"] is not null &&
+                (!TryGetLockPinSetInt(window, "pin", out var pin) || pin != index + 1))
+            {
+                return false;
+            }
+
+            if (!TryReadLockPinSetOptionalText(window, "label", out var label))
+                return false;
+
+            parsedWindows.Add(new LockPinWindow(index + 1, min, max, label));
+        }
+
+        if (!TryReadLockPinSetOptionalKey(config, "adjustKey", "q", out adjustKey) ||
+            !TryReadLockPinSetOptionalKey(config, "setKey", "space", out setKey) ||
+            !TryReadLockPinSetOptionalText(config, "pinLabel", out pinLabel) ||
+            !TryReadLockPinSetOptionalText(config, "durabilityLabel", out durabilityLabel) ||
+            !TryReadLockPinSetOptionalText(config, "warningLabel", out warningLabel))
+        {
+            return false;
+        }
+
+        pinWindows = parsedWindows;
+        gradeThresholds = new LockPinSetGradeThresholds(
+            successMaxTimeMs,
+            successMaxMistakes,
+            partialMaxTimeMs,
+            partialMaxMistakes);
+        return true;
+    }
+
+    private static bool IsLockPinSetRequirementUsable(LockPinSetEffectiveRequirement effective) =>
+        effective.PinCount >= LockPinSetMinPinCount &&
+        effective.PinCount <= LockPinSetMaxPinCount &&
+        effective.PinWindows.Count == effective.PinCount &&
+        effective.TimerMs is >= LockPinSetMinTimerMs and <= LockPinSetMaxTimerMs &&
+        effective.PickDurability is >= LockPinSetMinPickDurability and <= LockPinSetMaxPickDurability &&
+        effective.MaxMistakes >= 0 &&
+        effective.MaxMistakes <= effective.PickDurability &&
+        effective.PinDriftPerSecond is >= LockPinSetMinPinDriftPerSecond and <= LockPinSetMaxPinDriftPerSecond &&
+        effective.GradeThresholds.SuccessMaxTimeMs >= 0 &&
+        effective.GradeThresholds.SuccessMaxTimeMs <= effective.TimerMs &&
+        effective.GradeThresholds.SuccessMaxMistakes >= 0 &&
+        effective.GradeThresholds.SuccessMaxMistakes <= effective.MaxMistakes &&
+        effective.GradeThresholds.PartialMaxTimeMs >= effective.GradeThresholds.SuccessMaxTimeMs &&
+        effective.GradeThresholds.PartialMaxTimeMs <= effective.TimerMs &&
+        effective.GradeThresholds.PartialMaxMistakes >= effective.GradeThresholds.SuccessMaxMistakes &&
+        effective.GradeThresholds.PartialMaxMistakes <= effective.MaxMistakes;
+
+    private static LockPinSetGradeThresholds ClampLockPinSetGradeThresholds(
+        LockPinSetGradeThresholds thresholds,
+        int effectiveTimerMs,
+        int effectiveMaxMistakes)
+    {
+        var successMaxTimeMs = Math.Clamp(thresholds.SuccessMaxTimeMs, 0, effectiveTimerMs);
+        var partialMaxTimeMs = Math.Clamp(thresholds.PartialMaxTimeMs, successMaxTimeMs, effectiveTimerMs);
+        var successMaxMistakes = Math.Clamp(thresholds.SuccessMaxMistakes, 0, effectiveMaxMistakes);
+        var partialMaxMistakes = Math.Clamp(thresholds.PartialMaxMistakes, successMaxMistakes, effectiveMaxMistakes);
+
+        return new LockPinSetGradeThresholds(
+            successMaxTimeMs,
+            successMaxMistakes,
+            partialMaxTimeMs,
+            partialMaxMistakes);
+    }
+
+    private static LockPinWindow AdjustLockPinWindow(LockPinWindow window, int padding)
+    {
+        var min = ClampLockPinPosition(window.Min - padding);
+        var max = ClampLockPinPosition(window.Max + padding);
+        if (max > min)
+            return new LockPinWindow(window.Pin, min, max, window.Label);
+
+        var center = ClampLockPinPosition((window.Min + window.Max) / 2d);
+        min = ClampLockPinPosition(center - 0.5d);
+        max = ClampLockPinPosition(center + 0.5d);
+        if (max <= min)
+            max = Math.Min(LockPinSetMaxPosition, min + 1);
+
+        return new LockPinWindow(window.Pin, min, max, window.Label);
+    }
+
+    private static bool IsLockPinInputInsideWindow(LockPinSetEffectiveRequirement effective, LockPinSetInput input)
+    {
+        if (input.PinIndex < 0 || input.PinIndex >= effective.PinWindows.Count)
+            return false;
+
+        var window = effective.PinWindows[input.PinIndex];
+        var position = ClampLockPinPosition(input.Position);
+        return position >= window.Min && position <= window.Max;
+    }
+
+    private static int FindNextClosedLockPin(IReadOnlyList<bool> opened, int currentIndex)
+    {
+        for (var offset = 1; offset <= opened.Count; offset++)
+        {
+            var candidate = (currentIndex + offset) % opened.Count;
+            if (!opened[candidate])
+                return candidate;
+        }
+
+        return currentIndex;
+    }
+
+    private static double ApplyLockPinSetDrift(double position, double driftPerSecond, int deltaMs, int pinIndex)
+    {
+        if (deltaMs <= 0 || driftPerSecond <= 0)
+            return ClampLockPinPosition(position);
+
+        var direction = pinIndex % 2 == 0 ? 1 : -1;
+        return ClampLockPinPosition(position + (direction * driftPerSecond * deltaMs / 1000d));
+    }
+
+    private static bool TryGetLockPinSetInt(JsonObject root, string propertyName, out int value)
+    {
+        value = 0;
+        return root[propertyName] is JsonValue node && node.TryGetValue<int>(out value);
+    }
+
+    private static bool TryGetLockPinSetDouble(JsonObject root, string propertyName, out double value)
+    {
+        value = 0;
+        if (root[propertyName] is not JsonValue node)
+            return false;
+
+        if (node.TryGetValue<double>(out value))
+            return true;
+        if (node.TryGetValue<int>(out var intValue))
+        {
+            value = intValue;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryReadLockPinSetOptionalText(JsonObject root, string propertyName, out string? value)
+    {
+        value = null;
+        if (root[propertyName] is null)
+            return true;
+        if (root[propertyName] is not JsonValue node ||
+            !node.TryGetValue<string>(out var text) ||
+            string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        value = text.Trim();
+        return true;
+    }
+
+    private static bool TryReadLockPinSetOptionalKey(
+        JsonObject root,
+        string propertyName,
+        string fallback,
+        out string value)
+    {
+        value = fallback;
+        if (root[propertyName] is null)
+            return true;
+        if (root[propertyName] is not JsonValue node ||
+            !node.TryGetValue<string>(out var text) ||
+            string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        var normalized = text.Trim().ToLowerInvariant();
+        if (!QteKeyInput.IsSupportedToken(normalized))
+            return false;
+
+        value = normalized;
+        return true;
+    }
+
+    private static string NormalizeLockPinSetKey(string token, string fallback)
+    {
+        var normalized = token.Trim().ToLowerInvariant();
+        return QteKeyInput.IsSupportedToken(normalized) ? normalized : fallback;
+    }
+
+    private static double ClampLockPinPosition(double position) =>
+        Math.Clamp(position, LockPinSetMinPosition, LockPinSetMaxPosition);
+
     private static int CountRhythmPulseHits(
         IReadOnlyList<int> pulseOffsetsMs,
         int hitWindowMs,
@@ -3021,6 +3607,54 @@ public sealed class QteSceneService
         {
             var warning = string.IsNullOrWhiteSpace(warningLabel)
                 ? "Шум выше опасного порога."
+                : warningLabel;
+            lines.Add($"[bold red]{Markup.Escape(warning)}[/]");
+        }
+
+        return string.Join("\n", lines);
+    }
+
+    private static string BuildLockPinSetProgress(
+        LockPinSetEffectiveRequirement effective,
+        IReadOnlyList<bool> opened,
+        int currentPinIndex,
+        double currentPosition,
+        int mistakes,
+        int durabilityRemaining,
+        int remainingMs,
+        string pinLabel,
+        string? warningLabel)
+    {
+        var lines = new List<string>();
+        for (var index = 0; index < effective.PinWindows.Count; index++)
+        {
+            var window = effective.PinWindows[index];
+            var label = string.IsNullOrWhiteSpace(window.Label)
+                ? $"{pinLabel} {index + 1}"
+                : window.Label;
+            var isCurrent = index == currentPinIndex;
+            var state = opened[index]
+                ? "[green]открыт[/]"
+                : isCurrent
+                    ? "[yellow]выставляется[/]"
+                    : "[dim]ожидает[/]";
+            var position = isCurrent ? currentPosition : (window.Min + window.Max) / 2d;
+            var inWindow = position >= window.Min && position <= window.Max;
+            var marker = isCurrent
+                ? inWindow ? "[green]в окне[/]" : "[red]мимо окна[/]"
+                : "[dim]целевое окно[/]";
+            lines.Add(
+                $"[white]{Markup.Escape(label)}[/]: {state} | позиция {position:0.0} | окно {window.Min:0.0}..{window.Max:0.0} | {marker}");
+        }
+
+        lines.Add("");
+        lines.Add($"[dim]Осталось: {remainingMs / 1000d:0.0} с | Ошибки: {mistakes}/{effective.MaxMistakes} | Прочность отмычки: {durabilityRemaining}/{effective.PickDurability}[/]");
+        lines.Add($"[dim]Дрейф штифтов: {effective.PinDriftPerSecond:0.0}/с | Чистый успех до {effective.GradeThresholds.SuccessMaxTimeMs / 1000d:0.0} с без ошибок; частичный до {effective.GradeThresholds.PartialMaxTimeMs / 1000d:0.0} с.[/]");
+
+        if (durabilityRemaining <= Math.Max(1, effective.PickDurability / 2) || mistakes > 0)
+        {
+            var warning = string.IsNullOrWhiteSpace(warningLabel)
+                ? "Отмычка и замок уже выдали шум или сопротивление."
                 : warningLabel;
             lines.Add($"[bold red]{Markup.Escape(warning)}[/]");
         }
