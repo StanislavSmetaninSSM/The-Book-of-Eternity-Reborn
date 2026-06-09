@@ -142,6 +142,19 @@ public sealed class ValidationServiceQteTests : IDisposable
             issue.Code?.StartsWith("qte_pattern_memory_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnQteOfferAsync_AcceptsValidRhythmPulseConfig()
+    {
+        await WriteRhythmPulseOfferAsync();
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "qte_invalid_check_type", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("qte_rhythm_pulse_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     [Theory]
     [InlineData("emptyKeys", "qte_mash_input_keys_empty")]
     [InlineData("unsupportedKey", "qte_mash_input_key_invalid")]
@@ -182,6 +195,30 @@ public sealed class ValidationServiceQteTests : IDisposable
         string expectedCode)
     {
         await WritePatternMemoryOfferAsync(mutation);
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("missingConfig", "qte_rhythm_pulse_config_missing")]
+    [InlineData("zeroPulseCount", "qte_rhythm_pulse_pulse_count_out_of_range")]
+    [InlineData("negativePulseCount", "qte_rhythm_pulse_pulse_count_out_of_range")]
+    [InlineData("tooFastBeatInterval", "qte_rhythm_pulse_beat_interval_ms_out_of_range")]
+    [InlineData("tooSlowBeatInterval", "qte_rhythm_pulse_beat_interval_ms_out_of_range")]
+    [InlineData("zeroHitWindow", "qte_rhythm_pulse_hit_window_ms_out_of_range")]
+    [InlineData("overlappingHitWindow", "qte_rhythm_pulse_hit_window_ms_overlaps")]
+    [InlineData("negativeMisses", "qte_rhythm_pulse_allowed_misses_out_of_range")]
+    [InlineData("failureImpossibleMisses", "qte_rhythm_pulse_allowed_misses_out_of_range")]
+    [InlineData("unsupportedPatternVariation", "qte_rhythm_pulse_pattern_variation_invalid")]
+    [InlineData("malformedPatternVariation", "qte_rhythm_pulse_pattern_variation_invalid")]
+    public async Task ValidateAcceptedTurnQteOfferAsync_RejectsMalformedRhythmPulseConfig(
+        string mutation,
+        string expectedCode)
+    {
+        await WriteRhythmPulseOfferAsync(mutation);
 
         var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
 
@@ -425,6 +462,130 @@ public sealed class ValidationServiceQteTests : IDisposable
             case "failureImpossibleMistakes":
                 config["sequenceLength"] = 4;
                 config["allowedMistakes"] = 4;
+                break;
+        }
+
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, offer.ToJsonString());
+    }
+
+    private async Task WriteRhythmPulseOfferAsync(string? mutation = null)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+
+        var offer = JsonNode.Parse("""
+        {
+          "qteId": "qte_rhythm_pulse_test",
+          "title": "Ритм печати",
+          "offerText": "Нужно подстроить дыхание под пульсацию магической печати.",
+          "introNarrative": "Свет на камнях вспыхивает короткими ударами, задавая опасный ритм.",
+          "startChapterId": "seal_pulse",
+          "chapters": [
+            {
+              "chapterId": "seal_pulse",
+              "title": "Пульсация резонанса",
+              "narrative": "Каждая вспышка открывает короткое окно для движения.",
+              "actions": [
+                {
+                  "actionId": "match_pulse",
+                  "label": "Подстроиться под ритм",
+                  "check": {
+                    "type": "RhythmPulse",
+                    "baseDifficulty": 3,
+                    "primaryCharacteristic": "perception",
+                    "config": {
+                      "pulseCount": 4,
+                      "beatIntervalMs": 650,
+                      "hitWindowMs": 120,
+                      "allowedMisses": 1,
+                      "patternVariation": "steady"
+                    }
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "resonance_matched" },
+                    "partial": { "terminalOutcomeId": "resonance_wavers" },
+                    "fail": { "terminalOutcomeId": "resonance_breaks" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "resonance_matched",
+              "title": "Ритм совпал",
+              "finalNarrative": "Печать принимает ровный пульс и пропускает героя.",
+              "gmSummary": "Игрок успешно прошёл RhythmPulse последовательность.",
+              "responseFragment": {
+                "response": "Вы входите в резонанс с печатью.",
+                "experienceGained": 40
+              }
+            },
+            {
+              "outcomeId": "resonance_wavers",
+              "title": "Ритм дрогнул",
+              "finalNarrative": "Печать пропускает героя рывком, но резонанс обжигает ладони.",
+              "gmSummary": "Игрок частично прошёл RhythmPulse последовательность.",
+              "responseFragment": {
+                "response": "Вы проходите через нестабильный ритм.",
+                "experienceGained": 10
+              }
+            },
+            {
+              "outcomeId": "resonance_breaks",
+              "title": "Ритм сорван",
+              "finalNarrative": "Печать сбивает шаг и отбрасывает героя от прохода.",
+              "gmSummary": "Игрок провалил RhythmPulse последовательность.",
+              "responseFragment": {
+                "response": "Печать отбрасывает вас вспышкой.",
+                "currentPoiseChange": -10
+              }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var check = offer["chapters"]![0]!["actions"]![0]!["check"]!.AsObject();
+        var config = check["config"]!.AsObject();
+        switch (mutation)
+        {
+            case "missingConfig":
+                check.Remove("config");
+                break;
+            case "zeroPulseCount":
+                config["pulseCount"] = 0;
+                break;
+            case "negativePulseCount":
+                config["pulseCount"] = -2;
+                break;
+            case "tooFastBeatInterval":
+                config["beatIntervalMs"] = 100;
+                break;
+            case "tooSlowBeatInterval":
+                config["beatIntervalMs"] = 5000;
+                break;
+            case "zeroHitWindow":
+                config["hitWindowMs"] = 0;
+                break;
+            case "overlappingHitWindow":
+                config["beatIntervalMs"] = 500;
+                config["hitWindowMs"] = 250;
+                break;
+            case "negativeMisses":
+                config["allowedMisses"] = -1;
+                break;
+            case "failureImpossibleMisses":
+                config["pulseCount"] = 4;
+                config["allowedMisses"] = 4;
+                break;
+            case "unsupportedPatternVariation":
+                config["patternVariation"] = "random";
+                break;
+            case "malformedPatternVariation":
+                config["patternVariation"] = new JsonObject { ["mode"] = "steady" };
                 break;
         }
 

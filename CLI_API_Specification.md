@@ -1182,6 +1182,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - QTE v2 node types currently implemented:
   - `MashInput`
   - `PatternMemory`
+  - `RhythmPulse`
 - QTE reaction checks use physical QTE keys. Player-facing labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` describe physical keys; the client handles physical key/RU-EN normalization and must not tell the player to switch OS layout.
 - GM-authored QTE configs do not encode player keyboard layout, and this QTE-only normalization does not apply to normal text input, dialogue, names, or narrative prose.
 - `check.primaryCharacteristic` must be one of these canonical lowercase ids:
@@ -1207,6 +1208,16 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - Higher `baseDifficulty` may increase effective sequence length, reduce reveal/input time, or reduce mistake tolerance; a higher relevant `primaryCharacteristic` tier must not make the same config harder.
   - Perfect repeat resolves success; an imperfect repeat within tolerance and with meaningful progress resolves partial; too many mistakes, timeout, or Escape/cancel resolves fail.
   - Browser interactive PatternMemory parity remains #918; browser surfaces must not claim live interactive support in this slice.
+- For `RhythmPulse`, `check.config.pulseCount`, `beatIntervalMs`, `hitWindowMs`, and `allowedMisses` are required; `patternVariation` is optional.
+  - `pulseCount` must be an integer from 2 to 16.
+  - `beatIntervalMs` must be an integer from 300 to 3000.
+  - `hitWindowMs` must be an integer from 40 to 1000 and `hitWindowMs * 2` must be strictly less than `beatIntervalMs`.
+  - `allowedMisses` must be an integer from 0 to `pulseCount - 1` so failure remains possible.
+  - `patternVariation`, when present, must be `steady`, `accelerating`, or `swing`.
+  - Higher `baseDifficulty` may increase effective pulse count, reduce the hit window, or reduce miss tolerance; a higher relevant `primaryCharacteristic` tier must not make the same config harder.
+  - Console RhythmPulse uses Space as the local pulse key and must show visual/textual pulse timing; audio cues are optional enhancement only.
+  - Success resolves when missed pulses stay within tolerance; at least half of pulses hit resolves partial; too few hits or Escape/cancel resolves fail.
+  - Browser interactive RhythmPulse parity remains #918; browser surfaces must not claim live interactive support in this slice.
 - Every terminal outcome must contain a local `responseFragment` using normal `GameResponse` field names.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `responseFragment` is the authoritative final mechanical outcome for an accepted QTE branch; the GM must not rely on a follow-up GM turn to add the real reward later.

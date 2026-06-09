@@ -189,6 +189,46 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void RhythmPulseQteContract_IsDocumentedForGmAndPlayers()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "RhythmPulse",
+            "check.config.pulseCount",
+            "beatIntervalMs",
+            "hitWindowMs",
+            "allowedMisses",
+            "patternVariation",
+            "visual/textual pulse timing",
+            "Browser interactive RhythmPulse parity remains #918"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "\"type\": \"RhythmPulse\"",
+            "\"pulseCount\": 4",
+            "\"beatIntervalMs\": 650",
+            "\"hitWindowMs\": 120",
+            "\"allowedMisses\": 1",
+            "\"patternVariation\": \"steady\"",
+            "\"terminalOutcomeId\": \"resonance_matched\"",
+            "\"terminalOutcomeId\": \"resonance_wavers\"",
+            "\"terminalOutcomeId\": \"resonance_breaks\""
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void QuestRewardAuthorityContract_IsDocumentedForGm()
     {
         var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");

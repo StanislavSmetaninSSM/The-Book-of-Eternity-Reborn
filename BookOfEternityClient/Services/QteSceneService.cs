@@ -32,6 +32,18 @@ public sealed class QteSceneService
     internal const int PatternMemoryMinInputTimeoutMs = 1000;
     internal const int PatternMemoryMaxInputTimeoutMs = 30000;
     internal const int PatternMemoryMinInputMsPerSymbol = 300;
+    internal const int RhythmPulseMinPulseCount = 2;
+    internal const int RhythmPulseMaxPulseCount = 16;
+    internal const int RhythmPulseMinBeatIntervalMs = 300;
+    internal const int RhythmPulseMaxBeatIntervalMs = 3000;
+    internal const int RhythmPulseMinHitWindowMs = 40;
+    internal const int RhythmPulseMaxHitWindowMs = 1000;
+    internal static readonly IReadOnlyList<string> RhythmPulsePatternVariations =
+    [
+        "steady",
+        "accelerating",
+        "swing"
+    ];
     private const int ExperienceBaseXp = 100;
     private const double ExperienceExponent = 2.5;
 
@@ -1043,6 +1055,7 @@ public sealed class QteSceneService
             "ChargeRelease" => await RunChargeReleaseAsync(action.Check),
             "MashInput" => await RunMashInputAsync(action.Check),
             "PatternMemory" => await RunPatternMemoryAsync(action),
+            "RhythmPulse" => await RunRhythmPulseAsync(action.Check),
             _ => QteGrade.Fail
         };
     }
@@ -1468,6 +1481,279 @@ public sealed class QteSceneService
 
         alphabet = tokens;
         return true;
+    }
+
+    private async Task<QteGrade> RunRhythmPulseAsync(QteCheck check)
+    {
+        if (!TryReadRhythmPulseConfig(
+                check.Config,
+                out var pulseCount,
+                out var beatIntervalMs,
+                out var hitWindowMs,
+                out var allowedMisses,
+                out var patternVariation))
+        {
+            return QteGrade.Fail;
+        }
+
+        var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
+        var effective = ComputeRhythmPulseEffectiveRequirement(
+            pulseCount,
+            beatIntervalMs,
+            hitWindowMs,
+            allowedMisses,
+            check.BaseDifficulty,
+            statTier);
+        var schedule = GenerateRhythmPulseSchedule(
+            effective.PulseCount,
+            effective.BeatIntervalMs,
+            patternVariation);
+        if (schedule.Count == 0)
+            return QteGrade.Fail;
+
+        var inputs = new List<RhythmPulseInput>();
+        var totalDurationMs = schedule[^1] + effective.HitWindowMs;
+        var started = DateTime.UtcNow;
+
+        while (true)
+        {
+            var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
+            if (elapsedMs > totalDurationMs)
+                break;
+
+            while (TryReadImmediateKey(out var key))
+            {
+                if (key.Key == ConsoleKey.Escape)
+                    return QteGrade.Fail;
+
+                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
+                    inputs.Add(new RhythmPulseInput(elapsedMs, key));
+            }
+
+            var remainingMs = Math.Max(0, totalDurationMs - elapsedMs);
+            RenderMiniGamePanel(
+                "Ритм пульса",
+                $"Нажимайте {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)} в момент вспышки. Esc - безопасный отказ считается провалом.",
+                BuildRhythmPulseProgress(schedule, effective.HitWindowMs, effective.AllowedMisses, inputs, elapsedMs, remainingMs));
+
+            await Task.Delay(20);
+        }
+
+        return ParseGrade(ResolveRhythmPulseGrade(schedule, effective.HitWindowMs, effective.AllowedMisses, inputs));
+    }
+
+    internal sealed record RhythmPulseInput(int OffsetMs, ConsoleKeyInfo KeyInfo);
+
+    internal sealed record RhythmPulseEffectiveRequirement(
+        int PulseCount,
+        int BeatIntervalMs,
+        int HitWindowMs,
+        int AllowedMisses);
+
+    internal static RhythmPulseEffectiveRequirement ComputeRhythmPulseEffectiveRequirement(
+        int pulseCount,
+        int beatIntervalMs,
+        int hitWindowMs,
+        int allowedMisses,
+        int baseDifficulty,
+        int statTier)
+    {
+        var basePulseCount = Math.Clamp(
+            pulseCount,
+            RhythmPulseMinPulseCount,
+            RhythmPulseMaxPulseCount);
+        var effectiveBeatIntervalMs = Math.Clamp(
+            beatIntervalMs,
+            RhythmPulseMinBeatIntervalMs,
+            RhythmPulseMaxBeatIntervalMs);
+        var difficultyOffset = Math.Clamp(baseDifficulty, 1, 5) - 3;
+        var difficultyPenalty = Math.Max(0, difficultyOffset);
+        var statBonus = Math.Max(0, statTier / 2);
+        var minimumAdjustedPulseCount = Math.Max(RhythmPulseMinPulseCount, basePulseCount - 2);
+        var effectivePulseCount = Math.Clamp(
+            basePulseCount + difficultyPenalty - statBonus,
+            minimumAdjustedPulseCount,
+            RhythmPulseMaxPulseCount);
+        var effectiveHitWindowMs = Math.Clamp(
+            hitWindowMs - (difficultyOffset * 10) + (statTier * 8),
+            RhythmPulseMinHitWindowMs,
+            RhythmPulseMaxHitWindowMs);
+        var maxNonOverlappingWindowMs = Math.Max(
+            RhythmPulseMinHitWindowMs,
+            (effectiveBeatIntervalMs - 1) / 2);
+        effectiveHitWindowMs = Math.Min(effectiveHitWindowMs, maxNonOverlappingWindowMs);
+        var effectiveAllowedMisses = Math.Clamp(
+            allowedMisses - difficultyPenalty + statBonus,
+            0,
+            effectivePulseCount - 1);
+
+        return new RhythmPulseEffectiveRequirement(
+            effectivePulseCount,
+            effectiveBeatIntervalMs,
+            effectiveHitWindowMs,
+            effectiveAllowedMisses);
+    }
+
+    internal static IReadOnlyList<int> GenerateRhythmPulseSchedule(
+        int pulseCount,
+        int beatIntervalMs,
+        string? patternVariation)
+    {
+        if (pulseCount <= 0 || beatIntervalMs <= 0)
+            return [];
+
+        var count = Math.Clamp(pulseCount, RhythmPulseMinPulseCount, RhythmPulseMaxPulseCount);
+        var baseInterval = Math.Clamp(beatIntervalMs, RhythmPulseMinBeatIntervalMs, RhythmPulseMaxBeatIntervalMs);
+        var variation = NormalizeRhythmPulsePatternVariation(patternVariation);
+        var offsets = new List<int>(count);
+        var currentOffset = 0;
+
+        for (var i = 0; i < count; i++)
+        {
+            var interval = variation switch
+            {
+                "accelerating" => Math.Max(
+                    RhythmPulseMinBeatIntervalMs,
+                    (int)Math.Round(baseInterval * (1d - Math.Min(i, 4) * 0.08d))),
+                "swing" => Math.Max(
+                    RhythmPulseMinBeatIntervalMs,
+                    (int)Math.Round(baseInterval * (i % 2 == 0 ? 1.2d : 0.8d))),
+                _ => baseInterval
+            };
+            currentOffset += interval;
+            offsets.Add(currentOffset);
+        }
+
+        return offsets;
+    }
+
+    internal static string ResolveRhythmPulseGrade(
+        IReadOnlyList<int> pulseOffsetsMs,
+        int hitWindowMs,
+        int allowedMisses,
+        IEnumerable<RhythmPulseInput> inputs)
+    {
+        if (pulseOffsetsMs.Count == 0)
+            return "fail";
+
+        var inputList = inputs.ToArray();
+        if (inputList.Any(input => input.KeyInfo.Key == ConsoleKey.Escape))
+            return "fail";
+
+        var hits = CountRhythmPulseHits(pulseOffsetsMs, hitWindowMs, inputList);
+        var misses = pulseOffsetsMs.Count - hits;
+        var effectiveAllowedMisses = Math.Clamp(allowedMisses, 0, pulseOffsetsMs.Count - 1);
+        if (misses <= effectiveAllowedMisses)
+            return "success";
+
+        var partialHitTarget = Math.Max(1, (int)Math.Ceiling(pulseOffsetsMs.Count / 2d));
+        return hits >= partialHitTarget ? "partial" : "fail";
+    }
+
+    private static int CountRhythmPulseHits(
+        IReadOnlyList<int> pulseOffsetsMs,
+        int hitWindowMs,
+        IEnumerable<RhythmPulseInput> inputs)
+    {
+        if (pulseOffsetsMs.Count == 0)
+            return 0;
+
+        var window = Math.Max(0, hitWindowMs);
+        var matched = new bool[pulseOffsetsMs.Count];
+        foreach (var input in inputs.OrderBy(input => input.OffsetMs))
+        {
+            if (!QteKeyInput.MatchesConsoleKey(input.KeyInfo, ConsoleKey.Spacebar))
+                continue;
+
+            var bestIndex = -1;
+            var bestDistance = window + 1;
+            for (var i = 0; i < pulseOffsetsMs.Count; i++)
+            {
+                if (matched[i])
+                    continue;
+
+                var distance = Math.Abs(input.OffsetMs - pulseOffsetsMs[i]);
+                if (distance <= window && distance < bestDistance)
+                {
+                    bestIndex = i;
+                    bestDistance = distance;
+                }
+            }
+
+            if (bestIndex >= 0)
+                matched[bestIndex] = true;
+        }
+
+        return matched.Count(value => value);
+    }
+
+    private static bool TryReadRhythmPulseConfig(
+        JsonObject? config,
+        out int pulseCount,
+        out int beatIntervalMs,
+        out int hitWindowMs,
+        out int allowedMisses,
+        out string patternVariation)
+    {
+        pulseCount = 0;
+        beatIntervalMs = 0;
+        hitWindowMs = 0;
+        allowedMisses = 0;
+        patternVariation = "steady";
+
+        if (config == null ||
+            config["pulseCount"] is not JsonValue pulseNode ||
+            config["beatIntervalMs"] is not JsonValue beatNode ||
+            config["hitWindowMs"] is not JsonValue windowNode ||
+            config["allowedMisses"] is not JsonValue missesNode)
+        {
+            return false;
+        }
+
+        if (!pulseNode.TryGetValue<int>(out pulseCount) ||
+            !beatNode.TryGetValue<int>(out beatIntervalMs) ||
+            !windowNode.TryGetValue<int>(out hitWindowMs) ||
+            !missesNode.TryGetValue<int>(out allowedMisses) ||
+            pulseCount < RhythmPulseMinPulseCount ||
+            pulseCount > RhythmPulseMaxPulseCount ||
+            beatIntervalMs < RhythmPulseMinBeatIntervalMs ||
+            beatIntervalMs > RhythmPulseMaxBeatIntervalMs ||
+            hitWindowMs < RhythmPulseMinHitWindowMs ||
+            hitWindowMs > RhythmPulseMaxHitWindowMs ||
+            hitWindowMs * 2 >= beatIntervalMs ||
+            allowedMisses < 0 ||
+            allowedMisses >= pulseCount)
+        {
+            return false;
+        }
+
+        if (config["patternVariation"] is null)
+            return true;
+
+        if (config["patternVariation"] is not JsonValue variationNode ||
+            !variationNode.TryGetValue<string>(out var variation) ||
+            string.IsNullOrWhiteSpace(variation))
+        {
+            return false;
+        }
+
+        variation = variation.Trim();
+        if (!RhythmPulsePatternVariations.Contains(variation, StringComparer.Ordinal))
+            return false;
+
+        patternVariation = variation;
+        return true;
+    }
+
+    private static string NormalizeRhythmPulsePatternVariation(string? patternVariation)
+    {
+        if (string.IsNullOrWhiteSpace(patternVariation))
+            return "steady";
+
+        var normalized = patternVariation.Trim();
+        return RhythmPulsePatternVariations.Contains(normalized, StringComparer.Ordinal)
+            ? normalized
+            : "steady";
     }
 
     private async Task<QteGrade> RunTimingBarAsync(QteCheck check)
@@ -1914,6 +2200,50 @@ public sealed class QteSceneService
         {
             $"[white]Введено: {enteredText}[/]",
             $"[dim]Шаг {Math.Min(inputs.Count, sequenceLength)}/{sequenceLength} | Ошибок можно: {allowedMistakes} | Осталось: {remainingSeconds:0.0} с[/]"
+        });
+    }
+
+    private static string BuildRhythmPulseProgress(
+        IReadOnlyList<int> pulseOffsetsMs,
+        int hitWindowMs,
+        int allowedMisses,
+        IReadOnlyList<RhythmPulseInput> inputs,
+        int elapsedMs,
+        int remainingMs)
+    {
+        const int width = 32;
+        var totalDurationMs = pulseOffsetsMs.Count == 0
+            ? 1
+            : pulseOffsetsMs[^1] + hitWindowMs;
+        var markerPosition = Math.Clamp(
+            (int)Math.Round((width - 1) * elapsedMs / (double)Math.Max(1, totalDurationMs)),
+            0,
+            width - 1);
+        var hitCount = CountRhythmPulseHits(pulseOffsetsMs, hitWindowMs, inputs);
+        var currentPulse = pulseOffsetsMs.Count(offset => offset + hitWindowMs < elapsedMs) + 1;
+        currentPulse = Math.Clamp(currentPulse, 1, Math.Max(1, pulseOffsetsMs.Count));
+        var track = new StringBuilder(width);
+        for (var i = 0; i < width; i++)
+        {
+            if (i == markerPosition)
+            {
+                track.Append("[bold yellow]●[/]");
+                continue;
+            }
+
+            var isPulse = pulseOffsetsMs.Any(offset =>
+                Math.Abs(i - (int)Math.Round((width - 1) * offset / (double)Math.Max(1, totalDurationMs))) <= 0);
+            track.Append(isPulse ? "[cyan]│[/]" : "[dim]░[/]");
+        }
+
+        var misses = Math.Max(0, pulseOffsetsMs.Count - hitCount);
+        var remainingSeconds = remainingMs / 1000d;
+        return string.Join("\n", new[]
+        {
+            track.ToString(),
+            $"[white]Пульс: {currentPulse}/{pulseOffsetsMs.Count} | Попадания: {hitCount} | Промахи: {misses}[/]",
+            $"[dim]Окно: ±{hitWindowMs} мс | Допустимые промахи: {allowedMisses} | Осталось: {remainingSeconds:0.0} с[/]",
+            "[dim]Смотрите на вспышку дорожки; звук не обязателен для прохождения.[/]"
         });
     }
 
