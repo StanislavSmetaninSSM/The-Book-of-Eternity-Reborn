@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.CommandProtocol;
 using Spectre.Console;
 using Spectre.Console.Rendering;
 using BookOfEternityClient.Core;
@@ -14,13 +15,27 @@ public partial class ExplorerMode
 private async Task ShowNPCs()
     {
         var doc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_core.json");
-        if (doc == null) { ShowEmptyPanel(_loc.T("npcs"), "НПС не обнаружены"); return; }
+        if (doc == null)
+        {
+            if (await TryShowNpcJournalFallbackAsync())
+                return;
+
+            ShowEmptyPanel(_loc.T("npcs"), "НПС не обнаружены");
+            return;
+        }
 
         // Collect NPCs
         var npcs = CollectNpcListEntries(doc);
         var renameMap = BuildNpcRenameMap(doc);
 
-        if (npcs.Count == 0) { ShowEmptyPanel(_loc.T("npcs"), "НПС не обнаружены"); return; }
+        if (npcs.Count == 0)
+        {
+            if (await TryShowNpcJournalFallbackAsync())
+                return;
+
+            ShowEmptyPanel(_loc.T("npcs"), "НПС не обнаружены");
+            return;
+        }
 
         // Pre-load supplementary data
         var relDoc = await _stateManager.LoadGameStateFileAsync("game_state/npcs/npc_relationships.json");
@@ -76,6 +91,29 @@ private async Task ShowNPCs()
             await ShowNpcDetailPanel(npcs[selIdx], renameMap, relDoc, goalDoc, actDoc, npcInvDoc, npcEffDoc, npcSkillDoc,
                 debugMode, persDoc, jourDoc, npcInteractionDoc, maskDoc, memDoc, fateDoc, customDoc);
         }
+    }
+
+    private async Task<bool> TryShowNpcJournalFallbackAsync()
+    {
+        var fallbackEntries = await NpcJournalFallbackProjection.ReadAsync(_stateManager);
+        if (fallbackEntries.Count == 0)
+            return false;
+
+        ShowNpcJournalFallback(fallbackEntries);
+        return true;
+    }
+
+    private void ShowNpcJournalFallback(IReadOnlyList<NpcJournalFallbackEntry> fallbackEntries)
+    {
+        var rows = NpcJournalFallbackProjection.BuildConsoleRows(fallbackEntries);
+        var result = new ExplorerCommandResult
+        {
+            Command = "/npc",
+            State = CommandExecutionState.Completed,
+            Blocks = NpcJournalFallbackProjection.BuildBlocks(rows).ToList()
+        };
+
+        ExplorerCommandResultConsoleRenderer.Render(_console, result);
     }
 
 

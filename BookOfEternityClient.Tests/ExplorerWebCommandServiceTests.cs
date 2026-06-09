@@ -54,6 +54,49 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.Contains("Врата Памяти", text, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task ExecuteAsync_NpcWithRepositoryJournalFixtureAndNoCore_ShowsKnownJournalNotes()
+    {
+        var fixtureJournal = await File.ReadAllTextAsync(Path.Combine(
+            TestRepoPaths.BaseSessionRoot,
+            "game_state",
+            "npcs",
+            "npc_journals.json"));
+        await _fs.WriteFileAtomicAsync("game_state/npcs/npc_journals.json", fixtureJournal);
+
+        Assert.False(_fs.FileExists("game_state/npcs/npc_core.json"));
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/npc"));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Empty(result.Actions);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains("Торек Молотобой", text, StringComparison.Ordinal);
+        Assert.Contains("Впечатляющая решительность", text, StringComparison.Ordinal);
+        Assert.Contains("2 записи", text, StringComparison.Ordinal);
+        Assert.Contains("известные заметки", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Данные ещё не созданы", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("/npc_talk", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("/npc_trade", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("npc_journals.json", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("pending_turn_snapshot", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void ConsoleNpcInspectionSource_UsesJournalFallbackProjection()
+    {
+        var source = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "BookOfEternityClient",
+            "UI",
+            "ExplorerMode",
+            "ExplorerMode.Npcs.ListAndDetails.cs"));
+
+        Assert.Contains("NpcJournalFallbackProjection.ReadAsync(_stateManager", source, StringComparison.Ordinal);
+        Assert.Contains("ShowNpcJournalFallback", source, StringComparison.Ordinal);
+        Assert.Contains("BuildConsoleRows", source, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData("/help")]
     [InlineData("/status")]
