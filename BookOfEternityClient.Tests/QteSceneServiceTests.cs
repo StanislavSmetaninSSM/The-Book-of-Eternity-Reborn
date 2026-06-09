@@ -408,6 +408,106 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public void PrecisionChoiceGrade_ResolvesSuccessPartialAndFailFromSelectedChoiceIds()
+    {
+        var choices = PrecisionChoices();
+
+        Assert.Equal(
+            "success",
+            ResolvePrecisionChoiceGrade(choices, selectedChoiceId: "open_gate", elapsedMs: 1200, timeoutMs: 6000));
+        Assert.Equal(
+            "partial",
+            ResolvePrecisionChoiceGrade(choices, selectedChoiceId: "narrow_door", elapsedMs: 2000, timeoutMs: 6000));
+        Assert.Equal(
+            "fail",
+            ResolvePrecisionChoiceGrade(choices, selectedChoiceId: "dark_cellar", elapsedMs: 2000, timeoutMs: 6000));
+    }
+
+    [Fact]
+    public void PrecisionChoiceGrade_TimeoutResolvesConfiguredGradeOrDefaultFail()
+    {
+        var choices = PrecisionChoices();
+
+        Assert.Equal(
+            "partial",
+            ResolvePrecisionChoiceGrade(
+                choices,
+                selectedChoiceId: null,
+                elapsedMs: 6000,
+                timeoutMs: 6000,
+                timeoutGrade: "partial"));
+        Assert.Equal(
+            "fail",
+            ResolvePrecisionChoiceGrade(
+                choices,
+                selectedChoiceId: null,
+                elapsedMs: 6000,
+                timeoutMs: 6000));
+    }
+
+    [Fact]
+    public void PrecisionChoiceGrade_EscapeCancelsAsFail()
+    {
+        Assert.Equal(
+            "fail",
+            ResolvePrecisionChoiceGrade(
+                PrecisionChoices(),
+                selectedChoiceId: "open_gate",
+                elapsedMs: 1200,
+                timeoutMs: 6000,
+                canceled: true));
+    }
+
+    [Fact]
+    public void PrecisionChoiceGrade_UnknownChoiceResolvesAsFail()
+    {
+        Assert.Equal(
+            "fail",
+            ResolvePrecisionChoiceGrade(
+                PrecisionChoices(),
+                selectedChoiceId: "missing_choice",
+                elapsedMs: 1200,
+                timeoutMs: 6000));
+    }
+
+    [Fact]
+    public void PrecisionChoiceEffectiveRequirement_HigherStatDoesNotMakeChoiceHarder()
+    {
+        var lowStat = ComputePrecisionChoiceEffectiveRequirement(
+            timeoutMs: 6000,
+            baseDifficulty: 3,
+            statTier: -2,
+            decoyHintCount: 3);
+        var highStat = ComputePrecisionChoiceEffectiveRequirement(
+            timeoutMs: 6000,
+            baseDifficulty: 3,
+            statTier: 3,
+            decoyHintCount: 3);
+
+        Assert.True(highStat.TimeoutMs >= lowStat.TimeoutMs);
+        Assert.True(highStat.RevealedDecoyHintCount >= lowStat.RevealedDecoyHintCount);
+    }
+
+    [Fact]
+    public void PrecisionChoiceEffectiveRequirement_HigherDifficultyDoesNotMakeChoiceEasier()
+    {
+        var easyDifficulty = ComputePrecisionChoiceEffectiveRequirement(
+            timeoutMs: 6000,
+            baseDifficulty: 1,
+            statTier: 0,
+            decoyHintCount: 3);
+        var hardDifficulty = ComputePrecisionChoiceEffectiveRequirement(
+            timeoutMs: 6000,
+            baseDifficulty: 5,
+            statTier: 0,
+            decoyHintCount: 3);
+
+        Assert.True(hardDifficulty.TimeoutMs <= easyDifficulty.TimeoutMs);
+        Assert.True(hardDifficulty.RevealedDecoyHintCount <= easyDifficulty.RevealedDecoyHintCount);
+        Assert.True(hardDifficulty.TimeoutMs >= 3000);
+    }
+
+    [Fact]
     public async Task EnsureRuntimeStateHealthyAsync_DeletesInvalidJsonRuntimeFile()
     {
         await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, "{ invalid json");
@@ -1141,6 +1241,39 @@ public sealed class QteSceneServiceTests : IDisposable
             allowedMisses,
             baseDifficulty,
             statTier);
+
+    private static QteSceneService.PrecisionChoiceChoice[] PrecisionChoices() =>
+    [
+        new("open_gate", "success"),
+        new("narrow_door", "partial"),
+        new("dark_cellar", "fail")
+    ];
+
+    private static string ResolvePrecisionChoiceGrade(
+        IReadOnlyList<QteSceneService.PrecisionChoiceChoice> choices,
+        string? selectedChoiceId,
+        int elapsedMs,
+        int timeoutMs,
+        string? timeoutGrade = null,
+        bool canceled = false) =>
+        QteSceneService.ResolvePrecisionChoiceGrade(
+            choices,
+            selectedChoiceId,
+            elapsedMs,
+            timeoutMs,
+            timeoutGrade,
+            canceled);
+
+    private static QteSceneService.PrecisionChoiceEffectiveRequirement ComputePrecisionChoiceEffectiveRequirement(
+        int timeoutMs,
+        int baseDifficulty,
+        int statTier,
+        int decoyHintCount) =>
+        QteSceneService.ComputePrecisionChoiceEffectiveRequirement(
+            timeoutMs,
+            baseDifficulty,
+            statTier,
+            decoyHintCount);
 
     private static QteSceneService.RhythmPulseInput RhythmInput(
         int offsetMs,

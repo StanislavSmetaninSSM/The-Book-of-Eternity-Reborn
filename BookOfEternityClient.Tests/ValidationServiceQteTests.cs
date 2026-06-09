@@ -155,6 +155,19 @@ public sealed class ValidationServiceQteTests : IDisposable
             issue.Code?.StartsWith("qte_rhythm_pulse_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnQteOfferAsync_AcceptsValidPrecisionChoiceConfig()
+    {
+        await WritePrecisionChoiceOfferAsync();
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "qte_invalid_check_type", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("qte_precision_choice_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     [Theory]
     [InlineData("emptyKeys", "qte_mash_input_keys_empty")]
     [InlineData("unsupportedKey", "qte_mash_input_key_invalid")]
@@ -219,6 +232,41 @@ public sealed class ValidationServiceQteTests : IDisposable
         string expectedCode)
     {
         await WriteRhythmPulseOfferAsync(mutation);
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("missingConfig", "qte_precision_choice_config_missing")]
+    [InlineData("missingChoices", "qte_precision_choice_choices_missing")]
+    [InlineData("singleChoice", "qte_precision_choice_choices_out_of_range")]
+    [InlineData("tooManyChoices", "qte_precision_choice_choices_out_of_range")]
+    [InlineData("nonObjectChoice", "qte_precision_choice_choice_invalid")]
+    [InlineData("missingChoiceId", "qte_precision_choice_choice_id_missing")]
+    [InlineData("duplicateChoiceId", "qte_precision_choice_choice_id_duplicate")]
+    [InlineData("missingChoiceLabel", "qte_precision_choice_choice_label_missing")]
+    [InlineData("invalidChoiceGrade", "qte_precision_choice_choice_grade_invalid")]
+    [InlineData("missingCorrectChoiceId", "qte_precision_choice_correct_choice_missing")]
+    [InlineData("unknownCorrectChoiceId", "qte_precision_choice_correct_choice_unknown")]
+    [InlineData("correctChoiceNotSuccess", "qte_precision_choice_correct_choice_not_success")]
+    [InlineData("missingTimeout", "qte_precision_choice_timeout_missing")]
+    [InlineData("stringTimeout", "qte_precision_choice_timeout_invalid")]
+    [InlineData("tooShortTimeout", "qte_precision_choice_timeout_out_of_range")]
+    [InlineData("tooLongTimeout", "qte_precision_choice_timeout_out_of_range")]
+    [InlineData("timeoutSuccess", "qte_precision_choice_timeout_grade_invalid")]
+    [InlineData("timeoutUnknown", "qte_precision_choice_timeout_grade_invalid")]
+    [InlineData("nonArrayDecoyHints", "qte_precision_choice_decoy_hints_invalid")]
+    [InlineData("unknownDecoyHint", "qte_precision_choice_decoy_hint_unknown_choice")]
+    [InlineData("successDecoyHint", "qte_precision_choice_decoy_hint_success_choice")]
+    [InlineData("emptyDecoyHint", "qte_precision_choice_decoy_hint_invalid")]
+    public async Task ValidateAcceptedTurnQteOfferAsync_RejectsMalformedPrecisionChoiceConfig(
+        string mutation,
+        string expectedCode)
+    {
+        await WritePrecisionChoiceOfferAsync(mutation);
 
         var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
 
@@ -586,6 +634,208 @@ public sealed class ValidationServiceQteTests : IDisposable
                 break;
             case "malformedPatternVariation":
                 config["patternVariation"] = new JsonObject { ["mode"] = "steady" };
+                break;
+        }
+
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, offer.ToJsonString());
+    }
+
+    private async Task WritePrecisionChoiceOfferAsync(string? mutation = null)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+
+        var offer = JsonNode.Parse("""
+        {
+          "qteId": "qte_precision_choice_test",
+          "title": "Погоня у складов",
+          "offerText": "Нужно выбрать проход, пока преследователи сужают кольцо.",
+          "introNarrative": "За спиной лязгают цепи, впереди три тёмных переулка.",
+          "startChapterId": "warehouse_chase",
+          "chapters": [
+            {
+              "chapterId": "warehouse_chase",
+              "title": "Три прохода",
+              "narrative": "Один путь ведёт к открытой воде, остальные заводят в ловушку.",
+              "actions": [
+                {
+                  "actionId": "choose_alley",
+                  "label": "Выбрать проход",
+                  "check": {
+                    "type": "PrecisionChoice",
+                    "baseDifficulty": 3,
+                    "primaryCharacteristic": "perception",
+                    "config": {
+                      "timeoutMs": 6000,
+                      "timeoutGrade": "fail",
+                      "correctChoiceId": "salt_wind",
+                      "choices": [
+                        {
+                          "id": "salt_wind",
+                          "label": "Проход, откуда тянет солью и ветром",
+                          "description": "Сквозняк указывает на открытую набережную.",
+                          "grade": "success",
+                          "hint": "Пыль уходит внутрь прохода."
+                        },
+                        {
+                          "id": "red_lantern",
+                          "label": "Арка под красным фонарём",
+                          "description": "Свет обещает укрытие, но двор слишком тихий.",
+                          "grade": "partial",
+                          "hint": "Фонарь отвлекает преследователей, но двор узкий."
+                        },
+                        {
+                          "id": "dry_well",
+                          "label": "Лестница к сухому колодцу",
+                          "grade": "fail"
+                        }
+                      ],
+                      "decoyHints": [
+                        {
+                          "choiceId": "red_lantern",
+                          "hint": "Фонарь выглядит безопасным, но тень за ним не движется."
+                        }
+                      ]
+                    }
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "escape_clean" },
+                    "partial": { "terminalOutcomeId": "escape_scraped" },
+                    "fail": { "terminalOutcomeId": "caught" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "escape_clean",
+              "title": "Чистый отрыв",
+              "finalNarrative": "Солёный ветер выводит героя к воде.",
+              "gmSummary": "Игрок выбрал правильный PrecisionChoice проход.",
+              "responseFragment": {
+                "response": "Вы отрываетесь от преследователей.",
+                "experienceGained": 40
+              }
+            },
+            {
+              "outcomeId": "escape_scraped",
+              "title": "Узкий двор",
+              "finalNarrative": "Герой теряет время, но всё же перелезает через низкую стену.",
+              "gmSummary": "Игрок получил частичный PrecisionChoice исход.",
+              "responseFragment": {
+                "response": "Вы уходите с царапинами и потерей темпа.",
+                "experienceGained": 10
+              }
+            },
+            {
+              "outcomeId": "caught",
+              "title": "Кольцо сомкнулось",
+              "finalNarrative": "Погоня загоняет героя в тупик.",
+              "gmSummary": "Игрок провалил PrecisionChoice выбор.",
+              "responseFragment": {
+                "response": "Вы попадаете в засаду.",
+                "currentPoiseChange": -10
+              }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var check = offer["chapters"]![0]!["actions"]![0]!["check"]!.AsObject();
+        var config = check["config"]!.AsObject();
+        var choices = config["choices"]!.AsArray();
+        switch (mutation)
+        {
+            case "missingConfig":
+                check.Remove("config");
+                break;
+            case "missingChoices":
+                config.Remove("choices");
+                break;
+            case "singleChoice":
+                config["choices"] = new JsonArray(choices[0]!.DeepClone());
+                break;
+            case "tooManyChoices":
+                config["choices"] = new JsonArray(
+                    choices[0]!.DeepClone(),
+                    choices[1]!.DeepClone(),
+                    choices[2]!.DeepClone(),
+                    JsonNode.Parse("""{ "id": "c4", "label": "Вариант 4", "grade": "fail" }"""),
+                    JsonNode.Parse("""{ "id": "c5", "label": "Вариант 5", "grade": "fail" }"""),
+                    JsonNode.Parse("""{ "id": "c6", "label": "Вариант 6", "grade": "fail" }"""),
+                    JsonNode.Parse("""{ "id": "c7", "label": "Вариант 7", "grade": "fail" }"""),
+                    JsonNode.Parse("""{ "id": "c8", "label": "Вариант 8", "grade": "fail" }"""),
+                    JsonNode.Parse("""{ "id": "c9", "label": "Вариант 9", "grade": "fail" }"""));
+                break;
+            case "nonObjectChoice":
+                choices[1] = "red_lantern";
+                break;
+            case "missingChoiceId":
+                choices[1]!.AsObject().Remove("id");
+                break;
+            case "duplicateChoiceId":
+                choices[1]!["id"] = "salt_wind";
+                break;
+            case "missingChoiceLabel":
+                choices[1]!.AsObject().Remove("label");
+                break;
+            case "invalidChoiceGrade":
+                choices[1]!["grade"] = "near";
+                break;
+            case "missingCorrectChoiceId":
+                config.Remove("correctChoiceId");
+                break;
+            case "unknownCorrectChoiceId":
+                config["correctChoiceId"] = "missing_path";
+                break;
+            case "correctChoiceNotSuccess":
+                config["correctChoiceId"] = "red_lantern";
+                break;
+            case "missingTimeout":
+                config.Remove("timeoutMs");
+                break;
+            case "stringTimeout":
+                config["timeoutMs"] = "soon";
+                break;
+            case "tooShortTimeout":
+                config["timeoutMs"] = 500;
+                break;
+            case "tooLongTimeout":
+                config["timeoutMs"] = 45000;
+                break;
+            case "timeoutSuccess":
+                config["timeoutGrade"] = "success";
+                break;
+            case "timeoutUnknown":
+                config["timeoutGrade"] = "near";
+                break;
+            case "nonArrayDecoyHints":
+                config["decoyHints"] = new JsonObject { ["red_lantern"] = "Ложная подсказка" };
+                break;
+            case "unknownDecoyHint":
+                config["decoyHints"] = new JsonArray(new JsonObject
+                {
+                    ["choiceId"] = "missing_path",
+                    ["hint"] = "Кажется безопасным."
+                });
+                break;
+            case "successDecoyHint":
+                config["decoyHints"] = new JsonArray(new JsonObject
+                {
+                    ["choiceId"] = "salt_wind",
+                    ["hint"] = "Правильный путь не должен быть decoyHint."
+                });
+                break;
+            case "emptyDecoyHint":
+                config["decoyHints"] = new JsonArray(new JsonObject
+                {
+                    ["choiceId"] = "red_lantern",
+                    ["hint"] = " "
+                });
                 break;
         }
 

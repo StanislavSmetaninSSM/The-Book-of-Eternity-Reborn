@@ -126,6 +126,7 @@
                     - `MashInput`
                     - `PatternMemory`
                     - `RhythmPulse`
+                    - `PrecisionChoice`
 
                     For `MashInput`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.keys`: non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
@@ -160,6 +161,21 @@
                     - Success resolves when missed pulses stay within tolerance; at least half of pulses hit resolves partial.
                     - Too few hits, timeout, or Escape/cancel resolves fail.
                     - Browser interactive RhythmPulse parity remains #918; in this issue the console client owns live RhythmPulse play, and browser surfaces must not claim live interactive support.
+
+                    For `PrecisionChoice`, `check.config` is MANDATORY and MUST contain:
+                    - `check.config.choices`: array of 2..8 choice objects.
+                    - Each choice MUST contain unique non-empty `id`, non-empty player-facing `label`, and `grade` exactly `success`, `partial`, or `fail`; optional `description` and `hint` are player-facing text.
+                    - `correctChoiceId`: id of the single choice whose `grade` is `success`.
+                    - `timeoutMs`: integer from 1000 to 30000.
+                    - Optional `timeoutGrade`: only `fail` or `partial`; never `success`.
+                    - Optional `decoyHints`: array of `{ "choiceId": "...", "hint": "..." }` objects, each referencing an existing non-success choice with non-empty hint text.
+                    - Console PrecisionChoice must show stable numbered choices, a visible remaining-time cue, and escaped labels/descriptions/hints without layout instability.
+                    - Higher `baseDifficulty` reduces effective timeout or hint clarity.
+                    - A higher relevant `primaryCharacteristic` tier must not make the same PrecisionChoice config harder.
+                    - Selecting a configured choice before timeout resolves to that choice grade.
+                    - Timeout resolves as fail by default and may resolve partial when `timeoutGrade` is `partial`.
+                    - Unknown choice ids and Escape/cancel resolve fail.
+                    - Browser interactive PrecisionChoice parity remains #918; in this issue the console client owns live PrecisionChoice play, and browser surfaces must not claim live interactive support or duplicate gameplay resolution.
 
                     Keyboard/layout rule:
                     - QTE reaction checks use physical QTE keys, not ordinary typed prose.

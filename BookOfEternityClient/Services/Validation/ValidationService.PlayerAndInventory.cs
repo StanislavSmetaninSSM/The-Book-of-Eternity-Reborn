@@ -563,7 +563,7 @@ public partial class ValidationService
                     }
                     var primaryCharacteristic = RequireString(check, $"{actionContext}.check", issues, "primaryCharacteristic");
                     if (!string.IsNullOrWhiteSpace(checkType) &&
-                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory" and not "RhythmPulse")
+                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory" and not "RhythmPulse" and not "PrecisionChoice")
                     {
                         issues.Add(new ValidationIssue(
                             $"{actionContext}.check.type",
@@ -571,7 +571,7 @@ public partial class ValidationService
                             "Неподдерживаемый QTE check type",
                             code: "qte_invalid_check_type",
                             section: "QTE",
-                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory | RhythmPulse",
+                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory | RhythmPulse | PrecisionChoice",
                             actual: checkType));
                     }
 
@@ -629,6 +629,10 @@ public partial class ValidationService
                     else if (string.Equals(checkType, "RhythmPulse", StringComparison.Ordinal))
                     {
                         ValidateRhythmPulseConfig(check, actionContext, issues);
+                    }
+                    else if (string.Equals(checkType, "PrecisionChoice", StringComparison.Ordinal))
+                    {
+                        ValidatePrecisionChoiceConfig(check, actionContext, issues);
                     }
 
                     if (!action.TryGetProperty("routing", out var routing))
@@ -1398,6 +1402,445 @@ public partial class ValidationService
                 expected: string.Join(" | ", QteSceneService.RhythmPulsePatternVariations),
                 actual: variation.ValueKind == JsonValueKind.String ? variation.GetString() : variation.ValueKind.ToString()));
         }
+    }
+
+    private static void ValidatePrecisionChoiceConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)
+    {
+        var configContext = $"{actionContext}.check.config";
+        if (!check.TryGetProperty("config", out var config) || config.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                configContext,
+                IssueSeverity.Error,
+                "PrecisionChoice требует check.config object",
+                code: "qte_precision_choice_config_missing",
+                section: "QTE",
+                expected: "config object with choices, correctChoiceId, timeoutMs, optional timeoutGrade and decoyHints",
+                actual: check.TryGetProperty("config", out var existingConfig) ? existingConfig.ValueKind.ToString() : "missing"));
+            return;
+        }
+
+        var choiceGradesById = ValidatePrecisionChoiceChoices(config, configContext, issues);
+        ValidatePrecisionChoiceCorrectChoice(config, configContext, choiceGradesById, issues);
+
+        if (choiceGradesById.Count > 0)
+        {
+            var successChoices = choiceGradesById
+                .Where(pair => string.Equals(pair.Value, "success", StringComparison.Ordinal))
+                .Select(pair => pair.Key)
+                .ToArray();
+            if (successChoices.Length != 1)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{configContext}.choices",
+                    IssueSeverity.Error,
+                    "PrecisionChoice должен иметь ровно один success choice",
+                    code: "qte_precision_choice_success_choice_count_invalid",
+                    section: "QTE",
+                    expected: "exactly one choice.grade = success",
+                    actual: successChoices.Length.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            if (successChoices.Length == choiceGradesById.Count)
+            {
+                issues.Add(new ValidationIssue(
+                    $"{configContext}.choices",
+                    IssueSeverity.Error,
+                    "PrecisionChoice должен содержать хотя бы один non-success вариант",
+                    code: "qte_precision_choice_missing_decoy_choice",
+                    section: "QTE",
+                    expected: "at least one partial or fail choice",
+                    actual: "all choices are success"));
+            }
+        }
+
+        ValidatePrecisionChoiceTimeout(config, configContext, issues);
+        ValidatePrecisionChoiceTimeoutGrade(config, configContext, issues);
+        ValidatePrecisionChoiceDecoyHints(config, configContext, choiceGradesById, issues);
+    }
+
+    private static Dictionary<string, string> ValidatePrecisionChoiceChoices(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues)
+    {
+        var choiceGradesById = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (!config.TryGetProperty("choices", out var choices))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.choices",
+                IssueSeverity.Error,
+                "PrecisionChoice требует choices array",
+                code: "qte_precision_choice_choices_missing",
+                section: "QTE",
+                expected: $"{QteSceneService.PrecisionChoiceMinChoices}..{QteSceneService.PrecisionChoiceMaxChoices} choice objects",
+                actual: "missing"));
+            return choiceGradesById;
+        }
+
+        if (choices.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.choices",
+                IssueSeverity.Error,
+                "PrecisionChoice choices должен быть массивом",
+                code: "qte_precision_choice_choices_invalid",
+                section: "QTE",
+                expected: "array of choice objects",
+                actual: choices.ValueKind.ToString()));
+            return choiceGradesById;
+        }
+
+        var choiceCount = choices.GetArrayLength();
+        if (choiceCount < QteSceneService.PrecisionChoiceMinChoices ||
+            choiceCount > QteSceneService.PrecisionChoiceMaxChoices)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.choices",
+                IssueSeverity.Error,
+                "PrecisionChoice choices должен быть в игровом диапазоне",
+                code: "qte_precision_choice_choices_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.PrecisionChoiceMinChoices}..{QteSceneService.PrecisionChoiceMaxChoices}",
+                actual: choiceCount.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var seenIds = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var choice in choices.EnumerateArray())
+        {
+            var choiceContext = $"{configContext}.choices[{index++}]";
+            if (choice.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    choiceContext,
+                    IssueSeverity.Error,
+                    "PrecisionChoice choice должен быть object",
+                    code: "qte_precision_choice_choice_invalid",
+                    section: "QTE",
+                    expected: "choice object",
+                    actual: choice.ValueKind.ToString()));
+                continue;
+            }
+
+            var id = ReadRequiredPrecisionChoiceString(
+                choice,
+                choiceContext,
+                issues,
+                "id",
+                "qte_precision_choice_choice_id_missing",
+                "PrecisionChoice choice требует id");
+            var idIsUnique = false;
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                idIsUnique = seenIds.Add(id);
+                if (!idIsUnique)
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{choiceContext}.id",
+                        IssueSeverity.Error,
+                        "PrecisionChoice choice id должен быть уникальным",
+                        code: "qte_precision_choice_choice_id_duplicate",
+                        section: "QTE",
+                        expected: "unique choice ids",
+                        actual: id));
+                }
+            }
+
+            ReadRequiredPrecisionChoiceString(
+                choice,
+                choiceContext,
+                issues,
+                "label",
+                "qte_precision_choice_choice_label_missing",
+                "PrecisionChoice choice требует label");
+
+            var grade = ReadRequiredPrecisionChoiceString(
+                choice,
+                choiceContext,
+                issues,
+                "grade",
+                "qte_precision_choice_choice_grade_invalid",
+                "PrecisionChoice choice требует grade");
+            if (!string.IsNullOrWhiteSpace(grade) && !AllowedQteChoiceGrades.Contains(grade))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{choiceContext}.grade",
+                    IssueSeverity.Error,
+                    "PrecisionChoice choice grade должен быть success | partial | fail",
+                    code: "qte_precision_choice_choice_grade_invalid",
+                    section: "QTE",
+                    expected: "success | partial | fail",
+                    actual: grade,
+                    repairHint: "Используй точное lowercase значение без лишних пробелов."));
+            }
+            else if (!string.IsNullOrWhiteSpace(id) && !string.IsNullOrWhiteSpace(grade) && idIsUnique)
+            {
+                choiceGradesById[id] = grade;
+            }
+        }
+
+        return choiceGradesById;
+    }
+
+    private static void ValidatePrecisionChoiceCorrectChoice(
+        JsonElement config,
+        string configContext,
+        IReadOnlyDictionary<string, string> choiceGradesById,
+        List<ValidationIssue> issues)
+    {
+        var correctChoiceId = ReadRequiredPrecisionChoiceString(
+            config,
+            configContext,
+            issues,
+            "correctChoiceId",
+            "qte_precision_choice_correct_choice_missing",
+            "PrecisionChoice требует correctChoiceId");
+        if (string.IsNullOrWhiteSpace(correctChoiceId))
+            return;
+
+        if (!choiceGradesById.TryGetValue(correctChoiceId, out var correctGrade))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.correctChoiceId",
+                IssueSeverity.Error,
+                "PrecisionChoice correctChoiceId должен ссылаться на существующий choice id",
+                code: "qte_precision_choice_correct_choice_unknown",
+                section: "QTE",
+                expected: "one configured choice id",
+                actual: correctChoiceId));
+            return;
+        }
+
+        if (!string.Equals(correctGrade, "success", StringComparison.Ordinal))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.correctChoiceId",
+                IssueSeverity.Error,
+                "PrecisionChoice correctChoiceId должен указывать на choice с grade success",
+                code: "qte_precision_choice_correct_choice_not_success",
+                section: "QTE",
+                expected: "choice.grade = success",
+                actual: correctGrade));
+        }
+    }
+
+    private static void ValidatePrecisionChoiceTimeout(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues)
+    {
+        var hasTimeout = TryReadRequiredPrecisionChoiceInteger(
+            config,
+            configContext,
+            issues,
+            "timeoutMs",
+            "qte_precision_choice_timeout_missing",
+            "qte_precision_choice_timeout_invalid",
+            out var timeoutMs);
+        if (hasTimeout &&
+            (timeoutMs < QteSceneService.PrecisionChoiceMinTimeoutMs ||
+             timeoutMs > QteSceneService.PrecisionChoiceMaxTimeoutMs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.timeoutMs",
+                IssueSeverity.Error,
+                "PrecisionChoice timeoutMs должен быть в игровом диапазоне",
+                code: "qte_precision_choice_timeout_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.PrecisionChoiceMinTimeoutMs}..{QteSceneService.PrecisionChoiceMaxTimeoutMs}",
+                actual: timeoutMs.ToString(CultureInfo.InvariantCulture),
+                repairHint: "Используй короткое, но читаемое окно выбора под таймером."));
+        }
+    }
+
+    private static void ValidatePrecisionChoiceTimeoutGrade(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues)
+    {
+        if (!config.TryGetProperty("timeoutGrade", out var timeoutGrade) ||
+            timeoutGrade.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (timeoutGrade.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(timeoutGrade.GetString()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.timeoutGrade",
+                IssueSeverity.Error,
+                "PrecisionChoice timeoutGrade должен быть fail или partial",
+                code: "qte_precision_choice_timeout_grade_invalid",
+                section: "QTE",
+                expected: "fail | partial",
+                actual: timeoutGrade.ValueKind.ToString()));
+            return;
+        }
+
+        var grade = timeoutGrade.GetString()!.Trim();
+        if (!string.Equals(grade, "fail", StringComparison.Ordinal) &&
+            !string.Equals(grade, "partial", StringComparison.Ordinal))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.timeoutGrade",
+                IssueSeverity.Error,
+                "PrecisionChoice timeoutGrade не может быть success и должен быть fail или partial",
+                code: "qte_precision_choice_timeout_grade_invalid",
+                section: "QTE",
+                expected: "fail | partial",
+                actual: grade));
+        }
+    }
+
+    private static void ValidatePrecisionChoiceDecoyHints(
+        JsonElement config,
+        string configContext,
+        IReadOnlyDictionary<string, string> choiceGradesById,
+        List<ValidationIssue> issues)
+    {
+        if (!config.TryGetProperty("decoyHints", out var decoyHints) ||
+            decoyHints.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (decoyHints.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.decoyHints",
+                IssueSeverity.Error,
+                "PrecisionChoice decoyHints должен быть array",
+                code: "qte_precision_choice_decoy_hints_invalid",
+                section: "QTE",
+                expected: "array of { choiceId, hint } objects",
+                actual: decoyHints.ValueKind.ToString()));
+            return;
+        }
+
+        var index = 0;
+        foreach (var decoyHint in decoyHints.EnumerateArray())
+        {
+            var hintContext = $"{configContext}.decoyHints[{index++}]";
+            if (decoyHint.ValueKind != JsonValueKind.Object)
+            {
+                issues.Add(new ValidationIssue(
+                    hintContext,
+                    IssueSeverity.Error,
+                    "PrecisionChoice decoyHint должен быть object",
+                    code: "qte_precision_choice_decoy_hint_invalid",
+                    section: "QTE",
+                    expected: "{ choiceId, hint } object",
+                    actual: decoyHint.ValueKind.ToString()));
+                continue;
+            }
+
+            var choiceId = ReadRequiredPrecisionChoiceString(
+                decoyHint,
+                hintContext,
+                issues,
+                "choiceId",
+                "qte_precision_choice_decoy_hint_invalid",
+                "PrecisionChoice decoyHint требует choiceId");
+            ReadRequiredPrecisionChoiceString(
+                decoyHint,
+                hintContext,
+                issues,
+                "hint",
+                "qte_precision_choice_decoy_hint_invalid",
+                "PrecisionChoice decoyHint требует непустой hint");
+
+            if (string.IsNullOrWhiteSpace(choiceId))
+                continue;
+
+            if (!choiceGradesById.TryGetValue(choiceId, out var choiceGrade))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{hintContext}.choiceId",
+                    IssueSeverity.Error,
+                    "PrecisionChoice decoyHint choiceId должен ссылаться на существующий choice",
+                    code: "qte_precision_choice_decoy_hint_unknown_choice",
+                    section: "QTE",
+                    expected: "configured non-success choice id",
+                    actual: choiceId));
+                continue;
+            }
+
+            if (string.Equals(choiceGrade, "success", StringComparison.Ordinal))
+            {
+                issues.Add(new ValidationIssue(
+                    $"{hintContext}.choiceId",
+                    IssueSeverity.Error,
+                    "PrecisionChoice decoyHint не должен ссылаться на success choice",
+                    code: "qte_precision_choice_decoy_hint_success_choice",
+                    section: "QTE",
+                    expected: "partial or fail choice id",
+                    actual: choiceId));
+            }
+        }
+    }
+
+    private static string? ReadRequiredPrecisionChoiceString(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues,
+        string propName,
+        string code,
+        string message)
+    {
+        if (!root.TryGetProperty(propName, out var node) ||
+            node.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(node.GetString()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{propName}",
+                IssueSeverity.Error,
+                message,
+                code: code,
+                section: "QTE",
+                expected: "non-empty string",
+                actual: root.TryGetProperty(propName, out var existingNode) ? existingNode.ValueKind.ToString() : "missing"));
+            return null;
+        }
+
+        return node.GetString()!.Trim();
+    }
+
+    private static bool TryReadRequiredPrecisionChoiceInteger(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        string propName,
+        string missingCode,
+        string invalidCode,
+        out int value)
+    {
+        value = 0;
+        if (!config.TryGetProperty(propName, out var node))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.{propName}",
+                IssueSeverity.Error,
+                $"PrecisionChoice требует {propName}",
+                code: missingCode,
+                section: "QTE",
+                expected: "integer",
+                actual: "missing"));
+            return false;
+        }
+
+        if (node.ValueKind == JsonValueKind.Number && node.TryGetInt32(out value))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{configContext}.{propName}",
+            IssueSeverity.Error,
+            $"PrecisionChoice {propName} должен быть целым числом",
+            code: invalidCode,
+            section: "QTE",
+            expected: "integer",
+            actual: node.ValueKind.ToString()));
+        return false;
     }
 
     private static void ValidatePatternMemoryAlphabet(JsonElement config, string configContext, List<ValidationIssue> issues)
