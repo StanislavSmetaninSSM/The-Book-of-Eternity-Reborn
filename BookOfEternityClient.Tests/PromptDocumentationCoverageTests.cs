@@ -272,6 +272,51 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void StealthNoiseQteContract_IsDocumentedForGmAndPlayers()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "StealthNoise",
+            "check.config.durationMs",
+            "startingNoise",
+            "dangerThreshold",
+            "noiseDriftPerSecond",
+            "recoveryPerInput",
+            "allowedOverThresholdMs",
+            "gradeThresholds",
+            "current noise",
+            "danger threshold",
+            "Browser interactive StealthNoise parity remains #918"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "\"type\": \"StealthNoise\"",
+            "\"durationMs\": 8000",
+            "\"startingNoise\": 18",
+            "\"dangerThreshold\": 70",
+            "\"noiseDriftPerSecond\": 9",
+            "\"recoveryPerInput\": 12",
+            "\"allowedOverThresholdMs\": 900",
+            "\"gradeThresholds\"",
+            "\"terminalOutcomeId\": \"silent_passage\"",
+            "\"terminalOutcomeId\": \"guard_stirs\"",
+            "\"terminalOutcomeId\": \"alarm_raised\""
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void QuestRewardAuthorityContract_IsDocumentedForGm()
     {
         var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");

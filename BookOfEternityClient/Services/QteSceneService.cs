@@ -42,6 +42,12 @@ public sealed class QteSceneService
     internal const int PrecisionChoiceMaxChoices = 8;
     internal const int PrecisionChoiceMinTimeoutMs = 1000;
     internal const int PrecisionChoiceMaxTimeoutMs = 30000;
+    internal const int StealthNoiseMinDurationMs = 1000;
+    internal const int StealthNoiseMaxDurationMs = 30000;
+    internal const int StealthNoiseMinMeterValue = 0;
+    internal const int StealthNoiseMaxMeterValue = 100;
+    internal const int StealthNoiseMinDangerThreshold = 1;
+    internal const int StealthNoiseMinPositiveValue = 1;
     internal static readonly IReadOnlyList<string> RhythmPulsePatternVariations =
     [
         "steady",
@@ -1061,6 +1067,7 @@ public sealed class QteSceneService
             "PatternMemory" => await RunPatternMemoryAsync(action),
             "RhythmPulse" => await RunRhythmPulseAsync(action.Check),
             "PrecisionChoice" => await RunPrecisionChoiceAsync(action.Check),
+            "StealthNoise" => await RunStealthNoiseAsync(action.Check),
             _ => QteGrade.Fail
         };
     }
@@ -1812,6 +1819,404 @@ public sealed class QteSceneService
 
     private static string NormalizePrecisionChoiceTimeoutGrade(string? timeoutGrade) =>
         string.Equals(timeoutGrade, "partial", StringComparison.Ordinal) ? "partial" : "fail";
+
+    private async Task<QteGrade> RunStealthNoiseAsync(QteCheck check)
+    {
+        if (!TryReadStealthNoiseConfig(
+                check.Config,
+                out var durationMs,
+                out var startingNoise,
+                out var dangerThreshold,
+                out var noiseDriftPerSecond,
+                out var recoveryPerInput,
+                out var allowedOverThresholdMs,
+                out var gradeThresholds,
+                out var recoveryKey,
+                out var recoveryLabel,
+                out var warningLabel))
+        {
+            return QteGrade.Fail;
+        }
+
+        var statTier = await ResolveStatTierAsync(check.PrimaryCharacteristic);
+        var effective = ComputeStealthNoiseEffectiveRequirement(
+            durationMs,
+            startingNoise,
+            dangerThreshold,
+            noiseDriftPerSecond,
+            recoveryPerInput,
+            allowedOverThresholdMs,
+            gradeThresholds,
+            check.BaseDifficulty,
+            statTier,
+            recoveryKey);
+        var inputs = new List<StealthNoiseInput>();
+        var started = DateTime.UtcNow;
+        var recoveryPrompt = string.IsNullOrWhiteSpace(recoveryLabel)
+            ? "снизить шум"
+            : recoveryLabel;
+
+        while (true)
+        {
+            var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
+            if (elapsedMs >= effective.DurationMs)
+                break;
+
+            while (TryReadImmediateKey(out var key))
+            {
+                if (key.Key == ConsoleKey.Escape)
+                    return QteGrade.Fail;
+
+                var token = QteKeyInput.NormalizeConsoleInput(key);
+                if (string.Equals(token, effective.RecoveryKey, StringComparison.Ordinal))
+                    inputs.Add(new StealthNoiseInput(elapsedMs, key));
+            }
+
+            var sample = SimulateStealthNoise(effective, inputs, elapsedMs);
+            if (sample.OverThresholdMs > effective.GradeThresholds.PartialMaxOverThresholdMs)
+                return QteGrade.Fail;
+
+            var remainingMs = Math.Max(0, effective.DurationMs - elapsedMs);
+            RenderMiniGamePanel(
+                "Тихий проход",
+                $"Нажимайте {QteKeyInput.FormatPromptLabel(effective.RecoveryKey)}, чтобы {recoveryPrompt}. Esc - безопасный отказ считается провалом.",
+                BuildStealthNoiseProgress(effective, inputs, elapsedMs, remainingMs, warningLabel));
+
+            await Task.Delay(20);
+        }
+
+        return ParseGrade(ResolveStealthNoiseGrade(effective, inputs));
+    }
+
+    internal sealed record StealthNoiseInput(int OffsetMs, ConsoleKeyInfo KeyInfo);
+
+    internal sealed record StealthNoiseGradeThresholds(
+        double SuccessMaxNoise,
+        int SuccessMaxOverThresholdMs,
+        double PartialMaxNoise,
+        int PartialMaxOverThresholdMs);
+
+    internal sealed record StealthNoiseEffectiveRequirement(
+        int DurationMs,
+        double StartingNoise,
+        double DangerThreshold,
+        double NoiseDriftPerSecond,
+        double RecoveryPerInput,
+        int AllowedOverThresholdMs,
+        StealthNoiseGradeThresholds GradeThresholds,
+        string RecoveryKey);
+
+    private sealed record StealthNoiseSample(double Noise, int OverThresholdMs);
+
+    internal static StealthNoiseEffectiveRequirement ComputeStealthNoiseEffectiveRequirement(
+        int durationMs,
+        double startingNoise,
+        double dangerThreshold,
+        double noiseDriftPerSecond,
+        double recoveryPerInput,
+        int allowedOverThresholdMs,
+        StealthNoiseGradeThresholds gradeThresholds,
+        int baseDifficulty,
+        int statTier,
+        string recoveryKey)
+    {
+        var effectiveDurationMs = Math.Clamp(durationMs, StealthNoiseMinDurationMs, StealthNoiseMaxDurationMs);
+        var difficultyOffset = Math.Clamp(baseDifficulty, 1, 5) - 3;
+        var effectiveDrift = Math.Clamp(
+            noiseDriftPerSecond + (difficultyOffset * 1.5d) - (statTier * 0.5d),
+            StealthNoiseMinPositiveValue,
+            StealthNoiseMaxMeterValue);
+        var effectiveRecovery = Math.Clamp(
+            recoveryPerInput + statTier - Math.Max(0, difficultyOffset),
+            StealthNoiseMinPositiveValue,
+            StealthNoiseMaxMeterValue);
+        var effectiveAllowedOverThresholdMs = Math.Clamp(
+            allowedOverThresholdMs - (difficultyOffset * 100) + (statTier * 100),
+            0,
+            effectiveDurationMs);
+
+        return new StealthNoiseEffectiveRequirement(
+            effectiveDurationMs,
+            ClampStealthNoiseMeter(startingNoise),
+            Math.Clamp(dangerThreshold, StealthNoiseMinDangerThreshold, StealthNoiseMaxMeterValue),
+            effectiveDrift,
+            effectiveRecovery,
+            effectiveAllowedOverThresholdMs,
+            gradeThresholds,
+            NormalizeStealthNoiseRecoveryKey(recoveryKey));
+    }
+
+    internal static string ResolveStealthNoiseGrade(
+        StealthNoiseEffectiveRequirement effective,
+        IEnumerable<StealthNoiseInput> inputs,
+        bool canceled = false)
+    {
+        var inputList = inputs.ToArray();
+        if (canceled || inputList.Any(input => input.KeyInfo.Key == ConsoleKey.Escape))
+            return "fail";
+
+        var sample = SimulateStealthNoise(effective, inputList, effective.DurationMs);
+        var thresholds = effective.GradeThresholds;
+        var successOverThresholdLimit = Math.Min(
+            effective.AllowedOverThresholdMs,
+            thresholds.SuccessMaxOverThresholdMs);
+        if (sample.Noise <= thresholds.SuccessMaxNoise &&
+            sample.OverThresholdMs <= successOverThresholdLimit)
+        {
+            return "success";
+        }
+
+        var partialOverThresholdLimit = Math.Min(
+            effective.AllowedOverThresholdMs,
+            thresholds.PartialMaxOverThresholdMs);
+        return sample.Noise <= thresholds.PartialMaxNoise &&
+               sample.OverThresholdMs <= partialOverThresholdLimit
+            ? "partial"
+            : "fail";
+    }
+
+    internal static string ResolveStealthNoiseGrade(
+        JsonObject? config,
+        int baseDifficulty,
+        int statTier,
+        IEnumerable<StealthNoiseInput> inputs,
+        bool canceled = false)
+    {
+        if (!TryReadStealthNoiseConfig(
+                config,
+                out var durationMs,
+                out var startingNoise,
+                out var dangerThreshold,
+                out var noiseDriftPerSecond,
+                out var recoveryPerInput,
+                out var allowedOverThresholdMs,
+                out var gradeThresholds,
+                out var recoveryKey,
+                out _,
+                out _))
+        {
+            return "fail";
+        }
+
+        var effective = ComputeStealthNoiseEffectiveRequirement(
+            durationMs,
+            startingNoise,
+            dangerThreshold,
+            noiseDriftPerSecond,
+            recoveryPerInput,
+            allowedOverThresholdMs,
+            gradeThresholds,
+            baseDifficulty,
+            statTier,
+            recoveryKey);
+        return ResolveStealthNoiseGrade(effective, inputs, canceled);
+    }
+
+    private static StealthNoiseSample SimulateStealthNoise(
+        StealthNoiseEffectiveRequirement effective,
+        IEnumerable<StealthNoiseInput> inputs,
+        int elapsedMs)
+    {
+        var endMs = Math.Clamp(elapsedMs, 0, effective.DurationMs);
+        var noise = ClampStealthNoiseMeter(effective.StartingNoise);
+        var currentOffsetMs = 0;
+        var overThresholdMs = 0d;
+        var recoveryInputs = inputs
+            .Where(input => input.OffsetMs >= 0 && input.OffsetMs <= endMs)
+            .OrderBy(input => input.OffsetMs)
+            .ToArray();
+
+        foreach (var input in recoveryInputs)
+        {
+            AdvanceStealthNoise(
+                effective,
+                input.OffsetMs - currentOffsetMs,
+                ref noise,
+                ref overThresholdMs);
+            currentOffsetMs = input.OffsetMs;
+
+            var token = QteKeyInput.NormalizeConsoleInput(input.KeyInfo);
+            if (string.Equals(token, effective.RecoveryKey, StringComparison.Ordinal))
+                noise = ClampStealthNoiseMeter(noise - effective.RecoveryPerInput);
+        }
+
+        AdvanceStealthNoise(effective, endMs - currentOffsetMs, ref noise, ref overThresholdMs);
+        return new StealthNoiseSample(noise, (int)Math.Round(overThresholdMs, MidpointRounding.AwayFromZero));
+    }
+
+    private static void AdvanceStealthNoise(
+        StealthNoiseEffectiveRequirement effective,
+        int deltaMs,
+        ref double noise,
+        ref double overThresholdMs)
+    {
+        if (deltaMs <= 0)
+            return;
+
+        overThresholdMs += CalculateStealthNoiseOverThresholdMs(
+            noise,
+            effective.NoiseDriftPerSecond,
+            effective.DangerThreshold,
+            deltaMs);
+        noise = ClampStealthNoiseMeter(noise + (effective.NoiseDriftPerSecond * deltaMs / 1000d));
+    }
+
+    private static double CalculateStealthNoiseOverThresholdMs(
+        double startingNoise,
+        double driftPerSecond,
+        double dangerThreshold,
+        int deltaMs)
+    {
+        if (startingNoise >= dangerThreshold)
+            return deltaMs;
+
+        if (driftPerSecond <= 0)
+            return 0;
+
+        var timeToThresholdMs = (dangerThreshold - startingNoise) / driftPerSecond * 1000d;
+        return timeToThresholdMs >= deltaMs ? 0 : deltaMs - timeToThresholdMs;
+    }
+
+    private static bool TryReadStealthNoiseConfig(
+        JsonObject? config,
+        out int durationMs,
+        out double startingNoise,
+        out double dangerThreshold,
+        out double noiseDriftPerSecond,
+        out double recoveryPerInput,
+        out int allowedOverThresholdMs,
+        out StealthNoiseGradeThresholds gradeThresholds,
+        out string recoveryKey,
+        out string? recoveryLabel,
+        out string? warningLabel)
+    {
+        durationMs = 0;
+        startingNoise = 0;
+        dangerThreshold = 0;
+        noiseDriftPerSecond = 0;
+        recoveryPerInput = 0;
+        allowedOverThresholdMs = 0;
+        gradeThresholds = new StealthNoiseGradeThresholds(0, 0, 0, 0);
+        recoveryKey = "space";
+        recoveryLabel = null;
+        warningLabel = null;
+
+        if (config == null ||
+            !TryGetStealthNoiseInt(config, "durationMs", out durationMs) ||
+            !TryGetStealthNoiseDouble(config, "startingNoise", out startingNoise) ||
+            !TryGetStealthNoiseDouble(config, "dangerThreshold", out dangerThreshold) ||
+            !TryGetStealthNoiseDouble(config, "noiseDriftPerSecond", out noiseDriftPerSecond) ||
+            !TryGetStealthNoiseDouble(config, "recoveryPerInput", out recoveryPerInput) ||
+            !TryGetStealthNoiseInt(config, "allowedOverThresholdMs", out allowedOverThresholdMs) ||
+            config["gradeThresholds"] is not JsonObject thresholds ||
+            !TryGetStealthNoiseDouble(thresholds, "successMaxNoise", out var successMaxNoise) ||
+            !TryGetStealthNoiseInt(thresholds, "successMaxOverThresholdMs", out var successMaxOverThresholdMs) ||
+            !TryGetStealthNoiseDouble(thresholds, "partialMaxNoise", out var partialMaxNoise) ||
+            !TryGetStealthNoiseInt(thresholds, "partialMaxOverThresholdMs", out var partialMaxOverThresholdMs))
+        {
+            return false;
+        }
+
+        if (durationMs < StealthNoiseMinDurationMs ||
+            durationMs > StealthNoiseMaxDurationMs ||
+            startingNoise < StealthNoiseMinMeterValue ||
+            startingNoise > StealthNoiseMaxMeterValue ||
+            dangerThreshold < StealthNoiseMinDangerThreshold ||
+            dangerThreshold > StealthNoiseMaxMeterValue ||
+            startingNoise > dangerThreshold ||
+            noiseDriftPerSecond < StealthNoiseMinPositiveValue ||
+            noiseDriftPerSecond > StealthNoiseMaxMeterValue ||
+            recoveryPerInput < StealthNoiseMinPositiveValue ||
+            recoveryPerInput > StealthNoiseMaxMeterValue ||
+            allowedOverThresholdMs < 0 ||
+            allowedOverThresholdMs > durationMs ||
+            successMaxNoise < StealthNoiseMinMeterValue ||
+            successMaxNoise > dangerThreshold ||
+            successMaxOverThresholdMs < 0 ||
+            successMaxOverThresholdMs > allowedOverThresholdMs ||
+            partialMaxNoise < successMaxNoise ||
+            partialMaxNoise > StealthNoiseMaxMeterValue ||
+            partialMaxOverThresholdMs < successMaxOverThresholdMs ||
+            partialMaxOverThresholdMs > durationMs)
+        {
+            return false;
+        }
+
+        if (config["recoveryKey"] is JsonValue recoveryKeyNode)
+        {
+            if (!recoveryKeyNode.TryGetValue<string>(out var recoveryKeyValue) ||
+                !QteKeyInput.IsSupportedToken(recoveryKeyValue.Trim().ToLowerInvariant()))
+            {
+                return false;
+            }
+
+            recoveryKey = recoveryKeyValue.Trim().ToLowerInvariant();
+        }
+        else if (config["recoveryKey"] is not null)
+        {
+            return false;
+        }
+
+        if (!TryReadStealthNoiseOptionalText(config, "recoveryLabel", out recoveryLabel) ||
+            !TryReadStealthNoiseOptionalText(config, "warningLabel", out warningLabel))
+        {
+            return false;
+        }
+
+        gradeThresholds = new StealthNoiseGradeThresholds(
+            successMaxNoise,
+            successMaxOverThresholdMs,
+            partialMaxNoise,
+            partialMaxOverThresholdMs);
+        return true;
+    }
+
+    private static bool TryGetStealthNoiseInt(JsonObject root, string propertyName, out int value)
+    {
+        value = 0;
+        return root[propertyName] is JsonValue node && node.TryGetValue<int>(out value);
+    }
+
+    private static bool TryGetStealthNoiseDouble(JsonObject root, string propertyName, out double value)
+    {
+        value = 0;
+        if (root[propertyName] is not JsonValue node)
+            return false;
+
+        if (node.TryGetValue<double>(out value))
+            return true;
+        if (node.TryGetValue<int>(out var intValue))
+        {
+            value = intValue;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryReadStealthNoiseOptionalText(JsonObject root, string propertyName, out string? value)
+    {
+        value = null;
+        if (root[propertyName] is null)
+            return true;
+        if (root[propertyName] is not JsonValue node ||
+            !node.TryGetValue<string>(out var text) ||
+            string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        value = text.Trim();
+        return true;
+    }
+
+    private static double ClampStealthNoiseMeter(double noise) =>
+        Math.Clamp(noise, StealthNoiseMinMeterValue, StealthNoiseMaxMeterValue);
+
+    private static string NormalizeStealthNoiseRecoveryKey(string recoveryKey) =>
+        QteKeyInput.IsSupportedToken(recoveryKey.Trim().ToLowerInvariant())
+            ? recoveryKey.Trim().ToLowerInvariant()
+            : "space";
 
     private static int CountRhythmPulseHits(
         IReadOnlyList<int> pulseOffsetsMs,
@@ -2569,6 +2974,57 @@ public sealed class QteSceneService
 
         lines.Add("");
         lines.Add($"[dim]Осталось: {remainingMs / 1000d:0.0} с | Введите 1-{choices.Count}[/]");
+        return string.Join("\n", lines);
+    }
+
+    private static string BuildStealthNoiseProgress(
+        StealthNoiseEffectiveRequirement effective,
+        IReadOnlyList<StealthNoiseInput> inputs,
+        int elapsedMs,
+        int remainingMs,
+        string? warningLabel)
+    {
+        const int width = 24;
+        var sample = SimulateStealthNoise(effective, inputs, elapsedMs);
+        var filled = Math.Clamp(
+            (int)Math.Round(width * sample.Noise / StealthNoiseMaxMeterValue),
+            0,
+            width);
+        var thresholdIndex = Math.Clamp(
+            (int)Math.Round((width - 1) * effective.DangerThreshold / StealthNoiseMaxMeterValue),
+            0,
+            width - 1);
+        var parts = new List<string>(width);
+        for (var index = 0; index < width; index++)
+        {
+            if (index == thresholdIndex)
+            {
+                parts.Add("[bold red]│[/]");
+                continue;
+            }
+
+            if (index < filled)
+                parts.Add(sample.Noise > effective.DangerThreshold ? "[red]█[/]" : "[cyan]█[/]");
+            else
+                parts.Add("[dim]░[/]");
+        }
+
+        var remainingSeconds = remainingMs / 1000d;
+        var lines = new List<string>
+        {
+            string.Join("", parts),
+            $"[white]Шум: {sample.Noise:0.0}/100 | Опасный порог: {effective.DangerThreshold:0.0}[/]",
+            $"[dim]Осталось: {remainingSeconds:0.0} с | Над порогом: {sample.OverThresholdMs}/{effective.AllowedOverThresholdMs} мс | Сбросов: {inputs.Count}[/]"
+        };
+
+        if (sample.Noise > effective.DangerThreshold)
+        {
+            var warning = string.IsNullOrWhiteSpace(warningLabel)
+                ? "Шум выше опасного порога."
+                : warningLabel;
+            lines.Add($"[bold red]{Markup.Escape(warning)}[/]");
+        }
+
         return string.Join("\n", lines);
     }
 

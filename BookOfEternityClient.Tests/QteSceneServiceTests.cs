@@ -508,6 +508,143 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public void StealthNoiseGrade_ResolvesSuccessPartialAndFailFromNoisePressure()
+    {
+        var effective = StealthNoiseRequirement();
+
+        Assert.Equal(
+            "success",
+            ResolveStealthNoiseGrade(
+                effective,
+                [
+                    StealthInput(1000),
+                    StealthInput(2000),
+                    StealthInput(3000),
+                    StealthInput(4000)
+                ]));
+        Assert.Equal(
+            "partial",
+            ResolveStealthNoiseGrade(
+                effective,
+                [
+                    StealthInput(1500),
+                    StealthInput(3000)
+                ]));
+        Assert.Equal(
+            "fail",
+            ResolveStealthNoiseGrade(effective, []));
+    }
+
+    [Fact]
+    public void StealthNoiseGrade_ExcessiveOverThresholdTimeResolvesFail()
+    {
+        var thresholds = new QteSceneService.StealthNoiseGradeThresholds(
+            SuccessMaxNoise: 68,
+            SuccessMaxOverThresholdMs: 0,
+            PartialMaxNoise: 95,
+            PartialMaxOverThresholdMs: 500);
+        var effective = new QteSceneService.StealthNoiseEffectiveRequirement(
+            DurationMs: 2000,
+            StartingNoise: 65,
+            DangerThreshold: 70,
+            NoiseDriftPerSecond: 10,
+            RecoveryPerInput: 1,
+            AllowedOverThresholdMs: 500,
+            GradeThresholds: thresholds,
+            RecoveryKey: "space");
+
+        Assert.Equal("fail", ResolveStealthNoiseGrade(effective, []));
+    }
+
+    [Fact]
+    public void StealthNoiseGrade_EscapeCancelsAsFail()
+    {
+        var inputs = new[]
+        {
+            StealthInput(1000),
+            StealthInput(1200, ConsoleKey.Escape),
+            StealthInput(2000)
+        };
+
+        Assert.Equal("fail", ResolveStealthNoiseGrade(StealthNoiseRequirement(), inputs));
+    }
+
+    [Fact]
+    public void StealthNoiseGrade_MalformedConfigResolvesAsFail()
+    {
+        Assert.Equal(
+            "fail",
+            QteSceneService.ResolveStealthNoiseGrade(
+                config: new JsonObject
+                {
+                    ["durationMs"] = 8000,
+                    ["startingNoise"] = 18,
+                    ["dangerThreshold"] = 70
+                },
+                baseDifficulty: 3,
+                statTier: 0,
+                inputs: []));
+    }
+
+    [Fact]
+    public void StealthNoiseEffectiveRequirement_HigherStatDoesNotMakeNoiseHarder()
+    {
+        var lowStat = ComputeStealthNoiseEffectiveRequirement(
+            durationMs: 8000,
+            startingNoise: 18,
+            dangerThreshold: 70,
+            noiseDriftPerSecond: 9,
+            recoveryPerInput: 12,
+            allowedOverThresholdMs: 900,
+            gradeThresholds: StealthNoiseThresholds(),
+            baseDifficulty: 3,
+            statTier: -2);
+        var highStat = ComputeStealthNoiseEffectiveRequirement(
+            durationMs: 8000,
+            startingNoise: 18,
+            dangerThreshold: 70,
+            noiseDriftPerSecond: 9,
+            recoveryPerInput: 12,
+            allowedOverThresholdMs: 900,
+            gradeThresholds: StealthNoiseThresholds(),
+            baseDifficulty: 3,
+            statTier: 3);
+
+        Assert.True(highStat.NoiseDriftPerSecond <= lowStat.NoiseDriftPerSecond);
+        Assert.True(highStat.RecoveryPerInput >= lowStat.RecoveryPerInput);
+        Assert.True(highStat.AllowedOverThresholdMs >= lowStat.AllowedOverThresholdMs);
+    }
+
+    [Fact]
+    public void StealthNoiseEffectiveRequirement_HigherDifficultyDoesNotMakeNoiseEasier()
+    {
+        var easyDifficulty = ComputeStealthNoiseEffectiveRequirement(
+            durationMs: 8000,
+            startingNoise: 18,
+            dangerThreshold: 70,
+            noiseDriftPerSecond: 9,
+            recoveryPerInput: 12,
+            allowedOverThresholdMs: 900,
+            gradeThresholds: StealthNoiseThresholds(),
+            baseDifficulty: 1,
+            statTier: 0);
+        var hardDifficulty = ComputeStealthNoiseEffectiveRequirement(
+            durationMs: 8000,
+            startingNoise: 18,
+            dangerThreshold: 70,
+            noiseDriftPerSecond: 9,
+            recoveryPerInput: 12,
+            allowedOverThresholdMs: 900,
+            gradeThresholds: StealthNoiseThresholds(),
+            baseDifficulty: 5,
+            statTier: 0);
+
+        Assert.True(hardDifficulty.NoiseDriftPerSecond >= easyDifficulty.NoiseDriftPerSecond);
+        Assert.True(hardDifficulty.RecoveryPerInput <= easyDifficulty.RecoveryPerInput);
+        Assert.True(hardDifficulty.AllowedOverThresholdMs <= easyDifficulty.AllowedOverThresholdMs);
+    }
+
+    [Fact]
     public async Task EnsureRuntimeStateHealthyAsync_DeletesInvalidJsonRuntimeFile()
     {
         await _fs.WriteFileAtomicAsync(QteSceneService.QteRuntimePath, "{ invalid json");
@@ -1279,6 +1416,57 @@ public sealed class QteSceneServiceTests : IDisposable
         int offsetMs,
         ConsoleKey key = ConsoleKey.Spacebar) =>
         new(offsetMs, Key(key));
+
+    private static QteSceneService.StealthNoiseGradeThresholds StealthNoiseThresholds() =>
+        new(
+            SuccessMaxNoise: 48,
+            SuccessMaxOverThresholdMs: 0,
+            PartialMaxNoise: 70,
+            PartialMaxOverThresholdMs: 900);
+
+    private static QteSceneService.StealthNoiseEffectiveRequirement StealthNoiseRequirement() =>
+        new(
+            DurationMs: 8000,
+            StartingNoise: 18,
+            DangerThreshold: 70,
+            NoiseDriftPerSecond: 9,
+            RecoveryPerInput: 12,
+            AllowedOverThresholdMs: 900,
+            GradeThresholds: StealthNoiseThresholds(),
+            RecoveryKey: "space");
+
+    private static QteSceneService.StealthNoiseInput StealthInput(
+        int offsetMs,
+        ConsoleKey key = ConsoleKey.Spacebar) =>
+        new(offsetMs, Key(key));
+
+    private static string ResolveStealthNoiseGrade(
+        QteSceneService.StealthNoiseEffectiveRequirement effective,
+        QteSceneService.StealthNoiseInput[] inputs,
+        bool canceled = false) =>
+        QteSceneService.ResolveStealthNoiseGrade(effective, inputs, canceled);
+
+    private static QteSceneService.StealthNoiseEffectiveRequirement ComputeStealthNoiseEffectiveRequirement(
+        int durationMs,
+        double startingNoise,
+        double dangerThreshold,
+        double noiseDriftPerSecond,
+        double recoveryPerInput,
+        int allowedOverThresholdMs,
+        QteSceneService.StealthNoiseGradeThresholds gradeThresholds,
+        int baseDifficulty,
+        int statTier) =>
+        QteSceneService.ComputeStealthNoiseEffectiveRequirement(
+            durationMs,
+            startingNoise,
+            dangerThreshold,
+            noiseDriftPerSecond,
+            recoveryPerInput,
+            allowedOverThresholdMs,
+            gradeThresholds,
+            baseDifficulty,
+            statTier,
+            recoveryKey: "space");
 
     private static void AssertStrictlyIncreasing(IReadOnlyList<int> values)
     {

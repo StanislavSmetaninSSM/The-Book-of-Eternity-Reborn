@@ -563,7 +563,7 @@ public partial class ValidationService
                     }
                     var primaryCharacteristic = RequireString(check, $"{actionContext}.check", issues, "primaryCharacteristic");
                     if (!string.IsNullOrWhiteSpace(checkType) &&
-                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory" and not "RhythmPulse" and not "PrecisionChoice")
+                        checkType is not "BranchChoice" and not "TimingBar" and not "PromptChain" and not "BalanceMeter" and not "ChargeRelease" and not "MashInput" and not "PatternMemory" and not "RhythmPulse" and not "PrecisionChoice" and not "StealthNoise")
                     {
                         issues.Add(new ValidationIssue(
                             $"{actionContext}.check.type",
@@ -571,7 +571,7 @@ public partial class ValidationService
                             "Неподдерживаемый QTE check type",
                             code: "qte_invalid_check_type",
                             section: "QTE",
-                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory | RhythmPulse | PrecisionChoice",
+                            expected: "BranchChoice | TimingBar | PromptChain | BalanceMeter | ChargeRelease | MashInput | PatternMemory | RhythmPulse | PrecisionChoice | StealthNoise",
                             actual: checkType));
                     }
 
@@ -633,6 +633,10 @@ public partial class ValidationService
                     else if (string.Equals(checkType, "PrecisionChoice", StringComparison.Ordinal))
                     {
                         ValidatePrecisionChoiceConfig(check, actionContext, issues);
+                    }
+                    else if (string.Equals(checkType, "StealthNoise", StringComparison.Ordinal))
+                    {
+                        ValidateStealthNoiseConfig(check, actionContext, issues);
                     }
 
                     if (!action.TryGetProperty("routing", out var routing))
@@ -1778,6 +1782,446 @@ public partial class ValidationService
                     actual: choiceId));
             }
         }
+    }
+
+    private static void ValidateStealthNoiseConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)
+    {
+        var configContext = $"{actionContext}.check.config";
+        if (!check.TryGetProperty("config", out var config) || config.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                configContext,
+                IssueSeverity.Error,
+                "StealthNoise требует check.config object",
+                code: "qte_stealth_noise_config_missing",
+                section: "QTE",
+                expected: "config object with durationMs, startingNoise, dangerThreshold, noiseDriftPerSecond, recoveryPerInput, allowedOverThresholdMs, gradeThresholds",
+                actual: check.TryGetProperty("config", out var existingConfig) ? existingConfig.ValueKind.ToString() : "missing"));
+            return;
+        }
+
+        var hasDuration = TryReadRequiredStealthNoiseInteger(
+            config,
+            configContext,
+            issues,
+            "durationMs",
+            "qte_stealth_noise_duration_missing",
+            "qte_stealth_noise_duration_invalid",
+            out var durationMs);
+        if (hasDuration &&
+            (durationMs < QteSceneService.StealthNoiseMinDurationMs ||
+             durationMs > QteSceneService.StealthNoiseMaxDurationMs))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.durationMs",
+                IssueSeverity.Error,
+                "StealthNoise durationMs должен быть в игровом диапазоне",
+                code: "qte_stealth_noise_duration_out_of_range",
+                section: "QTE",
+                expected: $"{QteSceneService.StealthNoiseMinDurationMs}..{QteSceneService.StealthNoiseMaxDurationMs}",
+                actual: durationMs.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasStartingNoise = TryReadRequiredStealthNoiseNumber(
+            config,
+            configContext,
+            issues,
+            "startingNoise",
+            "qte_stealth_noise_starting_noise_missing",
+            "qte_stealth_noise_starting_noise_invalid",
+            out var startingNoise);
+        if (hasStartingNoise &&
+            (startingNoise < QteSceneService.StealthNoiseMinMeterValue ||
+             startingNoise > QteSceneService.StealthNoiseMaxMeterValue))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.startingNoise",
+                IssueSeverity.Error,
+                "StealthNoise startingNoise должен быть в диапазоне 0..100",
+                code: "qte_stealth_noise_starting_noise_out_of_range",
+                section: "QTE",
+                expected: "0..100",
+                actual: startingNoise.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasDangerThreshold = TryReadRequiredStealthNoiseNumber(
+            config,
+            configContext,
+            issues,
+            "dangerThreshold",
+            "qte_stealth_noise_danger_threshold_missing",
+            "qte_stealth_noise_danger_threshold_invalid",
+            out var dangerThreshold);
+        if (hasDangerThreshold &&
+            (dangerThreshold < QteSceneService.StealthNoiseMinDangerThreshold ||
+             dangerThreshold > QteSceneService.StealthNoiseMaxMeterValue))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.dangerThreshold",
+                IssueSeverity.Error,
+                "StealthNoise dangerThreshold должен быть в диапазоне 1..100",
+                code: "qte_stealth_noise_danger_threshold_out_of_range",
+                section: "QTE",
+                expected: "1..100",
+                actual: dangerThreshold.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        if (hasStartingNoise && hasDangerThreshold && startingNoise > dangerThreshold)
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.startingNoise",
+                IssueSeverity.Error,
+                "StealthNoise startingNoise не может быть выше dangerThreshold",
+                code: "qte_stealth_noise_starting_noise_above_threshold",
+                section: "QTE",
+                expected: "<= dangerThreshold",
+                actual: startingNoise.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasNoiseDrift = TryReadRequiredStealthNoiseNumber(
+            config,
+            configContext,
+            issues,
+            "noiseDriftPerSecond",
+            "qte_stealth_noise_drift_missing",
+            "qte_stealth_noise_drift_invalid",
+            out var noiseDriftPerSecond);
+        if (hasNoiseDrift &&
+            (noiseDriftPerSecond < QteSceneService.StealthNoiseMinPositiveValue ||
+             noiseDriftPerSecond > QteSceneService.StealthNoiseMaxMeterValue))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.noiseDriftPerSecond",
+                IssueSeverity.Error,
+                "StealthNoise noiseDriftPerSecond должен быть положительным игровым значением",
+                code: "qte_stealth_noise_drift_out_of_range",
+                section: "QTE",
+                expected: "1..100",
+                actual: noiseDriftPerSecond.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasRecovery = TryReadRequiredStealthNoiseNumber(
+            config,
+            configContext,
+            issues,
+            "recoveryPerInput",
+            "qte_stealth_noise_recovery_missing",
+            "qte_stealth_noise_recovery_invalid",
+            out var recoveryPerInput);
+        if (hasRecovery &&
+            (recoveryPerInput < QteSceneService.StealthNoiseMinPositiveValue ||
+             recoveryPerInput > QteSceneService.StealthNoiseMaxMeterValue))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.recoveryPerInput",
+                IssueSeverity.Error,
+                "StealthNoise recoveryPerInput должен быть положительным игровым значением",
+                code: "qte_stealth_noise_recovery_out_of_range",
+                section: "QTE",
+                expected: "1..100",
+                actual: recoveryPerInput.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasAllowedOverThreshold = TryReadRequiredStealthNoiseInteger(
+            config,
+            configContext,
+            issues,
+            "allowedOverThresholdMs",
+            "qte_stealth_noise_allowed_over_threshold_missing",
+            "qte_stealth_noise_allowed_over_threshold_invalid",
+            out var allowedOverThresholdMs);
+        if (hasAllowedOverThreshold &&
+            (allowedOverThresholdMs < 0 || (hasDuration && allowedOverThresholdMs > durationMs)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.allowedOverThresholdMs",
+                IssueSeverity.Error,
+                "StealthNoise allowedOverThresholdMs должен быть в диапазоне 0..durationMs",
+                code: "qte_stealth_noise_allowed_over_threshold_out_of_range",
+                section: "QTE",
+                expected: hasDuration ? $"0..{durationMs}" : "0..durationMs",
+                actual: allowedOverThresholdMs.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        ValidateStealthNoiseGradeThresholds(
+            config,
+            configContext,
+            issues,
+            hasDuration,
+            durationMs,
+            hasDangerThreshold,
+            dangerThreshold,
+            hasAllowedOverThreshold,
+            allowedOverThresholdMs);
+        ValidateStealthNoiseRecoveryKey(config, configContext, issues);
+        ValidateStealthNoiseOptionalLabel(config, configContext, issues, "recoveryLabel", "qte_stealth_noise_recovery_label_invalid");
+        ValidateStealthNoiseOptionalLabel(config, configContext, issues, "warningLabel", "qte_stealth_noise_warning_label_invalid");
+    }
+
+    private static void ValidateStealthNoiseGradeThresholds(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        bool hasDuration,
+        int durationMs,
+        bool hasDangerThreshold,
+        double dangerThreshold,
+        bool hasAllowedOverThreshold,
+        int allowedOverThresholdMs)
+    {
+        var thresholdsContext = $"{configContext}.gradeThresholds";
+        if (!config.TryGetProperty("gradeThresholds", out var thresholds) ||
+            thresholds.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(new ValidationIssue(
+                thresholdsContext,
+                IssueSeverity.Error,
+                "StealthNoise требует gradeThresholds object",
+                code: "qte_stealth_noise_grade_thresholds_missing",
+                section: "QTE",
+                expected: "successMaxNoise, successMaxOverThresholdMs, partialMaxNoise, partialMaxOverThresholdMs",
+                actual: config.TryGetProperty("gradeThresholds", out var existing) ? existing.ValueKind.ToString() : "missing"));
+            return;
+        }
+
+        var hasSuccessMaxNoise = TryReadRequiredStealthNoiseNumber(
+            thresholds,
+            thresholdsContext,
+            issues,
+            "successMaxNoise",
+            "qte_stealth_noise_grade_success_max_noise_missing",
+            "qte_stealth_noise_grade_success_max_noise_invalid",
+            out var successMaxNoise);
+        if (hasSuccessMaxNoise &&
+            (successMaxNoise < QteSceneService.StealthNoiseMinMeterValue ||
+             (hasDangerThreshold && successMaxNoise > dangerThreshold)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.successMaxNoise",
+                IssueSeverity.Error,
+                "StealthNoise successMaxNoise должен быть в диапазоне 0..dangerThreshold",
+                code: "qte_stealth_noise_grade_success_max_noise_out_of_range",
+                section: "QTE",
+                expected: hasDangerThreshold ? $"0..{dangerThreshold.ToString(CultureInfo.InvariantCulture)}" : "0..dangerThreshold",
+                actual: successMaxNoise.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasSuccessMaxOverThreshold = TryReadRequiredStealthNoiseInteger(
+            thresholds,
+            thresholdsContext,
+            issues,
+            "successMaxOverThresholdMs",
+            "qte_stealth_noise_grade_success_max_over_threshold_missing",
+            "qte_stealth_noise_grade_success_max_over_threshold_invalid",
+            out var successMaxOverThresholdMs);
+        if (hasSuccessMaxOverThreshold &&
+            (successMaxOverThresholdMs < 0 ||
+             (hasAllowedOverThreshold && successMaxOverThresholdMs > allowedOverThresholdMs)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.successMaxOverThresholdMs",
+                IssueSeverity.Error,
+                "StealthNoise successMaxOverThresholdMs должен быть в диапазоне 0..allowedOverThresholdMs",
+                code: "qte_stealth_noise_grade_success_max_over_threshold_out_of_range",
+                section: "QTE",
+                expected: hasAllowedOverThreshold ? $"0..{allowedOverThresholdMs}" : "0..allowedOverThresholdMs",
+                actual: successMaxOverThresholdMs.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasPartialMaxNoise = TryReadRequiredStealthNoiseNumber(
+            thresholds,
+            thresholdsContext,
+            issues,
+            "partialMaxNoise",
+            "qte_stealth_noise_grade_partial_max_noise_missing",
+            "qte_stealth_noise_grade_partial_max_noise_invalid",
+            out var partialMaxNoise);
+        if (hasPartialMaxNoise &&
+            (partialMaxNoise < QteSceneService.StealthNoiseMinMeterValue ||
+             partialMaxNoise > QteSceneService.StealthNoiseMaxMeterValue))
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.partialMaxNoise",
+                IssueSeverity.Error,
+                "StealthNoise partialMaxNoise должен быть в диапазоне 0..100",
+                code: "qte_stealth_noise_grade_partial_max_noise_out_of_range",
+                section: "QTE",
+                expected: "0..100",
+                actual: partialMaxNoise.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        if (hasSuccessMaxNoise && hasPartialMaxNoise && partialMaxNoise < successMaxNoise)
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.partialMaxNoise",
+                IssueSeverity.Error,
+                "StealthNoise partialMaxNoise не может быть ниже successMaxNoise",
+                code: "qte_stealth_noise_grade_noise_not_monotonic",
+                section: "QTE",
+                expected: "partialMaxNoise >= successMaxNoise",
+                actual: partialMaxNoise.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        var hasPartialMaxOverThreshold = TryReadRequiredStealthNoiseInteger(
+            thresholds,
+            thresholdsContext,
+            issues,
+            "partialMaxOverThresholdMs",
+            "qte_stealth_noise_grade_partial_max_over_threshold_missing",
+            "qte_stealth_noise_grade_partial_max_over_threshold_invalid",
+            out var partialMaxOverThresholdMs);
+        if (hasPartialMaxOverThreshold &&
+            (partialMaxOverThresholdMs < 0 || (hasDuration && partialMaxOverThresholdMs > durationMs)))
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.partialMaxOverThresholdMs",
+                IssueSeverity.Error,
+                "StealthNoise partialMaxOverThresholdMs должен быть в диапазоне 0..durationMs",
+                code: "qte_stealth_noise_grade_partial_max_over_threshold_out_of_range",
+                section: "QTE",
+                expected: hasDuration ? $"0..{durationMs}" : "0..durationMs",
+                actual: partialMaxOverThresholdMs.ToString(CultureInfo.InvariantCulture)));
+        }
+
+        if (hasSuccessMaxOverThreshold &&
+            hasPartialMaxOverThreshold &&
+            partialMaxOverThresholdMs < successMaxOverThresholdMs)
+        {
+            issues.Add(new ValidationIssue(
+                $"{thresholdsContext}.partialMaxOverThresholdMs",
+                IssueSeverity.Error,
+                "StealthNoise partialMaxOverThresholdMs не может быть ниже successMaxOverThresholdMs",
+                code: "qte_stealth_noise_grade_over_threshold_not_monotonic",
+                section: "QTE",
+                expected: "partialMaxOverThresholdMs >= successMaxOverThresholdMs",
+                actual: partialMaxOverThresholdMs.ToString(CultureInfo.InvariantCulture)));
+        }
+    }
+
+    private static void ValidateStealthNoiseRecoveryKey(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues)
+    {
+        if (!config.TryGetProperty("recoveryKey", out var recoveryKey) ||
+            recoveryKey.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (recoveryKey.ValueKind != JsonValueKind.String ||
+            string.IsNullOrWhiteSpace(recoveryKey.GetString()) ||
+            !QteKeyInput.IsSupportedToken(recoveryKey.GetString()!.Trim().ToLowerInvariant()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.recoveryKey",
+                IssueSeverity.Error,
+                "StealthNoise recoveryKey должен быть canonical supported QTE key",
+                code: "qte_stealth_noise_recovery_key_invalid",
+                section: "QTE",
+                expected: string.Join(" | ", QteKeyInput.SupportedTokens),
+                actual: recoveryKey.ValueKind == JsonValueKind.String ? recoveryKey.GetString() : recoveryKey.ValueKind.ToString()));
+        }
+    }
+
+    private static void ValidateStealthNoiseOptionalLabel(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues,
+        string propertyName,
+        string code)
+    {
+        if (!config.TryGetProperty(propertyName, out var label) ||
+            label.ValueKind == JsonValueKind.Null)
+        {
+            return;
+        }
+
+        if (label.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(label.GetString()))
+        {
+            issues.Add(new ValidationIssue(
+                $"{configContext}.{propertyName}",
+                IssueSeverity.Error,
+                $"StealthNoise {propertyName} должен быть непустым player-facing text",
+                code: code,
+                section: "QTE",
+                expected: "non-empty string",
+                actual: label.ValueKind == JsonValueKind.String ? label.GetString() : label.ValueKind.ToString()));
+        }
+    }
+
+    private static bool TryReadRequiredStealthNoiseInteger(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues,
+        string propName,
+        string missingCode,
+        string invalidCode,
+        out int value)
+    {
+        value = 0;
+        if (!root.TryGetProperty(propName, out var node))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{propName}",
+                IssueSeverity.Error,
+                $"StealthNoise требует {propName}",
+                code: missingCode,
+                section: "QTE",
+                expected: "integer",
+                actual: "missing"));
+            return false;
+        }
+
+        if (node.ValueKind == JsonValueKind.Number && node.TryGetInt32(out value))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{context}.{propName}",
+            IssueSeverity.Error,
+            $"StealthNoise {propName} должен быть целым числом",
+            code: invalidCode,
+            section: "QTE",
+            expected: "integer",
+            actual: node.ValueKind.ToString()));
+        return false;
+    }
+
+    private static bool TryReadRequiredStealthNoiseNumber(
+        JsonElement root,
+        string context,
+        List<ValidationIssue> issues,
+        string propName,
+        string missingCode,
+        string invalidCode,
+        out double value)
+    {
+        value = 0;
+        if (!root.TryGetProperty(propName, out var node))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.{propName}",
+                IssueSeverity.Error,
+                $"StealthNoise требует {propName}",
+                code: missingCode,
+                section: "QTE",
+                expected: "number",
+                actual: "missing"));
+            return false;
+        }
+
+        if (node.ValueKind == JsonValueKind.Number && node.TryGetDouble(out value))
+            return true;
+
+        issues.Add(new ValidationIssue(
+            $"{context}.{propName}",
+            IssueSeverity.Error,
+            $"StealthNoise {propName} должен быть числом",
+            code: invalidCode,
+            section: "QTE",
+            expected: "number",
+            actual: node.ValueKind.ToString()));
+        return false;
     }
 
     private static string? ReadRequiredPrecisionChoiceString(

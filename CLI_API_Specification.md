@@ -1184,6 +1184,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `PatternMemory`
   - `RhythmPulse`
   - `PrecisionChoice`
+  - `StealthNoise`
 - QTE reaction checks use physical QTE keys. Player-facing labels such as `Q / Й`, `W / Ц`, `E / У`, `A / Ф`, `S / Ы`, `D / В`, and `Space` describe physical keys; the client handles physical key/RU-EN normalization and must not tell the player to switch OS layout.
 - GM-authored QTE configs do not encode player keyboard layout, and this QTE-only normalization does not apply to normal text input, dialogue, names, or narrative prose.
 - `check.primaryCharacteristic` must be one of these canonical lowercase ids:
@@ -1230,6 +1231,18 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - Higher `baseDifficulty` reduces effective timeout or hint clarity; a higher relevant `primaryCharacteristic` tier must not make the same PrecisionChoice config harder.
   - Selecting a configured choice before timeout resolves to that choice grade. Timeout resolves as fail by default and may resolve partial when `timeoutGrade` is `partial`; unknown choice ids and Escape/cancel resolve fail.
   - Browser interactive PrecisionChoice parity remains #918; browser surfaces must not claim live interactive support or duplicate gameplay resolution in this slice.
+- For `StealthNoise`, `check.config.durationMs`, `startingNoise`, `dangerThreshold`, `noiseDriftPerSecond`, `recoveryPerInput`, `allowedOverThresholdMs`, and `gradeThresholds` are required.
+  - `check.config.durationMs` must be an integer from 1000 to 30000.
+  - `startingNoise` must be a number from 0 to 100 and must not begin above `dangerThreshold`.
+  - `dangerThreshold` must be a number from 1 to 100.
+  - `noiseDriftPerSecond` and `recoveryPerInput` must be positive numbers from 1 to 100.
+  - `allowedOverThresholdMs` must be an integer from 0 to `durationMs`.
+  - `gradeThresholds` must contain `successMaxNoise`, `successMaxOverThresholdMs`, `partialMaxNoise`, and `partialMaxOverThresholdMs`; partial thresholds must be at least as permissive as success thresholds.
+  - Optional `recoveryKey` must be a canonical QTE key token; absent means Space. Optional `recoveryLabel` and `warningLabel` must be non-empty player-facing text when present.
+  - The console must show current noise, danger threshold, remaining time, recovery control, and over-threshold warning as text, not only color or sound.
+  - Higher `baseDifficulty` increases effective noise pressure or lowers tolerance; a higher relevant `primaryCharacteristic` tier must not make the same StealthNoise config harder.
+  - Final noise and accumulated over-threshold time resolve success/partial/fail through `gradeThresholds`; Escape/cancel resolves fail.
+  - Browser interactive StealthNoise parity remains #918; browser surfaces must not claim live interactive support or duplicate gameplay resolution in this slice.
 - Every terminal outcome must contain a local `responseFragment` using normal `GameResponse` field names.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `responseFragment` is the authoritative final mechanical outcome for an accepted QTE branch; the GM must not rely on a follow-up GM turn to add the real reward later.

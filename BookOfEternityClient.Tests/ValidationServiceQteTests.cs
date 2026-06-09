@@ -168,6 +168,19 @@ public sealed class ValidationServiceQteTests : IDisposable
             issue.Code?.StartsWith("qte_precision_choice_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnQteOfferAsync_AcceptsValidStealthNoiseConfig()
+    {
+        await WriteStealthNoiseOfferAsync();
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            string.Equals(issue.Code, "qte_invalid_check_type", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("qte_stealth_noise_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
     [Theory]
     [InlineData("emptyKeys", "qte_mash_input_keys_empty")]
     [InlineData("unsupportedKey", "qte_mash_input_key_invalid")]
@@ -267,6 +280,41 @@ public sealed class ValidationServiceQteTests : IDisposable
         string expectedCode)
     {
         await WritePrecisionChoiceOfferAsync(mutation);
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Theory]
+    [InlineData("missingConfig", "qte_stealth_noise_config_missing")]
+    [InlineData("nonObjectConfig", "qte_stealth_noise_config_missing")]
+    [InlineData("missingDuration", "qte_stealth_noise_duration_missing")]
+    [InlineData("tooShortDuration", "qte_stealth_noise_duration_out_of_range")]
+    [InlineData("tooLongDuration", "qte_stealth_noise_duration_out_of_range")]
+    [InlineData("negativeStartingNoise", "qte_stealth_noise_starting_noise_out_of_range")]
+    [InlineData("startingNoiseAboveThreshold", "qte_stealth_noise_starting_noise_above_threshold")]
+    [InlineData("missingDangerThreshold", "qte_stealth_noise_danger_threshold_missing")]
+    [InlineData("zeroDangerThreshold", "qte_stealth_noise_danger_threshold_out_of_range")]
+    [InlineData("dangerThresholdTooHigh", "qte_stealth_noise_danger_threshold_out_of_range")]
+    [InlineData("zeroDrift", "qte_stealth_noise_drift_out_of_range")]
+    [InlineData("excessiveDrift", "qte_stealth_noise_drift_out_of_range")]
+    [InlineData("zeroRecovery", "qte_stealth_noise_recovery_out_of_range")]
+    [InlineData("excessiveRecovery", "qte_stealth_noise_recovery_out_of_range")]
+    [InlineData("negativeAllowance", "qte_stealth_noise_allowed_over_threshold_out_of_range")]
+    [InlineData("allowanceExceedsDuration", "qte_stealth_noise_allowed_over_threshold_out_of_range")]
+    [InlineData("missingGradeThresholds", "qte_stealth_noise_grade_thresholds_missing")]
+    [InlineData("missingSuccessMaxNoise", "qte_stealth_noise_grade_success_max_noise_missing")]
+    [InlineData("partialNoiseBelowSuccess", "qte_stealth_noise_grade_noise_not_monotonic")]
+    [InlineData("partialOverBelowSuccess", "qte_stealth_noise_grade_over_threshold_not_monotonic")]
+    [InlineData("emptyRecoveryLabel", "qte_stealth_noise_recovery_label_invalid")]
+    [InlineData("unsupportedRecoveryKey", "qte_stealth_noise_recovery_key_invalid")]
+    public async Task ValidateAcceptedTurnQteOfferAsync_RejectsMalformedStealthNoiseConfig(
+        string mutation,
+        string expectedCode)
+    {
+        await WriteStealthNoiseOfferAsync(mutation);
 
         var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
 
@@ -836,6 +884,173 @@ public sealed class ValidationServiceQteTests : IDisposable
                     ["choiceId"] = "red_lantern",
                     ["hint"] = " "
                 });
+                break;
+        }
+
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, offer.ToJsonString());
+    }
+
+    private async Task WriteStealthNoiseOfferAsync(string? mutation = null)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+
+        var offer = JsonNode.Parse("""
+        {
+          "qteId": "qte_stealth_noise_test",
+          "title": "Тихий коридор",
+          "offerText": "Нужно пройти мимо спящего стражника, удерживая шум ниже опасной черты.",
+          "introNarrative": "Пол под ногами скрипит, а стражник дышит совсем рядом.",
+          "startChapterId": "silent_hall",
+          "chapters": [
+            {
+              "chapterId": "silent_hall",
+              "title": "Скрипучий настил",
+              "narrative": "Каждый шаг наращивает шум, и нужно вовремя замирать.",
+              "actions": [
+                {
+                  "actionId": "cross_floor",
+                  "label": "Пересечь настил",
+                  "check": {
+                    "type": "StealthNoise",
+                    "baseDifficulty": 3,
+                    "primaryCharacteristic": "dexterity",
+                    "config": {
+                      "durationMs": 8000,
+                      "startingNoise": 18,
+                      "dangerThreshold": 70,
+                      "noiseDriftPerSecond": 9,
+                      "recoveryPerInput": 12,
+                      "allowedOverThresholdMs": 900,
+                      "recoveryKey": "space",
+                      "recoveryLabel": "замереть и распределить вес",
+                      "warningLabel": "Доски начинают отвечать резким скрипом.",
+                      "gradeThresholds": {
+                        "successMaxNoise": 48,
+                        "successMaxOverThresholdMs": 0,
+                        "partialMaxNoise": 70,
+                        "partialMaxOverThresholdMs": 900
+                      }
+                    }
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "silent_passage" },
+                    "partial": { "terminalOutcomeId": "guard_stirs" },
+                    "fail": { "terminalOutcomeId": "alarm" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "silent_passage",
+              "title": "Беззвучный проход",
+              "finalNarrative": "Герой проходит настил, не разбудив стражу.",
+              "gmSummary": "Игрок удержал StealthNoise ниже порога и прошёл тихо.",
+              "responseFragment": {
+                "response": "Вы исчезаете в дальнем коридоре.",
+                "experienceGained": 40
+              }
+            },
+            {
+              "outcomeId": "guard_stirs",
+              "title": "Стражник заворочался",
+              "finalNarrative": "Один скрип заставляет стражника приподняться, но тревога ещё не поднята.",
+              "gmSummary": "Игрок получил частичный StealthNoise исход: шум был опасен, но не сорвал сцену.",
+              "responseFragment": {
+                "response": "Вы проходите, оставляя за собой настороженную тишину.",
+                "experienceGained": 10
+              }
+            },
+            {
+              "outcomeId": "alarm",
+              "title": "Скрип поднял тревогу",
+              "finalNarrative": "Пол отвечает резким треском, и стражник вскакивает.",
+              "gmSummary": "Игрок провалил StealthNoise или отменил QTE; сцену нужно продолжать с поднятой тревогой.",
+              "responseFragment": {
+                "response": "Стража просыпается и перекрывает коридор.",
+                "currentPoiseChange": -10
+              }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var check = offer["chapters"]![0]!["actions"]![0]!["check"]!.AsObject();
+        var config = check["config"]!.AsObject();
+        var gradeThresholds = config["gradeThresholds"]!.AsObject();
+        switch (mutation)
+        {
+            case "missingConfig":
+                check.Remove("config");
+                break;
+            case "nonObjectConfig":
+                check["config"] = "quiet";
+                break;
+            case "missingDuration":
+                config.Remove("durationMs");
+                break;
+            case "tooShortDuration":
+                config["durationMs"] = 500;
+                break;
+            case "tooLongDuration":
+                config["durationMs"] = 45000;
+                break;
+            case "negativeStartingNoise":
+                config["startingNoise"] = -1;
+                break;
+            case "startingNoiseAboveThreshold":
+                config["startingNoise"] = 80;
+                break;
+            case "missingDangerThreshold":
+                config.Remove("dangerThreshold");
+                break;
+            case "zeroDangerThreshold":
+                config["dangerThreshold"] = 0;
+                break;
+            case "dangerThresholdTooHigh":
+                config["dangerThreshold"] = 101;
+                break;
+            case "zeroDrift":
+                config["noiseDriftPerSecond"] = 0;
+                break;
+            case "excessiveDrift":
+                config["noiseDriftPerSecond"] = 101;
+                break;
+            case "zeroRecovery":
+                config["recoveryPerInput"] = 0;
+                break;
+            case "excessiveRecovery":
+                config["recoveryPerInput"] = 101;
+                break;
+            case "negativeAllowance":
+                config["allowedOverThresholdMs"] = -1;
+                break;
+            case "allowanceExceedsDuration":
+                config["allowedOverThresholdMs"] = 9000;
+                break;
+            case "missingGradeThresholds":
+                config.Remove("gradeThresholds");
+                break;
+            case "missingSuccessMaxNoise":
+                gradeThresholds.Remove("successMaxNoise");
+                break;
+            case "partialNoiseBelowSuccess":
+                gradeThresholds["partialMaxNoise"] = 40;
+                break;
+            case "partialOverBelowSuccess":
+                gradeThresholds["successMaxOverThresholdMs"] = 500;
+                gradeThresholds["partialMaxOverThresholdMs"] = 100;
+                break;
+            case "emptyRecoveryLabel":
+                config["recoveryLabel"] = " ";
+                break;
+            case "unsupportedRecoveryKey":
+                config["recoveryKey"] = "enter";
                 break;
         }
 

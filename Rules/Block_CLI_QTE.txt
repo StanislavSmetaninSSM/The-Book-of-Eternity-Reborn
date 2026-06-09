@@ -127,6 +127,7 @@
                     - `PatternMemory`
                     - `RhythmPulse`
                     - `PrecisionChoice`
+                    - `StealthNoise`
 
                     For `MashInput`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.keys`: non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
@@ -176,6 +177,22 @@
                     - Timeout resolves as fail by default and may resolve partial when `timeoutGrade` is `partial`.
                     - Unknown choice ids and Escape/cancel resolve fail.
                     - Browser interactive PrecisionChoice parity remains #918; in this issue the console client owns live PrecisionChoice play, and browser surfaces must not claim live interactive support or duplicate gameplay resolution.
+
+                    For `StealthNoise`, `check.config` is MANDATORY and MUST contain:
+                    - `check.config.durationMs`: integer from 1000 to 30000.
+                    - `startingNoise`: number from 0 to 100; it MUST NOT start above `dangerThreshold`.
+                    - `dangerThreshold`: number from 1 to 100.
+                    - `noiseDriftPerSecond`: positive number from 1 to 100; this is passive noise growth.
+                    - `recoveryPerInput`: positive number from 1 to 100; this is how much the recovery input lowers current noise.
+                    - `allowedOverThresholdMs`: integer from 0 to `durationMs`.
+                    - `gradeThresholds`: object with `successMaxNoise`, `successMaxOverThresholdMs`, `partialMaxNoise`, and `partialMaxOverThresholdMs`; partial thresholds MUST NOT be stricter than success thresholds.
+                    - Optional `recoveryKey`: canonical QTE key token; absent means Space. Do not encode RU/EN layout details in GM config.
+                    - Optional `recoveryLabel` and `warningLabel`: non-empty player-facing text when present.
+                    - Console StealthNoise must show current noise, danger threshold, remaining time, recovery control, and over-threshold warning as readable text; sound/color can only be an enhancement.
+                    - Higher `baseDifficulty` increases effective noise pressure or lowers tolerance.
+                    - A higher relevant `primaryCharacteristic` tier must not make the same StealthNoise config harder.
+                    - Final noise plus accumulated over-threshold time resolve success/partial/fail through `gradeThresholds`; Escape/cancel resolves fail.
+                    - Browser interactive StealthNoise parity remains #918; in this issue the console client owns live StealthNoise play, and browser surfaces must not claim live interactive support or duplicate gameplay resolution.
 
                     Keyboard/layout rule:
                     - QTE reaction checks use physical QTE keys, not ordinary typed prose.
