@@ -202,8 +202,8 @@
                     - `pickDurability`: integer from 1 to 20.
                     - `maxMistakes`: integer from 0 to `pickDurability`.
                     - `pinDriftPerSecond`: number from 0 to 100.
-                    - `gradeThresholds`: object with `successMaxTimeMs`, `successMaxMistakes`, `partialMaxTimeMs`, and `partialMaxMistakes`; partial thresholds MUST NOT be stricter than success thresholds.
-                    - Optional `adjustKey` and `setKey`: canonical QTE key tokens; absent means `q` adjusts the current pin and `space` sets it. Do not encode RU/EN layout details in GM config.
+                    - `gradeThresholds`: object with `successMaxTimeMs`, `successMaxMistakes`, `partialMaxTimeMs`, and `partialMaxMistakes`; partial thresholds MUST NOT be stricter than success thresholds. Runtime clamps effective thresholds to the post-difficulty timer and mistake allowance so accepted hard locks still resolve success/partial/fail.
+                    - Optional `adjustKey` and `setKey`: canonical QTE key tokens and must be distinct; absent means `q` raises the current pin, `Shift+q` lowers it, and `space` sets it. Do not encode RU/EN layout details in GM config.
                     - Optional `pinLabel`, `durabilityLabel`, and `warningLabel`: non-empty player-facing text when present.
                     - Console LockPinSet must show each pin state, target window, current position, remaining time, mistakes, and pick durability as readable text; sound/color can only be an enhancement.
                     - Higher `baseDifficulty` narrows effective pin windows, increases drift, or lowers timer/mistake forgiveness.

@@ -361,6 +361,7 @@ public sealed class ValidationServiceQteTests : IDisposable
     [InlineData("partialMistakesBelowSuccess", "qte_lock_pin_set_grade_mistakes_not_monotonic")]
     [InlineData("unsupportedAdjustKey", "qte_lock_pin_set_adjust_key_invalid")]
     [InlineData("unsupportedSetKey", "qte_lock_pin_set_set_key_invalid")]
+    [InlineData("sameAdjustAndSetKey", "qte_lock_pin_set_keys_not_distinct")]
     [InlineData("emptyPinLabel", "qte_lock_pin_set_pin_label_invalid")]
     [InlineData("emptyDurabilityLabel", "qte_lock_pin_set_durability_label_invalid")]
     [InlineData("emptyWarningLabel", "qte_lock_pin_set_warning_label_invalid")]
@@ -1294,6 +1295,9 @@ public sealed class ValidationServiceQteTests : IDisposable
                 break;
             case "unsupportedSetKey":
                 config["setKey"] = "enter";
+                break;
+            case "sameAdjustAndSetKey":
+                config["setKey"] = "q";
                 break;
             case "emptyPinLabel":
                 config["pinLabel"] = " ";

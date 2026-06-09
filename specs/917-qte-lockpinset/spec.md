@@ -4,7 +4,7 @@
 
 **Created**: 2026-06-10
 
-**Status**: Drafted for autonomous implementation; pending TDD implementation, independent review, PR/merge, issue evidence comment, closure, and worktree cleanup.
+**Status**: Implemented and locally verified; pending final independent approval, PR/merge, issue evidence comment, closure, and worktree cleanup.
 
 **Input**: GitHub issue #917 — LockPinSet QTE v2 mini-game where the player sets lock pins/tumblers into correct windows under durability and timer pressure.
 
@@ -89,6 +89,7 @@ GM-facing QTE rules and the worked QTE example include LockPinSet config fields,
 - `maxMistakes` must be `0..pickDurability` or otherwise not exceed the authored durability model.
 - `pinDriftPerSecond` must be non-negative and bounded; excessive drift that makes all windows impossible is invalid.
 - `gradeThresholds` must define monotonic success/partial boundaries for completion time, mistakes/noise, and broken-pick state.
+- Optional `adjustKey` and `setKey` must resolve to distinct canonical QTE keys so pin movement and confirmation are both reachable.
 - Missing `routing.success`, `routing.partial`, or `routing.fail` remains invalid for this tri-grade QTE.
 - If the player cancels during active LockPinSet, the result is `fail`, not a crash, hang, or partial state leak.
 - Console layout must remain stable for long labels and must not require audio-only or browser-only affordances.
@@ -116,7 +117,7 @@ GM-facing QTE rules and the worked QTE example include LockPinSet config fields,
 ### Key Entities *(include if feature involves data)*
 
 - **LockPinSet check**: A QTE action check with type `LockPinSet`, existing `baseDifficulty` and `primaryCharacteristic`, and a config object for lockpicking play.
-- **LockPinSet config**: `pinCount`, `pinWindows`, `timerMs`, `pickDurability`, `maxMistakes`, `pinDriftPerSecond`, `gradeThresholds`, and optional player-facing `prompt`/`pinLabel`/`durabilityLabel`/`warningLabel` fields.
+- **LockPinSet config**: `pinCount`, `pinWindows`, `timerMs`, `pickDurability`, `maxMistakes`, `pinDriftPerSecond`, `gradeThresholds`, optional distinct `adjustKey`/`setKey`, and optional player-facing `pinLabel`/`durabilityLabel`/`warningLabel` fields.
 - **Pin window**: A target interval for a pin on a bounded track, with `min`, `max`, and optional player-facing `label`.
 - **LockPinSet state sample**: A deterministic representation of elapsed time, pin positions, locked/open pins, mistake count, pick durability, and timeout/cancel state used by runtime and tests.
 - **Effective LockPinSet requirement**: The computed pin count, target-window tolerance, drift, durability/mistake allowance, and timer after base config, difficulty, and characteristic tier are applied.

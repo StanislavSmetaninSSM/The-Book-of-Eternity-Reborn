@@ -2291,13 +2291,13 @@ public sealed class QteSceneService
                 if (key.Key == ConsoleKey.Escape)
                     return QteGrade.Fail;
 
-                var token = QteKeyInput.NormalizeConsoleInput(key);
-                if (string.Equals(token, effective.AdjustKey, StringComparison.Ordinal))
+                if (TryGetLockPinSetAdjustmentDirection(key, effective.AdjustKey, out var adjustmentDirection))
                 {
-                    currentPosition = ClampLockPinPosition(currentPosition + 5);
+                    currentPosition = ApplyLockPinSetAdjustment(currentPosition, adjustmentDirection);
                     continue;
                 }
 
+                var token = QteKeyInput.NormalizeConsoleInput(key);
                 if (!string.Equals(token, effective.SetKey, StringComparison.Ordinal))
                     continue;
 
@@ -2323,7 +2323,7 @@ public sealed class QteSceneService
             var remainingMs = Math.Max(0, effective.TimerMs - elapsedMs);
             RenderMiniGamePanel(
                 "Штифты замка",
-                $"Клавиша {QteKeyInput.FormatPromptLabel(effective.AdjustKey)} двигает текущий {pinName}; {QteKeyInput.FormatPromptLabel(effective.SetKey)} фиксирует. Нужно {durabilityPrompt}. Esc - безопасный отказ считается провалом.",
+                $"{QteKeyInput.FormatPromptLabel(effective.AdjustKey)} поднимает текущий {pinName}; Shift+{QteKeyInput.FormatPromptLabel(effective.AdjustKey)} опускает; {QteKeyInput.FormatPromptLabel(effective.SetKey)} фиксирует. Нужно {durabilityPrompt}. Esc - безопасный отказ считается провалом.",
                 BuildLockPinSetProgress(
                     effective,
                     opened,
@@ -2338,7 +2338,7 @@ public sealed class QteSceneService
             await Task.Delay(20);
         }
 
-        return ParseGrade(ResolveLockPinSetGrade(effective, inputs, timedOut: true));
+        return ParseGrade(ResolveLockPinSetGrade(effective, inputs));
     }
 
     internal sealed record LockPinWindow(int Pin, double Min, double Max, string? Label);
@@ -2399,6 +2399,10 @@ public sealed class QteSceneService
             pinDriftPerSecond + (difficultyOffset * 0.5d) - (statTier * 0.25d),
             LockPinSetMinPinDriftPerSecond,
             LockPinSetMaxPinDriftPerSecond);
+        var effectiveGradeThresholds = ClampLockPinSetGradeThresholds(
+            gradeThresholds,
+            effectiveTimerMs,
+            effectiveMaxMistakes);
 
         return new LockPinSetEffectiveRequirement(
             effectivePinCount,
@@ -2407,16 +2411,37 @@ public sealed class QteSceneService
             effectivePickDurability,
             effectiveMaxMistakes,
             effectiveDrift,
-            gradeThresholds,
+            effectiveGradeThresholds,
             NormalizeLockPinSetKey(adjustKey, "q"),
             NormalizeLockPinSetKey(setKey, "space"));
+    }
+
+    internal static bool TryGetLockPinSetAdjustmentDirection(
+        ConsoleKeyInfo key,
+        string adjustKey,
+        out int direction)
+    {
+        direction = 0;
+        var token = QteKeyInput.NormalizeConsoleInput(key);
+        if (!string.Equals(token, NormalizeLockPinSetKey(adjustKey, "q"), StringComparison.Ordinal))
+            return false;
+
+        direction = key.Modifiers.HasFlag(ConsoleModifiers.Shift) ? -1 : 1;
+        return true;
+    }
+
+    internal static double ApplyLockPinSetAdjustment(double position, int direction)
+    {
+        if (direction == 0)
+            return ClampLockPinPosition(position);
+
+        return ClampLockPinPosition(position + (Math.Sign(direction) * 5d));
     }
 
     internal static string ResolveLockPinSetGrade(
         LockPinSetEffectiveRequirement effective,
         IEnumerable<LockPinSetInput> inputs,
-        bool canceled = false,
-        bool timedOut = false)
+        bool canceled = false)
     {
         if (canceled || !IsLockPinSetRequirementUsable(effective))
             return "fail";
@@ -2480,8 +2505,7 @@ public sealed class QteSceneService
         int baseDifficulty,
         int statTier,
         IEnumerable<LockPinSetInput> inputs,
-        bool canceled = false,
-        bool timedOut = false)
+        bool canceled = false)
     {
         if (!TryReadLockPinSetConfig(
                 config,
@@ -2513,7 +2537,7 @@ public sealed class QteSceneService
             statTier,
             adjustKey,
             setKey);
-        return ResolveLockPinSetGrade(effective, inputs, canceled, timedOut);
+        return ResolveLockPinSetGrade(effective, inputs, canceled);
     }
 
     private static bool TryReadLockPinSetConfig(
@@ -2643,6 +2667,23 @@ public sealed class QteSceneService
         effective.GradeThresholds.PartialMaxTimeMs <= effective.TimerMs &&
         effective.GradeThresholds.PartialMaxMistakes >= effective.GradeThresholds.SuccessMaxMistakes &&
         effective.GradeThresholds.PartialMaxMistakes <= effective.MaxMistakes;
+
+    private static LockPinSetGradeThresholds ClampLockPinSetGradeThresholds(
+        LockPinSetGradeThresholds thresholds,
+        int effectiveTimerMs,
+        int effectiveMaxMistakes)
+    {
+        var successMaxTimeMs = Math.Clamp(thresholds.SuccessMaxTimeMs, 0, effectiveTimerMs);
+        var partialMaxTimeMs = Math.Clamp(thresholds.PartialMaxTimeMs, successMaxTimeMs, effectiveTimerMs);
+        var successMaxMistakes = Math.Clamp(thresholds.SuccessMaxMistakes, 0, effectiveMaxMistakes);
+        var partialMaxMistakes = Math.Clamp(thresholds.PartialMaxMistakes, successMaxMistakes, effectiveMaxMistakes);
+
+        return new LockPinSetGradeThresholds(
+            successMaxTimeMs,
+            successMaxMistakes,
+            partialMaxTimeMs,
+            partialMaxMistakes);
+    }
 
     private static LockPinWindow AdjustLockPinWindow(LockPinWindow window, int padding)
     {

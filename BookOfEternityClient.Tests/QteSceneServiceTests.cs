@@ -703,7 +703,7 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
-    public void LockPinSetGrade_TimeoutWithUnopenedPinsResolvesFail()
+    public void LockPinSetGrade_AttemptsAfterTimerDoNotOpenLock()
     {
         Assert.Equal(
             "fail",
@@ -711,9 +711,57 @@ public sealed class QteSceneServiceTests : IDisposable
                 LockPinSetRequirement(),
                 [
                     LockPinAttempt(1000, 0, 15),
-                    LockPinAttempt(2200, 1, 45)
-                ],
-                timedOut: true));
+                    LockPinAttempt(2200, 1, 45),
+                    LockPinAttempt(11000, 2, 75)
+                ]));
+    }
+
+    [Fact]
+    public void LockPinSetLiveAdjustment_CanReachCommittedExampleLowWindow()
+    {
+        var shiftedAdjust = new ConsoleKeyInfo('Q', ConsoleKey.Q, shift: true, alt: false, control: false);
+        var normalAdjust = new ConsoleKeyInfo('q', ConsoleKey.Q, shift: false, alt: false, control: false);
+        var position = 50d;
+
+        for (var step = 0; step < 4; step++)
+        {
+            Assert.True(QteSceneService.TryGetLockPinSetAdjustmentDirection(shiftedAdjust, "q", out var direction));
+            position = QteSceneService.ApplyLockPinSetAdjustment(position, direction);
+        }
+
+        Assert.InRange(position, 18, 32);
+        Assert.True(QteSceneService.TryGetLockPinSetAdjustmentDirection(normalAdjust, "q", out var upwardDirection));
+        Assert.True(upwardDirection > 0);
+    }
+
+    [Theory]
+    [InlineData(4, 9500)]
+    [InlineData(5, 9000)]
+    public void LockPinSetGrade_HardDifficultyFullTimerPartialThresholdStillResolvesAllGrades(
+        int baseDifficulty,
+        int expectedEffectiveTimerMs)
+    {
+        var effective = QteSceneService.ComputeLockPinSetEffectiveRequirement(
+            pinCount: 3,
+            pinWindows: LockPinWindows(),
+            timerMs: 10000,
+            pickDurability: 5,
+            maxMistakes: 2,
+            pinDriftPerSecond: 4,
+            gradeThresholds: LockPinSetThresholds(partialMaxTimeMs: 10000),
+            baseDifficulty,
+            statTier: 0,
+            adjustKey: "q",
+            setKey: "space");
+
+        Assert.Equal(expectedEffectiveTimerMs, effective.TimerMs);
+        Assert.True(effective.GradeThresholds.SuccessMaxTimeMs <= effective.GradeThresholds.PartialMaxTimeMs);
+        Assert.True(effective.GradeThresholds.PartialMaxTimeMs <= effective.TimerMs);
+        Assert.True(effective.GradeThresholds.SuccessMaxMistakes <= effective.GradeThresholds.PartialMaxMistakes);
+        Assert.True(effective.GradeThresholds.PartialMaxMistakes <= effective.MaxMistakes);
+        Assert.Equal("success", QteSceneService.ResolveLockPinSetGrade(effective, OpenAllLockPins(effective, 4200)));
+        Assert.Equal("partial", QteSceneService.ResolveLockPinSetGrade(effective, OpenAllLockPins(effective, expectedEffectiveTimerMs - 100)));
+        Assert.Equal("fail", QteSceneService.ResolveLockPinSetGrade(effective, OpenAllLockPins(effective, expectedEffectiveTimerMs + 100)));
     }
 
     [Fact]
@@ -1601,12 +1649,16 @@ public sealed class QteSceneServiceTests : IDisposable
             statTier,
             recoveryKey: "space");
 
-    private static QteSceneService.LockPinSetGradeThresholds LockPinSetThresholds() =>
+    private static QteSceneService.LockPinSetGradeThresholds LockPinSetThresholds(
+        int successMaxTimeMs = 5000,
+        int successMaxMistakes = 0,
+        int partialMaxTimeMs = 10000,
+        int partialMaxMistakes = 2) =>
         new(
-            SuccessMaxTimeMs: 5000,
-            SuccessMaxMistakes: 0,
-            PartialMaxTimeMs: 10000,
-            PartialMaxMistakes: 2);
+            successMaxTimeMs,
+            successMaxMistakes,
+            partialMaxTimeMs,
+            partialMaxMistakes);
 
     private static QteSceneService.LockPinWindow[] LockPinWindows() =>
     [
@@ -1653,6 +1705,19 @@ public sealed class QteSceneServiceTests : IDisposable
         double position,
         bool canceled = false) =>
         new(offsetMs, pinIndex, position, canceled);
+
+    private static QteSceneService.LockPinSetInput[] OpenAllLockPins(
+        QteSceneService.LockPinSetEffectiveRequirement effective,
+        int finalOffsetMs)
+    {
+        var stepMs = Math.Max(1, finalOffsetMs / effective.PinCount);
+        return effective.PinWindows
+            .Select((window, index) => LockPinAttempt(
+                Math.Min(finalOffsetMs, stepMs * (index + 1)),
+                index,
+                (window.Min + window.Max) / 2d))
+            .ToArray();
+    }
 
     private static double WindowWidth(QteSceneService.LockPinWindow window) => window.Max - window.Min;
 

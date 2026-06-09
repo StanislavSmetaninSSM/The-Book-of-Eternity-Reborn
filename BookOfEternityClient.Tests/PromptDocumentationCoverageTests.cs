@@ -334,6 +334,8 @@ public sealed class PromptDocumentationCoverageTests
             "pinDriftPerSecond",
             "gradeThresholds",
             "each pin state",
+            "Shift+",
+            "must be distinct",
             "Browser interactive LockPinSet parity remains #918"
         })
         {

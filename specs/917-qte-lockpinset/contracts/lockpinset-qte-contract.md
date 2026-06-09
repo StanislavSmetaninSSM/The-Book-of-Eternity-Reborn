@@ -66,7 +66,7 @@ A LockPinSet QTE action uses the existing QTE action/check envelope:
 - `check.config.gradeThresholds.successMaxMistakes`: integer `0..maxMistakes`.
 - `check.config.gradeThresholds.partialMaxTimeMs`: integer from `successMaxTimeMs` to `timerMs`.
 - `check.config.gradeThresholds.partialMaxMistakes`: integer from `successMaxMistakes` to `maxMistakes`.
-- `check.config.adjustKey` and `setKey`: optional canonical QTE key tokens; absent means the implementation chooses documented defaults.
+- `check.config.adjustKey` and `setKey`: optional canonical QTE key tokens; absent means the implementation chooses documented defaults. The effective keys must be distinct so raising/lowering and confirming are both reachable.
 - `check.config.pinLabel`, `durabilityLabel`, and `warningLabel`: optional player-facing text. Empty strings are invalid when present.
 
 ## Validation rules
@@ -88,6 +88,7 @@ Validation must reject:
 - partial thresholds that cannot be reached before timer/durability failure
 - missing `routing.success`, `routing.partial`, or `routing.fail`
 - unsupported physical key tokens when a key field is present
+- identical effective `adjustKey` and `setKey` values, including conflicts with defaults
 - empty player-facing `pinLabel`, `durabilityLabel`, or `warningLabel` when provided
 
 Validation issue messages should name `LockPinSet` and the exact malformed field.
@@ -96,6 +97,7 @@ Validation issue messages should name `LockPinSet` and the exact malformed field
 
 - The resolver presents visible pin states, target-window feedback, remaining-time cue, pick durability/mistake count, and active control guidance.
 - Pin positions use a bounded `0..100` track.
+- Default console controls raise the current pin with `q`, lower it with `Shift+q`, and set the pin with `space`; authored `adjustKey` replaces the raise/lower physical key while Shift reverses direction.
 - A pin is considered set/open when its final position falls inside its target window and the player confirms it.
 - Mistakes represent confirmations outside the target window, damaging the pick or adding noise.
 - The pick breaks when durability reaches zero or mistakes exceed the allowed threshold.
@@ -121,6 +123,7 @@ A concrete acceptable formula is:
 - `effectivePinDriftPerSecond = pinDriftPerSecond + ((baseDifficulty - 3) * 0.5) - (statTier * 0.25)`, clamped to `0..100`;
 - `effectiveTimerMs = timerMs - ((Math.Clamp(baseDifficulty, 1, 5) - 3) * 500) + (statTier * 250)`, clamped to `1000..60000`;
 - `effectiveMaxMistakes = maxMistakes - Math.Max(0, Math.Clamp(baseDifficulty, 1, 5) - 3) + Math.Min(2, Math.Max(0, statTier) / 2)`, clamped to `0..pickDurability`.
+- `effectiveGradeThresholds` are clamped to `effectiveTimerMs` and `effectiveMaxMistakes` while preserving success-before-partial ordering, so a valid authored `partialMaxTimeMs == timerMs` remains playable after hard difficulty reduces the effective timer.
 
 Codex may refine the exact formula if tests/docs/spec remain monotonic and synchronized.
 
@@ -129,7 +132,7 @@ Codex may refine the exact formula if tests/docs/spec remain monotonic and synch
 - The console must show text pin positions/windows and durability/mistake counts, not only color or sound.
 - Existing QTE audio cues may play when available, but audio is only an enhancement.
 - GM-authored config must not encode keyboard layout or ask the player to switch OS layout.
-- If physical keys are exposed, use existing QTE key labels and RU/EN fallback helpers where applicable.
+- If physical keys are exposed, use existing QTE key labels and RU/EN fallback helpers where applicable; Shift plus the adjust key lowers the pin instead of raising it.
 - Dynamic labels, warnings, and narrative text must be escaped before Spectre.Console markup rendering.
 
 ## Browser boundary

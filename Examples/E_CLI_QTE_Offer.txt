@@ -60,7 +60,9 @@
 - `LockPinSet` pin windows use a 0..100 track; each `pinWindows[]` entry must have ordered `min`/`max` bounds and optional one-based `pin`.
 - `pickDurability` is 1..20, `maxMistakes` is 0..`pickDurability`, `timerMs` is 1000..60000, and `pinDriftPerSecond` is 0..100.
 - Console LockPinSet shows each pin state, target window, current position, remaining time, mistakes, and pick durability.
+- Default console controls raise the current pin with `q`, lower it with `Shift+q`, and set it with `space`; authored `adjustKey`/`setKey` must stay canonical QTE tokens.
 - `LockPinSet` adjusts effective windows, timer, drift, or mistake tolerance by `baseDifficulty` and the relevant `primaryCharacteristic`.
+- Runtime clamps effective grade thresholds to the adjusted timer and mistake allowance so hard valid configs still resolve success/partial/fail.
 - Clean all-pins-open resolves success; slow/noisy open resolves partial; broken pick, timeout, too many mistakes, or Escape/cancel resolves fail.
 - Browser interactive LockPinSet parity remains #918; browser surfaces must not claim live LockPinSet support yet.
 - `responseFragment` is the final local mechanical outcome for an accepted QTE branch.

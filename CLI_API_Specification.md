@@ -1250,8 +1250,8 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `timerMs` must be an integer from 1000 to 60000.
   - `pickDurability` must be an integer from 1 to 20, and `maxMistakes` must be an integer from 0 to `pickDurability`.
   - `pinDriftPerSecond` must be a number from 0 to 100.
-  - `gradeThresholds` must contain `successMaxTimeMs`, `successMaxMistakes`, `partialMaxTimeMs`, and `partialMaxMistakes`; partial thresholds must be at least as permissive as success thresholds.
-  - Optional `adjustKey` and `setKey` must be canonical QTE key tokens; absent means `q` adjusts the current pin and `space` sets it. Optional `pinLabel`, `durabilityLabel`, and `warningLabel` must be non-empty player-facing text when present.
+  - `gradeThresholds` must contain `successMaxTimeMs`, `successMaxMistakes`, `partialMaxTimeMs`, and `partialMaxMistakes`; partial thresholds must be at least as permissive as success thresholds. Runtime clamps effective thresholds to the post-difficulty timer and mistake allowance so accepted hard locks still resolve success/partial/fail.
+  - Optional `adjustKey` and `setKey` must be canonical QTE key tokens and must be distinct; absent means `q` raises the current pin, `Shift+q` lowers it, and `space` sets it. Optional `pinLabel`, `durabilityLabel`, and `warningLabel` must be non-empty player-facing text when present.
   - The console must show each pin state, target window, current position, remaining time, mistakes, and pick durability as readable text, not only color or sound.
   - Higher `baseDifficulty` narrows effective windows, reduces timer/mistake forgiveness, or increases drift; a higher relevant `primaryCharacteristic` tier must not make the same LockPinSet config harder.
   - Clean all-pins-open within success thresholds resolves success; slow or noisy open within partial thresholds resolves partial; broken pick, too many mistakes, unopened pins at timeout, or Escape/cancel resolves fail.

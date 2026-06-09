@@ -12,6 +12,8 @@
 
 - Setup: branch `work/917-qte-lockpinset`, active feature path `specs/917-qte-lockpinset/`, issue #917 and parent #911 verified with `gh issue view`; issue body matched this spec's scope.
 - Baseline before Spec Kit artifact creation: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "QteSceneServiceTests|ValidationServiceQteTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests" --logger "console;verbosity=minimal"` passed with 163 passed, 0 failed, 0 skipped.
+- Independent review fix run: added live-control reachability coverage for the committed `18..32` first-pin example window; live console controls now raise with `adjustKey` and lower with `Shift+adjustKey`. Added hard-difficulty regression coverage proving `baseDifficulty` 4/5 configs with `partialMaxTimeMs == timerMs` still resolve success/partial/fail after effective threshold clamping.
+- Independent re-review fix run: validation now rejects identical effective `adjustKey`/`setKey` values, including conflicts with defaults, so accepted LockPinSet offers cannot map raise/lower and confirm to the same live control. Docs/spec contract/source guards now state the keys must be distinct.
 
 ## Phase 1: Setup and baseline
 
@@ -136,8 +138,10 @@
   - Evidence: contract formulas match the runtime helper, docs/examples/source guards match validation limits, and verification evidence is recorded in this task list.
 - [X] T044 Create one focused implementation commit with message `feat(qte): add LockPinSet QTE v2 support [skip ci]`.
   - Evidence: focused implementation commit created with the required message; Hermes owns review, PR, merge, and issue closure.
-- [ ] T045 Hermes-owned: obtain independent review before PR/merge.
+- [X] T045 Hermes-owned: obtain independent review before PR/merge.
+  - Evidence: independent final re-review returned `VERDICT: APPROVED` after the distinct `adjustKey`/`setKey` blocker was fixed and locally verified.
 - [ ] T046 Hermes-owned: merge PR, post issue evidence comment, close #917, fast-forward `main`, and remove the temporary worktree/branch.
+  - Evidence in progress: PR #934 opened at https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/934 after local gates and independent approval; merge/issue evidence/main verification/cleanup remain Hermes-owned.
 
 ## Dependencies & Execution Order
 

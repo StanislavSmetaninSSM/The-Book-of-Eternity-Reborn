@@ -1929,6 +1929,7 @@ public partial class ValidationService
             maxMistakes);
         ValidateLockPinSetOptionalKey(config, configContext, issues, "adjustKey", "qte_lock_pin_set_adjust_key_invalid");
         ValidateLockPinSetOptionalKey(config, configContext, issues, "setKey", "qte_lock_pin_set_set_key_invalid");
+        ValidateLockPinSetDistinctKeys(config, configContext, issues);
         ValidateLockPinSetOptionalLabel(config, configContext, issues, "pinLabel", "qte_lock_pin_set_pin_label_invalid");
         ValidateLockPinSetOptionalLabel(config, configContext, issues, "durabilityLabel", "qte_lock_pin_set_durability_label_invalid");
         ValidateLockPinSetOptionalLabel(config, configContext, issues, "warningLabel", "qte_lock_pin_set_warning_label_invalid");
@@ -2225,6 +2226,50 @@ public partial class ValidationService
                 expected: string.Join(" | ", QteKeyInput.SupportedTokens),
                 actual: key.ValueKind == JsonValueKind.String ? key.GetString() : key.ValueKind.ToString()));
         }
+    }
+
+    private static void ValidateLockPinSetDistinctKeys(
+        JsonElement config,
+        string configContext,
+        List<ValidationIssue> issues)
+    {
+        var adjustKey = GetLockPinSetOptionalKeyOrDefault(config, "adjustKey", "q");
+        var setKey = GetLockPinSetOptionalKeyOrDefault(config, "setKey", "space");
+
+        if (adjustKey is null || setKey is null ||
+            !string.Equals(adjustKey, setKey, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        issues.Add(new ValidationIssue(
+            $"{configContext}.setKey",
+            IssueSeverity.Error,
+            "LockPinSet adjustKey и setKey должны быть разными canonical QTE keys",
+            code: "qte_lock_pin_set_keys_not_distinct",
+            section: "QTE",
+            expected: "setKey distinct from adjustKey",
+            actual: setKey));
+    }
+
+    private static string? GetLockPinSetOptionalKeyOrDefault(
+        JsonElement config,
+        string propertyName,
+        string defaultToken)
+    {
+        if (!config.TryGetProperty(propertyName, out var key) ||
+            key.ValueKind == JsonValueKind.Null)
+        {
+            return defaultToken;
+        }
+
+        if (key.ValueKind != JsonValueKind.String)
+            return null;
+
+        var token = key.GetString()?.Trim().ToLowerInvariant();
+        return !string.IsNullOrWhiteSpace(token) && QteKeyInput.IsSupportedToken(token)
+            ? token
+            : null;
     }
 
     private static void ValidateLockPinSetOptionalLabel(
