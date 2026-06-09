@@ -50,6 +50,12 @@
 - `PrecisionChoice` adjusts effective timeout or hint clarity by `baseDifficulty` and the relevant `primaryCharacteristic`.
 - Timeout resolves as fail by default and may resolve partial when configured; Escape/cancel resolves fail.
 - Browser interactive PrecisionChoice parity remains #918; browser surfaces must not claim live PrecisionChoice support yet.
+- For `StealthNoise`, `check.config.durationMs`, `startingNoise`, `dangerThreshold`, `noiseDriftPerSecond`, `recoveryPerInput`, `allowedOverThresholdMs`, and `gradeThresholds` are required.
+- `StealthNoise` uses a 0..100 noise meter: `startingNoise` must not exceed `dangerThreshold`, `noiseDriftPerSecond` raises current noise, and `recoveryPerInput` lowers it when the player uses the recovery control.
+- `gradeThresholds` must define `successMaxNoise`, `successMaxOverThresholdMs`, `partialMaxNoise`, and `partialMaxOverThresholdMs`; partial thresholds must not be stricter than success thresholds.
+- Console StealthNoise shows current noise, danger threshold, remaining time, recovery control, and over-threshold warning as readable text.
+- `StealthNoise` adjusts effective drift/recovery/tolerance by `baseDifficulty` and the relevant `primaryCharacteristic`.
+- Browser interactive StealthNoise parity remains #918; browser surfaces must not claim live StealthNoise support yet.
 - `responseFragment` is the final local mechanical outcome for an accepted QTE branch.
 - Successful terminal outcomes must include positive `experienceGained`.
 - For validation purposes, a successful terminal outcome is any outcome reachable by following `success` branches from `startChapterId`.
@@ -420,6 +426,100 @@
       "gmSummary": "Игрок провалил PrecisionChoice, выбрал fail вариант, не успел до timeout или отменил через Escape/cancel.",
       "responseFragment": {
         "response": "Вы попадаете в тупик между складами.",
+        "currentPoiseChange": -15
+      }
+    }
+  ]
+}
+```
+
+## StealthNoise `output/qte_offer.json`
+
+```json
+{
+  "qteId": "qte_silent_floor_noise_001",
+  "title": "Тихий проход мимо стражи",
+  "offerText": "Мастер Игры предлагает короткое QTE: нужно удержать шум ниже опасного порога, пока герой пересекает скрипучий настил.",
+  "introNarrative": "В караульной темно. Спящий стражник сидит у стены, а старые доски готовы выдать каждый шаг.",
+  "declineHint": "Если игрок откажется, ту же ситуацию нужно разрешить обычной проверкой ловкости или скорости.",
+  "cinematicJustification": "Сцена длится несколько секунд и проверяет скрытность под нарастающим шумовым давлением.",
+  "sceneImagePrompt": "Fantasy rogue crossing creaking floorboards beside a sleeping guard, stealth infiltration tension, torchlit corridor",
+  "startChapterId": "creaking_floor",
+  "chapters": [
+    {
+      "chapterId": "creaking_floor",
+      "title": "Скрипучий настил",
+      "narrative": "Клиент показывает current noise, danger threshold и remaining time. Игрок должен вовремя замирать, чтобы шум не сорвался в тревогу.",
+      "chapterImagePrompt": "Close view of old wooden floorboards and a sleeping guard's boots, tense stealth fantasy scene",
+      "actions": [
+        {
+          "actionId": "cross_silent_floor",
+          "label": "Пересечь настил без шума",
+          "check": {
+            "type": "StealthNoise",
+            "baseDifficulty": 3,
+            "primaryCharacteristic": "dexterity",
+            "config": {
+              "durationMs": 8000,
+              "startingNoise": 18,
+              "dangerThreshold": 70,
+              "noiseDriftPerSecond": 9,
+              "recoveryPerInput": 12,
+              "allowedOverThresholdMs": 900,
+              "recoveryKey": "space",
+              "recoveryLabel": "замереть и распределить вес",
+              "warningLabel": "Доски начинают отвечать резким скрипом.",
+              "gradeThresholds": {
+                "successMaxNoise": 48,
+                "successMaxOverThresholdMs": 0,
+                "partialMaxNoise": 70,
+                "partialMaxOverThresholdMs": 900
+              }
+            }
+          },
+          "routing": {
+            "success": { "terminalOutcomeId": "silent_passage" },
+            "partial": { "terminalOutcomeId": "guard_stirs" },
+            "fail": { "terminalOutcomeId": "alarm_raised" }
+          },
+          "successText": "Вы переносите вес без единого резкого скрипа и уходите за угол.",
+          "partialText": "Один настил отвечает тревожным скрипом, но стражник только ворочается.",
+          "failText": "Шум срывается выше порога, и стражник вскакивает."
+        }
+      ]
+    }
+  ],
+  "terminalOutcomes": [
+    {
+      "outcomeId": "silent_passage",
+      "title": "Беззвучный проход",
+      "finalNarrative": "Герой пересекает настил, не разбудив караул, и растворяется в дальнем коридоре.",
+      "gmSummary": "Игрок успешно прошёл StealthNoise: current noise остался ниже danger threshold, тревога не поднята.",
+      "outcomeImagePrompt": "Rogue slipping past a sleeping guard into a dark corridor, stealth success, cinematic fantasy",
+      "responseFragment": {
+        "response": "Вы проходите мимо стражи без шума.",
+        "experienceGained": 40,
+        "timeChange": 3
+      }
+    },
+    {
+      "outcomeId": "guard_stirs",
+      "title": "Стражник заворочался",
+      "finalNarrative": "Короткий скрип заставляет стражника открыть глаза, но он ещё не понимает, что произошло.",
+      "gmSummary": "Игрок получил частичный StealthNoise исход: шум ненадолго пересёк danger threshold, но остался в partial thresholds.",
+      "responseFragment": {
+        "response": "Вы проходите, но за спиной слышите настороженное движение.",
+        "experienceGained": 10,
+        "timeChange": 8
+      }
+    },
+    {
+      "outcomeId": "alarm_raised",
+      "title": "Поднятая тревога",
+      "finalNarrative": "Доски трещат слишком громко. Стражник вскакивает и хватает колокол.",
+      "gmSummary": "Игрок провалил StealthNoise или отменил его через Escape/cancel; сцену нужно продолжать с поднятой тревогой.",
+      "responseFragment": {
+        "response": "Стража просыпается и перекрывает коридор.",
         "currentPoiseChange": -15
       }
     }
