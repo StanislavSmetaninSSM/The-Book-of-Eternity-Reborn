@@ -261,6 +261,41 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenShowcaseAttempt_PreHideoutFailureNeverWritesPermanentRewardEvenWithHighScore()
+    {
+        WriteCampaignSentinels();
+        var before = SnapshotGameSessionFiles();
+
+        var attempt = _qte.StartDarenShowcaseAttempt();
+        QteSceneService.QteActionResolution? resolution = null;
+        while (attempt.State == "Active")
+        {
+            var chapter = attempt.ActiveScene.Offer!.Chapters.Single(item =>
+                string.Equals(item.ChapterId, attempt.ActiveScene.CurrentChapterId, StringComparison.OrdinalIgnoreCase));
+            var action = chapter.Actions[0];
+            var grade = string.Equals(chapter.ChapterId, "gadget_infiltration", StringComparison.OrdinalIgnoreCase)
+                ? "fail"
+                : "success";
+            resolution = await _qte.ResolveDarenShowcaseActionAsync(
+                attempt,
+                action.ActionId,
+                grade,
+                completedAtUtc: new DateTime(2026, 6, 11, 1, 30, 0, DateTimeKind.Utc));
+        }
+
+        var after = SnapshotGameSessionFiles();
+        var profile = await _profile.ReadProfileAsync();
+
+        Assert.NotNull(resolution?.Completion);
+        Assert.Equal("no_reward_failure", resolution!.Completion!.OutcomeId);
+        Assert.False(attempt.Ending!.GrantsReward);
+        Assert.Null(profile.DarenShowcase);
+        Assert.False(File.Exists(Path.Combine(_rootPath, "client_profile", "qte_showcase_rewards.json")));
+        Assert.Equal(before, after);
+        AssertNoCampaignQteFiles();
+    }
+
+    [Fact]
     public async Task DarenBrowserState_UsesExistingQteProjectionAndCSharpRewardAuthority()
     {
         var intro = await _web.BuildDarenShowcaseStateAsync();

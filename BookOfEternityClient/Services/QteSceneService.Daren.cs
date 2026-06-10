@@ -76,6 +76,8 @@ public sealed partial class QteSceneService
             _ => action.Routing.Fail
         };
         var resultText = ResolveResultText(action, grade);
+        if (grade == QteGrade.Fail)
+            attempt.HadUnsafeRouteFailure = true;
         ApplyScoreDeltas(active.ScoreState, action, grade);
 
         QteActionResolution resolution;
@@ -84,7 +86,7 @@ public sealed partial class QteSceneService
             var scoreSummary = BuildFinalScoreSummary(offer.ScoreModel, active.ScoreState);
             var normalizedScore = ResolveDarenNormalizedScore(active.ScoreState);
             var ending = DarenQteRewardProfileService.ResolveEnding(
-                reachedHideout: true,
+                reachedHideout: !attempt.HadUnsafeRouteFailure,
                 normalizedScore);
             var profileResult = await new DarenQteRewardProfileService(_fs)
                 .RecordCompletionAsync(ending, completedAtUtc ?? DateTime.UtcNow);
@@ -720,6 +722,7 @@ public sealed partial class QteSceneService
         public QteActionResolution? LastResolution { get; set; }
         public QteSceneCompletion? LastCompletion { get; set; }
         public DarenShowcaseEnding? Ending { get; set; }
+        public bool HadUnsafeRouteFailure { get; set; }
         public string FeedbackTitle { get; set; } = "";
         public string Feedback { get; set; } = "";
         public string BoundaryNotice { get; init; } = DarenBoundaryNotice;
