@@ -481,7 +481,7 @@ public partial class ExplorerMode
                     foreach (var property in b.EnumerateObject())
                     {
                         lines.Add(
-                            $"      [dim]{Markup.Escape(property.Name)}:[/] [white]{Markup.Escape(FormatStructuredInventoryValue(property.Value))}[/]");
+                            $"      [dim]{Markup.Escape(GetStructuredBonusFieldLabel(property.Name))}:[/] [white]{Markup.Escape(FormatStructuredInventoryValue(property.Value))}[/]");
                     }
                 }
             }
@@ -1149,6 +1149,36 @@ public partial class ExplorerMode
             JsonValueKind.Undefined => "undefined",
             JsonValueKind.Object or JsonValueKind.Array => value.GetRawText(),
             _ => value.ToString() ?? ""
+        };
+
+    private static string GetStructuredBonusFieldLabel(string fieldName) =>
+        fieldName switch
+        {
+            "bonusId" => "ID бонуса",
+            "bonusType" => "Тип бонуса",
+            "type" => "Тип",
+            "targetType" => "Тип цели",
+            "targetTypeDisplayName" => "Название цели",
+            "target" => "Цель",
+            "skill" => "Навык",
+            "resource" => "Ресурс",
+            "characteristic" => "Характеристика",
+            "stat" => "Показатель",
+            "effect" => "Эффект",
+            "valueType" => "Тип значения",
+            "modifierType" => "Тип модификатора",
+            "value" => "Значение",
+            "application" => "Применение",
+            "condition" => "Условие",
+            "source" => "Источник",
+            "sourceId" => "ID источника",
+            "summary" => "Кратко",
+            "description" => "Описание",
+            "stackingRule" => "Правило сложения",
+            "duration" => "Длительность",
+            "group" => "Группа",
+            "isActive" => "Активен",
+            _ => fieldName
         };
 
     private static JsonElement? GetPlayerInventoryItemsElement(JsonElement root)
