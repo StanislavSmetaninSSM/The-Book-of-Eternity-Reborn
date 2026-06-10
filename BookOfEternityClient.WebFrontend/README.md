@@ -130,6 +130,10 @@ Issue #685 splits the Browser Client styling into a maintainable plain-CSS desig
 
 The visual direction is dark-fantasy chronicle UI: ink/obsidian background, parchment/gold narrative hierarchy, realm-aware accents from the C# game-screen DTO, clear desktop/mobile breakpoints, and technical labels only inside explicit advanced mode. CSS/React stay presentation-only; gameplay, validation, saves, commands, and afterlife contracts remain in the C# runtime.
 
+Issue #930 is the first closure-oriented polish pass over that system. It keeps the current five-tab player shell (`Сцена`, `Тренировка`, `Статус`, `Помощь`, `Настройки`) but replaces tab emoji payloads with semantic glyph ids rendered by local inline SVG, consolidates command-shell token aliases back into the dark-fantasy palette, and prevents `command-ui.css` from overriding the app into a generic flex web shell. The launcher route owns a single-column shell, while game routes place tabs, content, and command input in the main grid column.
+
+The #930 guard coverage lives in `test/sidebarNavigation.test.ts`, `test/browserPolishDesignSystem.test.ts`, `BrowserFrontendWorkspaceTests`, and `LocalWebUiBuiltFrontendSmokeTests`. Real local Chrome evidence may be generated under `TestResults/browser-smoke/live-local-web-*.png` during manual/agent verification; those screenshots are ignored artifacts, separate from the dependency-light HTML smoke artifacts.
+
 ## Contextual action menu (#683)
 
 Issue #683 adds a player-facing contextual action menu to the `Мир` route. The menu is built from the C# `ExplorerCommandCatalog` and `/api/game-screen` action-menu DTO, then rendered by React as Russian game sections: `Персонаж / Душа`, `Мир`, `Квесты`, `Карта`, `Фракции`, `Хранители`, `Посмертие`, `Бой`, `Архив`, and `Настройки`.

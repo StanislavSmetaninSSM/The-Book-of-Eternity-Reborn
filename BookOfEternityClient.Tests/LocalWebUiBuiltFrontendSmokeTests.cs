@@ -157,7 +157,8 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("локальную книгу", screen["narrative"]!["text"]!.GetValue<string>(), StringComparison.OrdinalIgnoreCase);
         Assert.Contains("import { TabBar } from './components/TabBar';", appSource, StringComparison.Ordinal);
         Assert.Contains("<GameLauncher menu={menu} />", appSource, StringComparison.Ordinal);
-        Assert.Contains("{!isLauncherRoute && <UnifiedInput />}", appSource, StringComparison.Ordinal);
+        Assert.Contains("const isPracticeRoute = activeRoute === 'practice';", appSource, StringComparison.Ordinal);
+        Assert.Contains("{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}", appSource, StringComparison.Ordinal);
         Assert.Contains("tabNav.map((tab)", tabBarSource, StringComparison.Ordinal);
         Assert.Contains("Открыть книгу", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Продолжить главу", launcherSource, StringComparison.Ordinal);
@@ -183,7 +184,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("data-artifact=\"browser-navigation-ia\"", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("data-viewport=\"desktop\"", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("data-viewport=\"mobile\"", navigationArtifact, StringComparison.Ordinal);
-        Assert.Contains("Сцена → Статус → Помощь → Настройки", navigationArtifact, StringComparison.Ordinal);
+        Assert.Contains("Сцена → Тренировка → Статус → Помощь → Настройки", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("Текущий ход, повествование и быстрые действия.", navigationArtifact, StringComparison.Ordinal);
         Assert.Contains("Расширенный режим", navigationArtifact, StringComparison.Ordinal);
         Assert.DoesNotContain("Debug", navigationArtifact, StringComparison.OrdinalIgnoreCase);
@@ -232,7 +233,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("Продолжить главу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Загрузить сохранение", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("Настроить книгу", firstScreenVisualQaArtifact, StringComparison.Ordinal);
-        Assert.Contains("Сцена → Статус → Помощь → Настройки", firstScreenVisualQaArtifact, StringComparison.Ordinal);
+        Assert.Contains("Сцена → Тренировка → Статус → Помощь → Настройки", firstScreenVisualQaArtifact, StringComparison.Ordinal);
         Assert.Contains("current minimal tab shell", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("advanced debug secondary", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("data-state=\"fresh-empty\"", firstScreenVisualQaArtifact, StringComparison.Ordinal);
@@ -248,7 +249,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.DoesNotContain("command coverage", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("<span>book</span>", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("<span>flame</span>", firstScreenVisualQaArtifact, StringComparison.OrdinalIgnoreCase);
-        foreach (var emojiIcon in new[] { "✦", "📖", "🕯️", "🗺️", "✍️", "🎒", "🎞️", "⚙️" })
+        foreach (var emojiIcon in new[] { "✦", "📖", "⚡", "📊", "❓", "🕯️", "🗺️", "✍️", "🎒", "🎞️", "⚙️" })
         {
             Assert.DoesNotContain(emojiIcon, firstScreenVisualQaArtifact, StringComparison.Ordinal);
         }
@@ -404,7 +405,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var tabs = ExtractPlayerTabs(tabBarConfigSource);
         var tabSequence = string.Join(" → ", tabs.Select(tab => tab.Label));
 
-        Assert.Equal(new[] { "scene", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
+        Assert.Equal(new[] { "scene", "practice", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
         Assert.Contains("<GameLauncher menu={menu} />", appSource, StringComparison.Ordinal);
         Assert.Contains("Книга Вечности: Перерождение", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Открыть книгу", launcherSource, StringComparison.Ordinal);
@@ -468,7 +469,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                   <h2>Сводка книги</h2>
                   <p class="muted">Слой книги · Герой и душа · Сохранение · Активной главы пока нет.</p>
                   <div class="checks">
-                    <div class="check">current minimal tab shell: launcher, shared tabs, status, help, settings, single command input.</div>
+                    <div class="check">current minimal tab shell: launcher, shared tabs, QTE practice, status, help, settings, single command input.</div>
                     <div class="check">no technical hero copy</div>
                     <div class="check">no repeated unavailable alerts</div>
                     <div class="check">no emoji route icons</div>
@@ -684,7 +685,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var tabs = ExtractPlayerTabs(tabBarConfigSource);
         var tabSequence = string.Join(" → ", tabs.Select(tab => tab.Label));
 
-        Assert.Equal(new[] { "scene", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
+        Assert.Equal(new[] { "scene", "practice", "status", "help", "settings" }, tabs.Select(tab => tab.Id));
 
         return $$"""
         <!doctype html>
@@ -760,7 +761,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
 
         var tabMatches = Regex.Matches(
             tabsMatch.Groups["tabs"].Value,
-            @"\{\s*id:\s*'(?<id>[^']+)',\s*icon:\s*'(?<icon>[^']+)',\s*label:\s*'(?<label>[^']+)',\s*shortcut:\s*'(?<shortcut>[^']+)',\s*description:\s*'(?<description>[^']+)'\s*\}",
+            @"\{\s*id:\s*'(?<id>[^']+)',\s*glyph:\s*'(?<glyph>[^']+)',\s*label:\s*'(?<label>[^']+)',\s*shortcut:\s*'(?<shortcut>[^']+)',\s*description:\s*'(?<description>[^']+)'\s*\}",
             RegexOptions.Singleline);
 
         var tabs = tabMatches
@@ -770,7 +771,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
                 match.Groups["shortcut"].Value,
                 match.Groups["description"].Value))
             .ToArray();
-        Assert.Equal(4, tabs.Length);
+        Assert.Equal(5, tabs.Length);
         return tabs;
     }
 

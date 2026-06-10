@@ -100,12 +100,24 @@
 
   /* ── Semantic surface aliases (referenced by components) ── */
   --border-subtle: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 16%, rgba(255, 255, 255, 0.06));
+  --border: var(--border-subtle);
   --surface-base: var(--color-ink-2);
   --surface-subtle: var(--color-obsidian);
   --surface-elevated: var(--color-obsidian-2);
+  --surface-raised: var(--surface-elevated);
+  --surface-command-bar: color-mix(in srgb, var(--color-ink) 78%, var(--realm-accent, var(--color-gold)) 10%);
+  --surface-command-field: color-mix(in srgb, var(--color-obsidian) 88%, var(--realm-accent, var(--color-gold)) 7%);
   --surface-hover: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 8%, var(--color-obsidian-2));
   --surface-active: color-mix(in srgb, var(--realm-accent, var(--color-gold)) 12%, var(--color-obsidian-2));
   --text-primary: var(--color-parchment);
   --text-muted: var(--color-mist);
+  --text-secondary: var(--color-parchment-muted);
+  --color-accent: var(--realm-accent);
+  --color-success: var(--state-success);
+  --color-warning: var(--state-warning);
+  --color-error: var(--state-danger);
   --accent-gold: var(--color-gold);
+  --space-xs: var(--space-1);
+  --space-sm: var(--space-2);
+  --space-md: var(--space-4);
 }
