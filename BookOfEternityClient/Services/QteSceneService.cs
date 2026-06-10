@@ -1373,36 +1373,40 @@ public sealed partial class QteSceneService
         var matchedPresses = 0;
         var started = DateTime.UtcNow;
 
-        while (true)
+        return await RunMiniGameLiveAsync(
+            "Рывок на усилие",
+            $"Быстро нажимайте {keyLabels}. Esc - безопасный отказ считается провалом.",
+            BuildMashInputProgress(matchedPresses, successTarget, partialTarget, durationMs),
+            async renderer =>
         {
-            var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
-            var remainingMs = Math.Max(0, durationMs - elapsedMs);
-            if (remainingMs <= 0)
-                break;
-
-            while (TryReadImmediateKey(out var key))
+            while (true)
             {
-                if (key.Key == ConsoleKey.Escape)
-                    return QteGrade.Fail;
+                var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
+                var remainingMs = Math.Max(0, durationMs - elapsedMs);
+                if (remainingMs <= 0)
+                    break;
 
-                var token = QteKeyInput.NormalizeConsoleInput(key);
-                if (token != null && accepted.Contains(token))
+                while (TryReadImmediateKey(out var key))
                 {
-                    matchedPresses++;
-                    if (matchedPresses >= successTarget)
-                        return QteGrade.Success;
+                    if (key.Key == ConsoleKey.Escape)
+                        return QteGrade.Fail;
+
+                    var token = QteKeyInput.NormalizeConsoleInput(key);
+                    if (token != null && accepted.Contains(token))
+                    {
+                        matchedPresses++;
+                        if (matchedPresses >= successTarget)
+                            return QteGrade.Success;
+                    }
                 }
+
+                renderer.Update(BuildMashInputProgress(matchedPresses, successTarget, partialTarget, remainingMs));
+
+                await Task.Delay(20);
             }
 
-            RenderMiniGamePanel(
-                "Рывок на усилие",
-                $"Быстро нажимайте {keyLabels}. Esc - безопасный отказ считается провалом.",
-                BuildMashInputProgress(matchedPresses, successTarget, partialTarget, remainingMs));
-
-            await Task.Delay(20);
-        }
-
-        return ParseGrade(ResolveMashInputGradeFromCount(matchedPresses, successTarget, partialTarget));
+            return ParseGrade(ResolveMashInputGradeFromCount(matchedPresses, successTarget, partialTarget));
+        });
     }
 
     internal static int ComputeMashInputEffectiveTargetPresses(int targetPresses, int baseDifficulty, int statTier)
@@ -1526,56 +1530,68 @@ public sealed partial class QteSceneService
             $"{action.ActionId}:{action.Check.BaseDifficulty}:{action.Check.PrimaryCharacteristic}:{string.Join(",", alphabet)}");
 
         var revealStarted = DateTime.UtcNow;
-        while ((DateTime.UtcNow - revealStarted).TotalMilliseconds < effective.RevealMs)
+        var revealCanceled = await RunMiniGameLiveAsync(
+            "Память рун: фаза показа",
+            "Запомните порядок знаков. Ввод начнётся после показа. Esc - безопасный отказ считается провалом.",
+            BuildPatternMemoryReveal(sequence, effective.RevealMs),
+            async renderer =>
         {
-            while (TryReadImmediateKey(out var revealKey))
+            while ((DateTime.UtcNow - revealStarted).TotalMilliseconds < effective.RevealMs)
             {
-                if (revealKey.Key == ConsoleKey.Escape)
-                    return QteGrade.Fail;
+                while (TryReadImmediateKey(out var revealKey))
+                {
+                    if (revealKey.Key == ConsoleKey.Escape)
+                        return true;
+                }
+
+                var remainingMs = Math.Max(0, effective.RevealMs - (int)(DateTime.UtcNow - revealStarted).TotalMilliseconds);
+                renderer.Update(BuildPatternMemoryReveal(sequence, remainingMs));
+
+                await Task.Delay(20);
             }
 
-            var remainingMs = Math.Max(0, effective.RevealMs - (int)(DateTime.UtcNow - revealStarted).TotalMilliseconds);
-            RenderMiniGamePanel(
-                "Память рун: фаза показа",
-                "Запомните порядок знаков. Ввод начнётся после показа. Esc - безопасный отказ считается провалом.",
-                BuildPatternMemoryReveal(sequence, remainingMs));
-
-            await Task.Delay(20);
-        }
+            return false;
+        });
+        if (revealCanceled)
+            return QteGrade.Fail;
 
         var inputs = new List<ConsoleKeyInfo>();
         var inputStarted = DateTime.UtcNow;
-        while ((DateTime.UtcNow - inputStarted).TotalMilliseconds < effective.InputTimeoutMs)
+        return await RunMiniGameLiveAsync(
+            "Память рун: фаза ввода",
+            "Повторите показанную последовательность теми же физическими клавишами. Esc - безопасный отказ считается провалом.",
+            BuildPatternMemoryInputProgress(sequence.Count, inputs, effective.AllowedMistakes, effective.InputTimeoutMs),
+            async renderer =>
         {
-            while (TryReadImmediateKey(out var inputKey))
+            while ((DateTime.UtcNow - inputStarted).TotalMilliseconds < effective.InputTimeoutMs)
             {
-                if (inputKey.Key == ConsoleKey.Escape)
-                    return QteGrade.Fail;
-
-                inputs.Add(inputKey);
-                if (inputs.Count >= sequence.Count)
+                while (TryReadImmediateKey(out var inputKey))
                 {
-                    return ParseGrade(ResolvePatternMemoryGrade(
-                        sequence,
-                        effective.AllowedMistakes,
-                        inputs));
+                    if (inputKey.Key == ConsoleKey.Escape)
+                        return QteGrade.Fail;
+
+                    inputs.Add(inputKey);
+                    if (inputs.Count >= sequence.Count)
+                    {
+                        return ParseGrade(ResolvePatternMemoryGrade(
+                            sequence,
+                            effective.AllowedMistakes,
+                            inputs));
+                    }
                 }
+
+                var remainingMs = Math.Max(0, effective.InputTimeoutMs - (int)(DateTime.UtcNow - inputStarted).TotalMilliseconds);
+                renderer.Update(BuildPatternMemoryInputProgress(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
+
+                await Task.Delay(20);
             }
 
-            var remainingMs = Math.Max(0, effective.InputTimeoutMs - (int)(DateTime.UtcNow - inputStarted).TotalMilliseconds);
-            RenderMiniGamePanel(
-                "Память рун: фаза ввода",
-                "Повторите показанную последовательность теми же физическими клавишами. Esc - безопасный отказ считается провалом.",
-                BuildPatternMemoryInputProgress(sequence.Count, inputs, effective.AllowedMistakes, remainingMs));
-
-            await Task.Delay(20);
-        }
-
-        return ParseGrade(ResolvePatternMemoryGrade(
-            sequence,
-            effective.AllowedMistakes,
-            inputs,
-            timedOut: true));
+            return ParseGrade(ResolvePatternMemoryGrade(
+                sequence,
+                effective.AllowedMistakes,
+                inputs,
+                timedOut: true));
+        });
     }
 
     internal sealed record PatternMemoryEffectiveRequirement(
@@ -1790,31 +1806,35 @@ public sealed partial class QteSceneService
         var totalDurationMs = schedule[^1] + effective.HitWindowMs;
         var started = DateTime.UtcNow;
 
-        while (true)
+        return await RunMiniGameLiveAsync(
+            "Ритм пульса",
+            $"Нажимайте {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)} в момент вспышки. Esc - безопасный отказ считается провалом.",
+            BuildRhythmPulseProgress(schedule, effective.HitWindowMs, effective.AllowedMisses, inputs, elapsedMs: 0, remainingMs: totalDurationMs),
+            async renderer =>
         {
-            var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
-            if (elapsedMs > totalDurationMs)
-                break;
-
-            while (TryReadImmediateKey(out var key))
+            while (true)
             {
-                if (key.Key == ConsoleKey.Escape)
-                    return QteGrade.Fail;
+                var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
+                if (elapsedMs > totalDurationMs)
+                    break;
 
-                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
-                    inputs.Add(new RhythmPulseInput(elapsedMs, key));
+                while (TryReadImmediateKey(out var key))
+                {
+                    if (key.Key == ConsoleKey.Escape)
+                        return QteGrade.Fail;
+
+                    if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
+                        inputs.Add(new RhythmPulseInput(elapsedMs, key));
+                }
+
+                var remainingMs = Math.Max(0, totalDurationMs - elapsedMs);
+                renderer.Update(BuildRhythmPulseProgress(schedule, effective.HitWindowMs, effective.AllowedMisses, inputs, elapsedMs, remainingMs));
+
+                await Task.Delay(20);
             }
 
-            var remainingMs = Math.Max(0, totalDurationMs - elapsedMs);
-            RenderMiniGamePanel(
-                "Ритм пульса",
-                $"Нажимайте {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)} в момент вспышки. Esc - безопасный отказ считается провалом.",
-                BuildRhythmPulseProgress(schedule, effective.HitWindowMs, effective.AllowedMisses, inputs, elapsedMs, remainingMs));
-
-            await Task.Delay(20);
-        }
-
-        return ParseGrade(ResolveRhythmPulseGrade(schedule, effective.HitWindowMs, effective.AllowedMisses, inputs));
+            return ParseGrade(ResolveRhythmPulseGrade(schedule, effective.HitWindowMs, effective.AllowedMisses, inputs));
+        });
     }
 
     internal sealed record RhythmPulseInput(int OffsetMs, ConsoleKeyInfo KeyInfo);
@@ -1949,51 +1969,55 @@ public sealed partial class QteSceneService
             .ToArray();
         var started = DateTime.UtcNow;
 
-        while (true)
+        return await RunMiniGameLiveAsync(
+            "Точный выбор",
+            "Нажмите номер варианта до истечения таймера. Esc - безопасный отказ считается провалом.",
+            BuildPrecisionChoiceProgress(choices, decoyHints, effective.RevealedDecoyHintCount, effective.TimeoutMs),
+            async renderer =>
         {
-            var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
-            var remainingMs = Math.Max(0, effective.TimeoutMs - elapsedMs);
-            if (remainingMs <= 0)
+            while (true)
             {
-                return ParseGrade(ResolvePrecisionChoiceGrade(
-                    gradeChoices,
-                    selectedChoiceId: null,
-                    elapsedMs,
-                    effective.TimeoutMs,
-                    timeoutGrade));
-            }
-
-            while (TryReadImmediateKey(out var key))
-            {
-                if (key.Key == ConsoleKey.Escape)
+                var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
+                var remainingMs = Math.Max(0, effective.TimeoutMs - elapsedMs);
+                if (remainingMs <= 0)
                 {
                     return ParseGrade(ResolvePrecisionChoiceGrade(
                         gradeChoices,
                         selectedChoiceId: null,
                         elapsedMs,
                         effective.TimeoutMs,
-                        timeoutGrade,
-                        canceled: true));
-                }
-
-                if (TryGetPrecisionChoiceIndex(key, choices.Count, out var choiceIndex))
-                {
-                    return ParseGrade(ResolvePrecisionChoiceGrade(
-                        gradeChoices,
-                        choices[choiceIndex].Id,
-                        elapsedMs,
-                        effective.TimeoutMs,
                         timeoutGrade));
                 }
+
+                while (TryReadImmediateKey(out var key))
+                {
+                    if (key.Key == ConsoleKey.Escape)
+                    {
+                        return ParseGrade(ResolvePrecisionChoiceGrade(
+                            gradeChoices,
+                            selectedChoiceId: null,
+                            elapsedMs,
+                            effective.TimeoutMs,
+                            timeoutGrade,
+                            canceled: true));
+                    }
+
+                    if (TryGetPrecisionChoiceIndex(key, choices.Count, out var choiceIndex))
+                    {
+                        return ParseGrade(ResolvePrecisionChoiceGrade(
+                            gradeChoices,
+                            choices[choiceIndex].Id,
+                            elapsedMs,
+                            effective.TimeoutMs,
+                            timeoutGrade));
+                    }
+                }
+
+                renderer.Update(BuildPrecisionChoiceProgress(choices, decoyHints, effective.RevealedDecoyHintCount, remainingMs));
+
+                await Task.Delay(20);
             }
-
-            RenderMiniGamePanel(
-                "Точный выбор",
-                "Нажмите номер варианта до истечения таймера. Esc - безопасный отказ считается провалом.",
-                BuildPrecisionChoiceProgress(choices, decoyHints, effective.RevealedDecoyHintCount, remainingMs));
-
-            await Task.Delay(20);
-        }
+        });
     }
 
     internal sealed record PrecisionChoiceChoice(string Id, string Grade);
@@ -2119,36 +2143,40 @@ public sealed partial class QteSceneService
             ? "снизить шум"
             : recoveryLabel;
 
-        while (true)
+        return await RunMiniGameLiveAsync(
+            "Тихий проход",
+            $"Нажимайте {QteKeyInput.FormatPromptLabel(effective.RecoveryKey)}, чтобы {recoveryPrompt}. Esc - безопасный отказ считается провалом.",
+            BuildStealthNoiseProgress(effective, inputs, elapsedMs: 0, remainingMs: effective.DurationMs, warningLabel),
+            async renderer =>
         {
-            var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
-            if (elapsedMs >= effective.DurationMs)
-                break;
-
-            while (TryReadImmediateKey(out var key))
+            while (true)
             {
-                if (key.Key == ConsoleKey.Escape)
+                var elapsedMs = (int)(DateTime.UtcNow - started).TotalMilliseconds;
+                if (elapsedMs >= effective.DurationMs)
+                    break;
+
+                while (TryReadImmediateKey(out var key))
+                {
+                    if (key.Key == ConsoleKey.Escape)
+                        return QteGrade.Fail;
+
+                    var token = QteKeyInput.NormalizeConsoleInput(key);
+                    if (string.Equals(token, effective.RecoveryKey, StringComparison.Ordinal))
+                        inputs.Add(new StealthNoiseInput(elapsedMs, key));
+                }
+
+                var sample = SimulateStealthNoise(effective, inputs, elapsedMs);
+                if (sample.OverThresholdMs > effective.GradeThresholds.PartialMaxOverThresholdMs)
                     return QteGrade.Fail;
 
-                var token = QteKeyInput.NormalizeConsoleInput(key);
-                if (string.Equals(token, effective.RecoveryKey, StringComparison.Ordinal))
-                    inputs.Add(new StealthNoiseInput(elapsedMs, key));
+                var remainingMs = Math.Max(0, effective.DurationMs - elapsedMs);
+                renderer.Update(BuildStealthNoiseProgress(effective, inputs, elapsedMs, remainingMs, warningLabel));
+
+                await Task.Delay(20);
             }
 
-            var sample = SimulateStealthNoise(effective, inputs, elapsedMs);
-            if (sample.OverThresholdMs > effective.GradeThresholds.PartialMaxOverThresholdMs)
-                return QteGrade.Fail;
-
-            var remainingMs = Math.Max(0, effective.DurationMs - elapsedMs);
-            RenderMiniGamePanel(
-                "Тихий проход",
-                $"Нажимайте {QteKeyInput.FormatPromptLabel(effective.RecoveryKey)}, чтобы {recoveryPrompt}. Esc - безопасный отказ считается провалом.",
-                BuildStealthNoiseProgress(effective, inputs, elapsedMs, remainingMs, warningLabel));
-
-            await Task.Delay(20);
-        }
-
-        return ParseGrade(ResolveStealthNoiseGrade(effective, inputs));
+            return ParseGrade(ResolveStealthNoiseGrade(effective, inputs));
+        });
     }
 
     internal sealed record StealthNoiseInput(int OffsetMs, ConsoleKeyInfo KeyInfo);
@@ -2527,56 +2555,68 @@ public sealed partial class QteSceneService
             ? "беречь отмычку"
             : durabilityLabel;
 
-        while (true)
+        return await RunMiniGameLiveAsync(
+            "Штифты замка",
+            $"{QteKeyInput.FormatPromptLabel(effective.AdjustKey)} поднимает текущий {pinName}; Shift+{QteKeyInput.FormatPromptLabel(effective.AdjustKey)} опускает; {QteKeyInput.FormatPromptLabel(effective.SetKey)} фиксирует. Нужно {durabilityPrompt}. Esc - безопасный отказ считается провалом.",
+            BuildLockPinSetProgress(
+                effective,
+                opened,
+                currentPinIndex,
+                currentPosition,
+                mistakes,
+                durabilityRemaining,
+                effective.TimerMs,
+                pinName,
+                warningLabel),
+            async renderer =>
         {
-            var now = DateTime.UtcNow;
-            var elapsedMs = (int)(now - started).TotalMilliseconds;
-            if (elapsedMs >= effective.TimerMs)
-                break;
-
-            var deltaMs = (int)(now - lastTick).TotalMilliseconds;
-            lastTick = now;
-            currentPosition = ApplyLockPinSetDrift(currentPosition, effective.PinDriftPerSecond, deltaMs, currentPinIndex);
-
-            while (TryReadImmediateKey(out var key))
+            while (true)
             {
-                if (key.Key == ConsoleKey.Escape)
-                    return QteGrade.Fail;
+                var now = DateTime.UtcNow;
+                var elapsedMs = (int)(now - started).TotalMilliseconds;
+                if (elapsedMs >= effective.TimerMs)
+                    break;
 
-                if (TryGetLockPinSetAdjustmentDirection(key, effective.AdjustKey, out var adjustmentDirection))
+                var deltaMs = (int)(now - lastTick).TotalMilliseconds;
+                lastTick = now;
+                currentPosition = ApplyLockPinSetDrift(currentPosition, effective.PinDriftPerSecond, deltaMs, currentPinIndex);
+
+                while (TryReadImmediateKey(out var key))
                 {
-                    currentPosition = ApplyLockPinSetAdjustment(currentPosition, adjustmentDirection);
-                    continue;
+                    if (key.Key == ConsoleKey.Escape)
+                        return QteGrade.Fail;
+
+                    if (TryGetLockPinSetAdjustmentDirection(key, effective.AdjustKey, out var adjustmentDirection))
+                    {
+                        currentPosition = ApplyLockPinSetAdjustment(currentPosition, adjustmentDirection);
+                        continue;
+                    }
+
+                    var token = QteKeyInput.NormalizeConsoleInput(key);
+                    if (!string.Equals(token, effective.SetKey, StringComparison.Ordinal))
+                        continue;
+
+                    var attempt = new LockPinSetInput(elapsedMs, currentPinIndex, currentPosition);
+                    inputs.Add(attempt);
+                    if (IsLockPinInputInsideWindow(effective, attempt))
+                    {
+                        opened[currentPinIndex] = true;
+                        if (opened.All(value => value))
+                            return ParseGrade(ResolveLockPinSetGrade(effective, inputs));
+
+                        currentPinIndex = FindNextClosedLockPin(opened, currentPinIndex);
+                        currentPosition = 50d;
+                        continue;
+                    }
+
+                    mistakes++;
+                    durabilityRemaining--;
+                    if (mistakes > effective.MaxMistakes || durabilityRemaining <= 0)
+                        return QteGrade.Fail;
                 }
 
-                var token = QteKeyInput.NormalizeConsoleInput(key);
-                if (!string.Equals(token, effective.SetKey, StringComparison.Ordinal))
-                    continue;
-
-                var attempt = new LockPinSetInput(elapsedMs, currentPinIndex, currentPosition);
-                inputs.Add(attempt);
-                if (IsLockPinInputInsideWindow(effective, attempt))
-                {
-                    opened[currentPinIndex] = true;
-                    if (opened.All(value => value))
-                        return ParseGrade(ResolveLockPinSetGrade(effective, inputs));
-
-                    currentPinIndex = FindNextClosedLockPin(opened, currentPinIndex);
-                    currentPosition = 50d;
-                    continue;
-                }
-
-                mistakes++;
-                durabilityRemaining--;
-                if (mistakes > effective.MaxMistakes || durabilityRemaining <= 0)
-                    return QteGrade.Fail;
-            }
-
-            var remainingMs = Math.Max(0, effective.TimerMs - elapsedMs);
-            RenderMiniGamePanel(
-                "Штифты замка",
-                $"{QteKeyInput.FormatPromptLabel(effective.AdjustKey)} поднимает текущий {pinName}; Shift+{QteKeyInput.FormatPromptLabel(effective.AdjustKey)} опускает; {QteKeyInput.FormatPromptLabel(effective.SetKey)} фиксирует. Нужно {durabilityPrompt}. Esc - безопасный отказ считается провалом.",
-                BuildLockPinSetProgress(
+                var remainingMs = Math.Max(0, effective.TimerMs - elapsedMs);
+                renderer.Update(BuildLockPinSetProgress(
                     effective,
                     opened,
                     currentPinIndex,
@@ -2587,10 +2627,11 @@ public sealed partial class QteSceneService
                     pinName,
                     warningLabel));
 
-            await Task.Delay(20);
-        }
+                await Task.Delay(20);
+            }
 
-        return ParseGrade(ResolveLockPinSetGrade(effective, inputs));
+            return ParseGrade(ResolveLockPinSetGrade(effective, inputs));
+        });
     }
 
     internal sealed record LockPinWindow(int Pin, double Min, double Max, string? Label);
@@ -3301,33 +3342,37 @@ public sealed partial class QteSceneService
         var position = 0;
         var direction = 1;
 
-        while (true)
+        return await RunMiniGameLiveAsync(
+            "Timing Bar",
+            $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, когда маркер будет в центральной зоне.",
+            BuildTimingBar(width, position, successStart, successWidth, partialStart, partialWidth),
+            async renderer =>
         {
-            RenderMiniGamePanel(
-                "Timing Bar",
-                $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, когда маркер будет в центральной зоне.",
-                BuildTimingBar(width, position, successStart, successWidth, partialStart, partialWidth));
-
-            if (TryReadImmediateKey(out var key))
+            while (true)
             {
-                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
+                renderer.Update(BuildTimingBar(width, position, successStart, successWidth, partialStart, partialWidth));
+
+                if (TryReadImmediateKey(out var key))
                 {
-                    if (position >= successStart && position < successStart + successWidth)
-                        return QteGrade.Success;
-                    if (position >= partialStart && position < partialStart + partialWidth)
-                        return QteGrade.Partial;
-                    return QteGrade.Fail;
+                    if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
+                    {
+                        if (position >= successStart && position < successStart + successWidth)
+                            return QteGrade.Success;
+                        if (position >= partialStart && position < partialStart + partialWidth)
+                            return QteGrade.Partial;
+                        return QteGrade.Fail;
+                    }
+
+                    if (key.Key == ConsoleKey.Escape)
+                        return QteGrade.Fail;
                 }
 
-                if (key.Key == ConsoleKey.Escape)
-                    return QteGrade.Fail;
+                await Task.Delay(tickMs);
+                position += direction;
+                if (position >= width - 1 || position <= 0)
+                    direction *= -1;
             }
-
-            await Task.Delay(tickMs);
-            position += direction;
-            if (position >= width - 1 || position <= 0)
-                direction *= -1;
-        }
+        });
     }
 
     private async Task<QteGrade> RunPromptChainAsync(QteCheck check)
@@ -3371,37 +3416,41 @@ public sealed partial class QteSceneService
         var ticks = 18 + (difficulty * 2);
         var safeTicks = 0;
 
-        for (var i = 0; i < ticks; i++)
+        return await RunMiniGameLiveAsync(
+            "Balance Meter",
+            $"Удерживайте индикатор в центральной зоне клавишами {QteKeyInput.FormatPromptLabel(ConsoleKey.A)} или {QteKeyInput.FormatPromptLabel(ConsoleKey.D)}.",
+            BuildBalanceMeter(value, safeHalfWidth, currentTick: 1, ticks),
+            async renderer =>
         {
-            if (TryReadImmediateKey(out var key))
+            for (var i = 0; i < ticks; i++)
             {
-                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.A) || key.Key == ConsoleKey.LeftArrow)
-                    value = Math.Max(0, value - 10);
-                else if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.D) || key.Key == ConsoleKey.RightArrow)
-                    value = Math.Min(100, value + 10);
-                else if (key.Key == ConsoleKey.Escape)
-                    return QteGrade.Fail;
+                if (TryReadImmediateKey(out var key))
+                {
+                    if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.A) || key.Key == ConsoleKey.LeftArrow)
+                        value = Math.Max(0, value - 10);
+                    else if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.D) || key.Key == ConsoleKey.RightArrow)
+                        value = Math.Min(100, value + 10);
+                    else if (key.Key == ConsoleKey.Escape)
+                        return QteGrade.Fail;
+                }
+
+                value = Math.Clamp(value + random.Next(-7 - difficulty, 8 + difficulty), 0, 100);
+                if (Math.Abs(value - 50) <= safeHalfWidth)
+                    safeTicks++;
+
+                renderer.Update(BuildBalanceMeter(value, safeHalfWidth, i + 1, ticks));
+
+                await Task.Delay(tickMs);
             }
 
-            value = Math.Clamp(value + random.Next(-7 - difficulty, 8 + difficulty), 0, 100);
-            if (Math.Abs(value - 50) <= safeHalfWidth)
-                safeTicks++;
-
-            RenderMiniGamePanel(
-                "Balance Meter",
-                $"Удерживайте индикатор в центральной зоне клавишами {QteKeyInput.FormatPromptLabel(ConsoleKey.A)} или {QteKeyInput.FormatPromptLabel(ConsoleKey.D)}.",
-                BuildBalanceMeter(value, safeHalfWidth, i + 1, ticks));
-
-            await Task.Delay(tickMs);
-        }
-
-        var ratio = (double)safeTicks / ticks;
-        return ratio switch
-        {
-            >= 0.70 => QteGrade.Success,
-            >= 0.45 => QteGrade.Partial,
-            _ => QteGrade.Fail
-        };
+            var ratio = (double)safeTicks / ticks;
+            return ratio switch
+            {
+                >= 0.70 => QteGrade.Success,
+                >= 0.45 => QteGrade.Partial,
+                _ => QteGrade.Fail
+            };
+        });
     }
 
     private async Task<QteGrade> RunChargeReleaseAsync(QteCheck check)
@@ -3414,46 +3463,53 @@ public sealed partial class QteSceneService
         var charge = 0;
         var charging = false;
 
-        while (true)
+        return await RunMiniGameLiveAsync(
+            "Charge Release",
+            $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, чтобы начать заряд.",
+            BuildChargeMeter(charge, targetStart, targetWidth),
+            async renderer =>
         {
-            RenderMiniGamePanel(
-                "Charge Release",
-                charging
-                    ? $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)} ещё раз, чтобы отпустить заряд."
-                    : $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, чтобы начать заряд.",
-                BuildChargeMeter(charge, targetStart, targetWidth));
-
-            if (TryReadImmediateKey(out var key))
+            while (true)
             {
-                if (key.Key == ConsoleKey.Escape)
-                    return QteGrade.Fail;
+                renderer.Update(
+                    "Charge Release",
+                    charging
+                        ? $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)} ещё раз, чтобы отпустить заряд."
+                        : $"Нажмите {QteKeyInput.FormatPromptLabel(ConsoleKey.Spacebar)}, чтобы начать заряд.",
+                    BuildChargeMeter(charge, targetStart, targetWidth));
 
-                if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
+                if (TryReadImmediateKey(out var key))
                 {
-                    if (!charging)
-                    {
-                        charging = true;
-                    }
-                    else
-                    {
-                        if (charge >= targetStart && charge <= targetStart + targetWidth)
-                            return QteGrade.Success;
-                        if (charge >= Math.Max(0, targetStart - 10) && charge <= Math.Min(100, targetStart + targetWidth + 10))
-                            return QteGrade.Partial;
+                    if (key.Key == ConsoleKey.Escape)
                         return QteGrade.Fail;
+
+                    if (QteKeyInput.MatchesConsoleKey(key, ConsoleKey.Spacebar))
+                    {
+                        if (!charging)
+                        {
+                            charging = true;
+                        }
+                        else
+                        {
+                            if (charge >= targetStart && charge <= targetStart + targetWidth)
+                                return QteGrade.Success;
+                            if (charge >= Math.Max(0, targetStart - 10) && charge <= Math.Min(100, targetStart + targetWidth + 10))
+                                return QteGrade.Partial;
+                            return QteGrade.Fail;
+                        }
                     }
                 }
-            }
 
-            if (charging)
-            {
-                charge += 4 + difficulty;
-                if (charge >= 100)
-                    return QteGrade.Fail;
-            }
+                if (charging)
+                {
+                    charge += 4 + difficulty;
+                    if (charge >= 100)
+                        return QteGrade.Fail;
+                }
 
-            await Task.Delay(tickMs);
-        }
+                await Task.Delay(tickMs);
+            }
+        });
     }
 
     public Task<int> ResolveQteStatTierAsync(string characteristic) => ResolveStatTierAsync(characteristic);
@@ -3633,8 +3689,70 @@ public sealed partial class QteSceneService
 
     private static void RenderMiniGamePanel(string title, string instructions, string body)
     {
-        AnsiConsole.Clear();
-        AnsiConsole.Write(new Panel(new Markup(string.Join("\n", new[]
+        AnsiConsole.Write(BuildMiniGamePanel(title, instructions, body));
+    }
+
+    private static async Task<T> RunMiniGameLiveAsync<T>(
+        string title,
+        string instructions,
+        string initialBody,
+        Func<QteMiniGameLiveRenderer, Task<T>> runAsync)
+    {
+        var renderer = new QteMiniGameLiveRenderer(title, instructions, initialBody);
+        if (!AnsiConsole.Profile.Capabilities.Interactive)
+        {
+            RenderMiniGamePanel(title, instructions, initialBody);
+            return await runAsync(renderer);
+        }
+
+        return await AnsiConsole.Live(renderer.Renderable)
+            .AutoClear(false)
+            .Overflow(VerticalOverflow.Crop)
+            .Cropping(VerticalOverflowCropping.Bottom)
+            .StartAsync(async context =>
+            {
+                renderer.Attach(context);
+                context.Refresh();
+                return await runAsync(renderer);
+            });
+    }
+
+    private sealed class QteMiniGameLiveRenderer(string title, string instructions, string body)
+    {
+        private LiveDisplayContext? _context;
+        private string _title = title;
+        private string _instructions = instructions;
+        private string _body = body;
+
+        public Panel Renderable => BuildMiniGamePanel(_title, _instructions, _body);
+
+        public void Attach(LiveDisplayContext context)
+        {
+            _context = context;
+        }
+
+        public void Update(string body)
+        {
+            Update(_title, _instructions, body);
+        }
+
+        public void Update(string title, string instructions, string body)
+        {
+            _title = title;
+            _instructions = instructions;
+            _body = body;
+
+            if (_context == null)
+                return;
+
+            _context.UpdateTarget(Renderable);
+            _context.Refresh();
+        }
+    }
+
+    private static Panel BuildMiniGamePanel(string title, string instructions, string body)
+    {
+        return new Panel(new Markup(string.Join("\n", new[]
         {
             $"[bold cyan]{Markup.Escape(title)}[/]",
             "",
@@ -3648,7 +3766,7 @@ public sealed partial class QteSceneService
             BorderStyle = new Style(Color.Cyan1),
             Padding = new Padding(2, 1),
             Expand = true
-        });
+        };
     }
 
     private static string BuildTimingBar(int width, int position, int successStart, int successWidth, int partialStart, int partialWidth)
