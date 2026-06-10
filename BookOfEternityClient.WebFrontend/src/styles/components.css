@@ -344,6 +344,190 @@
   gap: 0.7rem;
 }
 
+.qte-mini-game {
+  display: grid;
+  gap: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--state-qte) 28%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--state-qte) 10%, rgba(8, 11, 12, 0.86)), rgba(4, 7, 8, 0.72));
+  outline: none;
+}
+
+.qte-mini-game:focus-visible {
+  border-color: color-mix(in srgb, var(--state-qte) 62%, rgba(255, 255, 255, 0.12));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--state-qte) 36%, transparent);
+}
+
+.qte-mini-game__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.qte-mini-game__header strong {
+  color: var(--color-gold-bright);
+}
+
+.qte-mini-game__header span {
+  border: 1px solid color-mix(in srgb, var(--state-qte) 24%, rgba(255, 255, 255, 0.08));
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  color: var(--color-mist);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.qte-mini-game p {
+  margin: 0;
+}
+
+.qte-bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 2px;
+  min-height: 1.6rem;
+}
+
+.qte-bar__cell {
+  min-width: 0.2rem;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.qte-bar__cell.is-partial {
+  background: color-mix(in srgb, var(--state-warning) 42%, rgba(255, 255, 255, 0.06));
+}
+
+.qte-bar__cell.is-success {
+  background: color-mix(in srgb, var(--state-success) 48%, rgba(255, 255, 255, 0.06));
+}
+
+.qte-bar__cell.is-marker {
+  box-shadow: inset 0 0 0 2px var(--color-gold-bright), 0 0 12px color-mix(in srgb, var(--color-gold) 45%, transparent);
+}
+
+.qte-meter,
+.qte-progress,
+.qte-rhythm-track {
+  position: relative;
+  min-height: 1.65rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.qte-meter__safe,
+.qte-meter__marker,
+.qte-meter__danger,
+.qte-meter__fill,
+.qte-progress span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.qte-meter__safe {
+  background: color-mix(in srgb, var(--state-success) 34%, transparent);
+}
+
+.qte-meter__danger {
+  width: 2px;
+  background: var(--state-danger);
+}
+
+.qte-meter__marker {
+  width: 3px;
+  background: var(--color-gold-bright);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-gold) 55%, transparent);
+}
+
+.qte-meter__fill,
+.qte-progress span {
+  left: 0;
+  background: linear-gradient(90deg, var(--state-success), var(--state-warning), var(--state-danger));
+}
+
+.qte-token-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.qte-token-row span {
+  display: inline-flex;
+  min-width: 3.2rem;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.6rem;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--color-parchment);
+  font-weight: 800;
+}
+
+.qte-token-row span.is-success {
+  border-color: color-mix(in srgb, var(--state-success) 44%, rgba(255, 255, 255, 0.08));
+}
+
+.qte-token-row span.is-fail {
+  border-color: color-mix(in srgb, var(--state-danger) 44%, rgba(255, 255, 255, 0.08));
+}
+
+.qte-rhythm-track span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  width: 3px;
+  color: transparent;
+  background: var(--state-qte);
+}
+
+.qte-choice-grid,
+.qte-lock-grid {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.qte-choice-grid {
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+
+.qte-choice-grid button {
+  display: grid;
+  gap: 0.2rem;
+  text-align: left;
+}
+
+.qte-choice-grid small {
+  color: var(--color-mist);
+  font-weight: 600;
+}
+
+.qte-lock-grid > div {
+  display: grid;
+  gap: var(--space-2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.qte-lock-grid > div.is-current {
+  border-color: color-mix(in srgb, var(--color-gold) 45%, rgba(255, 255, 255, 0.08));
+}
+
+.qte-lock-grid > div.is-open {
+  border-color: color-mix(in srgb, var(--state-success) 42%, rgba(255, 255, 255, 0.08));
+}
+
 .media-gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));

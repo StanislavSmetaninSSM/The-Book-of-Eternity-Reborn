@@ -137,7 +137,7 @@
                     - `partialThreshold`: number greater than 0 and less than or equal to 1.
                     - Higher `baseDifficulty` raises the effective required press count; a higher relevant `primaryCharacteristic` tier lowers it.
                     - Escape/cancel resolves as fail.
-                    - Browser interactive MashInput parity remains #918; in this issue the console client owns live MashInput play, and browser surfaces must not claim live interactive support.
+                    - Browser clients support MashInput through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields.
 
                     For `PatternMemory`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.alphabet`: non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
@@ -149,7 +149,7 @@
                     - A higher relevant `primaryCharacteristic` tier must not make the same PatternMemory config harder.
                     - Perfect repeat resolves success; an imperfect repeat within tolerance and with meaningful progress resolves partial.
                     - Too many mistakes, timeout, or Escape/cancel resolves fail.
-                    - Browser interactive PatternMemory parity remains #918; in this issue the console client owns live PatternMemory play, and browser surfaces must not claim live interactive support.
+                    - Browser clients support PatternMemory through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields.
 
                     For `RhythmPulse`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.pulseCount`: integer from 2 to 16.
@@ -162,7 +162,7 @@
                     - Console RhythmPulse uses Space as the local pulse key and must show visual/textual pulse timing; audio cues are optional enhancement only.
                     - Success resolves when missed pulses stay within tolerance; at least half of pulses hit resolves partial.
                     - Too few hits, timeout, or Escape/cancel resolves fail.
-                    - Browser interactive RhythmPulse parity remains #918; in this issue the console client owns live RhythmPulse play, and browser surfaces must not claim live interactive support.
+                    - Browser clients support RhythmPulse through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields.
 
                     For `PrecisionChoice`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.choices`: array of 2..8 choice objects.
@@ -177,7 +177,7 @@
                     - Selecting a configured choice before timeout resolves to that choice grade.
                     - Timeout resolves as fail by default and may resolve partial when `timeoutGrade` is `partial`.
                     - Unknown choice ids and Escape/cancel resolve fail.
-                    - Browser interactive PrecisionChoice parity remains #918; in this issue the console client owns live PrecisionChoice play, and browser surfaces must not claim live interactive support or duplicate gameplay resolution.
+                    - Browser clients support PrecisionChoice through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields or duplicate gameplay resolution.
 
                     For `StealthNoise`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.durationMs`: integer from 1000 to 30000.
@@ -193,7 +193,7 @@
                     - Higher `baseDifficulty` increases effective noise pressure or lowers tolerance.
                     - A higher relevant `primaryCharacteristic` tier must not make the same StealthNoise config harder.
                     - Final noise plus accumulated over-threshold time resolve success/partial/fail through `gradeThresholds`; Escape/cancel resolves fail.
-                    - Browser interactive StealthNoise parity remains #918; in this issue the console client owns live StealthNoise play, and browser surfaces must not claim live interactive support or duplicate gameplay resolution.
+                    - Browser clients support StealthNoise through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields or duplicate gameplay resolution.
 
                     For `LockPinSet`, `check.config` is MANDATORY and MUST contain:
                     - `check.config.pinCount`: integer from 2 to 8.
@@ -210,7 +210,7 @@
                     - A higher relevant `primaryCharacteristic` tier must not make the same LockPinSet config harder.
                     - Clean all-pins-open within success thresholds resolves success; slow or noisy open within partial thresholds resolves partial.
                     - Broken pick, too many mistakes, unopened pins at timeout, or Escape/cancel resolves fail.
-                    - Browser interactive LockPinSet parity remains #918; in this issue the console client owns live LockPinSet play, and browser surfaces must not claim live interactive support or duplicate gameplay resolution.
+                    - Browser clients support LockPinSet through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields or duplicate gameplay resolution.
 
                     Keyboard/layout rule:
                     - QTE reaction checks use physical QTE keys, not ordinary typed prose.

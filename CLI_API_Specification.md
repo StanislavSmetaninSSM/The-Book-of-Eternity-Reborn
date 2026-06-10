@@ -1201,7 +1201,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `partialThreshold` must be a number greater than 0 and less than or equal to 1.
   - Higher `baseDifficulty` raises the effective required press count; a higher relevant `primaryCharacteristic` tier lowers it.
   - Escape/cancel resolves as fail.
-  - Browser interactive MashInput parity remains #918; browser surfaces must not claim live interactive support in this slice.
+  - Browser clients support MashInput through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields.
 - For `PatternMemory`, `check.config.alphabet`, `sequenceLength`, `revealMs`, `inputTimeoutMs`, and `allowedMistakes` are required.
   - `check.config.alphabet` must be a non-empty array of unique canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, `space`.
   - `sequenceLength` must be an integer from 2 to 12.
@@ -1210,7 +1210,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `allowedMistakes` must be an integer from 0 to `sequenceLength - 1` so failure remains possible.
   - Higher `baseDifficulty` may increase effective sequence length, reduce reveal/input time, or reduce mistake tolerance; a higher relevant `primaryCharacteristic` tier must not make the same config harder.
   - Perfect repeat resolves success; an imperfect repeat within tolerance and with meaningful progress resolves partial; too many mistakes, timeout, or Escape/cancel resolves fail.
-  - Browser interactive PatternMemory parity remains #918; browser surfaces must not claim live interactive support in this slice.
+  - Browser clients support PatternMemory through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields.
 - For `RhythmPulse`, `check.config.pulseCount`, `beatIntervalMs`, `hitWindowMs`, and `allowedMisses` are required; `patternVariation` is optional.
   - `pulseCount` must be an integer from 2 to 16.
   - `beatIntervalMs` must be an integer from 300 to 3000.
@@ -1220,7 +1220,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - Higher `baseDifficulty` may increase effective pulse count, reduce the hit window, or reduce miss tolerance; a higher relevant `primaryCharacteristic` tier must not make the same config harder.
   - Console RhythmPulse uses Space as the local pulse key and must show visual/textual pulse timing; audio cues are optional enhancement only.
   - Success resolves when missed pulses stay within tolerance; at least half of pulses hit resolves partial; too few hits or Escape/cancel resolves fail.
-  - Browser interactive RhythmPulse parity remains #918; browser surfaces must not claim live interactive support in this slice.
+  - Browser clients support RhythmPulse through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields.
 - For `PrecisionChoice`, `check.config.choices`, `correctChoiceId`, and `timeoutMs` are required; `timeoutGrade` and `decoyHints` are optional.
   - `check.config.choices` must contain 2..8 choice objects.
   - Each choice must contain unique non-empty `id`, non-empty player-facing `label`, and `grade` exactly `success`, `partial`, or `fail`; optional `description` and `hint` are player-facing text.
@@ -1231,7 +1231,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - The console must show stable numbered choices, a visible remaining-time cue, and escaped labels/descriptions/hints without layout instability.
   - Higher `baseDifficulty` reduces effective timeout or hint clarity; a higher relevant `primaryCharacteristic` tier must not make the same PrecisionChoice config harder.
   - Selecting a configured choice before timeout resolves to that choice grade. Timeout resolves as fail by default and may resolve partial when `timeoutGrade` is `partial`; unknown choice ids and Escape/cancel resolve fail.
-  - Browser interactive PrecisionChoice parity remains #918; browser surfaces must not claim live interactive support or duplicate gameplay resolution in this slice.
+  - Browser clients support PrecisionChoice through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields or duplicate gameplay resolution.
 - For `StealthNoise`, `check.config.durationMs`, `startingNoise`, `dangerThreshold`, `noiseDriftPerSecond`, `recoveryPerInput`, `allowedOverThresholdMs`, and `gradeThresholds` are required.
   - `check.config.durationMs` must be an integer from 1000 to 30000.
   - `startingNoise` must be a number from 0 to 100 and must not begin above `dangerThreshold`.
@@ -1243,7 +1243,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - The console must show current noise, danger threshold, remaining time, recovery control, and over-threshold warning as text, not only color or sound.
   - Higher `baseDifficulty` increases effective noise pressure or lowers tolerance; a higher relevant `primaryCharacteristic` tier must not make the same StealthNoise config harder.
   - Final noise and accumulated over-threshold time resolve success/partial/fail through `gradeThresholds`; Escape/cancel resolves fail.
-  - Browser interactive StealthNoise parity remains #918; browser surfaces must not claim live interactive support or duplicate gameplay resolution in this slice.
+  - Browser clients support StealthNoise through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields or duplicate gameplay resolution.
 - For `LockPinSet`, `check.config.pinCount`, `pinWindows`, `timerMs`, `pickDurability`, `maxMistakes`, `pinDriftPerSecond`, and `gradeThresholds` are required.
   - `check.config.pinCount` must be an integer from 2 to 8.
   - `pinWindows` must contain exactly one object per pin; each window uses numeric `min`/`max` bounds inside the 0..100 track, with `min < max`; optional `pin` must match the one-based array position.
@@ -1255,7 +1255,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - The console must show each pin state, target window, current position, remaining time, mistakes, and pick durability as readable text, not only color or sound.
   - Higher `baseDifficulty` narrows effective windows, reduces timer/mistake forgiveness, or increases drift; a higher relevant `primaryCharacteristic` tier must not make the same LockPinSet config harder.
   - Clean all-pins-open within success thresholds resolves success; slow or noisy open within partial thresholds resolves partial; broken pick, too many mistakes, unopened pins at timeout, or Escape/cancel resolves fail.
-  - Browser interactive LockPinSet parity remains #918; browser surfaces must not claim live interactive support or duplicate gameplay resolution in this slice.
+  - Browser clients support LockPinSet through #918 mini-games and submit only `success`, `partial`, or `fail` to the existing C# QTE action resolver; do not add browser-only GM config fields or duplicate gameplay resolution.
 - Every terminal outcome must contain a local `responseFragment` using normal `GameResponse` field names.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `responseFragment` is the authoritative final mechanical outcome for an accepted QTE branch; the GM must not rely on a follow-up GM turn to add the real reward later.

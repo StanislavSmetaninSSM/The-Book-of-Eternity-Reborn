@@ -7,16 +7,15 @@ import {
   formatQteGradeLabel,
   formatQteStateLabel,
   normalizeQteGrade,
-  qteGradeOptionsForAction,
   type QteAction,
   type QteGrade
 } from '../utils/formatters';
 import { toPlayerFacingText } from '../utils/playerCopy';
 import { qteLayoutSupportNote } from '../utils/qteKeyInput';
+import { QteMiniGame } from './qte/QteMiniGame';
 
 export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
   const [qteState, setQteState] = useState(qte);
-  const [selectedGrades, setSelectedGrades] = useState<Record<string, QteGrade>>({});
   const [result, setResult] = useState<BrowserApiResult<BrowserGameScreenDto['qte']> | null>(null);
   const [notice, setNotice] = useState('');
   const [submitting, setSubmitting] = useState<string | null>(null);
@@ -45,8 +44,7 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
     }
   }
 
-  async function resolveAction(action: QteAction, gradeOverride?: QteGrade) {
-    const grade = action.requiresSubmittedGrade ? gradeOverride ?? selectedGrades[action.actionId] ?? qteGradeOptionsForAction(action)[0] ?? 'success' : null;
+  async function resolveAction(action: QteAction, grade: QteGrade | null) {
     setSubmitting(`action-${action.actionId}`);
     setNotice('Записываем выбор быстрой сцены…');
 
@@ -64,10 +62,6 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
     } finally {
       setSubmitting(null);
     }
-  }
-
-  function selectGrade(actionId: string, grade: QteGrade) {
-    setSelectedGrades((current) => ({ ...current, [actionId]: grade }));
   }
 
   const activeChapter = qteState.activeScene?.currentChapter;
@@ -114,47 +108,17 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
               {activeChapter.actions.length > 0 ? (
                 <div className="qte-action-list">
                   {activeChapter.actions.map((action) => {
-                    const gradeOptions = qteGradeOptionsForAction(action);
-                    const selectedGrade = selectedGrades[action.actionId] ?? gradeOptions[0] ?? 'success';
                     return (
                       <article key={action.actionId} className="action-card">
                         <header>
                           <h4>{toPlayerFacingText(action.label, 'Действие сцены')}</h4>
                           <span className="availability-pill">{formatQteActionCheck(action)}</span>
                         </header>
-                        {action.requiresSubmittedGrade && (
-                          <div className="prompt-control">
-                            <label htmlFor={`qte-grade-${action.actionId}`}>Исход проверки</label>
-                            <select
-                              id={`qte-grade-${action.actionId}`}
-                              value={selectedGrade}
-                              onChange={(event) => selectGrade(action.actionId, normalizeQteGrade(event.currentTarget.value))}
-                              disabled={Boolean(submitting)}
-                            >
-                              {gradeOptions.map((grade) => (
-                                <option key={grade} value={grade}>{formatQteGradeLabel(grade)}</option>
-                              ))}
-                            </select>
-                            <div className="phase-chip-grid" aria-label="Быстрый выбор исхода">
-                              {gradeOptions.map((grade) => (
-                                <button
-                                  key={grade}
-                                  type="button"
-                                  onClick={() => {
-                                    selectGrade(action.actionId, grade);
-                                    void resolveAction(action, grade);
-                                  }}
-                                  disabled={Boolean(submitting)}
-                                >
-                                  {formatQteGradeLabel(grade)}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        <button type="button" onClick={() => void resolveAction(action)} disabled={Boolean(submitting)}>
-                          {action.requiresSubmittedGrade ? 'Подтвердить исход' : 'Выбрать действие'}
-                        </button>
+                        <QteMiniGame
+                          action={action}
+                          disabled={Boolean(submitting)}
+                          onSubmit={(grade) => void resolveAction(action, grade)}
+                        />
                       </article>
                     );
                   })}

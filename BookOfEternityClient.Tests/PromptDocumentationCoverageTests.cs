@@ -124,7 +124,7 @@ public sealed class PromptDocumentationCoverageTests
             "targetPresses",
             "partialThreshold",
             "Escape/cancel resolves as fail",
-            "Browser interactive MashInput parity remains #918"
+            "Browser clients support MashInput through #918 mini-games"
         })
         {
             Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
@@ -164,7 +164,7 @@ public sealed class PromptDocumentationCoverageTests
             "allowedMistakes",
             "фаза показа",
             "фаза ввода",
-            "Browser interactive PatternMemory parity remains #918"
+            "Browser clients support PatternMemory through #918 mini-games"
         })
         {
             Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
@@ -204,7 +204,7 @@ public sealed class PromptDocumentationCoverageTests
             "allowedMisses",
             "patternVariation",
             "visual/textual pulse timing",
-            "Browser interactive RhythmPulse parity remains #918"
+            "Browser clients support RhythmPulse through #918 mini-games"
         })
         {
             Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
@@ -245,7 +245,7 @@ public sealed class PromptDocumentationCoverageTests
             "decoyHints",
             "stable numbered choices",
             "Timeout resolves as fail by default and may resolve partial",
-            "Browser interactive PrecisionChoice parity remains #918"
+            "Browser clients support PrecisionChoice through #918 mini-games"
         })
         {
             Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
@@ -290,7 +290,7 @@ public sealed class PromptDocumentationCoverageTests
             "gradeThresholds",
             "current noise",
             "danger threshold",
-            "Browser interactive StealthNoise parity remains #918"
+            "Browser clients support StealthNoise through #918 mini-games"
         })
         {
             Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
@@ -336,7 +336,7 @@ public sealed class PromptDocumentationCoverageTests
             "each pin state",
             "Shift+",
             "must be distinct",
-            "Browser interactive LockPinSet parity remains #918"
+            "Browser clients support LockPinSet through #918 mini-games"
         })
         {
             Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);

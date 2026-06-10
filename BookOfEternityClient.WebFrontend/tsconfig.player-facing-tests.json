@@ -12,10 +12,12 @@
   },
   "include": [
     "src/api/contracts.ts",
+    "src/qte/*.ts",
     "src/context/ShellContext.tsx",
     "src/hooks/useShellState.ts",
     "src/hooks/shellStateResult.ts",
     "src/components/*.tsx",
+    "src/components/qte/*.tsx",
     "src/playerFacingCommandResult.ts",
     "test/playerFacingCommandResult.test.ts",
     "test/appRouteExtraction.test.ts",
@@ -25,6 +27,8 @@
     "test/gracefulDegradation.test.ts",
     "test/gameLauncherMenuLayout.test.ts",
     "test/audioPanelCatalogVisibility.test.ts",
-    "test/playerCopyRobustness.test.ts"
+    "test/playerCopyRobustness.test.ts",
+    "test/qteMiniGameHelpers.test.ts",
+    "test/qteScenePanelMiniGames.test.tsx"
   ]
 }
