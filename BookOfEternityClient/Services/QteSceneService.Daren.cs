@@ -83,11 +83,11 @@ public sealed partial class QteSceneService
         QteActionResolution resolution;
         if (!string.IsNullOrWhiteSpace(target.TerminalOutcomeId))
         {
-            var scoreSummary = BuildFinalScoreSummary(offer.ScoreModel, active.ScoreState);
             var normalizedScore = ResolveDarenNormalizedScore(active.ScoreState);
             var ending = DarenQteRewardProfileService.ResolveEnding(
                 reachedHideout: !attempt.HadUnsafeRouteFailure,
                 normalizedScore);
+            var scoreSummary = BuildDarenFinalScoreSummary(offer.ScoreModel, active.ScoreState, ending);
             var profileResult = await new DarenQteRewardProfileService(_fs)
                 .RecordCompletionAsync(ending, completedAtUtc ?? DateTime.UtcNow);
             var rewardMessage = ending.GrantsReward
@@ -677,9 +677,28 @@ public sealed partial class QteSceneService
         string rewardMessage,
         QteScoreSummary? scoreSummary)
     {
-        var rank = scoreSummary?.Rank?.Label;
+        var rank = ending.GrantsReward ? scoreSummary?.Rank?.Label : ending.DisplayName;
         var rankText = string.IsNullOrWhiteSpace(rank) ? ending.DisplayName : rank;
         return $"{ending.DisplayName}: {ending.Summary} Счёт вылазки {ending.NormalizedScore}/100. Ранг: {rankText}. {rewardMessage}";
+    }
+
+    private static QteScoreSummary? BuildDarenFinalScoreSummary(
+        QteScoreModel? scoreModel,
+        QteScoreState? scoreState,
+        DarenEndingResult ending)
+    {
+        var summary = BuildFinalScoreSummary(scoreModel, scoreState);
+        if (summary != null && !ending.GrantsReward)
+        {
+            summary.Rank = new QteScoreRankSummary
+            {
+                Id = ending.OutcomeId,
+                Label = ending.DisplayName,
+                Summary = ending.Summary
+            };
+        }
+
+        return summary;
     }
 
     private static void RenderDarenCompletion(DarenShowcaseAttemptState attempt, QteSceneCompletion completion)
