@@ -27,6 +27,13 @@
                     - If the player declines the QTE offer, the client will request a new ordinary GM turn and the same `qteId` MUST NOT be re-offered immediately.
                     - If the player accepts, the full QTE scene resolves LOCALLY on the client; there is no extra GM turn after acceptance.
 
+                    QTE Practice Mode:
+                    - QTE Practice Mode is client-owned practice for learning implemented QTE mechanics.
+                    - It has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, Daren rewards, or other permanent benefits.
+                    - It has no GM-authored practice scenes; the GM must not create offers, action types, response fields, or follow-up turns for practice.
+                    - Practice does not mutate campaign state, pending campaign actions, ordinary turn state, or permanent reward state.
+                    - Daren showcase work in #919 may point players toward practice, but #919 rewards/endings/adventure content are outside this QTE Practice Mode contract.
+
                     GM authoring responsibility:
                     - A valid `qte_offer.json` MUST contain these top-level fields:
                       - `qteId`

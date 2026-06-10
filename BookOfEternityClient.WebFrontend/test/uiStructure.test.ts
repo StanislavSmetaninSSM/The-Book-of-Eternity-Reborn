@@ -26,6 +26,7 @@ for (const staleSnippet of ['route-grid--primary', 'route-grid--utility', 'works
 assertIncludes(app, "import { ConnectionBanner } from './components/ConnectionBanner';", 'App.tsx should import ConnectionBanner.');
 assertIncludes(app, "import { TabBar } from './components/TabBar';", 'App.tsx should import TabBar.');
 assertIncludes(app, "import { SceneView } from './components/SceneView';", 'App.tsx should import SceneView.');
+assertIncludes(app, "import { QtePracticeView } from './components/QtePracticeView';", 'App.tsx should import QtePracticeView.');
 assertIncludes(app, "import { StatusView } from './components/StatusView';", 'App.tsx should import StatusView.');
 assertIncludes(app, "import { HelpView } from './components/HelpView';", 'App.tsx should import HelpView.');
 assertIncludes(app, "import { SettingsView } from './components/SettingsView';", 'App.tsx should import SettingsView.');
@@ -35,8 +36,9 @@ assertIncludes(app, '<ConnectionBanner />', 'App.tsx should render ConnectionBan
 assertIncludes(app, '{!isLauncherRoute && <TabBar />}', 'App.tsx should render TabBar after leaving the launcher.');
 assertIncludes(app, '<section className={`content-area${isLauncherRoute ? \' content-area--launcher\' : \'\'}`} aria-live="polite">', 'App.tsx should render the current content area with a launcher variant.');
 assertIncludes(app, '<GameLauncher menu={menu} />', 'App.tsx should render GameLauncher on the default launcher route.');
-assertIncludes(app, '{!isLauncherRoute && <UnifiedInput />}', 'App.tsx should render UnifiedInput inside the game shell after leaving the launcher.');
+assertIncludes(app, '{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}', 'App.tsx should render UnifiedInput inside the game shell after leaving the launcher and outside practice.');
 assertIncludes(app, "case 'scene': return <SceneView />;", 'TabContent should route scene tab to SceneView.');
+assertIncludes(app, "case 'practice': return <QtePracticeView />;", 'TabContent should route practice tab to QtePracticeView.');
 assertIncludes(app, "case 'status': return <StatusView />;", 'TabContent should route status tab to StatusView.');
 assertIncludes(app, "case 'help': return <HelpView />;", 'TabContent should route help tab to HelpView.');
 assertIncludes(app, "case 'settings': return <SettingsView />;", 'TabContent should route settings tab to SettingsView.');

@@ -1,0 +1,57 @@
+{
+  "state": "Catalog",
+  "catalog": [
+    {
+      "typeId": "BranchChoice",
+      "title": "Выбор ветки",
+      "description": "Тренировка выбора быстрого действия без наград и без изменения сюжета.",
+      "instructions": "Выберите действие и посмотрите локальный тренировочный результат.",
+      "available": true,
+      "unavailableReason": null,
+      "supportedSurfaces": [
+        "console",
+        "browser"
+      ],
+      "difficulties": [
+        {
+          "difficultyId": "normal",
+          "label": "Обычная",
+          "description": "Базовая скорость тренировки."
+        }
+      ]
+    },
+    {
+      "typeId": "MashInput",
+      "title": "Рывок усилия",
+      "description": "Тренировка частых нажатий без наград и без изменения сюжета.",
+      "instructions": "Нажимайте Space в рамках мини-игры.",
+      "available": true,
+      "unavailableReason": null,
+      "supportedSurfaces": [
+        "console",
+        "browser"
+      ],
+      "difficulties": [
+        {
+          "difficultyId": "normal",
+          "label": "Обычная",
+          "description": "Базовая скорость тренировки."
+        }
+      ]
+    }
+  ],
+  "selectedTypeId": null,
+  "selectedDifficultyId": null,
+  "activeScene": null,
+  "resolution": null,
+  "completion": null,
+  "feedbackTitle": "Свободная тренировка",
+  "feedback": "Выберите тип QTE. Тренировка не меняет сюжет и не выдаёт награды.",
+  "localScoreNotice": "Тренировочный счёт остаётся только на этой тренировке: без наград, опыта, предметов и прогресса.",
+  "availableOperations": [
+    "startAttempt",
+    "exit"
+  ],
+  "notification": null,
+  "error": null
+}

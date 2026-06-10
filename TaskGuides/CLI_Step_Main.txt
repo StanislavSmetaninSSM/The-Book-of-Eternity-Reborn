@@ -124,6 +124,8 @@
                - QTE offer turn writes `output/qte_offer.json` and does NOT also resolve ordinary state changes for the same situation
                - In a valid QTE-offer turn, leave ordinary `game_state/`, `lore/`, and `stories/` untouched; use only `output/qte_offer.json` plus narrative/interface/debug outputs
                - If the player declines a QTE offer, the client will ask for a new ordinary GM turn with standard resolution and the same `qteId` must not be offered again immediately
+               - QTE Practice Mode is client-owned practice: no rewards, no GM-authored practice scenes, and it does not mutate campaign state
+               - Practice may teach QTE mechanics outside a campaign; do not author practice offers, practice rewards, Daren rewards, or follow-up practice turns
                - For full QTE protocol rules, read `Rules/Block_CLI_QTE.txt`
                - For canonical QTE offer example, read `Examples/E_CLI_QTE_Offer.txt`
                - A valid `qte_offer.json` must at minimum contain `qteId`, `title`, `offerText`, `introNarrative`, `startChapterId`, `chapters`, and `terminalOutcomes`

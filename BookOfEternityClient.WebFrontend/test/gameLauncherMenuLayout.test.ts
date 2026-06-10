@@ -38,9 +38,13 @@ assert(appSource.includes("import { GameLauncher } from './components/GameLaunch
 assert(appSource.includes("activeRoute === 'home'"), 'App.tsx should keep a default home/launcher route before the player enters the shell.');
 assert(appSource.includes('<GameLauncher menu={menu} />'), 'App.tsx should render GameLauncher from the ready default home route.');
 assert(appSource.includes('{!isLauncherRoute && <TabBar />}'), 'App.tsx should keep tab navigation out of the launcher and restore it after entering the shell.');
-assert(appSource.includes('{!isLauncherRoute && <UnifiedInput />}'), 'App.tsx should keep the command input in the game shell, not on the default launcher.');
+assert(appSource.includes('{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}'), 'App.tsx should keep the command input out of the launcher and practice training route.');
 assert(shellContextSource.includes("useState<RouteId>('home')"), 'ShellContext should default the browser client to the home launcher route.');
+assert(shellContextSource.includes("'practice'"), 'ShellContext should expose a standalone practice route from the launcher.');
 assert(shellContextSource.includes('setActiveRouteState(tabToRoute(tab))'), 'ShellContext tab changes should transition from the launcher into the existing shell routes.');
+assert(launcherSource.includes("'practice'"), 'GameLauncher should include QTE practice as a first-screen launcher mode.');
+assert(launcherSource.includes("onActiveRouteChange('practice')"), 'GameLauncher should open QTE practice without entering a campaign route.');
+assert(launcherSource.includes("action.id === 'qte-practice'"), 'GameLauncher should bind the practice mode to the typed main-menu action.');
 
 assert(launcherSource.includes('<nav className="launcher-menu" aria-label="Действия главного меню">'), 'GameLauncher should render a single launcher-menu nav.');
 assert(launcherSource.includes('      <div className="launcher-art-bg" aria-hidden="true">'), 'GameLauncher should render the decorative launcher background wrapper.');

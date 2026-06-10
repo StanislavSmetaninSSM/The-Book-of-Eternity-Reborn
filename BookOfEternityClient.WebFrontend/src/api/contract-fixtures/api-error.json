@@ -32,6 +32,16 @@
       "kind": "client-panel",
       "command": "",
       "targetPanel": "game-shell"
+    },
+    {
+      "id": "qte-practice",
+      "label": "Тренировка QTE",
+      "description": "Открыть свободную тренировку быстрых сцен без наград и без изменения прохождения.",
+      "enabled": true,
+      "disabledReason": "",
+      "kind": "client-panel",
+      "command": "",
+      "targetPanel": "game-shell"
     }
   ],
   "saves": [

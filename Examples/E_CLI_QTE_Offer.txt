@@ -22,6 +22,8 @@
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `primaryCharacteristic` must use a canonical lowercase stat id such as `dexterity`, `speed`, `wisdom`, or `perception`.
 - Long ordinary QTE scenes may add optional `scoreModel` for scene-local scoring without Daren mode, practice rewards, achievements, inventory, resources, or permanent rewards.
+- QTE Practice Mode is client-owned practice for learning mechanics; it has no rewards, no GM-authored practice scenes, and does not mutate campaign state.
+- Practice attempts may reuse QTE scoring/ranks only as local training feedback; they do not grant XP, Ink Feathers, inventory, quests, Daren rewards, or progress.
 - `scoreModel.metrics[]` defines player-facing metric labels, numeric bounds, initial values, and `visibility` values: `always`, `final`, or `hidden`.
 - `scoreModel.ranks[]` defines ending ranks; non-fallback ranks use `allOf` thresholds and exactly one rank uses `fallback: true`.
 - `scoreModel.rankOrder` defines deterministic rank evaluation order and must include every non-fallback rank id when present.
