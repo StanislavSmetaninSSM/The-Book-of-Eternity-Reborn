@@ -33,6 +33,7 @@
 .narrative-card,
 .reborn-systems-panel,
 .qte-scene-panel,
+.qte-practice-view,
 .media-atlas-panel {
   position: relative;
   border: 1px solid var(--border-card);
@@ -308,6 +309,7 @@
 }
 
 .qte-scene-panel,
+.qte-practice-view,
 .media-atlas-panel {
   display: grid;
   gap: var(--space-4);
@@ -318,6 +320,7 @@
 }
 
 .qte-scene-panel .summary-card,
+.qte-practice-view .summary-card,
 .media-gallery-panel,
 .media-atlas-node {
   display: grid;
@@ -325,6 +328,7 @@
 }
 
 .qte-scene-panel button,
+.qte-practice-view button,
 .media-gallery-card__open {
   border: 1px solid color-mix(in srgb, var(--realm-accent) 32%, rgba(255, 255, 255, 0.08));
   border-radius: var(--radius-md);
@@ -334,9 +338,104 @@
   font-weight: 800;
 }
 
-.qte-scene-panel button:disabled {
+.qte-scene-panel button:disabled,
+.qte-practice-view button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+.qte-practice-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 24rem);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.qte-practice-hero h2,
+.qte-practice-hero p,
+.qte-practice-card h3,
+.qte-practice-card p {
+  margin: 0;
+}
+
+.qte-practice-notice {
+  border: 1px solid color-mix(in srgb, var(--state-qte) 24%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  background: color-mix(in srgb, var(--state-qte) 8%, rgba(8, 11, 12, 0.82));
+  color: var(--color-parchment-muted);
+  font-weight: 720;
+}
+
+.qte-practice-catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-3);
+}
+
+.qte-practice-card {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--state-qte) 24%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  background: rgba(8, 11, 12, 0.6);
+}
+
+.qte-practice-card header,
+.qte-practice-attempt > header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  align-items: start;
+}
+
+.qte-practice-card__type {
+  color: var(--color-mist);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.qte-practice-difficulty {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.qte-practice-difficulty button {
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+}
+
+.qte-practice-difficulty button.is-active {
+  border-color: color-mix(in srgb, var(--color-gold-bright) 62%, rgba(255, 255, 255, 0.12));
+  color: var(--color-gold-bright);
+}
+
+.qte-practice-ready-gate {
+  display: grid;
+  gap: var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--state-qte) 28%, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  background: color-mix(in srgb, var(--state-qte) 8%, rgba(8, 11, 12, 0.78));
+}
+
+.qte-practice-ready-gate h4,
+.qte-practice-ready-gate p {
+  margin: 0;
+}
+
+.qte-practice-ready-gate button {
+  justify-self: start;
+}
+
+@media (max-width: 760px) {
+  .qte-practice-hero {
+    grid-template-columns: 1fr;
+  }
 }
 
 .qte-action-list {

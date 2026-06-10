@@ -4,6 +4,7 @@ import gameScreenFixture from './contract-fixtures/game-screen.json';
 import lifecycleDashboardFixture from './contract-fixtures/lifecycle-dashboard.json';
 import explorerCommandResultFixture from './contract-fixtures/explorer-command-result.json';
 import qteStateFixture from './contract-fixtures/qte-state.json';
+import qtePracticeStateFixture from './contract-fixtures/qte-practice-state.json';
 import audioSettingsFixture from './contract-fixtures/audio-settings.json';
 import clientSettingsFixture from './contract-fixtures/client-settings.json';
 import commandCoverageFixture from './contract-fixtures/command-coverage.json';
@@ -18,6 +19,7 @@ import type {
   BrowserMainMenuDto,
   ExplorerCommandResult,
   LocalWebUiSessionStatus,
+  QtePracticeWebStateDto,
   QteWebStateDto
 } from './contracts';
 
@@ -28,6 +30,7 @@ const lifecycleDashboardContract = lifecycleDashboardFixture satisfies BrowserLi
 const explorerCommandResultContract =
   (explorerCommandResultFixture as unknown as ExplorerCommandResult) satisfies ExplorerCommandResult;
 const qteStateContract = qteStateFixture satisfies QteWebStateDto;
+const qtePracticeStateContract = qtePracticeStateFixture satisfies QtePracticeWebStateDto;
 const audioSettingsContract = audioSettingsFixture satisfies BrowserAudioSettingsDto;
 const clientSettingsContract = clientSettingsFixture satisfies BrowserClientSettingsDto;
 const commandCoverageContract = commandCoverageFixture satisfies BrowserCommandCoverageDto;
@@ -40,6 +43,7 @@ export const browserApiContractFixtures = {
   lifecycleDashboardContract,
   explorerCommandResultContract,
   qteStateContract,
+  qtePracticeStateContract,
   audioSettingsContract,
   clientSettingsContract,
   commandCoverageContract,

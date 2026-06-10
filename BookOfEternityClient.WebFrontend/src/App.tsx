@@ -5,6 +5,7 @@ import { ErrorNotice } from './components/ErrorNotice';
 import { LoadingCard } from './components/LoadingCard';
 import { TabBar } from './components/TabBar';
 import { SceneView } from './components/SceneView';
+import { QtePracticeView } from './components/QtePracticeView';
 import { StatusView } from './components/StatusView';
 import { HelpView } from './components/HelpView';
 import { SettingsView } from './components/SettingsView';
@@ -23,6 +24,7 @@ export default function App() {
 function AppShell() {
   const { activeRoute, advancedEnabled, clientSettings, menu, readyState, realmTheme, shellState, activeTab } = useShell();
   const isLauncherRoute = activeRoute === 'home' && menu !== null;
+  const isPracticeRoute = activeRoute === 'practice';
   const browserShellClassName = [
     'browser-shell',
     isLauncherRoute ? 'is-launcher-route' : '',
@@ -43,7 +45,7 @@ function AppShell() {
         {shellState.status === 'error' && <ErrorNotice title="Книга сейчас недоступна" failure={shellState} advancedEnabled={advancedEnabled} />}
         {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : <TabContent activeTab={activeTab} />)}
       </section>
-      {!isLauncherRoute && <UnifiedInput />}
+      {!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}
     </main>
   );
 }
@@ -51,6 +53,7 @@ function AppShell() {
 function TabContent({ activeTab }: { activeTab: TabId }) {
   switch (activeTab) {
     case 'scene': return <SceneView />;
+    case 'practice': return <QtePracticeView />;
     case 'status': return <StatusView />;
     case 'help': return <HelpView />;
     case 'settings': return <SettingsView />;

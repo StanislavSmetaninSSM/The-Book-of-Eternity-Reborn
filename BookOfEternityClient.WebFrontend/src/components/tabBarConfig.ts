@@ -10,9 +10,10 @@ export interface TabNavItem {
 
 export const tabNav: readonly TabNavItem[] = [
   { id: 'scene', icon: '📖', label: 'Сцена', shortcut: '1', description: 'Текущий ход, повествование и быстрые действия.' },
-  { id: 'status', icon: '📊', label: 'Статус', shortcut: '2', description: 'Персонаж, душа, мир и посмертный прогресс.' },
-  { id: 'help', icon: '❓', label: 'Помощь', shortcut: '3', description: 'Справка книги и подсказки текущей главы.' },
-  { id: 'settings', icon: '⚙️', label: 'Настройки', shortcut: '4', description: 'Язык, звук, доступность и явный расширенный режим.' }
+  { id: 'practice', icon: '⚡', label: 'Тренировка', shortcut: '2', description: 'Свободная тренировка быстрых сцен без наград.' },
+  { id: 'status', icon: '📊', label: 'Статус', shortcut: '3', description: 'Персонаж, душа, мир и посмертный прогресс.' },
+  { id: 'help', icon: '❓', label: 'Помощь', shortcut: '4', description: 'Справка книги и подсказки текущей главы.' },
+  { id: 'settings', icon: '⚙️', label: 'Настройки', shortcut: '5', description: 'Язык, звук, доступность и явный расширенный режим.' }
 ];
 
 export function resolveTabShortcut(key: string): TabId | null {

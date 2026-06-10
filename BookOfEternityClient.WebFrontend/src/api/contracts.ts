@@ -1042,6 +1042,49 @@ export interface QteWebStateDto {
   error: string | null;
 }
 
+export interface QtePracticeWebStateDto {
+  state: string;
+  catalog: QtePracticeCatalogEntryDto[];
+  selectedTypeId: string | null;
+  selectedDifficultyId: string | null;
+  activeScene: QteWebActiveSceneDto | null;
+  resolution: QteWebResolutionDto | null;
+  completion: QteWebCompletionDto | null;
+  feedbackTitle: string;
+  feedback: string;
+  localScoreNotice: string;
+  availableOperations: string[];
+  notification: string | null;
+  error: string | null;
+}
+
+export interface QtePracticeCatalogEntryDto {
+  typeId: string;
+  title: string;
+  description: string;
+  instructions: string;
+  available: boolean;
+  unavailableReason: string | null;
+  supportedSurfaces: string[];
+  difficulties: QtePracticeDifficultyDto[];
+}
+
+export interface QtePracticeDifficultyDto {
+  difficultyId: string;
+  label: string;
+  description: string;
+}
+
+export interface QtePracticeStartRequest {
+  typeId: string | null;
+  difficultyId: string | null;
+}
+
+export interface QtePracticeActionRequest {
+  actionId: string | null;
+  grade: string | null;
+}
+
 export interface QteWebOfferDto {
   qteId: string;
   title: string;

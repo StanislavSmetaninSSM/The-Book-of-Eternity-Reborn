@@ -63,6 +63,8 @@ public sealed class BrowserApiContractTests
         Assert.Contains("export interface BrowserLifecycleDashboardDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface ExplorerCommandResult", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface QteWebStateDto", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface QtePracticeWebStateDto", contracts, StringComparison.Ordinal);
+        Assert.Contains("export interface QtePracticeCatalogEntryDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserAudioSettingsDto", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserAudioSettingsUpdateRequest", contracts, StringComparison.Ordinal);
         Assert.Contains("export interface BrowserClientSettingsDto", contracts, StringComparison.Ordinal);
@@ -85,6 +87,11 @@ public sealed class BrowserApiContractTests
         Assert.Contains("executeExplorerCommand", client, StringComparison.Ordinal);
         Assert.Contains("submitPromptSession", client, StringComparison.Ordinal);
         Assert.Contains("getQteState", client, StringComparison.Ordinal);
+        Assert.Contains("getQtePractice", client, StringComparison.Ordinal);
+        Assert.Contains("startQtePractice", client, StringComparison.Ordinal);
+        Assert.Contains("resolveQtePracticeAction", client, StringComparison.Ordinal);
+        Assert.Contains("retryQtePractice", client, StringComparison.Ordinal);
+        Assert.Contains("exitQtePractice", client, StringComparison.Ordinal);
         Assert.Contains("resolveQteAction", client, StringComparison.Ordinal);
         Assert.Contains("getAudioSettings", client, StringComparison.Ordinal);
         Assert.Contains("updateAudioSettings", client, StringComparison.Ordinal);
@@ -95,6 +102,9 @@ public sealed class BrowserApiContractTests
         Assert.Contains("client-settings", client, StringComparison.Ordinal);
         Assert.Contains("client-settings-update", client, StringComparison.Ordinal);
         Assert.Contains("command-coverage", client, StringComparison.Ordinal);
+        Assert.Contains("qte-practice-state", client, StringComparison.Ordinal);
+        Assert.Contains("qte-practice-start", client, StringComparison.Ordinal);
+        Assert.Contains("qte-practice-action", client, StringComparison.Ordinal);
         Assert.DoesNotContain("any", client, StringComparison.Ordinal);
     }
 
@@ -127,6 +137,7 @@ public sealed class BrowserApiContractTests
         Assert.Contains("satisfies BrowserLifecycleDashboardDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies ExplorerCommandResult", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies QteWebStateDto", fixtureChecks, StringComparison.Ordinal);
+        Assert.Contains("satisfies QtePracticeWebStateDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserAudioSettingsDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserClientSettingsDto", fixtureChecks, StringComparison.Ordinal);
         Assert.Contains("satisfies BrowserCommandCoverageDto", fixtureChecks, StringComparison.Ordinal);
@@ -566,6 +577,7 @@ public sealed class BrowserApiContractTests
         yield return ["lifecycle-dashboard.json", BuildLifecycleDashboard()];
         yield return ["explorer-command-result.json", BuildExplorerCommandResult()];
         yield return ["qte-state.json", BuildQteStateFixture()];
+        yield return ["qte-practice-state.json", BuildQtePracticeStateFixture()];
         yield return ["audio-settings.json", BuildAudioSettings()];
         yield return ["client-settings.json", BuildClientSettings()];
         yield return ["command-coverage.json", BuildCommandCoverage()];
@@ -686,6 +698,15 @@ public sealed class BrowserApiContractTests
                     Id: "continue",
                     Label: "Продолжить",
                     Description: "Арион • Смертный мир • Ход 12",
+                    Enabled: true,
+                    DisabledReason: string.Empty,
+                    Kind: "client-panel",
+                    Command: string.Empty,
+                    TargetPanel: "game-shell"),
+                new BrowserMainMenuActionDto(
+                    Id: "qte-practice",
+                    Label: "Тренировка QTE",
+                    Description: "Открыть свободную тренировку быстрых сцен без наград и без изменения прохождения.",
                     Enabled: true,
                     DisabledReason: string.Empty,
                     Kind: "client-panel",
@@ -1064,6 +1085,64 @@ public sealed class BrowserApiContractTests
             LastResolvedReminder = null,
             LastDeclinedQteId = null,
             AvailableOperations = ["submitAction"],
+            Notification = null,
+            Error = null
+        };
+
+    private static QtePracticeWebStateDto BuildQtePracticeStateFixture() =>
+        new()
+        {
+            State = "Catalog",
+            Catalog =
+            [
+                new QtePracticeCatalogEntryDto
+                {
+                    TypeId = "BranchChoice",
+                    Title = "Выбор ветки",
+                    Description = "Тренировка выбора быстрого действия без наград и без изменения сюжета.",
+                    Instructions = "Выберите действие и посмотрите локальный тренировочный результат.",
+                    Available = true,
+                    UnavailableReason = null,
+                    SupportedSurfaces = ["console", "browser"],
+                    Difficulties =
+                    [
+                        new QtePracticeDifficultyDto
+                        {
+                            DifficultyId = "normal",
+                            Label = "Обычная",
+                            Description = "Базовая скорость тренировки."
+                        }
+                    ]
+                },
+                new QtePracticeCatalogEntryDto
+                {
+                    TypeId = "MashInput",
+                    Title = "Рывок усилия",
+                    Description = "Тренировка частых нажатий без наград и без изменения сюжета.",
+                    Instructions = "Нажимайте Space в рамках мини-игры.",
+                    Available = true,
+                    UnavailableReason = null,
+                    SupportedSurfaces = ["console", "browser"],
+                    Difficulties =
+                    [
+                        new QtePracticeDifficultyDto
+                        {
+                            DifficultyId = "normal",
+                            Label = "Обычная",
+                            Description = "Базовая скорость тренировки."
+                        }
+                    ]
+                }
+            ],
+            SelectedTypeId = null,
+            SelectedDifficultyId = null,
+            ActiveScene = null,
+            Resolution = null,
+            Completion = null,
+            FeedbackTitle = "Свободная тренировка",
+            Feedback = "Выберите тип QTE. Тренировка не меняет сюжет и не выдаёт награды.",
+            LocalScoreNotice = "Тренировочный счёт остаётся только на этой тренировке: без наград, опыта, предметов и прогресса.",
+            AvailableOperations = ["startAttempt", "exit"],
             Notification = null,
             Error = null
         };

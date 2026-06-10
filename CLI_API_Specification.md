@@ -1148,6 +1148,11 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - The client shows a native `Accept / Decline` prompt.
 - If the player declines, the client sends a new ordinary `turn_request.json` asking for standard mechanical resolution and forbidding the same `qteId` from being re-offered.
 - If the player accepts, the full QTE scene resolves locally on the client.
+- QTE Practice Mode is client-owned practice for learning implemented QTE mechanics before or outside a normal campaign.
+- Practice has no rewards: no XP, achievements, Ink Feathers, inventory, quest progress, Daren rewards, or other permanent benefits.
+- Practice has no GM-authored practice scenes; the GM must not author practice offers, action types, response fields, or follow-up turns.
+- Practice does not mutate campaign state, pending campaign actions, ordinary turn state, or permanent reward state.
+- Daren showcase work in #919 may point players toward practice, but Daren rewards/endings/adventure content are outside the QTE Practice Mode contract.
 - A valid `qte_offer.json` must contain these top-level fields:
   - `qteId`
   - `title`

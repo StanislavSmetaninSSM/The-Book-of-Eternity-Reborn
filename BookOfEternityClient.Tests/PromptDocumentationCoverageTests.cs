@@ -190,6 +190,43 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void QtePracticeMode_IsDocumentedAsClientOwnedNoRewardTraining()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "QTE Practice Mode",
+            "client-owned practice",
+            "no rewards",
+            "no GM-authored practice scenes",
+            "does not mutate campaign state",
+            "Daren",
+            "#919"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "QTE Practice Mode",
+            "client-owned practice",
+            "no rewards",
+            "no GM-authored practice scenes",
+            "does not mutate campaign state"
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+            Assert.Contains(requiredText, stepGuide, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void PatternMemoryQteContract_IsDocumentedForGmAndPlayers()
     {
         var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");

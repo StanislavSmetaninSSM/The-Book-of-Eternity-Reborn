@@ -179,6 +179,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("import { TabBar } from './components/TabBar';", app, StringComparison.Ordinal);
         Assert.Contains("import { SceneView } from './components/SceneView';", app, StringComparison.Ordinal);
         Assert.Contains("import { StatusView } from './components/StatusView';", app, StringComparison.Ordinal);
+        Assert.Contains("import { QtePracticeView } from './components/QtePracticeView';", app, StringComparison.Ordinal);
         Assert.Contains("import { HelpView } from './components/HelpView';", app, StringComparison.Ordinal);
         Assert.Contains("import { SettingsView } from './components/SettingsView';", app, StringComparison.Ordinal);
         Assert.Contains("import { UnifiedInput } from './components/UnifiedInput';", app, StringComparison.Ordinal);
@@ -187,13 +188,15 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("{!isLauncherRoute && <TabBar />}", app, StringComparison.Ordinal);
         Assert.Contains("<section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live=\"polite\">", app, StringComparison.Ordinal);
         Assert.Contains("<GameLauncher menu={menu} />", app, StringComparison.Ordinal);
-        Assert.Contains("{!isLauncherRoute && <UnifiedInput />}", app, StringComparison.Ordinal);
+        Assert.Contains("{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}", app, StringComparison.Ordinal);
         Assert.Contains("case 'scene': return <SceneView />;", app, StringComparison.Ordinal);
+        Assert.Contains("case 'practice': return <QtePracticeView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'status': return <StatusView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'help': return <HelpView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'settings': return <SettingsView />;", app, StringComparison.Ordinal);
 
-        Assert.Contains("export type TabId = 'scene' | 'status' | 'help' | 'settings';", shellContext, StringComparison.Ordinal);
+        Assert.Contains("export type TabId = 'scene' | 'practice' | 'status' | 'help' | 'settings';", shellContext, StringComparison.Ordinal);
+        Assert.Contains("export type RouteId = 'home' | 'game' | 'practice'", shellContext, StringComparison.Ordinal);
         Assert.Contains("const [activeRoute, setActiveRouteState] = useState<RouteId>('home');", shellContext, StringComparison.Ordinal);
         Assert.Contains("const activeTab = useMemo(() => routeToTab(activeRoute), [activeRoute]);", shellContext, StringComparison.Ordinal);
         Assert.Contains("setActiveRouteState(tabToRoute(tab));", shellContext, StringComparison.Ordinal);
@@ -238,11 +241,12 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("export interface TabNavItem", config, StringComparison.Ordinal);
         Assert.Contains("export const tabNav: readonly TabNavItem[]", config, StringComparison.Ordinal);
         Assert.Contains("id: 'scene'", config, StringComparison.Ordinal);
+        Assert.Contains("id: 'practice'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'status'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'help'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'settings'", config, StringComparison.Ordinal);
         Assert.Contains("shortcut: '1'", config, StringComparison.Ordinal);
-        Assert.Contains("shortcut: '4'", config, StringComparison.Ordinal);
+        Assert.Contains("shortcut: '5'", config, StringComparison.Ordinal);
         Assert.Contains("export function resolveTabShortcut", config, StringComparison.Ordinal);
 
         Assert.Contains("function isShortcutBlockedTarget", tabBar, StringComparison.Ordinal);
