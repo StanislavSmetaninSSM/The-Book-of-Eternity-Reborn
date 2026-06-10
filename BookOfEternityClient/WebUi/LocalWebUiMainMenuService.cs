@@ -223,6 +223,15 @@ public sealed class LocalWebUiMainMenuService
                 Command: string.Empty,
                 TargetPanel: "practice-panel"),
             new BrowserMainMenuActionDto(
+                Id: "daren-showcase",
+                Label: "Вылазка Дарена",
+                Description: "Отдельное QTE-ограбление поместья с постоянным лучшим итогом для будущей новой игры.",
+                Enabled: true,
+                DisabledReason: string.Empty,
+                Kind: "client-panel",
+                Command: string.Empty,
+                TargetPanel: "daren-showcase-panel"),
+            new BrowserMainMenuActionDto(
                 Id: "load",
                 Label: "Загрузить",
                 Description: hasSaves

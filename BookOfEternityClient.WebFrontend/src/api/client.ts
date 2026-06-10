@@ -9,6 +9,8 @@ import type {
   BrowserClientSettingsDto,
   BrowserClientSettingsUpdateRequest,
   BrowserCommandCoverageDto,
+  DarenShowcaseActionRequest,
+  DarenShowcaseWebStateDto,
   BrowserGameScreenDto,
   BrowserLifecycleDashboardDto,
   BrowserLoadSaveRequest,
@@ -61,6 +63,11 @@ export interface BrowserApiClient {
   resolveQtePracticeAction(request: QtePracticeActionRequest): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
   retryQtePractice(): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
   exitQtePractice(): Promise<BrowserApiResult<QtePracticeWebStateDto>>;
+  getDarenShowcase(): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
+  startDarenShowcase(): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
+  resolveDarenShowcaseAction(request: DarenShowcaseActionRequest): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
+  retryDarenShowcase(): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
+  exitDarenShowcase(): Promise<BrowserApiResult<DarenShowcaseWebStateDto>>;
   submitPlayerAction(request: BrowserPlayerActionRequest): Promise<BrowserApiResult<BrowserPlayerActionResult>>;
   generateMedia(request: BrowserMediaGenerateRequest): Promise<BrowserApiResult<BrowserMediaGenerateResult>>;
 }
@@ -90,6 +97,11 @@ export const browserApiEndpointDocs = [
   { id: 'qte-practice-action', method: 'POST', path: '/api/qte/practice/action', playerSurface: 'player-default', response: 'QtePracticeWebStateDto' },
   { id: 'qte-practice-retry', method: 'POST', path: '/api/qte/practice/retry', playerSurface: 'player-default', response: 'QtePracticeWebStateDto' },
   { id: 'qte-practice-exit', method: 'POST', path: '/api/qte/practice/exit', playerSurface: 'player-default', response: 'QtePracticeWebStateDto' },
+  { id: 'qte-daren-state', method: 'GET', path: '/api/qte/daren', playerSurface: 'player-default', response: 'DarenShowcaseWebStateDto' },
+  { id: 'qte-daren-start', method: 'POST', path: '/api/qte/daren/start', playerSurface: 'player-default', response: 'DarenShowcaseWebStateDto' },
+  { id: 'qte-daren-action', method: 'POST', path: '/api/qte/daren/action', playerSurface: 'player-default', response: 'DarenShowcaseWebStateDto' },
+  { id: 'qte-daren-retry', method: 'POST', path: '/api/qte/daren/retry', playerSurface: 'player-default', response: 'DarenShowcaseWebStateDto' },
+  { id: 'qte-daren-exit', method: 'POST', path: '/api/qte/daren/exit', playerSurface: 'player-default', response: 'DarenShowcaseWebStateDto' },
   { id: 'player-action', method: 'POST', path: '/api/explorer/player-action', playerSurface: 'player-default', response: 'BrowserPlayerActionResult' },
   { id: 'media-generate', method: 'POST', path: '/api/media/generate', playerSurface: 'player-default', response: 'BrowserMediaGenerateResult' }
 ] as const satisfies BrowserApiEndpointDescriptor[];
@@ -129,6 +141,11 @@ export function createBrowserApiClient(options: BrowserApiClientOptions = {}): B
     resolveQtePracticeAction: (request) => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/action', jsonInit('POST', request)),
     retryQtePractice: () => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/retry', jsonInit('POST')),
     exitQtePractice: () => requestJson<QtePracticeWebStateDto>(fetcher, baseUrl, '/api/qte/practice/exit', jsonInit('POST')),
+    getDarenShowcase: () => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren'),
+    startDarenShowcase: () => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/start', jsonInit('POST')),
+    resolveDarenShowcaseAction: (request) => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/action', jsonInit('POST', request)),
+    retryDarenShowcase: () => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/retry', jsonInit('POST')),
+    exitDarenShowcase: () => requestJson<DarenShowcaseWebStateDto>(fetcher, baseUrl, '/api/qte/daren/exit', jsonInit('POST')),
     submitPlayerAction: (request) => requestJson<BrowserPlayerActionResult>(fetcher, baseUrl, '/api/explorer/player-action', jsonInit('POST', request)),
     generateMedia: (request) => requestJson<BrowserMediaGenerateResult>(fetcher, baseUrl, '/api/media/generate', jsonInit('POST', request))
   };

@@ -41,7 +41,17 @@
       "disabledReason": "",
       "kind": "client-panel",
       "command": "",
-      "targetPanel": "game-shell"
+      "targetPanel": "practice-panel"
+    },
+    {
+      "id": "daren-showcase",
+      "label": "Вылазка Дарена",
+      "description": "Отдельное QTE-ограбление поместья с постоянным лучшим итогом для будущей новой игры.",
+      "enabled": true,
+      "disabledReason": "",
+      "kind": "client-panel",
+      "command": "",
+      "targetPanel": "daren-showcase-panel"
     }
   ],
   "saves": [

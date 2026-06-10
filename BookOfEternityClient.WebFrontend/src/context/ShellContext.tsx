@@ -27,7 +27,7 @@ import { sanitizeExplorerCommandResultForPlayer } from '../utils/playerCopy';
 export type TabId = 'scene' | 'practice' | 'status' | 'help' | 'settings';
 
 /** @deprecated Temporary compatibility alias until remaining route consumers migrate. */
-export type RouteId = 'home' | 'game' | 'practice' | 'soul' | 'world' | 'journal' | 'inventory' | 'media' | 'settings';
+export type RouteId = 'home' | 'game' | 'practice' | 'daren-showcase' | 'soul' | 'world' | 'journal' | 'inventory' | 'media' | 'settings';
 
 export type BrowserShellState =
   | { status: 'loading' }
@@ -91,6 +91,7 @@ const routeToTabMap: Record<RouteId, TabId> = {
   home: 'scene',
   game: 'scene',
   practice: 'practice',
+  'daren-showcase': 'practice',
   soul: 'status',
   world: 'scene',
   journal: 'help',

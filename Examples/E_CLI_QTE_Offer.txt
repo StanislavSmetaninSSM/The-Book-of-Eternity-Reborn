@@ -24,6 +24,9 @@
 - Long ordinary QTE scenes may add optional `scoreModel` for scene-local scoring without Daren mode, practice rewards, achievements, inventory, resources, or permanent rewards.
 - QTE Practice Mode is client-owned practice for learning mechanics; it has no rewards, no GM-authored practice scenes, and does not mutate campaign state.
 - Practice attempts may reuse QTE scoring/ranks only as local training feedback; they do not grant XP, Ink Feathers, inventory, quests, Daren rewards, or progress.
+- Daren showcase is client-owned authored content and is not a GM-authored QTE offer.
+- Daren showcase uses QTE mechanics for the fixed Daren manor theft route, stores only the best Daren tier outside ordinary `game_state`, and may grant a New Game Ink Feather bonus from that stored best tier.
+- QTE Practice Mode must not grant Daren rewards, and ordinary campaign QTE offers must not write Daren showcase tiers, Daren profile records, New Game grant markers, or permanent Ink Feather reward state.
 - `scoreModel.metrics[]` defines player-facing metric labels, numeric bounds, initial values, and `visibility` values: `always`, `final`, or `hidden`.
 - `scoreModel.ranks[]` defines ending ranks; non-fallback ranks use `allOf` thresholds and exactly one rank uses `fallback: true`.
 - `scoreModel.rankOrder` defines deterministic rank evaluation order and must include every non-fallback rank id when present.

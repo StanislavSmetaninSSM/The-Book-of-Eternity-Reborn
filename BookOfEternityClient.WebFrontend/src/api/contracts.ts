@@ -1085,6 +1085,44 @@ export interface QtePracticeActionRequest {
   grade: string | null;
 }
 
+export interface DarenShowcaseWebStateDto {
+  state: string;
+  introTitle: string;
+  introText: string;
+  boundaryNotice: string;
+  rewardNotice: string;
+  bestReward: DarenRewardProfileDto | null;
+  activeScene: QteWebActiveSceneDto | null;
+  resolution: QteWebResolutionDto | null;
+  completion: QteWebCompletionDto | null;
+  ending: DarenShowcaseEndingDto | null;
+  availableOperations: string[];
+  notification: string | null;
+  error: string | null;
+}
+
+export interface DarenRewardProfileDto {
+  tierId: string;
+  tierName: string;
+  inkFeatherBonus: number;
+  bestScore: number;
+  completedAtUtc: string;
+}
+
+export interface DarenShowcaseEndingDto {
+  tierId: string | null;
+  displayName: string;
+  normalizedScore: number;
+  inkFeatherBonus: number;
+  grantsReward: boolean;
+  rewardMessage: string;
+}
+
+export interface DarenShowcaseActionRequest {
+  actionId: string | null;
+  grade: string | null;
+}
+
 export interface QteWebOfferDto {
   qteId: string;
   title: string;

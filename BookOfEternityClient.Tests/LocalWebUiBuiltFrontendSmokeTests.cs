@@ -158,7 +158,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         Assert.Contains("import { TabBar } from './components/TabBar';", appSource, StringComparison.Ordinal);
         Assert.Contains("<GameLauncher menu={menu} />", appSource, StringComparison.Ordinal);
         Assert.Contains("const isPracticeRoute = activeRoute === 'practice';", appSource, StringComparison.Ordinal);
-        Assert.Contains("{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}", appSource, StringComparison.Ordinal);
+        Assert.Contains("{!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}", appSource, StringComparison.Ordinal);
         Assert.Contains("tabNav.map((tab)", tabBarSource, StringComparison.Ordinal);
         Assert.Contains("Открыть книгу", launcherSource, StringComparison.Ordinal);
         Assert.Contains("Продолжить главу", launcherSource, StringComparison.Ordinal);

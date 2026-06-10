@@ -12,6 +12,8 @@ public sealed record QtePracticeStartRequest(string? TypeId, string? DifficultyI
 
 public sealed record QtePracticeActionRequest(string? ActionId, string? Grade);
 
+public sealed record DarenShowcaseActionRequest(string? ActionId, string? Grade);
+
 public sealed class QteWebInteractionService
 {
     private static readonly string[] GradeOptions = ["success", "partial", "fail"];
@@ -21,6 +23,7 @@ public sealed class QteWebInteractionService
     private readonly FileSystemManager _fs;
     private readonly QteSceneService _qteSceneService;
     private QteSceneService.QtePracticeAttemptState? _practiceAttempt;
+    private QteSceneService.DarenShowcaseAttemptState? _darenAttempt;
 
     public QteWebInteractionService(FileSystemManager fs, QteSceneService qteSceneService)
     {
@@ -135,6 +138,9 @@ public sealed class QteWebInteractionService
     public Task<QtePracticeWebStateDto> BuildPracticeStateAsync() =>
         BuildPracticeStateCoreAsync(notification: null, error: null);
 
+    public Task<DarenShowcaseWebStateDto> BuildDarenShowcaseStateAsync() =>
+        BuildDarenShowcaseStateCoreAsync(notification: null, error: null);
+
     public async Task<QtePracticeWebStateDto> StartPracticeAttemptAsync(QtePracticeStartRequest? request)
     {
         try
@@ -183,6 +189,46 @@ public sealed class QteWebInteractionService
         return BuildPracticeStateCoreAsync("Тренировка закрыта.", error: null);
     }
 
+    public async Task<DarenShowcaseWebStateDto> StartDarenShowcaseAsync()
+    {
+        _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
+        return await BuildDarenShowcaseStateCoreAsync("Вылазка Дарена началась.", error: null);
+    }
+
+    public async Task<DarenShowcaseWebStateDto> ResolveDarenShowcaseActionAsync(DarenShowcaseActionRequest? request)
+    {
+        var actionId = request?.ActionId?.Trim();
+        if (string.IsNullOrWhiteSpace(actionId))
+            return await BuildDarenShowcaseStateCoreAsync(notification: null, error: "actionId is required.", stateOverride: "Failed");
+
+        if (_darenAttempt == null || !string.Equals(_darenAttempt.State, "Active", StringComparison.OrdinalIgnoreCase))
+            return await BuildDarenShowcaseStateCoreAsync(notification: null, error: "Вылазка Дарена не запущена.", stateOverride: "Failed");
+
+        try
+        {
+            var resolution = await _qteSceneService.ResolveDarenShowcaseActionAsync(_darenAttempt, actionId, request?.Grade);
+            return await BuildDarenShowcaseStateCoreAsync(
+                resolution.Completion == null ? "Вылазка продолжается." : "Вылазка завершена.",
+                error: null);
+        }
+        catch (Exception ex)
+        {
+            return await BuildDarenShowcaseStateCoreAsync(notification: null, error: ex.Message, stateOverride: "Failed");
+        }
+    }
+
+    public async Task<DarenShowcaseWebStateDto> RetryDarenShowcaseAsync()
+    {
+        _darenAttempt = _qteSceneService.StartDarenShowcaseAttempt();
+        return await BuildDarenShowcaseStateCoreAsync("Вылазка Дарена началась заново.", error: null);
+    }
+
+    public Task<DarenShowcaseWebStateDto> ExitDarenShowcaseAsync()
+    {
+        _darenAttempt = null;
+        return BuildDarenShowcaseStateCoreAsync("Вылазка Дарена закрыта.", error: null);
+    }
+
     private async Task<QtePracticeWebStateDto> BuildPracticeStateCoreAsync(
         string? notification,
         string? error,
@@ -223,6 +269,68 @@ public sealed class QteWebInteractionService
 
         return ["startAttempt", "exit"];
     }
+
+    private async Task<DarenShowcaseWebStateDto> BuildDarenShowcaseStateCoreAsync(
+        string? notification,
+        string? error,
+        string? stateOverride = null)
+    {
+        var attempt = _darenAttempt;
+        var state = stateOverride ?? attempt?.State ?? "Intro";
+        var activeScene = attempt != null && string.Equals(attempt.State, "Active", StringComparison.OrdinalIgnoreCase)
+            ? await BuildActiveSceneAsync(attempt.ActiveScene)
+            : null;
+        var profile = await new DarenQteRewardProfileService(_fs).ReadProfileAsync();
+
+        return new DarenShowcaseWebStateDto
+        {
+            State = state,
+            IntroTitle = "Ограбление поместья Дареном",
+            IntroText = "Хитрый вор Дарен проникает в запертое поместье, крадёт магический посох, уходит от погони и возвращается в убежище.",
+            BoundaryNotice = attempt?.BoundaryNotice ?? DarenShowcaseWebStateDto.DefaultBoundaryNotice,
+            RewardNotice = attempt?.RewardNotice ?? DarenShowcaseWebStateDto.DefaultRewardNotice,
+            BestReward = profile.DarenShowcase == null ? null : BuildDarenBestReward(profile.DarenShowcase),
+            ActiveScene = activeScene,
+            Resolution = attempt?.LastResolution == null ? null : BuildResolution(attempt.LastResolution),
+            Completion = attempt?.LastCompletion == null ? null : BuildCompletion(attempt.LastCompletion),
+            Ending = attempt?.Ending == null ? null : BuildDarenEnding(attempt.Ending),
+            AvailableOperations = BuildDarenOperations(state).ToList(),
+            Notification = notification,
+            Error = error
+        };
+    }
+
+    private static IEnumerable<string> BuildDarenOperations(string state)
+    {
+        if (string.Equals(state, "Active", StringComparison.OrdinalIgnoreCase))
+            return ["submitAction", "exit"];
+
+        if (string.Equals(state, "Completed", StringComparison.OrdinalIgnoreCase))
+            return ["retry", "exit"];
+
+        return ["start", "exit"];
+    }
+
+    private static DarenRewardProfileDto BuildDarenBestReward(DarenRewardRecord record) =>
+        new()
+        {
+            TierId = record.BestTierId,
+            TierName = record.BestTierName,
+            InkFeatherBonus = record.InkFeatherBonus,
+            BestScore = record.BestScore,
+            CompletedAtUtc = record.CompletedAtUtc
+        };
+
+    private static DarenShowcaseEndingDto BuildDarenEnding(QteSceneService.DarenShowcaseEnding ending) =>
+        new()
+        {
+            TierId = ending.TierId,
+            DisplayName = ending.DisplayName,
+            NormalizedScore = ending.NormalizedScore,
+            InkFeatherBonus = ending.InkFeatherBonus,
+            GrantsReward = ending.GrantsReward,
+            RewardMessage = ending.RewardMessage
+        };
 
     private static QtePracticeCatalogEntryDto BuildPracticeCatalogEntry(QteSceneService.QtePracticeCatalogEntry entry) =>
         new()
@@ -1028,6 +1136,48 @@ public sealed class QtePracticeWebStateDto
     public List<string> AvailableOperations { get; init; } = [];
     public string? Notification { get; init; }
     public string? Error { get; init; }
+}
+
+public sealed class DarenShowcaseWebStateDto
+{
+    public const string DefaultBoundaryNotice =
+        "Это отдельная авторская QTE-вылазка: обычная глава, обычные ходы и свободная тренировка QTE не меняются.";
+
+    public const string DefaultRewardNotice =
+        "Лучший итог Дарена запоминается книгой и даёт Чернильные Перья только при создании будущей новой игры.";
+
+    public string State { get; init; } = "Intro";
+    public string IntroTitle { get; init; } = "Ограбление поместья Дареном";
+    public string IntroText { get; init; } = "";
+    public string BoundaryNotice { get; init; } = DefaultBoundaryNotice;
+    public string RewardNotice { get; init; } = DefaultRewardNotice;
+    public DarenRewardProfileDto? BestReward { get; init; }
+    public QteWebActiveSceneDto? ActiveScene { get; init; }
+    public QteWebResolutionDto? Resolution { get; init; }
+    public QteWebCompletionDto? Completion { get; init; }
+    public DarenShowcaseEndingDto? Ending { get; init; }
+    public List<string> AvailableOperations { get; init; } = [];
+    public string? Notification { get; init; }
+    public string? Error { get; init; }
+}
+
+public sealed class DarenRewardProfileDto
+{
+    public string TierId { get; init; } = "";
+    public string TierName { get; init; } = "";
+    public int InkFeatherBonus { get; init; }
+    public int BestScore { get; init; }
+    public DateTime CompletedAtUtc { get; init; }
+}
+
+public sealed class DarenShowcaseEndingDto
+{
+    public string? TierId { get; init; }
+    public string DisplayName { get; init; } = "";
+    public int NormalizedScore { get; init; }
+    public int InkFeatherBonus { get; init; }
+    public bool GrantsReward { get; init; }
+    public string RewardMessage { get; init; } = "";
 }
 
 public sealed class QtePracticeCatalogEntryDto

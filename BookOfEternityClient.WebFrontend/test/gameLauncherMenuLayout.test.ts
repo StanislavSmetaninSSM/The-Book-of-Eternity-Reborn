@@ -38,7 +38,7 @@ assert(appSource.includes("import { GameLauncher } from './components/GameLaunch
 assert(appSource.includes("activeRoute === 'home'"), 'App.tsx should keep a default home/launcher route before the player enters the shell.');
 assert(appSource.includes('<GameLauncher menu={menu} />'), 'App.tsx should render GameLauncher from the ready default home route.');
 assert(appSource.includes('{!isLauncherRoute && <TabBar />}'), 'App.tsx should keep tab navigation out of the launcher and restore it after entering the shell.');
-assert(appSource.includes('{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}'), 'App.tsx should keep the command input out of the launcher and practice training route.');
+assert(appSource.includes('{!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}'), 'App.tsx should keep the command input out of the launcher and standalone QTE routes.');
 assert(shellContextSource.includes("useState<RouteId>('home')"), 'ShellContext should default the browser client to the home launcher route.');
 assert(shellContextSource.includes("'practice'"), 'ShellContext should expose a standalone practice route from the launcher.');
 assert(shellContextSource.includes('setActiveRouteState(tabToRoute(tab))'), 'ShellContext tab changes should transition from the launcher into the existing shell routes.');

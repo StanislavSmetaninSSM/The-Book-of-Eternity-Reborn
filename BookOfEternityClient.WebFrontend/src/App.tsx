@@ -6,6 +6,7 @@ import { LoadingCard } from './components/LoadingCard';
 import { TabBar } from './components/TabBar';
 import { SceneView } from './components/SceneView';
 import { QtePracticeView } from './components/QtePracticeView';
+import { DarenShowcaseView } from './components/DarenShowcaseView';
 import { StatusView } from './components/StatusView';
 import { HelpView } from './components/HelpView';
 import { SettingsView } from './components/SettingsView';
@@ -25,6 +26,7 @@ function AppShell() {
   const { activeRoute, advancedEnabled, clientSettings, menu, readyState, realmTheme, shellState, activeTab } = useShell();
   const isLauncherRoute = activeRoute === 'home' && menu !== null;
   const isPracticeRoute = activeRoute === 'practice';
+  const isDarenShowcaseRoute = activeRoute === 'daren-showcase';
   const browserShellClassName = [
     'browser-shell',
     isLauncherRoute ? 'is-launcher-route' : '',
@@ -43,9 +45,9 @@ function AppShell() {
       <section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live="polite">
         {shellState.status === 'loading' && <LoadingCard />}
         {shellState.status === 'error' && <ErrorNotice title="Книга сейчас недоступна" failure={shellState} advancedEnabled={advancedEnabled} />}
-        {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : <TabContent activeTab={activeTab} />)}
+        {readyState && (isLauncherRoute ? <GameLauncher menu={menu} /> : isDarenShowcaseRoute ? <DarenShowcaseView /> : <TabContent activeTab={activeTab} />)}
       </section>
-      {!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}
+      {!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}
     </main>
   );
 }
