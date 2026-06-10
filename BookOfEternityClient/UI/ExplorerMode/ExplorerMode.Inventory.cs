@@ -463,32 +463,26 @@ public partial class ExplorerMode
             if (item.TryGetProperty("structuredBonuses", out var sb) && sb.ValueKind == JsonValueKind.Array && sb.GetArrayLength() > 0)
             {
                 lines.Add(""); lines.Add("  [bold]📊 Структурные бонусы:[/]");
+                var structuredBonusIndex = 0;
                 foreach (var b in sb.EnumerateArray())
                 {
-                    var bSummary = GetStr(b, "summary", "");
-                    var bType = GetStr(b, "bonusType", GetStr(b, "type", GetStr(b, "targetType", "")));
-                    var bTarget = GetStr(b, "target",
-                        GetStr(b, "skill",
-                            GetStr(b, "resource",
-                                GetStr(b, "characteristic",
-                                    GetStr(b, "stat", "")))));
-                    var bValueType = GetStr(b, "valueType", "");
-                    var bVal = GetStr(b, "value", "");
-                    var bApp = GetStr(b, "application", "");
-                    var bCond = GetStr(b, "condition", "");
-                    var bonusLine = string.IsNullOrEmpty(bSummary)
-                        ? $"    • [green]{Markup.Escape(string.IsNullOrEmpty(bType) ? "Бонус" : bType)}[/]"
-                        : $"    • [green]{Markup.Escape(bSummary)}[/]";
-                    if (string.IsNullOrEmpty(bSummary))
+                    structuredBonusIndex++;
+                    if (b.ValueKind != JsonValueKind.Object)
                     {
-                        if (!string.IsNullOrEmpty(bTarget)) bonusLine += $" → {Markup.Escape(bTarget)}";
-                        if (!string.IsNullOrEmpty(bVal)) bonusLine += $": [white]{Markup.Escape(bVal)}[/]";
+                        lines.Add($"    • [green]{Markup.Escape(FormatStructuredInventoryValue(b))}[/]");
+                        continue;
                     }
-                    if (!string.IsNullOrEmpty(bValueType)) bonusLine += $" [dim]{Markup.Escape($"[{bValueType}]")}[/]";
-                    if (!string.IsNullOrEmpty(bSummary) && !string.IsNullOrEmpty(bType)) bonusLine += $" [dim]({Markup.Escape(bType)})[/]";
-                    if (!string.IsNullOrEmpty(bApp) && bApp != "Permanent") bonusLine += $" [dim]({Markup.Escape(bApp)})[/]";
-                    if (!string.IsNullOrEmpty(bCond)) bonusLine += $" [dim italic]если: {Markup.Escape(bCond)}[/]";
-                    lines.Add(bonusLine);
+
+                    var bSummary = GetStr(b, "summary", "");
+                    var bonusTitle = string.IsNullOrWhiteSpace(bSummary)
+                        ? $"Бонус #{structuredBonusIndex}"
+                        : bSummary;
+                    lines.Add($"    • [green]{Markup.Escape(bonusTitle)}[/]");
+                    foreach (var property in b.EnumerateObject())
+                    {
+                        lines.Add(
+                            $"      [dim]{Markup.Escape(property.Name)}:[/] [white]{Markup.Escape(FormatStructuredInventoryValue(property.Value))}[/]");
+                    }
                 }
             }
 
@@ -1143,6 +1137,19 @@ public partial class ExplorerMode
                     GetStr(summary, "effect",
                         GetStr(summary, "stat", "")))));
     }
+
+    private static string FormatStructuredInventoryValue(JsonElement value) =>
+        value.ValueKind switch
+        {
+            JsonValueKind.String => value.GetString() ?? "",
+            JsonValueKind.Number => value.GetRawText(),
+            JsonValueKind.True => "true",
+            JsonValueKind.False => "false",
+            JsonValueKind.Null => "null",
+            JsonValueKind.Undefined => "undefined",
+            JsonValueKind.Object or JsonValueKind.Array => value.GetRawText(),
+            _ => value.ToString() ?? ""
+        };
 
     private static JsonElement? GetPlayerInventoryItemsElement(JsonElement root)
     {

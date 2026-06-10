@@ -160,7 +160,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task TryProcessCommand_InventoryDetail_StructuredBonusValueTypeRendersAsLiteralText()
+    public async Task TryProcessCommand_InventoryDetail_StructuredBonusShowsFullFieldData()
     {
         await SeedMortalStateAsync();
         await WriteJsonAsync("game_state/inventory/items.json", new
@@ -183,7 +183,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
                             valueType = "Flat",
                             value = 2,
                             source = "Руническая перчатка",
-                            summary = "Чувство магических потоков +2"
+                            summary = "Чувство магических потоков +2",
+                            stackingRule = "replace [debug]"
                         }
                     }
                 }
@@ -199,7 +200,13 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("поврежд", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Структурные бонусы", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Чувство магических потоков +2", renderedText, StringComparison.Ordinal);
-        Assert.Contains("[Flat]", renderedText, StringComparison.Ordinal);
+        Assert.Contains("targetType: skill", renderedText, StringComparison.Ordinal);
+        Assert.Contains("skill: Чувство магических потоков", renderedText, StringComparison.Ordinal);
+        Assert.Contains("valueType: Flat", renderedText, StringComparison.Ordinal);
+        Assert.Contains("value: 2", renderedText, StringComparison.Ordinal);
+        Assert.Contains("source: Руническая перчатка", renderedText, StringComparison.Ordinal);
+        Assert.Contains("summary: Чувство магических потоков +2", renderedText, StringComparison.Ordinal);
+        Assert.Contains("stackingRule: replace [debug]", renderedText, StringComparison.Ordinal);
     }
 
     [Fact]
