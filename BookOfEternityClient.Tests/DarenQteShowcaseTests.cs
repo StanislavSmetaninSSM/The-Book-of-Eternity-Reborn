@@ -288,6 +288,9 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
         Assert.NotNull(resolution?.Completion);
         Assert.Equal("no_reward_failure", resolution!.Completion!.OutcomeId);
+        Assert.Equal("no_reward_failure", resolution.Completion.ScoreSummary?.Rank?.Id);
+        Assert.Equal("Провал вылазки", resolution.Completion.ScoreSummary?.Rank?.Label);
+        Assert.DoesNotContain("Чистая кража", resolution.Completion.Summary, StringComparison.OrdinalIgnoreCase);
         Assert.False(attempt.Ending!.GrantsReward);
         Assert.Null(profile.DarenShowcase);
         Assert.False(File.Exists(Path.Combine(_rootPath, "client_profile", "qte_showcase_rewards.json")));
