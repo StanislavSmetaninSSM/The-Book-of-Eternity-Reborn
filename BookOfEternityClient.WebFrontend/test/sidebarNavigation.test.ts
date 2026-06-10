@@ -13,21 +13,27 @@ function readSource(...relativePath: string[]): string {
 }
 
 describe('tab navigation source', () => {
-  it('defines the current four-tab player shell contract', () => {
+  it('defines the current five-tab player shell contract with local glyph ids', () => {
     const navConfig = readSource('src', 'components', 'tabBarConfig.ts');
 
     expect(navConfig).toContain('export interface TabNavItem');
     expect(navConfig).toContain('id: TabId;');
+    expect(navConfig).toContain('glyph: TabGlyphId;');
     expect(tabNav).toEqual([
-      { id: 'scene', icon: '📖', label: 'Сцена', shortcut: '1', description: 'Текущий ход, повествование и быстрые действия.' },
-      { id: 'status', icon: '📊', label: 'Статус', shortcut: '2', description: 'Персонаж, душа, мир и посмертный прогресс.' },
-      { id: 'help', icon: '❓', label: 'Помощь', shortcut: '3', description: 'Справка книги и подсказки текущей главы.' },
-      { id: 'settings', icon: '⚙️', label: 'Настройки', shortcut: '4', description: 'Язык, звук, доступность и явный расширенный режим.' }
+      { id: 'scene', glyph: 'scene', label: 'Сцена', shortcut: '1', description: 'Текущий ход, повествование и быстрые действия.' },
+      { id: 'practice', glyph: 'practice', label: 'Тренировка', shortcut: '2', description: 'Свободная тренировка быстрых сцен без наград.' },
+      { id: 'status', glyph: 'status', label: 'Статус', shortcut: '3', description: 'Персонаж, душа, мир и посмертный прогресс.' },
+      { id: 'help', glyph: 'help', label: 'Помощь', shortcut: '4', description: 'Справка книги и подсказки текущей главы.' },
+      { id: 'settings', glyph: 'settings', label: 'Настройки', shortcut: '5', description: 'Язык, звук, доступность и явный расширенный режим.' }
     ]);
     expect(resolveTabShortcut('1')).toBe('scene');
-    expect(resolveTabShortcut('4')).toBe('settings');
+    expect(resolveTabShortcut('5')).toBe('settings');
     expect(resolveTabShortcut('0')).toBeNull();
     expect(resolveTabShortcut('x')).toBeNull();
+
+    for (const emojiIcon of ['📖', '⚡', '📊', '❓', '⚙️']) {
+      expect(navConfig).not.toContain(emojiIcon);
+    }
   });
 
   it('defines the tab bar component without reviving the old sidebar route grid', () => {
@@ -36,7 +42,9 @@ describe('tab navigation source', () => {
     expect(existsSync(tabBarPath)).toBe(true);
 
     const tabBar = readFileSync(tabBarPath, 'utf-8');
-    expect(tabBar).toContain("import { resolveTabShortcut, tabNav } from './tabBarConfig';");
+    expect(tabBar).toContain("import { resolveTabShortcut, tabNav, type TabGlyphId } from './tabBarConfig';");
+    expect(tabBar).toContain('function TabGlyph');
+    expect(tabBar).toContain('<svg');
     expect(tabBar).toContain('<nav className="tab-bar" role="tablist" aria-label="Навигация">');
     expect(tabBar).toContain('tabNav.map((tab)');
     expect(tabBar).toContain('aria-selected={activeTab === tab.id}');

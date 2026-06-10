@@ -934,6 +934,7 @@
 .game-launcher {
   overflow: hidden;
   position: relative;
+  min-width: 0;
   padding: clamp(0.9rem, 2.5vw, 1.3rem);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.04), color-mix(in srgb, var(--color-gold) 6%, rgba(6, 8, 9, 0.86)));
@@ -953,11 +954,13 @@
   position: relative;
   display: grid;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .launcher-copy {
   display: grid;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .launcher-copy h2,
@@ -993,12 +996,14 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+  min-width: 0;
   padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   background: var(--surface-subtle);
   cursor: pointer;
   text-align: left;
+  overflow-wrap: anywhere;
   transition:
     border-color var(--motion-fast),
     background var(--motion-fast),
@@ -1059,6 +1064,7 @@
 .launcher-mode-panel {
   display: grid;
   gap: var(--space-3);
+  min-width: 0;
   border: 1px solid color-mix(in srgb, var(--color-gold-dim) 20%, rgba(255, 255, 255, 0.06));
   border-radius: var(--radius-md);
   padding: var(--space-4);
@@ -1069,12 +1075,14 @@
 .launcher-secondary-action {
   display: grid;
   gap: 0.25rem;
+  min-width: 0;
   border-color: color-mix(in srgb, var(--color-gold) 44%, rgba(255, 255, 255, 0.1));
   padding: 0.75rem;
   background: linear-gradient(135deg, color-mix(in srgb, var(--color-gold) 18%, rgba(20, 15, 8, 0.94)), rgba(10, 13, 15, 0.86));
   box-shadow: 0 12px 30px color-mix(in srgb, var(--color-gold) 10%, transparent);
   cursor: pointer;
   text-align: left;
+  overflow-wrap: anywhere;
 }
 
 .launcher-secondary-action:hover:not(:disabled),
@@ -1499,7 +1507,10 @@
   color: var(--color-parchment-muted);
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all var(--motion-fast);
+  transition:
+    border-color var(--motion-fast),
+    background var(--motion-fast),
+    color var(--motion-fast);
 }
 
 .action-palette-item:hover,
@@ -1682,7 +1693,11 @@
   color: var(--color-parchment);
   cursor: pointer;
   text-align: left;
-  transition: all var(--motion-fast);
+  transition:
+    border-color var(--motion-fast),
+    background var(--motion-fast),
+    box-shadow var(--motion-fast),
+    transform var(--motion-fast);
 }
 
 .shortlist-action:hover,
@@ -2205,7 +2220,10 @@
   color: var(--color-parchment-muted);
   font-weight: 700;
   cursor: pointer;
-  transition: all var(--motion-fast);
+  transition:
+    border-color var(--motion-fast),
+    background var(--motion-fast),
+    color var(--motion-fast);
 }
 
 .game-surface-close:hover {
@@ -2269,7 +2287,10 @@
   background: transparent;
   color: var(--color-mist);
   cursor: pointer;
-  transition: all var(--motion-fast);
+  transition:
+    background var(--motion-fast),
+    border-color var(--motion-fast),
+    color var(--motion-fast);
 }
 
 .compact-route-nav__item:hover {
@@ -2485,7 +2506,10 @@
   color: var(--color-mist);
   font-size: 1.2rem;
   cursor: pointer;
-  transition: all var(--motion-fast);
+  transition:
+    background var(--motion-fast),
+    border-color var(--motion-fast),
+    color var(--motion-fast);
 }
 
 .command-catalog-close:hover {

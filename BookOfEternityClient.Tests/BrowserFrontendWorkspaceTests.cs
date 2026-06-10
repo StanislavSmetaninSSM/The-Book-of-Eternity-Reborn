@@ -79,7 +79,7 @@ public sealed class BrowserFrontendWorkspaceTests
         using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
         var scripts = document.RootElement.GetProperty("scripts");
         Assert.Equal("npm run typecheck && npm run test:player-facing && npm run build", scripts.GetProperty("verify").GetString());
-        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts test/browserCardSpacing.test.ts test/browserCardHierarchy.test.tsx test/browserSoulEmptyStates.test.tsx test/qteLayoutInput.test.ts test/qteMiniGameHelpers.test.ts test/qteScenePanelMiniGames.test.tsx", scripts.GetProperty("test:player-facing").GetString());
+        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts test/browserCardSpacing.test.ts test/browserCardHierarchy.test.tsx test/browserSoulEmptyStates.test.tsx test/qteLayoutInput.test.ts test/qteMiniGameHelpers.test.ts test/qteScenePanelMiniGames.test.tsx test/sidebarNavigation.test.ts test/browserPolishDesignSystem.test.ts", scripts.GetProperty("test:player-facing").GetString());
 
         var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
         Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
@@ -239,17 +239,31 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.False(File.Exists(Path.Combine(FrontendRoot, "src", "components", "navBarConfig.ts")), "The stale navBarConfig contract should not be restored.");
 
         Assert.Contains("export interface TabNavItem", config, StringComparison.Ordinal);
+        Assert.Contains("export type TabGlyphId", config, StringComparison.Ordinal);
+        Assert.Contains("glyph: TabGlyphId;", config, StringComparison.Ordinal);
         Assert.Contains("export const tabNav: readonly TabNavItem[]", config, StringComparison.Ordinal);
         Assert.Contains("id: 'scene'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'practice'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'status'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'help'", config, StringComparison.Ordinal);
         Assert.Contains("id: 'settings'", config, StringComparison.Ordinal);
+        Assert.Contains("glyph: 'scene'", config, StringComparison.Ordinal);
+        Assert.Contains("glyph: 'practice'", config, StringComparison.Ordinal);
+        Assert.Contains("glyph: 'status'", config, StringComparison.Ordinal);
+        Assert.Contains("glyph: 'help'", config, StringComparison.Ordinal);
+        Assert.Contains("glyph: 'settings'", config, StringComparison.Ordinal);
         Assert.Contains("shortcut: '1'", config, StringComparison.Ordinal);
         Assert.Contains("shortcut: '5'", config, StringComparison.Ordinal);
         Assert.Contains("export function resolveTabShortcut", config, StringComparison.Ordinal);
+        foreach (var emojiIcon in new[] { "📖", "⚡", "📊", "❓", "⚙️" })
+        {
+            Assert.DoesNotContain(emojiIcon, config, StringComparison.Ordinal);
+        }
 
         Assert.Contains("function isShortcutBlockedTarget", tabBar, StringComparison.Ordinal);
+        Assert.Contains("function TabGlyph", tabBar, StringComparison.Ordinal);
+        Assert.Contains("<TabGlyph glyph={tab.glyph} />", tabBar, StringComparison.Ordinal);
+        Assert.Contains("className={`tab-bar__glyph tab-bar__glyph--${glyph}`}", tabBar, StringComparison.Ordinal);
         Assert.Contains("target instanceof HTMLInputElement", tabBar, StringComparison.Ordinal);
         Assert.Contains("target instanceof HTMLTextAreaElement", tabBar, StringComparison.Ordinal);
         Assert.Contains("target instanceof HTMLSelectElement", tabBar, StringComparison.Ordinal);
@@ -262,6 +276,7 @@ public sealed class BrowserFrontendWorkspaceTests
 
         Assert.Contains(".tab-bar {", styles, StringComparison.Ordinal);
         Assert.Contains(".tab-bar__tab.is-active", styles, StringComparison.Ordinal);
+        Assert.Contains(".tab-bar__glyph", styles, StringComparison.Ordinal);
         Assert.DoesNotContain(".nav-bar", styles, StringComparison.Ordinal);
     }
 
