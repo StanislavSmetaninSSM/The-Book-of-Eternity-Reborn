@@ -34,15 +34,15 @@ Source issue: [#919](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternit
 
 - [x] Current baseline before spec artifact edits: focused C# QTE/browser/docs tests passed 268/268.
 - [x] Current baseline before spec artifact edits: `npm run verify --prefix BookOfEternityClient.WebFrontend` passed; Vitest player-facing slice passed 72/72 and Vite build succeeded.
-- [ ] Spec Kit prerequisite helper resolves `specs/919-daren-qte-training` after tasks are committed.
-- [ ] RED tests/source guards have been written and observed failing before production implementation.
+- [x] Spec Kit prerequisite helper resolves `specs/919-daren-qte-training` after tasks are committed.
+- [x] RED tests/source guards have been written and observed failing before production implementation.
 
 ## Completion Gate
 
-- [ ] Focused C# Daren/QTE/New Game/docs/browser tests pass.
-- [ ] Frontend verification passes.
-- [ ] Client build passes.
-- [ ] Spec Kit prerequisites resolve the active feature directory.
-- [ ] Diff hygiene and added-line static scan pass.
+- [x] Focused C# Daren/QTE/New Game/docs/browser tests pass.
+- [x] Frontend verification passes.
+- [x] Client build passes.
+- [x] Spec Kit prerequisites resolve the active feature directory.
+- [x] Diff hygiene and added-line static scan pass.
 - [ ] Independent review approves or all critical/important findings are fixed and re-reviewed.
 - [ ] PR is squash-merged into `main` and #919 is closed with evidence.

@@ -1,0 +1,24 @@
+{
+  "state": "Intro",
+  "introTitle": "Ограбление поместья Дареном",
+  "introText": "Хитрый вор Дарен проникает в запертое поместье, крадёт магический посох, уходит от погони и возвращается в убежище.",
+  "boundaryNotice": "Это отдельная авторская QTE-вылазка: обычная глава, обычные ходы и свободная тренировка QTE не меняются.",
+  "rewardNotice": "Лучший итог Дарена запоминается книгой и даёт Чернильные Перья только при создании будущей новой игры.",
+  "bestReward": {
+    "tierId": "clean_heist",
+    "tierName": "Чистая кража",
+    "inkFeatherBonus": 4,
+    "bestScore": 82,
+    "completedAtUtc": "2026-05-25T09:30:00Z"
+  },
+  "activeScene": null,
+  "resolution": null,
+  "completion": null,
+  "ending": null,
+  "availableOperations": [
+    "start",
+    "exit"
+  ],
+  "notification": null,
+  "error": null
+}

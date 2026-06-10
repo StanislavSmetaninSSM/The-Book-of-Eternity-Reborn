@@ -36,7 +36,7 @@ assertIncludes(app, '<ConnectionBanner />', 'App.tsx should render ConnectionBan
 assertIncludes(app, '{!isLauncherRoute && <TabBar />}', 'App.tsx should render TabBar after leaving the launcher.');
 assertIncludes(app, '<section className={`content-area${isLauncherRoute ? \' content-area--launcher\' : \'\'}`} aria-live="polite">', 'App.tsx should render the current content area with a launcher variant.');
 assertIncludes(app, '<GameLauncher menu={menu} />', 'App.tsx should render GameLauncher on the default launcher route.');
-assertIncludes(app, '{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}', 'App.tsx should render UnifiedInput inside the game shell after leaving the launcher and outside practice.');
+assertIncludes(app, '{!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}', 'App.tsx should render UnifiedInput inside the game shell after leaving the launcher and outside standalone QTE routes.');
 assertIncludes(app, "case 'scene': return <SceneView />;", 'TabContent should route scene tab to SceneView.');
 assertIncludes(app, "case 'practice': return <QtePracticeView />;", 'TabContent should route practice tab to QtePracticeView.');
 assertIncludes(app, "case 'status': return <StatusView />;", 'TabContent should route status tab to StatusView.');

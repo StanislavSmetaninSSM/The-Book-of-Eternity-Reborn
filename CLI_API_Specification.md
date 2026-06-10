@@ -1153,6 +1153,8 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
 - Practice has no GM-authored practice scenes; the GM must not author practice offers, action types, response fields, or follow-up turns.
 - Practice does not mutate campaign state, pending campaign actions, ordinary turn state, or permanent reward state.
 - Daren showcase work in #919 may point players toward practice, but Daren rewards/endings/adventure content are outside the QTE Practice Mode contract.
+- Daren showcase is client-owned authored content and is not a GM-authored QTE offer. It uses QTE mechanics to tell the fixed Daren manor theft route, stores only the best permanent Daren tier outside ordinary `game_state`, and may grant a New Game Ink Feather bonus from that stored best tier.
+- QTE Practice Mode must not grant Daren rewards, and ordinary GM-authored campaign QTE offers must not write Daren showcase tiers, Daren profile records, New Game grant markers, or permanent Ink Feather reward state.
 - A valid `qte_offer.json` must contain these top-level fields:
   - `qteId`
   - `title`

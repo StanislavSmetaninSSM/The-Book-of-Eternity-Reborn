@@ -34,6 +34,12 @@
                     - Practice does not mutate campaign state, pending campaign actions, ordinary turn state, or permanent reward state.
                     - Daren showcase work in #919 may point players toward practice, but #919 rewards/endings/adventure content are outside this QTE Practice Mode contract.
 
+                    Daren showcase boundary:
+                    - Daren showcase is client-owned authored content and is not a GM-authored QTE offer.
+                    - It tells the fixed Daren manor theft route, stores only the best permanent Daren tier outside ordinary `game_state`, and may grant a New Game Ink Feather bonus from that stored best tier.
+                    - QTE Practice Mode must not grant Daren rewards.
+                    - Ordinary GM-authored campaign QTE offers MUST NOT write Daren showcase tiers, Daren profile records, New Game grant markers, or permanent Ink Feather reward state.
+
                     GM authoring responsibility:
                     - A valid `qte_offer.json` MUST contain these top-level fields:
                       - `qteId`

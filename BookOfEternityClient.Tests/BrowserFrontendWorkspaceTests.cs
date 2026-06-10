@@ -79,7 +79,7 @@ public sealed class BrowserFrontendWorkspaceTests
         using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
         var scripts = document.RootElement.GetProperty("scripts");
         Assert.Equal("npm run typecheck && npm run test:player-facing && npm run build", scripts.GetProperty("verify").GetString());
-        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts test/browserCardSpacing.test.ts test/browserCardHierarchy.test.tsx test/browserSoulEmptyStates.test.tsx test/qteLayoutInput.test.ts test/qteMiniGameHelpers.test.ts test/qteScenePanelMiniGames.test.tsx test/sidebarNavigation.test.ts test/browserPolishDesignSystem.test.ts", scripts.GetProperty("test:player-facing").GetString());
+        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/playerCopyRobustness.test.ts test/realmTheming.test.ts test/browserCardSpacing.test.ts test/browserCardHierarchy.test.tsx test/browserSoulEmptyStates.test.tsx test/qteLayoutInput.test.ts test/qteMiniGameHelpers.test.ts test/qteScenePanelMiniGames.test.tsx test/darenShowcase.test.tsx test/sidebarNavigation.test.ts test/browserPolishDesignSystem.test.ts", scripts.GetProperty("test:player-facing").GetString());
 
         var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
         Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
@@ -188,7 +188,7 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.Contains("{!isLauncherRoute && <TabBar />}", app, StringComparison.Ordinal);
         Assert.Contains("<section className={`content-area${isLauncherRoute ? ' content-area--launcher' : ''}`} aria-live=\"polite\">", app, StringComparison.Ordinal);
         Assert.Contains("<GameLauncher menu={menu} />", app, StringComparison.Ordinal);
-        Assert.Contains("{!isLauncherRoute && !isPracticeRoute && <UnifiedInput />}", app, StringComparison.Ordinal);
+        Assert.Contains("{!isLauncherRoute && !isPracticeRoute && !isDarenShowcaseRoute && <UnifiedInput />}", app, StringComparison.Ordinal);
         Assert.Contains("case 'scene': return <SceneView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'practice': return <QtePracticeView />;", app, StringComparison.Ordinal);
         Assert.Contains("case 'status': return <StatusView />;", app, StringComparison.Ordinal);
