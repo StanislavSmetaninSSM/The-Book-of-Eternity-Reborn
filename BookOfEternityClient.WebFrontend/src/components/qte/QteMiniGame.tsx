@@ -658,6 +658,10 @@ function MiniGameFrame({
           return;
         }
 
+        if (!shouldHandleQteFrameShortcut(event)) {
+          return;
+        }
+
         if (onKeyDown) {
           onKeyDown(event);
           return;
@@ -678,6 +682,19 @@ function MiniGameFrame({
       {children}
     </div>
   );
+}
+
+function shouldHandleQteFrameShortcut(event: KeyboardEvent<HTMLDivElement>): boolean {
+  const target = event.target;
+  if (!(target instanceof Element)) {
+    return true;
+  }
+
+  if (target === event.currentTarget) {
+    return true;
+  }
+
+  return target.closest('button, a, input, select, textarea, [role="button"], [contenteditable="true"]') === null;
 }
 
 function MeterTrack({

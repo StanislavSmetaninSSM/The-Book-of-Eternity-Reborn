@@ -104,6 +104,14 @@ describe('QteScenePanel browser mini-games #918', () => {
     expect(source).toContain('hideExpected');
     expect(source).toContain('resolvePrecisionChoiceGrade(config.choices, null, true');
   });
+
+  it('keeps QTE frame shortcuts from swallowing focused child button keyboard activation', () => {
+    const source = readFileSync(join(cwd, 'src', 'components', 'qte', 'QteMiniGame.tsx'), 'utf-8');
+
+    expect(source).toContain('function shouldHandleQteFrameShortcut');
+    expect(source).toContain('if (!shouldHandleQteFrameShortcut(event))');
+    expect(source).toContain("target.closest('button, a, input, select, textarea, [role=\"button\"], [contenteditable=\"true\"]')");
+  });
 });
 
 function activeQte(actions: QteWebActionDto[]): BrowserGameScreenDto['qte'] {
