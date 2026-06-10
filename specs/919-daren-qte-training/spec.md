@@ -1,8 +1,8 @@
 # Feature Specification: Daren QTE Training Showcase
 
-**Feature Branch**: `work/919-daren-qte-training`  
-**Created**: 2026-06-11  
-**Status**: Draft for autonomous implementation  
+**Feature Branch**: `work/919-daren-qte-training`
+**Created**: 2026-06-11
+**Status**: Draft for autonomous implementation
 **Source Issues**: [#919 QTE training mode: ограбление поместья вором Дареном](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919), parent [#911 QTE v2](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/911), prerequisites [#918 Browser QTE parity](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/918), [#924 QTE scoring](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/924), [#925 QTE Practice Mode](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/925)
 
 ## Source Issues & Scope

@@ -10,18 +10,18 @@ Implement #919 as a standalone, client-owned Daren QTE showcase mini-adventure t
 
 ## Technical Context
 
-**Language/Version**: C#/.NET 8 for runtime/client/tests, TypeScript/React/Vite for browser UI.  
-**Primary Dependencies**: Spectre.Console, System.Text.Json, existing C# QTE services, existing browser QTE mini-game components, Vitest/TypeScript tests.  
-**Storage**: Existing file-backed local state plus a new client/profile record outside `game_session/game_state`; default planned path `client_profile/qte_showcase_rewards.json` under the configured base path unless implementation finds an existing profile convention.  
-**Testing**: xUnit via `dotnet test`; TypeScript/Vitest and Vite build via `npm run verify --prefix BookOfEternityClient.WebFrontend`.  
-**Target Platform**: Local Windows/loopback game client with console and browser frontends; no cloud dependency.  
-**Project Type**: Desktop/console C# local game client with local browser frontend.  
-**Performance Goals**: deterministic route tests must run without wall-clock sleeps; browser/frontend verify must stay in existing local CI-style command.  
-**Constraints**: no mutation of ordinary campaign state before valid reward write; no reward duplication; no React-side gameplay authority; no raw debug/API wording in default UI.  
+**Language/Version**: C#/.NET 8 for runtime/client/tests, TypeScript/React/Vite for browser UI.
+**Primary Dependencies**: Spectre.Console, System.Text.Json, existing C# QTE services, existing browser QTE mini-game components, Vitest/TypeScript tests.
+**Storage**: Existing file-backed local state plus a new client/profile record outside `game_session/game_state`; default planned path `client_profile/qte_showcase_rewards.json` under the configured base path unless implementation finds an existing profile convention.
+**Testing**: xUnit via `dotnet test`; TypeScript/Vitest and Vite build via `npm run verify --prefix BookOfEternityClient.WebFrontend`.
+**Target Platform**: Local Windows/loopback game client with console and browser frontends; no cloud dependency.
+**Project Type**: Desktop/console C# local game client with local browser frontend.
+**Performance Goals**: deterministic route tests must run without wall-clock sleeps; browser/frontend verify must stay in existing local CI-style command.
+**Constraints**: no mutation of ordinary campaign state before valid reward write; no reward duplication; no React-side gameplay authority; no raw debug/API wording in default UI.
 **Scale/Scope**: one full authored Daren route with all required QTE types, four ending tiers, persistent best-tier profile, New Game reward grant, and docs/examples.
 
-**Source Issue(s)**: #919 — <https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919>  
-**Contract Scope**: player-facing console/browser UX, QTE runtime/scoring, persistent client profile, New Game initialization, validation/normalizer, docs, examples, source guards.  
+**Source Issue(s)**: #919 — <https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919>
+**Contract Scope**: player-facing console/browser UX, QTE runtime/scoring, persistent client profile, New Game initialization, validation/normalizer, docs, examples, source guards.
 **Verification Commands**:
 
 ```bash
