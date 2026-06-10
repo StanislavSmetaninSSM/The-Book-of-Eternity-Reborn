@@ -8,12 +8,19 @@ public sealed record QteWebOfferDecisionRequest(string? Decision);
 
 public sealed record QteWebActionRequest(string? ActionId, string? Grade);
 
+public sealed record QtePracticeStartRequest(string? TypeId, string? DifficultyId);
+
+public sealed record QtePracticeActionRequest(string? ActionId, string? Grade);
+
 public sealed class QteWebInteractionService
 {
     private static readonly string[] GradeOptions = ["success", "partial", "fail"];
+    private const string PracticeLocalScoreNotice =
+        "Тренировочный счёт остаётся только в этой попытке: без наград, опыта, предметов, достижений, Ink Feathers и прогресса.";
 
     private readonly FileSystemManager _fs;
     private readonly QteSceneService _qteSceneService;
+    private QteSceneService.QtePracticeAttemptState? _practiceAttempt;
 
     public QteWebInteractionService(FileSystemManager fs, QteSceneService qteSceneService)
     {
@@ -124,6 +131,116 @@ public sealed class QteWebInteractionService
             return Failed(ex.Message);
         }
     }
+
+    public Task<QtePracticeWebStateDto> BuildPracticeStateAsync() =>
+        BuildPracticeStateCoreAsync(notification: null, error: null);
+
+    public async Task<QtePracticeWebStateDto> StartPracticeAttemptAsync(QtePracticeStartRequest? request)
+    {
+        try
+        {
+            _practiceAttempt = _qteSceneService.StartPracticeAttempt(request?.TypeId, request?.DifficultyId);
+            return await BuildPracticeStateCoreAsync("Тренировка началась.", error: null);
+        }
+        catch (Exception ex)
+        {
+            return await BuildPracticeStateCoreAsync(notification: null, error: ex.Message, stateOverride: "Failed");
+        }
+    }
+
+    public async Task<QtePracticeWebStateDto> ResolvePracticeActionAsync(QtePracticeActionRequest? request)
+    {
+        var actionId = request?.ActionId?.Trim();
+        if (string.IsNullOrWhiteSpace(actionId))
+            return await BuildPracticeStateCoreAsync(notification: null, error: "actionId is required.", stateOverride: "Failed");
+
+        if (_practiceAttempt == null || !string.Equals(_practiceAttempt.State, "Active", StringComparison.OrdinalIgnoreCase))
+            return await BuildPracticeStateCoreAsync(notification: null, error: "Тренировка не запущена.", stateOverride: "Failed");
+
+        try
+        {
+            _qteSceneService.ResolvePracticeAction(_practiceAttempt, actionId, request?.Grade);
+            return await BuildPracticeStateCoreAsync("Попытка завершена.", error: null);
+        }
+        catch (Exception ex)
+        {
+            return await BuildPracticeStateCoreAsync(notification: null, error: ex.Message, stateOverride: "Failed");
+        }
+    }
+
+    public async Task<QtePracticeWebStateDto> RetryPracticeAttemptAsync()
+    {
+        if (_practiceAttempt == null)
+            return await BuildPracticeStateCoreAsync(notification: null, error: "Сначала выберите QTE для тренировки.", stateOverride: "Failed");
+
+        _practiceAttempt = _qteSceneService.StartPracticeAttempt(_practiceAttempt.TypeId, _practiceAttempt.DifficultyId);
+        return await BuildPracticeStateCoreAsync("Тренировка повторена.", error: null);
+    }
+
+    public Task<QtePracticeWebStateDto> ExitPracticeAttemptAsync()
+    {
+        _practiceAttempt = null;
+        return BuildPracticeStateCoreAsync("Тренировка закрыта.", error: null);
+    }
+
+    private async Task<QtePracticeWebStateDto> BuildPracticeStateCoreAsync(
+        string? notification,
+        string? error,
+        string? stateOverride = null)
+    {
+        var attempt = _practiceAttempt;
+        var catalog = QteSceneService.GetPracticeCatalog().Select(BuildPracticeCatalogEntry).ToList();
+        var state = stateOverride ?? attempt?.State ?? "Catalog";
+        var activeScene = attempt != null && string.Equals(attempt.State, "Active", StringComparison.OrdinalIgnoreCase)
+            ? await BuildActiveSceneAsync(attempt.ActiveScene)
+            : null;
+
+        return new QtePracticeWebStateDto
+        {
+            State = state,
+            Catalog = catalog,
+            SelectedTypeId = attempt?.TypeId,
+            SelectedDifficultyId = attempt?.DifficultyId,
+            ActiveScene = activeScene,
+            Resolution = attempt?.LastResolution == null ? null : BuildResolution(attempt.LastResolution),
+            Completion = attempt?.LastCompletion == null ? null : BuildCompletion(attempt.LastCompletion),
+            FeedbackTitle = attempt?.FeedbackTitle ?? "Свободная тренировка",
+            Feedback = attempt?.Feedback ?? "Выберите тип QTE. Тренировка не меняет сюжет и не выдаёт награды.",
+            LocalScoreNotice = attempt?.LocalScoreNotice ?? PracticeLocalScoreNotice,
+            AvailableOperations = BuildPracticeOperations(state).ToList(),
+            Notification = notification,
+            Error = error
+        };
+    }
+
+    private static IEnumerable<string> BuildPracticeOperations(string state)
+    {
+        if (string.Equals(state, "Active", StringComparison.OrdinalIgnoreCase))
+            return ["submitAction", "retry", "changeDifficulty", "chooseAnother", "exit"];
+
+        if (string.Equals(state, "Completed", StringComparison.OrdinalIgnoreCase))
+            return ["retry", "changeDifficulty", "chooseAnother", "exit"];
+
+        return ["startAttempt", "exit"];
+    }
+
+    private static QtePracticeCatalogEntryDto BuildPracticeCatalogEntry(QteSceneService.QtePracticeCatalogEntry entry) =>
+        new()
+        {
+            TypeId = entry.TypeId,
+            Title = entry.Title,
+            Description = entry.Description,
+            Instructions = entry.Instructions,
+            Available = entry.Available,
+            UnavailableReason = entry.UnavailableReason,
+            SupportedSurfaces = entry.SupportedSurfaces.ToList(),
+            Difficulties = entry.Difficulties.Select(difficulty => new QtePracticeDifficultyDto
+            {
+                DifficultyId = difficulty.DifficultyId,
+                Label = difficulty.Label,
+                Description = difficulty.Description
+            }).ToList()
+        };
 
     private static QteWebOfferDto BuildOffer(QteSceneService.QteOffer offer) =>
         new()
@@ -894,6 +1011,42 @@ public sealed class QteWebStateDto
     public List<string> AvailableOperations { get; init; } = [];
     public string? Notification { get; init; }
     public string? Error { get; init; }
+}
+
+public sealed class QtePracticeWebStateDto
+{
+    public string State { get; init; } = "Catalog";
+    public List<QtePracticeCatalogEntryDto> Catalog { get; init; } = [];
+    public string? SelectedTypeId { get; init; }
+    public string? SelectedDifficultyId { get; init; }
+    public QteWebActiveSceneDto? ActiveScene { get; init; }
+    public QteWebResolutionDto? Resolution { get; init; }
+    public QteWebCompletionDto? Completion { get; init; }
+    public string FeedbackTitle { get; init; } = "";
+    public string Feedback { get; init; } = "";
+    public string LocalScoreNotice { get; init; } = "";
+    public List<string> AvailableOperations { get; init; } = [];
+    public string? Notification { get; init; }
+    public string? Error { get; init; }
+}
+
+public sealed class QtePracticeCatalogEntryDto
+{
+    public string TypeId { get; init; } = "";
+    public string Title { get; init; } = "";
+    public string Description { get; init; } = "";
+    public string Instructions { get; init; } = "";
+    public bool Available { get; init; }
+    public string? UnavailableReason { get; init; }
+    public List<string> SupportedSurfaces { get; init; } = [];
+    public List<QtePracticeDifficultyDto> Difficulties { get; init; } = [];
+}
+
+public sealed class QtePracticeDifficultyDto
+{
+    public string DifficultyId { get; init; } = "";
+    public string Label { get; init; } = "";
+    public string Description { get; init; } = "";
 }
 
 public sealed class QteWebOfferDto

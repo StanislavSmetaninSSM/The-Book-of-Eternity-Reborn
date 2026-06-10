@@ -14,7 +14,7 @@ using Spectre.Console;
 
 namespace BookOfEternityClient.Services;
 
-public sealed class QteSceneService
+public sealed partial class QteSceneService
 {
     public const string QteOfferPath = "output/qte_offer.json";
     public const string QteRuntimePath = "game_state/control/qte_runtime.json";

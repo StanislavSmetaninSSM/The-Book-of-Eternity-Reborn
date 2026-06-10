@@ -167,6 +167,16 @@ public static class LocalWebUiHost
             await qte.ResolveOfferDecisionAsync(request));
         app.MapPost("/api/qte/action", async (QteWebActionRequest request, QteWebInteractionService qte) =>
             await qte.ResolveActionAsync(request));
+        app.MapGet("/api/qte/practice", async (QteWebInteractionService qte) =>
+            await qte.BuildPracticeStateAsync());
+        app.MapPost("/api/qte/practice/start", async (QtePracticeStartRequest request, QteWebInteractionService qte) =>
+            await qte.StartPracticeAttemptAsync(request));
+        app.MapPost("/api/qte/practice/action", async (QtePracticeActionRequest request, QteWebInteractionService qte) =>
+            await qte.ResolvePracticeActionAsync(request));
+        app.MapPost("/api/qte/practice/retry", async (QteWebInteractionService qte) =>
+            await qte.RetryPracticeAttemptAsync());
+        app.MapPost("/api/qte/practice/exit", async (QteWebInteractionService qte) =>
+            await qte.ExitPracticeAttemptAsync());
 
         app.MapFallback((HttpContext context) =>
             IsFrontendFallbackRequest(context.Request)

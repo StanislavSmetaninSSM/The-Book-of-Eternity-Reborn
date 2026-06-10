@@ -105,6 +105,28 @@ public partial class GameEngine
                 return;
             }
 
+            if (chosen.Key == "qte_practice")
+            {
+                await _qteSceneService.RunPracticeModeAsync();
+                await _audioService.PlayMainMenuMusicAsync();
+                options = await BuildMainMenuOptionsAsync();
+                if (selectedIndex >= options.Count)
+                    selectedIndex = Math.Max(0, options.Count - 1);
+                try
+                {
+                    if (cursorVisibilityCaptured)
+                        Console.CursorVisible = false;
+                }
+                catch
+                {
+                    // Ignore cursor visibility failures.
+                }
+
+                lastWidth = -1;
+                lastHeight = -1;
+                continue;
+            }
+
             if (chosen.Key == "options")
             {
                 await OptionsMenu();
@@ -344,6 +366,7 @@ public partial class GameEngine
         {
             new MainMenuOption("new_game", _loc.T("new_game"), _loc.T("main_menu_new_desc"), "green", nextIndex++),
             new MainMenuOption("load_game", _loc.T("load_game"), _loc.T("main_menu_load_desc"), "cyan1", nextIndex++),
+            new MainMenuOption("qte_practice", "Тренировка QTE", "Свободная тренировка быстрых сцен без наград и без изменения прохождения.", "purple", nextIndex++),
             new MainMenuOption("options", _loc.T("options"), _loc.T("main_menu_options_desc"), "yellow", nextIndex++),
             new MainMenuOption("about", _loc.T("about"), _loc.T("main_menu_about_desc"), "blue", nextIndex++),
             new MainMenuOption("exit", _loc.T("exit"), _loc.T("main_menu_exit_desc"), "red", nextIndex)

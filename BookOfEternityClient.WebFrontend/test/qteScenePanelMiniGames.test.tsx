@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import type { BrowserGameScreenDto, QteWebActionDto, QteWebStateDto } from '../src/api/contracts';
+import type { BrowserGameScreenDto, QtePracticeWebStateDto, QteWebActionDto, QteWebStateDto } from '../src/api/contracts';
+import { QtePracticeView } from '../src/components/QtePracticeView';
 import { QteScenePanel } from '../src/components/QteScenePanel';
 
 type QteCheckConfigFixture = Record<string, unknown>;
@@ -138,6 +139,85 @@ describe('QteScenePanel browser mini-games #918', () => {
   });
 });
 
+describe('QtePracticeView #925', () => {
+  it('renders the implemented QTE catalog as reward-free player-facing training choices', () => {
+    const html = renderToStaticMarkup(<QtePracticeView initialState={practiceCatalogState()} />);
+
+    for (const title of [
+      'Выбор ветки',
+      'Полоса реакции',
+      'Цепь знаков',
+      'Равновесие',
+      'Накопление силы',
+      'Рывок усилия',
+      'Память рун',
+      'Пульс ритма',
+      'Точный выбор',
+      'Тихий проход',
+      'Штифты замка'
+    ]) {
+      expect(html).toContain(title);
+    }
+
+    for (const typeId of [
+      'BranchChoice',
+      'TimingBar',
+      'PromptChain',
+      'BalanceMeter',
+      'ChargeRelease',
+      'MashInput',
+      'PatternMemory',
+      'RhythmPulse',
+      'PrecisionChoice',
+      'StealthNoise',
+      'LockPinSet'
+    ]) {
+      expect(html).not.toContain(typeId);
+    }
+
+    expect(html).toContain('без наград');
+    expect(html).toContain('не меняет сюжет');
+    expect(html).not.toContain('FutureMirror');
+    expect(html).not.toContain('/api/');
+    expect(html).not.toMatch(/\bDTO\b/i);
+    expect(html).not.toMatch(/\bdebug\b/i);
+  });
+
+  it('shows a ready gate with instructions before mounting the active practice mini-game', () => {
+    const html = renderToStaticMarkup(<QtePracticeView initialState={practiceActiveState()} />);
+
+    expect(html).toContain('Рывок усилия');
+    expect(html).toContain('Тренировочный счёт');
+    expect(html).toContain('Подготовьтесь перед запуском мини-игры');
+    expect(html).toContain('Начать мини-игру');
+    expect(html).not.toContain('data-qte-mini-game=');
+    expect(html).not.toContain('MashInput');
+    expect(html).not.toContain('Исход проверки');
+    expect(html).not.toContain('<select');
+  });
+
+  it('shows completion actions for retrying, changing difficulty, choosing another QTE, or exiting', () => {
+    const html = renderToStaticMarkup(<QtePracticeView initialState={practiceCompletedState()} />);
+
+    expect(html).toContain('Повторить');
+    expect(html).toContain('Сменить сложность');
+    expect(html).toContain('Выбрать другое QTE');
+    expect(html).toContain('Выйти');
+    expect(html).toContain('Ранг: Удачный исход');
+    expect(html).toContain('без наград');
+  });
+
+  it('keeps practice browser UI tied to the shared mini-game implementation and practice endpoints', () => {
+    const source = readFileSync(join(cwd, 'src', 'components', 'QtePracticeView.tsx'), 'utf-8');
+    const client = readFileSync(join(cwd, 'src', 'api', 'client.ts'), 'utf-8');
+
+    expect(source).toContain("import { QteMiniGame } from './qte/QteMiniGame';");
+    expect(source).toContain('browserApi.resolveQtePracticeAction');
+    expect(client).toContain('/api/qte/practice/action');
+    expect(client).toContain('/api/qte/practice/start');
+  });
+});
+
 function activeQte(actions: QteWebActionDto[]): BrowserGameScreenDto['qte'] {
   return {
     state: 'Active',
@@ -259,4 +339,79 @@ function action(
     checkConfig,
     ...overrides
   } as unknown as QteWebActionDto;
+}
+
+function practiceCatalogState(): QtePracticeWebStateDto {
+  return {
+    state: 'Catalog',
+    catalog: [
+      practiceCatalogEntry('BranchChoice', 'Выбор ветки'),
+      practiceCatalogEntry('TimingBar', 'Полоса реакции'),
+      practiceCatalogEntry('PromptChain', 'Цепь знаков'),
+      practiceCatalogEntry('BalanceMeter', 'Равновесие'),
+      practiceCatalogEntry('ChargeRelease', 'Накопление силы'),
+      practiceCatalogEntry('MashInput', 'Рывок усилия'),
+      practiceCatalogEntry('PatternMemory', 'Память рун'),
+      practiceCatalogEntry('RhythmPulse', 'Пульс ритма'),
+      practiceCatalogEntry('PrecisionChoice', 'Точный выбор'),
+      practiceCatalogEntry('StealthNoise', 'Тихий проход'),
+      practiceCatalogEntry('LockPinSet', 'Штифты замка')
+    ],
+    selectedTypeId: null,
+    selectedDifficultyId: null,
+    activeScene: null,
+    resolution: null,
+    completion: null,
+    feedbackTitle: 'Свободная тренировка',
+    feedback: 'Выберите QTE. Тренировка не меняет сюжет.',
+    localScoreNotice: 'Тренировочный счёт остаётся только на этой попытке: без наград.',
+    availableOperations: ['startAttempt', 'exit'],
+    notification: null,
+    error: null
+  };
+}
+
+function practiceActiveState(): QtePracticeWebStateDto {
+  return {
+    ...practiceCatalogState(),
+    state: 'Active',
+    selectedTypeId: 'MashInput',
+    selectedDifficultyId: 'normal',
+    activeScene: activeQte([
+      action('MashInput', { kind: 'MashInput', supported: true, keys: ['space'], durationMs: 3000, successTarget: 8, partialTarget: 4 }, { label: 'Рывок усилия' })
+    ])!.activeScene,
+    feedbackTitle: 'Рывок усилия',
+    feedback: 'Тренировка не меняет сюжет.',
+    availableOperations: ['submitAction', 'retry', 'changeDifficulty', 'chooseAnother', 'exit']
+  };
+}
+
+function practiceCompletedState(): QtePracticeWebStateDto {
+  return {
+    ...practiceCatalogState(),
+    state: 'Completed',
+    selectedTypeId: 'MashInput',
+    selectedDifficultyId: 'normal',
+    completion: completedScoredQte().completion,
+    feedbackTitle: 'Попытка завершена',
+    feedback: 'Итог показан только для тренировки и не меняет сюжет.',
+    availableOperations: ['retry', 'changeDifficulty', 'chooseAnother', 'exit']
+  };
+}
+
+function practiceCatalogEntry(typeId: string, title: string): QtePracticeWebStateDto['catalog'][number] {
+  return {
+    typeId,
+    title,
+    description: 'Тренировка без наград и без изменения прохождения.',
+    instructions: 'Запустите попытку и сыграйте мини-игру.',
+    available: true,
+    unavailableReason: null,
+    supportedSurfaces: ['console', 'browser'],
+    difficulties: [
+      { difficultyId: 'easy', label: 'Мягкая', description: 'Больше времени на реакцию.' },
+      { difficultyId: 'normal', label: 'Обычная', description: 'Базовая скорость.' },
+      { difficultyId: 'hard', label: 'Сложная', description: 'Меньше права на ошибку.' }
+    ]
+  };
 }

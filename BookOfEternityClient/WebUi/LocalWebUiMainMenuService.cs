@@ -214,6 +214,15 @@ public sealed class LocalWebUiMainMenuService
                 Command: "/world_setup",
                 TargetPanel: "game-shell"),
             new BrowserMainMenuActionDto(
+                Id: "qte-practice",
+                Label: "Тренировка QTE",
+                Description: "Свободная тренировка быстрых сцен без наград и без изменения прохождения.",
+                Enabled: true,
+                DisabledReason: string.Empty,
+                Kind: "client-panel",
+                Command: string.Empty,
+                TargetPanel: "practice-panel"),
+            new BrowserMainMenuActionDto(
                 Id: "load",
                 Label: "Загрузить",
                 Description: hasSaves
