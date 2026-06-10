@@ -975,9 +975,7 @@ public partial class ExplorerMode
         if (transDoc != null)
             autoCombatSkill = GetStr(transDoc.RootElement, "playerAutoCombatSkillChange", GetStr(transDoc.RootElement, "autoCombatSkill", ""));
 
-        var grid = new Grid()
-            .AddColumn(new GridColumn())
-            .AddColumn(new GridColumn());
+        var content = new Grid().AddColumn(new GridColumn());
 
         var leftContent = new Grid().AddColumn(new GridColumn());
         leftContent.AddRow(new Markup($"[bold white]👤 {Markup.Escape(state.CharacterName)}[/]"));
@@ -1202,12 +1200,13 @@ public partial class ExplorerMode
             }
         }
 
-        grid.AddRow(
-            leftContent,
-            rightContent
-        );
+        // Spectre.Console 0.49 can hang while measuring two expandable grid columns
+        // that contain fixed/no-wrap child tables. Keep status sections vertical.
+        content.AddRow(leftContent);
+        content.AddRow(new Text(""));
+        content.AddRow(rightContent);
 
-        var panel = new Panel(grid)
+        var panel = new Panel(content)
         {
             Header = new PanelHeader($" {_loc.T("status")} ", Justify.Center),
             Border = BoxBorder.Double,

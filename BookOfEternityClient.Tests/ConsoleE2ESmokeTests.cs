@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using Xunit;
@@ -121,6 +122,46 @@ public sealed class ConsoleE2ESmokeTests : IDisposable
     }
 
     [Fact]
+    public async Task ConsoleE2E_StatusCommand_RealSpectreRenderReturnsAfterKeyPrompt()
+    {
+        var repoRoot = FindRepositoryRoot();
+        var fixtureGameSessionPath = Path.Combine(repoRoot, "FileSystemExample", "game_session");
+        using var sandbox = ConsoleE2ESandbox.CreateFromFixture(
+            fixtureGameSessionPath,
+            _tempRoot,
+            preserveArtifacts: true);
+
+        var artifactRoot = Path.Combine(sandbox.BasePath, "artifacts");
+        var scriptPath = Path.Combine(sandbox.BasePath, "status-script.json");
+        File.WriteAllText(
+            scriptPath,
+            """
+            {
+              "steps": [
+                { "kind": "key", "key": "Enter" },
+                { "kind": "text", "text": "/статус" },
+                { "kind": "key", "key": "Enter" },
+                { "kind": "key", "key": "Enter" }
+              ]
+            }
+            """);
+
+        var result = await RunConsoleClient(
+            repoRoot,
+            sandbox.BasePath,
+            scriptPath,
+            artifactRoot,
+            timeout: TimeSpan.FromSeconds(20));
+
+        Assert.Equal(2, result.ExitCode);
+        Assert.Contains("Console E2E scripted input failed at step 4", result.Stderr, StringComparison.Ordinal);
+        Assert.Contains("requested text input", result.Stdout, StringComparison.Ordinal);
+        Assert.Contains("Статус", result.Stdout, StringComparison.Ordinal);
+        Assert.Contains("Здоров", result.Stdout, StringComparison.Ordinal);
+        Assert.Contains("Деньги", result.Stdout, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task ConsoleE2E_ExhaustedScript_PreservesRealRunnerFailureArtifacts()
     {
         var repoRoot = FindRepositoryRoot();
@@ -202,7 +243,8 @@ public sealed class ConsoleE2ESmokeTests : IDisposable
         string repoRoot,
         string sandboxBasePath,
         string scriptPath,
-        string artifactRoot)
+        string artifactRoot,
+        TimeSpan? timeout = null)
     {
         var stdoutPath = Path.Combine(sandboxBasePath, "stdout.txt");
         var stderrPath = Path.Combine(sandboxBasePath, "stderr.txt");
@@ -214,6 +256,8 @@ public sealed class ConsoleE2ESmokeTests : IDisposable
                 WorkingDirectory = repoRoot,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8,
                 UseShellExecute = false
             }
         };
@@ -237,7 +281,7 @@ public sealed class ConsoleE2ESmokeTests : IDisposable
         var stdoutTask = process.StandardOutput.ReadToEndAsync();
         var stderrTask = process.StandardError.ReadToEndAsync();
         var waitTask = process.WaitForExitAsync();
-        var finished = await Task.WhenAny(waitTask, Task.Delay(TimeSpan.FromSeconds(45)));
+        var finished = await Task.WhenAny(waitTask, Task.Delay(timeout ?? TimeSpan.FromSeconds(45)));
         if (finished != waitTask)
         {
             try
