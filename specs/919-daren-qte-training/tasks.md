@@ -69,7 +69,7 @@
 - [x] T041 Run `git diff --check origin/main...HEAD` and an added-line static scan for secrets/shell/eval/pickle/SQL-injection patterns, excluding generated/scratch artifacts.
 - [x] T042 Reconcile this `tasks.md`: mark only tasks with implementation and verification evidence complete before PR.
 - [x] T043 Obtain independent review against #919 acceptance, Spec Kit artifacts, docs/examples, tests, profile/New Game reward semantics, browser/console parity, and player-copy boundaries. Evidence: Codex review run `E:/Games/codex-runs/20260611-073410-boe-919-daren-qte-training-review` returned `CHANGES_REQUIRED` for unsafe pre-hideout Daren failure reward writes.
-- [ ] T044 Fix critical/important review findings, rerun focused verification, and re-review until approved. Evidence pending: unsafe failure regression/fix added; fresh focused gates passed 290/290 C#, frontend 76/76, build 0 warnings/errors, Spec Kit prerequisites, diff check, and static scan; re-review still required.
+- [x] T044 Fix critical/important review findings, rerun focused verification, and re-review until approved. Evidence: unsafe failure regression/fix commit `c7657ff`; fresh gates passed 290/290 C#, frontend 76/76, build 0 warnings/errors, Spec Kit prerequisites, diff check, and static scan; independent delegate re-review approved after focused regression/threshold/New Game tests passed 11/11.
 - [ ] T045 Create PR with local verification evidence and `GitHub Actions: not used/not required`.
 - [ ] T046 Squash merge after local gates and approved review; delete remote branch, fast-forward local `main`, run post-merge focused verification, comment evidence on #919, and confirm issue closed.
 
