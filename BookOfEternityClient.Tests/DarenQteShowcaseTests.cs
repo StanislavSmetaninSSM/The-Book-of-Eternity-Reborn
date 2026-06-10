@@ -299,6 +299,34 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public async Task DarenShowcaseAttempt_AllPartialValidCompletionCanReachShadowTier()
+    {
+        var attempt = _qte.StartDarenShowcaseAttempt();
+        QteSceneService.QteActionResolution? resolution = null;
+        while (attempt.State == "Active")
+        {
+            var chapter = attempt.ActiveScene.Offer!.Chapters.Single(item =>
+                string.Equals(item.ChapterId, attempt.ActiveScene.CurrentChapterId, StringComparison.OrdinalIgnoreCase));
+            var action = chapter.Actions[0];
+            resolution = await _qte.ResolveDarenShowcaseActionAsync(
+                attempt,
+                action.ActionId,
+                "partial",
+                completedAtUtc: new DateTime(2026, 6, 11, 1, 45, 0, DateTimeKind.Utc));
+        }
+
+        var profile = await _profile.ReadProfileAsync();
+
+        Assert.NotNull(resolution?.Completion);
+        Assert.Equal("shadow_on_the_run", resolution!.Completion!.OutcomeId);
+        Assert.Equal("shadow_on_the_run", resolution.Completion.ScoreSummary?.Rank?.Id);
+        Assert.Equal("Тень в бегах", resolution.Completion.ScoreSummary?.Rank?.Label);
+        Assert.True(attempt.Ending!.GrantsReward);
+        Assert.Equal(1, attempt.Ending.InkFeatherBonus);
+        Assert.Equal("shadow_on_the_run", profile.DarenShowcase?.BestTierId);
+    }
+
+    [Fact]
     public async Task DarenBrowserState_UsesExistingQteProjectionAndCSharpRewardAuthority()
     {
         var intro = await _web.BuildDarenShowcaseStateAsync();

@@ -508,7 +508,7 @@ public sealed partial class QteSceneService
         new(StringComparer.OrdinalIgnoreCase)
         {
             ["success"] = DarenGradeDeltas(5, stealth, loot, pursuit, evidence, hideout),
-            ["partial"] = DarenGradeDeltas(2, Math.Max(0, stealth / 2), Math.Max(0, loot / 2), Math.Max(0, pursuit / 2), evidence / 2, Math.Max(0, hideout / 2)),
+            ["partial"] = DarenGradeDeltas(0, Math.Max(0, stealth / 2), Math.Max(0, loot / 2), Math.Max(0, pursuit / 2), evidence / 2, Math.Max(0, hideout / 2)),
             ["fail"] = DarenGradeDeltas(-8, -Math.Max(3, stealth), -Math.Max(2, loot), -Math.Max(2, pursuit), Math.Max(4, Math.Abs(evidence)), -Math.Max(2, hideout))
         };
 
