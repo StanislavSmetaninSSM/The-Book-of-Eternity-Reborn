@@ -482,8 +482,8 @@ public sealed class QteSceneService
                 if (outcome == null)
                     throw new InvalidOperationException($"QTE outcome '{target.TerminalOutcomeId}' not found.");
 
-                var finalResponse = await ApplyTerminalOutcomeAsync(outcome);
                 var scoreSummary = BuildFinalScoreSummary(offer.ScoreModel, active.ScoreState);
+                var finalResponse = await ApplyTerminalOutcomeAsync(outcome, scoreSummary);
                 var summary = BuildCompletionSummary(offer, outcome, grade, scoreSummary);
                 await AppendHistoryAsync(offer, outcome, grade, active.AcceptedAtTurn, currentTurnNumber, summary, scoreSummary, active.ScoreState?.Audit);
 
@@ -650,6 +650,62 @@ public sealed class QteSceneService
             string.Equals(metric.Visibility, "always", StringComparison.OrdinalIgnoreCase)) ??
         Enumerable.Empty<QteScoreMetricState>();
 
+    private static IEnumerable<QteScoreMetricState> GetVisibleFinalScoreMetrics(QteScoreSummary? scoreSummary) =>
+        scoreSummary?.Metrics.Where(metric =>
+            !string.Equals(metric.Visibility, "hidden", StringComparison.OrdinalIgnoreCase)) ??
+        Enumerable.Empty<QteScoreMetricState>();
+
+    private static List<string> BuildFinalScoreMarkupLines(QteScoreSummary? scoreSummary)
+    {
+        var lines = new List<string>();
+        var rank = scoreSummary?.Rank;
+        var metrics = GetVisibleFinalScoreMetrics(scoreSummary).ToList();
+        if (rank == null && metrics.Count == 0)
+            return lines;
+
+        lines.Add("[bold]Итоговый счёт:[/]");
+        if (!string.IsNullOrWhiteSpace(rank?.Label))
+            lines.Add($"[green]Ранг: {Markup.Escape(rank.Label)}[/]");
+        if (!string.IsNullOrWhiteSpace(rank?.Summary))
+            lines.Add($"[grey]{Markup.Escape(rank.Summary!)}[/]");
+
+        foreach (var metric in metrics)
+            lines.Add($"[grey]• {Markup.Escape(metric.Label)}: {FormatScoreValue(metric.Value)}[/]");
+
+        return lines;
+    }
+
+    private static string? BuildFinalScorePlainText(QteScoreSummary? scoreSummary)
+    {
+        var lines = new List<string>();
+        var rank = scoreSummary?.Rank;
+        var metrics = GetVisibleFinalScoreMetrics(scoreSummary).ToList();
+        if (rank == null && metrics.Count == 0)
+            return null;
+
+        lines.Add("Итоговый счёт:");
+        if (!string.IsNullOrWhiteSpace(rank?.Label))
+            lines.Add($"Ранг: {rank.Label}");
+        if (!string.IsNullOrWhiteSpace(rank?.Summary))
+            lines.Add(rank.Summary!);
+
+        foreach (var metric in metrics)
+            lines.Add($"{metric.Label}: {FormatScoreValue(metric.Value)}");
+
+        return string.Join(Environment.NewLine, lines);
+    }
+
+    private static void AppendFinalScoreToResponse(GameResponse response, QteScoreSummary? scoreSummary)
+    {
+        var scoreText = BuildFinalScorePlainText(scoreSummary);
+        if (string.IsNullOrWhiteSpace(scoreText))
+            return;
+
+        response.Response = string.IsNullOrWhiteSpace(response.Response)
+            ? scoreText
+            : $"{response.Response.TrimEnd()}{Environment.NewLine}{Environment.NewLine}{scoreText}";
+    }
+
     private static QteScoreMetricState CloneScoreMetric(QteScoreMetricState metric) =>
         new()
         {
@@ -756,10 +812,14 @@ public sealed class QteSceneService
         }
     }
 
-    private async Task<GameResponse> ApplyTerminalOutcomeAsync(QteTerminalOutcome outcome)
+    private async Task<GameResponse> ApplyTerminalOutcomeAsync(
+        QteTerminalOutcome outcome,
+        QteScoreSummary? scoreSummary)
     {
-        var response = await ApplyTerminalOutcomeValidatedStateChangesAsync(outcome);
-        await ShowTerminalOutcomeScreenAsync(outcome);
+        var response = BuildTerminalOutcomeResponse(outcome);
+        AppendFinalScoreToResponse(response, scoreSummary);
+        response = await ApplyTerminalOutcomeValidatedStateChangesAsync(response);
+        await ShowTerminalOutcomeScreenAsync(outcome, scoreSummary);
         return response;
     }
 
@@ -768,6 +828,13 @@ public sealed class QteSceneService
         bool allowPreexistingStateIssues = false)
     {
         var response = BuildTerminalOutcomeResponse(outcome);
+        return await ApplyTerminalOutcomeValidatedStateChangesAsync(response, allowPreexistingStateIssues);
+    }
+
+    private async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(
+        GameResponse response,
+        bool allowPreexistingStateIssues = false)
+    {
         var baseline = await CaptureQteNormalizationBaselineAsync(response);
         HashSet<string>? preexistingErrorFingerprints = null;
         if (allowPreexistingStateIssues)
@@ -997,9 +1064,21 @@ public sealed class QteSceneService
         }
     }
 
-    private async Task ShowTerminalOutcomeScreenAsync(QteTerminalOutcome outcome)
+    private async Task ShowTerminalOutcomeScreenAsync(QteTerminalOutcome outcome, QteScoreSummary? scoreSummary)
     {
         var imageOffered = false;
+        var lines = new List<string>
+        {
+            $"[bold green]{Markup.Escape(outcome.Title)}[/]",
+            "",
+            $"[white]{Markup.Escape(outcome.FinalNarrative)}[/]"
+        };
+        var scoreLines = BuildFinalScoreMarkupLines(scoreSummary);
+        if (scoreLines.Count > 0)
+        {
+            lines.Add("");
+            lines.AddRange(scoreLines);
+        }
 
         while (true)
         {
@@ -1011,12 +1090,7 @@ public sealed class QteSceneService
             choices.Add("✅ Завершить сцену");
 
             AnsiConsole.Clear();
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", new[]
-            {
-                $"[bold green]{Markup.Escape(outcome.Title)}[/]",
-                "",
-                $"[white]{Markup.Escape(outcome.FinalNarrative)}[/]"
-            })))
+            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
             {
                 Header = new PanelHeader(" Финал QTE ", Justify.Center),
                 Border = BoxBorder.Double,

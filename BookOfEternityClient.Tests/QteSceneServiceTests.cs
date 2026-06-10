@@ -2,10 +2,13 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Spectre.Console;
+using Spectre.Console.Rendering;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -1177,6 +1180,54 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task StartAcceptedSceneAsync_RendersFinalScoreSummaryInConsoleAndResponse()
+    {
+        var originalConsole = AnsiConsole.Console;
+        var console = new QueuedAnsiConsole(Enumerable.Repeat(Key(ConsoleKey.Enter), 8));
+        AnsiConsole.Console = console;
+
+        try
+        {
+            await SeedMinimalValidatedMortalStateAsync();
+            var service = CreateRuntimeCapableService(new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 3)));
+            var offer = BuildScoredBranchChoiceOffer();
+            offer.ScoreModel!.Metrics.Add(new QteSceneService.QteScoreMetricDefinition
+            {
+                Id = "secretTrace",
+                Label = "Тайный след",
+                Initial = 7,
+                Min = 0,
+                Max = 10,
+                Visibility = "hidden"
+            });
+
+            var completion = await service.StartAcceptedSceneAsync(offer, currentTurnNumber: 10);
+            var output = console.Output;
+
+            Assert.Contains("Удачный исход", output, StringComparison.Ordinal);
+            Assert.Contains("Скрытность: 65", output, StringComparison.Ordinal);
+            Assert.Contains("Тревога: 35", output, StringComparison.Ordinal);
+            Assert.Contains("Улики: 37", output, StringComparison.Ordinal);
+            Assert.DoesNotContain("Тайный след", output, StringComparison.Ordinal);
+            Assert.DoesNotContain("scoreModel", output, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("scoreDeltas", output, StringComparison.OrdinalIgnoreCase);
+
+            Assert.NotNull(completion.ScoreSummary);
+            Assert.Contains("Ранг: Удачный исход", completion.Response.Response, StringComparison.Ordinal);
+            Assert.Contains("Скрытность: 65", completion.Response.Response, StringComparison.Ordinal);
+            Assert.Contains("Тревога: 35", completion.Response.Response, StringComparison.Ordinal);
+            Assert.Contains("Улики: 37", completion.Response.Response, StringComparison.Ordinal);
+            Assert.DoesNotContain("Тайный след", completion.Response.Response, StringComparison.Ordinal);
+            Assert.DoesNotContain("scoreModel", completion.Response.Response, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("scoreDeltas", completion.Response.Response, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            AnsiConsole.Console = originalConsole;
+        }
+    }
+
+    [Fact]
     public async Task ResolveActiveActionAsync_LeavesUnscoredQteHistoryUnchanged()
     {
         var service = CreateRuntimeCapableService();
@@ -1533,20 +1584,22 @@ public sealed class QteSceneServiceTests : IDisposable
         Assert.Equal("sibling_run", Path.GetFileName(runDirectories[0]));
     }
 
-    private QteSceneService CreateRuntimeCapableService()
+    private QteSceneService CreateRuntimeCapableService(IConsoleInputSource? inputSource = null)
     {
         var settings = new GameSettings();
+        var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
         return new QteSceneService(
             _fs,
             settings,
             null!,
-            null!,
-            null!,
+            new ImageService(_fs, settings, new LocalizationManager { CurrentLanguage = "ru" }, NullLogger<ImageService>.Instance),
+            new AudioService(_fs, settings, NullLogger<AudioService>.Instance),
             new StateDistributor(_fs, NullLogger<StateDistributor>.Instance),
             new ValidationService(_fs, NullLogger<ValidationService>.Instance),
             new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance),
-            new StateManager(_fs, settings, NullLogger<StateManager>.Instance),
-            NullLogger<QteSceneService>.Instance);
+            stateManager,
+            NullLogger<QteSceneService>.Instance,
+            inputSource);
     }
 
     private async Task<SaveLoadService> CreateSaveLoadServiceAsync()
@@ -1568,6 +1621,33 @@ public sealed class QteSceneServiceTests : IDisposable
         var json = await _fs.ReadFileAsync(relativePath);
         Assert.False(string.IsNullOrWhiteSpace(json));
         return JsonDocument.Parse(json!);
+    }
+
+    private async Task SeedMinimalValidatedMortalStateAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая душа",
+          "currentIncarnation": 0,
+          "currentRealm": "Mortal World"
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
+        {
+          "healthPercentage": "100%",
+          "energyPercentage": "100%",
+          "poisePercentage": "100%",
+          "currentCondition": "Собран",
+          "money": 0
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/abode_power_journal.json", """
+        {
+          "entries": []
+        }
+        """);
     }
 
     private static void AssertMetricValue(JsonElement scoreContainer, string metricId, double expectedValue)
@@ -1810,6 +1890,84 @@ public sealed class QteSceneServiceTests : IDisposable
     {
         var keyChar = key == ConsoleKey.Spacebar ? ' ' : char.ToLowerInvariant(key.ToString()[0]);
         return new ConsoleKeyInfo(keyChar, key, false, false, false);
+    }
+
+    private sealed class QueuedConsoleInputSource : IConsoleInputSource
+    {
+        private readonly Queue<ConsoleKeyInfo> _keys;
+
+        public QueuedConsoleInputSource(IEnumerable<ConsoleKeyInfo> keys)
+        {
+            _keys = new Queue<ConsoleKeyInfo>(keys);
+        }
+
+        public bool IsScripted => true;
+
+        public bool KeyAvailable => _keys.Count > 0;
+
+        public ConsoleKeyInfo ReadKey(bool intercept = true) =>
+            _keys.Count > 0 ? _keys.Dequeue() : Key(ConsoleKey.Enter);
+
+        public string? ReadLine() => string.Empty;
+
+        public void AssertCompleted()
+        {
+            Assert.Empty(_keys);
+        }
+    }
+
+    private sealed class QueuedAnsiConsole : IAnsiConsole
+    {
+        private readonly StringWriter _writer = new();
+        private readonly IAnsiConsole _inner;
+
+        public QueuedAnsiConsole(IEnumerable<ConsoleKeyInfo> keys)
+        {
+            _inner = AnsiConsole.Create(new AnsiConsoleSettings
+            {
+                Ansi = AnsiSupport.Yes,
+                ColorSystem = ColorSystemSupport.Standard,
+                Interactive = InteractionSupport.Yes,
+                Out = new AnsiConsoleOutput(_writer)
+            });
+            Input = new QueuedAnsiConsoleInput(keys);
+        }
+
+        public string Output => _writer.ToString();
+
+        public Profile Profile => _inner.Profile;
+
+        public IAnsiConsoleCursor Cursor => _inner.Cursor;
+
+        public IAnsiConsoleInput Input { get; }
+
+        public RenderPipeline Pipeline => _inner.Pipeline;
+
+        public IExclusivityMode ExclusivityMode => _inner.ExclusivityMode;
+
+        public void Clear(bool home)
+        {
+        }
+
+        public void Write(IRenderable renderable) => _inner.Write(renderable);
+    }
+
+    private sealed class QueuedAnsiConsoleInput : IAnsiConsoleInput
+    {
+        private readonly Queue<ConsoleKeyInfo> _keys;
+
+        public QueuedAnsiConsoleInput(IEnumerable<ConsoleKeyInfo> keys)
+        {
+            _keys = new Queue<ConsoleKeyInfo>(keys);
+        }
+
+        public bool IsKeyAvailable() => _keys.Count > 0;
+
+        public ConsoleKeyInfo? ReadKey(bool intercept) =>
+            _keys.Count > 0 ? _keys.Dequeue() : Key(ConsoleKey.Enter);
+
+        public Task<ConsoleKeyInfo?> ReadKeyAsync(bool intercept, CancellationToken cancellationToken) =>
+            Task.FromResult(ReadKey(intercept));
     }
 
     private static string ResolveMashInputGrade(

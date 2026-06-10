@@ -65,26 +65,27 @@
 ## Phase 6: Verification, review, and Spec Kit reconciliation
 
 - [x] **T017 Run full focused local verification**
-  Final evidence 2026-06-10:
+  Final implementation evidence 2026-06-10:
   - `.specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` passed with `FEATURE_DIR=E:\Games\worktrees\boe-924-qte-scoring\specs\924-qte-scoring`.
   - `dotnet build BookOfEternityClient/BookOfEternityClient.csproj --no-restore` passed with 0 warnings / 0 errors.
   - `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:IsTestProject=true` passed with 0 warnings / 0 errors.
   - `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --no-restore --filter "QteSceneServiceTests|ValidationServiceQteTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|BrowserApiContractTests|BrowserFrontendWorkspaceTests" --logger "console;verbosity=minimal"` passed 265/265.
-  - Expanded final focused run including `BrowserQteMiniGameContractTests` passed 269/269.
-  - `npm run verify --prefix BookOfEternityClient.WebFrontend` passed: typecheck, player-facing tests 60/60, and Vite build.
-  - `git diff --check` passed; `git diff --check origin/main...HEAD` passed for committed branch diff at the time of checking.
-  - Added-line production-source credential scan found no secrets/tokens/passwords in production C#/frontend source.
+  - Expanded final focused run including `BrowserQteMiniGameContractTests` passed 269/269 before independent review.
+  - After the independent review fix for console final score summaries, `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~QteSceneServiceTests.StartAcceptedSceneAsync_RendersFinalScoreSummaryInConsoleAndResponse" --logger "console;verbosity=minimal"` passed 1/1, and the expanded QTE/browser/docs focused run passed 270/270.
+  - `npm run verify --prefix BookOfEternityClient.WebFrontend` passed: typecheck, player-facing tests 60/60, and Vite build both before and after the review fix.
+  - `git diff --check` passed; `git diff --check origin/main...HEAD` passed for the committed branch diff.
+  - Added-line production-source credential scan found no secrets/tokens/passwords in production C#/frontend source (`NO_MATCHES`).
 
 - [x] **T018 Update this tasks file with RED/GREEN and final evidence**
   This tasks file now records RED evidence for validation/runtime/browser/docs guards and GREEN evidence for implementation, docs, frontend, and final verification gates. Hermes-owned review/PR/merge/closure tasks remain open.
 
-- [ ] **T019 Independent pre-merge review**
-  Hermes must obtain independent review after Codex implementation. Critical/Important findings block PR/merge until fixed and re-reviewed.
+- [x] **T019 Independent pre-merge review**
+  Initial independent review `E:/Games/codex-runs/20260611-000857-boe-924-qte-scoring-review` returned `CHANGES_REQUIRED`: console final completion did not display score summary/rank and the Spec Kit contract example could imply worst-first `rankOrder`. Follow-up fix commit `a9c1016` renders final score summaries/ranks in console/response, filters hidden metrics, corrects rank-order guidance, and adds `StartAcceptedSceneAsync_RendersFinalScoreSummaryInConsoleAndResponse`. Final re-review `E:/Games/codex-runs/20260611-003912-boe-924-qte-scoring-rereview` returned `APPROVED`; blocking findings: none.
 
 ## Phase 7: Hermes-owned PR, merge, and closure
 
-- [ ] **T020 Create PR**
-  Push `work/924-qte-scoring`, create a PR to `main` that closes #924, and include local verification evidence plus `GitHub Actions: not used / not required`.
+- [x] **T020 Create PR**
+  Pushed `work/924-qte-scoring` and created PR [#938](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/938) to `main`. PR closes #924 and includes local verification evidence plus `GitHub Actions: not used / not required`.
 
 - [ ] **T021 Squash-merge and verify closure**
   After local gates and independent review are clean, squash-merge, delete the remote branch, fast-forward main, verify PR `MERGED` and issue #924 `CLOSED`/`COMPLETED`, and run post-merge focused verification on `main`.

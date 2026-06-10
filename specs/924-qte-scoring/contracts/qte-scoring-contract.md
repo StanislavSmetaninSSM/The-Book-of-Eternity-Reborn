@@ -37,7 +37,7 @@ A QTE offer may define an optional `scoreModel` alongside existing QTE action/ch
         "visibility": "always"
       }
     ],
-    "rankOrder": ["bad", "partial", "good", "best"],
+    "rankOrder": ["best", "good", "partial", "bad"],
     "ranks": [
       {
         "id": "best",
