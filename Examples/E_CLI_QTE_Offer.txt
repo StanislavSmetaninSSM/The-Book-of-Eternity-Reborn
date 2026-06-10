@@ -21,6 +21,12 @@
 - At least one terminal outcome must be reachable through success-routing.
 - Every terminal outcome must contain `outcomeId`, `title`, `finalNarrative`, `gmSummary`, and `responseFragment`.
 - `primaryCharacteristic` must use a canonical lowercase stat id such as `dexterity`, `speed`, `wisdom`, or `perception`.
+- Long ordinary QTE scenes may add optional `scoreModel` for scene-local scoring without Daren mode, practice rewards, achievements, inventory, resources, or permanent rewards.
+- `scoreModel.metrics[]` defines player-facing metric labels, numeric bounds, initial values, and `visibility` values: `always`, `final`, or `hidden`.
+- `scoreModel.ranks[]` defines ending ranks; non-fallback ranks use `allOf` thresholds and exactly one rank uses `fallback: true`.
+- `scoreModel.rankOrder` defines deterministic rank evaluation order and must include every non-fallback rank id when present.
+- Action `scoreDeltas` applies only the selected `success`, `partial`, or `fail` grade, clamps metrics to their bounds, and contributes to the final score summary and QTE history audit.
+- Browser clients render scored QTE state read-only and still submit only the existing QTE action grade/result flow.
 - For `BranchChoice`, `check.config.choiceGrade` must be exactly `success`, `partial`, or `fail`.
 - For `MashInput`, `check.config.keys`, `durationMs`, `targetPresses`, and `partialThreshold` are required.
 - `MashInput` keys must use canonical QTE key tokens: `q`, `w`, `e`, `a`, `s`, `d`, or `space`.
@@ -86,6 +92,52 @@
   "declineHint": "Если игрок откажется, ту же ситуацию нужно разрешить обычной проверкой силы или выносливости.",
   "cinematicJustification": "Сцена длится несколько секунд и проверяет резкий физический натиск.",
   "sceneImagePrompt": "Ancient stone door closing in a torchlit corridor, hero forcing the slab open, tense cinematic fantasy action",
+  "scoreModel": {
+    "metrics": [
+      {
+        "id": "momentum",
+        "label": "Темп",
+        "initial": 50,
+        "min": 0,
+        "max": 100,
+        "visibility": "always"
+      },
+      {
+        "id": "damage",
+        "label": "Повреждения",
+        "initial": 0,
+        "min": 0,
+        "max": 100,
+        "visibility": "final"
+      }
+    ],
+    "rankOrder": ["gold", "silver"],
+    "ranks": [
+      {
+        "id": "gold",
+        "label": "Золотой исход",
+        "summary": "Герой проходит быстро и почти без потерь.",
+        "allOf": [
+          { "metric": "momentum", "op": ">=", "value": 75 },
+          { "metric": "damage", "op": "<=", "value": 20 }
+        ]
+      },
+      {
+        "id": "silver",
+        "label": "Серебряный исход",
+        "summary": "Герой сохраняет достаточный темп, но платит цену.",
+        "allOf": [
+          { "metric": "momentum", "op": ">=", "value": 45 }
+        ]
+      },
+      {
+        "id": "bronze",
+        "label": "Тяжёлый исход",
+        "summary": "Сцена завершена, но темп потерян.",
+        "fallback": true
+      }
+    ]
+  },
   "startChapterId": "door_gap",
   "chapters": [
     {
@@ -112,6 +164,20 @@
             "success": { "terminalOutcomeId": "door_open" },
             "partial": { "terminalOutcomeId": "door_stuck" },
             "fail": { "terminalOutcomeId": "caught_at_door" }
+          },
+          "scoreDeltas": {
+            "success": [
+              { "metric": "momentum", "delta": 30 },
+              { "metric": "damage", "delta": -5 }
+            ],
+            "partial": [
+              { "metric": "momentum", "delta": -5 },
+              { "metric": "damage", "delta": 15 }
+            ],
+            "fail": [
+              { "metric": "momentum", "delta": -25 },
+              { "metric": "damage", "delta": 30 }
+            ]
           },
           "successText": "Дверь поддаётся под резким натиском.",
           "partialText": "Створка не открывается полностью, но оставляет щель для рывка.",

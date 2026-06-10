@@ -1160,6 +1160,7 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - `declineHint`
   - `cinematicJustification`
   - `sceneImagePrompt`
+  - `scoreModel`
 - `qte_offer.json` must contain `startChapterId`, and that field alone defines the opening chapter. The order of `chapters[]` has no mechanical meaning.
 - Every chapter must contain a non-empty `actions[]` array.
 - Every chapter must contain `chapterId`, `narrative`, and `actions`.
@@ -1173,6 +1174,15 @@ The Mortal-World and afterlife Ink Feather whitelists are mutually exclusive.
   - all branch references must resolve
   - every chapter must be reachable from `startChapterId`
   - at least one success-reachable terminal outcome must exist
+- Optional QTE scoring:
+  - `scoreModel` may be used by ordinary GM-authored QTE offers to track scene-local scoring without Daren mode, practice mode rewards, achievements, inventory, resources, or other permanent reward systems.
+  - `scoreModel.metrics[]` defines stable lowercase metric ids, player-facing labels, numeric `initial`, `min`, and `max` values, and `visibility`.
+  - Supported metric `visibility` values are `always`, `final`, and `hidden`: `always` may be shown during active play and in the final score summary, `final` is shown only in the final score summary, and `hidden` is not shown in default player UI.
+  - `scoreModel.ranks[]` defines ending ranks. Non-fallback ranks use `allOf` threshold rules with `metric`, `op`, and `value`; one rank must use `fallback: true`.
+  - `scoreModel.rankOrder`, when present, defines deterministic rank evaluation order and must include every non-fallback rank id.
+  - Action-level `scoreDeltas` may define `success`, `partial`, and/or `fail` arrays. Each delta entry uses `{ "metric": "...", "delta": number }` and applies only when that action resolves to that grade.
+  - The C# client applies deltas locally, clamps metrics to their bounds, records score audit details in QTE history, and computes the final rank when the scene reaches a terminal outcome.
+  - Browser clients render scored QTE state read-only and still submit only the existing QTE action grade/result flow; React must not post arbitrary metric deltas or become score authority.
 - QTE v1 node types:
   - `BranchChoice`
   - `TimingBar`

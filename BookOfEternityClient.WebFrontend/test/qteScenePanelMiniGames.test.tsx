@@ -50,6 +50,30 @@ describe('QteScenePanel browser mini-games #918', () => {
     }
   });
 
+  it('renders scored QTE metrics and final rank without raw contract wording', () => {
+    const activeHtml = renderToStaticMarkup(<QteScenePanel qte={activeScoredQte()} />);
+
+    expect(activeHtml).toContain('Счёт сцены');
+    expect(activeHtml).toContain('Скрытность');
+    expect(activeHtml).toContain('87');
+    expect(activeHtml).toContain('Тревога');
+    expect(activeHtml).not.toContain('Улики');
+    expect(activeHtml).not.toContain('Тайное давление');
+
+    const finalHtml = renderToStaticMarkup(<QteScenePanel qte={completedScoredQte()} />);
+    expect(finalHtml).toContain('Ранг: Удачный исход');
+    expect(finalHtml).toContain('Цель достигнута, тревога осталась управляемой.');
+    expect(finalHtml).toContain('Улики');
+    expect(finalHtml).toContain('34');
+    expect(finalHtml).not.toContain('Тайное давление');
+
+    for (const html of [activeHtml, finalHtml]) {
+      for (const forbidden of [/\/api\//i, /\bDTO\b/i, /\bendpoint\b/i, /\bdebug\b/i, /\bJSON\b/i, /scoreDeltas/i, /scoreModel/i]) {
+        expect(html).not.toMatch(forbidden);
+      }
+    }
+  });
+
   it('keeps BranchChoice as a direct static choice without mini-game grading', () => {
     const html = renderToStaticMarkup(
       <QteScenePanel qte={activeQte([
@@ -128,7 +152,8 @@ function activeQte(actions: QteWebActionDto[]): BrowserGameScreenDto['qte'] {
         narrative: 'Книга требует реакции.',
         chapterImagePrompt: null,
         actions
-      }
+      },
+      scoreState: null
     },
     resolution: null,
     completion: null,
@@ -138,6 +163,84 @@ function activeQte(actions: QteWebActionDto[]): BrowserGameScreenDto['qte'] {
     notification: null,
     error: null
   } satisfies QteWebStateDto;
+}
+
+type QteScoreMetricFixture = {
+  id: string;
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  visibility: 'always' | 'final' | 'hidden';
+};
+
+type QteScoreRankFixture = {
+  id: string;
+  label: string;
+  summary: string | null;
+};
+
+type QteScoreSummaryFixture = {
+  rank: QteScoreRankFixture;
+  metrics: QteScoreMetricFixture[];
+};
+
+type ScoreAwareActiveQte = BrowserGameScreenDto['qte'] & {
+  activeScene: NonNullable<BrowserGameScreenDto['qte']['activeScene']> & {
+    scoreState: {
+      metrics: QteScoreMetricFixture[];
+    };
+  };
+};
+
+type ScoreAwareCompletedQte = BrowserGameScreenDto['qte'] & {
+  completion: NonNullable<BrowserGameScreenDto['qte']['completion']> & {
+    scoreSummary: QteScoreSummaryFixture;
+  };
+};
+
+function activeScoredQte(): BrowserGameScreenDto['qte'] {
+  const qte = activeQte([
+    action('BranchChoice', { kind: 'BranchChoice', supported: true, choiceGrade: 'success' }, { requiresSubmittedGrade: false })
+  ]) as ScoreAwareActiveQte;
+
+  qte.activeScene.scoreState = {
+    metrics: [
+      { id: 'stealth', label: 'Скрытность', value: 87, min: 0, max: 100, visibility: 'always' },
+      { id: 'alarm', label: 'Тревога', value: 12, min: 0, max: 100, visibility: 'always' }
+    ]
+  };
+  return qte;
+}
+
+function completedScoredQte(): BrowserGameScreenDto['qte'] {
+  return {
+    state: 'Completed',
+    offer: null,
+    activeScene: null,
+    resolution: null,
+    completion: {
+      qteId: 'qte_browser_scored',
+      outcomeId: 'escaped',
+      summary: 'QTE[qte_browser_scored] -> Уход (Успех). Ранг: Удачный исход',
+      scoreSummary: {
+        rank: {
+          id: 'good',
+          label: 'Удачный исход',
+          summary: 'Цель достигнута, тревога осталась управляемой.'
+        },
+        metrics: [
+          { id: 'stealth', label: 'Скрытность', value: 64, min: 0, max: 100, visibility: 'always' },
+          { id: 'evidence', label: 'Улики', value: 34, min: 0, max: 100, visibility: 'final' }
+        ]
+      }
+    },
+    lastResolvedReminder: null,
+    lastDeclinedQteId: null,
+    availableOperations: [],
+    notification: null,
+    error: null
+  } as ScoreAwareCompletedQte;
 }
 
 function action(

@@ -433,6 +433,7 @@ public partial class ValidationService
             if (chaptersEmpty || terminalOutcomesEmpty)
                 return issues;
 
+            var scoreMetrics = ValidateQteScoreModel(root, issues);
             var chapterIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var outcomeIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var chapterElements = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
@@ -642,6 +643,8 @@ public partial class ValidationService
                     {
                         ValidateLockPinSetConfig(check, actionContext, issues);
                     }
+
+                    ValidateQteScoreDeltas(action, actionContext, scoreMetrics, issues);
 
                     if (!action.TryGetProperty("routing", out var routing))
                     {
@@ -906,6 +909,317 @@ public partial class ValidationService
         }
 
         return issues;
+    }
+
+    private sealed record QteScoreMetricValidation(string Id, double Min, double Max);
+
+    private static Dictionary<string, QteScoreMetricValidation>? ValidateQteScoreModel(
+        JsonElement root,
+        List<ValidationIssue> issues)
+    {
+        const string context = $"{QteSceneService.QteOfferPath}.scoreModel";
+        if (!root.TryGetProperty("scoreModel", out var scoreModel))
+            return null;
+
+        if (scoreModel.ValueKind != JsonValueKind.Object)
+        {
+            AddQteScoreIssue(issues, context, "qte_score_model_invalid", "scoreModel должен быть JSON object.", expected: "JSON object", actual: scoreModel.ValueKind.ToString());
+            return null;
+        }
+
+        var metricsById = new Dictionary<string, QteScoreMetricValidation>(StringComparer.OrdinalIgnoreCase);
+        if (!scoreModel.TryGetProperty("metrics", out var metrics) ||
+            metrics.ValueKind != JsonValueKind.Array ||
+            metrics.GetArrayLength() == 0)
+        {
+            AddQteScoreIssue(issues, $"{context}.metrics", "qte_score_metrics_missing", "scoreModel.metrics должен быть непустым массивом.", expected: "non-empty metrics[]");
+        }
+        else
+        {
+            var index = 0;
+            foreach (var metric in metrics.EnumerateArray())
+            {
+                var metricContext = $"{context}.metrics[{index++}]";
+                if (!RequireObject(metric, metricContext, issues))
+                    continue;
+
+                var id = GetFirstNonEmptyString(metric, "id") ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(id) || !SnakeCaseIdRegex.IsMatch(id))
+                {
+                    AddQteScoreIssue(issues, $"{metricContext}.id", "qte_score_metric_id_invalid", "score metric id должен быть stable snake_case id.", expected: "lowercase snake_case id", actual: id);
+                }
+                else if (metricsById.ContainsKey(id))
+                {
+                    AddQteScoreIssue(issues, $"{metricContext}.id", "qte_score_metric_duplicate", $"score metric id '{id}' повторяется.", expected: "unique metric ids", actual: id);
+                }
+
+                var label = GetFirstNonEmptyString(metric, "label");
+                if (string.IsNullOrWhiteSpace(label))
+                    AddQteScoreIssue(issues, $"{metricContext}.label", "qte_score_metric_label_missing", "score metric label должен быть player-facing строкой.", expected: "non-empty label");
+
+                var hasInitial = TryReadDouble(metric, "initial", out var initial);
+                var hasMin = TryReadDouble(metric, "min", out var min);
+                var hasMax = TryReadDouble(metric, "max", out var max);
+                if (!hasInitial || !hasMin || !hasMax)
+                {
+                    AddQteScoreIssue(issues, metricContext, "qte_score_metric_number_invalid", "score metric initial/min/max должны быть числами.", expected: "numeric initial, min, max");
+                }
+                else
+                {
+                    if (min > max)
+                    {
+                        AddQteScoreIssue(issues, $"{metricContext}.min", "qte_score_metric_invalid_bounds", "score metric min не может быть больше max.", expected: "min <= max", actual: $"{min}>{max}");
+                    }
+                    else
+                    {
+                        if (initial < min || initial > max)
+                            AddQteScoreIssue(issues, $"{metricContext}.initial", "qte_score_metric_initial_out_of_bounds", "score metric initial должен попадать в [min,max].", expected: $"{min}..{max}", actual: initial.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
+                        if (!string.IsNullOrWhiteSpace(id) && SnakeCaseIdRegex.IsMatch(id) && !metricsById.ContainsKey(id))
+                            metricsById[id] = new QteScoreMetricValidation(id, min, max);
+                    }
+                }
+
+                var visibility = GetFirstNonEmptyString(metric, "visibility") ?? "always";
+                if (!IsAllowedQteScoreVisibility(visibility))
+                    AddQteScoreIssue(issues, $"{metricContext}.visibility", "qte_score_metric_visibility_invalid", "score metric visibility должен быть always, final или hidden.", expected: "always | final | hidden", actual: visibility);
+            }
+        }
+
+        ValidateQteScoreRanks(scoreModel, context, metricsById, issues);
+        return metricsById.Count == 0 ? null : metricsById;
+    }
+
+    private static void ValidateQteScoreRanks(
+        JsonElement scoreModel,
+        string context,
+        IReadOnlyDictionary<string, QteScoreMetricValidation> metricsById,
+        List<ValidationIssue> issues)
+    {
+        if (!scoreModel.TryGetProperty("ranks", out var ranks) ||
+            ranks.ValueKind != JsonValueKind.Array ||
+            ranks.GetArrayLength() == 0)
+        {
+            AddQteScoreIssue(issues, $"{context}.ranks", "qte_score_ranks_missing", "scoreModel.ranks должен быть непустым массивом.", expected: "non-empty ranks[]");
+            return;
+        }
+
+        var rankIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var nonFallbackRankIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var fallbackCount = 0;
+        var index = 0;
+        foreach (var rank in ranks.EnumerateArray())
+        {
+            var rankContext = $"{context}.ranks[{index++}]";
+            if (!RequireObject(rank, rankContext, issues))
+                continue;
+
+            var id = GetFirstNonEmptyString(rank, "id") ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(id) || !SnakeCaseIdRegex.IsMatch(id))
+            {
+                AddQteScoreIssue(issues, $"{rankContext}.id", "qte_score_rank_id_invalid", "score rank id должен быть stable snake_case id.", expected: "lowercase snake_case id", actual: id);
+            }
+            else if (!rankIds.Add(id))
+            {
+                AddQteScoreIssue(issues, $"{rankContext}.id", "qte_score_rank_duplicate", $"score rank id '{id}' повторяется.", expected: "unique rank ids", actual: id);
+            }
+
+            if (string.IsNullOrWhiteSpace(GetFirstNonEmptyString(rank, "label")))
+                AddQteScoreIssue(issues, $"{rankContext}.label", "qte_score_rank_label_missing", "score rank label должен быть player-facing строкой.", expected: "non-empty label");
+
+            var fallback = rank.TryGetProperty("fallback", out var fallbackNode) &&
+                           fallbackNode.ValueKind == JsonValueKind.True;
+            if (fallback)
+            {
+                fallbackCount++;
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(id))
+                    nonFallbackRankIds.Add(id);
+                if (!rank.TryGetProperty("allOf", out var allOf) ||
+                    allOf.ValueKind != JsonValueKind.Array ||
+                    allOf.GetArrayLength() == 0)
+                {
+                    AddQteScoreIssue(issues, $"{rankContext}.allOf", "qte_score_rank_thresholds_missing", "non-fallback score rank требует непустой allOf.", expected: "non-empty allOf[] or fallback=true");
+                }
+                else
+                {
+                    ValidateQteScoreRankThresholds(allOf, $"{rankContext}.allOf", metricsById, issues);
+                }
+            }
+        }
+
+        if (fallbackCount == 0)
+            AddQteScoreIssue(issues, $"{context}.ranks", "qte_score_rank_missing_fallback", "scoreModel.ranks должен содержать fallback rank.", expected: "exactly one fallback=true rank");
+        else if (fallbackCount > 1)
+            AddQteScoreIssue(issues, $"{context}.ranks", "qte_score_rank_multiple_fallback", "scoreModel.ranks не может содержать несколько fallback ranks.", expected: "exactly one fallback=true rank", actual: fallbackCount.ToString(System.Globalization.CultureInfo.InvariantCulture));
+
+        if (scoreModel.TryGetProperty("rankOrder", out var rankOrder))
+        {
+            if (rankOrder.ValueKind != JsonValueKind.Array)
+            {
+                AddQteScoreIssue(issues, $"{context}.rankOrder", "qte_score_rank_order_invalid", "scoreModel.rankOrder должен быть массивом rank id.", expected: "rankOrder[]");
+                return;
+            }
+
+            var orderIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var orderIndex = 0;
+            foreach (var item in rankOrder.EnumerateArray())
+            {
+                var orderContext = $"{context}.rankOrder[{orderIndex++}]";
+                if (item.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(item.GetString()))
+                {
+                    AddQteScoreIssue(issues, orderContext, "qte_score_rank_order_invalid", "rankOrder entries должны быть непустыми строками.", expected: "rank id string", actual: item.ValueKind.ToString());
+                    continue;
+                }
+
+                var rankId = item.GetString()!.Trim();
+                if (!orderIds.Add(rankId))
+                    AddQteScoreIssue(issues, orderContext, "qte_score_rank_order_duplicate", $"rankOrder повторяет rank id '{rankId}'.", expected: "unique rankOrder ids", actual: rankId);
+                if (!rankIds.Contains(rankId))
+                    AddQteScoreIssue(issues, orderContext, "qte_score_rank_order_unknown_rank", $"rankOrder ссылается на неизвестный rank id '{rankId}'.", expected: "defined rank id", actual: rankId);
+            }
+
+            foreach (var nonFallbackId in nonFallbackRankIds)
+            {
+                if (!orderIds.Contains(nonFallbackId))
+                    AddQteScoreIssue(issues, $"{context}.rankOrder", "qte_score_rank_order_missing_rank", $"rankOrder должен включать non-fallback rank id '{nonFallbackId}'.", expected: "all non-fallback rank ids", actual: nonFallbackId);
+            }
+        }
+    }
+
+    private static void ValidateQteScoreRankThresholds(
+        JsonElement allOf,
+        string context,
+        IReadOnlyDictionary<string, QteScoreMetricValidation> metricsById,
+        List<ValidationIssue> issues)
+    {
+        var index = 0;
+        foreach (var threshold in allOf.EnumerateArray())
+        {
+            var thresholdContext = $"{context}[{index++}]";
+            if (!RequireObject(threshold, thresholdContext, issues))
+                continue;
+
+            var metricId = GetFirstNonEmptyString(threshold, "metric") ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(metricId) || !metricsById.TryGetValue(metricId, out var metric))
+            {
+                AddQteScoreIssue(issues, $"{thresholdContext}.metric", "qte_score_rank_threshold_unknown_metric", $"rank threshold ссылается на неизвестный metric '{metricId}'.", expected: "defined score metric id", actual: metricId);
+                continue;
+            }
+
+            var op = GetFirstNonEmptyString(threshold, "op") ?? string.Empty;
+            if (op is not (">=" or ">" or "<=" or "<" or "=="))
+            {
+                AddQteScoreIssue(issues, $"{thresholdContext}.op", "qte_score_rank_threshold_op_invalid", "rank threshold op должен быть >=, >, <=, < или ==.", expected: ">= | > | <= | < | ==", actual: op);
+                continue;
+            }
+
+            if (!TryReadDouble(threshold, "value", out var value))
+            {
+                AddQteScoreIssue(issues, $"{thresholdContext}.value", "qte_score_rank_threshold_value_invalid", "rank threshold value должен быть числом.", expected: "numeric value");
+                continue;
+            }
+
+            if (!IsQteScoreThresholdSatisfiable(metric, op, value))
+            {
+                AddQteScoreIssue(issues, $"{thresholdContext}.value", "qte_score_rank_threshold_unsatisfiable", $"rank threshold {metricId} {op} {value} невозможно выполнить в bounds метрики.", expected: $"{metric.Min}..{metric.Max}", actual: value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            }
+        }
+    }
+
+    private static void ValidateQteScoreDeltas(
+        JsonElement action,
+        string actionContext,
+        IReadOnlyDictionary<string, QteScoreMetricValidation>? metricsById,
+        List<ValidationIssue> issues)
+    {
+        if (!action.TryGetProperty("scoreDeltas", out var scoreDeltas))
+            return;
+
+        var relativeActionContext = actionContext.StartsWith(QteSceneService.QteOfferPath, StringComparison.Ordinal)
+            ? actionContext[QteSceneService.QteOfferPath.Length..]
+            : $".{actionContext}";
+        var deltaContext = $"{QteSceneService.QteOfferPath}.scoreModel{relativeActionContext}.scoreDeltas";
+        if (metricsById == null || metricsById.Count == 0)
+        {
+            AddQteScoreIssue(issues, deltaContext, "qte_score_delta_without_score_model", "scoreDeltas требуют корневой scoreModel.metrics.", expected: "scoreModel.metrics[]");
+            return;
+        }
+
+        if (scoreDeltas.ValueKind != JsonValueKind.Object)
+        {
+            AddQteScoreIssue(issues, deltaContext, "qte_score_delta_invalid_shape", "scoreDeltas должен быть объектом grade -> delta[].", expected: "object");
+            return;
+        }
+
+        foreach (var gradeProperty in scoreDeltas.EnumerateObject())
+        {
+            var grade = gradeProperty.Name.Trim();
+            var gradeContext = $"{deltaContext}.{grade}";
+            if (!AllowedQteChoiceGrades.Contains(grade))
+            {
+                AddQteScoreIssue(issues, gradeContext, "qte_score_delta_invalid_grade", "scoreDeltas использует неизвестный grade.", expected: "success | partial | fail", actual: grade);
+                continue;
+            }
+
+            if (gradeProperty.Value.ValueKind != JsonValueKind.Array)
+            {
+                AddQteScoreIssue(issues, gradeContext, "qte_score_delta_invalid_shape", "scoreDeltas grade должен быть массивом delta objects.", expected: "delta[]", actual: gradeProperty.Value.ValueKind.ToString());
+                continue;
+            }
+
+            var index = 0;
+            foreach (var delta in gradeProperty.Value.EnumerateArray())
+            {
+                var itemContext = $"{gradeContext}[{index++}]";
+                if (!RequireObject(delta, itemContext, issues))
+                    continue;
+
+                var metricId = GetFirstNonEmptyString(delta, "metric") ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(metricId) || !metricsById.ContainsKey(metricId))
+                    AddQteScoreIssue(issues, $"{itemContext}.metric", "qte_score_delta_unknown_metric", $"score delta ссылается на неизвестный metric '{metricId}'.", expected: "defined score metric id", actual: metricId);
+
+                if (!TryReadDouble(delta, "delta", out _))
+                    AddQteScoreIssue(issues, $"{itemContext}.delta", "qte_score_delta_invalid_delta", "score delta.delta должен быть числом.", expected: "numeric delta");
+            }
+        }
+    }
+
+    private static bool IsAllowedQteScoreVisibility(string visibility) =>
+        string.Equals(visibility, "always", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(visibility, "final", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(visibility, "hidden", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsQteScoreThresholdSatisfiable(QteScoreMetricValidation metric, string op, double value) =>
+        op switch
+        {
+            ">=" => value <= metric.Max,
+            ">" => value < metric.Max,
+            "<=" => value >= metric.Min,
+            "<" => value > metric.Min,
+            "==" => value >= metric.Min && value <= metric.Max,
+            _ => false
+        };
+
+    private static void AddQteScoreIssue(
+        List<ValidationIssue> issues,
+        string filePath,
+        string code,
+        string message,
+        string? expected = null,
+        string? actual = null)
+    {
+        issues.Add(new ValidationIssue(
+            filePath,
+            IssueSeverity.Error,
+            message,
+            code: code,
+            section: "QTE",
+            expected: expected,
+            actual: actual,
+            repairHint: "Исправь scoreModel/scoreDeltas в output/qte_offer.json; это generic QTE scoring contract без Daren/practice reward fields."));
     }
 
     private static void ValidateMashInputConfig(JsonElement check, string actionContext, List<ValidationIssue> issues)

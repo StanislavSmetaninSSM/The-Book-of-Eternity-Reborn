@@ -96,7 +96,8 @@
           }
         }
       ]
-    }
+    },
+    "scoreState": null
   },
   "resolution": null,
   "completion": null,

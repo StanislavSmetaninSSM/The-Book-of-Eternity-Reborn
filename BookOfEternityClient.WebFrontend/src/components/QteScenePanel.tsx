@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { browserApi } from '../api/client';
-import type { BrowserApiResult, BrowserGameScreenDto } from '../api/contracts';
+import type { BrowserApiResult, BrowserGameScreenDto, QteWebScoreMetricDto, QteWebScoreSummaryDto } from '../api/contracts';
 import { isSuccess } from '../context/ShellContext';
 import {
   formatQteActionCheck,
@@ -103,6 +103,7 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
           {activeChapter ? (
             <>
               <p>{toPlayerFacingText(activeChapter.narrative ?? activeChapter.title, 'Выберите действие для этой сцены.')}</p>
+              {renderScoreMetrics(qteState.activeScene.scoreState?.metrics ?? [], 'Счёт сцены', false)}
               <p className="muted">{qteLayoutSupportNote}</p>
               {activeChapter.chapterImagePrompt && <p className="muted">Образ главы: {toPlayerFacingText(activeChapter.chapterImagePrompt, 'образ уточняется')}</p>}
               {activeChapter.actions.length > 0 ? (
@@ -145,6 +146,7 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
         <article className="summary-card">
           <h3>Сцена завершена</h3>
           <p>{toPlayerFacingText(qteState.completion.summary, 'Быстрая сцена завершилась.')}</p>
+          {renderScoreSummary(qteState.completion.scoreSummary)}
         </article>
       )}
 
@@ -153,4 +155,66 @@ export function QteScenePanel({ qte }: { qte: BrowserGameScreenDto['qte'] }) {
       {result && !isSuccess(result) && <p className="warning-text">{toPlayerFacingText(result.playerMessage, 'Быстрая сцена не смогла обновиться.')}</p>}
     </section>
   );
+}
+
+function renderScoreSummary(scoreSummary: QteWebScoreSummaryDto | null | undefined) {
+  if (!scoreSummary) {
+    return null;
+  }
+
+  const rankLabel = scoreSummary.rank?.label
+    ? toPlayerFacingText(scoreSummary.rank.label, 'итог сцены')
+    : '';
+  return (
+    <div className="qte-score-summary" aria-label="Итоговый счёт сцены">
+      {rankLabel && <p className="qte-score-rank">Ранг: {rankLabel}</p>}
+      {scoreSummary.rank?.summary && <p>{toPlayerFacingText(scoreSummary.rank.summary, 'Итог быстрой сцены записан.')}</p>}
+      {renderScoreMetrics(scoreSummary.metrics, 'Итог сцены', true)}
+    </div>
+  );
+}
+
+function renderScoreMetrics(metrics: readonly QteWebScoreMetricDto[], title: string, includeFinalMetrics: boolean) {
+  const visibleMetrics = metrics.filter((metric) => {
+    const visibility = metric.visibility.trim().toLowerCase();
+    if (visibility === 'hidden') {
+      return false;
+    }
+    return includeFinalMetrics || visibility === 'always';
+  });
+
+  if (visibleMetrics.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="qte-score-strip" aria-label={title}>
+      <p className="qte-score-strip__title">{title}</p>
+      <div className="qte-score-grid">
+        {visibleMetrics.map((metric) => {
+          const label = toPlayerFacingText(metric.label, 'Показатель сцены');
+          const value = formatScoreValue(metric.value);
+          const range = metric.max > metric.min ? Math.round(((metric.value - metric.min) / (metric.max - metric.min)) * 100) : 100;
+          const clampedRange = Math.min(100, Math.max(0, range));
+          return (
+            <div className="qte-score-metric" key={metric.id}>
+              <span className="qte-score-metric__label">{label}</span>
+              <span className="qte-score-metric__value">{value}</span>
+              <span className="qte-score-meter" aria-label={`${label}: ${value}`}>
+                <span style={{ width: `${clampedRange}%` }} />
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function formatScoreValue(value: number): string {
+  if (!Number.isFinite(value)) {
+    return '0';
+  }
+
+  return Number.isInteger(value) ? value.toString() : value.toFixed(2).replace(/\.?0+$/, '');
 }

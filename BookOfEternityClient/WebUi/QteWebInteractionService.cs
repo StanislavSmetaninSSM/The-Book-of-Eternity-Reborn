@@ -149,7 +149,8 @@ public sealed class QteWebInteractionService
             QteId = offer.QteId,
             Title = offer.Title ?? "QTE событие",
             AcceptedAtTurn = active.AcceptedAtTurn,
-            CurrentChapter = chapter == null ? null : await BuildChapterAsync(chapter)
+            CurrentChapter = chapter == null ? null : await BuildChapterAsync(chapter),
+            ScoreState = BuildActiveScoreState(active.ScoreState)
         };
     }
 
@@ -802,7 +803,50 @@ public sealed class QteWebInteractionService
         {
             QteId = completion.QteId,
             OutcomeId = completion.OutcomeId,
-            Summary = completion.Summary
+            Summary = completion.Summary,
+            ScoreSummary = BuildScoreSummary(completion.ScoreSummary)
+        };
+
+    private static QteWebScoreStateDto? BuildActiveScoreState(QteSceneService.QteScoreState? scoreState)
+    {
+        if (scoreState == null)
+            return null;
+
+        var metrics = scoreState.Metrics
+            .Where(static metric => string.Equals(metric.Visibility, "always", StringComparison.OrdinalIgnoreCase))
+            .Select(BuildScoreMetric)
+            .ToList();
+        return metrics.Count == 0 ? null : new QteWebScoreStateDto { Metrics = metrics };
+    }
+
+    private static QteWebScoreSummaryDto? BuildScoreSummary(QteSceneService.QteScoreSummary? scoreSummary)
+    {
+        if (scoreSummary == null)
+            return null;
+
+        return new QteWebScoreSummaryDto
+        {
+            Rank = scoreSummary.Rank == null
+                ? null
+                : new QteWebScoreRankDto
+                {
+                    Id = scoreSummary.Rank.Id,
+                    Label = scoreSummary.Rank.Label,
+                    Summary = scoreSummary.Rank.Summary
+                },
+            Metrics = scoreSummary.Metrics.Select(BuildScoreMetric).ToList()
+        };
+    }
+
+    private static QteWebScoreMetricDto BuildScoreMetric(QteSceneService.QteScoreMetricState metric) =>
+        new()
+        {
+            Id = metric.Id,
+            Label = metric.Label,
+            Value = metric.Value,
+            Min = metric.Min,
+            Max = metric.Max,
+            Visibility = metric.Visibility
         };
 
     private async Task<int> ReadCurrentTurnNumberAsync()
@@ -870,6 +914,7 @@ public sealed class QteWebActiveSceneDto
     public string Title { get; init; } = "";
     public int AcceptedAtTurn { get; init; }
     public QteWebChapterDto? CurrentChapter { get; init; }
+    public QteWebScoreStateDto? ScoreState { get; init; }
 }
 
 public sealed class QteWebChapterDto
@@ -914,4 +959,33 @@ public sealed class QteWebCompletionDto
     public string QteId { get; init; } = "";
     public string OutcomeId { get; init; } = "";
     public string Summary { get; init; } = "";
+    public QteWebScoreSummaryDto? ScoreSummary { get; init; }
+}
+
+public sealed class QteWebScoreStateDto
+{
+    public List<QteWebScoreMetricDto> Metrics { get; init; } = [];
+}
+
+public sealed class QteWebScoreSummaryDto
+{
+    public QteWebScoreRankDto? Rank { get; init; }
+    public List<QteWebScoreMetricDto> Metrics { get; init; } = [];
+}
+
+public sealed class QteWebScoreRankDto
+{
+    public string Id { get; init; } = "";
+    public string Label { get; init; } = "";
+    public string? Summary { get; init; }
+}
+
+public sealed class QteWebScoreMetricDto
+{
+    public string Id { get; init; } = "";
+    public string Label { get; init; } = "";
+    public double Value { get; init; }
+    public double Min { get; init; }
+    public double Max { get; init; }
+    public string Visibility { get; init; } = "";
 }
