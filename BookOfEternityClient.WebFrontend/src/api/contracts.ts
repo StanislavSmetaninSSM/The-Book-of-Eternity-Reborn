@@ -852,6 +852,183 @@ export interface QteWebActionRequest {
   grade: 'success' | 'partial' | 'fail' | null;
 }
 
+export type QteWebCheckConfigDto =
+  | QteTimingBarCheckConfigDto
+  | QtePromptChainCheckConfigDto
+  | QteBalanceMeterCheckConfigDto
+  | QteChargeReleaseCheckConfigDto
+  | QteBranchChoiceCheckConfigDto
+  | QteMashInputCheckConfigDto
+  | QtePatternMemoryCheckConfigDto
+  | QteRhythmPulseCheckConfigDto
+  | QtePrecisionChoiceCheckConfigDto
+  | QteStealthNoiseCheckConfigDto
+  | QteLockPinSetCheckConfigDto
+  | QteUnsupportedCheckConfigDto;
+
+export interface QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+}
+
+export interface QteTimingBarCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  width: number;
+  successStart: number;
+  successWidth: number;
+  partialStart: number;
+  partialWidth: number;
+  tickMs: number;
+}
+
+export interface QtePromptChainCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  sequence: string[];
+  allowedMistakes: number;
+  timeoutMs: number;
+}
+
+export interface QteBalanceMeterCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  safeHalfWidth: number;
+  tickMs: number;
+  ticks: number;
+}
+
+export interface QteChargeReleaseCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  targetStart: number;
+  targetWidth: number;
+  tickMs: number;
+  partialPadding: number;
+}
+
+export interface QteBranchChoiceCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  choiceGrade: string;
+}
+
+export interface QteMashInputCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  keys: string[];
+  durationMs: number;
+  targetPresses: number;
+  partialThreshold: number;
+  successTarget: number;
+  partialTarget: number;
+}
+
+export interface QtePatternMemoryCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  alphabet: string[];
+  sequence: string[];
+  sequenceLength: number;
+  revealMs: number;
+  inputTimeoutMs: number;
+  allowedMistakes: number;
+}
+
+export interface QteRhythmPulseCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  pulseCount: number;
+  beatIntervalMs: number;
+  hitWindowMs: number;
+  allowedMisses: number;
+  patternVariation: string;
+  pulseOffsetsMs: number[];
+}
+
+export interface QtePrecisionChoiceCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  choices: QtePrecisionChoiceOptionDto[];
+  correctChoiceId: string;
+  timeoutMs: number;
+  timeoutGrade: string;
+  revealedDecoyHintCount: number;
+  decoyHints: QtePrecisionChoiceDecoyHintDto[];
+}
+
+export interface QtePrecisionChoiceOptionDto {
+  id: string;
+  label: string;
+  grade: string;
+  description?: string;
+  hint?: string;
+}
+
+export interface QtePrecisionChoiceDecoyHintDto {
+  choiceId: string;
+  hint: string;
+}
+
+export interface QteStealthNoiseCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  durationMs: number;
+  startingNoise: number;
+  dangerThreshold: number;
+  noiseDriftPerSecond: number;
+  recoveryPerInput: number;
+  allowedOverThresholdMs: number;
+  recoveryKey: string;
+  recoveryLabel?: string;
+  warningLabel?: string;
+  gradeThresholds: QteStealthNoiseGradeThresholdsDto;
+}
+
+export interface QteStealthNoiseGradeThresholdsDto {
+  successMaxNoise: number;
+  successMaxOverThresholdMs: number;
+  partialMaxNoise: number;
+  partialMaxOverThresholdMs: number;
+}
+
+export interface QteLockPinSetCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  pinCount: number;
+  pinWindows: QteLockPinWindowDto[];
+  timerMs: number;
+  pickDurability: number;
+  maxMistakes: number;
+  pinDriftPerSecond: number;
+  adjustKey: string;
+  setKey: string;
+  pinLabel?: string;
+  durabilityLabel?: string;
+  warningLabel?: string;
+  gradeThresholds: QteLockPinSetGradeThresholdsDto;
+}
+
+export interface QteLockPinWindowDto {
+  pin: number;
+  min: number;
+  max: number;
+  label?: string;
+}
+
+export interface QteLockPinSetGradeThresholdsDto {
+  successMaxTimeMs: number;
+  successMaxMistakes: number;
+  partialMaxTimeMs: number;
+  partialMaxMistakes: number;
+}
+
+export interface QteUnsupportedCheckConfigDto extends QteCheckConfigBase {
+  kind: string;
+  supported: boolean;
+  checkType: string;
+}
+
 export interface QteWebStateDto {
   state: string;
   offer: QteWebOfferDto | null;
@@ -899,6 +1076,7 @@ export interface QteWebActionDto {
   primaryCharacteristic: string;
   requiresSubmittedGrade: boolean;
   gradeOptions: string[];
+  checkConfig: QteWebCheckConfigDto;
 }
 
 export interface QteWebResolutionDto {

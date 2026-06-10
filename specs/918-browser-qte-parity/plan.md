@@ -1,18 +1,18 @@
 # Implementation Plan: Browser QTE Interactive Mini-Games
 
-**Branch**: `work/918-browser-qte-parity` | **Date**: 2026-06-10 | **Spec**: `specs/918-browser-qte-parity/spec.md`  
+**Branch**: `work/918-browser-qte-parity` | **Date**: 2026-06-10 | **Spec**: `specs/918-browser-qte-parity/spec.md`
 **Source Issues**: [#918](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/918), parent [#680](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/680), QTE v2 parent [#911](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/911)
 
 ## Technical Context
 
-**Language/Version**: C#/.NET 8, TypeScript, React, Vite  
-**Primary Dependencies**: Spectre.Console QTE runtime, `QteSceneService`, local Browser API host, React frontend, Vitest/player-facing source guards  
-**Storage**: Existing file-backed `game_session` QTE runtime state only; no new save/pending/control files  
-**Testing**: `dotnet test` focused QTE/browser/docs filters; `npm run verify --prefix BookOfEternityClient.WebFrontend`; component/player-facing tests; `git diff --check`; added-line static scan  
-**Target Platform**: Local Windows host, browser over loopback/local web UI, console unchanged  
-**Project Type**: C# game client + local React browser frontend  
-**Performance Goals**: QTE panel must not add always-on polling loops or heavy global listeners outside active mini-game lifecycle  
-**Constraints**: React remains presentation/request-state; C# remains gameplay/write authority; no scoring/practice/Daren scope; no new GM-authored QTE fields  
+**Language/Version**: C#/.NET 8, TypeScript, React, Vite
+**Primary Dependencies**: Spectre.Console QTE runtime, `QteSceneService`, local Browser API host, React frontend, Vitest/player-facing source guards
+**Storage**: Existing file-backed `game_session` QTE runtime state only; no new save/pending/control files
+**Testing**: `dotnet test` focused QTE/browser/docs filters; `npm run verify --prefix BookOfEternityClient.WebFrontend`; component/player-facing tests; `git diff --check`; added-line static scan
+**Target Platform**: Local Windows host, browser over loopback/local web UI, console unchanged
+**Project Type**: C# game client + local React browser frontend
+**Performance Goals**: QTE panel must not add always-on polling loops or heavy global listeners outside active mini-game lifecycle
+**Constraints**: React remains presentation/request-state; C# remains gameplay/write authority; no scoring/practice/Daren scope; no new GM-authored QTE fields
 **Scale/Scope**: One cross-surface Browser Client parity slice for existing QTE v1 and v2 checks
 
 ## Constitution Check
@@ -27,37 +27,37 @@
 
 ### Existing files expected to change
 
-- `BookOfEternityClient/WebUi/QteWebInteractionService.cs`  
+- `BookOfEternityClient/WebUi/QteWebInteractionService.cs`
   Extend browser QTE action DTO projection with read-only check config details for supported mini-games while preserving existing endpoint/write semantics.
 
-- `BookOfEternityClient/WebUi/LocalWebUiHost.cs`  
+- `BookOfEternityClient/WebUi/LocalWebUiHost.cs`
   Update endpoint/contract docs or generated fixture behavior only if DTO/API contract snapshots require it.
 
-- `BookOfEternityClient.Tests/BrowserApiContractTests.cs`  
+- `BookOfEternityClient.Tests/BrowserApiContractTests.cs`
   Add/adjust API contract tests proving QTE action config projection and no raw grade-default leak in default player surfaces.
 
-- `BookOfEternityClient.Tests/QteSceneServiceTests.cs` / `ValidationServiceQteTests.cs` / `PromptDocumentationCoverageTests.cs` / `ExampleDocumentationValidationTests.cs`  
+- `BookOfEternityClient.Tests/QteSceneServiceTests.cs` / `ValidationServiceQteTests.cs` / `PromptDocumentationCoverageTests.cs` / `ExampleDocumentationValidationTests.cs`
   Touch only when docs/source guards need synchronization for browser QTE parity guidance; avoid changing core QTE semantics unless a true gap is found.
 
-- `BookOfEternityClient.WebFrontend/src/api/contracts.ts`  
+- `BookOfEternityClient.WebFrontend/src/api/contracts.ts`
   Add typed QTE config projection and supported-check metadata.
 
-- `BookOfEternityClient.WebFrontend/src/api/contract-fixtures/qte-state.json` and generated/check files  
+- `BookOfEternityClient.WebFrontend/src/api/contract-fixtures/qte-state.json` and generated/check files
   Update fixtures so TypeScript and C# contract guards cover supported check types.
 
-- `BookOfEternityClient.WebFrontend/src/components/QteScenePanel.tsx`  
+- `BookOfEternityClient.WebFrontend/src/components/QteScenePanel.tsx`
   Replace default grade selection with check-specific mini-game rendering and submit path.
 
-- New focused frontend component/helper files under `BookOfEternityClient.WebFrontend/src/components/` or `src/qte/`  
+- New focused frontend component/helper files under `BookOfEternityClient.WebFrontend/src/components/` or `src/qte/`
   Prefer small components/helpers per check family rather than growing `QteScenePanel.tsx` into a monolith.
 
-- `BookOfEternityClient.WebFrontend/src/utils/qteKeyInput.ts`  
+- `BookOfEternityClient.WebFrontend/src/utils/qteKeyInput.ts`
   Reuse existing RU/EN layout normalization support; do not duplicate key maps per mini-game.
 
-- New/updated frontend tests under `BookOfEternityClient.WebFrontend/test/`  
+- New/updated frontend tests under `BookOfEternityClient.WebFrontend/test/`
   Add deterministic tests for mini-game grade calculation, default-player no-grade-selector behavior, keyboard/pointer paths, and fixture contract coverage.
 
-- GM/player docs (likely `CLI_API_Specification.md`, `Rules/Block_CLI_QTE.txt`, `Examples/E_CLI_QTE_Offer.txt`, and/or browser docs)  
+- GM/player docs (likely `CLI_API_Specification.md`, `Rules/Block_CLI_QTE.txt`, `Examples/E_CLI_QTE_Offer.txt`, and/or browser docs)
   Update only if the browser parity behavior or DTO contract needs player/GM-facing synchronization. Do not add new GM fields.
 
 ### Spec Kit artifacts
@@ -99,16 +99,16 @@ Expected implementation verification:
 
 ## Risk Log
 
-- **Risk**: Implementing every QTE type in one issue is broad.  
+- **Risk**: Implementing every QTE type in one issue is broad.
   **Mitigation**: Keep mini-game code small/deterministic; no scoring/Daren/practice scope; if a specific check cannot be safely completed, add explicit unsupported-state coverage and create a follow-up rather than shipping broken controls.
 
-- **Risk**: React-side grade calculation could appear to move gameplay authority out of C#.  
+- **Risk**: React-side grade calculation could appear to move gameplay authority out of C#.
   **Mitigation**: React computes only local mini-game outcome; C# remains the only write/routing/history/completion authority through `ResolveActiveActionAsync`.
 
-- **Risk**: Timing-based tests can be flaky.  
+- **Risk**: Timing-based tests can be flaky.
   **Mitigation**: Extract pure grade calculators and test them with deterministic inputs; keep live timers as thin UI wrappers.
 
-- **Risk**: Player-facing browser surface may leak debug/config/grade language.  
+- **Risk**: Player-facing browser surface may leak debug/config/grade language.
   **Mitigation**: Add player-facing source/component tests that default UI does not render manual grade selectors for supported checks and does not expose raw DTO/config paths.
 
 ## Phase 0 - Research Notes

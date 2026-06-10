@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
@@ -59,7 +60,7 @@ public sealed class QteWebInteractionService
             return new QteWebStateDto
             {
                 State = stateOverride ?? "Active",
-                ActiveScene = BuildActiveScene(active),
+                ActiveScene = await BuildActiveSceneAsync(active),
                 Resolution = resolution == null ? null : BuildResolution(resolution),
                 Completion = resolution?.Completion == null ? null : BuildCompletion(resolution.Completion),
                 AvailableOperations = ["submitAction"],
@@ -137,7 +138,7 @@ public sealed class QteWebInteractionService
             StartChapterId = offer.StartChapterId
         };
 
-    private static QteWebActiveSceneDto BuildActiveScene(QteSceneService.ActiveQteSceneState active)
+    private async Task<QteWebActiveSceneDto> BuildActiveSceneAsync(QteSceneService.ActiveQteSceneState active)
     {
         var offer = active.Offer!;
         var chapter = offer.Chapters.FirstOrDefault(item =>
@@ -148,23 +149,28 @@ public sealed class QteWebInteractionService
             QteId = offer.QteId,
             Title = offer.Title ?? "QTE событие",
             AcceptedAtTurn = active.AcceptedAtTurn,
-            CurrentChapter = chapter == null ? null : BuildChapter(chapter)
+            CurrentChapter = chapter == null ? null : await BuildChapterAsync(chapter)
         };
     }
 
-    private static QteWebChapterDto BuildChapter(QteSceneService.QteChapter chapter) =>
-        new()
+    private async Task<QteWebChapterDto> BuildChapterAsync(QteSceneService.QteChapter chapter)
+    {
+        var actions = await Task.WhenAll(chapter.Actions.Select(BuildActionAsync));
+        return new QteWebChapterDto
         {
             ChapterId = chapter.ChapterId,
             Title = chapter.Title,
             Narrative = chapter.Narrative,
             ChapterImagePrompt = chapter.ChapterImagePrompt,
-            Actions = chapter.Actions.Select(BuildAction).ToList()
+            Actions = actions.ToList()
         };
+    }
 
-    private static QteWebActionDto BuildAction(QteSceneService.QteAction action)
+    private async Task<QteWebActionDto> BuildActionAsync(QteSceneService.QteAction action)
     {
         var checkType = action.Check.Type;
+        var statTier = await _qteSceneService.ResolveQteStatTierAsync(action.Check.PrimaryCharacteristic);
+        var checkConfig = BuildCheckConfig(action, statTier);
         return new QteWebActionDto
         {
             ActionId = action.ActionId,
@@ -172,9 +178,611 @@ public sealed class QteWebInteractionService
             CheckType = checkType,
             BaseDifficulty = action.Check.BaseDifficulty,
             PrimaryCharacteristic = action.Check.PrimaryCharacteristic,
-            RequiresSubmittedGrade = !string.Equals(checkType, "BranchChoice", StringComparison.OrdinalIgnoreCase),
-            GradeOptions = GradeOptions.ToList()
+            RequiresSubmittedGrade = IsInteractiveSupportedCheck(checkConfig),
+            GradeOptions = GradeOptions.ToList(),
+            CheckConfig = checkConfig
         };
+    }
+
+    private static bool IsInteractiveSupportedCheck(JsonObject checkConfig)
+    {
+        if (checkConfig["supported"]?.GetValue<bool>() != true)
+            return false;
+
+        return !string.Equals(
+            checkConfig["kind"]?.GetValue<string>(),
+            "BranchChoice",
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static JsonObject BuildCheckConfig(QteSceneService.QteAction action, int statTier)
+    {
+        var check = action.Check;
+        return check.Type.Trim() switch
+        {
+            "TimingBar" => BuildTimingBarConfig(check, statTier),
+            "PromptChain" => BuildPromptChainConfig(action, statTier),
+            "BalanceMeter" => BuildBalanceMeterConfig(check, statTier),
+            "ChargeRelease" => BuildChargeReleaseConfig(check, statTier),
+            "BranchChoice" => BuildBranchChoiceConfig(check),
+            "MashInput" => BuildMashInputConfig(check, statTier),
+            "PatternMemory" => BuildPatternMemoryConfig(action, statTier),
+            "RhythmPulse" => BuildRhythmPulseConfig(check, statTier),
+            "PrecisionChoice" => BuildPrecisionChoiceConfig(check, statTier),
+            "StealthNoise" => BuildStealthNoiseConfig(check, statTier),
+            "LockPinSet" => BuildLockPinSetConfig(check, statTier),
+            _ => UnsupportedCheckConfig(check.Type)
+        };
+    }
+
+    private static JsonObject BuildTimingBarConfig(QteSceneService.QteCheck check, int statTier)
+    {
+        var difficulty = Math.Clamp(check.BaseDifficulty, 1, 5);
+        const int width = 32;
+        var successWidth = Math.Clamp(8 - difficulty + statTier, 3, 12);
+        var partialWidth = Math.Clamp(successWidth + 4, successWidth + 1, 16);
+        var tickMs = Math.Clamp(110 - (statTier * 5) + (difficulty * 10), 50, 180);
+        var successStart = (width - successWidth) / 2;
+        var partialStart = (width - partialWidth) / 2;
+
+        return SupportedCheckConfig("TimingBar", new JsonObject
+        {
+            ["width"] = width,
+            ["successStart"] = successStart,
+            ["successWidth"] = successWidth,
+            ["partialStart"] = partialStart,
+            ["partialWidth"] = partialWidth,
+            ["tickMs"] = tickMs
+        });
+    }
+
+    private static JsonObject BuildPromptChainConfig(QteSceneService.QteAction action, int statTier)
+    {
+        var difficulty = Math.Clamp(action.Check.BaseDifficulty, 1, 5);
+        var steps = Math.Clamp(3 + difficulty - Math.Max(0, statTier - 1), 2, 7);
+        var allowedMistakes = statTier >= 2 ? 1 : 0;
+        var timeoutMs = Math.Clamp(1100 + (statTier * 150) - (difficulty * 120), 450, 1600);
+        var tokenCycle = new[] { "w", "a", "s", "d", "e", "space", "q" };
+        var offset = Math.Abs(action.ActionId.Sum(character => character)) % tokenCycle.Length;
+        var sequence = Enumerable.Range(0, steps)
+            .Select(index => tokenCycle[(offset + index) % tokenCycle.Length])
+            .ToArray();
+
+        return SupportedCheckConfig("PromptChain", new JsonObject
+        {
+            ["sequence"] = StringArray(sequence),
+            ["allowedMistakes"] = allowedMistakes,
+            ["timeoutMs"] = timeoutMs
+        });
+    }
+
+    private static JsonObject BuildBalanceMeterConfig(QteSceneService.QteCheck check, int statTier)
+    {
+        var difficulty = Math.Clamp(check.BaseDifficulty, 1, 5);
+        return SupportedCheckConfig("BalanceMeter", new JsonObject
+        {
+            ["safeHalfWidth"] = Math.Clamp(18 - (difficulty * 2) + (statTier * 2), 8, 24),
+            ["tickMs"] = Math.Clamp(140 - (statTier * 5) + (difficulty * 10), 70, 220),
+            ["ticks"] = 18 + (difficulty * 2)
+        });
+    }
+
+    private static JsonObject BuildChargeReleaseConfig(QteSceneService.QteCheck check, int statTier)
+    {
+        var difficulty = Math.Clamp(check.BaseDifficulty, 1, 5);
+        return SupportedCheckConfig("ChargeRelease", new JsonObject
+        {
+            ["targetStart"] = Math.Clamp(50 - (difficulty * 5) - (statTier * 2), 20, 70),
+            ["targetWidth"] = Math.Clamp(20 - (difficulty * 2) + (statTier * 2), 8, 26),
+            ["tickMs"] = Math.Clamp(85 - (statTier * 5) + (difficulty * 8), 40, 140),
+            ["partialPadding"] = 10
+        });
+    }
+
+    private static JsonObject BuildBranchChoiceConfig(QteSceneService.QteCheck check) =>
+        SupportedCheckConfig("BranchChoice", new JsonObject
+        {
+            ["choiceGrade"] = NormalizeGrade(GetConfigString(check.Config, "choiceGrade"))
+        });
+
+    private static JsonObject BuildMashInputConfig(QteSceneService.QteCheck check, int statTier)
+    {
+        if (!TryGetStringArray(check.Config, "keys", out var keys) ||
+            !TryGetInt(check.Config, "durationMs", out var durationMs) ||
+            !TryGetInt(check.Config, "targetPresses", out var targetPresses) ||
+            !TryGetDouble(check.Config, "partialThreshold", out var partialThreshold))
+        {
+            return UnsupportedCheckConfig(check.Type);
+        }
+
+        var supportedKeys = keys
+            .Select(static key => key.Trim().ToLowerInvariant())
+            .Where(QteKeyInput.IsSupportedToken)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (supportedKeys.Length == 0)
+            return UnsupportedCheckConfig(check.Type);
+
+        var successTarget = QteSceneService.ComputeMashInputEffectiveTargetPresses(
+            targetPresses,
+            check.BaseDifficulty,
+            statTier);
+        var partialTarget = QteSceneService.ComputeMashInputPartialTargetPresses(successTarget, partialThreshold);
+
+        return SupportedCheckConfig("MashInput", new JsonObject
+        {
+            ["keys"] = StringArray(supportedKeys),
+            ["durationMs"] = durationMs,
+            ["targetPresses"] = targetPresses,
+            ["partialThreshold"] = partialThreshold,
+            ["successTarget"] = successTarget,
+            ["partialTarget"] = partialTarget
+        });
+    }
+
+    private static JsonObject BuildPatternMemoryConfig(QteSceneService.QteAction action, int statTier)
+    {
+        var check = action.Check;
+        if (!TryGetStringArray(check.Config, "alphabet", out var alphabet) ||
+            !TryGetInt(check.Config, "sequenceLength", out var sequenceLength) ||
+            !TryGetInt(check.Config, "revealMs", out var revealMs) ||
+            !TryGetInt(check.Config, "inputTimeoutMs", out var inputTimeoutMs) ||
+            !TryGetInt(check.Config, "allowedMistakes", out var allowedMistakes))
+        {
+            return UnsupportedCheckConfig(check.Type);
+        }
+
+        var supportedAlphabet = alphabet
+            .Select(static token => token.Trim().ToLowerInvariant())
+            .Where(QteKeyInput.IsSupportedToken)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (supportedAlphabet.Length == 0)
+            return UnsupportedCheckConfig(check.Type);
+
+        var effective = QteSceneService.ComputePatternMemoryEffectiveRequirement(
+            sequenceLength,
+            revealMs,
+            inputTimeoutMs,
+            allowedMistakes,
+            check.BaseDifficulty,
+            statTier);
+        var sequence = QteSceneService.GeneratePatternMemorySequence(
+            supportedAlphabet,
+            effective.SequenceLength,
+            $"{action.ActionId}:{check.BaseDifficulty}:{check.PrimaryCharacteristic}:{string.Join(",", supportedAlphabet)}");
+
+        return SupportedCheckConfig("PatternMemory", new JsonObject
+        {
+            ["alphabet"] = StringArray(supportedAlphabet),
+            ["sequence"] = StringArray(sequence),
+            ["sequenceLength"] = effective.SequenceLength,
+            ["revealMs"] = effective.RevealMs,
+            ["inputTimeoutMs"] = effective.InputTimeoutMs,
+            ["allowedMistakes"] = effective.AllowedMistakes
+        });
+    }
+
+    private static JsonObject BuildRhythmPulseConfig(QteSceneService.QteCheck check, int statTier)
+    {
+        if (!TryGetInt(check.Config, "pulseCount", out var pulseCount) ||
+            !TryGetInt(check.Config, "beatIntervalMs", out var beatIntervalMs) ||
+            !TryGetInt(check.Config, "hitWindowMs", out var hitWindowMs) ||
+            !TryGetInt(check.Config, "allowedMisses", out var allowedMisses))
+        {
+            return UnsupportedCheckConfig(check.Type);
+        }
+
+        var patternVariation = GetConfigString(check.Config, "patternVariation") ?? "steady";
+        var effective = QteSceneService.ComputeRhythmPulseEffectiveRequirement(
+            pulseCount,
+            beatIntervalMs,
+            hitWindowMs,
+            allowedMisses,
+            check.BaseDifficulty,
+            statTier);
+        var schedule = QteSceneService.GenerateRhythmPulseSchedule(
+            effective.PulseCount,
+            effective.BeatIntervalMs,
+            patternVariation);
+
+        return SupportedCheckConfig("RhythmPulse", new JsonObject
+        {
+            ["pulseCount"] = effective.PulseCount,
+            ["beatIntervalMs"] = effective.BeatIntervalMs,
+            ["hitWindowMs"] = effective.HitWindowMs,
+            ["allowedMisses"] = effective.AllowedMisses,
+            ["patternVariation"] = patternVariation,
+            ["pulseOffsetsMs"] = IntArray(schedule)
+        });
+    }
+
+    private static JsonObject BuildPrecisionChoiceConfig(QteSceneService.QteCheck check, int statTier)
+    {
+        if (check.Config == null ||
+            check.Config["choices"] is not JsonArray choices ||
+            !TryGetInt(check.Config, "timeoutMs", out var timeoutMs))
+        {
+            return UnsupportedCheckConfig(check.Type);
+        }
+
+        var choiceConfigs = new JsonArray();
+        var availableHintCount = 0;
+        foreach (var node in choices)
+        {
+            if (node is not JsonObject choice ||
+                !TryGetString(choice, "id", out var id) ||
+                !TryGetString(choice, "label", out var label) ||
+                !TryGetString(choice, "grade", out var grade))
+            {
+                return UnsupportedCheckConfig(check.Type);
+            }
+
+            var choiceConfig = new JsonObject
+            {
+                ["id"] = id,
+                ["label"] = label,
+                ["grade"] = NormalizeGrade(grade)
+            };
+            if (TryGetString(choice, "description", out var description))
+                choiceConfig["description"] = description;
+            if (TryGetString(choice, "hint", out var hint))
+            {
+                choiceConfig["hint"] = hint;
+                availableHintCount++;
+            }
+
+            choiceConfigs.Add(choiceConfig);
+        }
+
+        var decoyHints = new JsonArray();
+        if (check.Config["decoyHints"] is JsonArray decoyHintNodes)
+        {
+            foreach (var node in decoyHintNodes)
+            {
+                if (node is not JsonObject hint ||
+                    !TryGetString(hint, "choiceId", out var choiceId) ||
+                    !TryGetString(hint, "hint", out var hintText))
+                {
+                    return UnsupportedCheckConfig(check.Type);
+                }
+
+                decoyHints.Add(new JsonObject
+                {
+                    ["choiceId"] = choiceId,
+                    ["hint"] = hintText
+                });
+                availableHintCount++;
+            }
+        }
+
+        var effective = QteSceneService.ComputePrecisionChoiceEffectiveRequirement(
+            timeoutMs,
+            check.BaseDifficulty,
+            statTier,
+            availableHintCount);
+
+        return SupportedCheckConfig("PrecisionChoice", new JsonObject
+        {
+            ["choices"] = choiceConfigs,
+            ["correctChoiceId"] = GetConfigString(check.Config, "correctChoiceId") ?? string.Empty,
+            ["timeoutMs"] = effective.TimeoutMs,
+            ["timeoutGrade"] = NormalizeTimeoutGrade(GetConfigString(check.Config, "timeoutGrade")),
+            ["revealedDecoyHintCount"] = effective.RevealedDecoyHintCount,
+            ["decoyHints"] = decoyHints
+        });
+    }
+
+    private static JsonObject BuildStealthNoiseConfig(QteSceneService.QteCheck check, int statTier)
+    {
+        if (check.Config == null ||
+            !TryGetInt(check.Config, "durationMs", out var durationMs) ||
+            !TryGetDouble(check.Config, "startingNoise", out var startingNoise) ||
+            !TryGetDouble(check.Config, "dangerThreshold", out var dangerThreshold) ||
+            !TryGetDouble(check.Config, "noiseDriftPerSecond", out var noiseDriftPerSecond) ||
+            !TryGetDouble(check.Config, "recoveryPerInput", out var recoveryPerInput) ||
+            !TryGetInt(check.Config, "allowedOverThresholdMs", out var allowedOverThresholdMs) ||
+            check.Config["gradeThresholds"] is not JsonObject thresholds ||
+            !TryReadStealthNoiseThresholds(thresholds, out var gradeThresholds))
+        {
+            return UnsupportedCheckConfig(check.Type);
+        }
+
+        var recoveryKey = GetConfigString(check.Config, "recoveryKey") ?? "space";
+        recoveryKey = QteKeyInput.IsSupportedToken(recoveryKey.Trim().ToLowerInvariant())
+            ? recoveryKey.Trim().ToLowerInvariant()
+            : "space";
+        var effective = QteSceneService.ComputeStealthNoiseEffectiveRequirement(
+            durationMs,
+            startingNoise,
+            dangerThreshold,
+            noiseDriftPerSecond,
+            recoveryPerInput,
+            allowedOverThresholdMs,
+            gradeThresholds,
+            check.BaseDifficulty,
+            statTier,
+            recoveryKey);
+
+        var config = SupportedCheckConfig("StealthNoise", new JsonObject
+        {
+            ["durationMs"] = effective.DurationMs,
+            ["startingNoise"] = effective.StartingNoise,
+            ["dangerThreshold"] = effective.DangerThreshold,
+            ["noiseDriftPerSecond"] = effective.NoiseDriftPerSecond,
+            ["recoveryPerInput"] = effective.RecoveryPerInput,
+            ["allowedOverThresholdMs"] = effective.AllowedOverThresholdMs,
+            ["recoveryKey"] = effective.RecoveryKey,
+            ["gradeThresholds"] = StealthNoiseThresholdsJson(effective.GradeThresholds)
+        });
+        AddOptionalString(config, "recoveryLabel", GetConfigString(check.Config, "recoveryLabel"));
+        AddOptionalString(config, "warningLabel", GetConfigString(check.Config, "warningLabel"));
+        return config;
+    }
+
+    private static JsonObject BuildLockPinSetConfig(QteSceneService.QteCheck check, int statTier)
+    {
+        if (check.Config == null ||
+            !TryGetInt(check.Config, "pinCount", out var pinCount) ||
+            check.Config["pinWindows"] is not JsonArray windows ||
+            !TryGetInt(check.Config, "timerMs", out var timerMs) ||
+            !TryGetInt(check.Config, "pickDurability", out var pickDurability) ||
+            !TryGetInt(check.Config, "maxMistakes", out var maxMistakes) ||
+            !TryGetDouble(check.Config, "pinDriftPerSecond", out var pinDriftPerSecond) ||
+            check.Config["gradeThresholds"] is not JsonObject thresholds ||
+            !TryReadLockPinSetThresholds(thresholds, out var gradeThresholds))
+        {
+            return UnsupportedCheckConfig(check.Type);
+        }
+
+        var authoredPinWindows = new List<QteSceneService.LockPinWindow>();
+        foreach (var node in windows)
+        {
+            if (node is not JsonObject window ||
+                !TryGetDouble(window, "min", out var min) ||
+                !TryGetDouble(window, "max", out var max))
+            {
+                return UnsupportedCheckConfig(check.Type);
+            }
+
+            authoredPinWindows.Add(new QteSceneService.LockPinWindow(
+                TryGetInt(window, "pin", out var pin) ? pin : authoredPinWindows.Count + 1,
+                min,
+                max,
+                GetConfigString(window, "label")));
+        }
+
+        var adjustKey = NormalizeSupportedKey(GetConfigString(check.Config, "adjustKey"), "q");
+        var setKey = NormalizeSupportedKey(GetConfigString(check.Config, "setKey"), "space");
+        var effective = QteSceneService.ComputeLockPinSetEffectiveRequirement(
+            pinCount,
+            authoredPinWindows,
+            timerMs,
+            pickDurability,
+            maxMistakes,
+            pinDriftPerSecond,
+            gradeThresholds,
+            check.BaseDifficulty,
+            statTier,
+            adjustKey,
+            setKey);
+        var config = SupportedCheckConfig("LockPinSet", new JsonObject
+        {
+            ["pinCount"] = effective.PinCount,
+            ["pinWindows"] = LockPinWindowsJson(effective.PinWindows),
+            ["timerMs"] = effective.TimerMs,
+            ["pickDurability"] = effective.PickDurability,
+            ["maxMistakes"] = effective.MaxMistakes,
+            ["pinDriftPerSecond"] = effective.PinDriftPerSecond,
+            ["adjustKey"] = effective.AdjustKey,
+            ["setKey"] = effective.SetKey,
+            ["gradeThresholds"] = LockPinSetThresholdsJson(effective.GradeThresholds)
+        });
+        AddOptionalString(config, "pinLabel", GetConfigString(check.Config, "pinLabel"));
+        AddOptionalString(config, "durabilityLabel", GetConfigString(check.Config, "durabilityLabel"));
+        AddOptionalString(config, "warningLabel", GetConfigString(check.Config, "warningLabel"));
+        return config;
+    }
+
+    private static JsonObject SupportedCheckConfig(string kind, JsonObject fields)
+    {
+        fields["kind"] = kind;
+        fields["supported"] = true;
+        return fields;
+    }
+
+    private static JsonObject UnsupportedCheckConfig(string? checkType) =>
+        new()
+        {
+            ["kind"] = "Unsupported",
+            ["supported"] = false,
+            ["checkType"] = checkType ?? string.Empty
+        };
+
+    private static string NormalizeGrade(string? grade) => grade?.Trim().ToLowerInvariant() switch
+    {
+        "success" => "success",
+        "partial" => "partial",
+        _ => "fail"
+    };
+
+    private static string NormalizeTimeoutGrade(string? grade) =>
+        string.Equals(grade?.Trim(), "partial", StringComparison.OrdinalIgnoreCase) ? "partial" : "fail";
+
+    private static string NormalizeSupportedKey(string? key, string fallback)
+    {
+        var normalized = key?.Trim().ToLowerInvariant();
+        return !string.IsNullOrWhiteSpace(normalized) && QteKeyInput.IsSupportedToken(normalized)
+            ? normalized
+            : fallback;
+    }
+
+    private static void AddOptionalString(JsonObject target, string propertyName, string? value)
+    {
+        if (!string.IsNullOrWhiteSpace(value))
+            target[propertyName] = value.Trim();
+    }
+
+    private static JsonArray StringArray(IEnumerable<string> values)
+    {
+        var array = new JsonArray();
+        foreach (var value in values)
+            array.Add(value);
+        return array;
+    }
+
+    private static JsonArray IntArray(IEnumerable<int> values)
+    {
+        var array = new JsonArray();
+        foreach (var value in values)
+            array.Add(value);
+        return array;
+    }
+
+    private static bool TryReadStealthNoiseThresholds(
+        JsonObject source,
+        out QteSceneService.StealthNoiseGradeThresholds thresholds)
+    {
+        thresholds = new QteSceneService.StealthNoiseGradeThresholds(0, 0, 0, 0);
+        if (!TryGetDouble(source, "successMaxNoise", out var successMaxNoise) ||
+            !TryGetInt(source, "successMaxOverThresholdMs", out var successMaxOverThresholdMs) ||
+            !TryGetDouble(source, "partialMaxNoise", out var partialMaxNoise) ||
+            !TryGetInt(source, "partialMaxOverThresholdMs", out var partialMaxOverThresholdMs))
+        {
+            return false;
+        }
+
+        thresholds = new QteSceneService.StealthNoiseGradeThresholds(
+            successMaxNoise,
+            successMaxOverThresholdMs,
+            partialMaxNoise,
+            partialMaxOverThresholdMs);
+        return true;
+    }
+
+    private static JsonObject StealthNoiseThresholdsJson(QteSceneService.StealthNoiseGradeThresholds thresholds) =>
+        new()
+        {
+            ["successMaxNoise"] = thresholds.SuccessMaxNoise,
+            ["successMaxOverThresholdMs"] = thresholds.SuccessMaxOverThresholdMs,
+            ["partialMaxNoise"] = thresholds.PartialMaxNoise,
+            ["partialMaxOverThresholdMs"] = thresholds.PartialMaxOverThresholdMs
+        };
+
+    private static bool TryReadLockPinSetThresholds(
+        JsonObject source,
+        out QteSceneService.LockPinSetGradeThresholds thresholds)
+    {
+        thresholds = new QteSceneService.LockPinSetGradeThresholds(0, 0, 0, 0);
+        if (!TryGetInt(source, "successMaxTimeMs", out var successMaxTimeMs) ||
+            !TryGetInt(source, "successMaxMistakes", out var successMaxMistakes) ||
+            !TryGetInt(source, "partialMaxTimeMs", out var partialMaxTimeMs) ||
+            !TryGetInt(source, "partialMaxMistakes", out var partialMaxMistakes))
+        {
+            return false;
+        }
+
+        thresholds = new QteSceneService.LockPinSetGradeThresholds(
+            successMaxTimeMs,
+            successMaxMistakes,
+            partialMaxTimeMs,
+            partialMaxMistakes);
+        return true;
+    }
+
+    private static JsonObject LockPinSetThresholdsJson(QteSceneService.LockPinSetGradeThresholds thresholds) =>
+        new()
+        {
+            ["successMaxTimeMs"] = thresholds.SuccessMaxTimeMs,
+            ["successMaxMistakes"] = thresholds.SuccessMaxMistakes,
+            ["partialMaxTimeMs"] = thresholds.PartialMaxTimeMs,
+            ["partialMaxMistakes"] = thresholds.PartialMaxMistakes
+        };
+
+    private static JsonArray LockPinWindowsJson(IEnumerable<QteSceneService.LockPinWindow> windows)
+    {
+        var array = new JsonArray();
+        foreach (var window in windows)
+        {
+            var node = new JsonObject
+            {
+                ["pin"] = window.Pin,
+                ["min"] = window.Min,
+                ["max"] = window.Max
+            };
+            AddOptionalString(node, "label", window.Label);
+            array.Add(node);
+        }
+
+        return array;
+    }
+
+    private static bool TryGetStringArray(JsonObject? root, string propertyName, out string[] values)
+    {
+        values = [];
+        if (root?[propertyName] is not JsonArray array)
+            return false;
+
+        var parsed = new List<string>(array.Count);
+        foreach (var node in array)
+        {
+            if (node is not JsonValue value ||
+                !value.TryGetValue<string>(out var text) ||
+                string.IsNullOrWhiteSpace(text))
+            {
+                return false;
+            }
+
+            parsed.Add(text.Trim());
+        }
+
+        values = parsed.ToArray();
+        return true;
+    }
+
+    private static bool TryGetString(JsonObject root, string propertyName, out string value)
+    {
+        value = string.Empty;
+        if (root[propertyName] is not JsonValue node ||
+            !node.TryGetValue<string>(out var text) ||
+            string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        value = text.Trim();
+        return true;
+    }
+
+    private static string? GetConfigString(JsonObject? config, string propertyName)
+    {
+        if (config == null || config[propertyName] is not JsonValue value)
+            return null;
+
+        return value.TryGetValue<string>(out var text) ? text : null;
+    }
+
+    private static bool TryGetInt(JsonObject? root, string propertyName, out int value)
+    {
+        value = 0;
+        return root?[propertyName] is JsonValue node && node.TryGetValue<int>(out value);
+    }
+
+    private static bool TryGetDouble(JsonObject? root, string propertyName, out double value)
+    {
+        value = 0;
+        if (root?[propertyName] is not JsonValue node)
+            return false;
+
+        if (node.TryGetValue<double>(out value))
+            return true;
+        if (node.TryGetValue<int>(out var intValue))
+        {
+            value = intValue;
+            return true;
+        }
+
+        return false;
     }
 
     private static QteWebResolutionDto BuildResolution(QteSceneService.QteActionResolution resolution) =>
@@ -282,6 +890,12 @@ public sealed class QteWebActionDto
     public string PrimaryCharacteristic { get; init; } = "";
     public bool RequiresSubmittedGrade { get; init; }
     public List<string> GradeOptions { get; init; } = [];
+    public JsonObject CheckConfig { get; init; } = new()
+    {
+        ["kind"] = "Unsupported",
+        ["supported"] = false,
+        ["checkType"] = ""
+    };
 }
 
 public sealed class QteWebResolutionDto

@@ -3204,6 +3204,8 @@ public sealed class QteSceneService
         }
     }
 
+    public Task<int> ResolveQteStatTierAsync(string characteristic) => ResolveStatTierAsync(characteristic);
+
     private async Task<int> ResolveStatTierAsync(string characteristic)
     {
         try

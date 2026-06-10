@@ -1,12 +1,110 @@
 {
-  "state": "NoScene",
+  "state": "Active",
   "offer": null,
-  "activeScene": null,
+  "activeScene": {
+    "qteId": "qte_browser_contract",
+    "title": "Быстрая сцена",
+    "acceptedAtTurn": 12,
+    "currentChapter": {
+      "chapterId": "start",
+      "title": "Испытание реакции",
+      "narrative": "Книга проверяет реакцию, память и выбор.",
+      "chapterImagePrompt": null,
+      "actions": [
+        {
+          "actionId": "timingbar",
+          "label": "Поймать момент",
+          "checkType": "TimingBar",
+          "baseDifficulty": 3,
+          "primaryCharacteristic": "dexterity",
+          "requiresSubmittedGrade": true,
+          "gradeOptions": [
+            "success",
+            "partial",
+            "fail"
+          ],
+          "checkConfig": {
+            "kind": "TimingBar",
+            "supported": true,
+            "width": 32,
+            "successStart": 12,
+            "successWidth": 8,
+            "partialStart": 9,
+            "partialWidth": 14,
+            "tickMs": 90
+          }
+        },
+        {
+          "actionId": "mashinput",
+          "label": "Продавить створку",
+          "checkType": "MashInput",
+          "baseDifficulty": 3,
+          "primaryCharacteristic": "strength",
+          "requiresSubmittedGrade": true,
+          "gradeOptions": [
+            "success",
+            "partial",
+            "fail"
+          ],
+          "checkConfig": {
+            "kind": "MashInput",
+            "supported": true,
+            "keys": [
+              "space"
+            ],
+            "durationMs": 3000,
+            "targetPresses": 12,
+            "partialThreshold": 0.5,
+            "successTarget": 12,
+            "partialTarget": 6
+          }
+        },
+        {
+          "actionId": "branchchoice",
+          "label": "Пойти обходом",
+          "checkType": "BranchChoice",
+          "baseDifficulty": 1,
+          "primaryCharacteristic": "wisdom",
+          "requiresSubmittedGrade": false,
+          "gradeOptions": [
+            "success",
+            "partial",
+            "fail"
+          ],
+          "checkConfig": {
+            "kind": "BranchChoice",
+            "supported": true,
+            "choiceGrade": "partial"
+          }
+        },
+        {
+          "actionId": "futuremirror",
+          "label": "Сдвинуть зеркало",
+          "checkType": "FutureMirror",
+          "baseDifficulty": 4,
+          "primaryCharacteristic": "intelligence",
+          "requiresSubmittedGrade": false,
+          "gradeOptions": [
+            "success",
+            "partial",
+            "fail"
+          ],
+          "checkConfig": {
+            "kind": "Unsupported",
+            "supported": false,
+            "checkType": "FutureMirror"
+          }
+        }
+      ]
+    }
+  },
   "resolution": null,
   "completion": null,
-  "lastResolvedReminder": "Последняя QTE завершена.",
-  "lastDeclinedQteId": "",
-  "availableOperations": [],
+  "lastResolvedReminder": null,
+  "lastDeclinedQteId": null,
+  "availableOperations": [
+    "submitAction"
+  ],
   "notification": null,
   "error": null
 }

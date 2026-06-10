@@ -565,7 +565,7 @@ public sealed class BrowserApiContractTests
         yield return ["game-screen.json", BuildGameScreen()];
         yield return ["lifecycle-dashboard.json", BuildLifecycleDashboard()];
         yield return ["explorer-command-result.json", BuildExplorerCommandResult()];
-        yield return ["qte-state.json", BuildQteState()];
+        yield return ["qte-state.json", BuildQteStateFixture()];
         yield return ["audio-settings.json", BuildAudioSettings()];
         yield return ["client-settings.json", BuildClientSettings()];
         yield return ["command-coverage.json", BuildCommandCoverage()];
@@ -956,6 +956,114 @@ public sealed class BrowserApiContractTests
             LastResolvedReminder = "Последняя QTE завершена.",
             LastDeclinedQteId = string.Empty,
             AvailableOperations = [],
+            Notification = null,
+            Error = null
+        };
+
+    private static QteWebStateDto BuildQteStateFixture() =>
+        new()
+        {
+            State = "Active",
+            Offer = null,
+            ActiveScene = new QteWebActiveSceneDto
+            {
+                QteId = "qte_browser_contract",
+                Title = "Быстрая сцена",
+                AcceptedAtTurn = 12,
+                CurrentChapter = new QteWebChapterDto
+                {
+                    ChapterId = "start",
+                    Title = "Испытание реакции",
+                    Narrative = "Книга проверяет реакцию, память и выбор.",
+                    ChapterImagePrompt = null,
+                    Actions =
+                    [
+                        new QteWebActionDto
+                        {
+                            ActionId = "timingbar",
+                            Label = "Поймать момент",
+                            CheckType = "TimingBar",
+                            BaseDifficulty = 3,
+                            PrimaryCharacteristic = "dexterity",
+                            RequiresSubmittedGrade = true,
+                            GradeOptions = ["success", "partial", "fail"],
+                            CheckConfig = JsonNode.Parse("""
+                            {
+                              "kind": "TimingBar",
+                              "supported": true,
+                              "width": 32,
+                              "successStart": 12,
+                              "successWidth": 8,
+                              "partialStart": 9,
+                              "partialWidth": 14,
+                              "tickMs": 90
+                            }
+                            """)!.AsObject()
+                        },
+                        new QteWebActionDto
+                        {
+                            ActionId = "mashinput",
+                            Label = "Продавить створку",
+                            CheckType = "MashInput",
+                            BaseDifficulty = 3,
+                            PrimaryCharacteristic = "strength",
+                            RequiresSubmittedGrade = true,
+                            GradeOptions = ["success", "partial", "fail"],
+                            CheckConfig = JsonNode.Parse("""
+                            {
+                              "kind": "MashInput",
+                              "supported": true,
+                              "keys": ["space"],
+                              "durationMs": 3000,
+                              "targetPresses": 12,
+                              "partialThreshold": 0.5,
+                              "successTarget": 12,
+                              "partialTarget": 6
+                            }
+                            """)!.AsObject()
+                        },
+                        new QteWebActionDto
+                        {
+                            ActionId = "branchchoice",
+                            Label = "Пойти обходом",
+                            CheckType = "BranchChoice",
+                            BaseDifficulty = 1,
+                            PrimaryCharacteristic = "wisdom",
+                            RequiresSubmittedGrade = false,
+                            GradeOptions = ["success", "partial", "fail"],
+                            CheckConfig = JsonNode.Parse("""
+                            {
+                              "kind": "BranchChoice",
+                              "supported": true,
+                              "choiceGrade": "partial"
+                            }
+                            """)!.AsObject()
+                        },
+                        new QteWebActionDto
+                        {
+                            ActionId = "futuremirror",
+                            Label = "Сдвинуть зеркало",
+                            CheckType = "FutureMirror",
+                            BaseDifficulty = 4,
+                            PrimaryCharacteristic = "intelligence",
+                            RequiresSubmittedGrade = false,
+                            GradeOptions = ["success", "partial", "fail"],
+                            CheckConfig = JsonNode.Parse("""
+                            {
+                              "kind": "Unsupported",
+                              "supported": false,
+                              "checkType": "FutureMirror"
+                            }
+                            """)!.AsObject()
+                        }
+                    ]
+                }
+            },
+            Resolution = null,
+            Completion = null,
+            LastResolvedReminder = null,
+            LastDeclinedQteId = null,
+            AvailableOperations = ["submitAction"],
             Notification = null,
             Error = null
         };

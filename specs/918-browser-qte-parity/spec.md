@@ -1,8 +1,8 @@
 # Feature Specification: Browser QTE Interactive Mini-Games
 
-**Feature Branch**: `work/918-browser-qte-parity`  
-**Created**: 2026-06-10  
-**Status**: Draft for autonomous implementation  
+**Feature Branch**: `work/918-browser-qte-parity`
+**Created**: 2026-06-10
+**Status**: Draft for autonomous implementation
 **Source Issues**: [#918 Browser QTE parity](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/918), parent browser epic [#680](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/680), QTE v2 parent [#911](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/911)
 
 ## User Scenarios & Testing

@@ -61,6 +61,8 @@ The shell keeps default UI Russian-first and player-facing. Command IDs, `/api/*
 
 Issue #688 makes the `Медиа` route consume `/api/game-screen.media` and render gallery images, the realm atlas, and QTE controls as player-facing sections. Raw endpoint diagnostics for media/QTE remain advanced-only.
 
+Issue #918 makes supported active QTE checks render as browser mini-games instead of a default manual grade selector. React may compute the local `success` / `partial` / `fail` outcome from player input, but C# remains the only routing, write, history, and completion authority through the existing QTE action resolver.
+
 Future Browser Client tasks (#683-#689) should extend these route regions rather than recreating ad-hoc DOM manipulation:
 
 - main menu/session flow under `Главная`;
