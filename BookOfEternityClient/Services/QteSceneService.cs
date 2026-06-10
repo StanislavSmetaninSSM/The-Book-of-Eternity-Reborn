@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using System.Globalization;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
@@ -347,7 +348,8 @@ public sealed class QteSceneService
             CurrentChapterId = !string.IsNullOrWhiteSpace(offer.StartChapterId)
                 ? offer.StartChapterId
                 : offer.Chapters.FirstOrDefault()?.ChapterId ?? "",
-            AcceptedAtTurn = currentTurnNumber
+            AcceptedAtTurn = currentTurnNumber,
+            ScoreState = BuildInitialScoreState(offer.ScoreModel)
         };
         await SaveRuntimeStateAsync(state);
         ClearOfferFile();
@@ -382,6 +384,7 @@ public sealed class QteSceneService
             _ => action.Routing.Fail
         };
         var resultText = ResolveResultText(action, grade);
+        ApplyScoreDeltas(active.ScoreState, action, grade);
 
         if (!string.IsNullOrWhiteSpace(target.TerminalOutcomeId))
         {
@@ -393,8 +396,9 @@ public sealed class QteSceneService
             var finalResponse = await ApplyTerminalOutcomeValidatedStateChangesAsync(
                 outcome,
                 allowPreexistingStateIssues);
-            var summary = $"QTE[{offer.QteId}] -> {outcome.Title} ({DisplayGrade(grade)})";
-            await AppendHistoryAsync(offer, outcome, grade, active.AcceptedAtTurn, currentTurnNumber, summary);
+            var scoreSummary = BuildFinalScoreSummary(offer.ScoreModel, active.ScoreState);
+            var summary = BuildCompletionSummary(offer, outcome, grade, scoreSummary);
+            await AppendHistoryAsync(offer, outcome, grade, active.AcceptedAtTurn, currentTurnNumber, summary, scoreSummary, active.ScoreState?.Audit);
 
             state.PendingOffer = null;
             state.ActiveScene = null;
@@ -414,7 +418,8 @@ public sealed class QteSceneService
                     QteId = offer.QteId,
                     OutcomeId = outcome.OutcomeId,
                     Summary = summary,
-                    Response = finalResponse
+                    Response = finalResponse,
+                    ScoreSummary = scoreSummary
                 }
             };
         }
@@ -449,7 +454,7 @@ public sealed class QteSceneService
             if (chapter == null)
                 throw new InvalidOperationException($"QTE chapter '{active.CurrentChapterId}' not found.");
 
-            ShowChapterPrelude(offer, chapter);
+            ShowChapterPrelude(offer, chapter, active.ScoreState);
 
             var actionOptions = BuildUniqueOptions(chapter.Actions, action =>
                 ConsoleLayout.PlainChoiceLabel($"⚡ {action.Label}", action.Check.Type, $"Сложность {Math.Clamp(action.Check.BaseDifficulty, 1, 5)}"));
@@ -466,6 +471,7 @@ public sealed class QteSceneService
                 QteGrade.Partial => action.Routing.Partial,
                 _ => action.Routing.Fail
             };
+            ApplyScoreDeltas(active.ScoreState, action, grade);
 
             await ShowIntermediateResultAsync(offer, chapter, action, grade);
 
@@ -476,9 +482,10 @@ public sealed class QteSceneService
                 if (outcome == null)
                     throw new InvalidOperationException($"QTE outcome '{target.TerminalOutcomeId}' not found.");
 
-                var finalResponse = await ApplyTerminalOutcomeAsync(outcome);
-                var summary = $"QTE[{offer.QteId}] -> {outcome.Title} ({DisplayGrade(grade)})";
-                await AppendHistoryAsync(offer, outcome, grade, active.AcceptedAtTurn, currentTurnNumber, summary);
+                var scoreSummary = BuildFinalScoreSummary(offer.ScoreModel, active.ScoreState);
+                var finalResponse = await ApplyTerminalOutcomeAsync(outcome, scoreSummary);
+                var summary = BuildCompletionSummary(offer, outcome, grade, scoreSummary);
+                await AppendHistoryAsync(offer, outcome, grade, active.AcceptedAtTurn, currentTurnNumber, summary, scoreSummary, active.ScoreState?.Audit);
 
                 state.PendingOffer = null;
                 state.ActiveScene = null;
@@ -490,7 +497,8 @@ public sealed class QteSceneService
                     QteId = offer.QteId,
                     OutcomeId = outcome.OutcomeId,
                     Summary = summary,
-                    Response = finalResponse
+                    Response = finalResponse,
+                    ScoreSummary = scoreSummary
                 };
             }
 
@@ -502,7 +510,224 @@ public sealed class QteSceneService
         }
     }
 
-    private void ShowChapterPrelude(QteOffer offer, QteChapter chapter)
+    private static QteScoreState? BuildInitialScoreState(QteScoreModel? scoreModel)
+    {
+        if (scoreModel?.Metrics is not { Count: > 0 })
+            return null;
+
+        return new QteScoreState
+        {
+            Metrics = scoreModel.Metrics.Select(metric => new QteScoreMetricState
+            {
+                Id = metric.Id,
+                Label = metric.Label,
+                Value = Clamp(metric.Initial, metric.Min, metric.Max),
+                Min = metric.Min,
+                Max = metric.Max,
+                Visibility = string.IsNullOrWhiteSpace(metric.Visibility) ? "always" : metric.Visibility.Trim().ToLowerInvariant()
+            }).ToList()
+        };
+    }
+
+    private static void ApplyScoreDeltas(QteScoreState? scoreState, QteAction action, QteGrade grade)
+    {
+        if (scoreState == null || action.ScoreDeltas == null || action.ScoreDeltas.Count == 0)
+            return;
+
+        var gradeKey = GradeKey(grade);
+        var deltas = action.ScoreDeltas.FirstOrDefault(pair =>
+            string.Equals(pair.Key, gradeKey, StringComparison.OrdinalIgnoreCase)).Value;
+        if (deltas == null || deltas.Count == 0)
+            return;
+
+        foreach (var delta in deltas)
+        {
+            var metric = scoreState.Metrics.FirstOrDefault(item =>
+                string.Equals(item.Id, delta.Metric, StringComparison.OrdinalIgnoreCase));
+            if (metric == null)
+                continue;
+
+            var previous = metric.Value;
+            metric.Value = Clamp(metric.Value + delta.Delta, metric.Min, metric.Max);
+            scoreState.Audit.Add(new QteScoreAuditEntry
+            {
+                ActionId = action.ActionId,
+                ActionLabel = action.Label,
+                Grade = gradeKey,
+                Metric = metric.Id,
+                MetricLabel = metric.Label,
+                PreviousValue = previous,
+                Delta = delta.Delta,
+                NewValue = metric.Value
+            });
+        }
+    }
+
+    private static QteScoreSummary? BuildFinalScoreSummary(QteScoreModel? scoreModel, QteScoreState? scoreState)
+    {
+        if (scoreModel == null || scoreState == null)
+            return null;
+
+        var rank = SelectFinalRank(scoreModel, scoreState);
+        return new QteScoreSummary
+        {
+            Rank = rank == null
+                ? null
+                : new QteScoreRankSummary
+                {
+                    Id = rank.Id,
+                    Label = rank.Label,
+                    Summary = rank.Summary
+                },
+            Metrics = scoreState.Metrics.Select(CloneScoreMetric).ToList()
+        };
+    }
+
+    private static QteScoreRankDefinition? SelectFinalRank(QteScoreModel scoreModel, QteScoreState scoreState)
+    {
+        foreach (var rank in EnumerateRankEvaluationOrder(scoreModel).Where(rank => !rank.Fallback))
+        {
+            if (rank.AllOf.Count > 0 && rank.AllOf.All(threshold => MatchesThreshold(scoreState, threshold)))
+                return rank;
+        }
+
+        return scoreModel.Ranks.FirstOrDefault(rank => rank.Fallback) ?? scoreModel.Ranks.FirstOrDefault();
+    }
+
+    private static IEnumerable<QteScoreRankDefinition> EnumerateRankEvaluationOrder(QteScoreModel scoreModel)
+    {
+        var emitted = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (scoreModel.RankOrder is { Count: > 0 })
+        {
+            foreach (var rankId in scoreModel.RankOrder)
+            {
+                var rank = scoreModel.Ranks.FirstOrDefault(item =>
+                    string.Equals(item.Id, rankId, StringComparison.OrdinalIgnoreCase));
+                if (rank != null && emitted.Add(rank.Id))
+                    yield return rank;
+            }
+        }
+
+        foreach (var rank in scoreModel.Ranks)
+        {
+            if (emitted.Add(rank.Id))
+                yield return rank;
+        }
+    }
+
+    private static bool MatchesThreshold(QteScoreState scoreState, QteScoreThreshold threshold)
+    {
+        var metric = scoreState.Metrics.FirstOrDefault(item =>
+            string.Equals(item.Id, threshold.Metric, StringComparison.OrdinalIgnoreCase));
+        if (metric == null)
+            return false;
+
+        return threshold.Op switch
+        {
+            ">=" => metric.Value >= threshold.Value,
+            ">" => metric.Value > threshold.Value,
+            "<=" => metric.Value <= threshold.Value,
+            "<" => metric.Value < threshold.Value,
+            "==" => Math.Abs(metric.Value - threshold.Value) < 0.000001d,
+            _ => false
+        };
+    }
+
+    private static string BuildCompletionSummary(
+        QteOffer offer,
+        QteTerminalOutcome outcome,
+        QteGrade grade,
+        QteScoreSummary? scoreSummary)
+    {
+        var summary = $"QTE[{offer.QteId}] -> {outcome.Title} ({DisplayGrade(grade)})";
+        if (!string.IsNullOrWhiteSpace(scoreSummary?.Rank?.Label))
+            summary += $". Ранг: {scoreSummary.Rank.Label}";
+        return summary;
+    }
+
+    private static IEnumerable<QteScoreMetricState> GetVisibleActiveScoreMetrics(QteScoreState? scoreState) =>
+        scoreState?.Metrics.Where(metric =>
+            string.Equals(metric.Visibility, "always", StringComparison.OrdinalIgnoreCase)) ??
+        Enumerable.Empty<QteScoreMetricState>();
+
+    private static IEnumerable<QteScoreMetricState> GetVisibleFinalScoreMetrics(QteScoreSummary? scoreSummary) =>
+        scoreSummary?.Metrics.Where(metric =>
+            !string.Equals(metric.Visibility, "hidden", StringComparison.OrdinalIgnoreCase)) ??
+        Enumerable.Empty<QteScoreMetricState>();
+
+    private static List<string> BuildFinalScoreMarkupLines(QteScoreSummary? scoreSummary)
+    {
+        var lines = new List<string>();
+        var rank = scoreSummary?.Rank;
+        var metrics = GetVisibleFinalScoreMetrics(scoreSummary).ToList();
+        if (rank == null && metrics.Count == 0)
+            return lines;
+
+        lines.Add("[bold]Итоговый счёт:[/]");
+        if (!string.IsNullOrWhiteSpace(rank?.Label))
+            lines.Add($"[green]Ранг: {Markup.Escape(rank.Label)}[/]");
+        if (!string.IsNullOrWhiteSpace(rank?.Summary))
+            lines.Add($"[grey]{Markup.Escape(rank.Summary!)}[/]");
+
+        foreach (var metric in metrics)
+            lines.Add($"[grey]• {Markup.Escape(metric.Label)}: {FormatScoreValue(metric.Value)}[/]");
+
+        return lines;
+    }
+
+    private static string? BuildFinalScorePlainText(QteScoreSummary? scoreSummary)
+    {
+        var lines = new List<string>();
+        var rank = scoreSummary?.Rank;
+        var metrics = GetVisibleFinalScoreMetrics(scoreSummary).ToList();
+        if (rank == null && metrics.Count == 0)
+            return null;
+
+        lines.Add("Итоговый счёт:");
+        if (!string.IsNullOrWhiteSpace(rank?.Label))
+            lines.Add($"Ранг: {rank.Label}");
+        if (!string.IsNullOrWhiteSpace(rank?.Summary))
+            lines.Add(rank.Summary!);
+
+        foreach (var metric in metrics)
+            lines.Add($"{metric.Label}: {FormatScoreValue(metric.Value)}");
+
+        return string.Join(Environment.NewLine, lines);
+    }
+
+    private static void AppendFinalScoreToResponse(GameResponse response, QteScoreSummary? scoreSummary)
+    {
+        var scoreText = BuildFinalScorePlainText(scoreSummary);
+        if (string.IsNullOrWhiteSpace(scoreText))
+            return;
+
+        response.Response = string.IsNullOrWhiteSpace(response.Response)
+            ? scoreText
+            : $"{response.Response.TrimEnd()}{Environment.NewLine}{Environment.NewLine}{scoreText}";
+    }
+
+    private static QteScoreMetricState CloneScoreMetric(QteScoreMetricState metric) =>
+        new()
+        {
+            Id = metric.Id,
+            Label = metric.Label,
+            Value = metric.Value,
+            Min = metric.Min,
+            Max = metric.Max,
+            Visibility = metric.Visibility
+        };
+
+    private static double Clamp(double value, double min, double max) =>
+        Math.Min(max, Math.Max(min, value));
+
+    private static string GradeKey(QteGrade grade) => grade.ToString().ToLowerInvariant();
+
+    private static string FormatScoreValue(double value) =>
+        Math.Abs(value - Math.Round(value)) < 0.000001d
+            ? ((int)Math.Round(value)).ToString(CultureInfo.InvariantCulture)
+            : value.ToString("0.##", CultureInfo.InvariantCulture);
+
+    private void ShowChapterPrelude(QteOffer offer, QteChapter chapter, QteScoreState? scoreState)
     {
         var lines = new List<string>
         {
@@ -512,6 +737,15 @@ public sealed class QteSceneService
 
         if (!string.IsNullOrWhiteSpace(chapter.Narrative))
             lines.Add($"[white]{Markup.Escape(chapter.Narrative)}[/]");
+
+        var visibleMetrics = GetVisibleActiveScoreMetrics(scoreState).ToList();
+        if (visibleMetrics.Count > 0)
+        {
+            lines.Add("");
+            lines.Add("[bold]Счёт сцены:[/]");
+            foreach (var metric in visibleMetrics)
+                lines.Add($"[grey]• {Markup.Escape(metric.Label)}: {FormatScoreValue(metric.Value)}[/]");
+        }
 
         lines.Add("");
         lines.Add("[yellow]Нажмите любую клавишу, когда будете готовы продолжить...[/]");
@@ -578,10 +812,14 @@ public sealed class QteSceneService
         }
     }
 
-    private async Task<GameResponse> ApplyTerminalOutcomeAsync(QteTerminalOutcome outcome)
+    private async Task<GameResponse> ApplyTerminalOutcomeAsync(
+        QteTerminalOutcome outcome,
+        QteScoreSummary? scoreSummary)
     {
-        var response = await ApplyTerminalOutcomeValidatedStateChangesAsync(outcome);
-        await ShowTerminalOutcomeScreenAsync(outcome);
+        var response = BuildTerminalOutcomeResponse(outcome);
+        AppendFinalScoreToResponse(response, scoreSummary);
+        response = await ApplyTerminalOutcomeValidatedStateChangesAsync(response);
+        await ShowTerminalOutcomeScreenAsync(outcome, scoreSummary);
         return response;
     }
 
@@ -590,6 +828,13 @@ public sealed class QteSceneService
         bool allowPreexistingStateIssues = false)
     {
         var response = BuildTerminalOutcomeResponse(outcome);
+        return await ApplyTerminalOutcomeValidatedStateChangesAsync(response, allowPreexistingStateIssues);
+    }
+
+    private async Task<GameResponse> ApplyTerminalOutcomeValidatedStateChangesAsync(
+        GameResponse response,
+        bool allowPreexistingStateIssues = false)
+    {
         var baseline = await CaptureQteNormalizationBaselineAsync(response);
         HashSet<string>? preexistingErrorFingerprints = null;
         if (allowPreexistingStateIssues)
@@ -819,9 +1064,21 @@ public sealed class QteSceneService
         }
     }
 
-    private async Task ShowTerminalOutcomeScreenAsync(QteTerminalOutcome outcome)
+    private async Task ShowTerminalOutcomeScreenAsync(QteTerminalOutcome outcome, QteScoreSummary? scoreSummary)
     {
         var imageOffered = false;
+        var lines = new List<string>
+        {
+            $"[bold green]{Markup.Escape(outcome.Title)}[/]",
+            "",
+            $"[white]{Markup.Escape(outcome.FinalNarrative)}[/]"
+        };
+        var scoreLines = BuildFinalScoreMarkupLines(scoreSummary);
+        if (scoreLines.Count > 0)
+        {
+            lines.Add("");
+            lines.AddRange(scoreLines);
+        }
 
         while (true)
         {
@@ -833,12 +1090,7 @@ public sealed class QteSceneService
             choices.Add("✅ Завершить сцену");
 
             AnsiConsole.Clear();
-            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", new[]
-            {
-                $"[bold green]{Markup.Escape(outcome.Title)}[/]",
-                "",
-                $"[white]{Markup.Escape(outcome.FinalNarrative)}[/]"
-            })))
+            AnsiConsole.Write(new Panel(new Markup(string.Join("\n", lines)))
             {
                 Header = new PanelHeader(" Финал QTE ", Justify.Center),
                 Border = BoxBorder.Double,
@@ -3241,7 +3493,15 @@ public sealed class QteSceneService
         return await _imageService.GenerateSceneImageOnceAsync(imagePrompt, imageKey);
     }
 
-    private async Task AppendHistoryAsync(QteOffer offer, QteTerminalOutcome outcome, QteGrade grade, int acceptedAtTurn, int finishedAtTurn, string summary)
+    private async Task AppendHistoryAsync(
+        QteOffer offer,
+        QteTerminalOutcome outcome,
+        QteGrade grade,
+        int acceptedAtTurn,
+        int finishedAtTurn,
+        string summary,
+        QteScoreSummary? finalScore,
+        IReadOnlyList<QteScoreAuditEntry>? scoreAudit)
     {
         var history = await LoadHistoryAsync();
         history.Add(new QteHistoryEntry
@@ -3252,7 +3512,9 @@ public sealed class QteSceneService
             FinishedAtTurn = finishedAtTurn,
             OutcomeId = outcome.OutcomeId,
             Grade = grade.ToString().ToLowerInvariant(),
-            Summary = summary
+            Summary = summary,
+            FinalScore = finalScore,
+            ScoreAudit = scoreAudit is { Count: > 0 } ? scoreAudit.ToList() : null
         });
 
         await _fs.WriteFileAtomicAsync(QteHistoryPath, JsonSerializer.Serialize(history, JsonOpts));
@@ -3760,6 +4022,9 @@ public sealed class QteSceneService
 
         [JsonPropertyName("terminalOutcomes")]
         public List<QteTerminalOutcome> TerminalOutcomes { get; set; } = new();
+
+        [JsonPropertyName("scoreModel")]
+        public QteScoreModel? ScoreModel { get; set; }
     }
 
     public sealed class QteChapter
@@ -3802,6 +4067,9 @@ public sealed class QteSceneService
 
         [JsonPropertyName("failText")]
         public string? FailText { get; set; }
+
+        [JsonPropertyName("scoreDeltas")]
+        public Dictionary<string, List<QteScoreDelta>>? ScoreDeltas { get; set; }
     }
 
     public sealed class QteCheck
@@ -3861,6 +4129,156 @@ public sealed class QteSceneService
         public JsonObject? ResponseFragment { get; set; }
     }
 
+    public sealed class QteScoreModel
+    {
+        [JsonPropertyName("metrics")]
+        public List<QteScoreMetricDefinition> Metrics { get; set; } = new();
+
+        [JsonPropertyName("rankOrder")]
+        public List<string>? RankOrder { get; set; }
+
+        [JsonPropertyName("ranks")]
+        public List<QteScoreRankDefinition> Ranks { get; set; } = new();
+    }
+
+    public sealed class QteScoreMetricDefinition
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = "";
+
+        [JsonPropertyName("label")]
+        public string Label { get; set; } = "";
+
+        [JsonPropertyName("initial")]
+        public double Initial { get; set; }
+
+        [JsonPropertyName("min")]
+        public double Min { get; set; }
+
+        [JsonPropertyName("max")]
+        public double Max { get; set; }
+
+        [JsonPropertyName("visibility")]
+        public string Visibility { get; set; } = "always";
+    }
+
+    public sealed class QteScoreRankDefinition
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = "";
+
+        [JsonPropertyName("label")]
+        public string Label { get; set; } = "";
+
+        [JsonPropertyName("summary")]
+        public string? Summary { get; set; }
+
+        [JsonPropertyName("allOf")]
+        public List<QteScoreThreshold> AllOf { get; set; } = new();
+
+        [JsonPropertyName("fallback")]
+        public bool Fallback { get; set; }
+    }
+
+    public sealed class QteScoreThreshold
+    {
+        [JsonPropertyName("metric")]
+        public string Metric { get; set; } = "";
+
+        [JsonPropertyName("op")]
+        public string Op { get; set; } = "";
+
+        [JsonPropertyName("value")]
+        public double Value { get; set; }
+    }
+
+    public sealed class QteScoreDelta
+    {
+        [JsonPropertyName("metric")]
+        public string Metric { get; set; } = "";
+
+        [JsonPropertyName("delta")]
+        public double Delta { get; set; }
+    }
+
+    public sealed class QteScoreState
+    {
+        [JsonPropertyName("metrics")]
+        public List<QteScoreMetricState> Metrics { get; set; } = new();
+
+        [JsonPropertyName("audit")]
+        public List<QteScoreAuditEntry> Audit { get; set; } = new();
+    }
+
+    public sealed class QteScoreMetricState
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = "";
+
+        [JsonPropertyName("label")]
+        public string Label { get; set; } = "";
+
+        [JsonPropertyName("value")]
+        public double Value { get; set; }
+
+        [JsonPropertyName("min")]
+        public double Min { get; set; }
+
+        [JsonPropertyName("max")]
+        public double Max { get; set; }
+
+        [JsonPropertyName("visibility")]
+        public string Visibility { get; set; } = "always";
+    }
+
+    public sealed class QteScoreAuditEntry
+    {
+        [JsonPropertyName("actionId")]
+        public string ActionId { get; set; } = "";
+
+        [JsonPropertyName("actionLabel")]
+        public string? ActionLabel { get; set; }
+
+        [JsonPropertyName("grade")]
+        public string Grade { get; set; } = "";
+
+        [JsonPropertyName("metric")]
+        public string Metric { get; set; } = "";
+
+        [JsonPropertyName("metricLabel")]
+        public string? MetricLabel { get; set; }
+
+        [JsonPropertyName("previousValue")]
+        public double PreviousValue { get; set; }
+
+        [JsonPropertyName("delta")]
+        public double Delta { get; set; }
+
+        [JsonPropertyName("newValue")]
+        public double NewValue { get; set; }
+    }
+
+    public sealed class QteScoreSummary
+    {
+        [JsonPropertyName("rank")]
+        public QteScoreRankSummary? Rank { get; set; }
+
+        [JsonPropertyName("metrics")]
+        public List<QteScoreMetricState> Metrics { get; set; } = new();
+    }
+
+    public sealed class QteScoreRankSummary
+    {
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = "";
+
+        [JsonPropertyName("label")]
+        public string Label { get; set; } = "";
+
+        [JsonPropertyName("summary")]
+        public string? Summary { get; set; }
+    }
+
     public sealed class QteRuntimeState
     {
         [JsonPropertyName("pendingOffer")]
@@ -3889,6 +4307,9 @@ public sealed class QteSceneService
 
         [JsonPropertyName("acceptedAtTurn")]
         public int AcceptedAtTurn { get; set; }
+
+        [JsonPropertyName("scoreState")]
+        public QteScoreState? ScoreState { get; set; }
     }
 
     public sealed class QteHistoryEntry
@@ -3913,6 +4334,12 @@ public sealed class QteSceneService
 
         [JsonPropertyName("summary")]
         public string Summary { get; set; } = "";
+
+        [JsonPropertyName("finalScore")]
+        public QteScoreSummary? FinalScore { get; set; }
+
+        [JsonPropertyName("scoreAudit")]
+        public List<QteScoreAuditEntry>? ScoreAudit { get; set; }
     }
 
     public sealed class QteSceneCompletion
@@ -3921,6 +4348,7 @@ public sealed class QteSceneService
         public string OutcomeId { get; set; } = "";
         public string Summary { get; set; } = "";
         public GameResponse Response { get; set; } = new();
+        public QteScoreSummary? ScoreSummary { get; set; }
     }
 
     public sealed class QteActionResolution

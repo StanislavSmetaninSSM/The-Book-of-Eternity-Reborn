@@ -2,10 +2,13 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Spectre.Console;
+using Spectre.Console.Rendering;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -1110,6 +1113,140 @@ public sealed class QteSceneServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task ResolveActiveActionAsync_AppliesScoreDeltasComputesRankAndWritesHistory()
+    {
+        var service = CreateRuntimeCapableService();
+        var offer = BuildScoredBranchChoiceOffer();
+
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 10);
+
+        using (var initialRuntime = await ReadJsonDocumentAsync(QteSceneService.QteRuntimePath))
+        {
+            var scoreState = initialRuntime.RootElement
+                .GetProperty("activeScene")
+                .GetProperty("scoreState");
+            AssertMetricValue(scoreState, "stealth", 50);
+            AssertMetricValue(scoreState, "alarm", 10);
+            AssertMetricValue(scoreState, "evidence", 0);
+        }
+
+        var first = await service.ResolveActiveActionAsync("cross_yard", null, currentTurnNumber: 11, allowPreexistingStateIssues: true);
+        Assert.Equal("Active", first.State);
+
+        using (var afterFirst = await ReadJsonDocumentAsync(QteSceneService.QteRuntimePath))
+        {
+            var scoreState = afterFirst.RootElement
+                .GetProperty("activeScene")
+                .GetProperty("scoreState");
+            AssertMetricValue(scoreState, "stealth", 100);
+            AssertMetricValue(scoreState, "alarm", 0);
+            AssertMetricValue(scoreState, "evidence", 0);
+        }
+
+        var second = await service.ResolveActiveActionAsync("search_study", null, currentTurnNumber: 12, allowPreexistingStateIssues: true);
+        Assert.Equal("Active", second.State);
+
+        var final = await service.ResolveActiveActionAsync("escape_roof", null, currentTurnNumber: 13, allowPreexistingStateIssues: true);
+        Assert.Equal("Completed", final.State);
+        Assert.NotNull(final.Completion);
+        Assert.Contains("Ранг: Удачный исход", final.Completion!.Summary, StringComparison.Ordinal);
+
+        using var runtime = await ReadJsonDocumentAsync(QteSceneService.QteRuntimePath);
+        Assert.False(runtime.RootElement.TryGetProperty("activeScene", out var activeScene) &&
+                     activeScene.ValueKind != JsonValueKind.Null);
+        Assert.Contains(
+            "Ранг: Удачный исход",
+            runtime.RootElement.GetProperty("lastResolvedQteSummaryPendingReminder").GetString(),
+            StringComparison.Ordinal);
+
+        using var history = await ReadJsonDocumentAsync(QteSceneService.QteHistoryPath);
+        var entry = Assert.Single(history.RootElement.EnumerateArray());
+        var finalScore = entry.GetProperty("finalScore");
+        Assert.Equal("good", finalScore.GetProperty("rank").GetProperty("id").GetString());
+        AssertMetricValue(finalScore, "stealth", 65);
+        AssertMetricValue(finalScore, "alarm", 35);
+        AssertMetricValue(finalScore, "evidence", 37);
+
+        var audit = entry.GetProperty("scoreAudit").EnumerateArray().ToArray();
+        Assert.Equal(7, audit.Length);
+        Assert.Equal("cross_yard", audit[0].GetProperty("actionId").GetString());
+        Assert.Equal("success", audit[0].GetProperty("grade").GetString());
+        Assert.Equal("stealth", audit[0].GetProperty("metric").GetString());
+        Assert.Equal(50, audit[0].GetProperty("previousValue").GetDouble());
+        Assert.Equal(75, audit[0].GetProperty("delta").GetDouble());
+        Assert.Equal(100, audit[0].GetProperty("newValue").GetDouble());
+        Assert.Equal("escape_roof", audit[^1].GetProperty("actionId").GetString());
+        Assert.Equal("fail", audit[^1].GetProperty("grade").GetString());
+    }
+
+    [Fact]
+    public async Task StartAcceptedSceneAsync_RendersFinalScoreSummaryInConsoleAndResponse()
+    {
+        var originalConsole = AnsiConsole.Console;
+        var console = new QueuedAnsiConsole(Enumerable.Repeat(Key(ConsoleKey.Enter), 8));
+        AnsiConsole.Console = console;
+
+        try
+        {
+            await SeedMinimalValidatedMortalStateAsync();
+            var service = CreateRuntimeCapableService(new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 3)));
+            var offer = BuildScoredBranchChoiceOffer();
+            offer.ScoreModel!.Metrics.Add(new QteSceneService.QteScoreMetricDefinition
+            {
+                Id = "secretTrace",
+                Label = "Тайный след",
+                Initial = 7,
+                Min = 0,
+                Max = 10,
+                Visibility = "hidden"
+            });
+
+            var completion = await service.StartAcceptedSceneAsync(offer, currentTurnNumber: 10);
+            var output = console.Output;
+
+            Assert.Contains("Удачный исход", output, StringComparison.Ordinal);
+            Assert.Contains("Скрытность: 65", output, StringComparison.Ordinal);
+            Assert.Contains("Тревога: 35", output, StringComparison.Ordinal);
+            Assert.Contains("Улики: 37", output, StringComparison.Ordinal);
+            Assert.DoesNotContain("Тайный след", output, StringComparison.Ordinal);
+            Assert.DoesNotContain("scoreModel", output, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("scoreDeltas", output, StringComparison.OrdinalIgnoreCase);
+
+            Assert.NotNull(completion.ScoreSummary);
+            Assert.Contains("Ранг: Удачный исход", completion.Response.Response, StringComparison.Ordinal);
+            Assert.Contains("Скрытность: 65", completion.Response.Response, StringComparison.Ordinal);
+            Assert.Contains("Тревога: 35", completion.Response.Response, StringComparison.Ordinal);
+            Assert.Contains("Улики: 37", completion.Response.Response, StringComparison.Ordinal);
+            Assert.DoesNotContain("Тайный след", completion.Response.Response, StringComparison.Ordinal);
+            Assert.DoesNotContain("scoreModel", completion.Response.Response, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("scoreDeltas", completion.Response.Response, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            AnsiConsole.Console = originalConsole;
+        }
+    }
+
+    [Fact]
+    public async Task ResolveActiveActionAsync_LeavesUnscoredQteHistoryUnchanged()
+    {
+        var service = CreateRuntimeCapableService();
+        var offer = BuildUnscoredBranchChoiceOffer();
+
+        await service.BeginAcceptedSceneAsync(offer, currentTurnNumber: 20);
+        var final = await service.ResolveActiveActionAsync("open_gate", null, currentTurnNumber: 21, allowPreexistingStateIssues: true);
+
+        Assert.Equal("Completed", final.State);
+
+        var runtimeJson = await _fs.ReadFileAsync(QteSceneService.QteRuntimePath);
+        Assert.DoesNotContain("scoreState", runtimeJson, StringComparison.Ordinal);
+        using var history = await ReadJsonDocumentAsync(QteSceneService.QteHistoryPath);
+        var entry = Assert.Single(history.RootElement.EnumerateArray());
+        Assert.False(entry.TryGetProperty("finalScore", out _));
+        Assert.False(entry.TryGetProperty("scoreAudit", out _));
+    }
+
+    [Fact]
     public async Task ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure()
     {
         await _fs.WriteFileAtomicAsync("game_state/player/experience.json", """
@@ -1447,20 +1584,22 @@ public sealed class QteSceneServiceTests : IDisposable
         Assert.Equal("sibling_run", Path.GetFileName(runDirectories[0]));
     }
 
-    private QteSceneService CreateRuntimeCapableService()
+    private QteSceneService CreateRuntimeCapableService(IConsoleInputSource? inputSource = null)
     {
         var settings = new GameSettings();
+        var stateManager = new StateManager(_fs, settings, NullLogger<StateManager>.Instance);
         return new QteSceneService(
             _fs,
             settings,
             null!,
-            null!,
-            null!,
+            new ImageService(_fs, settings, new LocalizationManager { CurrentLanguage = "ru" }, NullLogger<ImageService>.Instance),
+            new AudioService(_fs, settings, NullLogger<AudioService>.Instance),
             new StateDistributor(_fs, NullLogger<StateDistributor>.Instance),
             new ValidationService(_fs, NullLogger<ValidationService>.Instance),
             new CanonicalStateNormalizer(_fs, NullLogger<CanonicalStateNormalizer>.Instance),
-            new StateManager(_fs, settings, NullLogger<StateManager>.Instance),
-            NullLogger<QteSceneService>.Instance);
+            stateManager,
+            NullLogger<QteSceneService>.Instance,
+            inputSource);
     }
 
     private async Task<SaveLoadService> CreateSaveLoadServiceAsync()
@@ -1477,6 +1616,268 @@ public sealed class QteSceneServiceTests : IDisposable
         Assert.False(Directory.Exists(backupDirectory));
     }
 
+    private async Task<JsonDocument> ReadJsonDocumentAsync(string relativePath)
+    {
+        var json = await _fs.ReadFileAsync(relativePath);
+        Assert.False(string.IsNullOrWhiteSpace(json));
+        return JsonDocument.Parse(json!);
+    }
+
+    private async Task SeedMinimalValidatedMortalStateAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
+        {
+          "soulName": "Тестовая душа",
+          "currentIncarnation": 0,
+          "currentRealm": "Mortal World"
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/core/player_status.json", """
+        {
+          "healthPercentage": "100%",
+          "energyPercentage": "100%",
+          "poisePercentage": "100%",
+          "currentCondition": "Собран",
+          "money": 0
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/meta/abode_power_journal.json", """
+        {
+          "entries": []
+        }
+        """);
+    }
+
+    private static void AssertMetricValue(JsonElement scoreContainer, string metricId, double expectedValue)
+    {
+        var metrics = scoreContainer.TryGetProperty("metrics", out var metricsElement)
+            ? metricsElement
+            : scoreContainer;
+        Assert.Equal(JsonValueKind.Array, metrics.ValueKind);
+
+        var metric = metrics.EnumerateArray().Single(item =>
+            string.Equals(item.GetProperty("id").GetString(), metricId, StringComparison.OrdinalIgnoreCase));
+        Assert.Equal(expectedValue, metric.GetProperty("value").GetDouble());
+    }
+
+    private static QteSceneService.QteOffer BuildScoredBranchChoiceOffer()
+    {
+        var json = """
+        {
+          "qteId": "qte_scored_manor_runtime",
+          "title": "Тихое проникновение",
+          "offerText": "Нужно пройти двор, собрать улики и уйти до тревоги.",
+          "introNarrative": "Фонари качаются над мокрым двором усадьбы.",
+          "startChapterId": "yard",
+          "scoreModel": {
+            "metrics": [
+              { "id": "stealth", "label": "Скрытность", "initial": 50, "min": 0, "max": 100, "visibility": "always" },
+              { "id": "alarm", "label": "Тревога", "initial": 10, "min": 0, "max": 100, "visibility": "always" },
+              { "id": "evidence", "label": "Улики", "initial": 0, "min": 0, "max": 100, "visibility": "final" }
+            ],
+            "rankOrder": ["best", "good", "partial", "bad"],
+            "ranks": [
+              {
+                "id": "best",
+                "label": "Безупречный исход",
+                "summary": "Усадьба осталась спокойной, а улики собраны чисто.",
+                "allOf": [
+                  { "metric": "stealth", "op": ">=", "value": 85 },
+                  { "metric": "alarm", "op": "<=", "value": 20 },
+                  { "metric": "evidence", "op": ">=", "value": 40 }
+                ]
+              },
+              {
+                "id": "good",
+                "label": "Удачный исход",
+                "summary": "Цель достигнута, тревога осталась управляемой.",
+                "allOf": [
+                  { "metric": "stealth", "op": ">=", "value": 55 },
+                  { "metric": "alarm", "op": "<=", "value": 40 },
+                  { "metric": "evidence", "op": ">=", "value": 30 }
+                ]
+              },
+              {
+                "id": "partial",
+                "label": "Неровный исход",
+                "summary": "Победа есть, но следы заметны.",
+                "allOf": [
+                  { "metric": "stealth", "op": ">=", "value": 20 }
+                ]
+              },
+              {
+                "id": "bad",
+                "label": "Провальный исход",
+                "summary": "Сцена завершилась тяжёлыми последствиями.",
+                "fallback": true
+              }
+            ]
+          },
+          "chapters": [
+            {
+              "chapterId": "yard",
+              "title": "Двор",
+              "narrative": "Патруль разворачивается у ворот.",
+              "actions": [
+                {
+                  "actionId": "cross_yard",
+                  "label": "Пройти между фонарями",
+                  "check": {
+                    "type": "BranchChoice",
+                    "baseDifficulty": 2,
+                    "primaryCharacteristic": "dexterity",
+                    "config": { "choiceGrade": "success" }
+                  },
+                  "scoreDeltas": {
+                    "success": [
+                      { "metric": "stealth", "delta": 75 },
+                      { "metric": "alarm", "delta": -20 }
+                    ]
+                  },
+                  "routing": {
+                    "success": { "nextChapterId": "study" },
+                    "partial": { "nextChapterId": "study" },
+                    "fail": { "nextChapterId": "study" }
+                  }
+                }
+              ]
+            },
+            {
+              "chapterId": "study",
+              "title": "Кабинет",
+              "narrative": "В кабинете пахнет мокрой бумагой.",
+              "actions": [
+                {
+                  "actionId": "search_study",
+                  "label": "Обыскать стол",
+                  "check": {
+                    "type": "BranchChoice",
+                    "baseDifficulty": 3,
+                    "primaryCharacteristic": "perception",
+                    "config": { "choiceGrade": "partial" }
+                  },
+                  "scoreDeltas": {
+                    "partial": [
+                      { "metric": "stealth", "delta": -10 },
+                      { "metric": "evidence", "delta": 12 }
+                    ]
+                  },
+                  "routing": {
+                    "success": { "nextChapterId": "roof" },
+                    "partial": { "nextChapterId": "roof" },
+                    "fail": { "nextChapterId": "roof" }
+                  }
+                }
+              ]
+            },
+            {
+              "chapterId": "roof",
+              "title": "Крыша",
+              "narrative": "Над крышей уже слышны шаги.",
+              "actions": [
+                {
+                  "actionId": "escape_roof",
+                  "label": "Уйти по крыше",
+                  "check": {
+                    "type": "BranchChoice",
+                    "baseDifficulty": 4,
+                    "primaryCharacteristic": "speed",
+                    "config": { "choiceGrade": "fail" }
+                  },
+                  "scoreDeltas": {
+                    "fail": [
+                      { "metric": "stealth", "delta": -25 },
+                      { "metric": "alarm", "delta": 35 },
+                      { "metric": "evidence", "delta": 25 }
+                    ]
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "escaped" },
+                    "partial": { "terminalOutcomeId": "escaped" },
+                    "fail": { "terminalOutcomeId": "escaped" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "escaped",
+              "title": "Уход с крыши",
+              "finalNarrative": "Вы уходите по мокрой черепице.",
+              "gmSummary": "Игрок завершил scored QTE.",
+              "responseFragment": {
+                "response": "Вы уходите из усадьбы с уликами.",
+                "experienceGained": 25
+              }
+            }
+          ]
+        }
+        """;
+
+        return JsonSerializer.Deserialize<QteSceneService.QteOffer>(json)!;
+    }
+
+    private static QteSceneService.QteOffer BuildUnscoredBranchChoiceOffer()
+    {
+        return new QteSceneService.QteOffer
+        {
+            QteId = "qte_unscored_gate",
+            Title = "Старые ворота",
+            OfferText = "Нужно открыть ворота.",
+            IntroNarrative = "Засов заедает от ржавчины.",
+            StartChapterId = "gate",
+            Chapters =
+            [
+                new QteSceneService.QteChapter
+                {
+                    ChapterId = "gate",
+                    Title = "Ворота",
+                    Narrative = "Ворота поддаются с трудом.",
+                    Actions =
+                    [
+                        new QteSceneService.QteAction
+                        {
+                            ActionId = "open_gate",
+                            Label = "Открыть ворота",
+                            Check = new QteSceneService.QteCheck
+                            {
+                                Type = "BranchChoice",
+                                BaseDifficulty = 1,
+                                PrimaryCharacteristic = Characteristics.Strength,
+                                Config = new JsonObject { ["choiceGrade"] = "success" }
+                            },
+                            Routing = new QteSceneService.QteRouting
+                            {
+                                Success = new QteSceneService.QteBranchTarget { TerminalOutcomeId = "gate_open" },
+                                Partial = new QteSceneService.QteBranchTarget { TerminalOutcomeId = "gate_open" },
+                                Fail = new QteSceneService.QteBranchTarget { TerminalOutcomeId = "gate_open" }
+                            }
+                        }
+                    ]
+                }
+            ],
+            TerminalOutcomes =
+            [
+                new QteSceneService.QteTerminalOutcome
+                {
+                    OutcomeId = "gate_open",
+                    Title = "Ворота открыты",
+                    FinalNarrative = "Проход свободен.",
+                    GmSummary = "Игрок открыл обычную QTE-сцену.",
+                    ResponseFragment = JsonNode.Parse("""
+                    {
+                      "response": "Ворота открываются.",
+                      "experienceGained": 5
+                    }
+                    """)!.AsObject()
+                }
+            ]
+        };
+    }
+
     private static ConsoleKeyInfo[] RepeatKey(ConsoleKey key, int count)
     {
         var keyChar = key == ConsoleKey.Spacebar ? ' ' : char.ToLowerInvariant(key.ToString()[0]);
@@ -1489,6 +1890,84 @@ public sealed class QteSceneServiceTests : IDisposable
     {
         var keyChar = key == ConsoleKey.Spacebar ? ' ' : char.ToLowerInvariant(key.ToString()[0]);
         return new ConsoleKeyInfo(keyChar, key, false, false, false);
+    }
+
+    private sealed class QueuedConsoleInputSource : IConsoleInputSource
+    {
+        private readonly Queue<ConsoleKeyInfo> _keys;
+
+        public QueuedConsoleInputSource(IEnumerable<ConsoleKeyInfo> keys)
+        {
+            _keys = new Queue<ConsoleKeyInfo>(keys);
+        }
+
+        public bool IsScripted => true;
+
+        public bool KeyAvailable => _keys.Count > 0;
+
+        public ConsoleKeyInfo ReadKey(bool intercept = true) =>
+            _keys.Count > 0 ? _keys.Dequeue() : Key(ConsoleKey.Enter);
+
+        public string? ReadLine() => string.Empty;
+
+        public void AssertCompleted()
+        {
+            Assert.Empty(_keys);
+        }
+    }
+
+    private sealed class QueuedAnsiConsole : IAnsiConsole
+    {
+        private readonly StringWriter _writer = new();
+        private readonly IAnsiConsole _inner;
+
+        public QueuedAnsiConsole(IEnumerable<ConsoleKeyInfo> keys)
+        {
+            _inner = AnsiConsole.Create(new AnsiConsoleSettings
+            {
+                Ansi = AnsiSupport.Yes,
+                ColorSystem = ColorSystemSupport.Standard,
+                Interactive = InteractionSupport.Yes,
+                Out = new AnsiConsoleOutput(_writer)
+            });
+            Input = new QueuedAnsiConsoleInput(keys);
+        }
+
+        public string Output => _writer.ToString();
+
+        public Profile Profile => _inner.Profile;
+
+        public IAnsiConsoleCursor Cursor => _inner.Cursor;
+
+        public IAnsiConsoleInput Input { get; }
+
+        public RenderPipeline Pipeline => _inner.Pipeline;
+
+        public IExclusivityMode ExclusivityMode => _inner.ExclusivityMode;
+
+        public void Clear(bool home)
+        {
+        }
+
+        public void Write(IRenderable renderable) => _inner.Write(renderable);
+    }
+
+    private sealed class QueuedAnsiConsoleInput : IAnsiConsoleInput
+    {
+        private readonly Queue<ConsoleKeyInfo> _keys;
+
+        public QueuedAnsiConsoleInput(IEnumerable<ConsoleKeyInfo> keys)
+        {
+            _keys = new Queue<ConsoleKeyInfo>(keys);
+        }
+
+        public bool IsKeyAvailable() => _keys.Count > 0;
+
+        public ConsoleKeyInfo? ReadKey(bool intercept) =>
+            _keys.Count > 0 ? _keys.Dequeue() : Key(ConsoleKey.Enter);
+
+        public Task<ConsoleKeyInfo?> ReadKeyAsync(bool intercept, CancellationToken cancellationToken) =>
+            Task.FromResult(ReadKey(intercept));
     }
 
     private static string ResolveMashInputGrade(

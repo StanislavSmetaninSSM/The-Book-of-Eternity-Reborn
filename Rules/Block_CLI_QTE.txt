@@ -40,6 +40,7 @@
                       - `declineHint`
                       - `cinematicJustification`
                       - `sceneImagePrompt`
+                      - `scoreModel`
                     - The GM must pre-author the whole scene graph:
                       - `startChapterId`
                       - chapters
@@ -77,6 +78,19 @@
                     - The scene MUST contain at least one terminal outcome reachable through success-routing.
                     - Every `check.primaryCharacteristic` MUST use one canonical lowercase id:
                       - `strength`, `dexterity`, `constitution`, `intelligence`, `wisdom`, `faith`, `attractiveness`, `trade`, `persuasion`, `perception`, `luck`, `speed`
+                    - Optional scoring for long QTE scenes:
+                      - `scoreModel` MAY be used by ordinary GM-authored QTE offers.
+                      - `scoreModel` is generic QTE scoring; it is NOT Daren mode, practice-mode rewards, achievements, Ink Feathers, inventory, gadgets, resources, or any permanent reward system.
+                      - `scoreModel.metrics[]` defines stable lowercase metric ids, player-facing labels, numeric `initial`, `min`, and `max` values, and `visibility`.
+                      - Supported metric `visibility` values are `always`, `final`, and `hidden`.
+                      - `always` metrics may be shown during active play and in the final score summary.
+                      - `final` metrics are shown only in the final score summary.
+                      - `hidden` metrics are not shown in default player UI and must not leak as raw ids/debug text.
+                      - `scoreModel.ranks[]` defines ending ranks. Non-fallback ranks use `allOf` threshold rules with `metric`, `op`, and `value`; exactly one rank MUST use `fallback: true`.
+                      - `scoreModel.rankOrder`, when present, defines deterministic rank evaluation order and MUST include every non-fallback rank id.
+                      - Action-level `scoreDeltas` MAY define `success`, `partial`, and/or `fail` arrays. Each delta entry uses `{ "metric": "...", "delta": number }`.
+                      - The C# client applies only the selected grade's scoreDeltas, clamps metrics to their bounds, records score audit details in QTE history, and computes the final rank at terminal completion.
+                      - Browser clients render scored QTE state read-only and still submit only the existing QTE action grade/result flow; do not add browser-only score authority fields or arbitrary metric-delta posts.
                     - For `BranchChoice`, `check.config.choiceGrade` is MANDATORY and may be ONLY:
                       - `success`
                       - `partial`

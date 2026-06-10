@@ -171,6 +171,28 @@ public sealed class BrowserQteMiniGameContractTests : IDisposable
         Assert.Equal(3, actions["lockpinset"]["checkConfig"]!["maxMistakes"]!.GetValue<int>());
     }
 
+    [Fact]
+    public async Task BuildReadOnlyStateAsync_ProjectsReadOnlyScoreStateWithVisibility()
+    {
+        await _qte.BeginAcceptedSceneAsync(BuildScoredBrowserOffer(), currentTurnNumber: 12);
+
+        var state = await _web.BuildReadOnlyStateAsync();
+        var json = JsonSerializer.Serialize(state, WebJsonOptions);
+        var root = JsonNode.Parse(json)!.AsObject();
+        var scoreState = root["activeScene"]!["scoreState"]!.AsObject();
+        var metrics = scoreState["metrics"]!.AsArray().Select(static item => item!.AsObject()).ToArray();
+
+        var stealth = Assert.Single(metrics, metric => RequiredString(metric, "id", "score metric") == "stealth");
+        Assert.Equal("Скрытность", RequiredString(stealth, "label", "stealth score metric"));
+        Assert.Equal(50d, stealth["value"]!.GetValue<double>());
+        Assert.Equal("always", RequiredString(stealth, "visibility", "stealth score metric"));
+
+        var serializedScore = scoreState.ToJsonString(WebJsonOptions);
+        Assert.DoesNotContain("Улики", serializedScore, StringComparison.Ordinal);
+        Assert.DoesNotContain("secretPressure", serializedScore, StringComparison.Ordinal);
+        Assert.DoesNotContain("scoreDeltas", serializedScore, StringComparison.Ordinal);
+    }
+
     private async Task WriteActiveSceneAsync(IReadOnlyList<QteSceneService.QteAction> actions)
     {
         var state = new QteSceneService.QteRuntimeState
@@ -295,6 +317,83 @@ public sealed class BrowserQteMiniGameContractTests : IDisposable
         }
         """)!.AsObject())
     ];
+
+    private static QteSceneService.QteOffer BuildScoredBrowserOffer()
+    {
+        var json = """
+        {
+          "qteId": "qte_browser_scored_contract",
+          "title": "Тихое проникновение",
+          "offerText": "Нужно пройти двор и не поднять тревогу.",
+          "introNarrative": "Фонари качаются над мокрым двором.",
+          "startChapterId": "start",
+          "scoreModel": {
+            "metrics": [
+              { "id": "stealth", "label": "Скрытность", "initial": 50, "min": 0, "max": 100, "visibility": "always" },
+              { "id": "evidence", "label": "Улики", "initial": 0, "min": 0, "max": 100, "visibility": "final" },
+              { "id": "secretPressure", "label": "Тайное давление", "initial": 0, "min": 0, "max": 100, "visibility": "hidden" }
+            ],
+            "rankOrder": ["good", "bad"],
+            "ranks": [
+              {
+                "id": "good",
+                "label": "Удачный исход",
+                "summary": "Следы остались под контролем.",
+                "allOf": [
+                  { "metric": "stealth", "op": ">=", "value": 40 }
+                ]
+              },
+              {
+                "id": "bad",
+                "label": "Провальный исход",
+                "summary": "Сцена сорвалась.",
+                "fallback": true
+              }
+            ]
+          },
+          "chapters": [
+            {
+              "chapterId": "start",
+              "title": "Двор",
+              "narrative": "Стража приближается.",
+              "actions": [
+                {
+                  "actionId": "cross_yard",
+                  "label": "Пройти двор",
+                  "check": {
+                    "type": "BranchChoice",
+                    "baseDifficulty": 2,
+                    "primaryCharacteristic": "dexterity",
+                    "config": { "choiceGrade": "success" }
+                  },
+                  "scoreDeltas": {
+                    "success": [
+                      { "metric": "stealth", "delta": 10 }
+                    ]
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "done" },
+                    "partial": { "terminalOutcomeId": "done" },
+                    "fail": { "terminalOutcomeId": "done" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "done",
+              "title": "Выход",
+              "finalNarrative": "Вы уходите через сад.",
+              "gmSummary": "QTE завершена.",
+              "responseFragment": { "response": "Вы уходите.", "experienceGained": 5 }
+            }
+          ]
+        }
+        """;
+
+        return JsonSerializer.Deserialize<QteSceneService.QteOffer>(json)!;
+    }
 
     private static QteSceneService.QteAction BuildAction(
         string actionId,

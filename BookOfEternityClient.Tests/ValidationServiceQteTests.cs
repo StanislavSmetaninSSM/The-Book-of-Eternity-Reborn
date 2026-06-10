@@ -194,6 +194,43 @@ public sealed class ValidationServiceQteTests : IDisposable
             issue.Code?.StartsWith("qte_lock_pin_set_", StringComparison.OrdinalIgnoreCase) == true);
     }
 
+    [Fact]
+    public async Task ValidateAcceptedTurnQteOfferAsync_AcceptsValidScoreModel()
+    {
+        await WriteScoredQteOfferAsync();
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code?.StartsWith("qte_score_", StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    [Theory]
+    [InlineData("duplicateMetricId", "qte_score_metric_duplicate")]
+    [InlineData("invalidMetricId", "qte_score_metric_id_invalid")]
+    [InlineData("invalidMetricBounds", "qte_score_metric_invalid_bounds")]
+    [InlineData("initialOutsideBounds", "qte_score_metric_initial_out_of_bounds")]
+    [InlineData("invalidVisibility", "qte_score_metric_visibility_invalid")]
+    [InlineData("unknownDeltaMetric", "qte_score_delta_unknown_metric")]
+    [InlineData("invalidGradeDeltaKey", "qte_score_delta_invalid_grade")]
+    [InlineData("invalidDeltaValue", "qte_score_delta_invalid_delta")]
+    [InlineData("unknownThresholdMetric", "qte_score_rank_threshold_unknown_metric")]
+    [InlineData("impossibleThreshold", "qte_score_rank_threshold_unsatisfiable")]
+    [InlineData("duplicateRankId", "qte_score_rank_duplicate")]
+    [InlineData("missingFallbackRank", "qte_score_rank_missing_fallback")]
+    [InlineData("duplicateRankOrderId", "qte_score_rank_order_duplicate")]
+    [InlineData("unknownRankOrderId", "qte_score_rank_order_unknown_rank")]
+    public async Task ValidateAcceptedTurnQteOfferAsync_RejectsMalformedScoreModel(string mutation, string expectedCode)
+    {
+        await WriteScoredQteOfferAsync(mutation);
+
+        var issues = await _validator.ValidateAcceptedTurnQteOfferAsync();
+
+        Assert.Contains(issues, issue =>
+            string.Equals(issue.Code, expectedCode, StringComparison.OrdinalIgnoreCase) &&
+            issue.FilePath.Contains("scoreModel", StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("emptyKeys", "qte_mash_input_keys_empty")]
     [InlineData("unsupportedKey", "qte_mash_input_key_invalid")]
@@ -614,6 +651,197 @@ public sealed class ValidationServiceQteTests : IDisposable
             case "failureImpossibleMistakes":
                 config["sequenceLength"] = 4;
                 config["allowedMistakes"] = 4;
+                break;
+        }
+
+        await _fs.WriteFileAtomicAsync(QteSceneService.QteOfferPath, offer.ToJsonString());
+    }
+
+    private async Task WriteScoredQteOfferAsync(string? mutation = null)
+    {
+        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json", """
+        {
+          "qteEventsEnabled": true
+        }
+        """);
+
+        var offer = JsonNode.Parse("""
+        {
+          "qteId": "qte_scored_manor",
+          "title": "Тихое проникновение",
+          "offerText": "Нужно пройти двор, собрать улики и уйти до тревоги.",
+          "introNarrative": "Фонари качаются над мокрым двором усадьбы.",
+          "startChapterId": "yard",
+          "scoreModel": {
+            "metrics": [
+              { "id": "stealth", "label": "Скрытность", "initial": 50, "min": 0, "max": 100, "visibility": "always" },
+              { "id": "evidence", "label": "Улики", "initial": 0, "min": 0, "max": 100, "visibility": "final" },
+              { "id": "alarm", "label": "Тревога", "initial": 10, "min": 0, "max": 100, "visibility": "always" }
+            ],
+            "rankOrder": ["best", "good", "partial", "bad"],
+            "ranks": [
+              {
+                "id": "best",
+                "label": "Безупречный исход",
+                "summary": "Усадьба осталась спокойной, а улики собраны чисто.",
+                "allOf": [
+                  { "metric": "stealth", "op": ">=", "value": 85 },
+                  { "metric": "alarm", "op": "<=", "value": 20 }
+                ]
+              },
+              {
+                "id": "good",
+                "label": "Удачный исход",
+                "summary": "Цель достигнута, тревога осталась управляемой.",
+                "allOf": [
+                  { "metric": "stealth", "op": ">=", "value": 55 },
+                  { "metric": "alarm", "op": "<=", "value": 50 }
+                ]
+              },
+              {
+                "id": "partial",
+                "label": "Неровный исход",
+                "summary": "Победа есть, но следы заметны.",
+                "allOf": [
+                  { "metric": "stealth", "op": ">=", "value": 20 }
+                ]
+              },
+              {
+                "id": "bad",
+                "label": "Провальный исход",
+                "summary": "Сцена завершилась тяжёлыми последствиями.",
+                "fallback": true
+              }
+            ]
+          },
+          "chapters": [
+            {
+              "chapterId": "yard",
+              "title": "Двор",
+              "narrative": "Патруль разворачивается у ворот.",
+              "actions": [
+                {
+                  "actionId": "cross_yard",
+                  "label": "Пройти между фонарями",
+                  "check": {
+                    "type": "BranchChoice",
+                    "baseDifficulty": 2,
+                    "primaryCharacteristic": "dexterity",
+                    "config": { "choiceGrade": "success" }
+                  },
+                  "scoreDeltas": {
+                    "success": [
+                      { "metric": "stealth", "delta": 25 },
+                      { "metric": "alarm", "delta": -10 }
+                    ],
+                    "partial": [
+                      { "metric": "stealth", "delta": -5 },
+                      { "metric": "evidence", "delta": 5 }
+                    ],
+                    "fail": [
+                      { "metric": "stealth", "delta": -20 },
+                      { "metric": "alarm", "delta": 30 }
+                    ]
+                  },
+                  "routing": {
+                    "success": { "terminalOutcomeId": "clean_exit" },
+                    "partial": { "terminalOutcomeId": "narrow_exit" },
+                    "fail": { "terminalOutcomeId": "caught" }
+                  }
+                }
+              ]
+            }
+          ],
+          "terminalOutcomes": [
+            {
+              "outcomeId": "clean_exit",
+              "title": "Чистый уход",
+              "finalNarrative": "Вы исчезаете до смены караула.",
+              "gmSummary": "Игрок прошёл scored QTE с успехом.",
+              "responseFragment": {
+                "response": "Вы уходите из усадьбы с уликами.",
+                "experienceGained": 25
+              }
+            },
+            {
+              "outcomeId": "narrow_exit",
+              "title": "Уход с помехами",
+              "finalNarrative": "Вы выбираетесь через мокрый сад.",
+              "gmSummary": "Игрок прошёл scored QTE частично.",
+              "responseFragment": {
+                "response": "Вы уходите, но оставляете следы.",
+                "experienceGained": 5
+              }
+            },
+            {
+              "outcomeId": "caught",
+              "title": "Поднятая тревога",
+              "finalNarrative": "Патруль замечает движение.",
+              "gmSummary": "Игрок провалил scored QTE.",
+              "responseFragment": {
+                "response": "Тревога поднята."
+              }
+            }
+          ]
+        }
+        """)!.AsObject();
+
+        var scoreModel = offer["scoreModel"]!.AsObject();
+        var metrics = scoreModel["metrics"]!.AsArray();
+        var ranks = scoreModel["ranks"]!.AsArray();
+        var action = offer["chapters"]![0]!["actions"]![0]!.AsObject();
+        var scoreDeltas = action["scoreDeltas"]!.AsObject();
+
+        switch (mutation)
+        {
+            case "duplicateMetricId":
+                metrics.Add(JsonNode.Parse("""
+                { "id": "stealth", "label": "Повтор", "initial": 0, "min": 0, "max": 10, "visibility": "always" }
+                """));
+                break;
+            case "invalidMetricId":
+                metrics[0]!["id"] = "bad id";
+                break;
+            case "invalidMetricBounds":
+                metrics[0]!["min"] = 100;
+                metrics[0]!["max"] = 0;
+                break;
+            case "initialOutsideBounds":
+                metrics[0]!["initial"] = 120;
+                break;
+            case "invalidVisibility":
+                metrics[0]!["visibility"] = "debug";
+                break;
+            case "unknownDeltaMetric":
+                scoreDeltas["success"]![0]!["metric"] = "ghost";
+                break;
+            case "invalidGradeDeltaKey":
+                scoreDeltas["critical"] = new JsonArray(JsonNode.Parse("""{ "metric": "stealth", "delta": 1 }"""));
+                break;
+            case "invalidDeltaValue":
+                scoreDeltas["success"]![0]!["delta"] = "many";
+                break;
+            case "unknownThresholdMetric":
+                ranks[0]!["allOf"]![0]!["metric"] = "ghost";
+                break;
+            case "impossibleThreshold":
+                ranks[0]!["allOf"]![0]!["op"] = ">";
+                ranks[0]!["allOf"]![0]!["value"] = 100;
+                break;
+            case "duplicateRankId":
+                ranks.Add(JsonNode.Parse("""
+                { "id": "good", "label": "Повтор", "summary": "Повтор.", "allOf": [{ "metric": "stealth", "op": ">=", "value": 1 }] }
+                """));
+                break;
+            case "missingFallbackRank":
+                ranks[3]!.AsObject().Remove("fallback");
+                ranks[3]!["allOf"] = new JsonArray(JsonNode.Parse("""{ "metric": "stealth", "op": ">=", "value": 0 }"""));
+                break;
+            case "duplicateRankOrderId":
+                scoreModel["rankOrder"] = new JsonArray("best", "good", "good", "partial", "bad");
+                break;
+            case "unknownRankOrderId":
+                scoreModel["rankOrder"] = new JsonArray("best", "legendary", "good", "partial", "bad");
                 break;
         }
 

@@ -148,6 +148,48 @@ public sealed class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void ScoredQteContract_IsDocumentedForGmAndPlayers()
+    {
+        var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");
+        var qteExample = ReadRepoFile("Examples", "E_CLI_QTE_Offer.txt");
+        var apiSpec = ReadRepoFile("CLI_API_Specification.md");
+
+        foreach (var requiredText in new[]
+        {
+            "scoreModel",
+            "metrics",
+            "ranks",
+            "rankOrder",
+            "thresholds",
+            "visibility",
+            "always",
+            "final",
+            "hidden",
+            "scoreDeltas",
+            "final score summary",
+            "Browser clients render scored QTE state read-only"
+        })
+        {
+            Assert.Contains(requiredText, qteRules, StringComparison.Ordinal);
+            Assert.Contains(requiredText, apiSpec, StringComparison.Ordinal);
+        }
+
+        foreach (var requiredText in new[]
+        {
+            "\"scoreModel\"",
+            "\"scoreDeltas\"",
+            "\"visibility\": \"always\"",
+            "\"visibility\": \"final\"",
+            "\"rankOrder\"",
+            "\"id\": \"silver\"",
+            "\"metric\": \"momentum\""
+        })
+        {
+            Assert.Contains(requiredText, qteExample, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void PatternMemoryQteContract_IsDocumentedForGmAndPlayers()
     {
         var qteRules = ReadRepoFile("Rules", "Block_CLI_QTE.txt");

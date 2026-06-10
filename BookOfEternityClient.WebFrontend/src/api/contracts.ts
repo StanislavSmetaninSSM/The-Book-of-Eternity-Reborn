@@ -1058,6 +1058,7 @@ export interface QteWebActiveSceneDto {
   title: string;
   acceptedAtTurn: number;
   currentChapter: QteWebChapterDto | null;
+  scoreState: QteWebScoreStateDto | null;
 }
 
 export interface QteWebChapterDto {
@@ -1093,4 +1094,29 @@ export interface QteWebCompletionDto {
   qteId: string;
   outcomeId: string;
   summary: string;
+  scoreSummary: QteWebScoreSummaryDto | null;
+}
+
+export interface QteWebScoreStateDto {
+  metrics: QteWebScoreMetricDto[];
+}
+
+export interface QteWebScoreSummaryDto {
+  rank: QteWebScoreRankDto | null;
+  metrics: QteWebScoreMetricDto[];
+}
+
+export interface QteWebScoreRankDto {
+  id: string;
+  label: string;
+  summary: string | null;
+}
+
+export interface QteWebScoreMetricDto {
+  id: string;
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  visibility: 'always' | 'final' | 'hidden' | string;
 }
