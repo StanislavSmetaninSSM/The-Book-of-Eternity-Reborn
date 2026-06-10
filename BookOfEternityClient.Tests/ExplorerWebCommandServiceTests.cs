@@ -82,6 +82,28 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         Assert.DoesNotContain("pending_turn_snapshot", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData("/квесты", "Печать с крыльями")]
+    [InlineData("/навыки", "Чувство магических потоков")]
+    [InlineData("/новости_мира", "Письмо появилось ночью")]
+    [InlineData("/чужие_нити", "Лунный претендент")]
+    [InlineData("/погода", "08:15")]
+    [InlineData("/эффекты", "Магический резонанс")]
+    [InlineData("/бой", "Теневой посыльный")]
+    [InlineData("/доступ_к_хранилищам", "Приватный письменный стол")]
+    [InlineData("/взаимодействия", "странной печати")]
+    public async Task ExecuteAsync_MortalReadOnlySummaries_ReadCanonicalStateKeys(string command, string expectedText)
+    {
+        await SeedCanonicalMortalSummaryFilesAsync();
+
+        var result = await _service.ExecuteAsync(new ExplorerWebCommandRequest(command));
+
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        var text = CollectBlockText(result.Blocks);
+        Assert.Contains(expectedText, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Данные ещё не созданы", text, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void ConsoleNpcInspectionSource_UsesJournalFallbackProjection()
     {
@@ -1604,7 +1626,7 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
         var table = Assert.Single(result.Blocks.OfType<UiTableBlock>());
         Assert.Equal(new[] { "Раздел", "Состояние" }, table.Columns);
         var row = Assert.Single(table.Rows);
-        Assert.Equal(["NPC", "1"], row.Cells);
+        Assert.Equal(["NPC", "1: Мирра"], row.Cells);
         Assert.DoesNotContain(table.Rows, static candidate => candidate.Cells.Any(static cell => cell.Contains("отсутствует", StringComparison.OrdinalIgnoreCase)));
         Assert.DoesNotContain(table.Rows.SelectMany(static candidate => candidate.Cells), static cell => cell.Contains("game_state/", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(result.Blocks.OfType<UiRawJsonBlock>(), static raw => raw.Title == "Полный JSON game_state/npcs/npc_core.json");
@@ -2657,6 +2679,174 @@ public sealed class ExplorerWebCommandServiceTests : IDisposable
           "interactions": [
             { "interactionId": "int_1", "summary": "Игроки встретились на тракте." }
           ]
+        }
+        """);
+    }
+
+    private async Task SeedCanonicalMortalSummaryFilesAsync()
+    {
+        await _fs.WriteFileAtomicAsync("game_state/quests/regular_quests.json", """
+        {
+          "quests": [
+            {
+              "questId": "quest_valmont_letter",
+              "questName": "Печать с крыльями и полумесяцем",
+              "status": "Active"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_active.json", """
+        {
+          "activeSkillChanges": [
+            {
+              "skillId": "skill_arcane_sense",
+              "skillName": "Чувство магических потоков",
+              "skillDescription": "Видит слабые печати."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/skills_passive.json", """
+        {
+          "passiveSkillChanges": [
+            {
+              "skillId": "skill_valmont_arcana",
+              "skillName": "Аркановедение Вальмонтов",
+              "masteryLevel": 2
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_events.json", """
+        {
+          "worldEventsLog": [
+            {
+              "eventId": "world_event_valmont_letter",
+              "title": "Письмо появилось ночью",
+              "description": "В покоях найдено письмо с крыльями и полумесяцем."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_flags.json", """
+        {
+          "worldStateFlags": [
+            {
+              "flagId": "flag_valmont_glove_awakened",
+              "displayName": "Руническая перчатка пробудилась",
+              "value": true
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/rival_soul_arcs.json", """
+        {
+          "arcs": [
+            {
+              "arcId": "rival_arc_moonlit_claimant",
+              "objective": "Соперник ищет ту же руническую перчатку.",
+              "rivalSoul": {
+                "rivalSoulId": "rival_soul_moonlit_claimant",
+                "displayNameOrMoniker": "Лунный претендент"
+              }
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/world_time.json", """
+        {
+          "year": 124,
+          "monthName": "Month of Beginnings",
+          "dayOfMonth": 1,
+          "timeOfDay": "08:15",
+          "currentTimeInMinutes": 495
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/world/weather.json", """
+        {
+          "tendency": "NO_CHANGE",
+          "description": "Утренний туман рассеивается."
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/player/effects.json", """
+        {
+          "activeEffects": [
+            {
+              "name": "Магический резонанс",
+              "effectDescription": "Руническая перчатка подсвечивает следы магии.",
+              "duration": "Пока перчатка экипирована"
+            }
+          ],
+          "wounds": [],
+          "temporaryConditions": [
+            {
+              "name": "Головная боль после тяжёлых снов",
+              "effectDescription": "-1 к Восприятию до полудня.",
+              "duration": "До 12:00"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/combat/enemies.json", """
+        {
+          "enemiesData": [
+            {
+              "enemyName": "Теневой посыльный",
+              "description": "Слабый, но ловкий противник."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/combat/allies.json", """
+        {
+          "alliesData": [
+            {
+              "allyName": "Дворецкий Мариус",
+              "description": "Союзник поддержки."
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/combat/combat_log.json", """
+        {
+          "combat_log_markdown": "Последняя стычка: Ночной визитёр"
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/misc/storage_access.json", """
+        {
+          "grantStorageAccess": [
+            {
+              "storageId": "storage_valmont_private_desk",
+              "storageName": "Приватный письменный стол",
+              "accessLevel": "owner"
+            }
+          ]
+        }
+        """);
+
+        await _fs.WriteFileAtomicAsync("game_state/misc/player_interactions.json", """
+        {
+          "otherPlayersInteractions": {
+            "player_test_companion": [
+              {
+                "message": "Тестовый союзник оставил заметку о странной печати.",
+                "visibleToPlayer": true
+              }
+            ]
+          }
         }
         """);
     }

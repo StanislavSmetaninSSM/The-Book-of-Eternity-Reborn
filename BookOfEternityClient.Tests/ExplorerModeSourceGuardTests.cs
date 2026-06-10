@@ -159,6 +159,14 @@ public sealed class ExplorerModeSourceGuardTests
     }
 
     [Fact]
+    public void ExplorerMode_DynamicBracketLabels_MustEscapeLiteralSquareBrackets()
+    {
+        var explorerMode = ReadExplorerModeSource();
+
+        Assert.DoesNotMatch(@"\[[^\]]+\]\[\{Markup\.Escape\(", explorerMode);
+    }
+
+    [Fact]
     public void GameInterface_MortalHudBars_MustUseFixedMetricColumnsForPercentAlignment()
     {
         var source = ReadUiSourceFile("GameInterface.cs");

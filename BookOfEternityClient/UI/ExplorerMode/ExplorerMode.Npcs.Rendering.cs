@@ -499,8 +499,8 @@ public partial class ExplorerMode
             var turn = GetStr(entry, "turn", GetStr(entry, "turnNumber", ""));
             var topic = GetStr(entry, "topic", "");
 
-            var turnTag = !string.IsNullOrEmpty(turn) ? $"[dim]Ход {turn}:[/] " : "";
-            var topicTag = !string.IsNullOrEmpty(topic) ? $"[steelblue1][{Markup.Escape(topic)}][/] " : "";
+            var turnTag = !string.IsNullOrEmpty(turn) ? $"[dim]Ход {Markup.Escape(turn)}:[/] " : "";
+            var topicTag = !string.IsNullOrEmpty(topic) ? $"[steelblue1]{Markup.Escape($"[{topic}]")}[/] " : "";
             
             if (!string.IsNullOrEmpty(thought))
                 lines.Add($"    {turnTag}{topicTag}[italic]«{Markup.Escape(thought)}»[/]");

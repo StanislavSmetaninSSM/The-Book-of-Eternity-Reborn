@@ -465,16 +465,27 @@ public partial class ExplorerMode
                 lines.Add(""); lines.Add("  [bold]📊 Структурные бонусы:[/]");
                 foreach (var b in sb.EnumerateArray())
                 {
-                    var bType = GetStr(b, "bonusType", GetStr(b, "type", "?"));
-                    var bTarget = GetStr(b, "target", "");
+                    var bSummary = GetStr(b, "summary", "");
+                    var bType = GetStr(b, "bonusType", GetStr(b, "type", GetStr(b, "targetType", "")));
+                    var bTarget = GetStr(b, "target",
+                        GetStr(b, "skill",
+                            GetStr(b, "resource",
+                                GetStr(b, "characteristic",
+                                    GetStr(b, "stat", "")))));
                     var bValueType = GetStr(b, "valueType", "");
                     var bVal = GetStr(b, "value", "");
                     var bApp = GetStr(b, "application", "");
                     var bCond = GetStr(b, "condition", "");
-                    var bonusLine = $"    • [green]{Markup.Escape(bType)}[/]";
-                    if (!string.IsNullOrEmpty(bTarget)) bonusLine += $" → {Markup.Escape(bTarget)}";
-                    if (!string.IsNullOrEmpty(bVal)) bonusLine += $": [white]{Markup.Escape(bVal)}[/]";
-                    if (!string.IsNullOrEmpty(bValueType)) bonusLine += $" [dim][{Markup.Escape(bValueType)}][/]";
+                    var bonusLine = string.IsNullOrEmpty(bSummary)
+                        ? $"    • [green]{Markup.Escape(string.IsNullOrEmpty(bType) ? "Бонус" : bType)}[/]"
+                        : $"    • [green]{Markup.Escape(bSummary)}[/]";
+                    if (string.IsNullOrEmpty(bSummary))
+                    {
+                        if (!string.IsNullOrEmpty(bTarget)) bonusLine += $" → {Markup.Escape(bTarget)}";
+                        if (!string.IsNullOrEmpty(bVal)) bonusLine += $": [white]{Markup.Escape(bVal)}[/]";
+                    }
+                    if (!string.IsNullOrEmpty(bValueType)) bonusLine += $" [dim]{Markup.Escape($"[{bValueType}]")}[/]";
+                    if (!string.IsNullOrEmpty(bSummary) && !string.IsNullOrEmpty(bType)) bonusLine += $" [dim]({Markup.Escape(bType)})[/]";
                     if (!string.IsNullOrEmpty(bApp) && bApp != "Permanent") bonusLine += $" [dim]({Markup.Escape(bApp)})[/]";
                     if (!string.IsNullOrEmpty(bCond)) bonusLine += $" [dim italic]если: {Markup.Escape(bCond)}[/]";
                     lines.Add(bonusLine);

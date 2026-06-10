@@ -100,10 +100,10 @@ public static class ExplorerMortalWorldCommandResultBuilder
             CommandKind.Inventory => await BuildInventory(normalizedCommand, fs),
             CommandKind.Npcs => await BuildNpcs(normalizedCommand, fs),
             CommandKind.Quests => await BuildBundle(normalizedCommand, fs, "Квесты", [
-                new("game_state/quests/regular_quests.json", "activeQuests", "Активных"),
+                new("game_state/quests/regular_quests.json", "quests|activeQuests", "Активных"),
                 new("game_state/quests/regular_quests.json", "completedQuests", "Завершённых"),
-                new("game_state/quests/quest_history.json", "entries", "Исторических записей"),
-                new("game_state/quests/plot_outline.json", "entries", "Сюжетных записей")
+                new("game_state/quests/quest_history.json", "questHistory|entries", "Исторических записей"),
+                new("game_state/quests/plot_outline.json", "plotOutline|entries", "Сюжетных записей")
             ]),
             CommandKind.Map => await BuildMap(normalizedCommand, fs),
             CommandKind.CurrentLocation => await BuildBundle(normalizedCommand, fs, "Где я", [
@@ -118,13 +118,13 @@ public static class ExplorerMortalWorldCommandResultBuilder
                 new("game_state/factions/faction_custom.json", "entries", "Особых состояний")
             ]),
             CommandKind.Skills => await BuildBundle(normalizedCommand, fs, "Навыки", [
-                new("game_state/player/skills_active.json", "skills", "Активных"),
-                new("game_state/player/skills_passive.json", "skills", "Пассивных")
+                new("game_state/player/skills_active.json", "activeSkillChanges|skills", "Активных"),
+                new("game_state/player/skills_passive.json", "passiveSkillChanges|skills", "Пассивных")
             ]),
             CommandKind.Stats => await BuildStats(normalizedCommand, fs, stateManager),
             CommandKind.WorldNews => await BuildBundle(normalizedCommand, fs, "Новости мира", [
-                new("game_state/world/world_events.json", "events", "Событий"),
-                new("game_state/world/world_flags.json", "flags", "Флагов"),
+                new("game_state/world/world_events.json", "worldEventsLog|events", "Событий"),
+                new("game_state/world/world_flags.json", "worldStateFlags|flags", "Флагов"),
                 new("game_state/world/progression.json", "entries", "Записей прогресса")
             ]),
             CommandKind.RivalThreads => await BuildBundle(normalizedCommand, fs, "Чужие нити", [
@@ -141,22 +141,22 @@ public static class ExplorerMortalWorldCommandResultBuilder
             ]),
             CommandKind.Effects => await BuildEffects(normalizedCommand, fs, stateManager),
             CommandKind.Combat => await BuildBundle(normalizedCommand, fs, "Бой", [
-                new("game_state/combat/enemies.json", "enemies", "Врагов"),
-                new("game_state/combat/allies.json", "allies", "Союзников"),
-                new("game_state/combat/combat_log.json", "entries", "Записей журнала")
+                new("game_state/combat/enemies.json", "enemiesData|enemies", "Врагов"),
+                new("game_state/combat/allies.json", "alliesData|allies", "Союзников"),
+                new("game_state/combat/combat_log.json", "combat_log_markdown|entries", "Записей журнала")
             ]),
             CommandKind.Weather => await BuildBundle(normalizedCommand, fs, "Время и погода", [
-                new("game_state/world/world_time.json", "currentTime", "Время"),
-                new("game_state/world/weather.json", "currentState", "Погода"),
+                new("game_state/world/world_time.json", "timeOfDay|currentTime", "Время"),
+                new("game_state/world/weather.json", "tendency|currentState", "Погода"),
                 new("game_state/world/weather.json", "description", "Описание")
             ]),
             CommandKind.Books => await BuildBooks(normalizedCommand, fs),
             CommandKind.StorageAccess => await BuildBundle(normalizedCommand, fs, "Доступ к хранилищам", [
-                new("game_state/misc/storage_access.json", "storages", "Хранилищ"),
+                new("game_state/misc/storage_access.json", "grantStorageAccess|storages", "Хранилищ"),
                 new("game_state/misc/storage_access.json", "entries", "Записей")
             ]),
             CommandKind.Interactions => await BuildBundle(normalizedCommand, fs, "Взаимодействия игроков", [
-                new("game_state/misc/player_interactions.json", "interactions", "Взаимодействий"),
+                new("game_state/misc/player_interactions.json", "otherPlayersInteractions|interactions", "Взаимодействий"),
                 new("game_state/misc/player_interactions.json", "entries", "Записей")
             ]),
             _ => null
@@ -250,6 +250,17 @@ public static class ExplorerMortalWorldCommandResultBuilder
             });
         }
 
+        var detailRows = BuildEffectDetailRows(read.Node);
+        if (detailRows.Count > 0)
+        {
+            blocks.Add(new UiTableBlock
+            {
+                Title = "Подробности эффектов",
+                Columns = ["Раздел", "Название", "Описание", "Длительность"],
+                Rows = detailRows
+            });
+        }
+
         if (!HasVisibleStructuredEffectDetails(read.Node))
             blocks.AddRange(BuildMortalStatusFallbackBlocks(stateManager.CurrentState.PlayerStatus));
 
@@ -298,6 +309,53 @@ public static class ExplorerMortalWorldCommandResultBuilder
         }
 
         return rows;
+    }
+
+    private static List<UiTableRow> BuildEffectDetailRows(JsonNode? node)
+    {
+        var rows = new List<UiTableRow>();
+        if (node is JsonArray array)
+        {
+            AddEffectDetailRows(rows, "Активный эффект", array);
+            return rows;
+        }
+
+        if (node is not JsonObject root)
+            return rows;
+
+        AddEffectDetailRows(rows, "Активный эффект", root["activeEffects"] as JsonArray);
+        AddEffectDetailRows(rows, "Рана", root["wounds"] as JsonArray);
+        AddEffectDetailRows(rows, "Временное состояние", root["temporaryConditions"] as JsonArray);
+        return rows;
+    }
+
+    private static void AddEffectDetailRows(List<UiTableRow> rows, string section, JsonArray? effects)
+    {
+        if (effects == null)
+            return;
+
+        foreach (var effect in effects.OfType<JsonObject>())
+        {
+            var name = FirstNonEmpty(
+                GetNodeString(effect, "name"),
+                GetNodeString(effect, "effectName"),
+                GetNodeString(effect, "title"),
+                "Безымянный эффект");
+            var description = FirstNonEmpty(
+                GetNodeString(effect, "effectDescription"),
+                GetNodeString(effect, "description"),
+                GetNodeString(effect, "source"),
+                "не указано");
+            var duration = FirstNonEmpty(
+                GetNodeString(effect, "duration"),
+                GetNodeString(effect, "expiresAt"),
+                "не указано");
+
+            rows.Add(new UiTableRow
+            {
+                Cells = [section, name, description, duration]
+            });
+        }
     }
 
     private static string DescribeEffectsNode(JsonNode? node) => node switch
@@ -436,14 +494,104 @@ public static class ExplorerMortalWorldCommandResultBuilder
         if (read.Node == null)
             return read.FileExists ? "повреждён" : "отсутствует";
 
-        var node = read.Node[propertyName];
+        var node = ResolveSpecNode(read.Node, propertyName);
+        if (node == null)
+            return "отсутствует";
+
+        return DescribeSummaryNode(node);
+    }
+
+    private static JsonNode? ResolveSpecNode(JsonNode root, string propertyName)
+    {
+        if (root is not JsonObject obj)
+            return null;
+
+        foreach (var candidate in propertyName.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (obj.TryGetPropertyValue(candidate, out var value) && value != null)
+                return value;
+        }
+
+        return null;
+    }
+
+    private static string DescribeSummaryNode(JsonNode node)
+    {
         return node switch
         {
-            JsonArray array => array.Count.ToString(),
-            JsonObject obj => $"{obj.Count} полей",
+            JsonArray array => DescribeSummaryArray(array),
+            JsonObject obj => DescribeSummaryObject(obj),
             JsonValue value when TryGetScalarString(value, out var text) => EmptyFallback(text),
             _ => "найдено"
         };
+    }
+
+    private static string DescribeSummaryArray(JsonArray array)
+    {
+        if (array.Count == 0)
+            return "0";
+
+        var preview = string.Join(", ", array
+            .Take(3)
+            .Select(PreviewSummaryNode)
+            .Where(static value => !string.IsNullOrWhiteSpace(value)));
+        return string.IsNullOrWhiteSpace(preview) ? array.Count.ToString() : $"{array.Count}: {preview}";
+    }
+
+    private static string DescribeSummaryObject(JsonObject obj)
+    {
+        if (obj.Count == 0)
+            return "0 полей";
+
+        var preview = PreviewSummaryNode(obj);
+        return string.IsNullOrWhiteSpace(preview) ? $"{obj.Count} полей" : $"{obj.Count} полей: {preview}";
+    }
+
+    private static string PreviewSummaryNode(JsonNode? node)
+    {
+        if (node == null)
+            return string.Empty;
+
+        if (node is JsonArray array)
+        {
+            return string.Join(", ", array
+                .Take(3)
+                .Select(PreviewSummaryNode)
+                .Where(static value => !string.IsNullOrWhiteSpace(value)));
+        }
+
+        if (node is JsonObject obj)
+        {
+            var direct = FirstNonEmpty(
+                GetNodeString(obj, "title"),
+                GetNodeString(obj, "questName"),
+                GetNodeString(obj, "skillName"),
+                GetNodeString(obj, "displayName"),
+                GetNodeString(obj, "displayNameOrMoniker"),
+                GetNodeString(obj["rivalSoul"], "displayNameOrMoniker"),
+                GetNodeString(obj["sponsorGuardianRef"], "displayName"),
+                GetNodeString(obj, "name"),
+                GetNodeString(obj, "enemyName"),
+                GetNodeString(obj, "allyName"),
+                GetNodeString(obj, "storageName"),
+                GetNodeString(obj, "message"),
+                GetNodeString(obj, "summary"),
+                GetNodeString(obj, "description"),
+                GetNodeString(obj, "objective"));
+            if (!string.IsNullOrWhiteSpace(direct))
+                return direct;
+
+            foreach (var child in obj)
+            {
+                var nested = PreviewSummaryNode(child.Value);
+                if (!string.IsNullOrWhiteSpace(nested))
+                    return nested;
+            }
+
+            return string.Empty;
+        }
+
+        return TryGetScalarString(node, out var text) ? EmptyFallback(text) : string.Empty;
     }
 
     private static async Task<ExplorerCommandResult> BuildLocations(string command, FileSystemManager fs)

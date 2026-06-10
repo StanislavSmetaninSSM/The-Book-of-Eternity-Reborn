@@ -386,7 +386,7 @@ public partial class ExplorerMode
             if (string.IsNullOrEmpty(bDesc))
                 line = $"    ✦ [cyan]{Markup.Escape(bType)}: {Markup.Escape(bTarget)} +{Markup.Escape(bVal)}[/]";
             if (!string.IsNullOrEmpty(bValueType))
-                line += $" [dim][{Markup.Escape(bValueType)}][/]";
+                line += $" [dim]{Markup.Escape($"[{bValueType}]")}[/]";
             if (!string.IsNullOrEmpty(bApp) && bApp.ToLowerInvariant() == "conditional" && !string.IsNullOrEmpty(bCond))
                 line += $" [dim](если: {Markup.Escape(bCond)})[/]";
             lines.Add(line);

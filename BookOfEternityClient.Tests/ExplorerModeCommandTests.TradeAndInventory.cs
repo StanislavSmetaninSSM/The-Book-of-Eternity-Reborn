@@ -160,6 +160,49 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     }
 
     [Fact]
+    public async Task TryProcessCommand_InventoryDetail_StructuredBonusValueTypeRendersAsLiteralText()
+    {
+        await SeedMortalStateAsync();
+        await WriteJsonAsync("game_state/inventory/items.json", new
+        {
+            items = new[]
+            {
+                new
+                {
+                    itemId = "runic_glove_1",
+                    name = "Руническая перчатка",
+                    description = "Узоры мерцают тусклым золотом.",
+                    type = "Артефакт",
+                    count = 1,
+                    structuredBonuses = new[]
+                    {
+                        new
+                        {
+                            targetType = "skill",
+                            skill = "Чувство магических потоков",
+                            valueType = "Flat",
+                            value = 2,
+                            source = "Руническая перчатка",
+                            summary = "Чувство магических потоков +2"
+                        }
+                    }
+                }
+            }
+        });
+        await _stateManager.RefreshGameStateAsync();
+
+        var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/инв"));
+
+        Assert.Null(ex);
+        AssertNoHiddenExplorerErrors("inventory_structured_bonus_value_type");
+        var renderedText = ExtractRenderedText();
+        Assert.DoesNotContain("поврежд", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Структурные бонусы", renderedText, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Чувство магических потоков +2", renderedText, StringComparison.Ordinal);
+        Assert.Contains("[Flat]", renderedText, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task TryProcessCommand_NpcPromptChoices_EscapeBracketBearingDynamicLabels()
     {
         await SeedMortalStateAsync();
