@@ -38,7 +38,7 @@
 
 ## Phase 4: Hermes-Owned Review, PR, Merge, Closure
 
-- [ ] T022 Independent review validates #957 acceptance, #955/#956/#919 boundaries, shared route prose, no accidental QTE mechanics/reward changes, and no default UI technical wording.
+- [x] T022 Independent review validates #957 acceptance, #955/#956/#919 boundaries, shared route prose, no accidental QTE mechanics/reward changes, and no default UI technical wording. Evidence: independent Codex review run `E:/Games/codex-runs/20260611-173843-boe-957-daren-literary-prose-finalreview` returned `APPROVED`, blocking findings none; reviewer inspected `git diff origin/main...HEAD`, Daren prose, tests, narrative spine, and Spec Kit artifacts, and ran read-only diff/scope/technical-term scans.
 - [ ] T023 Create PR with local-gated verification evidence and safe closing wording for #957.
 - [ ] T024 Squash-merge to `main`, verify PR merged and #957 closed/completed, post evidence comment, and clean up worktree/branches.
 
