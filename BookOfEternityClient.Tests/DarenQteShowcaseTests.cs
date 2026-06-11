@@ -496,6 +496,70 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenGadgetInfiltration_ReadsAsHookAndLineLiteraryPageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "gadget_infiltration");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "gadget_infiltration");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Крюк и леска", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("gadget_infiltration_action", action.ActionId);
+        Assert.Equal("ChargeRelease", action.Check.Type);
+        Assert.Equal(Characteristics.Dexterity, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Null(action.Check.Config);
+        Assert.Equal("Запустить складной крюк", action.Label);
+        Assert.Equal("stealth_crossing", action.Routing.Success.NextChapterId);
+        Assert.Equal("stealth_crossing", action.Routing.Partial.NextChapterId);
+        Assert.Equal("stealth_crossing", action.Routing.Fail.NextChapterId);
+
+        Assert.True(text.Length >= 1500,
+            "Daren gadget_infiltration narrative should be a substantial literary page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren gadget_infiltration narrative should unfold across a real scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren gadget_infiltration narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("tower cold stone pressure", [["башн"], ["холод", "ледян"], ["камн"]]),
+            ("balcony and courtyard space", [["балкон"], ["двор"]]),
+            ("folding hook and line as tactile objects", [["складн"], ["крюк"], ["леск", "шнур", "корд"], ["металл", "желез"]]),
+            ("Daren hands body and ascent preparation", [["ладон", "пальц", "плеч", "колен", "дых", "ребр"], ["подтян", "подн", "перен", "согнул", "движ"]]),
+            ("guard sound and light stakes", [["страж", "караул"], ["фонар", "свет"], ["звук", "шум", "звон", "скрип", "оклик", "крик"]]),
+            ("hook launch anchor climb lead-in", [["запуст", "брос", "метн"], ["зацеп", "якор", "край"], ["подн", "подъем", "лез", "взоб"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"gadget_infiltration full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 3),
+            ("loot", 0),
+            ("pursuit_control", 2),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 1),
+            ("loot", 0),
+            ("pursuit_control", 1),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("gadget_infiltration full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -1522,6 +1586,25 @@ public sealed class DarenQteShowcaseTests : IDisposable
             delta.Delta != 0);
     }
 
+    private static void AssertScoreDeltas(
+        QteSceneService.QteAction action,
+        string grade,
+        params (string Metric, double Delta)[] expected)
+    {
+        Assert.NotNull(action.ScoreDeltas);
+        Assert.True(action.ScoreDeltas!.TryGetValue(grade, out var actual),
+            $"Daren action '{action.ActionId}' needs score deltas for {grade}.");
+        Assert.NotNull(actual);
+
+        var actualByMetric = actual!.ToDictionary(delta => delta.Metric, delta => delta.Delta, StringComparer.OrdinalIgnoreCase);
+        Assert.Equal(
+            expected.Select(item => item.Metric).OrderBy(item => item, StringComparer.OrdinalIgnoreCase),
+            actualByMetric.Keys.OrderBy(item => item, StringComparer.OrdinalIgnoreCase));
+
+        foreach (var (metric, delta) in expected)
+            Assert.Equal(delta, actualByMetric[metric]);
+    }
+
     private static JsonObject RequiredConfig(QteSceneService.QteAction action)
     {
         Assert.NotNull(action.Check.Config);
@@ -1609,7 +1692,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.False(string.IsNullOrWhiteSpace(value), $"Daren chapter '{chapterId}' needs authored narrative prose.");
         var text = value.Trim();
         var maxLength = string.Equals(chapterId, "approach_manor", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "informant_parley", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "informant_parley", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "gadget_infiltration", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
