@@ -1,10 +1,23 @@
 {
   "schemaVersion": 1,
   "routeId": "daren_qte_showcase",
-  "sourceIssues": [958, 957, 956, 955, 919],
+  "sourceIssues": [959, 958, 957, 956, 955, 919],
   "targetPlaytimeMinutes": {
     "min": 20,
     "max": 30
+  },
+  "branchConsequenceContract": {
+    "sharedRouteFields": [
+      "QteAction success, partial, and fail result text carries player-visible branch consequence prose.",
+      "ScoreDeltas carry branch pressure through existing stealth, loot, pursuit, evidence, and hideout metrics.",
+      "QteRouting keeps non-terminal poor outcomes playable where the shared route continues.",
+      "DarenQteNarrativeSpine consequenceHooks and carryForward notes record durable handoff truth."
+    ],
+    "forbiddenExpansions": [
+      "No branch-memory service or campaign-state consequence system for this slice.",
+      "No React-only or console-only story fork.",
+      "No new endpoint, state file, reward profile, or QTE check type."
+    ]
   },
   "arcStages": [
     "preparation",

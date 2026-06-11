@@ -123,6 +123,56 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "hideout_safety"
     ];
 
+    private static readonly string[] StrongConsequenceTerms =
+    [
+        "чист",
+        "без след",
+        "не остав",
+        "молчит",
+        "сбивает",
+        "теряет"
+    ];
+
+    private static readonly string[] PartialConsequenceTerms =
+    [
+        "цен",
+        "задерж",
+        "сомнен",
+        "след",
+        "запом",
+        "царап",
+        "шум"
+    ];
+
+    private static readonly string[] PoorConsequenceTerms =
+    [
+        "тревог",
+        "погон",
+        "свидетел",
+        "ули",
+        "опас",
+        "обход",
+        "запом",
+        "выда"
+    ];
+
+    private static readonly string[] PoorOutcomePressureTerms =
+    [
+        "тревог",
+        "погон",
+        "свидетел",
+        "след",
+        "шум",
+        "задерж",
+        "обход",
+        "опас",
+        "ули",
+        "фонар",
+        "Орвальд",
+        "Ренар",
+        "Лукьян"
+    ];
+
     private static readonly string[] SocialReactionTerms =
     [
         "Мира",
@@ -350,6 +400,122 @@ public sealed class DarenQteShowcaseTests : IDisposable
             AssertActionResultLooksLikeTransition(chapter.ChapterId, action.ActionId, "partial", action.PartialText);
             AssertActionResultLooksLikeTransition(chapter.ChapterId, action.ActionId, "fail", action.FailText);
         }
+    }
+
+    [Fact]
+    public void DarenKeyQteResults_HaveDistinctBranchConsequenceSignals()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        foreach (var beatId in new[]
+        {
+            "stealth_crossing",
+            "lock_pick",
+            "rune_memory",
+            "timed_rhythm",
+            "pursuit",
+            "hideout_return"
+        })
+        {
+            var (_, action) = RequiredChapterAction(route.Offer, beatId);
+
+            Assert.Equal(3, new[] { action.SuccessText, action.PartialText, action.FailText }
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Count());
+            AssertContainsAny($"{beatId} success consequence", action.SuccessText ?? "", StrongConsequenceTerms);
+            AssertContainsAny($"{beatId} partial consequence", action.PartialText ?? "", PartialConsequenceTerms);
+            AssertContainsAny($"{beatId} fail consequence", action.FailText ?? "", PoorConsequenceTerms);
+        }
+    }
+
+    [Fact]
+    public void DarenLaterScenes_EchoSeveralEarlierChoicesAndResults()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        foreach (var (sourceBeatId, laterBeatId, terms) in new (string SourceBeatId, string LaterBeatId, string[] Terms)[]
+        {
+            ("informant_parley", "guard_interrogation", ["Мир", "фраз", "слух"]),
+            ("guard_interrogation", "pursuit", ["Лукьян", "ключник", "свидетел"]),
+            ("lock_pick", "staff_theft", ["замок", "царап", "наклад"]),
+            ("ward_steward_parley", "physical_pressure", ["Ренар", "голос", "вард"]),
+            ("route_decision", "chase_chain", ["оранжер", "калитк", "арка"]),
+            ("pursuit", "hideout_return", ["Орвальд", "капитан", "погон"])
+        })
+        {
+            var sourceIndex = FindChapterIndex(route.Offer, sourceBeatId);
+            var laterIndex = FindChapterIndex(route.Offer, laterBeatId);
+            Assert.True(sourceIndex < laterIndex, $"Daren carry-forward echo '{laterBeatId}' must occur after '{sourceBeatId}'.");
+
+            var (laterChapter, _) = RequiredChapterAction(route.Offer, laterBeatId);
+            AssertContainsAny($"{sourceBeatId} echo in {laterBeatId}", BuildPlayerFacingRouteText([laterChapter]), terms);
+        }
+    }
+
+    [Fact]
+    public void DarenDialoguePlanningChoices_ReachLaterConsequenceProse()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        foreach (var (dialogueBeatId, terms) in new (string DialogueBeatId, string[] Terms)[]
+        {
+            ("informant_parley", ["Мир", "фраз", "слух"]),
+            ("guard_interrogation", ["Лукьян", "ключник", "свидетел"]),
+            ("ward_steward_parley", ["Ренар", "дом", "вард"])
+        })
+        {
+            var dialogueIndex = FindChapterIndex(route.Offer, dialogueBeatId);
+            var laterText = BuildPlayerFacingRouteText(route.Offer.Chapters.Skip(dialogueIndex + 1));
+
+            AssertContainsAny($"{dialogueBeatId} later consequence", laterText, terms);
+        }
+    }
+
+    [Fact]
+    public void DarenNonTerminalPoorOutcomes_KeepPlayMovingWithSpecificPressure()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        foreach (var beatId in new[]
+        {
+            "gadget_infiltration",
+            "route_decision",
+            "staff_theft",
+            "pursuit",
+            "chase_chain"
+        })
+        {
+            var (_, action) = RequiredChapterAction(route.Offer, beatId);
+
+            Assert.False(string.IsNullOrWhiteSpace(action.Routing.Fail.NextChapterId),
+                $"Daren non-terminal poor outcome '{beatId}' should continue to a later scene.");
+            Assert.True(string.IsNullOrWhiteSpace(action.Routing.Fail.TerminalOutcomeId),
+                $"Daren non-terminal poor outcome '{beatId}' should not collapse into a terminal outcome.");
+            AssertContainsAny($"{beatId} fail pressure", action.FailText ?? "", PoorOutcomePressureTerms);
+            AssertFailureScoreDeltasIncreasePressure(beatId, action);
+        }
+    }
+
+    [Fact]
+    public void DarenBranchConsequences_StayInSharedRouteAndSpineContract()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var spine = LoadDarenNarrativeSpine();
+        var darenSource = ReadRepoFile("BookOfEternityClient", "Services", "QteSceneService.Daren.cs");
+
+        Assert.Equal("daren_qte_showcase", route.RouteId);
+        Assert.Contains(959, RequiredIntArray(spine, "sourceIssues"));
+
+        var contract = RequiredObject(spine, "branchConsequenceContract");
+        var sharedFields = RequiredStringArray(contract, "sharedRouteFields");
+        Assert.Contains(sharedFields, item => item.Contains("success", StringComparison.OrdinalIgnoreCase) && item.Contains("partial", StringComparison.OrdinalIgnoreCase) && item.Contains("fail", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(sharedFields, item => item.Contains("ScoreDeltas", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(sharedFields, item => item.Contains("routing", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(RequiredStringArray(contract, "forbiddenExpansions"), item => item.Contains("branch-memory", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(RequiredStringArray(contract, "forbiddenExpansions"), item => item.Contains("React-only", StringComparison.OrdinalIgnoreCase));
+
+        foreach (var forbidden in new[] { "BranchMemory", "CampaignState", "ConsequenceService", "DarenConsequence", "React-only" })
+            Assert.DoesNotContain(forbidden, darenSource, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -1013,6 +1179,27 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(item.ChapterId, chapterId, StringComparison.OrdinalIgnoreCase));
         var action = Assert.Single(chapter.Actions);
         return (chapter, action);
+    }
+
+    private static int FindChapterIndex(QteSceneService.QteOffer offer, string chapterId)
+    {
+        var index = offer.Chapters.FindIndex(item =>
+            string.Equals(item.ChapterId, chapterId, StringComparison.OrdinalIgnoreCase));
+        Assert.True(index >= 0, $"Daren route should contain chapter '{chapterId}'.");
+        return index;
+    }
+
+    private static void AssertFailureScoreDeltasIncreasePressure(string beatId, QteSceneService.QteAction action)
+    {
+        Assert.NotNull(action.ScoreDeltas);
+        Assert.True(action.ScoreDeltas!.TryGetValue("fail", out var deltas), $"Daren action '{beatId}' needs fail score deltas.");
+        Assert.NotNull(deltas);
+        Assert.Contains(deltas!, delta =>
+            string.Equals(delta.Metric, "normalized_score", StringComparison.OrdinalIgnoreCase) &&
+            delta.Delta < 0);
+        Assert.Contains(deltas!, delta =>
+            ExistingRiskMetricIds.Contains(delta.Metric, StringComparer.OrdinalIgnoreCase) &&
+            delta.Delta != 0);
     }
 
     private static JsonObject RequiredConfig(QteSceneService.QteAction action)
