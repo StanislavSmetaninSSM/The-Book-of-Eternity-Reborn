@@ -733,6 +733,91 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenLockPick_ReadsAsCabinetLockLiteraryPageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "lock_pick");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "lock_pick");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Замок кабинета", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("lock_pick_action", action.ActionId);
+        Assert.Equal("LockPinSet", action.Check.Type);
+        Assert.Equal(Characteristics.Dexterity, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("Выставить штифты замка", action.Label);
+        Assert.Equal("rune_memory", action.Routing.Success.NextChapterId);
+        Assert.Equal("rune_memory", action.Routing.Partial.NextChapterId);
+        Assert.Equal("rune_memory", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(3, RequiredInt(config, "pinCount"));
+        var pinWindows = RequiredObjectArray(config, "pinWindows");
+        Assert.Equal([1, 2, 3], pinWindows.Select(pin => RequiredInt(pin, "pin")));
+        Assert.Equal([18, 44, 68], pinWindows.Select(pin => RequiredInt(pin, "min")));
+        Assert.Equal([32, 58, 82], pinWindows.Select(pin => RequiredInt(pin, "max")));
+        Assert.Equal(["нижний штифт", "средний штифт", "верхний штифт"], pinWindows.Select(pin => RequiredString(pin, "label")));
+        Assert.Equal(12000, RequiredInt(config, "timerMs"));
+        Assert.Equal(6, RequiredInt(config, "pickDurability"));
+        Assert.Equal(2, RequiredInt(config, "maxMistakes"));
+        Assert.Equal(3, RequiredInt(config, "pinDriftPerSecond"));
+        Assert.Equal("q", RequiredString(config, "adjustKey"));
+        Assert.Equal("space", RequiredString(config, "setKey"));
+        Assert.Equal("штифт", RequiredString(config, "pinLabel"));
+        Assert.Equal("прочность отмычки", RequiredString(config, "durabilityLabel"));
+        Assert.Equal("замок шумит", RequiredString(config, "warningLabel"));
+        var gradeThresholds = RequiredObject(config, "gradeThresholds");
+        Assert.Equal(6500, RequiredInt(gradeThresholds, "successMaxTimeMs"));
+        Assert.Equal(0, RequiredInt(gradeThresholds, "successMaxMistakes"));
+        Assert.Equal(11000, RequiredInt(gradeThresholds, "partialMaxTimeMs"));
+        Assert.Equal(2, RequiredInt(gradeThresholds, "partialMaxMistakes"));
+
+        Assert.True(text.Length >= 1500,
+            "Daren lock_pick narrative should be a substantial cabinet-lock burglary page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren lock_pick narrative should unfold across a tactile scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren lock_pick narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("cabinet threshold and old lock", [["кабин"], ["двер", "порог"], ["замок"], ["стар"]]),
+            ("keyhole plate and traceable scratches", [["скваж", "ключев"], ["наклад", "пластин"], ["царап"], ["след", "улик"]]),
+            ("pins and lock-picking craft", [["штифт"], ["отмыч", "крюч", "щуп", "натяж"], ["выстав", "подн", "прижал", "поверн"], ["слуш", "слыш"]]),
+            ("Daren body control", [["ладон", "пальц", "рук"], ["дых", "вдох", "выдох"], ["слуш", "слыш", "ух"], ["пульс", "сердц", "плеч"]]),
+            ("stealth and evidence pressure", [["шум", "звон", "щелк", "скрип"], ["страж", "Лукьян", "свидетел"], ["посох"], ["пыль", "след", "улик"]]),
+            ("LockPinSet lead-in", [["штифт"], ["выстав", "постав", "посад", "пойм"], ["замер", "момент", "окно"], ["откры", "поверн"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"lock_pick full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 3),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 1),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", 0),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -3),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("lock_pick full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -1868,7 +1953,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
             string.Equals(chapterId, "informant_parley", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "gadget_infiltration", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "stealth_crossing", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "guard_interrogation", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "guard_interrogation", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "lock_pick", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
