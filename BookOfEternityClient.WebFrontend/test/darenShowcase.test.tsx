@@ -56,6 +56,10 @@ describe('DarenShowcaseView #919', () => {
     expect(html).toContain('Идеальная тень');
     expect(html).toContain('6 Чернильных Перьев');
     expect(html).toContain('Чистая кража');
+    expect(html).toContain(
+      'Будущая новая игра помнит лучший след: Идеальная тень, 6 Чернильных Перьев. Эта вылазка завершилась как Чистая кража, счёт 80/100.'
+    );
+    expect(html).not.toContain('Будущая новая игра помнит лучший след: Чистая кража, 4 Чернильных Пера');
     expect(html).not.toContain('будущий бонус 4 Чернильных Перьев');
     expect(html).not.toContain('+4 Чернильных Перьев для будущей новой игры');
   });
