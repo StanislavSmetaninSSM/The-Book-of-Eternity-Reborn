@@ -107,7 +107,7 @@ public sealed class ExplorerWebCommandService
                 _fs,
                 _localization),
             ExplorerCommandBrowserHandlerKind.MortalWorld => await ExplorerMortalWorldCommandResultBuilder.TryBuildAsync(
-                commandToken,
+                descriptor.AcceptsArguments ? parsed.BuilderCommand : commandToken,
                 _stateManager,
                 _fs),
             ExplorerCommandBrowserHandlerKind.ChaosSea => await ExplorerChaosSeaCommandResultBuilder.TryBuildAsync(
