@@ -41,7 +41,7 @@
 
 ## Phase 4: Hermes-Owned Review, PR, Merge, Closure
 
-- [ ] T025 Independent review validates #958 acceptance, #955/#956/#957/#919 boundaries, shared route dialogue/cast, no new dialogue runtime, no accidental reward/campaign changes, and no default UI technical wording.
+- [x] T025 Independent review validates #958 acceptance, #955/#956/#957/#919 boundaries, shared route dialogue/cast, no new dialogue runtime, no accidental reward/campaign changes, and no default UI technical wording. Evidence: independent Codex review run `E:/Games/codex-runs/20260611-182642-boe-958-daren-dialogue-cast-finalreview` returned `APPROVED`, blocking findings none; reviewer inspected `git diff origin/main...HEAD`, route code, spine JSON, tests, Spec Kit artifacts, ran `git diff --check`, and ran an added-line static scan with `NO_MATCHES`. Reviewer noted a detached-worktree restore limitation for rerunning tests and an optional non-blocking browser-projection hardening suggestion.
 - [ ] T026 Create PR with local-gated verification evidence and safe closing wording for #958.
 - [ ] T027 Squash-merge to `main`, verify PR merged and #958 closed/completed, post evidence comment, remove/restore temporary labels as appropriate, and clean up worktree/branches.
 
