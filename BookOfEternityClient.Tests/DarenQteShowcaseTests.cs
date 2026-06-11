@@ -560,6 +560,84 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenStealthCrossing_ReadsAsGalleryStealthPageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "stealth_crossing");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "stealth_crossing");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Галерея без звука", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("stealth_crossing_action", action.ActionId);
+        Assert.Equal("StealthNoise", action.Check.Type);
+        Assert.Equal(Characteristics.Dexterity, action.Check.PrimaryCharacteristic);
+        Assert.Equal(3, action.Check.BaseDifficulty);
+        Assert.Equal("Пройти галерею без шума", action.Label);
+        Assert.Equal("guard_interrogation", action.Routing.Success.NextChapterId);
+        Assert.Equal("guard_interrogation", action.Routing.Partial.NextChapterId);
+        Assert.Equal("guard_interrogation", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal(6500, RequiredInt(config, "durationMs"));
+        Assert.Equal(14, RequiredInt(config, "startingNoise"));
+        Assert.Equal(70, RequiredInt(config, "dangerThreshold"));
+        Assert.Equal(9, RequiredInt(config, "noiseDriftPerSecond"));
+        Assert.Equal(12, RequiredInt(config, "recoveryPerInput"));
+        Assert.Equal(800, RequiredInt(config, "allowedOverThresholdMs"));
+        Assert.Equal("space", RequiredString(config, "recoveryKey"));
+        Assert.Equal("приглушить шаг", RequiredString(config, "recoveryLabel"));
+        Assert.Equal("страж слышит шум", RequiredString(config, "warningLabel"));
+        var thresholds = RequiredObject(config, "gradeThresholds");
+        Assert.Equal(48, RequiredInt(thresholds, "successMaxNoise"));
+        Assert.Equal(0, RequiredInt(thresholds, "successMaxOverThresholdMs"));
+        Assert.Equal(76, RequiredInt(thresholds, "partialMaxNoise"));
+        Assert.Equal(850, RequiredInt(thresholds, "partialMaxOverThresholdMs"));
+
+        Assert.True(text.Length >= 1500,
+            "Daren stealth_crossing narrative should be a substantial gallery stealth page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren stealth_crossing narrative should unfold across a real stealth scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren stealth_crossing narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("gallery portraits dust and confined light", [["галер"], ["портрет"], ["пыл"], ["полос", "луч", "свет"], ["пол", "доск", "паркет", "камн"]]),
+            ("sleeping guard pressure", [["страж", "караул", "Лукьян"], ["сон", "спал", "дрем"], ["дых", "храп", "вдох"], ["фонар", "свет"]]),
+            ("Daren controlled body movement", [["ладон", "пальц", "плеч", "колен", "ступн", "сапог"], ["дых", "вдох", "выдох"], ["перен", "вес", "согнул", "скольз", "шаг"]]),
+            ("silence noise and exposure stakes", [["тиш", "молч", "без звук"], ["шум", "скрип", "треск", "звон", "шорох"], ["разбуд", "прос", "услыш"], ["след", "кабин", "двер"]]),
+            ("stealth-noise action lead-in", [["пройти", "перейти", "пересеч", "двин"], ["приглуш", "сдерж", "удерж", "останов"], ["шаг"], ["без шум", "беззвуч", "тихо", "тиш"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"stealth_crossing full-page {context}", text, termGroups);
+        }
+
+        AssertScoreDeltas(action, "success",
+            ("normalized_score", 5),
+            ("stealth", 5),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -2),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "partial",
+            ("normalized_score", 0),
+            ("stealth", 2),
+            ("loot", 0),
+            ("pursuit_control", 0),
+            ("evidence", -1),
+            ("hideout_safety", 0));
+        AssertScoreDeltas(action, "fail",
+            ("normalized_score", -8),
+            ("stealth", -5),
+            ("loot", -2),
+            ("pursuit_control", -2),
+            ("evidence", 4),
+            ("hideout_safety", -2));
+        AssertNoPlayerFacingTechnicalTerms("stealth_crossing full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -1693,7 +1771,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var text = value.Trim();
         var maxLength = string.Equals(chapterId, "approach_manor", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(chapterId, "informant_parley", StringComparison.OrdinalIgnoreCase) ||
-            string.Equals(chapterId, "gadget_infiltration", StringComparison.OrdinalIgnoreCase)
+            string.Equals(chapterId, "gadget_infiltration", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "stealth_crossing", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
