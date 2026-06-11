@@ -42,7 +42,7 @@
 ## Phase 4: Hermes-Owned Review, PR, Merge, Closure
 
 - [x] T025 Independent review validates #959 acceptance, #955/#956/#957/#958/#919 boundaries, shared route consequences, no new branch-state/consequence runtime, no accidental reward/campaign changes, and no default UI technical wording. Evidence: independent Codex review run `E:/Games/codex-runs/20260611-201431-boe-959-daren-branch-consequences-finalreview` returned `APPROVED`, blocking findings none; reviewer inspected `git diff origin/main...HEAD`, `QteSceneService.Daren.cs`, `DarenQteShowcaseTests.cs`, `DarenQteNarrativeSpine.json`, and Spec Kit artifacts, then ran read-only diff/static/scope checks.
-- [ ] T026 Create PR with local-gated verification evidence and safe closing wording for #959.
+- [x] T026 Create PR with local-gated verification evidence and safe closing wording for #959. Evidence: PR #967 created at https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/967 with `Closes #959`, local verification evidence, independent review evidence, and follow-up issue references worded as non-lifecycle references.
 - [ ] T027 Squash-merge to `main`, verify PR merged and #959 closed/completed, post evidence comment, remove/restore temporary labels as appropriate, and clean up worktree/branches.
 
 ## Notes for Codex
