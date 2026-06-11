@@ -1,6 +1,6 @@
 # Requirements Checklist: Daren Literary Scene Prose
 
-**Feature**: `specs/957-daren-literary-prose`  
+**Feature**: `specs/957-daren-literary-prose`
 **Reviewed**: 2026-06-11
 
 ## Completeness

@@ -1,8 +1,8 @@
 # Feature Specification: Daren Literary Scene Prose
 
-**Feature Branch**: `work/957-daren-literary-prose`  
-**Created**: 2026-06-11  
-**Status**: Draft for autonomous implementation  
+**Feature Branch**: `work/957-daren-literary-prose`
+**Created**: 2026-06-11
+**Status**: Draft for autonomous implementation
 **Source Issues**: [#957](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/957), parent [#955](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/955), prerequisite spine [#956](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/956), base scenario [#919](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919)
 
 ## Source Issues & Scope

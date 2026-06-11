@@ -1,8 +1,8 @@
 # Implementation Plan: Daren Literary Scene Prose
 
-**Branch**: `work/957-daren-literary-prose`  
-**Spec**: `specs/957-daren-literary-prose/spec.md`  
-**Source Issues**: [#957](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/957), parent [#955](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/955), prerequisite [#956](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/956), base [#919](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919)  
+**Branch**: `work/957-daren-literary-prose`
+**Spec**: `specs/957-daren-literary-prose/spec.md`
+**Source Issues**: [#957](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/957), parent [#955](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/955), prerequisite [#956](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/956), base [#919](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919)
 **Date**: 2026-06-11
 
 ## Summary

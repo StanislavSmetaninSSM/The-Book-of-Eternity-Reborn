@@ -67,6 +67,18 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
     private static readonly int[] FutureDarenIssueIds = [957, 958, 959, 960, 961];
 
+    private static readonly string[] ForbiddenPlayerFacingTechnicalTerms =
+    [
+        "GM",
+        "DTO",
+        "API",
+        "endpoint",
+        "debug",
+        "Spec Kit",
+        "manual-grade",
+        "client-owned"
+    ];
+
     private static readonly string[] ForbiddenStoryCopyTerms =
     [
         "debug",
@@ -77,6 +89,83 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "Spec Kit",
         "QTE"
     ];
+
+    private static readonly IReadOnlyDictionary<string, string[][]> ChapterSignalGroups =
+        new Dictionary<string, string[][]>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["approach_manor"] =
+            [
+                ["помест", "стен"],
+                ["фонар", "патрул", "страж"],
+                ["тень", "подступ", "калит"]
+            ],
+            ["gadget_infiltration"] =
+            [
+                ["балкон", "башн"],
+                ["леск", "камн", "двор"],
+                ["крюк", "цепля", "подъем"]
+            ],
+            ["stealth_crossing"] =
+            [
+                ["галер", "пол", "портрет"],
+                ["страж", "сон", "фонар"],
+                ["шум", "тиш", "шаг"]
+            ],
+            ["lock_pick"] =
+            [
+                ["кабин", "замок", "двер"],
+                ["след", "шум", "страж"],
+                ["штифт", "отмыч", "откры"]
+            ],
+            ["rune_memory"] =
+            [
+                ["рун", "дверц", "стекл"],
+                ["защит", "сигнал", "тревож"],
+                ["запом", "узор", "повтор"]
+            ],
+            ["physical_pressure"] =
+            [
+                ["решет", "ниша", "футляр"],
+                ["грох", "крыл", "тяж"],
+                ["удерж", "посох", "освобод"]
+            ],
+            ["timed_rhythm"] =
+            [
+                ["кристалл", "коридор"],
+                ["сигнал", "тревог", "свет"],
+                ["пауза", "ритм", "двиг"]
+            ],
+            ["route_decision"] =
+            [
+                ["оранжер", "выход"],
+                ["след", "свет", "погон"],
+                ["выб", "уйти", "путь"]
+            ],
+            ["staff_theft"] =
+            [
+                ["посох", "кольц", "подвес"],
+                ["звон", "тревог", "погон"],
+                ["баланс", "рем", "снять"]
+            ],
+            ["pursuit"] =
+            [
+                ["окн", "двор", "зал"],
+                ["страж", "погон", "крик"],
+                ["рывок", "момент", "выскоч"]
+            ],
+            ["chase_chain"] =
+            [
+                ["двор", "алле", "стен", "телег"],
+                ["след", "преслед", "погон"],
+                ["цепоч", "прыж", "поворот"]
+            ],
+            ["hideout_return"] =
+            [
+                ["мост", "убежищ", "тайник"],
+                ["след", "погон", "опас"],
+                ["спрят", "зачист", "посох"]
+            ]
+        };
 
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
@@ -136,12 +225,58 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenChapters_HaveLiterarySceneProseForEveryBeat()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        Assert.Equal(RequiredBeatIds, route.Offer.Chapters.Select(chapter => chapter.ChapterId));
+        foreach (var chapter in route.Offer.Chapters)
+            AssertChapterNarrativeLooksLikeSceneProse(chapter.ChapterId, chapter.Narrative);
+    }
+
+    [Fact]
+    public void DarenActionResultText_ReadsAsTransitionProse()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        foreach (var chapter in route.Offer.Chapters)
+        {
+            var action = Assert.Single(chapter.Actions);
+            AssertActionResultLooksLikeTransition(chapter.ChapterId, action.ActionId, "success", action.SuccessText);
+            AssertActionResultLooksLikeTransition(chapter.ChapterId, action.ActionId, "partial", action.PartialText);
+            AssertActionResultLooksLikeTransition(chapter.ChapterId, action.ActionId, "fail", action.FailText);
+        }
+    }
+
+    [Fact]
+    public void DarenPlayerFacingRouteCopy_DoesNotLeakTechnicalTerms()
+    {
+        var offer = QteSceneService.GetDarenShowcaseRoute().Offer;
+
+        AssertNoPlayerFacingTechnicalTerms("offer text", offer.OfferText);
+        AssertNoPlayerFacingTechnicalTerms("intro narrative", offer.IntroNarrative);
+        AssertNoPlayerFacingTechnicalTerms("decline hint", offer.DeclineHint);
+        AssertNoPlayerFacingTechnicalTerms("cinematic justification", offer.CinematicJustification);
+        foreach (var chapter in offer.Chapters)
+        {
+            AssertNoPlayerFacingTechnicalTerms($"{chapter.ChapterId} narrative", chapter.Narrative);
+            foreach (var action in chapter.Actions)
+            {
+                AssertNoPlayerFacingTechnicalTerms($"{action.ActionId} success", action.SuccessText);
+                AssertNoPlayerFacingTechnicalTerms($"{action.ActionId} partial", action.PartialText);
+                AssertNoPlayerFacingTechnicalTerms($"{action.ActionId} fail", action.FailText);
+            }
+        }
+    }
+
+    [Fact]
     public void DarenNarrativeSpine_ExistsAndDeclaresRouteIssuesAndPlaytime()
     {
         var spine = LoadDarenNarrativeSpine();
 
         Assert.Equal(1, RequiredInt(spine, "schemaVersion"));
         Assert.Equal("daren_qte_showcase", RequiredString(spine, "routeId"));
+        Assert.Contains(957, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(956, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(955, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(919, RequiredIntArray(spine, "sourceIssues"));
@@ -662,6 +797,68 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.True(value.TryGetValue<int>(out var number), $"Expected '{propertyName}' to be an integer.");
         return number;
     }
+
+    private static void AssertChapterNarrativeLooksLikeSceneProse(string chapterId, string? value)
+    {
+        Assert.False(string.IsNullOrWhiteSpace(value), $"Daren chapter '{chapterId}' needs authored narrative prose.");
+        var text = value.Trim();
+        Assert.InRange(text.Length, 140, 520);
+        Assert.True(CountSentences(text) >= 2,
+            $"Daren chapter '{chapterId}' should have at least two scene sentences, not a bare mechanic label.");
+        Assert.Contains("Дарен", text, StringComparison.OrdinalIgnoreCase);
+        AssertNoPlayerFacingTechnicalTerms($"{chapterId} narrative", text);
+
+        Assert.True(ChapterSignalGroups.TryGetValue(chapterId, out var signalGroups),
+            $"Missing chapter signal guard for Daren beat '{chapterId}'.");
+        foreach (var signalGroup in signalGroups)
+            AssertContainsAny(chapterId, text, signalGroup);
+    }
+
+    private static void AssertActionResultLooksLikeTransition(
+        string chapterId,
+        string actionId,
+        string grade,
+        string? value)
+    {
+        var context = $"{chapterId}/{actionId}/{grade}";
+        Assert.False(string.IsNullOrWhiteSpace(value), $"Daren action result '{context}' needs transition prose.");
+        var text = value.Trim();
+        Assert.InRange(text.Length, 70, 260);
+        Assert.True(text.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 8,
+            $"Daren action result '{context}' is too terse to carry the scene forward.");
+        AssertNoPlayerFacingTechnicalTerms(context, text);
+        Assert.True(
+            text.Contains("Дарен", StringComparison.OrdinalIgnoreCase) ||
+            ContainsAny(text, ["погон", "след", "страж", "посох", "тревог", "убежищ", "двор", "шум", "тайник"]),
+            $"Daren action result '{context}' should name Daren or an immediate scene consequence.");
+    }
+
+    private static void AssertNoPlayerFacingTechnicalTerms(string context, string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return;
+
+        foreach (var forbidden in ForbiddenPlayerFacingTechnicalTerms)
+        {
+            Assert.DoesNotContain(
+                forbidden,
+                value,
+                StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    private static int CountSentences(string value) =>
+        value.Split(['.', '!', '?', '…'], StringSplitOptions.RemoveEmptyEntries)
+            .Count(sentence => sentence.Trim().Length >= 10);
+
+    private static void AssertContainsAny(string context, string value, IReadOnlyList<string> terms)
+    {
+        Assert.True(ContainsAny(value, terms),
+            $"Daren chapter '{context}' needs one of these story signals: {string.Join(", ", terms)}.");
+    }
+
+    private static bool ContainsAny(string value, IReadOnlyList<string> terms) =>
+        terms.Any(term => value.Contains(term, StringComparison.OrdinalIgnoreCase));
 
     private static void AssertStoryCopyLooksAuthored(string beatId, string field, string value)
     {

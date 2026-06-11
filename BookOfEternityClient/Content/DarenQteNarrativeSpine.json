@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "routeId": "daren_qte_showcase",
-  "sourceIssues": [956, 955, 919],
+  "sourceIssues": [957, 956, 955, 919],
   "targetPlaytimeMinutes": {
     "min": 20,
     "max": 30
