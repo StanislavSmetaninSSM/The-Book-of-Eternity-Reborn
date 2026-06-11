@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "routeId": "daren_qte_showcase",
-  "sourceIssues": [957, 956, 955, 919],
+  "sourceIssues": [958, 957, 956, 955, 919],
   "targetPlaytimeMinutes": {
     "min": 20,
     "max": 30
@@ -22,26 +22,38 @@
   "castSlots": [
     {
       "slotId": "contact_informant",
+      "displayName": "Мира Ночная Нить",
+      "persona": "Уличная информаторка, которая продаёт Дарену смены караула, но отвечает только на осторожные слова.",
       "role": "Contact or informant who gives Daren the manor timing, staff rumor, and first social pressure point.",
-      "plannedBeatIds": ["approach_manor", "route_decision"],
+      "plannedBeatIds": ["approach_manor", "informant_parley", "route_decision"],
+      "dialogueBeatIds": ["informant_parley"],
       "futureIssueLinks": [958, 959]
     },
     {
       "slotId": "estate_staff_guard",
+      "displayName": "Лукьян Седой Ключник",
+      "persona": "Усталый ключник и ночной страж, который может пропустить Дарена, запомнить его лицо или стать свидетелем.",
       "role": "Servant, tired watchman, or house guard who can notice noise, answer a lie, or become a later witness.",
-      "plannedBeatIds": ["stealth_crossing", "physical_pressure", "pursuit"],
+      "plannedBeatIds": ["stealth_crossing", "guard_interrogation", "physical_pressure", "pursuit"],
+      "dialogueBeatIds": ["guard_interrogation"],
       "futureIssueLinks": [958, 959, 961]
     },
     {
       "slotId": "magical_security_authority",
+      "displayName": "Ренара Вардовая",
+      "persona": "Голос домовых печатей, который говорит через руны и решает, станет ли ошибка Дарена тревогой.",
       "role": "House mage, steward, or ward-bound presence that explains why the staff and runes matter.",
-      "plannedBeatIds": ["rune_memory", "timed_rhythm", "staff_theft"],
+      "plannedBeatIds": ["rune_memory", "ward_steward_parley", "timed_rhythm", "staff_theft"],
+      "dialogueBeatIds": ["ward_steward_parley"],
       "futureIssueLinks": [958, 959, 960]
     },
     {
       "slotId": "pursuit_figure",
+      "displayName": "капитан Орвальд Шпиль",
+      "persona": "Личный преследователь из охраны поместья, который превращает тревогу в охоту за именем Дарена.",
       "role": "Named pursuer who turns the alarm into personal pressure during the escape and ending summary.",
       "plannedBeatIds": ["pursuit", "chase_chain", "hideout_return"],
+      "dialogueBeatIds": ["pursuit", "chase_chain"],
       "futureIssueLinks": [958, 959, 960, 961]
     }
   ],
@@ -71,6 +83,32 @@
       ],
       "futureIssueLinks": [957, 959, 960, 961],
       "pacingMinutes": 2
+    },
+    {
+      "beatId": "informant_parley",
+      "phase": "preparation contact pressure",
+      "title": "Whisper From Mira",
+      "dramaticPurpose": "Give the approach a human contact who can reward careful answers or create an early witness.",
+      "playerGoal": "Answer Mira's test without making the informant doubt Daren's restraint.",
+      "qteType": "PrecisionChoice",
+      "sceneFraming": "Mira the Night Thread waits under the back-road awning with guard shifts, staff rumor, and the first price of trust.",
+      "branchPoints": [
+        "Success wins Mira's full warning about Lukyan and Orvald.",
+        "Partial progress buys only the guard rumor and leaves a debt.",
+        "Failure turns Mira into a frightened witness who can speed later suspicion."
+      ],
+      "consequenceHooks": [
+        "Mira's trust can reduce evidence and improve pursuit control.",
+        "A partial answer can make the guard scene less certain.",
+        "A threat can feed later staff suspicion and pursuit confidence."
+      ],
+      "carryForward": [
+        "Mira's warning can justify Daren knowing Lukyan's weakness.",
+        "A bad answer can make later witnesses feel earned.",
+        "The named pursuer can enter pursuit with prior rumor weight."
+      ],
+      "futureIssueLinks": [958, 959, 960, 961],
+      "pacingMinutes": 1
     },
     {
       "beatId": "gadget_infiltration",
@@ -125,6 +163,32 @@
       "pacingMinutes": 2
     },
     {
+      "beatId": "guard_interrogation",
+      "phase": "infiltration staff pressure",
+      "title": "Lukyan At The Service Door",
+      "dramaticPurpose": "Turn interior stealth into a social-pressure answer with a staff witness.",
+      "playerGoal": "Calm Lukyan before his lantern becomes evidence.",
+      "qteType": "PrecisionChoice",
+      "sceneFraming": "Lukyan the Gray Keyholder stops Daren beside the service door, asking a quiet question with a guard's suspicion behind it.",
+      "branchPoints": [
+        "Success uses Mira's phrase and makes Lukyan look away.",
+        "Partial progress passes as a late order but leaves a remembered face.",
+        "Failure gives Lukyan a clear witness memory."
+      ],
+      "consequenceHooks": [
+        "Lukyan's response can adjust stealth and evidence.",
+        "A remembered face can strengthen later pursuit or ending prose.",
+        "A clean answer can keep the cabinet approach quiet."
+      ],
+      "carryForward": [
+        "The guard's doubt can echo in the alarm or chase.",
+        "Mira's earlier warning can pay off through the phrase option.",
+        "A failed answer can justify a human witness rather than abstract noise."
+      ],
+      "futureIssueLinks": [958, 959, 960, 961],
+      "pacingMinutes": 1
+    },
+    {
       "beatId": "lock_pick",
       "phase": "security lock challenge",
       "title": "Cabinet Lock Teeth",
@@ -177,13 +241,39 @@
       "pacingMinutes": 2
     },
     {
+      "beatId": "ward_steward_parley",
+      "phase": "security magical authority",
+      "title": "Renara's Ward Question",
+      "dramaticPurpose": "Personify magical security through a house authority that responds to Daren's answer.",
+      "playerGoal": "Answer Renara so the house delays its alarm instead of naming Daren.",
+      "qteType": "PrecisionChoice",
+      "sceneFraming": "Renara the Ward Steward speaks through the cold glass and asks why a stranger has touched the staff's seals.",
+      "branchPoints": [
+        "Success frames the broken rune as a false seal and quiets the house.",
+        "Partial progress delays the ward but lets Renara remember Daren's voice.",
+        "Failure gives the house a personal reason to wake."
+      ],
+      "consequenceHooks": [
+        "Renara's judgment can affect loot condition, evidence, and pursuit pressure.",
+        "A partial answer can color later ward and chase prose.",
+        "A failed answer can make the alarm feel intentional."
+      ],
+      "carryForward": [
+        "The physical-pressure beat can reference Renara's voice.",
+        "The pursuit can feel guided by a house that remembers Daren.",
+        "Ending follow-ups can expand ward-specific consequences later."
+      ],
+      "futureIssueLinks": [958, 959, 960, 961],
+      "pacingMinutes": 1
+    },
+    {
       "beatId": "physical_pressure",
       "phase": "complication under physical pressure",
       "title": "Weight Of Iron",
       "dramaticPurpose": "Escalate from delicate work into bodily strain while keeping the staff almost within reach.",
       "playerGoal": "Hold the heavy grate long enough for the staff case to clear its niche.",
       "qteType": "MashInput",
-      "sceneFraming": "The grate sinks with patient cruelty while the case slides out inch by inch beneath Daren's shoulder.",
+      "sceneFraming": "After Renara's voice fades, the grate sinks with patient cruelty while the case slides out inch by inch beneath Daren's shoulder.",
       "branchPoints": [
         "Success keeps the grate steady until the mechanism resets.",
         "Partial progress frees the case but leaves a bruise and scraping sound.",
@@ -287,7 +377,7 @@
       "dramaticPurpose": "Convert accumulated suspicion into immediate pursuit pressure.",
       "playerGoal": "Take the first escape window before guards close the courtyard.",
       "qteType": "TimingBar",
-      "sceneFraming": "Boots hammer the hall behind him, and the open window ahead narrows with every shout from the yard.",
+      "sceneFraming": "Captain Orvald Spire drives the boots in the hall behind him, and the open window ahead narrows with every shout from the yard.",
       "branchPoints": [
         "Success slips through before the courtyard locks down.",
         "Partial progress escapes but flashes cloak and face in lantern light.",

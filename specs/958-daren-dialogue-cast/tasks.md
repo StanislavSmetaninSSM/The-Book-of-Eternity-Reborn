@@ -1,0 +1,55 @@
+# Tasks: Daren NPC Dialogue Cast
+
+**Input**: `specs/958-daren-dialogue-cast/spec.md`, `plan.md`, `contracts/daren-dialogue-cast.md`, `checklists/requirements.md`
+**Source Issues**: [#958](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/958), parent [#955](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/955), prerequisite [#956](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/956), prerequisite [#957](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/957), base [#919](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/919)
+
+## Phase 0: Hermes Preflight and Spec Kit Setup
+
+- [x] T001 Select #958 as the next logical closure unit after #956/#957 because the narrative spine and shared prose are merged, #958 is the next child under parent #955, no open PR was found, and no correlated live Codex process was found in preflight.
+- [x] T002 Create isolated worktree `E:/Games/worktrees/boe-958-daren-dialogue-cast` on branch `work/958-daren-dialogue-cast` from `origin/main`.
+- [x] T003 Mark #958 `status: in-progress` and remove `status: triaged` on GitHub.
+- [x] T004 Record focused baseline before implementation. Evidence: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "DarenQteShowcaseTests|QteSceneServiceTests|ValidationServiceQteTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|BrowserApiContractTests|BrowserFrontendWorkspaceTests" --logger "console;verbosity=minimal"` passed 294/294 on 2026-06-11 before #958 code changes.
+- [x] T005 Verify Spec Kit prerequisite helper discovers `specs/958-daren-dialogue-cast/`. Evidence: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` returned `FEATURE_DIR=E:\\Games\\worktrees\\boe-958-daren-dialogue-cast\\specs\\958-daren-dialogue-cast` and `AVAILABLE_DOCS=["contracts/","tasks.md"]`; `specify version` reported 0.9.3 and Codex integration installed.
+
+## Phase 1: RED Tests
+
+- [x] T006 Add a failing cast-coverage test in `BookOfEternityClient.Tests/DarenQteShowcaseTests.cs` that asserts the route/spine exposes four named/personified figures for the required cast slots: contact/informant, estate staff/guard, magical-security authority or house representative, and pursuit figure. Evidence: added `DarenDialogueCast_HasNamedFiguresVisibleInRouteAndSpine`, requiring display names/personas/dialogue beat links for Мира Ночная Нить, Лукьян Седой Ключник, Ренара Вардовая, and капитан Орвальд Шпиль.
+- [x] T007 Add a failing dialogue/social-choice coverage test that asserts the Daren route contains at least three people-driven dialogue/social-choice moments implemented as existing QTE route chapters/actions. Evidence: added `DarenRoute_ContainsDialogueSocialChoiceMomentsThroughExistingQteActions` over `informant_parley`, `guard_interrogation`, and `ward_steward_parley`.
+- [x] T008 Add a failing choice-option test that verifies interactive dialogue choices expose player-facing answer labels/descriptions/hints through supported existing QTE check config, preferring `PrecisionChoice` when player selection is expected. Evidence: added `DarenDialogueChoices_ExposePlayerFacingAnswerOptions`, requiring `PrecisionChoice` choices with success/partial/fail labels, descriptions, and hints.
+- [x] T009 Add a failing response-variant test that asserts dialogue/social-choice success/partial/fail result texts are distinct, non-empty, concise, and read as NPC/social reactions. Evidence: added `DarenDialogueResponses_HaveDistinctNpcSocialVariants`.
+- [x] T010 Add a failing consequence test that asserts at least one dialogue/social-choice outcome affects existing score/risk metrics and later route copy/result text references an earlier NPC/social consequence. Evidence: added `DarenDialogueConsequences_AffectRiskAndEchoLaterInRouteProse`.
+- [x] T011 Keep or update route/spine boundary tests so the original #957 heist beats remain present in original relative order, route id/reward semantics stay unchanged, and no new dialogue runtime/state/endpoint/frontend-only fork/check type is introduced. Evidence: updated route/spine tests to assert the original heist beats remain an ordered subsequence while the shared route and spine match exactly.
+- [x] T012 Run the focused Daren test filter and record RED evidence showing the new tests fail because cast/dialogue/choice content is missing, not because of typo or harness errors. Evidence: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "DarenQteShowcaseTests" --logger "console;verbosity=minimal"` failed before implementation with 9 failed, 21 passed, 0 skipped, 30 total. Failures were missing dialogue chapters, missing cast `displayName` fields, missing #958 spine source issue, and expected beat-order additions.
+
+## Phase 2: GREEN Shared Route Dialogue
+
+- [x] T013 Update `BookOfEternityClient/Services/QteSceneService.Daren.cs` with a small Daren NPC cast and shared route text that makes the contact/informant, estate staff/guard, magical-security authority/house representative, and pursuit figure visible to players. Evidence: shared route prose now names Мира Ночная Нить, Лукьян Седой Ключник, Ренара Вардовая, and капитан Орвальд Шпиль.
+- [x] T014 Add at least three dialogue/social-choice moments inside the existing QTE route flow using existing check types and route/action/config data. If inserting new chapters, keep original heist beats ordered as a subsequence. Evidence: added `informant_parley`, `guard_interrogation`, and `ward_steward_parley` as normal one-action route chapters using existing `PrecisionChoice` checks.
+- [x] T015 Author success/partial/fail result text for dialogue/social-choice actions so NPC responses differ by grade and remain player-facing/console-friendly. Evidence: each new social action has distinct success/partial/fail response prose naming or reacting to the NPC.
+- [x] T016 Add score/risk deltas for at least one dialogue/social-choice action using existing metrics; do not create new score/state machinery. Evidence: new dialogue actions use existing `DarenScoreDeltas` over stealth, pursuit control, evidence, and loot; no new metrics/state files were added.
+- [x] T017 Add modest later prose/result references to earlier NPC/social consequences without broadening into #959 branch-consequence expansion or #960 endings. Evidence: later route prose carries Ренара's ward pressure forward and pursuit prose names капитан Орвальд Шпиль; no ending/reward expansion was added.
+- [x] T018 Update `BookOfEternityClient/Content/DarenQteNarrativeSpine.json` only as needed for #958 source/cast/dialogue truth while preserving #956/#957 invariants and #959-#961 handoff links. Evidence: spine now includes source issue #958, concrete cast metadata, dialogue beat links, and matching new `PrecisionChoice` beats.
+- [x] T019 Rerun focused Daren tests and record GREEN evidence. Evidence: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "DarenQteShowcaseTests" --logger "console;verbosity=minimal"` passed with 0 failed, 30 passed, 0 skipped, 30 total.
+
+## Phase 3: Verification and Reconciliation
+
+- [x] T020 Run affected QTE/docs/browser contract slice: `DarenQteShowcaseTests|QteSceneServiceTests|ValidationServiceQteTests|PromptDocumentationCoverageTests|ExampleDocumentationValidationTests|BrowserApiContractTests|BrowserFrontendWorkspaceTests`. Evidence: command passed with 0 failed, 299 passed, 0 skipped, 299 total.
+- [x] T021 Run client and test-project builds: `dotnet build BookOfEternityClient/BookOfEternityClient.csproj --no-restore`; `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -p:IsTestProject=true`. Evidence: both builds succeeded with 0 warnings and 0 errors.
+- [x] T022 Run Spec Kit prerequisite helper and verify `FEATURE_DIR` points to `specs/958-daren-dialogue-cast`. Evidence: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks` returned `FEATURE_DIR=E:\\Games\\worktrees\\boe-958-daren-dialogue-cast\\specs\\958-daren-dialogue-cast` and `AVAILABLE_DOCS=["contracts/","tasks.md"]`.
+- [x] T023 Run `git diff --check origin/main...HEAD` and an added-line static scan. Exclude specs/tests/docs from the security scan only when matches are clearly plan/test placeholder text rather than production code. Evidence: `git diff --check origin/main...HEAD` exited cleanly with no output; added-line production scan reported `No suspicious added production lines matched static scan patterns.`
+- [x] T024 Update this `tasks.md` with RED/GREEN and verification evidence for completed implementation tasks. Evidence: T006-T024 are marked complete in this file with command evidence; T025-T027 remain open for Hermes-owned review, PR, merge, issue closure, and cleanup.
+
+## Phase 4: Hermes-Owned Review, PR, Merge, Closure
+
+- [x] T025 Independent review validates #958 acceptance, #955/#956/#957/#919 boundaries, shared route dialogue/cast, no new dialogue runtime, no accidental reward/campaign changes, and no default UI technical wording. Evidence: independent Codex review run `E:/Games/codex-runs/20260611-182642-boe-958-daren-dialogue-cast-finalreview` returned `APPROVED`, blocking findings none; reviewer inspected `git diff origin/main...HEAD`, route code, spine JSON, tests, Spec Kit artifacts, ran `git diff --check`, and ran an added-line static scan with `NO_MATCHES`. Reviewer noted a detached-worktree restore limitation for rerunning tests and an optional non-blocking browser-projection hardening suggestion.
+- [x] T026 Create PR with local-gated verification evidence and safe closing wording for #958. Evidence: PR #966 created at https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/966 with `Closes #958`, local verification evidence, independent review evidence, and follow-up issue references worded as non-lifecycle references.
+- [ ] T027 Squash-merge to `main`, verify PR merged and #958 closed/completed, post evidence comment, remove/restore temporary labels as appropriate, and clean up worktree/branches.
+
+## Notes for Codex
+
+- Follow TDD strictly: RED tests first, verify failure, then implementation, then GREEN verification.
+- Mark T006-T024 complete only after diff and command evidence exist.
+- Leave T025-T027 open; Hermes owns independent review, PR, merge, issue closure, and cleanup.
+- Do not broaden into #959 branch-specific consequences, #960 endings/rewards, or #961 broad content quality gates.
+- If implementation touches React/frontend files, run `npm run verify --prefix BookOfEternityClient.WebFrontend` and record exact counts.
+- If requirements change, update `spec.md`, `plan.md`, and `contracts/daren-dialogue-cast.md` before final response.
