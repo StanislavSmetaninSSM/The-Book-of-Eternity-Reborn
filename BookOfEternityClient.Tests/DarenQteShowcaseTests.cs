@@ -11,13 +11,39 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class DarenQteShowcaseTests : IDisposable
 {
-    private static readonly string[] RequiredBeatIds =
+    private static readonly string[] OriginalHeistBeatIds =
     [
         "approach_manor",
         "gadget_infiltration",
         "stealth_crossing",
         "lock_pick",
         "rune_memory",
+        "physical_pressure",
+        "timed_rhythm",
+        "route_decision",
+        "staff_theft",
+        "pursuit",
+        "chase_chain",
+        "hideout_return"
+    ];
+
+    private static readonly string[] RequiredDialogueBeatIds =
+    [
+        "informant_parley",
+        "guard_interrogation",
+        "ward_steward_parley"
+    ];
+
+    private static readonly string[] RequiredBeatIds =
+    [
+        "approach_manor",
+        "informant_parley",
+        "gadget_infiltration",
+        "stealth_crossing",
+        "guard_interrogation",
+        "lock_pick",
+        "rune_memory",
+        "ward_steward_parley",
         "physical_pressure",
         "timed_rhythm",
         "route_decision",
@@ -63,6 +89,64 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "estate_staff_guard",
         "magical_security_authority",
         "pursuit_figure"
+    ];
+
+    private static readonly IReadOnlyDictionary<string, string> RequiredCastNamesBySlotId =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["contact_informant"] = "Мира Ночная Нить",
+            ["estate_staff_guard"] = "Лукьян Седой Ключник",
+            ["magical_security_authority"] = "Ренара Вардовая",
+            ["pursuit_figure"] = "капитан Орвальд Шпиль"
+        };
+
+    private static readonly IReadOnlyDictionary<string, string> RequiredDialogueNpcByBeatId =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["informant_parley"] = "Мира Ночная Нить",
+            ["guard_interrogation"] = "Лукьян Седой Ключник",
+            ["ward_steward_parley"] = "Ренара Вардовая"
+        };
+
+    private static readonly string[] DialogueChoiceCheckTypes =
+    [
+        "BranchChoice",
+        "PrecisionChoice"
+    ];
+
+    private static readonly string[] ExistingRiskMetricIds =
+    [
+        "stealth",
+        "loot",
+        "pursuit_control",
+        "evidence",
+        "hideout_safety"
+    ];
+
+    private static readonly string[] SocialReactionTerms =
+    [
+        "Мира",
+        "Лукьян",
+        "Ренара",
+        "шеп",
+        "отвеч",
+        "подозр",
+        "страж",
+        "ключник",
+        "дом",
+        "след"
+    ];
+
+    private static readonly string[] LaterSocialEchoTerms =
+    [
+        "Мира",
+        "Лукьян",
+        "Ренара",
+        "Орвальд",
+        "ключник",
+        "донос",
+        "подозр",
+        "свидетел"
     ];
 
     private static readonly int[] FutureDarenIssueIds = [957, 958, 959, 960, 961];
@@ -111,6 +195,18 @@ public sealed class DarenQteShowcaseTests : IDisposable
                 ["страж", "сон", "фонар"],
                 ["шум", "тиш", "шаг"]
             ],
+            ["informant_parley"] =
+            [
+                ["Мира", "нить", "информ"],
+                ["слух", "смен", "страж"],
+                ["ответ", "шеп", "договор"]
+            ],
+            ["guard_interrogation"] =
+            [
+                ["Лукьян", "ключник", "страж"],
+                ["галер", "служ", "двер"],
+                ["вопрос", "ответ", "подозр"]
+            ],
             ["lock_pick"] =
             [
                 ["кабин", "замок", "двер"],
@@ -122,6 +218,12 @@ public sealed class DarenQteShowcaseTests : IDisposable
                 ["рун", "дверц", "стекл"],
                 ["защит", "сигнал", "тревож"],
                 ["запом", "узор", "повтор"]
+            ],
+            ["ward_steward_parley"] =
+            [
+                ["Ренара", "вард", "дом"],
+                ["руна", "сигнал", "печать"],
+                ["ответ", "посох", "управ"]
             ],
             ["physical_pressure"] =
             [
@@ -205,6 +307,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
         Assert.Equal("daren_qte_showcase", route.RouteId);
         Assert.Equal(RequiredBeatIds, route.Beats.Select(beat => beat.BeatId));
+        AssertOrderedSubsequence(OriginalHeistBeatIds, route.Beats.Select(beat => beat.BeatId), "Daren route beats");
         Assert.All(route.Beats, beat =>
         {
             Assert.False(string.IsNullOrWhiteSpace(beat.Title));
@@ -230,6 +333,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         var route = QteSceneService.GetDarenShowcaseRoute();
 
         Assert.Equal(RequiredBeatIds, route.Offer.Chapters.Select(chapter => chapter.ChapterId));
+        AssertOrderedSubsequence(OriginalHeistBeatIds, route.Offer.Chapters.Select(chapter => chapter.ChapterId), "Daren route chapters");
         foreach (var chapter in route.Offer.Chapters)
             AssertChapterNarrativeLooksLikeSceneProse(chapter.ChapterId, chapter.Narrative);
     }
@@ -246,6 +350,151 @@ public sealed class DarenQteShowcaseTests : IDisposable
             AssertActionResultLooksLikeTransition(chapter.ChapterId, action.ActionId, "partial", action.PartialText);
             AssertActionResultLooksLikeTransition(chapter.ChapterId, action.ActionId, "fail", action.FailText);
         }
+    }
+
+    [Fact]
+    public void DarenDialogueCast_HasNamedFiguresVisibleInRouteAndSpine()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var routeText = BuildPlayerFacingRouteText(route.Offer);
+        var spine = LoadDarenNarrativeSpine();
+        var castSlots = RequiredObjectArray(spine, "castSlots");
+
+        foreach (var (slotId, displayName) in RequiredCastNamesBySlotId)
+        {
+            var slot = Assert.Single(castSlots, item =>
+                string.Equals(RequiredString(item, "slotId"), slotId, StringComparison.OrdinalIgnoreCase));
+
+            Assert.Equal(displayName, RequiredString(slot, "displayName"));
+            AssertStoryCopyLooksAuthored(slotId, "persona", RequiredString(slot, "persona"));
+
+            var dialogueBeatIds = RequiredStringArray(slot, "dialogueBeatIds");
+            Assert.All(dialogueBeatIds, beatId =>
+                Assert.Contains(beatId, RequiredBeatIds, StringComparer.OrdinalIgnoreCase));
+
+            Assert.Contains(displayName, routeText, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void DarenRoute_ContainsDialogueSocialChoiceMomentsThroughExistingQteActions()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        foreach (var beatId in RequiredDialogueBeatIds)
+        {
+            var (chapter, action) = RequiredChapterAction(route.Offer, beatId);
+            var npcName = RequiredDialogueNpcByBeatId[beatId];
+
+            Assert.Contains(action.Check.Type, DialogueChoiceCheckTypes);
+            Assert.Equal("PrecisionChoice", action.Check.Type);
+            Assert.Contains(npcName, $"{chapter.Title} {chapter.Narrative} {action.Label}", StringComparison.OrdinalIgnoreCase);
+            Assert.NotNull(action.Routing.Success.NextChapterId ?? action.Routing.Success.TerminalOutcomeId);
+            Assert.NotNull(action.Routing.Partial.NextChapterId ?? action.Routing.Partial.TerminalOutcomeId);
+            Assert.NotNull(action.Routing.Fail.NextChapterId ?? action.Routing.Fail.TerminalOutcomeId);
+        }
+    }
+
+    [Fact]
+    public void DarenDialogueChoices_ExposePlayerFacingAnswerOptions()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        foreach (var beatId in RequiredDialogueBeatIds)
+        {
+            var (_, action) = RequiredChapterAction(route.Offer, beatId);
+
+            Assert.Equal("PrecisionChoice", action.Check.Type);
+            var choices = RequiredObjectArray(RequiredConfig(action), "choices");
+            Assert.InRange(choices.Count, 3, 8);
+
+            var grades = choices
+                .Select(choice => RequiredString(choice, "grade"))
+                .ToArray();
+            Assert.Contains("success", grades, StringComparer.OrdinalIgnoreCase);
+            Assert.Contains("partial", grades, StringComparer.OrdinalIgnoreCase);
+            Assert.Contains("fail", grades, StringComparer.OrdinalIgnoreCase);
+
+            foreach (var choice in choices)
+            {
+                var label = RequiredString(choice, "label");
+                var description = RequiredString(choice, "description");
+                var hint = RequiredString(choice, "hint");
+                AssertNoPlayerFacingTechnicalTerms($"{beatId} choice label", label);
+                AssertNoPlayerFacingTechnicalTerms($"{beatId} choice description", description);
+                AssertNoPlayerFacingTechnicalTerms($"{beatId} choice hint", hint);
+                Assert.True(label.Length <= 48, $"Daren dialogue choice '{beatId}' label is too long for compact choice UI.");
+                Assert.True(description.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 3,
+                    $"Daren dialogue choice '{beatId}' needs a meaningful answer description.");
+                Assert.True(hint.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length >= 3,
+                    $"Daren dialogue choice '{beatId}' needs a meaningful answer hint.");
+            }
+        }
+    }
+
+    [Fact]
+    public void DarenDialogueResponses_HaveDistinctNpcSocialVariants()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+
+        foreach (var beatId in RequiredDialogueBeatIds)
+        {
+            var (_, action) = RequiredChapterAction(route.Offer, beatId);
+            var resultTexts = new[]
+            {
+                action.SuccessText,
+                action.PartialText,
+                action.FailText
+            };
+
+            Assert.Equal(3, resultTexts.Distinct(StringComparer.OrdinalIgnoreCase).Count());
+            AssertActionResultLooksLikeTransition(beatId, action.ActionId, "success", action.SuccessText);
+            AssertActionResultLooksLikeTransition(beatId, action.ActionId, "partial", action.PartialText);
+            AssertActionResultLooksLikeTransition(beatId, action.ActionId, "fail", action.FailText);
+
+            foreach (var text in resultTexts)
+            {
+                Assert.True(ContainsAny(text ?? "", SocialReactionTerms),
+                    $"Daren dialogue action '{beatId}' result should read as an NPC or social reaction.");
+            }
+        }
+    }
+
+    [Fact]
+    public void DarenDialogueConsequences_AffectRiskAndEchoLaterInRouteProse()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var dialogueActions = RequiredDialogueBeatIds
+            .Select(beatId => RequiredChapterAction(route.Offer, beatId))
+            .ToArray();
+
+        var hasRiskDelta = dialogueActions.Any(item =>
+            item.Action.ScoreDeltas != null &&
+            item.Action.ScoreDeltas.Values
+                .SelectMany(delta => delta)
+                .Any(delta =>
+                    delta.Delta != 0 &&
+                    ExistingRiskMetricIds.Contains(delta.Metric, StringComparer.OrdinalIgnoreCase)));
+
+        Assert.True(hasRiskDelta, "At least one Daren dialogue/social choice must affect an existing score or risk metric.");
+
+        foreach (var (_, action) in dialogueActions)
+        {
+            Assert.NotNull(action.ScoreDeltas);
+            foreach (var grade in new[] { "success", "partial", "fail" })
+            {
+                Assert.True(action.ScoreDeltas!.TryGetValue(grade, out var deltas), $"Daren dialogue action '{action.ActionId}' needs score deltas for {grade}.");
+                Assert.NotEmpty(deltas);
+            }
+        }
+
+        var lastDialogueIndex = route.Offer.Chapters.FindLastIndex(chapter =>
+            RequiredDialogueBeatIds.Contains(chapter.ChapterId, StringComparer.OrdinalIgnoreCase));
+        Assert.InRange(lastDialogueIndex, 0, route.Offer.Chapters.Count - 2);
+
+        var laterText = BuildPlayerFacingRouteText(route.Offer.Chapters.Skip(lastDialogueIndex + 1));
+        Assert.True(ContainsAny(laterText, LaterSocialEchoTerms),
+            "Later Daren route prose should echo an earlier NPC interaction or social consequence.");
     }
 
     [Fact]
@@ -277,6 +526,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
         Assert.Equal(1, RequiredInt(spine, "schemaVersion"));
         Assert.Equal("daren_qte_showcase", RequiredString(spine, "routeId"));
         Assert.Contains(957, RequiredIntArray(spine, "sourceIssues"));
+        Assert.Contains(958, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(956, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(955, RequiredIntArray(spine, "sourceIssues"));
         Assert.Contains(919, RequiredIntArray(spine, "sourceIssues"));
@@ -298,6 +548,7 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
         var spineBeatIds = spineBeats.Select(beat => RequiredString(beat, "beatId")).ToArray();
         Assert.Equal(route.Beats.Select(beat => beat.BeatId), spineBeatIds);
+        AssertOrderedSubsequence(OriginalHeistBeatIds, spineBeatIds, "Daren narrative spine beats");
         Assert.Equal(spineBeatIds.Length, spineBeatIds.Distinct(StringComparer.OrdinalIgnoreCase).Count());
 
         foreach (var beat in spineBeats)
@@ -357,6 +608,10 @@ public sealed class DarenQteShowcaseTests : IDisposable
             Assert.False(string.IsNullOrWhiteSpace(RequiredString(slot, "role")));
             Assert.All(RequiredStringArray(slot, "plannedBeatIds"), plannedBeatId =>
                 Assert.Contains(plannedBeatId, beatIds));
+            Assert.False(string.IsNullOrWhiteSpace(RequiredString(slot, "displayName")));
+            Assert.False(string.IsNullOrWhiteSpace(RequiredString(slot, "persona")));
+            Assert.All(RequiredStringArray(slot, "dialogueBeatIds"), beatId =>
+                Assert.Contains(beatId, beatIds));
             Assert.Contains(958, RequiredIntArray(slot, "futureIssueLinks"));
         }
 
@@ -722,6 +977,50 @@ public sealed class DarenQteShowcaseTests : IDisposable
         return Assert.IsType<JsonObject>(JsonNode.Parse(File.ReadAllText(path)));
     }
 
+    private static string BuildPlayerFacingRouteText(QteSceneService.QteOffer offer) =>
+        string.Join("\n", BuildPlayerFacingRouteParts(offer.Chapters)
+            .Prepend(offer.CinematicJustification ?? "")
+            .Prepend(offer.DeclineHint ?? "")
+            .Prepend(offer.IntroNarrative ?? "")
+            .Prepend(offer.OfferText ?? "")
+            .Prepend(offer.Title ?? ""));
+
+    private static string BuildPlayerFacingRouteText(IEnumerable<QteSceneService.QteChapter> chapters) =>
+        string.Join("\n", BuildPlayerFacingRouteParts(chapters));
+
+    private static IEnumerable<string> BuildPlayerFacingRouteParts(IEnumerable<QteSceneService.QteChapter> chapters)
+    {
+        foreach (var chapter in chapters)
+        {
+            yield return chapter.Title ?? "";
+            yield return chapter.Narrative ?? "";
+            foreach (var action in chapter.Actions)
+            {
+                yield return action.Label;
+                yield return action.SuccessText ?? "";
+                yield return action.PartialText ?? "";
+                yield return action.FailText ?? "";
+                yield return action.Check.Config?.ToJsonString() ?? "";
+            }
+        }
+    }
+
+    private static (QteSceneService.QteChapter Chapter, QteSceneService.QteAction Action) RequiredChapterAction(
+        QteSceneService.QteOffer offer,
+        string chapterId)
+    {
+        var chapter = Assert.Single(offer.Chapters, item =>
+            string.Equals(item.ChapterId, chapterId, StringComparison.OrdinalIgnoreCase));
+        var action = Assert.Single(chapter.Actions);
+        return (chapter, action);
+    }
+
+    private static JsonObject RequiredConfig(QteSceneService.QteAction action)
+    {
+        Assert.NotNull(action.Check.Config);
+        return action.Check.Config;
+    }
+
     private static JsonObject RequiredObject(JsonObject root, string propertyName)
     {
         Assert.True(root[propertyName] is JsonObject, $"Expected '{propertyName}' to be an object.");
@@ -859,6 +1158,24 @@ public sealed class DarenQteShowcaseTests : IDisposable
 
     private static bool ContainsAny(string value, IReadOnlyList<string> terms) =>
         terms.Any(term => value.Contains(term, StringComparison.OrdinalIgnoreCase));
+
+    private static void AssertOrderedSubsequence(
+        IReadOnlyList<string> expectedSubsequence,
+        IEnumerable<string> actualSequence,
+        string context)
+    {
+        var actual = actualSequence.ToArray();
+        var searchStart = 0;
+        foreach (var expected in expectedSubsequence)
+        {
+            var foundIndex = Array.FindIndex(
+                actual,
+                searchStart,
+                item => string.Equals(item, expected, StringComparison.OrdinalIgnoreCase));
+            Assert.True(foundIndex >= 0, $"{context} should keep original Daren heist beat '{expected}' in order.");
+            searchStart = foundIndex + 1;
+        }
+    }
 
     private static void AssertStoryCopyLooksAuthored(string beatId, string field, string value)
     {
