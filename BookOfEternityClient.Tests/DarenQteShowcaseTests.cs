@@ -401,6 +401,45 @@ public sealed class DarenQteShowcaseTests : IDisposable
     }
 
     [Fact]
+    public void DarenApproachManor_ReadsAsFullLiteraryPage()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "approach_manor");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "approach_manor");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Подступ к поместью", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("approach_manor_action", action.ActionId);
+        Assert.Equal("BranchChoice", action.Check.Type);
+        Assert.Equal("Выбрать тень у старой липы", action.Label);
+
+        Assert.True(text.Length >= 1200,
+            "Daren approach_manor narrative should be a substantial literary page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 8,
+            "Daren approach_manor narrative should unfold across multiple scene sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 4,
+            "Daren approach_manor narrative should keep Daren as the active point-of-view protagonist.");
+
+        foreach (var (context, terms) in new (string Context, string[] Terms)[]
+        {
+            ("manor wall and gate", ["помест", "стен", "калит"]),
+            ("wet night atmosphere", ["мокр", "трава", "сыр", "ноч"]),
+            ("patrol lantern pressure", ["фонар", "патрул", "страж"]),
+            ("old linden shadow route", ["липа", "тень"]),
+            ("Daren body language", ["ладон", "плеч", "дых", "колен", "ребр"]),
+            ("Daren intent", ["посох", "добыч", "вор"]),
+            ("failure stakes", ["крик", "тревог", "погон", "увид"]),
+            ("choice lead-in", ["выб", "скольз", "полз", "шаг", "подступ"])
+        })
+        {
+            AssertContainsAny($"approach_manor full-page {context}", text, terms);
+        }
+
+        AssertNoPlayerFacingTechnicalTerms("approach_manor full-page narrative", text);
+    }
+
+    [Fact]
     public void DarenActionResultText_ReadsAsTransitionProse()
     {
         var route = QteSceneService.GetDarenShowcaseRoute();
@@ -1513,7 +1552,10 @@ public sealed class DarenQteShowcaseTests : IDisposable
     {
         Assert.False(string.IsNullOrWhiteSpace(value), $"Daren chapter '{chapterId}' needs authored narrative prose.");
         var text = value.Trim();
-        Assert.InRange(text.Length, 140, 520);
+        var maxLength = string.Equals(chapterId, "approach_manor", StringComparison.OrdinalIgnoreCase)
+            ? 3600
+            : 520;
+        Assert.InRange(text.Length, 140, maxLength);
         Assert.True(CountSentences(text) >= 2,
             $"Daren chapter '{chapterId}' should have at least two scene sentences, not a bare mechanic label.");
         Assert.Contains("Дарен", text, StringComparison.OrdinalIgnoreCase);
