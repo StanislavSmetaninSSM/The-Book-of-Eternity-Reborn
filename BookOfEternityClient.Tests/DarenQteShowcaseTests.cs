@@ -210,7 +210,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
         "debug",
         "Spec Kit",
         "manual-grade",
-        "client-owned"
+        "client-owned",
+        "QTE"
     ];
 
     private static readonly string[] ForbiddenStoryCopyTerms =
@@ -437,6 +438,61 @@ public sealed class DarenQteShowcaseTests : IDisposable
         }
 
         AssertNoPlayerFacingTechnicalTerms("approach_manor full-page narrative", text);
+    }
+
+    [Fact]
+    public void DarenInformantParley_ReadsAsMiraLiteraryPageWithoutMechanicDrift()
+    {
+        var route = QteSceneService.GetDarenShowcaseRoute();
+        var beat = Assert.Single(route.Beats, item => item.BeatId == "informant_parley");
+        var (chapter, action) = RequiredChapterAction(route.Offer, "informant_parley");
+        var text = chapter.Narrative?.Trim() ?? "";
+
+        Assert.Equal("Шёпот Миры", beat.Title);
+        Assert.Equal(beat.PlayerText, chapter.Narrative);
+        Assert.Equal("informant_parley_action", action.ActionId);
+        Assert.Equal("PrecisionChoice", action.Check.Type);
+        Assert.Equal(Characteristics.Wisdom, action.Check.PrimaryCharacteristic);
+        Assert.Equal(2, action.Check.BaseDifficulty);
+        Assert.Equal("Ответить Мире Ночной Нити", action.Label);
+        Assert.Equal("gadget_infiltration", action.Routing.Success.NextChapterId);
+        Assert.Equal("gadget_infiltration", action.Routing.Partial.NextChapterId);
+        Assert.Equal("gadget_infiltration", action.Routing.Fail.NextChapterId);
+
+        var config = RequiredConfig(action);
+        Assert.Equal("old_captain_shift", RequiredString(config, "correctChoiceId"));
+        Assert.Equal(7000, RequiredInt(config, "timeoutMs"));
+        Assert.Equal("fail", RequiredString(config, "timeoutGrade"));
+        var choices = RequiredObjectArray(config, "choices");
+        Assert.Equal(["old_captain_shift", "pay_for_rumor", "threaten_contact"], choices.Select(choice => RequiredString(choice, "id")));
+        Assert.Equal(["success", "partial", "fail"], choices.Select(choice => RequiredString(choice, "grade")));
+
+        Assert.True(text.Length >= 1500,
+            "Daren informant_parley narrative should be a substantial literary page, not a compact synopsis.");
+        Assert.True(CountSentences(text) >= 12,
+            "Daren informant_parley narrative should unfold across a real scene, not two briefing sentences.");
+        Assert.True(CountOccurrences(text, "Дарен") >= 5,
+            "Daren informant_parley narrative should keep Daren as the active point-of-view protagonist.");
+        Assert.True(CountOccurrences(text, "Мира") >= 5,
+            "Daren informant_parley narrative should make Mira a present social scene partner.");
+        Assert.True(CountOccurrences(text, "—") >= 6,
+            "Daren informant_parley narrative should include a voiced exchange between Daren and Mira.");
+
+        foreach (var (context, termGroups) in new (string Context, string[][] TermGroups)[]
+        {
+            ("rear-road awning meeting place", [["навес"], ["задн"], ["дорог"]]),
+            ("wet night and ribbon detail", [["мокр", "дожд"], ["лент"], ["ноч", "тёмн"]]),
+            ("old-contact relationship subtext", [["стар", "знаком", "Когда-то"], ["долг", "молч", "памят"]]),
+            ("body language and social tension", [["запяст", "пальц", "плеч", "ладон"], ["взгляд", "усмеш", "нож", "тень"]]),
+            ("source exposure and guard stakes", [["источник", "слух"], ["страж"], ["погон", "Орвальд"]]),
+            ("gallery shift information pressure", [["парол"], ["смен"], ["галер"], ["Лукьян", "ключник"]]),
+            ("precision-choice lead-in", [["назов", "ответ"], ["точн", "правильн"], ["довер", "повер"]])
+        })
+        {
+            AssertContainsEveryTermGroup($"informant_parley full-page {context}", text, termGroups);
+        }
+
+        AssertNoPlayerFacingTechnicalTerms("informant_parley full-page narrative", text);
     }
 
     [Fact]
@@ -1552,7 +1608,8 @@ public sealed class DarenQteShowcaseTests : IDisposable
     {
         Assert.False(string.IsNullOrWhiteSpace(value), $"Daren chapter '{chapterId}' needs authored narrative prose.");
         var text = value.Trim();
-        var maxLength = string.Equals(chapterId, "approach_manor", StringComparison.OrdinalIgnoreCase)
+        var maxLength = string.Equals(chapterId, "approach_manor", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(chapterId, "informant_parley", StringComparison.OrdinalIgnoreCase)
             ? 3600
             : 520;
         Assert.InRange(text.Length, 140, maxLength);
@@ -1637,6 +1694,17 @@ public sealed class DarenQteShowcaseTests : IDisposable
     {
         Assert.True(ContainsAny(value, terms),
             $"Daren chapter '{context}' needs one of these story signals: {string.Join(", ", terms)}.");
+    }
+
+    private static void AssertContainsEveryTermGroup(string context, string value, IEnumerable<IReadOnlyList<string>> termGroups)
+    {
+        var index = 0;
+        foreach (var terms in termGroups)
+        {
+            Assert.True(ContainsAny(value, terms),
+                $"Daren chapter '{context}' needs story signal group {index}: {string.Join(", ", terms)}.");
+            index++;
+        }
     }
 
     private static bool ContainsAny(string value, IReadOnlyList<string> terms) =>
