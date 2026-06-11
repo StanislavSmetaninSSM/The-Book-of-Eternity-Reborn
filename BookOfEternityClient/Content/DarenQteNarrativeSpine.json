@@ -1,0 +1,375 @@
+{
+  "schemaVersion": 1,
+  "routeId": "daren_qte_showcase",
+  "sourceIssues": [956, 955, 919],
+  "targetPlaytimeMinutes": {
+    "min": 20,
+    "max": 30
+  },
+  "arcStages": [
+    "preparation",
+    "approach",
+    "infiltration",
+    "reconnaissance",
+    "security",
+    "complication",
+    "theft",
+    "alarm",
+    "chase",
+    "hideout",
+    "epilogue"
+  ],
+  "castSlots": [
+    {
+      "slotId": "contact_informant",
+      "role": "Contact or informant who gives Daren the manor timing, staff rumor, and first social pressure point.",
+      "plannedBeatIds": ["approach_manor", "route_decision"],
+      "futureIssueLinks": [958, 959]
+    },
+    {
+      "slotId": "estate_staff_guard",
+      "role": "Servant, tired watchman, or house guard who can notice noise, answer a lie, or become a later witness.",
+      "plannedBeatIds": ["stealth_crossing", "physical_pressure", "pursuit"],
+      "futureIssueLinks": [958, 959, 961]
+    },
+    {
+      "slotId": "magical_security_authority",
+      "role": "House mage, steward, or ward-bound presence that explains why the staff and runes matter.",
+      "plannedBeatIds": ["rune_memory", "timed_rhythm", "staff_theft"],
+      "futureIssueLinks": [958, 959, 960]
+    },
+    {
+      "slotId": "pursuit_figure",
+      "role": "Named pursuer who turns the alarm into personal pressure during the escape and ending summary.",
+      "plannedBeatIds": ["pursuit", "chase_chain", "hideout_return"],
+      "futureIssueLinks": [958, 959, 960, 961]
+    }
+  ],
+  "beats": [
+    {
+      "beatId": "approach_manor",
+      "phase": "preparation and approach opening",
+      "title": "Approach Under Lanterns",
+      "dramaticPurpose": "Establish the manor target, Daren's nerve, and the first choice that sets suspicion.",
+      "playerGoal": "Choose the shadowed way in before patrol light fixes on the wall.",
+      "qteType": "BranchChoice",
+      "sceneFraming": "Daren watches the patrol rhythm from wet grass while the staff's tower window glows beyond the wall.",
+      "branchPoints": [
+        "Success finds the blind gap between lanterns before anyone looks back.",
+        "Partial progress breaks a twig and starts a quiet suspicion thread.",
+        "Failure wastes time at the bright gate and makes later watchers more alert."
+      ],
+      "consequenceHooks": [
+        "Suspicion level can color guard reactions inside the manor.",
+        "Evidence left here can strengthen the later pursuit.",
+        "The chosen approach can echo in the ending explanation."
+      ],
+      "carryForward": [
+        "Early suspicion should be remembered by stealth and chase scenes.",
+        "Clean entry can support best ending language.",
+        "Messy entry can justify an exposed hideout risk later."
+      ],
+      "futureIssueLinks": [957, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "gadget_infiltration",
+      "phase": "infiltration over outer wall",
+      "title": "Hook Over Balcony",
+      "dramaticPurpose": "Show Daren's thief tools as story pressure rather than a standalone gadget system.",
+      "playerGoal": "Set the folding hook quietly and reach the balcony before the line rings against stone.",
+      "qteType": "ChargeRelease",
+      "sceneFraming": "The balcony is close enough to touch, but the hook line hums like a plucked string in the cold air.",
+      "branchPoints": [
+        "Success lands the hook softly and preserves the silent route.",
+        "Partial progress reaches the balcony with a small metallic note.",
+        "Failure drops the hook and gives the yard a reason to wake."
+      ],
+      "consequenceHooks": [
+        "Tool noise can raise pursuit readiness.",
+        "A clean climb can make later confidence feel earned.",
+        "A poor climb can invite an animal or guard reaction in follow-up prose."
+      ],
+      "carryForward": [
+        "Noise from the hook can be referenced by the gallery patrol.",
+        "Reliable tool use can support a composed theft scene.",
+        "Bad tool handling can become one reason the chase starts hotter."
+      ],
+      "futureIssueLinks": [957, 959, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "stealth_crossing",
+      "phase": "infiltration through silent reconnaissance",
+      "title": "Gallery Without Footsteps",
+      "dramaticPurpose": "Turn the first interior crossing into a stealth character scene with human witnesses nearby.",
+      "playerGoal": "Cross the gallery while reading sleepers, floorboards, and candlelight without raising noise.",
+      "qteType": "StealthNoise",
+      "sceneFraming": "Daren passes portraits and sleeping guards while dust shows which boards remember every careless boot.",
+      "branchPoints": [
+        "Success keeps the room asleep and leaves no witness.",
+        "Partial progress stirs a guard who can later doubt what he heard.",
+        "Failure wakes a distant lantern and adds a human witness."
+      ],
+      "consequenceHooks": [
+        "Witness memory can support later dialogue reactions.",
+        "Noise can increase alarm speed during the theft.",
+        "Clean movement can reduce evidence in the final accounting."
+      ],
+      "carryForward": [
+        "A stirred guard can reappear during pursuit or ending prose.",
+        "Silent crossing can strengthen Daren's self-control arc.",
+        "A noisy crossing can make later staff handling feel more desperate."
+      ],
+      "futureIssueLinks": [957, 958, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "lock_pick",
+      "phase": "security lock challenge",
+      "title": "Cabinet Lock Teeth",
+      "dramaticPurpose": "Make the lock a tense threshold into the manor's guarded records.",
+      "playerGoal": "Set the old pins without snapping the pick or leaving obvious tool marks.",
+      "qteType": "LockPinSet",
+      "sceneFraming": "The cabinet door breathes cold around the keyhole, and each pin answers Daren's touch like a small bell.",
+      "branchPoints": [
+        "Success opens the cabinet with a dry click and no trace.",
+        "Partial progress opens the lock but marks the plate.",
+        "Failure makes the lock complain loudly enough to matter later."
+      ],
+      "consequenceHooks": [
+        "Tool marks can become evidence for house staff.",
+        "Lock noise can pull suspicion toward this wing.",
+        "A clean lock can support best theft and ending conditions."
+      ],
+      "carryForward": [
+        "Visible scratches can be named during the alarm.",
+        "A clean cabinet entry can keep the staff theft feeling surgical.",
+        "Lock trouble can compound with rune and rhythm mistakes."
+      ],
+      "futureIssueLinks": [957, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "rune_memory",
+      "phase": "security rune reconnaissance",
+      "title": "Runes Behind Glass",
+      "dramaticPurpose": "Introduce magical security and show that Daren survives by observation, not brute force alone.",
+      "playerGoal": "Memorize the ward sequence before it fades and repeat it without alerting the house.",
+      "qteType": "PatternMemory",
+      "sceneFraming": "Blue runes bloom across the staff case, each sign vanishing as if the house is testing whether he deserves to pass.",
+      "branchPoints": [
+        "Success darkens the runes in the correct order.",
+        "Partial progress cracks one sign without closing the way.",
+        "Failure turns the ward light sharp enough for someone trained to notice."
+      ],
+      "consequenceHooks": [
+        "Rune damage can alert the magical security authority.",
+        "Correct memory can improve staff condition and loot quality.",
+        "Failed memory can explain later ward pressure and pursuit confidence."
+      ],
+      "carryForward": [
+        "A cracked rune can be cited by the house representative.",
+        "Strong observation can foreshadow a cleaner escape route.",
+        "Magical disturbance can raise alarm wording during the theft."
+      ],
+      "futureIssueLinks": [957, 958, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "physical_pressure",
+      "phase": "complication under physical pressure",
+      "title": "Weight Of Iron",
+      "dramaticPurpose": "Escalate from delicate work into bodily strain while keeping the staff almost within reach.",
+      "playerGoal": "Hold the heavy grate long enough for the staff case to clear its niche.",
+      "qteType": "MashInput",
+      "sceneFraming": "The grate sinks with patient cruelty while the case slides out inch by inch beneath Daren's shoulder.",
+      "branchPoints": [
+        "Success keeps the grate steady until the mechanism resets.",
+        "Partial progress frees the case but leaves a bruise and scraping sound.",
+        "Failure drops the iron hard enough to shake the wing."
+      ],
+      "consequenceHooks": [
+        "The crash can accelerate staff room discovery.",
+        "Physical strain can change later chase description.",
+        "Clean handling can preserve loot condition."
+      ],
+      "carryForward": [
+        "A strained arm can make the chase more costly in prose.",
+        "A loud grate can justify an earlier alarm beat.",
+        "A steady lift can make Daren's confidence believable near the staff."
+      ],
+      "futureIssueLinks": [957, 958, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "timed_rhythm",
+      "phase": "alarm rhythm avoidance",
+      "title": "Crystal Pulse Crossing",
+      "dramaticPurpose": "Show the alarm system as a living rhythm that Daren can read or betray.",
+      "playerGoal": "Move between crystal pulses without letting the signal catch his shadow.",
+      "qteType": "RhythmPulse",
+      "sceneFraming": "The signal crystal beats red light through the corridor, leaving small pockets of darkness between each pulse.",
+      "branchPoints": [
+        "Success carries Daren through every dark pocket.",
+        "Partial progress lets one pulse brush his heel.",
+        "Failure rings the crystal and makes stealth collapse."
+      ],
+      "consequenceHooks": [
+        "Crystal contact can start or sharpen the alarm.",
+        "Clean timing can preserve the quiet route toward the staff.",
+        "A brushed pulse can create uncertainty for later guards."
+      ],
+      "carryForward": [
+        "Alarm intensity here should shape the pursuit opening.",
+        "Clean rhythm can support excellent ending language.",
+        "A near miss can give future prose a useful pressure memory."
+      ],
+      "futureIssueLinks": [957, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "route_decision",
+      "phase": "approach choice toward theft",
+      "title": "Orangery Exit Choice",
+      "dramaticPurpose": "Create a fast tactical choice that can carry dialogue and evidence consequences later.",
+      "playerGoal": "Pick the exit that hides tracks while keeping the staff room within reach.",
+      "qteType": "PrecisionChoice",
+      "sceneFraming": "Three exits open around the orangery: wet glass, servant gate, and a bright arch that promises speed too loudly.",
+      "branchPoints": [
+        "Success chooses the wet glass where water can erase footprints.",
+        "Partial progress takes the servant gate and leaves a readable trail.",
+        "Failure runs into the bright arch and becomes easy to place."
+      ],
+      "consequenceHooks": [
+        "Route choice can determine who later sees Daren.",
+        "Footprints can become evidence in ending text.",
+        "A risky route can increase pursuit certainty."
+      ],
+      "carryForward": [
+        "The chosen exit should influence chase geography.",
+        "A servant gate choice can invite an NPC reaction later.",
+        "Evidence from this choice can affect mixed endings."
+      ],
+      "futureIssueLinks": [957, 958, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "staff_theft",
+      "phase": "theft of magical staff",
+      "title": "Staff On Leather",
+      "dramaticPurpose": "Deliver the central theft and make loot condition visible before the route turns outward.",
+      "playerGoal": "Lift and balance the magical staff without striking the hanging alarms around it.",
+      "qteType": "BalanceMeter",
+      "sceneFraming": "The staff is warmer than the room and heavier than its size promises, resting above rings that sing at a breath.",
+      "branchPoints": [
+        "Success settles the staff against the strap without a sound.",
+        "Partial progress catches one ring before the echo travels far.",
+        "Failure rings the hangers and announces exactly what was stolen."
+      ],
+      "consequenceHooks": [
+        "Staff condition can feed the final ending tier prose.",
+        "Alarm sound can decide pursuit urgency.",
+        "Loot handling can affect Daren's pride or regret."
+      ],
+      "carryForward": [
+        "Damaged or noisy staff theft should matter in endings.",
+        "Clean theft can support the strongest reward explanation.",
+        "The house can name the stolen object during pursuit."
+      ],
+      "futureIssueLinks": [957, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "pursuit",
+      "phase": "alarm and chase ignition",
+      "title": "Window Before Hands",
+      "dramaticPurpose": "Convert accumulated suspicion into immediate pursuit pressure.",
+      "playerGoal": "Take the first escape window before guards close the courtyard.",
+      "qteType": "TimingBar",
+      "sceneFraming": "Boots hammer the hall behind him, and the open window ahead narrows with every shout from the yard.",
+      "branchPoints": [
+        "Success slips through before the courtyard locks down.",
+        "Partial progress escapes but flashes cloak and face in lantern light.",
+        "Failure loses a step and lets the pursuer claim the rhythm."
+      ],
+      "consequenceHooks": [
+        "Pursuer confidence can shape the chase chain.",
+        "Visible identity can threaten hideout safety.",
+        "A clean break can reduce evidence against Daren."
+      ],
+      "carryForward": [
+        "The named pursuit figure should enter strongly here.",
+        "A lost step should make the next scene tighter.",
+        "A clean window exit can preserve best ending pace."
+      ],
+      "futureIssueLinks": [957, 958, 959, 960, 961],
+      "pacingMinutes": 2
+    },
+    {
+      "beatId": "chase_chain",
+      "phase": "chase through courtyards",
+      "title": "Courtyard Chain Run",
+      "dramaticPurpose": "Pay off the route's pressure through a multi-action escape sequence.",
+      "playerGoal": "Remember the turns, jumps, and cuts that lead away from the manor without leaving a clean trail.",
+      "qteType": "PromptChain",
+      "sceneFraming": "Daren crosses yard, wall, cart, and alley as one remembered sentence, with the staff beating against his side.",
+      "branchPoints": [
+        "Success makes the chase look like planned choreography.",
+        "Partial progress keeps him upright but leaves a rough trail.",
+        "Failure crashes through obstacles and teaches the pursuers where he ran."
+      ],
+      "consequenceHooks": [
+        "Chase quality can decide hideout safety pressure.",
+        "Dropped evidence can change mixed ending text.",
+        "Strong escape can make the pursuer lose authority."
+      ],
+      "carryForward": [
+        "The chase result should directly affect the hideout return.",
+        "Optional evidence can be resolved in ending prose.",
+        "Physical mistakes from earlier scenes can reappear here."
+      ],
+      "futureIssueLinks": [957, 958, 959, 960, 961],
+      "pacingMinutes": 3
+    },
+    {
+      "beatId": "hideout_return",
+      "phase": "hideout return and epilogue",
+      "title": "Bridge Hideout Reckoning",
+      "dramaticPurpose": "Resolve whether Daren, the staff, and the hideout survive the night's accumulated choices.",
+      "playerGoal": "Choose how to hide the staff, break the trail, and explain the cost of the heist.",
+      "qteType": "BranchChoice",
+      "sceneFraming": "Under the bridge, Daren has one quiet minute to bury light, clean mud, and decide what the night made of him.",
+      "branchPoints": [
+        "Success seals the staff away and leaves the pursuit blind.",
+        "Partial progress hides the prize but leaves one loose trace.",
+        "Failure keeps the staff nearby while the hideout becomes vulnerable."
+      ],
+      "consequenceHooks": [
+        "Hideout safety can decide poor or strong ending language.",
+        "Accumulated evidence can surface in the final summary.",
+        "Loot condition can complete the reward explanation."
+      ],
+      "carryForward": [
+        "All earlier suspicion, evidence, loot, pursuit, and hideout threads should close here.",
+        "Ending prose should distinguish poor, mixed, good, and excellent results.",
+        "Future quality gates should reject summaries that ignore route consequences."
+      ],
+      "futureIssueLinks": [957, 959, 960, 961],
+      "pacingMinutes": 2
+    }
+  ],
+  "contractBoundaries": [
+    "Future work should keep console and browser as consumers of the same existing QTE route and shared route data.",
+    "This scene map is an authoring artifact with no new dialogue/scenario runtime requirement.",
+    "This slice requires no new QTE check type and no one-off gameplay system.",
+    "This slice makes no reward/profile contract changes and no New Game grant changes."
+  ],
+  "handoffNotes": [
+    "#957 should turn scene framing into concise player-facing prose without changing the beat order.",
+    "#958 should use the cast slots for dialogue and NPC reactions without creating a separate route.",
+    "#959 should expand branch and consequence text from the hooks already listed here.",
+    "#960 should derive ending variations from the accumulated suspicion, evidence, loot, pursuit, and hideout threads.",
+    "#961 should add quality gates that preserve the shared route, pacing range, and story-first presentation."
+  ]
+}
