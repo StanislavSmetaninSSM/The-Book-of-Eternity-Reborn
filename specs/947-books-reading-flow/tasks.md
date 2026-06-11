@@ -21,7 +21,7 @@
 - [X] T011 Run affected C# test slices and build gates.
 - [X] T012 Run frontend verification if React/frontend files changed.
 - [X] T013 Run Spec Kit prerequisite check, `git diff --check`, and added-line static scan.
-- [ ] T014 Independent review: verify #947 acceptance, console/browser parity, no raw/debug default output, readable authority intact, and no scope creep into #948/#949.
+- [X] T014 Independent review: verify #947 acceptance, console/browser parity, no raw/debug default output, readable authority intact, and no scope creep into #948/#949.
 - [ ] T015 Hermes-owned lifecycle: PR, squash merge, issue evidence comment, issue close, worktree cleanup.
 
 ## Notes
@@ -54,3 +54,9 @@
   - `git diff --check origin/main...HEAD` passed with no output after implementation and evidence commits.
   - Added-line static scan over the committed non-spec diff found no matches for secret/shell/eval/path traversal/security patterns.
   - `npm run verify --prefix BookOfEternityClient.WebFrontend` was not run because no React/frontend files changed.
+- Review fix / final review (2026-06-11):
+  - Independent review run `E:/Games/codex-runs/20260611-155359-boe-947-books-reading-flow-finalreview` returned `CHANGES_REQUIRED`: numeric stable selectors such as `/books 2` could be treated as one-based shelf indexes before exact stable-id matching.
+  - RED: `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj -p:IsTestProject=true --filter "FullyQualifiedName~ExecuteAsync_Books_WithNumericStableDocumentId_PrefersSelectorOverShelfIndex" --logger "console;verbosity=minimal"` failed 1/1 before the fix because `/books 2` opened the second shelf row instead of the document whose stable id is `2`.
+  - Fix commit `75827e8`: `ReadableInventoryDocumentShelfProjection.FindBySelector` now matches exact selector/aliases before numeric index fallback, preserving generated stable-id actions while keeping index fallback for non-conflicting manual selection.
+  - GREEN after fix: focused #947 tests passed 5/5, affected slice passed 429/429, validation slice passed 1115/1115, both C# builds succeeded with 0 warnings/0 errors, `git diff --check origin/main...HEAD` passed, and added-line static scan returned `NO_MATCHES`.
+  - Independent re-review run `E:/Games/codex-runs/20260611-160533-boe-947-books-reading-flow-rereview` returned `APPROVED`; blocking findings none. Detached review worktree Spec Kit helper failure was classified as review-harness limitation because Hermes supplied fresh feature-branch evidence.
